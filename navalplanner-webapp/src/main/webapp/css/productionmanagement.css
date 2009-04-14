@@ -1,0 +1,137 @@
+/* ProductionManagement Global Styles */
+
+/*** Tasks ***/
+#listtasks {
+    position:relative;
+    width:400px; /** Constants */
+    top:100px;
+}
+
+.listdetails {
+    width:200px;
+    float:left;
+    margin-top:80px;
+}
+
+.listdetails table {
+    height:30px;
+}
+
+.listdetails td {
+    padding-left:3px;
+}
+
+.listdetails input {
+    width: 90px;
+}
+
+
+.z-datebox-inp {
+    width:100px;
+}
+
+
+/* Task box properties */
+.yui-resize {
+    border: 1px solid;
+    text-align:center;
+    vertical-align: middle;
+    font-size:0.8em;
+    z-index:10;
+}
+
+/* Task lane properties */
+.row {
+    height: 19px;
+    border-bottom: dotted 1px #CCCCCC;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    width: 1800px;
+}
+
+
+/*** Dependencies ***/
+#listdependencies {
+    position:relative;
+    width:400px;
+    float:left;
+    top:0px; /* Should be -60, recalc. redrawing deps. */
+}
+
+.dependence {
+    z-index:1;
+    position: absolute;
+}
+
+.end, .start, .mid, .arrow {
+    position:absolute;
+    padding:4px;
+}
+
+.end, .start {
+    height:1px;
+}
+
+.mid {
+    width:1px;
+}
+
+/*.center {
+    float:left;
+    overflow-x:scroll;
+    width:600px;
+}
+.footer {
+    clear:both;
+} */
+
+
+/* Width: ganttpanel constant,
+Height: is recalculated on number of tasks */
+#ganttpanel {
+    /* border: 1px solid; */
+    height:400px;
+    width: 900px;
+    overflow-x: scroll;
+}
+
+#ganttpanel table {
+    float:left;
+    padding:0;
+    margin:0;
+    overflow:hidden;
+}
+
+#ganttpanel table td {
+    padding:0;
+}
+
+.fake_column.timetracker_column_even {
+    background-color: #EEEEEE;
+}
+
+.timetracker_fake_row {
+    height: 80px;
+}
+
+/*
+.extra_padding {
+  padding: 6px;
+} */
+
+.logo {
+    background-image: url("../img/v3/blue_ga.jpg");
+    height:50px;
+    width:300px;
+    height:100px;
+    float:left;
+    clear:both;
+    position:absolute;
+}
+
+.vision {
+}
+
+.headings {
+    height:20px;
+}

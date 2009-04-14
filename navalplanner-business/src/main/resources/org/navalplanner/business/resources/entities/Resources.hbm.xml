@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+    
+    <class name="org.navalplanner.business.resources.entities.Resource">
+        
+        <id name="id" access="field">
+            <generator class="native"/>
+        </id>
+        
+        <!-- IMPORTANT: type="long" must be specified (otherwise, Hibernate
+             infers type="integer". -->
+        <version name="version" type="long" access="field"/>
+        
+        <many-to-one name="resourceGroup" 
+            column="RESOURCE_GROUP_ID"
+            class="org.navalplanner.business.resources.entities.ResourceGroup"/>
+            
+        <joined-subclass 
+            name="org.navalplanner.business.resources.entities.Worker">
+            
+            <key column="WORKER_ID"/>
+            
+            <property name="firstName"/>
+            <property name="surname"/>
+            <property name="nif"/>
+            <property name="dailyHours"/>
+            
+        </joined-subclass>
+        
+        <joined-subclass 
+            name="org.navalplanner.business.resources.entities.ResourceGroup">
+            
+            <key column="RESOURCE_GROUP_ID"/>
+            
+            <set name="resources" inverse="true" cascade="save-update">
+                <key column="RESOURCE_GROUP_ID"/>
+                <one-to-many 
+                    class="org.navalplanner.business.resources.entities.Resource"/>
+            </set>
+ 
+        </joined-subclass>
+        
+    </class>
+    
+</hibernate-mapping>

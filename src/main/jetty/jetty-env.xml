@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" 
+    "http://jetty.mortbay.org/configure.dtd">
+
+<Configure class="org.mortbay.jetty.webapp.WebAppContext">
+    <New id="navalplanner-ds" class="org.mortbay.jetty.plus.naming.Resource">
+        <Arg>${dataSource.jndiName}</Arg>
+        <Arg>
+            <New class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+                <Set name="driverClassName">${jdbcDriver.className}</Set>
+                <Set name="url">${dataSource.url}</Set>
+                <Set name="username">${dataSource.user}</Set>
+                <Set name="password">${dataSource.password}</Set>
+            </New>
+        </Arg>
+   </New>
+</Configure>
+

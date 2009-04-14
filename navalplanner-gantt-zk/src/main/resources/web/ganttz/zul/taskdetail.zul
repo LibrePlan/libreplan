@@ -1,0 +1,18 @@
+<zk>
+<zscript><![CDATA[
+    top = self;
+]]>
+</zscript>
+<hbox>
+    <textbox id="nameBox" value="" onChange="top.updateBean();" />           
+    <datebox id="startDateBox" compact="true" onChange="top.updateBean();"/>                                   
+    <datebox id="endDateBox" compact="true" onChange="top.updateBean();" />                             
+</hbox>     
+
+<zscript><![CDATA[
+   top.nameBox = nameBox;
+   top.startDateBox = startDateBox;
+   top.endDateBox = endDateBox;
+]]>
+</zscript>
+</zk>

@@ -1,0 +1,29 @@
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<zk>
+<vbox class="listdetails" id="insertionPoint">
+        <button label="${c:l('listdetails.add_task')}"
+                        onClick="insertionPoint.getParent().addTask();" />
+        <taskdetail taskId="task1" start="01/06/2009" length="365 days"
+                         taskName="Tarefa1"
+                        color="blue"/>
+        <taskdetail taskId="task2" start="01/01/2011" length="365 days"
+                         taskName="Tarefa2"
+                        color="red"/>
+        <taskdetail taskId="task3" start="01/01/2013" length="365 days"
+                        taskName="Tarefa3"
+                        color="yellow"/>
+
+        <taskdetail taskId="task4" start="01/01/2013" length="365 days"
+                        taskName="Tarefa4"
+                        color="yellow"/>
+
+        <!--taskdetail taskId="task5" start="01/01/2010" length="100 days"
+                        taskName="Tarefa5"
+                        color="orange"/>
+
+        <taskdetail taskId="task6" start="01/01/2010" length="100 days"
+                        taskName="Tarefa6"
+                        color="white"/-->
+
+</vbox>
+</zk>
