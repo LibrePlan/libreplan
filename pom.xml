@@ -238,10 +238,25 @@
         <!-- =============================================================== -->
         <!-- Filtering -->
         <resources>
+            
+            <!-- Apply filtering to files matching the following expressions
+                 in src/main/resources. -->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <includes>
+                    <include>*spring-config*.xml</include>
+                    <include>*hibernate.cfg*.xml</include>
+                </includes>
             </resource>
+            
+            <!-- Continue considering resources the files in src/main/resources,
+                 but without applying filtering. -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            
+            <!-- Filter Jetty configuration -->
             <resource>
                 <directory>../src/main/jetty</directory>
                 <includes>
@@ -253,10 +268,24 @@
         </resources>
         
         <testResources>
+            
+            <!-- Apply filtering to files matching the following expressions
+                 in src/test/resources. -->
             <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
+                <includes>
+                    <include>*spring-config*.xml</include>
+                    <include>*hibernate.cfg*.xml</include>
+                </includes>
             </testResource>
+
+            <!-- Continue considering resources the files in src/test/resources,
+                 but without applying filtering. -->
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>            
+            
         </testResources>
 
         <plugins>
