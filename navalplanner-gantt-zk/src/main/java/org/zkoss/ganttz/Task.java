@@ -284,11 +284,19 @@ public class Task extends Div {
     }
 
     private void updateProperties() {
+        /*
+         * It is set to another value, so the smart update is forced. If the new
+         * value is equal to the previous, the smart update wouldn't be sent and
+         * it would keep the same position in the client. This position could be
+         * the result of dragging the task, so it would seem that the dependency
+         * is not enforced.
+         */
+        setLeft("0");
         setLeft(getMapper().toPixels(this.taskBean.getBeginDate()) + "px");
+        setWidth("0");
         setWidth(getMapper().toPixels(this.taskBean.getLengthMilliseconds())
                 + "px");
         smartUpdate("name", this.taskBean.getName());
-
     }
 
     public void remove() {
