@@ -1,0 +1,16 @@
+# ignore build output directory
+navalplanner-webapp/target
+navalplanner-business/target
+navalplanner-gantt-zk/target
+
+# ignore eclipse configuration files
+.classpath
+.project
+.settings/
+
+#ignore patches files
+*.patch
+
+#ignore backup files
+*~
+\#*\#
