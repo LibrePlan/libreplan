@@ -15,6 +15,7 @@ import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.lang.Objects;
 import org.zkoss.xml.HTMLs;
 import org.zkoss.zk.au.AuRequest;
@@ -212,9 +213,9 @@ public class Task extends Div {
         this.taskBean.setLengthMilliseconds(getMapper().toMilliseconds(pixels));
     }
 
-    void doAddDependency(String dependencyId) {
+    void doAddDependency(String destinyTaskId) {
         Dependency dependency = new Dependency(this,
-                ((Task) getFellow(dependencyId)));
+                ((Task) getFellow(destinyTaskId)));
         fireDependenceAdded(dependency);
     }
 

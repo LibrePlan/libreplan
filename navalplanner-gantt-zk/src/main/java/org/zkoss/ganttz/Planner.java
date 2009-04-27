@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.zkoss.ganttz.util.DependencyRegistry;
+import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
@@ -13,6 +15,8 @@ public class Planner extends XulElement implements AfterCompose {
     private DependencyAddedListener dependencyAddedListener;
 
     private Map<String, TaskBean> tasksById = new HashMap<String, TaskBean>();
+
+    private DependencyRegistry dependencyRegistry = new DependencyRegistry();
 
     public Planner() {
     }
@@ -42,6 +46,7 @@ public class Planner extends XulElement implements AfterCompose {
             throw new IllegalArgumentException("task with id " + taskId
                     + " is already in " + tasksById);
         tasksById.put(taskId, task);
+        dependencyRegistry.add(task);
     }
 
     TaskBean retrieve(String taskId) {
@@ -78,10 +83,21 @@ public class Planner extends XulElement implements AfterCompose {
             }
         };
         taskList.addDependencyListener(dependencyAddedListener);
+        taskList.addTaskRemovedListener(new TaskRemovedListener() {
+            @Override
+            public void taskRemoved(Task taskRemoved) {
+                dependencyRegistry.remove(taskRemoved.getTaskBean());
+            }
+        });
     }
 
-    public void addTask(Task task) {
+    public void publishTask(Task task) {
         getTaskList().addTask(task);
+        dependencyRegistry.add(task.getTaskBean());
+    }
+
+    public void publishDependency(Dependency dependency) {
+        dependencyRegistry.add(dependency);
     }
 
 }

@@ -8,6 +8,8 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.zkoss.ganttz.util.DependencyBean;
+import org.zkoss.ganttz.util.DependencyType;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
@@ -20,14 +22,6 @@ import org.zkoss.zul.impl.XulElement;
 public class Dependency extends XulElement implements AfterCompose {
 
     private Task source;
-
-    public Task getSource() {
-        return source;
-    }
-
-    public Task getDestination() {
-        return destination;
-    }
 
     private Task destination;
 
@@ -96,4 +90,18 @@ public class Dependency extends XulElement implements AfterCompose {
     public boolean contains(Task task) {
         return getSource().equals(task) || getDestination().equals(task);
     }
+
+    public Task getSource() {
+        return source;
+    }
+
+    public Task getDestination() {
+        return destination;
+    }
+
+    public DependencyBean getDependencyBean() {
+        return new DependencyBean(source.getTaskBean(), destination
+                .getTaskBean(), DependencyType.END_START);
+    }
+
 }

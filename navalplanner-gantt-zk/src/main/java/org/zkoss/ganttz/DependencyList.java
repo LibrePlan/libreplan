@@ -42,6 +42,7 @@ public class DependencyList extends XulElement implements AfterCompose {
     void addDependency(Dependency dependency) {
         appendChild(dependency);
         addContextMenu(dependency);
+        publishDependency(dependency);
     }
 
     private void addContextMenu(Dependency dependency) {
@@ -83,7 +84,22 @@ public class DependencyList extends XulElement implements AfterCompose {
                     taskRemovedListener);
         }
         addContextMenu();
+        publishDependencies();
 
+    }
+
+    private void publishDependencies() {
+        for (Dependency dependency : getDependencies()) {
+            publishDependency(dependency);
+        }
+    }
+
+    private void publishDependency(Dependency dependency) {
+        getPlanner().publishDependency(dependency);
+    }
+
+    private Planner getPlanner() {
+        return getGanttPanel().getPlanner();
     }
 
     private void addContextMenu() {
@@ -93,8 +109,6 @@ public class DependencyList extends XulElement implements AfterCompose {
     }
 
     private Menupopup contextMenu;
-
-    private Dependency dependencyForContextMenu = null;
 
     private Menupopup getContextMenu() {
         if (contextMenu == null) {

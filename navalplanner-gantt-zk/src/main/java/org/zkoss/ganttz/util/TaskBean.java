@@ -1,9 +1,17 @@
-package org.zkoss.ganttz;
+package org.zkoss.ganttz.util;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Date;
 
+/**
+ * This class contains the information of a task. It can be modified and
+ * notifies of the changes to the interested parties. <br/>
+ * Created at Apr 24, 2009
+ * 
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * 
+ */
 public class TaskBean {
 
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(

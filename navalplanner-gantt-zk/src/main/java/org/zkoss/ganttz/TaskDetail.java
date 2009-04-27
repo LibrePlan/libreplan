@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.ext.AfterCompose;
