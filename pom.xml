@@ -255,8 +255,8 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>*spring-config*.xml</include>
-                    <include>*hibernate.cfg*.xml</include>
+                    <include>*spring-config.xml</include>
+                    <include>*hibernate.cfg.xml</include>
                 </includes>
             </resource>
             
@@ -285,8 +285,8 @@
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>*spring-config*.xml</include>
-                    <include>*hibernate.cfg*.xml</include>
+                    <include>*spring-config-test.xml</include>
+                    <include>*hibernate-test.cfg.xml</include>
                 </includes>
             </testResource>
 
