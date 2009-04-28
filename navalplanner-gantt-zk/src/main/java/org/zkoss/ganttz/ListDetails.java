@@ -33,7 +33,7 @@ public class ListDetails extends HtmlMacroComponent {
         taskDetail.setParent(insertionPoint);
         taskDetail.afterCompose();
         Task task = new Task();
-        getPlanner().publishTask(task);
+        getPlanner().addTask(task);
         task.setColor("yellow");
         task.setId(newId);
     }

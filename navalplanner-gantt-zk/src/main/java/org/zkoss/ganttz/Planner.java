@@ -91,9 +91,8 @@ public class Planner extends XulElement implements AfterCompose {
         });
     }
 
-    public void publishTask(Task task) {
+    public void addTask(Task task) {
         getTaskList().addTask(task);
-        dependencyRegistry.add(task.getTaskBean());
     }
 
     public void publishDependency(Dependency dependency) {
