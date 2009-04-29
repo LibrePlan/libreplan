@@ -25,7 +25,7 @@ public class Planner extends XulElement implements AfterCompose {
     public Planner() {
     }
 
-    private TaskList getTaskList() {
+    TaskList getTaskList() {
         List<Object> children = findOneComponentOfType(GanttPanel.class)
                 .getChildren();
         return Planner.findComponentsOfType(TaskList.class, children).get(0);
@@ -77,6 +77,11 @@ public class Planner extends XulElement implements AfterCompose {
         return findComponentsOfType(DependencyList.class, children).get(0);
     }
 
+    private ListDetails getDetails() {
+        List<Object> children = getChildren();
+        return Planner.findComponentsOfType(ListDetails.class, children).get(0);
+    }
+
     @Override
     public void afterCompose() {
         TaskList taskList = getTaskList();
@@ -91,6 +96,8 @@ public class Planner extends XulElement implements AfterCompose {
             @Override
             public void taskRemoved(Task taskRemoved) {
                 dependencyRegistry.remove(taskRemoved.getTaskBean());
+                getDetails().taskRemoved(taskRemoved);
+                getGanntPanel().invalidate();
             }
         };
         taskList.addTaskRemovedListener(taskRemovedListener);

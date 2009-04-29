@@ -203,7 +203,6 @@ public class Task extends Div {
     // Command action to do
     void doUpdatePosition(String leftX, String topY) {
         System.out.println("leftX:" + getLeft() + "newLeft:" + leftX);
-        setTop(topY);
         this.taskBean.setBeginDate(getMapper().toDate(stripPx(leftX)));
     }
 

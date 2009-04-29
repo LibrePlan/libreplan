@@ -1,6 +1,7 @@
 package org.zkoss.ganttz;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.logging.Log;
@@ -12,6 +13,7 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 public class ListDetails extends HtmlMacroComponent {
 
     private static Log LOG = LogFactory.getLog(ListDetails.class);
+    private TaskRemovedListener taskRemovedListener;
 
     public ListDetails() {
         LOG.info("constructing list details");
@@ -19,6 +21,26 @@ public class ListDetails extends HtmlMacroComponent {
 
     Planner getPlanner() {
         return (Planner) getParent();
+    }
+
+    private List<TaskDetail> getTaskDetails() {
+        List<Object> children = getInsertionPoint().getChildren();
+        return Planner.findComponentsOfType(TaskDetail.class, children);
+    }
+
+    public void taskRemoved(Task taskRemoved) {
+        List<TaskDetail> taskDetails = getTaskDetails();
+        for (TaskDetail taskDetail : taskDetails) {
+            if (taskDetail.getTaskId().equals(taskRemoved.getId())) {
+                removeDetail(taskDetail);
+                return;
+            }
+        }
+        throw new RuntimeException("not found taskDetail for " + taskRemoved);
+    }
+
+    private void removeDetail(TaskDetail taskDetail) {
+        getInsertionPoint().getChildren().remove(taskDetail);
     }
 
     public void addTask() {
@@ -29,13 +51,17 @@ public class ListDetails extends HtmlMacroComponent {
         taskDetail.setDynamicProperty("length", "30 days");
         taskDetail.setDynamicProperty("taskName", Labels
                 .getLabel("task.new_task_name"));
-        Component insertionPoint = getFellow("insertionPoint");
+        Component insertionPoint = getInsertionPoint();
         taskDetail.setParent(insertionPoint);
         taskDetail.afterCompose();
         Task task = new Task();
         getPlanner().addTask(task);
         task.setColor("yellow");
         task.setId(newId);
+    }
+
+    private Component getInsertionPoint() {
+        return getFellow("insertionPoint");
     }
 
 }
