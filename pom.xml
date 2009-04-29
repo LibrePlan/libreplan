@@ -216,6 +216,11 @@
                 <artifactId>navalplanner-gantt-zk</artifactId>
                 <version>1.0.0</version>
             </dependency>
+	    <dependency>
+                <groupId>org.navalplanner</groupId>
+                <artifactId>navalplanner-business</artifactId>
+                <version>1.0.0</version>
+            </dependency>
             <!-- BeanShell (required by ZK)-->
             <dependency>
                 <groupId>bsh</groupId>
@@ -229,6 +234,11 @@
                 <artifactId>commons-fileupload</artifactId>
                 <version>1.2.1</version>
                 <scope>runtime</scope>
+            </dependency>
+	    <dependency>
+              <groupId>jgrapht</groupId>
+              <artifactId>jgrapht</artifactId>
+              <version>0.7.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

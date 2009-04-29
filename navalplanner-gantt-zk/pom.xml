@@ -33,8 +33,7 @@
         </dependency>
         <dependency>
         	<groupId>jgrapht</groupId>
-        	<artifactId>jgrapht</artifactId>
-        	<version>0.7.3</version>
+        	<artifactId>jgrapht</artifactId>        	
         </dependency>
     </dependencies>
     

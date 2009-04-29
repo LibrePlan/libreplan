@@ -34,6 +34,11 @@
         <dependency>
             <groupId>org.navalplanner</groupId>
             <artifactId>navalplanner-gantt-zk</artifactId>
+        </dependency>        
+        <!-- Naval Planner Business  -->
+        <dependency>
+            <groupId>org.navalplanner</groupId>
+            <artifactId>navalplanner-business</artifactId>
         </dependency>
         <!-- Spring -->
         <dependency>
