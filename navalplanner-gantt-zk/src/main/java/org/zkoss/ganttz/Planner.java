@@ -18,6 +18,8 @@ public class Planner extends XulElement implements AfterCompose {
 
     private DependencyRegistry dependencyRegistry = new DependencyRegistry();
 
+    private DependencyRemovedListener dependencyRemovedListener;
+
     public Planner() {
     }
 
@@ -89,6 +91,15 @@ public class Planner extends XulElement implements AfterCompose {
                 dependencyRegistry.remove(taskRemoved.getTaskBean());
             }
         });
+        dependencyRemovedListener = new DependencyRemovedListener() {
+
+            @Override
+            public void dependenceRemoved(Dependency dependency) {
+                dependencyRegistry.remove(dependency);
+            }
+        };
+        getDependencyList().addDependencyRemovedListener(
+                dependencyRemovedListener);
     }
 
     public void addTask(Task task) {

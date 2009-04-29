@@ -10,7 +10,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.util.MenuBuilder;
+import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
+import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.zoom.ZoomLevelChangedListener;
 import org.zkoss.zk.ui.event.Event;
@@ -30,6 +32,9 @@ public class DependencyList extends XulElement implements AfterCompose {
     private TaskRemovedListener taskRemovedListener;
 
     private ZoomLevelChangedListener listener;
+
+    private final WeakReferencedListeners<DependencyRemovedListener> dependencyRemovedListeners = WeakReferencedListeners
+            .create();
 
     public DependencyList() {
     }
@@ -115,12 +120,28 @@ public class DependencyList extends XulElement implements AfterCompose {
             contextMenu = MenuBuilder.on(getPage(), getDependencies()).item(
                     "Erase", new ItemAction<Dependency>() {
                         @Override
-                        public void onEvent(Dependency choosen, Event event) {
+                        public void onEvent(final Dependency choosen,
+                                Event event) {
                             removeChild(choosen);
+                            dependencyRemovedListeners
+                                    .fireEvent(new ListenerNotification<DependencyRemovedListener>() {
+
+                                        @Override
+                                        public void doNotify(
+                                                DependencyRemovedListener listener) {
+                                            listener.dependenceRemoved(choosen);
+
+                                        }
+                                    });
                         }
                     }).create();
         }
         return contextMenu;
+    }
+
+    public void addDependencyRemovedListener(
+            DependencyRemovedListener removedListener) {
+        dependencyRemovedListeners.addListener(removedListener);
     }
 
     private TimeTracker getTimeTracker() {
