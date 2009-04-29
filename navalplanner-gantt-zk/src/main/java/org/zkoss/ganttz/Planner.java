@@ -72,9 +72,13 @@ public class Planner extends XulElement implements AfterCompose {
         return findOneComponentOfType(GanttPanel.class);
     }
 
-    private DependencyList getDependencyList() {
+    public DependencyList getDependencyList() {
         List<Object> children = getGanntPanel().getChildren();
-        return findComponentsOfType(DependencyList.class, children).get(0);
+        List<DependencyList> found = findComponentsOfType(DependencyList.class,
+                children);
+        if (found.isEmpty())
+            return null;
+        return found.get(0);
     }
 
     private ListDetails getDetails() {

@@ -5,6 +5,7 @@
 
 package org.zkoss.ganttz;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -148,8 +149,27 @@ public class DependencyList extends XulElement implements AfterCompose {
         return getGanttPanel().getTimeTracker();
     }
 
-    public void redrawDependencies() {
+    public void redrawDependenciesConnectedTo(Task task) {
+        redrawDependencies(getDependenciesConnectedTo(task));
+    }
+
+    private List<Dependency> getDependenciesConnectedTo(Task task) {
+        ArrayList<Dependency> result = new ArrayList<Dependency>();
         for (Dependency dependency : getDependencies()) {
+            if (dependency.getSource().equals(task)
+                    || dependency.getDestination().equals(task)) {
+                result.add(dependency);
+            }
+        }
+        return result;
+    }
+
+    public void redrawDependencies() {
+        redrawDependencies(getDependencies());
+    }
+
+    public void redrawDependencies(List<Dependency> dependencies) {
+        for (Dependency dependency : dependencies) {
             dependency.redrawDependency();
         }
     }
