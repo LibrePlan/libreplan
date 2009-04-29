@@ -192,17 +192,17 @@
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zul</artifactId>
-                <version>3.5.2</version>
+                <version>3.6.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkplus</artifactId>
-                <version>3.5.2</version>
+                <version>3.6.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zk</artifactId>
-                <version>3.5.2</version>
+                <version>3.6.0.1</version>
             </dependency>
             <!-- Commons Logging (required by many frameworks)-->
             <dependency>
