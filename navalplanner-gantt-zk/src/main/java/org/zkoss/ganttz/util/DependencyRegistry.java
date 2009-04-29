@@ -76,13 +76,18 @@ public class DependencyRegistry {
     }
 
     public void remove(TaskBean task) {
+        List<RulesEnforcer> outgoing = getOutgoing(task);
         graph.removeVertex(task);
         rulesEnforcersByTask.remove(task);
-        updateOutgoing(task);
+        update(outgoing);
     }
 
     private void updateOutgoing(TaskBean task) {
-        for (RulesEnforcer rulesEnforcer : getOutgoing(task)) {
+        update(getOutgoing(task));
+    }
+
+    private void update(List<RulesEnforcer> outgoing) {
+        for (RulesEnforcer rulesEnforcer : outgoing) {
             rulesEnforcer.update();
         }
     }

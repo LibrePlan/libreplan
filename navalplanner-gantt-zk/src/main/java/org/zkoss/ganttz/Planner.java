@@ -20,6 +20,8 @@ public class Planner extends XulElement implements AfterCompose {
 
     private DependencyRemovedListener dependencyRemovedListener;
 
+    private TaskRemovedListener taskRemovedListener;
+
     public Planner() {
     }
 
@@ -85,12 +87,13 @@ public class Planner extends XulElement implements AfterCompose {
             }
         };
         taskList.addDependencyListener(dependencyAddedListener);
-        taskList.addTaskRemovedListener(new TaskRemovedListener() {
+        taskRemovedListener = new TaskRemovedListener() {
             @Override
             public void taskRemoved(Task taskRemoved) {
                 dependencyRegistry.remove(taskRemoved.getTaskBean());
             }
-        });
+        };
+        taskList.addTaskRemovedListener(taskRemovedListener);
         dependencyRemovedListener = new DependencyRemovedListener() {
 
             @Override
