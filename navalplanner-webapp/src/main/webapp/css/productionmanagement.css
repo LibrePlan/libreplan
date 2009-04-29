@@ -38,6 +38,8 @@
     vertical-align: middle;
     font-size:0.8em;
     z-index:10;
+    cursor: pointer;
+    cursor: hand;
 }
 
 /* Task lane properties */
@@ -66,6 +68,7 @@
 .end, .start, .mid, .arrow {
     position:absolute;
     padding:4px;
+    cursor: crosshair;
 }
 
 .end, .start {
@@ -76,14 +79,10 @@
     width:1px;
 }
 
-/*.center {
-    float:left;
-    overflow-x:scroll;
-    width:600px;
-}
 .footer {
     clear:both;
-} */
+    margin:20px;
+}
 
 
 /* Width: ganttpanel constant,
