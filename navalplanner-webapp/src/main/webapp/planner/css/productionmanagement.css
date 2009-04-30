@@ -132,5 +132,8 @@ Height: is recalculated on number of tasks */
 }
 
 .headings {
-    height:20px;
+    /* height:90px; */
+    height:90px;
 }
+
+table {margin:0px; padding:0px; border:0px;}

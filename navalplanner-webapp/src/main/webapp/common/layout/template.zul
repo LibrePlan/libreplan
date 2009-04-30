@@ -1,0 +1,66 @@
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<div>
+        <div class="headings">
+            <div class="logo"></div>
+            <div class="vision"></div>
+        </div>
+    	<menubar id="menubar" width="900px" top="0px" left="320px"
+            ctrlKeys="^k#f2" onCtrlKey="doCtrlKey()" sclass="mainmenu">
+
+            <menu label="${c:l('mainmenu.project')}">
+        		<menupopup>
+            		<menuitem label="${c:l('mainmenu.new')}"
+                        onClick="alert(self.label)" />
+                    <menuitem label="${c:l('mainmenu.open')}"
+                        onClick="alert(self.label)" />
+    				<menuitem label="${c:l('mainmenu.save')}"
+                        onClick="alert(self.label)" />
+    				<menuseparator />
+    				<menuitem label="${c:l('mainmenu.exit')}"
+                        onClick="alert(self.label)" />
+    			</menupopup>
+    		</menu>
+
+            <menu label="${c:l('mainmenu.resources')}">
+                <menupopup>
+                    <menuitem label="${c:l('mainmenu.add_resources')}"
+                        onClick="alert(self.label)" />
+                    <menuitem label="${c:l('mainmenu.manage_resources')}"
+                        onClick="alert(self.label)" />
+                    <menuitem label="${c:l('mainmenu.check_plannification')}"
+                        onClick="alert(self.label)" />
+                </menupopup>
+            </menu>
+
+            <menu label="${c:l('mainmenu.plannification')}">
+    			<menupopup>
+    				<menuitem label="${c:l('mainmenu.add_task')}"
+                        onClick="alert(self.label)" />
+    				<menuitem label="${c:l('mainmenu.manage_tasks')}"
+                        onClick="alert(self.label)" />
+    				<menuitem label="${c:l('mainmenu.set_complection_data')}"
+                        onClick="alert(self.label)" />
+    				<menuitem label="${c:l('mainmenu.add_dependency')}"
+                        onClick="alert(self.label)" />
+    				<menuitem label="${c:l('mainmenu.manage_dependencies')}"
+                        onClick="alert(self.label)" />
+    			</menupopup>
+    		</menu>
+
+            <menu label="${c:l('mainmenu.help')}">
+    			<menupopup>
+    				<menu label="${c:l('mainmenu.about')}">
+    					<menupopup>
+        					<menuitem label="${c:l('mainmenu.aclunaga')}"
+                                onClick="alert(self.label)" />
+    					</menupopup>
+    				</menu>
+    			</menupopup>
+    		</menu>
+    	</menubar>
+
+    <div self="@{insert(content)}"/>
+
+      <div class="footer">© Fundación para o Fomento da Calidade Industrial e
+      Desenvolvemento Tecnolóxico de Galicia. Xunta de Galicia</div>
+ </div>

@@ -3,9 +3,7 @@
 <?link rel="stylesheet" type="text/css" href="/planner/css/productionmanagement.css"?>
 <?page  id="myhello"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
-
 <zk>
-
 
     <planner self="@{define(content)}">
         <div id="idContextMenuTaskAssigment" use="org.zk.myhello.pages.MyHelloPageListener">            

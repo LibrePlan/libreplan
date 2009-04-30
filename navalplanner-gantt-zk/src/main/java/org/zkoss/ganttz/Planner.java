@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.zkoss.ganttz.util.DependencyRegistry;
 import org.zkoss.ganttz.util.TaskBean;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
@@ -66,6 +67,10 @@ public class Planner extends XulElement implements AfterCompose {
             }
         }
         return result;
+    }
+
+    public String getContextPath() {
+        return Executions.getCurrent().getContextPath();
     }
 
     private GanttPanel getGanntPanel() {
