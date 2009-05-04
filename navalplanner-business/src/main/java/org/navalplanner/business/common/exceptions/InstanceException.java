@@ -1,5 +1,12 @@
 package org.navalplanner.business.common.exceptions;
 
+/**
+ * An exception for modeling a problem with an instance of a persistent entity.
+ * It contains a message, the key of the instance, and its class name.
+ * 
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
+ *
+ */
 @SuppressWarnings("serial")
 public abstract class InstanceException extends Exception {
 

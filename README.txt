@@ -1,25 +1,19 @@
-* DB creation
-  -----------
+* Database creation
+  -----------------
 
-  + Start MySQL:
-    - Unix: mysqld --default-table-type=InnoDB
-    - Windows: mysqld-nt --default-table-type=InnoDB(Windows).
-
-  + Create DB "navaldev" (for development):
-    - mysqladmin -u root create navaldev
-
-  + Create user "naval" with password "naval":
-    - mysql -u root
-      GRANT ALL PRIVILEGES ON navaldev.* to naval@localhost IDENTIFIED BY 'naval';
+  + Current databases supported: PostgreSQL (default), MySQL, and 
+    HQLDB (In-Process/Standalone Mode).
+  
+  + For PostgreSQL and MySQL:
+  
+    - Create a database with name "navaldev" (for development).
+    - Create a database with name "navaldevtest" (for the test fase in 
+      development).
+    - Create user "naval" with password "naval" with necessary privileges for
+      accessing (creating tables, selecting data from tables, etc.) the 
+      previous databases.
       
-  + Create another DB with name "navaldevtest" (for testing). The user created
-    above will need to access this new DB.
-    
-    - mysqladmin -u root create navaldevtest
-    - mysql -u root
-      GRANT ALL PRIVILEGES ON navaldevtest.* to naval@localhost IDENTIFIED BY 'naval';
-
-  + PostgreSQL -> DB name=navaldev, user=naval, password=naval.
+   * For HSQLDB. There is nothing to do.
 
 * Compilation
   -----------
@@ -43,12 +37,18 @@
   + To install the web application in a web container, use the WAR file:
     navalplanner-webapp/target/navalplanner-webapp.war
 
-  + NOTE: For PostgreSQL: mvn -Pdev,postgresql install
+  + NOTES: 
+  
+    - Use "-Pdev,mysql" with "mvn" command if using MySQL.
+      e.g. mvn -Pdev,mysql install
+      
+    - Use "-Pdev,hsqldb" with "mvn" command if using HSQLDB.
+      e.g. mvn -Pdev,hsqldb install
 
 * Profiles
   --------
   
   Check <profiles> section in the root pom.xml to see the profile-based approach
   used in the project. The default profiles (the one assumed by the above
-  instructions) are "dev" and "mysql" (meaning "use MySQL assuming a development
-  environment").
+  instructions) are "dev" and "postgresql" (meaning "use PostgreSQL assuming a 
+  development environment").

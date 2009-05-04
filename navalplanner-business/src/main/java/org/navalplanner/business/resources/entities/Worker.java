@@ -1,5 +1,11 @@
 package org.navalplanner.business.resources.entities;
 
+/**
+ * This class models a worker.
+ * 
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
+ *
+ */
 public class Worker extends Resource {
     
     private String firstName;

@@ -10,6 +10,13 @@ import org.navalplanner.business.resources.daos.ResourcesDaoRegistry;
 // child another simple resource, general methods like getChilds() do not make
 // sense for simple entities, etc.). In consequence, I prefer the modeling 
 // option shown below.
+
+/**
+ * This class acts as the base class for all resources.
+ * 
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
+ *
+ */
 public abstract class Resource {
     
     private Long id;

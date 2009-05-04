@@ -16,16 +16,22 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 
 /**
- * All Hibernate DAOs must extend directly from this class. This constraint is
- * imposed by the constructor of this class that must infer the type of the 
- * entity from the concrete DAO declaration. 
+ * An implementation of <code>IGenericDao</code> based on Hibernate's native
+ * API. Concrete DAOs must extend directly from this class. This constraint is
+ * imposed by the constructor of this class that must infer the type of the
+ * entity from the declaration of the concrete DAO. <p/>
  * 
- * The class autowires a SessionFactory bean and allows to implement DAOs with 
- * the Hibernate's native API. Subclasses access Hibernate's Session by calling
- * on getSession() method. Operations must be implemented by catching
- * HibernateException and rethrowing it by using 
- * convertHibernateAccessException() method. See source code of this class
- * for an example.
+ * This class autowires a <code>SessionFactory</code> bean and allows to
+ * implement DAOs with Hibernate's native API. Subclasses access Hibernate's
+ * <code>Session</code> by calling on <code>getSession()</code> method.
+ * Operations must be implemented by catching <code>HibernateException</code>
+ * and rethrowing it by using <code>convertHibernateAccessException()</code>
+ * method. See source code of this class for an example.
+ * 
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
+ *
+ * @param <E> Entity class
+ * @param <PK> Primary key class
  */
 public class GenericDaoHibernate<E, PK extends Serializable>
     implements IGenericDao<E, PK> {

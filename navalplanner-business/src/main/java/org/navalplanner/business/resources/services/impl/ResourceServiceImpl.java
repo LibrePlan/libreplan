@@ -9,6 +9,13 @@ import org.navalplanner.business.resources.services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of the resource management service. Resource DAOs are
+ * autowired.
+ * 
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
+ *
+ */
 @Transactional
 public class ResourceServiceImpl implements ResourceService {
     

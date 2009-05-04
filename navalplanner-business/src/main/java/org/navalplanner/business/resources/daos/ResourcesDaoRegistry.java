@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 // (I think it is not necessary).
 
 /**
- * Classes in which dependency injection (DI) is not directly supported by
- * Spring (e.g. entities) must use ResourcesDaoRegistry to access 
- * resource DAOs. For the rest of classes (e.g. services, tests, etc.) Spring 
- * DI will be a more convenient option.
+ * A registry of resource DAOs. Classes in which dependency injection (DI) is 
+ * not directly supported by Spring (e.g. entities) must use this class to 
+ * access resource DAOs. For the rest of classes (e.g. services, tests, etc.),
+ * Spring DI is a more convenient option.
+ * 
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
+ *
  */
 public final class ResourcesDaoRegistry {
     

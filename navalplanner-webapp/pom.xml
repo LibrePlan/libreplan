@@ -17,6 +17,21 @@
     </build>
  
     <dependencies>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring</artifactId>
+        </dependency>
+        <!-- BeanShell (required by ZK) -->
+        <dependency>
+            <groupId>org.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+        </dependency>
+        <!-- Apache Commons Fileupload (required by ZK) -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
         <!-- ZK  -->
         <dependency>
             <groupId>org.zkoss.zk</groupId>
@@ -29,7 +44,7 @@
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zk</artifactId>
-        </dependency>
+        </dependency>          
         <!-- Naval Planner ZK Components  -->
         <dependency>
             <groupId>org.navalplanner</groupId>
@@ -39,25 +54,6 @@
         <dependency>
             <groupId>org.navalplanner</groupId>
             <artifactId>navalplanner-business</artifactId>
-        </dependency>
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-        </dependency>
-        <!-- BeanShell (required by ZK)-->
-        <dependency>
-            <groupId>bsh</groupId>
-            <artifactId>bsh</artifactId>
-        </dependency>
-        <!-- Apache Commons Fileupload (required by ZK) -->
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-        </dependency>
-        <dependency>
-        	<groupId>org.navalplanner</groupId>
-        	<artifactId>navalplanner-business</artifactId>        	
         </dependency>
     </dependencies>
     

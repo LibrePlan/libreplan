@@ -14,16 +14,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
-// FIXME: This class is not currently used. I prefer GenericDaoHibernate.
+// FIXME: This class is not currently used. I prefer GenericDaoHibernate, since
+// it represents a non-intrusive use of Spring.
 
 /**
- * All Hibernate DAOs must extend directly from this class. This constraint is
- * imposed by the constructor of this class that must infer the type of the 
- * entity from the concrete DAO declaration. 
+ * An implementation of <code>IGenericDao</code> based on Spring's 
+ * <code>HibernateTemplate</code>. Concrete DAOs must extend directly from 
+ * this class. This constraint is imposed by the constructor of this class that 
+ * must infer the type of the entity from the concrete DAO declaration. <p/>
  * 
- * The class autowires a SessionFactory bean and allows to implement Spring's 
- * HibernateTemplate-based DAOs. Subclasses access HibernateTemplate by calling 
- * on getHibernateTemplate() method.
+ * This class autowires a <code>SessionFactory</code> bean and allows to 
+ * implement Spring's HibernateTemplate-based DAOs. Subclasses access 
+ * <code>HibernateTemplate</code> by calling on 
+ * <code>getHibernateTemplate()</code> method.
+ * 
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
+ *
+ * @param <E> Entity class
+ * @param <PK> Primary key class
  */
 public class GenericDaoHibernateTemplate<E, PK extends Serializable>
     implements IGenericDao<E, PK> {

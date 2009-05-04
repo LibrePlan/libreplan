@@ -6,6 +6,13 @@ import java.util.Set;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ResourcesDaoRegistry;
 
+/**
+ * This class models a resource group. A resource group represents a resource 
+ * containing other resources.
+ * 
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
+ *
+ */
 public class ResourceGroup extends Resource {
     
     private Set<Resource> resources = new HashSet<Resource>();

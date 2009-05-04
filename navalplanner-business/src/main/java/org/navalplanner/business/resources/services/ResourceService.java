@@ -3,14 +3,12 @@ package org.navalplanner.business.resources.services;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Resource;
 
-// FIXME: Define validation approach for creating and updating entities.
-
-// FIXME: Originally we though the interface in a less generic way (e.g.
-// createWorker, createResourceGroup, etc.). Now it is completely generic.
-
-// FIXME: The interface must be oriented to detached objects (e.g. 
-// removeResource(resource) instead of removeResource(resourceId))??? - It
-// depends on final requirements.
+/**
+ * Interface for the resource management service.
+ * 
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
+ *
+ */
 public interface ResourceService {
     
     /**
@@ -29,11 +27,6 @@ public interface ResourceService {
      */
     public void addResourceToResourceGroup(Long resourceId, 
         Long resourceGroupId) throws InstanceNotFoundException;
-    
-// FIXME: Is the following signature better than the previous one??? - I prefer
-// the previous one.
-// public void addResourceToResourceGroup(Long resourceId, Long resourceGroupId)
-//     throws ResourceNotFoundException, ResourceGroupNotFoundException;
     
     public int getResourceDailyCapacity(Long resourceId) 
         throws InstanceNotFoundException;

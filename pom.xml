@@ -19,9 +19,9 @@
     
     <!-- =================================================================== -->
     <!-- Default values for properties. These default values are expected to be
-         valid for most profiles. In any case, profiles can overwrite values 
-         when necessary.
-         -->
+         valid for most profiles. Specific profiles can overwrite values when 
+         necessary.
+    -->
     <properties>        
         <!--  Data source properties -->
         <dataSource.user>naval</dataSource.user>
@@ -35,8 +35,8 @@
     <!-- Profiles. 
     
          * The build is always executed by selecting at least two non-exclusive
-           profiles. By default, such profiles are "dev" and "mysql" (meaning 
-           "use MySQL assuming a development environment").
+           profiles. By default, such profiles are "dev" and "postgresql"  
+           (meaning "use PostgreSQL assuming a development environment").
            
          * General profiles. There are two general (database-independent)
            profiles: "dev" and "prod". The former is used for development 
@@ -45,10 +45,10 @@
            used in both profiles: one for running (dataSource) and another one 
            for the Maven test fase (testDataSource). Note the Maven test fase
            is executed both with development and production profiles.
-           
+                      
          * Database-specific profiles. There is a profile for each supported
            database.
-           
+
          * Specific profiles can be defined to better adapt to a particular
            environment by overwriting/adding properties and/or including other 
            chunks of valid XML.
@@ -56,24 +56,23 @@
          * Usage:
          
            + mvn <<goal>> => Execute <<goal>> with default profiles.
-           + mvn -Pdev,<<database>> <<goal> => Execute <<goal>> with 
-             development and <<database>> profiles.
+           + mvn -Pdev,<<database>> <<goal> => Execute <<goal>> with "dev"
+             and <<database>> profiles.
            + mvn -Pprod,<<database>> <<goal>> => Execute <<goal>> with 
-             production and <<database>> profiles.
-             
+             "prod" and <<database>> profiles.
            + Note that when using -P option all desired profiles must be
-             specified (e.g. "-Pprod" with the intention to select "prod"
-             and the default database profiles is not correct; 
+             specified (e.g. "-Pprod" with the intention to select "prod" and
+             the default database profile is not correct; 
              "-Pprod,<<database>>" must be used instead).
              
          * Examples:
          
            + mvn <<goal>>
-           + mvn -Pdev,mysql <<goal>>
-           + mvn -Pprod,mysql <<goal>>
+           + mvn -Ppostgresql,prod <<goal>>
+           + mvn -Ppostgresql,dev <<goal>>
            
     -->
-    <profiles>
+    <profiles> 
         
         <!-- Development profile -->
         <profile>
@@ -82,9 +81,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <!-- Data source properties -->
-                <dataSource.url>jdbc:mysql://localhost/navaldev</dataSource.url>
-                <testDataSource.url>${dataSource.url}test</testDataSource.url>
+                <!-- Naval Planner environment properties -->
+                <navalplanner.mode>dev</navalplanner.mode>
                 <!-- Hibernate properties -->
                 <hibernate.show_sql>true</hibernate.show_sql>
                 <hibernate.format_sql>true</hibernate.format_sql>
@@ -97,39 +95,22 @@
         <profile>
             <id>prod</id>
             <properties>
-                <!-- Data source properties -->
-                <!-- NOTE: particular production profiles will probably wish to
-                     overwrite "dataSource.url" property and also maybe
-                     "testDataSource.url".-->
-                <dataSource.url>jdbc:mysql://localhost/navalprod</dataSource.url>
-                <testDataSource.url>${dataSource.url}test</testDataSource.url>
+                <!-- Naval Planner environment properties -->
+                <navalplanner.mode>prod</navalplanner.mode>
                 <!-- Hibernate properties -->
                 <hibernate.show_sql>false</hibernate.show_sql>
                 <hibernate.format_sql>false</hibernate.format_sql>
                 <hibernate.use_sql_comments>false</hibernate.use_sql_comments>
                 <hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
             </properties>
-        </profile>
-        
-        <!-- MySQL profile -->
+        </profile>  
+
+        <!-- PostgreSQL profile -->
         <profile>
-            <id>mysql</id>
+            <id>postgresql</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <properties>
-                <!-- JDBC driver properties -->
-                <jdbcDriver.groupId>mysql</jdbcDriver.groupId>
-                <jdbcDriver.artifactId>mysql-connector-java</jdbcDriver.artifactId>
-                <jdbcDriver.version>5.0.5</jdbcDriver.version>
-                <jdbcDriver.className>com.mysql.jdbc.Driver</jdbcDriver.className>
-                <!-- Hibernate properties -->
-                <hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
-            </properties>
-        </profile>   
-
-        <profile>
-            <id>postgresql</id>
             <properties>
                 <!-- JDBC driver properties -->
                 <jdbcDriver.groupId>postgresql</jdbcDriver.groupId>
@@ -137,17 +118,49 @@
                 <jdbcDriver.version>8.3-603.jdbc4</jdbcDriver.version>
                 <jdbcDriver.className>org.postgresql.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
-                <!-- FIXME: Workaround for current bug in profile-based
-                     approach. -->
-                <dataSource.url>jdbc:postgresql://localhost/navaldev</dataSource.url>
+                <dataSource.url>jdbc:postgresql://localhost/naval${navalplanner.mode}</dataSource.url>
+                <testDataSource.url>${dataSource.url}test</testDataSource.url>
                 <!-- Hibernate properties -->
                 <hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</hibernate.dialect>
             </properties>
-
-        </profile>       
- 
-        <!-- Add here other profiles. -->
+        </profile> 
         
+        <!-- MySQL profile -->
+        <profile>
+            <id>mysql</id>
+            <properties>
+                <!-- JDBC driver properties -->
+                <jdbcDriver.groupId>mysql</jdbcDriver.groupId>
+                <jdbcDriver.artifactId>mysql-connector-java</jdbcDriver.artifactId>
+                <jdbcDriver.version>5.0.5</jdbcDriver.version>
+                <jdbcDriver.className>com.mysql.jdbc.Driver</jdbcDriver.className>
+                <!-- Data source properties -->
+                <dataSource.url>jdbc:mysql://localhost/naval${navalplanner.mode}</dataSource.url>
+                <testDataSource.url>${dataSource.url}test</testDataSource.url>
+                <!-- Hibernate properties -->
+                <hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
+            </properties>
+        </profile>
+        
+        <!-- HSQLDB profile -->
+        <profile>
+            <id>hsqldb</id>
+            <properties>
+                <!-- JDBC driver properties -->
+                <jdbcDriver.groupId>hsqldb</jdbcDriver.groupId>
+                <jdbcDriver.artifactId>hsqldb</jdbcDriver.artifactId>
+                <jdbcDriver.version>1.8.0.7</jdbcDriver.version>
+                <jdbcDriver.className>org.hsqldb.jdbcDriver</jdbcDriver.className>
+                <!-- Data source properties -->
+                <dataSource.user>sa</dataSource.user>
+                <dataSource.password/>
+                <dataSource.url>jdbc:hsqldb:${java.io.tmpdir}/naval${navalplanner.mode};shutdown=true</dataSource.url>
+                <testDataSource.url>jdbc:hsqldb:${java.io.tmpdir}/naval${navalplanner.mode}test;shutdown=true</testDataSource.url>
+                <!-- Hibernate properties -->
+                <hibernate.dialect>org.hibernate.dialect.HSQLDialect</hibernate.dialect>
+            </properties>
+        </profile>    
+         
     </profiles>
 
     <!-- =================================================================== -->
@@ -187,7 +200,27 @@
                 <artifactId>spring-test</artifactId>
                 <version>2.5.6</version>
                 <scope>test</scope>
-            </dependency>        
+            </dependency>
+            <!-- Commons Logging (required by many frameworks)-->
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.0.4</version>
+            </dependency>
+            <!-- BeanShell (required by ZK)-->
+            <dependency>
+                <groupId>org.beanshell</groupId>
+                <artifactId>bsh</artifactId>
+                <version>2.0b4</version>
+                <scope>runtime</scope>
+            </dependency>
+            <!-- Apache Commons Fileupload (required by ZK) -->
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.2.1</version>
+                <scope>runtime</scope>
+            </dependency>
             <!-- ZK  -->
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
@@ -204,11 +237,11 @@
                 <artifactId>zk</artifactId>
                 <version>3.6.0.1</version>
             </dependency>
-            <!-- Commons Logging (required by many frameworks)-->
+            <!-- JGraphT -->
             <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.0.4</version>
+                <groupId>org.jgrapht</groupId>
+                <artifactId>jgrapht-jdk1.5</artifactId>
+                <version>0.7.3</version>
             </dependency>
             <!-- Naval Planner ZK Components -->
             <dependency>
@@ -216,29 +249,11 @@
                 <artifactId>navalplanner-gantt-zk</artifactId>
                 <version>1.0.0</version>
             </dependency>
-	    <dependency>
+            <!-- Naval Planner Business -->
+            <dependency>
                 <groupId>org.navalplanner</groupId>
                 <artifactId>navalplanner-business</artifactId>
                 <version>1.0.0</version>
-            </dependency>
-            <!-- BeanShell (required by ZK)-->
-            <dependency>
-                <groupId>bsh</groupId>
-                <artifactId>bsh</artifactId>
-                <version>2.0b4</version>
-                <scope>runtime</scope>
-            </dependency>
-            <!-- Apache Commons Fileupload (required by ZK) -->
-            <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>1.2.1</version>
-                <scope>runtime</scope>
-            </dependency>
-	    <dependency>
-              <groupId>jgrapht</groupId>
-              <artifactId>jgrapht</artifactId>
-              <version>0.7.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

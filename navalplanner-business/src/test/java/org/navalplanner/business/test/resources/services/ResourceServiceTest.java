@@ -19,6 +19,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * A class for testing <code>ResourceService</code>. The service and the
+ * resource DAOs are autowired.
+ * 
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={BUSINESS_SPRING_CONFIG_FILE,
     BUSINESS_SPRING_CONFIG_TEST_FILE})
