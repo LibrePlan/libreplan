@@ -2,7 +2,7 @@
   -----------------
 
   + Current databases supported: PostgreSQL (default), MySQL, and 
-    HQLDB (In-Process/Standalone Mode).
+    HSQLDB (In-Process/Standalone Mode).
   
   + For PostgreSQL and MySQL:
   
@@ -13,7 +13,7 @@
       accessing (creating tables, selecting data from tables, etc.) the 
       previous databases.
       
-   * For HSQLDB. There is nothing to do.
+   + For HSQLDB. There is nothing to do.
 
 * Compilation
   -----------
@@ -37,13 +37,20 @@
   + To install the web application in a web container, use the WAR file:
     navalplanner-webapp/target/navalplanner-webapp.war
 
-  + NOTES: 
+  + NOTES FOR USING OTHER DATABASES:
   
-    - Use "-Pdev,mysql" with "mvn" command if using MySQL.
-      e.g. mvn -Pdev,mysql install
+    - MySQL:
+
+      * Remember to start MySQL with "--default-table-type=InnoDB" option for
+        enabling support for transactions.
+
+      * Use "mvn -Pdev,mysql <<goal|fase>>"
+        e.g. mvn -Pdev,mysql install
       
-    - Use "-Pdev,hsqldb" with "mvn" command if using HSQLDB.
-      e.g. mvn -Pdev,hsqldb install
+    - HSQLDB:
+
+      * Use "mvn -Pdev,hsqldb <<goal|fase>>"
+        e.g. mvn -Pdev,hsqldb install
 
 * Profiles
   --------
