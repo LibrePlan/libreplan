@@ -14,13 +14,13 @@
         <ganttpanel>
             <timetracker detailLevel="${idContextMenuTaskAssigment.currentDetailLevel}" />
             <tasklist id="taskList">
-                <task id="task1" color="blue"/>
+                <task id="task1" color="#007bbe"/>
 
-                <task id="task2" color="red"/>
+                <task id="task2" color="#007bbe"/>
 
-                <task id="task3" color="yellow"/>
+                <task id="task3" color="#007bbe"/>
 
-                <task id="task4" color="green"/>                                              
+                <task id="task4" color="#007bbe"/>
 
 		    <!--task id="task5" color="orange"/>
 

@@ -24,7 +24,7 @@
             <menu label="${c:l('mainmenu.resources')}">
                 <menupopup>
                     <menuitem label="${c:l('mainmenu.add_resources')}"
-                        onClick="alert(self.label)" />
+                        href='/common/resources.zul' />
                     <menuitem label="${c:l('mainmenu.manage_resources')}"
                         onClick="alert(self.label)" />
                     <menuitem label="${c:l('mainmenu.check_plannification')}"
@@ -52,7 +52,7 @@
     				<menu label="${c:l('mainmenu.about')}">
     					<menupopup>
         					<menuitem label="${c:l('mainmenu.aclunaga')}"
-                                onClick="alert(self.label)" />
+                                href='/common/aclunaga.zul' />
     					</menupopup>
     				</menu>
     			</menupopup>

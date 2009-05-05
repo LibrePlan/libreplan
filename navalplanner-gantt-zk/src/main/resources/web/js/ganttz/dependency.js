@@ -17,6 +17,12 @@ zkDependency.draw = function(dependency) {
         this.origin(dependency).offsetWidth - zkTask.CORNER_WIDTH);
     orig[1] = orig[1] + zkTask.HEIGHT;
     dest[1] = dest[1] + zkTask.HALF_HEIGHT;
+
+    if ( ( orig[1] > dest[1] ) ) {
+
+        orig[1] = orig[1] - zkTask.HEIGHT;
+    }
+
 	zkPlanner.drawArrow(dependency, orig, dest);
 
 }

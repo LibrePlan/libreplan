@@ -56,7 +56,7 @@ public class ListDetails extends HtmlMacroComponent {
         taskDetail.afterCompose();
         Task task = new Task();
         getPlanner().addTask(task);
-        task.setColor("yellow");
+        task.setColor("#007bbe");
         task.setId(newId);
     }
 

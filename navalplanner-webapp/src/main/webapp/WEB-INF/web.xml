@@ -85,7 +85,7 @@
 
     <welcome-file-list>
 
-        <welcome-file>myhello.zul</welcome-file>
+        <welcome-file>/planner/main.zul</welcome-file>
 
     </welcome-file-list>
 </web-app>
