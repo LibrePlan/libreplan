@@ -2,12 +2,12 @@ package org.navalplanner.business.common.daos.impl;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-
 import org.navalplanner.business.common.daos.IGenericDao;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,23 +33,23 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
  * @param <E> Entity class
  * @param <PK> Primary key class
  */
-public class GenericDaoHibernateTemplate<E, PK extends Serializable>
-    implements IGenericDao<E, PK> {
+public class GenericDaoHibernateTemplate<E, PK extends Serializable> implements
+        IGenericDao<E, PK> {
 
     private Class<E> entityClass;
-    
+
     private HibernateTemplate hibernateTemplate;
 
     @SuppressWarnings("unchecked")
     public GenericDaoHibernateTemplate() {
-        this.entityClass = (Class<E>) ((ParameterizedType) getClass().
-            getGenericSuperclass()).getActualTypeArguments()[0];        
+        this.entityClass = (Class<E>) ((ParameterizedType) getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[0];
     }
-    
+
     protected HibernateTemplate getHibernateTemplate() {
         return hibernateTemplate;
     }
-    
+
     @Autowired
     public void setSessionFactory(SessionFactory sessionFactory) {
         hibernateTemplate = new HibernateTemplate(sessionFactory);
@@ -58,7 +58,7 @@ public class GenericDaoHibernateTemplate<E, PK extends Serializable>
     public void save(E entity) {
         hibernateTemplate.saveOrUpdate(entity);
     }
-    
+
     @SuppressWarnings("unchecked")
     public E find(PK id) throws InstanceNotFoundException {
 
@@ -73,13 +73,12 @@ public class GenericDaoHibernateTemplate<E, PK extends Serializable>
     }
 
     public boolean exists(final PK id) {
-                
+
         return (Boolean) hibernateTemplate.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) {
-                return session.createCriteria(entityClass).
-                    add(Restrictions.idEq(id)).
-                    setProjection(Projections.id()).
-                    uniqueResult() != null;
+                return session.createCriteria(entityClass).add(
+                        Restrictions.idEq(id)).setProjection(Projections.id())
+                        .uniqueResult() != null;
             }
         });
 
@@ -87,6 +86,12 @@ public class GenericDaoHibernateTemplate<E, PK extends Serializable>
 
     public void remove(PK id) throws InstanceNotFoundException {
         hibernateTemplate.delete(find(id));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends E> List<T> list(Class<T> klass) {
+        return hibernateTemplate.loadAll(klass);
     }
 
 }

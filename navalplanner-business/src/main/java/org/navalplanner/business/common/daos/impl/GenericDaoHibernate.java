@@ -2,13 +2,13 @@ package org.navalplanner.business.common.daos.impl;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-
 import org.navalplanner.business.common.daos.IGenericDao;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,54 +33,54 @@ import org.springframework.orm.hibernate3.SessionFactoryUtils;
  * @param <E> Entity class
  * @param <PK> Primary key class
  */
-public class GenericDaoHibernate<E, PK extends Serializable>
-    implements IGenericDao<E, PK> {
+public class GenericDaoHibernate<E, PK extends Serializable> implements
+        IGenericDao<E, PK> {
 
     private Class<E> entityClass;
-    
+
     @Autowired
     private SessionFactory sessionFactory;
 
     @SuppressWarnings("unchecked")
     public GenericDaoHibernate() {
-        this.entityClass = (Class<E>) ((ParameterizedType) getClass().
-            getGenericSuperclass()).getActualTypeArguments()[0];        
+        this.entityClass = (Class<E>) ((ParameterizedType) getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[0];
     }
-    
+
     protected Session getSession() {
         return sessionFactory.getCurrentSession();
     }
 
     protected DataAccessException convertHibernateAccessException(
-        HibernateException e) {
-        
-       return SessionFactoryUtils.convertHibernateAccessException(e);
-        
+            HibernateException e) {
+
+        return SessionFactoryUtils.convertHibernateAccessException(e);
+
     }
-    
+
     public void save(E entity) {
-        
+
         try {
             getSession().saveOrUpdate(entity);
         } catch (HibernateException e) {
             throw convertHibernateAccessException(e);
         }
-        
+
     }
-    
+
     @SuppressWarnings("unchecked")
     public E find(PK id) throws InstanceNotFoundException {
-        
+
         try {
 
             E entity = (E) getSession().get(entityClass, id);
-    
+
             if (entity == null) {
                 throw new InstanceNotFoundException(id, entityClass.getName());
             }
-    
+
             return entity;
-        
+
         } catch (HibernateException e) {
             throw convertHibernateAccessException(e);
         }
@@ -88,14 +88,13 @@ public class GenericDaoHibernate<E, PK extends Serializable>
     }
 
     public boolean exists(final PK id) {
-        
+
         try {
 
-            return getSession().createCriteria(entityClass).
-                add(Restrictions.idEq(id)).
-                setProjection(Projections.id()).
-                uniqueResult() != null;
-            
+            return getSession().createCriteria(entityClass).add(
+                    Restrictions.idEq(id)).setProjection(Projections.id())
+                    .uniqueResult() != null;
+
         } catch (HibernateException e) {
             throw convertHibernateAccessException(e);
         }
@@ -103,13 +102,19 @@ public class GenericDaoHibernate<E, PK extends Serializable>
     }
 
     public void remove(PK id) throws InstanceNotFoundException {
-        
+
         try {
             getSession().delete(find(id));
         } catch (HibernateException e) {
             throw convertHibernateAccessException(e);
         }
-        
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends E> List<T> list(Class<T> klass) {
+        return getSession().createCriteria(klass).list();
     }
 
 }

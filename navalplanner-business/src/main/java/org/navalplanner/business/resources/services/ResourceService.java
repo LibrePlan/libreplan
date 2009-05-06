@@ -1,7 +1,10 @@
 package org.navalplanner.business.resources.services;
 
+import java.util.List;
+
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * Interface for the resource management service.
@@ -10,19 +13,19 @@ import org.navalplanner.business.resources.entities.Resource;
  *
  */
 public interface ResourceService {
-    
+
     /**
-     * It updates or inserts the resource passed as a parameter. If the
-     * resource is a composite resource, updating or inserting is cascaded to
-     * the resources contained in it.
+     * It updates or inserts the resource passed as a parameter. If the resource
+     * is a composite resource, updating or inserting is cascaded to the
+     * resources contained in it.
      */
     public void saveResource(Resource resource);
-    
-    public Resource findResource(Long resourceId) 
-        throws InstanceNotFoundException;
-    
+
+    public Resource findResource(Long resourceId)
+            throws InstanceNotFoundException;
+
     /**
-     * It adds a resource to a resource group. It the resource already belongs 
+     * It adds a resource to a resource group. It the resource already belongs
      * to a resource group, the resource is moved to the new group.
      */
     public void addResourceToResourceGroup(Long resourceId, 
@@ -32,10 +35,12 @@ public interface ResourceService {
         throws InstanceNotFoundException;
     
     /**
-     * It removes a resource. If the resource is a composite resource, the 
+     * It removes a resource. If the resource is a composite resource, the
      * resources contained in it are not removed.
      */
-    public void removeResource(Long resourceId) 
-        throws InstanceNotFoundException;
+    public void removeResource(Long resourceId)
+            throws InstanceNotFoundException;
+
+    public List<Worker> getWorkers();
 
 }

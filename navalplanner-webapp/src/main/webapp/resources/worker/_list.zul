@@ -1,0 +1,28 @@
+<window id="${arg.top_id}" title="List">
+    <grid id="listing" model="@{controller.workers}" mold="paging"
+        pageSize="5">
+        <columns>
+            <column label="First Name" />
+            <column label="Surname" />
+            <column label="nif" />
+            <column label="daily_hours" />
+            <column label="operations" />
+        </columns>
+        <rows>
+            <row self="@{each='worker'}" value="@{worker}">
+                <label value="@{worker.firstName}" />
+                <label value="@{worker.surname}" />
+                <label value="@{worker.nif}" />
+                <label value="@{worker.dailyHours}" />
+                <hbox>
+                    <button label="Edit"
+                        onClick="controller.goToEditForm(self.getParent().getParent().value);">
+                    </button>
+                </hbox>
+            </row>
+        </rows>
+    </grid>
+    <button id="show_create_form" onClick="controller.goToCreateForm();"
+        label="Create">
+    </button>
+</window>

@@ -1,0 +1,17 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?page  id="Create"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?component name="list" inline="true" macroURI="_list.zul"?>
+<?component name="edition" inline="true" macroURI="_edition.zul"?>
+<zk>
+    <window title="Worker" self="@{define(content)}"
+        apply="org.navalplanner.web.resources.WorkerCRUDController">
+        <list top_id="listWindow" />
+        <edition top_id="createWindow" title="Create"
+            save_button_label="Save" cancel_button_label="Cancel" />
+        <edition top_id="editWindow" title="Edit"
+            save_button_label="Save" cancel_button_label="Cancel" />
+    </window>
+</zk>

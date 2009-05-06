@@ -1,6 +1,7 @@
-package org.navalplanner.business.common.daos; 
+package org.navalplanner.business.common.daos;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 
@@ -20,11 +21,13 @@ public interface IGenericDao <E, PK extends Serializable>{
      * It updates and inserts the object passed as a parameter.
      */
     public void save(E entity);
-        
+
     public E find(PK id) throws InstanceNotFoundException;
-    
+
     public boolean exists(PK id);
 
     public void remove(PK id) throws InstanceNotFoundException;
-    
+
+    public <T extends E> List<T> list(Class<T> klass);
+
 }
