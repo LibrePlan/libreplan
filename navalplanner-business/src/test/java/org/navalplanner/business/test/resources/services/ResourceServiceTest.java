@@ -1,12 +1,5 @@
 package org.navalplanner.business.test.resources.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
-import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -19,12 +12,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+
 /**
  * A class for testing <code>ResourceService</code>. The service and the
  * resource DAOs are autowired.
- * 
  * @author Fernando Bellas Permuy <fbellas@udc.es>
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
@@ -177,6 +175,7 @@ public class ResourceServiceTest {
 
     @Test
     public void testListWorkers() throws Exception {
+        final int previousWorkers = resourceService.getWorkers().size();
         ResourceGroup resourceGroup = new ResourceGroup();
         Worker worker1 = new Worker("worker-1", "worker-2-surname",
                 "11111111A", 8);
@@ -189,10 +188,10 @@ public class ResourceServiceTest {
         resourceService.saveResource(resourceGroup);
         assertEquals(
                 "Two workers has been created when saving the resource group",
-                2, resourceService.getWorkers().size());
+                previousWorkers + 2, resourceService.getWorkers().size());
         resourceService.saveResource(worker3);
-        assertEquals("Three workers has been created", 3, resourceService
-                .getWorkers().size());
+        assertEquals("Three workers has been created", previousWorkers + 3,
+                resourceService.getWorkers().size());
     }
 
 }
