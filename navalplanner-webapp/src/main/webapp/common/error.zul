@@ -1,14 +1,20 @@
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro.css"?>
 <zk>
-	<caption>
-		Erro ${requestScope['javax.servlet.error.status_code']}
-	</caption>
-	<vbox apply="org.navalplanner.web.error.PageForErrorOnEvent">
-		Prodúxose un erro na execución:
-		"${requestScope['javax.servlet.error.message']}". O erro
-		gardouse e procurarase arreglalo no menor tempo posible.
-		<hbox style="margin-left:auto; margin-right:auto">
-			<button id="reload" label="Reload" />
-			<button id="quitSession" label="Exit Session"></button>
-		</hbox>
-	</vbox>
+
+    <window self="@{define(content)}" >
+        <!--caption>
+            Erro ${requestScope['javax.servlet.error.status_code']}
+        </caption-->
+        <vbox apply="org.navalplanner.web.error.PageForErrorOnEvent"
+            sclass="errorbox">
+            Prodúxose un erro na execución:
+            "${requestScope['javax.servlet.error.message']}". O erro
+            gardouse e procurarase arreglalo no menor tempo posible.
+            <hbox style="margin-left:auto; margin-right:auto">
+                <button id="reload" label="Reload" />
+                <button id="quitSession" label="Exit Session"></button>
+            </hbox>
+        </vbox>
+    </window>
 </zk>

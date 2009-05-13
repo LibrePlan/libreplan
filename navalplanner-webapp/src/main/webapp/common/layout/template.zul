@@ -23,6 +23,8 @@
 
             <menu label="${c:l('mainmenu.resources')}">
                 <menupopup>
+                    <menuitem label="${c:l('mainmenu.list_workers')}"
+                        href='/resources/worker/worker.zul' />
                     <menuitem label="${c:l('mainmenu.add_resources')}"
                         href='/common/resources.zul' />
                     <menuitem label="${c:l('mainmenu.manage_resources')}"
@@ -34,6 +36,8 @@
 
             <menu label="${c:l('mainmenu.plannification')}">
     			<menupopup>
+                    <menuitem label="${c:l('mainmenu.plannification')}"
+                        href='/planner/main.zul' />
     				<menuitem label="${c:l('mainmenu.add_task')}"
                         onClick="alert(self.label)" />
     				<menuitem label="${c:l('mainmenu.manage_tasks')}"

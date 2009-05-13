@@ -2,12 +2,15 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?page  id="Create"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro.css"?>
+<?link rel="stylesheet" type="text/css" href="/resources/css/resources.css"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?component name="list" inline="true" macroURI="_list.zul"?>
 <?component name="edition" inline="true" macroURI="_edition.zul"?>
 <zk>
-    <window title="Worker" self="@{define(content)}"
-        apply="org.navalplanner.web.resources.WorkerCRUDController">
+    <window self="@{define(content)}"
+        apply="org.navalplanner.web.resources.WorkerCRUDController"
+        sclass="workerwindow">
         <list top_id="listWindow" />
         <edition top_id="createWindow" title="Create"
             save_button_label="Save" cancel_button_label="Cancel" />

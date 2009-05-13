@@ -1,28 +1,27 @@
 <window id="${arg.top_id}" title="${arg.title}">
-    <grid fixedLayout="true">
+    <grid fixedLayout="false">
         <columns>
-            <column label="Type" width="150px" />
+            <column label="Type" />
             <column label="Content" />
         </columns>
         <rows>
             <row>
-                <label value="first_name" width="150px" />
-                <textbox value="@{controller.worker.firstName}"
-                    width="150px" />
+                <label value="first_name" />
+                <textbox value="@{controller.worker.firstName}" />
             </row>
             <row>
-                <label value="last_name" width="150px" />
+                <label value="last_name" />
                 <textbox value="@{controller.worker.surname}"
-                    width="150px" />
+                    />
             </row>
             <row>
-                <label value="nif" width="150px" />
-                <textbox value="@{controller.worker.nif}" width="150px" />
+                <label value="nif"  />
+                <textbox value="@{controller.worker.nif}"  />
             </row>
             <row>
-                <label value="daily_hours" width="150px" />
+                <label value="daily_hours" />
                 <textbox value="@{controller.worker.dailyHours}"
-                    width="150px" />
+                    />
             </row>
         </rows>
     </grid>

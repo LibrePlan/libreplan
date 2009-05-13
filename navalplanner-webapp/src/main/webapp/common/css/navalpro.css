@@ -160,6 +160,26 @@ table {
     white-space:nowrap;
 }
 
-.zk #ganttpanel .z-button-cm {
-    border: 0px;
+.errorbox {
+    margin: 40px;
+    padding: 40px;
+    border: solid 1px red;
+}
+
+/* Forms */
+.z-button-tl, .z-button-tm, z-button-tr,
+.z-button-cl, .z-button-cr,
+.z-button-bl, .z-button-bm, z-button-br {
+    display:none;
+}
+
+.zk .z-button-cm {
+    color:#007bbe;
+    background-color: #FFFFFF;
+    background-image: none;
+    border: 2px solid #007bbe;
+}
+
+.zk .z-button, .zk .z-button-br, .zk .z-button-tr {
+    background-image: none;
 }

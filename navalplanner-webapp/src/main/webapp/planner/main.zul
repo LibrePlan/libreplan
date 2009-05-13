@@ -3,6 +3,7 @@
 <?link rel="stylesheet" type="text/css" href="/planner/css/productionmanagement.css"?>
 <?page  id="myhello"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro.css"?>
 <zk>
 
     <planner self="@{define(content)}">

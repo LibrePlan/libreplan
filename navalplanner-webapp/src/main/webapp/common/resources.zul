@@ -1,14 +1,15 @@
-<?init class="org.zk.myhello.pages.MyHelloPageListener"?>
+<!-- ?init class="org.zk.myhello.pages.MyHelloPageListener"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<?link rel="stylesheet" type="text/css" href="/planner/css/productionmanagement.css"?>
-<?page  id="myhello"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro.css"?>
+<?page  id="myhello"? -->
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro.css"?>
 <zk>
 
     <grid fixedLayout="true"  self="@{define(content)}">
 	<rows>
 		<row>
-			<label value="Resouce" width="150px" />
+			<label value="Resource" width="150px" />
 			<textbox value="Name" width="150px" />
 		</row>
     </rows>
