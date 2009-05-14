@@ -1,66 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:tx="http://www.springframework.org/schema/tx"
-    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
     xsi:schemaLocation="
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-    
+
     <!--  Data source. -->
-    <bean id="dataSource"
-        class="org.springframework.jndi.JndiObjectFactoryBean"
-        p:jndiName="${dataSource.jndiName}"
-        p:resourceRef="true" />
-        
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"
+        p:jndiName="${dataSource.jndiName}" p:resourceRef="true" />
+
     <!-- Hibernate Session Factory. -->
     <bean id="sessionFactory"
         class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
         p:dataSource-ref="dataSource"
         p:configLocation="classpath:/navalplanner-business-hibernate.cfg.xml">
-        
+
         <property name="mappingResources">
             <list>
-                <value>org/navalplanner/business/resources/entities/Resources.hbm.xml</value>
+                <value>
+                    org/navalplanner/business/resources/entities/Resources.hbm.xml
+                </value>
             </list>
         </property>
-        
+
     </bean>
-        
+
     <!-- Spring Transaction manager  -->
     <bean id="transactionManager"
         class="org.springframework.orm.hibernate3.HibernateTransactionManager"
-        p:sessionFactory-ref="sessionFactory"/>
-        
-    <!-- Enable configuration of transactional behavior based on
-         annotations -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-    
-    <!-- For enabling annotation-based configuration (in particular, required 
-         for "@Autowired") -->
-    <context:annotation-config/>
-    
-    <!--  ======================== Business Objects ======================== -->
+        p:sessionFactory-ref="sessionFactory" />
+
+    <!--
+        Enable configuration of transactional behavior based on
+        annotations
+    -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <!--
+        For enabling annotation-based configuration (in particular,
+        required for "@Autowired")
+    -->
+    <context:annotation-config />
+
+    <!--
+        ======================== Business Objects
+        ========================
+    -->
 
     <!--  Resource DAOs and registry -->
-    <bean id="resourceDao" 
-        class="org.navalplanner.business.resources.daos.impl.ResourceDaoHibernate"/>
-    
-    <bean id="workerDao"
-        class="org.navalplanner.business.resources.daos.impl.WorkerDaoHibernate"/>
-    
-    <bean id="resourceGroupDao" 
-        class="org.navalplanner.business.resources.daos.impl.ResourceGroupDaoHibernate"/>
+    <bean id="resourceDao"
+        class="org.navalplanner.business.resources.daos.impl.ResourceDaoHibernate" />
 
-    <bean id="resourcesDaoRegistry" 
-        class="org.navalplanner.business.resources.daos.ResourcesDaoRegistry" 
-        factory-method="getInstance"/>
+    <bean id="workerDao"
+        class="org.navalplanner.business.resources.daos.impl.WorkerDaoHibernate" />
+
+
+    <bean id="resourcesDaoRegistry"
+        class="org.navalplanner.business.resources.daos.ResourcesDaoRegistry"
+        factory-method="getInstance" />
 
     <!--  Service layer -->
-    <bean id="resourceService" 
-        class="org.navalplanner.business.resources.services.impl.ResourceServiceImpl"/>
-        
+    <bean id="resourceService"
+        class="org.navalplanner.business.resources.services.impl.ResourceServiceImpl" />
+
 </beans>

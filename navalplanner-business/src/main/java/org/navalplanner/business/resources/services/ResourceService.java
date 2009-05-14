@@ -8,9 +8,7 @@ import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * Interface for the resource management service.
- * 
  * @author Fernando Bellas Permuy <fbellas@udc.es>
- *
  */
 public interface ResourceService {
 
@@ -24,16 +22,9 @@ public interface ResourceService {
     public Resource findResource(Long resourceId)
             throws InstanceNotFoundException;
 
-    /**
-     * It adds a resource to a resource group. It the resource already belongs
-     * to a resource group, the resource is moved to the new group.
-     */
-    public void addResourceToResourceGroup(Long resourceId, 
-        Long resourceGroupId) throws InstanceNotFoundException;
-    
-    public int getResourceDailyCapacity(Long resourceId) 
-        throws InstanceNotFoundException;
-    
+    public int getResourceDailyCapacity(Long resourceId)
+            throws InstanceNotFoundException;
+
     /**
      * It removes a resource. If the resource is a composite resource, the
      * resources contained in it are not removed.

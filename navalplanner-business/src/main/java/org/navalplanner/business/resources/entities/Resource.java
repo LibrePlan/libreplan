@@ -13,54 +13,34 @@ import org.navalplanner.business.resources.daos.ResourcesDaoRegistry;
 
 /**
  * This class acts as the base class for all resources.
- * 
  * @author Fernando Bellas Permuy <fbellas@udc.es>
- *
  */
 public abstract class Resource {
-    
+
     private Long id;
-    private ResourceGroup resourceGroup;
-    
+
     @SuppressWarnings("unused")
     private long version;
 
     public Long getId() {
         return id;
     }
- 
-    public ResourceGroup getResourceGroup() {
-        return resourceGroup;
-    }
 
-    public void setResourceGroup(ResourceGroup resourceGroup) {
-        this.resourceGroup = resourceGroup;
-    }
-    
     public abstract int getDailyCapacity();
-    
+
     /**
-     * It removes the resource from the database and updates references. 
-     * The default implementation removes the resource from the resource group
-     * it belongs to (if it belongs to someone) and from the database. This 
-     * implementation should be valid for simple resources. 
+     * It removes the resource from the database and updates references. The
+     * default implementation removes the resource from the resource group it
+     * belongs to (if it belongs to someone) and from the database. This
+     * implementation should be valid for simple resources.
      */
     public void remove() {
-        
-        /* Remove from the resource group it belongs to. */
-        ResourceGroup resourceGroup = getResourceGroup();
-        
-        if (resourceGroup != null) {
-            resourceGroup.removeResource(this);
-        }
-        
         /* Remove from the database. */
         try {
             ResourcesDaoRegistry.getResourceDao().remove(getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
-        
     }
 
 }

@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.IResourceDao;
-import org.navalplanner.business.resources.daos.IResourceGroupDao;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.entities.ResourceGroup;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +21,6 @@ public class ResourceServiceImpl implements ResourceService {
     @Autowired
     private IResourceDao resourceDao;
 
-    @Autowired
-    private IResourceGroupDao resourceGroupDao;
-
     public void saveResource(Resource resource) {
         resourceDao.save(resource);
     }
@@ -35,15 +30,6 @@ public class ResourceServiceImpl implements ResourceService {
             throws InstanceNotFoundException {
 
         return resourceDao.find(resourceId);
-
-    }
-
-    public void addResourceToResourceGroup(Long resourceId, Long resourceGroupId)
-            throws InstanceNotFoundException {
-
-        ResourceGroup resourceGroup = resourceGroupDao.find(resourceGroupId);
-
-        resourceGroup.addResource(resourceId);
 
     }
 
