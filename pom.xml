@@ -1,410 +1,418 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.navalplanner</groupId>
-	<artifactId>navalplanner</artifactId>
-	<packaging>pom</packaging>
-	<version>1.0.0</version>
-	<name>Naval Planner</name>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.navalplanner</groupId>
+    <artifactId>navalplanner</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+    <name>Naval Planner</name>
 
-	<!--
-		===================================================================
-	-->
-	<!-- Modules -->
-	<modules>
-		<module>navalplanner-business</module>
-		<module>navalplanner-gantt-zk</module>
-		<module>navalplanner-webapp</module>
-	</modules>
+    <!--
+        ===================================================================
+    -->
+    <!-- Modules -->
+    <modules>
+        <module>navalplanner-business</module>
+        <module>navalplanner-gantt-zk</module>
+        <module>navalplanner-webapp</module>
+    </modules>
 
-	<!--
-		===================================================================
-	-->
-	<!--
-		Default values for properties. These default values are expected to be
-		valid for most profiles. Specific profiles can overwrite values when
-		necessary.
-	-->
-	<properties>
-		<!--  Data source properties -->
-		<dataSource.user>naval</dataSource.user>
-		<dataSource.password>naval</dataSource.password>
-		<dataSource.jndiName>jdbc/navalplanner-ds</dataSource.jndiName>
-		<testDataSource.user>${dataSource.user}</testDataSource.user>
-		<testDataSource.password>${dataSource.password}</testDataSource.password>
-	</properties>
+    <!--
+        ===================================================================
+    -->
+    <!--
+        Default values for properties. These default values are expected
+        to be valid for most profiles. Specific profiles can overwrite
+        values when necessary.
+    -->
+    <properties>
+        <!--  Data source properties -->
+        <dataSource.user>naval</dataSource.user>
+        <dataSource.password>naval</dataSource.password>
+        <dataSource.jndiName>jdbc/navalplanner-ds</dataSource.jndiName>
+        <testDataSource.user>${dataSource.user}</testDataSource.user>
+        <testDataSource.password>${dataSource.password}</testDataSource.password>
+    </properties>
 
-	<!--
-		===================================================================
-	-->
-	<!--
-		Profiles. * The build is always executed by selecting at least two
-		non-exclusive profiles. By default, such profiles are "dev" and
-		"postgresql" (meaning "use PostgreSQL assuming a development
-		environment"). * General profiles. There are two general
-		(database-independent) profiles: "dev" and "prod". The former is used
-		for development (including testing) and the latter is used for
-		production (including testing). As shown below, two dataSources
-		(databases schemas) are used in both profiles: one for running
-		(dataSource) and another one for the Maven test fase (testDataSource).
-		Note the Maven test fase is executed both with development and
-		production profiles. * Database-specific profiles. There is a profile
-		for each supported database. * Specific profiles can be defined to
-		better adapt to a particular environment by overwriting/adding
-		properties and/or including other chunks of valid XML. * Usage: + mvn
-		<<goal>> => Execute <<goal>> with default profiles. + mvn
-		-Pdev,<<database>> <<goal> => Execute <<goal>> with "dev" and
-		<<database>> profiles. + mvn -Pprod,<<database>> <<goal>> => Execute
-		<<goal>> with "prod" and <<database>> profiles. + Note that when using
-		-P option all desired profiles must be specified (e.g. "-Pprod" with
-		the intention to select "prod" and the default database profile is not
-		correct; "-Pprod,<<database>>" must be used instead). * Examples: +
-		mvn <<goal>> + mvn -Ppostgresql,prod <<goal>> + mvn -Ppostgresql,dev
-		<<goal>>
-	-->
-	<profiles>
+    <!--
+        ===================================================================
+    -->
+    <!--
+        Profiles. * The build is always executed by selecting at least
+        two non-exclusive profiles. By default, such profiles are "dev"
+        and "postgresql" (meaning "use PostgreSQL assuming a development
+        environment"). * General profiles. There are two general
+        (database-independent) profiles: "dev" and "prod". The former is
+        used for development (including testing) and the latter is used
+        for production (including testing). As shown below, two
+        dataSources (databases schemas) are used in both profiles: one
+        for running (dataSource) and another one for the Maven test fase
+        (testDataSource). Note the Maven test fase is executed both with
+        development and production profiles. * Database-specific
+        profiles. There is a profile for each supported database. *
+        Specific profiles can be defined to better adapt to a particular
+        environment by overwriting/adding properties and/or including
+        other chunks of valid XML. * Usage: + mvn <<goal>> => Execute
+        <<goal>> with default profiles. + mvn -Pdev,<<database>> <<goal>
+        => Execute <<goal>> with "dev" and <<database>> profiles. + mvn
+        -Pprod,<<database>> <<goal>> => Execute <<goal>> with "prod" and
+        <<database>> profiles. + Note that when using -P option all
+        desired profiles must be specified (e.g. "-Pprod" with the
+        intention to select "prod" and the default database profile is
+        not correct; "-Pprod,<<database>>" must be used instead). *
+        Examples: + mvn <<goal>> + mvn -Ppostgresql,prod <<goal>> + mvn
+        -Ppostgresql,dev <<goal>>
+    -->
+    <profiles>
 
-		<!-- Development profile -->
-		<profile>
-			<id>dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<!-- Naval Planner environment properties -->
-				<navalplanner.mode>dev</navalplanner.mode>
-				<!-- Hibernate properties -->
-				<hibernate.show_sql>true</hibernate.show_sql>
-				<hibernate.format_sql>true</hibernate.format_sql>
-				<hibernate.use_sql_comments>true</hibernate.use_sql_comments>
-				<hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
-			</properties>
-		</profile>
+        <!-- Development profile -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Naval Planner environment properties -->
+                <navalplanner.mode>dev</navalplanner.mode>
+                <!-- Hibernate properties -->
+                <hibernate.show_sql>true</hibernate.show_sql>
+                <hibernate.format_sql>true</hibernate.format_sql>
+                <hibernate.use_sql_comments>true</hibernate.use_sql_comments>
+                <hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
+            </properties>
+        </profile>
 
-		<!-- Production profile -->
-		<profile>
-			<id>prod</id>
-			<properties>
-				<!-- Naval Planner environment properties -->
-				<navalplanner.mode>prod</navalplanner.mode>
-				<!-- Hibernate properties -->
-				<hibernate.show_sql>false</hibernate.show_sql>
-				<hibernate.format_sql>false</hibernate.format_sql>
-				<hibernate.use_sql_comments>false</hibernate.use_sql_comments>
-				<hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
-			</properties>
-		</profile>
+        <!-- Production profile -->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <!-- Naval Planner environment properties -->
+                <navalplanner.mode>prod</navalplanner.mode>
+                <!-- Hibernate properties -->
+                <hibernate.show_sql>false</hibernate.show_sql>
+                <hibernate.format_sql>false</hibernate.format_sql>
+                <hibernate.use_sql_comments>false</hibernate.use_sql_comments>
+                <hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
+            </properties>
+        </profile>
 
-		<!-- PostgreSQL profile -->
-		<profile>
-			<id>postgresql</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<!-- JDBC driver properties -->
-				<jdbcDriver.groupId>postgresql</jdbcDriver.groupId>
-				<jdbcDriver.artifactId>postgresql</jdbcDriver.artifactId>
-				<jdbcDriver.version>8.3-603.jdbc4</jdbcDriver.version>
-				<jdbcDriver.className>org.postgresql.Driver</jdbcDriver.className>
-				<!-- Data source properties -->
-				<dataSource.url>jdbc:postgresql://localhost/naval${navalplanner.mode}</dataSource.url>
-				<testDataSource.url>${dataSource.url}test</testDataSource.url>
-				<!-- Hibernate properties -->
-				<hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</hibernate.dialect>
-			</properties>
-		</profile>
+        <!-- PostgreSQL profile -->
+        <profile>
+            <id>postgresql</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- JDBC driver properties -->
+                <jdbcDriver.groupId>postgresql</jdbcDriver.groupId>
+                <jdbcDriver.artifactId>postgresql</jdbcDriver.artifactId>
+                <jdbcDriver.version>8.3-603.jdbc4</jdbcDriver.version>
+                <jdbcDriver.className>org.postgresql.Driver</jdbcDriver.className>
+                <!-- Data source properties -->
+                <dataSource.url>jdbc:postgresql://localhost/naval${navalplanner.mode}</dataSource.url>
+                <testDataSource.url>${dataSource.url}test</testDataSource.url>
+                <!-- Hibernate properties -->
+                <hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</hibernate.dialect>
+            </properties>
+        </profile>
 
-		<!-- MySQL profile -->
-		<profile>
-			<id>mysql</id>
-			<properties>
-				<!-- JDBC driver properties -->
-				<jdbcDriver.groupId>mysql</jdbcDriver.groupId>
-				<jdbcDriver.artifactId>mysql-connector-java</jdbcDriver.artifactId>
-				<jdbcDriver.version>5.0.5</jdbcDriver.version>
-				<jdbcDriver.className>com.mysql.jdbc.Driver</jdbcDriver.className>
-				<!-- Data source properties -->
-				<dataSource.url>jdbc:mysql://localhost/naval${navalplanner.mode}</dataSource.url>
-				<testDataSource.url>${dataSource.url}test</testDataSource.url>
-				<!-- Hibernate properties -->
-				<hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
-			</properties>
-		</profile>
+        <!-- MySQL profile -->
+        <profile>
+            <id>mysql</id>
+            <properties>
+                <!-- JDBC driver properties -->
+                <jdbcDriver.groupId>mysql</jdbcDriver.groupId>
+                <jdbcDriver.artifactId>mysql-connector-java</jdbcDriver.artifactId>
+                <jdbcDriver.version>5.0.5</jdbcDriver.version>
+                <jdbcDriver.className>com.mysql.jdbc.Driver</jdbcDriver.className>
+                <!-- Data source properties -->
+                <dataSource.url>jdbc:mysql://localhost/naval${navalplanner.mode}</dataSource.url>
+                <testDataSource.url>${dataSource.url}test</testDataSource.url>
+                <!-- Hibernate properties -->
+                <hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
+            </properties>
+        </profile>
 
-		<!-- HSQLDB profile -->
-		<profile>
-			<id>hsqldb</id>
-			<properties>
-				<!-- JDBC driver properties -->
-				<jdbcDriver.groupId>hsqldb</jdbcDriver.groupId>
-				<jdbcDriver.artifactId>hsqldb</jdbcDriver.artifactId>
-				<jdbcDriver.version>1.8.0.7</jdbcDriver.version>
-				<jdbcDriver.className>org.hsqldb.jdbcDriver</jdbcDriver.className>
-				<!-- Data source properties -->
-				<dataSource.user>sa</dataSource.user>
-				<dataSource.password />
-				<dataSource.url>jdbc:hsqldb:${java.io.tmpdir}/naval${navalplanner.mode};shutdown=true</dataSource.url>
-				<testDataSource.url>jdbc:hsqldb:${java.io.tmpdir}/naval${navalplanner.mode}test;shutdown=true</testDataSource.url>
-				<!-- Hibernate properties -->
-				<hibernate.dialect>org.hibernate.dialect.HSQLDialect</hibernate.dialect>
-			</properties>
-		</profile>
+        <!-- HSQLDB profile -->
+        <profile>
+            <id>hsqldb</id>
+            <properties>
+                <!-- JDBC driver properties -->
+                <jdbcDriver.groupId>hsqldb</jdbcDriver.groupId>
+                <jdbcDriver.artifactId>hsqldb</jdbcDriver.artifactId>
+                <jdbcDriver.version>1.8.0.7</jdbcDriver.version>
+                <jdbcDriver.className>org.hsqldb.jdbcDriver</jdbcDriver.className>
+                <!-- Data source properties -->
+                <dataSource.user>sa</dataSource.user>
+                <dataSource.password />
+                <dataSource.url>jdbc:hsqldb:${java.io.tmpdir}/naval${navalplanner.mode};shutdown=true</dataSource.url>
+                <testDataSource.url>jdbc:hsqldb:${java.io.tmpdir}/naval${navalplanner.mode}test;shutdown=true</testDataSource.url>
+                <!-- Hibernate properties -->
+                <hibernate.dialect>org.hibernate.dialect.HSQLDialect</hibernate.dialect>
+            </properties>
+        </profile>
 
-	</profiles>
+    </profiles>
 
-	<!--
-		===================================================================
-	-->
-	<!-- Dependency management -->
-	<dependencyManagement>
-		<dependencies>
-			<!-- JDBC driver -->
-			<dependency>
-				<groupId>${jdbcDriver.groupId}</groupId>
-				<artifactId>${jdbcDriver.artifactId}</artifactId>
-				<version>${jdbcDriver.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<!-- Hibernate -->
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate</artifactId>
-				<version>3.2.6.ga</version>
-			</dependency>
-			<!-- JUnit -->
-			<!--
-				IMPORTANT: Spring TestContext 2.5.x is not compatible with JUnit
-				4.5.
-			-->
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.4</version>
-				<scope>test</scope>
-			</dependency>
+    <!--
+        ===================================================================
+    -->
+    <!-- Dependency management -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- JDBC driver -->
+            <dependency>
+                <groupId>${jdbcDriver.groupId}</groupId>
+                <artifactId>${jdbcDriver.artifactId}</artifactId>
+                <version>${jdbcDriver.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- Hibernate -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate</artifactId>
+                <version>3.2.6.ga</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-annotations</artifactId>
+                <version>3.3.1.GA</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>3.0.0.ga</version>
+            </dependency>
+            <!-- JUnit -->
+            <!--
+                IMPORTANT: Spring TestContext 2.5.x is not compatible
+                with JUnit 4.5.
+            -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.4</version>
+                <scope>test</scope>
+            </dependency>
 
-			<!-- Easy mock -->
-			<dependency>
-				<groupId>org.easymock</groupId>
-				<artifactId>easymock</artifactId>
-				<version>2.4</version>
-				<scope>test</scope>
-			</dependency>
+            <!-- Easy mock -->
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>2.4</version>
+                <scope>test</scope>
+            </dependency>
 
-			<!-- Spring -->
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring</artifactId>
-				<version>2.5.6</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-test</artifactId>
-				<version>2.5.6</version>
-				<scope>test</scope>
-			</dependency>
-			<!-- Commons Logging (required by many frameworks)-->
-			<dependency>
-				<groupId>commons-logging</groupId>
-				<artifactId>commons-logging</artifactId>
-				<version>1.0.4</version>
-			</dependency>
-			<!-- BeanShell (required by ZK)-->
-			<dependency>
-				<groupId>org.beanshell</groupId>
-				<artifactId>bsh</artifactId>
-				<version>2.0b4</version>
-				<scope>runtime</scope>
-			</dependency>
-			<!-- Apache Commons Fileupload (required by ZK) -->
-			<dependency>
-				<groupId>commons-fileupload</groupId>
-				<artifactId>commons-fileupload</artifactId>
-				<version>1.2.1</version>
-				<scope>runtime</scope>
-			</dependency>
-			<!-- ZK  -->
-			<dependency>
-				<groupId>org.zkoss.zk</groupId>
-				<artifactId>zul</artifactId>
-				<version>3.6.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.zkoss.zk</groupId>
-				<artifactId>zkplus</artifactId>
-				<version>3.6.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.zkoss.zk</groupId>
-				<artifactId>zk</artifactId>
-				<version>3.6.1</version>
-			</dependency>
-			<!-- JGraphT -->
-			<dependency>
-				<groupId>org.jgrapht</groupId>
-				<artifactId>jgrapht-jdk1.5</artifactId>
-				<version>0.7.3</version>
-			</dependency>
-			<!-- Naval Planner ZK Components -->
-			<dependency>
-				<groupId>org.navalplanner</groupId>
-				<artifactId>navalplanner-gantt-zk</artifactId>
-				<version>1.0.0</version>
-			</dependency>
-			<!-- Naval Planner Business -->
-			<dependency>
-				<groupId>org.navalplanner</groupId>
-				<artifactId>navalplanner-business</artifactId>
-				<version>1.0.0</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>2.5</version>
-				<type>jar</type>
-				<scope>provided</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+            <!-- Spring -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring</artifactId>
+                <version>2.5.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>2.5.6</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- Commons Logging (required by many frameworks)-->
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.0.4</version>
+            </dependency>
+            <!-- BeanShell (required by ZK)-->
+            <dependency>
+                <groupId>org.beanshell</groupId>
+                <artifactId>bsh</artifactId>
+                <version>2.0b4</version>
+                <scope>runtime</scope>
+            </dependency>
+            <!-- Apache Commons Fileupload (required by ZK) -->
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.2.1</version>
+                <scope>runtime</scope>
+            </dependency>
+            <!-- ZK  -->
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zul</artifactId>
+                <version>3.6.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zkplus</artifactId>
+                <version>3.6.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zk</artifactId>
+                <version>3.6.1</version>
+            </dependency>
+            <!-- JGraphT -->
+            <dependency>
+                <groupId>org.jgrapht</groupId>
+                <artifactId>jgrapht-jdk1.5</artifactId>
+                <version>0.7.3</version>
+            </dependency>
+            <!-- Naval Planner ZK Components -->
+            <dependency>
+                <groupId>org.navalplanner</groupId>
+                <artifactId>navalplanner-gantt-zk</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <!-- Naval Planner Business -->
+            <dependency>
+                <groupId>org.navalplanner</groupId>
+                <artifactId>navalplanner-business</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.5</version>
+                <type>jar</type>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-	<build>
+    <build>
 
-		<!-- =============================================================== -->
-		<!-- Filtering -->
-		<resources>
+        <!-- =============================================================== -->
+        <!-- Filtering -->
+        <resources>
 
-			<!--
-				Apply filtering to files matching the following expressions in
-				src/main/resources.
-			-->
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>*spring-config.xml</include>
-					<include>*hibernate.cfg.xml</include>
-				</includes>
-			</resource>
+            <!--
+                Apply filtering to files matching the following
+                expressions in src/main/resources.
+            -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*spring-config.xml</include>
+                    <include>*hibernate.cfg.xml</include>
+                </includes>
+            </resource>
 
-			<!--
-				Continue considering resources the files in src/main/resources, but
-				without applying filtering.
-			-->
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
+            <!--
+                Continue considering resources the files in
+                src/main/resources, but without applying filtering.
+            -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
 
-			<!-- Filter Jetty configuration -->
-			<resource>
-				<directory>../src/main/jetty</directory>
-				<includes>
-					<include>jetty-env.xml</include>
-				</includes>
-				<targetPath>../jetty</targetPath>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
+            <!-- Filter Jetty configuration -->
+            <resource>
+                <directory>../src/main/jetty</directory>
+                <includes>
+                    <include>jetty-env.xml</include>
+                </includes>
+                <targetPath>../jetty</targetPath>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
 
-		<testResources>
+        <testResources>
 
-			<!--
-				Apply filtering to files matching the following expressions in
-				src/test/resources.
-			-->
-			<testResource>
-				<directory>src/test/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>*spring-config-test.xml</include>
-					<include>*hibernate-test.cfg.xml</include>
-				</includes>
-			</testResource>
+            <!--
+                Apply filtering to files matching the following
+                expressions in src/test/resources.
+            -->
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*spring-config-test.xml</include>
+                    <include>*hibernate-test.cfg.xml</include>
+                </includes>
+            </testResource>
 
-			<!--
-				Continue considering resources the files in src/test/resources, but
-				without applying filtering.
-			-->
-			<testResource>
-				<directory>src/test/resources</directory>
-			</testResource>
+            <!--
+                Continue considering resources the files in
+                src/test/resources, but without applying filtering.
+            -->
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
 
-		</testResources>
+        </testResources>
 
-		<plugins>
+        <plugins>
 
-			<!-- =========================================================== -->
-			<!-- Compiler configuration -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<verbose>true</verbose>
-					<source>1.6</source>
-					<target>1.6</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
+            <!-- =========================================================== -->
+            <!-- Compiler configuration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <verbose>true</verbose>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
 
-			<!-- =========================================================== -->
-			<!-- Assembly configuration -->
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor>src/main/assembly/src.xml</descriptor>
-					</descriptors>
-				</configuration>
-			</plugin>
+            <!-- =========================================================== -->
+            <!-- Assembly configuration -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/src.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
 
-			<!-- =========================================================== -->
-			<!-- Jetty configuration -->
-			<plugin>
+            <!-- =========================================================== -->
+            <!-- Jetty configuration -->
+            <plugin>
 
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<!-- FIXME: try to not to specify version. -->
-				<version>6.1.12.rc2</version>
-				<configuration>
-					<jettyEnvXml>target/jetty/jetty-env.xml</jettyEnvXml>
-					<scanIntervalSeconds>5</scanIntervalSeconds>
-					<scanTargetPatterns>
-						<scanTargetPattern>
-							<directory>src/main/webapp/WEB-INF</directory>
-							<includes>
-								<include>*</include>
-							</includes>
-						</scanTargetPattern>
-					</scanTargetPatterns>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <!-- FIXME: try to not to specify version. -->
+                <version>6.1.12.rc2</version>
+                <configuration>
+                    <jettyEnvXml>target/jetty/jetty-env.xml</jettyEnvXml>
+                    <scanIntervalSeconds>5</scanIntervalSeconds>
+                    <scanTargetPatterns>
+                        <scanTargetPattern>
+                            <directory>src/main/webapp/WEB-INF</directory>
+                            <includes>
+                                <include>*</include>
+                            </includes>
+                        </scanTargetPattern>
+                    </scanTargetPatterns>
 
-					<!-- Log to the console. -->
-					<requestLog implementation="org.mortbay.jetty.NCSARequestLog">
-						<!--
-							This do anything for Jetty, but is a workaround for a Maven bug
-							that prevents the requestLog from being set.
-						-->
-						<append>true</append>
-					</requestLog>
-					<!--
-						<connectors> <connector
-						implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-						<port>9090</port> </connector> </connectors>
-					-->
-				</configuration>
+                    <!-- Log to the console. -->
+                    <requestLog implementation="org.mortbay.jetty.NCSARequestLog">
+                        <!--
+                            This do anything for Jetty, but is a
+                            workaround for a Maven bug that prevents the
+                            requestLog from being set.
+                        -->
+                        <append>true</append>
+                    </requestLog>
+                    <!--
+                        <connectors> <connector
+                        implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                        <port>9090</port> </connector> </connectors>
+                    -->
+                </configuration>
 
-				<dependencies>
-					<dependency>
-						<groupId>${jdbcDriver.groupId}</groupId>
-						<artifactId>${jdbcDriver.artifactId}</artifactId>
-						<version>${jdbcDriver.version}</version>
-					</dependency>
-				</dependencies>
-
-			</plugin>
-
-		</plugins>
-
-	</build>
-
+                <dependencies>
+                    <dependency>
+                        <groupId>${jdbcDriver.groupId}</groupId>
+                        <artifactId>${jdbcDriver.artifactId}</artifactId>
+                        <version>${jdbcDriver.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
 </project>

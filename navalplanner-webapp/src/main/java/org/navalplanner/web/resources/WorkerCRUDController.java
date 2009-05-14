@@ -4,7 +4,12 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
@@ -20,6 +25,9 @@ public class WorkerCRUDController extends GenericForwardComposer {
     private static final Log LOG = LogFactory
             .getLog(WorkerCRUDController.class);
 
+    private ClassValidator<Worker> workerValidator = new ClassValidator<Worker>(
+            Worker.class);
+
     private Window createWindow;
 
     private Window listWindow;
@@ -32,16 +40,21 @@ public class WorkerCRUDController extends GenericForwardComposer {
 
     private OnlyOneVisible visibility;
 
-    public WorkerCRUDController() {
+    private IMessagesForUser messages;
 
+    private Component messagesContainer;
+
+    public WorkerCRUDController() {
     }
 
     public WorkerCRUDController(Window createWindow, Window listWindow,
-            Window editWindow, IWorkerModel workerModel) {
+            Window editWindow, IWorkerModel workerModel,
+            IMessagesForUser messages) {
         this.createWindow = createWindow;
         this.listWindow = listWindow;
         this.editWindow = editWindow;
         this.workerModel = workerModel;
+        this.messages = messages;
     }
 
     public Worker getWorker() {
@@ -56,9 +69,17 @@ public class WorkerCRUDController extends GenericForwardComposer {
     }
 
     public void save() {
+        InvalidValue[] invalidValues = workerValidator.getInvalidValues(worker);
+        if (invalidValues.length > 0) {
+            for (InvalidValue invalidValue : invalidValues) {
+                messages.invalidValue(invalidValue);
+            }
+            return;
+        }
         workerModel.save(worker);
         getVisibility().showOnly(listWindow);
         Util.reloadBindings(listWindow);
+        messages.showMessage(Level.INFO, "traballador gardado");
         worker = null;
     }
 
@@ -86,6 +107,9 @@ public class WorkerCRUDController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         getVisibility().showOnly(listWindow);
+        if (messagesContainer == null)
+            throw new RuntimeException("messagesContainer is needed");
+        messages = new MessagesForUser(messagesContainer);
     }
 
     private OnlyOneVisible getVisibility() {

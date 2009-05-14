@@ -11,6 +11,8 @@
     <window self="@{define(content)}"
         apply="org.navalplanner.web.resources.WorkerCRUDController"
         sclass="workerwindow">
+        <vbox id="messagesContainer">
+        </vbox>
         <list top_id="listWindow" />
         <edition top_id="createWindow" title="Create"
             save_button_label="Save" cancel_button_label="Cancel" />
