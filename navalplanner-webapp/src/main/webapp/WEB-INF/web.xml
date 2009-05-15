@@ -44,13 +44,17 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
-
     <listener>
         <listener-class>
             org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
 
     <!-- end Spring listeners -->
+
+    <!-- Loads all IDataBootstrap and executes them -->
+    <listener>
+        <listener-class>org.navalplanner.web.bootstrap.BootstrapListener</listener-class>
+    </listener>
 
     <servlet>
         <description>ZK loader for ZUML pages</description>
@@ -85,12 +89,8 @@
     </servlet-mapping>
     <!-- //// -->
 
-
-
     <welcome-file-list>
-
         <welcome-file>/planner/main.zul</welcome-file>
-
     </welcome-file-list>
 
     <error-page>
@@ -99,9 +99,7 @@
     </error-page>
 
     <error-page>
-            <error-code>404</error-code>
-                <location>/common/page_not_found.zul</location>
+        <error-code>404</error-code>
+        <location>/common/page_not_found.zul</location>
     </error-page>
-
-
 </web-app>

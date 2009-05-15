@@ -39,14 +39,15 @@
     <tx:annotation-driven transaction-manager="transactionManager" />
 
     <!--
-        For enabling annotation-based configuration (in particular,
-        required for "@Autowired")
+        For enabling annotation-based configuration (in particular, required
+        for "@Autowired")
     -->
     <context:annotation-config />
 
+    <context:component-scan base-package="org.navalplanner.business"/>
+
     <!--
-        ======================== Business Objects
-        ========================
+        ======================== Business Objects ========================
     -->
 
     <!--  Resource DAOs and registry -->
