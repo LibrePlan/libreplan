@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:tx="http://www.springframework.org/schema/tx"
-    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
     xsi:schemaLocation="
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-    
+
     <!--  Data source -->
     <bean id="dataSource"
         class="org.springframework.jdbc.datasource.DriverManagerDataSource"
-        p:driverClassName="${jdbcDriver.className}"
-        p:url="${testDataSource.url}" p:username="${testDataSource.user}"
-        p:password="${testDataSource.password}"/>
-        
-        
-        <!-- Hibernate Session Factory. -->
+        p:driverClassName="${jdbcDriver.className}" p:url="${testDataSource.url}"
+        p:username="${testDataSource.user}" p:password="${testDataSource.password}" />
+
+
+    <!-- Hibernate Session Factory. -->
     <bean id="sessionFactory"
         class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
         p:dataSource-ref="dataSource"
         p:configLocation="classpath:/navalplanner-business-hibernate-test.cfg.xml">
-        
-        <!-- FIXME: ideally this chunk of XML should be only in 
-             src/main/resources/navalplanner-business-spring-config.xml. -->
+
+        <!--
+            FIXME: ideally this chunk of XML should be only in
+            src/main/resources/navalplanner-business-spring-config.xml.
+        -->
         <property name="mappingResources">
             <list>
-                <value>org/navalplanner/business/resources/entities/Resources.hbm.xml</value>
+                <value>
+                    org/navalplanner/business/resources/entities/Resources.hbm.xml
+                </value>
             </list>
         </property>
-        
+
     </bean>
-        
+
 </beans>

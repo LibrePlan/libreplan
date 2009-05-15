@@ -1,8 +1,10 @@
 package org.navalplanner.business.resources.services;
 
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 
@@ -34,4 +36,7 @@ public interface ResourceService {
 
     public List<Worker> getWorkers();
 
+    public List<Resource> getResources();
+
+    public Set<Resource> getSetOfResourcesSatisfying(ICriterion criterion);
 }

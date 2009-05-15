@@ -1,9 +1,12 @@
 package org.navalplanner.business.resources.services.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.IResourceDao;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.ResourceService;
@@ -50,5 +53,22 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public List<Worker> getWorkers() {
         return resourceDao.list(Worker.class);
+    }
+
+    @Override
+    public Set<Resource> getSetOfResourcesSatisfying(ICriterion criterion) {
+        List<Resource> resources = resourceDao.list(Resource.class);
+        HashSet<Resource> result = new HashSet<Resource>();
+        for (Resource resource : resources) {
+            if (criterion.isSatisfiedBy(resource)) {
+                result.add(resource);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Resource> getResources() {
+        return resourceDao.list(Resource.class);
     }
 }

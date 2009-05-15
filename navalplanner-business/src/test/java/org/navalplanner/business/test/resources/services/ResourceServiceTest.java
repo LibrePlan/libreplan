@@ -8,9 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.IResourceDao;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.ResourceService;
+import org.navalplanner.business.test.resources.entities.CriterionTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
@@ -103,6 +105,29 @@ public class ResourceServiceTest {
                 // ok
             }
         }
+    }
+
+    public void testResourcesSatisfying() {
+        Worker worker1 = new Worker("worker-1", "worker-2-surname",
+                "11111111A", 8);
+        Worker worker2 = new Worker("worker-2", "worker-3-surname",
+                "22222222B", 6);
+        resourceService.saveResource(worker1);
+        resourceService.saveResource(worker2);
+        ICriterion firstCriterion = CriterionTest
+                .justThisResourcesCriterion(worker1);
+        ICriterion secondCriterion = CriterionTest
+                .justThisResourcesCriterion(worker2);
+        ICriterion bothCriterion = CriterionTest.justThisResourcesCriterion(
+                worker1, worker2);
+        assertEquals(1, resourceService.getSetOfResourcesSatisfying(
+                firstCriterion).size());
+        assertEquals(worker1, resourceService.getSetOfResourcesSatisfying(
+                firstCriterion).iterator().next());
+        assertEquals(1, resourceService.getSetOfResourcesSatisfying(
+                secondCriterion).size());
+        assertEquals(2, resourceService.getSetOfResourcesSatisfying(
+                bothCriterion).size());
     }
 
 }
