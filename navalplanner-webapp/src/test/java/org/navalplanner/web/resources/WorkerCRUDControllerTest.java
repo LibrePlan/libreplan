@@ -1,15 +1,5 @@
 package org.navalplanner.web.resources;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +11,18 @@ import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.zkoss.zul.api.Window;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.same;
+import static org.easymock.EasyMock.verify;
 
 /**
  * Tests for {@link WorkerCRUDController} <br />
@@ -60,7 +62,7 @@ public class WorkerCRUDControllerTest {
         // expectations
         expect(workerModel.createNewInstance()).andReturn(workerToReturn);
         workerModel.save(workerToReturn);
-        messagesForUser.showMessage(Level.INFO,
+        messagesForUser.showMessage(same(Level.INFO),
                 isA(String.class));
         replay(workerModel, messagesForUser);
         // action
@@ -105,7 +107,7 @@ public class WorkerCRUDControllerTest {
         expect(workerModel.getWorkers()).andReturn(workersToReturn);
         expect(editWindow.setVisible(true)).andReturn(false);
         workerModel.save(workersToReturn.get(0));
-        messagesForUser.showMessage(Level.INFO,
+        messagesForUser.showMessage(same(Level.INFO),
                 isA(String.class));
         replay(createWindow, listWindow, editWindow, workerModel,
                 messagesForUser);
