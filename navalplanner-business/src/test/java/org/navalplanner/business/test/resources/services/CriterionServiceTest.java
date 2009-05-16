@@ -1,11 +1,20 @@
 package org.navalplanner.business.test.resources.services;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+
+import java.util.UUID;
+
 import org.hibernate.SessionFactory;
+import org.hibernate.validator.InvalidStateException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.ICriterionType;
+import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.CriterionService;
 import org.navalplanner.business.resources.services.ResourceService;
@@ -17,10 +26,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import static junit.framework.Assert.assertEquals;
-import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
-import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 /**
  * Test cases for {@link CriterionService} <br />
@@ -41,6 +46,54 @@ public class CriterionServiceTest {
     @Autowired
     private SessionFactory sessionFactory;
 
+    @Test(expected = InvalidStateException.class)
+    public void testCantSaveCriterionWithoutNameAndType() throws Exception {
+        Criterion criterion = new Criterion("", "");
+        criterionService.save(criterion);
+        sessionFactory.getCurrentSession().flush();
+    }
+
+    @Test
+    public void testAddCriterion() throws Exception {
+        String unique = UUID.randomUUID().toString();
+        Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique);
+        criterionService.save(criterion);
+    }
+
+    @Test(expected = Exception.class)
+    public void testUniqueNameForCriterion() {
+        String unique = UUID.randomUUID().toString();
+        Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique);
+        criterionService.save(criterion);
+        criterionService.save(PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique));
+    }
+
+    @Test
+    public void testCreateIfNotExists() {
+        String unique = UUID.randomUUID().toString();
+        Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique);
+        criterionService.createIfNotExists(criterion);
+        assertTrue(criterionService.exists(criterion));
+        criterionService.createIfNotExists(PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique));
+    }
+
+    @Test
+    public void testPersistingDoesNotChangeEquality() throws Exception {
+        String unique = UUID.randomUUID().toString();
+        Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique);
+        Criterion other = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique);
+        assertEquals(criterion, other);
+        criterionService.save(criterion);
+        assertEquals(criterion, other);
+    }
+
     @Test
     public void testCreateCriterionSatisfactionButNotSave() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
@@ -54,7 +107,7 @@ public class CriterionServiceTest {
 
     /*
      * It sends a dataIntegrityViolationException when adding a
-     * criterionSatisfaction with a resource that doesn't exist yet
+     * criterionSatisfaction with a criterion that doesn't exist yet
      */
     @Test(expected = DataIntegrityViolationException.class)
     public void testCreateCriterionSatisfactionOnTransientCriterion()
@@ -83,7 +136,7 @@ public class CriterionServiceTest {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
+        new CriterionSatisfaction(
                 CriterionSatisfactionDAOTest.year(2000), criterion, worker);
         resourceService.saveResource(worker);
         assertEquals(1, criterionService.getResourcesSatisfying(criterion)
@@ -154,7 +207,7 @@ public class CriterionServiceTest {
         criterionService.add(new CriterionSatisfaction(
                 CriterionSatisfactionDAOTest.year(1998), criterion, worker));
 
-        ICriterionType criterionType = ResourceTest
+        ICriterionType<?> criterionType = ResourceTest
                 .createTypeThatMatches(criterion);
 
         assertEquals(2, criterionService.getSatisfactionsFor(criterionType,

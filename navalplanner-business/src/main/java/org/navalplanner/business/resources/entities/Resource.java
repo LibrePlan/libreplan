@@ -58,7 +58,7 @@ public abstract class Resource {
     }
 
     public Collection<CriterionSatisfaction> getSatisfactionsFor(
-            ICriterionType type) {
+            ICriterionType<?> type) {
         Set<CriterionSatisfaction> allSatisfactions = getAllSatisfactions();
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
         for (CriterionSatisfaction criterionSatisfaction : allSatisfactions) {
@@ -70,7 +70,7 @@ public abstract class Resource {
     }
 
     public Collection<CriterionSatisfaction> getActiveSatisfactionsFor(
-            ICriterionType criterionType) {
+            ICriterionType<?> criterionType) {
         Collection<CriterionSatisfaction> satisfactionsFor = getSatisfactionsFor(criterionType);
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
         for (CriterionSatisfaction criterionSatisfaction : satisfactionsFor) {
@@ -82,7 +82,7 @@ public abstract class Resource {
     }
 
     public Collection<CriterionSatisfaction> getActiveSatisfactionsForIn(
-            ICriterionType criterionType, Date start, Date end) {
+            ICriterionType<?> criterionType, Date start, Date end) {
         Validate.notNull(criterionType);
         Validate.isTrue(start.before(end));
         Collection<CriterionSatisfaction> satisfactionsFor = getSatisfactionsFor(criterionType);

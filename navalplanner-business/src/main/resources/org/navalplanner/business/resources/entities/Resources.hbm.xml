@@ -22,14 +22,16 @@
       <property name="dailyHours"/>
     </joined-subclass>
   </class>
+
   <class name="Criterion">
-    <id access="field" name="id">
-      <generator class="native"/>
-    </id>
+    <composite-id>
+        <key-property access="field" name="name"/>
+        <key-property access="field" name="type"/>
+    </composite-id>
     <version access="field" name="version" type="long"/>
-    <property access="field" name="type"/>
     <property access="field" name="active"/>
   </class>
+
   <class name="CriterionSatisfaction">
     <id access="field" name="id">
       <generator class="native"/>
@@ -37,7 +39,10 @@
     <version access="field" name="version" type="long"/>
     <property access="field" name="startDate" not-null="true"/>
     <property access="field" name="finishDate"/>
-    <many-to-one access="field" name="criterion" not-null="true"/>
+    <many-to-one name="criterion" access="field" not-null="true">
+        <column name="name" not-null="true"></column>
+        <column name="type" not-null="true"></column>
+    </many-to-one>
     <many-to-one access="field" column="resource" name="resource" not-null="true"/>
   </class>
 </hibernate-mapping>

@@ -1,6 +1,7 @@
 package org.navalplanner.business.test.resources.daos;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +17,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
@@ -42,26 +44,20 @@ public class CriterionDAOTest {
     public void testSaveCriterions() throws Exception {
         Criterion criterion = createValidCriterion();
         criterionDAO.save(criterion);
-        assertNotNull(criterion.getId());
-        assertTrue(criterionDAO.exists(criterion.getId()));
+        assertTrue(criterionDAO.exists(criterion));
     }
 
     public static Criterion createValidCriterion() {
-        return new Criterion();
-    }
-
-    @Test(expected = InstanceNotFoundException.class)
-    public void testRemoveNotExistent() throws InstanceNotFoundException {
-        criterionDAO.remove(Long.MAX_VALUE);
+        return new Criterion(UUID.randomUUID().toString(), "pruebaType");
     }
 
     @Test
     public void testRemove() throws InstanceNotFoundException {
         Criterion criterion = createValidCriterion();
         criterionDAO.save(criterion);
-        assertTrue(criterionDAO.exists(criterion.getId()));
-        criterionDAO.remove(criterion.getId());
-        assertFalse(criterionDAO.exists(criterion.getId()));
+        assertTrue(criterionDAO.exists(criterion));
+        criterionDAO.remove(criterion);
+        assertFalse(criterionDAO.exists(criterion));
     }
 
     @Test

@@ -83,7 +83,7 @@ public class ResourceTest {
                 otherCriterion, worker);
         new CriterionSatisfaction(CriterionSatisfactionDAOTest.year(4000),
                 criterion, worker);
-        ICriterionType criterionType = createTypeThatMatches(criterion);
+        ICriterionType<Criterion> criterionType = createTypeThatMatches(criterion);
         assertEquals(2, worker.getSatisfactionsFor(criterionType).size());
         assertEquals(1, worker.getActiveSatisfactionsFor(criterionType).size());
     }
@@ -100,7 +100,7 @@ public class ResourceTest {
             }
 
             @Override
-            public ICriterion createCriterion() {
+            public Criterion createCriterion(String name) {
                 return null;
             }
         };
@@ -119,7 +119,7 @@ public class ResourceTest {
         new CriterionSatisfaction(CriterionSatisfactionDAOTest.year(2000),
                 otherCriterion, worker);
 
-        ICriterionType criterionType = createTypeThatMatches(criterion);
+        ICriterionType<Criterion> criterionType = createTypeThatMatches(criterion);
 
         assertEquals(2, worker.getSatisfactionsFor(criterionType).size());
         assertEquals(1, worker.getActiveSatisfactionsForIn(criterionType,

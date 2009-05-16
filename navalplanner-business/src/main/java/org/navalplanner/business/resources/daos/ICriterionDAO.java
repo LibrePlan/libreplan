@@ -7,6 +7,6 @@ import org.navalplanner.business.resources.entities.Criterion;
  * Description goes here. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public interface ICriterionDAO extends IGenericDao<Criterion, Long> {
+public interface ICriterionDAO extends IGenericDao<Criterion, Criterion> {
 
 }

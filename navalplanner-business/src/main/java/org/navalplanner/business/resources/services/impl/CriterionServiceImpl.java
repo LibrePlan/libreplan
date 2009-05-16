@@ -35,12 +35,12 @@ public class CriterionServiceImpl implements CriterionService {
     @Autowired
     private ResourceService resourceService;
 
-    public boolean exists(Long id) {
-        return criterionDAO.exists(id);
+    public boolean exists(Criterion criterion) {
+        return criterionDAO.exists(criterion);
     }
 
-    public Criterion find(Long id) throws InstanceNotFoundException {
-        return criterionDAO.find(id);
+    public Criterion find(Criterion criterion) throws InstanceNotFoundException {
+        return criterionDAO.find(criterion);
     }
 
     public List<Criterion> list() {
@@ -48,11 +48,7 @@ public class CriterionServiceImpl implements CriterionService {
     }
 
     public void remove(Criterion criterion) throws InstanceNotFoundException {
-        criterionDAO.remove(criterion.getId());
-    }
-
-    public void remove(Long id) throws InstanceNotFoundException {
-        criterionDAO.remove(id);
+        criterionDAO.remove(criterion);
     }
 
     public void save(Criterion entity) {
@@ -92,7 +88,7 @@ public class CriterionServiceImpl implements CriterionService {
 
     @Override
     public Collection<CriterionSatisfaction> getSatisfactionsFor(
-            ICriterionType criterionType) {
+            ICriterionType<?> criterionType) {
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
         for (Resource resource : resourceService.getResources()) {
             result.addAll(resource.getActiveSatisfactionsFor(criterionType));
@@ -102,12 +98,18 @@ public class CriterionServiceImpl implements CriterionService {
 
     @Override
     public Collection<CriterionSatisfaction> getSatisfactionsFor(
-            ICriterionType criterionType, Date start, Date end) {
+            ICriterionType<?> criterionType, Date start, Date end) {
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
         for (Resource resource : resourceService.getResources()) {
             result.addAll(resource.getActiveSatisfactionsForIn(criterionType,
                     start, end));
         }
         return result;
+    }
+
+    @Override
+    public void createIfNotExists(Criterion criterion) {
+        if (!exists(criterion))
+            save(criterion);
     }
 }

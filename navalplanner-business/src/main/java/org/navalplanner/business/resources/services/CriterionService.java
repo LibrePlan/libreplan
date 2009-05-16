@@ -17,15 +17,9 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public interface CriterionService {
 
-    boolean exists(Long id);
-
-    Criterion find(Long id) throws InstanceNotFoundException;
-
     List<Criterion> list();
 
     void remove(Criterion criterion) throws InstanceNotFoundException;
-
-    void remove(Long id) throws InstanceNotFoundException;
 
     void save(Criterion entity);
 
@@ -37,9 +31,13 @@ public interface CriterionService {
             Date begin, Date end);
 
     Collection<CriterionSatisfaction> getSatisfactionsFor(
-            ICriterionType criterionType);
+            ICriterionType<?> criterionType);
 
     Collection<CriterionSatisfaction> getSatisfactionsFor(
-            ICriterionType criterionType, Date begin, Date end);
+            ICriterionType<?> criterionType, Date begin, Date end);
+
+    void createIfNotExists(Criterion criterion);
+
+    boolean exists(Criterion criterion);
 
 }

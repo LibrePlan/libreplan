@@ -22,6 +22,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
@@ -84,7 +85,7 @@ public class CriterionSatisfactionDAOTest {
         satisfactionDAO.save(satisfaction);
         assertTrue(satisfactionDAO.exists(satisfaction.getId()));
         satisfactionDAO.remove(satisfaction.getId());
-        assertFalse(criterionDAO.exists(satisfaction.getId()));
+        assertFalse(satisfactionDAO.exists(satisfaction.getId()));
     }
 
     @Test

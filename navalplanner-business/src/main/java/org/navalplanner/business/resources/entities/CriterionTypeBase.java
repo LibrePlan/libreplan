@@ -4,7 +4,7 @@ package org.navalplanner.business.resources.entities;
  * Base implementation of {@link ICriterionType} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public abstract class CriterionTypeBase implements ICriterionType {
+public abstract class CriterionTypeBase implements ICriterionType<Criterion> {
 
     private final boolean allowHierarchy;
 

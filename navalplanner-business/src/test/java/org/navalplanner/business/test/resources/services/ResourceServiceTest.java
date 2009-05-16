@@ -1,6 +1,5 @@
 package org.navalplanner.business.test.resources.services;
 
-import org.hibernate.SessionFactory;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidStateException;
 import org.hibernate.validator.InvalidValue;
@@ -42,9 +41,6 @@ public class ResourceServiceTest {
 
     @Autowired
     private IResourceDao resourceDao;
-
-    @Autowired
-    private SessionFactory sessionFactory;
 
     @Test
     public void testRemoveResource() throws InstanceNotFoundException {

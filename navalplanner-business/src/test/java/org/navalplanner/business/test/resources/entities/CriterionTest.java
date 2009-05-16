@@ -1,20 +1,23 @@
 package org.navalplanner.business.test.resources.entities;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-
-import org.junit.Test;
-import org.navalplanner.business.resources.entities.CriterionCompounder;
-import org.navalplanner.business.resources.entities.ICriterion;
-import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.entities.Worker;
-
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.navalplanner.business.resources.entities.CriterionCompounder.atom;
 import static org.navalplanner.business.resources.entities.CriterionCompounder.build;
 import static org.navalplanner.business.resources.entities.CriterionCompounder.not;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+
+import org.junit.Test;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionCompounder;
+import org.navalplanner.business.resources.entities.ICriterion;
+import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
+import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * Tests for criterion. <br />
@@ -22,6 +25,23 @@ import static org.navalplanner.business.resources.entities.CriterionCompounder.n
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class CriterionTest {
+
+    @Test
+    public void testCreateWithAType() throws Exception {
+        Criterion firedCriterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion("fired");
+        assertTrue(PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .contains(firedCriterion));
+    }
+
+
+    @Test
+    public void testCriterionNameAndTypeIsInmutableBusinessKey()
+            throws Exception {
+        Criterion criterion = new Criterion("name", "type");
+        Criterion other = new Criterion("name", "type");
+        assertEquals(criterion.hashCode(), other.hashCode());
+    }
 
     @Test
     public void testCompounding() throws Exception {
