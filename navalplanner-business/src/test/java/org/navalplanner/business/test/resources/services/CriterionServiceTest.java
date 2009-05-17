@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.ICriterionOnData;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Worker;
@@ -23,6 +24,7 @@ import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTes
 import org.navalplanner.business.test.resources.entities.ResourceTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -160,6 +162,44 @@ public class CriterionServiceTest {
                 .size());
     }
 
+    @Test
+    public void shouldLetCreateCriterionOnData() {
+        Criterion criterion = CriterionDAOTest.createValidCriterion();
+        criterionService.save(criterion);
+        Worker worker = new Worker("firstName", "surName", "2333232", 10);
+        resourceService.saveResource(worker);
+        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
+                CriterionSatisfactionDAOTest.year(2000), criterion, worker);
+        criterionService.add(criterionSatisfaction);
+        ICriterionOnData criterionOnData = criterionService.empower(criterion);
+        assertTrue(criterionOnData.isSatisfiedBy(worker));
+        assertEquals(1, criterionOnData.getResourcesSatisfying().size());
+        assertTrue(criterionOnData.getResourcesSatisfying().contains(worker));
+        assertTrue(criterionOnData.getResourcesSatisfying(
+                CriterionSatisfactionDAOTest.year(1990),
+                CriterionSatisfactionDAOTest.year(2005)).isEmpty());
+        assertEquals(1, criterionOnData.getResourcesSatisfying(
+                CriterionSatisfactionDAOTest.year(2001),
+                CriterionSatisfactionDAOTest.year(2005)).size());
+    }
+
+    @Test
+    @NotTransactional
+    public void shouldntThrowExceptionDueToTransparentProxyGotcha() {
+        Criterion criterion = CriterionDAOTest.createValidCriterion();
+        criterionService.save(criterion);
+        Worker worker = new Worker("firstName", "surName", "2333232", 10);
+        resourceService.saveResource(worker);
+        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
+                CriterionSatisfactionDAOTest.year(2000), criterion, worker);
+        criterionService.add(criterionSatisfaction);
+        ICriterionOnData criterionOnData = criterionService.empower(criterion);
+        criterionOnData.getResourcesSatisfying();
+        criterionOnData.getResourcesSatisfying(
+                CriterionSatisfactionDAOTest.year(2001),
+                CriterionSatisfactionDAOTest.year(2005));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void mustBeCorrectInterval() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
@@ -225,7 +265,6 @@ public class CriterionServiceTest {
         assertEquals(2, criterionService.getSatisfactionsFor(criterionType,
                 CriterionSatisfactionDAOTest.year(1999),
                 CriterionSatisfactionDAOTest.year(2005)).size());
-
     }
 
 }

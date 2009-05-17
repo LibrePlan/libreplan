@@ -8,6 +8,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.ICriterion;
+import org.navalplanner.business.resources.entities.ICriterionOnData;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -39,5 +40,7 @@ public interface CriterionService {
     void createIfNotExists(Criterion criterion);
 
     boolean exists(Criterion criterion);
+
+    ICriterionOnData empower(ICriterion criterion);
 
 }

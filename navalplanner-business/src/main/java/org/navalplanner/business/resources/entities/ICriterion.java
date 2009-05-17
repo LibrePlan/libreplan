@@ -3,9 +3,7 @@ package org.navalplanner.business.resources.entities;
 import java.util.Date;
 
 /**
- * Responsible of searching the resources satisfiying some condition or set of
- * conditions. <br />
- * Created at May 12, 2009
+ * It's a predicate that can be applied on resources <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public interface ICriterion {

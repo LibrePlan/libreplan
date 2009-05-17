@@ -12,11 +12,13 @@ import org.navalplanner.business.resources.daos.impl.CriterionSatisfactionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.ICriterion;
+import org.navalplanner.business.resources.entities.ICriterionOnData;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.services.CriterionService;
 import org.navalplanner.business.resources.services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -111,5 +113,44 @@ public class CriterionServiceImpl implements CriterionService {
     public void createIfNotExists(Criterion criterion) {
         if (!exists(criterion))
             save(criterion);
+    }
+
+    @Override
+    public ICriterionOnData empower(final ICriterion criterion) {
+        final CriterionService criterionService = getProxifiedCriterionService();
+        return new ICriterionOnData() {
+            @Override
+            public boolean isSatisfiedBy(Resource resource) {
+                return criterion.isSatisfiedBy(resource);
+            }
+
+            @Override
+            public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
+                return criterion.isSatisfiedBy(resource, start, end);
+            }
+
+            @Override
+            public Collection<Resource> getResourcesSatisfying() {
+                return criterionService.getResourcesSatisfying(criterion);
+            }
+
+            @Override
+            public Collection<Resource> getResourcesSatisfying(Date start,
+                    Date end) throws IllegalArgumentException {
+                return criterionService.getResourcesSatisfying(criterion,
+                        start, end);
+            }
+        };
+    }
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    // this is a hack to avoid using the this variable in empower method. The
+    // this instance is not proxified because spring uses an transparent proxy,
+    // so it doesn't open the transacion
+    private CriterionService getProxifiedCriterionService() {
+        return (CriterionService) applicationContext.getBeansOfType(
+                CriterionService.class).values().iterator().next();
     }
 }
