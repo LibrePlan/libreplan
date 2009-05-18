@@ -1,6 +1,6 @@
-
 package org.navalplanner.business.resources.entities;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,6 +13,13 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
         @Override
         public List<Criterion> getPredefined() {
             return WorkingRelationship.getCriterions();
+        }
+    },
+    LOCATION_GROUP(false, true) {
+
+        @Override
+        public List<Criterion> getPredefined() {
+            return Arrays.asList();
         }
     };
 
