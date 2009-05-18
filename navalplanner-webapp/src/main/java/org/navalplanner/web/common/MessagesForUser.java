@@ -21,14 +21,41 @@ import org.zkoss.zul.Label;
 public class MessagesForUser extends GenericForwardComposer implements
         IMessagesForUser {
 
+    private static final long DEFAULT_MINIMUM_VISUALIZATION_TIME_MILLIS =
+            1000 * 2; // 2 seconds
+
+    private class ComponentHolderTimestamped {
+        final Component component;
+        final long timestamp;
+
+        ComponentHolderTimestamped(Component component) {
+            this.component = component;
+            this.timestamp = System.currentTimeMillis();
+        }
+
+        public boolean minimumVisualizationTimeSurpased(long currentTime) {
+            return currentTime - timestamp > minimumVisualizationTimeMilliseconds;
+        }
+    }
+
     private Component container;
 
-    private Queue<Component> pendingToDetach = new ConcurrentLinkedQueue<Component>();
+    private final long minimumVisualizationTimeMilliseconds;
+
+    private Queue<ComponentHolderTimestamped> pendingToDetach =
+            new ConcurrentLinkedQueue<ComponentHolderTimestamped>();
 
     private static final String DETACH_EVENT_NAME = "onMarkDetached";
 
     public MessagesForUser(Component container) {
+        this(container, DEFAULT_MINIMUM_VISUALIZATION_TIME_MILLIS);
+    }
+
+    public MessagesForUser(Component container,
+            long minimumVisualizationTimeMilliseconds) {
         this.container = container;
+        this.minimumVisualizationTimeMilliseconds =
+                minimumVisualizationTimeMilliseconds;
         container.getPage().getDesktop().addListener(new EventInterceptor() {
 
             @Override
@@ -46,9 +73,13 @@ public class MessagesForUser extends GenericForwardComposer implements
                         || pendingToDetach.isEmpty()) {
                     return event;
                 }
-                Component currrent = null;
-                while ((currrent = pendingToDetach.poll()) != null) {
-                    currrent.detach();
+                long currentTime = System.currentTimeMillis();
+                ComponentHolderTimestamped currrent = null;
+                while ((currrent = pendingToDetach.peek()) != null
+                        && currrent
+                                .minimumVisualizationTimeSurpased(currentTime)) {
+                    currrent.component.detach();
+                    pendingToDetach.poll();
                 }
                 return event;
             }
@@ -85,7 +116,7 @@ public class MessagesForUser extends GenericForwardComposer implements
 
             @Override
             public void onEvent(Event event) throws Exception {
-                pendingToDetach.offer(label);
+                pendingToDetach.offer(new ComponentHolderTimestamped(label));
             }
         });
     }
