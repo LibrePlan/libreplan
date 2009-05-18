@@ -1,28 +1,23 @@
 package org.navalplanner.web.resources;
 
+import static junit.framework.Assert.assertEquals;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.same;
+import static org.easymock.EasyMock.verify;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.junit.Test;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.zkoss.zul.api.Window;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.same;
-import static org.easymock.EasyMock.verify;
 
 /**
  * Tests for {@link WorkerCRUDController} <br />
@@ -60,10 +55,10 @@ public class WorkerCRUDControllerTest {
                 workerModel, messagesForUser);
         replay(createWindow, listWindow, editWindow);
         // expectations
-        expect(workerModel.createNewInstance()).andReturn(workerToReturn);
-        workerModel.save(workerToReturn);
-        messagesForUser.showMessage(same(Level.INFO),
-                isA(String.class));
+        workerModel.prepareForCreate();
+        expect(workerModel.getWorker()).andReturn(workerToReturn).anyTimes();
+        workerModel.save();
+        messagesForUser.showMessage(same(Level.INFO), isA(String.class));
         replay(workerModel, messagesForUser);
         // action
         workerCRUDController.goToCreateForm();
@@ -82,7 +77,8 @@ public class WorkerCRUDControllerTest {
         Worker workerToReturn = new Worker();
         // expectations
         WorkerCRUDController workerCRUDController = createControllerForModel(workerModel);
-        expect(workerModel.createNewInstance()).andReturn(workerToReturn);
+        workerModel.prepareForCreate();
+        expect(workerModel.getWorker()).andReturn(workerToReturn).anyTimes();
         expect(createWindow.setVisible(true)).andReturn(false);
         expect(createWindow.setVisible(false)).andReturn(true);
         expect(listWindow.setVisible(true)).andReturn(false);
@@ -105,10 +101,12 @@ public class WorkerCRUDControllerTest {
                         "firstName", "surname", "nif", 4)));
         // expectations
         expect(workerModel.getWorkers()).andReturn(workersToReturn);
+        workerModel.prepareEditFor(workersToReturn.get(0));
         expect(editWindow.setVisible(true)).andReturn(false);
-        workerModel.save(workersToReturn.get(0));
-        messagesForUser.showMessage(same(Level.INFO),
-                isA(String.class));
+        expect(workerModel.getWorker()).andReturn(workersToReturn.get(0))
+                .anyTimes();
+        workerModel.save();
+        messagesForUser.showMessage(same(Level.INFO), isA(String.class));
         replay(createWindow, listWindow, editWindow, workerModel,
                 messagesForUser);
         // perform actions
@@ -120,27 +118,4 @@ public class WorkerCRUDControllerTest {
         verify(workerModel, editWindow, messagesForUser);
     }
 
-    @Test
-    public void testWorkerInvalid() {
-        IWorkerModel workerModel = createMock(IWorkerModel.class);
-        IMessagesForUser messages = createMock(IMessagesForUser.class);
-        WorkerCRUDController workerCRUDController = createControllerForModel(
-                workerModel, messages);
-        Worker workerToReturn = new Worker();
-        // expectations
-        expect(workerModel.createNewInstance()).andReturn(workerToReturn);
-        ClassValidator<Worker> workerValidator = new ClassValidator<Worker>(
-                Worker.class);
-        InvalidValue[] invalidValues = workerValidator
-                .getInvalidValues(workerToReturn);
-        assertFalse(invalidValues.length == 0);
-        messages.invalidValue(isA(InvalidValue.class));
-        expectLastCall().times(invalidValues.length);
-        replay(createWindow, listWindow, editWindow, workerModel, messages);
-        // perform actions
-        workerCRUDController.goToCreateForm();
-        workerCRUDController.save();
-        // verify
-        verify(messages);
-    }
 }
