@@ -1,0 +1,15 @@
+<zk>
+    <vbox id="${arg.top_id}">
+        <hbox>
+            <label value="name" />
+            <textbox value="@{controller.criterionName}" />
+            <checkbox checked="@{controller.criterionActive}" visible="@{controller.editing}"></checkbox>
+        </hbox>
+        <hbox>
+            <button onClick="controller.save();"
+                label="${arg.save_button_label}" />
+            <button onClick="controller.cancel();"
+                label="${arg.cancel_button_label}" />
+        </hbox>
+    </vbox>
+</zk>

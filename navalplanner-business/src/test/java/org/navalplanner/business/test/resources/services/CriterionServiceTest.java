@@ -1,10 +1,6 @@
 package org.navalplanner.business.test.resources.services;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
-import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
-
+import java.util.Collection;
 import java.util.UUID;
 
 import org.hibernate.SessionFactory;
@@ -13,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionOnData;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
@@ -28,6 +25,11 @@ import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 /**
  * Test cases for {@link CriterionService} <br />
@@ -80,8 +82,9 @@ public class CriterionServiceTest {
                 .createCriterion(unique);
         criterionService.createIfNotExists(criterion);
         assertTrue(criterionService.exists(criterion));
-        criterionService.createIfNotExists(PredefinedCriterionTypes.WORK_RELATIONSHIP
-                .createCriterion(unique));
+        criterionService
+                .createIfNotExists(PredefinedCriterionTypes.WORK_RELATIONSHIP
+                        .createCriterion(unique));
     }
 
     @Test
@@ -138,8 +141,8 @@ public class CriterionServiceTest {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
-        new CriterionSatisfaction(
-                CriterionSatisfactionDAOTest.year(2000), criterion, worker);
+        new CriterionSatisfaction(CriterionSatisfactionDAOTest.year(2000),
+                criterion, worker);
         resourceService.saveResource(worker);
         assertEquals(1, criterionService.getResourcesSatisfying(criterion)
                 .size());
@@ -195,9 +198,8 @@ public class CriterionServiceTest {
         criterionService.add(criterionSatisfaction);
         ICriterionOnData criterionOnData = criterionService.empower(criterion);
         criterionOnData.getResourcesSatisfying();
-        criterionOnData.getResourcesSatisfying(
-                CriterionSatisfactionDAOTest.year(2001),
-                CriterionSatisfactionDAOTest.year(2005));
+        criterionOnData.getResourcesSatisfying(CriterionSatisfactionDAOTest
+                .year(2001), CriterionSatisfactionDAOTest.year(2005));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -265,6 +267,63 @@ public class CriterionServiceTest {
         assertEquals(2, criterionService.getSatisfactionsFor(criterionType,
                 CriterionSatisfactionDAOTest.year(1999),
                 CriterionSatisfactionDAOTest.year(2005)).size());
+    }
+
+    @Test
+    public void testCriterionsForType() throws Exception {
+        final Criterion one = CriterionDAOTest.createValidCriterion();
+        Criterion other = CriterionDAOTest.createValidCriterion();
+        criterionService.save(one);
+        criterionService.save(other);
+        ICriterionType<Criterion> type = createTypeThatMatches(one);
+        Collection<Criterion> criterions = criterionService
+                .getCriterionsFor(type);
+        assertEquals(1, criterions.size());
+        assertTrue(criterions.contains(one));
+    }
+
+    private ICriterionType<Criterion> createTypeThatMatches(
+            final Criterion criterion) {
+        return new ICriterionType<Criterion>() {
+
+            @Override
+            public boolean allowHierarchy() {
+                return false;
+            }
+
+            @Override
+            public boolean allowMultipleActiveCriterionsPerResource() {
+                return false;
+            }
+
+            @Override
+            public boolean contains(ICriterion c) {
+                return criterion == c;
+            }
+
+            @Override
+            public Criterion createCriterion(String name) {
+                return null;
+            }
+
+            @Override
+            public String getName() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public boolean allowAdding() {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public boolean allowEditing() {
+                // TODO Auto-generated method stub
+                return false;
+            }
+        };
     }
 
 }

@@ -6,9 +6,15 @@ package org.navalplanner.business.resources.entities;
  */
 public interface ICriterionType<C extends ICriterion> {
 
+    public String getName();
+
     public boolean allowMultipleActiveCriterionsPerResource();
 
     public boolean allowHierarchy();
+
+    public boolean allowAdding();
+
+    public boolean allowEditing();
 
     public C createCriterion(String name);
 

@@ -92,7 +92,7 @@ public class ResourceTest {
             final Criterion... criterions) {
         final HashSet<Criterion> criterionsSet = new HashSet<Criterion>(Arrays
                 .asList(criterions));
-        return new CriterionTypeBase(true, true) {
+        return new CriterionTypeBase("base", true, true, false, false) {
 
             @Override
             public boolean contains(ICriterion c) {

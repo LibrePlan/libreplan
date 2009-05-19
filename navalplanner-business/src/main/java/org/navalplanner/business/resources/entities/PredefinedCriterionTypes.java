@@ -9,13 +9,13 @@ import java.util.List;
  */
 public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
-    WORK_RELATIONSHIP(false, false) {
+    WORK_RELATIONSHIP(false, false, false, false) {
         @Override
         public List<Criterion> getPredefined() {
             return WorkingRelationship.getCriterions();
         }
     },
-    LOCATION_GROUP(false, true) {
+    LOCATION_GROUP(false, true, true, true) {
 
         @Override
         public List<Criterion> getPredefined() {
@@ -27,10 +27,17 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
     private final boolean allowMultipleActiveCriterionsPerResource;
 
+    private final boolean allowAdding;
+
+    private final boolean allowEditing;
+
     private PredefinedCriterionTypes(boolean allowHierarchy,
-            boolean allowMultipleActiveCriterionsPerResource) {
+            boolean allowMultipleActiveCriterionsPerResource,
+            boolean allowAdding, boolean allowEditing) {
         this.allowHierarchy = allowHierarchy;
         this.allowMultipleActiveCriterionsPerResource = allowMultipleActiveCriterionsPerResource;
+        this.allowAdding = allowAdding;
+        this.allowEditing = allowEditing;
     }
 
     @Override
@@ -72,6 +79,20 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
         throw new RuntimeException("not found "
                 + PredefinedCriterionTypes.class.getName() + " type for "
                 + type);
+    }
+
+    public String getName() {
+        return name();
+    }
+
+    @Override
+    public boolean allowAdding() {
+        return allowAdding;
+    }
+
+    @Override
+    public boolean allowEditing() {
+        return allowEditing;
     }
 
 }

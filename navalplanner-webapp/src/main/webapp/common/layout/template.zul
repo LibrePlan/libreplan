@@ -25,6 +25,8 @@
                 <menupopup>
                     <menuitem label="${c:l('mainmenu.list_workers')}"
                         href='/resources/worker/worker.zul' />
+                        <menuitem label="${c:l('mainmenu.manage_criterions')}"
+                        href='/resources/criterions/criterions.zul' />
                     <menuitem label="${c:l('mainmenu.add_resources')}"
                         href='/common/resources.zul' />
                     <menuitem label="${c:l('mainmenu.manage_resources')}"

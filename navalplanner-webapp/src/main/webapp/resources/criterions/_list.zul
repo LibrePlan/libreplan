@@ -1,0 +1,7 @@
+<grid id="listing" fixedLayout="true">
+    <columns sizable="true">
+        <column label="Operacións" />
+        <column label="Nome" />
+        <column label="Activo" />
+    </columns>
+</grid>

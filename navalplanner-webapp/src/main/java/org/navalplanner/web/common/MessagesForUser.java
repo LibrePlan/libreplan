@@ -6,6 +6,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -21,8 +22,9 @@ import org.zkoss.zul.Label;
 public class MessagesForUser extends GenericForwardComposer implements
         IMessagesForUser {
 
-    private static final long DEFAULT_MINIMUM_VISUALIZATION_TIME_MILLIS =
-            1000 * 2; // 2 seconds
+    private static final long DEFAULT_MINIMUM_VISUALIZATION_TIME_MILLIS = 1000 * 2; // 2
+
+    // seconds
 
     private class ComponentHolderTimestamped {
         final Component component;
@@ -42,8 +44,7 @@ public class MessagesForUser extends GenericForwardComposer implements
 
     private final long minimumVisualizationTimeMilliseconds;
 
-    private Queue<ComponentHolderTimestamped> pendingToDetach =
-            new ConcurrentLinkedQueue<ComponentHolderTimestamped>();
+    private Queue<ComponentHolderTimestamped> pendingToDetach = new ConcurrentLinkedQueue<ComponentHolderTimestamped>();
 
     private static final String DETACH_EVENT_NAME = "onMarkDetached";
 
@@ -54,8 +55,7 @@ public class MessagesForUser extends GenericForwardComposer implements
     public MessagesForUser(Component container,
             long minimumVisualizationTimeMilliseconds) {
         this.container = container;
-        this.minimumVisualizationTimeMilliseconds =
-                minimumVisualizationTimeMilliseconds;
+        this.minimumVisualizationTimeMilliseconds = minimumVisualizationTimeMilliseconds;
         container.getPage().getDesktop().addListener(new EventInterceptor() {
 
             @Override
@@ -127,6 +127,13 @@ public class MessagesForUser extends GenericForwardComposer implements
         for (Object child : children) {
             Component c = (Component) child;
             c.detach();
+        }
+    }
+
+    @Override
+    public void showInvalidValues(ValidationException e) {
+        for (InvalidValue invalidValue : e.getInvalidValues()) {
+            invalidValue(invalidValue);
         }
     }
 

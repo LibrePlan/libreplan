@@ -43,4 +43,6 @@ public interface CriterionService {
 
     ICriterionOnData empower(ICriterion criterion);
 
+    Collection<Criterion> getCriterionsFor(ICriterionType<?> type);
+
 }

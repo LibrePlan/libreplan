@@ -58,8 +58,7 @@ public class Criterion implements ICriterion, Serializable {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(name)
-                .append(type).toHashCode();
+        return new HashCodeBuilder().append(name).append(type).toHashCode();
     }
 
     @Override
@@ -70,6 +69,14 @@ public class Criterion implements ICriterion, Serializable {
                     other.type).isEquals();
         }
         return false;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
 }

@@ -153,4 +153,16 @@ public class CriterionServiceImpl implements CriterionService {
         return (CriterionService) applicationContext.getBeansOfType(
                 CriterionService.class).values().iterator().next();
     }
+
+    @Override
+    public Collection<Criterion> getCriterionsFor(ICriterionType<?> type) {
+        List<Criterion> list = criterionDAO.list(Criterion.class);
+        ArrayList<Criterion> result = new ArrayList<Criterion>();
+        for (Criterion criterion : list) {
+            if (type.contains(criterion)) {
+                result.add(criterion);
+            }
+        }
+        return result;
+    }
 }
