@@ -6,6 +6,7 @@ import java.util.List;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * CriterionsModel contract <br />
@@ -19,7 +20,7 @@ public interface ICriterionsModel {
 
     Criterion getCriterion();
 
-    void prepareForCreate(ICriterionType<Criterion> criterionType);
+    void prepareForCreate(ICriterionType<?> criterionType);
 
     void prepareForEdit(Criterion criterion);
 
@@ -36,5 +37,10 @@ public interface ICriterionsModel {
     boolean isCriterionActive();
 
     void setCriterionActive(boolean active);
+
+    boolean isApplyableToWorkers();
+
+    <T extends Resource> List<T> getResourcesSatisfyingCurrentCriterionOfType(
+            Class<T> klass);
 
 }

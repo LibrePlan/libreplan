@@ -5,6 +5,7 @@ import java.util.List;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
+import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
@@ -114,6 +115,15 @@ public class CriterionAdminController extends GenericForwardComposer {
 
     public boolean isEditing() {
         return criterionsModel.isEditing();
+    }
+
+    public boolean isApplyableToWorkers() {
+        return criterionsModel.isApplyableToWorkers();
+    }
+
+    public List<Worker> getWorkersForCurrentCriterion() {
+        return criterionsModel
+                .getResourcesSatisfyingCurrentCriterionOfType(Worker.class);
     }
 
     public boolean isCriterionActive() {

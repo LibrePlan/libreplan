@@ -20,8 +20,7 @@
             </row>
             <row>
                 <label value="daily_hours" />
-                <textbox value="@{controller.worker.dailyHours}"
-                    />
+                <textbox value="@{controller.worker.dailyHours}"/>
             </row>
         </rows>
     </grid>

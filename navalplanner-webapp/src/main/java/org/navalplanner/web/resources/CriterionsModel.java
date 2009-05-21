@@ -1,5 +1,6 @@
 package org.navalplanner.web.resources;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
+import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.CriterionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -34,7 +37,7 @@ public class CriterionsModel implements ICriterionsModel {
     @Autowired
     private CriterionService criterionService;
 
-    private ICriterionType<Criterion> criterionType;
+    private ICriterionType<?> criterionType;
 
     private Criterion criterion;
 
@@ -63,7 +66,7 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
-    public void prepareForCreate(ICriterionType<Criterion> criterionType) {
+    public void prepareForCreate(ICriterionType<?> criterionType) {
         this.criterionType = criterionType;
         this.criterion = null;
     }
@@ -72,7 +75,7 @@ public class CriterionsModel implements ICriterionsModel {
     public void prepareForEdit(Criterion criterion) {
         Validate.notNull(criterion);
         this.criterion = criterion;
-        this.criterionType = null;
+        this.criterionType = getTypeFor(criterion);
     }
 
     @Override
@@ -101,7 +104,8 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     private void create() throws ValidationException {
-        Criterion criterion = criterionType.createCriterion(nameForCriterion);
+        Criterion criterion = (Criterion) criterionType
+                .createCriterion(nameForCriterion);
         InvalidValue[] invalidValues = criterionValidator
                 .getInvalidValues(criterion);
         if (invalidValues.length > 0)
@@ -132,5 +136,19 @@ public class CriterionsModel implements ICriterionsModel {
     @Override
     public void setCriterionActive(boolean active) {
         criterion.setActive(active);
+    }
+
+    @Override
+    public boolean isApplyableToWorkers() {
+        return criterionType != null
+                && criterionType.criterionCanBeRelatedTo(Worker.class);
+    }
+
+    @Override
+    public <T extends Resource> List<T> getResourcesSatisfyingCurrentCriterionOfType(
+            Class<T> klass) {
+        if (criterion == null)
+            return new ArrayList<T>();
+        return criterionService.getResourcesSatisfying(klass, criterion);
     }
 }
