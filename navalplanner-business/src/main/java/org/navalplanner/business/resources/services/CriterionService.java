@@ -13,7 +13,7 @@ import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
- * Services for aggregate {@link Criterion} <br />
+ * Services for {@link Criterion} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public interface CriterionService {
@@ -23,8 +23,6 @@ public interface CriterionService {
     void remove(Criterion criterion) throws InstanceNotFoundException;
 
     void save(Criterion entity);
-
-    void add(CriterionSatisfaction criterionSatisfaction);
 
     Collection<Resource> getResourcesSatisfying(ICriterion criterion);
 
@@ -44,5 +42,10 @@ public interface CriterionService {
     ICriterionOnData empower(ICriterion criterion);
 
     Collection<Criterion> getCriterionsFor(ICriterionType<?> type);
+
+    <T extends Resource> List<T> getResourcesSatisfying(Class<T> resourceType,
+            Criterion criterion);
+
+    Criterion load(Criterion criterion);
 
 }

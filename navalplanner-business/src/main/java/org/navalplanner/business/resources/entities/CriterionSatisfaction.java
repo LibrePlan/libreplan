@@ -30,7 +30,6 @@ public class CriterionSatisfaction {
         this.startDate = startDate;
         this.criterion = criterion;
         this.resource = resource;
-        this.resource.add(this);
     }
 
     public Long getId() {
@@ -62,21 +61,28 @@ public class CriterionSatisfaction {
     }
 
     public boolean isActiveNow() {
-        return startDate.before(new Date()) && finishDate == null;
+        Date now = new Date();
+        return isActiveAt(now);
+    }
+
+    public boolean isActiveAt(Date date) {
+        return (startDate.before(date) || startDate.equals(date))
+                && (finishDate == null || date.before(finishDate));
     }
 
     public boolean isActiveIn(Date start, Date end) {
-        return startDate.before(start)
+        return (startDate.equals(start) || startDate.before(start))
                 && (finishDate == null || end.before(finishDate));
     }
 
     public void finish(Date finish) {
         Validate.notNull(finish);
-        Validate.isTrue(startDate.before(finish));
+        Validate.isTrue(startDate.equals(finish) || startDate.before(finish));
         finishDate = finish;
     }
 
     public boolean isFinished() {
         return finishDate != null;
     }
+
 }

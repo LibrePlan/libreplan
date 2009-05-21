@@ -71,4 +71,9 @@ public class ResourceServiceImpl implements ResourceService {
     public List<Resource> getResources() {
         return resourceDao.list(Resource.class);
     }
+
+    @Override
+    public <T extends Resource> List<T> getResources(Class<T> klass) {
+        return resourceDao.list(klass);
+    }
 }

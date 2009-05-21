@@ -10,7 +10,7 @@ public abstract class CriterionTypeBase implements ICriterionType<Criterion> {
 
     private final boolean allowHierarchy;
 
-    private final boolean allowMultipleValuesPerResource;
+    private final boolean allowMultipleCriterionsPerResource;
 
     private final String name;
 
@@ -19,11 +19,11 @@ public abstract class CriterionTypeBase implements ICriterionType<Criterion> {
     private final boolean allowEditing;
 
     protected CriterionTypeBase(String name, boolean allowHierarchy,
-            boolean allowMultipleValuesPerResource, boolean allowAdding,
+            boolean allowMultipleCriterionsPerResource, boolean allowAdding,
             boolean allowEditing) {
         Validate.notNull(name, "name is not null");
         this.allowHierarchy = allowHierarchy;
-        this.allowMultipleValuesPerResource = allowMultipleValuesPerResource;
+        this.allowMultipleCriterionsPerResource = allowMultipleCriterionsPerResource;
         this.name = name;
         this.allowAdding = allowAdding;
         this.allowEditing = allowEditing;
@@ -36,7 +36,7 @@ public abstract class CriterionTypeBase implements ICriterionType<Criterion> {
 
     @Override
     public boolean allowMultipleActiveCriterionsPerResource() {
-        return allowMultipleValuesPerResource;
+        return allowMultipleCriterionsPerResource;
     }
 
     public String getName() {

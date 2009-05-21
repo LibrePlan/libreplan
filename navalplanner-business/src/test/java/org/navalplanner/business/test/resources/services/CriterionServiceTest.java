@@ -7,12 +7,14 @@ import org.hibernate.SessionFactory;
 import org.hibernate.validator.InvalidStateException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionOnData;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.CriterionService;
 import org.navalplanner.business.resources.services.ResourceService;
@@ -26,8 +28,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
@@ -49,6 +54,9 @@ public class CriterionServiceTest {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private ICriterionsBootstrap criterionsBootstrap;
 
     @Test(expected = InvalidStateException.class)
     public void testCantSaveCriterionWithoutNameAndType() throws Exception {
@@ -99,81 +107,96 @@ public class CriterionServiceTest {
         assertEquals(criterion, other);
     }
 
-    @Test
-    public void testCreateCriterionSatisfactionButNotSave() {
-        Criterion criterion = CriterionDAOTest.createValidCriterion();
-        criterionService.save(criterion);
-        Worker worker = new Worker("firstName", "surName", "2333232", 10);
-        resourceService.saveResource(worker);
-        new CriterionSatisfaction(CriterionSatisfactionDAOTest.year(2000),
-                criterion, worker);
-        assertEquals(1, worker.getAllSatisfactions().size());
-    }
-
-    /*
-     * It sends a dataIntegrityViolationException when adding a
-     * criterionSatisfaction with a criterion that doesn't exist yet
-     */
     @Test(expected = DataIntegrityViolationException.class)
     public void testCreateCriterionSatisfactionOnTransientCriterion()
             throws Exception {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
+        ICriterionType<?> type = createTypeThatMatches(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
+        worker.activate(new CriterionWithItsType(type, criterion));
+        assertTrue(criterion.isSatisfiedBy(worker));
         resourceService.saveResource(worker);
-
-        criterionService.add(new CriterionSatisfaction(
-                CriterionSatisfactionDAOTest.year(2000), criterion, worker));
+        assertTrue(criterion.isSatisfiedBy(worker));
+        assertThat(criterionService.getResourcesSatisfying(criterion).size(),
+                equalTo(1));
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @NotTransactional
+    @Test
+    public void testInNoTransaction() throws Exception {
+        Criterion criterion = CriterionDAOTest.createValidCriterion();
+        criterionService.save(criterion);
+        ICriterionType<?> type = createTypeThatMatches(criterion);
+        Worker worker = new Worker("firstName", "surName", "2333232", 10);
+        worker.activate(new CriterionWithItsType(type, criterion));
+        assertTrue(criterion.isSatisfiedBy(worker));
+        resourceService.saveResource(worker);
+        assertTrue(criterion.isSatisfiedBy(worker));
+        assertThat(criterionService.getResourcesSatisfying(criterion).size(),
+                equalTo(1));
+    }
+
     public void testCreateCriterionSatisfactionOnTransientResource()
             throws Exception {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
+        ICriterionType<?> type = createTypeThatMatches(criterion);
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                CriterionSatisfactionDAOTest.year(2000), criterion, worker);
-        criterionService.add(criterionSatisfaction);
-    }
-
-    @Test
-    public void testCreatingButNotPersistingSatisfaction() throws Exception {
-        Criterion criterion = CriterionDAOTest.createValidCriterion();
-        criterionService.save(criterion);
-        Worker worker = new Worker("firstName", "surName", "2333232", 10);
-        new CriterionSatisfaction(CriterionSatisfactionDAOTest.year(2000),
-                criterion, worker);
+        worker.activate(new CriterionWithItsType(type, criterion));
         resourceService.saveResource(worker);
-        assertEquals(1, criterionService.getResourcesSatisfying(criterion)
-                .size());
-        sessionFactory.getCurrentSession().evict(worker);
-        assertEquals(
-                "once the worker has been evicted the satisfaction created is not taken into account",
-                0, criterionService.getResourcesSatisfying(criterion).size());
+        assertThat(criterionService.getResourcesSatisfying(criterion).size(),
+                equalTo(1));
+        assertThat((Worker) criterionService.getResourcesSatisfying(criterion)
+                .iterator().next(), equalTo(worker));
     }
 
     @Test
     public void testGetSetOfResourcesSatisfyingCriterion() throws Exception {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         criterionService.save(criterion);
+        ICriterionType<?> type = createTypeThatMatches(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                CriterionSatisfactionDAOTest.year(2000), criterion, worker);
-        criterionService.add(criterionSatisfaction);
+        worker.activate(new CriterionWithItsType(type, criterion));
         assertEquals(1, criterionService.getResourcesSatisfying(criterion)
                 .size());
+    }
+
+    public static class Prueba extends Resource {
+
+        @Override
+        public int getDailyCapacity() {
+            return 0;
+        }
+
+    }
+
+    @Test
+    public void testGetSetOfResourcesSubclassSatisfyingCriterion() {
+        Criterion criterion = CriterionDAOTest.createValidCriterion();
+        criterionService.save(criterion);
+        ICriterionType<Criterion> type = createTypeThatMatches(criterion);
+        Worker worker = new Worker("firstName", "surName", "2333232", 10);
+        resourceService.saveResource(worker);
+        worker.activate(new CriterionWithItsType(type, criterion));
+
+        assertThat(criterionService.getResourcesSatisfying(Resource.class,
+                criterion).size(), is(1));
+        assertThat(criterionService.getResourcesSatisfying(Worker.class,
+                criterion).size(), is(1));
+        assertThat(criterionService.getResourcesSatisfying(Prueba.class,
+                criterion).size(), is(0));
     }
 
     @Test
     public void shouldLetCreateCriterionOnData() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
+        ICriterionType<?> type = createTypeThatMatches(criterion);
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                CriterionSatisfactionDAOTest.year(2000), criterion, worker);
-        criterionService.add(criterionSatisfaction);
+        worker.activate(new CriterionWithItsType(type, criterion),
+                CriterionSatisfactionDAOTest.year(2000));
         ICriterionOnData criterionOnData = criterionService.empower(criterion);
         assertTrue(criterionOnData.isSatisfiedBy(worker));
         assertEquals(1, criterionOnData.getResourcesSatisfying().size());
@@ -190,12 +213,12 @@ public class CriterionServiceTest {
     @NotTransactional
     public void shouldntThrowExceptionDueToTransparentProxyGotcha() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
+        ICriterionType<Criterion> type = createTypeThatMatches(criterion);
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                CriterionSatisfactionDAOTest.year(2000), criterion, worker);
-        criterionService.add(criterionSatisfaction);
+        worker.activate(new CriterionWithItsType(type, criterion),
+                CriterionSatisfactionDAOTest.year(2000));
         ICriterionOnData criterionOnData = criterionService.empower(criterion);
         criterionOnData.getResourcesSatisfying();
         criterionOnData.getResourcesSatisfying(CriterionSatisfactionDAOTest
@@ -215,12 +238,13 @@ public class CriterionServiceTest {
     public void testSearchInInterval() throws Exception {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         criterionService.save(criterion);
+        ICriterionType<Criterion> type = createTypeThatMatches(true, criterion);
+        CriterionWithItsType criterionWithItsType = new CriterionWithItsType(
+                type, criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                CriterionSatisfactionDAOTest.year(2000), criterion, worker);
-
-        criterionService.add(criterionSatisfaction);
+        worker.activate(criterionWithItsType, CriterionSatisfactionDAOTest
+                .year(2000));
 
         assertEquals(1, criterionService.getResourcesSatisfying(criterion,
                 CriterionSatisfactionDAOTest.year(2001),
@@ -229,9 +253,8 @@ public class CriterionServiceTest {
                 CriterionSatisfactionDAOTest.year(1999),
                 CriterionSatisfactionDAOTest.year(2005)).size());
 
-        CriterionSatisfaction otherSatisfaction = new CriterionSatisfaction(
-                CriterionSatisfactionDAOTest.year(1998), criterion, worker);
-        criterionService.add(otherSatisfaction);
+        worker.activate(new CriterionWithItsType(type, criterion),
+                CriterionSatisfactionDAOTest.year(1998));
 
         assertEquals(1, criterionService.getResourcesSatisfying(criterion,
                 CriterionSatisfactionDAOTest.year(1999),
@@ -241,13 +264,16 @@ public class CriterionServiceTest {
     @Test
     public void testSearchResourcesForCriterionType() throws Exception {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
+        ICriterionType<Criterion> type = createTypeThatMatches(true, criterion);
+        CriterionWithItsType criterionWithItsType = new CriterionWithItsType(
+                type, criterion);
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        criterionService.add(new CriterionSatisfaction(
-                CriterionSatisfactionDAOTest.year(2000), criterion, worker));
-        criterionService.add(new CriterionSatisfaction(
-                CriterionSatisfactionDAOTest.year(1998), criterion, worker));
+        worker.activate(criterionWithItsType, CriterionSatisfactionDAOTest
+                .year(2000));
+        worker.activate(criterionWithItsType, CriterionSatisfactionDAOTest
+                .year(1998));
 
         ICriterionType<?> criterionType = ResourceTest
                 .createTypeThatMatches(criterion);
@@ -262,8 +288,8 @@ public class CriterionServiceTest {
                 CriterionSatisfactionDAOTest.year(1997),
                 CriterionSatisfactionDAOTest.year(2005)).size());
 
-        criterionService.add(new CriterionSatisfaction(
-                CriterionSatisfactionDAOTest.year(1997), criterion, worker));
+        worker.activate(criterionWithItsType, CriterionSatisfactionDAOTest
+                .year(1997));
         assertEquals(2, criterionService.getSatisfactionsFor(criterionType,
                 CriterionSatisfactionDAOTest.year(1999),
                 CriterionSatisfactionDAOTest.year(2005)).size());
@@ -284,6 +310,12 @@ public class CriterionServiceTest {
 
     private ICriterionType<Criterion> createTypeThatMatches(
             final Criterion criterion) {
+        return createTypeThatMatches(false, criterion);
+    }
+
+    private ICriterionType<Criterion> createTypeThatMatches(
+            final boolean allowMultipleActiveCriterionsPerResource,
+            final Criterion criterion) {
         return new ICriterionType<Criterion>() {
 
             @Override
@@ -293,7 +325,7 @@ public class CriterionServiceTest {
 
             @Override
             public boolean allowMultipleActiveCriterionsPerResource() {
-                return false;
+                return allowMultipleActiveCriterionsPerResource;
             }
 
             @Override
@@ -322,6 +354,12 @@ public class CriterionServiceTest {
             public boolean allowEditing() {
                 // TODO Auto-generated method stub
                 return false;
+            }
+
+            @Override
+            public boolean criterionCanBeRelatedTo(
+                    Class<? extends Resource> klass) {
+                return true;
             }
         };
     }

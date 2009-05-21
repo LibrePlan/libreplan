@@ -9,13 +9,13 @@ import java.util.List;
  */
 public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
-    WORK_RELATIONSHIP(false, false, false, false) {
+    WORK_RELATIONSHIP(false, false, false, false, Worker.class) {
         @Override
         public List<Criterion> getPredefined() {
             return WorkingRelationship.getCriterions();
         }
     },
-    LOCATION_GROUP(false, true, true, true) {
+    LOCATION_GROUP(false, true, true, true, Resource.class) {
 
         @Override
         public List<Criterion> getPredefined() {
@@ -31,13 +31,26 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
     private final boolean allowEditing;
 
+    private List<Class<? extends Resource>> classes;
+
     private PredefinedCriterionTypes(boolean allowHierarchy,
             boolean allowMultipleActiveCriterionsPerResource,
-            boolean allowAdding, boolean allowEditing) {
+            boolean allowAdding, boolean allowEditing,
+            Class<? extends Resource>... klasses) {
         this.allowHierarchy = allowHierarchy;
         this.allowMultipleActiveCriterionsPerResource = allowMultipleActiveCriterionsPerResource;
         this.allowAdding = allowAdding;
         this.allowEditing = allowEditing;
+        this.classes = Arrays.asList(klasses);
+    }
+
+    @Override
+    public boolean criterionCanBeRelatedTo(Class<? extends Resource> klass) {
+        for (Class<? extends Resource> c : classes) {
+            if (c.isAssignableFrom(klass))
+                return true;
+        }
+        return false;
     }
 
     @Override

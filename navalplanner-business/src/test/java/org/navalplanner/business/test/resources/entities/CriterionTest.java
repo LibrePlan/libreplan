@@ -1,12 +1,5 @@
 package org.navalplanner.business.test.resources.entities;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.navalplanner.business.resources.entities.CriterionCompounder.atom;
-import static org.navalplanner.business.resources.entities.CriterionCompounder.build;
-import static org.navalplanner.business.resources.entities.CriterionCompounder.not;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -18,6 +11,13 @@ import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.resources.entities.CriterionCompounder.atom;
+import static org.navalplanner.business.resources.entities.CriterionCompounder.build;
+import static org.navalplanner.business.resources.entities.CriterionCompounder.not;
 
 /**
  * Tests for criterion. <br />
@@ -33,7 +33,6 @@ public class CriterionTest {
         assertTrue(PredefinedCriterionTypes.WORK_RELATIONSHIP
                 .contains(firedCriterion));
     }
-
 
     @Test
     public void testCriterionNameAndTypeIsInmutableBusinessKey()
@@ -59,8 +58,8 @@ public class CriterionTest {
         assertTrue(criterionForWorkers1And2.isSatisfiedBy(worker1));
         assertTrue(criterionForWorkers1And2.isSatisfiedBy(worker2));
 
-        ICriterion compositedCriterion = CriterionCompounder.atom(criterionForWorker1)
-                .and(criterionForWorkers1And2).getResult();
+        ICriterion compositedCriterion = CriterionCompounder.atom(
+                criterionForWorker1).and(criterionForWorkers1And2).getResult();
         ICriterion matchesNoneComposited = CriterionCompounder.build().and(
                 criterionForWorker1).and(criterionForWorker2).getResult();
 
@@ -136,6 +135,18 @@ public class CriterionTest {
         assertTrue(or.isSatisfiedBy(worker1));
         assertFalse(or.isSatisfiedBy(worker2));
         assertTrue("or has less priority", or.isSatisfiedBy(worker3));
+    }
+
+    @Test
+    public void testCanBeRelatedTo() throws Exception {
+        assertTrue(PredefinedCriterionTypes.LOCATION_GROUP
+                .criterionCanBeRelatedTo(Resource.class));
+        assertTrue(PredefinedCriterionTypes.LOCATION_GROUP
+                .criterionCanBeRelatedTo(Worker.class));
+        assertFalse(PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .criterionCanBeRelatedTo(Resource.class));
+        assertTrue(PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .criterionCanBeRelatedTo(Worker.class));
     }
 
     public static ICriterion justThisResourcesCriterion(

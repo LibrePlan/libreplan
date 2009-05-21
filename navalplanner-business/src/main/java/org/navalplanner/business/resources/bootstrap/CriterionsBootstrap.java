@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.services.CriterionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Loads all {@link ICriterionTypeProvider} and if there is any criterion that
@@ -21,13 +21,16 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("singleton")
-public class CriterionsBootstrap implements IDataBootstrap {
+public class CriterionsBootstrap implements ICriterionsBootstrap {
 
     @Autowired
     private CriterionService criterionService;
 
     @Autowired
     private List<ICriterionTypeProvider> providers;
+
+    public CriterionsBootstrap() {
+    }
 
     public List<ICriterionType<?>> getTypes() {
         ArrayList<ICriterionType<?>> result = new ArrayList<ICriterionType<?>>();
@@ -38,6 +41,7 @@ public class CriterionsBootstrap implements IDataBootstrap {
     }
 
     @Override
+    @Transactional
     public void loadRequiredData() {
         Map<ICriterionType<?>, List<Criterion>> typesWithCriterions = getTypesWithCriterions();
         for (Entry<ICriterionType<?>, List<Criterion>> entry : typesWithCriterions
@@ -48,7 +52,7 @@ public class CriterionsBootstrap implements IDataBootstrap {
         }
     }
 
-    public Map<ICriterionType<?>, List<Criterion>> getTypesWithCriterions() {
+    private Map<ICriterionType<?>, List<Criterion>> getTypesWithCriterions() {
         HashMap<ICriterionType<?>, List<Criterion>> result = new HashMap<ICriterionType<?>, List<Criterion>>();
         for (ICriterionTypeProvider provider : providers) {
             for (Entry<ICriterionType<?>, List<Criterion>> entry : provider

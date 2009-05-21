@@ -10,7 +10,7 @@
             Hibernate infers type="integer".
         -->
     <version access="field" name="version" type="long"/>
-    <set access="field" inverse="true" name="criterionSatisfactions">
+    <set access="field" inverse="true" name="criterionSatisfactions" cascade="all-delete-orphan">
       <key column="resource" not-null="true"/>
       <one-to-many class="CriterionSatisfaction"/>
     </set>

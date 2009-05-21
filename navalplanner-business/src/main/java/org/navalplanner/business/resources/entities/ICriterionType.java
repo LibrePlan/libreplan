@@ -20,4 +20,6 @@ public interface ICriterionType<C extends ICriterion> {
 
     public boolean contains(ICriterion criterion);
 
+    public boolean criterionCanBeRelatedTo(Class<? extends Resource> klass);
+
 }

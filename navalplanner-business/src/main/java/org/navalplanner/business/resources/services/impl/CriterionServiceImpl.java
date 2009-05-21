@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.impl.CriterionDAO;
-import org.navalplanner.business.resources.daos.impl.CriterionSatisfactionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -32,9 +31,6 @@ public class CriterionServiceImpl implements CriterionService {
     private CriterionDAO criterionDAO;
 
     @Autowired
-    private CriterionSatisfactionDAO criterionSatisfactionDAO;
-
-    @Autowired
     private ResourceService resourceService;
 
     public boolean exists(Criterion criterion) {
@@ -55,11 +51,6 @@ public class CriterionServiceImpl implements CriterionService {
 
     public void save(Criterion entity) {
         criterionDAO.save(entity);
-    }
-
-    @Override
-    public void add(CriterionSatisfaction criterionSatisfaction) {
-        criterionSatisfactionDAO.save(criterionSatisfaction);
     }
 
     @Override
@@ -165,4 +156,28 @@ public class CriterionServiceImpl implements CriterionService {
         }
         return result;
     }
+
+    @Override
+    public <T extends Resource> List<T> getResourcesSatisfying(
+            Class<T> resourceType, Criterion criterion) {
+        Validate.notNull(resourceType, "resourceType must be not null");
+        Validate.notNull(criterion, "criterion must be not null");
+        List<T> result = new ArrayList<T>();
+        for (T r : resourceService.getResources(resourceType)) {
+            if (criterion.isSatisfiedBy(r)) {
+                result.add(r);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Criterion load(Criterion criterion) {
+        try {
+            return criterionDAO.find(criterion);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

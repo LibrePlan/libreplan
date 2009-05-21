@@ -38,5 +38,8 @@ public interface ResourceService {
 
     public List<Resource> getResources();
 
+    public <T extends Resource> List<T> getResources(Class<T> klass);
+
     public Set<Resource> getSetOfResourcesSatisfying(ICriterion criterion);
+
 }

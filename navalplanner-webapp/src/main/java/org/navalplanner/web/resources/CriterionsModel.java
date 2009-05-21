@@ -7,7 +7,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.resources.bootstrap.CriterionsBootstrap;
+import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.services.CriterionService;
@@ -29,7 +29,7 @@ public class CriterionsModel implements ICriterionsModel {
             Criterion.class);
 
     @Autowired
-    private CriterionsBootstrap criterionsBootstrap;
+    private ICriterionsBootstrap criterionsBootstrap;
 
     @Autowired
     private CriterionService criterionService;
