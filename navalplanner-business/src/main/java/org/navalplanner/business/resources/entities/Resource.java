@@ -29,7 +29,6 @@ public abstract class Resource {
 
     private Long id;
 
-    @SuppressWarnings("unused")
     private long version;
 
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
@@ -39,6 +38,10 @@ public abstract class Resource {
     }
 
     public abstract int getDailyCapacity();
+
+    public long getVersion() {
+        return version;
+    }
 
     /**
      * It removes the resource from the database and updates references. The

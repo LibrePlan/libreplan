@@ -1,5 +1,15 @@
 package org.navalplanner.business.test.resources.services;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidStateException;
 import org.hibernate.validator.InvalidValue;
@@ -7,23 +17,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.IResourceDao;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterion;
+import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.resources.services.CriterionService;
 import org.navalplanner.business.resources.services.ResourceService;
+import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
 import org.navalplanner.business.test.resources.entities.CriterionTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
-import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 /**
  * A class for testing <code>ResourceService</code>. The service and the
@@ -41,6 +49,9 @@ public class ResourceServiceTest {
 
     @Autowired
     private IResourceDao resourceDao;
+
+    @Autowired
+    private CriterionService criterionService;
 
     @Test
     public void testRemoveResource() throws InstanceNotFoundException {
@@ -101,6 +112,35 @@ public class ResourceServiceTest {
                 // ok
             }
         }
+    }
+
+    @Test
+    @NotTransactional
+    public void versionIsIncreased() throws Exception {
+        Worker worker1 = new Worker("worker-1", "worker-2-surname",
+                "11111111A", 8);
+        resourceService.saveResource(worker1);
+        long versionValueAfterSave = worker1.getVersion();
+        worker1.setFirstName("blabla");
+        resourceService.saveResource(worker1);
+        assertThat(worker1.getVersion(), not(equalTo(versionValueAfterSave)));
+    }
+
+    @Test
+    @NotTransactional
+    public void versionIsIncreasedWhenAddingSatisfactions()
+            throws Exception {
+        Worker worker1 = new Worker("worker-1", "worker-2-surname",
+                "11111111A", 8);
+        resourceService.saveResource(worker1);
+        long versionValueAfterSave = worker1.getVersion();
+        Criterion criterion = CriterionDAOTest.createValidCriterion();
+        criterionService.save(criterion);
+        ICriterionType<Criterion> type = CriterionServiceTest
+                .createTypeThatMatches(criterion);
+        worker1.activate(new CriterionWithItsType(type, criterion));
+        resourceService.saveResource(worker1);
+        assertThat(worker1.getVersion(), not(equalTo(versionValueAfterSave)));
     }
 
     public void testResourcesSatisfying() {

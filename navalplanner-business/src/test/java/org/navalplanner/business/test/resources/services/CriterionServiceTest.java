@@ -1,5 +1,13 @@
 package org.navalplanner.business.test.resources.services;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+
 import java.util.Collection;
 import java.util.UUID;
 
@@ -27,14 +35,6 @@ import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
-import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 /**
  * Test cases for {@link CriterionService} <br />
@@ -308,12 +308,12 @@ public class CriterionServiceTest {
         assertTrue(criterions.contains(one));
     }
 
-    private ICriterionType<Criterion> createTypeThatMatches(
+    public static ICriterionType<Criterion> createTypeThatMatches(
             final Criterion criterion) {
         return createTypeThatMatches(false, criterion);
     }
 
-    private ICriterionType<Criterion> createTypeThatMatches(
+    public static ICriterionType<Criterion> createTypeThatMatches(
             final boolean allowMultipleActiveCriterionsPerResource,
             final Criterion criterion) {
         return new ICriterionType<Criterion>() {
