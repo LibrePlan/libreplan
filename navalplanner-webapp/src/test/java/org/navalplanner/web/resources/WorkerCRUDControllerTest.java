@@ -28,6 +28,7 @@ public class WorkerCRUDControllerTest {
     private Window createWindow;
     private Window listWindow;
     private Window editWindow;
+    private Window workRelationshipsWindow;
 
     private WorkerCRUDController createControllerForModel(
             IWorkerModel workerModel) {
@@ -39,11 +40,14 @@ public class WorkerCRUDControllerTest {
         createWindow = createNiceMock(Window.class);
         listWindow = createNiceMock(Window.class);
         editWindow = createNiceMock(Window.class);
+        workRelationshipsWindow = createNiceMock(Window.class);
 
         WorkerCRUDController workerCRUDController = new WorkerCRUDController(
-                createWindow, listWindow, editWindow, workerModel, messages);
+                createWindow, listWindow, editWindow, workRelationshipsWindow,
+                workerModel, messages);
         return workerCRUDController;
     }
+
 
     @Test
     public void testSave() throws Exception {
@@ -53,7 +57,7 @@ public class WorkerCRUDControllerTest {
 
         WorkerCRUDController workerCRUDController = createControllerForModel(
                 workerModel, messagesForUser);
-        replay(createWindow, listWindow, editWindow);
+        replay(createWindow, listWindow, editWindow, workRelationshipsWindow);
         // expectations
         workerModel.prepareForCreate();
         expect(workerModel.getWorker()).andReturn(workerToReturn).anyTimes();
@@ -82,7 +86,8 @@ public class WorkerCRUDControllerTest {
         expect(createWindow.setVisible(true)).andReturn(false);
         expect(createWindow.setVisible(false)).andReturn(true);
         expect(listWindow.setVisible(true)).andReturn(false);
-        replay(createWindow, listWindow, editWindow, workerModel);
+        expect(workRelationshipsWindow.setVisible(true)).andReturn(false);
+        replay(createWindow, listWindow, editWindow, workRelationshipsWindow, workerModel);
         // actions
         workerCRUDController.goToCreateForm();
         workerCRUDController.cancel();
@@ -107,8 +112,8 @@ public class WorkerCRUDControllerTest {
                 .anyTimes();
         workerModel.save();
         messagesForUser.showMessage(same(Level.INFO), isA(String.class));
-        replay(createWindow, listWindow, editWindow, workerModel,
-                messagesForUser);
+        replay(createWindow, listWindow, editWindow, workRelationshipsWindow,
+                workerModel, messagesForUser);
         // perform actions
         List<Worker> workers = workerCRUDController.getWorkers();
         assertEquals(workersToReturn, workers);

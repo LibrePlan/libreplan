@@ -39,7 +39,7 @@
     <version access="field" name="version" type="long"/>
     <property access="field" name="startDate" not-null="true"/>
     <property access="field" name="finishDate"/>
-    <many-to-one name="criterion" access="field" not-null="true">
+    <many-to-one name="criterion" access="field" not-null="true" lazy="false">
         <column name="name" not-null="true"></column>
         <column name="type" not-null="true"></column>
     </many-to-one>

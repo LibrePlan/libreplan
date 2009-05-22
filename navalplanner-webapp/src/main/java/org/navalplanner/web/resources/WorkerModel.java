@@ -7,9 +7,12 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import java.util.Set;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for worker <br />
@@ -45,6 +48,7 @@ public class WorkerModel implements IWorkerModel {
     }
 
     @Override
+
     public Worker getWorker() {
         return worker;
     }
@@ -55,6 +59,7 @@ public class WorkerModel implements IWorkerModel {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public void prepareEditFor(Worker worker) {
         Validate.notNull(worker, "worker is not null");
         try {
@@ -62,6 +67,12 @@ public class WorkerModel implements IWorkerModel {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+        this.worker.getAllSatisfactions();
+        for ( CriterionSatisfaction cs : this.worker.getAllSatisfactions() ) {}
+    }
+
+    public Set<CriterionSatisfaction> getCriterionSatisfactions(Worker worker) {
+        return worker.getAllSatisfactions();
     }
 
 }

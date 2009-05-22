@@ -26,4 +26,8 @@
     </grid>
     <button onClick="controller.save();" label="${arg.save_button_label}" />
     <button onClick="controller.cancel();" label="${arg.cancel_button_label}" />
+    <button label="Work Relationships"
+        onClick="controller.goToWorkRelationshipsForm(controller.worker)">
+    </button>
+
 </window>

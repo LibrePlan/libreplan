@@ -1,9 +1,12 @@
 package org.navalplanner.web.resources;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -26,6 +29,8 @@ public class WorkerCRUDController extends GenericForwardComposer {
 
     private Window editWindow;
 
+    private Window workRelationshipsWindow;
+
     private IWorkerModel workerModel;
 
     private OnlyOneVisible visibility;
@@ -34,15 +39,18 @@ public class WorkerCRUDController extends GenericForwardComposer {
 
     private Component messagesContainer;
 
+    private GenericForwardComposer workRelationship;
+
     public WorkerCRUDController() {
     }
 
     public WorkerCRUDController(Window createWindow, Window listWindow,
-            Window editWindow, IWorkerModel workerModel,
-            IMessagesForUser messages) {
+            Window editWindow, Window workRelationshipsWindow,
+            IWorkerModel workerModel, IMessagesForUser messages) {
         this.createWindow = createWindow;
         this.listWindow = listWindow;
         this.editWindow = editWindow;
+        this.workRelationshipsWindow = workRelationshipsWindow;
         this.workerModel = workerModel;
         this.messages = messages;
     }
@@ -78,6 +86,11 @@ public class WorkerCRUDController extends GenericForwardComposer {
         Util.reloadBindings(editWindow);
     }
 
+    public void goToWorkRelationshipsForm(Worker worker) {
+        getVisibility().showOnly(workRelationshipsWindow);
+        Util.reloadBindings(workRelationshipsWindow);
+    }
+
     public void goToCreateForm() {
         workerModel.prepareForCreate();
         getVisibility().showOnly(createWindow);
@@ -92,14 +105,20 @@ public class WorkerCRUDController extends GenericForwardComposer {
         if (messagesContainer == null)
             throw new RuntimeException("messagesContainer is needed");
         messages = new MessagesForUser(messagesContainer);
+        this.workRelationship =
+                new WorkRelationshipsController(this.workerModel,this);
     }
 
     private OnlyOneVisible getVisibility() {
         if (visibility == null) {
             visibility = new OnlyOneVisible(listWindow, editWindow,
-                    createWindow);
+                    createWindow, workRelationshipsWindow );
         }
         return visibility;
+    }
+
+    public GenericForwardComposer getWorkRelationship() {
+        return this.workRelationship;
     }
 
 }

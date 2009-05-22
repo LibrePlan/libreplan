@@ -49,7 +49,11 @@ public class CriterionSatisfaction {
     }
 
     public Date getEndDate() {
-        return new Date(finishDate.getTime());
+        if (isFinished() ) {
+            return new Date(finishDate.getTime());
+        } else {
+            return null;
+        }
     }
 
     public Criterion getCriterion() {
@@ -84,5 +88,16 @@ public class CriterionSatisfaction {
     public boolean isFinished() {
         return finishDate != null;
     }
+
+    public void setEndDate(Date date) {
+        if ( (startDate.equals(date) || startDate.before(date)) )
+            finishDate = date;
+    }
+
+    public void setStartDate(Date date) {
+        if ( (finishDate == null || finishDate.after(date)) )
+            startDate = date;
+    }
+
 
 }

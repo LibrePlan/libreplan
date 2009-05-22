@@ -56,7 +56,7 @@ public abstract class Resource {
     }
 
     public Set<CriterionSatisfaction> getAllSatisfactions() {
-        return Collections.unmodifiableSet(criterionSatisfactions);
+        return new HashSet(criterionSatisfactions);
     }
 
     public Collection<CriterionSatisfaction> getSatisfactionsFor(

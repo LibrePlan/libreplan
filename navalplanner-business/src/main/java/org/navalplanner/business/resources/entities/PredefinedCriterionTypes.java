@@ -16,10 +16,15 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
         }
     },
     LOCATION_GROUP(false, true, true, true, Resource.class) {
-
         @Override
         public List<Criterion> getPredefined() {
             return Arrays.asList();
+        }
+    },
+    LEAVE(false, false, false, false, Worker.class) {
+        @Override
+        public List<Criterion> getPredefined() {
+            return LeaveCriterions.getCriterions();
         }
     };
 

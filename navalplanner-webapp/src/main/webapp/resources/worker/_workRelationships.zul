@@ -1,0 +1,31 @@
+<window id="${arg.top_id}" title="${arg.title}"
+    apply="${controller.workRelationshipsController}">
+    <grid id="history"
+        model="@{controller.workRelationship.criterionSatisfactions}"
+        mold="paging" pageSize="5">
+		<columns>
+			<column label="Date start"/>
+			<column label="Date end"/>
+			<column label="Relationship"/>
+		</columns>
+        <rows>
+			<row self="@{each='criterionSatisfaction'}"
+                value="@{criterionSatisfaction}">
+				<datebox id="date_start"
+                    value="@{criterionSatisfaction.startDate}" width="150px" />
+				<!--datebox id="date_start"
+                    value="@{criterionSatisfaction.startDate}"
+                    onChange="controller.goToEditForm();"
+                    width="150px" /-->
+				<datebox id="date_end"
+                    value="@{criterionSatisfaction.endDate}" width="150px" />
+				<label value="@{criterionSatisfaction.criterion.name}" />
+			</row>
+		</rows>
+      </grid>
+    <button onClick="controller.save();" label="${arg.save_button_label}" />
+    <button onClick="controller.cancel();" label="${arg.cancel_button_label}" />
+    <button label="Edit personal data"
+        onClick="controller.goToEditForm(controller.worker)">
+    </button>
+</window>
