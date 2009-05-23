@@ -1,55 +1,14 @@
-<zk>
-    <tabbox id="${arg.top_id}">
-        <tabs>
-            <tab label="Edición" closable="false" />
-            <tab label="Trabajadores" closable="false"
-                visible="@{controller.isApplyableToWorkers}" />
-        </tabs>
-        <tabpanels>
-            <tabpanel>
-                <vbox>
-                    <hbox>
-                        <label value="name" />
-                        <textbox value="@{controller.criterionName}" />
-                        <checkbox
-                            checked="@{controller.criterionActive}"
-                            visible="@{controller.editing}">
-                        </checkbox>
-                    </hbox>
-                    <hbox>
-                        <button onClick="controller.save();"
-                            label="${arg.save_button_label}" />
-                        <button onClick="controller.cancel();"
-                            label="${arg.cancel_button_label}" />
-                    </hbox>
-                </vbox>
-            </tabpanel>
-            <tabpanel>
-                <grid
-                    model="@{controller.workersForCurrentCriterion}"
-                    mold="paging" pageSize="5">
-                    <columns>
-                        <column label="operations" />
-                        <column label="First Name"
-                            sort="auto(firstName)" />
-                        <column label="Surname" sort="auto(surname)" />
-                        <column label="nif" sort="auto(nif)" />
-                    </columns>
-                    <rows>
-                        <row self="@{each='worker'}"
-                            value="@{worker}">
-                            <label value="@{worker.firstName}" />
-                            <label value="@{worker.surname}" />
-                            <label value="@{worker.nif}" />
-                            <hbox>
-                                <button label="Edit">
-                                </button>
-                            </hbox>
-                        </row>
-                    </rows>
-                </grid>
-            </tabpanel>
-        </tabpanels>
-    </tabbox>
-
-</zk>
+<vbox id="${arg.top_id}">
+ <hbox>
+  <label value="name" />
+  <textbox value="@{controller.edition.criterionName}" />
+  <checkbox checked="@{controller.edition.criterionActive}"
+   visible="@{controller.edition.editing}">
+  </checkbox>
+ </hbox>
+ <hbox>
+  <button onClick="controller.save();" label="${arg.save_button_label}" />
+  <button onClick="controller.cancel();"
+   label="${arg.cancel_button_label}" />
+ </hbox>
+</vbox>

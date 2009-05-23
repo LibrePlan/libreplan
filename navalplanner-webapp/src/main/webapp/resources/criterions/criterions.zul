@@ -7,16 +7,17 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?component name="list" inline="true" macroURI="_list.zul"?>
 <?component name="edition" inline="true" macroURI="_edition.zul"?>
+<?component name="workers" inline="true" macroURI="_workers.zul"?>
 <zk>
-    <window self="@{define(content)}"
-        apply="org.navalplanner.web.resources.CriterionAdminController"
-        sclass="workerwindow">
-        <vbox id="messagesContainer">
-        </vbox>
-        <list top_id="listWindow" />
-        <edition top_id="createComponent" title="Crear"
-            save_button_label="Save" cancel_button_label="Cancelar" />
-        <edition top_id="editComponent" title="Editar"
-            save_button_label="Save" cancel_button_label="Cancelar" />
-    </window>
+ <window self="@{define(content)}"
+  apply="org.navalplanner.web.resources.criterion.CriterionAdminController"
+  sclass="workerwindow">
+  <vbox id="messagesContainer"></vbox>
+  <list top_id="listWindow" />
+  <edition top_id="createComponent" title="Crear"
+   save_button_label="Save" cancel_button_label="Cancelar" />
+  <edition top_id="editComponent" title="Editar"
+   save_button_label="Save" cancel_button_label="Cancelar" />
+  <workers top_id="workersComponent" title="Workers" cancel_button_label="Volver"/>
+ </window>
 </zk>

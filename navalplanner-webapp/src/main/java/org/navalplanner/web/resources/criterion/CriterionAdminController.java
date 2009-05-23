@@ -1,11 +1,10 @@
-package org.navalplanner.web.resources;
+package org.navalplanner.web.resources.criterion;
 
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
-import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
@@ -18,6 +17,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.GroupsModel;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -45,6 +45,12 @@ public class CriterionAdminController extends GenericForwardComposer {
 
     private OnlyOneVisible onlyOneVisible;
 
+    private Component workersComponent;
+
+    private CriterionEditController edition;
+
+    private CriterionWorkersController workers;
+
     public CriterionAdminController() {
 
     }
@@ -53,8 +59,10 @@ public class CriterionAdminController extends GenericForwardComposer {
         public void render(Row row, java.lang.Object data) {
             if (data instanceof Criterion) {
                 final Criterion criterion = (Criterion) data;
+                Hbox operations = new Hbox();
+                operations.setParent(row);
                 Button editButton = new Button("Editar");
-                editButton.setParent(row);
+                editButton.setParent(operations);
                 editButton.setDisabled(!criterionsModel.getTypeFor(criterion)
                         .allowEditing());
                 editButton.addEventListener("onClick", new EventListener() {
@@ -64,6 +72,18 @@ public class CriterionAdminController extends GenericForwardComposer {
                         goToEditForm(criterion);
                     }
                 });
+                Button traballadoresButton = new Button("Traballadores");
+                traballadoresButton.setParent(operations);
+                traballadoresButton.setDisabled(!criterionsModel
+                        .isApplyableToWorkers(criterion));
+                traballadoresButton.addEventListener("onClick",
+                        new EventListener() {
+
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                showWorkers(criterion);
+                            }
+                        });
                 new Label(criterion.getName()).setParent(row);
                 Checkbox checkbox = new Checkbox();
                 checkbox.setChecked(criterion.isActive());
@@ -101,37 +121,22 @@ public class CriterionAdminController extends GenericForwardComposer {
 
     private void goToEditForm(Criterion criterion) {
         onlyOneVisible.showOnly(editComponent);
-        criterionsModel.prepareForEdit(criterion);
+        criterionsModel.workOn(criterion);
         Util.reloadBindings(editComponent);
     }
 
-    public void setCriterionName(String name) {
-        criterionsModel.setNameForCriterion(name);
+    private void showWorkers(Criterion criterion) {
+        criterionsModel.workOn(criterion);
+        Util.reloadBindings(workersComponent);
+        onlyOneVisible.showOnly(workersComponent);
     }
 
-    public String getCriterionName() {
-        return criterionsModel.getNameForCriterion();
+    public CriterionEditController getEdition() {
+        return edition;
     }
 
-    public boolean isEditing() {
-        return criterionsModel.isEditing();
-    }
-
-    public boolean isApplyableToWorkers() {
-        return criterionsModel.isApplyableToWorkers();
-    }
-
-    public List<Worker> getWorkersForCurrentCriterion() {
-        return criterionsModel
-                .getResourcesSatisfyingCurrentCriterionOfType(Worker.class);
-    }
-
-    public boolean isCriterionActive() {
-        return criterionsModel.isCriterionActive();
-    }
-
-    public void setCriterionActive(boolean active) {
-        criterionsModel.setCriterionActive(active);
+    public CriterionWorkersController getWorkers() {
+        return workers;
     }
 
     public void save() {
@@ -180,13 +185,15 @@ public class CriterionAdminController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         onlyOneVisible = new OnlyOneVisible(listing, editComponent,
-                createComponent);
+                createComponent, workersComponent);
         onlyOneVisible.showOnly(listing);
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
         listing = (Grid) comp.getFellow("listing");
         reload();
         listing.setRowRenderer(getRowRenderer());
+        edition = new CriterionEditController(criterionsModel);
+        workers = new CriterionWorkersController(criterionsModel);
     }
 
     private void reload() {

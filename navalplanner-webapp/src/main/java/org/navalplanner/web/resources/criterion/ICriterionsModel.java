@@ -1,4 +1,4 @@
-package org.navalplanner.web.resources;
+package org.navalplanner.web.resources.criterion;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,7 +22,7 @@ public interface ICriterionsModel {
 
     void prepareForCreate(ICriterionType<?> criterionType);
 
-    void prepareForEdit(Criterion criterion);
+    void workOn(Criterion criterion);
 
     ICriterionType<?> getTypeFor(Criterion criterion);
 
@@ -38,7 +38,7 @@ public interface ICriterionsModel {
 
     void setCriterionActive(boolean active);
 
-    boolean isApplyableToWorkers();
+    boolean isApplyableToWorkers(Criterion criterion);
 
     <T extends Resource> List<T> getResourcesSatisfyingCurrentCriterionOfType(
             Class<T> klass);

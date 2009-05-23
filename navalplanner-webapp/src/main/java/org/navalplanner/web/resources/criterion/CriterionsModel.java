@@ -1,4 +1,4 @@
-package org.navalplanner.web.resources;
+package org.navalplanner.web.resources.criterion;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,7 +72,7 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
-    public void prepareForEdit(Criterion criterion) {
+    public void workOn(Criterion criterion) {
         Validate.notNull(criterion);
         this.criterion = criterion;
         this.criterionType = getTypeFor(criterion);
@@ -139,9 +139,9 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
-    public boolean isApplyableToWorkers() {
-        return criterionType != null
-                && criterionType.criterionCanBeRelatedTo(Worker.class);
+    public boolean isApplyableToWorkers(Criterion criterion) {
+        ICriterionType<?> type = getTypeFor(criterion);
+        return type != null && type.criterionCanBeRelatedTo(Worker.class);
     }
 
     @Override

@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.services.CriterionService;
+import org.navalplanner.business.resources.services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,9 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
 
     @Autowired
     private List<ICriterionTypeProvider> providers;
+
+    @Autowired
+    private ResourceService resourceService;
 
     public CriterionsBootstrap() {
     }
