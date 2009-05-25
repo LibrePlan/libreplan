@@ -10,7 +10,7 @@
 <?component name="workRelationships" inline="true" macroURI="_workRelationships.zul"?>
 <zk>
     <window self="@{define(content)}"
-        apply="org.navalplanner.web.resources.WorkerCRUDController"
+        apply="org.navalplanner.web.resources.worker.WorkerCRUDController"
         sclass="workerwindow">
         <vbox id="messagesContainer">
         </vbox>

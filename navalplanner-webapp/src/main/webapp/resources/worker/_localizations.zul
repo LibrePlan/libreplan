@@ -1,0 +1,46 @@
+<vbox id="localizationsContainer">
+ <hbox>
+  <listbox id="activeSatisfactions" mold="paging" model="@{controller.localizations.activeSatisfactions}"
+   pageSize="5" multiple="true" checkmark="true">
+   <listhead>
+    <listheader label="Grupo" sort="auto(criterion.name)"></listheader>
+    <listheader label="Data Inicio" sort="auto(startDate)" />
+   </listhead>
+   <listitem self="@{each='satisfaction'}" value="@{satisfaction}">
+    <listcell label="@{satisfaction.criterion.name}"></listcell>
+    <listcell label="@{satisfaction.startDate}"></listcell>
+   </listitem>
+  </listbox>
+  <vbox>
+   <button id="unassignButton" label="&gt;&gt;"></button>
+   <button id="assignButton" label="&lt;&lt;"></button>
+  </vbox>
+
+  <listbox id="criterionsNotAssigned" mold="paging" model="@{controller.localizations.criterionsNotAssigned}"
+   pageSize="5" multiple="true" checkmark="true">
+   <listhead>
+    <listheader label="Grupo" sort="auto(name)"></listheader>
+   </listhead>
+   <listitem self="@{each='criterion'}" value="@{criterion}">
+    <listcell label="@{criterion.name}"></listcell>
+   </listitem>
+  </listbox>
+
+ </hbox>
+
+ <grid id="listing" model="@{controller.localizations.localizationsHistory}"
+  mold="paging" pageSize="5">
+  <columns>
+   <column label="Grupo" sort="auto(criterion.name)" />
+   <column label="Data Inicio" sort="auto(startDate)" />
+   <column label="Data fin" sort="auto(endDate)" />
+  </columns>
+  <rows>
+   <row self="@{each='satisfaction'}">
+    <label value="@{satisfaction.criterion.name}" />
+    <label value="@{satisfaction.startDate}" />
+    <label value="@{satisfaction.endDate}" />
+   </row>
+  </rows>
+ </grid>
+</vbox>

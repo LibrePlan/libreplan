@@ -1,33 +1,50 @@
+<?component name="localizations" inline="true" macroURI="_localizations.zul"?>
 <window id="${arg.top_id}" title="${arg.title}">
-    <grid fixedLayout="false">
-        <columns>
-            <column label="Type" />
-            <column label="Content" />
-        </columns>
-        <rows>
-            <row>
-                <label value="first_name" />
-                <textbox value="@{controller.worker.firstName}" />
-            </row>
-            <row>
-                <label value="last_name" />
-                <textbox value="@{controller.worker.surname}"
-                    />
-            </row>
-            <row>
-                <label value="nif"  />
-                <textbox value="@{controller.worker.nif}"  />
-            </row>
-            <row>
-                <label value="daily_hours" />
-                <textbox value="@{controller.worker.dailyHours}"/>
-            </row>
-        </rows>
-    </grid>
-    <button onClick="controller.save();" label="${arg.save_button_label}" />
-    <button onClick="controller.cancel();" label="${arg.cancel_button_label}" />
-    <button label="Work Relationships"
+    <tabbox>
+        <tabs>
+            <tab label="Edición"></tab>
+            <tab label="Localizacións"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <grid fixedLayout="false">
+                    <columns>
+                        <column label="Type" />
+                        <column label="Content" />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="first_name" />
+                            <textbox
+                                value="@{controller.worker.firstName}" />
+                        </row>
+                        <row>
+                            <label value="last_name" />
+                            <textbox
+                                value="@{controller.worker.surname}" />
+                        </row>
+                        <row>
+                            <label value="nif" />
+                            <textbox value="@{controller.worker.nif}" />
+                        </row>
+                        <row>
+                            <label value="daily_hours" />
+                            <textbox
+                                value="@{controller.worker.dailyHours}" />
+                        </row>
+                    </rows>
+                </grid>
+            </tabpanel>
+            <tabpanel>
+                <localizations />
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+    <button onClick="controller.save();"
+        label="${arg.save_button_label}" />
+    <button onClick="controller.cancel();"
+        label="${arg.cancel_button_label}" />
+	<button label="Work Relationships"
         onClick="controller.goToWorkRelationshipsForm(controller.worker)">
     </button>
-
 </window>

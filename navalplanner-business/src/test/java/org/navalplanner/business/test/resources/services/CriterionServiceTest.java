@@ -1,22 +1,16 @@
 package org.navalplanner.business.test.resources.services;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
-import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
-
 import java.util.Collection;
 import java.util.UUID;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.validator.InvalidStateException;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.navalplanner.business.resources.daos.impl.CriterionDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionOnData;
@@ -26,6 +20,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.CriterionService;
 import org.navalplanner.business.resources.services.ResourceService;
+import org.navalplanner.business.resources.services.CriterionService.OnTransaction;
 import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
 import org.navalplanner.business.test.resources.entities.ResourceTest;
@@ -35,6 +30,14 @@ import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 /**
  * Test cases for {@link CriterionService} <br />
@@ -54,10 +57,6 @@ public class CriterionServiceTest {
 
     @Autowired
     private SessionFactory sessionFactory;
-
-    @Autowired
-    private CriterionDAO criterionDAO;
-
 
     @Test(expected = InvalidStateException.class)
     public void testCantSaveCriterionWithoutNameAndType() throws Exception {
@@ -84,8 +83,7 @@ public class CriterionServiceTest {
         int initial = criterionService.getCriterionsFor(
                 PredefinedCriterionTypes.WORK_RELATIONSHIP).size();
         criterionService.save(criterion);
-        assertThat("after saving one more", criterionService
-                .getCriterionsFor(
+        assertThat("after saving one more", criterionService.getCriterionsFor(
                 PredefinedCriterionTypes.WORK_RELATIONSHIP).size(),
                 equalTo(initial + 1));
         criterion.setActive(false);
@@ -226,6 +224,42 @@ public class CriterionServiceTest {
 
     @Test
     @NotTransactional
+    public void testCriterionIsEquivalentOnDetachedAndProxifiedCriterion()
+            throws Exception {
+        final Worker worker1 = new Worker("worker-1", "worker-2-surname",
+                "11111111A", 8);
+        resourceService.saveResource(worker1);
+        Criterion criterion = CriterionDAOTest.createValidCriterion();
+        criterionService.save(criterion);
+        ICriterionType<?> type = createTypeThatMatches(criterion);
+        worker1.activate(new CriterionWithItsType(type, criterion));
+        resourceService.saveResource(worker1);
+        Resource workerReloaded = criterionService
+                .onTransaction(new OnTransaction<Resource>() {
+
+                    @Override
+                    public Resource execute() {
+                        try {
+                            Resource result = resourceService
+                                    .findResource(worker1.getId());
+                            result.forceLoadSatisfactions();
+                            return result;
+                        } catch (InstanceNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+        Collection<CriterionSatisfaction> satisfactionsFor = workerReloaded
+                .getSatisfactionsFor(type);
+        Criterion reloadedCriterion = satisfactionsFor.iterator().next()
+                .getCriterion();
+        Assume.assumeTrue(!reloadedCriterion.getClass().equals(
+                criterion.getClass()));
+        assertTrue(reloadedCriterion.isEquivalent(criterion));
+    }
+
+    @Test
+    @NotTransactional
     public void shouldntThrowExceptionDueToTransparentProxyGotcha() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         ICriterionType<Criterion> type = createTypeThatMatches(criterion);
@@ -345,7 +379,7 @@ public class CriterionServiceTest {
 
             @Override
             public boolean contains(ICriterion c) {
-                return criterion.equals(c);
+                return criterion.isEquivalent(c);
             }
 
             @Override

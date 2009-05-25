@@ -17,6 +17,8 @@ import org.junit.Test;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
+import org.navalplanner.web.resources.worker.IWorkerModel;
+import org.navalplanner.web.resources.worker.WorkerCRUDController;
 import org.zkoss.zul.api.Window;
 
 /**

@@ -1,8 +1,10 @@
-package org.navalplanner.web.resources;
+package org.navalplanner.web.resources.worker;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.Worker;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 
 /**
@@ -24,8 +26,9 @@ public class WorkRelationshipsController extends GenericForwardComposer {
         if (this.workerCRUDController.getWorker() == null) {
             return new HashSet();
         } else {
-            return workerModel.getCriterionSatisfactions(
-                    this.workerCRUDController.getWorker());
+            return workerModel
+                    .getCriterionSatisfactions(this.workerCRUDController
+                            .getWorker());
         }
     }
 }

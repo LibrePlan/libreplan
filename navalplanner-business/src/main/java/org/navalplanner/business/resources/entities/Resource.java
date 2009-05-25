@@ -37,6 +37,13 @@ public abstract class Resource {
         return id;
     }
 
+    public void forceLoadSatisfactions() {
+        for (CriterionSatisfaction criterionSatisfaction : criterionSatisfactions) {
+            criterionSatisfaction.getCriterion().getName();
+            criterionSatisfaction.getCriterion().getType();
+        }
+    }
+
     public abstract int getDailyCapacity();
 
     public long getVersion() {
@@ -80,6 +87,15 @@ public abstract class Resource {
             if (criterionSatisfaction.getCriterion().isEquivalent(criterion)) {
                 result.add(criterionSatisfaction);
             }
+        }
+        return result;
+    }
+
+    public Set<Criterion> getActiveCriterionsFor(ICriterionType<?> type) {
+        Set<Criterion> result = new HashSet<Criterion>();
+        Collection<CriterionSatisfaction> active = getActiveSatisfactionsFor(type);
+        for (CriterionSatisfaction satisfaction : active) {
+            result.add(satisfaction.getCriterion());
         }
         return result;
     }

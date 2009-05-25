@@ -86,8 +86,8 @@ public class Criterion implements ICriterion {
     public boolean isEquivalent(ICriterion criterion) {
         if (criterion instanceof Criterion) {
             Criterion other = (Criterion) criterion;
-            return new EqualsBuilder().append(name, other.name).append(type,
-                    other.type).isEquals();
+            return new EqualsBuilder().append(getName(), other.getName())
+                    .append(getType(), other.getType()).isEquals();
         }
         return false;
     }

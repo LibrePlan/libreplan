@@ -192,4 +192,9 @@ public class CriterionServiceImpl implements CriterionService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public <T> T onTransaction(OnTransaction<T> onTransaction) {
+        return onTransaction.execute();
+    }
+
 }

@@ -1,12 +1,5 @@
 package org.navalplanner.business.test.resources.entities;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -21,6 +14,13 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for {@link Resource}. <br />
@@ -79,6 +79,29 @@ public class ResourceTest {
                 .year(4000));
         assertEquals(2, worker.getSatisfactionsFor(criterionType).size());
         assertEquals(1, worker.getActiveSatisfactionsFor(criterionType).size());
+    }
+
+    @Test
+    public void testActiveCriterions() throws Exception {
+        final Criterion criterion = CriterionDAOTest.createValidCriterion();
+        Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
+        ICriterionType<Criterion> type = createTypeThatMatches(criterion,
+                otherCriterion);
+        CriterionWithItsType criterionWithItsType = new CriterionWithItsType(
+                type, criterion);
+        CriterionWithItsType otherCriterionWithItsType = new CriterionWithItsType(
+                type, otherCriterion);
+        Worker worker = new Worker("firstName", "surName", "2333232", 10);
+        assertThat(worker.getActiveCriterionsFor(type).size(), equalTo(0));
+        worker.activate(criterionWithItsType, CriterionSatisfactionDAOTest
+                .year(2000));
+        assertThat(worker.getActiveCriterionsFor(type).size(), equalTo(1));
+        worker.activate(criterionWithItsType, CriterionSatisfactionDAOTest
+                .year(2002));
+        assertThat(worker.getActiveCriterionsFor(type).size(), equalTo(1));
+        worker.activate(otherCriterionWithItsType, CriterionSatisfactionDAOTest
+                .year(2000));
+        assertThat(worker.getActiveCriterionsFor(type).size(), equalTo(2));
     }
 
     public static CriterionTypeBase createTypeThatMatches(

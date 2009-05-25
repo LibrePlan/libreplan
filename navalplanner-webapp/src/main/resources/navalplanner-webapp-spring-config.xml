@@ -15,7 +15,4 @@
     <context:annotation-config />
 
     <context:component-scan base-package="org.navalplanner.web"/>
-
-    <bean id="workerModel" class="org.navalplanner.web.resources.WorkerModel"
-        scope="prototype" />
 </beans>

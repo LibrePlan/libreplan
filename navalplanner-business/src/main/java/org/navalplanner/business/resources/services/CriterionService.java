@@ -48,4 +48,10 @@ public interface CriterionService {
 
     Criterion load(Criterion criterion);
 
+    interface OnTransaction<T> {
+        public T execute();
+    }
+
+    <T> T onTransaction(OnTransaction<T> onTransaction);
+
 }

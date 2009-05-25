@@ -9,10 +9,12 @@ import org.zkoss.zkplus.databind.DataBinder;
  */
 public class Util {
 
-    public static void reloadBindings(Component reload) {
-        DataBinder binder = Util.getBinder(reload);
-        if (binder != null) {
-            binder.loadComponent(reload);
+    public static void reloadBindings(Component... toReload) {
+        for (Component reload : toReload) {
+            DataBinder binder = Util.getBinder(reload);
+            if (binder != null) {
+                binder.loadComponent(reload);
+            }
         }
     }
 
