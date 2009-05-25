@@ -1,8 +1,7 @@
-<zk>
+<vbox id="${arg.top_id}" apply="${controller.workers}">
  <grid model="@{controller.workers.workersForCurrentCriterion}"
-  id="${arg.top_id}" mold="paging" pageSize="5">
+  mold="paging" pageSize="5" apply="${controller.workers}">
   <columns>
-   <column label="operations" />
    <column label="First Name" sort="auto(firstName)" />
    <column label="Surname" sort="auto(surname)" />
    <column label="nif" sort="auto(nif)" />
@@ -12,12 +11,20 @@
     <label value="@{worker.firstName}" />
     <label value="@{worker.surname}" />
     <label value="@{worker.nif}" />
-    <hbox>
-     <button label="Edit"></button>
-    </hbox>
    </row>
   </rows>
  </grid>
+
+ <button id="adminButton" label="Administrar" disabled="@{controller.workers.changeAssignmentsDisabled}" onClick="controller.workers.showList(event);"></button>
+ <window visible="false"  id="workersWindow">
+    <listbox id="list" model="@{controller.workers.allWorkers}" mold="paging" multiple="true" checkmark="true">
+        <listhead>
+            <listheader label="Name" sort="auto(surname)"></listheader>
+        </listhead>
+    </listbox>
+    <button label="Gardar" id="saveList"></button>
+    <button label="Cancelar" id="cancelList"></button>
+ </window>
  <button onClick="controller.cancel();"
-   label="${arg.cancel_button_label}" />
-</zk>
+  label="${arg.cancel_button_label}" />
+</vbox>

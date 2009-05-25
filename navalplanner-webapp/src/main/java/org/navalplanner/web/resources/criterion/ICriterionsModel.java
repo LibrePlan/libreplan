@@ -7,6 +7,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * CriterionsModel contract <br />
@@ -26,21 +27,21 @@ public interface ICriterionsModel {
 
     ICriterionType<?> getTypeFor(Criterion criterion);
 
-    String getNameForCriterion();
-
-    void setNameForCriterion(String name);
-
     void saveCriterion() throws ValidationException;
 
     boolean isEditing();
-
-    boolean isCriterionActive();
-
-    void setCriterionActive(boolean active);
 
     boolean isApplyableToWorkers(Criterion criterion);
 
     <T extends Resource> List<T> getResourcesSatisfyingCurrentCriterionOfType(
             Class<T> klass);
+
+    List<Worker> getAllWorkers();
+
+    boolean isChangeAssignmentsDisabled();
+
+    void activateAll(Collection<? extends Resource> selected);
+
+    void deactivateAll(Collection<? extends Resource> unSelectedWorkers);
 
 }

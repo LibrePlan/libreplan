@@ -7,13 +7,16 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.CriterionService;
+import org.navalplanner.business.resources.services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -37,11 +40,12 @@ public class CriterionsModel implements ICriterionsModel {
     @Autowired
     private CriterionService criterionService;
 
+    @Autowired
+    private ResourceService resourceService;
+
     private ICriterionType<?> criterionType;
 
     private Criterion criterion;
-
-    private String nameForCriterion;
 
     @Override
     @Transactional(readOnly = true)
@@ -61,14 +65,10 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
-    public void setNameForCriterion(String name) {
-        this.nameForCriterion = name;
-    }
-
-    @Override
     public void prepareForCreate(ICriterionType<?> criterionType) {
         this.criterionType = criterionType;
-        this.criterion = null;
+        this.criterion = (Criterion) criterionType
+                .createCriterionWithoutNameYet();
     }
 
     @Override
@@ -90,52 +90,18 @@ public class CriterionsModel implements ICriterionsModel {
     @Override
     @Transactional
     public void saveCriterion() throws ValidationException {
-        if (criterionType != null) {
-            create();
-        } else {
-            saveEdit();
-        }
-        criterion = null;
-        criterionType = null;
-    }
-
-    private void saveEdit() {
-        criterionService.save(criterion);
-    }
-
-    private void create() throws ValidationException {
-        Criterion criterion = (Criterion) criterionType
-                .createCriterion(nameForCriterion);
         InvalidValue[] invalidValues = criterionValidator
                 .getInvalidValues(criterion);
         if (invalidValues.length > 0)
             throw new ValidationException(invalidValues);
         criterionService.save(criterion);
-    }
-
-    @Override
-    public String getNameForCriterion() {
-        if (criterion == null) {
-            return "";
-        }
-        return criterion.getName();
-    }
-
-    @Override
-    public boolean isCriterionActive() {
-        if (criterion == null)
-            return false;
-        return criterion.isActive();
+        criterion = null;
+        criterionType = null;
     }
 
     @Override
     public boolean isEditing() {
         return criterion != null;
-    }
-
-    @Override
-    public void setCriterionActive(boolean active) {
-        criterion.setActive(active);
     }
 
     @Override
@@ -151,4 +117,48 @@ public class CriterionsModel implements ICriterionsModel {
             return new ArrayList<T>();
         return criterionService.getResourcesSatisfying(klass, criterion);
     }
+
+    @Override
+    public List<Worker> getAllWorkers() {
+        return resourceService.getWorkers();
+    }
+
+    @Override
+    public boolean isChangeAssignmentsDisabled() {
+        return criterionType == null
+                || !criterionType.allowMultipleActiveCriterionsPerResource();
+    }
+
+    @Override
+    @Transactional
+    public void activateAll(Collection<? extends Resource> resources) {
+        for (Resource resource : resources) {
+            Resource reloaded = find(resource.getId());
+            reloaded
+                    .activate(new CriterionWithItsType(criterionType, criterion));
+            resourceService.saveResource(reloaded);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deactivateAll(Collection<? extends Resource> resources) {
+        for (Resource resource : resources) {
+            Resource reloaded = find(resource.getId());
+            reloaded.deactivate(new CriterionWithItsType(criterionType,
+                    criterion));
+            resourceService.saveResource(reloaded);
+        }
+    }
+
+    private Resource find(Long id) {
+        Resource reloaded;
+        try {
+            reloaded = resourceService.findResource(id);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return reloaded;
+    }
+
 }

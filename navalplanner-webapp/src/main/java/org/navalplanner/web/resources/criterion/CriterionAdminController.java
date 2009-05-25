@@ -187,13 +187,14 @@ public class CriterionAdminController extends GenericForwardComposer {
         onlyOneVisible = new OnlyOneVisible(listing, editComponent,
                 createComponent, workersComponent);
         onlyOneVisible.showOnly(listing);
-        comp.setVariable("controller", this, true);
+        comp.setVariable("controller", this, false);
+        workers = new CriterionWorkersController(criterionsModel);
+        workers.doAfterCompose(comp.getFellow("workersComponent"));
         messagesForUser = new MessagesForUser(messagesContainer);
         listing = (Grid) comp.getFellow("listing");
         reload();
         listing.setRowRenderer(getRowRenderer());
         edition = new CriterionEditController(criterionsModel);
-        workers = new CriterionWorkersController(criterionsModel);
     }
 
     private void reload() {
