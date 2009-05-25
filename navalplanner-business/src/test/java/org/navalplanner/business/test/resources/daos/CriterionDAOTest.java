@@ -1,5 +1,12 @@
 package org.navalplanner.business.test.resources.daos;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -12,14 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-
-import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
-import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 /**
  * Test cases for CriterionDAO <br />
@@ -44,20 +43,19 @@ public class CriterionDAOTest {
     public void testSaveCriterions() throws Exception {
         Criterion criterion = createValidCriterion();
         criterionDAO.save(criterion);
-        assertTrue(criterionDAO.exists(criterion));
+        assertTrue(criterionDAO.exists(criterion.getId()));
     }
 
     public static Criterion createValidCriterion() {
-        return new Criterion(UUID.randomUUID().toString(), "pruebaType");
+        return Criterion.withNameAndType(UUID.randomUUID().toString(), "pruebaType");
     }
 
     @Test
     public void testRemove() throws InstanceNotFoundException {
         Criterion criterion = createValidCriterion();
         criterionDAO.save(criterion);
-        assertTrue(criterionDAO.exists(criterion));
-        criterionDAO.remove(criterion);
-        assertFalse(criterionDAO.exists(criterion));
+        criterionDAO.remove(criterion.getId());
+        assertFalse(criterionDAO.exists(criterion.getId()));
     }
 
     @Test

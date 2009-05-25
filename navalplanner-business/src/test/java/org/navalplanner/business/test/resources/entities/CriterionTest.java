@@ -1,5 +1,11 @@
 package org.navalplanner.business.test.resources.entities;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.resources.entities.CriterionCompounder.atom;
+import static org.navalplanner.business.resources.entities.CriterionCompounder.build;
+import static org.navalplanner.business.resources.entities.CriterionCompounder.not;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -11,13 +17,6 @@ import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.navalplanner.business.resources.entities.CriterionCompounder.atom;
-import static org.navalplanner.business.resources.entities.CriterionCompounder.build;
-import static org.navalplanner.business.resources.entities.CriterionCompounder.not;
 
 /**
  * Tests for criterion. <br />
@@ -32,14 +31,6 @@ public class CriterionTest {
                 .createCriterion("fired");
         assertTrue(PredefinedCriterionTypes.WORK_RELATIONSHIP
                 .contains(firedCriterion));
-    }
-
-    @Test
-    public void testCriterionNameAndTypeIsInmutableBusinessKey()
-            throws Exception {
-        Criterion criterion = new Criterion("name", "type");
-        Criterion other = new Criterion("name", "type");
-        assertEquals(criterion.hashCode(), other.hashCode());
     }
 
     @Test

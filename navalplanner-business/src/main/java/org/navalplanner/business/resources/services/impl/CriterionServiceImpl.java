@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.impl.CriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -28,13 +29,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class CriterionServiceImpl implements CriterionService {
 
     @Autowired
-    private CriterionDAO criterionDAO;
+    private ICriterionDAO criterionDAO;
 
     @Autowired
     private ResourceService resourceService;
 
     public boolean exists(Criterion criterion) {
-        return criterionDAO.exists(criterion);
+        return criterionDAO.exists(criterion.getId())
+                || criterionDAO.existsByNameAndType(criterion);
     }
 
     public Criterion find(Criterion criterion) throws InstanceNotFoundException {
@@ -46,10 +48,20 @@ public class CriterionServiceImpl implements CriterionService {
     }
 
     public void remove(Criterion criterion) throws InstanceNotFoundException {
-        criterionDAO.remove(criterion);
+        criterionDAO.remove(criterion.getId());
     }
 
     public void save(Criterion entity) {
+        if (criterionDAO.existsByNameAndType(entity)) {
+            /*
+             * TODO It's an unchecked exception by now. I consider this error an
+             * expected error condition, so we should send a checked exception.
+             */
+            throw new RuntimeException(
+                    "there must be only one criterion with name "
+                            + entity.getName() + " and type "
+                            + entity.getType());
+        }
         criterionDAO.save(entity);
     }
 
@@ -174,7 +186,7 @@ public class CriterionServiceImpl implements CriterionService {
     @Override
     public Criterion load(Criterion criterion) {
         try {
-            return criterionDAO.find(criterion);
+            return criterionDAO.find(criterion.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

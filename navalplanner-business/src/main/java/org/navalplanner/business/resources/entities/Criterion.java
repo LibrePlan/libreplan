@@ -1,18 +1,18 @@
 package org.navalplanner.business.resources.entities;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.validator.NotEmpty;
 
 /**
  * A criterion stored in the database <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Criterion implements ICriterion, Serializable {
+public class Criterion implements ICriterion {
+
+    private Long id;
 
     @SuppressWarnings("unused")
     private long version;
@@ -25,17 +25,32 @@ public class Criterion implements ICriterion, Serializable {
 
     private boolean active = true;
 
+    public static Criterion ofType(String type) {
+        Validate.notEmpty(type);
+        Criterion result = new Criterion();
+        result.type = type;
+        return result;
+    }
+
+    public static Criterion withNameAndType(String name, String type) {
+        return new Criterion(name, type);
+    }
+
     /**
      * Constructor for hibernate. Do not use!
      */
     public Criterion() {
     }
 
-    public Criterion(String name, String type) {
-        Validate.notNull(name);
-        Validate.notNull(type);
+    private Criterion(String name, String type) {
+        Validate.notEmpty(name);
+        Validate.notEmpty(type);
         this.type = type;
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     @Override
@@ -52,23 +67,12 @@ public class Criterion implements ICriterion, Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getType() {
         return type;
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(name).append(type).toHashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Criterion) {
-            Criterion other = (Criterion) obj;
-            return new EqualsBuilder().append(name, other.name).append(type,
-                    other.type).isEquals();
-        }
-        return false;
     }
 
     public boolean isActive() {
@@ -77,6 +81,15 @@ public class Criterion implements ICriterion, Serializable {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isEquivalent(ICriterion criterion) {
+        if (criterion instanceof Criterion) {
+            Criterion other = (Criterion) criterion;
+            return new EqualsBuilder().append(name, other.name).append(type,
+                    other.type).isEquals();
+        }
+        return false;
     }
 
 }

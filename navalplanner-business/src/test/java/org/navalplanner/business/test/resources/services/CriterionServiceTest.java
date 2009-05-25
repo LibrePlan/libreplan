@@ -15,7 +15,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.validator.InvalidStateException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
+import org.navalplanner.business.resources.daos.impl.CriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -56,11 +56,13 @@ public class CriterionServiceTest {
     private SessionFactory sessionFactory;
 
     @Autowired
-    private ICriterionsBootstrap criterionsBootstrap;
+    private CriterionDAO criterionDAO;
+
 
     @Test(expected = InvalidStateException.class)
     public void testCantSaveCriterionWithoutNameAndType() throws Exception {
-        Criterion criterion = new Criterion("", "");
+        Criterion criterion = Criterion.withNameAndType("valido", "valido");
+        criterion.setName("");
         criterionService.save(criterion);
         sessionFactory.getCurrentSession().flush();
     }
@@ -71,6 +73,31 @@ public class CriterionServiceTest {
         Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
                 .createCriterion(unique);
         criterionService.save(criterion);
+    }
+
+    @Test
+    @NotTransactional
+    public void testEditingCriterion() throws Exception {
+        String unique = UUID.randomUUID().toString();
+        Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique);
+        int initial = criterionService.getCriterionsFor(
+                PredefinedCriterionTypes.WORK_RELATIONSHIP).size();
+        criterionService.save(criterion);
+        assertThat("after saving one more", criterionService
+                .getCriterionsFor(
+                PredefinedCriterionTypes.WORK_RELATIONSHIP).size(),
+                equalTo(initial + 1));
+        criterion.setActive(false);
+        String newName = "prueba";
+        criterion.setName(newName);
+        criterionService.save(criterion);
+        assertThat("after editing there are the same", criterionService
+                .getCriterionsFor(PredefinedCriterionTypes.WORK_RELATIONSHIP)
+                .size(), equalTo(initial + 1));
+        Criterion retrieved = criterionService.load(criterion);
+        assertThat(retrieved.getName(), equalTo(newName));
+        criterionService.remove(criterion);
     }
 
     @Test(expected = Exception.class)
@@ -93,18 +120,6 @@ public class CriterionServiceTest {
         criterionService
                 .createIfNotExists(PredefinedCriterionTypes.WORK_RELATIONSHIP
                         .createCriterion(unique));
-    }
-
-    @Test
-    public void testPersistingDoesNotChangeEquality() throws Exception {
-        String unique = UUID.randomUUID().toString();
-        Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
-                .createCriterion(unique);
-        Criterion other = PredefinedCriterionTypes.WORK_RELATIONSHIP
-                .createCriterion(unique);
-        assertEquals(criterion, other);
-        criterionService.save(criterion);
-        assertEquals(criterion, other);
     }
 
     @Test(expected = DataIntegrityViolationException.class)
@@ -330,7 +345,7 @@ public class CriterionServiceTest {
 
             @Override
             public boolean contains(ICriterion c) {
-                return criterion == c;
+                return criterion.equals(c);
             }
 
             @Override
@@ -340,19 +355,16 @@ public class CriterionServiceTest {
 
             @Override
             public String getName() {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             @Override
             public boolean allowAdding() {
-                // TODO Auto-generated method stub
                 return false;
             }
 
             @Override
             public boolean allowEditing() {
-                // TODO Auto-generated method stub
                 return false;
             }
 
@@ -360,6 +372,11 @@ public class CriterionServiceTest {
             public boolean criterionCanBeRelatedTo(
                     Class<? extends Resource> klass) {
                 return true;
+            }
+
+            @Override
+            public Criterion createCriterionWithoutNameYet() {
+                return null;
             }
         };
     }

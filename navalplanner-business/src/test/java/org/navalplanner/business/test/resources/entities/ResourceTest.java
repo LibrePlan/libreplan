@@ -1,5 +1,12 @@
 package org.navalplanner.business.test.resources.entities;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -14,13 +21,6 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Tests for {@link Resource}. <br />
@@ -108,6 +108,11 @@ public class ResourceTest {
             public boolean criterionCanBeRelatedTo(
                     Class<? extends Resource> klass) {
                 return true;
+            }
+
+            @Override
+            public Criterion createCriterionWithoutNameYet() {
+                return null;
             }
         };
     }
@@ -279,6 +284,11 @@ public class ResourceTest {
             public boolean criterionCanBeRelatedTo(
                     Class<? extends Resource> klass) {
                 return false;
+            }
+
+            @Override
+            public Criterion createCriterionWithoutNameYet() {
+                return null;
             }
         };
         CriterionWithItsType criterionWithItsType = new CriterionWithItsType(

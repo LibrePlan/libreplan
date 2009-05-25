@@ -77,7 +77,7 @@ public abstract class Resource {
     public List<CriterionSatisfaction> getSatisfactionsFor(ICriterion criterion) {
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
         for (CriterionSatisfaction criterionSatisfaction : getAllSatisfactions()) {
-            if (criterionSatisfaction.getCriterion().equals(criterion)) {
+            if (criterionSatisfaction.getCriterion().isEquivalent(criterion)) {
                 result.add(criterionSatisfaction);
             }
         }
@@ -132,7 +132,7 @@ public abstract class Resource {
             ICriterion criterion) {
         Set<CriterionSatisfaction> result = new HashSet<CriterionSatisfaction>();
         for (CriterionSatisfaction satisfaction : criterionSatisfactions) {
-            if (satisfaction.getCriterion().equals(criterion)) {
+            if (satisfaction.getCriterion().isEquivalent(criterion)) {
                 result.add(satisfaction);
             }
         }

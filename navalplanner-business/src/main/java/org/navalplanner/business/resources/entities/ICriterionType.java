@@ -18,8 +18,11 @@ public interface ICriterionType<C extends ICriterion> {
 
     public C createCriterion(String name);
 
+    public C createCriterionWithoutNameYet();
+
     public boolean contains(ICriterion criterion);
 
     public boolean criterionCanBeRelatedTo(Class<? extends Resource> klass);
+
 
 }

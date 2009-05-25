@@ -79,7 +79,12 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
     @Override
     public Criterion createCriterion(String name) {
-        return new Criterion(name, getType());
+        return Criterion.withNameAndType(name, getType());
+    }
+
+    @Override
+    public Criterion createCriterionWithoutNameYet() {
+        return Criterion.ofType(getType());
     }
 
     public abstract List<Criterion> getPredefined();
