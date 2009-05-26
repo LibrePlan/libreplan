@@ -9,10 +9,12 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.IRedirectorRegistry;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MatrixParameters;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
+import org.navalplanner.web.common.Redirector;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -22,7 +24,8 @@ import org.zkoss.zul.api.Window;
  * Controller for {@link Worker} resource <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class WorkerCRUDController extends GenericForwardComposer {
+public class WorkerCRUDController extends GenericForwardComposer implements
+        IWorkerCRUDController {
 
     private Window createWindow;
 
@@ -33,6 +36,8 @@ public class WorkerCRUDController extends GenericForwardComposer {
     private Window workRelationshipsWindow;
 
     private IWorkerModel workerModel;
+
+    private IRedirectorRegistry redirectorRegistry;
 
     private OnlyOneVisible visibility;
 
@@ -125,12 +130,15 @@ public class WorkerCRUDController extends GenericForwardComposer {
         messages = new MessagesForUser(messagesContainer);
         Map<String, String> matrixParameters = MatrixParameters
                 .extract((HttpServletRequest) execution.getNativeRequest());
-        if (matrixParameters.containsKey("create")) {
-            goToCreateForm();
-        } else if (matrixParameters.containsKey("edit")) {
-            goToEditForm(workerModel.findResource(Long
-                    .parseLong(matrixParameters.get("edit"))));
-        }
+        Redirector redirector = redirectorRegistry
+                .getRedirectorFor(IWorkerCRUDController.class);
+        redirector.applyTo(this);
+        // if (matrixParameters.containsKey("create")) {
+        // goToCreateForm();
+        // } else if (matrixParameters.containsKey("edit")) {
+        // goToEditForm(workerModel.findResource(Long
+        // .parseLong(matrixParameters.get("edit"))));
+        // }
 
     }
 

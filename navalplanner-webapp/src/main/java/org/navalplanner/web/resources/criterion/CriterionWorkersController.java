@@ -9,6 +9,7 @@ import java.util.Set;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.resources.worker.IWorkerCRUDController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -32,6 +33,8 @@ public class CriterionWorkersController extends GenericForwardComposer {
     private Button saveListButton;
 
     private Button cancelListButton;
+
+    private IWorkerCRUDController workerCRUDControllerRedirector;
 
     public void showList(Event event) {
         loadDataToList();
@@ -60,9 +63,7 @@ public class CriterionWorkersController extends GenericForwardComposer {
     }
 
     public void goToEditPage(Resource resource) {
-        System.out.println("going to edit page for: " + resource);
-        desktop.getExecution().sendRedirect(
-                "/resources/worker/worker.zul;edit=" + resource.getId());
+        workerCRUDControllerRedirector.goToEditForm((Worker) resource);
     }
 
     @Override
