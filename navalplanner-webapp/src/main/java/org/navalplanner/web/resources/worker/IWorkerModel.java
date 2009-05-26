@@ -29,4 +29,6 @@ public interface IWorkerModel {
 
     Set<CriterionSatisfaction> getCriterionSatisfactions(Worker worker);
 
+    Worker findResource(long workerId);
+
 }

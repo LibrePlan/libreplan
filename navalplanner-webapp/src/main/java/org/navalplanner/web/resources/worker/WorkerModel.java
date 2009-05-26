@@ -284,4 +284,13 @@ public class WorkerModel implements IWorkerModel {
         return worker != null && worker.getId() == null;
     }
 
+    @Override
+    public Worker findResource(long workerId) {
+        try {
+            return (Worker) resourceService.findResource(workerId);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

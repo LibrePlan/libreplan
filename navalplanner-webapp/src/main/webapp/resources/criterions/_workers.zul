@@ -2,12 +2,14 @@
  <grid model="@{controller.workers.workersForCurrentCriterion}"
   mold="paging" pageSize="5" apply="${controller.workers}">
   <columns>
-   <column label="First Name" sort="auto(firstName)" />
-   <column label="Surname" sort="auto(surname)" />
+   <column label="Operacións" />
+   <column label="Nome" sort="auto(firstName)" />
+   <column label="Apellidos" sort="auto(surname)" />
    <column label="nif" sort="auto(nif)" />
   </columns>
   <rows>
    <row self="@{each='worker'}" value="@{worker}">
+    <button label="Edición" onClick="controller.workers.goToEditPage(self.getParent().getValue());"></button>
     <label value="@{worker.firstName}" />
     <label value="@{worker.surname}" />
     <label value="@{worker.nif}" />

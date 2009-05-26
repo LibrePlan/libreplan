@@ -59,6 +59,12 @@ public class CriterionWorkersController extends GenericForwardComposer {
         return criterionsModel.isChangeAssignmentsDisabled();
     }
 
+    public void goToEditPage(Resource resource) {
+        System.out.println("going to edit page for: " + resource);
+        desktop.getExecution().sendRedirect(
+                "/resources/worker/worker.zul;edit=" + resource.getId());
+    }
+
     @Override
     public void doAfterCompose(final Component comp) throws Exception {
         super.doAfterCompose(comp);

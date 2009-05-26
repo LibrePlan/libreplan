@@ -1,12 +1,16 @@
 package org.navalplanner.web.resources.worker;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.MatrixParameters;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
@@ -119,6 +123,15 @@ public class WorkerCRUDController extends GenericForwardComposer {
         if (messagesContainer == null)
             throw new RuntimeException("messagesContainer is needed");
         messages = new MessagesForUser(messagesContainer);
+        Map<String, String> matrixParameters = MatrixParameters
+                .extract((HttpServletRequest) execution.getNativeRequest());
+        if (matrixParameters.containsKey("create")) {
+            goToCreateForm();
+        } else if (matrixParameters.containsKey("edit")) {
+            goToEditForm(workerModel.findResource(Long
+                    .parseLong(matrixParameters.get("edit"))));
+        }
+
     }
 
     private LocalizationsController createLocalizationsController(
