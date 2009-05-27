@@ -13,6 +13,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Linkable {
+public @interface LinkToState {
     public String[] value();
 }

@@ -1,23 +1,23 @@
 package org.navalplanner.web.resources.worker;
 
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.web.common.Linkable;
-import org.navalplanner.web.common.Page;
+import org.navalplanner.web.common.LinksDefiner;
+import org.navalplanner.web.common.LinkToState;
 
 /**
  * Contract for {@link WorkerCRUDController}. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-@Page("/resources/worker/worker.zul")
-public interface IWorkerCRUDController {
+@LinksDefiner(page = "/resources/worker/worker.zul", beanName = "workerCRUD")
+public interface WorkerCRUDLinks {
 
-    @Linkable("edit")
+    @LinkToState("edit")
     public abstract void goToEditForm(Worker worker);
 
-    @Linkable("workRelationships")
+    @LinkToState("workRelationships")
     public abstract void goToWorkRelationshipsForm(Worker worker);
 
-    @Linkable("create")
+    @LinkToState("create")
     public abstract void goToCreateForm();
 
 }

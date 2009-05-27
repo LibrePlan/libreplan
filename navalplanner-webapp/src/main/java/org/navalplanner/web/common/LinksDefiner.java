@@ -10,8 +10,10 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Page {
+public @interface LinksDefiner {
 
-    public String value();
+    public String page();
+
+    public String beanName();
 
 }

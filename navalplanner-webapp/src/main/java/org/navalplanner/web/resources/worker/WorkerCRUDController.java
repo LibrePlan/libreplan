@@ -1,9 +1,6 @@
 package org.navalplanner.web.resources.worker;
 
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -11,7 +8,6 @@ import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.IRedirectorRegistry;
 import org.navalplanner.web.common.Level;
-import org.navalplanner.web.common.MatrixParameters;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Redirector;
@@ -25,7 +21,7 @@ import org.zkoss.zul.api.Window;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class WorkerCRUDController extends GenericForwardComposer implements
-        IWorkerCRUDController {
+        WorkerCRUDLinks {
 
     private Window createWindow;
 
@@ -128,18 +124,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         if (messagesContainer == null)
             throw new RuntimeException("messagesContainer is needed");
         messages = new MessagesForUser(messagesContainer);
-        Map<String, String> matrixParameters = MatrixParameters
-                .extract((HttpServletRequest) execution.getNativeRequest());
-        Redirector redirector = redirectorRegistry
-                .getRedirectorFor(IWorkerCRUDController.class);
+        Redirector<WorkerCRUDLinks> redirector = redirectorRegistry
+                .getRedirectorFor(WorkerCRUDLinks.class);
         redirector.applyTo(this);
-        // if (matrixParameters.containsKey("create")) {
-        // goToCreateForm();
-        // } else if (matrixParameters.containsKey("edit")) {
-        // goToEditForm(workerModel.findResource(Long
-        // .parseLong(matrixParameters.get("edit"))));
-        // }
-
     }
 
     private LocalizationsController createLocalizationsController(

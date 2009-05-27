@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * Marks a controller that redirects to the real controller <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-@Qualifier
+@Qualifier("linked")
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE })
-public @interface Redirecter {
+public @interface Linked {
 
 }
