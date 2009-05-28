@@ -146,8 +146,8 @@
                 <!-- Data source properties -->
                 <dataSource.user>sa</dataSource.user>
                 <dataSource.password />
-                <dataSource.url>jdbc:hsqldb:${java.io.tmpdir}/naval${navalplanner.mode};shutdown=true</dataSource.url>
-                <testDataSource.url>jdbc:hsqldb:${java.io.tmpdir}/naval${navalplanner.mode}test;shutdown=true</testDataSource.url>
+                <dataSource.url>jdbc:hsqldb:target/hsqldb/naval${navalplanner.mode};shutdown=true</dataSource.url>
+                <testDataSource.url>jdbc:hsqldb:target/hsqldb/naval${navalplanner.mode}test;shutdown=true</testDataSource.url>
                 <!-- Hibernate properties -->
                 <hibernate.dialect>org.hibernate.dialect.HSQLDialect</hibernate.dialect>
             </properties>
