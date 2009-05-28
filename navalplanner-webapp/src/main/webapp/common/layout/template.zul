@@ -1,9 +1,9 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<div>
-        <div class="headings">
-            <div class="logo"></div>
-            <div class="vision"></div>
-        </div>
+<div xmlns:n="http://www.zkoss.org/2005/zk/native">
+        <n:div class="headings">
+            <n:div class="logo"></n:div>
+            <n:div class="vision"></n:div>
+        </n:div>
     	<menubar id="menubar" width="900px" top="0px" left="320px"
             ctrlKeys="^k#f2" onCtrlKey="doCtrlKey()" sclass="mainmenu">
 
@@ -67,6 +67,6 @@
 
     <div self="@{insert(content)}"/>
 
-      <div class="footer">© Fundación para o Fomento da Calidade Industrial e
-      Desenvolvemento Tecnolóxico de Galicia. Xunta de Galicia</div>
+      <n:div class="footer">© Fundación para o Fomento da Calidade Industrial e
+      Desenvolvemento Tecnolóxico de Galicia. Xunta de Galicia</n:div>
  </div>
