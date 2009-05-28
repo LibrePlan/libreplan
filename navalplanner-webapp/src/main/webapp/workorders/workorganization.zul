@@ -1,0 +1,76 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?page  id="Create"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro.css"?>
+<?link rel="stylesheet" type="text/css" href="/resources/css/resources.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+    <window self="@{define(content)}"
+        apply="org.navalplanner.web.workorders.WorkOrganizationController">
+
+        <tree id="tree" width="600px" rows="8" multiple="true" >
+            <treecols sizable="true">
+                <treecol label="Name" />
+                <treecol label="Description" />
+            </treecols>
+            <treechildren>
+                <treeitem>
+                    <treerow draggable="true" droppable="true">
+                        <treecell label=" Task 1 ">
+                            <textbox value="Task 1 Name" width="230px"/>
+                        </treecell>
+                        <treecell>
+                            <textbox value="10" width="30px"/> hours
+                        </treecell>
+                    </treerow>
+                </treeitem>
+                <treeitem>
+                    <treerow draggable="true" droppable="true">
+                        <treecell label=" Task 2 " >
+                            <textbox value="Task 2 Name" width="230px"/>
+                        </treecell>
+                        <treecell>(calculated) hours </treecell>
+                    </treerow>
+                    <treechildren>
+                        <treeitem>
+                            <treerow draggable="true" droppable="true">
+                                <treecell label="Task 2.1 " >
+                                    <textbox value="Task 1 Name" width="200px"/>
+                                </treecell>
+                            </treerow>
+                            <treechildren>
+                                <treeitem>
+                                    <treerow draggable="true" droppable="true">
+                                        <treecell label="Task 2.1.1 " >
+                                            <textbox value="Task 2.1.1 Name" width="170px"/>
+                                        </treecell>
+                                    </treerow>
+                                </treeitem>
+                                <treeitem>
+                                    <treerow draggable="true" droppable="true">
+                                        <treecell label="Item 2.1.2" />
+                                    </treerow>
+                                </treeitem>
+                            </treechildren>
+                        </treeitem>
+                        <treeitem>
+                            <treerow draggable="true" droppable="true">
+                                <treecell label="Item 2.2" />
+                            </treerow>
+                            <treechildren>
+                                <treeitem>
+                                    <treerow draggable="true" droppable="true">
+                                        <treecell label="Item 2.2.1" />
+                                    </treerow>
+                                </treeitem>
+                            </treechildren>
+                        </treeitem>
+                    </treechildren>
+                </treeitem>
+                <treeitem label="Item 3" />
+            </treechildren>
+        </tree>
+
+    </window>
+</zk>
