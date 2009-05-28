@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,19 +20,19 @@ import org.springframework.orm.hibernate3.SessionFactoryUtils;
  * An implementation of <code>IGenericDao</code> based on Hibernate's native
  * API. Concrete DAOs must extend directly from this class. This constraint is
  * imposed by the constructor of this class that must infer the type of the
- * entity from the declaration of the concrete DAO. <p/>
- * 
+ * entity from the declaration of the concrete DAO.
+ * <p/>
  * This class autowires a <code>SessionFactory</code> bean and allows to
  * implement DAOs with Hibernate's native API. Subclasses access Hibernate's
  * <code>Session</code> by calling on <code>getSession()</code> method.
  * Operations must be implemented by catching <code>HibernateException</code>
  * and rethrowing it by using <code>convertHibernateAccessException()</code>
  * method. See source code of this class for an example.
- * 
  * @author Fernando Bellas Permuy <fbellas@udc.es>
- *
- * @param <E> Entity class
- * @param <PK> Primary key class
+ * @param <E>
+ *            Entity class
+ * @param <PK>
+ *            Primary key class
  */
 public class GenericDaoHibernate<E, PK extends Serializable> implements
         IGenericDao<E, PK> {
@@ -45,6 +46,11 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
     public GenericDaoHibernate() {
         this.entityClass = (Class<E>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
+    }
+
+    public GenericDaoHibernate(Class<E> entityClass) {
+        Validate.notNull(entityClass);
+        this.entityClass = entityClass;
     }
 
     protected Session getSession() {

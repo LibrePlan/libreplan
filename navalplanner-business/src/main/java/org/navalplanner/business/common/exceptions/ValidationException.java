@@ -40,4 +40,8 @@ public class ValidationException extends Exception {
         this.invalidValues = invalidValues;
     }
 
+    public ValidationException(String message) {
+        this(new InvalidValue[] {}, message);
+    }
+
 }

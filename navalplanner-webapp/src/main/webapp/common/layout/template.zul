@@ -36,6 +36,13 @@
                 </menupopup>
             </menu>
 
+            <menu label="${c:l('mainmenu.workorders')}">
+                <menupopup>
+                    <menuitem label="${c:l('mainmenu.list_projects')}"
+                        href='/workorders/projects.zul' />
+                </menupopup>
+            </menu>
+
             <menu label="${c:l('mainmenu.plannification')}">
     			<menupopup>
                     <menuitem label="${c:l('mainmenu.plannification')}"

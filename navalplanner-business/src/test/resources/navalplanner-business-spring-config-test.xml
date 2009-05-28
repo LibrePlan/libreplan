@@ -29,6 +29,9 @@
                 <value>
                     org/navalplanner/business/resources/entities/Resources.hbm.xml
                 </value>
+                <value>
+                    org/navalplanner/business/resources/entities/WorkOrders.hbm.xml
+                </value>
             </list>
         </property>
 

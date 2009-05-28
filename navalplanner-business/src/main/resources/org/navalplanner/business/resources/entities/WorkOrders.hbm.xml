@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.workorders.entities">
+    <class name="ProjectWork">
+        <id access="field" name="id">
+            <generator class="native" />
+        </id>
+        <version name="version"  access="field" type="long"/>
+        <property name="initDate" access="field"></property>
+        <property name="endDate" access="field"></property>
+        <property name="name" access="field"></property>
+        <property name="description" access="field"></property>
+        <property name="responsible" access="field"></property>
+        <property name="customer" access="field"></property>
+    </class>
+</hibernate-mapping>

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.zkoss.zk.ui.Component;
@@ -134,6 +135,9 @@ public class MessagesForUser extends GenericForwardComposer implements
     public void showInvalidValues(ValidationException e) {
         for (InvalidValue invalidValue : e.getInvalidValues()) {
             invalidValue(invalidValue);
+        }
+        if (!StringUtils.isEmpty(e.getMessage())) {
+            showMessage(Level.INFO, e.getMessage());
         }
     }
 

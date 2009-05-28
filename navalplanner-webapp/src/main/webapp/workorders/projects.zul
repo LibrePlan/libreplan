@@ -1,0 +1,36 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?page  id="List"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro.css"?>
+<?link rel="stylesheet" type="text/css" href="/resources/css/resources.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?component name="list" inline="true" macroURI="_list.zul"?>
+<?component name="edition" inline="true" macroURI="_edition.zul"?>
+<zk >
+    <window self="@{define(content)}"
+        apply="org.navalplanner.web.workorders.ProjectWorkCRUDController">
+        <vbox id="messagesContainer"></vbox>
+        <list top_id="listWindow" />
+        <edition top_id="createWindow" title="Create"
+            save_button_label="Save" cancel_button_label="Cancel" />
+        <edition top_id="editWindow" title="Edit Personal Data"
+            save_button_label="Save" cancel_button_label="Cancel" />
+        <window visible="@{controller.confirmingRemove}"
+            id="confirmRemove" title="Confirmación" width="500px"
+            position="center">
+            <vbox>
+                <hbox>
+                ¿Desexa borrar <label value="@{controller.project.name}"/> ?
+                </hbox>
+                <hbox>
+                    <button label="Si"
+                        onClick="controller.remove(controller.project);" />
+                    <button label="Non"
+                        onClick="controller.cancelRemove();" />
+                </hbox>
+            </vbox>
+        </window>
+    </window>
+
+</zk>
