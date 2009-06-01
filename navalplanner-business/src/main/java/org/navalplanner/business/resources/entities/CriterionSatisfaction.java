@@ -45,7 +45,7 @@ public class CriterionSatisfaction {
     private Resource resource;
 
     public Date getStartDate() {
-        return new Date(startDate.getTime());
+        return startDate==null ? null: new Date(startDate.getTime());
     }
 
     public Date getEndDate() {

@@ -31,6 +31,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private Window workRelationshipsWindow;
 
+    private Window addWorkRelationshipWindow;
+
     private IWorkerModel workerModel;
 
     private IRedirectorRegistry redirectorRegistry;
@@ -52,11 +54,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public WorkerCRUDController(Window createWindow, Window listWindow,
             Window editWindow, Window workRelationshipsWindow,
+            Window addWorkRelationshipWindow,
             IWorkerModel workerModel, IMessagesForUser messages) {
         this.createWindow = createWindow;
         this.listWindow = listWindow;
         this.editWindow = editWindow;
         this.workRelationshipsWindow = workRelationshipsWindow;
+        this.addWorkRelationshipWindow = addWorkRelationshipWindow;
         this.workerModel = workerModel;
         this.messages = messages;
     }
@@ -98,18 +102,30 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         Util.reloadBindings(editWindow);
     }
 
+    public void goToEditForm() {
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
+    }
+
     public void goToWorkRelationshipsForm(Worker worker) {
         getVisibility().showOnly(workRelationshipsWindow);
         Util.reloadBindings(workRelationshipsWindow);
+    }
+
+    public void goToWorkRelationshipsForm() {
+        getVisibility().showOnly(workRelationshipsWindow);
+        Util.reloadBindings(workRelationshipsWindow);
+    }
+
+    public void goToAddWorkRelationshipForm() {
+        getVisibility().showOnly(addWorkRelationshipWindow);
+        Util.reloadBindings(addWorkRelationshipWindow);
     }
 
     public void goToCreateForm() {
         workerModel.prepareForCreate();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
-        this.workRelationship = new WorkRelationshipsController(
-                this.workerModel, this);
-
     }
 
     @Override
@@ -124,6 +140,10 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         if (messagesContainer == null)
             throw new RuntimeException("messagesContainer is needed");
         messages = new MessagesForUser(messagesContainer);
+        this.workRelationship =
+                 new WorkRelationshipsController(this.workerModel,this);
+        this.workRelationship.doAfterCompose(
+                comp.getFellow("addWorkRelationshipWindow"));
         Redirector<WorkerCRUDLinks> redirector = redirectorRegistry
                 .getRedirectorFor(WorkerCRUDLinks.class);
         redirector.applyTo(this);
@@ -142,7 +162,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     private OnlyOneVisible getVisibility() {
         if (visibility == null) {
             visibility = new OnlyOneVisible(listWindow, editWindow,
-                    createWindow, workRelationshipsWindow);
+                    createWindow, workRelationshipsWindow,
+                    addWorkRelationshipWindow );
         }
         return visibility;
     }

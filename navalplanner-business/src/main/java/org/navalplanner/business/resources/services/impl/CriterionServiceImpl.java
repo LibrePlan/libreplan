@@ -48,7 +48,11 @@ public class CriterionServiceImpl implements CriterionService {
     }
 
     public void remove(Criterion criterion) throws InstanceNotFoundException {
-        criterionDAO.remove(criterion.getId());
+        if (criterion.getId() != null ) {
+            criterionDAO.remove(criterion.getId());
+        } else {
+            criterionDAO.removeByNameAndType(criterion);
+        }
     }
 
     public void save(Criterion entity) {

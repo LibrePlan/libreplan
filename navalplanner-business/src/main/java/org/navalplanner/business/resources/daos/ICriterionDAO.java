@@ -11,6 +11,8 @@ import org.navalplanner.business.resources.entities.Criterion;
  */
 public interface ICriterionDAO extends IGenericDao<Criterion, Long> {
 
+    public void removeByNameAndType(Criterion criterion);
+
     Criterion findByNameAndType(Criterion criterion);
 
     boolean existsByNameAndType(Criterion entity);

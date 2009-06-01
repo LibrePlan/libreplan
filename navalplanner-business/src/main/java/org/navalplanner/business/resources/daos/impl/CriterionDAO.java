@@ -1,5 +1,7 @@
 package org.navalplanner.business.resources.daos.impl;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -32,6 +34,16 @@ public class CriterionDAO extends GenericDaoHibernate<Criterion, Long>
             throw new InstanceNotFoundException(criterion, Criterion.class
                     .getName());
         return result;
+    }
+
+    @Override
+    public void removeByNameAndType(Criterion criterion) {
+        Criterion reloaded = findByNameAndType(criterion);
+        try {
+            remove(reloaded.getId());
+        } catch (InstanceNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
 }

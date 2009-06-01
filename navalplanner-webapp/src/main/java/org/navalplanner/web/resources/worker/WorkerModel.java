@@ -39,6 +39,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class WorkerModel implements IWorkerModel {
 
     private final ResourceService resourceService;
+    private final ICriterionType<?>[] laboralRelatedTypes = {
+            PredefinedCriterionTypes.LEAVE,
+            PredefinedCriterionTypes.WORK_RELATIONSHIP };
     private Worker worker;
     private ClassValidator<Worker> workerValidator;
     private final CriterionService criterionService;
@@ -293,4 +296,24 @@ public class WorkerModel implements IWorkerModel {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Map<ICriterionType<?>, Collection<Criterion>> getLaboralRelatedCriterions() {
+        Map<ICriterionType<?>, Collection<Criterion>> result = new HashMap<ICriterionType<?>, Collection<Criterion>>();
+        for (ICriterionType<?> type : laboralRelatedTypes) {
+            result.put(type, criterionService.getCriterionsFor(type));
+        }
+        return result;
+    }
+
+    @Override
+    public Set<CriterionSatisfaction> getLaboralRelatedCriterionSatisfactions(
+            Worker worker) {
+        Set<CriterionSatisfaction> result = new HashSet<CriterionSatisfaction>();
+        for (ICriterionType<?> criterionType : laboralRelatedTypes) {
+            result.addAll(worker.getSatisfactionsFor(criterionType));
+        }
+        return result;
+
+    }
 }

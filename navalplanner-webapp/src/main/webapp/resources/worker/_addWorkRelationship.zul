@@ -1,0 +1,28 @@
+<window id="${arg.top_id}" title="${arg.title}"
+    apply="${controller.workRelationshipsController}">
+    <grid id="history">
+		<columns>
+			<column label="Date start"/>
+			<column label="Date end"/>
+			<column label="Relationship"/>
+		</columns>
+        <rows>
+			<row>
+				<datebox id="newWorkRelationshipStartDate" width="150px" />
+<!--             value="@{controller.workRelationship.newRelationship.startDate}" -->
+				<datebox id="newWorkRelationshipEndDate" width="150px" />
+<!--                    value="@{controller.workRelationship.newRelationship.endDate}" -->
+                <listbox onSelect="" mold="select" rows="1" id="selectedWorkCriterion"
+                    model="@{controller.workRelationship.workCriterions}">
+                        <listitem self="@{each='workCriterion'}"
+                            label="@{workCriterion.name}"
+                            value="@{workCriterion}" />
+                </listbox>
+			</row>
+		</rows>
+      </grid>
+    <button onClick="controller.workRelationship.addCriterionSatisfaction();"
+        label="Add Work Relationship" />
+    <button onClick="controller.goToWorkRelationshipsForm()"
+        label="Cancel and back to Work Relationships"/>
+</window>
