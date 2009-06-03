@@ -20,7 +20,6 @@ import org.navalplanner.business.resources.daos.ResourcesDaoRegistry;
 // child another simple resource, general methods like getChilds() do not make
 // sense for simple entities, etc.). In consequence, I prefer the modeling 
 // option shown below.
-
 /**
  * This class acts as the base class for all resources.
  * @author Fernando Bellas Permuy <fbellas@udc.es>
@@ -28,9 +27,7 @@ import org.navalplanner.business.resources.daos.ResourcesDaoRegistry;
 public abstract class Resource {
 
     private Long id;
-
     private long version;
-
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
 
     public Long getId() {
@@ -119,9 +116,7 @@ public abstract class Resource {
         Collection<CriterionSatisfaction> satisfactionsFor = getSatisfactionsFor(criterionType);
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
         for (CriterionSatisfaction criterionSatisfaction : satisfactionsFor) {
-            if (end == null && criterionSatisfaction.isActiveAt(start)
-                    || end != null
-                    && criterionSatisfaction.isActiveIn(start, end)) {
+            if (end == null && criterionSatisfaction.isActiveAt(start) || end != null && criterionSatisfaction.isActiveIn(start, end)) {
                 result.add(criterionSatisfaction);
             }
         }
@@ -184,8 +179,9 @@ public abstract class Resource {
             CriterionSatisfaction newSatisfaction = new CriterionSatisfaction(
                     start, criterion, this);
             criterionSatisfactions.add(newSatisfaction);
-            if (finish != null)
+            if (finish != null) {
                 newSatisfaction.finish(finish);
+            }
             if (!type.allowMultipleActiveCriterionsPerResource()) {
                 for (CriterionSatisfaction criterionSatisfaction : getActiveSatisfactionsAt(
                         type, start)) {
@@ -211,8 +207,9 @@ public abstract class Resource {
             Set<CriterionSatisfaction> posterior) {
         Date earliest = null;
         for (CriterionSatisfaction criterionSatisfaction : posterior) {
-            if (earliest == null)
+            if (earliest == null) {
                 earliest = criterionSatisfaction.getStartDate();
+            }
             earliest = Collections.min(Arrays.asList(earliest,
                     criterionSatisfaction.getStartDate()));
         }
@@ -222,16 +219,14 @@ public abstract class Resource {
     private Set<CriterionSatisfaction> getSatisfactionsPosteriorTo(
             ICriterionType<?> type, CriterionSatisfaction newSatisfaction) {
         Date start = newSatisfaction.getStartDate();
-        Date finish = newSatisfaction.isFinished() ? newSatisfaction
-                .getEndDate() : null;
+        Date finish = newSatisfaction.isFinished() ? newSatisfaction.getEndDate() : null;
         Set<CriterionSatisfaction> posterior = new HashSet<CriterionSatisfaction>();
         if (finish != null) {
             posterior.addAll(getActiveSatisfactionsAt(type, finish));
         } else {
             ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
             for (CriterionSatisfaction satisfaction : getSatisfactionsFor(type)) {
-                if (!satisfaction.isFinished()
-                        && satisfaction.getStartDate().after(start)) {
+                if (!satisfaction.isFinished() && satisfaction.getStartDate().after(start)) {
                     result.add(satisfaction);
                 }
             }
@@ -242,8 +237,7 @@ public abstract class Resource {
     }
 
     public void deactivate(CriterionWithItsType criterionWithItsType) {
-        for (CriterionSatisfaction criterionSatisfaction : getActiveSatisfactionsFor(criterionWithItsType
-                .getCriterion())) {
+        for (CriterionSatisfaction criterionSatisfaction : getActiveSatisfactionsFor(criterionWithItsType.getCriterion())) {
             criterionSatisfaction.finish(new Date());
         }
     }
@@ -268,9 +262,13 @@ public abstract class Resource {
     public boolean canBeActivated(CriterionWithItsType criterionWithItsType,
             Date start, Date finish) {
         ICriterionType<?> type = criterionWithItsType.getType();
-        return type.criterionCanBeRelatedTo(getClass())
-                && (type.allowMultipleActiveCriterionsPerResource() || noneOf(
-                        criterionWithItsType, start, finish));
+        return type.criterionCanBeRelatedTo(getClass()) && (type.allowMultipleActiveCriterionsPerResource() || noneOf(
+                criterionWithItsType, start, finish));
+    }
+
+    public void removeCriterionSatisfaction(CriterionSatisfaction satisfaction)
+            throws InstanceNotFoundException {
+        criterionSatisfactions.remove(satisfaction);
     }
 
 }

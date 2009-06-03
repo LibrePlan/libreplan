@@ -8,7 +8,8 @@
 <?component name="list" inline="true" macroURI="_list.zul"?>
 <?component name="edition" inline="true" macroURI="_edition.zul"?>
 <?component name="workRelationships" inline="true" macroURI="_workRelationships.zul"?>
-<?component name="addWorkRelationship" inline="true" macroURI="_addWorkRelationship.zul"?>
+<!--?component name="addWorkRelationship" inline="true" macroURI="_addWorkRelationship.zul"?-->
+<?component name="editWorkRelationship" inline="true" macroURI="_editWorkRelationship.zul"?>
 <zk>
     <window self="@{define(content)}"
         apply="org.navalplanner.web.resources.worker.WorkerCRUDController"
@@ -22,7 +23,14 @@
             save_button_label="Save" cancel_button_label="Cancel" />
         <workRelationships top_id="workRelationshipsWindow" title="Work Relationships"
             save_button_label="Save" cancel_button_label="Cancel" />
-        <addWorkRelationship top_id="addWorkRelationshipWindow" title="Add Work Relationship"
-            save_button_label="Save" cancel_button_label="Cancel" />
+        <!--addWorkRelationship top_id="addWorkRelationshipWindow" title="Add Work Relationship"
+            save_button_label="Save" cancel_button_label="Cancel" /-->
+        <editWorkRelationship top_id="editWorkRelationshipWindow" title="Edit Work Relationship"
+            save_button_label="Save" cancel_button_label="Cancel"
+            add_button_label="Edit"/>
+        <editWorkRelationship top_id="addWorkRelationshipWindow" title="Add Work Relationship"
+            save_button_label="Save" cancel_button_label="Cancel"
+            add_button_label="Add"/>
+
     </window>
 </zk>

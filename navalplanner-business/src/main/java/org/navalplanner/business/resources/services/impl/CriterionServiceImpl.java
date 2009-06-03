@@ -190,7 +190,7 @@ public class CriterionServiceImpl implements CriterionService {
     @Override
     public Criterion load(Criterion criterion) {
         try {
-            return criterionDAO.find(criterion.getId());
+            return criterionDAO.find(criterion);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

@@ -1,9 +1,11 @@
 <?component name="localizations" inline="true" macroURI="_localizations.zul"?>
+<?component name="workRelationships" inline="true" macroURI="_workRelationships.zul"?>
 <window id="${arg.top_id}" title="${arg.title}">
     <tabbox>
         <tabs>
             <tab label="Edición"></tab>
             <tab label="Localizacións"></tab>
+            <tab label="Historial Laboral"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -38,13 +40,15 @@
             <tabpanel>
                 <localizations />
             </tabpanel>
+            <tabpanel>
+                <workRelationships top_id="workRelationshipsWindow"
+                    title="Work Relationships" save_button_label="Save"
+                    cancel_button_label="Cancel" />
+            </tabpanel>
         </tabpanels>
     </tabbox>
     <button onClick="controller.save();"
         label="${arg.save_button_label}" />
     <button onClick="controller.cancel();"
         label="${arg.cancel_button_label}" />
-	<button label="Work Relationships"
-        onClick="controller.goToWorkRelationshipsForm(controller.worker)">
-    </button>
 </window>

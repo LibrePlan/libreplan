@@ -1,30 +1,34 @@
-<window id="${arg.top_id}" title="${arg.title}"
+<window id="${arg.top_id}"
     apply="${controller.workRelationshipsController}">
     <grid id="history"
         model="@{controller.workRelationship.criterionSatisfactions}"
         mold="paging" pageSize="5">
 		<columns>
-			<column label="Date start"/>
-			<column label="Date end"/>
+			<column label="Date start" width="150px"/>
+			<column label="Date end" width="150px"/>
 			<column label="Relationship"/>
+			<column label="Operations"/>
 		</columns>
         <rows>
 			<row self="@{each='criterionSatisfaction'}"
                 value="@{criterionSatisfaction}">
-				<datebox id="date_start"
+				<label id="date_start"
                     value="@{criterionSatisfaction.startDate}" width="150px" />
-				<!--onChange="controller.goToValidation" -->
-				<datebox id="date_end"
+				<label id="date_end"
                     value="@{criterionSatisfaction.endDate}" width="150px" />
 				<label value="@{criterionSatisfaction.criterion.name}" />
+				<hbox>
+					<button label="Editar"
+						onClick="controller.goToEditWorkRelationshipForm(
+                        self.getParent().getParent().value);">
+					</button>
+					<button label="Borrar"
+						onClick="controller.workRelationship.deleteCriterionSatisfaction(self.getParent().getParent().value);">
+					</button>
+				</hbox>
 			</row>
 		</rows>
       </grid>
-    <button onClick="controller.save();" label="${arg.save_button_label}" />
-    <button onClick="controller.cancel();" label="${arg.cancel_button_label}" />
-    <button label="Edit personal data"
-        onClick="controller.goToEditForm()">
-    </button>
     <button label="New entry"
         onClick="controller.goToAddWorkRelationshipForm()">
     </button>

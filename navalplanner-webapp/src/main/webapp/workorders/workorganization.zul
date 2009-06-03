@@ -8,15 +8,15 @@
 <zk>
     <window self="@{define(content)}"
         apply="org.navalplanner.web.workorders.WorkOrganizationController">
-
-        <tree id="tree" width="600px" rows="8" multiple="true" >
+        <tree id="tree" width="600px" rows="8" multiple="true"
+        droppable="true" onDrop="controller.move(self, event.dragged)">
             <treecols sizable="true">
                 <treecol label="Name" />
                 <treecol label="Description" />
             </treecols>
             <treechildren>
                 <treeitem>
-                    <treerow draggable="true" droppable="true">
+                    <treerow draggable="true">
                         <treecell label=" Task 1 ">
                             <textbox value="Task 1 Name" width="230px"/>
                         </treecell>
@@ -26,15 +26,15 @@
                     </treerow>
                 </treeitem>
                 <treeitem>
-                    <treerow draggable="true" droppable="true">
+                    <treerow draggable="true">
                         <treecell label=" Task 2 " >
                             <textbox value="Task 2 Name" width="230px"/>
                         </treecell>
-                        <treecell>(calculated) hours </treecell>
+                        <treecell>--- hours </treecell>
                     </treerow>
                     <treechildren>
                         <treeitem>
-                            <treerow draggable="true" droppable="true">
+                            <treerow draggable="true">
                                 <treecell label="Task 2.1 " >
                                     <textbox value="Task 1 Name" width="200px"/>
                                 </treecell>
@@ -48,29 +48,30 @@
                                     </treerow>
                                 </treeitem>
                                 <treeitem>
-                                    <treerow draggable="true" droppable="true">
+                                    <treerow draggable="true">
                                         <treecell label="Item 2.1.2" />
                                     </treerow>
                                 </treeitem>
                             </treechildren>
                         </treeitem>
                         <treeitem>
-                            <treerow draggable="true" droppable="true">
+                            <treerow draggable="true">
                                 <treecell label="Item 2.2" />
                             </treerow>
-                            <treechildren>
-                                <treeitem>
-                                    <treerow draggable="true" droppable="true">
-                                        <treecell label="Item 2.2.1" />
-                                    </treerow>
-                                </treeitem>
-                            </treechildren>
                         </treeitem>
                     </treechildren>
                 </treeitem>
-                <treeitem label="Item 3" />
             </treechildren>
         </tree>
 
     </window>
+    <!--zscript>
+	void move(Component dragged) {
+		if (self instanceof Treerow) {
+			self.parent.insertBefore(dragged, self.getNextSibling() );
+		} else {
+			self.appendChild(dragged);
+		}
+	}
+    </zscript-->
 </zk>

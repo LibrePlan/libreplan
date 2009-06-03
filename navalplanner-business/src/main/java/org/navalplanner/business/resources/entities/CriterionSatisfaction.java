@@ -3,6 +3,9 @@ package org.navalplanner.business.resources.entities;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.daos.ICriterionSatisfactionDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Declares a interval of time in which the criterion is satisfied <br />
@@ -14,6 +17,10 @@ public class CriterionSatisfaction {
 
     @SuppressWarnings("unused")
     private long version;
+
+    @Autowired
+    private ICriterionSatisfactionDAO criterionSatisfactionDAO;
+
 
     /**
      * Required by hibernate. Do not use directly
@@ -98,6 +105,5 @@ public class CriterionSatisfaction {
         if ( (finishDate == null || finishDate.after(date)) )
             startDate = date;
     }
-
 
 }
