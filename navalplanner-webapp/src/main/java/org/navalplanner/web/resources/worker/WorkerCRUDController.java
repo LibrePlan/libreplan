@@ -14,12 +14,12 @@ import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.entities.WorkingRelationship;
 import org.navalplanner.business.resources.services.CriterionService;
 import org.navalplanner.web.common.IMessagesForUser;
-import org.navalplanner.web.common.IRedirectorRegistry;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
-import org.navalplanner.web.common.Redirector;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
+import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.api.Window;
@@ -29,7 +29,7 @@ import org.zkoss.zul.api.Window;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class WorkerCRUDController extends GenericForwardComposer implements
-        WorkerCRUDLinks {
+        IWorkerCRUDControllerEntryPoints {
 
     private Window createWindow;
 
@@ -45,7 +45,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private IWorkerModel workerModel;
 
-    private IRedirectorRegistry redirectorRegistry;
+    private IURLHandlerRegistry URLHandlerRegistry;
 
     private OnlyOneVisible visibility;
 
@@ -179,9 +179,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                  new WorkRelationshipsController(this.workerModel,this);
         this.workRelationship.doAfterCompose(
                 comp.getFellow("addWorkRelationshipWindow"));
-        Redirector<WorkerCRUDLinks> redirector = redirectorRegistry
-                .getRedirectorFor(WorkerCRUDLinks.class);
-        redirector.applyTo(this);
+         URLHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
+                .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
+        handler.applyIfMatches(this);
     }
 
     private LocalizationsController createLocalizationsController(

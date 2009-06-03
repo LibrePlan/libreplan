@@ -1,4 +1,4 @@
-package org.navalplanner.web.common;
+package org.navalplanner.web.common.entrypoints;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.io.Resource;
@@ -34,7 +35,7 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
 
         private final Class<?> pageInterface;
 
-        private Redirector<?> redirector;
+        private URLHandler<?> urlHandler;
 
         private SynthetizedImplementation(
                 ConfigurableListableBeanFactory beanFactory,
@@ -46,26 +47,25 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args)
                 throws Throwable {
-            Redirector<?> redirector = getRedirector();
-            redirector.doRedirect(method.getName(), args);
+            URLHandler<?> redirector = getHandler();
+            redirector.doTransition(method.getName(), args);
             return null;
         }
 
-        private Redirector<?> getRedirector() {
-            if (redirector != null)
-                return redirector;
-            RedirectorRegistry redirectorRegistry = (RedirectorRegistry) beanFactory
-                    .getBean(getSpringDefaultName(RedirectorRegistry.class),
-                            RedirectorRegistry.class);
-            redirector = redirectorRegistry.getRedirectorFor(pageInterface);
-            return redirector;
+        private URLHandler<?> getHandler() {
+            if (urlHandler != null)
+                return urlHandler;
+            URLHandlerRegistry registry = (URLHandlerRegistry) BeanFactoryUtils
+                    .beanOfType(beanFactory, URLHandlerRegistry.class);
+            urlHandler = registry.getRedirectorFor(pageInterface);
+            return urlHandler;
         }
     }
 
     public void postProcessBeanFactory(
             ConfigurableListableBeanFactory beanFactory) throws BeansException {
         long elapsedTime = System.currentTimeMillis();
-        for (Class<?> pageInterface : findInterfacesMarkedWithLinkable()) {
+        for (Class<?> pageInterface : findInterfacesMarkedEntryPoints()) {
             beanFactory.registerSingleton(getBeanName(pageInterface),
                     createRedirectorImplementationFor(beanFactory,
                             pageInterface));
@@ -73,10 +73,10 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
         elapsedTime = System.currentTimeMillis() - elapsedTime;
         LOG.debug("Took " + elapsedTime
                 + " ms to search for interfaces annotated with "
-                + LinksDefiner.class.getSimpleName());
+                + EntryPoints.class.getSimpleName());
     }
 
-    private List<Class<?>> findInterfacesMarkedWithLinkable() {
+    private List<Class<?>> findInterfacesMarkedEntryPoints() {
         List<Class<?>> result = new ArrayList<Class<?>>();
         PathMatchingResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
         CachingMetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(
@@ -112,7 +112,7 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
                 ClassMetadata classMetadata = metadataReader.getClassMetadata();
                 if (classMetadata.isInterface()
                         && annotationMetadata.getAnnotationTypes().contains(
-                                LinksDefiner.class.getName())) {
+                                EntryPoints.class.getName())) {
                     Class<?> klass = Class
                             .forName(classMetadata.getClassName());
                     if (klass.isInterface()) {
@@ -134,14 +134,8 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
                         beanFactory, pageInterface));
     }
 
-    private static String getSpringDefaultName(Class<?> klass) {
-        String simpleName = klass.getSimpleName();
-        return simpleName.substring(0, 1).toLowerCase()
-                + simpleName.substring(1);
-    }
-
     private static String getBeanName(Class<?> pageInterface) {
-        LinksDefiner annotation = pageInterface.getAnnotation(LinksDefiner.class);
-        return annotation.beanName();
+        EntryPoints annotation = pageInterface.getAnnotation(EntryPoints.class);
+        return annotation.registerAs();
     }
 }

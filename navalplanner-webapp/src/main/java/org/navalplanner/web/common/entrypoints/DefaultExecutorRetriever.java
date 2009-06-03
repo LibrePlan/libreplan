@@ -1,4 +1,4 @@
-package org.navalplanner.web.common;
+package org.navalplanner.web.common.entrypoints;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;

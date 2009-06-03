@@ -11,6 +11,7 @@ import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+import org.navalplanner.web.common.entrypoints.MatrixParameters;
 
 /**
  * Tests that {@link MatrixParameters} supports matrix parameters

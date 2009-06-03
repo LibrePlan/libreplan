@@ -1,4 +1,4 @@
-package org.navalplanner.web.common;
+package org.navalplanner.web.common.converters;
 
 import java.util.HashMap;
 import java.util.List;

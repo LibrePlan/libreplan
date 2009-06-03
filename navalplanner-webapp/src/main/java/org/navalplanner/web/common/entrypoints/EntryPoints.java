@@ -1,4 +1,4 @@
-package org.navalplanner.web.common;
+package org.navalplanner.web.common.entrypoints;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -10,10 +10,10 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LinksDefiner {
+public @interface EntryPoints {
 
     public String page();
 
-    public String beanName();
+    public String registerAs();
 
 }

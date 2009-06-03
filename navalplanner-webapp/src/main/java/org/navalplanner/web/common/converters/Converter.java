@@ -1,4 +1,4 @@
-package org.navalplanner.web.common;
+package org.navalplanner.web.common.converters;
 
 /**
  * Converts from an object to an string representation, and converts the object

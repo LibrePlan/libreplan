@@ -1,4 +1,4 @@
-package org.navalplanner.web.common;
+package org.navalplanner.web.common.entrypoints;
 
 import java.util.HashMap;
 import java.util.Map;

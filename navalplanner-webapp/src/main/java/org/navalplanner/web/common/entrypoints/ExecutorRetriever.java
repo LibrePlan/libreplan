@@ -1,4 +1,4 @@
-package org.navalplanner.web.common;
+package org.navalplanner.web.common.entrypoints;
 
 import org.zkoss.zk.ui.Execution;
 

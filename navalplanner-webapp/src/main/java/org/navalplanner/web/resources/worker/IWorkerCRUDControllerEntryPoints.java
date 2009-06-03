@@ -1,23 +1,23 @@
 package org.navalplanner.web.resources.worker;
 
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.web.common.LinksDefiner;
-import org.navalplanner.web.common.LinkToState;
+import org.navalplanner.web.common.entrypoints.EntryPoint;
+import org.navalplanner.web.common.entrypoints.EntryPoints;
 
 /**
  * Contract for {@link WorkerCRUDController}. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-@LinksDefiner(page = "/resources/worker/worker.zul", beanName = "workerCRUD")
-public interface WorkerCRUDLinks {
+@EntryPoints(page = "/resources/worker/worker.zul", registerAs = "workerCRUD")
+public interface IWorkerCRUDControllerEntryPoints {
 
-    @LinkToState("edit")
+    @EntryPoint("edit")
     public abstract void goToEditForm(Worker worker);
 
-    @LinkToState("workRelationships")
+    @EntryPoint("workRelationships")
     public abstract void goToWorkRelationshipsForm(Worker worker);
 
-    @LinkToState("create")
+    @EntryPoint("create")
     public abstract void goToCreateForm();
 
 }

@@ -13,7 +13,7 @@
         required for "@Autowired")
     -->
     <context:annotation-config />
-    <bean class="org.navalplanner.web.common.RedirectorSynthetiser"></bean>
+    <bean class="org.navalplanner.web.common.entrypoints.RedirectorSynthetiser"></bean>
 
     <context:component-scan base-package="org.navalplanner.web"/>
 </beans>

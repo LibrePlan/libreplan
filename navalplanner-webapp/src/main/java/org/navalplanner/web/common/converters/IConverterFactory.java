@@ -1,4 +1,5 @@
-package org.navalplanner.web.common;
+package org.navalplanner.web.common.converters;
+
 
 /**
  * Retrieves a Converter given a type <br />

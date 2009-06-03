@@ -1,4 +1,4 @@
-package org.navalplanner.web.common;
+package org.navalplanner.web.common.entrypoints;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -13,22 +13,24 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.web.common.converters.Converter;
+import org.navalplanner.web.common.converters.IConverterFactory;
 import org.zkoss.zk.ui.Execution;
 
 /**
  * <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Redirector<T> {
+public class URLHandler<T> {
 
-    private static final Log LOG = LogFactory.getLog(Redirector.class);
+    private static final Log LOG = LogFactory.getLog(URLHandler.class);
 
-    private static class LinkMetadata {
+    private static class EntryPointMetadata {
         private final Method method;
 
-        private final LinkToState annotation;
+        private final EntryPoint annotation;
 
-        private LinkMetadata(Method method, LinkToState annotation) {
+        private EntryPointMetadata(Method method, EntryPoint annotation) {
             this.method = method;
             this.annotation = annotation;
         }
@@ -36,42 +38,42 @@ public class Redirector<T> {
 
     private final ExecutorRetriever executorRetriever;
 
-    private Map<String, LinkMetadata> metadata = new HashMap<String, LinkMetadata>();
+    private Map<String, EntryPointMetadata> metadata = new HashMap<String, EntryPointMetadata>();
 
     private final String page;
 
     private final IConverterFactory converterFactory;
 
-    public Redirector(IConverterFactory converterFactory,
-            ExecutorRetriever executorRetriever, Class<T> interfaceDefiningLinks) {
-        Validate.isTrue(interfaceDefiningLinks.isInterface());
+    public URLHandler(IConverterFactory converterFactory,
+            ExecutorRetriever executorRetriever,
+            Class<T> interfaceDefiningEntryPoints) {
+        Validate.isTrue(interfaceDefiningEntryPoints.isInterface());
         this.converterFactory = converterFactory;
         this.executorRetriever = executorRetriever;
-        LinksDefiner linkDefiner = interfaceDefiningLinks
-                .getAnnotation(LinksDefiner.class);
-        Validate
-                .notNull(linkDefiner, LinksDefiner.class.getName()
-                        + " annotation required on "
-                        + interfaceDefiningLinks.getName());
-        this.page = linkDefiner.page();
-        for (Method method : interfaceDefiningLinks.getMethods()) {
-            LinkToState linkToState = method.getAnnotation(LinkToState.class);
-            if (linkToState != null) {
-                metadata.put(method.getName(), new LinkMetadata(method,
-                        linkToState));
+        EntryPoints entryPoints = interfaceDefiningEntryPoints
+                .getAnnotation(EntryPoints.class);
+        Validate.notNull(entryPoints, EntryPoints.class.getName()
+                + " annotation required on "
+                + interfaceDefiningEntryPoints.getName());
+        this.page = entryPoints.page();
+        for (Method method : interfaceDefiningEntryPoints.getMethods()) {
+            EntryPoint entryPoint = method.getAnnotation(EntryPoint.class);
+            if (entryPoint != null) {
+                metadata.put(method.getName(), new EntryPointMetadata(method,
+                        entryPoint));
             }
         }
     }
 
-    public void doRedirect(String methodName, Object... values) {
+    public void doTransition(String methodName, Object... values) {
         if (!metadata.containsKey(methodName)) {
             LOG.error("Method " + methodName
                     + "doesn't represent a state(It doesn't have a "
-                    + LinkToState.class.getSimpleName()
+                    + EntryPoint.class.getSimpleName()
                     + " annotation). Nothing will be done");
             return;
         }
-        LinkMetadata linkableMetadata = metadata.get(methodName);
+        EntryPointMetadata linkableMetadata = metadata.get(methodName);
         Class<?>[] types = linkableMetadata.method.getParameterTypes();
         String[] parameterNames = linkableMetadata.annotation.value();
         String[] stringRepresentations = new String[parameterNames.length];
@@ -102,28 +104,28 @@ public class Redirector<T> {
         }
     }
 
-    public <S extends T> void applyTo(S controller) {
+    public <S extends T> void applyIfMatches(S controller) {
         Execution current = executorRetriever.getCurrent();
         Map<String, String> matrixParams = MatrixParameters
                 .extract((HttpServletRequest) current.getNativeRequest());
         Set<String> matrixParamsNames = matrixParams.keySet();
-        for (Entry<String, LinkMetadata> entry : metadata.entrySet()) {
-            LinkMetadata linkMetadata = entry.getValue();
-            LinkToState linkToStateAnnotation = linkMetadata.annotation;
+        for (Entry<String, EntryPointMetadata> entry : metadata.entrySet()) {
+            EntryPointMetadata entryPointMetadata = entry.getValue();
+            EntryPoint entryPointAnnotation = entryPointMetadata.annotation;
             HashSet<String> requiredParams = new HashSet<String>(Arrays
-                    .asList(linkToStateAnnotation.value()));
+                    .asList(entryPointAnnotation.value()));
             if (matrixParamsNames.equals(requiredParams)) {
                 Object[] arguments = retrieveArguments(matrixParams,
-                        linkToStateAnnotation, linkMetadata.method
+                        entryPointAnnotation, entryPointMetadata.method
                                 .getParameterTypes());
-                callMethod(controller, linkMetadata.method, arguments);
+                callMethod(controller, entryPointMetadata.method, arguments);
                 return;
             }
         }
     }
 
     private Object[] retrieveArguments(Map<String, String> matrixParams,
-            LinkToState linkToStateAnnotation, Class<?>[] parameterTypes) {
+            EntryPoint linkToStateAnnotation, Class<?>[] parameterTypes) {
         Object[] result = new Object[parameterTypes.length];
         for (int i = 0; i < parameterTypes.length; i++) {
             Object argumentName = linkToStateAnnotation.value()[i];

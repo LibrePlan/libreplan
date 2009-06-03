@@ -9,7 +9,7 @@ import java.util.Set;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.resources.worker.WorkerCRUDLinks;
+import org.navalplanner.web.resources.worker.IWorkerCRUDControllerEntryPoints;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -34,7 +34,7 @@ public class CriterionWorkersController extends GenericForwardComposer {
 
     private Button cancelListButton;
 
-    private WorkerCRUDLinks workerCRUD;
+    private IWorkerCRUDControllerEntryPoints workerCRUD;
 
     public void showList(Event event) {
         loadDataToList();
