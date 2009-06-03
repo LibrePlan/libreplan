@@ -3,9 +3,11 @@ package org.zkoss.ganttz.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlNativeComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -101,12 +103,31 @@ public class MenuBuilder<T extends XulElement> {
             });
             result.appendChild(menuItem);
         }
-        root.appendChild(result);
+        insertInRootComponent(result);
         if (setContext) {
             for (T element : elements) {
                 element.setContext(result);
             }
         }
         return result;
+    }
+
+    private void insertInRootComponent(Menupopup result) {
+        ArrayList<Component> children = new ArrayList<Component>(root
+                .getChildren());
+        Collections.reverse(children);
+        // the Menupopup cannot be inserted after a HtmlNativeComponent, so we
+        // try to avoid it
+        if (children.isEmpty()) {
+            root.appendChild(result);
+        }
+        for (Component child : children) {
+            if (!(child instanceof HtmlNativeComponent)) {
+                root.insertBefore(result, child);
+                return;
+            }
+        }
+        throw new RuntimeException("all children of " + root
+                + " are html native");
     }
 }
