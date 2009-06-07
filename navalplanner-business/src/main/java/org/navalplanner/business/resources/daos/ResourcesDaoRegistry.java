@@ -2,7 +2,7 @@ package org.navalplanner.business.resources.daos;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-// FIXME: Improve with 
+// FIXME: Improve with
 // http://en.wikipedia.org/wiki/Initialization_on_demand_holder_idiom???
 // (I think it is not necessary).
 

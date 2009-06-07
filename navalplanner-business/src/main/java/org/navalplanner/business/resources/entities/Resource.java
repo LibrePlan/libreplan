@@ -16,9 +16,9 @@ import org.navalplanner.business.resources.daos.ResourcesDaoRegistry;
 // FIXME: Alternatively, Resource can be modeled with the style:
 // Resource.getParent() & Resource.getChilds(). This way, Resource does not
 // depend on ResourceGroup. However, such an option allows combinations not
-// semantically correct (e.g. a simple resource, such as Worker, could be the 
+// semantically correct (e.g. a simple resource, such as Worker, could be the
 // child another simple resource, general methods like getChilds() do not make
-// sense for simple entities, etc.). In consequence, I prefer the modeling 
+// sense for simple entities, etc.). In consequence, I prefer the modeling
 // option shown below.
 /**
  * This class acts as the base class for all resources.

@@ -11,9 +11,9 @@ import java.util.Vector;
 import org.zkoss.ganttz.util.Interval;
 
 /**
- * 
+ *
  * @author Francisco Javier Moran Rúa
- * 
+ *
  */
 public class DetailOneTimeTrackerState extends TimeTrackerState {
 

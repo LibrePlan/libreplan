@@ -14,9 +14,9 @@ import java.util.Vector;
 import org.zkoss.ganttz.util.Interval;
 
 /**
- * 
+ *
  * @author Francisco Javier Moran Rúa
- * 
+ *
  */
 public class DetailTwoTimeTrackerState extends TimeTrackerState {
 
@@ -96,7 +96,7 @@ public class DetailTwoTimeTrackerState extends TimeTrackerState {
     }
 
     /**
-     * 
+     *
      * @param date
      * @param year
      * @return a number from 1(quarter until to 1st April) to 4(quarter until

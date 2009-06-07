@@ -12,9 +12,9 @@ import org.zkoss.zul.Label;
  */
 
 /**
- * 
+ *
  * @author Francisco Javier Moran Rúa
- * 
+ *
  */
 public class MyHelloPageListener extends Div implements Initiator {
 

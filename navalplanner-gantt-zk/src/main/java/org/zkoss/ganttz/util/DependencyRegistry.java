@@ -18,9 +18,9 @@ import org.zkoss.ganttz.Dependency;
  * the {@link DependencyBean dependency} as arcs. It enforces the rules embodied
  * in the dependencies and in the duration of the tasks using listeners. <br/>
  * Created at Apr 24, 2009
- * 
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- * 
+ *
  */
 public class DependencyRegistry {
 

@@ -5,7 +5,7 @@ import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * DAO interface for the <code>Resource</code> entity.
- * 
+ *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  *
  */

@@ -15,9 +15,9 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- * 
+ *
  * @author Francisco Javier Moran Rúa
- * 
+ *
  */
 public class Dependency extends XulElement implements AfterCompose {
 

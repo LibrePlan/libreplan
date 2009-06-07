@@ -15,9 +15,9 @@ import java.util.List;
 import org.zkoss.ganttz.util.Interval;
 
 /**
- * 
+ *
  * @author Francisco Javier Moran Rúa
- * 
+ *
  */
 public abstract class TimeTrackerState {
 
@@ -26,9 +26,9 @@ public abstract class TimeTrackerState {
 
     /**
      * This class is conceived as an immutable class.
-     * 
+     *
      * @author Francisco Javier Moran Rúa
-     * 
+     *
      */
     public final static class DetailItem {
 

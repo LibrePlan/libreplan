@@ -21,10 +21,10 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Label;
 
 /**
- * 
- * 
+ *
+ *
  * @author Francisco Javier Moran Rúa
- * 
+ *
  */
 
 public class TimeTracker extends HtmlMacroComponent {

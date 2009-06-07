@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.zkoss.ganttz.util;
 

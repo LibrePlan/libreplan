@@ -6,7 +6,7 @@ import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * Hibernate DAO for the <code>Worker</code> entity.
- * 
+ *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  *
  */

@@ -30,7 +30,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 
 /**
- * 
+ *
  * @author javi
  */
 public class Task extends Div {

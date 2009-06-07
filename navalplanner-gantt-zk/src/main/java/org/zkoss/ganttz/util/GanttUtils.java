@@ -8,7 +8,7 @@ package org.zkoss.ganttz.util;
 /**
  *
  * @author Francisco Javier Moran Rúa
- * 
+ *
  */
 public class GanttUtils {
 

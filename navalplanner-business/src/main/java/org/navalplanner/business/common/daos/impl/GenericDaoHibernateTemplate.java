@@ -18,16 +18,16 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 // it represents a non-intrusive use of Spring.
 
 /**
- * An implementation of <code>IGenericDao</code> based on Spring's 
- * <code>HibernateTemplate</code>. Concrete DAOs must extend directly from 
- * this class. This constraint is imposed by the constructor of this class that 
+ * An implementation of <code>IGenericDao</code> based on Spring's
+ * <code>HibernateTemplate</code>. Concrete DAOs must extend directly from
+ * this class. This constraint is imposed by the constructor of this class that
  * must infer the type of the entity from the concrete DAO declaration. <p/>
- * 
- * This class autowires a <code>SessionFactory</code> bean and allows to 
- * implement Spring's HibernateTemplate-based DAOs. Subclasses access 
- * <code>HibernateTemplate</code> by calling on 
+ *
+ * This class autowires a <code>SessionFactory</code> bean and allows to
+ * implement Spring's HibernateTemplate-based DAOs. Subclasses access
+ * <code>HibernateTemplate</code> by calling on
  * <code>getHibernateTemplate()</code> method.
- * 
+ *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  *
  * @param <E> Entity class

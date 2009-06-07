@@ -7,9 +7,9 @@ package org.zkoss.ganttz.util.zoom;
 
 
 /**
- * 
+ *
  * @author Francisco Javier Moran Rúa
- * 
+ *
  */
 public enum ZoomLevel {
 
@@ -27,7 +27,7 @@ public enum ZoomLevel {
     }
 
     /**
-     * 
+     *
      * @return if there is no next, returns <code>this</code>. Otherwise returns
      *         the next one.
      */
@@ -40,7 +40,7 @@ public enum ZoomLevel {
     }
 
     /**
-     * 
+     *
      * @return if there is no previous, returns <code>this</code>. Otherwise
      *         returns the previous one.
      */

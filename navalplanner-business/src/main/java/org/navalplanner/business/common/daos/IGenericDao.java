@@ -9,7 +9,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
  * The interface all DAOs (Data Access Objects) must implement. In general,
  * a DAO must be implemented for each persistent entity. Concrete DAOs may
  * provide (and usually will provide) additional methods.
- * 
+ *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  *
  * @param <E> Entity class

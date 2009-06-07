@@ -22,9 +22,9 @@ import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- * 
+ *
  * @author Francisco Javier Moran Rúa
- * 
+ *
  */
 public class DependencyList extends XulElement implements AfterCompose {
 
