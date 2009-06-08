@@ -2,9 +2,7 @@ package org.navalplanner.business.workorders.entities;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -38,7 +36,7 @@ public class ProjectWork {
     // TODO turn into a many to one relationship when Customer entity is defined
     private String customer;
 
-    private Set<TaskWork> taskWorks = new HashSet<TaskWork>();
+    private List<TaskWork> taskWorks = new ArrayList<TaskWork>();
 
     public Long getId() {
         return id;

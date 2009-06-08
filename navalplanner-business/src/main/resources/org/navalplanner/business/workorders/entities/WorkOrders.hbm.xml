@@ -12,10 +12,11 @@
         <property name="description" access="field"></property>
         <property name="responsible" access="field"></property>
         <property name="customer" access="field"></property>
-        <set name="taskWorks" access="field" cascade="all-delete-orphan">
+        <list name="taskWorks" access="field" cascade="all-delete-orphan">
             <key column="projectId" not-null="false"></key>
+            <index column="positionInProject"></index>
             <one-to-many class="TaskWork" />
-        </set>
+        </list>
     </class>
 
     <class name="TaskWork" abstract="true">
@@ -33,10 +34,11 @@
 
         <joined-subclass name="TaskWorkContainer">
             <key column="TASKWORKID"></key>
-            <set name="children" access="field" cascade="all-delete-orphan">
+            <list name="children" access="field" cascade="all-delete-orphan">
                 <key column="parent" not-null="false"></key>
+                <index column="positionInContainer"></index>
                 <one-to-many class="TaskWork" />
-            </set>
+            </list>
         </joined-subclass>
 
         <joined-subclass name="TaskWorkLeaf">
