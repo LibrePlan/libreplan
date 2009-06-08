@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.navalplanner.business.common.OnTransaction;
 import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -68,6 +69,11 @@ public class ProjectWorkService implements IProjectWorkService {
     public void remove(ProjectWork projectWork)
             throws InstanceNotFoundException {
         dao.remove(projectWork.getId());
+    }
+
+    @Override
+    public <T> T onTransaction(OnTransaction<T> onTransaction) {
+        return onTransaction.execute();
     }
 
 }

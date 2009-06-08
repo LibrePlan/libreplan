@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.navalplanner.business.common.OnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -47,10 +48,6 @@ public interface CriterionService {
             Criterion criterion);
 
     Criterion load(Criterion criterion);
-
-    interface OnTransaction<T> {
-        public T execute();
-    }
 
     <T> T onTransaction(OnTransaction<T> onTransaction);
 

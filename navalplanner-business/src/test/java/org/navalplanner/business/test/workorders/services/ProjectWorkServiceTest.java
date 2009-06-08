@@ -1,18 +1,5 @@
 package org.navalplanner.business.test.workorders.services;
 
-import java.util.List;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
-import org.navalplanner.business.workorders.entities.ProjectWork;
-import org.navalplanner.business.workorders.services.IProjectWorkService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertFalse;
@@ -20,6 +7,26 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+
+import java.util.List;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.navalplanner.business.common.OnTransaction;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
+import org.navalplanner.business.workorders.entities.ActivityWork;
+import org.navalplanner.business.workorders.entities.ProjectWork;
+import org.navalplanner.business.workorders.entities.TaskWork;
+import org.navalplanner.business.workorders.entities.TaskWorkContainer;
+import org.navalplanner.business.workorders.entities.TaskWorkLeaf;
+import org.navalplanner.business.workorders.services.IProjectWorkService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.NotTransactional;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Tests for {@link ProjectWork}. <br />
@@ -83,4 +90,43 @@ public class ProjectWorkServiceTest {
         assertThat(projectWorkService.find(projectWork.getId()), notNullValue());
     }
 
+    @Test
+    @NotTransactional
+    public void testAddingTaskWork() throws Exception {
+        final ProjectWork projectWork = createValidProjectWork();
+        TaskWorkContainer container = new TaskWorkContainer();
+        container.setName("bla");
+        TaskWorkLeaf leaf = new TaskWorkLeaf();
+        leaf.setName("leaf");
+        container.addTask(leaf);
+        projectWork.add(container);
+        ActivityWork activityWork = new ActivityWork();
+        activityWork.setWorkingHours(3);
+        leaf.addActivity(activityWork);
+        projectWorkService.save(projectWork);
+        projectWorkService.onTransaction(new OnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                try {
+                    ProjectWork reloaded = projectWorkService.find(projectWork
+                            .getId());
+                    assertFalse(projectWork == reloaded);
+                    assertThat(reloaded.getTaskWorks().size(), equalTo(1));
+                    TaskWorkContainer containerReloaded = (TaskWorkContainer) reloaded
+                            .getTaskWorks().get(0);
+                    assertThat(containerReloaded.getActivities().size(),
+                            equalTo(0));
+                    assertThat(containerReloaded.getChildren().size(),
+                            equalTo(1));
+                    TaskWork leaf = containerReloaded.getChildren().get(0);
+                    assertThat(leaf.getActivities().size(), equalTo(1));
+                    projectWorkService.remove(projectWork);
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                return null;
+            }
+        });
+    }
 }
