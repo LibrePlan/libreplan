@@ -110,6 +110,34 @@ public class WorkerModel implements IWorkerModel {
         return worker.getAllSatisfactions();
     }
 
+    @Transactional
+    public AddingSatisfactionResult addSatisfaction(ICriterionType<?> type,
+            CriterionSatisfaction original, CriterionSatisfaction edited) {
+        Worker worker = getWorker();
+        edited.setResource(worker);
+        boolean previouslyContained = false;
+        if (previouslyContained = worker.contains(original)) {
+            worker.removeCriterionSatisfaction(original);
+        }
+        boolean canAdd = false;
+        try {
+            canAdd = worker.canAddSatisfaction(type, edited);
+        } catch (IllegalArgumentException e) {
+            if (previouslyContained) {
+                worker.addSatisfaction(type, original);
+            }
+            return AddingSatisfactionResult.SATISFACTION_WRONG;
+        }
+        if (!canAdd) {
+            if (previouslyContained) {
+                worker.addSatisfaction(type, original);
+            }
+            return AddingSatisfactionResult.DONT_COMPLY_OVERLAPPING_RESTRICTIONS;
+        }
+        worker.addSatisfaction(type, edited);
+        return AddingSatisfactionResult.OK;
+    }
+
     private static class NullAssigner implements
             IMultipleCriterionActiveAssigner {
 
@@ -252,7 +280,8 @@ public class WorkerModel implements IWorkerModel {
         public void applyChanges() {
             for (CriterionSatisfaction criterionSatisfaction : added) {
                 resource.addSatisfaction(new CriterionWithItsType(type,
-                criterionSatisfaction.getCriterion()), Interval.from(criterionSatisfaction.getStartDate()));
+                        criterionSatisfaction.getCriterion()), Interval
+                        .from(criterionSatisfaction.getStartDate()));
             }
             for (Criterion criterion : unassigned.keySet()) {
                 resource.finish(new CriterionWithItsType(type, criterion));
@@ -307,13 +336,13 @@ public class WorkerModel implements IWorkerModel {
     }
 
     @Override
-    public Set<CriterionSatisfaction> getLaboralRelatedCriterionSatisfactions(
+    public List<CriterionSatisfaction> getLaboralRelatedCriterionSatisfactions(
             Worker worker) {
         Set<CriterionSatisfaction> result = new HashSet<CriterionSatisfaction>();
         for (ICriterionType<?> criterionType : laboralRelatedTypes) {
             result.addAll(worker.getSatisfactionsFor(criterionType));
         }
-        return result;
-
+        return worker.query().oneOf(laboralRelatedTypes).sortByStartDate()
+                .result();
     }
 }

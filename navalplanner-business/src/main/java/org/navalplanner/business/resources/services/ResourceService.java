@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-//import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -19,6 +19,7 @@ public interface ResourceService {
      * It updates or inserts the resource passed as a parameter. If the resource
      * is a composite resource, updating or inserting is cascaded to the
      * resources contained in it.
+     * @throws ValidationException
      */
     public void saveResource(Resource resource);
 

@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Declares a interval of time in which the criterion is satisfied <br />
@@ -63,6 +64,20 @@ public class CriterionSatisfaction {
 
     private Resource resource;
 
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+
+    public CriterionSatisfaction copy() {
+        CriterionSatisfaction result = new CriterionSatisfaction();
+        result.startDate = startDate;
+        result.finishDate = finishDate;
+        result.criterion = criterion;
+        result.resource = resource;
+        return result;
+    }
+
     public Date getStartDate() {
         return startDate != null ? new Date(startDate.getTime()) : null;
     }
@@ -119,20 +134,26 @@ public class CriterionSatisfaction {
     }
 
     public void setEndDate(Date date) {
-        if (date == null) {
-            finishDate = null;
-        }
-        if ((startDate.equals(date) || startDate.before(date)))
-            finishDate = date;
+        finishDate = date;
     }
 
     public void setStartDate(Date date) {
-        if ((finishDate == null || finishDate.after(date)))
-            startDate = date;
+        startDate = date;
     }
 
     public boolean overlapsWith(Interval interval) {
         return getInterval().overlapsWith(interval);
+    }
+
+    public boolean goesBeforeWithoutOverlapping(CriterionSatisfaction other) {
+        int compare = BY_START_COMPARATOR.compare(this, other);
+        if (compare > 0) {
+            return false;
+        } else {
+            Interval thisInterval = getInterval();
+            return !thisInterval.overlapsWith(other.getInterval());
+        }
+
     }
 
 }

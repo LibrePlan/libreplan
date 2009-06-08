@@ -130,7 +130,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     public void goToAddWorkRelationshipForm() {
         this.addWorkRelationship.prepareForCreate();
         getVisibility().showOnly(addWorkRelationshipWindow);
-        Util.reloadBindings(addWorkRelationshipWindow);
     }
 
     public void goToCreateForm() {
@@ -142,7 +141,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     public void goToEditWorkRelationshipForm(CriterionSatisfaction satisfaction) {
         this.editWorkRelationship.prepareForEdit(satisfaction);
         getVisibility().showOnly(editWorkRelationshipWindow);
-        Util.reloadBindings(editWorkRelationshipWindow);
     }
 
     @Override
@@ -158,12 +156,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             throw new RuntimeException("messagesContainer is needed");
         messages = new MessagesForUser(messagesContainer);
         this.addWorkRelationship = new WorkRelationshipsController(
-                this.workerModel, this);
+                this.workerModel, this, messages);
         setupWorkRelationshipController(this.addWorkRelationship,
                 this.addWorkRelationshipWindow);
         setupWorkRelationshipController(
                 this.editWorkRelationship = new WorkRelationshipsController(
-                        this.workerModel, this), editWorkRelationshipWindow);
+                        this.workerModel, this, messages),
+                editWorkRelationshipWindow);
 
         URLHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);

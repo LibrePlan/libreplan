@@ -1,12 +1,14 @@
 package org.navalplanner.business.resources.entities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -142,6 +144,25 @@ public abstract class Resource {
             return new ArrayList<Criterion>(result);
         }
 
+        public Query oneOf(ICriterionType<?>[] laboralRelatedTypes) {
+            return oneOf(Arrays.asList(laboralRelatedTypes));
+        }
+
+        public Query oneOf(final Collection<? extends ICriterionType<?>> types) {
+            return withNewPredicate(new Predicate() {
+
+                @Override
+                public boolean accepts(CriterionSatisfaction satisfaction) {
+                    for (ICriterionType<?> criterionType : types) {
+                        if (criterionType.contains(satisfaction.getCriterion())) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
+
     }
 
     public Query query() {
@@ -245,8 +266,8 @@ public abstract class Resource {
 
     }
 
-    public CriterionSatisfaction addSatisfaction(
-            ICriterionType<Criterion> type, CriterionSatisfaction satisfaction) {
+    public CriterionSatisfaction addSatisfaction(ICriterionType<?> type,
+            CriterionSatisfaction satisfaction) {
         return new EnsureSatisfactionIsCorrect(this, type, satisfaction)
                 .addSatisfaction();
     }
@@ -347,7 +368,8 @@ public abstract class Resource {
 
     public boolean canAddSatisfaction(ICriterionType<?> type,
             CriterionSatisfaction satisfaction) {
-        return new EnsureSatisfactionIsCorrect(this, type, satisfaction)
+        EnsureSatisfactionIsCorrect ensureSatisfactionIsCorrect = new EnsureSatisfactionIsCorrect(this, type, satisfaction);
+        return ensureSatisfactionIsCorrect
                 .canAddSatisfaction();
     }
 
@@ -371,13 +393,74 @@ public abstract class Resource {
         return previous;
     }
 
-    public void removeCriterionSatisfaction(CriterionSatisfaction satisfaction)
-            throws InstanceNotFoundException {
+    public void removeCriterionSatisfaction(CriterionSatisfaction satisfaction) {
         criterionSatisfactions.remove(satisfaction);
     }
 
     public boolean contains(CriterionSatisfaction satisfaction) {
         return criterionSatisfactions.contains(satisfaction);
+    }
+
+    public void checkNotOverlaps(List<ICriterionType<?>> types) {
+        for (ICriterionType<?> criterionType : types) {
+            if (!criterionType.allowSimultaneousCriterionsPerResource()) {
+                List<CriterionSatisfaction> satisfactions = query().from(
+                        criterionType).sortByStartDate().result();
+                ListIterator<CriterionSatisfaction> listIterator = satisfactions
+                        .listIterator();
+                while (listIterator.hasNext()) {
+                    CriterionSatisfaction current = listIterator.next();
+                    CriterionSatisfaction previous = getPrevious(listIterator);
+                    CriterionSatisfaction next = getNext(listIterator);
+                    if (previous != null) {
+                        checkNotOverlaps(previous, current);
+                    }
+                    if (next != null)
+                        checkNotOverlaps(current, next);
+                }
+            }
+
+        }
+
+    }
+
+    private void checkNotOverlaps(CriterionSatisfaction before,
+            CriterionSatisfaction after) {
+        if (!before.goesBeforeWithoutOverlapping(after)) {
+            throw new IllegalArgumentException(createOverlapsMessage(before,
+                    after));
+        }
+    }
+
+    private String createOverlapsMessage(CriterionSatisfaction before,
+            CriterionSatisfaction after) {
+        return new StringBuilder("the satisfaction").append(before).append(
+                "overlaps with").append(after).toString();
+    }
+
+    private CriterionSatisfaction getNext(
+            ListIterator<CriterionSatisfaction> listIterator) {
+        if (listIterator.hasNext()) {
+            CriterionSatisfaction result = listIterator.next();
+            listIterator.previous();
+            return result;
+        }
+        return null;
+    }
+
+    private CriterionSatisfaction getPrevious(
+            ListIterator<CriterionSatisfaction> listIterator) {
+        listIterator.previous();
+        try {
+            if (listIterator.hasPrevious()) {
+                CriterionSatisfaction result = listIterator.previous();
+                listIterator.next();
+                return result;
+            }
+            return null;
+        } finally {
+            listIterator.next();
+        }
     }
 
 }

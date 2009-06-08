@@ -127,4 +127,37 @@ public class CriterionSatisfactionTest {
             assertThat(copy, equalTo(orderedSatisfactions));
         }
     }
+
+    @Test
+    public void testGoesBeforeWithoutOverlapping() {
+        final Criterion criterion = CriterionDAOTest.createValidCriterion();
+        Worker worker = new Worker("firstName", "surName", "2333232", 10);
+        CriterionSatisfaction posterior = new CriterionSatisfaction();
+        posterior.setCriterion(criterion);
+        posterior.setStartDate(year(2000));
+        posterior.setEndDate(year(2008));
+        Interval[] goesAfterOrOverlapsIntervals = { Interval.from(year(2000)),
+                Interval.from(year(2001)), Interval.from(year(1999)),
+                Interval.range(year(1999), year(2001)),
+                Interval.from(year(2009)),
+                Interval.range(year(2009), year(2012)) };
+        for (Interval interval : goesAfterOrOverlapsIntervals) {
+            CriterionSatisfaction copied = posterior.copy();
+            copied.setStartDate(interval.getStart());
+            copied.setEndDate(interval.getEnd());
+            assertFalse(interval + " shouldn't go before", copied
+                    .goesBeforeWithoutOverlapping(posterior));
+        }
+        Interval[] goesBeforeWithoutOverlappingInterval = {
+                Interval.point(year(2000)),
+                Interval.range(year(1990), year(2000)),
+                Interval.range(year(1990), year(1997)) };
+        for (Interval interval : goesBeforeWithoutOverlappingInterval) {
+            CriterionSatisfaction copied = posterior.copy();
+            copied.setStartDate(interval.getStart());
+            copied.setEndDate(interval.getEnd());
+            assertTrue(copied.goesBeforeWithoutOverlapping(posterior));
+        }
+
+    }
 }

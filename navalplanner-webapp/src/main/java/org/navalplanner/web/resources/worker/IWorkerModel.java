@@ -37,7 +37,15 @@ public interface IWorkerModel {
 
     Map<ICriterionType<?>, Collection<Criterion>> getLaboralRelatedCriterions();
 
-    Set<CriterionSatisfaction> getLaboralRelatedCriterionSatisfactions(
+    List<CriterionSatisfaction> getLaboralRelatedCriterionSatisfactions(
             Worker worker);
+
+    public enum AddingSatisfactionResult {
+        OK, SATISFACTION_WRONG, DONT_COMPLY_OVERLAPPING_RESTRICTIONS;
+    }
+
+    AddingSatisfactionResult addSatisfaction(ICriterionType<?> type,
+            CriterionSatisfaction originalSatisfaction,
+            CriterionSatisfaction edited);
 
 }

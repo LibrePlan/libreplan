@@ -3,9 +3,8 @@ package org.navalplanner.web.resources.worker;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -13,8 +12,11 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterionType;
-import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.Util;
+import org.navalplanner.web.resources.worker.IWorkerModel.AddingSatisfactionResult;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Listbox;
@@ -34,26 +36,28 @@ public class WorkRelationshipsController extends GenericForwardComposer {
      * CriterionSatisfaction();
      */
 
-    private CriterionSatisfaction editRelationship = new CriterionSatisfaction();
+    private CriterionSatisfaction satisfactionEdited = new CriterionSatisfaction();
 
-    private Collection<Criterion> workCriterions;
+    private List<Criterion> workCriterions;
 
     private Listbox selectedWorkCriterion;
-
-    /*
-     * private Datebox newWorkRelationshipStartDate;
-     * 
-     * private Datebox newWorkRelationshipEndDate;
-     */
 
     private HashMap<Criterion, CriterionWithItsType> fromCriterionToType;
 
     private boolean editing;
 
+    private Component containerComponent;
+
+    private CriterionSatisfaction originalSatisfaction;
+
+    private final IMessagesForUser messagesForUser;
+
     public WorkRelationshipsController(IWorkerModel workerModel,
-            WorkerCRUDController workerCRUDController) {
+            WorkerCRUDController workerCRUDController,
+            IMessagesForUser messagesForUser) {
         this.workerModel = workerModel;
         this.workerCRUDController = workerCRUDController;
+        this.messagesForUser = messagesForUser;
         this.workCriterions = new ArrayList<Criterion>();
         Map<ICriterionType<?>, Collection<Criterion>> map = workerModel
                 .getLaboralRelatedCriterions();
@@ -68,13 +72,12 @@ public class WorkRelationshipsController extends GenericForwardComposer {
         }
     }
 
-    public Set<CriterionSatisfaction> getCriterionSatisfactions() {
-        if (this.workerCRUDController.getWorker() == null) {
-            return new HashSet<CriterionSatisfaction>();
+    public List<CriterionSatisfaction> getCriterionSatisfactions() {
+        if (getWorker() == null) {
+            return new ArrayList<CriterionSatisfaction>();
         } else {
             return workerModel
-                    .getLaboralRelatedCriterionSatisfactions(this.workerCRUDController
-                            .getWorker());
+                    .getLaboralRelatedCriterionSatisfactions(getWorker());
         }
     }
 
@@ -86,47 +89,88 @@ public class WorkRelationshipsController extends GenericForwardComposer {
     }
 
     public void prepareForCreate() {
-        this.editRelationship = new CriterionSatisfaction();
+        this.satisfactionEdited = new CriterionSatisfaction();
+        this.originalSatisfaction = this.satisfactionEdited;
+        Util.reloadBindings(containerComponent);
         editing = false;
     }
 
     public void prepareForEdit(CriterionSatisfaction criterionSatisfaction) {
-        this.editRelationship = criterionSatisfaction;
+        this.satisfactionEdited = criterionSatisfaction.copy();
+        this.originalSatisfaction = criterionSatisfaction;
+        Util.reloadBindings(containerComponent);
+        this.satisfactionEdited.setCriterion(select(this.satisfactionEdited
+                .getCriterion()));
+        // the criterion retrieved is used instead of the original one, so the
+        // call fromCriterionToType.get(criterion) works
         editing = true;
     }
 
-    public void saveCriterionSatisfaction() throws InstanceNotFoundException {
-
-        // Add new criterion
-        Criterion selectedCriterion = (Criterion) selectedWorkCriterion
-                .getSelectedItem().getValue();
-        CriterionWithItsType criterionWithItsType = fromCriterionToType
-                .get(selectedCriterion);
-        System.out.println("SAVE!!: " + selectedCriterion.getName());
-        if (this.workerCRUDController.getWorker().contains(editRelationship)) {
-            this.workerCRUDController.getWorker().removeCriterionSatisfaction(
-                    editRelationship);
+    private Criterion select(Criterion criterion) {
+        int i = 0;
+        for (Criterion c : workCriterions) {
+            if (c.isEquivalent(criterion)) {
+                selectedWorkCriterion.setSelectedIndex(i);
+                return c;
+            }
+            i++;
         }
-        this.workerCRUDController.getWorker().addSatisfaction(
-                criterionWithItsType,
-                Interval.range(editRelationship.getStartDate(),
-                        editRelationship.getEndDate()));
+        throw new RuntimeException("not found criterion" + criterion);
+    }
 
-        // Delete the former one
-        workerCRUDController.getWorker().removeCriterionSatisfaction(
-                this.editRelationship);
+    public void saveCriterionSatisfaction() {
+        Criterion choosenCriterion = getChoosenCriterion();
+        CriterionWithItsType criterionWithItsType = fromCriterionToType
+                .get(choosenCriterion);
+        satisfactionEdited.setCriterion(choosenCriterion);
+        AddingSatisfactionResult addSatisfaction = workerModel.addSatisfaction(
+                criterionWithItsType.getType(), originalSatisfaction,
+                satisfactionEdited);
+        switch (addSatisfaction) {
+        case OK:
+            messagesForUser.showMessage(Level.INFO, "Periodo gardado");
+            this.workerCRUDController.goToEditForm();
+            break;
+        case SATISFACTION_WRONG:
+            messagesForUser
+                    .showMessage(Level.WARNING,
+                            "O periodo ten datos inválidos. A fecha de fin debe ser posterior á de inicio");
+            break;
+        case DONT_COMPLY_OVERLAPPING_RESTRICTIONS:
+            messagesForUser
+                    .showMessage(Level.WARNING,
+                            "O periodo non se puido gardar. Solápase cun periodo non compatible.");
+            this.workerCRUDController.goToEditForm();
+            break;
+        default:
+            throw new RuntimeException("unexpected: " + addSatisfaction);
+        }
+    }
 
-        this.workerCRUDController.goToEditForm();
+    private Criterion getChoosenCriterion() {
+        Criterion criterion;
+        if (editing) {
+            criterion = satisfactionEdited.getCriterion();
+        } else {
+            criterion = (Criterion) this.selectedWorkCriterion
+                    .getSelectedItemApi().getValue();
+        }
+        return criterion;
+    }
+
+    private Worker getWorker() {
+        return this.workerModel.getWorker();
     }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        this.containerComponent = comp;
         this.selectedWorkCriterion.setSelectedIndex(0);
     }
 
     public CriterionSatisfaction getEditRelationship() {
-        return this.editRelationship;
+        return this.satisfactionEdited;
     }
 
     public Collection<Criterion> getWorkCriterions() {

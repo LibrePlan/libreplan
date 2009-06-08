@@ -109,6 +109,12 @@ class Range extends Interval {
                         .compareTo(interval.start) > 0);
     }
 
+    @Override
+    public String toString() {
+        return new StringBuilder("[").append(start).append(", ").append(end)
+                .append(")").toString();
+    }
+
 }
 
 class OpenEndedInterval extends Interval {
@@ -131,6 +137,11 @@ class OpenEndedInterval extends Interval {
         return start.before(interval.start) || interval.end == null
                 || start.before(interval.end);
     }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("[").append(start).append(",...)").toString();
+    }
 }
 
 class Point extends Interval {
@@ -152,6 +163,12 @@ class Point extends Interval {
     @Override
     public boolean overlapsWith(Interval interval) {
         return interval.contains(end) && !interval.start.equals(end);
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder().append("[").append(start).append(")")
+                .toString();
     }
 
 }
