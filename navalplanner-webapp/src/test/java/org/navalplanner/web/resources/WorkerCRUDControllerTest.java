@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
+import org.navalplanner.web.resources.worker.IWorkerCRUDControllerEntryPoints;
 import org.navalplanner.web.resources.worker.IWorkerModel;
 import org.navalplanner.web.resources.worker.WorkerCRUDController;
 import org.zkoss.zul.api.Window;
@@ -33,6 +34,7 @@ public class WorkerCRUDControllerTest {
     private Window workRelationshipsWindow;
     private Window addWorkRelationshipWindow;
     private Window editWorkRelationshipWindow;
+
     private WorkerCRUDController createControllerForModel(
             IWorkerModel workerModel) {
         return createControllerForModel(workerModel, null);
@@ -44,16 +46,15 @@ public class WorkerCRUDControllerTest {
         listWindow = createNiceMock(Window.class);
         editWindow = createNiceMock(Window.class);
         workRelationshipsWindow = createNiceMock(Window.class);
-        addWorkRelationshipWindow  = createNiceMock(Window.class);
-        editWorkRelationshipWindow  = createNiceMock(Window.class);
-
+        addWorkRelationshipWindow = createNiceMock(Window.class);
+        editWorkRelationshipWindow = createNiceMock(Window.class);
         WorkerCRUDController workerCRUDController = new WorkerCRUDController(
                 createWindow, listWindow, editWindow, workRelationshipsWindow,
-                addWorkRelationshipWindow, editWorkRelationshipWindow ,workerModel, messages);
+                addWorkRelationshipWindow, editWorkRelationshipWindow,
+                workerModel, messages, createNiceMock(IWorkerCRUDControllerEntryPoints.class));
         return workerCRUDController;
 
     }
-
 
     @Test
     public void testSave() throws Exception {
@@ -81,6 +82,7 @@ public class WorkerCRUDControllerTest {
         // verify
         verify(workerModel, messagesForUser);
     }
+
     @Test
     public void testGoToSaveAndThenCancel() {
         IWorkerModel workerModel = createMock(IWorkerModel.class);
@@ -95,7 +97,8 @@ public class WorkerCRUDControllerTest {
         expect(workRelationshipsWindow.setVisible(true)).andReturn(false);
         expect(addWorkRelationshipWindow.setVisible(true)).andReturn(false);
         replay(createWindow, listWindow, editWindow, workRelationshipsWindow,
-                addWorkRelationshipWindow, editWorkRelationshipWindow, workerModel);
+                addWorkRelationshipWindow, editWorkRelationshipWindow,
+                workerModel);
         // actions
         workerCRUDController.goToCreateForm();
         workerCRUDController.cancel();

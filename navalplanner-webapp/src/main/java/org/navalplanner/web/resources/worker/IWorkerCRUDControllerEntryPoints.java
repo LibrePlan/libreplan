@@ -20,4 +20,7 @@ public interface IWorkerCRUDControllerEntryPoints {
     @EntryPoint("create")
     public abstract void goToCreateForm();
 
+    @EntryPoint("list")
+    void goToList();
+
 }

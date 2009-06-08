@@ -57,6 +57,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private WorkRelationshipsController editWorkRelationship;
 
+    private IWorkerCRUDControllerEntryPoints workerCRUD;
+
     public WorkerCRUDController() {
     }
 
@@ -64,7 +66,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             Window editWindow, Window workRelationshipsWindow,
             Window addWorkRelationshipWindow,
             Window editWorkRelationshipWindow, IWorkerModel workerModel,
-            IMessagesForUser messages) {
+            IMessagesForUser messages,
+            IWorkerCRUDControllerEntryPoints workerCRUD) {
         this.createWindow = createWindow;
         this.listWindow = listWindow;
         this.editWindow = editWindow;
@@ -73,6 +76,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         this.editWorkRelationshipWindow = editWorkRelationshipWindow;
         this.workerModel = workerModel;
         this.messages = messages;
+        this.workerCRUD = workerCRUD;
     }
 
     public Worker getWorker() {
@@ -92,7 +96,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     public void save() {
         try {
             workerModel.save();
-            getVisibility().showOnly(listWindow);
+            goToList();
             Util.reloadBindings(listWindow);
             messages.showMessage(Level.INFO, "traballador gardado");
         } catch (ValidationException e) {
@@ -103,10 +107,16 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void cancel() {
+        goToList();
+    }
+
+    public void goToList() {
+        getBookmarker().goToList();
         getVisibility().showOnly(listWindow);
     }
 
     public void goToEditForm(Worker worker) {
+        getBookmarker().goToEditForm(worker);
         workerModel.prepareEditFor(worker);
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
@@ -133,6 +143,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToCreateForm() {
+        getBookmarker().goToCreateForm();
         workerModel.prepareForCreate();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
@@ -151,7 +162,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         localizationsForCreationController = createLocalizationsController(
                 comp, "createWindow");
         comp.setVariable("controller", this, true);
-        getVisibility().showOnly(listWindow);
         if (messagesContainer == null)
             throw new RuntimeException("messagesContainer is needed");
         messages = new MessagesForUser(messagesContainer);
@@ -164,9 +174,12 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                         this.workerModel, this, messages),
                 editWorkRelationshipWindow);
 
-        URLHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
+        final URLHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
-        handler.applyIfMatches(this);
+        handler.registerListener(this, page);
+        getVisibility().showOnly(listWindow);
+        handler.registerListener(this, page);
+        getVisibility().showOnly(listWindow);
     }
 
     private void setupWorkRelationshipController(
@@ -198,6 +211,10 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public GenericForwardComposer getWorkRelationship() {
         return this.addWorkRelationship;
+    }
+
+    private IWorkerCRUDControllerEntryPoints getBookmarker() {
+        return workerCRUD;
     }
 
 }

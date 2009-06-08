@@ -16,12 +16,19 @@ import org.apache.commons.logging.LogFactory;
 import org.navalplanner.web.common.converters.Converter;
 import org.navalplanner.web.common.converters.IConverterFactory;
 import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.BookmarkEvent;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 
 /**
  * <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class URLHandler<T> {
+
+    private static final String FLAG_ATTRIBUTE = URLHandler.class.getName()
+            + "_";
 
     private static final Log LOG = LogFactory.getLog(URLHandler.class);
 
@@ -66,6 +73,9 @@ public class URLHandler<T> {
     }
 
     public void doTransition(String methodName, Object... values) {
+        if (isFlagedInThisRequest())
+            return;
+        flagAlreadyExecutedInThisRequest();
         if (!metadata.containsKey(methodName)) {
             LOG.error("Method " + methodName
                     + "doesn't represent a state(It doesn't have a "
@@ -83,13 +93,53 @@ public class URLHandler<T> {
             stringRepresentations[i] = converterFor
                     .asStringUngeneric(values[i]);
         }
-        StringBuilder linkValue = new StringBuilder(page);
-        for (int i = 0; i < parameterNames.length; i++) {
-            linkValue.append(";").append(parameterNames[i]);
-            if (stringRepresentations[i] != null)
-                linkValue.append("=").append(stringRepresentations[i]);
-        }
+        String fragment = getFragment(parameterNames, stringRepresentations);
+        String requestPath = executorRetriever.getCurrent().getDesktop()
+                .getRequestPath();
+        if (requestPath.contains(page)) {
+            doBookmark(fragment);
+        } else
+            sendRedirect(fragment);
+    }
+
+    private boolean isFlagedInThisRequest() {
+        return getRequest().getAttribute(FLAG_ATTRIBUTE) == this;
+    }
+
+    private void flagAlreadyExecutedInThisRequest() {
+        getRequest().setAttribute(FLAG_ATTRIBUTE, this);
+    }
+
+    private void doBookmark(String fragment) {
+        executorRetriever.getCurrent().getDesktop().setBookmark(
+                stripHash(fragment));
+    }
+
+    private String stripHash(String fragment) {
+        if (fragment.startsWith("#"))
+            return fragment.substring(1);
+        return fragment;
+    }
+
+    private void sendRedirect(String fragment) {
+        StringBuilder linkValue = new StringBuilder(page).append(fragment);
         executorRetriever.getCurrent().sendRedirect(linkValue.toString());
+    }
+
+    private String getFragment(String[] parameterNames,
+            String[] stringRepresentations) {
+        StringBuilder result = new StringBuilder();
+        if (parameterNames.length > 0)
+            result.append("#");
+        for (int i = 0; i < parameterNames.length; i++) {
+            result.append(parameterNames[i]);
+            if (stringRepresentations[i] != null)
+                result.append("=").append(stringRepresentations[i]);
+            if (i < parameterNames.length - 1) {
+                result.append(";");
+            }
+        }
+        return result.toString();
     }
 
     private static void callMethod(Object target, Method superclassMethod,
@@ -105,9 +155,24 @@ public class URLHandler<T> {
     }
 
     public <S extends T> void applyIfMatches(S controller) {
+        String uri = getRequest().getRequestURI();
+        applyIfMatches(controller, uri);
+    }
+
+    private HttpServletRequest getRequest() {
         Execution current = executorRetriever.getCurrent();
-        Map<String, String> matrixParams = MatrixParameters
-                .extract((HttpServletRequest) current.getNativeRequest());
+        HttpServletRequest request = (HttpServletRequest) current
+                .getNativeRequest();
+        return request;
+    }
+
+    public <S extends T> void applyIfMatches(S controller, String fragment) {
+        if (isFlagedInThisRequest()) {
+            return;
+        }
+        flagAlreadyExecutedInThisRequest();
+        String string = insertSemicolonIfNeeded(fragment);
+        Map<String, String> matrixParams = MatrixParameters.extract(string);
         Set<String> matrixParamsNames = matrixParams.keySet();
         for (Entry<String, EntryPointMetadata> entry : metadata.entrySet()) {
             EntryPointMetadata entryPointMetadata = entry.getValue();
@@ -122,6 +187,24 @@ public class URLHandler<T> {
                 return;
             }
         }
+    }
+
+    public <S extends T> void registerListener(final S controller, Page page) {
+        page.addEventListener("onBookmarkChange", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                BookmarkEvent bookmarkEvent = (BookmarkEvent) event;
+                String bookmark = bookmarkEvent.getBookmark();
+                applyIfMatches(controller, bookmark);
+            }
+        });
+    }
+
+    private String insertSemicolonIfNeeded(String uri) {
+        if (!uri.startsWith(";"))
+            return ";" + uri;
+        return uri;
     }
 
     private Object[] retrieveArguments(Map<String, String> matrixParams,
