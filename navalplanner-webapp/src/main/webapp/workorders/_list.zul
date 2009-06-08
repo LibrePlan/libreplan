@@ -20,6 +20,9 @@
                     <button label="Remove"
                         onClick="controller.confirmRemove(self.parent.parent.value);">
                     </button>
+                    <button label="Details"
+                        href="/workorders/workorganization.zul">
+                    </button>
                 </hbox>
                 <label value="@{project.name}" />
                 <label value="@{project.initDate}" />

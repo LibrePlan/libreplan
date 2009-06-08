@@ -74,6 +74,6 @@
 
     <div self="@{insert(content)}"/>
 
-      <n:div class="footer">© Fundación para o Fomento da Calidade Industrial e
-      Desenvolvemento Tecnolóxico de Galicia. Xunta de Galicia</n:div>
+      <div class="footer">© Fundación para o Fomento da Calidade Industrial e
+      Desenvolvemento Tecnolóxico de Galicia. Xunta de Galicia</div>
  </div>
