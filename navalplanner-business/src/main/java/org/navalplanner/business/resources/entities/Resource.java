@@ -1,11 +1,11 @@
 package org.navalplanner.business.resources.entities;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +20,7 @@ import org.navalplanner.business.resources.daos.ResourcesDaoRegistry;
 // child another simple resource, general methods like getChilds() do not make
 // sense for simple entities, etc.). In consequence, I prefer the modeling
 // option shown below.
+
 /**
  * This class acts as the base class for all resources.
  * @author Fernando Bellas Permuy <fbellas@udc.es>
@@ -27,8 +28,125 @@ import org.navalplanner.business.resources.daos.ResourcesDaoRegistry;
 public abstract class Resource {
 
     private Long id;
+
     private long version;
+
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
+
+    private interface Predicate {
+        public boolean accepts(CriterionSatisfaction satisfaction);
+    }
+
+    public class Query {
+
+        private List<Predicate> predicates = new ArrayList<Predicate>();
+        private boolean sort = false;
+
+        private Query() {
+
+        }
+
+        public Query from(final ICriterionType<?> type) {
+            return withNewPredicate(new Predicate() {
+
+                @Override
+                public boolean accepts(CriterionSatisfaction satisfaction) {
+                    return type.contains(satisfaction.getCriterion());
+                }
+            });
+        }
+
+        private Query withNewPredicate(Predicate newPredicate) {
+            predicates.add(newPredicate);
+            return this;
+        }
+
+        public Query at(Date date) {
+            return enforcedInAll(Interval.point(date));
+        }
+
+        public Query between(Date start, Date end) {
+            return enforcedInAll(Interval.range(start, end));
+        }
+
+        public Query enforcedInAll(final Interval interval) {
+            return withNewPredicate(new Predicate() {
+
+                @Override
+                public boolean accepts(CriterionSatisfaction satisfaction) {
+                    return satisfaction.isAlwaysEnforcedIn(interval);
+                }
+            });
+        }
+
+        public Query overlapsWith(final Interval interval) {
+            return withNewPredicate(new Predicate() {
+
+                @Override
+                public boolean accepts(CriterionSatisfaction satisfaction) {
+                    return satisfaction.overlapsWith(interval);
+                }
+            });
+        }
+
+        public Query from(final ICriterion criterion) {
+            return withNewPredicate(new Predicate() {
+
+                @Override
+                public boolean accepts(CriterionSatisfaction satisfaction) {
+                    return satisfaction.getCriterion().isEquivalent(criterion);
+                }
+            });
+        }
+
+        public Query sortByStartDate() {
+            sort = true;
+            return this;
+        }
+
+        public List<CriterionSatisfaction> result() {
+            ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
+            for (CriterionSatisfaction criterionSatisfaction : criterionSatisfactions) {
+                if (isAcceptedByAllPredicates(criterionSatisfaction)) {
+                    result.add(criterionSatisfaction);
+                }
+            }
+            Collections.sort(result, CriterionSatisfaction.BY_START_COMPARATOR);
+            return result;
+        }
+
+        private boolean isAcceptedByAllPredicates(
+                CriterionSatisfaction criterionSatisfaction) {
+            for (Predicate predicate : predicates) {
+                if (!predicate.accepts(criterionSatisfaction))
+                    return false;
+            }
+            return true;
+        }
+
+        public Query current() {
+            return withNewPredicate(new Predicate() {
+
+                @Override
+                public boolean accepts(CriterionSatisfaction satisfaction) {
+                    return satisfaction.isCurrent();
+                }
+            });
+        }
+
+        public List<Criterion> asCriterions() {
+            LinkedHashSet<Criterion> result = new LinkedHashSet<Criterion>();
+            for (CriterionSatisfaction criterionSatisfaction : result()) {
+                result.add(criterionSatisfaction.getCriterion());
+            }
+            return new ArrayList<Criterion>(result);
+        }
+
+    }
+
+    public Query query() {
+        return new Query();
+    }
 
     public Long getId() {
         return id;
@@ -63,212 +181,203 @@ public abstract class Resource {
     }
 
     public Set<CriterionSatisfaction> getAllSatisfactions() {
-        return new HashSet(criterionSatisfactions);
+        return new HashSet<CriterionSatisfaction>(criterionSatisfactions);
     }
 
     public Collection<CriterionSatisfaction> getSatisfactionsFor(
             ICriterionType<?> type) {
-        Set<CriterionSatisfaction> allSatisfactions = getAllSatisfactions();
-        ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
-        for (CriterionSatisfaction criterionSatisfaction : allSatisfactions) {
-            if (type.contains(criterionSatisfaction.getCriterion())) {
-                result.add(criterionSatisfaction);
-            }
-        }
-        return result;
+        return query().from(type).result();
     }
 
     public List<CriterionSatisfaction> getSatisfactionsFor(ICriterion criterion) {
-        ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
-        for (CriterionSatisfaction criterionSatisfaction : getAllSatisfactions()) {
-            if (criterionSatisfaction.getCriterion().isEquivalent(criterion)) {
-                result.add(criterionSatisfaction);
-            }
-        }
-        return result;
+        return query().from(criterion).result();
     }
 
-    public Set<Criterion> getActiveCriterionsFor(ICriterionType<?> type) {
-        Set<Criterion> result = new HashSet<Criterion>();
-        Collection<CriterionSatisfaction> active = getActiveSatisfactionsFor(type);
-        for (CriterionSatisfaction satisfaction : active) {
-            result.add(satisfaction.getCriterion());
-        }
-        return result;
+    public List<Criterion> getCurrentCriterionsFor(ICriterionType<?> type) {
+        return query().from(type).current().asCriterions();
     }
 
-    public Collection<CriterionSatisfaction> getActiveSatisfactionsFor(
+    public Collection<CriterionSatisfaction> getCurrentSatisfactionsFor(
             ICriterionType<?> criterionType) {
-        Collection<CriterionSatisfaction> satisfactionsFor = getSatisfactionsFor(criterionType);
-        ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
-        for (CriterionSatisfaction criterionSatisfaction : satisfactionsFor) {
-            if (criterionSatisfaction.isActiveNow()) {
-                result.add(criterionSatisfaction);
-            }
-        }
-        return result;
+        return query().from(criterionType).current().result();
     }
 
-    public Collection<CriterionSatisfaction> getActiveSatisfactionsForIn(
-            ICriterionType<?> criterionType, Date start, Date end) {
-        Validate.notNull(criterionType);
-        Validate.isTrue(end == null || start.before(end));
-        Collection<CriterionSatisfaction> satisfactionsFor = getSatisfactionsFor(criterionType);
-        ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
-        for (CriterionSatisfaction criterionSatisfaction : satisfactionsFor) {
-            if (end == null && criterionSatisfaction.isActiveAt(start) || end != null && criterionSatisfaction.isActiveIn(start, end)) {
-                result.add(criterionSatisfaction);
-            }
-        }
-        return result;
-    }
-
-    public Collection<CriterionSatisfaction> getActiveSatisfactionsAt(
-            ICriterionType<?> criterionType, Date pointInTime) {
-        return getActiveSatisfactionsForIn(criterionType, pointInTime, null);
-    }
-
-    public Collection<CriterionSatisfaction> getActiveSatisfactionsFor(
+    public List<CriterionSatisfaction> getCurrentSatisfactionsFor(
             ICriterion criterion) {
-        Set<CriterionSatisfaction> result = new HashSet<CriterionSatisfaction>();
-        for (CriterionSatisfaction criterionSatisfaction : getAllSatisfactionsFor(criterion)) {
-            if (criterionSatisfaction.isActiveNow()) {
-                result.add(criterionSatisfaction);
+        return query().from(criterion).current().result();
+    }
+
+    public CriterionSatisfaction addSatisfaction(
+            CriterionWithItsType criterionWithItsType) {
+        return addSatisfaction(criterionWithItsType, Interval.from(new Date()));
+    }
+
+    private static class EnsureSatisfactionIsCorrect {
+
+        private EnsureSatisfactionIsCorrect(Resource resource,
+                ICriterionType<?> type, CriterionSatisfaction satisfaction) {
+            Validate.notNull(resource);
+            Validate.notNull(satisfaction.getResource());
+            Validate.notNull(satisfaction);
+            if (!satisfaction.getResource().equals(resource)) {
+                throw new IllegalArgumentException(
+                        "the satisfaction is not related to this resource");
             }
+            this.type = new CriterionWithItsType(type, satisfaction
+                    .getCriterion());
+            this.interval = satisfaction.getInterval();
+            this.resource = resource;
         }
-        return result;
-    }
 
-    private Collection<CriterionSatisfaction> getAllSatisfactionsFor(
-            ICriterion criterion) {
-        Set<CriterionSatisfaction> result = new HashSet<CriterionSatisfaction>();
-        for (CriterionSatisfaction satisfaction : criterionSatisfactions) {
-            if (satisfaction.getCriterion().isEquivalent(criterion)) {
-                result.add(satisfaction);
-            }
+        final Resource resource;
+
+        final CriterionWithItsType type;
+
+        final Interval interval;
+
+        CriterionSatisfaction addSatisfaction() {
+            return resource.addSatisfaction(type, interval);
         }
-        return result;
-    }
 
-    public Collection<CriterionSatisfaction> getActiveSatisfactionsForIn(
-            ICriterion criterion, Date start, Date end) {
-        Validate.isTrue(end == null || start.before(end));
-        ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
-        Collection<CriterionSatisfaction> allSatisfactionsFor = getAllSatisfactionsFor(criterion);
-        for (CriterionSatisfaction criterionSatisfaction : allSatisfactionsFor) {
-            if (criterionSatisfaction.isActiveIn(start, end)) {
-                result.add(criterionSatisfaction);
-            }
+        boolean canAddSatisfaction() {
+            return resource.canAddSatisfaction(type, interval);
         }
-        return result;
+
     }
 
-    public void activate(CriterionWithItsType criterionWithItsType) {
-        activate(criterionWithItsType, new Date());
+    public CriterionSatisfaction addSatisfaction(
+            ICriterionType<Criterion> type, CriterionSatisfaction satisfaction) {
+        return new EnsureSatisfactionIsCorrect(this, type, satisfaction)
+                .addSatisfaction();
     }
 
-    public void activate(CriterionWithItsType criterionWithItsType, Date start) {
-        activate(criterionWithItsType, start, null);
-    }
-
-    public void activate(CriterionWithItsType criterionWithItsType, Date start,
-            Date finish) {
-        ICriterionType<?> type = criterionWithItsType.getType();
+    public CriterionSatisfaction addSatisfaction(
+            CriterionWithItsType criterionWithItsType, Interval interval) {
         Criterion criterion = criterionWithItsType.getCriterion();
-        if (canBeActivated(criterionWithItsType, start, finish)) {
-            CriterionSatisfaction newSatisfaction = new CriterionSatisfaction(
-                    start, criterion, this);
-            criterionSatisfactions.add(newSatisfaction);
+        ICriterionType<?> type = criterionWithItsType.getType();
+        CriterionSatisfaction newSatisfaction = createNewSatisfaction(interval,
+                criterion);
+        if (canAddSatisfaction(criterionWithItsType, interval)) {
+            Date finish = getFinishDate(type, newSatisfaction, interval);
             if (finish != null) {
                 newSatisfaction.finish(finish);
             }
-            if (!type.allowMultipleActiveCriterionsPerResource()) {
-                for (CriterionSatisfaction criterionSatisfaction : getActiveSatisfactionsAt(
-                        type, start)) {
-                    if (newSatisfaction != criterionSatisfaction) {
-                        criterionSatisfaction.finish(start);
-                    }
-                }
-                Set<CriterionSatisfaction> posterior = getSatisfactionsPosteriorTo(
-                        type, newSatisfaction);
-                Date earliest = getEarliestStartDate(posterior);
-                if (earliest != null) {
-                    newSatisfaction.finish(earliest);
-                }
-            }
+            criterionSatisfactions.add(newSatisfaction);
+            return newSatisfaction;
         } else {
             throw new IllegalStateException(
                     "this resource is activaved for other criterion of the same type");
         }
-
     }
 
-    private static Date getEarliestStartDate(
-            Set<CriterionSatisfaction> posterior) {
-        Date earliest = null;
-        for (CriterionSatisfaction criterionSatisfaction : posterior) {
-            if (earliest == null) {
-                earliest = criterionSatisfaction.getStartDate();
+    private CriterionSatisfaction createNewSatisfaction(Interval interval,
+            Criterion criterion) {
+        CriterionSatisfaction newSatisfaction = new CriterionSatisfaction(
+                criterion, this, interval);
+        return newSatisfaction;
+    }
+
+    private Date getFinishDate(ICriterionType<?> type,
+            CriterionSatisfaction newSatisfaction, Interval interval) {
+        if (!type.allowSimultaneousCriterionsPerResource()) {
+            CriterionSatisfaction posterior = getNext(type, newSatisfaction);
+            if (posterior != null && posterior.overlapsWith(interval)) {
+                assert !posterior.overlapsWith(Interval.range(interval
+                        .getStart(), posterior.getStartDate()));
+                return posterior.getStartDate();
             }
-            earliest = Collections.min(Arrays.asList(earliest,
-                    criterionSatisfaction.getStartDate()));
         }
-        return earliest;
+        return interval.getEnd();
     }
 
-    private Set<CriterionSatisfaction> getSatisfactionsPosteriorTo(
-            ICriterionType<?> type, CriterionSatisfaction newSatisfaction) {
-        Date start = newSatisfaction.getStartDate();
-        Date finish = newSatisfaction.isFinished() ? newSatisfaction.getEndDate() : null;
-        Set<CriterionSatisfaction> posterior = new HashSet<CriterionSatisfaction>();
-        if (finish != null) {
-            posterior.addAll(getActiveSatisfactionsAt(type, finish));
+    /**
+     * @param orderedSatisfactions
+     * @param newSatisfaction
+     * @return the position in which if newSatisfaction is inserted would comply
+     *         with the following:
+     *         <ul>
+     *         <li>newSatisfaction startDate would be equal or posterior to all
+     *         the previous satisfactions</li>
+     *         <li>newSatisfaction startDate would be previous to all the
+     *         posterior satisfactions</li>
+     *         </ul>
+     */
+    private int findPlace(List<CriterionSatisfaction> orderedSatisfactions,
+            CriterionSatisfaction newSatisfaction) {
+        int position = Collections.binarySearch(orderedSatisfactions,
+                newSatisfaction, CriterionSatisfaction.BY_START_COMPARATOR);
+        if (position >= 0) {
+            return position + 1;
         } else {
-            ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
-            for (CriterionSatisfaction satisfaction : getSatisfactionsFor(type)) {
-                if (!satisfaction.isFinished() && satisfaction.getStartDate().after(start)) {
-                    result.add(satisfaction);
-                }
-            }
-            posterior.addAll(result);
-        }
-        posterior.remove(newSatisfaction);
-        return posterior;
-    }
-
-    public void deactivate(CriterionWithItsType criterionWithItsType) {
-        for (CriterionSatisfaction criterionSatisfaction : getActiveSatisfactionsFor(criterionWithItsType.getCriterion())) {
-            criterionSatisfaction.finish(new Date());
+            return Math.abs(position) - 1;
         }
     }
 
-    private boolean noneOf(CriterionWithItsType criterionWithItsType,
-            Date start, Date end) {
+    public List<CriterionSatisfaction> finish(
+            CriterionWithItsType criterionWithItsType) {
+        return finishEnforcedAt(criterionWithItsType, new Date());
+    }
+
+    public List<CriterionSatisfaction> finishEnforcedAt(
+            CriterionWithItsType criterionWithItsType, Date date) {
+        ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
+        for (CriterionSatisfaction criterionSatisfaction : query().from(
+                criterionWithItsType.getType()).at(date).result()) {
+            criterionSatisfaction.finish(date);
+            result.add(criterionSatisfaction);
+        }
+        return result;
+    }
+
+    public boolean canAddSatisfaction(
+            CriterionWithItsType criterionWithItsType, Interval interval) {
         ICriterionType<?> type = criterionWithItsType.getType();
-        Criterion criterion = criterionWithItsType.getCriterion();
-        return getActiveSatisfactionsForIn(type, start, end).size() == getActiveSatisfactionsForIn(
-                criterion, start, end).size();
+        if (!type.criterionCanBeRelatedTo(getClass())) {
+            return false;
+        }
+        if (type.allowSimultaneousCriterionsPerResource()) {
+            return true;
+        }
+        CriterionSatisfaction newSatisfaction = createNewSatisfaction(interval,
+                criterionWithItsType.getCriterion());
+        CriterionSatisfaction previous = getPrevious(criterionWithItsType
+                .getType(), newSatisfaction);
+        return previous == null || !previous.overlapsWith(interval);
     }
 
-    public boolean canBeActivated(CriterionWithItsType criterionWithItsType) {
-        return canBeActivated(criterionWithItsType, new Date());
+    public boolean canAddSatisfaction(ICriterionType<?> type,
+            CriterionSatisfaction satisfaction) {
+        return new EnsureSatisfactionIsCorrect(this, type, satisfaction)
+                .canAddSatisfaction();
     }
 
-    public boolean canBeActivated(CriterionWithItsType criterionWithItsType,
-            Date start) {
-        return canBeActivated(criterionWithItsType, start, null);
+    private CriterionSatisfaction getNext(ICriterionType<?> type,
+            CriterionSatisfaction newSatisfaction) {
+        List<CriterionSatisfaction> ordered = query().from(type)
+                .sortByStartDate().result();
+        int position = findPlace(ordered, newSatisfaction);
+        CriterionSatisfaction next = position != ordered.size() ? ordered
+                .get(position) : null;
+        return next;
     }
 
-    public boolean canBeActivated(CriterionWithItsType criterionWithItsType,
-            Date start, Date finish) {
-        ICriterionType<?> type = criterionWithItsType.getType();
-        return type.criterionCanBeRelatedTo(getClass()) && (type.allowMultipleActiveCriterionsPerResource() || noneOf(
-                criterionWithItsType, start, finish));
+    private CriterionSatisfaction getPrevious(ICriterionType<?> type,
+            CriterionSatisfaction newSatisfaction) {
+        List<CriterionSatisfaction> ordered = query().from(type)
+                .sortByStartDate().result();
+        int position = findPlace(ordered, newSatisfaction);
+        CriterionSatisfaction previous = position > 0 ? ordered
+                .get(position - 1) : null;
+        return previous;
     }
 
     public void removeCriterionSatisfaction(CriterionSatisfaction satisfaction)
             throws InstanceNotFoundException {
         criterionSatisfactions.remove(satisfaction);
+    }
+
+    public boolean contains(CriterionSatisfaction satisfaction) {
+        return criterionSatisfactions.contains(satisfaction);
     }
 
 }

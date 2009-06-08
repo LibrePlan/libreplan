@@ -55,11 +55,12 @@ public class Criterion implements ICriterion {
 
     @Override
     public boolean isSatisfiedBy(Resource resource) {
-        return !resource.getActiveSatisfactionsFor(this).isEmpty();
+        return !resource.getCurrentSatisfactionsFor(this).isEmpty();
     }
 
     public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
-        return !resource.getActiveSatisfactionsForIn(this, start, end)
+        return !resource.query().from(this)
+        .enforcedInAll(Interval.range(start, end)).result()
                 .isEmpty();
     }
 

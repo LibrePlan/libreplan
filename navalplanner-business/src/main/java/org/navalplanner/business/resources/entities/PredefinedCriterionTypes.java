@@ -30,7 +30,7 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
     private final boolean allowHierarchy;
 
-    private final boolean allowMultipleActiveCriterionsPerResource;
+    private final boolean allowSimultaneousCriterionsPerResource;
 
     private final boolean allowAdding;
 
@@ -39,11 +39,11 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
     private List<Class<? extends Resource>> classes;
 
     private PredefinedCriterionTypes(boolean allowHierarchy,
-            boolean allowMultipleActiveCriterionsPerResource,
+            boolean allowSimultaneousCriterionsPerResource,
             boolean allowAdding, boolean allowEditing,
             Class<? extends Resource>... klasses) {
         this.allowHierarchy = allowHierarchy;
-        this.allowMultipleActiveCriterionsPerResource = allowMultipleActiveCriterionsPerResource;
+        this.allowSimultaneousCriterionsPerResource = allowSimultaneousCriterionsPerResource;
         this.allowAdding = allowAdding;
         this.allowEditing = allowEditing;
         this.classes = Arrays.asList(klasses);
@@ -64,8 +64,8 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
     }
 
     @Override
-    public boolean allowMultipleActiveCriterionsPerResource() {
-        return allowMultipleActiveCriterionsPerResource;
+    public boolean allowSimultaneousCriterionsPerResource() {
+        return allowSimultaneousCriterionsPerResource;
     }
 
     @Override

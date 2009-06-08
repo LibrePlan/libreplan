@@ -1,17 +1,11 @@
 package org.navalplanner.web.resources.worker;
 
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
-import org.navalplanner.business.resources.entities.CriterionTypeBase;
-import org.navalplanner.business.resources.entities.CriterionWithItsType;
-import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.entities.WorkingRelationship;
 import org.navalplanner.business.resources.services.CriterionService;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -53,7 +47,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private Component messagesContainer;
 
-    private WorkRelationshipsController workRelationship;
+    private WorkRelationshipsController addWorkRelationship;
 
     private LocalizationsController localizationsForEditionController;
 
@@ -61,13 +55,16 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private CriterionService criterionService;
 
+    private WorkRelationshipsController editWorkRelationship;
+
     public WorkerCRUDController() {
     }
 
     public WorkerCRUDController(Window createWindow, Window listWindow,
             Window editWindow, Window workRelationshipsWindow,
-            Window addWorkRelationshipWindow, Window editWorkRelationshipWindow,
-            IWorkerModel workerModel, IMessagesForUser messages) {
+            Window addWorkRelationshipWindow,
+            Window editWorkRelationshipWindow, IWorkerModel workerModel,
+            IMessagesForUser messages) {
         this.createWindow = createWindow;
         this.listWindow = listWindow;
         this.editWindow = editWindow;
@@ -131,24 +128,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToAddWorkRelationshipForm() {
-       Criterion selectedCriterion = criterionService.load(
-               WorkingRelationship.HIRED.criterion());
-       CriterionWithItsType criteriontype = new CriterionWithItsType(
-               PredefinedCriterionTypes.WORK_RELATIONSHIP, selectedCriterion);
-       this.workerModel.getWorker().activate(criteriontype,new Date());
-       /* CriterionSatisfaction newSatisfaction =
-                new CriterionSatisfaction(
-                    new Date(),
-                    selectedCriterion,
-                    this.workerModel.getWorker()); */
-       CriterionSatisfaction newSatisfaction =
-               this.workerModel.getWorker().
-                getActiveSatisfactionsFor(selectedCriterion).iterator().next();
-        this.workRelationship.setEditCriterionSatisfaction(newSatisfaction);
+        this.addWorkRelationship.prepareForCreate();
         getVisibility().showOnly(addWorkRelationshipWindow);
         Util.reloadBindings(addWorkRelationshipWindow);
-//        getVisibility().showOnly(editWorkRelationshipWindow);
-//        Util.reloadBindings(editWorkRelationshipWindow);
     }
 
     public void goToCreateForm() {
@@ -158,7 +140,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToEditWorkRelationshipForm(CriterionSatisfaction satisfaction) {
-        this.workRelationship.setEditCriterionSatisfaction(satisfaction);
+        this.editWorkRelationship.prepareForEdit(satisfaction);
         getVisibility().showOnly(editWorkRelationshipWindow);
         Util.reloadBindings(editWorkRelationshipWindow);
     }
@@ -175,13 +157,25 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         if (messagesContainer == null)
             throw new RuntimeException("messagesContainer is needed");
         messages = new MessagesForUser(messagesContainer);
-        this.workRelationship =
-                 new WorkRelationshipsController(this.workerModel,this);
-        this.workRelationship.doAfterCompose(
-                comp.getFellow("addWorkRelationshipWindow"));
-         URLHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
+        this.addWorkRelationship = new WorkRelationshipsController(
+                this.workerModel, this);
+        setupWorkRelationshipController(this.addWorkRelationship,
+                this.addWorkRelationshipWindow);
+        setupWorkRelationshipController(
+                this.editWorkRelationship = new WorkRelationshipsController(
+                        this.workerModel, this), editWorkRelationshipWindow);
+
+        URLHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
         handler.applyIfMatches(this);
+    }
+
+    private void setupWorkRelationshipController(
+            WorkRelationshipsController workRelationshipController,
+            Window workRelationshipWindow) throws Exception {
+        workRelationshipController.doAfterCompose(workRelationshipWindow);
+        workRelationshipWindow.setVariable("workRelationship",
+                workRelationshipController, true);
     }
 
     private LocalizationsController createLocalizationsController(
@@ -198,13 +192,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         if (visibility == null) {
             visibility = new OnlyOneVisible(listWindow, editWindow,
                     createWindow, workRelationshipsWindow,
-                   addWorkRelationshipWindow, editWorkRelationshipWindow );
+                    addWorkRelationshipWindow, editWorkRelationshipWindow);
         }
         return visibility;
     }
 
     public GenericForwardComposer getWorkRelationship() {
-        return this.workRelationship;
+        return this.addWorkRelationship;
     }
 
 }

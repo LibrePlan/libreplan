@@ -126,7 +126,7 @@ public class CriterionsModel implements ICriterionsModel {
     @Override
     public boolean isChangeAssignmentsDisabled() {
         return criterionType == null
-                || !criterionType.allowMultipleActiveCriterionsPerResource();
+                || !criterionType.allowSimultaneousCriterionsPerResource();
     }
 
     @Override
@@ -135,7 +135,7 @@ public class CriterionsModel implements ICriterionsModel {
         for (Resource resource : resources) {
             Resource reloaded = find(resource.getId());
             reloaded
-                    .activate(new CriterionWithItsType(criterionType, criterion));
+                    .addSatisfaction(new CriterionWithItsType(criterionType, criterion));
             resourceService.saveResource(reloaded);
         }
     }
@@ -145,7 +145,7 @@ public class CriterionsModel implements ICriterionsModel {
     public void deactivateAll(Collection<? extends Resource> resources) {
         for (Resource resource : resources) {
             Resource reloaded = find(resource.getId());
-            reloaded.deactivate(new CriterionWithItsType(criterionType,
+            reloaded.finish(new CriterionWithItsType(criterionType,
                     criterion));
             resourceService.saveResource(reloaded);
         }

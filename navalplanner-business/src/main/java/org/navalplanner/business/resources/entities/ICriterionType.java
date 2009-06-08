@@ -8,7 +8,7 @@ public interface ICriterionType<C extends ICriterion> {
 
     public String getName();
 
-    public boolean allowMultipleActiveCriterionsPerResource();
+    public boolean allowSimultaneousCriterionsPerResource();
 
     public boolean allowHierarchy();
 

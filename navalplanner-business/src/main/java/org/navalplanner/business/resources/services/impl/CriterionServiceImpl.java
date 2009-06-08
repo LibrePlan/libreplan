@@ -14,6 +14,7 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionOnData;
 import org.navalplanner.business.resources.entities.ICriterionType;
+import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.services.CriterionService;
 import org.navalplanner.business.resources.services.ResourceService;
@@ -100,7 +101,7 @@ public class CriterionServiceImpl implements CriterionService {
             ICriterionType<?> criterionType) {
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
         for (Resource resource : resourceService.getResources()) {
-            result.addAll(resource.getActiveSatisfactionsFor(criterionType));
+            result.addAll(resource.getCurrentSatisfactionsFor(criterionType));
         }
         return result;
     }
@@ -110,8 +111,8 @@ public class CriterionServiceImpl implements CriterionService {
             ICriterionType<?> criterionType, Date start, Date end) {
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
         for (Resource resource : resourceService.getResources()) {
-            result.addAll(resource.getActiveSatisfactionsForIn(criterionType,
-                    start, end));
+            result.addAll(resource.query().from(criterionType).enforcedInAll(
+                    Interval.range(start, end)).result());
         }
         return result;
     }

@@ -19,6 +19,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterionType;
+import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -165,7 +166,7 @@ public class WorkerModel implements IWorkerModel {
                 ICriterionType<?> type) {
             Validate
                     .isTrue(
-                            type.allowMultipleActiveCriterionsPerResource(),
+                            type.allowSimultaneousCriterionsPerResource(),
                             "must allow multiple active criterions for this type to use this assignment strategy");
             this.criterionService = criterionService;
             this.resource = resource;
@@ -197,13 +198,13 @@ public class WorkerModel implements IWorkerModel {
 
         private HashSet<CriterionSatisfaction> calculateInitialActive() {
             return new HashSet<CriterionSatisfaction>(resource
-                    .getActiveSatisfactionsFor(type));
+                    .getCurrentSatisfactionsFor(type));
         }
 
         private List<Criterion> calculateInitialCriterionsNotAssigned() {
             Map<Long, Criterion> allCriterions = byId(criterionService
                     .getCriterionsFor(type));
-            for (Long activeId : asIds(resource.getActiveCriterionsFor(type))) {
+            for (Long activeId : asIds(resource.getCurrentCriterionsFor(type))) {
                 allCriterions.remove(activeId);
             }
             return new ArrayList<Criterion>(allCriterions.values());
@@ -250,12 +251,11 @@ public class WorkerModel implements IWorkerModel {
         @Override
         public void applyChanges() {
             for (CriterionSatisfaction criterionSatisfaction : added) {
-                resource.activate(new CriterionWithItsType(type,
-                        criterionSatisfaction.getCriterion()),
-                        criterionSatisfaction.getStartDate());
+                resource.addSatisfaction(new CriterionWithItsType(type,
+                criterionSatisfaction.getCriterion()), Interval.from(criterionSatisfaction.getStartDate()));
             }
             for (Criterion criterion : unassigned.keySet()) {
-                resource.deactivate(new CriterionWithItsType(type, criterion));
+                resource.finish(new CriterionWithItsType(type, criterion));
             }
         }
     }

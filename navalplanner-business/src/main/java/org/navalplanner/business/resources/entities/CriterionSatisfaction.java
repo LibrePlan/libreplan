@@ -1,11 +1,9 @@
 package org.navalplanner.business.resources.entities;
 
+import java.util.Comparator;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.daos.ICriterionSatisfactionDAO;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Declares a interval of time in which the criterion is satisfied <br />
@@ -13,18 +11,24 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class CriterionSatisfaction {
 
+    public static final Comparator<CriterionSatisfaction> BY_START_COMPARATOR;
+
+    static {
+        BY_START_COMPARATOR = new Comparator<CriterionSatisfaction>() {
+
+            @Override
+            public int compare(CriterionSatisfaction o1,
+                    CriterionSatisfaction o2) {
+                return o1.getStartDate().compareTo(o2.getStartDate());
+            }
+        };
+    }
+
     private Long id;
 
     @SuppressWarnings("unused")
     private long version;
 
-    @Autowired
-    private ICriterionSatisfactionDAO criterionSatisfactionDAO;
-
-
-    /**
-     * Required by hibernate. Do not use directly
-     */
     public CriterionSatisfaction() {
 
     }
@@ -37,6 +41,14 @@ public class CriterionSatisfaction {
         this.startDate = startDate;
         this.criterion = criterion;
         this.resource = resource;
+    }
+
+    public CriterionSatisfaction(Criterion criterion, Resource resource,
+            Interval interval) {
+        this(interval.getStart(), criterion, resource);
+        if (interval.getEnd() != null) {
+            this.finish(interval.getEnd());
+        }
     }
 
     public Long getId() {
@@ -52,44 +64,54 @@ public class CriterionSatisfaction {
     private Resource resource;
 
     public Date getStartDate() {
-        return startDate==null ? null: new Date(startDate.getTime());
+        return startDate != null ? new Date(startDate.getTime()) : null;
     }
 
     public Date getEndDate() {
-        if (isFinished() ) {
+        if (isFinished()) {
             return new Date(finishDate.getTime());
         } else {
             return null;
         }
     }
 
+    public Interval getInterval() {
+        return Interval.range(startDate, finishDate);
+    }
+
     public Criterion getCriterion() {
         return criterion;
+    }
+
+    public void setCriterion(Criterion criterion) {
+        this.criterion = criterion;
     }
 
     public Resource getResource() {
         return resource;
     }
 
-    public boolean isActiveNow() {
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
+    public boolean isCurrent() {
         Date now = new Date();
-        return isActiveAt(now);
+        return isEnforcedAt(now);
     }
 
-    public boolean isActiveAt(Date date) {
-        return (startDate.before(date) || startDate.equals(date))
-                && (finishDate == null || date.before(finishDate));
+    public boolean isEnforcedAt(Date date) {
+        return getInterval().contains(date);
     }
 
-    public boolean isActiveIn(Date start, Date end) {
-        return (startDate.equals(start) || startDate.before(start))
-                && (finishDate == null || end.before(finishDate));
+    public boolean isAlwaysEnforcedIn(Interval interval) {
+        return getInterval().includes(interval);
     }
 
     public void finish(Date finish) {
         Validate.notNull(finish);
         Validate.isTrue(startDate.equals(finish) || startDate.before(finish));
-        finishDate = finish;
+        this.finishDate = finish;
     }
 
     public boolean isFinished() {
@@ -97,13 +119,20 @@ public class CriterionSatisfaction {
     }
 
     public void setEndDate(Date date) {
-        if ( (startDate.equals(date) || startDate.before(date)) )
+        if (date == null) {
+            finishDate = null;
+        }
+        if ((startDate.equals(date) || startDate.before(date)))
             finishDate = date;
     }
 
     public void setStartDate(Date date) {
-        if ( (finishDate == null || finishDate.after(date)) )
+        if ((finishDate == null || finishDate.after(date)))
             startDate = date;
+    }
+
+    public boolean overlapsWith(Interval interval) {
+        return getInterval().overlapsWith(interval);
     }
 
 }

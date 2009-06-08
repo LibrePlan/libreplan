@@ -138,7 +138,7 @@ public class ResourceServiceTest {
         criterionService.save(criterion);
         ICriterionType<Criterion> type = CriterionServiceTest
                 .createTypeThatMatches(criterion);
-        worker1.activate(new CriterionWithItsType(type, criterion));
+        worker1.addSatisfaction(new CriterionWithItsType(type, criterion));
         resourceService.saveResource(worker1);
         assertThat(worker1.getVersion(), not(equalTo(versionValueAfterSave)));
     }

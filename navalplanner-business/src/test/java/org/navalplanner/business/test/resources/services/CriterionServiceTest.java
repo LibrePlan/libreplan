@@ -15,6 +15,7 @@ import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionOnData;
 import org.navalplanner.business.resources.entities.ICriterionType;
+import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -126,7 +127,7 @@ public class CriterionServiceTest {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         ICriterionType<?> type = createTypeThatMatches(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
-        worker.activate(new CriterionWithItsType(type, criterion));
+        worker.addSatisfaction(new CriterionWithItsType(type, criterion));
         assertTrue(criterion.isSatisfiedBy(worker));
         resourceService.saveResource(worker);
         assertTrue(criterion.isSatisfiedBy(worker));
@@ -141,7 +142,7 @@ public class CriterionServiceTest {
         criterionService.save(criterion);
         ICriterionType<?> type = createTypeThatMatches(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
-        worker.activate(new CriterionWithItsType(type, criterion));
+        worker.addSatisfaction(new CriterionWithItsType(type, criterion));
         assertTrue(criterion.isSatisfiedBy(worker));
         resourceService.saveResource(worker);
         assertTrue(criterion.isSatisfiedBy(worker));
@@ -155,7 +156,7 @@ public class CriterionServiceTest {
         ICriterionType<?> type = createTypeThatMatches(criterion);
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
-        worker.activate(new CriterionWithItsType(type, criterion));
+        worker.addSatisfaction(new CriterionWithItsType(type, criterion));
         resourceService.saveResource(worker);
         assertThat(criterionService.getResourcesSatisfying(criterion).size(),
                 equalTo(1));
@@ -170,7 +171,7 @@ public class CriterionServiceTest {
         ICriterionType<?> type = createTypeThatMatches(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        worker.activate(new CriterionWithItsType(type, criterion));
+        worker.addSatisfaction(new CriterionWithItsType(type, criterion));
         assertEquals(1, criterionService.getResourcesSatisfying(criterion)
                 .size());
     }
@@ -191,7 +192,7 @@ public class CriterionServiceTest {
         ICriterionType<Criterion> type = createTypeThatMatches(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        worker.activate(new CriterionWithItsType(type, criterion));
+        worker.addSatisfaction(new CriterionWithItsType(type, criterion));
 
         assertThat(criterionService.getResourcesSatisfying(Resource.class,
                 criterion).size(), is(1));
@@ -208,8 +209,7 @@ public class CriterionServiceTest {
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        worker.activate(new CriterionWithItsType(type, criterion),
-                CriterionSatisfactionDAOTest.year(2000));
+        worker.addSatisfaction(new CriterionWithItsType(type, criterion), Interval.from(CriterionSatisfactionDAOTest.year(2000)));
         ICriterionOnData criterionOnData = criterionService.empower(criterion);
         assertTrue(criterionOnData.isSatisfiedBy(worker));
         assertEquals(1, criterionOnData.getResourcesSatisfying().size());
@@ -232,7 +232,7 @@ public class CriterionServiceTest {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         criterionService.save(criterion);
         ICriterionType<?> type = createTypeThatMatches(criterion);
-        worker1.activate(new CriterionWithItsType(type, criterion));
+        worker1.addSatisfaction(new CriterionWithItsType(type, criterion));
         resourceService.saveResource(worker1);
         Resource workerReloaded = criterionService
                 .onTransaction(new OnTransaction<Resource>() {
@@ -266,8 +266,7 @@ public class CriterionServiceTest {
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        worker.activate(new CriterionWithItsType(type, criterion),
-                CriterionSatisfactionDAOTest.year(2000));
+        worker.addSatisfaction(new CriterionWithItsType(type, criterion), Interval.from(CriterionSatisfactionDAOTest.year(2000)));
         ICriterionOnData criterionOnData = criterionService.empower(criterion);
         criterionOnData.getResourcesSatisfying();
         criterionOnData.getResourcesSatisfying(CriterionSatisfactionDAOTest
@@ -292,8 +291,8 @@ public class CriterionServiceTest {
                 type, criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        worker.activate(criterionWithItsType, CriterionSatisfactionDAOTest
-                .year(2000));
+        worker.addSatisfaction(criterionWithItsType, Interval.from(CriterionSatisfactionDAOTest
+        .year(2000)));
 
         assertEquals(1, criterionService.getResourcesSatisfying(criterion,
                 CriterionSatisfactionDAOTest.year(2001),
@@ -302,8 +301,7 @@ public class CriterionServiceTest {
                 CriterionSatisfactionDAOTest.year(1999),
                 CriterionSatisfactionDAOTest.year(2005)).size());
 
-        worker.activate(new CriterionWithItsType(type, criterion),
-                CriterionSatisfactionDAOTest.year(1998));
+        worker.addSatisfaction(new CriterionWithItsType(type, criterion), Interval.from(CriterionSatisfactionDAOTest.year(1998)));
 
         assertEquals(1, criterionService.getResourcesSatisfying(criterion,
                 CriterionSatisfactionDAOTest.year(1999),
@@ -319,10 +317,10 @@ public class CriterionServiceTest {
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        worker.activate(criterionWithItsType, CriterionSatisfactionDAOTest
-                .year(2000));
-        worker.activate(criterionWithItsType, CriterionSatisfactionDAOTest
-                .year(1998));
+        worker.addSatisfaction(criterionWithItsType, Interval.from(CriterionSatisfactionDAOTest
+        .year(2000)));
+        worker.addSatisfaction(criterionWithItsType, Interval.from(CriterionSatisfactionDAOTest
+        .year(1998)));
 
         ICriterionType<?> criterionType = ResourceTest
                 .createTypeThatMatches(criterion);
@@ -337,8 +335,8 @@ public class CriterionServiceTest {
                 CriterionSatisfactionDAOTest.year(1997),
                 CriterionSatisfactionDAOTest.year(2005)).size());
 
-        worker.activate(criterionWithItsType, CriterionSatisfactionDAOTest
-                .year(1997));
+        worker.addSatisfaction(criterionWithItsType, Interval.from(CriterionSatisfactionDAOTest
+        .year(1997)));
         assertEquals(2, criterionService.getSatisfactionsFor(criterionType,
                 CriterionSatisfactionDAOTest.year(1999),
                 CriterionSatisfactionDAOTest.year(2005)).size());
@@ -363,18 +361,18 @@ public class CriterionServiceTest {
     }
 
     public static ICriterionType<Criterion> createTypeThatMatches(
-            final boolean allowMultipleActiveCriterionsPerResource,
+            final boolean allowSimultaneousCriterionsPerResource,
             final Criterion criterion) {
         return new ICriterionType<Criterion>() {
 
             @Override
-            public boolean allowHierarchy() {
-                return false;
+            public boolean allowSimultaneousCriterionsPerResource() {
+                return allowSimultaneousCriterionsPerResource;
             }
 
             @Override
-            public boolean allowMultipleActiveCriterionsPerResource() {
-                return allowMultipleActiveCriterionsPerResource;
+            public boolean allowHierarchy() {
+                return false;
             }
 
             @Override

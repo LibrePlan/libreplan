@@ -1,5 +1,4 @@
-<window id="${arg.top_id}" title="${arg.title}"
-    apply="${controller.workRelationshipsController}">
+<window id="${arg.top_id}" title="${arg.title}">
     <grid id="edit">
 		<columns>
 			<column label="Date start"/>
@@ -9,11 +8,11 @@
         <rows>
 			<row>
 				<datebox id="editWorkRelationshipStartDate" width="180px"
-                    value="@{controller.workRelationship.editRelationship.startDate}" />
+                    value="@{workRelationship.editRelationship.startDate}" />
 				<datebox id="editWorkRelationshipEndDate" width="180px"
-                    value="@{controller.workRelationship.editRelationship.endDate}" />
+                    value="@{workRelationship.editRelationship.endDate}" />
                 <listbox onSelect="" mold="select" rows="1" id="selectedWorkCriterion"
-                    model="@{controller.workRelationship.workCriterions}">
+                    model="@{workRelationship.workCriterions}" disabled="@{! workRelationship.editing}">
                         <listitem self="@{each='workCriterion'}"
                             label="@{workCriterion.name}"
                             value="@{workCriterion}" />
@@ -21,7 +20,7 @@
 			</row>
 		</rows>
       </grid>
-    <button onClick="controller.workRelationship.saveCriterionSatisfaction();"
+    <button onClick="workRelationship.saveCriterionSatisfaction();"
         label="Save Work Relationship" />
     <button onClick="controller.goToEditForm()"
         label="Cancel and back to Work Relationships"/>
