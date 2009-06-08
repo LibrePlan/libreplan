@@ -336,14 +336,14 @@ public abstract class Resource {
 
     public List<CriterionSatisfaction> finish(
             CriterionWithItsType criterionWithItsType) {
-        return finishEnforcedAt(criterionWithItsType, new Date());
+        return finishEnforcedAt(criterionWithItsType.getCriterion(), new Date());
     }
 
-    public List<CriterionSatisfaction> finishEnforcedAt(
-            CriterionWithItsType criterionWithItsType, Date date) {
+    public List<CriterionSatisfaction> finishEnforcedAt(Criterion criterion,
+            Date date) {
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
         for (CriterionSatisfaction criterionSatisfaction : query().from(
-                criterionWithItsType.getType()).at(date).result()) {
+                criterion).at(date).result()) {
             criterionSatisfaction.finish(date);
             result.add(criterionSatisfaction);
         }
@@ -368,9 +368,9 @@ public abstract class Resource {
 
     public boolean canAddSatisfaction(ICriterionType<?> type,
             CriterionSatisfaction satisfaction) {
-        EnsureSatisfactionIsCorrect ensureSatisfactionIsCorrect = new EnsureSatisfactionIsCorrect(this, type, satisfaction);
-        return ensureSatisfactionIsCorrect
-                .canAddSatisfaction();
+        EnsureSatisfactionIsCorrect ensureSatisfactionIsCorrect = new EnsureSatisfactionIsCorrect(
+                this, type, satisfaction);
+        return ensureSatisfactionIsCorrect.canAddSatisfaction();
     }
 
     private CriterionSatisfaction getNext(ICriterionType<?> type,

@@ -54,8 +54,7 @@ public class ResourceTest {
     public void getSatisfactionsForWrongIntervalThrowsException() {
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         worker.query().from(CriterionDAOTest.createValidCriterion())
-                .enforcedInAll(Interval.range(year(2000), year(1999)))
-                .result();
+                .enforcedInAll(Interval.range(year(2000), year(1999))).result();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -213,8 +212,7 @@ public class ResourceTest {
         assertThat(worker.query().from(criterionType).enforcedInAll(fromNow)
                 .result().size(), equalTo(1));
         List<CriterionSatisfaction> finished = worker.finishEnforcedAt(
-                new CriterionWithItsType(criterionType, criterion), fromNow
-                        .getStart());
+                criterion, fromNow.getStart());
         assertThat(finished.size(), equalTo(1));
         assertTrue("all satisfactions are finished", worker.query().from(
                 criterionType).enforcedInAll(fromNow).result().isEmpty());
