@@ -258,6 +258,11 @@
                 <artifactId>zk</artifactId>
                 <version>3.6.1</version>
             </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zkex</artifactId>
+                <version>3.6.1</version>
+            </dependency>
             <!-- JGraphT -->
             <dependency>
                 <groupId>org.jgrapht</groupId>
@@ -265,6 +270,11 @@
                 <version>0.7.3</version>
             </dependency>
             <!-- Naval Planner ZK Components -->
+            <dependency>
+                <groupId>org.navalplanner</groupId>
+                <artifactId>navalplanner-gantt-zk</artifactId>
+                <version>1.0.0</version>
+            </dependency>
             <dependency>
                 <groupId>org.navalplanner</groupId>
                 <artifactId>navalplanner-gantt-zk</artifactId>

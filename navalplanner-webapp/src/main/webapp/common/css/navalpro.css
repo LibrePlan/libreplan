@@ -174,7 +174,7 @@ table {
     display:none;
 }
 
-.zk .z-button-cm {
+.zk .z-button-cm, .z-button-cm {
     color:#007bbe;
     background-color: #FFFFFF;
     background-image: none;
@@ -183,4 +183,12 @@ table {
 
 .zk .z-button, .zk .z-button-br, .zk .z-button-tr {
     background-image: none;
+}
+
+.z-button-tr {
+    background-image: none !important;
+}
+
+.z-button-br {
+    background-image: none !important;
 }

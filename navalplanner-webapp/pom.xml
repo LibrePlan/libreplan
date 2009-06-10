@@ -44,6 +44,10 @@
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zk</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zkex</artifactId>
+        </dependency>
         <!-- Naval Planner ZK Components  -->
         <dependency>
             <groupId>org.navalplanner</groupId>
