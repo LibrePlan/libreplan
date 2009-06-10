@@ -3,6 +3,7 @@ package org.navalplanner.web.workorders;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.workorders.entities.ITaskWorkContainer;
 import org.navalplanner.business.workorders.entities.ProjectWork;
 
 /**
@@ -19,10 +20,12 @@ public interface IProjectWorkModel {
 
     void save() throws ValidationException;
 
-    ProjectWork getProject();
+    ITaskWorkContainer getProject();
 
     void remove(ProjectWork projectWork);
 
     void prepareForRemove(ProjectWork project);
+
+    TaskTreeModel getTasksTreeModel();
 
 }

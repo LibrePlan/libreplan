@@ -20,7 +20,7 @@ public class ProjectWorkTest {
         ProjectWork projectWork = new ProjectWork();
         TaskWorkContainer container = new TaskWorkContainer();
         TaskWorkLeaf leaf = new TaskWorkLeaf();
-        container.addTask(leaf);
+        container.add(leaf);
         projectWork.add(container);
         assertThat(projectWork.getTaskWorks().size(), equalTo(1));
     }
@@ -32,7 +32,7 @@ public class ProjectWorkTest {
         TaskWorkLeaf[] created = new TaskWorkLeaf[100];
         for (int i = 0; i < created.length; i++) {
             created[i] = new TaskWorkLeaf();
-            container.addTask(created[i]);
+            container.add(created[i]);
         }
         for (int i = 0; i < created.length; i++) {
             assertThat(container.getChildren().get(i),

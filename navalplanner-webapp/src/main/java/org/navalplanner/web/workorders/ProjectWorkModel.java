@@ -8,6 +8,7 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.workorders.entities.ITaskWorkContainer;
 import org.navalplanner.business.workorders.entities.ProjectWork;
 import org.navalplanner.business.workorders.services.IProjectWorkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class ProjectWorkModel implements IProjectWorkModel {
     private ClassValidator<ProjectWork> projectValidator = new ClassValidator<ProjectWork>(
             ProjectWork.class);
 
+    private TaskTreeModel tasksTreeModel;
+
     @Autowired
     public ProjectWorkModel(IProjectWorkService projectService) {
         Validate.notNull(projectService);
@@ -49,6 +52,7 @@ public class ProjectWorkModel implements IProjectWorkModel {
         Validate.notNull(project);
         try {
             this.project = projectService.find(project.getId());
+            this.tasksTreeModel = new TaskTreeModel(this.project);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -57,6 +61,7 @@ public class ProjectWorkModel implements IProjectWorkModel {
     @Override
     public void prepareForCreate() {
         this.project = new ProjectWork();
+        this.tasksTreeModel = new TaskTreeModel(this.project);
         this.project.setInitDate(new Date());
     }
 
@@ -71,7 +76,7 @@ public class ProjectWorkModel implements IProjectWorkModel {
     }
 
     @Override
-    public ProjectWork getProject() {
+    public ITaskWorkContainer getProject() {
         return project;
     }
 
@@ -87,6 +92,11 @@ public class ProjectWorkModel implements IProjectWorkModel {
     @Override
     public void prepareForRemove(ProjectWork project) {
         this.project = project;
+    }
+
+    @Override
+    public TaskTreeModel getTasksTreeModel() {
+        return tasksTreeModel;
     }
 
 }

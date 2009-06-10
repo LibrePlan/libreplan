@@ -12,7 +12,7 @@
         <property name="description" access="field"></property>
         <property name="responsible" access="field"></property>
         <property name="customer" access="field"></property>
-        <list name="taskWorks" access="field" cascade="all-delete-orphan">
+        <list name="taskWorks" access="field" cascade="all">
             <key column="projectId" not-null="false"></key>
             <index column="positionInProject"></index>
             <one-to-many class="TaskWork" />
@@ -23,7 +23,7 @@
         <id name="id" type="long" access="field">
             <generator class="native" />
         </id>
-        <set name="activityWorks" access="field" cascade="all-delete-orphan">
+        <set name="activityWorks" access="field" cascade="all">
             <key column="PARENT_TASK" not-null="false"></key>
             <one-to-many class="ActivityWork" />
         </set>
@@ -34,7 +34,7 @@
 
         <joined-subclass name="TaskWorkContainer">
             <key column="TASKWORKID"></key>
-            <list name="children" access="field" cascade="all-delete-orphan">
+            <list name="children" access="field" cascade="all">
                 <key column="parent" not-null="false"></key>
                 <index column="positionInContainer"></index>
                 <one-to-many class="TaskWork" />

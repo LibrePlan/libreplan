@@ -1,0 +1,40 @@
+<vbox id="tasksTree">
+    <vbox>
+        <hbox>
+            <button label="Nova tarefa"
+                onClick="tasksTreeController.addTaskWork();">
+            </button>
+            <button label="Eliminar tarefa"
+                onClick="tasksTreeController.removeTaskWork();">
+            </button>
+            <button label="Convertir en  subtarefa"
+                onClick="tasksTreeController.indent();">
+            </button>
+            <button label="Unindent" onClick="tasksTreeController.unindent();" />
+            <button label="Baixar" onClick="tasksTreeController.up();"></button>
+            <button label="Subir" onClick="tasksTreeController.down();"></button>
+        </hbox>
+    </vbox>
+    <vbox>
+        <tree id="tree" width="900px" multiple="true" droppable="true"
+            onDrop="tasksTreeController.move(self, event.dragged)"
+            model="@{tasksTreeController.tasksTreeModel}"
+            treeitemRenderer="@{tasksTreeController.renderer}" pageSize="5">
+            <treecols sizable="true">
+                <treecol label="Nome e descripción" />
+                <treecol label="Comezo estimado" />
+                <treecol label="Fin estimado" />
+                <treecol label="Horas" />
+            </treecols>
+        </tree>
+    </vbox>
+    <!--zscript>
+        void move(Component dragged) {
+        if (self instanceof Treerow) {
+        self.parent.insertBefore(dragged, self.getNextSibling() );
+        } else {
+        self.appendChild(dragged);
+        }
+        }
+        </zscript-->
+</vbox>

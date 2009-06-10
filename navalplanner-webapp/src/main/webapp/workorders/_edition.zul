@@ -1,40 +1,61 @@
+<?component name="tasksTree" inline="true" macroURI="_tasksTree.zul"?>
 <window id="${arg.top_id}" title="${arg.title}">
-    <grid fixedLayout="false">
-        <columns>
-            <column label="Nome"  />
-            <column label="Comezo"  />
-            <column label="Final"  />
-            <column label="Responsable"  />
-            <column label="Cliente"  />
-            <column label="Descripción" />
-        </columns>
-        <rows>
-            <row>
-                <label value="Nome" />
-                <textbox value="@{controller.project.name}" />
-            </row>
-            <row>
-                <label value="Comezo" />
-                <datebox value="@{controller.project.initDate}" />
-            </row>
-            <row>
-                <label value="Final" />
-                <datebox value="@{controller.project.endDate}" />
-            </row>
-            <row>
-                <label value="Responsable" />
-                <textbox value="@{controller.project.responsible}" />
-            </row>
-            <row>
-                <label value="Cliente" />
-                <textbox value="@{controller.project.customer}" />
-            </row>
-            <row>
-                <label value="Descripción" />
-                <textbox value="@{controller.project.description}" rows="4"/>
-            </row>
-        </rows>
-    </grid>
+    <tabbox>
+        <tabs>
+            <tab label="Edición"></tab>
+            <tab label="Tarefas"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <grid fixedLayout="false">
+                    <columns>
+                        <column label="Nome" />
+                        <column label="Comezo" />
+                        <column label="Final" />
+                        <column label="Responsable" />
+                        <column label="Cliente" />
+                        <column label="Descripción" />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="Nome" />
+                            <textbox value="@{controller.project.name}" />
+                        </row>
+                        <row>
+                            <label value="Comezo" />
+                            <datebox
+                                value="@{controller.project.initDate}" />
+                        </row>
+                        <row>
+                            <label value="Final" />
+                            <datebox
+                                value="@{controller.project.endDate}" />
+                        </row>
+                        <row>
+                            <label value="Responsable" />
+                            <textbox
+                                value="@{controller.project.responsible}" />
+                        </row>
+                        <row>
+                            <label value="Cliente" />
+                            <textbox
+                                value="@{controller.project.customer}" />
+                        </row>
+                        <row>
+                            <label value="Descripción" />
+                            <textbox
+                                value="@{controller.project.description}"
+                                rows="4" />
+                        </row>
+                    </rows>
+                </grid>
+            </tabpanel>
+            <tabpanel>
+                <tasksTree />
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
     <button onClick="controller.save();"
         label="${arg.save_button_label}" />
     <button onClick="controller.cancel();"

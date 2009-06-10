@@ -11,7 +11,7 @@ import org.hibernate.validator.NotNull;
  * It represents a project with its related information. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class ProjectWork {
+public class ProjectWork implements ITaskWorkContainer {
 
     private static Date copy(Date date) {
         return date != null ? new Date(date.getTime()) : date;
@@ -99,11 +99,39 @@ public class ProjectWork {
     }
 
     public void add(TaskWork task) {
-        taskWorks.add(task);
+        getTasksManipulator().add(task);
+    }
+
+    private TaskWorkListManipulator getTasksManipulator() {
+        return new TaskWorkListManipulator(taskWorks);
     }
 
     public List<TaskWork> getTaskWorks() {
         return new ArrayList<TaskWork>(taskWorks);
+    }
+
+    public void remove(TaskWork task) {
+        getTasksManipulator().remove(task);
+    }
+
+    public void replace(TaskWork oldTask, TaskWork newTask) {
+        getTasksManipulator().replace(oldTask, newTask);
+    }
+
+    @Override
+    public void up(TaskWork task) {
+        getTasksManipulator().up(task);
+    }
+
+    @Override
+    public void down(TaskWork task) {
+        getTasksManipulator().down(task);
+    }
+
+    @Override
+    public void add(int position, TaskWork task) {
+        getTasksManipulator().add(position, task);
+
     }
 
 }

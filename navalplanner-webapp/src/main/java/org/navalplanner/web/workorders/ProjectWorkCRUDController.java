@@ -3,6 +3,7 @@ package org.navalplanner.web.workorders;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.workorders.entities.ITaskWorkContainer;
 import org.navalplanner.business.workorders.entities.ProjectWork;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -47,7 +48,7 @@ public class ProjectWorkCRUDController extends GenericForwardComposer {
         return cachedOnlyOneVisible;
     }
 
-    public ProjectWork getProject() {
+    public ITaskWorkContainer getProject() {
         return projectWorkModel.getProject();
     }
 
@@ -61,7 +62,7 @@ public class ProjectWorkCRUDController extends GenericForwardComposer {
         }
     }
 
-    private void goToList() {
+    public void goToList() {
         Util.reloadBindings(listWindow);
         getVisibility().showOnly(listWindow);
     }
@@ -128,6 +129,16 @@ public class ProjectWorkCRUDController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
         getVisibility().showOnly(listWindow);
+        setupTaskTreeController(comp, "editWindow");
+        setupTaskTreeController(comp, "createWindow");
+    }
+
+    private void setupTaskTreeController(Component comp, String window)
+            throws Exception {
+        TaskWorksTreeController controller = new TaskWorksTreeController(
+                projectWorkModel);
+        controller
+                .doAfterCompose(comp.getFellow(window).getFellow("tasksTree"));
     }
 
 }

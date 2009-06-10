@@ -107,7 +107,7 @@ public class ProjectWorkServiceTest {
         for (int i = 0; i < tasks.length; i++) {
             TaskWorkLeaf leaf = createValidLeaf("bla");
             tasks[i] = leaf;
-            container.addTask(leaf);
+            container.add(leaf);
         }
         projectWorkService.save(projectWork);
         projectWorkService.onTransaction(new OnTransaction<Void>() {
@@ -153,7 +153,7 @@ public class ProjectWorkServiceTest {
         container.setName("bla");
         TaskWorkLeaf leaf = new TaskWorkLeaf();
         leaf.setName("leaf");
-        container.addTask(leaf);
+        container.add(leaf);
         projectWork.add(container);
         ActivityWork activityWork = new ActivityWork();
         activityWork.setWorkingHours(3);

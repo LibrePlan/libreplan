@@ -17,7 +17,7 @@ public class ActivityWork {
         this.workingHours = workingHours;
     }
 
-    public int getWorkingHours() {
+    public Integer getWorkingHours() {
         return workingHours;
     }
 

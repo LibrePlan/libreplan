@@ -20,13 +20,20 @@ public abstract class TaskWork {
 
     private Set<ActivityWork> activityWorks = new HashSet<ActivityWork>();
 
-    public int getWorkHours() {
+    public Integer getWorkHours() {
         int result = 0;
         Set<ActivityWork> a = activityWorks;
         for (ActivityWork activityWork : a) {
-            result += activityWork.getWorkingHours();
+            Integer workingHours = activityWork.getWorkingHours();
+            if (workingHours != null) {
+                result += workingHours;
+            }
         }
         return result;
+    }
+
+    public void setActivities(List<ActivityWork> activities) {
+        this.activityWorks = new HashSet<ActivityWork>(activities);
     }
 
     public void addActivity(ActivityWork activityWork) {
@@ -54,5 +61,37 @@ public abstract class TaskWork {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public abstract boolean isLeaf();
+
+    public abstract List<TaskWork> getChildren();
+
+    public Date getInitDate() {
+        return initDate;
+    }
+
+    public void setInitDate(Date initDate) {
+        this.initDate = initDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public abstract void remove(TaskWork lastAsTask);
+
+    public abstract void replace(TaskWork old, TaskWork newTask);
+
+    public abstract TaskWorkContainer asContainer();
+
+    public void forceLoadActivities() {
+        for (ActivityWork activityWork : activityWorks) {
+            activityWork.getWorkingHours();
+        }
     }
 }
