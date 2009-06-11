@@ -94,7 +94,7 @@ public class WorkerModel implements IWorkerModel {
     @Override
     @Transactional(readOnly = true)
     public void prepareEditFor(Worker worker) {
-        Validate.notNull(worker, "worker is not null");
+        Validate.notNull(worker, "worker must be not null");
         try {
             this.worker = (Worker) resourceService.findResource(worker.getId());
             this.worker.forceLoadSatisfactions();
