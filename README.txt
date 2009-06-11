@@ -1,18 +1,23 @@
 * Database creation
   -----------------
 
-  + Current databases supported: PostgreSQL (default), MySQL, and 
+  + Current databases supported: PostgreSQL (default), MySQL, and
     HSQLDB (In-Process/Standalone Mode).
-  
+
   + For PostgreSQL and MySQL:
-  
+
     - Create a database with name "navaldev" (for development).
-    - Create a database with name "navaldevtest" (for the test fase in 
+CREATE DATABASE navaldev;
+    - Create a database with name "navaldevtest" (for the test fase in
       development).
+CREATE DATABASE navaldevtest;
     - Create user "naval" with password "naval" with necessary privileges for
-      accessing (creating tables, selecting data from tables, etc.) the 
+      accessing (creating tables, selecting data from tables, etc.) the
       previous databases.
-      
+CREATE USER naval WITH PASSWORD 'naval';
+GRANT ALL PRIVILEGES ON DATABASE navaldev TO naval;
+GRANT ALL PRIVILEGES ON DATABASE navaldevtest TO naval;
+
    + For HSQLDB. There is nothing to do.
 
 * Compilation
@@ -38,7 +43,7 @@
     navalplanner-webapp/target/navalplanner-webapp.war
 
   + NOTES FOR USING OTHER DATABASES:
-  
+
     - MySQL:
 
       * Remember to start MySQL with "--default-table-type=InnoDB" option for
@@ -46,7 +51,7 @@
 
       * Use "mvn -Pdev,mysql <<goal|fase>>"
         e.g. mvn -Pdev,mysql install
-      
+
     - HSQLDB:
 
       * Use "mvn -Pdev,hsqldb <<goal|fase>>"
@@ -54,8 +59,8 @@
 
 * Profiles
   --------
-  
+
   Check <profiles> section in the root pom.xml to see the profile-based approach
   used in the project. The default profiles (the one assumed by the above
-  instructions) are "dev" and "postgresql" (meaning "use PostgreSQL assuming a 
+  instructions) are "dev" and "postgresql" (meaning "use PostgreSQL assuming a
   development environment").
