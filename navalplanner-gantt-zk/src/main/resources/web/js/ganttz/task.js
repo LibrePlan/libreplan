@@ -84,16 +84,17 @@ zkTask.init = function(cmp) {
     }, zkTask, true);
 
 
-    // Listen to mousemove events
-    YAHOO.util.Event.on(document.body, 'mousemove', function(e) {
-        var arrPos = YAHOO.util.Event.getXY(e);
-        zkTask.xMouse = arrPos[0];
-        zkTask.yMouse = arrPos[1];
-    });
 };
 
 zkTask.xMouse;
 zkTask.yMouse;
+
+// Listen to mousemove events
+YAHOO.util.Event.on(document.body, 'mousemove', function(e) {
+	var arrPos = YAHOO.util.Event.getXY(e);
+	zkTask.xMouse = arrPos[0];
+	zkTask.yMouse = arrPos[1];
+});
 
 zkTask.setAttr = function(cmp, nm, val) {
 
