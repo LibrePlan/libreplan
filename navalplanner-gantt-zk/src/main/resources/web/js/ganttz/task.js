@@ -189,12 +189,7 @@ zkTask.isOverTask = function(cmp, arrow) {
     for ( var i = 0; i < arrayTasks.length; i++) {
 
         var task = arrayTasks[i];
-
-        YAHOO.log(" zkTask.xMouse (" + zkTask.xMouse + "," + zkTask.yMouse
-            + ") " + "task.pos (" + xpos + "," + ypos + ") "
-            + "task.offsetLeft (" + task.offsetLeft + "," + task.offsetTop
-            + ") " + "task.idTask-" + task.toString());
-
+        
         if (((xpos) > (task.offsetLeft))
             && ((xpos) < (task.offsetLeft + task.offsetWidth))
             && (ypos > (task.offsetTop))
