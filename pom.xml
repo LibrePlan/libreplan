@@ -385,6 +385,23 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp/META-INF</directory>
+                            <targetPath>META-INF</targetPath>
+                            <filtering>true</filtering>
+                            <includes>
+                                <include>context.xml</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+
             <!-- =========================================================== -->
             <!-- Jetty configuration -->
             <plugin>

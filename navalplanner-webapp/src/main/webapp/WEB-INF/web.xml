@@ -3,7 +3,7 @@
     xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
   http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-    <display-name>helloworld</display-name>
+    <display-name>navalplanner-webapp</display-name>
 
     <!--
         It searches all navalplanner-business-spring-config.xml files, it can
