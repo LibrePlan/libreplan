@@ -15,9 +15,7 @@ import java.util.List;
 import org.zkoss.ganttz.util.Interval;
 
 /**
- *
  * @author Francisco Javier Moran Rúa
- *
  */
 public abstract class TimeTrackerState {
 
@@ -26,9 +24,7 @@ public abstract class TimeTrackerState {
 
     /**
      * This class is conceived as an immutable class.
-     *
      * @author Francisco Javier Moran Rúa
-     *
      */
     public final static class DetailItem {
 
@@ -123,8 +119,6 @@ public abstract class TimeTrackerState {
 
     protected static long calculateYearsBetween(Date initialDate, Date endDate) {
 
-        System.out.println("Initial date:" + initialDate);
-        System.out.println("End date:" + endDate);
         long milsecondsDiff = endDate.getTime() - initialDate.getTime();
 
         // To chech later: If you put MILLSECONDS_IN_YEAR the

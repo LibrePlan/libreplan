@@ -18,9 +18,7 @@ import org.zkoss.ganttz.Dependency;
  * the {@link DependencyBean dependency} as arcs. It enforces the rules embodied
  * in the dependencies and in the duration of the tasks using listeners. <br/>
  * Created at Apr 24, 2009
- *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public class DependencyRegistry {
 
@@ -98,15 +96,24 @@ public class DependencyRegistry {
         rulesEnforcersByTask.get(destination).update();
     }
 
-    public void add(Dependency dependency) {
-        TaskBean destination = dependency.getDestination().getTaskBean();
-        graph.addEdge(dependency.getSource().getTaskBean(), destination,
-                dependency.getDependencyBean());
+    public void add(DependencyBean dependency) {
+        TaskBean source = dependency.getSource();
+        TaskBean destination = dependency.getDestination();
+        graph.addEdge(source, destination, dependency);
         getEnforcer(destination).update();
     }
 
     private RulesEnforcer getEnforcer(TaskBean destination) {
         return rulesEnforcersByTask.get(destination);
+    }
+
+    public List<TaskBean> getTasks() {
+        return new ArrayList<TaskBean>(graph.vertexSet());
+    }
+
+    public List<DependencyBean> getDependencies() {
+        Set<DependencyBean> edgeSet = graph.edgeSet();
+        return new ArrayList<DependencyBean>(edgeSet);
     }
 
 }

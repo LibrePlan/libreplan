@@ -1,22 +1,25 @@
 package org.zkoss.ganttz;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zkoss.util.resource.Labels;
+import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 public class ListDetails extends HtmlMacroComponent {
 
     private static Log LOG = LogFactory.getLog(ListDetails.class);
+
     private TaskRemovedListener taskRemovedListener;
 
-    public ListDetails() {
-        LOG.info("constructing list details");
+    private final List<TaskBean> taskBeans;
+
+    public ListDetails(List<TaskBean> taskBeans) {
+        this.taskBeans = taskBeans;
     }
 
     Planner getPlanner() {
@@ -28,10 +31,10 @@ public class ListDetails extends HtmlMacroComponent {
         return Planner.findComponentsOfType(TaskDetail.class, children);
     }
 
-    public void taskRemoved(Task taskRemoved) {
+    public void taskRemoved(TaskBean taskRemoved) {
         List<TaskDetail> taskDetails = getTaskDetails();
         for (TaskDetail taskDetail : taskDetails) {
-            if (taskDetail.getTaskId().equals(taskRemoved.getId())) {
+            if (taskDetail.getTaskBean().equals(taskRemoved)) {
                 removeDetail(taskDetail);
                 return;
             }
@@ -44,20 +47,34 @@ public class ListDetails extends HtmlMacroComponent {
     }
 
     public void addTask() {
-        TaskDetail taskDetail = new TaskDetail();
-        String newId = UUID.randomUUID().toString();
-        taskDetail.setTaskId(newId);
-        taskDetail.setDynamicProperty("start", TaskDetail.format(new Date()));
-        taskDetail.setDynamicProperty("length", "30 days");
-        taskDetail.setDynamicProperty("taskName", Labels
-                .getLabel("task.new_task_name"));
-        Component insertionPoint = getInsertionPoint();
-        taskDetail.setParent(insertionPoint);
+        TaskBean newTask = new TaskBean();
+        newTask.setName("Nova Tarefa");
+        newTask.setBeginDate(new Date());
+        newTask.setEndDate(threeMonthsLater(newTask.getBeginDate()));
+        System.out.println(newTask.getEndDate());
+        addTask(newTask);
+        getPlanner().addTask(newTask);
+    }
+
+    private static Date threeMonthsLater(Date now) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.MONTH, 3);
+        return calendar.getTime();
+    }
+
+    @Override
+    public void afterCompose() {
+        super.afterCompose();
+        for (TaskBean taskBean : taskBeans) {
+            addTask(taskBean);
+        }
+    }
+
+    private void addTask(TaskBean taskBean) {
+        TaskDetail taskDetail = TaskDetail.create(taskBean);
+        getInsertionPoint().appendChild(taskDetail);
         taskDetail.afterCompose();
-        Task task = new Task();
-        getPlanner().addTask(task);
-        task.setColor("#007bbe");
-        task.setId(newId);
     }
 
     private Component getInsertionPoint() {

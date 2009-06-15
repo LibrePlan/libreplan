@@ -22,9 +22,7 @@ import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- *
  * @author Francisco Javier Moran Rúa
- *
  */
 public class DependencyList extends XulElement implements AfterCompose {
 
@@ -48,7 +46,6 @@ public class DependencyList extends XulElement implements AfterCompose {
     void addDependency(Dependency dependency) {
         appendChild(dependency);
         addContextMenu(dependency);
-        publishDependency(dependency);
     }
 
     private void addContextMenu(Dependency dependency) {
@@ -57,6 +54,12 @@ public class DependencyList extends XulElement implements AfterCompose {
 
     private GanttPanel getGanttPanel() {
         return (GanttPanel) getParent();
+    }
+
+    public void setDependencies(List<Dependency> dependencies) {
+        for (Dependency dependency : dependencies) {
+            addDependency(dependency);
+        }
     }
 
     @Override
@@ -90,22 +93,7 @@ public class DependencyList extends XulElement implements AfterCompose {
                     taskRemovedListener);
         }
         addContextMenu();
-        publishDependencies();
 
-    }
-
-    private void publishDependencies() {
-        for (Dependency dependency : getDependencies()) {
-            publishDependency(dependency);
-        }
-    }
-
-    private void publishDependency(Dependency dependency) {
-        getPlanner().publishDependency(dependency);
-    }
-
-    private Planner getPlanner() {
-        return getGanttPanel().getPlanner();
     }
 
     private void addContextMenu() {

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,13 +28,13 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Div;
 
 /**
- *
  * @author javi
  */
-public class Task extends Div {
+public class Task extends Div implements AfterCompose {
 
     private static Pattern pixelsSpecificationPattern = Pattern
             .compile("\\s*(\\d+)px\\s*;?\\s*");
@@ -122,16 +123,34 @@ public class Task extends Div {
         }
     };
 
-    public Task() {
+    public static Task asTask(TaskBean taskBean) {
+        return new Task(taskBean);
+    }
+
+    public Task(TaskBean taskBean) {
         setHeight("20px"); /* Initial constant for standard task height */
         setContext("idContextMenuTaskAssigment");
+        this.taskBean = taskBean;
+        setColor("#007bbe");
+        setId(UUID.randomUUID().toString());
+    }
+
+    public void afterCompose() {
+        updateProperties();
+        this.taskBean.addPropertyChangeListener(new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                updateProperties();
+            }
+        });
     }
 
     private String _color;
 
     private List<WeakReference<DependencyAddedListener>> dependencyListeners = new LinkedList<WeakReference<DependencyAddedListener>>();
 
-    private TaskBean taskBean;
+    private final TaskBean taskBean;
 
     public TaskBean getTaskBean() {
         return taskBean;
@@ -139,22 +158,6 @@ public class Task extends Div {
 
     public String getTaskName() {
         return taskBean.getName();
-    }
-
-    @Override
-    public void setId(String id) {
-        super.setId(id);
-        if (taskBean != null)
-            throw new IllegalStateException("taskBean already set");
-        taskBean = getPlanner().retrieve(id);
-        updateProperties();
-        taskBean.addPropertyChangeListener(new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                updateProperties();
-            }
-        });
     }
 
     public String getLength() {
@@ -202,12 +205,10 @@ public class Task extends Div {
 
     // Command action to do
     void doUpdatePosition(String leftX, String topY) {
-        System.out.println("leftX:" + getLeft() + "newLeft:" + leftX);
         this.taskBean.setBeginDate(getMapper().toDate(stripPx(leftX)));
     }
 
     void doUpdateSize(String size) {
-        System.out.println("size:" + getWidth() + "newWidth:" + size);
         int pixels = stripPx(size);
         this.taskBean.setLengthMilliseconds(getMapper().toMilliseconds(pixels));
     }
@@ -303,5 +304,4 @@ public class Task extends Div {
         getTaskList().removeTask(this);
 
     }
-
 }

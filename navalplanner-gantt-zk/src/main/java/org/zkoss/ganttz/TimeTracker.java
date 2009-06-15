@@ -21,16 +21,13 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Label;
 
 /**
- *
- *
- * @author Francisco Javier Moran Rúa
- *
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 
 public class TimeTracker extends HtmlMacroComponent {
 
     private static Interval getTestInterval() {
-        return new Interval(TimeTrackerState.year(2009), TimeTrackerState
+        return new Interval(TimeTrackerState.year(2008), TimeTrackerState
                 .year(2019));
     }
 
@@ -43,6 +40,12 @@ public class TimeTracker extends HtmlMacroComponent {
     private Collection<DetailItem> detailsFirstLevelCached = null;
 
     private Collection<DetailItem> detailsSecondLevelCached = null;
+
+    private ZoomLevel detailLevel;
+
+    public TimeTracker() {
+        this.detailLevel = ZoomLevel.DETAIL_ONE;
+    }
 
     public void addZoomListener(ZoomLevelChangedListener listener) {
         zoomListeners
@@ -102,7 +105,7 @@ public class TimeTracker extends HtmlMacroComponent {
     }
 
     private void changeDetailLevel(ZoomLevel d) {
-        setDynamicProperty("detailLevel", d);
+        this.detailLevel = d;
         datesMapper = null;
         detailsFirstLevelCached = null;
         detailsSecondLevelCached = null;
@@ -117,7 +120,7 @@ public class TimeTracker extends HtmlMacroComponent {
     }
 
     private ZoomLevel getDetailLevel() {
-        return (ZoomLevel) getDynamicProperty("detailLevel");
+        return detailLevel;
     }
 
     public AbstractComponent getFakeRow() {

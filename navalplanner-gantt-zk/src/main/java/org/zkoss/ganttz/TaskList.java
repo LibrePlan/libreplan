@@ -7,11 +7,15 @@ package org.zkoss.ganttz;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
+import org.zkoss.ganttz.util.DependencyBean;
 import org.zkoss.ganttz.util.MenuBuilder;
+import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;
@@ -26,9 +30,8 @@ import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- *
- * @author Francisco Javier Moran Rúa
- *
+ * Component to show the list of task in the planner
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public class TaskList extends XulElement implements AfterCompose {
 
@@ -45,10 +48,40 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer();
 
+    private List<TaskBean> originalTasks;
+
+    public TaskList(List<TaskBean> tasks) {
+        this.originalTasks = tasks;
+    }
+
+    public static TaskList createFor(List<TaskBean> tasks) {
+        TaskList result = new TaskList(tasks);
+        return result;
+    }
+
+    public List<Dependency> asDependencies(List<DependencyBean> dependencies) {
+        List<? extends Object> children = getChildren();
+        List<Task> tasks = Planner.findComponentsOfType(Task.class, children);
+        Map<TaskBean, Task> taskByTaskBean = new HashMap<TaskBean, Task>();
+        for (Task task : tasks) {
+            taskByTaskBean.put(task.getTaskBean(), task);
+        }
+        List<Dependency> result = new ArrayList<Dependency>();
+        for (DependencyBean dependencyBean : dependencies) {
+            result.add(new Dependency(taskByTaskBean.get(dependencyBean
+                    .getSource()), taskByTaskBean.get(dependencyBean
+                    .getDestination())));
+        }
+        return result;
+    }
+
+    public void addTask(TaskBean newTask) {
+        addTask(Task.asTask(newTask));
+    }
+
     public synchronized void addTask(Task task) {
         task.setParent(this);
         invalidate();
-        getDependencyList().invalidate();
         addContextMenu(task);
         addListenerForTaskEditForm(task);
         ListIterator<WeakReference<DependencyAddedListener>> iterator = listeners
@@ -61,16 +94,7 @@ public class TaskList extends XulElement implements AfterCompose {
                 iterator.remove();
             }
         }
-    }
-
-    private DependencyList getDependencyList() {
-        return getGanttPanel().getDependencyList();
-    }
-
-    private void addListenersForTaskEditForm() {
-        for (Task task : getTasks()) {
-            addListenerForTaskEditForm(task);
-        }
+        task.afterCompose();
     }
 
     private void addListenerForTaskEditForm(final Task task) {
@@ -88,15 +112,13 @@ public class TaskList extends XulElement implements AfterCompose {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                getContextMenuForTasks().open(task);
+                try {
+                    getContextMenuForTasks().open(task);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
-    }
-
-    private void addContextMenu() {
-        for (Task task : getTasks()) {
-            addContextMenu(task);
-        }
     }
 
     public void addRemoveListener(TaskRemovedListener listener) {
@@ -124,11 +146,13 @@ public class TaskList extends XulElement implements AfterCompose {
     public String getSameHeightElementId() {
         TimeTracker timeTracker = getTimeTracker();
         AbstractComponent fakeRow = timeTracker.getFakeRow();
+        if (fakeRow == null)
+            return "";
         return fakeRow.getUuid();
     }
 
     private TimeTracker getTimeTracker() {
-        return (getGanttPanel()).getTimeTracker();
+        return getGanttPanel().getTimeTracker();
     }
 
     DatesMapper getMapper() {
@@ -162,6 +186,9 @@ public class TaskList extends XulElement implements AfterCompose {
 
     @Override
     public void afterCompose() {
+        for (TaskBean taskBean : originalTasks) {
+            addTask(Task.asTask(taskBean));
+        }
         if (zoomLevelChangedListener == null) {
             zoomLevelChangedListener = new ZoomLevelChangedListener() {
                 @Override
@@ -175,8 +202,6 @@ public class TaskList extends XulElement implements AfterCompose {
             };
             getTimeTracker().addZoomListener(zoomLevelChangedListener);
         }
-        addListenersForTaskEditForm();
-        addContextMenu();
     }
 
     private Menupopup getContextMenuForTasks() {
@@ -209,4 +234,5 @@ public class TaskList extends XulElement implements AfterCompose {
     public TaskEditFormComposer getModalFormComposer() {
         return taskEditFormComposer;
     }
+
 }

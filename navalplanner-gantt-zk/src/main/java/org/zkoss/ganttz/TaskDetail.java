@@ -3,7 +3,6 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -15,25 +14,12 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.util.TaskBean;
-import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
 
 public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
-
-    private static long parseLength(String length) {
-        return LengthType.getTimeInMilliseconds(length);
-    }
-
-    private static Date parseStartDate(String start) {
-        try {
-            return dateFormat.parse(start);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     static String format(Date date) {
         return dateFormat.format(date);
@@ -77,7 +63,7 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
 
     private String taskId;
 
-    private TaskBean taskBean;
+    private final TaskBean taskBean;
 
     public TaskBean getTaskBean() {
         return taskBean;
@@ -116,37 +102,21 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
 
     private Datebox endDateBox;
 
-    public String getTaskId() {
-        return taskId;
+    public static TaskDetail create(TaskBean bean) {
+        return new TaskDetail(bean);
     }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
-
-    public TaskDetail() {
-        LOG.info("Detail component constructor");
+    private TaskDetail(TaskBean task) {
+        this.taskBean = task;
     }
 
     public TaskBean getData() {
         return taskBean;
     }
 
-    private Planner getPlanner() {
-        AbstractComponent parent = (AbstractComponent) getParent();
-        while (!(parent instanceof ListDetails)) {
-            parent = (AbstractComponent) parent.getParent();
-        }
-        return ((ListDetails) parent).getPlanner();
-    }
-
     @Override
     public void afterCompose() {
         super.afterCompose();
-        taskBean = new TaskBean((String) getDynamicProperty("taskName"),
-                parseStartDate((String) getDynamicProperty("start")),
-                parseLength((String) getDynamicProperty("length")));
-        getPlanner().publish(taskId, taskBean);
         updateComponents();
         taskBean.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -172,4 +142,5 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
         getStartDateBox().setValue(taskBean.getBeginDate());
         getEndDateBox().setValue(taskBean.getEndDate());
     }
+
 }

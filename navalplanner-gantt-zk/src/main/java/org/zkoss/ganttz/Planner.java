@@ -1,12 +1,11 @@
 package org.zkoss.ganttz;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.zkoss.ganttz.util.DependencyRegistry;
 import org.zkoss.ganttz.util.TaskBean;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
@@ -15,13 +14,15 @@ public class Planner extends XulElement implements AfterCompose {
 
     private DependencyAddedListener dependencyAddedListener;
 
-    private Map<String, TaskBean> tasksById = new HashMap<String, TaskBean>();
-
     private DependencyRegistry dependencyRegistry = new DependencyRegistry();
 
     private DependencyRemovedListener dependencyRemovedListener;
 
     private TaskRemovedListener taskRemovedListener;
+
+    private ListDetails listDetails;
+
+    private GanttPanel ganttPanel;
 
     public Planner() {
     }
@@ -42,22 +43,6 @@ public class Planner extends XulElement implements AfterCompose {
         return result.get(0);
     }
 
-    void publish(String taskId, TaskBean task) {
-        if (taskId == null)
-            throw new IllegalArgumentException("taskId cannot be null");
-        if (task == null)
-            throw new IllegalArgumentException("task cannot be null");
-        if (tasksById.containsKey(taskId))
-            throw new IllegalArgumentException("task with id " + taskId
-                    + " is already in " + tasksById);
-        tasksById.put(taskId, task);
-        dependencyRegistry.add(task);
-    }
-
-    TaskBean retrieve(String taskId) {
-        return tasksById.get(taskId);
-    }
-
     public static <T> List<T> findComponentsOfType(Class<T> type,
             List<? extends Object> children) {
         ArrayList<T> result = new ArrayList<T>();
@@ -73,12 +58,16 @@ public class Planner extends XulElement implements AfterCompose {
         return Executions.getCurrent().getContextPath();
     }
 
-    private GanttPanel getGanntPanel() {
-        return findOneComponentOfType(GanttPanel.class);
+    private void removePreviousGanntPanel() {
+        List<Object> children = getChildren();
+        for (GanttPanel ganttPanel : findComponentsOfType(GanttPanel.class,
+                children)) {
+            removeChild(ganttPanel);
+        }
     }
 
     public DependencyList getDependencyList() {
-        List<Object> children = getGanntPanel().getChildren();
+        List<Object> children = ganttPanel.getChildren();
         List<DependencyList> found = findComponentsOfType(DependencyList.class,
                 children);
         if (found.isEmpty())
@@ -86,18 +75,29 @@ public class Planner extends XulElement implements AfterCompose {
         return found.get(0);
     }
 
-    private ListDetails getDetails() {
+    private void removePreviousDetails() {
         List<Object> children = getChildren();
-        return Planner.findComponentsOfType(ListDetails.class, children).get(0);
+        for (ListDetails l : Planner.findComponentsOfType(ListDetails.class,
+                children)) {
+            removeChild(l);
+        }
+    }
+
+    public TaskEditFormComposer getModalFormComposer() {
+        return getTaskList().getModalFormComposer();
     }
 
     @Override
     public void afterCompose() {
+        if (dependencyRegistry == null)
+            throw new IllegalStateException("dependencyRegistry must be set");
+        ganttPanel.afterCompose();
         TaskList taskList = getTaskList();
         dependencyAddedListener = new DependencyAddedListener() {
             @Override
             public void dependenceAdded(Dependency dependency) {
                 getDependencyList().addDependency(dependency);
+                publishDependency(dependency);
             }
         };
         taskList.addDependencyListener(dependencyAddedListener);
@@ -105,8 +105,8 @@ public class Planner extends XulElement implements AfterCompose {
             @Override
             public void taskRemoved(Task taskRemoved) {
                 dependencyRegistry.remove(taskRemoved.getTaskBean());
-                getDetails().taskRemoved(taskRemoved);
-                getGanntPanel().invalidate();
+                listDetails.taskRemoved(taskRemoved.getTaskBean());
+                ganttPanel.invalidate();
             }
         };
         taskList.addTaskRemovedListener(taskRemovedListener);
@@ -121,12 +121,31 @@ public class Planner extends XulElement implements AfterCompose {
                 dependencyRemovedListener);
     }
 
-    public void addTask(Task task) {
-        getTaskList().addTask(task);
+    public void addTask(TaskBean newTask) {
+        getTaskList().addTask(newTask);
+        getDependencyList().invalidate();
+        dependencyRegistry.add(newTask);
     }
 
-    public void publishDependency(Dependency dependency) {
-        dependencyRegistry.add(dependency);
+    private void publishDependency(Dependency dependency) {
+        dependencyRegistry.add(dependency.getDependencyBean());
+    }
+
+    public DependencyRegistry getDependencyRegistry() {
+        return dependencyRegistry;
+    }
+
+    public void setDependencyRegistry(DependencyRegistry dependencyRegistry) {
+        this.dependencyRegistry = dependencyRegistry;
+        removePreviousDetails();
+        this.listDetails = new ListDetails(dependencyRegistry.getTasks());
+        insertBefore(this.listDetails,
+                (Component) (getChildren().isEmpty() ? null : getChildren()
+                        .get(0)));
+        this.listDetails.afterCompose();
+        removePreviousGanntPanel();
+        this.ganttPanel = new GanttPanel(this.dependencyRegistry);
+        appendChild(ganttPanel);
     }
 
 }

@@ -6,53 +6,41 @@
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro.css"?>
 <zk>
 
-    <planner self="@{define(content)}">
-        <div id="idContextMenuTaskAssigment" use="org.zk.myhello.pages.MyHelloPageListener">            
+<zscript><![CDATA[
+    plannerData = new org.navalplanner.web.planner.DataForPlanner();
+]]>
+</zscript>
+    <!-- choose lightLoad, mediumLoad or highLoad.
+     -->
+    <planner id="planner" self="@{define(content)}" dependencyRegistry="${plannerData.lightLoad}">
+        <div id="idContextMenuTaskAssigment"
+            use="org.zk.myhello.pages.MyHelloPageListener">
         </div>
+    </planner>
 
-        <listdetails>
-        </listdetails>
-        <ganttpanel>
-            <timetracker detailLevel="${idContextMenuTaskAssigment.currentDetailLevel}" />
-            <tasklist id="taskList">
-                <task id="task1" color="#007bbe"/>
+    <window border="normal" width="300px"
+        apply="${planner.modalFormComposer}">
+        <grid>
+            <rows>
+                <row>
+                    ${c:l('task.name')}
+                    <textbox id="name" />
+                </row>
+                <row>
+                    ${c:l('task.start')}
+                    <datebox id="startDateBox" compact="true" />
+                </row>
+                <row>
+                    ${c:l('task.end')}
+                    <datebox id="endDateBox" compact="true" />
+                </row>
+                <row>
+                    ${c:l('task.notes')}
+                    <textbox id="notes" />
+                </row>
+            </rows>
+        </grid>
+        <button id="ok" label=" ${c:l('task.ok')}" />
+    </window>
 
-                <task id="task2" color="#007bbe"/>
-
-                <task id="task3" color="#007bbe"/>
-
-                <task id="task4" color="#007bbe"/>
-
-		    <!--task id="task5" color="orange"/>
-
-		    <task id="task6" color="white"/-->		    		  
-
-            </tasklist>            
-            
-     
-            <window border="normal" width="300px" apply="${taskList.modalFormComposer}">
-                <grid>
-                    <rows>
-                        <row>${c:l('task.name')} <textbox id="name"/></row>
-                        <row>${c:l('task.start')} <datebox id="startDateBox" compact="true"/>
-                        </row>
-                        <row>                                   
-                            ${c:l('task.end')} <datebox id="endDateBox" compact="true"  />
-                        </row>                        
-                        <row>                                   
-                            ${c:l('task.notes')} <textbox id="notes" />
-                        </row>
-                    </rows>
-                </grid>
-                <button id="ok" label=" ${c:l('task.ok')}" />
-            </window>                      
-
-            <dependencylist>
-                <dependency idTaskOrig="task1" idTaskEnd="task2"/>
-                <dependency idTaskOrig="task2" idTaskEnd="task3"/>
-                <dependency idTaskOrig="task1" idTaskEnd="task4"/>
-            </dependencylist>
-        </ganttpanel>
-    </planner>          
-            
 </zk>
