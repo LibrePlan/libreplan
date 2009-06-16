@@ -96,6 +96,9 @@ public class TaskList extends XulElement implements AfterCompose {
         task.afterCompose();
         if (relocate) {
             response(null, new AuInvoke(task, "recolocateAfterAdding"));
+            setHeight(getHeight());// forcing smart update
+            adjustZoomColumnsHeight();
+            getGanttPanel().getDependencyList().redrawDependencies();
         }
     }
 
@@ -198,8 +201,7 @@ public class TaskList extends XulElement implements AfterCompose {
                     for (Task task : getTasks()) {
                         task.zoomChanged();
                     }
-                    response("adjust_height", new AuInvoke(TaskList.this,
-                            "adjust_height"));
+                    adjustZoomColumnsHeight();
                 }
             };
             getTimeTracker().addZoomListener(zoomLevelChangedListener);
@@ -235,6 +237,10 @@ public class TaskList extends XulElement implements AfterCompose {
 
     public TaskEditFormComposer getModalFormComposer() {
         return taskEditFormComposer;
+    }
+
+    private void adjustZoomColumnsHeight() {
+        response("adjust_height", new AuInvoke(TaskList.this, "adjust_height"));
     }
 
 }
