@@ -24,7 +24,8 @@
 
 <script type="text/javascript">
 document.body.class = "yui-skin-sam";
-var myContainer = document.body.appendChild(document.createElement("div"));
+/*var myContainer = document.body.insertBefore(document.createElement("div"),document.body.childNodes[0]);
+var myLogReader = new YAHOO.widget.LogReader(myContainer);*/
 </script>
 
 

@@ -123,7 +123,6 @@ public class Planner extends XulElement implements AfterCompose {
 
     public void addTask(TaskBean newTask) {
         getTaskList().addTask(newTask);
-        getDependencyList().invalidate();
         dependencyRegistry.add(newTask);
     }
 

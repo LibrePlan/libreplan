@@ -23,6 +23,13 @@ zkTask.getDD = function(cmp) {
     return cmp.created_dd;
 }
 
+zkTask.recolocateAfterAdding = function(cmp){
+    var row = cmp.parentNode;
+    var taskList = row.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+    taskList.appendChild(row);
+}
+
 zkTask.init = function(cmp) {
     // Configure the drag&drop over the component
     var dd = zkTask.getDD(cmp);
@@ -82,7 +89,6 @@ zkTask.init = function(cmp) {
         });
 
     }, zkTask, true);
-
 
 };
 

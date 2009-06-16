@@ -76,12 +76,11 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     public void addTask(TaskBean newTask) {
-        addTask(Task.asTask(newTask));
+        addTask(Task.asTask(newTask), true);
     }
 
-    public synchronized void addTask(Task task) {
+    public synchronized void addTask(final Task task, boolean relocate) {
         task.setParent(this);
-        invalidate();
         addContextMenu(task);
         addListenerForTaskEditForm(task);
         ListIterator<WeakReference<DependencyAddedListener>> iterator = listeners
@@ -95,6 +94,9 @@ public class TaskList extends XulElement implements AfterCompose {
             }
         }
         task.afterCompose();
+        if (relocate) {
+            response(null, new AuInvoke(task, "recolocateAfterAdding"));
+        }
     }
 
     private void addListenerForTaskEditForm(final Task task) {
@@ -187,7 +189,7 @@ public class TaskList extends XulElement implements AfterCompose {
     @Override
     public void afterCompose() {
         for (TaskBean taskBean : originalTasks) {
-            addTask(Task.asTask(taskBean));
+            addTask(Task.asTask(taskBean), false);
         }
         if (zoomLevelChangedListener == null) {
             zoomLevelChangedListener = new ZoomLevelChangedListener() {
