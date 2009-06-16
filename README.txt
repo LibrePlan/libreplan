@@ -14,9 +14,13 @@ CREATE DATABASE navaldevtest;
     - Create user "naval" with password "naval" with necessary privileges for
       accessing (creating tables, selecting data from tables, etc.) the
       previous databases.
+        * PostgreSQL:
 CREATE USER naval WITH PASSWORD 'naval';
 GRANT ALL PRIVILEGES ON DATABASE navaldev TO naval;
 GRANT ALL PRIVILEGES ON DATABASE navaldevtest TO naval;
+        * MySQL:
+GRANT ALL ON navaldev.* to 'naval'@'localhost' identified by 'naval';
+GRANT ALL ON navaldevtest.* to 'naval'@'localhost' identified by 'naval';
 
    + For HSQLDB. There is nothing to do.
 
