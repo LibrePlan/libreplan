@@ -91,7 +91,7 @@ zkPlanner.drawArrow = function(arrow, orig, dest){
         deparrow.style.top = yend - 10 + "px";
         deparrow.style.left = xend - 5 + "px";
         if ( yorig > yend ) {
-            deparrow.src = baseURL+"arrow4.png";
+            deparrow.src = this.getImagesDir()+"arrow4.png";
             deparrow.style.top = yend + "px";
         }
     } else {
