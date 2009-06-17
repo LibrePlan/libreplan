@@ -31,65 +31,74 @@ zkTask.recolocateAfterAdding = function(cmp){
 }
 
 zkTask.init = function(cmp) {
-    // Configure the drag&drop over the component
-    var dd = zkTask.getDD(cmp);
+    var callback = function(){
+        //Configure the drag&drop over the component
+        var dd = zkTask.getDD(cmp);
+        //when the tasks is being dragged the related dependencies are redrawn
+        dd.on('dragEvent',function(ev){
+            if(cmp['relatedDependencies']){
+                for ( var i = 0; i < cmp.relatedDependencies.length; i++) {
+                    zkDependency.draw(cmp.relatedDependencies[i]);
+                }
+            }
+        }, null, false);
+        // Register the event endDragEvent
+        dd.on('endDragEvent', function(ev) {
+            zkau.send( {
+                uuid : cmp.id,
+                cmd : "updatePosition",
+                data : [ cmp.style.left, cmp.style.top ]
+            });
 
-    // Register the event endDragEvent
-    dd.on('endDragEvent', function(ev) {
-        zkau.send( {
-            uuid : cmp.id,
-            cmd : "updatePosition",
-            data : [ cmp.style.left, cmp.style.top ]
+        }, null, false);
+        // Configure the task element to be resizable
+        var resize = new YAHOO.util.Resize(cmp.id, {
+            handles : [ 'r' ],
+            proxy : true
         });
 
-    }, null, false);
-
-    // Configure the task element to be resizable
-    var resize = new YAHOO.util.Resize(cmp.id, {
-        handles : [ 'r' ],
-        proxy : true
-    });
-
-    // Configure the task element to be resizable
-    cmp2 = document.getElementById('completion'+cmp.id);
-
-    var resize2 = new YAHOO.util.Resize(cmp2, {
-        handles : [ 'r' ],
-        proxy : true,
-        maxWidth: cmp.clientWidth - 2
-    });
-
-
-    resize2.on('resize', function(ev) {
-
-        zkau.send( {
-            uuid : cmp2.id,
-            cmd : "updateProgress",
-            data : [ cmp2.style.width ],
-        });
-    }, zkTask, true);
-
-
-    resize.on('resize', function(ev) {
-
+        // Configure the task element to be resizable
         cmp2 = document.getElementById('completion'+cmp.id);
-        resize2 = new YAHOO.util.Resize(cmp2, {
+
+        var resize2 = new YAHOO.util.Resize(cmp2, {
             handles : [ 'r' ],
             proxy : true,
             maxWidth: cmp.clientWidth - 2
         });
-        if ( (cmp.clientWidth) < (cmp2.clientWidth) ) {
-            cmp2.style.width = cmp.clientWidth - 2  + 'px';
-        }
 
-        zkau.send( {
-            uuid : cmp.id,
-            cmd : "updateSize",
-            data : [ cmp.style.width ]
-        });
+        resize2.on('resize', function(ev) {
 
-    }, zkTask, true);
+            zkau.send( {
+                uuid : cmp2.id,
+                cmd : "updateProgress",
+                data : [ cmp2.style.width ],
+            });
+        }, zkTask, true);
 
+
+        resize.on('resize', function(ev) {
+
+            cmp2 = document.getElementById('completion'+cmp.id);
+            resize2 = new YAHOO.util.Resize(cmp2, {
+                handles : [ 'r' ],
+                proxy : true,
+                maxWidth: cmp.clientWidth - 2
+            });
+            if ( (cmp.clientWidth) < (cmp2.clientWidth) ) {
+                cmp2.style.width = cmp.clientWidth - 2  + 'px';
+            }
+
+            zkau.send( {
+                uuid : cmp.id,
+                cmd : "updateSize",
+                data : [ cmp.style.width ]
+            });
+
+        }, zkTask, true);
+        //it removes itself, so it's not executed again:
+        YAHOO.util.Event.removeListener(cmp, "mouseover", callback);
+    }
+    YAHOO.util.Event.addListener(cmp, "mouseover", callback);
 };
 
 zkTask.xMouse;
@@ -127,6 +136,13 @@ zkTask.setAttr = function(cmp, name, value) {
         return true;
     }
     return false;
+}
+
+zkTask.addRelatedDependency = function(cmp, dependency) {
+    if(! cmp['relatedDependencies']){
+        cmp.relatedDependencies = [];
+    }
+    cmp.relatedDependencies.push(dependency);
 }
 
 zkTask.createArrow = function(cmp) {

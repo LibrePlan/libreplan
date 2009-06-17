@@ -32,14 +32,9 @@ zkDependency.init = function(dependency) {
     YAHOO.util.Event.onDOMReady(function() {
         zkDependency.draw(dependency);
     });
-
-    YAHOO.util.Event.onDOMReady(function() {
-        boxes = [ zkTask.getDD(zkDependency.origin(dependency)), zkTask.getDD(zkDependency.destination(dependency))];
-        for(var i = 0; i < boxes.length; i++){
-            boxes[i].on('dragEvent',function(ev){
-                zkDependency.draw(dependency);
-            }, null, false);
-         } 
-    });
+    var origin = zkDependency.origin(dependency);
+    var destination = zkDependency.destination(dependency);
+    zkTask.addRelatedDependency(origin, dependency);
+    zkTask.addRelatedDependency(destination, dependency);
 }
 
