@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.navalplanner.business.workorders.entities.ProjectWork;
 import org.navalplanner.business.workorders.entities.TaskWork;
+import org.navalplanner.business.workorders.entities.TaskWorkLeaf;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.DropEvent;
@@ -15,6 +16,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treecell;
@@ -200,6 +202,28 @@ public class TaskWorksTreeController extends GenericForwardComposer {
         return textBox;
     }
 
+    private static Intbox bind(Intbox intBox, Getter<Integer> getter) {
+        intBox.setValue(getter.get());
+        intBox.setDisabled(true);
+        return intBox;
+    }
+
+    private static Intbox bind(final Intbox intBox,
+            final Getter<Integer> getter, final Setter<Integer> setter) {
+        intBox.setValue(getter.get());
+        intBox.addEventListener("onChange", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                InputEvent newInput = (InputEvent) event;
+                String value = newInput.getValue();
+                setter.set(Integer.valueOf(value));
+                intBox.setValue(getter.get());
+            }
+        });
+        return intBox;
+    }
+
     private static Datebox bind(final Datebox dateBox,
             final Getter<Date> getter, final Setter<Date> setter) {
         dateBox.setValue(getter.get());
@@ -244,13 +268,33 @@ public class TaskWorksTreeController extends GenericForwardComposer {
                 }
             }));
             Treecell cellForHours = new Treecell();
-            cellForHours.appendChild(bind(new Textbox(), new Getter<String>() {
+            if (taskWork instanceof TaskWorkLeaf) {
+                // If it's a leaf hours cell is editable
+                cellForHours.appendChild(bind(new Intbox(),
+                        new Getter<Integer>() {
 
-                @Override
-                public String get() {
-                    return taskWork.getWorkHours() + "";
-                }
-            }));
+                            @Override
+                            public Integer get() {
+                                return taskWork.getWorkHours();
+                            }
+                        }, new Setter<Integer>() {
+
+                            @Override
+                            public void set(Integer value) {
+                                ((TaskWorkLeaf) taskWork).setWorkHours(value);
+                            }
+                        }));
+            } else {
+                // If it's a container hours cell is not editable
+                cellForHours.appendChild(bind(new Intbox(),
+                        new Getter<Integer>() {
+
+                            @Override
+                            public Integer get() {
+                                return taskWork.getWorkHours();
+                            }
+                        }));
+            }
             Treecell tcDateStart = new Treecell();
             tcDateStart.appendChild(bind(new Datebox(), new Getter<Date>() {
 

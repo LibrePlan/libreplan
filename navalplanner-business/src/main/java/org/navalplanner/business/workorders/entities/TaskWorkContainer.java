@@ -56,4 +56,14 @@ public class TaskWorkContainer extends TaskWork implements ITaskWorkContainer {
         children.add(position, task);
     }
 
+    @Override
+    public Integer getWorkHours() {
+        int result = 0;
+        List<TaskWork> children = getChildren();
+        for (TaskWork taskWork : children) {
+            result += taskWork.getWorkHours();
+        }
+        return result;
+    }
+
 }

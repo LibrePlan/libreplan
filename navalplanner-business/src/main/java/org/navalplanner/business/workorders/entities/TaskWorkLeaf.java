@@ -33,4 +33,21 @@ public class TaskWorkLeaf extends TaskWork {
     public void replace(TaskWork old, TaskWork newTask) {
         throw new UnsupportedOperationException();
     }
+
+    public void setWorkHours(Integer workingHours) {
+        List<ActivityWork> activities = getActivities();
+
+        // FIXME For the moment we have just one activity for each TaksWorkLeaf
+        if (activities.isEmpty()) {
+            ActivityWork activity = new ActivityWork();
+            activity.setWorkingHours(workingHours);
+
+            activities.add(activity);
+        } else {
+            ActivityWork activity = activities.get(0);
+            activity.setWorkingHours(workingHours);
+        }
+
+        setActivities(activities);
+    }
 }
