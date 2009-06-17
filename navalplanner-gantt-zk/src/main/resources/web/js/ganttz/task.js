@@ -31,6 +31,8 @@ zkTask.recolocateAfterAdding = function(cmp){
 }
 
 zkTask.init = function(cmp) {
+    //Instead of executing the code directly, a callback is created
+    //that will be executed when the user passes the mouse over the task
     var callback = function(){
         //Configure the drag&drop over the component
         var dd = zkTask.getDD(cmp);
