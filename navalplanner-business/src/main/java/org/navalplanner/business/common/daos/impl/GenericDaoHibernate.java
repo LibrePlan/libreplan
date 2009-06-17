@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.HibernateException;
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
@@ -68,6 +69,26 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
 
         try {
             getSession().saveOrUpdate(entity);
+        } catch (HibernateException e) {
+            throw convertHibernateAccessException(e);
+        }
+
+    }
+
+    public void reattachForRead(E entity) {
+
+        try {
+            getSession().lock(entity, LockMode.READ);
+        } catch (HibernateException e) {
+            throw convertHibernateAccessException(e);
+        }
+
+    }
+
+    public void lock(E entity) {
+
+        try {
+            getSession().lock(entity, LockMode.UPGRADE);
         } catch (HibernateException e) {
             throw convertHibernateAccessException(e);
         }

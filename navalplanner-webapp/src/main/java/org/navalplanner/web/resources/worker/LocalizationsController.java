@@ -71,7 +71,7 @@ public class LocalizationsController extends GenericForwardComposer {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                workerModel.getLocalizationsAssigner().unassign(
+                workerModel.unassignSatisfactions(
                         extractValuesOf(activeSatisfactions.getSelectedItems(),
                                 CriterionSatisfaction.class));
                 reloadLists();
@@ -84,7 +84,7 @@ public class LocalizationsController extends GenericForwardComposer {
             public void onEvent(Event event) throws Exception {
                 Set<Listitem> selectedItems = criterionsNotAssigned
                         .getSelectedItems();
-                workerModel.getLocalizationsAssigner().assign(
+                workerModel.assignCriteria(
                         extractValuesOf(selectedItems, Criterion.class));
                 reloadLists();
             }

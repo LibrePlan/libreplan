@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
@@ -57,6 +58,14 @@ public class GenericDaoHibernateTemplate<E, PK extends Serializable> implements
 
     public void save(E entity) {
         hibernateTemplate.saveOrUpdate(entity);
+    }
+
+    public void reattachForRead(E entity) {
+        hibernateTemplate.lock(entity, LockMode.READ);
+    }
+
+    public void lock(E entity) {
+        hibernateTemplate.lock(entity, LockMode.UPGRADE);
     }
 
     @SuppressWarnings("unchecked")

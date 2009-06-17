@@ -77,14 +77,13 @@ public class WorkRelationshipsController extends GenericForwardComposer {
             return new ArrayList<CriterionSatisfaction>();
         } else {
             return workerModel
-                    .getLaboralRelatedCriterionSatisfactions(getWorker());
+                    .getLaboralRelatedCriterionSatisfactions();
         }
     }
 
     public void deleteCriterionSatisfaction(CriterionSatisfaction satisfaction)
             throws InstanceNotFoundException {
-        workerCRUDController.getWorker().removeCriterionSatisfaction(
-                satisfaction);
+        workerModel.removeSatisfaction(satisfaction);
         this.workerCRUDController.goToEditForm();
     }
 

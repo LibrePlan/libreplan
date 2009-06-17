@@ -35,6 +35,11 @@ public class ResourceServiceImpl implements ResourceService {
         resourceDao.save(resource);
     }
 
+    @Transactional(readOnly = true)
+    public void checkVersion(Resource resource) {
+        resourceDao.reattachForRead(resource);
+    }
+
     private void checkResourceIsOk(Resource resource) {
         List<ICriterionType<?>> types = criterionsBootstrap.getTypes();
         resource.checkNotOverlaps(types);

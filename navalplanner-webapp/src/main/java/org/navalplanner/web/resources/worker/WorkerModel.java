@@ -106,14 +106,15 @@ public class WorkerModel implements IWorkerModel {
         }
     }
 
-    public Set<CriterionSatisfaction> getCriterionSatisfactions(Worker worker) {
-        return worker.getAllSatisfactions();
-    }
-
-    @Transactional
+    @Transactional(readOnly = true)
     public AddingSatisfactionResult addSatisfaction(ICriterionType<?> type,
             CriterionSatisfaction original, CriterionSatisfaction edited) {
+
+        /* Check worker's version. */
         Worker worker = getWorker();
+        resourceService.checkVersion(worker);
+
+        /* Add criterion satisfaction. */
         edited.setResource(worker);
         boolean previouslyContained = false;
         if (previouslyContained = worker.contains(original)) {
@@ -136,6 +137,42 @@ public class WorkerModel implements IWorkerModel {
         }
         worker.addSatisfaction(type, edited);
         return AddingSatisfactionResult.OK;
+    }
+
+    @Transactional(readOnly = true)
+    public void removeSatisfaction(CriterionSatisfaction satisfaction) {
+
+        /* Check worker's version. */
+        Worker worker = getWorker();
+        resourceService.checkVersion(worker);
+
+        /* Remove criterion satisfaction. */
+        worker.removeCriterionSatisfaction(satisfaction);
+
+    }
+
+    @Transactional(readOnly = true)
+    public void assignCriteria(Collection<? extends Criterion> criteria) {
+
+        /* Check worker's version. */
+        Worker worker = getWorker();
+        resourceService.checkVersion(worker);
+
+        /* Assign criteria. */
+        getLocalizationsAssigner().assign(criteria);
+    }
+
+    @Transactional(readOnly = true)
+    public void unassignSatisfactions(
+        Collection<? extends CriterionSatisfaction> satisfactions) {
+
+        /* Check worker's version. */
+        Worker worker = getWorker();
+        resourceService.checkVersion(worker);
+
+        /* Unassign criterion satisfactions. */
+        getLocalizationsAssigner().unassign(satisfactions);
+
     }
 
     private static class NullAssigner implements
@@ -317,16 +354,6 @@ public class WorkerModel implements IWorkerModel {
     }
 
     @Override
-    public Worker findResource(long workerId) {
-        try {
-            return (Worker) resourceService.findResource(workerId);
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public Map<ICriterionType<?>, Collection<Criterion>> getLaboralRelatedCriterions() {
         Map<ICriterionType<?>, Collection<Criterion>> result = new HashMap<ICriterionType<?>, Collection<Criterion>>();
         for (ICriterionType<?> type : laboralRelatedTypes) {
@@ -336,12 +363,8 @@ public class WorkerModel implements IWorkerModel {
     }
 
     @Override
-    public List<CriterionSatisfaction> getLaboralRelatedCriterionSatisfactions(
-            Worker worker) {
-        Set<CriterionSatisfaction> result = new HashSet<CriterionSatisfaction>();
-        for (ICriterionType<?> criterionType : laboralRelatedTypes) {
-            result.addAll(worker.getSatisfactionsFor(criterionType));
-        }
+    public List<CriterionSatisfaction>
+        getLaboralRelatedCriterionSatisfactions() {
         return worker.query().oneOf(laboralRelatedTypes).sortByStartDate()
                 .result();
     }

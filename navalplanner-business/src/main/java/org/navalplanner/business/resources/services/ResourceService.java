@@ -23,6 +23,14 @@ public interface ResourceService {
      */
     public void saveResource(Resource resource);
 
+    /**
+     * It checks if the version of the detached object passed as a parameter is
+     * older than the one in the database. If it is older, it throws
+     * <code>org.springframework.dao.OptimisticLockingFailureException</code>.
+     * It can not be called as part of a READ-WRITE transaction.
+     */
+    public void checkVersion(Resource resource);
+
     public Resource findResource(Long resourceId)
             throws InstanceNotFoundException;
 

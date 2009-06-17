@@ -3,7 +3,6 @@ package org.navalplanner.web.resources.worker;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -31,14 +30,9 @@ public interface IWorkerModel {
 
     boolean isCreating();
 
-    Set<CriterionSatisfaction> getCriterionSatisfactions(Worker worker);
-
-    Worker findResource(long workerId);
-
     Map<ICriterionType<?>, Collection<Criterion>> getLaboralRelatedCriterions();
 
-    List<CriterionSatisfaction> getLaboralRelatedCriterionSatisfactions(
-            Worker worker);
+    List<CriterionSatisfaction> getLaboralRelatedCriterionSatisfactions();
 
     public enum AddingSatisfactionResult {
         OK, SATISFACTION_WRONG, DONT_COMPLY_OVERLAPPING_RESTRICTIONS;
@@ -47,5 +41,12 @@ public interface IWorkerModel {
     AddingSatisfactionResult addSatisfaction(ICriterionType<?> type,
             CriterionSatisfaction originalSatisfaction,
             CriterionSatisfaction edited);
+
+    void removeSatisfaction(CriterionSatisfaction satisfaction);
+
+    public void assignCriteria(Collection<? extends Criterion> criteria);
+
+    void unassignSatisfactions(
+            Collection<? extends CriterionSatisfaction> satisfactions);
 
 }
