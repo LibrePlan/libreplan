@@ -1,3 +1,6 @@
+HEIGHT_PER_ROW = 30;
+HEIGHT_TIME_TRACKER = 130;
+
 zkTasklist = {};
 
 zkTasklist.init = function(cmp) {
@@ -17,16 +20,13 @@ zkTasklist.adjust_height = function(cmp) {
         element.style["height"] = newheigth + 'px';
     }
 
-    setHeight(document.getElementById('ganttpanel'), 120);/*
-                                                             * timetracker
-                                                             * height
-                                                             */
+    setHeight(document.getElementById('ganttpanel'), HEIGHT_TIME_TRACKER);
     if (component_to_adjust) {
         setHeight(component_to_adjust);
     }
     var found = YAHOO.util.Selector.query(".fake_column", component_to_adjust,
             false);
     found.each( function(element) {
-        setHeight(element);
+        setHeight(element,HEIGHT_PER_ROW);
     });
 }

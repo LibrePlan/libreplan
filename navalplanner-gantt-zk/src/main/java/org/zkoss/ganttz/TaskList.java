@@ -35,7 +35,7 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class TaskList extends XulElement implements AfterCompose {
 
-    private static final int HEIGHT_PER_ROW = 31;
+    private static final int HEIGHT_PER_ROW = 30;
 
     private List<WeakReference<DependencyAddedListener>> listeners = new LinkedList<WeakReference<DependencyAddedListener>>();
 

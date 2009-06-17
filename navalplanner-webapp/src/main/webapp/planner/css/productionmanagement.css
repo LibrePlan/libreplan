@@ -1,16 +1,16 @@
-/* ProductionManagement Global Styles */
+/* Planificator specific styles */
 
 /*** Tasks ***/
 #listtasks {
     position:relative;
-    width:400px; /** Constants */
+    width:400px;
     top:100px;
 }
 
 .listdetails {
     width:200px;
     float:left;
-    margin-top:80px;
+    margin-top:79px;
 }
 
 .listdetails table {
@@ -32,7 +32,7 @@
 
 
 /* Task box properties */
-.yui-resize {
+.yui-resize, .box {
     border: 1px solid;
     text-align:center;
     vertical-align: middle;
@@ -57,7 +57,7 @@
     position:relative;
     width:400px;
     float:left;
-    top:0px; /* Should be -60, recalc. redrawing deps. */
+    top:0px;
 }
 
 .dependence {
@@ -79,16 +79,9 @@
     width:1px;
 }
 
-.footer {
-    clear:both;
-    margin:20px;
-}
-
-
 /* Width: ganttpanel constant,
 Height: is recalculated on number of tasks */
 #ganttpanel {
-    /* border: 1px solid; */
     height:400px;
     width: 900px;
     overflow-x: scroll;
@@ -111,29 +104,6 @@ Height: is recalculated on number of tasks */
 
 .timetracker_fake_row {
     height: 80px;
-}
-
-/*
-.extra_padding {
-padding: 6px;
-} */
-
-.logo {
-    background-image: url("../img/v3/blue_ga.jpg");
-    height:50px;
-    width:300px;
-    height:100px;
-    float:left;
-    clear:both;
-    position:absolute;
-}
-
-.vision {
-}
-
-.headings {
-    /* height:90px; */
-    height:90px;
 }
 
 table {
