@@ -8,14 +8,6 @@
         <tabpanels>
             <tabpanel>
                 <grid fixedLayout="false">
-                    <columns>
-                        <column label="Nome" />
-                        <column label="Comezo" />
-                        <column label="Final" />
-                        <column label="Responsable" />
-                        <column label="Cliente" />
-                        <column label="Descripción" />
-                    </columns>
                     <rows>
                         <row>
                             <label value="Nome" />
