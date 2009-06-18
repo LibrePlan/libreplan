@@ -1,12 +1,14 @@
 package org.navalplanner.business.common.daos.impl;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.StaleObjectStateException;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IGenericDao;
@@ -60,8 +62,56 @@ public class GenericDaoHibernateTemplate<E, PK extends Serializable> implements
         hibernateTemplate.saveOrUpdate(entity);
     }
 
-    public void reattachForRead(E entity) {
-        hibernateTemplate.lock(entity, LockMode.READ);
+    public void checkVersion(E entity) {
+
+        /* Get id and version from entity. */
+        Serializable entityId;
+        long entityVersion;
+
+        try {
+
+            Method getIdMethod = entityClass.getMethod("getId");
+            entityId = (Serializable) getIdMethod.invoke(entity);
+
+            if (entityId == null) {
+                return;
+            }
+
+            Method getVersionMethod = entityClass.getMethod("getVersion");
+            entityVersion = (Long) getVersionMethod.invoke(entity);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        /* Check version. */
+        final Serializable id = entityId;
+        final long versionValueInMemory = entityVersion;
+
+        hibernateTemplate.execute(new HibernateCallback() {
+
+            public Object doInHibernate(Session session) {
+
+                Long versionValueInDB = (Long)
+                    session.createCriteria(entityClass).
+                    add(Restrictions.idEq(id)).
+                    setProjection(Projections.property("version")).
+                    uniqueResult();
+
+                if (versionValueInDB == null) {
+                    return null;
+                }
+
+                if (versionValueInMemory != versionValueInDB) {
+                    throw new StaleObjectStateException(entityClass.getName(),
+                        id);
+                }
+
+                return null;
+
+            }
+        });
+
     }
 
     public void lock(E entity) {
@@ -85,9 +135,10 @@ public class GenericDaoHibernateTemplate<E, PK extends Serializable> implements
 
         return (Boolean) hibernateTemplate.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) {
-                return session.createCriteria(entityClass).add(
-                        Restrictions.idEq(id)).setProjection(Projections.id())
-                        .uniqueResult() != null;
+                return session.createCriteria(entityClass).
+                    add(Restrictions.idEq(id)).
+                    setProjection(Projections.id()).
+                    uniqueResult() != null;
             }
         });
 

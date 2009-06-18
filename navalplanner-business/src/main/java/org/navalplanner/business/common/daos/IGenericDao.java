@@ -21,26 +21,34 @@ public interface IGenericDao <E, PK extends Serializable>{
      * It updates or inserts the instance passed as a parameter. If the
      * instance passed as parameter already exists in the database, the
      * instance is reattached to the underlying ORM session. In this case, if
-     * the version field is older than the one in the database,
+     * the version field is not equal to the one in the database,
      * <code>org.springframework.dao.OptimisticLockingFailureException</code>
      * is thrown.
      */
     public void save(E entity);
 
     /**
-     * It reattaches the instance passed as a parameter to the underlying ORM
-     * session. It can only be used in READ-ONLY transactions. If the
-     * version field is older than the one in the database,
+     * It checks if the version of the instance passed as a parameter is equal
+     * to the one in the database. The instance must have methods conforming to
+     * the following signatures: <code>java.io.Serializable getId()</code> (to
+     * get the key) and <code>[long|Long] getVersion()</code> (to get the
+     * version).
+     * <br/>
+     * If the check is not passed,
      * <code>org.springframework.dao.OptimisticLockingFailureException</code>
-     * is thrown.
+     * is thrown. If the key of the entity is <code>null</code> or the entity
+     * does not exist in database, the check is considered to be successful.
+     * This lets client code to treat creation and modification of instances in
+     * a unified way.
      */
-    public void reattachForRead(E entity);
+    public void checkVersion(E entity);
 
     /**
      * It sets a WRITE lock on the instance passed as a parameter. The instance
-     * must exist in the database. Other concurrent transactions will be
-     * blocked if they try to write (but can read) on the same persistent
-     * instance. If the version field is older than the one in the database,
+     * must exist in the database and cannot have been previously modified.
+     * Other concurrent transactions will be blocked if they try to write (but
+     * they can read) on the same persistent instance. If the version field is
+     * not equal to the one in the database,
      * <code>org.springframework.dao.OptimisticLockingFailureException</code>
      * is thrown. The lock is released when the transaction finishes.
      */

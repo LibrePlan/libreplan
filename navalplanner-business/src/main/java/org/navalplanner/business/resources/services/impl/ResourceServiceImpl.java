@@ -37,7 +37,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Transactional(readOnly = true)
     public void checkVersion(Resource resource) {
-        resourceDao.reattachForRead(resource);
+        resourceDao.checkVersion(resource);
     }
 
     private void checkResourceIsOk(Resource resource) {

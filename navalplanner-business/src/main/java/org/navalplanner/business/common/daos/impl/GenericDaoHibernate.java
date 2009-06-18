@@ -1,6 +1,7 @@
 package org.navalplanner.business.common.daos.impl;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.StaleObjectStateException;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IGenericDao;
@@ -75,10 +77,45 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
 
     }
 
-    public void reattachForRead(E entity) {
+    public void checkVersion(E entity) {
+
+        /* Get id and version from entity. */
+        Serializable id;
+        long versionValueInMemory;
 
         try {
-            getSession().lock(entity, LockMode.READ);
+
+            Method getIdMethod = entityClass.getMethod("getId");
+            id = (Serializable) getIdMethod.invoke(entity);
+
+            if (id == null) {
+                return;
+            }
+
+            Method getVersionMethod = entityClass.getMethod("getVersion");
+            versionValueInMemory = (Long) getVersionMethod.invoke(entity);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        /* Check version. */
+        try {
+
+            Long versionValueInDB = (Long)
+                getSession().createCriteria(entityClass).
+                add(Restrictions.idEq(id)).
+                setProjection(Projections.property("version")).
+                uniqueResult();
+
+            if (versionValueInDB == null) {
+                return;
+            }
+
+            if (versionValueInMemory != versionValueInDB) {
+                throw new StaleObjectStateException(entityClass.getName(), id);
+            }
+
         } catch (HibernateException e) {
             throw convertHibernateAccessException(e);
         }
@@ -118,9 +155,10 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
 
         try {
 
-            return getSession().createCriteria(entityClass).add(
-                    Restrictions.idEq(id)).setProjection(Projections.id())
-                    .uniqueResult() != null;
+            return getSession().createCriteria(entityClass).
+                add(Restrictions.idEq(id)).
+                setProjection(Projections.id()).
+                uniqueResult() != null;
 
         } catch (HibernateException e) {
             throw convertHibernateAccessException(e);
