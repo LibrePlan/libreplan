@@ -60,6 +60,7 @@ public class WorkerModel implements IWorkerModel {
     }
 
     @Override
+    @Transactional
     public void save() throws ValidationException {
         InvalidValue[] invalidValues = workerValidator
                 .getInvalidValues(getWorker());
@@ -73,6 +74,7 @@ public class WorkerModel implements IWorkerModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Worker> getWorkers() {
         return resourceService.getWorkers();
     }
@@ -106,6 +108,7 @@ public class WorkerModel implements IWorkerModel {
         }
     }
 
+    @Override
     @Transactional(readOnly = true)
     public AddingSatisfactionResult addSatisfaction(ICriterionType<?> type,
             CriterionSatisfaction original, CriterionSatisfaction edited) {
@@ -139,6 +142,7 @@ public class WorkerModel implements IWorkerModel {
         return AddingSatisfactionResult.OK;
     }
 
+    @Override
     @Transactional(readOnly = true)
     public void removeSatisfaction(CriterionSatisfaction satisfaction) {
 
@@ -151,6 +155,7 @@ public class WorkerModel implements IWorkerModel {
 
     }
 
+    @Override
     @Transactional(readOnly = true)
     public void assignCriteria(Collection<? extends Criterion> criteria) {
 
@@ -162,6 +167,7 @@ public class WorkerModel implements IWorkerModel {
         getLocalizationsAssigner().assign(criteria);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public void unassignSatisfactions(
         Collection<? extends CriterionSatisfaction> satisfactions) {
@@ -326,6 +332,7 @@ public class WorkerModel implements IWorkerModel {
         }
     }
 
+    @Override
     public IMultipleCriterionActiveAssigner getLocalizationsAssigner() {
         return localizationsAssigner != null ? localizationsAssigner
                 : new NullAssigner();
@@ -354,6 +361,7 @@ public class WorkerModel implements IWorkerModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Map<ICriterionType<?>, Collection<Criterion>> getLaboralRelatedCriterions() {
         Map<ICriterionType<?>, Collection<Criterion>> result = new HashMap<ICriterionType<?>, Collection<Criterion>>();
         for (ICriterionType<?> type : laboralRelatedTypes) {
