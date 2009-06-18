@@ -9,7 +9,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.api.Popup;
 
 public class TaskEditFormComposer extends GenericForwardComposer {
 
@@ -17,7 +17,8 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
     }
 
-    private Window window;
+    private Popup popUp;
+
     private TaskBean currentTask;
 
     private Textbox name;
@@ -33,19 +34,19 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        window = (Window) comp;
-        window.setVisible(false);
+        popUp = (Popup) comp;
+        popUp.setVisible(false);
     }
 
     public void showEditFormFor(Task task) {
         cleanListener();
         this.currentTask = task.getTaskBean();
-        window.doPopup();
+        popUp.open(task, "after_start");
         propertyChangeListener = new PropertyChangeListener() {
 
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if (window.isVisible()) {
+                if (popUp.isVisible()) {
                     updateComponentValuesForTask(currentTask);
                 }
             }
@@ -62,7 +63,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     }
 
     private void updateComponentValuesForTask(TaskBean currentTask) {
-        window.setTitle(currentTask.getName());
+        // popUp.setTitle(currentTask.getName());
         name.setValue(currentTask.getName());
         startDateBox.setValue(currentTask.getBeginDate());
         endDateBox.setValue(currentTask.getEndDate());
@@ -86,7 +87,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     }
 
     public void onClick$ok(Event event) {
-        window.setVisible(false);
+        popUp.close();
         cleanListener();
     }
 

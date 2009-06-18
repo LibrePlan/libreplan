@@ -18,7 +18,7 @@
         </div>
     </planner>
 
-    <window border="normal" width="300px"
+    <popup width="300px"
         apply="${planner.modalFormComposer}">
         <grid>
             <rows>
@@ -41,6 +41,6 @@
             </rows>
         </grid>
         <button id="ok" label=" ${c:l('task.ok')}" />
-    </window>
+    </popup>
 
 </zk>
