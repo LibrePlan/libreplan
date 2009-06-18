@@ -6,6 +6,19 @@ import java.util.List;
 public class TaskWorkLeaf extends TaskWork {
 
     @Override
+    public Integer getWorkHours() {
+        int result = 0;
+        List<ActivityWork> a = getActivities();
+        for (ActivityWork activityWork : a) {
+            Integer workingHours = activityWork.getWorkingHours();
+            if (workingHours != null) {
+                result += workingHours;
+            }
+        }
+        return result;
+    }
+
+    @Override
     public List<TaskWork> getChildren() {
         return new ArrayList<TaskWork>();
     }

@@ -20,17 +20,7 @@ public abstract class TaskWork {
 
     private Set<ActivityWork> activityWorks = new HashSet<ActivityWork>();
 
-    public Integer getWorkHours() {
-        int result = 0;
-        Set<ActivityWork> a = activityWorks;
-        for (ActivityWork activityWork : a) {
-            Integer workingHours = activityWork.getWorkingHours();
-            if (workingHours != null) {
-                result += workingHours;
-            }
-        }
-        return result;
-    }
+    public abstract Integer getWorkHours();
 
     public void setActivities(List<ActivityWork> activities) {
         this.activityWorks = new HashSet<ActivityWork>(activities);
