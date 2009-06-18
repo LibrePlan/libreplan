@@ -33,7 +33,7 @@ GRANT ALL ON navaldevtest.* to 'naval'@'localhost' identified by 'naval';
     -Dversion=1.0.1B -Dpackaging=jar \
     -Dfile=<<spring-framework-2.5.6>>/lib/j2ee/jta.jar
 
-  + cd navalplanner
+  + cd xestion-producion
 
   + mvn install
 
