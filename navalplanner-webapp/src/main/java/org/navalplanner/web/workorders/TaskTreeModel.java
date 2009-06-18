@@ -103,6 +103,18 @@ public class TaskTreeModel extends SimpleTreeModel {
             return getRootAsNode();
     }
 
+    public List<SimpleTreeNode> getParents(SimpleTreeNode node) {
+        List<SimpleTreeNode> parents = new ArrayList<SimpleTreeNode>();
+        SimpleTreeNode current = node;
+
+        while (!current.equals(getRootAsNode())) {
+            current = getParent(current);
+            parents.add(current);
+        }
+
+        return parents;
+    }
+
     public void indent(SimpleTreeNode nodeToIndent) {
         SimpleTreeNode parentOfSelected = getParent(nodeToIndent);
         int position = parentOfSelected.getChildren().indexOf(nodeToIndent);

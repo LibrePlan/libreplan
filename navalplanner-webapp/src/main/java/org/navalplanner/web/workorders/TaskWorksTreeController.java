@@ -1,8 +1,11 @@
 package org.navalplanner.web.workorders;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.navalplanner.business.workorders.entities.ProjectWork;
@@ -240,12 +243,14 @@ public class TaskWorksTreeController extends GenericForwardComposer {
 
     public class TaskWorkTreeitemRenderer implements TreeitemRenderer {
 
+        private Map<SimpleTreeNode, Intbox> map = new HashMap<SimpleTreeNode, Intbox>();
+
         public void TaskWorkTreeitemRenderer() {
         }
 
         @Override
         public void render(Treeitem item, Object data) throws Exception {
-            SimpleTreeNode t = (SimpleTreeNode) data;
+            final SimpleTreeNode t = (SimpleTreeNode) data;
             item.setValue(data);
             final TaskWork taskWork = (TaskWork) t.getData();
             if (snapshotOfOpenedNodes != null) {
@@ -268,9 +273,11 @@ public class TaskWorksTreeController extends GenericForwardComposer {
                 }
             }));
             Treecell cellForHours = new Treecell();
+            Intbox intboxHours = new Intbox();
+            map.put(t, intboxHours);
             if (taskWork instanceof TaskWorkLeaf) {
                 // If it's a leaf hours cell is editable
-                cellForHours.appendChild(bind(new Intbox(),
+                cellForHours.appendChild(bind(intboxHours,
                         new Getter<Integer>() {
 
                             @Override
@@ -282,11 +289,25 @@ public class TaskWorksTreeController extends GenericForwardComposer {
                             @Override
                             public void set(Integer value) {
                                 ((TaskWorkLeaf) taskWork).setWorkHours(value);
+
+                                List<SimpleTreeNode> parentNodes = getTasksTreeModel()
+                                        .getParents(t);
+                                // Remove the last element becuase it's a
+                                // ProjectWork node, not a TaskWork
+                                parentNodes.remove(parentNodes.size() - 1);
+
+                                for (SimpleTreeNode node : parentNodes) {
+                                    Intbox intbox = map.get(node);
+                                    TaskWork parentTaskWork = (TaskWork) node
+                                            .getData();
+                                    intbox.setValue(parentTaskWork
+                                            .getWorkHours());
+                                }
                             }
                         }));
             } else {
                 // If it's a container hours cell is not editable
-                cellForHours.appendChild(bind(new Intbox(),
+                cellForHours.appendChild(bind(intboxHours,
                         new Getter<Integer>() {
 
                             @Override
