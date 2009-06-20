@@ -17,20 +17,35 @@ import org.zkoss.zul.Textbox;
 
 public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
 
-
     private static final Log LOG = LogFactory.getLog(TaskDetail.class);
 
     private final TaskBean taskBean;
-
-    public TaskBean getTaskBean() {
-        return taskBean;
-    }
 
     private Textbox nameBox;
 
     private Textbox startDateTextBox;
 
     private Textbox endDateTextBox;
+
+    private Datebox startDateBox;
+
+    private Datebox endDateBox;
+
+    private DateFormat dateFormat;
+
+    public static TaskDetail create(TaskBean bean) {
+        return new TaskDetail(bean);
+    }
+
+    private TaskDetail(TaskBean task) {
+        this.taskBean = task;
+        this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales
+                .getCurrent());
+    }
+
+    public TaskBean getTaskBean() {
+        return taskBean;
+    }
 
     public Textbox getNameBox() {
         return nameBox;
@@ -57,22 +72,6 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
     public void setEndDateBox(Datebox endDateBox) {
         this.endDateBox = endDateBox;
         this.endDateBox.setFormat("dd/MM/yyyy");
-    }
-
-    private Datebox startDateBox;
-
-    private Datebox endDateBox;
-
-    public static TaskDetail create(TaskBean bean) {
-        return new TaskDetail(bean);
-    }
-
-    private DateFormat dateFormat;
-
-    private TaskDetail(TaskBean task) {
-        this.taskBean = task;
-        this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales
-                .getCurrent());
     }
 
     public TaskBean getData() {
