@@ -4,12 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,40 +23,6 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
     private static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     private static final Log LOG = LogFactory.getLog(TaskDetail.class);
-
-    private static Pattern lengthPattern = Pattern
-            .compile("\\s*(\\d+)\\s*(\\w+)\\s*");
-
-    private enum LengthType {
-        HOUR(3600, "h", "hour", "hora", "horas"), DAYS(3600 * 24, "day", "dia",
-                "dias", "días", "día", "days");
-
-        private final long milliseconds;
-
-        private Set<String> set;
-
-        private LengthType(int seconds, String... sufixes) {
-            milliseconds = seconds * 1000;
-            set = new HashSet<String>(Arrays.asList(sufixes));
-        }
-
-        public static long getTimeInMilliseconds(String spec) {
-            Matcher matcher = lengthPattern.matcher(spec);
-            if (!matcher.matches())
-                throw new IllegalArgumentException("spec " + spec
-                        + " is not matched by " + lengthPattern.pattern());
-            long number = Integer.parseInt(matcher.group(1));
-            String specifier = matcher.group(2).toLowerCase();
-            for (LengthType type : LengthType.values()) {
-                if (type.set.contains(specifier)) {
-                    return number * type.milliseconds;
-                }
-            }
-            throw new IllegalArgumentException(specifier + " not found");
-        }
-    }
-
-    private String taskId;
 
     private final TaskBean taskBean;
 
