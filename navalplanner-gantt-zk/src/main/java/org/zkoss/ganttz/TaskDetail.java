@@ -3,12 +3,12 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.util.TaskBean;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -17,7 +17,6 @@ import org.zkoss.zul.Textbox;
 
 public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
 
-    private static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     private static final Log LOG = LogFactory.getLog(TaskDetail.class);
 
@@ -68,8 +67,12 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
         return new TaskDetail(bean);
     }
 
+    private DateFormat dateFormat;
+
     private TaskDetail(TaskBean task) {
         this.taskBean = task;
+        this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales
+                .getCurrent());
     }
 
     public TaskBean getData() {
