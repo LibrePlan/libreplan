@@ -1,5 +1,8 @@
+
 <vbox id="localizationsContainer">
  <hbox>
+
+  <label class="titulo" value="Localizacións asignadas" />
   <listbox id="activeSatisfactions" mold="paging" model="@{controller.localizations.activeSatisfactions}"
    pageSize="5" multiple="true" checkmark="true">
    <listhead>
@@ -11,11 +14,13 @@
     <listcell label="@{satisfaction.startDate}"></listcell>
    </listitem>
   </listbox>
+
   <vbox>
    <button id="unassignButton" label="&gt;&gt;"></button>
    <button id="assignButton" label="&lt;&lt;"></button>
   </vbox>
 
+  <label class="titulo" value="Localizacións non asignadas" />
   <listbox id="criterionsNotAssigned" mold="paging" model="@{controller.localizations.criterionsNotAssigned}"
    pageSize="5" multiple="true" checkmark="true">
    <listhead>
@@ -28,6 +33,7 @@
 
  </hbox>
 
+ <label class="titulo" value="Histórico" />
  <grid id="listing" model="@{controller.localizations.localizationsHistory}"
   mold="paging" pageSize="5">
   <columns>
