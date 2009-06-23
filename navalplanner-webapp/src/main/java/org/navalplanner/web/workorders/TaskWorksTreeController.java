@@ -14,9 +14,7 @@ import org.navalplanner.business.workorders.entities.TaskWorkLeaf;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.DropEvent;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
@@ -175,72 +173,6 @@ public class TaskWorksTreeController extends GenericForwardComposer {
         comp.setVariable("tasksTreeController", this, true);
     }
 
-    private static interface Getter<T> {
-        public T get();
-    }
-
-    private static interface Setter<T> {
-        public void set(T value);
-    }
-
-    private static Textbox bind(Textbox textBox, Getter<String> getter) {
-        textBox.setValue(getter.get());
-        textBox.setDisabled(true);
-        return textBox;
-    }
-
-    private static Textbox bind(final Textbox textBox,
-            final Getter<String> getter, final Setter<String> setter) {
-        textBox.setValue(getter.get());
-        textBox.addEventListener("onChange", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                InputEvent newInput = (InputEvent) event;
-                String value = newInput.getValue();
-                setter.set(value);
-                textBox.setValue(getter.get());
-            }
-        });
-        return textBox;
-    }
-
-    private static Intbox bind(Intbox intBox, Getter<Integer> getter) {
-        intBox.setValue(getter.get());
-        intBox.setDisabled(true);
-        return intBox;
-    }
-
-    private static Intbox bind(final Intbox intBox,
-            final Getter<Integer> getter, final Setter<Integer> setter) {
-        intBox.setValue(getter.get());
-        intBox.addEventListener("onChange", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                InputEvent newInput = (InputEvent) event;
-                String value = newInput.getValue();
-                setter.set(Integer.valueOf(value));
-                intBox.setValue(getter.get());
-            }
-        });
-        return intBox;
-    }
-
-    private static Datebox bind(final Datebox dateBox,
-            final Getter<Date> getter, final Setter<Date> setter) {
-        dateBox.setValue(getter.get());
-        dateBox.addEventListener("onChange", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                setter.set(dateBox.getValue());
-                dateBox.setValue(getter.get());
-            }
-        });
-        return dateBox;
-    }
-
     public class TaskWorkTreeitemRenderer implements TreeitemRenderer {
 
         private Map<SimpleTreeNode, Intbox> map = new HashMap<SimpleTreeNode, Intbox>();
@@ -259,13 +191,14 @@ public class TaskWorksTreeController extends GenericForwardComposer {
             // Contruct treecells
             int[] path = getTasksTreeModel().getPath(t);
             Treecell cellForName = new Treecell(pathAsString(path));
-            cellForName.appendChild(bind(new Textbox(), new Getter<String>() {
+            cellForName.appendChild(Util.bind(new Textbox(),
+                    new Util.Getter<String>() {
 
                 @Override
                 public String get() {
                     return taskWork.getName();
                 }
-            }, new Setter<String>() {
+            }, new Util.Setter<String>() {
 
                 @Override
                 public void set(String value) {
@@ -277,14 +210,14 @@ public class TaskWorksTreeController extends GenericForwardComposer {
             map.put(t, intboxHours);
             if (taskWork instanceof TaskWorkLeaf) {
                 // If it's a leaf hours cell is editable
-                cellForHours.appendChild(bind(intboxHours,
-                        new Getter<Integer>() {
+                cellForHours.appendChild(Util.bind(intboxHours,
+                        new Util.Getter<Integer>() {
 
                             @Override
                             public Integer get() {
                                 return taskWork.getWorkHours();
                             }
-                        }, new Setter<Integer>() {
+                        }, new Util.Setter<Integer>() {
 
                             @Override
                             public void set(Integer value) {
@@ -307,8 +240,8 @@ public class TaskWorksTreeController extends GenericForwardComposer {
                         }));
             } else {
                 // If it's a container hours cell is not editable
-                cellForHours.appendChild(bind(intboxHours,
-                        new Getter<Integer>() {
+                cellForHours.appendChild(Util.bind(intboxHours,
+                        new Util.Getter<Integer>() {
 
                             @Override
                             public Integer get() {
@@ -317,13 +250,14 @@ public class TaskWorksTreeController extends GenericForwardComposer {
                         }));
             }
             Treecell tcDateStart = new Treecell();
-            tcDateStart.appendChild(bind(new Datebox(), new Getter<Date>() {
+            tcDateStart.appendChild(Util.bind(new Datebox(),
+                    new Util.Getter<Date>() {
 
                 @Override
                 public Date get() {
                     return taskWork.getInitDate();
                 }
-            }, new Setter<Date>() {
+            }, new Util.Setter<Date>() {
 
                 @Override
                 public void set(Date value) {
@@ -331,13 +265,14 @@ public class TaskWorksTreeController extends GenericForwardComposer {
                 }
             }));
             Treecell tcDateEnd = new Treecell();
-            tcDateEnd.appendChild(bind(new Datebox(), new Getter<Date>() {
+            tcDateEnd.appendChild(Util.bind(new Datebox(),
+                    new Util.Getter<Date>() {
 
                 @Override
                 public Date get() {
                     return taskWork.getEndDate();
                 }
-            }, new Setter<Date>() {
+            }, new Util.Setter<Date>() {
 
                 @Override
                 public void set(Date value) {
