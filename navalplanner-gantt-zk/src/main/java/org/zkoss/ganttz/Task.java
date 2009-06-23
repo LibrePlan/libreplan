@@ -36,6 +36,9 @@ import org.zkoss.zul.Div;
  */
 public class Task extends Div implements AfterCompose {
 
+    private static final int HEIGHT_PER_TASK = 10;
+    private static final String STANDARD_TASK_COLOR = "#007bbe";
+
     private static Pattern pixelsSpecificationPattern = Pattern
             .compile("\\s*(\\d+)px\\s*;?\\s*");
 
@@ -128,10 +131,10 @@ public class Task extends Div implements AfterCompose {
     }
 
     public Task(TaskBean taskBean) {
-        setHeight("20px"); /* Initial constant for standard task height */
+        setHeight( HEIGHT_PER_TASK + "px");
         setContext("idContextMenuTaskAssigment");
         this.taskBean = taskBean;
-        setColor("#007bbe");
+        setColor(STANDARD_TASK_COLOR);
         setId(UUID.randomUUID().toString());
     }
 
@@ -302,6 +305,5 @@ public class Task extends Div implements AfterCompose {
 
     public void remove() {
         getTaskList().removeTask(this);
-
     }
 }

@@ -9,19 +9,15 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
+import org.zkoss.zk.au.out.AuInvoke;
 
 public class Planner extends XulElement implements AfterCompose {
 
     private DependencyAddedListener dependencyAddedListener;
-
     private DependencyRegistry dependencyRegistry = new DependencyRegistry();
-
     private DependencyRemovedListener dependencyRemovedListener;
-
     private TaskRemovedListener taskRemovedListener;
-
     private ListDetails listDetails;
-
     private GanttPanel ganttPanel;
 
     public Planner() {
@@ -94,6 +90,7 @@ public class Planner extends XulElement implements AfterCompose {
         ganttPanel.afterCompose();
         TaskList taskList = getTaskList();
         dependencyAddedListener = new DependencyAddedListener() {
+
             @Override
             public void dependenceAdded(Dependency dependency) {
                 getDependencyList().addDependency(dependency);
@@ -102,11 +99,15 @@ public class Planner extends XulElement implements AfterCompose {
         };
         taskList.addDependencyListener(dependencyAddedListener);
         taskRemovedListener = new TaskRemovedListener() {
+
             @Override
             public void taskRemoved(Task taskRemoved) {
                 dependencyRegistry.remove(taskRemoved.getTaskBean());
                 listDetails.taskRemoved(taskRemoved.getTaskBean());
-                ganttPanel.invalidate();
+                TaskList taskList = getTaskList();
+                setHeight(getHeight());// forcing smart update
+                taskList.adjustZoomColumnsHeight();
+                getDependencyList().redrawDependencies();
             }
         };
         taskList.addTaskRemovedListener(taskRemovedListener);
@@ -146,5 +147,4 @@ public class Planner extends XulElement implements AfterCompose {
         this.ganttPanel = new GanttPanel(this.dependencyRegistry);
         appendChild(ganttPanel);
     }
-
 }

@@ -3,31 +3,43 @@
 /*** Tasks ***/
 #listtasks {
     position:relative;
-    width:400px;
-    top:100px;
+    width:600px;
+    top:70px;
 }
 
 .listdetails {
     width:200px;
     float:left;
-    margin-top:79px;
+    margin-top:46px;
 }
 
 .listdetails table {
-    height:30px;
+    height:20px;
+    border-bottom: 1px solid #86A4BE;
+}
+
+.listdetails img {
+    display:none;
 }
 
 .listdetails td {
-    padding-left:3px;
+    padding-left:0px; /* 3 */
 }
 
 .listdetails input {
-    width: 90px;
+   width: 90px;
+   font-size:10px !important;
+   border-bottom:0px;
+   border-right:0px;
+   height:17px;
 }
 
 
-.z-datebox-inp {
-    width:100px;
+.listdetails .z-datebox-inp {
+   height:17px;
+   font-size:10px !important;
+   border-bottom:0px;
+   border-right:0px;
 }
 
 
@@ -36,7 +48,6 @@
     border: 1px solid;
     text-align:center;
     vertical-align: middle;
-    font-size:0.8em;
     z-index:10;
     cursor: pointer;
     cursor: hand;
@@ -44,7 +55,7 @@
 
 /* Task lane properties */
 .row {
-    height: 19px;
+    height: 9px; /* 19 */
     border-bottom: dotted 1px #CCCCCC;
     margin-bottom: 10px;
     margin-top: 10px;
@@ -82,7 +93,7 @@
 /* Width: ganttpanel constant,
 Height: is recalculated on number of tasks */
 #ganttpanel {
-    height:400px;
+    height:800px;
     width: 900px;
     overflow-x: scroll;
 }
@@ -114,16 +125,16 @@ table {
 
 .completion {
     display: none;
-    width: 80%;
-    top: -16px;
+    width: 30%;
     margin-top:0px;
-    height: 20px;
+    height: 10px;
     background-color: #FFCC99;
     z-index:5;
     border:0px;
 }
 
 .row span {
+    display:none;
     position:relative;
     z-index:5;
     color:#BBBBBB;

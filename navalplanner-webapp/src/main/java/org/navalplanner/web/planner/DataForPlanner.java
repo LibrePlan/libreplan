@@ -22,7 +22,7 @@ public class DataForPlanner {
     }
 
     public DependencyRegistry getLightLoad() {
-        return getModelWith(50);
+        return getModelWith(40);
     }
 
     public DependencyRegistry getMediumLoad() {

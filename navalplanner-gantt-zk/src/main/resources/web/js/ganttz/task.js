@@ -7,8 +7,8 @@
 zkTask = {};
 
 zkTask.CORNER_WIDTH = 20;
-zkTask.HEIGHT = 20;
-zkTask.HALF_HEIGHT = 10;
+zkTask.HEIGHT = 10;
+zkTask.HALF_HEIGHT = 5;
 zkTask.DEPENDENCY_PADDING = 4;
 zkTask.HALF_DEPENDENCY_PADDING = 2;
 
@@ -23,11 +23,16 @@ zkTask.getDD = function(cmp) {
     return cmp.created_dd;
 }
 
-zkTask.recolocateAfterAdding = function(cmp){
+zkTask.relocateAfterAdding = function(cmp){
     var row = cmp.parentNode;
     var taskList = row.parentNode.parentNode;
     row.parentNode.removeChild(row);
     taskList.appendChild(row);
+}
+
+zkTask.cleanup = function(cmp){
+    var row = cmp.parentNode;
+    row.parentNode.removeChild(row);
 }
 
 zkTask.init = function(cmp) {

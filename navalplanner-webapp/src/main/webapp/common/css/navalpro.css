@@ -23,24 +23,6 @@ table {
     border:0px;
 }
 
-.completion {
-    display: none;
-    width: 80%;
-    top: -16px;
-    margin-top:0px;
-    height: 20px;
-    background-color: #FFCC99;
-    z-index:5;
-    border:0px;
-}
-
-.row span {
-    position:relative;
-    z-index:5;
-    color:#BBBBBB;
-    white-space:nowrap;
-}
-
 .errorbox {
     margin: 40px;
     padding: 40px;

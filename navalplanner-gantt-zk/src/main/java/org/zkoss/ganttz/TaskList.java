@@ -35,7 +35,7 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class TaskList extends XulElement implements AfterCompose {
 
-    private static final int HEIGHT_PER_ROW = 30;
+    private static final int HEIGHT_PER_ROW = 20; /* 30  */
 
     private List<WeakReference<DependencyAddedListener>> listeners = new LinkedList<WeakReference<DependencyAddedListener>>();
 
@@ -95,7 +95,7 @@ public class TaskList extends XulElement implements AfterCompose {
         }
         task.afterCompose();
         if (relocate) {
-            response(null, new AuInvoke(task, "recolocateAfterAdding"));
+            response(null, new AuInvoke(task, "relocateAfterAdding"));
             setHeight(getHeight());// forcing smart update
             adjustZoomColumnsHeight();
             getGanttPanel().getDependencyList().redrawDependencies();
@@ -138,7 +138,6 @@ public class TaskList extends XulElement implements AfterCompose {
                     @Override
                     public void doNotify(TaskRemovedListener listener) {
                         listener.taskRemoved(task);
-
                     }
                 });
     }
@@ -239,7 +238,7 @@ public class TaskList extends XulElement implements AfterCompose {
         return taskEditFormComposer;
     }
 
-    private void adjustZoomColumnsHeight() {
+    public void adjustZoomColumnsHeight() {
         response("adjust_height", new AuInvoke(TaskList.this, "adjust_height"));
     }
 
