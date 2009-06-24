@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.orders.entities">
+    <class name="Order" table="order_table">
+        <id access="field" type="long" name="id">
+            <generator class="native" />
+        </id>
+        <version name="version" access="field" type="long" />
+        <property name="initDate" access="field"></property>
+        <property name="endDate" access="field"></property>
+        <property name="name" access="field"></property>
+        <property name="description" access="field"></property>
+        <property name="responsible" access="field"></property>
+        <property name="customer" access="field"></property>
+        <list name="orderElements" access="field" cascade="all">
+            <key column="orderId" not-null="false"></key>
+            <index column="positionInOrder"></index>
+            <one-to-many class="OrderElement" />
+        </list>
+    </class>
+
+    <class name="OrderElement" abstract="true">
+        <id name="id" type="long" access="field">
+            <generator class="native" />
+        </id>
+
+        <property name="name" access="field" />
+        <property name="initDate" access="field" />
+        <property name="endDate" access="field" />
+        <property name="mandatoryInit" access="field" />
+        <property name="mandatoryEnd" access="field" />
+        <property name="description" access="field" />
+
+        <joined-subclass name="OrderLineGroup">
+            <key column="ORDERELEMENTID"></key>
+            <list name="children" access="field" cascade="all">
+                <key column="parent" not-null="false"></key>
+                <index column="positionInContainer"></index>
+                <one-to-many class="OrderElement" />
+            </list>
+        </joined-subclass>
+
+        <joined-subclass name="OrderLine">
+            <key column="ORDERELEMENTID"></key>
+
+            <property name="fixedHours" access="field" />
+
+            <set name="hoursGroups" access="field" cascade="all">
+                <key column="PARENT_ORDER_ELEMENT" not-null="false"></key>
+                <one-to-many class="HoursGroup" />
+            </set>
+        </joined-subclass>
+    </class>
+
+    <class name="HoursGroup">
+        <id name="id" type="long" access="field">
+            <generator class="native" />
+        </id>
+
+        <property name="workingHours" access="field" />
+        <property name="percentage" access="field" />
+        <property name="hoursPolicy" access="field" />
+
+    </class>
+</hibernate-mapping>

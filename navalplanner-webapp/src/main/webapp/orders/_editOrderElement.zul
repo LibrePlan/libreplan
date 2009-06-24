@@ -1,0 +1,75 @@
+<popup id="${arg.top_id}">
+
+    <vbox>
+
+        <label value="${arg.title}" />
+
+        <hbox>
+            <label value="Order Element Name" />
+            <textbox id="name"
+                value="@{orderElementController.orderElement.name,
+                save-when='saveButton.onClick'}" />
+        </hbox>
+
+        <hbox>
+            <label value="Init Date" />
+            <datebox id="initDate"
+                value="@{orderElementController.orderElement.initDate,
+                save-when='saveButton.onClick'}" />
+            <checkbox id="mandatoryInit"
+                checked="@{orderElementController.orderElement.mandatoryInit},
+                save-when='saveButton.onClick'" />
+            <label value="Mandatory" />
+        </hbox>
+
+        <hbox>
+            <label value="End Date" />
+            <datebox id="endDate"
+                value="@{orderElementController.orderElement.endDate,
+                save-when='saveButton.onClick'}" />
+            <checkbox id="mandatoryEnd"
+                checked="@{orderElementController.orderElement.mandatoryEnd,
+                save-when='saveButton.onClick'}" />
+            <label value="Mandatory" />
+        </hbox>
+
+        <hbox>
+            <label value="Total hours" />
+            <textbox id="totalHours"
+                value="@{orderElementController.orderElement.workHours}" />
+            <div id="fixedHoursCheckbox" />
+        </hbox>
+
+        <listbox id="hoursGroupsListbox" multiple="true"
+            model="@{orderElementController.hoursGroupsModel}"
+            itemRenderer="@{orderElementController.renderer}">
+             <listhead sizable="true">
+                 <listheader label="Hours" />
+                 <listheader label="%" />
+                 <listheader label="Fixed" />
+             </listhead>
+        </listbox>
+
+        <hbox>
+            <button id="addHoursGroup" label="Add hours group"
+                onClick="orderElementController.addHoursGroup();" />
+            <button id="deleteHoursGroup" label="Delete hours group"
+                onClick="orderElementController.deleteHoursGroups();" />
+            <button id="manageCriterions" label="Manage criterions" />
+        </hbox>
+
+        <textbox id="description" rows="4"
+            value="@{orderElementController.orderElement.description,
+            save-when='saveButton.onClick'}" />
+
+        <hbox>
+            <button onClick="orderElementController.cancel();"
+                label="${arg.cancel_button_label}" />
+            <button id="saveButton"
+                onClick="orderElementController.save();"
+                label="${arg.save_button_label}" />
+        </hbox>
+
+    </vbox>
+
+</popup>

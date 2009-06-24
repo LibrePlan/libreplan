@@ -1,0 +1,40 @@
+<vbox id="orderElementTree">
+    <vbox>
+        <hbox>
+            <button label="New order element"
+                onClick="orderElementTreeController.addOrderElement();">
+            </button>
+            <button label="Remove order element"
+                onClick="orderElementTreeController.removeOrderElement();">
+            </button>
+            <button label="Indent"
+                onClick="orderElementTreeController.indent();">
+            </button>
+            <button label="Unindent" onClick="orderElementTreeController.unindent();" />
+            <button label="Down" onClick="orderElementTreeController.up();"></button>
+            <button label="Up" onClick="orderElementTreeController.down();"></button>
+        </hbox>
+    </vbox>
+    <vbox>
+        <tree id="tree" width="900px" multiple="true" droppable="true"
+            onDrop="orderElementTreeController.move(self, event.dragged)"
+            model="@{orderElementTreeController.orderElementTreeModel}"
+            treeitemRenderer="@{orderElementTreeController.renderer}" pageSize="5">
+            <treecols sizable="true">
+                <treecol label="Name and description" />
+                <treecol label="Estimated init" />
+                <treecol label="Estimated end" />
+                <treecol label="Hours" />
+            </treecols>
+        </tree>
+    </vbox>
+    <!--zscript>
+        void move(Component dragged) {
+        if (self instanceof Treerow) {
+        self.parent.insertBefore(dragged, self.getNextSibling() );
+        } else {
+        self.appendChild(dragged);
+        }
+        }
+        </zscript-->
+</vbox>

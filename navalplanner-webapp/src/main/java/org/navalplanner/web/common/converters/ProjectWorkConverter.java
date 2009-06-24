@@ -1,26 +1,26 @@
 package org.navalplanner.web.common.converters;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.workorders.entities.ProjectWork;
-import org.navalplanner.business.workorders.services.IProjectWorkService;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.services.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
- * A {@link Converter} for {@link ProjectWork} <br />
+ * A {@link Converter} for {@link Order} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class ProjectWorkConverter implements Converter<ProjectWork> {
+public class ProjectWorkConverter implements Converter<Order> {
 
     @Autowired
-    private IProjectWorkService projectWorkService;
+    private IOrderService projectWorkService;
 
     @Override
-    public ProjectWork asObject(String stringRepresentation) {
+    public Order asObject(String stringRepresentation) {
         try {
             return projectWorkService
                     .find(Long.parseLong(stringRepresentation));
@@ -30,18 +30,18 @@ public class ProjectWorkConverter implements Converter<ProjectWork> {
     }
 
     @Override
-    public String asString(ProjectWork entity) {
+    public String asString(Order entity) {
         return entity.getId() + "";
     }
 
     @Override
     public String asStringUngeneric(Object entity) {
-        return asString((ProjectWork) entity);
+        return asString((Order) entity);
     }
 
     @Override
-    public Class<ProjectWork> getType() {
-        return ProjectWork.class;
+    public Class<Order> getType() {
+        return Order.class;
     }
 
 }

@@ -1,0 +1,55 @@
+<?component name="orderElementTree" inline="true" macroURI="_orderElementTree.zul"?>
+<window id="${arg.top_id}" title="${arg.title}">
+    <tabbox>
+        <tabs>
+            <tab label="Edition"></tab>
+            <tab label="Order Elements"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <grid fixedLayout="false">
+                    <rows>
+                        <row>
+                            <label value="Name" />
+                            <textbox value="@{controller.order.name}" />
+                        </row>
+                        <row>
+                            <label value="Init date" />
+                            <datebox
+                                value="@{controller.order.initDate}" />
+                        </row>
+                        <row>
+                            <label value="End date" />
+                            <datebox
+                                value="@{controller.order.endDate}" />
+                        </row>
+                        <row>
+                            <label value="Responsible" />
+                            <textbox
+                                value="@{controller.order.responsible}" />
+                        </row>
+                        <row>
+                            <label value="Customer" />
+                            <textbox
+                                value="@{controller.order.customer}" />
+                        </row>
+                        <row>
+                            <label value="Description" />
+                            <textbox
+                                value="@{controller.order.description}"
+                                rows="4" />
+                        </row>
+                    </rows>
+                </grid>
+            </tabpanel>
+            <tabpanel>
+                <orderElementTree />
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+    <button onClick="controller.save();"
+        label="${arg.save_button_label}" />
+    <button onClick="controller.cancel();"
+        label="${arg.cancel_button_label}" />
+</window>

@@ -1,0 +1,187 @@
+package org.navalplanner.business.test.orders.services;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+
+import java.util.List;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.navalplanner.business.common.OnTransaction;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.services.IOrderService;
+import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.NotTransactional;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Tests for {@link Order}. <br />
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@Transactional
+public class OrderServiceTest {
+
+    private static Order createValidOrder() {
+        Order order = new Order();
+        order.setDescription("description");
+        order.setCustomer("blabla");
+        order.setInitDate(CriterionSatisfactionDAOTest.year(2000));
+        order.setName("name");
+        order.setResponsible("responsible");
+        return order;
+    }
+
+    @Autowired
+    private IOrderService orderService;
+
+    @Test
+    public void testCreation() throws ValidationException {
+        Order order = createValidOrder();
+        orderService.save(order);
+        assertTrue(orderService.exists(order));
+    }
+
+    @Test
+    public void testListing() throws Exception {
+        List<Order> list = orderService.getOrders();
+        orderService.save(createValidOrder());
+        assertThat(orderService.getOrders().size(), equalTo(list
+                .size() + 1));
+    }
+
+    @Test
+    public void testRemove() throws Exception {
+        Order order = createValidOrder();
+        orderService.save(order);
+        assertTrue(orderService.exists(order));
+        orderService.remove(order);
+        assertFalse(orderService.exists(order));
+    }
+
+    @Test(expected = ValidationException.class)
+    public void shouldSendValidationExceptionIfEndDateIsBeforeThanStartingDate()
+            throws ValidationException {
+        Order order = createValidOrder();
+        order.setEndDate(CriterionSatisfactionDAOTest.year(0));
+        orderService.save(order);
+    }
+
+    @Test
+    public void testFind() throws Exception {
+        Order order = createValidOrder();
+        orderService.save(order);
+        assertThat(orderService.find(order.getId()), notNullValue());
+    }
+
+    @Test
+    @NotTransactional
+    public void testOrderPreserved() throws ValidationException,
+            InstanceNotFoundException {
+        final Order order = createValidOrder();
+        final OrderElement[] containers = new OrderLineGroup[10];
+        for (int i = 0; i < containers.length; i++) {
+            containers[i] = new OrderLineGroup();
+            containers[i].setName("bla");
+            order.add(containers[i]);
+        }
+        OrderLineGroup container = (OrderLineGroup) containers[0];
+        container.setName("container");
+        final OrderElement[] orderElements = new OrderElement[10];
+        for (int i = 0; i < orderElements.length; i++) {
+            OrderLine leaf = createValidLeaf("bla");
+            orderElements[i] = leaf;
+            container.add(leaf);
+        }
+        orderService.save(order);
+        orderService.onTransaction(new OnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                try {
+                    Order reloaded = orderService.find(order
+                            .getId());
+                    List<OrderElement> elements = reloaded.getOrderElements();
+                    for (int i = 0; i < containers.length; i++) {
+                        assertThat(elements.get(i).getId(),
+                                equalTo(containers[i].getId()));
+                    }
+                    OrderLineGroup container = (OrderLineGroup) reloaded
+                            .getOrderElements().iterator().next();
+                    List<OrderElement> children = container.getChildren();
+                    for (int i = 0; i < orderElements.length; i++) {
+                        assertThat(children.get(i).getId(), equalTo(orderElements[i]
+                                .getId()));
+                    }
+                    return null;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        });
+        orderService.remove(order);
+    }
+
+    private OrderLine createValidLeaf(String parameter) {
+        OrderLine result = new OrderLine();
+        result.setName(parameter);
+        return result;
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddingOrderElement() throws Exception {
+        final Order order = createValidOrder();
+        OrderLineGroup container = new OrderLineGroup();
+        container.setName("bla");
+        OrderLine leaf = new OrderLine();
+        leaf.setName("leaf");
+        container.add(leaf);
+        order.add(container);
+        HoursGroup hoursGroup = new HoursGroup();
+        hoursGroup.setWorkingHours(3);
+        leaf.addHoursGroup(hoursGroup);
+        orderService.save(order);
+        orderService.onTransaction(new OnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                try {
+                    Order reloaded = orderService.find(order
+                            .getId());
+                    assertFalse(order == reloaded);
+                    assertThat(reloaded.getOrderElements().size(), equalTo(1));
+                    OrderLineGroup containerReloaded = (OrderLineGroup) reloaded
+                            .getOrderElements().get(0);
+                    assertThat(containerReloaded.getHoursGroups().size(),
+                            equalTo(1));
+                    assertThat(containerReloaded.getChildren().size(),
+                            equalTo(1));
+                    OrderElement leaf = containerReloaded.getChildren().get(0);
+                    assertThat(leaf.getHoursGroups().size(), equalTo(1));
+                    orderService.remove(order);
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                return null;
+            }
+        });
+    }
+}

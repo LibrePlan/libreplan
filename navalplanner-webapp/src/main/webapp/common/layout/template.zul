@@ -36,10 +36,10 @@
                 </menupopup>
             </menu>
 
-            <menu label="${c:l('mainmenu.workorders')}">
+            <menu label="${c:l('mainmenu.orders')}">
                 <menupopup>
-                    <menuitem label="${c:l('mainmenu.list_projects')}"
-                        href='/workorders/projects.zul' />
+                    <menuitem label="${c:l('mainmenu.list_orders')}"
+                        href='/orders/orders.zul' />
                 </menupopup>
             </menu>
 

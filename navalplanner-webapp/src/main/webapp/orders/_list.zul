@@ -1,0 +1,36 @@
+<window id="${arg.top_id}" title="Orders List">
+    <grid id="listing" model="@{controller.orders}" mold="paging"
+        pageSize="5">
+        <columns>
+            <column label="Operations" />
+            <column label="Name" sort="auto(name)" />
+            <column label="Init date" sort="auto(initDate)" />
+            <column label="End date" sort="auto(endDate)" />
+            <column label="Responsible" sort="auto(responsible)" />
+            <column label="Customer" sort="auto(customer)" />
+            <column label="Description" sort="auto(description)" />
+        </columns>
+        <rows>
+            <row self="@{each='order'}" value="@{order}">
+                <hbox>
+                    <button label="Edit"
+                        onClick="controller.goToEditForm(self.parent.parent.value);">
+                    </button>
+
+                    <button label="Remove"
+                        onClick="controller.confirmRemove(self.parent.parent.value);">
+                    </button>
+                </hbox>
+                <label value="@{order.name}" />
+                <label value="@{order.initDate}" />
+                <label value="@{order.endDate}" />
+                <label value="@{order.responsible}" />
+                <label value="@{order.customer}" />
+                <label value="@{order.description}" />
+            </row>
+        </rows>
+    </grid>
+    <button id="show_create_form" onClick="controller.goToCreateForm();"
+        label="Create">
+    </button>
+</window>
