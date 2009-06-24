@@ -1,10 +1,7 @@
 package org.navalplanner.business.workorders.entities;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.validator.NotNull;
 
@@ -18,21 +15,15 @@ public abstract class TaskWork {
 
     private Date endDate;
 
-    private Set<ActivityWork> activityWorks = new HashSet<ActivityWork>();
+    private Boolean mandatoryInit = false;
+
+    private Boolean mandatoryEnd = false;
+
+    private String description;
 
     public abstract Integer getWorkHours();
 
-    public void setActivities(List<ActivityWork> activities) {
-        this.activityWorks = new HashSet<ActivityWork>(activities);
-    }
-
-    public void addActivity(ActivityWork activityWork) {
-        activityWorks.add(activityWork);
-    }
-
-    public List<ActivityWork> getActivities() {
-        return new ArrayList<ActivityWork>(activityWorks);
-    }
+    public abstract List<ActivityWork> getActivities();
 
     public long getId() {
         return id;
@@ -73,15 +64,32 @@ public abstract class TaskWork {
         this.endDate = endDate;
     }
 
-    public abstract void remove(TaskWork lastAsTask);
+    public void setMandatoryInit(Boolean mandatoryInit) {
+        this.mandatoryInit = mandatoryInit;
+    }
 
-    public abstract void replace(TaskWork old, TaskWork newTask);
+    public Boolean isMandatoryInit() {
+        return mandatoryInit;
+    }
+
+    public void setMandatoryEnd(Boolean mandatoryEnd) {
+        this.mandatoryEnd = mandatoryEnd;
+    }
+
+    public Boolean isMandatoryEnd() {
+        return mandatoryEnd;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
     public abstract TaskWorkContainer asContainer();
 
-    public void forceLoadActivities() {
-        for (ActivityWork activityWork : activityWorks) {
-            activityWork.getWorkingHours();
-        }
-    }
+    public abstract void forceLoadActivities();
+
 }

@@ -66,4 +66,20 @@ public class TaskWorkContainer extends TaskWork implements ITaskWorkContainer {
         return result;
     }
 
+    @Override
+    public void forceLoadActivities() {
+        for (TaskWork taskWork : children) {
+            taskWork.forceLoadActivities();
+        }
+    }
+
+    @Override
+    public List<ActivityWork> getActivities() {
+        List<ActivityWork> activities = new ArrayList<ActivityWork>();
+        for (TaskWork taskWork : children) {
+            activities.addAll(taskWork.getActivities());
+        }
+        return activities;
+    }
+
 }

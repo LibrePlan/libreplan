@@ -1,9 +1,15 @@
 package org.navalplanner.business.workorders.entities;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TaskWorkLeaf extends TaskWork {
+
+    private Boolean fixedHours = false;
+
+    private Set<ActivityWork> activityWorks = new HashSet<ActivityWork>();
 
     @Override
     public Integer getWorkHours() {
@@ -28,23 +34,15 @@ public class TaskWorkLeaf extends TaskWork {
         return true;
     }
 
-    public void remove(TaskWork taskWork) {
-
-    }
-
     @Override
     public TaskWorkContainer asContainer() {
         TaskWorkContainer result = new TaskWorkContainer();
         result.setName(getName());
         result.setInitDate(getInitDate());
         result.setEndDate(getEndDate());
-        result.setActivities(getActivities());
+        // FIXME
+        // result.setActivities(getActivities());
         return result;
-    }
-
-    @Override
-    public void replace(TaskWork old, TaskWork newTask) {
-        throw new UnsupportedOperationException();
     }
 
     public void setWorkHours(Integer workingHours) {
@@ -63,4 +61,37 @@ public class TaskWorkLeaf extends TaskWork {
 
         setActivities(activities);
     }
+
+    public void setActivities(List<ActivityWork> activities) {
+        this.activityWorks = new HashSet<ActivityWork>(activities);
+    }
+
+    public void addActivity(ActivityWork activityWork) {
+        activityWorks.add(activityWork);
+    }
+
+    public void deleteActivity(ActivityWork value) {
+        activityWorks.remove(value);
+    }
+
+    @Override
+    public List<ActivityWork> getActivities() {
+        return new ArrayList<ActivityWork>(activityWorks);
+    }
+
+    @Override
+    public void forceLoadActivities() {
+        for (ActivityWork activityWork : activityWorks) {
+            activityWork.getWorkingHours();
+        }
+    }
+
+    public void setFixedHours(Boolean fixedHours) {
+        this.fixedHours = fixedHours;
+    }
+
+    public Boolean isFixedHours() {
+        return fixedHours;
+    }
+
 }

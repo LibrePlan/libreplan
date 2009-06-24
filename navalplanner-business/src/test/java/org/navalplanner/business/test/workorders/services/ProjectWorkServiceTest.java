@@ -1,5 +1,13 @@
 package org.navalplanner.business.test.workorders.services;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+
 import java.util.List;
 
 import org.junit.Test;
@@ -19,14 +27,6 @@ import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
-import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 /**
  * Tests for {@link ProjectWork}. <br />
@@ -171,7 +171,7 @@ public class ProjectWorkServiceTest {
                     TaskWorkContainer containerReloaded = (TaskWorkContainer) reloaded
                             .getTaskWorks().get(0);
                     assertThat(containerReloaded.getActivities().size(),
-                            equalTo(0));
+                            equalTo(1));
                     assertThat(containerReloaded.getChildren().size(),
                             equalTo(1));
                     TaskWork leaf = containerReloaded.getChildren().get(0);

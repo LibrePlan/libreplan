@@ -23,14 +23,13 @@
         <id name="id" type="long" access="field">
             <generator class="native" />
         </id>
-        <set name="activityWorks" access="field" cascade="all">
-            <key column="PARENT_TASK" not-null="false"></key>
-            <one-to-many class="ActivityWork" />
-        </set>
 
         <property name="name" access="field" />
         <property name="initDate" access="field" />
         <property name="endDate" access="field" />
+        <property name="mandatoryInit" access="field" />
+        <property name="mandatoryEnd" access="field" />
+        <property name="description" access="field" />
 
         <joined-subclass name="TaskWorkContainer">
             <key column="TASKWORKID"></key>
@@ -43,6 +42,13 @@
 
         <joined-subclass name="TaskWorkLeaf">
             <key column="TASKWORKID"></key>
+
+            <property name="fixedHours" access="field" />
+
+            <set name="activityWorks" access="field" cascade="all">
+                <key column="PARENT_TASK" not-null="false"></key>
+                <one-to-many class="ActivityWork" />
+            </set>
         </joined-subclass>
     </class>
 
@@ -50,6 +56,10 @@
         <id name="id" type="long" access="field">
             <generator class="native" />
         </id>
-        <property name="workingHours"></property>
+
+        <property name="workingHours" access="field" />
+        <property name="percentage" access="field" />
+        <property name="hoursPolicy" access="field" />
+
     </class>
 </hibernate-mapping>
