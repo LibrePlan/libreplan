@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.util.TaskBean;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 public class ListDetails extends HtmlMacroComponent {
@@ -27,7 +26,7 @@ public class ListDetails extends HtmlMacroComponent {
     }
 
     private List<TaskDetail> getTaskDetails() {
-        List<Object> children = getInsertionPoint().getChildren();
+        List<Object> children = getChildren();
         return Planner.findComponentsOfType(TaskDetail.class, children);
     }
 
@@ -43,7 +42,7 @@ public class ListDetails extends HtmlMacroComponent {
     }
 
     private void removeDetail(TaskDetail taskDetail) {
-        getInsertionPoint().getChildren().remove(taskDetail);
+        getChildren().remove(taskDetail);
     }
 
     public void addTask() {
@@ -51,7 +50,6 @@ public class ListDetails extends HtmlMacroComponent {
         newTask.setName("Nova Tarefa");
         newTask.setBeginDate(new Date());
         newTask.setEndDate(threeMonthsLater(newTask.getBeginDate()));
-        System.out.println(newTask.getEndDate());
         addTask(newTask);
         getPlanner().addTask(newTask);
     }
@@ -73,12 +71,8 @@ public class ListDetails extends HtmlMacroComponent {
 
     private void addTask(TaskBean taskBean) {
         TaskDetail taskDetail = TaskDetail.create(taskBean);
-        getInsertionPoint().appendChild(taskDetail);
+        appendChild(taskDetail);
         taskDetail.afterCompose();
-    }
-
-    private Component getInsertionPoint() {
-        return getFellow("insertionPoint");
     }
 
 }
