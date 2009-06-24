@@ -62,6 +62,10 @@ public class GenericDaoHibernateTemplate<E, PK extends Serializable> implements
         hibernateTemplate.saveOrUpdate(entity);
     }
 
+    public E merge(E entity) {
+        return entityClass.cast(hibernateTemplate.merge(entity));
+    }
+
     public void checkVersion(E entity) {
 
         /* Get id and version from entity. */

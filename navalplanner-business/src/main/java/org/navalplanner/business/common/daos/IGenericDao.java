@@ -28,6 +28,16 @@ public interface IGenericDao <E, PK extends Serializable>{
     public void save(E entity);
 
     /**
+     * Merges an entity, useful when saving an entity and a different object
+     *
+     * Unlike save, it does not launch an Exception if there is already a
+     * persistent instance with the same identifier in the session
+     *
+     * @param entity
+     */
+    public E merge(E entity);
+
+    /**
      * It checks if the version of the instance passed as a parameter is equal
      * to the one in the database. The instance must have methods conforming to
      * the following signatures: <code>java.io.Serializable getId()</code> (to

@@ -77,6 +77,10 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
 
     }
 
+    public E merge(E entity) {
+        return entityClass.cast(getSession().merge(entity));
+    }
+
     public void checkVersion(E entity) {
 
         /* Get id and version from entity. */
