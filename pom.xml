@@ -275,6 +275,11 @@
                 <artifactId>joda-time</artifactId>
                 <version>1.6</version>
             </dependency>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time-hibernate</artifactId>
+                <version>1.1</version>
+            </dependency>
             <!-- Naval Planner ZK Components -->
             <dependency>
                 <groupId>org.navalplanner</groupId>
