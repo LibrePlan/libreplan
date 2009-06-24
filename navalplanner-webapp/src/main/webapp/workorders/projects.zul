@@ -7,6 +7,7 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?component name="list" inline="true" macroURI="_list.zul"?>
 <?component name="edition" inline="true" macroURI="_edition.zul"?>
+<?component name="taskWorkPopup" inline="true" macroURI="_editTaskWork.zul"?>
 <zk >
     <window self="@{define(content)}"
         apply="org.navalplanner.web.workorders.ProjectWorkCRUDController">
@@ -15,6 +16,8 @@
         <edition top_id="createWindow" title="Create"
             save_button_label="Save" cancel_button_label="Cancel" />
         <edition top_id="editWindow" title="Edit Personal Data"
+            save_button_label="Save" cancel_button_label="Cancel" />
+        <taskWorkPopup top_id="editTaskWorkPopup" title="Edit Task Work"
             save_button_label="Save" cancel_button_label="Cancel" />
         <window visible="@{controller.confirmingRemove}"
             id="confirmRemove" title="Confirmación" width="500px"

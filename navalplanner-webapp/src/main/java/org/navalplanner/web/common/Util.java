@@ -1,5 +1,6 @@
 package org.navalplanner.web.common;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.zkoss.zk.ui.Component;
@@ -7,7 +8,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zkplus.databind.DataBinder;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 
@@ -202,6 +205,98 @@ public class Util {
             }
         });
         return dateBox;
+    }
+
+    /**
+     * Binds a {@link Decimalbox} with a {@link Getter}. The {@link Getter} will
+     * be used to get the value that is going to be showed in the
+     * {@link Decimalbox}.
+     *
+     * @param decimalBox
+     *            The {@link Decimalbox} to be bound
+     * @param getter
+     *            The {@link Getter} interface that will implement a get method.
+     * @return The {@link Decimalbox} bound
+     */
+    public static Decimalbox bind(final Decimalbox decimalBox,
+            final Getter<BigDecimal> getter) {
+        decimalBox.setValue(getter.get());
+        decimalBox.setDisabled(true);
+        return decimalBox;
+    }
+
+    /**
+     * Binds a {@link Decimalbox} with a {@link Getter}. The {@link Getter} will
+     * be used to get the value that is going to be showed in the
+     * {@link Decimalbox}. The {@link Setter} will be used to store the value
+     * inserted by the user in the {@link Decimalbox}.
+     *
+     * @param decimalBox
+     *            The {@link Decimalbox} to be bound
+     * @param getter
+     *            The {@link Getter} interface that will implement a get method.
+     * @param setter
+     *            The {@link Setter} interface that will implement a set method.
+     * @return The {@link Decimalbox} bound
+     */
+    public static Decimalbox bind(final Decimalbox decimalBox,
+            final Getter<BigDecimal> getter, final Setter<BigDecimal> setter) {
+        decimalBox.setValue(getter.get());
+        decimalBox.addEventListener("onChange", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                setter.set(decimalBox.getValue());
+                decimalBox.setValue(getter.get());
+            }
+        });
+        return decimalBox;
+    }
+
+    /**
+     * Binds a {@link Checkbox} with a {@link Getter}. The {@link Getter} will
+     * be used to get the value that is going to be showed in the
+     * {@link Checkbox}.
+     *
+     * @param decimalBox
+     *            The {@link Checkbox} to be bound
+     * @param getter
+     *            The {@link Getter} interface that will implement a get method.
+     * @return The {@link Checkbox} bound
+     */
+    public static Checkbox bind(final Checkbox checkBox,
+            final Getter<Boolean> getter) {
+        checkBox.setChecked(getter.get());
+        checkBox.setDisabled(true);
+        return checkBox;
+    }
+
+    /**
+     * Binds a {@link Checkbox} with a {@link Getter}. The {@link Getter} will
+     * be used to get the value that is going to be showed in the
+     * {@link Checkbox}. The {@link Setter} will be used to store the value
+     * inserted by the user in the {@link Checkbox}.
+     *
+     * @param decimalBox
+     *            The {@link Checkbox} to be bound
+     * @param getter
+     *            The {@link Getter} interface that will implement a get method.
+     * @param setter
+     *            The {@link Setter} interface that will implement a set method.
+     * @return The {@link Checkbox} bound
+     */
+    public static Checkbox bind(final Checkbox checkBox,
+            final Getter<Boolean> getter, final Setter<Boolean> setter) {
+        checkBox.setChecked(getter.get());
+        checkBox.addEventListener("onChange", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                setter.set(checkBox.isChecked());
+                checkBox.setChecked(getter.get());
+            }
+        });
+        return checkBox;
     }
 
 }

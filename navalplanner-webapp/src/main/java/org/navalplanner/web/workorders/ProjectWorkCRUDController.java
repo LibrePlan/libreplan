@@ -129,14 +129,19 @@ public class ProjectWorkCRUDController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
         getVisibility().showOnly(listWindow);
-        setupTaskTreeController(comp, "editWindow");
-        setupTaskTreeController(comp, "createWindow");
+
+        TaskWorkController taskWorkController = new TaskWorkController();
+        taskWorkController.doAfterCompose(comp.getFellow("editTaskWorkPopup"));
+
+        setupTaskTreeController(comp, "editWindow", taskWorkController);
+        setupTaskTreeController(comp, "createWindow", taskWorkController);
     }
 
-    private void setupTaskTreeController(Component comp, String window)
+    private void setupTaskTreeController(Component comp, String window,
+            TaskWorkController taskWorkController)
             throws Exception {
         TaskWorksTreeController controller = new TaskWorksTreeController(
-                projectWorkModel);
+                projectWorkModel, taskWorkController);
         controller
                 .doAfterCompose(comp.getFellow(window).getFellow("tasksTree"));
     }

@@ -14,7 +14,9 @@ import org.navalplanner.business.workorders.entities.TaskWorkLeaf;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.DropEvent;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
@@ -27,8 +29,10 @@ import org.zkoss.zul.Treerow;
 import org.zkoss.zul.api.Tree;
 
 /**
- * Controller for {@link WorkOrganization} view of WorkOrder entitites <br />
+ * Controller for {@link WorkOrganization} view of WorkOrder entities <br />
+ *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class TaskWorksTreeController extends GenericForwardComposer {
 
@@ -40,12 +44,16 @@ public class TaskWorksTreeController extends GenericForwardComposer {
 
     private final IProjectWorkModel projectWorkModel;
 
+    private final TaskWorkController taskWorkController;
+
     public TaskWorkTreeitemRenderer getRenderer() {
         return renderer;
     }
 
-    public TaskWorksTreeController(IProjectWorkModel projectWorkModel) {
+    public TaskWorksTreeController(IProjectWorkModel projectWorkModel,
+            TaskWorkController taskWorkController) {
         this.projectWorkModel = projectWorkModel;
+        this.taskWorkController = taskWorkController;
     }
 
     public void indent() {
@@ -279,6 +287,7 @@ public class TaskWorksTreeController extends GenericForwardComposer {
                     taskWork.setEndDate(value);
                 }
             }));
+
             Treerow tr = null;
             /*
              * Since only one treerow is allowed, if treerow is not null, append
@@ -313,6 +322,15 @@ public class TaskWorksTreeController extends GenericForwardComposer {
                 }
             });
 
+            tr.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    taskWorkController.openPopup(taskWork);
+                }
+
+            });
+
         }
 
         private String pathAsString(int[] path) {
@@ -326,4 +344,5 @@ public class TaskWorksTreeController extends GenericForwardComposer {
             return result.toString();
         }
     }
+
 }

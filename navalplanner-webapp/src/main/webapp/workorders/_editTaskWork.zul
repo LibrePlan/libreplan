@@ -1,0 +1,75 @@
+<popup id="${arg.top_id}">
+
+    <vbox>
+
+        <label value="${arg.title}" />
+
+        <hbox>
+            <label value="Task Name" />
+            <textbox id="name"
+                value="@{taskWorkController.taskWork.name,
+                save-when='saveButton.onClick'}" />
+        </hbox>
+
+        <hbox>
+            <label value="Init Date" />
+            <datebox id="initDate"
+                value="@{taskWorkController.taskWork.initDate,
+                save-when='saveButton.onClick'}" />
+            <checkbox id="mandatoryInit"
+                checked="@{taskWorkController.taskWork.mandatoryInit},
+                save-when='saveButton.onClick'" />
+            <label value="Mandatory" />
+        </hbox>
+
+        <hbox>
+            <label value="End Date" />
+            <datebox id="endDate"
+                value="@{taskWorkController.taskWork.endDate,
+                save-when='saveButton.onClick'}" />
+            <checkbox id="mandatoryEnd"
+                checked="@{taskWorkController.taskWork.mandatoryEnd,
+                save-when='saveButton.onClick'}" />
+            <label value="Mandatory" />
+        </hbox>
+
+        <hbox>
+            <label value="Total hours" />
+            <textbox id="totalHours"
+                value="@{taskWorkController.taskWork.workHours}" />
+            <div id="fixedHoursCheckbox" />
+        </hbox>
+
+        <listbox id="activityWorksListbox" multiple="true"
+            model="@{taskWorkController.activityWorksModel}"
+            itemRenderer="@{taskWorkController.renderer}">
+             <listhead sizable="true">
+                 <listheader label="Hours" />
+                 <listheader label="%" />
+                 <listheader label="Fixed" />
+             </listhead>
+        </listbox>
+
+        <hbox>
+            <button id="addActivityWork" label="Add activity work"
+                onClick="taskWorkController.addActivityWork();" />
+            <button id="deleteActivityWork" label="Delete activity work"
+                onClick="taskWorkController.deleteActivityWorks();" />
+            <button id="manageCriterions" label="Manage criterions" />
+        </hbox>
+
+        <textbox id="description" rows="4"
+            value="@{taskWorkController.taskWork.description,
+            save-when='saveButton.onClick'}" />
+
+        <hbox>
+            <button onClick="taskWorkController.cancel();"
+                label="${arg.cancel_button_label}" />
+            <button id="saveButton"
+                onClick="taskWorkController.save();"
+                label="${arg.save_button_label}" />
+        </hbox>
+
+    </vbox>
+
+</popup>
