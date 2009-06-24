@@ -5,9 +5,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.RollbackException;
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.OnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.impl.CriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -57,18 +60,19 @@ public class CriterionServiceImpl implements CriterionService {
         }
     }
 
-    public void save(Criterion entity) {
-        if (criterionDAO.existsByNameAndType(entity)) {
-            /*
-             * TODO It's an unchecked exception by now. I consider this error an
-             * expected error condition, so we should send a checked exception.
-             */
-            throw new RuntimeException(
-                    "there must be only one criterion with name "
-                            + entity.getName() + " and type "
-                            + entity.getType());
-        }
+    @Transactional(rollbackFor=ValidationException.class)
+    public void save(Criterion entity) throws ValidationException {
         criterionDAO.save(entity);
+        if (criterionDAO.findByNameAndType(entity).size() > 1) {
+
+            InvalidValue[] invalidValues = {
+                new InvalidValue(entity.getName() + " already exists",
+                    Criterion.class, "name", entity.getName(), entity)
+            };
+
+            throw new ValidationException(invalidValues,
+                "Couldn't save new criterion");
+        }
     }
 
     @Override
@@ -119,7 +123,7 @@ public class CriterionServiceImpl implements CriterionService {
     }
 
     @Override
-    public void createIfNotExists(Criterion criterion) {
+    public void createIfNotExists(Criterion criterion) throws ValidationException {
         if (!exists(criterion))
             save(criterion);
     }

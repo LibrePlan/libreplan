@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -30,6 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Component("criterionsModel")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class CriterionsModel implements ICriterionsModel {
+
+    private static final Log log = LogFactory.getLog(CriterionsModel.class);
 
     private ClassValidator<Criterion> criterionValidator = new ClassValidator<Criterion>(
             Criterion.class);
@@ -88,15 +92,20 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
-    @Transactional
     public void saveCriterion() throws ValidationException {
         InvalidValue[] invalidValues = criterionValidator
                 .getInvalidValues(criterion);
         if (invalidValues.length > 0)
             throw new ValidationException(invalidValues);
-        criterionService.save(criterion);
-        criterion = null;
-        criterionType = null;
+
+        try {
+            criterionService.save(criterion);
+        } catch (ValidationException ve) {
+            throw ve;
+        } finally {
+            criterion = null;
+            criterionType = null;
+        }
     }
 
     @Override

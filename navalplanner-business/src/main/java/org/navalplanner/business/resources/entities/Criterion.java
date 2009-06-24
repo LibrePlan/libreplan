@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.validator.NotEmpty;
 
 /**
@@ -93,4 +94,8 @@ public class Criterion implements ICriterion {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).getStringBuffer().toString();
+    }
 }

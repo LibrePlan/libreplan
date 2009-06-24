@@ -2,6 +2,8 @@ package org.navalplanner.web.resources.criterion;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
@@ -30,6 +32,8 @@ import org.zkoss.zul.api.Group;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class CriterionAdminController extends GenericForwardComposer {
+
+    private static final Log log = LogFactory.getLog(CriterionAdminController.class);
 
     private ICriterionsModel criterionsModel;
 

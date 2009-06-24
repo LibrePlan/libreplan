@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.OnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
@@ -88,7 +89,7 @@ public class CriterionServiceTest {
                 PredefinedCriterionTypes.WORK_RELATIONSHIP).size(),
                 equalTo(initial + 1));
         criterion.setActive(false);
-        String newName = "prueba";
+        String newName = UUID.randomUUID().toString() + "random";
         criterion.setName(newName);
         criterionService.save(criterion);
         assertThat("after editing there are the same", criterionService
@@ -99,18 +100,29 @@ public class CriterionServiceTest {
         criterionService.remove(criterion);
     }
 
-    @Test(expected = Exception.class)
-    public void testUniqueNameForCriterion() {
+    @Test
+    public void testSaveCriterionTwice() throws ValidationException {
         String unique = UUID.randomUUID().toString();
         Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
                 .createCriterion(unique);
         criterionService.save(criterion);
-        criterionService.save(PredefinedCriterionTypes.WORK_RELATIONSHIP
-                .createCriterion(unique));
+        criterionService.save(criterion);
+    }
+
+    @Test(expected=ValidationException.class)
+    @NotTransactional
+    public void testCannotExistTwoDifferentCriterionsWithSameNameAndType() throws ValidationException {
+        String unique = UUID.randomUUID().toString();
+        Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique);
+        criterionService.save(criterion);
+        Criterion criterion2 = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique);
+        criterionService.save(criterion2);
     }
 
     @Test
-    public void testCreateIfNotExists() {
+    public void testCreateIfNotExists() throws ValidationException {
         String unique = UUID.randomUUID().toString();
         Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
                 .createCriterion(unique);
@@ -186,7 +198,7 @@ public class CriterionServiceTest {
     }
 
     @Test
-    public void testGetSetOfResourcesSubclassSatisfyingCriterion() {
+    public void testGetSetOfResourcesSubclassSatisfyingCriterion() throws ValidationException {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         criterionService.save(criterion);
         ICriterionType<Criterion> type = createTypeThatMatches(criterion);
@@ -203,7 +215,7 @@ public class CriterionServiceTest {
     }
 
     @Test
-    public void shouldLetCreateCriterionOnData() {
+    public void shouldLetCreateCriterionOnData() throws ValidationException {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         ICriterionType<?> type = createTypeThatMatches(criterion);
         criterionService.save(criterion);
@@ -260,7 +272,7 @@ public class CriterionServiceTest {
 
     @Test
     @NotTransactional
-    public void shouldntThrowExceptionDueToTransparentProxyGotcha() {
+    public void shouldntThrowExceptionDueToTransparentProxyGotcha() throws ValidationException {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         ICriterionType<Criterion> type = createTypeThatMatches(criterion);
         criterionService.save(criterion);
@@ -274,7 +286,7 @@ public class CriterionServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void mustBeCorrectInterval() {
+    public void mustBeCorrectInterval() throws ValidationException {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         criterionService.save(criterion);
         criterionService.getResourcesSatisfying(criterion,

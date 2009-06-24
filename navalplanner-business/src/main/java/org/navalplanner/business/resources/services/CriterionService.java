@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.OnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -23,7 +24,14 @@ public interface CriterionService {
 
     void remove(Criterion criterion) throws InstanceNotFoundException;
 
-    void save(Criterion entity);
+    /**
+     * Save or update criterion
+     *
+     * "name" and "type" fields must be both unique
+     *
+     * @param entity
+     */
+    void save(Criterion entity) throws ValidationException;
 
     Collection<Resource> getResourcesSatisfying(ICriterion criterion);
 
@@ -36,7 +44,7 @@ public interface CriterionService {
     Collection<CriterionSatisfaction> getSatisfactionsFor(
             ICriterionType<?> criterionType, Date begin, Date end);
 
-    void createIfNotExists(Criterion criterion);
+    void createIfNotExists(Criterion criterion) throws ValidationException;
 
     boolean exists(Criterion criterion);
 

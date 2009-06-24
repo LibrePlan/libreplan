@@ -1,5 +1,6 @@
 package org.navalplanner.business.resources.daos;
 
+import java.util.List;
 import org.navalplanner.business.common.daos.IGenericDao;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.impl.CriterionDAO;
@@ -13,7 +14,9 @@ public interface ICriterionDAO extends IGenericDao<Criterion, Long> {
 
     public void removeByNameAndType(Criterion criterion);
 
-    Criterion findByNameAndType(Criterion criterion);
+    List<Criterion> findByNameAndType(Criterion criterion);
+
+    Criterion findUniqueByNameAndType(Criterion criterion) throws InstanceNotFoundException;
 
     boolean existsByNameAndType(Criterion entity);
 

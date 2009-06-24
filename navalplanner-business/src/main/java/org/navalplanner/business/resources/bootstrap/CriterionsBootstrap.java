@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.services.CriterionService;
@@ -47,7 +48,11 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
         for (Entry<ICriterionType<?>, List<Criterion>> entry : typesWithCriterions
                 .entrySet()) {
             for (Criterion criterion : entry.getValue()) {
-                criterionService.createIfNotExists(criterion);
+                try {
+                    criterionService.createIfNotExists(criterion);
+                } catch (ValidationException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
