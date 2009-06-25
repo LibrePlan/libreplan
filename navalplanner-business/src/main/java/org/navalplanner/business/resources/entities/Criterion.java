@@ -60,9 +60,8 @@ public class Criterion implements ICriterion {
     }
 
     public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
-        return !resource.query().from(this)
-        .enforcedInAll(Interval.range(start, end)).result()
-                .isEmpty();
+        return !resource.query().from(this).enforcedInAll(
+                Interval.range(start, end)).result().isEmpty();
     }
 
     public String getName() {
@@ -96,6 +95,6 @@ public class Criterion implements ICriterion {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).getStringBuffer().toString();
+        return ToStringBuilder.reflectionToString(this);
     }
 }
