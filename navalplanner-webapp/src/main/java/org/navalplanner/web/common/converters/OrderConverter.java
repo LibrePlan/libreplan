@@ -14,16 +14,15 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class ProjectWorkConverter implements Converter<Order> {
+public class OrderConverter implements Converter<Order> {
 
     @Autowired
-    private IOrderService projectWorkService;
+    private IOrderService orderService;
 
     @Override
     public Order asObject(String stringRepresentation) {
         try {
-            return projectWorkService
-                    .find(Long.parseLong(stringRepresentation));
+            return orderService.find(Long.parseLong(stringRepresentation));
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
