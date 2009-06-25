@@ -121,8 +121,8 @@ public class CriterionAdminController extends GenericForwardComposer {
 
     private void goToCreateForm(ICriterionType<Criterion> type) {
         onlyOneVisible.showOnly(createComponent);
-        Util.reloadBindings(createComponent);
         criterionsModel.prepareForCreate(type);
+        Util.reloadBindings(createComponent);
     }
 
     private void goToEditForm(Criterion criterion) {
