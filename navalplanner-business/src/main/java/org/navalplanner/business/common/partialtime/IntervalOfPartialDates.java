@@ -1,4 +1,4 @@
-package org.navalplanner.business.partialtime;
+package org.navalplanner.business.common.partialtime;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;

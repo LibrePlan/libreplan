@@ -1,9 +1,9 @@
-package org.navalplanner.business.partialtime;
+package org.navalplanner.business.common.partialtime;
 
 import java.util.EnumMap;
 
 import org.apache.commons.lang.Validate;
-import org.navalplanner.business.partialtime.PartialDate.Granularity;
+import org.navalplanner.business.common.partialtime.PartialDate.Granularity;
 
 /**
  * Represents a quantity of time. It's composed from granularities and integers <br />

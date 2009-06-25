@@ -1,12 +1,12 @@
-package org.navalplanner.business.test.partialtime;
+package org.navalplanner.business.common.test.partialtime;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
-import org.navalplanner.business.partialtime.TimeQuantity;
-import org.navalplanner.business.partialtime.PartialDate.Granularity;
+import org.navalplanner.business.common.partialtime.TimeQuantity;
+import org.navalplanner.business.common.partialtime.PartialDate.Granularity;
 
 public class TimeQuantityTest {
 

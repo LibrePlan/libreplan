@@ -1,4 +1,4 @@
-package org.navalplanner.business.partialtime;
+package org.navalplanner.business.common.partialtime;
 
 import java.util.ArrayList;
 import java.util.Collections;
