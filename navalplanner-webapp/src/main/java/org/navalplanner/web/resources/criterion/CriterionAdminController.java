@@ -8,6 +8,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
@@ -33,7 +34,8 @@ import org.zkoss.zul.api.Group;
  */
 public class CriterionAdminController extends GenericForwardComposer {
 
-    private static final Log log = LogFactory.getLog(CriterionAdminController.class);
+    private static final Log log = LogFactory
+            .getLog(CriterionAdminController.class);
 
     private ICriterionsModel criterionsModel;
 
@@ -148,6 +150,7 @@ public class CriterionAdminController extends GenericForwardComposer {
         try {
             criterionsModel.saveCriterion();
             reload();
+            messagesForUser.showMessage(Level.INFO, "Criterio gardado");
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
         }
