@@ -17,7 +17,7 @@ public class TimeQuantity {
                 Granularity.class);
         for (Granularity granularity : Granularity.values()) {
             Integer acc = sumAll(granularity, values);
-            if (acc != null) {
+            if (acc != null && acc != 0) {
                 result.put(granularity, acc);
             }
         }
@@ -30,7 +30,7 @@ public class TimeQuantity {
         for (EnumMap<Granularity, Integer> enumMap : maps) {
             if (enumMap.containsKey(granularity)) {
                 Integer valueToAdd = enumMap.get(granularity);
-                result = result == null ? enumMap.get(granularity) : result
+                result = result == null ? valueToAdd : result
                         + valueToAdd;
             }
         }
@@ -46,7 +46,11 @@ public class TimeQuantity {
         if (result.containsKey(granularity)) {
             newQuantity += result.get(granularity);
         }
-        result.put(granularity, newQuantity);
+        if (newQuantity != 0) {
+            result.put(granularity, newQuantity);
+        } else {
+            result.remove(granularity);
+        }
         return result;
     }
 
@@ -58,6 +62,20 @@ public class TimeQuantity {
 
     public TimeQuantity() {
         this(new EnumMap<Granularity, Integer>(Granularity.class));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TimeQuantity) {
+            TimeQuantity other = (TimeQuantity) obj;
+            return values.equals(other.values);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return values.hashCode();
     }
 
     private TimeQuantity(EnumMap<Granularity, Integer> enumMap) {

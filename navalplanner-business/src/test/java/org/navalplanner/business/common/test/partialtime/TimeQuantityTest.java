@@ -1,6 +1,8 @@
 package org.navalplanner.business.common.test.partialtime;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 
@@ -88,6 +90,27 @@ public class TimeQuantityTest {
                 .plus(13, Granularity.MONTH);
         assertThat(quantity.valueFor(Granularity.MONTH), equalTo(13));
         assertThat(quantity.valueFor(Granularity.YEAR), equalTo(0));
+    }
+
+    @Test
+    public void twoTimeQuantitiesAreEqualsIfHaveTheSameValues() {
+        assertEquals(TimeQuantity.empty(), TimeQuantity.empty());
+        assertEquals(TimeQuantity.empty().plus(3, Granularity.HOUR),
+                TimeQuantity.empty().plus(3, Granularity.HOUR));
+        assertEquals(TimeQuantity.empty().plus(3, Granularity.HOUR),
+                TimeQuantity.empty().plus(2, Granularity.HOUR).plus(1,
+                        Granularity.HOUR));
+        assertThat(TimeQuantity.empty().plus(2, Granularity.DAY),
+                not(equalTo(TimeQuantity.empty().plus(1, Granularity.DAY))));
+    }
+
+    @Test
+    public void equalsWorksWellWithZeroValues() {
+        TimeQuantity quantity = TimeQuantity.empty().plus(2, Granularity.MONTH)
+                .plus(-2, Granularity.MONTH);
+        assertEquals(quantity.hashCode(), TimeQuantity.empty().hashCode());
+        assertEquals(quantity, TimeQuantity.empty());
+        assertEquals(quantity, TimeQuantity.empty().plus(0, Granularity.MONTH));
     }
 
     @Test
