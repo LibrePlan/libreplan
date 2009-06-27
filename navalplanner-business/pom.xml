@@ -49,6 +49,11 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-annotations</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <classifier>jdk15</classifier>
+        </dependency>
 		<dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
