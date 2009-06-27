@@ -1,5 +1,7 @@
 package org.navalplanner.business.common.partialtime;
 
+import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -388,5 +390,17 @@ public class PartialDate implements ReadablePartial {
                     + " is more specific than this instance granularity: "
                     + this.granularity);
         return get(granularity.getMostSpecific());
+    }
+
+    public Serializable[] getDataForPersistence() {
+        return new Serializable[] {
+                new Timestamp(normalizedInstant.getMillis()),
+                granularity.name() };
+    }
+
+    public static PartialDate createFromDataForPersistence(Object... values) {
+        Timestamp instant = (Timestamp) values[0];
+        Granularity granularity = Granularity.valueOf((String) values[1]);
+        return PartialDate.createFrom(instant).with(granularity);
     }
 }

@@ -32,6 +32,9 @@
                 <value>
                     org/navalplanner/business/orders/entities/Orders.hbm.xml
                 </value>
+                 <value>
+                    TestEntities.hbm.xml
+                </value>
             </list>
         </property>
 
