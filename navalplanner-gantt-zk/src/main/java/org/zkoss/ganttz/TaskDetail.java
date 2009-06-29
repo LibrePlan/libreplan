@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +12,7 @@ import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
@@ -98,6 +100,86 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
         dateBox.setVisible(true);
         dateBox.setFocus(true);
         dateBox.setOpen(true);
+    }
+
+    private enum Navigation {
+        LEFT, UP, RIGHT, DOWN;
+        public static Navigation getIntentFrom(KeyEvent keyEvent) {
+            return values()[keyEvent.getKeyCode() - 37];
+        }
+    }
+
+    TaskDetail getAboveDetail() {
+        List<Component> parentChildren = getParent().getChildren();
+        // TODO can be optimized
+        int positionInParent = parentChildren.indexOf(this);
+        if (positionInParent == 0)
+            return null;
+        return (TaskDetail) parentChildren.get(positionInParent - 1);
+    }
+
+    TaskDetail getBelowDetail() {
+        List<Component> parentChildren = getParent().getChildren();
+        int positionInParent = parentChildren.indexOf(this);
+        if (positionInParent == parentChildren.size() - 1)
+            return null;
+        return (TaskDetail) parentChildren.get(positionInParent + 1);
+    }
+
+    private Textbox[] getTextBoxes() {
+        return new Textbox[] { nameBox, startDateTextBox, endDateTextBox };
+    }
+
+    public void focusGoUp(int position) {
+        TaskDetail aboveDetail = getAboveDetail();
+        if (aboveDetail != null) {
+            aboveDetail.getTextBoxes()[position].focus();
+        }
+    }
+
+    public void focusGoDown(int position) {
+        TaskDetail belowDetail = getBelowDetail();
+        if (belowDetail != null) {
+            belowDetail.getTextBoxes()[position].focus();
+        }
+    }
+
+    public void userWantsToMove(Textbox textbox, KeyEvent keyEvent) {
+        Navigation navigation = Navigation.getIntentFrom(keyEvent);
+        List<Textbox> textBoxSiblingsIncludedItself = getTextBoxSiblingsIncludedItself(textbox);
+        int position = textBoxSiblingsIncludedItself.indexOf(textbox);
+        switch (navigation) {
+        case UP:
+            focusGoUp(position);
+            break;
+        case DOWN:
+            focusGoDown(position);
+            break;
+        case LEFT:
+            if (position == 0) {
+                focusGoUp(getTextBoxes().length - 1);
+            } else {
+                textBoxSiblingsIncludedItself.get(position - 1).focus();
+            }
+            break;
+        case RIGHT:
+            if (position < textBoxSiblingsIncludedItself.size() - 1)
+                textBoxSiblingsIncludedItself.get(position + 1).focus();
+            else {
+                focusGoDown(0);
+            }
+            break;
+        default:
+            throw new RuntimeException("case not covered: " + navigation);
+        }
+    }
+
+    private List<Textbox> getTextBoxSiblingsIncludedItself(Textbox textbox) {
+        Component parent = textbox.getParent();
+        List<Component> children = parent.getChildren();
+        List<Textbox> textboxes = Planner.findComponentsOfType(Textbox.class,
+                children);
+        return textboxes;
     }
 
     /**
