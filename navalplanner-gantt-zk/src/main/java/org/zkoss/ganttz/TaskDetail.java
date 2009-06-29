@@ -79,12 +79,12 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
     }
 
     /**
-     * When a text box associated to a datebox receives focus, the corresponding
-     * datebox is shown
+     * When a text box associated to a datebox is requested to show the datebox,
+     * the corresponding datebox is shown
      * @param component
      *            the component that has received focus
      */
-    public void hasReceivedFocus(Component component) {
+    public void userWantsDateBox(Component component) {
         if (component == startDateTextBox) {
             showDateBox(startDateBox, startDateTextBox);
         }
@@ -97,6 +97,7 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
         associatedTextBox.setVisible(false);
         dateBox.setVisible(true);
         dateBox.setFocus(true);
+        dateBox.setOpen(true);
     }
 
     /**
@@ -169,6 +170,5 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
     public void setEndDateTextBox(Textbox endDateTextBox) {
         this.endDateTextBox = endDateTextBox;
     }
-
 
 }
