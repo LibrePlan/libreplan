@@ -64,6 +64,7 @@ public class ListDetails extends HtmlMacroComponent {
 
     @Override
     public void afterCompose() {
+        setClass("listdetails");
         super.afterCompose();
         for (TaskBean taskBean : taskBeans) {
             addTask(taskBean);

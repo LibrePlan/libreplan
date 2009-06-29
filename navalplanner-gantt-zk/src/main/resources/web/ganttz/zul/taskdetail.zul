@@ -3,8 +3,8 @@
     top = self;
 ]]>
 </zscript>
-<hbox>
-    <textbox id="nameBox" ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" value="" onChange="top.updateBean();" />
+<hbox class="taskdetail_grid">
+    <textbox id="nameBox" ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" value="" onChange="top.updateBean();" class="task_title"/>
     <textbox id="startDateTextBox" value="" ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" onChange="top.updateBean();" onOK="top.userWantsDateBox(self);" />
     <datebox id="startDateBox" compact="true" onChange="top.updateBean();" visible="${false}" onBlur="top.dateBoxHasLostFocus(self);"/>
     <textbox id="endDateTextBox" ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" value="" onChange="top.updateBean();"  onOK="top.userWantsDateBox(self);"/>

@@ -8,14 +8,16 @@
 }
 
 .listdetails {
-    width:200px;
+    width:280px;
     float:left;
     margin-top:46px;
+    border-bottom: 1px solid #86A4BE;
+   font-size:10px !important;
 }
 
-.listdetails table {
-    height:20px;
-    border-bottom: 1px solid #86A4BE;
+.taskdetail_grid table {
+    height:30px;
+    width:280px;
 }
 
 .listdetails img {
@@ -27,21 +29,23 @@
 }
 
 .listdetails input {
-   width: 90px;
+   width: 80px;
    font-size:10px !important;
    border-bottom:0px;
    border-right:0px;
    height:17px;
 }
 
+.task_title {
+   width: 120px !important;
+}
 
 .listdetails .z-datebox-inp {
-   height:17px;
+   font-family:"Verdana,Tahoma,Arial,Helvetica,sans-serif";
    font-size:10px !important;
    border-bottom:0px;
    border-right:0px;
 }
-
 
 /* Task box properties */
 .yui-resize, .box {
