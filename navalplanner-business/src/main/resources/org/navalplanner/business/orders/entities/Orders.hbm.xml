@@ -43,8 +43,6 @@
         <joined-subclass name="OrderLine">
             <key column="ORDERELEMENTID"></key>
 
-            <property name="fixedHours" access="field" />
-
             <set name="hoursGroups" access="field" cascade="all">
                 <key column="PARENT_ORDER_ELEMENT" not-null="false"></key>
                 <one-to-many class="HoursGroup" />

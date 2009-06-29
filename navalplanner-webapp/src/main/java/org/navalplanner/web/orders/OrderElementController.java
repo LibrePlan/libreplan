@@ -1,7 +1,6 @@
 package org.navalplanner.web.orders;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,10 +16,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -113,55 +110,9 @@ public class OrderElementController extends GenericForwardComposer {
             popup.getFellow("deleteHoursGroup").setVisible(true);
         }
 
-        fillFixedHoursCheckbox(orderElement);
-
         Util.reloadBindings(popup);
 
         popup.open(popup.getParent(), "start-after");
-    }
-
-    /**
-     * Private method that just fills the Div with id "fixedHoursCheckbox" in
-     * the .zul.
-     *
-     * If the parameter is a {@link OrderLine} the method adds the needed
-     * checkbox.
-     *
-     * @param orderElement
-     *            {@link OrderElement} that is been rendered
-     */
-    private void fillFixedHoursCheckbox(final OrderElement orderElement) {
-
-        // Get the Div with id "fixedHoursCheckbox"
-        Component fixedHoursCheckbox = popup.getFellow("fixedHoursCheckbox");
-
-        // Empty the content of the Div
-        // Making a copy to avoid a ConcurrentModificationException
-        List<Component> children = new ArrayList<Component>(fixedHoursCheckbox
-                .getChildren());
-        for (Component component : children) {
-            fixedHoursCheckbox.removeChild(component);
-        }
-
-        // If is a leaf
-        if (orderElement instanceof OrderLine) {
-            // Add specific fields
-            fixedHoursCheckbox.appendChild(Util.bind(new Checkbox(),
-                    new Util.Getter<Boolean>() {
-
-                        @Override
-                        public Boolean get() {
-                            return ((OrderLine) orderElement).isFixedHours();
-                        }
-                    }, new Util.Setter<Boolean>() {
-
-                        @Override
-                        public void set(Boolean value) {
-                            ((OrderLine) orderElement).setFixedHours(value);
-                        }
-                    }));
-            fixedHoursCheckbox.appendChild(new Label("Fixed hours"));
-        }
     }
 
     /**
@@ -243,6 +194,9 @@ public class OrderElementController extends GenericForwardComposer {
                 listitem.setParent(hoursPolicyListBox);
             }
 
+            Decimalbox decimalBox = new Decimalbox();
+            decimalBox.setScale(2);
+
             // If is a container
             if (orderElement instanceof OrderLineGroup) {
                 // Just getters are needed
@@ -258,7 +212,7 @@ public class OrderElementController extends GenericForwardComposer {
                         }));
 
                 // Percentage
-                cellPercentage.appendChild(Util.bind(new Decimalbox(),
+                cellPercentage.appendChild(Util.bind(decimalBox,
                         new Util.Getter<BigDecimal>() {
 
                             @Override
@@ -290,7 +244,7 @@ public class OrderElementController extends GenericForwardComposer {
                             }
                         });
 
-                final Decimalbox percentage = Util.bind(new Decimalbox(),
+                final Decimalbox percentage = Util.bind(decimalBox,
                         new Util.Getter<BigDecimal>() {
 
                             @Override

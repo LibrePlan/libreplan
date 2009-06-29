@@ -2,7 +2,9 @@ package org.navalplanner.business.orders.entities;
 
 import java.math.BigDecimal;
 
-public class HoursGroup {
+import org.hibernate.validator.NotNull;
+
+public class HoursGroup implements Cloneable {
 
     private Long id;
 
@@ -10,7 +12,8 @@ public class HoursGroup {
         return id;
     }
 
-    private Integer workingHours;
+    @NotNull
+    private Integer workingHours = 0;
 
     private BigDecimal percentage;
 

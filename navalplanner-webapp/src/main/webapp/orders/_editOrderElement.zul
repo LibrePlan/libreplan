@@ -37,7 +37,6 @@
             <label value="Total hours" />
             <textbox id="totalHours"
                 value="@{orderElementController.orderElement.workHours}" />
-            <div id="fixedHoursCheckbox" />
         </hbox>
 
         <listbox id="hoursGroupsListbox" multiple="true"
