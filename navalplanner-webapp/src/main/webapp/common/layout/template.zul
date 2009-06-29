@@ -7,16 +7,13 @@
     	<menubar id="menubar" width="900px" top="0px" left="320px"
             ctrlKeys="^k#f2" onCtrlKey="doCtrlKey()" sclass="mainmenu">
 
-            <menu label="${c:l('mainmenu.project')}">
-        		<menupopup>
-            		<menuitem label="${c:l('mainmenu.new')}"
+            <menu label="${c:l('mainmenu.plannification')}">
+                <menupopup>
+                    <menuitem label="${c:l('mainmenu.plannification')}"
+                        href='/planner/main.zul' />
+                    <menuitem label="${c:l('mainmenu.company_overview')}"
                         onClick="alert(self.label)" />
-                    <menuitem label="${c:l('mainmenu.open')}"
-                        onClick="alert(self.label)" />
-    				<menuitem label="${c:l('mainmenu.save')}"
-                        onClick="alert(self.label)" />
-    				<menuseparator />
-    				<menuitem label="${c:l('mainmenu.exit')}"
+                    <menuitem label="${c:l('mainmenu.plannifications_list')}"
                         onClick="alert(self.label)" />
     			</menupopup>
     		</menu>
@@ -27,11 +24,7 @@
                         href='/resources/worker/worker.zul#list' />
                         <menuitem label="${c:l('mainmenu.manage_criterions')}"
                         href='/resources/criterions/criterions.zul' />
-                    <menuitem label="${c:l('mainmenu.add_resources')}"
-                        href='/common/resources.zul' />
-                    <menuitem label="${c:l('mainmenu.manage_resources')}"
-                        onClick="alert(self.label)" />
-                    <menuitem label="${c:l('mainmenu.check_plannification')}"
+                    <menuitem label="${c:l('mainmenu.manage_machines')}"
                         onClick="alert(self.label)" />
                 </menupopup>
             </menu>
@@ -40,25 +33,27 @@
                 <menupopup>
                     <menuitem label="${c:l('mainmenu.list_orders')}"
                         href='/orders/orders.zul' />
+                    <menuitem label="${c:l('mainmenu.activity_work_types')}" />
+                    <menuitem label="${c:l('mainmenu.models')}" />
                 </menupopup>
             </menu>
 
-            <menu label="${c:l('mainmenu.plannification')}">
-    			<menupopup>
-                    <menuitem label="${c:l('mainmenu.plannification')}"
-                        href='/planner/main.zul' />
-    				<menuitem label="${c:l('mainmenu.add_task')}"
-                        onClick="alert(self.label)" />
-    				<menuitem label="${c:l('mainmenu.manage_tasks')}"
-                        onClick="alert(self.label)" />
-    				<menuitem label="${c:l('mainmenu.set_complection_data')}"
-                        onClick="alert(self.label)" />
-    				<menuitem label="${c:l('mainmenu.add_dependency')}"
-                        onClick="alert(self.label)" />
-    				<menuitem label="${c:l('mainmenu.manage_dependencies')}"
-                        onClick="alert(self.label)" />
-    			</menupopup>
-    		</menu>
+            <menu label="${c:l('mainmenu.work_reports')}">
+                <menupopup>
+                    <menuitem label="${c:l('mainmenu.work_report_list')}" />
+                    <menuitem label="${c:l('mainmenu.work_report_types')}" />
+                    <menuitem label="${c:l('mainmenu.work_report_import')}" />
+                </menupopup>
+            </menu>
+
+            <menu label="${c:l('mainmenu.administration')}">
+                <menupopup>
+                    <menuitem label="${c:l('mainmenu.manage_users')}" />
+                </menupopup>
+            </menu>
+
+            <menu label="${c:l('mainmenu.quality_management')}">
+            </menu>
 
             <menu label="${c:l('mainmenu.help')}">
     			<menupopup>
