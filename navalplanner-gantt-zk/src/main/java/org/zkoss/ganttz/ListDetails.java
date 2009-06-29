@@ -50,7 +50,8 @@ public class ListDetails extends HtmlMacroComponent {
         newTask.setName("Nova Tarefa");
         newTask.setBeginDate(new Date());
         newTask.setEndDate(threeMonthsLater(newTask.getBeginDate()));
-        addTask(newTask);
+        TaskDetail newDetail = addTask(newTask);
+        newDetail.receiveFocus();
         getPlanner().addTask(newTask);
     }
 
@@ -69,10 +70,11 @@ public class ListDetails extends HtmlMacroComponent {
         }
     }
 
-    private void addTask(TaskBean taskBean) {
+    private TaskDetail addTask(TaskBean taskBean) {
         TaskDetail taskDetail = TaskDetail.create(taskBean);
         appendChild(taskDetail);
         taskDetail.afterCompose();
+        return taskDetail;
     }
 
 }

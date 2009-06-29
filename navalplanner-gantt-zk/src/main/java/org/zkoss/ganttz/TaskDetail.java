@@ -133,14 +133,22 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
     public void focusGoUp(int position) {
         TaskDetail aboveDetail = getAboveDetail();
         if (aboveDetail != null) {
-            aboveDetail.getTextBoxes()[position].focus();
+            aboveDetail.receiveFocus(position);
         }
+    }
+
+    public void receiveFocus() {
+        receiveFocus(0);
+    }
+
+    public void receiveFocus(int position) {
+        this.getTextBoxes()[position].focus();
     }
 
     public void focusGoDown(int position) {
         TaskDetail belowDetail = getBelowDetail();
         if (belowDetail != null) {
-            belowDetail.getTextBoxes()[position].focus();
+            belowDetail.receiveFocus(position);
         }
     }
 
