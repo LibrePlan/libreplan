@@ -149,7 +149,18 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
         TaskDetail belowDetail = getBelowDetail();
         if (belowDetail != null) {
             belowDetail.receiveFocus(position);
+        } else {
+            ListDetails listDetails = getListDetails();
+            listDetails.addTask();
         }
+    }
+
+    private ListDetails getListDetails() {
+        Component current = getParent();
+        while (!(current instanceof ListDetails)) {
+            current = current.getParent();
+        }
+        return (ListDetails) current;
     }
 
     public void userWantsToMove(Textbox textbox, KeyEvent keyEvent) {
