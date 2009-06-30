@@ -1,201 +1,85 @@
 package org.navalplanner.web.orders;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.navalplanner.business.orders.entities.IOrderLineGroup;
-import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.daos.IOrderElementDao;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.OrderLine;
-import org.navalplanner.business.orders.entities.OrderLineGroup;
-import org.zkoss.zul.SimpleTreeModel;
-import org.zkoss.zul.SimpleTreeNode;
+import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.ICriterionType;
+import org.navalplanner.business.resources.services.CriterionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Model for a the {@link OrderElement} tree for a {@link Order} <br />
- *
- * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
- */
-public class OrderElementModel extends SimpleTreeModel {
+@Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+public class OrderElementModel implements IOrderElementModel {
 
-    private static List<SimpleTreeNode> asNodes(List<OrderElement> orderElements) {
-        ArrayList<SimpleTreeNode> result = new ArrayList<SimpleTreeNode>();
-        for (OrderElement orderElement : orderElements) {
-            result.add(asNode(orderElement));
+    private OrderElement orderElement;
+
+    @Autowired
+    private IOrderElementDao orderElementDao;
+
+    @Autowired
+    private ICriterionsBootstrap criterionsBootstrap;
+
+    @Autowired
+    private CriterionService criterionService;
+
+    private Map<String, ICriterionType<?>> mapCriterionTypes = new HashMap<String, ICriterionType<?>>();
+
+    @Override
+    public OrderElement getOrderElement() {
+        return orderElement;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void setCurrent(OrderElement orderElement) {
+        // FIXME Review reattachment
+        boolean wasTransient = orderElement.isTransient();
+        orderElementDao.save(orderElement);
+        orderElement.forceLoadHourGroupsCriterions();
+        if (wasTransient) {
+            orderElement.makeTransientAgain();
         }
-        return result;
+        this.orderElement = orderElement;
     }
 
-    private static SimpleTreeNode asNode(OrderElement orderElement) {
-        orderElement.forceLoadHourGroups();
-        return new SimpleTreeNode(orderElement, asNodes(orderElement.getChildren()));
-    }
+    @Override
+    public List<ICriterionType<?>> getCriterionTypes() {
+        List<ICriterionType<?>> criterionTypes = criterionsBootstrap
+                .getTypes();
 
-    private static SimpleTreeNode createRootNodeAndDescendants(
-            Order order) {
-        return new SimpleTreeNode(order, asNodes(order.getOrderElements()));
-    }
-
-    public OrderElementModel(Order order) {
-        super(createRootNodeAndDescendants(order));
-    }
-
-    public void reloadFromOrder() {
-        Order root = getRootAsOrder();
-        SimpleTreeNode rootAsNode = getRootAsNode();
-        rootAsNode.getChildren().clear();
-        rootAsNode.getChildren().addAll(asNodes(root.getOrderElements()));
-    }
-
-    public void addOrderElement() {
-        addOrderElementAtImpl(getRootAsNode());
-        reloadFromOrder();
-    }
-
-    private OrderElement createNewOrderElement() {
-        OrderElement newOrderElement = new OrderLine();
-        newOrderElement.setName("New Order Element");
-        return newOrderElement;
-    }
-
-    public void addOrderElementAt(SimpleTreeNode node) {
-        addOrderElementAtImpl(node);
-        reloadFromOrder();
-    }
-
-    private void addOrderElementAtImpl(SimpleTreeNode node) {
-        addOrderElementAtImpl(node, createNewOrderElement());
-    }
-
-    private void addOrderElementAtImpl(SimpleTreeNode node, OrderElement orderElement) {
-        addOrderElementAtImpl(node, orderElement, node.getChildCount());
-    }
-
-    private void addOrderElementAtImpl(SimpleTreeNode destinationNode, OrderElement orderElement,
-            int position) {
-        IOrderLineGroup container = turnIntoContainerIfNeeded(destinationNode);
-        container.add(position, orderElement);
-    }
-
-    private IOrderLineGroup turnIntoContainerIfNeeded(
-            SimpleTreeNode selectedForTurningIntoContainer) {
-        IOrderLineGroup parentContainer = asOrderLineGroup(getParent(selectedForTurningIntoContainer));
-        if (selectedForTurningIntoContainer.getData() instanceof IOrderLineGroup)
-            return (IOrderLineGroup) selectedForTurningIntoContainer
-                    .getData();
-        OrderElement toBeTurned = asOrderLine(selectedForTurningIntoContainer);
-        OrderLineGroup asContainer = toBeTurned.asContainer();
-        parentContainer.replace(toBeTurned, asContainer);
-        return asContainer;
-    }
-
-    private SimpleTreeNode getParent(SimpleTreeNode node) {
-        int[] position = getPath(node);
-        SimpleTreeNode current = getRootAsNode();
-        SimpleTreeNode[] path = new SimpleTreeNode[position.length];
-        for (int i = 0; i < position.length; i++) {
-            path[i] = (SimpleTreeNode) current.getChildAt(position[i]);
-            current = path[i];
-        }
-        int parentOfLast = path.length - 2;
-        if (parentOfLast >= 0)
-            return path[parentOfLast];
-        else
-            return getRootAsNode();
-    }
-
-    public List<SimpleTreeNode> getParents(SimpleTreeNode node) {
-        List<SimpleTreeNode> parents = new ArrayList<SimpleTreeNode>();
-        SimpleTreeNode current = node;
-
-        while (!current.equals(getRootAsNode())) {
-            current = getParent(current);
-            parents.add(current);
+        if (mapCriterionTypes.isEmpty()) {
+            for (ICriterionType<?> criterionType : criterionTypes) {
+                mapCriterionTypes.put(criterionType.getName(), criterionType);
+            }
         }
 
-        return parents;
+        return criterionTypes;
     }
 
-    public void indent(SimpleTreeNode nodeToIndent) {
-        SimpleTreeNode parentOfSelected = getParent(nodeToIndent);
-        int position = parentOfSelected.getChildren().indexOf(nodeToIndent);
-        if (position == 0) {
-            return;
+    @Override
+    public ICriterionType<?> getCriterionTypeByName(String name) {
+        if (mapCriterionTypes.isEmpty()) {
+            for (ICriterionType<?> criterionType : criterionsBootstrap
+                    .getTypes()) {
+                mapCriterionTypes.put(criterionType.getName(), criterionType);
+            }
         }
-        SimpleTreeNode destination = (SimpleTreeNode) parentOfSelected
-                .getChildren().get(position - 1);
-        moveImpl(nodeToIndent, destination, destination.getChildCount());
-        reloadFromOrder();
+
+        return mapCriterionTypes.get(name);
     }
 
-    public void unindent(SimpleTreeNode nodeToUnindent) {
-        SimpleTreeNode parent = getParent(nodeToUnindent);
-        if (getRootAsNode() == parent) {
-            return;
-        }
-        SimpleTreeNode destination = getParent(parent);
-        moveImpl(nodeToUnindent, destination, destination.getChildren()
-                .indexOf(parent) + 1);
-        reloadFromOrder();
-    }
-
-    public void move(SimpleTreeNode toBeMoved, SimpleTreeNode destination) {
-        moveImpl(toBeMoved, destination, destination.getChildCount());
-        reloadFromOrder();
-    }
-
-    private void moveImpl(SimpleTreeNode toBeMoved, SimpleTreeNode destination,
-            int position) {
-        if (destination.getChildren().contains(toBeMoved)) {
-            return;// it's already moved
-        }
-        removeNodeImpl(toBeMoved);
-        addOrderElementAtImpl(destination, asOrderLine(toBeMoved), position);
-    }
-
-    public int[] getPath(SimpleTreeNode destination) {
-        int[] path = getPath(getRootAsNode(), destination);
-        return path;
-    }
-
-    public void up(SimpleTreeNode node) {
-        IOrderLineGroup orderLineGroup = asOrderLineGroup(getParent(node));
-        orderLineGroup.up(asOrderLine(node));
-        reloadFromOrder();
-    }
-
-    public void down(SimpleTreeNode node) {
-        IOrderLineGroup orderLineGroup = asOrderLineGroup(getParent(node));
-        orderLineGroup.down(asOrderLine(node));
-        reloadFromOrder();
-    }
-
-    private Order getRootAsOrder() {
-        return (Order) getRootAsNode().getData();
-    }
-
-    private static OrderElement asOrderLine(SimpleTreeNode node) {
-        return (OrderElement) node.getData();
-    }
-
-    private static IOrderLineGroup asOrderLineGroup(SimpleTreeNode node) {
-        return (IOrderLineGroup) node.getData();
-    }
-
-    private SimpleTreeNode getRootAsNode() {
-        return (SimpleTreeNode) getRoot();
-    }
-
-    public void removeNode(SimpleTreeNode value) {
-        removeNodeImpl(value);
-        reloadFromOrder();
-    }
-
-    private void removeNodeImpl(SimpleTreeNode value) {
-        if (value == getRootAsNode())
-            return;
-        IOrderLineGroup orderLineGroup = asOrderLineGroup(getParent(value));
-        orderLineGroup.remove(asOrderLine(value));
+    @Override
+    public List<Criterion> getCriterionsFor(ICriterionType<?> type) {
+        return (List<Criterion>) criterionService.getCriterionsFor(type);
     }
 
 }

@@ -8,7 +8,7 @@
 <?component name="list" inline="true" macroURI="_list.zul"?>
 <?component name="edition" inline="true" macroURI="_edition.zul"?>
 <?component name="orderElementPopup" inline="true" macroURI="_editOrderElement.zul"?>
-<zk >
+<zk>
     <window self="@{define(content)}"
         apply="org.navalplanner.web.orders.OrderCRUDController">
         <vbox id="messagesContainer"></vbox>

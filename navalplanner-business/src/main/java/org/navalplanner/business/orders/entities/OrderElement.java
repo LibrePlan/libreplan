@@ -6,7 +6,10 @@ import java.util.List;
 import org.hibernate.validator.NotNull;
 
 public abstract class OrderElement {
-    private long id;
+
+    private Long id;
+
+    private Long version;
 
     @NotNull
     private String name;
@@ -91,5 +94,21 @@ public abstract class OrderElement {
     public abstract OrderLineGroup asContainer();
 
     public abstract void forceLoadHourGroups();
+
+    public abstract void forceLoadHourGroupsCriterions();
+
+    public void makeTransientAgain() {
+        // FIXME Review reattachment
+        id = null;
+        version = null;
+        for (HoursGroup hoursGroup : getHoursGroups()) {
+            hoursGroup.makeTransientAgain();
+        }
+    }
+
+    public boolean isTransient() {
+        // FIXME Review reattachment
+        return id == null;
+    }
 
 }

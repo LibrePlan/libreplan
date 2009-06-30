@@ -67,6 +67,15 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     }
 
     @Override
+    public List<HoursGroup> getHoursGroups() {
+        List<HoursGroup> hoursGroups = new ArrayList<HoursGroup>();
+        for (OrderElement orderElement : children) {
+            hoursGroups.addAll(orderElement.getHoursGroups());
+        }
+        return hoursGroups;
+    }
+
+    @Override
     public void forceLoadHourGroups() {
         for (OrderElement orderElement : children) {
             orderElement.forceLoadHourGroups();
@@ -74,12 +83,10 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     }
 
     @Override
-    public List<HoursGroup> getHoursGroups() {
-        List<HoursGroup> hoursGroups = new ArrayList<HoursGroup>();
+    public void forceLoadHourGroupsCriterions() {
         for (OrderElement orderElement : children) {
-            hoursGroups.addAll(orderElement.getHoursGroups());
+            orderElement.forceLoadHourGroupsCriterions();
         }
-        return hoursGroups;
     }
 
 }

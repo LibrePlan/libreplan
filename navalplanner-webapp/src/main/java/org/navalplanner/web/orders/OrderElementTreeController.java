@@ -13,11 +13,13 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.SimpleTreeNode;
@@ -64,7 +66,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
         }
     }
 
-    public OrderElementModel getOrderElementTreeModel() {
+    public OrderElementTreeModel getOrderElementTreeModel() {
         return orderModel.getOrderElementTreeModel();
     }
 
@@ -218,7 +220,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             map.put(t, intboxHours);
             if (orderElement instanceof OrderLine) {
                 // If it's a leaf hours cell is editable
-                cellForHours.appendChild(Util.bind(intboxHours,
+                Intbox intbox = Util.bind(intboxHours,
                         new Util.Getter<Integer>() {
 
                             @Override
@@ -245,7 +247,23 @@ public class OrderElementTreeController extends GenericForwardComposer {
                                             .getWorkHours());
                                 }
                             }
-                        }));
+                        });
+                // Checking hours value
+                intbox.setConstraint(new Constraint() {
+
+                    @Override
+                    public void validate(Component comp, Object value)
+                            throws WrongValueException {
+                        if (!((OrderLine) orderElement)
+                                .isTotalHoursValid((Integer) value)) {
+                            throw new WrongValueException(comp,
+                                    "Value is not valid, taking into account "
+                                            + "the current list of HoursGroup");
+                        }
+                    }
+                });
+
+                cellForHours.appendChild(intbox);
             } else {
                 // If it's a container hours cell is not editable
                 cellForHours.appendChild(Util.bind(intboxHours,
@@ -326,7 +344,9 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    orderElementController.openPopup(orderElement);
+                    IOrderElementModel model = orderModel
+                            .getOrderElementModel(orderElement);
+                    orderElementController.openPopup(model);
                 }
 
             });

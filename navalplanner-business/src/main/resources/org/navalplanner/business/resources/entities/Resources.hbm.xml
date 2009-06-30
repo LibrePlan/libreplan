@@ -31,6 +31,7 @@
     <property name="name" access="field"/>
     <property name="type" access="field"/>
     <property access="field" name="active"/>
+
   </class>
 
   <class name="CriterionSatisfaction">

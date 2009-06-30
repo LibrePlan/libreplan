@@ -19,7 +19,6 @@ public class OrderLine extends OrderElement {
 
     @Override
     public List<OrderElement> getChildren() {
-        // FIXME Shouldn't return null?
         return new ArrayList<OrderElement>();
     }
 
@@ -43,14 +42,6 @@ public class OrderLine extends OrderElement {
     public List<HoursGroup> getHoursGroups() {
         return new ArrayList<HoursGroup>(hoursGroups);
     }
-
-    @Override
-    public void forceLoadHourGroups() {
-        for (HoursGroup hoursGroup : hoursGroups) {
-            hoursGroup.getWorkingHours();
-        }
-    }
-
 
     public void addHoursGroup(HoursGroup hoursGroup) {
         hoursGroups.add(hoursGroup);
@@ -88,7 +79,6 @@ public class OrderLine extends OrderElement {
         } else {
 
             if (!isTotalHoursValid(workHours)) {
-                // FIXME change exception type
                 throw new IllegalArgumentException(
                         "\"workHours\" value is not valid, taking into "
                                 + "account the current list of HoursGroup");
@@ -203,7 +193,7 @@ public class OrderLine extends OrderElement {
      *            The desired value
      * @return true if the value is valid
      */
-    private boolean isTotalHoursValid(Integer total) {
+    public boolean isTotalHoursValid(Integer total) {
 
         Integer newTotal = 0;
 
@@ -288,6 +278,30 @@ public class OrderLine extends OrderElement {
                     hoursGroup.setPercentage(percentage);
                 }
             }
+        }
+    }
+
+    /**
+     * Re-calculates the percentages in the {@link HoursGroup} set of the
+     * current {@link OrderLine}, without modify the {@link HoursGroup} with
+     * policy FIXED_PERCENTAGE.
+     *
+     */
+    public void recalculatePercentages() {
+        recalculatePercentages(hoursGroups);
+    }
+
+    @Override
+    public void forceLoadHourGroups() {
+        for (HoursGroup hoursGroup : hoursGroups) {
+            hoursGroup.getWorkingHours();
+        }
+    }
+
+    @Override
+    public void forceLoadHourGroupsCriterions() {
+        for (HoursGroup hoursGroup : hoursGroups) {
+            hoursGroup.forceLoadCriterions();
         }
     }
 

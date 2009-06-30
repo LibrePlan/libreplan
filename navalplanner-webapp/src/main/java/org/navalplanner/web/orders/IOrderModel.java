@@ -5,6 +5,7 @@ import java.util.List;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
  * Contract for {@link OrderModel}<br />
@@ -26,6 +27,8 @@ public interface IOrderModel {
 
     void prepareForRemove(Order order);
 
-    OrderElementModel getOrderElementTreeModel();
+    OrderElementTreeModel getOrderElementTreeModel();
+
+    IOrderElementModel getOrderElementModel(OrderElement orderElement);
 
 }

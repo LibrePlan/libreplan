@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.transaction.RollbackException;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.OnTransaction;

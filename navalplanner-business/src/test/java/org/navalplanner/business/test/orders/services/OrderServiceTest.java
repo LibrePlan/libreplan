@@ -9,7 +9,11 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.OnTransaction;
@@ -18,9 +22,11 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.services.IOrderService;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.services.CriterionService;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
@@ -50,6 +56,16 @@ public class OrderServiceTest {
 
     @Autowired
     private IOrderService orderService;
+
+    @Autowired
+    private CriterionService criterionService;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private Session getSession() {
+        return sessionFactory.getCurrentSession();
+    }
 
     @Test
     public void testCreation() throws ValidationException {
@@ -184,4 +200,62 @@ public class OrderServiceTest {
             }
         });
     }
+
+    @Test
+    @NotTransactional
+    public void testManyToManyHoursGroupCriterionMapping() throws Exception {
+        final Order order = createValidOrder();
+
+        OrderElement orderElement = new OrderLine();
+        orderElement.setName("Order element");
+        order.add(orderElement);
+
+        HoursGroup hoursGroup = new HoursGroup();
+        hoursGroup.setWorkingHours(10);
+        HoursGroup hoursGroup2 = new HoursGroup();
+        hoursGroup2.setWorkingHours(5);
+
+        ((OrderLine) orderElement).addHoursGroup(hoursGroup);
+        ((OrderLine) orderElement).addHoursGroup(hoursGroup2);
+
+        Criterion criterion = Criterion.withNameAndType("Test"
+                + UUID.randomUUID().toString(), "test");
+        criterionService.save(criterion);
+
+        hoursGroup.addCriterion(criterion);
+        hoursGroup2.addCriterion(criterion);
+
+        orderService.save(order);
+
+        orderService.onTransaction(new OnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                try {
+                    Order reloaded = orderService.find(order.getId());
+
+                    List<OrderElement> orderElements = reloaded
+                            .getOrderElements();
+                    assertThat(orderElements.size(), equalTo(1));
+
+                    List<HoursGroup> hoursGroups = orderElements.get(0)
+                            .getHoursGroups();
+                    assertThat(hoursGroups.size(), equalTo(2));
+
+                    Set<Criterion> criterions = hoursGroups.get(0)
+                            .getCriterions();
+                    assertThat(criterions.size(), equalTo(1));
+
+                    Criterion criterion = criterions.iterator().next();
+
+                    assertThat(criterion.getType(), equalTo("test"));
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                return null;
+            }
+        });
+
+    }
+
 }

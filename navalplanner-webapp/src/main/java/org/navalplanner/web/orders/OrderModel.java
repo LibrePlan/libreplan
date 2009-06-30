@@ -10,6 +10,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.services.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -32,7 +33,10 @@ public class OrderModel implements IOrderModel {
     private ClassValidator<Order> orderValidator = new ClassValidator<Order>(
             Order.class);
 
-    private OrderElementModel orderElementTreeModel;
+    private OrderElementTreeModel orderElementTreeModel;
+
+    @Autowired
+    private IOrderElementModel orderElementModel;
 
     @Autowired
     public OrderModel(IOrderService orderService) {
@@ -52,7 +56,7 @@ public class OrderModel implements IOrderModel {
         Validate.notNull(order);
         try {
             this.order = orderService.find(order.getId());
-            this.orderElementTreeModel = new OrderElementModel(this.order);
+            this.orderElementTreeModel = new OrderElementTreeModel(this.order);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -61,7 +65,7 @@ public class OrderModel implements IOrderModel {
     @Override
     public void prepareForCreate() {
         this.order = new Order();
-        this.orderElementTreeModel = new OrderElementModel(this.order);
+        this.orderElementTreeModel = new OrderElementTreeModel(this.order);
         this.order.setInitDate(new Date());
     }
 
@@ -95,8 +99,14 @@ public class OrderModel implements IOrderModel {
     }
 
     @Override
-    public OrderElementModel getOrderElementTreeModel() {
+    public OrderElementTreeModel getOrderElementTreeModel() {
         return orderElementTreeModel;
+    }
+
+    @Override
+    public IOrderElementModel getOrderElementModel(OrderElement orderElement) {
+        orderElementModel.setCurrent(orderElement);
+        return orderElementModel;
     }
 
 }
