@@ -1,5 +1,6 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<zk>
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+
  <zscript><![CDATA[
      top = self;
 ]]>
@@ -13,6 +14,8 @@
     }
 
 </style>
+
+<n:div id="timetracker">
 
 <vbox>
     <hbox>
@@ -35,7 +38,7 @@
         </columns>
 
         <rows>
-            <row id="fake_row" style="height: 100px;">
+            <row id="fake_row" style="height: 100px;" class="fake_column timetracker_column${(each.even?'_myeven':'')}">
                  <div class="fake_column timetracker_column${(each.even?'_even':'')}" style="height: 100px;" forEach="${top.detailsSecondLevel}" />
             </row>
         </rows>
@@ -49,4 +52,7 @@
  </zscript>
 
 </vbox>
+
+</n:div>
+
 </zk>

@@ -1,6 +1,9 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<zk>
-        <button label="${c:l('listdetails.add_task')}"
-                        onClick="self.getParent().addTask();" />
-
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+            <button label="${c:l('listdetails.add_task')}"
+                        onClick="insertionPoint.getParent().getParent().addTask();" />
+    <n:div id="listdetails_container">
+        <vbox class="listdetails" id="insertionPoint">
+        </vbox>
+    </n:div>
 </zk>

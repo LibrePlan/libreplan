@@ -28,7 +28,7 @@ document.body.class = "yui-skin-sam";
 var myLogReader = new YAHOO.widget.LogReader(myContainer);*/
 </script>
 
-
+<div id="scroll_container">
 
 <c:set var="self" value="${requestScope.arg.self}"/>
 

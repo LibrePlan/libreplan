@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.util.TaskBean;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 public class ListDetails extends HtmlMacroComponent {
@@ -26,7 +27,7 @@ public class ListDetails extends HtmlMacroComponent {
     }
 
     private List<TaskDetail> getTaskDetails() {
-        List<Object> children = getChildren();
+        List<Object> children = getInsertionPoint().getChildren();
         return Planner.findComponentsOfType(TaskDetail.class, children);
     }
 
@@ -42,7 +43,7 @@ public class ListDetails extends HtmlMacroComponent {
     }
 
     private void removeDetail(TaskDetail taskDetail) {
-        getChildren().remove(taskDetail);
+        getInsertionPoint().getChildren().remove(taskDetail);
     }
 
     public void addTask() {
@@ -73,9 +74,13 @@ public class ListDetails extends HtmlMacroComponent {
 
     private TaskDetail addTask(TaskBean taskBean) {
         TaskDetail taskDetail = TaskDetail.create(taskBean);
-        appendChild(taskDetail);
+        getInsertionPoint().appendChild(taskDetail);
         taskDetail.afterCompose();
         return taskDetail;
+    }
+
+    private Component getInsertionPoint() {
+        return getFellow("insertionPoint");
     }
 
 }

@@ -11,6 +11,8 @@ zkTask.HEIGHT = 10;
 zkTask.HALF_HEIGHT = 5;
 zkTask.DEPENDENCY_PADDING = 4;
 zkTask.HALF_DEPENDENCY_PADDING = 2;
+// Task borders are default 1px
+
 
 zkTask.getDD = function(cmp) {
     if (typeof (cmp.created_dd) == 'undefined') {
@@ -70,7 +72,7 @@ zkTask.init = function(cmp) {
         var resize2 = new YAHOO.util.Resize(cmp2, {
             handles : [ 'r' ],
             proxy : true,
-            maxWidth: cmp.clientWidth - 2
+            maxWidth: cmp.clientWidth - 2  // Considering 1px borders
         });
 
         resize2.on('resize', function(ev) {
@@ -89,7 +91,7 @@ zkTask.init = function(cmp) {
             resize2 = new YAHOO.util.Resize(cmp2, {
                 handles : [ 'r' ],
                 proxy : true,
-                maxWidth: cmp.clientWidth - 2
+                maxWidth: cmp.clientWidth - 2 // Considering 1px borders
             });
             if ( (cmp.clientWidth) < (cmp2.clientWidth) ) {
                 cmp2.style.width = cmp.clientWidth - 2  + 'px';
@@ -181,7 +183,7 @@ zkTask.createArrow = function(cmp) {
     mouseClickListener = function(e) {
         var parentNode = arrow.parentNode;
         var task;
-        if (task = zkTask.isOverTask(cmp, arrow)) {
+        if ((task = zkTask.isOverTask(cmp, arrow))) {
             zkau.send( {
                 uuid : cmp.id,
                 cmd : "addDependency",
@@ -198,27 +200,23 @@ zkTask.createArrow = function(cmp) {
     YAHOO.util.Event.on(document.body, 'click', mouseClickListener);
 };
 
+/* This method is binded to the mouse click listener to
+ * determine if it is positioned over any task */
 zkTask.isOverTask = function(cmp, arrow) {
 
     var listtasksNode = document.getElementById("listtasks");
-    var ganttPanelNode = document.getElementById("ganttpanel");
+//    var ganttPanelNode = document.getElementById("ganttpanel");
+    var ganttPanelNode = document.getElementById("scroll_container");
 
-    arrayTasks = zkTask.getElementsByAttribute(listtasksNode, "div", "z.type",
-        "ganttz.task.Task");
+    arrayTasks = zkTask.getElementsByAttribute(
+        listtasksNode, "div", "z.type","ganttz.task.Task");
 
-    /* Cursor relative positions to #listtasks (439,160) and ganttPanel scroll */
-    var xpos = zkTask.xMouse - listtasksNode.offsetLeft
-    + ganttPanelNode.scrollLeft;
-    var ypos = zkTask.yMouse - listtasksNode.offsetTop;
-    /*
-     * This way of getting cursor coordinates, is unable to calculate scrollbar
-     * offset.
-     */
+    var xpos = zkTask.xMouse - ganttPanelNode.offsetLeft + ganttPanelNode.scrollLeft;
+    var ypos = zkTask.yMouse - ganttPanelNode.offsetTop + ganttPanelNode.scrollTop
+        - listtasksNode.offsetTop;
 
     for ( var i = 0; i < arrayTasks.length; i++) {
-
         var task = arrayTasks[i];
-        
         if (((xpos) > (task.offsetLeft))
             && ((xpos) < (task.offsetLeft + task.offsetWidth))
             && (ypos > (task.offsetTop))

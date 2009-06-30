@@ -1,23 +1,26 @@
-/* Planificator specific styles */
+/* Planificator specific styles
 
-/*** Tasks ***/
-#listtasks {
-    position:relative;
-    width:600px;
-    top:70px;
-}
+The next constants are used within the planner styling:
 
+LISTDETAILS_W = 280
+
+HEIGHT_PER_ROW = 15;
+HEIGHT_TIME_TRACKER = 120;
+
+
+
+*/
+
+
+
+/****** Tasks and dependencies ******/
 .listdetails {
-    width:280px;
+    width:280px; /* LISTDETAILS_W */
     float:left;
-    margin-top:46px;
+    margin-top:  0px;
     border-bottom: 1px solid #86A4BE;
    font-size:10px !important;
-}
-
-.taskdetail_grid table {
-    height:30px;
-    width:280px;
+    margin-top:0px;
 }
 
 .listdetails img {
@@ -25,7 +28,7 @@
 }
 
 .listdetails td {
-    padding-left:0px; /* 3 */
+    padding-left:0px;
 }
 
 .listdetails input {
@@ -36,15 +39,27 @@
    height:17px;
 }
 
-.task_title {
-   width: 120px !important;
-}
-
 .listdetails .z-datebox-inp {
    font-family:"Verdana,Tahoma,Arial,Helvetica,sans-serif";
    font-size:10px !important;
    border-bottom:0px;
    border-right:0px;
+}
+
+.task_title {
+   width: 120px !important;
+}
+
+.taskdetail_grid table {
+    height:30px;
+    width:280px; /* LISTDETAILS_W */
+}
+
+
+#listtasks {
+    position:relative;
+    width:600px;
+    top:0px;
 }
 
 /* Task box properties */
@@ -67,7 +82,7 @@
 }
 
 
-/*** Dependencies ***/
+/****** Dependencies *******/
 #listdependencies {
     position:relative;
     width:400px;
@@ -94,13 +109,36 @@
     width:1px;
 }
 
+.completion {
+    display: none;
+    width: 30%;
+    margin-top:0px;
+    height: 10px;
+    background-color: #FFCC99;
+    z-index:5;
+    border:0px;
+}
+
+.row span {
+    display:none;
+    position:relative;
+    z-index:5;
+    color:#BBBBBB;
+    white-space:nowrap;
+}
+
+.zk #ganttpanel .z-button-cm {
+    border: 0px;
+}
+
+
 /* Width: ganttpanel constant,
 Height: is recalculated on number of tasks */
 #ganttpanel {
-    height:800px;
+    height:400px; /* 800 */
     width: 900px;
-    overflow-x: scroll;
 }
+
 
 #ganttpanel table {
     float:left;
@@ -127,24 +165,70 @@ table {
     border:0px;
 }
 
-.completion {
-    display: none;
-    width: 30%;
-    margin-top:0px;
-    height: 10px;
-    background-color: #FFCC99;
-    z-index:5;
-    border:0px;
-}
 
-.row span {
-    display:none;
+#listdetails_container {
+    float:left;
+    overflow:hidden;
+    height:300px;
     position:relative;
-    z-index:5;
-    color:#BBBBBB;
-    white-space:nowrap;
+    top:50px;
+    overflow: hidden;
+    border-bottom: 1px solid #86A4BE;
+    border-right: 1px solid #86A4BE;
 }
 
-.zk #ganttpanel .z-button-cm {
-    border: 0px;
+
+
+#scroll_container {
+    margin-top:70px;
+/*    border:solid green 1px; */
+    height:300px; /* Recalculate based on window */
+    width:500px; /* Recalculate based on window */
+    overflow:hidden;
+    float:left;
+    position:absolute;
+    left:300px;
+
+}
+
+#timetracker {
+    position:absolute;
+    left:300px;
+        width:600px;
+        height:400px;
+        position:absolute;
+        overflow-x:hidden;
+        float:left;
+/*        border: solid 1px red; */
+    }
+
+
+#ganttpanel_scroller_x, #ganttpanel_scroller_y {
+    position:absolute;
+    float:left;
+    overflow:auto;
+}
+
+#ganttpanel_scroller_x {
+    top: 600px;  /* Calculate initial settings */
+    left: 280px;
+    width:635px;
+    height:15px;
+}
+
+#ganttpanel_inner_scroller_x {
+       /* must be resized on ganttpanel javascript adjust size */
+        width:1900px; /* Real canvas dimensions */
+        height:15px; /* Scroll constant */
+}
+
+#ganttpanel_scroller_y {
+    top: 270px; /* Calculate initial settings */
+    left: 920px;
+    width:15px;
+    height:330px;
+}
+#ganttpanel_inner_scroller_y {
+        width:15px; /* Scroll constant */
+        height:1350px; /* Modified when added or removed tasks, or zoom adjustments */
 }

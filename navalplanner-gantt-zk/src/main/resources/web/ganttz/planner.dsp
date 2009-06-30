@@ -9,7 +9,7 @@
 /*]]> */
 </script>
 
-<div id="${self.uuid}" z.type="ganttz.planner.Planner" ${self.outerAttrs}">
+<div id="${self.uuid}" z.type="ganttz.planner.Planner" ${self.outerAttrs}>
     <c:forEach var="child" items="${self.children}">
         ${z:redraw(child, null)}
     </c:forEach>

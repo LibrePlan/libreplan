@@ -10,3 +10,10 @@
         </c:forEach>
     </div>
 </div>
+
+<br/>
+
+<div id="ganttpanel_scroller_x">
+    <div id="ganttpanel_inner_scroller_x"></div>
+</div>
+<div id="ganttpanel_scroller_y"><div id="ganttpanel_inner_scroller_y" /></div>

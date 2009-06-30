@@ -1,4 +1,3 @@
-<vbox id="orderElementTree">
     <vbox>
         <hbox>
             <button label="New order element"

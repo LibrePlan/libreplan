@@ -12,7 +12,7 @@
 </zscript>
     <!-- choose lightLoad, mediumLoad or highLoad.
      -->
-    <planner id="planner" self="@{define(content)}" dependencyRegistry="${plannerData.lightLoad}">
+    <planner id="planner" self="@{define(content)}" dependencyRegistry="${plannerData.mediumLoad}">
         <div id="idContextMenuTaskAssigment"
             use="org.zk.myhello.pages.MyHelloPageListener">
         </div>
