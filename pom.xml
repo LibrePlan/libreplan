@@ -435,19 +435,10 @@
 
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
-                <!-- FIXME: try to not to specify version. -->
-                <version>6.1.12.rc2</version>
+                <version>6.1.18</version>
                 <configuration>
                     <jettyEnvXml>target/jetty/jetty-env.xml</jettyEnvXml>
-                    <scanIntervalSeconds>5</scanIntervalSeconds>
-                    <scanTargetPatterns>
-                        <scanTargetPattern>
-                            <directory>src/main/webapp/WEB-INF</directory>
-                            <includes>
-                                <include>*</include>
-                            </includes>
-                        </scanTargetPattern>
-                    </scanTargetPatterns>
+                    <reload>manual</reload>
 
                     <!-- Log to the console. -->
                     <requestLog implementation="org.mortbay.jetty.NCSARequestLog">
@@ -459,9 +450,11 @@
                         <append>true</append>
                     </requestLog>
                     <!--
-                        <connectors> <connector
-                        implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                        <port>9090</port> </connector> </connectors>
+                    <connectors>
+                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                            <port>9090</port>
+                        </connector>
+                    </connectors>
                     -->
                 </configuration>
 
