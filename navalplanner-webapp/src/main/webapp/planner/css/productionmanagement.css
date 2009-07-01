@@ -81,6 +81,28 @@ HEIGHT_TIME_TRACKER = 120;
     width: 1800px;
 }
 
+/* ---------- TaskGroup --------- */
+.taskgroup_start {
+    background-image: url("/navalplanner-webapp/zkau/web/ganttz/img/group_left.png");
+    height: 10px;
+    width: 10px;
+    float:left;
+}
+
+.taskgroup_end {
+    background-image: url("../../zkau/web/ganttz/img/group_right.png");
+    height: 10px;
+    width: 10px;
+    float:right;
+}
+
+.taskgroup {
+    border-top: solid black 2px;
+    border-bottom: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    background-color: transparent !important;
+}
 
 /****** Dependencies *******/
 #listdependencies {

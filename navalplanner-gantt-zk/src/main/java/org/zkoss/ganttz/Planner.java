@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.zkoss.ganttz.util.DependencyRegistry;
 import org.zkoss.ganttz.util.TaskBean;
+import org.zkoss.ganttz.util.TaskContainerBean;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -125,6 +126,11 @@ public class Planner extends XulElement implements AfterCompose {
     public void addTask(TaskBean newTask) {
         getTaskList().addTask(newTask);
         dependencyRegistry.add(newTask);
+    }
+
+    public void addTaskContainer(TaskContainerBean newTaskContainer) {
+        getTaskList().addTaskContainer(newTaskContainer);
+        dependencyRegistry.add(newTaskContainer);
     }
 
     private void publishDependency(Dependency dependency) {

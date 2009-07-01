@@ -18,6 +18,7 @@ import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
+import org.zkoss.ganttz.util.TaskContainerBean;
 import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.zoom.ZoomLevelChangedListener;
@@ -77,6 +78,10 @@ public class TaskList extends XulElement implements AfterCompose {
 
     public void addTask(TaskBean newTask) {
         addTask(Task.asTask(newTask), true);
+    }
+
+    public void addTaskContainer(TaskContainerBean newTaskContainer) {
+        addTask(TaskContainer.asTask(newTaskContainer), true);
     }
 
     public synchronized void addTask(final Task task, boolean relocate) {

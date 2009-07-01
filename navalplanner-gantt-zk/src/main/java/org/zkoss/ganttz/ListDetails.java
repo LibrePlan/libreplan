@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.util.TaskBean;
+import org.zkoss.ganttz.util.TaskContainerBean;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
@@ -54,6 +55,16 @@ public class ListDetails extends HtmlMacroComponent {
         TaskDetail newDetail = addTask(newTask);
         newDetail.receiveFocus();
         getPlanner().addTask(newTask);
+    }
+
+    public void addTaskContainer() {
+        TaskContainerBean newTask = new TaskContainerBean();
+        newTask.setName("Novo Contedor de Tarefas");
+        newTask.setBeginDate(new Date());
+        newTask.setEndDate(threeMonthsLater(newTask.getBeginDate()));
+        TaskDetail newDetail = addTask(newTask);
+        newDetail.receiveFocus();
+        getPlanner().addTaskContainer(newTask);
     }
 
     private static Date threeMonthsLater(Date now) {

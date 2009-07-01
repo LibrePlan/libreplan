@@ -1,6 +1,6 @@
 /**
  * 
- * ganttz.js
+ * task.js
  * 
  */
 
@@ -139,11 +139,12 @@ zkTask.addDependency = function(cmp) {
 };
 
 zkTask.setAttr = function(cmp, name, value) {
-    if ("name" == name) {
-        var span = YAHOO.util.Selector.query("span", cmp, true);
-        span.innerHTML = value;
-        return true;
-    }
+    // Obsolete as far as tasks will not show name inside
+//     if ("name" == name) {
+//        var span = YAHOO.util.Selector.query("span", cmp, true);
+//        span.innerHTML = value;
+//        return true;
+//    }
     return false;
 }
 
@@ -210,6 +211,9 @@ zkTask.isOverTask = function(cmp, arrow) {
 
     arrayTasks = zkTask.getElementsByAttribute(
         listtasksNode, "div", "z.type","ganttz.task.Task");
+    arrayTasks = arrayTasks.concat(
+        zkTask.getElementsByAttribute(listtasksNode, "div", "z.type",
+        "ganttz.taskcontainer.TaskContainer" ) );
 
     var xpos = zkTask.xMouse - ganttPanelNode.offsetLeft + ganttPanelNode.scrollLeft;
     var ypos = zkTask.yMouse - ganttPanelNode.offsetTop + ganttPanelNode.scrollTop

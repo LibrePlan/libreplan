@@ -51,6 +51,15 @@
     </component>
 
     <component>
+        <component-name>taskcontainer</component-name>
+        <component-class>org.zkoss.ganttz.TaskContainer</component-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>~./ganttz/taskcontainer.dsp</mold-uri>
+        </mold>
+    </component>
+
+    <component>
         <component-name>tasklist</component-name>
         <component-class>org.zkoss.ganttz.TaskList</component-class>
         <mold>
