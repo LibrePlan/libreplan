@@ -21,8 +21,6 @@
     <hbox>
         <button image="/zkau/web/ganttz/img/zoom_in.gif" forward="onIncrease"/>
         <button image="/zkau/web/ganttz/img/zoom_out.gif" forward="onDecrease"/>
-        <label value="Detail level:"/>
-        <label id="mcdetaillevel" value="${c:l(arg.detailLevel)}"/>
     </hbox>
 
 <div>

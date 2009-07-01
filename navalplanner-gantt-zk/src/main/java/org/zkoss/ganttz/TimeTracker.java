@@ -18,7 +18,6 @@ import org.zkoss.ganttz.util.zoom.ZoomLevelChangedListener;
 import org.zkoss.ganttz.util.zoom.TimeTrackerState.DetailItem;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.HtmlMacroComponent;
-import org.zkoss.zul.Label;
 
 /**
  * @author Javier Moran Rua <jmoran@igalia.com>
@@ -109,8 +108,6 @@ public class TimeTracker extends HtmlMacroComponent {
         datesMapper = null;
         detailsFirstLevelCached = null;
         detailsSecondLevelCached = null;
-        final Label lb = (Label) getFellow("mcdetaillevel");
-        lb.setValue(getDetailLevel().toString());
         recreate();
         fireZoomChanged(d);
     }
