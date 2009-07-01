@@ -13,7 +13,8 @@ public enum ZoomLevel {
     DETAIL_ONE(DetailOneTimeTrackerState.INSTANCE), DETAIL_TWO(
             DetailTwoTimeTrackerState.INSTANCE), DETAIL_THREE(
             DetailThreeTimeTrackerState.INSTANCE), DETAIL_FOUR(
-            DetailTwoTimeTrackerState.INSTANCE);
+            DetailFourTimeTrackerState.INSTANCE), DETAIL_FIVE(
+            DetailFiveTimeTrackerState.INSTANCE);
 
     private final TimeTrackerState state;
 
