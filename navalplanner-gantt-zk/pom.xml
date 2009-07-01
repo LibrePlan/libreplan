@@ -13,6 +13,10 @@
     <name>Naval Planner ZK Components Module</name>
 
     <dependencies>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
         <!-- Commons Logging -->
         <dependency>
             <groupId>commons-logging</groupId>
