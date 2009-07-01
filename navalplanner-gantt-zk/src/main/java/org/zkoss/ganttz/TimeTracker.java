@@ -27,8 +27,8 @@ import org.zkoss.zul.Label;
 public class TimeTracker extends HtmlMacroComponent {
 
     private static Interval getTestInterval() {
-        return new Interval(TimeTrackerState.year(2008), TimeTrackerState
-                .year(2019));
+        return new Interval(TimeTrackerState.year(2009), TimeTrackerState
+                .year(2012));
     }
 
     private AbstractComponent fakeRow;

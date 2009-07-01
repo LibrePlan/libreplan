@@ -5,17 +5,14 @@
 
 package org.zkoss.ganttz.util.zoom;
 
-
 /**
- *
  * @author Francisco Javier Moran Rúa
- *
  */
 public enum ZoomLevel {
 
     DETAIL_ONE(DetailOneTimeTrackerState.INSTANCE), DETAIL_TWO(
             DetailTwoTimeTrackerState.INSTANCE), DETAIL_THREE(
-            DetailTwoTimeTrackerState.INSTANCE), DETAIL_FOUR(
+            DetailThreeTimeTrackerState.INSTANCE), DETAIL_FOUR(
             DetailTwoTimeTrackerState.INSTANCE);
 
     private final TimeTrackerState state;
@@ -27,7 +24,6 @@ public enum ZoomLevel {
     }
 
     /**
-     *
      * @return if there is no next, returns <code>this</code>. Otherwise returns
      *         the next one.
      */
@@ -40,7 +36,6 @@ public enum ZoomLevel {
     }
 
     /**
-     *
      * @return if there is no previous, returns <code>this</code>. Otherwise
      *         returns the previous one.
      */

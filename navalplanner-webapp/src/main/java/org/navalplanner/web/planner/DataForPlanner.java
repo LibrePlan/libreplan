@@ -36,7 +36,7 @@ public class DataForPlanner {
     private DependencyRegistry getModelWith(int tasksToCreate) {
         DependencyRegistry dependencyRegistry = new DependencyRegistry();
         Date now = new Date();
-        Date end = threeMonthsLater(now);
+        Date end = twoMonthsLater(now);
         TaskBean first = null;
         TaskBean second = null;
         for (int i = 0; i < tasksToCreate; i++) {
@@ -55,11 +55,10 @@ public class DataForPlanner {
         return dependencyRegistry;
     }
 
-    private static Date threeMonthsLater(Date now) {
+    private static Date twoMonthsLater(Date now) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
-        calendar.add(Calendar.MONTH, 3);
+        calendar.add(Calendar.MONTH, 2);
         return calendar.getTime();
     }
-
 }
