@@ -86,12 +86,6 @@ public class ListDetails extends HtmlMacroComponent {
     private TaskDetail addTask(TaskBean taskBean) {
         TaskDetail taskDetail = TaskDetail.create(taskBean);
         getInsertionPoint().appendChild(taskDetail);
-        if (taskBean instanceof TaskContainerBean) {
-            TaskContainerBean container = (TaskContainerBean) taskBean;
-            for (TaskBean t : container.getTasks()) {
-                addTask(t);
-            }
-        }
         taskDetail.afterCompose();
         return taskDetail;
     }

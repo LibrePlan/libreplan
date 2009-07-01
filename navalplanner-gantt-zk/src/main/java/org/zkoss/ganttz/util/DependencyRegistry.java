@@ -25,10 +25,10 @@ public class DependencyRegistry {
     private final DirectedGraph<TaskBean, DependencyBean> graph = new SimpleDirectedGraph<TaskBean, DependencyBean>(
             DependencyBean.class);
 
-    private Map<TaskBean, RulesEnforcer> rulesEnforcersByTask = new HashMap<TaskBean, RulesEnforcer>();
+    private Map<TaskBean, DependencyRulesEnforcer> rulesEnforcersByTask = new HashMap<TaskBean, DependencyRulesEnforcer>();
 
-    private List<RulesEnforcer> getOutgoing(TaskBean task) {
-        ArrayList<RulesEnforcer> result = new ArrayList<RulesEnforcer>();
+    private List<DependencyRulesEnforcer> getOutgoing(TaskBean task) {
+        ArrayList<DependencyRulesEnforcer> result = new ArrayList<DependencyRulesEnforcer>();
         for (DependencyBean dependencyBean : graph.outgoingEdgesOf(task)) {
             result.add(rulesEnforcersByTask
                     .get(dependencyBean.getDestination()));
@@ -36,10 +36,36 @@ public class DependencyRegistry {
         return result;
     }
 
-    private class RulesEnforcer {
+    private class ParentShrinkingEnforcer {
+
+        private final TaskContainerBean container;
+
+        private ParentShrinkingEnforcer(final TaskContainerBean container) {
+            if (container == null)
+                throw new IllegalArgumentException("container cannot be null");
+            this.container = container;
+            for (TaskBean subtask : this.container.getTasks()) {
+                subtask.addPropertyChangeListener(new PropertyChangeListener() {
+
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        Date newBeginDate = container
+                                .getSmallestBeginDateFromChildren();
+                        container.setBeginDate(newBeginDate);
+                        Date newEndDate = container
+                                .getBiggestDateFromChildren();
+                        container.setEndDate(newEndDate);
+                    }
+                });
+            }
+        }
+
+    }
+
+    private class DependencyRulesEnforcer {
         private final TaskBean task;
 
-        private RulesEnforcer(TaskBean task) {
+        private DependencyRulesEnforcer(TaskBean task) {
             if (task == null)
                 throw new IllegalArgumentException("task cannot be null");
             this.task = task;
@@ -47,8 +73,8 @@ public class DependencyRegistry {
 
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    RulesEnforcer.this.update();
-                    updateOutgoing(RulesEnforcer.this.task);
+                    DependencyRulesEnforcer.this.update();
+                    updateOutgoing(DependencyRulesEnforcer.this.task);
                 }
             });
         }
@@ -69,16 +95,18 @@ public class DependencyRegistry {
     }
 
     public void applyAllRestrictions() {
-        for (RulesEnforcer rulesEnforcer : rulesEnforcersByTask.values()) {
+        for (DependencyRulesEnforcer rulesEnforcer : rulesEnforcersByTask
+                .values()) {
             rulesEnforcer.update();
         }
     }
 
     public void add(TaskBean task) {
         graph.addVertex(task);
-        rulesEnforcersByTask.put(task, new RulesEnforcer(task));
+        rulesEnforcersByTask.put(task, new DependencyRulesEnforcer(task));
         if (task instanceof TaskContainerBean) {
             TaskContainerBean container = (TaskContainerBean) task;
+            new ParentShrinkingEnforcer(container);
             for (TaskBean child : container.getTasks()) {
                 add(child);
                 add(new DependencyBean(child, container,
@@ -90,7 +118,7 @@ public class DependencyRegistry {
     }
 
     public void remove(TaskBean task) {
-        List<RulesEnforcer> outgoing = getOutgoing(task);
+        List<DependencyRulesEnforcer> outgoing = getOutgoing(task);
         graph.removeVertex(task);
         rulesEnforcersByTask.remove(task);
         update(outgoing);
@@ -100,8 +128,8 @@ public class DependencyRegistry {
         update(getOutgoing(task));
     }
 
-    private void update(List<RulesEnforcer> outgoing) {
-        for (RulesEnforcer rulesEnforcer : outgoing) {
+    private void update(List<DependencyRulesEnforcer> outgoing) {
+        for (DependencyRulesEnforcer rulesEnforcer : outgoing) {
             rulesEnforcer.update();
         }
     }
@@ -119,7 +147,7 @@ public class DependencyRegistry {
         getEnforcer(destination).update();
     }
 
-    private RulesEnforcer getEnforcer(TaskBean destination) {
+    private DependencyRulesEnforcer getEnforcer(TaskBean destination) {
         return rulesEnforcersByTask.get(destination);
     }
 
