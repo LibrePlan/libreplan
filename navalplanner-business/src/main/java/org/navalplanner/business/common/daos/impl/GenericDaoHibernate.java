@@ -85,7 +85,7 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
 
         /* Get id and version from entity. */
         Serializable id;
-        long versionValueInMemory;
+        Long versionValueInMemory;
 
         try {
 
@@ -98,6 +98,10 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
 
             Method getVersionMethod = entityClass.getMethod("getVersion");
             versionValueInMemory = (Long) getVersionMethod.invoke(entity);
+
+            if (versionValueInMemory == null) {
+                return;
+            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -116,7 +120,7 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
                 return;
             }
 
-            if (versionValueInMemory != versionValueInDB) {
+            if (!versionValueInMemory.equals(versionValueInDB)) {
                 throw new StaleObjectStateException(entityClass.getName(), id);
             }
 

@@ -46,10 +46,10 @@ public interface IGenericDao <E, PK extends Serializable>{
      * <br/>
      * If the check is not passed,
      * <code>org.springframework.dao.OptimisticLockingFailureException</code>
-     * is thrown. If the key of the entity is <code>null</code> or the entity
-     * does not exist in database, the check is considered to be successful.
-     * This lets client code to treat creation and modification of instances in
-     * a unified way.
+     * is thrown. If the key or the version of the entity is <code>null</code>,
+     * or the entity does not exist in database, the check is considered to be
+     * successful. This lets client code to treat creation and modification of
+     * instances in a unified way.
      */
     public void checkVersion(E entity);
 
