@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
@@ -22,17 +21,32 @@ public class HoursGroup implements Cloneable {
     @NotNull
     private Integer workingHours = 0;
 
-    private BigDecimal percentage;
+    private BigDecimal percentage = new BigDecimal(0).setScale(2);
 
-    public enum HoursPolicies {
-        NO_FIXED, FIXED_HOURS, FIXED_PERCENTAGE
-    };
-
-    private HoursPolicies hoursPolicy = HoursPolicies.NO_FIXED;
+    private Boolean fixedPercentage = false;
 
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
-    public void setWorkingHours(Integer workingHours) {
+    @NotNull
+    private OrderLine parentOrderLine;
+
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    public HoursGroup() {
+    }
+
+    public HoursGroup(OrderLine parentOrderLine) {
+        this.parentOrderLine = parentOrderLine;
+    }
+
+    public void setWorkingHours(Integer workingHours)
+            throws IllegalArgumentException {
+        if (workingHours < 0) {
+            throw new IllegalArgumentException(
+                    "Working hours shouldn't be neagtive");
+        }
+
         this.workingHours = workingHours;
     }
 
@@ -40,20 +54,29 @@ public class HoursGroup implements Cloneable {
         return workingHours;
     }
 
-    public void setPercentage(BigDecimal percentage) {
+    public void setPercentage(BigDecimal percentage)
+            throws IllegalArgumentException {
+        BigDecimal oldPercentage = this.percentage;
+
         this.percentage = percentage;
+
+        if (!parentOrderLine.isPercentageValid()) {
+            this.percentage = oldPercentage;
+            throw new IllegalArgumentException(
+                    "Total percentage should be less than 100%");
+        }
     }
 
     public BigDecimal getPercentage() {
         return percentage;
     }
 
-    public void setHoursPolicy(HoursPolicies hoursPolicy) {
-        this.hoursPolicy = hoursPolicy;
+    public void setFixedPercentage(Boolean fixedPercentage) {
+        this.fixedPercentage = fixedPercentage;
     }
 
-    public HoursPolicies getHoursPolicy() {
-        return hoursPolicy;
+    public Boolean isFixedPercentage() {
+        return this.fixedPercentage;
     }
 
     public void setCriterions(Set<Criterion> criterions) {
@@ -115,14 +138,23 @@ public class HoursGroup implements Cloneable {
         criterions.size();
     }
 
+    public void setParentOrderLine(OrderLine parentOrderLine) {
+        this.parentOrderLine = parentOrderLine;
+    }
+
+    public OrderLine getParentOrderLine() {
+        return parentOrderLine;
+    }
+
     public void makeTransientAgain() {
         // FIXME Review reattachment
         id = null;
         version = null;
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+    public boolean isTransient() {
+     // FIXME Review reattachment
+        return id == null;
     }
+
 }

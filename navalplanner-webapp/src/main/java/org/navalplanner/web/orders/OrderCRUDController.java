@@ -2,6 +2,7 @@ package org.navalplanner.web.orders;
 
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
@@ -16,9 +17,13 @@ import org.zkoss.zul.api.Window;
 
 /**
  * Controller for CRUD actions <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class OrderCRUDController extends GenericForwardComposer {
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(OrderCRUDController.class);
 
     private IOrderModel orderModel;
 
@@ -113,8 +118,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderModel.remove(order);
         hideConfirmingWindow();
         Util.reloadBindings(listWindow);
-        messagesForUser.showMessage(Level.INFO, "removed "
-                + order.getName());
+        messagesForUser.showMessage(Level.INFO, "removed " + order.getName());
     }
 
     public void goToCreateForm() {
@@ -134,17 +138,17 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderElementController.doAfterCompose(comp
                 .getFellow("editOrderElementPopup"));
 
-        setupOrderElementTreeController(comp, "editWindow", orderElementController);
-        setupOrderElementTreeController(comp, "createWindow", orderElementController);
+        setupOrderElementTreeController(comp, "editWindow",
+                orderElementController);
+        setupOrderElementTreeController(comp, "createWindow",
+                orderElementController);
     }
 
     private void setupOrderElementTreeController(Component comp, String window,
-            OrderElementController orderElementController)
-            throws Exception {
+            OrderElementController orderElementController) throws Exception {
         OrderElementTreeController controller = new OrderElementTreeController(
                 orderModel, orderElementController);
-        controller
-                .doAfterCompose(comp.getFellow(window).getFellow(
+        controller.doAfterCompose(comp.getFellow(window).getFellow(
                 "orderElementTree"));
     }
 

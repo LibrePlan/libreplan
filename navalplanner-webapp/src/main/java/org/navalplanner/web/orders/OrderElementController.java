@@ -11,7 +11,6 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
-import org.navalplanner.business.orders.entities.HoursGroup.HoursPolicies;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.web.common.Util;
@@ -21,6 +20,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
@@ -30,6 +30,7 @@ import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Popup;
+import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Listhead;
 
 /**
@@ -39,17 +40,15 @@ import org.zkoss.zul.api.Listhead;
  */
 public class OrderElementController extends GenericForwardComposer {
 
+    /**
+     * {@link IOrderElementModel} with the data needed for this controller
+     */
     private IOrderElementModel model;
 
     /**
      * {@link Popup} where {@link OrderElement} edition form is showed
      */
     private Popup popup;
-
-    /**
-     * Model of the {@link HoursGroup} list
-     */
-    private List<HoursGroup> hoursGroupsModel;
 
     /**
      * {@link Listitem} for every {@link HoursGroup}
@@ -61,6 +60,9 @@ public class OrderElementController extends GenericForwardComposer {
      */
     private Listbox hoursGroupsListbox;
 
+    /**
+     * Set of selected {@link ICriterionType} just used in the controller
+     */
     private Set<ICriterionType<?>> selectedCriterionTypes = new HashSet<ICriterionType<?>>();
 
     public OrderElement getOrderElement() {
@@ -71,14 +73,17 @@ public class OrderElementController extends GenericForwardComposer {
         return model.getOrderElement();
     }
 
-    public List<HoursGroup> getHoursGroupsModel() {
-        return hoursGroupsModel;
-    }
-
     public HoursGroupListitemRender getRenderer() {
         return renderer;
     }
 
+    public List<HoursGroup> getHoursGroups() {
+        if (model == null) {
+            return new ArrayList<HoursGroup>();
+        }
+
+        return model.getOrderElement().getHoursGroups();
+    }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -100,8 +105,6 @@ public class OrderElementController extends GenericForwardComposer {
         this.model = model;
 
         final OrderElement orderElement = model.getOrderElement();
-
-        this.hoursGroupsModel = orderElement.getHoursGroups();
 
         // If is a container
         if (orderElement instanceof OrderLineGroup) {
@@ -175,13 +178,12 @@ public class OrderElementController extends GenericForwardComposer {
      * The {@link OrderElement} should be a {@link OrderLine}
      */
     public void addHoursGroup() {
-        HoursGroup hoursGroup = new HoursGroup();
+        OrderLine orderLine = (OrderLine) getOrderElement();
 
-        OrderElement orderElement = getOrderElement();
+        HoursGroup hoursGroup = new HoursGroup(orderLine);
 
-        ((OrderLine) orderElement).addHoursGroup(hoursGroup);
+        orderLine.addHoursGroup(hoursGroup);
 
-        this.hoursGroupsModel = orderElement.getHoursGroups();
         Util.reloadBindings(popup);
     }
 
@@ -201,10 +203,12 @@ public class OrderElementController extends GenericForwardComposer {
                     .getValue());
         }
 
-        this.hoursGroupsModel = orderElement.getHoursGroups();
         Util.reloadBindings(popup);
     }
 
+    /**
+     * Toggle visibility of the selectCriterions {@link Vbox}
+     */
     public void manageCriterions() {
         Component selectCriterions = popup.getFellow("selectCriterions");
 
@@ -217,6 +221,11 @@ public class OrderElementController extends GenericForwardComposer {
         Util.reloadBindings(selectCriterions);
     }
 
+    /**
+     * Gets the list of possible {@link ICriterionType}.
+     *
+     * @return A {@link List} of {@link ICriterionType}
+     */
     public List<ICriterionType<?>> getCriterionTypes() {
         if (model == null) {
             return new ArrayList<ICriterionType<?>>();
@@ -227,11 +236,20 @@ public class OrderElementController extends GenericForwardComposer {
         return list;
     }
 
+    /**
+     * Returns the selected {@link ICriterionType}.
+     *
+     * @return A {@link Set} of {@link ICriterionType}
+     */
     public Set<ICriterionType<?>> getSelectedCriterionTypes() {
         return selectedCriterionTypes;
     }
 
-    public void reloadSelectedCriterionTypes() {
+    /**
+     * Reloads the selected {@link ICriterionType}, depending on the
+     * {@link Criterion} related with the {@link HoursGroup}
+     */
+    private void reloadSelectedCriterionTypes() {
         OrderElement orderElement = getOrderElement();
 
         if (orderElement == null) {
@@ -251,6 +269,14 @@ public class OrderElementController extends GenericForwardComposer {
         }
     }
 
+    /**
+     * Adds the selected {@link ICriterionType} to the selectedCriterionTypes
+     * attribute.
+     *
+     * @param selectedItems
+     *            {@link Set} of {@link Listitem} with the selected
+     *            {@link ICriterionType}
+     */
     public void assignCriterions(Set<Listitem> selectedItems) {
         for (Listitem listitem : selectedItems) {
             ICriterionType<?> value = (ICriterionType<?>) listitem.getValue();
@@ -259,6 +285,14 @@ public class OrderElementController extends GenericForwardComposer {
         Util.reloadBindings(popup);
     }
 
+    /**
+     * Removes the selected {@link ICriterionType} from the
+     * selectedCriterionTypes attribute.
+     *
+     * @param selectedItems
+     *            {@link Set} of {@link Listitem} with the selected
+     *            {@link ICriterionType}
+     */
     public void unassignCriterions(Set<Listitem> selectedItems) {
         for (Listitem listitem : selectedItems) {
             ICriterionType<?> value = (ICriterionType<?>) listitem.getValue();
@@ -268,6 +302,13 @@ public class OrderElementController extends GenericForwardComposer {
         Util.reloadBindings(popup);
     }
 
+    /**
+     * Removes the {@link Criterion} which matches with this type for all the
+     * {@link HoursGroup}
+     *
+     * @param type
+     *            The type of the {@link Criterion} that should be removed
+     */
     private void removeCriterionsFromHoursGroup(ICriterionType<?> type) {
         OrderElement orderElement = getOrderElement();
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
@@ -294,20 +335,8 @@ public class OrderElementController extends GenericForwardComposer {
             cellWorkingHours.setParent(item);
             Listcell cellPercentage = new Listcell();
             cellPercentage.setParent(item);
-            Listcell cellHoursPolicy = new Listcell();
-            cellHoursPolicy.setParent(item);
-
-            // Generate hours policy Listbox
-            final Listbox hoursPolicyListBox = new Listbox();
-            hoursPolicyListBox.setRows(1);
-            hoursPolicyListBox.setMold("select");
-
-            for (HoursPolicies hourPolicy : HoursPolicies.values()) {
-                Listitem listitem = new Listitem();
-                listitem.setValue(hourPolicy);
-                listitem.setLabel(hourPolicy.toString());
-                listitem.setParent(hoursPolicyListBox);
-            }
+            Listcell cellFixedPercentage = new Listcell();
+            cellFixedPercentage.setParent(item);
 
             Decimalbox decimalBox = new Decimalbox();
             decimalBox.setScale(2);
@@ -336,15 +365,19 @@ public class OrderElementController extends GenericForwardComposer {
                             }
                         }));
 
-                // Hours policy
-                hoursPolicyListBox.setSelectedIndex(hoursGroup.getHoursPolicy()
-                        .ordinal());
-                hoursPolicyListBox.setDisabled(true);
-                cellHoursPolicy.appendChild(hoursPolicyListBox);
+                // Fixed percentage
+                cellFixedPercentage.appendChild(Util.bind(new Checkbox(),
+                        new Util.Getter<Boolean>() {
+
+                            @Override
+                            public Boolean get() {
+                                return hoursGroup.isFixedPercentage();
+                            }
+                        }));
 
             } else { // If is a leaf
 
-                final Intbox workingHours = Util.bind(new Intbox(),
+                Intbox workingHours = Util.bind(new Intbox(),
                         new Util.Getter<Integer>() {
 
                             @Override
@@ -365,13 +398,13 @@ public class OrderElementController extends GenericForwardComposer {
 
                             @Override
                             public void onEvent(Event event) throws Exception {
-                                Util.reloadBindings(popup);
                                 ((OrderLine) getOrderElement())
-                                        .recalculatePercentages();
+                                        .recalculateHoursGroups();
+                                Util.reloadBindings(popup);
                             }
                         });
 
-                final Decimalbox percentage = Util.bind(decimalBox,
+                Decimalbox percentage = Util.bind(decimalBox,
                         new Util.Getter<BigDecimal>() {
 
                             @Override
@@ -392,38 +425,45 @@ public class OrderElementController extends GenericForwardComposer {
 
                             @Override
                             public void onEvent(Event event) throws Exception {
-                                Util.reloadBindings(popup);
                                 ((OrderLine) getOrderElement())
-                                        .recalculatePercentages();
+                                        .recalculateHoursGroups();
+                                Util.reloadBindings(popup);
                             }
                         });
 
-                // Hours policy
-                hoursPolicyListBox.setSelectedIndex(hoursGroup.getHoursPolicy()
-                        .ordinal());
-                hoursPolicyListBox.addEventListener(Events.ON_SELECT,
+                // Fixed percentage
+                Checkbox fixedPercentage = Util.bind(new Checkbox(),
+                        new Util.Getter<Boolean>() {
+
+                            @Override
+                            public Boolean get() {
+                                return hoursGroup.isFixedPercentage();
+                            }
+                        }, new Util.Setter<Boolean>() {
+
+                            @Override
+                            public void set(Boolean value) {
+                                hoursGroup.setFixedPercentage(value);
+                            }
+                        });
+                fixedPercentage.addEventListener(Events.ON_CHECK,
                         new EventListener() {
 
                             @Override
                             public void onEvent(Event event) throws Exception {
-                                HoursPolicies policy = (HoursPolicies) hoursPolicyListBox
-                                        .getSelectedItem().getValue();
-                                hoursGroup.setHoursPolicy(policy);
-
-                                // Disable components depending on the policy
-                                disableComponents(workingHours, percentage,
-                                        policy);
+                                ((OrderLine) getOrderElement())
+                                        .recalculateHoursGroups();
+                                Util.reloadBindings(popup);
                             }
                         });
 
                 // Disable components depending on the policy
                 disableComponents(workingHours, percentage,
-                        (HoursPolicies) hoursPolicyListBox.getSelectedItem()
-                                .getValue());
+                        fixedPercentage.isChecked());
 
                 cellWorkingHours.appendChild(workingHours);
                 cellPercentage.appendChild(percentage);
-                cellHoursPolicy.appendChild(hoursPolicyListBox);
+                cellFixedPercentage.appendChild(fixedPercentage);
 
                 // For each ICriterionType selected
                 for (ICriterionType<?> criterionType : getSelectedCriterionTypes()) {
@@ -500,28 +540,22 @@ public class OrderElementController extends GenericForwardComposer {
          *            An {@link Intbox} for the workingHours
          * @param percentage
          *            A {@link Decimalbox} for the percentage
-         * @param policy
-         *            A {@link HoursPolicies} value
+         * @param fixedPercentage
+         *            If FIXED_PERCENTAGE policy is set or not
          */
         public void disableComponents(Intbox workingHours,
-                Decimalbox percentage, HoursPolicies policy) {
+                Decimalbox percentage, Boolean fixedPercentage) {
 
-            switch (policy) {
-            case FIXED_PERCENTAGE:
+            if (fixedPercentage) {
                 // Working hours not editable
                 workingHours.setDisabled(true);
                 // Percentage editable
                 percentage.setDisabled(false);
-                break;
-
-            case NO_FIXED:
-            case FIXED_HOURS:
-            default:
+            } else {
                 // Working hours editable
                 workingHours.setDisabled(false);
                 // Percentage not editable
                 percentage.setDisabled(true);
-                break;
             }
         }
     }

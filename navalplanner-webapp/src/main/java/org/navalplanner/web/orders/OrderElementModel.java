@@ -3,8 +3,10 @@ package org.navalplanner.web.orders;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.navalplanner.business.orders.daos.IOrderElementDao;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -43,10 +45,15 @@ public class OrderElementModel implements IOrderElementModel {
     public void setCurrent(OrderElement orderElement) {
         // FIXME Review reattachment
         boolean wasTransient = orderElement.isTransient();
+        Set<HoursGroup> transientHoursGroups = orderElement
+                .getTransientHoursGroups();
         orderElementDao.save(orderElement);
         orderElement.forceLoadHourGroupsCriterions();
         if (wasTransient) {
             orderElement.makeTransientAgain();
+        }
+        for (HoursGroup hoursGroup : transientHoursGroups) {
+            hoursGroup.makeTransientAgain();
         }
         this.orderElement = orderElement;
     }

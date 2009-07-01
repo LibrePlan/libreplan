@@ -171,7 +171,7 @@ public class OrderServiceTest {
         leaf.setName("leaf");
         container.add(leaf);
         order.add(container);
-        HoursGroup hoursGroup = new HoursGroup();
+        HoursGroup hoursGroup = new HoursGroup(leaf);
         hoursGroup.setWorkingHours(3);
         leaf.addHoursGroup(hoursGroup);
         orderService.save(order);
@@ -206,17 +206,17 @@ public class OrderServiceTest {
     public void testManyToManyHoursGroupCriterionMapping() throws Exception {
         final Order order = createValidOrder();
 
-        OrderElement orderElement = new OrderLine();
-        orderElement.setName("Order element");
-        order.add(orderElement);
+        OrderLine orderLine = new OrderLine();
+        orderLine.setName("Order element");
+        order.add(orderLine);
 
-        HoursGroup hoursGroup = new HoursGroup();
+        HoursGroup hoursGroup = new HoursGroup(orderLine);
         hoursGroup.setWorkingHours(10);
-        HoursGroup hoursGroup2 = new HoursGroup();
+        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
         hoursGroup2.setWorkingHours(5);
 
-        ((OrderLine) orderElement).addHoursGroup(hoursGroup);
-        ((OrderLine) orderElement).addHoursGroup(hoursGroup2);
+        orderLine.addHoursGroup(hoursGroup);
+        orderLine.addHoursGroup(hoursGroup2);
 
         Criterion criterion = Criterion.withNameAndType("Test"
                 + UUID.randomUUID().toString(), "test");

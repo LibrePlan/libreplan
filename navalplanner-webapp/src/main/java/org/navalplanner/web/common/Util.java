@@ -6,6 +6,7 @@ import java.util.Date;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zkplus.databind.DataBinder;
 import org.zkoss.zul.Checkbox;
@@ -288,7 +289,7 @@ public class Util {
     public static Checkbox bind(final Checkbox checkBox,
             final Getter<Boolean> getter, final Setter<Boolean> setter) {
         checkBox.setChecked(getter.get());
-        checkBox.addEventListener("onChange", new EventListener() {
+        checkBox.addEventListener(Events.ON_CHECK, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {

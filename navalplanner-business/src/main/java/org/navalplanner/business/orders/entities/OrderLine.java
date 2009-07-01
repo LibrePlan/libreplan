@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.navalplanner.business.orders.entities.HoursGroup.HoursPolicies;
-
 public class OrderLine extends OrderElement {
 
     private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
@@ -44,13 +42,14 @@ public class OrderLine extends OrderElement {
     }
 
     public void addHoursGroup(HoursGroup hoursGroup) {
+        hoursGroup.setParentOrderLine(this);
         hoursGroups.add(hoursGroup);
-        recalculatePercentages(hoursGroups);
+        recalculateHoursGroups();
     }
 
     public void deleteHoursGroup(HoursGroup hoursGroup) {
         hoursGroups.remove(hoursGroup);
-        recalculatePercentages(hoursGroups);
+        recalculateHoursGroups();
     }
 
     /**
@@ -71,7 +70,7 @@ public class OrderLine extends OrderElement {
         }
 
         if (hoursGroups.isEmpty()) {
-            HoursGroup hoursGroup = new HoursGroup();
+            HoursGroup hoursGroup = new HoursGroup(this);
             hoursGroup.setWorkingHours(workHours);
             hoursGroup.setPercentage((new BigDecimal(1).setScale(2)));
 
@@ -94,8 +93,6 @@ public class OrderLine extends OrderElement {
      *
      * This method takes into account the different {@link HoursGroup} policies:
      *
-     * {@link HoursGroup} with FIXED_HOURS policy don't change.
-     *
      * If policy is FIXED_PERCENTAGE the new value is calculated for each
      * {@link HoursGroup} with this policy. Using round down in order to avoid
      * problems.
@@ -114,27 +111,16 @@ public class OrderLine extends OrderElement {
         Set<HoursGroup> newHoursGroups = new HashSet<HoursGroup>();
 
         // Divide HourGroup depending on policy
-        Set<HoursGroup> fixedHoursGroups = new HashSet<HoursGroup>();
         Set<HoursGroup> fixedPercentageGroups = new HashSet<HoursGroup>();
         Set<HoursGroup> noFixedGroups = new HashSet<HoursGroup>();
 
         for (HoursGroup hoursGroup : hoursGroups) {
-            switch (hoursGroup.getHoursPolicy()) {
-            case FIXED_HOURS:
-                fixedHoursGroups.add(hoursGroup);
-                break;
-            case FIXED_PERCENTAGE:
+            if (hoursGroup.isFixedPercentage()) {
                 fixedPercentageGroups.add(hoursGroup);
-                break;
-            case NO_FIXED:
-            default:
+            } else {
                 noFixedGroups.add(hoursGroup);
-                break;
             }
         }
-
-        // All the HourGroup with FIXED_HOURS will be kept without changes
-        newHoursGroups.addAll(fixedHoursGroups);
 
         // For every HourGroup with FIXED_PERCENTAGE, workingHours will be
         // calculated
@@ -173,20 +159,21 @@ public class OrderLine extends OrderElement {
         newTotal = calculateTotalHours(newHoursGroups);
         if (newTotal.compareTo(workHours) < 0) {
             // Add a new HourGroup with the remaining hours
-            HoursGroup hoursGroup = new HoursGroup();
+            HoursGroup hoursGroup = new HoursGroup(this);
             hoursGroup.setWorkingHours(workHours - newTotal);
+
             newHoursGroups.add(hoursGroup);
         }
 
-        // Re-calculate percentages
-        recalculatePercentages(newHoursGroups);
-
         // Set the attribute with the new hours group calculated
         hoursGroups = newHoursGroups;
+
+        // Re-calculate percentages
+        recalculateHoursGroups();
     }
 
     /**
-     * Check if the desired total number of hours is valid taking into account
+     * Checks if the desired total number of hours is valid taking into account
      * {@link HoursGroup} policy restrictions.
      *
      * @param total
@@ -198,22 +185,39 @@ public class OrderLine extends OrderElement {
         Integer newTotal = 0;
 
         for (HoursGroup hoursGroup : hoursGroups) {
-            switch (hoursGroup.getHoursPolicy()) {
-            case FIXED_HOURS:
-                newTotal += hoursGroup.getWorkingHours();
-                break;
-            case FIXED_PERCENTAGE:
+            if (hoursGroup.isFixedPercentage()) {
                 newTotal += hoursGroup.getPercentage().multiply(
                         new BigDecimal(total).setScale(2)).toBigInteger()
                         .intValue();
-                break;
-            case NO_FIXED:
-            default:
-                break;
             }
         }
 
         if (newTotal.compareTo(total) > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if the percentage is or not valid. That means, if the pertentage
+     * of all {@link HoursGroup} with FIXED_PERCENTAGE isn't more than 100%.
+     *
+     * This method is called from setPercentage at {@link HoursGroup} class.
+     *
+     * @return true if the percentage is valid
+     */
+    public boolean isPercentageValid() {
+
+        BigDecimal newPercentage = new BigDecimal(0).setScale(2);
+
+        for (HoursGroup hoursGroup : hoursGroups) {
+            if (hoursGroup.isFixedPercentage()) {
+                newPercentage = newPercentage.add(hoursGroup.getPercentage());
+            }
+        }
+
+        if (newPercentage.compareTo(new BigDecimal(1).setScale(2)) > 0) {
             return false;
         }
 
@@ -248,7 +252,7 @@ public class OrderLine extends OrderElement {
     private Integer calculateTotalHoursNoFixed(Set<HoursGroup> hoursGroups) {
         Integer result = 0;
         for (HoursGroup hoursGroup : hoursGroups) {
-            if (hoursGroup.getHoursPolicy() == HoursPolicies.NO_FIXED) {
+            if (!hoursGroup.isFixedPercentage()) {
                 result += hoursGroup.getWorkingHours();
             }
         }
@@ -256,18 +260,55 @@ public class OrderLine extends OrderElement {
     }
 
     /**
-     * Re-calculates the percentages in a {@link HoursGroup} set, without modify
-     * the {@link HoursGroup} with policy FIXED_PERCENTAGE.
+     * Re-calculates the working hours and percentages in the {@link HoursGroup}
+     * set of the current {@link OrderLine}, taking into account the policy of
+     * each {@link HoursGroup}.
      *
-     * @param hoursGroups
-     *            A {@link HoursGroup} set
      */
-    private void recalculatePercentages(Set<HoursGroup> hoursGroups) {
+    public void recalculateHoursGroups() {
         Integer total = calculateTotalHours(hoursGroups);
         BigDecimal totalBigDecimal = new BigDecimal(total).setScale(2);
 
+        // For each HoursGroup with FIXED_PERCENTAGE, the workingHours are
+        // calculated
         for (HoursGroup hoursGroup : hoursGroups) {
-            if (hoursGroup.getHoursPolicy() != HoursPolicies.FIXED_PERCENTAGE) {
+            if (hoursGroup.isFixedPercentage()) {
+                Integer workingHours = hoursGroup.getPercentage().multiply(
+                        totalBigDecimal).toBigInteger().intValue();
+
+                hoursGroup.setWorkingHours(workingHours);
+            }
+        }
+
+        Integer newTotal = calculateTotalHours(hoursGroups);
+        // If the total was modified
+        if (!newTotal.equals(total)) {
+            Integer totalNoFixed = calculateTotalHoursNoFixed(hoursGroups);
+
+            // For each HoursGroup without FIXED_PERCENTAGE, the hours are
+            // proportionally shared
+            for (HoursGroup hoursGroup : hoursGroups) {
+                if (!hoursGroup.isFixedPercentage()) {
+                    Integer hours = hoursGroup.getWorkingHours();
+                    Integer newHours = (int) (((float) hours / totalNoFixed) * (total - (newTotal - totalNoFixed)));
+                    hoursGroup.setWorkingHours(newHours);
+                }
+            }
+        }
+
+        newTotal = calculateTotalHours(hoursGroups);
+        // If there's still some remaining hours
+        if (newTotal.compareTo(total) < 0) {
+            // Add a new HourGroup with the remaining hours
+            HoursGroup hoursGroup = new HoursGroup(this);
+            hoursGroup.setWorkingHours(total - newTotal);
+            hoursGroups.add(hoursGroup);
+        }
+
+        // Then the percentages for the HoursGroup without FIXED_PERCENTAGE are
+        // recalculated.
+        for (HoursGroup hoursGroup : hoursGroups) {
+            if (!hoursGroup.isFixedPercentage()) {
                 if (totalBigDecimal.equals(new BigDecimal(0).setScale(2))) {
                     hoursGroup.setPercentage(new BigDecimal(0).setScale(2));
                 } else {
@@ -279,16 +320,6 @@ public class OrderLine extends OrderElement {
                 }
             }
         }
-    }
-
-    /**
-     * Re-calculates the percentages in the {@link HoursGroup} set of the
-     * current {@link OrderLine}, without modify the {@link HoursGroup} with
-     * policy FIXED_PERCENTAGE.
-     *
-     */
-    public void recalculatePercentages() {
-        recalculatePercentages(hoursGroups);
     }
 
     @Override

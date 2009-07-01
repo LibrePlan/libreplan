@@ -1,7 +1,9 @@
 package org.navalplanner.business.orders.entities;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.validator.NotNull;
 
@@ -109,6 +111,19 @@ public abstract class OrderElement {
     public boolean isTransient() {
         // FIXME Review reattachment
         return id == null;
+    }
+
+    public Set<HoursGroup> getTransientHoursGroups() {
+        // FIXME Review reattachment
+        Set<HoursGroup> transientHoursGroups = new HashSet<HoursGroup>();
+
+        for (HoursGroup hoursGroup : getHoursGroups()) {
+            if (hoursGroup.isTransient()) {
+                transientHoursGroups.add(hoursGroup);
+            }
+        }
+
+        return transientHoursGroups;
     }
 
 }

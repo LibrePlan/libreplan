@@ -44,8 +44,8 @@
         <joined-subclass name="OrderLine">
             <key column="ORDERELEMENTID"></key>
 
-            <set name="hoursGroups" access="field" cascade="all">
-                <key column="PARENT_ORDER_ELEMENT" not-null="false"></key>
+            <set name="hoursGroups" access="field" cascade="all" inverse="true">
+                <key column="PARENT_ORDER_LINE" not-null="false"></key>
                 <one-to-many class="HoursGroup" />
             </set>
         </joined-subclass>
@@ -59,7 +59,7 @@
 
         <property name="workingHours" access="field" />
         <property name="percentage" access="field" />
-        <property name="hoursPolicy" access="field" />
+        <property name="fixedPercentage" access="field" />
 
         <set name="criterions" table="CriterionHoursGroup"
             access="field" inverse="false">
@@ -68,5 +68,9 @@
                 class="org.navalplanner.business.resources.entities.Criterion" />
         </set>
 
+        <many-to-one name="parentOrderLine" column="PARENT_ORDER_LINE"
+            not-null="true"/>
+
     </class>
+
 </hibernate-mapping>

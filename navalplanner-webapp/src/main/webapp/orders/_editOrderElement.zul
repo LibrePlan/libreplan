@@ -40,12 +40,12 @@
         </hbox>
 
         <listbox id="hoursGroupsListbox" multiple="true"
-            model="@{orderElementController.hoursGroupsModel}"
+            model="@{orderElementController.hoursGroups}"
             itemRenderer="@{orderElementController.renderer}">
              <listhead sizable="true">
                  <listheader label="Hours" />
                  <listheader label="%" />
-                 <listheader label="Fixed" />
+                 <listheader label="Fixed percentage" />
              </listhead>
         </listbox>
 
