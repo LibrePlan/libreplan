@@ -2,8 +2,10 @@ package org.navalplanner.web.orders;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -61,9 +63,9 @@ public class OrderElementController extends GenericForwardComposer {
     private Listbox hoursGroupsListbox;
 
     /**
-     * Set of selected {@link ICriterionType} just used in the controller
+     * List of selected {@link ICriterionType} just used in the controller
      */
-    private Set<ICriterionType<?>> selectedCriterionTypes = new HashSet<ICriterionType<?>>();
+    private Set<ICriterionType<?>> selectedCriterionTypes = new LinkedHashSet<ICriterionType<?>>();
 
     public OrderElement getOrderElement() {
         if (model == null) {
@@ -77,12 +79,72 @@ public class OrderElementController extends GenericForwardComposer {
         return renderer;
     }
 
+    /**
+     * Returns a {@link List} of {@link HoursGroup}.
+     *
+     * If the current element is an {@link OrderLine} this method just returns
+     * the {@link HoursGroup} of this {@link OrderLine}.
+     *
+     * Otherwise, this method gets all the {@link HoursGroup} of all the
+     * children {@link OrderElement}, and aggregates them if they have the same
+     * {@link Criterion}.
+     *
+     * @return The {@link HoursGroup} list of the current {@link OrderElement}
+     */
     public List<HoursGroup> getHoursGroups() {
         if (model == null) {
             return new ArrayList<HoursGroup>();
         }
 
-        return model.getOrderElement().getHoursGroups();
+        // If it's an OrderLine
+        if (model.getOrderElement() instanceof OrderLine) {
+            return model.getOrderElement().getHoursGroups();
+        } else {
+            // If it's an OrderLineGroup
+            Set<ICriterionType<?>> criterionTypes = getSelectedCriterionTypes();
+
+            // If there isn't any ICriterionType selected
+            if (criterionTypes.isEmpty()) {
+                return model.getOrderElement().getHoursGroups();
+            }
+
+            // Creates a map in order to join HoursGroup with the same
+            // Criterions.
+            // Map key will be an String with the Criterions separated by ;
+            Map<String, HoursGroup> map = new HashMap<String, HoursGroup>();
+
+            List<HoursGroup> hoursGroups = model.getOrderElement().getHoursGroups();
+
+            for (HoursGroup hoursGroup : hoursGroups) {
+                String key = "";
+                for (ICriterionType<?> criterionType : criterionTypes) {
+                    Criterion criterion = hoursGroup
+                            .getCriterionByType(criterionType);
+                    if (criterion != null) {
+                        key += criterion.getName() + ";";
+                    } else {
+                        key += ";";
+                    }
+                }
+
+                HoursGroup hoursGroupAggregation = map.get(key);
+                if (hoursGroupAggregation == null) {
+                    // This is not a real HoursGroup element, it's just an
+                    // aggregation that join HoursGroup with the same Criterions
+                    hoursGroupAggregation = new HoursGroup();
+                    hoursGroupAggregation.setWorkingHours(hoursGroup.getWorkingHours());
+                    hoursGroupAggregation.setCriterions(hoursGroup
+                            .getCriterions());
+                } else {
+                    Integer newHours = hoursGroupAggregation.getWorkingHours() + hoursGroup.getWorkingHours();
+                    hoursGroupAggregation.setWorkingHours(newHours);
+                }
+
+                map.put(key, hoursGroupAggregation);
+            }
+
+            return new ArrayList<HoursGroup>(map.values());
+        }
     }
 
     @Override
@@ -148,6 +210,12 @@ public class OrderElementController extends GenericForwardComposer {
                         }
                     });
         }
+
+        // selectCriterions Vbox is always hidden
+        reloadSelectedCriterionTypes();
+        popup.getFellow("selectCriterions").setVisible(false);
+
+        popup.getFellow("hoursGroupsListbox").invalidate();
 
         Util.reloadBindings(popup);
 
@@ -239,7 +307,7 @@ public class OrderElementController extends GenericForwardComposer {
     /**
      * Returns the selected {@link ICriterionType}.
      *
-     * @return A {@link Set} of {@link ICriterionType}
+     * @return A {@link List} of {@link ICriterionType}
      */
     public Set<ICriterionType<?>> getSelectedCriterionTypes() {
         return selectedCriterionTypes;
@@ -253,9 +321,9 @@ public class OrderElementController extends GenericForwardComposer {
         OrderElement orderElement = getOrderElement();
 
         if (orderElement == null) {
-            selectedCriterionTypes = new HashSet<ICriterionType<?>>();
+            selectedCriterionTypes = new LinkedHashSet<ICriterionType<?>>();
         } else {
-            Set<ICriterionType<?>> criterionTypes = new HashSet<ICriterionType<?>>();
+            Set<ICriterionType<?>> criterionTypes = new LinkedHashSet<ICriterionType<?>>();
 
             for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
                 Set<Criterion> criterions = hoursGroup.getCriterions();
@@ -331,12 +399,12 @@ public class OrderElementController extends GenericForwardComposer {
 
             item.setValue(hoursGroup);
 
+            Listhead header = ((Listbox) item.getParent()).getListheadApi();
+
             Listcell cellWorkingHours = new Listcell();
             cellWorkingHours.setParent(item);
             Listcell cellPercentage = new Listcell();
             cellPercentage.setParent(item);
-            Listcell cellFixedPercentage = new Listcell();
-            cellFixedPercentage.setParent(item);
 
             Decimalbox decimalBox = new Decimalbox();
             decimalBox.setScale(2);
@@ -361,19 +429,60 @@ public class OrderElementController extends GenericForwardComposer {
 
                             @Override
                             public BigDecimal get() {
-                                return hoursGroup.getPercentage();
+                                BigDecimal workingHours = new BigDecimal(hoursGroup
+                                        .getWorkingHours()).setScale(2);
+                                BigDecimal total = new BigDecimal(model
+                                        .getOrderElement()
+                                                .getWorkHours()).setScale(2);
+                                return workingHours.divide(total,
+                                        BigDecimal.ROUND_DOWN);
                             }
                         }));
 
-                // Fixed percentage
-                cellFixedPercentage.appendChild(Util.bind(new Checkbox(),
-                        new Util.Getter<Boolean>() {
+                // For each ICriterionType selected
+                for (ICriterionType<?> criterionType : getSelectedCriterionTypes()) {
+                    Listcell cellCriterion = new Listcell();
+                    cellCriterion.setParent(item);
 
-                            @Override
-                            public Boolean get() {
-                                return hoursGroup.isFixedPercentage();
-                            }
-                        }));
+                    // Add a new column on the HoursGroup table
+                    Listheader headerCriterion = new Listheader();
+                    headerCriterion.setLabel(criterionType.getName());
+                    headerCriterion.setParent(header);
+
+                    // Add a new Listbox for each ICriterionType
+                    final Listbox criterionListbox = new Listbox();
+                    criterionListbox.setRows(1);
+                    criterionListbox.setMold("select");
+                    criterionListbox.setDisabled(true);
+
+                    // Add an empty option to remove a Criterion
+                    Listitem emptyListitem = new Listitem();
+                    emptyListitem.setParent(criterionListbox);
+
+                    // Get the Criterion of the current type in the HoursGroup
+                    final Criterion criterionHoursGroup = hoursGroup
+                            .getCriterionByType(criterionType);
+
+                    // For each possible Criterion of the current type
+                    for (Criterion criterion : model
+                            .getCriterionsFor(criterionType)) {
+                        // Add the Criterion option
+                        Listitem listitem = new Listitem();
+                        listitem.setValue(criterion);
+                        listitem.setLabel(criterion.getName());
+                        listitem.setParent(criterionListbox);
+
+                        // Check if it matches with the HoursGroup criterion
+                        if ((criterionHoursGroup != null)
+                                && (criterionHoursGroup.getName()
+                                        .equals(criterion.getName()))) {
+                            // Mark as selected
+                            criterionListbox.setSelectedItem(listitem);
+                        }
+                    }
+
+                    cellCriterion.appendChild(criterionListbox);
+                }
 
             } else { // If is a leaf
 
@@ -432,6 +541,13 @@ public class OrderElementController extends GenericForwardComposer {
                         });
 
                 // Fixed percentage
+                Listcell cellFixedPercentage = new Listcell();
+                cellFixedPercentage.setParent(item);
+
+                Listheader headerFixedPercentage = new Listheader();
+                headerFixedPercentage.setLabel("Fixed percentage");
+                headerFixedPercentage.setParent(header);
+
                 Checkbox fixedPercentage = Util.bind(new Checkbox(),
                         new Util.Getter<Boolean>() {
 
@@ -471,8 +587,6 @@ public class OrderElementController extends GenericForwardComposer {
                     cellCriterion.setParent(item);
 
                     // Add a new column on the HoursGroup table
-                    Listhead header = ((Listbox) item.getParent())
-                            .getListheadApi();
                     Listheader headerCriterion = new Listheader();
                     headerCriterion.setLabel(criterionType.getName());
                     headerCriterion.setParent(header);
@@ -529,7 +643,6 @@ public class OrderElementController extends GenericForwardComposer {
                     cellCriterion.appendChild(criterionListbox);
                 }
             }
-
         }
 
         /**

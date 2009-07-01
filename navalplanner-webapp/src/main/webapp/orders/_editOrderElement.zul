@@ -45,7 +45,6 @@
              <listhead sizable="true">
                  <listheader label="Hours" />
                  <listheader label="%" />
-                 <listheader label="Fixed percentage" />
              </listhead>
         </listbox>
 
