@@ -6,9 +6,7 @@ import java.util.Date;
  * This enum tells the type of a depepdency. Each instance contanins the correct
  * behaviour for that type of dependency . <br/>
  * Created at Apr 24, 2009
- *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public enum DependencyType {
 
@@ -34,6 +32,30 @@ public enum DependencyType {
         public Date calculateStartDestinyTask(TaskBean originalTask,
                 Date current) {
             return getBigger(originalTask.getEndDate(), current);
+        }
+    },
+    START_START {
+
+        @Override
+        public Date calculateEndDestinyTask(TaskBean originTask, Date current) {
+            return current;
+        }
+
+        @Override
+        public Date calculateStartDestinyTask(TaskBean originTask, Date current) {
+            return getBigger(originTask.getBeginDate(), current);
+        }
+    },
+    END_END {
+
+        @Override
+        public Date calculateEndDestinyTask(TaskBean originTask, Date current) {
+            return getBigger(originTask.getEndDate(), current);
+        }
+
+        @Override
+        public Date calculateStartDestinyTask(TaskBean originTask, Date current) {
+            return current;
         }
     };
 
