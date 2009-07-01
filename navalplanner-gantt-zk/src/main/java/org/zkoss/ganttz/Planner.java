@@ -10,7 +10,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
-import org.zkoss.zk.au.out.AuInvoke;
 
 public class Planner extends XulElement implements AfterCompose {
 
@@ -129,7 +128,7 @@ public class Planner extends XulElement implements AfterCompose {
     }
 
     public void addTaskContainer(TaskContainerBean newTaskContainer) {
-        getTaskList().addTaskContainer(newTaskContainer);
+        getTaskList().addTask(newTaskContainer);
         dependencyRegistry.add(newTaskContainer);
     }
 

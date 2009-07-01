@@ -7,9 +7,7 @@ import java.util.Date;
  * This class represents a dependency. Contains the source and the destination.
  * It also specifies the type of the relationship. <br/>
  * Created at Apr 24, 2009
- *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public class DependencyBean {
 
@@ -53,8 +51,10 @@ public class DependencyBean {
 
     private final DependencyType type;
 
+    private final boolean visible;
+
     public DependencyBean(TaskBean source, TaskBean destination,
-            DependencyType type) {
+            DependencyType type, boolean visible) {
         if (source == null)
             throw new IllegalArgumentException("source cannot be null");
         if (destination == null)
@@ -64,6 +64,12 @@ public class DependencyBean {
         this.source = source;
         this.destination = destination;
         this.type = type;
+        this.visible = visible;
+    }
+
+    public DependencyBean(TaskBean source, TaskBean destination,
+            DependencyType type) {
+        this(source, destination, type, true);
     }
 
     @Override
@@ -108,6 +114,10 @@ public class DependencyBean {
 
     public DependencyType getType() {
         return type;
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 
 }

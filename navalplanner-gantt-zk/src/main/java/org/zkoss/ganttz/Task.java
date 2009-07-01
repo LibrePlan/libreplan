@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.zkoss.ganttz.util.TaskBean;
+import org.zkoss.ganttz.util.TaskContainerBean;
 import org.zkoss.lang.Objects;
 import org.zkoss.xml.HTMLs;
 import org.zkoss.zk.au.AuRequest;
@@ -127,11 +128,14 @@ public class Task extends Div implements AfterCompose {
     };
 
     public static Task asTask(TaskBean taskBean) {
+        if (taskBean instanceof TaskContainerBean) {
+            return TaskContainer.asTask((TaskContainerBean) taskBean);
+        }
         return new Task(taskBean);
     }
 
     public Task(TaskBean taskBean) {
-        setHeight( HEIGHT_PER_TASK + "px");
+        setHeight(HEIGHT_PER_TASK + "px");
         setContext("idContextMenuTaskAssigment");
         this.taskBean = taskBean;
         setColor(STANDARD_TASK_COLOR);

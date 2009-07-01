@@ -68,9 +68,25 @@ public class DependencyRegistry {
         }
     }
 
+    public void applyAllRestrictions() {
+        for (RulesEnforcer rulesEnforcer : rulesEnforcersByTask.values()) {
+            rulesEnforcer.update();
+        }
+    }
+
     public void add(TaskBean task) {
         graph.addVertex(task);
         rulesEnforcersByTask.put(task, new RulesEnforcer(task));
+        if (task instanceof TaskContainerBean) {
+            TaskContainerBean container = (TaskContainerBean) task;
+            for (TaskBean child : container.getTasks()) {
+                add(child);
+                add(new DependencyBean(child, container,
+                        DependencyType.END_END, false));
+                add(new DependencyBean(container, child,
+                        DependencyType.START_START, false));
+            }
+        }
     }
 
     public void remove(TaskBean task) {
@@ -111,9 +127,15 @@ public class DependencyRegistry {
         return new ArrayList<TaskBean>(graph.vertexSet());
     }
 
-    public List<DependencyBean> getDependencies() {
+    public List<DependencyBean> getVisibleDependencies() {
         Set<DependencyBean> edgeSet = graph.edgeSet();
-        return new ArrayList<DependencyBean>(edgeSet);
+        ArrayList<DependencyBean> result = new ArrayList<DependencyBean>();
+        for (DependencyBean dependencyBean : edgeSet) {
+            if (dependencyBean.isVisible()) {
+                result.add(dependencyBean);
+            }
+        }
+        return result;
     }
 
 }
