@@ -20,6 +20,7 @@ import org.zkoss.zul.api.Listitem;
 /**
  * Subcontroller for assigning localizations <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class LocalizationsController extends GenericForwardComposer {
 

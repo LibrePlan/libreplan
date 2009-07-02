@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Model for worker <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)

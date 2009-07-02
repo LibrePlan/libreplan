@@ -24,6 +24,7 @@ import org.zkoss.zul.Listbox;
 /**
  * Subcontroller for {@link Worker} resource <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class WorkRelationshipsController extends GenericForwardComposer {
 
