@@ -1,25 +1,25 @@
-/* Planificator specific styles
+/*
+* ganttz.css Ganttz specific styles
+* /
 
 The next constants are used within the planner styling:
 
-LISTDETAILS_W = 280
+Ganntz.ListdetailsWidth = 280
 
-HEIGHT_PER_ROW = 15;
-HEIGHT_TIME_TRACKER = 120;
+zkTasklist.HEIGHT_PER_ROW = 15
+zkTasklist.HEIGHT_TIME_TRACKER = 120
 
-
+zkTasklist.SCROLLBAR_WIDTH = 15
 
 */
 
-
-
 /****** Tasks and dependencies ******/
 .listdetails {
-    width:280px; /* LISTDETAILS_W */
+    width:280px;  /* Ganntz.ListdetailsWidth */
     float:left;
     margin-top:  0px;
     border-bottom: 1px solid #86A4BE;
-   font-size:10px !important;
+    font-size:10px !important;
     margin-top:0px;
 }
 
@@ -32,27 +32,27 @@ HEIGHT_TIME_TRACKER = 120;
 }
 
 .listdetails input {
-   width: 80px;
-   font-size:10px !important;
-   border-bottom:0px;
-   border-right:0px;
-   height:17px;
+    width: 80px;
+    font-size:10px !important;
+    border-bottom:0px;
+    border-right:0px;
+    height:17px;
 }
 
 .listdetails .z-datebox-inp {
-   font-family:"Verdana,Tahoma,Arial,Helvetica,sans-serif";
-   font-size:10px !important;
-   border-bottom:0px;
-   border-right:0px;
+    font-family:"Verdana,Tahoma,Arial,Helvetica,sans-serif";
+    font-size:10px !important;
+    border-bottom:0px;
+    border-right:0px;
 }
 
 .task_title {
-   width: 120px !important;
+    width: 120px !important;
 }
 
 .taskdetail_grid table {
     height:30px;
-    width:280px; /* LISTDETAILS_W */
+    width:280px; /* Ganntz.ListdetailsWidth */
 }
 
 
@@ -63,7 +63,7 @@ HEIGHT_TIME_TRACKER = 120;
 }
 
 /* Task box properties */
-.yui-resize, .box {
+.box {
     border: 1px solid;
     text-align:center;
     vertical-align: middle;
@@ -81,7 +81,7 @@ HEIGHT_TIME_TRACKER = 120;
     width: 1800px;
 }
 
-/* ---------- TaskGroup --------- */
+/* -------------- TaskGroup -------------- */
 .taskgroup_start {
     background-image: url("/navalplanner-webapp/zkau/web/ganttz/img/group_left.png");
     height: 10px;
@@ -90,7 +90,7 @@ HEIGHT_TIME_TRACKER = 120;
 }
 
 .taskgroup_end {
-    background-image: url("../../zkau/web/ganttz/img/group_right.png");
+    background-image: url("/navalplanner-webapp/zkau/web/ganttz/img/group_right.png");
     height: 10px;
     width: 10px;
     float:right;
@@ -104,7 +104,7 @@ HEIGHT_TIME_TRACKER = 120;
     background-color: transparent !important;
 }
 
-/****** Dependencies *******/
+/* -------------- Dependencies -------------- */
 #listdependencies {
     position:relative;
     width:400px;
@@ -149,18 +149,16 @@ HEIGHT_TIME_TRACKER = 120;
     white-space:nowrap;
 }
 
+
+
 .zk #ganttpanel .z-button-cm {
     border: 0px;
 }
 
-
-/* Width: ganttpanel constant,
-Height: is recalculated on number of tasks */
 #ganttpanel {
     height:400px; /* 800 */
     width: 900px;
 }
-
 
 #ganttpanel table {
     float:left;
@@ -173,13 +171,21 @@ Height: is recalculated on number of tasks */
     padding:0;
 }
 
-.fake_column.timetracker_column_even {
-    background-color: #EEEEEE;
-}
-
+/* -------------- Timetracker -------------- */
 .timetracker_fake_row {
     height: 80px;
 }
+
+#watermark .timetracker_column_even {
+    background-color: #EEEEEE;
+}
+
+.z-columns,.z-column {
+    font-size: 8px !important;
+    text-align: center;
+    padding:0 0 0 0 !important;
+}
+
 
 table {
     margin:0px;
@@ -203,7 +209,7 @@ table {
 
 #scroll_container {
     margin-top:70px;
-/*    border:solid green 1px; */
+    /*    border:solid green 1px; */
     height:300px; /* Recalculate based on window */
     width:500px; /* Recalculate based on window */
     overflow:hidden;
@@ -214,15 +220,22 @@ table {
 }
 
 #timetracker {
+    /* border: solid 1px red; */
     position:absolute;
     left:300px;
-        width:600px;
-        height:400px;
-        position:absolute;
-        overflow-x:hidden;
-        float:left;
-/*        border: solid 1px red; */
-    }
+    width:600px;
+    height:400px;
+    position:absolute;
+    overflow-x:hidden;
+    float:left;
+}
+
+
+tr.z-vbox-sep {
+    height: 0px;
+    padding: 0px;
+    margin: 0px;
+}
 
 
 #ganttpanel_scroller_x, #ganttpanel_scroller_y {
@@ -239,9 +252,9 @@ table {
 }
 
 #ganttpanel_inner_scroller_x {
-       /* must be resized on ganttpanel javascript adjust size */
-        width:1900px; /* Real canvas dimensions */
-        height:15px; /* Scroll constant */
+    /* must be resized on ganttpanel javascript adjust size */
+    width:1900px; /* Real canvas dimensions */
+    height:15px; /* Scroll constant */
 }
 
 #ganttpanel_scroller_y {
@@ -251,6 +264,6 @@ table {
     height:330px;
 }
 #ganttpanel_inner_scroller_y {
-        width:15px; /* Scroll constant */
-        height:1350px; /* Modified when added or removed tasks, or zoom adjustments */
+    width:15px; /* Scroll constant */
+    height:1350px; /* Modified when added or removed tasks, or zoom adjustments */
 }

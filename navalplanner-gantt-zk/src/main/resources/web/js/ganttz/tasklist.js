@@ -1,15 +1,21 @@
-HEIGHT_PER_ROW = 15;
+/**
+ * Javascript behaviuor for TaskList elements
+ * @author Javier Morán Rúa <jmoran@igalia.com>
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ */
+zkTasklist = {};
+
+HEIGHT_PER_ROW = 15;             // Ganttz task row height
 HEIGHT_TIME_TRACKER = 120;
 
-MIN_RESOLUTION_X = 600;
-MIN_RESOLUTION_Y = 600;
+MIN_RESOLUTION_X = 600;          // Minimun horizontal autoresizable window
+MIN_RESOLUTION_Y = 600;          // Minimun vertical autoresizable window
 
-TASKDETAILS_WIDTH = 300
-TIMETRACKER_OFFSET_TOP = 200
-SCROLLBAR_WIDTH = 15
-
-
-zkTasklist = {};
+TASKDETAILS_WIDTH = 300;         // Taskdetails column width
+TASKDETAILS_HEIGHT = 300;
+TIMETRACKER_OFFSET_TOP = 200     // Design-relative height above timetracker
+SCROLLBAR_WIDTH = 15;            // Scrollbars default width
 
 zkTasklist.init = function(cmp) {
     zkTasklist.adjust_height(cmp);
@@ -32,79 +38,88 @@ zkTasklist.adjust_height = function(cmp) {
     if (component_to_adjust) {
         setHeight(component_to_adjust);
     }
-    var found = YAHOO.util.Selector.query(".fake_column", component_to_adjust,
-            false);
-    found.each( function(element) {
-        setHeight(element,HEIGHT_PER_ROW);
-    });
+
+    adjustScrollableDimensions();
 }
 
 
-//document.getElementById('scroll-container').onscroll = scrollEvent;
-document.getElementById('ganttpanel_scroller_x').onscroll = scrollEvent;
-function scrollEvent() {
-    //scroller = document.getElementById('scroll-container');
-    scroller = document.getElementById('ganttpanel_scroller_x');
+// Simultaneous timetracker and canvas horizontal scroll
+document.getElementById('ganttpanel_scroller_x').onscroll = function() {
+   scroller = document.getElementById('ganttpanel_scroller_x');
    document.getElementById('timetracker').scrollLeft = scroller.scrollLeft;
    document.getElementById('scroll_container').scrollLeft = scroller.scrollLeft;
+}
 
+
+// Simultaneous listdetails and canvas vertical scroll
+// Pending to listen to container onwheel scroll move
+document.getElementById('ganttpanel_scroller_y').onscroll = function() {
+    offset = document.getElementById('ganttpanel_scroller_y').scrollTop;
+    document.getElementById('listdetails_container').scrollTop = offset;
+    document.getElementById('scroll_container').scrollTop = offset;
    }
 
-document.getElementById('ganttpanel_scroller_y').onscroll = scrollEvent_y;
-function scrollEvent_y() {
-    //scroller = document.getElementById('scroll-container');
-    scroller = document.getElementById('ganttpanel_scroller_y');
-    document.getElementById('listdetails_container').scrollTop = scroller.scrollTop ;
-   document.getElementById('scroll_container').scrollTop = scroller.scrollTop ;
-   }
+// Scroll panel when detected movements on listdetails container
+document.getElementById('listdetails_container').onscroll = function() {
+    offset = document.getElementById('listdetails_container').scrollTop;
+    document.getElementById('scroll_container').scrollTop = offset;
+    document.getElementById('ganttpanel_scroller_y').scrollTop = offset;
+}
 
 window.onresize = relocateScrolls;
 window.onload = relocateScrolls;
-// document.body.onresize = relocateScrolls;
+/*
+ * Move scrollbars to locate them on left and bottom window borders
+ */
 function relocateScrolls() {
 
     scroller_y = document.getElementById('ganttpanel_scroller_y');
     scroller_x = document.getElementById('ganttpanel_scroller_x');
-    timetracker = document.getElementById('timetracker');
     listdetails = document.getElementById('listdetails_container');
-    scroll_container = document.getElementById('scroll_container');
 
-
-    // Reposition scroll-y and scroll-x width (Width change)
+    // Shift scroll-y and scroll-x width (Width change)
     if ( window.innerWidth > MIN_RESOLUTION_X ) {
         scroller_y.style["left"] =
             (window.innerWidth - SCROLLBAR_WIDTH*2) +"px";
         scroller_x.style["width"] =
             (window.innerWidth - TASKDETAILS_WIDTH - SCROLLBAR_WIDTH ) +"px";
-        timetracker.style["width"] = (window.innerWidth - TASKDETAILS_WIDTH
-            - SCROLLBAR_WIDTH - SCROLLBAR_WIDTH*2 ) +"px";
-        scroll_container.style["width"] = timetracker.style["width"];
     }
 
-    // Reposition scroll-y and scroll-x width (Height change)
+    // Shift scroll-y and scroll-x width (Height change)
     if ( window.innerHeight > MIN_RESOLUTION_Y ) {
         scroller_x.style["top"] = (window.innerHeight - SCROLLBAR_WIDTH*2) +"px";
-        scroller_y.style["height"] = (window.innerHeight - TASKDETAILS_WIDTH ) +"px";
-
-        timetracker.style["height"] = (window.innerHeight - TIMETRACKER_OFFSET_TOP ) +"px";
-
+        scroller_y.style["height"] = (window.innerHeight - TASKDETAILS_HEIGHT ) +"px";
         listdetails.style["height"] = scroller_y.style["height"];
-        scroll_container.style["height"] = (window.innerHeight - TIMETRACKER_OFFSET_TOP - 90 ) +"px";
     }
 
-    /* FIX: Needed to recalculate native watermark td */
-
-    adjustScrolls();
+    adjustScrollableDimensions();
 }
 
+/*
+ * Recalculate component dimensions
+ */
+function adjustScrollableDimensions() {
 
-function adjustScrolls() {
+    // Timetracker is recalculated when the window is resized and when zoom
+    // level is changed as the component is recreated
+    timetracker = document.getElementById('timetracker');
+    scroll_container = document.getElementById('scroll_container');
 
-    // Resize scroller inner divs to adapt scrollbars lenght
+    timetracker.style["width"] =
+        (window.innerWidth - TASKDETAILS_WIDTH - SCROLLBAR_WIDTH*2 ) +"px";
+    scroll_container.style["width"] = timetracker.style["width"];
+
+    timetracker.style["height"] =
+        (window.innerHeight - TIMETRACKER_OFFSET_TOP ) +"px";
+    scroll_container.style["height"] =
+        (window.innerHeight - TIMETRACKER_OFFSET_TOP - 90 ) +"px";
+
+    // Watermark heigh also needs recalculations due to the recreation
+    document.getElementById('watermark').style["height"]
+        = (window.innerHeight - TIMETRACKER_OFFSET_TOP - 60 ) +"px";
+
+    // Inner divs need recalculation to adjust to new scroll displacement lenght
     document.getElementById('ganttpanel_inner_scroller_y').style["height"]
         = document.getElementById('listdetails_container').scrollHeight + "px";
-
-    document.getElementById('ganttpanel_inner_scroller_x').style["width"]
-        = document.getElementById('timetracker').scrollWidth + "px";
 
 }

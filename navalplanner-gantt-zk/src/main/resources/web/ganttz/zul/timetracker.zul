@@ -1,56 +1,45 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
-
- <zscript><![CDATA[
-     top = self;
+<zscript><![CDATA[
+top = self;
 ]]>
 </zscript>
 
-<style dynamic="true">
-    tr.z-vbox-sep {
-        height: 0px;
-        padding: 0px;
-        margin: 0px;
-    }
-
-</style>
-
-<n:div id="timetracker">
-
-<vbox>
-    <hbox>
-        <button image="/zkau/web/ganttz/img/zoom_in.gif" forward="onIncrease"/>
-        <button image="/zkau/web/ganttz/img/zoom_out.gif" forward="onDecrease"/>
-    </hbox>
-
 <div>
-<grid>
-        <columns>
-            <column label="${each.name}"  width="${each.size}px" forEach="${top.detailsFirstLevel}"></column>
-        </columns>
+<n:div id="timetracker">
+    <vbox>
 
- </grid>
-    <grid style="width: ${top.horizontalSize+2}px;">
-        <columns>
-            <column label="${each.name}" class="timetracker_column${(each.even?'_even':'')}" width="${each.size}px" forEach="${top.detailsSecondLevel}"></column>
-        </columns>
+        <n:div id="zoom_buttons">
+            <hbox>
+                <button image="/zkau/web/ganttz/img/zoom_in.gif" forward="onIncrease"/>
+                <button image="/zkau/web/ganttz/img/zoom_out.gif" forward="onDecrease"/>
+            </hbox>
+        </n:div>
 
-        <rows>
-            <row id="fake_row" style="height: 100px;" class="fake_column timetracker_column${(each.even?'_myeven':'')}">
-                 <div class="fake_column timetracker_column${(each.even?'_even':'')}" style="height: 100px;" forEach="${top.detailsSecondLevel}" />
-            </row>
-        </rows>
+        <grid>
+            <columns>
+                <column label="${each.name}" width="${each.size}px"
+                    forEach="${top.detailsFirstLevel}"></column>
+            </columns>
+        </grid>
 
- </grid>
-</div>
+        <n:div class="z-grid-header">
+            <n:table style="width: ${top.horizontalSize+2}px;" class="second_level_">
 
- <zscript><![CDATA[
-     top.fakeRow = fake_row;
-]]>
- </zscript>
+                <n:tr class="z-columns">
+                    <n:th class="z-column" forEach="${top.detailsSecondLevel}">
+                    ${each.name}
+                    </n:th>
+                </n:tr>
+                <n:tr id="watermark" style="height:100px">
+                    <n:td class="timetracker_column${(each.even?'_even':'')}"
+                        forEach="${top.detailsSecondLevel}"></n:td>
+                </n:tr>
+            </n:table>
+        </n:div>
 
-</vbox>
+    </vbox>
 
 </n:div>
-
+</div>
 </zk>
