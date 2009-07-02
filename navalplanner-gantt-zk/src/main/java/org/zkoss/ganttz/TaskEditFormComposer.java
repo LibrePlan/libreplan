@@ -35,7 +35,6 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         popUp = (Popup) comp;
-        popUp.setVisible(false);
     }
 
     public void showEditFormFor(Task task) {

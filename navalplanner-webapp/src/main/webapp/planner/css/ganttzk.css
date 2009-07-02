@@ -258,7 +258,7 @@ tr.z-vbox-sep {
 }
 
 #ganttpanel_scroller_y {
-    top: 270px; /* Calculate initial settings */
+    top: 230px; /* Calculate initial settings */
     left: 920px;
     width:15px;
     height:330px;
@@ -266,4 +266,10 @@ tr.z-vbox-sep {
 #ganttpanel_inner_scroller_y {
     width:15px; /* Scroll constant */
     height:1350px; /* Modified when added or removed tasks, or zoom adjustments */
+}
+
+
+.footer {
+    /* Pending to calculate general position */
+    display:none;
 }

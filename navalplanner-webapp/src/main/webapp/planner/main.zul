@@ -1,8 +1,7 @@
-<?init class="org.zk.myhello.pages.MyHelloPageListener"?>
-<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<?link rel="stylesheet" type="text/css" href="/planner/css/productionmanagement.css"?>
-<?page  id="myhello"?>
+<?page title="GanttZK demo" contentType="text/html;charset=UTF-8"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="stylesheet" type="text/css" href="/planner/css/ganttzk.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro.css"?>
 <zk>
 
@@ -12,14 +11,12 @@
 </zscript>
     <!-- choose lightLoad, mediumLoad or highLoad.
      -->
-    <planner id="planner" self="@{define(content)}" dependencyRegistry="${plannerData.lightLoad}">
-        <div id="idContextMenuTaskAssigment"
-            use="org.zk.myhello.pages.MyHelloPageListener">
-        </div>
+    <planner id="planner" self="@{define(content)}"
+        dependencyRegistry="${plannerData.mediumLoad}">
+        <div id="idContextMenuTaskAssigment"></div>
     </planner>
 
-    <popup width="300px"
-        apply="${planner.modalFormComposer}">
+    <popup width="300px" apply="${planner.modalFormComposer}">
         <grid>
             <rows>
                 <row>

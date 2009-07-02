@@ -7,14 +7,18 @@
 zkTasklist = {};
 
 HEIGHT_PER_ROW = 15;             // Ganttz task row height
-HEIGHT_TIME_TRACKER = 120;
+HEIGHT_TIME_TRACKER = 200;       //200
 
 MIN_RESOLUTION_X = 600;          // Minimun horizontal autoresizable window
 MIN_RESOLUTION_Y = 600;          // Minimun vertical autoresizable window
 
-TASKDETAILS_WIDTH = 300;         // Taskdetails column width
-TASKDETAILS_HEIGHT = 300;
+TASKDETAILS_WIDTH = 300;         // Taskdetails column fixed width (300)
+TASKDETAILS_HEIGHT = 300;        // Design-relative reservated height for taskdetails (300)
 TIMETRACKER_OFFSET_TOP = 200     // Design-relative height above timetracker
+
+FOOTER_HEIGHT = 40;             // Design-relative footer height
+
+
 SCROLLBAR_WIDTH = 15;            // Scrollbars default width
 
 zkTasklist.init = function(cmp) {
@@ -80,14 +84,14 @@ function relocateScrolls() {
     // Shift scroll-y and scroll-x width (Width change)
     if ( window.innerWidth > MIN_RESOLUTION_X ) {
         scroller_y.style["left"] =
-            (window.innerWidth - SCROLLBAR_WIDTH*2) +"px";
+            (window.innerWidth - SCROLLBAR_WIDTH -5 ) +"px"; // Extra padding
         scroller_x.style["width"] =
-            (window.innerWidth - TASKDETAILS_WIDTH - SCROLLBAR_WIDTH ) +"px";
+            (window.innerWidth - TASKDETAILS_WIDTH - SCROLLBAR_WIDTH +5 ) +"px"; // Extra padding
     }
 
     // Shift scroll-y and scroll-x width (Height change)
     if ( window.innerHeight > MIN_RESOLUTION_Y ) {
-        scroller_x.style["top"] = (window.innerHeight - SCROLLBAR_WIDTH*2) +"px";
+        scroller_x.style["top"] = (window.innerHeight - SCROLLBAR_WIDTH*2 - FOOTER_HEIGHT) +"px";
         scroller_y.style["height"] = (window.innerHeight - TASKDETAILS_HEIGHT ) +"px";
         listdetails.style["height"] = scroller_y.style["height"];
     }
@@ -110,7 +114,7 @@ function adjustScrollableDimensions() {
     scroll_container.style["width"] = timetracker.style["width"];
 
     timetracker.style["height"] =
-        (window.innerHeight - TIMETRACKER_OFFSET_TOP ) +"px";
+        (window.innerHeight - TIMETRACKER_OFFSET_TOP +5 ) +"px"; // Extra padding
     scroll_container.style["height"] =
         (window.innerHeight - TIMETRACKER_OFFSET_TOP - 90 ) +"px";
 

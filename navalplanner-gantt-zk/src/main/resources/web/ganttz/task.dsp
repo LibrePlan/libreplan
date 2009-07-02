@@ -6,8 +6,8 @@
 
 
 <div id="row${self.uuid}" class="row" z.valor="boxid="${self.uuid}">
-    <div id="${self.uuid}" z.type="ganttz.task.Task" idTask="${self.id}" z.autoz="true"${self.outerAttrs}" class="box">
-        <span id="${self.uuid}!real">${self.taskName}</span>
+    <div id="${self.uuid}" z.type="ganttz.task.Task" idTask="${self.id}"
+        z.autoz="true"${self.outerAttrs}" class="box">
         <div id="completion${self.uuid}" class="completion"></div>
     </div>
 </div>
