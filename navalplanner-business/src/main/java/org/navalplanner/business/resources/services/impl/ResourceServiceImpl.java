@@ -13,6 +13,9 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -20,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
  * autowired.
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
+@Service
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 @Transactional
 public class ResourceServiceImpl implements ResourceService {
 

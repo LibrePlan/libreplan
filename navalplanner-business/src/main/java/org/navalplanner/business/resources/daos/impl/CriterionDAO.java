@@ -9,13 +9,19 @@ import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
 
 /**
  * DAO implementation for Criterion. <br />
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
+@Repository
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class CriterionDAO extends GenericDaoHibernate<Criterion, Long>
         implements ICriterionDAO {
 

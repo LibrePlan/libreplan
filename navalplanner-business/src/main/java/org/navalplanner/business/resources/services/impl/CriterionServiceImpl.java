@@ -22,13 +22,19 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.services.CriterionService;
 import org.navalplanner.business.resources.services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of {@link CriterionService} using {@link CriterionDAO} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
+@Service
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 @Transactional
 public class CriterionServiceImpl implements CriterionService {
 

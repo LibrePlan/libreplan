@@ -15,14 +15,14 @@ import org.navalplanner.business.orders.services.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for UI operations related to {@link Order}. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-@Component
+@Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class OrderModel implements IOrderModel {
 

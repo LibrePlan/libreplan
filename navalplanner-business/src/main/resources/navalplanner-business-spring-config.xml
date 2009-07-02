@@ -49,30 +49,11 @@
 
     <context:component-scan base-package="org.navalplanner.business"/>
 
-    <!--
-        ======================== Business Objects ========================
-    -->
-
-    <!--  Resource DAOs and registry -->
-    <bean id="resourceDao"
-        class="org.navalplanner.business.resources.daos.impl.ResourceDaoHibernate" />
-
-    <bean id="workerDao"
-        class="org.navalplanner.business.resources.daos.impl.WorkerDaoHibernate" />
-
-    <bean id="criterionDao"
-        class="org.navalplanner.business.resources.daos.impl.CriterionDAO" />
-
-    <bean id="criterionSatisfactionDao"
-        class="org.navalplanner.business.resources.daos.impl.CriterionSatisfactionDAO" />
+    <!--  DAO registries (to be used from non-Spring managed objects
+          (e.g. entities)  -->
 
     <bean id="resourcesDaoRegistry"
         class="org.navalplanner.business.resources.daos.ResourcesDaoRegistry"
         factory-method="getInstance" />
-
-    <!--  Service layer -->
-    <bean id="resourceService"
-        class="org.navalplanner.business.resources.services.impl.ResourceServiceImpl" />
-    <bean id="criterionService" class="org.navalplanner.business.resources.services.impl.CriterionServiceImpl" />
 
 </beans>

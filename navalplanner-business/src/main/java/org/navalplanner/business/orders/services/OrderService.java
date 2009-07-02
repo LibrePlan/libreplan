@@ -10,14 +10,15 @@ import org.navalplanner.business.orders.entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Default implementation of {@link IOrderService} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@Component
+@Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 @Transactional
 public class OrderService implements IOrderService {
