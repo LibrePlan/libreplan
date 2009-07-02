@@ -7,9 +7,11 @@
 
 zkTaskContainer = {};
 
+/* We will not allow taskcontainer move or resize untill its behaviour its
+ * clearly specified
 zkTaskContainer.getDD = function(cmp) {
     zkTask.getDD(cmp);
-};
+}; */
 
 zkTaskContainer.relocateAfterAdding = function(cmp) {
     zkTask.relocateAfterAdding (cmp);
@@ -20,7 +22,9 @@ zkTaskContainer.cleanup = function(cmp){
 };
 
 zkTaskContainer.init = function(cmp) {
-    zkTask.init(cmp);
+/* We will not allow taskcontainer move or resize untill its behaviour its
+ * clearly specified
+    zkTask.init(cmp); */
 };
 
 zkTaskContainer.xMouse;
@@ -63,6 +67,10 @@ zkTaskContainer.getElementsByAttribute = function(oElm, strTagName, strAttribute
     strAttributeValue) {
     zkTask.getElementsByAttribute(oElm, strTagName, strAttributeName, strAttributeValue);
 }
+
+
+/* We will not allow taskcontainer move or resize untill its behaviour its
+ * clearly specified
 
 YAHOO.example.DDRegion = function(id, sGroup, config) {
     this.cont = config.cont;
@@ -113,4 +121,4 @@ YAHOO.extend(YAHOO.example.DDRegion, YAHOO.util.DD, {
         this.setXConstraint(left, right);
         this.setYConstraint(top, bottom);
     }
-});
+}); */
