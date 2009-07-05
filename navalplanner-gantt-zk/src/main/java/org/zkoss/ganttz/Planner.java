@@ -3,15 +3,18 @@ package org.zkoss.ganttz;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.util.DependencyRegistry;
 import org.zkoss.ganttz.util.TaskBean;
-import org.zkoss.ganttz.util.TaskContainerBean;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
 public class Planner extends XulElement implements AfterCompose {
+
+    private static final Log LOG = LogFactory.getLog(Planner.class);
 
     private DependencyAddedListener dependencyAddedListener;
     private DependencyRegistry dependencyRegistry = new DependencyRegistry();
@@ -124,7 +127,7 @@ public class Planner extends XulElement implements AfterCompose {
 
     public void addTask(TaskBean newTask) {
         getTaskList().addTask(newTask);
-        dependencyRegistry.add(newTask);
+        dependencyRegistry.addTopLevel(newTask);
     }
 
     private void publishDependency(Dependency dependency) {
@@ -138,7 +141,8 @@ public class Planner extends XulElement implements AfterCompose {
     public void setDependencyRegistry(DependencyRegistry dependencyRegistry) {
         this.dependencyRegistry = dependencyRegistry;
         removePreviousDetails();
-        this.listDetails = new ListDetails(dependencyRegistry.getTasks());
+        this.listDetails = new ListDetails(dependencyRegistry
+                .getTopLevelTasks());
         insertBefore(this.listDetails,
                 (Component) (getChildren().isEmpty() ? null : getChildren()
                         .get(0)));

@@ -3,6 +3,7 @@ package org.zkoss.ganttz.util;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,8 @@ public class DependencyRegistry {
             DependencyBean.class);
 
     private Map<TaskBean, DependencyRulesEnforcer> rulesEnforcersByTask = new HashMap<TaskBean, DependencyRulesEnforcer>();
+
+    private List<TaskBean> topLevelTasks = new ArrayList<TaskBean>();
 
     private List<DependencyRulesEnforcer> getOutgoing(TaskBean task) {
         ArrayList<DependencyRulesEnforcer> result = new ArrayList<DependencyRulesEnforcer>();
@@ -101,14 +104,19 @@ public class DependencyRegistry {
         }
     }
 
-    public void add(TaskBean task) {
+    public void addTopLevel(TaskBean task) {
+        topLevelTasks.add(task);
+        addTask(task);
+    }
+
+    private void addTask(TaskBean task) {
         graph.addVertex(task);
         rulesEnforcersByTask.put(task, new DependencyRulesEnforcer(task));
         if (task instanceof TaskContainerBean) {
             TaskContainerBean container = (TaskContainerBean) task;
             new ParentShrinkingEnforcer(container);
             for (TaskBean child : container.getTasks()) {
-                add(child);
+                addTask(child);
                 add(new DependencyBean(child, container,
                         DependencyType.END_END, false));
                 add(new DependencyBean(container, child,
@@ -164,6 +172,10 @@ public class DependencyRegistry {
             }
         }
         return result;
+    }
+
+    public List<TaskBean> getTopLevelTasks() {
+        return Collections.unmodifiableList(topLevelTasks);
     }
 
 }

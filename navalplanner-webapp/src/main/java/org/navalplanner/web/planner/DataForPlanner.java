@@ -47,7 +47,7 @@ public class DataForPlanner {
                 first = taskBean;
             if (i == 1)
                 second = taskBean;
-            dependencyRegistry.add(taskBean);
+            dependencyRegistry.addTopLevel(taskBean);
         }
         TaskContainerBean container = new TaskContainerBean();
         container.setBeginDate(now);
@@ -57,7 +57,7 @@ public class DataForPlanner {
         container.add(child1);
         TaskBean child2 = createTaskBean("child 2", now, end);
         container.add(child2);
-        dependencyRegistry.add(container);
+        dependencyRegistry.addTopLevel(container);
         dependencyRegistry.add(new DependencyBean(child1, child2,
                 DependencyType.END_START));
         dependencyRegistry.add(new DependencyBean(first, second,

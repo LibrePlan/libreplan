@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -123,25 +121,16 @@ public class ListDetails extends HtmlMacroComponent {
 
     private static List<SimpleTreeNode> asSimpleTreeNodes(
             List<TaskBean> taskBeans2) {
-        return asSimpleTreeNodes(taskBeans2, new HashSet<TaskBean>());
-    }
-
-    private static List<SimpleTreeNode> asSimpleTreeNodes(
-            List<TaskBean> taskBeans2, Set<TaskBean> alreadyIncluded) {
         ArrayList<SimpleTreeNode> result = new ArrayList<SimpleTreeNode>();
         for (TaskBean taskBean : taskBeans2) {
-            if (alreadyIncluded.contains(taskBean))
-                continue;
             SimpleTreeNode node = asSimpleTreeNode(taskBean);
             if (taskBean instanceof TaskContainerBean) {
                 TaskContainerBean container = (TaskContainerBean) taskBean;
                 node.getChildren()
-                        .addAll(
-                                asSimpleTreeNodes(container.getTasks(),
-                                        alreadyIncluded));
+                .addAll(
+                        asSimpleTreeNodes(container.getTasks()));
             }
             result.add(node);
-            alreadyIncluded.add(taskBean);
         }
         return result;
     }
