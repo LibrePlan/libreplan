@@ -3,18 +3,22 @@ package org.zkoss.ganttz;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zkoss.ganttz.TaskDetail.ITaskDetailNavigator;
 import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.TaskContainerBean;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.SimpleTreeModel;
 import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Tree;
+import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -22,11 +26,7 @@ import org.zkoss.zul.Treerow;
 
 public class ListDetails extends HtmlMacroComponent {
 
-    /**
-     * @author Óscar González Fernández <ogonzalez@igalia.com>
-     */
     private final class TaskBeanRenderer implements TreeitemRenderer {
-        @Override
         public void render(Treeitem item, Object data) throws Exception {
             SimpleTreeNode node = (SimpleTreeNode) data;
             TaskBean taskBean = (TaskBean) node.getData();
@@ -34,10 +34,75 @@ public class ListDetails extends HtmlMacroComponent {
             treerow.setParent(item);
             Treecell treecell = new Treecell();
             treecell.setParent(treerow);
-            TaskDetail taskDetail = TaskDetail.create(taskBean);
+            final int[] path = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
+                    node);
+            TaskDetail taskDetail = TaskDetail.create(taskBean,
+                    new TreeNavigator(tasksTreeModel, path));
             taskDetail.setParent(treecell);
+            detailsForBeans.put(taskBean, taskDetail);
             taskDetail.afterCompose();
         }
+    }
+
+    private Map<TaskBean, TaskDetail> detailsForBeans = new HashMap<TaskBean, TaskDetail>();
+
+    private final class TreeNavigator implements ITaskDetailNavigator {
+        private final int[] pathToNode;
+
+        private final TreeModel treemodel;
+
+        private SimpleTreeNode parentCached;
+
+        private TreeNavigator(TreeModel treemodel, int[] pathToNode) {
+            this.treemodel = treemodel;
+            this.pathToNode = pathToNode;
+        }
+
+        @Override
+        public TaskDetail getAboveDetail() {
+            SimpleTreeNode parent = getParent(pathToNode);
+            int lastPosition = pathToNode[pathToNode.length - 1];
+            if (lastPosition != 0) {
+                return getChild(parent, lastPosition - 1);
+            } else if (treemodel.getRoot() != parent) {
+                return detailsForBeans.get(getTaskBean(parent));
+            }
+            return null;
+        }
+
+        private TaskDetail getChild(SimpleTreeNode parent, int position) {
+            SimpleTreeNode node = (SimpleTreeNode) parent.getChildren().get(
+                    position);
+            TaskBean bean = getTaskBean(node);
+            return detailsForBeans.get(bean);
+        }
+
+        private TaskBean getTaskBean(SimpleTreeNode node) {
+            return (TaskBean) node.getData();
+        }
+
+        @Override
+        public TaskDetail getBelowDetail() {
+            SimpleTreeNode parent = getParent(pathToNode);
+            int childCount = parent.getChildCount();
+            int lastPosition = pathToNode[pathToNode.length - 1];
+            int belowPosition = lastPosition + 1;
+            if (belowPosition < childCount) {
+                return getChild(parent, belowPosition);
+            }
+            return null;
+        }
+
+        private SimpleTreeNode getParent(int[] path) {
+            if (parentCached != null)
+                return parentCached;
+            SimpleTreeNode current = (SimpleTreeNode) treemodel.getRoot();
+            for (int i = 0; i < path.length - 1; i++) {
+                current = (SimpleTreeNode) current.getChildren().get(path[i]);
+            }
+            return parentCached = current;
+        }
+
     }
 
     private static Log LOG = LogFactory.getLog(ListDetails.class);

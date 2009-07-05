@@ -19,6 +19,12 @@ import org.zkoss.zul.Textbox;
 
 public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
 
+    public interface ITaskDetailNavigator {
+        TaskDetail getBelowDetail();
+
+        TaskDetail getAboveDetail();
+    }
+
     private static final Log LOG = LogFactory.getLog(TaskDetail.class);
 
     private final TaskBean taskBean;
@@ -35,14 +41,18 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
 
     private DateFormat dateFormat;
 
-    public static TaskDetail create(TaskBean bean) {
-        return new TaskDetail(bean);
+    private final ITaskDetailNavigator taskDetailNavigator;
+
+    public static TaskDetail create(TaskBean bean,
+            ITaskDetailNavigator taskDetailnavigator) {
+        return new TaskDetail(bean, taskDetailnavigator);
     }
 
-    private TaskDetail(TaskBean task) {
+    private TaskDetail(TaskBean task, ITaskDetailNavigator taskDetailNavigator) {
         this.taskBean = task;
         this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales
                 .getCurrent());
+        this.taskDetailNavigator = taskDetailNavigator;
     }
 
     public TaskBean getTaskBean() {
@@ -109,29 +119,12 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
         }
     }
 
-    TaskDetail getAboveDetail() {
-        List<Component> parentChildren = getParent().getChildren();
-        // TODO can be optimized
-        int positionInParent = parentChildren.indexOf(this);
-        if (positionInParent == 0)
-            return null;
-        return (TaskDetail) parentChildren.get(positionInParent - 1);
-    }
-
-    TaskDetail getBelowDetail() {
-        List<Component> parentChildren = getParent().getChildren();
-        int positionInParent = parentChildren.indexOf(this);
-        if (positionInParent == parentChildren.size() - 1)
-            return null;
-        return (TaskDetail) parentChildren.get(positionInParent + 1);
-    }
-
     private Textbox[] getTextBoxes() {
         return new Textbox[] { nameBox, startDateTextBox, endDateTextBox };
     }
 
     public void focusGoUp(int position) {
-        TaskDetail aboveDetail = getAboveDetail();
+        TaskDetail aboveDetail = taskDetailNavigator.getAboveDetail();
         if (aboveDetail != null) {
             aboveDetail.receiveFocus(position);
         }
@@ -146,7 +139,7 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
     }
 
     public void focusGoDown(int position) {
-        TaskDetail belowDetail = getBelowDetail();
+        TaskDetail belowDetail = taskDetailNavigator.getBelowDetail();
         if (belowDetail != null) {
             belowDetail.receiveFocus(position);
         } else {
