@@ -26,12 +26,6 @@
         <macro-uri>~./ganttz/zul/listdetails.zul</macro-uri>        
     </component>
     
-    <component>
-        <component-name>taskdetail</component-name>
-        <component-class>org.zkoss.ganttz.TaskDetail</component-class>
-        <macro-uri>~./ganttz/zul/taskdetail.zul</macro-uri>        
-    </component>
-    
      <component>
         <component-name>ganttpanel</component-name>
         <component-class>org.zkoss.ganttz.GanttPanel</component-class>

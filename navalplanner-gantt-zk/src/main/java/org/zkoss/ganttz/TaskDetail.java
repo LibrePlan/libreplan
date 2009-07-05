@@ -11,13 +11,14 @@ import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.KeyEvent;
-import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Treecell;
+import org.zkoss.zul.api.Treerow;
 
-public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
+public class TaskDetail extends GenericForwardComposer {
 
     public interface ITaskDetailNavigator {
         TaskDetail getBelowDetail();
@@ -149,7 +150,7 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
     }
 
     private ListDetails getListDetails() {
-        Component current = getParent();
+        Component current = nameBox;
         while (!(current instanceof ListDetails)) {
             current = current.getParent();
         }
@@ -214,9 +215,12 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
         associatedTextBox.setVisible(true);
     }
 
+
     @Override
-    public void afterCompose() {
-        super.afterCompose();
+    public void doAfterCompose(Component component) throws Exception {
+        super.doAfterCompose(component);
+        component.setVariable("top", this, true);
+        findComponents((Treerow) component);
         updateComponents();
         taskBean.addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
 
@@ -225,6 +229,40 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
                 updateComponents();
             }
         });
+    }
+
+    private void findComponents(Treerow row) {
+        List<Object> rowChildren = row.getChildren();
+        List<Treecell> treeCells = Planner.findComponentsOfType(Treecell.class,
+                rowChildren);
+        assert treeCells.size() == 3;
+        findComponentsForNameCell(treeCells.get(0));
+        findComponentsForStartDateCell(treeCells.get(1));
+        findComponentsForEndDateCell(treeCells.get(2));
+    }
+
+    private static Datebox findDateBoxOfCell(Treecell treecell) {
+        List<Object> children = treecell.getChildren();
+        return Planner.findComponentsOfType(Datebox.class, children).get(0);
+    }
+
+    private static Textbox findTextBoxOfCell(Treecell treecell) {
+        List<Object> children = treecell.getChildren();
+        return Planner.findComponentsOfType(Textbox.class, children).get(0);
+    }
+
+    private void findComponentsForNameCell(Treecell treecell) {
+        nameBox = (Textbox) treecell.getChildren().get(0);
+    }
+
+    private void findComponentsForStartDateCell(Treecell treecell) {
+        startDateTextBox = findTextBoxOfCell(treecell);
+        startDateBox = findDateBoxOfCell(treecell);
+    }
+
+    private void findComponentsForEndDateCell(Treecell treecell) {
+        endDateBox = findDateBoxOfCell(treecell);
+        endDateTextBox = findTextBoxOfCell(treecell);
     }
 
     public void updateBean() {

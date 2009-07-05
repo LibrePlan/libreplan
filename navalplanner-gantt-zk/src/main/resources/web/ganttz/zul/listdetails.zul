@@ -4,8 +4,13 @@
                         onClick="self.getParent().addTask();" />
        <button label="Engadir Contedor"
                         onClick="self.getParent().addTaskContainer();" />
-     <n:div id="listdetails_container">
+    <n:div id="listdetails_container">
         <tree id="tasksTree">
+            <treecols sizable="false">
+                <treecol label="Name" />
+                <treecol label="Start Date" />
+                <treecol label="End Date" />
+            </treecols>
         </tree>
     </n:div>
 </zk>

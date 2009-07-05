@@ -1,22 +1,13 @@
-<zk>
-<zscript><![CDATA[
-    top = self;
-]]>
-</zscript>
-<hbox class="taskdetail_grid">
-    <textbox id="nameBox" ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" value="" onChange="top.updateBean();" class="task_title"/>
-    <textbox id="startDateTextBox" value="" ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" onChange="top.updateBean();" onOK="top.userWantsDateBox(self);" />
-    <datebox id="startDateBox" compact="true" onChange="top.updateBean();" visible="${false}" onBlur="top.dateBoxHasLostFocus(self);"/>
-    <textbox id="endDateTextBox" ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" value="" onChange="top.updateBean();"  onOK="top.userWantsDateBox(self);"/>
-    <datebox id="endDateBox" compact="true" onChange="top.updateBean();" visible ="${false}" onBlur="top.dateBoxHasLostFocus(self);" ctrlKeys="#down" onCtrlKey="top.userWantsDateBox(self)"/>
-</hbox>
-
-<zscript><![CDATA[
-   top.nameBox = nameBox;
-   top.startDateBox = startDateBox;
-   top.endDateBox = endDateBox;
-   top.startDateTextBox = startDateTextBox;
-   top.endDateTextBox = endDateTextBox;
-]]>
-</zscript>
-</zk>
+<treerow sclass="taskdetail_grid">
+    <treecell>
+        <textbox ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" value="" onChange="top.updateBean();" class="task_title"/>
+    </treecell>
+    <treecell>
+        <textbox value="" ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" onChange="top.updateBean();" onOK="top.userWantsDateBox(self);" />
+        <datebox  compact="true" onChange="top.updateBean();" visible="${false}" onBlur="top.dateBoxHasLostFocus(self);"/>
+    </treecell>
+    <treecell>
+        <textbox ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" value="" onChange="top.updateBean();"  onOK="top.userWantsDateBox(self);"/>
+        <datebox compact="true" onChange="top.updateBean();" visible ="${false}" onBlur="top.dateBoxHasLostFocus(self);" ctrlKeys="#down" onCtrlKey="top.userWantsDateBox(self)"/>
+    </treecell>
+</treerow>

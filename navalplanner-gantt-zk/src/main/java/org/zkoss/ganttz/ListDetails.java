@@ -12,6 +12,8 @@ import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.TaskDetail.ITaskDetailNavigator;
 import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.TaskContainerBean;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -20,10 +22,8 @@ import org.zkoss.zul.SimpleTreeModel;
 import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
-import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
-import org.zkoss.zul.Treerow;
 
 public class ListDetails extends HtmlMacroComponent {
 
@@ -31,11 +31,7 @@ public class ListDetails extends HtmlMacroComponent {
         public void render(Treeitem item, Object data) throws Exception {
             SimpleTreeNode node = (SimpleTreeNode) data;
             TaskBean taskBean = (TaskBean) node.getData();
-            Treerow treerow = new Treerow();
-            treerow.setParent(item);
             item.setOpen(isOpened(taskBean));
-            Treecell treecell = new Treecell();
-            treecell.setParent(treerow);
             final int[] path = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
                     node);
             TaskDetail taskDetail = TaskDetail.create(taskBean,
@@ -43,9 +39,10 @@ public class ListDetails extends HtmlMacroComponent {
             if (taskBean instanceof TaskContainerBean) {
                 expandWhenOpened((TaskContainerBean) taskBean, item);
             }
-            taskDetail.setParent(treecell);
+            Component row = Executions.getCurrent().createComponents(
+                    "~./ganttz/zul/taskdetail.zul", item, null);
+            taskDetail.doAfterCompose(row);
             detailsForBeans.put(taskBean, taskDetail);
-            taskDetail.afterCompose();
         }
 
         private void expandWhenOpened(final TaskContainerBean taskBean,
