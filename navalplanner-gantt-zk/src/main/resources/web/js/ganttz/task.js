@@ -28,8 +28,9 @@ zkTask.getDD = function(cmp) {
 zkTask.relocateAfterAdding = function(cmp){
     var row = cmp.parentNode;
     var taskList = row.parentNode.parentNode;
+    var nextTask = row.parentNode.nextSibling;
     row.parentNode.removeChild(row);
-    taskList.appendChild(row);
+    taskList.insertBefore(row, nextTask);
 }
 
 zkTask.cleanup = function(cmp){
