@@ -127,11 +127,6 @@ public class Planner extends XulElement implements AfterCompose {
         dependencyRegistry.add(newTask);
     }
 
-    public void addTaskContainer(TaskContainerBean newTaskContainer) {
-        getTaskList().addTask(newTaskContainer);
-        dependencyRegistry.add(newTaskContainer);
-    }
-
     private void publishDependency(Dependency dependency) {
         dependencyRegistry.add(dependency.getDependencyBean());
     }
