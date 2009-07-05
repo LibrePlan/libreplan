@@ -50,7 +50,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
                 }
             }
         };
-        currentTask.addPropertyChangeListener(propertyChangeListener);
+        currentTask.addFundamentalPropertiesChangeListener(propertyChangeListener);
         updateComponentValuesForTask(currentTask);
     }
 

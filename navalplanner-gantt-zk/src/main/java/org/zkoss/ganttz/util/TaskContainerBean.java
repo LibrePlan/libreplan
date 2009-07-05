@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;
+
 /**
  * This class contains the information of a task container. It can be modified
  * and notifies of the changes to the interested parties. <br/>
@@ -13,6 +15,10 @@ import java.util.List;
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class TaskContainerBean extends TaskBean {
+
+    public interface IExpandListener {
+        public void expandStateChanged(boolean isNowExpanded);
+    }
 
     private static <T> List<T> removeNulls(Collection<T> elements) {
         ArrayList<T> result = new ArrayList<T>();
@@ -61,8 +67,18 @@ public class TaskContainerBean extends TaskBean {
 
     private List<TaskBean> tasks = new ArrayList<TaskBean>();
 
+    private boolean expanded = false;
+
+    private WeakReferencedListeners<IExpandListener> expandListeners = WeakReferencedListeners
+            .create();
+
+    public void addExpandListener(IExpandListener expandListener) {
+        expandListeners.addListener(expandListener);
+    }
+
     public void add(TaskBean task) {
         tasks.add(task);
+        task.setVisible(expanded);
     }
 
     public List<TaskBean> getTasks() {
@@ -95,6 +111,39 @@ public class TaskContainerBean extends TaskBean {
         if (tasks.isEmpty())
             return getEndDate();
         return getBiggest(getEndDates());
+    }
+
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    @Override
+    protected void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (!this.expanded) {
+            return;
+        }
+        for (TaskBean taskBean : tasks) {
+            taskBean.setVisible(true);
+        }
+    }
+
+    public void setExpanded(boolean expanded) {
+        boolean valueChanged = expanded != this.expanded;
+        this.expanded = expanded;
+        for (TaskBean taskBean : tasks) {
+            taskBean.setVisible(this.expanded);
+        }
+        if(valueChanged){
+            expandListeners.fireEvent(new ListenerNotification<IExpandListener>() {
+
+                        @Override
+                        public void doNotify(IExpandListener listener) {
+                            listener
+                                    .expandStateChanged(TaskContainerBean.this.expanded);
+                        }
+                    });
+        }
     }
 
 }

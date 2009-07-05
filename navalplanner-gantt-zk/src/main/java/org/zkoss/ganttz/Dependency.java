@@ -27,6 +27,7 @@ public class Dependency extends XulElement implements AfterCompose {
 
     public Dependency() {
 
+
     }
 
     public Dependency(Task source, Task destination) {
@@ -48,8 +49,8 @@ public class Dependency extends XulElement implements AfterCompose {
                 redrawDependency();
             }
         };
-        this.source.getTaskBean().addPropertyChangeListener(listener);
-        this.destination.getTaskBean().addPropertyChangeListener(listener);
+        this.source.getTaskBean().addFundamentalPropertiesChangeListener(listener);
+        this.destination.getTaskBean().addFundamentalPropertiesChangeListener(listener);
     }
 
     /**

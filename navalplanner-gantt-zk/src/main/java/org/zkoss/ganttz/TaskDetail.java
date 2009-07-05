@@ -218,7 +218,7 @@ public class TaskDetail extends HtmlMacroComponent implements AfterCompose {
     public void afterCompose() {
         super.afterCompose();
         updateComponents();
-        taskBean.addPropertyChangeListener(new PropertyChangeListener() {
+        taskBean.addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
 
             @Override
             public void propertyChange(PropertyChangeEvent evt) {

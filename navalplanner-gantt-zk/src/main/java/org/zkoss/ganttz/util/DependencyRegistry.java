@@ -48,7 +48,7 @@ public class DependencyRegistry {
                 throw new IllegalArgumentException("container cannot be null");
             this.container = container;
             for (TaskBean subtask : this.container.getTasks()) {
-                subtask.addPropertyChangeListener(new PropertyChangeListener() {
+                subtask.addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
 
                     @Override
                     public void propertyChange(PropertyChangeEvent evt) {
@@ -72,7 +72,7 @@ public class DependencyRegistry {
             if (task == null)
                 throw new IllegalArgumentException("task cannot be null");
             this.task = task;
-            this.task.addPropertyChangeListener(new PropertyChangeListener() {
+            this.task.addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
 
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {

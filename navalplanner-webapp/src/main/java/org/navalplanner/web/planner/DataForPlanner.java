@@ -38,6 +38,14 @@ public class DataForPlanner {
         DependencyRegistry dependencyRegistry = new DependencyRegistry();
         Date now = new Date();
         Date end = twoMonthsLater(now);
+        TaskContainerBean container = createContainer("container", now, end);
+        TaskBean child1 = createTaskBean("child 1", now, end);
+        container.add(child1);
+        TaskContainerBean containerChild = createContainer("child 2", now, end);
+        containerChild.setExpanded(true);
+        container.add(containerChild);
+        containerChild.add(createTaskBean("another", now, end));
+        dependencyRegistry.addTopLevel(container);
         TaskBean first = null;
         TaskBean second = null;
         for (int i = 0; i < tasksToCreate - 3; i++) {
@@ -49,21 +57,20 @@ public class DataForPlanner {
                 second = taskBean;
             dependencyRegistry.addTopLevel(taskBean);
         }
-        TaskContainerBean container = new TaskContainerBean();
-        container.setBeginDate(now);
-        container.setEndDate(end);
-        container.setName("container");
-        TaskBean child1 = createTaskBean("child 1", now, end);
-        container.add(child1);
-        TaskBean child2 = createTaskBean("child 2", now, end);
-        container.add(child2);
-        dependencyRegistry.addTopLevel(container);
-        dependencyRegistry.add(new DependencyBean(child1, child2,
+        dependencyRegistry.add(new DependencyBean(child1, containerChild,
                 DependencyType.END_START));
         dependencyRegistry.add(new DependencyBean(first, second,
                 DependencyType.END_START));
         dependencyRegistry.applyAllRestrictions();
         return dependencyRegistry;
+    }
+
+    private TaskContainerBean createContainer(String name, Date start, Date end) {
+        TaskContainerBean container = new TaskContainerBean();
+        container.setBeginDate(start);
+        container.setEndDate(end);
+        container.setName(name);
+        return container;
     }
 
     private TaskBean createTaskBean(String name, Date now, Date end) {

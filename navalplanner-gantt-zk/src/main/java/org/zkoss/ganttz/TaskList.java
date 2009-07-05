@@ -23,6 +23,7 @@ import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.zoom.ZoomLevelChangedListener;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.AbstractComponent;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -64,7 +65,7 @@ public class TaskList extends XulElement implements AfterCompose {
         List<Task> tasks = Planner.findComponentsOfType(Task.class, children);
         Map<TaskBean, Task> taskByTaskBean = new HashMap<TaskBean, Task>();
         for (Task task : tasks) {
-            taskByTaskBean.put(task.getTaskBean(), task);
+            task.publishTasks(taskByTaskBean);
         }
         List<Dependency> result = new ArrayList<Dependency>();
         for (DependencyBean dependencyBean : dependencies) {
@@ -76,11 +77,13 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     public void addTask(TaskBean newTask) {
-        addTask(Task.asTask(newTask), true);
+        addTask(Task.asTask(newTask, this), true);
     }
 
-    public synchronized void addTask(final Task task, boolean relocate) {
-        task.setParent(this);
+    public synchronized void addTask(Component afterThis, final Task task,
+            boolean relocate) {
+        insertBefore(task, afterThis == null ? null : afterThis
+                .getNextSibling());
         addContextMenu(task);
         addListenerForTaskEditForm(task);
         ListIterator<WeakReference<DependencyAddedListener>> iterator = listeners
@@ -100,6 +103,17 @@ public class TaskList extends XulElement implements AfterCompose {
             adjustZoomColumnsHeight();
             getGanttPanel().getDependencyList().redrawDependencies();
         }
+        if (task instanceof TaskContainer) {
+            TaskContainer container = (TaskContainer) task;
+            if (container.isExpanded()) {
+                container.open();
+            }
+        }
+
+    }
+
+    public synchronized void addTask(final Task task, boolean relocate) {
+        addTask(null, task, relocate);
     }
 
     private void addListenerForTaskEditForm(final Task task) {
@@ -173,6 +187,16 @@ public class TaskList extends XulElement implements AfterCompose {
         return result;
     }
 
+    private List<TaskContainer> getTaskContainers() {
+        ArrayList<TaskContainer> result = new ArrayList<TaskContainer>();
+        for (Task task : getTasks()) {
+            if (task instanceof TaskContainer) {
+                result.add((TaskContainer) task);
+            }
+        }
+        return result;
+    }
+
     private int getTasksNumber() {
         return getTasks().size();
     }
@@ -191,7 +215,7 @@ public class TaskList extends XulElement implements AfterCompose {
     @Override
     public void afterCompose() {
         for (TaskBean taskBean : originalTasks) {
-            addTask(Task.asTask(taskBean), false);
+            addTask(Task.asTask(taskBean, this), false);
         }
         if (zoomLevelChangedListener == null) {
             zoomLevelChangedListener = new ZoomLevelChangedListener() {
@@ -240,6 +264,11 @@ public class TaskList extends XulElement implements AfterCompose {
 
     public void adjustZoomColumnsHeight() {
         response("adjust_height", new AuInvoke(TaskList.this, "adjust_height"));
+    }
+
+    public void hideTask(Task subtask) {
+        removeChild(subtask);
+        subtask.setParent(null);
     }
 
 }

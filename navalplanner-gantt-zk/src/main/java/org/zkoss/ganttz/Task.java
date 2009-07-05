@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -127,9 +128,9 @@ public class Task extends Div implements AfterCompose {
         }
     };
 
-    public static Task asTask(TaskBean taskBean) {
+    public static Task asTask(TaskBean taskBean, TaskList taskList) {
         if (taskBean instanceof TaskContainerBean) {
-            return TaskContainer.asTask((TaskContainerBean) taskBean);
+            return TaskContainer.asTask((TaskContainerBean) taskBean, taskList);
         }
         return new Task(taskBean);
     }
@@ -144,13 +145,19 @@ public class Task extends Div implements AfterCompose {
 
     public void afterCompose() {
         updateProperties();
-        this.taskBean.addPropertyChangeListener(new PropertyChangeListener() {
+        if (propertiesListener != null)
+            return;
+        propertiesListener = new PropertyChangeListener() {
 
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                updateProperties();
+                if (isInPage()) {
+                    updateProperties();
+                }
             }
-        });
+        };
+        this.taskBean
+                .addFundamentalPropertiesChangeListener(propertiesListener);
     }
 
     private String _color;
@@ -158,6 +165,7 @@ public class Task extends Div implements AfterCompose {
     private List<WeakReference<DependencyAddedListener>> dependencyListeners = new LinkedList<WeakReference<DependencyAddedListener>>();
 
     private final TaskBean taskBean;
+    private PropertyChangeListener propertiesListener;
 
     public TaskBean getTaskBean() {
         return taskBean;
@@ -307,7 +315,20 @@ public class Task extends Div implements AfterCompose {
         return getPlanner().getDependencyList();
     }
 
+    private boolean isInPage() {
+        return getParent() != null;
+    }
+
     public void remove() {
         getTaskList().removeTask(this);
+    }
+
+    void publishTasks(Map<TaskBean, Task> resultAccumulated) {
+        resultAccumulated.put(getTaskBean(), this);
+        publishDescendants(resultAccumulated);
+    }
+
+    protected void publishDescendants(Map<TaskBean, Task> resultAccumulated) {
+
     }
 }

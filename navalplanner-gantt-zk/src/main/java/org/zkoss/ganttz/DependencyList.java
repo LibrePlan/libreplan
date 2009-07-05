@@ -5,12 +5,15 @@
 
 package org.zkoss.ganttz;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.util.MenuBuilder;
+import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;
@@ -25,6 +28,46 @@ import org.zkoss.zul.impl.XulElement;
  * @author Francisco Javier Moran Rúa
  */
 public class DependencyList extends XulElement implements AfterCompose {
+
+    private final class DependencyVisibilityToggler implements
+            PropertyChangeListener {
+        private final TaskBean source;
+        private final TaskBean destination;
+        private final Dependency dependency;
+
+        private DependencyVisibilityToggler(TaskBean source,
+                TaskBean destination, Dependency dependency) {
+            this.source = source;
+            this.destination = destination;
+            this.dependency = dependency;
+        }
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (!evt.getPropertyName().equals("visible"))
+                return;
+            if (dependencyMustBeVisible() != isDependencyNowVisible()) {
+                toggleDependencyExistence(dependencyMustBeVisible());
+            }
+        }
+
+        void toggleDependencyExistence(boolean visible) {
+            if (visible) {
+                appendChild(dependency);
+                addContextMenu(dependency);
+            } else {
+                removeChild(dependency);
+            }
+        }
+
+        boolean isDependencyNowVisible() {
+            return dependency.getParent() != null;
+        }
+
+        boolean dependencyMustBeVisible() {
+            return source.isVisible() && destination.isVisible();
+        }
+    }
 
     private static final Log LOG = LogFactory.getLog(DependencyList.class);
 
@@ -43,9 +86,16 @@ public class DependencyList extends XulElement implements AfterCompose {
         return Planner.findComponentsOfType(Dependency.class, children);
     }
 
-    void addDependency(Dependency dependency) {
-        appendChild(dependency);
-        addContextMenu(dependency);
+    void addDependency(final Dependency dependency) {
+        Task source = dependency.getSource();
+        Task destination = dependency.getDestination();
+        DependencyVisibilityToggler visibilityToggler = new DependencyVisibilityToggler(
+                source.getTaskBean(), destination.getTaskBean(), dependency);
+        source.getTaskBean().addFundamentalPropertiesChangeListener(visibilityToggler);
+        destination.getTaskBean().addVisibilityPropertiesChangeListener(
+                visibilityToggler);
+        visibilityToggler.toggleDependencyExistence(visibilityToggler
+                .dependencyMustBeVisible());
     }
 
     private void addContextMenu(Dependency dependency) {

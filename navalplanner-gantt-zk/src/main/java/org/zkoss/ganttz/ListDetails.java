@@ -13,6 +13,9 @@ import org.zkoss.ganttz.TaskDetail.ITaskDetailNavigator;
 import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.TaskContainerBean;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zul.SimpleTreeModel;
 import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Tree;
@@ -30,16 +33,40 @@ public class ListDetails extends HtmlMacroComponent {
             TaskBean taskBean = (TaskBean) node.getData();
             Treerow treerow = new Treerow();
             treerow.setParent(item);
+            item.setOpen(isOpened(taskBean));
             Treecell treecell = new Treecell();
             treecell.setParent(treerow);
             final int[] path = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
                     node);
             TaskDetail taskDetail = TaskDetail.create(taskBean,
                     new TreeNavigator(tasksTreeModel, path));
+            if (taskBean instanceof TaskContainerBean) {
+                expandWhenOpened((TaskContainerBean) taskBean, item);
+            }
             taskDetail.setParent(treecell);
             detailsForBeans.put(taskBean, taskDetail);
             taskDetail.afterCompose();
         }
+
+        private void expandWhenOpened(final TaskContainerBean taskBean,
+                Treeitem item) {
+            item.addEventListener("onOpen", new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    OpenEvent openEvent = (OpenEvent) event;
+                    taskBean.setExpanded(openEvent.isOpen());
+                }
+            });
+        }
+
+    }
+
+    public boolean isOpened(TaskBean taskBean) {
+        if (taskBean instanceof TaskContainerBean) {
+            TaskContainerBean container = (TaskContainerBean) taskBean;
+            return container.isExpanded();
+        }
+        return true;
     }
 
     private Map<TaskBean, TaskDetail> detailsForBeans = new HashMap<TaskBean, TaskDetail>();
@@ -73,10 +100,6 @@ public class ListDetails extends HtmlMacroComponent {
                     position);
             TaskBean bean = getTaskBean(node);
             return detailsForBeans.get(bean);
-        }
-
-        private TaskBean getTaskBean(SimpleTreeNode node) {
-            return (TaskBean) node.getData();
         }
 
         @Override
@@ -119,15 +142,18 @@ public class ListDetails extends HtmlMacroComponent {
         this.taskBeans = taskBeans;
     }
 
+    private static TaskBean getTaskBean(SimpleTreeNode node) {
+        return (TaskBean) node.getData();
+    }
+
     private static List<SimpleTreeNode> asSimpleTreeNodes(
-            List<TaskBean> taskBeans2) {
+            List<TaskBean> taskBeans) {
         ArrayList<SimpleTreeNode> result = new ArrayList<SimpleTreeNode>();
-        for (TaskBean taskBean : taskBeans2) {
+        for (TaskBean taskBean : taskBeans) {
             SimpleTreeNode node = asSimpleTreeNode(taskBean);
             if (taskBean instanceof TaskContainerBean) {
                 TaskContainerBean container = (TaskContainerBean) taskBean;
-                node.getChildren()
-                .addAll(
+                node.getChildren().addAll(
                         asSimpleTreeNodes(container.getTasks()));
             }
             result.add(node);

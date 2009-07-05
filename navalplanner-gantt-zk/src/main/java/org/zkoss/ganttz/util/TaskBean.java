@@ -14,7 +14,10 @@ import java.util.Date;
  */
 public class TaskBean {
 
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(
+    private PropertyChangeSupport fundamentalProperties = new PropertyChangeSupport(
+            this);
+
+    private PropertyChangeSupport visibilityProperties = new PropertyChangeSupport(
             this);
 
     private String name;
@@ -24,6 +27,19 @@ public class TaskBean {
     private long lengthMilliseconds = 0;
 
     private String notes;
+
+    private boolean visible = true;
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    protected void setVisible(boolean visible) {
+        boolean previousValue = this.visible;
+        this.visible = visible;
+        visibilityProperties.firePropertyChange("visible", previousValue,
+                this.visible);
+    }
 
     public TaskBean() {
     }
@@ -49,14 +65,14 @@ public class TaskBean {
     public void setName(String name) {
         String previousValue = this.name;
         this.name = name;
-        propertyChangeSupport.firePropertyChange("name", previousValue,
+        fundamentalProperties.firePropertyChange("name", previousValue,
                 this.name);
     }
 
     public void setBeginDate(Date beginDate) {
         Date previousValue = this.beginDate;
         this.beginDate = beginDate;
-        propertyChangeSupport.firePropertyChange("beginDate", previousValue,
+        fundamentalProperties.firePropertyChange("beginDate", previousValue,
                 this.beginDate);
     }
 
@@ -67,7 +83,7 @@ public class TaskBean {
     public void setLengthMilliseconds(long lengthMilliseconds) {
         long previousValue = this.lengthMilliseconds;
         this.lengthMilliseconds = lengthMilliseconds;
-        propertyChangeSupport.firePropertyChange("lengthMilliseconds",
+        fundamentalProperties.firePropertyChange("lengthMilliseconds",
                 previousValue, this.lengthMilliseconds);
     }
 
@@ -75,12 +91,17 @@ public class TaskBean {
         return lengthMilliseconds;
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        this.propertyChangeSupport.addPropertyChangeListener(listener);
+    public void addVisibilityPropertiesChangeListener(
+            PropertyChangeListener listener) {
+        this.visibilityProperties.addPropertyChangeListener(listener);
+    }
+
+    public void addFundamentalPropertiesChangeListener(PropertyChangeListener listener) {
+        this.fundamentalProperties.addPropertyChangeListener(listener);
     }
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        this.propertyChangeSupport.removePropertyChangeListener(listener);
+        this.fundamentalProperties.removePropertyChangeListener(listener);
     }
 
     public Date getEndDate() {
@@ -94,7 +115,7 @@ public class TaskBean {
     public void setNotes(String notes) {
         String previousValue = this.notes;
         this.notes = notes;
-        propertyChangeSupport.firePropertyChange("notes", previousValue,
+        fundamentalProperties.firePropertyChange("notes", previousValue,
                 this.notes);
     }
 

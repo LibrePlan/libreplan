@@ -1,11 +1,13 @@
 zkDependency = {};
 
 zkDependency.origin = function(dependency) {
-    return document.getElementById(dependency.getAttribute("idTaskOrig"));
+    var id = dependency.getAttribute("idTaskOrig");
+    return document.getElementById(id);
 }
 
 zkDependency.destination = function(dependency) {
-    return document.getElementById(dependency.getAttribute("idTaskEnd"));
+    var id = dependency.getAttribute("idTaskEnd");
+    return document.getElementById(id);
 }
 
 zkDependency.draw = function(dependency) {
@@ -30,11 +32,11 @@ zkDependency.draw = function(dependency) {
 zkDependency.init = function(dependency) {
     zkPlanner.setupArrow(dependency);    
     YAHOO.util.Event.onDOMReady(function() {
+        var origin = zkDependency.origin(dependency);
+        var destination = zkDependency.destination(dependency);
         zkDependency.draw(dependency);
+        zkTask.addRelatedDependency(origin, dependency);
+        zkTask.addRelatedDependency(destination, dependency);
     });
-    var origin = zkDependency.origin(dependency);
-    var destination = zkDependency.destination(dependency);
-    zkTask.addRelatedDependency(origin, dependency);
-    zkTask.addRelatedDependency(destination, dependency);
 }
 
