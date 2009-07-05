@@ -187,16 +187,6 @@ public class TaskList extends XulElement implements AfterCompose {
         return result;
     }
 
-    private List<TaskContainer> getTaskContainers() {
-        ArrayList<TaskContainer> result = new ArrayList<TaskContainer>();
-        for (Task task : getTasks()) {
-            if (task instanceof TaskContainer) {
-                result.add((TaskContainer) task);
-            }
-        }
-        return result;
-    }
-
     private int getTasksNumber() {
         return getTasks().size();
     }
