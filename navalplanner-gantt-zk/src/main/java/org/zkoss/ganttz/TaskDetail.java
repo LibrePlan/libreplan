@@ -234,6 +234,9 @@ public class TaskDetail extends GenericForwardComposer {
         registerOnEnterListener(startDateTextBox);
         registerOnEnterListener(endDateTextBox);
 
+        registerOnEnterOpenDateBox(startDateBox);
+        registerOnEnterOpenDateBox(endDateBox);
+
         registerBlurListener(startDateBox);
         registerBlurListener(endDateBox);
 
@@ -294,7 +297,16 @@ public class TaskDetail extends GenericForwardComposer {
                 userWantsDateBox(textBox);
             }
         });
+    }
 
+    private void registerOnEnterOpenDateBox(final Datebox datebox) {
+        datebox.addEventListener("onOK", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                datebox.setOpen(true);
+            }
+        });
     }
 
     private void findComponentsForStartDateCell(Treecell treecell) {
