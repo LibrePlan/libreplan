@@ -8,9 +8,7 @@ import java.util.Date;
  * This class contains the information of a task. It can be modified and
  * notifies of the changes to the interested parties. <br/>
  * Created at Apr 24, 2009
- *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public class TaskBean {
 
@@ -81,6 +79,10 @@ public class TaskBean {
     }
 
     public void setLengthMilliseconds(long lengthMilliseconds) {
+        if (lengthMilliseconds < 0)
+            throw new IllegalArgumentException(
+                    "a task must not have a negative length. Received value: "
+                            + lengthMilliseconds);
         long previousValue = this.lengthMilliseconds;
         this.lengthMilliseconds = lengthMilliseconds;
         fundamentalProperties.firePropertyChange("lengthMilliseconds",
@@ -96,7 +98,8 @@ public class TaskBean {
         this.visibilityProperties.addPropertyChangeListener(listener);
     }
 
-    public void addFundamentalPropertiesChangeListener(PropertyChangeListener listener) {
+    public void addFundamentalPropertiesChangeListener(
+            PropertyChangeListener listener) {
         this.fundamentalProperties.addPropertyChangeListener(listener);
     }
 

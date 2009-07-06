@@ -318,13 +318,14 @@ public class TaskDetail extends GenericForwardComposer {
     }
 
     public void updateBean() {
-        if (getEndDateBox().getValue().before(getStartDateBox().getValue())) {
-            updateComponents();
-            return;
+        Date begin = getStartDateBox().getValue();
+        Date end = getEndDateBox().getValue();
+        if (end.before(begin)) {
+            end = new Date(begin.getTime() + taskBean.getLengthMilliseconds());
         }
         taskBean.setName(getNameBox().getValue());
-        taskBean.setBeginDate(getStartDateBox().getValue());
-        taskBean.setEndDate(getEndDateBox().getValue());
+        taskBean.setBeginDate(begin);
+        taskBean.setEndDate(end);
     }
 
     private void updateComponents() {
