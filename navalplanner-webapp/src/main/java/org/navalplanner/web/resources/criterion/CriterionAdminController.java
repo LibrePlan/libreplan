@@ -149,10 +149,11 @@ public class CriterionAdminController extends GenericForwardComposer {
         onlyOneVisible.showOnly(listing);
         try {
             criterionsModel.saveCriterion();
-            reload();
             messagesForUser.showMessage(Level.INFO, "Criterio gardado");
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
+        } finally {
+            reload();
         }
     }
 
