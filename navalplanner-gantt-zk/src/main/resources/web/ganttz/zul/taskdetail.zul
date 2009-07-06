@@ -1,13 +1,16 @@
 <treerow sclass="taskdetail_grid">
+    <zscript><![CDATA[
+    ]]>
+</zscript>
     <treecell>
-        <textbox ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" value="" onChange="top.updateBean();" class="task_title"/>
+        <textbox ctrlKeys="#down#up#right#left" class="task_title"/>
     </treecell>
     <treecell>
-        <textbox value="" ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" onChange="top.updateBean();" onOK="top.userWantsDateBox(self);" />
-        <datebox  compact="true" onChange="top.updateBean();" visible="${false}" onBlur="top.dateBoxHasLostFocus(self);"/>
+        <textbox value="" ctrlKeys="#down#up#right#left"  />
+        <datebox  compact="true" visible="${false}"/>
     </treecell>
     <treecell>
-        <textbox ctrlKeys="#down#up#right#left" onCtrlKey="top.userWantsToMove(self,event);" value="" onChange="top.updateBean();"  onOK="top.userWantsDateBox(self);"/>
-        <datebox compact="true" onChange="top.updateBean();" visible ="${false}" onBlur="top.dateBoxHasLostFocus(self);" ctrlKeys="#down" onCtrlKey="top.userWantsDateBox(self)"/>
+        <textbox ctrlKeys="#down#up#right#left"  />
+        <datebox compact="true" visible ="${false}"/>
     </treecell>
 </treerow>

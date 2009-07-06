@@ -3,6 +3,7 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
@@ -120,10 +123,6 @@ public class TaskDetail extends GenericForwardComposer {
         }
     }
 
-    private Textbox[] getTextBoxes() {
-        return new Textbox[] { nameBox, startDateTextBox, endDateTextBox };
-    }
-
     public void focusGoUp(int position) {
         TaskDetail aboveDetail = taskDetailNavigator.getAboveDetail();
         if (aboveDetail != null) {
@@ -136,7 +135,7 @@ public class TaskDetail extends GenericForwardComposer {
     }
 
     public void receiveFocus(int position) {
-        this.getTextBoxes()[position].focus();
+        this.getTextBoxes().get(position).focus();
     }
 
     public void focusGoDown(int position) {
@@ -159,8 +158,8 @@ public class TaskDetail extends GenericForwardComposer {
 
     public void userWantsToMove(Textbox textbox, KeyEvent keyEvent) {
         Navigation navigation = Navigation.getIntentFrom(keyEvent);
-        List<Textbox> textBoxSiblingsIncludedItself = getTextBoxSiblingsIncludedItself(textbox);
-        int position = textBoxSiblingsIncludedItself.indexOf(textbox);
+        List<Textbox> textBoxes = getTextBoxes();
+        int position = textBoxes.indexOf(textbox);
         switch (navigation) {
         case UP:
             focusGoUp(position);
@@ -170,14 +169,14 @@ public class TaskDetail extends GenericForwardComposer {
             break;
         case LEFT:
             if (position == 0) {
-                focusGoUp(getTextBoxes().length - 1);
+                focusGoUp(getTextBoxes().size() - 1);
             } else {
-                textBoxSiblingsIncludedItself.get(position - 1).focus();
+                textBoxes.get(position - 1).focus();
             }
             break;
         case RIGHT:
-            if (position < textBoxSiblingsIncludedItself.size() - 1)
-                textBoxSiblingsIncludedItself.get(position + 1).focus();
+            if (position < textBoxes.size() - 1)
+                textBoxes.get(position + 1).focus();
             else {
                 focusGoDown(0);
             }
@@ -187,12 +186,8 @@ public class TaskDetail extends GenericForwardComposer {
         }
     }
 
-    private List<Textbox> getTextBoxSiblingsIncludedItself(Textbox textbox) {
-        Component parent = textbox.getParent();
-        List<Component> children = parent.getChildren();
-        List<Textbox> textboxes = Planner.findComponentsOfType(Textbox.class,
-                children);
-        return textboxes;
+    private List<Textbox> getTextBoxes() {
+        return Arrays.asList(nameBox, startDateTextBox, endDateTextBox);
     }
 
     /**
@@ -215,20 +210,36 @@ public class TaskDetail extends GenericForwardComposer {
         associatedTextBox.setVisible(true);
     }
 
-
     @Override
     public void doAfterCompose(Component component) throws Exception {
         super.doAfterCompose(component);
-        component.setVariable("top", this, true);
         findComponents((Treerow) component);
+        registerListeners();
         updateComponents();
-        taskBean.addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
+        taskBean
+                .addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
 
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                updateComponents();
-            }
-        });
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        updateComponents();
+                    }
+                });
+    }
+
+    private void registerListeners() {
+        registerKeyboardListener(nameBox);
+        registerKeyboardListener(startDateTextBox);
+        registerKeyboardListener(endDateTextBox);
+
+        registerOnEnterListener(startDateTextBox);
+        registerOnEnterListener(endDateTextBox);
+
+        registerBlurListener(startDateBox);
+        registerBlurListener(endDateBox);
+
+        registerOnChange(nameBox);
+        registerOnChange(startDateBox);
+        registerOnChange(endDateBox);
     }
 
     private void findComponents(Treerow row) {
@@ -255,6 +266,37 @@ public class TaskDetail extends GenericForwardComposer {
         nameBox = (Textbox) treecell.getChildren().get(0);
     }
 
+    private void registerKeyboardListener(final Textbox textBox) {
+        textBox.addEventListener("onCtrlKey", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                userWantsToMove(textBox, (KeyEvent) event);
+            }
+        });
+    }
+
+    private void registerOnChange(Component component) {
+        component.addEventListener("onChange", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                updateBean();
+            }
+        });
+    }
+
+    private void registerOnEnterListener(final Textbox textBox) {
+        textBox.addEventListener("onOK", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                userWantsDateBox(textBox);
+            }
+        });
+
+    }
+
     private void findComponentsForStartDateCell(Treecell treecell) {
         startDateTextBox = findTextBoxOfCell(treecell);
         startDateBox = findDateBoxOfCell(treecell);
@@ -263,6 +305,16 @@ public class TaskDetail extends GenericForwardComposer {
     private void findComponentsForEndDateCell(Treecell treecell) {
         endDateBox = findDateBoxOfCell(treecell);
         endDateTextBox = findTextBoxOfCell(treecell);
+    }
+
+    private void registerBlurListener(final Datebox datebox) {
+        datebox.addEventListener("onBlur", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                dateBoxHasLostFocus(datebox);
+            }
+        });
     }
 
     public void updateBean() {
