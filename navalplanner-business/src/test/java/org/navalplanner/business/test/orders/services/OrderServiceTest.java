@@ -26,6 +26,7 @@ import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.services.IOrderService;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.services.CriterionService;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -218,8 +219,8 @@ public class OrderServiceTest {
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
 
-        Criterion criterion = Criterion.withNameAndType("Test"
-                + UUID.randomUUID().toString(), "test");
+        CriterionType criterionType = new CriterionType("test");
+        Criterion criterion = new Criterion("Test" + UUID.randomUUID(), criterionType);
         criterionService.save(criterion);
 
         hoursGroup.addCriterion(criterion);
@@ -248,7 +249,7 @@ public class OrderServiceTest {
 
                     Criterion criterion = criterions.iterator().next();
 
-                    assertThat(criterion.getType(), equalTo("test"));
+                    assertThat(criterion.getType().getName(), equalTo("test"));
                 } catch (InstanceNotFoundException e) {
                     throw new RuntimeException(e);
                 }

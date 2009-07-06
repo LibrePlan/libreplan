@@ -1,9 +1,12 @@
 package org.navalplanner.business.resources.daos.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -29,14 +32,14 @@ public class CriterionDAO extends GenericDaoHibernate<Criterion, Long>
 
     @Override
     public List<Criterion> findByNameAndType(Criterion criterion) {
+        if (criterion.getType() == null) return new ArrayList<Criterion>();
+
         Criteria c = getSession().createCriteria(Criterion.class);
+        c.add(Restrictions.eq("name", criterion.getName()).ignoreCase())
+                .createCriteria("type")
+                .add(Restrictions.eq("name", criterion.getType().getName()).ignoreCase());
 
-        c.add(Restrictions.eq("name", criterion.getName()).ignoreCase());
-        c.add(Restrictions.eq("type", criterion.getType()).ignoreCase());
-
-        List result = (List<Criterion>) c.list();
-
-        return result;
+        return (List<Criterion>) c.list();
     }
 
     public Criterion findUniqueByNameAndType(Criterion criterion) throws InstanceNotFoundException {
@@ -75,5 +78,4 @@ public class CriterionDAO extends GenericDaoHibernate<Criterion, Long>
             throw new RuntimeException(ex);
         }
     }
-
 }

@@ -13,6 +13,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionOnData;
@@ -22,6 +23,7 @@ import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.CriterionService;
+import org.navalplanner.business.resources.services.CriterionTypeService;
 import org.navalplanner.business.resources.services.ResourceService;
 import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
@@ -44,6 +46,7 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 /**
  * Test cases for {@link CriterionService} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
@@ -55,6 +58,9 @@ public class CriterionServiceTest {
     private CriterionService criterionService;
 
     @Autowired
+    private CriterionTypeService criterionTypeService;
+
+    @Autowired
     private ResourceService resourceService;
 
     @Autowired
@@ -62,7 +68,7 @@ public class CriterionServiceTest {
 
     @Test(expected = InvalidStateException.class)
     public void testCantSaveCriterionWithoutNameAndType() throws Exception {
-        Criterion criterion = Criterion.withNameAndType("valido", "valido");
+        Criterion criterion = CriterionDAOTest.createValidCriterion("valido");
         criterion.setName("");
         criterionService.save(criterion);
         sessionFactory.getCurrentSession().flush();
@@ -244,7 +250,7 @@ public class CriterionServiceTest {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         criterionService.save(criterion);
         ICriterionType<?> type = createTypeThatMatches(criterion);
-        worker1.addSatisfaction(new CriterionWithItsType(type, criterion));
+        worker1.addSatisfaction(new CriterionWithItsType(criterion.getType(), criterion));
         resourceService.saveResource(worker1);
         Resource workerReloaded = criterionService
                 .onTransaction(new OnTransaction<Resource>() {
@@ -262,7 +268,7 @@ public class CriterionServiceTest {
                     }
                 });
         Collection<CriterionSatisfaction> satisfactionsFor = workerReloaded
-                .getSatisfactionsFor(type);
+                .getSatisfactionsFor(criterion.getType());
         Criterion reloadedCriterion = satisfactionsFor.iterator().next()
                 .getCriterion();
         Assume.assumeTrue(!reloadedCriterion.getClass().equals(

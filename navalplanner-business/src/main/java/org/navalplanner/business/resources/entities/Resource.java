@@ -176,7 +176,7 @@ public abstract class Resource {
     public void forceLoadSatisfactions() {
         for (CriterionSatisfaction criterionSatisfaction : criterionSatisfactions) {
             criterionSatisfaction.getCriterion().getName();
-            criterionSatisfaction.getCriterion().getType();
+            criterionSatisfaction.getCriterion().getType().getName();
         }
     }
 

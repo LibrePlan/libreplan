@@ -14,6 +14,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
@@ -328,8 +329,8 @@ public class OrderElementController extends GenericForwardComposer {
             for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
                 Set<Criterion> criterions = hoursGroup.getCriterions();
                 for (Criterion criterion : criterions) {
-                    String type = criterion.getType();
-                    criterionTypes.add(model.getCriterionTypeByName(type));
+                    CriterionType type = criterion.getType();
+                    criterionTypes.add(model.getCriterionTypeByName(type.getName()));
                 }
             }
 

@@ -14,12 +14,14 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.impl.CriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionOnData;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.services.CriterionService;
+import org.navalplanner.business.resources.services.CriterionTypeService;
 import org.navalplanner.business.resources.services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -32,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Implementation of {@link CriterionService} using {@link CriterionDAO} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -43,6 +46,9 @@ public class CriterionServiceImpl implements CriterionService {
 
     @Autowired
     private ResourceService resourceService;
+
+    @Autowired
+    private CriterionTypeService criterionTypeService;
 
     public boolean exists(Criterion criterion) {
         return criterionDAO.exists(criterion.getId())
@@ -66,7 +72,15 @@ public class CriterionServiceImpl implements CriterionService {
     }
 
     @Transactional(rollbackFor=ValidationException.class)
+    @Override
     public void save(Criterion entity) throws ValidationException {
+
+        // Save criterion.type if it's new
+        CriterionType criterionType = entity.getType();
+        if (criterionType.getId() == null) {
+            entity.setType(saveCriterionType(criterionType));
+        }
+
         criterionDAO.save(entity);
         if (criterionDAO.findByNameAndType(entity).size() > 1) {
 
@@ -78,6 +92,16 @@ public class CriterionServiceImpl implements CriterionService {
             throw new ValidationException(invalidValues,
                 "Couldn't save new criterion");
         }
+    }
+
+    private CriterionType saveCriterionType(CriterionType criterionType) throws ValidationException {
+        if (criterionTypeService.exists(criterionType)) {
+            criterionType = criterionTypeService.findUniqueByName(criterionType.getName());
+        } else {
+            criterionTypeService.save(criterionType);
+        }
+
+        return criterionType;
     }
 
     @Override

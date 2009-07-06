@@ -8,9 +8,11 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionSatisfactionDAO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.impl.WorkerDaoHibernate;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -43,6 +45,9 @@ public class CriterionSatisfactionDAOTest {
     private ICriterionDAO criterionDAO;
 
     @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
+    @Autowired
     private WorkerDaoHibernate workerDAO;
 
     @Test
@@ -55,6 +60,7 @@ public class CriterionSatisfactionDAOTest {
 
     private CriterionSatisfaction createValidCriterionSatisfaction(int year) {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
+        saveCriterionType(criterion);
         criterionDAO.save(criterion);
         Worker worker = new Worker("firstname", "surname", "nif", 4);
         workerDAO.save(worker);
@@ -63,9 +69,23 @@ public class CriterionSatisfactionDAOTest {
         return criterionSatisfaction;
     }
 
+    private void saveCriterionType(Criterion criterion) {
+        CriterionType criterionType = criterion.getType();
+        if (criterionTypeDAO.existsByName(criterionType)) {
+            try {
+                criterionType = criterionTypeDAO.findUniqueByName(criterionType);
+            } catch (InstanceNotFoundException ex) {
+            }
+        } else {
+            criterionTypeDAO.save(criterionType);
+        }
+        criterion.setType(criterionType);
+    }
+
     @Test(expected = DataIntegrityViolationException.class)
     public void testNotSaveWithTransientCriterionAndWorker() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
+        saveCriterionType(criterion);
         Worker worker = new Worker("firstname", "surname", "nif", 4);
         CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
                 year(2007), criterion, worker);

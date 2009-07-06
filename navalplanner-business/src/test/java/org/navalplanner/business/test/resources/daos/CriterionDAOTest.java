@@ -14,7 +14,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -34,25 +36,51 @@ public class CriterionDAOTest {
     @Autowired
     private ICriterionDAO criterionDAO;
 
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
     @Test
     public void testInSpringContainer() {
         assertNotNull(criterionDAO);
     }
 
+    public static Criterion createValidCriterion() {
+        return createValidCriterion(UUID.randomUUID().toString());
+    }
+
+    public static Criterion createValidCriterion(String name) {
+        CriterionType criterionType = CriterionTypeDAOTest.createValidCriterionType();
+
+        return Criterion.withNameAndType(name, criterionType);
+    }
+
+    private void saveCriterionType(Criterion criterion) {
+        CriterionType criterionType = criterion.getType();
+        if (criterionTypeDAO.existsByName(criterionType)) {
+            try {
+                criterionType = criterionTypeDAO.findUniqueByName(criterionType);
+            } catch (InstanceNotFoundException ex) {
+
+            }
+        } else {
+            criterionTypeDAO.save(criterionType);
+        }
+        criterion.setType(criterionType);
+    }
+
     @Test
     public void testSaveCriterions() throws Exception {
         Criterion criterion = createValidCriterion();
+        // A valid CriterionType must exists before saving Criterion
+        saveCriterionType(criterion);
         criterionDAO.save(criterion);
         assertTrue(criterionDAO.exists(criterion.getId()));
-    }
-
-    public static Criterion createValidCriterion() {
-        return Criterion.withNameAndType(UUID.randomUUID().toString(), "pruebaType");
     }
 
     @Test
     public void testRemove() throws InstanceNotFoundException {
         Criterion criterion = createValidCriterion();
+         saveCriterionType(criterion);
         criterionDAO.save(criterion);
         criterionDAO.remove(criterion.getId());
         assertFalse(criterionDAO.exists(criterion.getId()));
@@ -62,7 +90,9 @@ public class CriterionDAOTest {
     public void testList() {
         int previous = criterionDAO.list(Criterion.class).size();
         Criterion criterion1 = createValidCriterion();
+        saveCriterionType(criterion1);
         Criterion criterion2 = createValidCriterion();
+        saveCriterionType(criterion2);
         criterionDAO.save(criterion1);
         criterionDAO.save(criterion2);
         List<Criterion> list = criterionDAO.list(Criterion.class);

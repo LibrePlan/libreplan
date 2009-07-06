@@ -132,10 +132,6 @@ public class CriterionTest {
     public void testCanBeRelatedTo() throws Exception {
         assertTrue(PredefinedCriterionTypes.LOCATION_GROUP
                 .criterionCanBeRelatedTo(Resource.class));
-        assertTrue(PredefinedCriterionTypes.LOCATION_GROUP
-                .criterionCanBeRelatedTo(Worker.class));
-        assertFalse(PredefinedCriterionTypes.WORK_RELATIONSHIP
-                .criterionCanBeRelatedTo(Resource.class));
         assertTrue(PredefinedCriterionTypes.WORK_RELATIONSHIP
                 .criterionCanBeRelatedTo(Worker.class));
     }

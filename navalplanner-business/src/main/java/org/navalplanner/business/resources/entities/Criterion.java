@@ -6,6 +6,9 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
+import org.navalplanner.business.resources.services.CriterionTypeService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * A criterion stored in the database <br />
@@ -21,19 +24,16 @@ public class Criterion implements ICriterion {
     @NotEmpty
     private String name;
 
-    @NotEmpty
-    private String type;
+    @NotNull
+    private CriterionType type;
 
     private boolean active = true;
 
-    public static Criterion ofType(String type) {
-        Validate.notEmpty(type);
-        Criterion result = new Criterion();
-        result.type = type;
-        return result;
+    public static Criterion ofType(CriterionType type) {
+        return new Criterion(type);
     }
 
-    public static Criterion withNameAndType(String name, String type) {
+    public static Criterion withNameAndType(String name, CriterionType type) {
         return new Criterion(name, type);
     }
 
@@ -43,11 +43,18 @@ public class Criterion implements ICriterion {
     public Criterion() {
     }
 
-    private Criterion(String name, String type) {
-        Validate.notEmpty(name);
-        Validate.notEmpty(type);
+    public Criterion(CriterionType type) {
+        Validate.notNull(type);
+
         this.type = type;
+    }
+
+    public Criterion(String name, CriterionType type) {
+        Validate.notEmpty(name);
+        Validate.notNull(type);
+
         this.name = name;
+        this.type = type;
     }
 
     public Long getId() {
@@ -59,6 +66,7 @@ public class Criterion implements ICriterion {
         return !resource.getCurrentSatisfactionsFor(this).isEmpty();
     }
 
+    @Override
     public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
         return !resource.query().from(this).enforcedInAll(
                 Interval.range(start, end)).result().isEmpty();
@@ -72,8 +80,12 @@ public class Criterion implements ICriterion {
         this.name = name;
     }
 
-    public String getType() {
+    public CriterionType getType() {
         return type;
+    }
+
+    public void setType(CriterionType type) {
+        this.type = type;
     }
 
     public boolean isActive() {

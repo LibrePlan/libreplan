@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="org.navalplanner.business.resources.entities">
+<hibernate-mapping default-access="field" package="org.navalplanner.business.resources.entities">
   <class name="Resource">
     <id access="field" name="id">
       <generator class="native"/>
@@ -10,7 +10,7 @@
             Hibernate infers type="integer".
         -->
     <version access="field" name="version" type="long"/>
-    <set access="field" inverse="true" name="criterionSatisfactions" cascade="all-delete-orphan">
+    <set access="field" cascade="all-delete-orphan" inverse="true" name="criterionSatisfactions">
       <key column="resource" not-null="true"/>
       <one-to-many class="CriterionSatisfaction"/>
     </set>
@@ -23,17 +23,18 @@
     </joined-subclass>
   </class>
 
+  <!-- Criterion -->
   <class name="Criterion">
     <id access="field" name="id">
       <generator class="native"/>
     </id>
     <version access="field" name="version" type="long"/>
-    <property name="name" access="field"/>
-    <property name="type" access="field"/>
+    <property access="field" name="name"/>
     <property access="field" name="active"/>
-
+    <many-to-one access="field" name="type" column="id_criterion_type" not-null="true" />
   </class>
 
+  <!-- CriterionSatisfaction -->
   <class name="CriterionSatisfaction">
     <id access="field" name="id">
       <generator class="native"/>
@@ -41,7 +42,26 @@
     <version access="field" name="version" type="long"/>
     <property access="field" name="startDate" not-null="true"/>
     <property access="field" name="finishDate"/>
-    <many-to-one name="criterion" access="field" not-null="true" />
+    <many-to-one access="field" name="criterion" not-null="true"/>
     <many-to-one access="field" column="resource" name="resource" not-null="true"/>
   </class>
+
+  <!-- CriterionType -->
+  <class name="CriterionType">
+    <id name="id">
+      <generator class="native"/>
+    </id>
+    <version name="version" type="long"/>
+    <property name="name" unique="true"/>
+    <property name="allowSimultaneousCriterionsPerResource"/>
+    <property name="allowHierarchy"/>
+    <property name="allowAdding"/>
+    <property name="allowEditing"/>
+    <property name="resource">
+      <type name="org.hibernate.type.EnumType">
+        <param name="enumClass">org.navalplanner.business.resources.entities.ResourceEnum</param>
+      </type>
+    </property>
+  </class>
+
 </hibernate-mapping>

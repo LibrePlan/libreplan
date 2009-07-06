@@ -6,25 +6,26 @@ import java.util.List;
 /**
  * This class defines some criterion types known a priori<br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
-    WORK_RELATIONSHIP(false, false, false, false, Worker.class) {
+   WORK_RELATIONSHIP(false, false, false, false, ResourceEnum.WORKER) {
         @Override
-        public List<Criterion> getPredefined() {
-            return WorkingRelationship.getCriterions();
+        public List<String> getPredefined() {
+            return WorkingRelationship.getCriterionNames();
         }
     },
-    LOCATION_GROUP(false, true, true, true, Resource.class) {
+    LOCATION_GROUP(false, true, true, true, ResourceEnum.RESOURCE) {
         @Override
-        public List<Criterion> getPredefined() {
+        public List<String> getPredefined() {
             return Arrays.asList();
         }
     },
-    LEAVE(false, false, false, false, Worker.class) {
+    LEAVE(false, false, false, false, ResourceEnum.WORKER) {
         @Override
-        public List<Criterion> getPredefined() {
-            return LeaveCriterions.getCriterions();
+        public List<String> getPredefined() {
+            return LeaveCriterions.getCriterionNames();
         }
     };
 
@@ -36,26 +37,22 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
     private final boolean allowEditing;
 
-    private List<Class<? extends Resource>> classes;
+    private final ResourceEnum resource;
 
     private PredefinedCriterionTypes(boolean allowHierarchy,
             boolean allowSimultaneousCriterionsPerResource,
             boolean allowAdding, boolean allowEditing,
-            Class<? extends Resource>... klasses) {
+            ResourceEnum resource) {
         this.allowHierarchy = allowHierarchy;
         this.allowSimultaneousCriterionsPerResource = allowSimultaneousCriterionsPerResource;
         this.allowAdding = allowAdding;
         this.allowEditing = allowEditing;
-        this.classes = Arrays.asList(klasses);
+        this.resource = resource;
     }
 
     @Override
-    public boolean criterionCanBeRelatedTo(Class<? extends Resource> klass) {
-        for (Class<? extends Resource> c : classes) {
-            if (c.isAssignableFrom(klass))
-                return true;
-        }
-        return false;
+    public String getName() {
+        return name();
     }
 
     @Override
@@ -69,46 +66,6 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
     }
 
     @Override
-    public boolean contains(ICriterion criterion) {
-        if (criterion instanceof Criterion) {
-            Criterion c = (Criterion) criterion;
-            return this.getType().equals(c.getType());
-        } else
-            return false;
-    }
-
-    @Override
-    public Criterion createCriterion(String name) {
-        return Criterion.withNameAndType(name, getType());
-    }
-
-    @Override
-    public Criterion createCriterionWithoutNameYet() {
-        return Criterion.ofType(getType());
-    }
-
-    public abstract List<Criterion> getPredefined();
-
-    private String getType() {
-        return name();
-    }
-
-    public static ICriterionType<Criterion> getType(String type) {
-        for (PredefinedCriterionTypes predefinedType : PredefinedCriterionTypes
-                .values()) {
-            if (predefinedType.name().equals(type))
-                return predefinedType;
-        }
-        throw new RuntimeException("not found "
-                + PredefinedCriterionTypes.class.getName() + " type for "
-                + type);
-    }
-
-    public String getName() {
-        return name();
-    }
-
-    @Override
     public boolean allowAdding() {
         return allowAdding;
     }
@@ -118,4 +75,30 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
         return allowEditing;
     }
 
+    @Override
+    public Criterion createCriterion(String name) {
+        return new Criterion(name, CriterionType.asCriterionType(this));
+    }
+
+    @Override
+    public Criterion createCriterionWithoutNameYet() {
+        return createCriterion("");
+    }
+
+    @Override
+    public boolean contains(ICriterion criterion) {
+        if (criterion instanceof Criterion) {
+            Criterion c = (Criterion) criterion;
+            return CriterionType.asCriterionType(this).equals(c.getType());
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean criterionCanBeRelatedTo(Class<? extends Resource> klass) {
+        return resource.isAssignableFrom(klass);
+    }
+
+    public abstract List<String> getPredefined();
 }
