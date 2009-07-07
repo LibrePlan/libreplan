@@ -31,6 +31,6 @@ public enum ResourceEnum {
     }
 
     public boolean isAssignableFrom(Class clase) {
-        return asClass().equals(clase);
+        return asClass().isAssignableFrom(clase);
     }
 }
