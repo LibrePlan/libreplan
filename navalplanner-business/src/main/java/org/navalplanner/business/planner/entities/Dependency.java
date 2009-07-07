@@ -1,5 +1,7 @@
 package org.navalplanner.business.planner.entities;
 
+import org.apache.commons.lang.Validate;
+
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
@@ -29,9 +31,14 @@ public class Dependency {
     public Dependency() {
     }
 
-    private Dependency(TaskElement origin, TaskElement end, Type type) {
+    private Dependency(TaskElement origin, TaskElement destination, Type type) {
+        Validate.notNull(origin);
+        Validate.notNull(destination);
+        Validate.notNull(type);
+        Validate.isTrue(!origin.equals(destination),
+                "a dependency must have a different origin than destination");
         this.origin = origin;
-        this.destination = end;
+        this.destination = destination;
         this.type = type;
     }
 
