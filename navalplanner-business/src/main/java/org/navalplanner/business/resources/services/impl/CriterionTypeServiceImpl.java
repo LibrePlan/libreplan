@@ -1,6 +1,7 @@
 package org.navalplanner.business.resources.services.impl;
 
 
+import java.util.List;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -47,6 +48,11 @@ public class CriterionTypeServiceImpl implements CriterionTypeService {
         } catch (InstanceNotFoundException e) {
             return null;
         }
+    }
+
+    @Override
+    public List<CriterionType> getAll() {
+        return criterionTypeDAO.list(CriterionType.class);
     }
 
     @Override

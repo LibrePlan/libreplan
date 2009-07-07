@@ -401,8 +401,8 @@ public abstract class Resource {
         return criterionSatisfactions.contains(satisfaction);
     }
 
-    public void checkNotOverlaps(List<ICriterionType<?>> types) {
-        for (ICriterionType<?> criterionType : types) {
+    public void checkNotOverlaps(List<CriterionType> types) {
+        for (CriterionType criterionType : types) {
             if (!criterionType.allowSimultaneousCriterionsPerResource()) {
                 List<CriterionSatisfaction> satisfactions = query().from(
                         criterionType).sortByStartDate().result();

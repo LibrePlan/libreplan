@@ -10,8 +10,9 @@ import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.ICriterionType;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.services.CriterionService;
+import org.navalplanner.business.resources.services.CriterionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -33,7 +34,10 @@ public class OrderElementModel implements IOrderElementModel {
     @Autowired
     private CriterionService criterionService;
 
-    private Map<String, ICriterionType<?>> mapCriterionTypes = new HashMap<String, ICriterionType<?>>();
+    @Autowired
+    private CriterionTypeService criterionTypeService;
+
+    private Map<String, CriterionType> mapCriterionTypes = new HashMap<String, CriterionType>();
 
     @Override
     public OrderElement getOrderElement() {
@@ -59,12 +63,11 @@ public class OrderElementModel implements IOrderElementModel {
     }
 
     @Override
-    public List<ICriterionType<?>> getCriterionTypes() {
-        List<ICriterionType<?>> criterionTypes = criterionsBootstrap
-                .getTypes();
+    public List<CriterionType> getCriterionTypes() {
+        List<CriterionType> criterionTypes = criterionTypeService.getAll();
 
         if (mapCriterionTypes.isEmpty()) {
-            for (ICriterionType<?> criterionType : criterionTypes) {
+            for (CriterionType criterionType : criterionTypes) {
                 mapCriterionTypes.put(criterionType.getName(), criterionType);
             }
         }
@@ -73,10 +76,10 @@ public class OrderElementModel implements IOrderElementModel {
     }
 
     @Override
-    public ICriterionType<?> getCriterionTypeByName(String name) {
+    public CriterionType getCriterionTypeByName(String name) {
         if (mapCriterionTypes.isEmpty()) {
-            for (ICriterionType<?> criterionType : criterionsBootstrap
-                    .getTypes()) {
+            for (CriterionType criterionType : criterionTypeService
+                    .getAll()) {
                 mapCriterionTypes.put(criterionType.getName(), criterionType);
             }
         }
@@ -85,7 +88,7 @@ public class OrderElementModel implements IOrderElementModel {
     }
 
     @Override
-    public List<Criterion> getCriterionsFor(ICriterionType<?> type) {
+    public List<Criterion> getCriterionsFor(CriterionType type) {
         return (List<Criterion>) criterionService.getCriterionsFor(type);
     }
 

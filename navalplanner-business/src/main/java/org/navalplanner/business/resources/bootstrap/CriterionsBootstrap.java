@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -41,14 +40,6 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
     private List<ICriterionTypeProvider> providers;
 
     public CriterionsBootstrap() {
-    }
-
-    public List<ICriterionType<?>> getTypes() {
-        ArrayList<ICriterionType<?>> result = new ArrayList<ICriterionType<?>>();
-        for (ICriterionTypeProvider provider : providers) {
-            result.addAll(provider.getRequiredCriterions().keySet());
-        }
-        return result;
     }
 
     @Override

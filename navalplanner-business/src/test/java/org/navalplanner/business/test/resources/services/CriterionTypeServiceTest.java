@@ -1,5 +1,7 @@
 package org.navalplanner.business.test.resources.services;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.UUID;
 import org.hibernate.exception.ConstraintViolationException;
@@ -13,7 +15,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
@@ -30,33 +31,45 @@ public class CriterionTypeServiceTest {
     @Autowired
     private CriterionTypeService criterionTypeService;
 
+    public CriterionType createValidCriterionType() {
+        String unique = UUID.randomUUID().toString();
+        return createValidCriterionType(unique);
+    }
+
     public CriterionType createValidCriterionType(String name) {
         return new CriterionType(name);
     }
 
     @Test
     public void testSaveCriterionType() throws ValidationException {
-        String unique = UUID.randomUUID().toString();
-        CriterionType criterionType = createValidCriterionType(unique);
+        CriterionType criterionType = createValidCriterionType();
         criterionTypeService.save(criterionType);
         assertTrue(criterionTypeService.exists(criterionType));
     }
 
     @Test
     public void testSaveCriterionTypeTwice() throws ValidationException {
-        String unique = UUID.randomUUID().toString();
-        CriterionType criterionType = createValidCriterionType(unique);
+        CriterionType criterionType = createValidCriterionType();
         criterionTypeService.save(criterionType);
         criterionTypeService.save(criterionType);
         assertTrue(criterionTypeService.exists(criterionType));
     }
 
-     @Test(expected=ConstraintViolationException.class)
-    public void testCannotSaveTwoCriterionTypesWithTheSameName() throws ValidationException {
+    @Test(expected=ConstraintViolationException.class)
+    public void testCannotSaveTwoDifferentCriterionTypesWithTheSameName() throws ValidationException {
         String unique = UUID.randomUUID().toString();
         CriterionType criterionType = createValidCriterionType(unique);
         criterionTypeService.save(criterionType);
         criterionType = createValidCriterionType(unique);
         criterionTypeService.save(criterionType);
+    }
+
+    @Test
+    public void testGetAll() throws ValidationException {
+        int previous = criterionTypeService.getAll().size();
+        CriterionType criterionType = createValidCriterionType();
+        criterionTypeService.save(criterionType);
+        int now = criterionTypeService.getAll().size();
+        assertEquals(now, previous + 1);
     }
 }

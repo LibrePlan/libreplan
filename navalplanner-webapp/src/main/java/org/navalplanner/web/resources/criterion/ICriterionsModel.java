@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -15,7 +16,7 @@ import org.navalplanner.business.resources.entities.Worker;
  */
 public interface ICriterionsModel {
 
-    List<ICriterionType<?>> getTypes();
+    List<CriterionType> getTypes();
 
     Collection<Criterion> getCriterionsFor(ICriterionType<?> type);
 

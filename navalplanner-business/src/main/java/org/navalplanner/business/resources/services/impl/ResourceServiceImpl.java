@@ -7,10 +7,11 @@ import java.util.Set;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
 import org.navalplanner.business.resources.daos.IResourceDao;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterion;
-import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.resources.services.CriterionTypeService;
 import org.navalplanner.business.resources.services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -34,6 +35,10 @@ public class ResourceServiceImpl implements ResourceService {
     @Autowired
     private ICriterionsBootstrap criterionsBootstrap;
 
+    @Autowired
+    private CriterionTypeService criterionTypeService;
+
+
     @Transactional
     public void saveResource(Resource resource) {
         checkResourceIsOk(resource);
@@ -46,7 +51,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     private void checkResourceIsOk(Resource resource) {
-        List<ICriterionType<?>> types = criterionsBootstrap.getTypes();
+        List<CriterionType> types = criterionTypeService.getAll();
         resource.checkNotOverlaps(types);
     }
 

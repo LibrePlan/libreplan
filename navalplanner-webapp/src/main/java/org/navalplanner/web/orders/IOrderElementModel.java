@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.ICriterionType;
+import org.navalplanner.business.resources.entities.CriterionType;
 
 public interface IOrderElementModel {
 
@@ -12,10 +12,10 @@ public interface IOrderElementModel {
 
     public void setCurrent(OrderElement orderElement);
 
-    public List<ICriterionType<?>> getCriterionTypes();
+    public List<CriterionType> getCriterionTypes();
 
-    public ICriterionType<?> getCriterionTypeByName(String name);
+    public CriterionType getCriterionTypeByName(String name);
 
-    public List<Criterion> getCriterionsFor(ICriterionType<?> type);
+    public List<Criterion> getCriterionsFor(CriterionType type);
 
 }

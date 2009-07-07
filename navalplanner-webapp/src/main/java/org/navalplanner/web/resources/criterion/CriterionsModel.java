@@ -13,11 +13,13 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.CriterionService;
+import org.navalplanner.business.resources.services.CriterionTypeService;
 import org.navalplanner.business.resources.services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -45,6 +47,9 @@ public class CriterionsModel implements ICriterionsModel {
     private CriterionService criterionService;
 
     @Autowired
+    private CriterionTypeService criterionTypeService;
+
+    @Autowired
     private ResourceService resourceService;
 
     private ICriterionType<?> criterionType;
@@ -53,8 +58,8 @@ public class CriterionsModel implements ICriterionsModel {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ICriterionType<?>> getTypes() {
-        return criterionsBootstrap.getTypes();
+    public List<CriterionType> getTypes() {
+        return criterionTypeService.getAll();
     }
 
     @Override

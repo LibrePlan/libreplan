@@ -20,6 +20,8 @@ public interface CriterionTypeService {
 
     CriterionType findUniqueByName(String name);
 
+    List<CriterionType> getAll();
+
     void remove(CriterionType criterionType) throws InstanceNotFoundException;
 
     void save(CriterionType entity) throws ValidationException;

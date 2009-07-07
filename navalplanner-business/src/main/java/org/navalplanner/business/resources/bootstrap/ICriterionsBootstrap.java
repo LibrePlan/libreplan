@@ -11,8 +11,6 @@ import org.navalplanner.business.resources.entities.ICriterionType;
  */
 public interface ICriterionsBootstrap extends IDataBootstrap {
 
-    public abstract List<ICriterionType<?>> getTypes();
-
     public abstract void loadRequiredData();
 
 }

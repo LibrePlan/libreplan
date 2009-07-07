@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -166,20 +167,20 @@ public class CriterionAdminController extends GenericForwardComposer {
     }
 
     private GroupsModel getTypesWithCriterions() {
-        List<ICriterionType<?>> types = criterionsModel.getTypes();
+        List<CriterionType> types = criterionsModel.getTypes();
         Object[][] groups = new Object[types.size()][];
         int i = 0;
-        for (ICriterionType<?> type : types) {
+        for (CriterionType type : types) {
             groups[i] = criterionsModel.getCriterionsFor(type).toArray();
             i++;
         }
         return new SimpleGroupsModel(groups, asStrings(types), types.toArray());
     }
 
-    private String[] asStrings(List<ICriterionType<?>> types) {
+    private String[] asStrings(List<CriterionType> types) {
         String[] result = new String[types.size()];
         int i = 0;
-        for (ICriterionType<?> criterionType : types) {
+        for (CriterionType criterionType : types) {
             result[i++] = criterionType.getName();
         }
         return result;

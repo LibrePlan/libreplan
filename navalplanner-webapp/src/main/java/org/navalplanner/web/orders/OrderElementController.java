@@ -15,7 +15,6 @@ import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -64,9 +63,9 @@ public class OrderElementController extends GenericForwardComposer {
     private Listbox hoursGroupsListbox;
 
     /**
-     * List of selected {@link ICriterionType} just used in the controller
+     * List of selected {@link CriterionType} just used in the controller
      */
-    private Set<ICriterionType<?>> selectedCriterionTypes = new LinkedHashSet<ICriterionType<?>>();
+    private Set<CriterionType> selectedCriterionTypes = new LinkedHashSet<CriterionType>();
 
     public OrderElement getOrderElement() {
         if (model == null) {
@@ -102,9 +101,9 @@ public class OrderElementController extends GenericForwardComposer {
             return model.getOrderElement().getHoursGroups();
         } else {
             // If it's an OrderLineGroup
-            Set<ICriterionType<?>> criterionTypes = getSelectedCriterionTypes();
+            Set<CriterionType> criterionTypes = getSelectedCriterionTypes();
 
-            // If there isn't any ICriterionType selected
+            // If there isn't any CriterionType selected
             if (criterionTypes.isEmpty()) {
                 return model.getOrderElement().getHoursGroups();
             }
@@ -118,7 +117,7 @@ public class OrderElementController extends GenericForwardComposer {
 
             for (HoursGroup hoursGroup : hoursGroups) {
                 String key = "";
-                for (ICriterionType<?> criterionType : criterionTypes) {
+                for (CriterionType criterionType : criterionTypes) {
                     Criterion criterion = hoursGroup
                             .getCriterionByType(criterionType);
                     if (criterion != null) {
@@ -291,40 +290,40 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     /**
-     * Gets the list of possible {@link ICriterionType}.
+     * Gets the list of possible {@link CriterionType}.
      *
-     * @return A {@link List} of {@link ICriterionType}
+     * @return A {@link List} of {@link CriterionType}
      */
-    public List<ICriterionType<?>> getCriterionTypes() {
+    public List<CriterionType> getCriterionTypes() {
         if (model == null) {
-            return new ArrayList<ICriterionType<?>>();
+            return new ArrayList<CriterionType>();
         }
 
-        List<ICriterionType<?>> list = model.getCriterionTypes();
+        List<CriterionType> list = model.getCriterionTypes();
         list.removeAll(getSelectedCriterionTypes());
         return list;
     }
 
     /**
-     * Returns the selected {@link ICriterionType}.
+     * Returns the selected {@link CriterionType}.
      *
-     * @return A {@link List} of {@link ICriterionType}
+     * @return A {@link List} of {@link CriterionType}
      */
-    public Set<ICriterionType<?>> getSelectedCriterionTypes() {
+    public Set<CriterionType> getSelectedCriterionTypes() {
         return selectedCriterionTypes;
     }
 
     /**
-     * Reloads the selected {@link ICriterionType}, depending on the
+     * Reloads the selected {@link CriterionType}, depending on the
      * {@link Criterion} related with the {@link HoursGroup}
      */
     private void reloadSelectedCriterionTypes() {
         OrderElement orderElement = getOrderElement();
 
         if (orderElement == null) {
-            selectedCriterionTypes = new LinkedHashSet<ICriterionType<?>>();
+            selectedCriterionTypes = new LinkedHashSet<CriterionType>();
         } else {
-            Set<ICriterionType<?>> criterionTypes = new LinkedHashSet<ICriterionType<?>>();
+            Set<CriterionType> criterionTypes = new LinkedHashSet<CriterionType>();
 
             for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
                 Set<Criterion> criterions = hoursGroup.getCriterions();
@@ -339,32 +338,32 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     /**
-     * Adds the selected {@link ICriterionType} to the selectedCriterionTypes
+     * Adds the selected {@link CriterionType} to the selectedCriterionTypes
      * attribute.
      *
      * @param selectedItems
      *            {@link Set} of {@link Listitem} with the selected
-     *            {@link ICriterionType}
+     *            {@link CriterionType}
      */
     public void assignCriterions(Set<Listitem> selectedItems) {
         for (Listitem listitem : selectedItems) {
-            ICriterionType<?> value = (ICriterionType<?>) listitem.getValue();
+            CriterionType value = (CriterionType) listitem.getValue();
             selectedCriterionTypes.add(value);
         }
         Util.reloadBindings(popup);
     }
 
     /**
-     * Removes the selected {@link ICriterionType} from the
+     * Removes the selected {@link CriterionType} from the
      * selectedCriterionTypes attribute.
      *
      * @param selectedItems
      *            {@link Set} of {@link Listitem} with the selected
-     *            {@link ICriterionType}
+     *            {@link CriterionType}
      */
     public void unassignCriterions(Set<Listitem> selectedItems) {
         for (Listitem listitem : selectedItems) {
-            ICriterionType<?> value = (ICriterionType<?>) listitem.getValue();
+            CriterionType value = (CriterionType) listitem.getValue();
             selectedCriterionTypes.remove(value);
             removeCriterionsFromHoursGroup(value);
         }
@@ -378,7 +377,7 @@ public class OrderElementController extends GenericForwardComposer {
      * @param type
      *            The type of the {@link Criterion} that should be removed
      */
-    private void removeCriterionsFromHoursGroup(ICriterionType<?> type) {
+    private void removeCriterionsFromHoursGroup(CriterionType type) {
         OrderElement orderElement = getOrderElement();
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
             hoursGroup.removeCriterionByType(type);
@@ -440,8 +439,8 @@ public class OrderElementController extends GenericForwardComposer {
                             }
                         }));
 
-                // For each ICriterionType selected
-                for (ICriterionType<?> criterionType : getSelectedCriterionTypes()) {
+                // For each CriterionType selected
+                for (CriterionType criterionType : getSelectedCriterionTypes()) {
                     Listcell cellCriterion = new Listcell();
                     cellCriterion.setParent(item);
 
@@ -450,7 +449,7 @@ public class OrderElementController extends GenericForwardComposer {
                     headerCriterion.setLabel(criterionType.getName());
                     headerCriterion.setParent(header);
 
-                    // Add a new Listbox for each ICriterionType
+                    // Add a new Listbox for each CriterionType
                     final Listbox criterionListbox = new Listbox();
                     criterionListbox.setRows(1);
                     criterionListbox.setMold("select");
@@ -582,8 +581,8 @@ public class OrderElementController extends GenericForwardComposer {
                 cellPercentage.appendChild(percentage);
                 cellFixedPercentage.appendChild(fixedPercentage);
 
-                // For each ICriterionType selected
-                for (ICriterionType<?> criterionType : getSelectedCriterionTypes()) {
+                // For each CriterionType selected
+                for (CriterionType criterionType : getSelectedCriterionTypes()) {
                     Listcell cellCriterion = new Listcell();
                     cellCriterion.setParent(item);
 
@@ -592,7 +591,7 @@ public class OrderElementController extends GenericForwardComposer {
                     headerCriterion.setLabel(criterionType.getName());
                     headerCriterion.setParent(header);
 
-                    // Add a new Listbox for each ICriterionType
+                    // Add a new Listbox for each CriterionType
                     final Listbox criterionListbox = new Listbox();
                     criterionListbox.setRows(1);
                     criterionListbox.setMold("select");
