@@ -39,7 +39,7 @@ public class TaskGroupTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void cantAndNullTaskElement() {
+    public void cantAddNullTaskElement() {
         taskGroup.addTaskElement(null);
     }
 }
