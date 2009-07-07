@@ -42,4 +42,9 @@ public class TaskGroupTest {
     public void cantAddNullTaskElement() {
         taskGroup.addTaskElement(null);
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void taskElementsCollectionCannotBeModified() {
+        taskGroup.getTaskElements().set(0, null);
+    }
 }

@@ -1,6 +1,7 @@
 package org.navalplanner.business.planner.entities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -13,7 +14,7 @@ public class TaskGroup extends TaskElement {
     private List<TaskElement> taskElements = new ArrayList<TaskElement>();
 
     public List<TaskElement> getTaskElements() {
-        return taskElements;
+        return Collections.unmodifiableList(taskElements);
     }
 
     public void addTaskElement(TaskElement task) {
