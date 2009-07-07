@@ -26,8 +26,8 @@ zkTasklist.init = function(cmp) {
 }
 
 zkTasklist.adjust_height = function(cmp) {
-    var height = cmp.style.height;
-    var component_to_adjust = document.getElementById(cmp
+/*    var height = cmp.style.height;
+      var component_to_adjust = document.getElementById(cmp
             .getAttribute('sameHeightElementId'));
 
     function setHeight(element, offset) {
@@ -37,11 +37,14 @@ zkTasklist.adjust_height = function(cmp) {
         var newheigth = parseInt(height) + offset;
         element.style["height"] = document.getElementById('scroll_container').style["height"];
     }
-
     setHeight(document.getElementById('ganttpanel'), HEIGHT_TIME_TRACKER);
+
     if (component_to_adjust) {
         setHeight(component_to_adjust);
-    }
+    } */
+
+    document.getElementById('ganttpanel').style["height"]
+        = document.getElementById('scroll_container').style["height"];
 
     adjustScrollableDimensions();
 }
@@ -125,5 +128,10 @@ function adjustScrollableDimensions() {
     // Inner divs need recalculation to adjust to new scroll displacement lenght
     document.getElementById('ganttpanel_inner_scroller_y').style["height"]
         = document.getElementById('listdetails_container').scrollHeight + "px";
+
+    // Inner divs need recalculation to adjust to new scroll displacement lenght
+/*    It must be recalculated matching taskdetails width
+ *    document.getElementById('ganttpanel_inner_scroller_x').style["width"]
+        = timetracker.firstElementChild.clientWidth +"px"; */
 
 }

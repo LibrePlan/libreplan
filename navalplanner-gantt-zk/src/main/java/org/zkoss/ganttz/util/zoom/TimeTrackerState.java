@@ -12,6 +12,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.JodaTimePermission;
 import org.zkoss.ganttz.util.Interval;
 
 /**
@@ -23,7 +26,8 @@ public abstract class TimeTrackerState {
     protected static final int NUMBER_OF_ITEMS_MINIMUM = 10;
 
     /**
-     * This class is conceived as an immutable class.
+     * This class was conceived as an immutable class but it required to
+     * procesate twice DetailItem collections so it has now proper setters
      * @author Francisco Javier Moran Rúa
      */
     public final static class DetailItem {
@@ -31,38 +35,87 @@ public abstract class TimeTrackerState {
         private int size;
         private String name;
 
-        private final boolean even;
+        private boolean even;
+        private boolean currentPeriod;
+        private int currentDayOffset;
+
+        private DateTime startDate;
+        private DateTime endDate;
+
 
         public DetailItem(int size, String name) {
             this(size, name, false);
         }
 
+        public DetailItem(int size, String name,
+                DateTime startDate, DateTime endDate) {
+            this(size, name, false);
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.markCurrentDay();
+        }
+
+        public void markCurrentDay(  ) {
+            if ( this.startDate.isBeforeNow() && this.endDate.isAfterNow() ) {
+                int offsetInPx = Math.round(
+                        ( ( (float) Days.daysBetween(this.startDate, new DateTime() ).getDays() ) /
+                          ( (float) Days.daysBetween(this.startDate, this.endDate).getDays() )
+                        ) * this.size);
+                this.markCurrentDay(offsetInPx);
+            }
+        }
+
+
+
         public DetailItem(int size, String name, boolean even) {
             this.size = size;
             this.name = name;
             this.even = even;
+            this.currentPeriod = false;
+            this.currentDayOffset = 0;
         }
 
-        /**
-         * @return the size
-         */
+        public DetailItem(int size, String name, int currentdayoffset) {
+            this.size = size;
+            this.name = name;
+            this.even = false;
+            this.currentPeriod = true;
+            this.currentDayOffset = currentdayoffset;
+        }
+
         public int getSize() {
             return size;
         }
 
-        /**
-         * @return the name
-         */
         public String getName() {
             return name;
         }
 
-        public DetailItem markEven(boolean even) {
-            return new DetailItem(size, name, even);
+        public void setEven(boolean even) {
+            this.even = even;
         }
+
+        public void markCurrentDay(int offset) {
+            this.currentPeriod = true;
+            this.currentDayOffset = offset;
+        }
+
+/*        public DetailItem markEven(boolean even) {
+            return new DetailItem(size, name, even,
+                    currentPeriod, currentDayOffset);
+        } */
+
 
         public boolean isEven() {
             return even;
+        }
+
+        public boolean isCurrentPeriod() {
+            return currentPeriod;
+        }
+
+        public int getCurrentDayOffset() {
+            return currentDayOffset;
         }
 
     }
@@ -71,12 +124,16 @@ public abstract class TimeTrackerState {
         return markEvens(createDetailsForFirstLevel(interval));
     }
 
+    // When applied after setting current day, removes extra data as current day
+    // or bank holidays, and must proccess the array twice. May be refactorized
     private static List<DetailItem> markEvens(
             Collection<? extends DetailItem> items) {
         boolean even = false;
         ArrayList<DetailItem> result = new ArrayList<DetailItem>();
+
         for (DetailItem detailItem : items) {
-            result.add(detailItem.markEven(even));
+            detailItem.setEven(even);
+            result.add( detailItem );
             even = !even;
         }
         return result;
@@ -90,6 +147,7 @@ public abstract class TimeTrackerState {
             Interval interval);
 
     public Collection<DetailItem> getSecondLevelDetails(Interval interval) {
+        // Also mark holidays and current date
         return markEvens(createDetailsForSecondLevel(interval));
     }
 

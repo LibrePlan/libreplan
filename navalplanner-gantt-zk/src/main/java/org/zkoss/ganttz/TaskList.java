@@ -161,14 +161,6 @@ public class TaskList extends XulElement implements AfterCompose {
         return getTasksNumber() * HEIGHT_PER_ROW + "px";
     }
 
-    public String getSameHeightElementId() {
-        TimeTracker timeTracker = getTimeTracker();
-        AbstractComponent fakeRow = timeTracker.getFakeRow();
-        if (fakeRow == null)
-            return "";
-        return fakeRow.getUuid();
-    }
-
     private TimeTracker getTimeTracker() {
         return getGanttPanel().getTimeTracker();
     }

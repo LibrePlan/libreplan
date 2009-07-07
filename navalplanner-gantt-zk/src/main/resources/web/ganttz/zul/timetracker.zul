@@ -27,13 +27,16 @@ top = self;
             <n:table style="width: ${top.horizontalSize+2}px;" class="second_level_">
 
                 <n:tr class="z-columns">
-                    <n:th class="z-column" forEach="${top.detailsSecondLevel}">
+                    <n:th class="z-column" forEach="${top.detailsSecondLevel}"
+                    style="width: ${each.size}px">
                     ${each.name}
                     </n:th>
                 </n:tr>
                 <n:tr id="watermark" style="height:100px">
-                    <n:td class="timetracker_column${(each.even?'_even':'')}"
-                        forEach="${top.detailsSecondLevel}"></n:td>
+                    <n:td class="timetracker_column${(each.even?'_even':'')}
+                        ${(each.currentPeriod?'timetracker_column_today':'')}"
+                        forEach="${top.detailsSecondLevel}"
+                        style="background-position: ${each.currentDayOffset}px"/>
                 </n:tr>
             </n:table>
         </n:div>

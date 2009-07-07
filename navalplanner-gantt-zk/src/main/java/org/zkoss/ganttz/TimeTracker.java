@@ -16,7 +16,6 @@ import org.zkoss.ganttz.util.zoom.TimeTrackerState;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.zoom.ZoomLevelChangedListener;
 import org.zkoss.ganttz.util.zoom.TimeTrackerState.DetailItem;
-import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 /**
@@ -30,7 +29,7 @@ public class TimeTracker extends HtmlMacroComponent {
                 .year(2012));
     }
 
-    private AbstractComponent fakeRow;
+//    private AbstractComponent fakeRow;
 
     private List<WeakReference<ZoomLevelChangedListener>> zoomListeners = new LinkedList<WeakReference<ZoomLevelChangedListener>>();
 
@@ -118,14 +117,6 @@ public class TimeTracker extends HtmlMacroComponent {
 
     private ZoomLevel getDetailLevel() {
         return detailLevel;
-    }
-
-    public AbstractComponent getFakeRow() {
-        return fakeRow;
-    }
-
-    public void setFakeRow(AbstractComponent fakeRow) {
-        this.fakeRow = fakeRow;
     }
 
     public DatesMapper getMapper() {

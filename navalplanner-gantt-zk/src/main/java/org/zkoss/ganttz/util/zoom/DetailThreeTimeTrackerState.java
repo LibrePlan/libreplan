@@ -37,7 +37,8 @@ public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
             @Override
             public DetailItem create(DateTime dateTime) {
                 return new DetailItem(SECOND_LEVEL_SIZE,
-                        getMonthString(dateTime));
+                        getMonthString(dateTime),
+                        dateTime, dateTime.plusMonths(1));
             }
         };
     }

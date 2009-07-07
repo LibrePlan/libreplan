@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Vector;
 
+import org.joda.time.DateTime;
 import org.zkoss.ganttz.util.Interval;
 
 /**
@@ -73,23 +74,29 @@ public class DetailTwoTimeTrackerState extends TimeTrackerState {
 
     }
 
+
     private Collection<DetailItem> buildCollectionDetailsSecondLevel(
             Date initialDate, Date endDate, int initialYear, int endYear) {
+
         ArrayList<DetailItem> result = new ArrayList<DetailItem>();
+
+        DateTime beginInterval = new DateTime(initialDate);
+        DateTime endInterval = beginInterval.plusMonths(3);
         int startDateQuarter = calculateInQuarterPeriodDateInYear(initialDate,
                 initialYear);
-        ArrayList<DetailItem> quarters = new ArrayList<DetailItem>();
-        for (int i = 0; i < 4; i++) {
-            quarters.add(new DetailItem(SECOND_LEVEL_ITEM_SIZE, "Q" + (i + 1)));
+        int quarterEndDate = calculateInQuarterPeriodDateInYear(endDate,endYear);
+
+            for (int j = initialYear; j <= endYear; j++) {
+                for (int i = (j == initialYear ? startDateQuarter : 0);
+                        i < (j == endYear ? quarterEndDate : 4); i++) {
+                    DetailItem quarter =
+                            new DetailItem(SECOND_LEVEL_ITEM_SIZE, "Q" + (i + 1),
+                            beginInterval, endInterval);
+                    result.add(quarter);
+                    beginInterval = beginInterval.plusMonths(3);
+                    endInterval = endInterval.plusMonths(3);
+                }
         }
-        // DetailItem is an inmutable class so it can be safely shared
-        result.addAll(quarters.subList(startDateQuarter - 1, 4));
-        for (int i = (initialYear + 1); i < endYear; i++) {
-            result.addAll(quarters);
-        }
-        int quarterEndDate = calculateInQuarterPeriodDateInYear(endDate,
-                endYear);
-        result.addAll(quarters.subList(0, quarterEndDate));
         return result;
     }
 

@@ -32,7 +32,8 @@ var myLogReader = new YAHOO.widget.LogReader(myContainer);*/
 
 <c:set var="self" value="${requestScope.arg.self}"/>
 
-<div id="${self.uuid}" z.type="ganttz.tasklist.Tasklist" z.autoz="true"${self.outerAttrs}" sameHeightElementId="${self.sameHeightElementId}">
+<div id="${self.uuid}" z.type="ganttz.tasklist.Tasklist" z.autoz="true"${self.outerAttrs}">
+
 
 <div id="listtasks">
     <c:forEach var="child" items="${self.children}">

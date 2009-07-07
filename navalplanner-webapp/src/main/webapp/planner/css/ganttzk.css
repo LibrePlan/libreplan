@@ -176,16 +176,32 @@ zkTasklist.SCROLLBAR_WIDTH = 15
     height: 80px;
 }
 
+/* Forces every zoom level the same table width */
+#timetracker table {
+   border-collapse: collapse;
+}
+
+#timetracker .second_level_ tr {
+   height:14px;
+}
+
+/* Watermark alternate row color */
 #watermark .timetracker_column_even {
     background-color: #EEEEEE;
 }
 
-.z-columns,.z-column {
+/* Background image for current day vertical line */
+#watermark .timetracker_column_today {
+    background-image: url("/navalplanner-webapp/zkau/web/ganttz/img/watermark_today.png");
+    background-repeat: repeat-y;
+}
+
+/* Reduce spacing and font-size for watermark legend */
+.z-columns, .z-column {
     font-size: 8px !important;
     text-align: center;
     padding:0 0 0 0 !important;
 }
-
 
 table {
     margin:0px;

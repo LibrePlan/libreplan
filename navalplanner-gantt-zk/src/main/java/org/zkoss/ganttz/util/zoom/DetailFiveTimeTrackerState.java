@@ -42,7 +42,7 @@ public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
             public DetailItem create(DateTime dateTime) {
                 return new DetailItem(SECOND_LEVEL_SIZE, dateTime
                         .getDayOfMonth()
-                        + "");
+                        + "", dateTime, dateTime.plusDays(1));
             }
         };
     }

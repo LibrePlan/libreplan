@@ -37,7 +37,7 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
             public DetailItem create(DateTime dateTime) {
                 return new DetailItem(SECOND_LEVEL_SIZE, dateTime
                         .getWeekOfWeekyear()
-                        + "");
+                        + "",dateTime,dateTime.plusWeeks(1));
             }
         };
     }
