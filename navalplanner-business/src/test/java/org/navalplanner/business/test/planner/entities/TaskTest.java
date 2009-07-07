@@ -1,4 +1,4 @@
-package org.navalplanner.business.test.planner;
+package org.navalplanner.business.test.planner.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;

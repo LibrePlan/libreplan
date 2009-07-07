@@ -12,6 +12,11 @@ import org.navalplanner.business.orders.entities.OrderElement;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public abstract class TaskElement {
+
+    private Long id;
+
+    private Long version;
+
     private Date startDate;
 
     private Date endDate;
@@ -66,6 +71,14 @@ public abstract class TaskElement {
         if (this.equals(dependency.getDestination())) {
             dependenciesWithThisDestination.add(dependency);
         }
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public Long getId() {
+        return id;
     }
 
 }

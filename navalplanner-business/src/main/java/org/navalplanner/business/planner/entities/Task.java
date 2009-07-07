@@ -1,6 +1,7 @@
 package org.navalplanner.business.planner.entities;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.orders.entities.HoursGroup;
 
 /**
@@ -12,6 +13,7 @@ public class Task extends TaskElement {
         return new Task(hoursGroup);
     }
 
+    @NotNull
     private HoursGroup hoursGroup;
 
     /**

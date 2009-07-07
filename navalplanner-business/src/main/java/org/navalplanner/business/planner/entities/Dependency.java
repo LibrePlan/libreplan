@@ -19,6 +19,10 @@ public class Dependency {
         return dependency;
     }
 
+    private Long id;
+
+    private Long version;
+
     private TaskElement origin;
 
     private TaskElement destination;
@@ -52,5 +56,13 @@ public class Dependency {
 
     public Type getType() {
         return type;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getVersion() {
+        return version;
     }
 }

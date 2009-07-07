@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.planner.entities"
+    default-access="field">
+    <class name="TaskElement">
+        <id name="id">
+            <generator class="native"></generator>
+        </id>
+        <version name="version" type="long"></version>
+
+        <property name="startDate" type="timestamp" />
+        <property name="endDate" type="timestamp" />
+
+        <set name="dependenciesWithThisOrigin">
+            <key column="ORIGIN"></key>
+            <one-to-many class="Dependency" />
+        </set>
+
+        <set name="dependenciesWithThisDestination" cascade="all">
+            <key column="DESTINATION"></key>
+            <one-to-many class="Dependency" />
+        </set>
+
+        <joined-subclass name="Task">
+            <key column="TASK_ELEMENT_ID"></key>
+        </joined-subclass>
+
+        <joined-subclass name="TaskGroup">
+            <key column="TASK_ELEMENT_ID"></key>
+            <list name="taskElements" cascade="all">
+                <key column="parent" not-null="false"></key>
+                <index column="positionInParent"></index>
+                <one-to-many class="TaskElement" />
+            </list>
+        </joined-subclass>
+    </class>
+    <class name="Dependency">
+        <id name="id">
+            <generator class="native"></generator>
+        </id>
+        <version name="version" type="long"></version>
+        <many-to-one class="TaskElement" name="origin"
+            column="ORIGIN" />
+        <many-to-one class="TaskElement" name="destination"
+            column="DESTINATION" />
+        <property name="type">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.navalplanner.business.planner.entities.Dependency$Type</param>
+            </type>
+        </property>
+
+    </class>
+</hibernate-mapping>
