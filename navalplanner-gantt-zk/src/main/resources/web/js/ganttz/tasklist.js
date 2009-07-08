@@ -13,7 +13,7 @@ MIN_RESOLUTION_X = 600;          // Minimun horizontal autoresizable window
 MIN_RESOLUTION_Y = 600;          // Minimun vertical autoresizable window
 
 TASKDETAILS_WIDTH = 300;         // Taskdetails column fixed width (300)
-TASKDETAILS_HEIGHT = 300;        // Design-relative reservated height for taskdetails (300)
+TASKDETAILS_HEIGHT = 260;        // Design-relative reservated height for taskdetails (300)
 TIMETRACKER_OFFSET_TOP = 200     // Design-relative height above timetracker
 
 FOOTER_HEIGHT = 40;             // Design-relative footer height

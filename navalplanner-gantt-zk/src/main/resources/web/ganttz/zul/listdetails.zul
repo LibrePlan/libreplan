@@ -1,15 +1,15 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
-            <button label="${c:l('listdetails.add_task')}"
-                        onClick="self.getParent().addTask();" />
-       <button label="Engadir Contedor"
-                        onClick="self.getParent().addTaskContainer();" />
+    <button label="${c:l('listdetails.add_task')}"
+        onClick="self.getParent().addTask();" />
+    <button label="Engadir Contedor"
+        onClick="self.getParent().addTaskContainer();" />
     <n:div id="listdetails_container">
         <tree id="tasksTree">
             <treecols sizable="false">
-                <treecol label="Name" />
-                <treecol label="Start Date" />
-                <treecol label="End Date" />
+                <treecol label="Name"/>
+                <treecol label="Start"/>
+                <treecol label="End"/>
             </treecols>
         </tree>
     </n:div>

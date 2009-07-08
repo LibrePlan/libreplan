@@ -22,6 +22,7 @@ import org.zkoss.zul.SimpleTreeModel;
 import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
+import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 
@@ -34,6 +35,7 @@ public class ListDetails extends HtmlMacroComponent {
             item.setOpen(isOpened(taskBean));
             final int[] path = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
                     node);
+            String cssClass = "depth_"+path.length;
             TaskDetail taskDetail = TaskDetail.create(taskBean,
                     new TreeNavigator(tasksTreeModel, path));
             if (taskBean instanceof TaskContainerBean) {
@@ -42,6 +44,11 @@ public class ListDetails extends HtmlMacroComponent {
             Component row = Executions.getCurrent().createComponents(
                     "~./ganttz/zul/taskdetail.zul", item, null);
             taskDetail.doAfterCompose(row);
+            List<Object> rowChildren =  row.getChildren();
+            List<Treecell> treeCells = Planner.findComponentsOfType(Treecell.class, rowChildren);
+            for(Treecell cell : treeCells){
+                cell.setSclass(cssClass);
+            }
             detailsForBeans.put(taskBean, taskDetail);
         }
 

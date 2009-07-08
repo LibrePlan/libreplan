@@ -13,7 +13,9 @@ zkTasklist.SCROLLBAR_WIDTH = 15
 
 */
 
-/****** Tasks and dependencies ******/
+/* -------------- Listdetails -------------- */
+
+/* External listdetails box */
 .listdetails {
     width:280px;  /* Ganntz.ListdetailsWidth */
     float:left;
@@ -23,37 +25,66 @@ zkTasklist.SCROLLBAR_WIDTH = 15
     margin-top:0px;
 }
 
-.listdetails img {
-    display:none;
+#listdetails_container {
+    float:left;
+    overflow:hidden;
+    height:300px;
+    position:relative;
+    top:20px;
+    overflow: hidden;
+    border-bottom: 1px solid #86A4BE;
+    border-right: 1px solid #86A4BE;
 }
 
-.listdetails td {
-    padding-left:0px;
+/*.listdetails img {
+    display:none;
+} */
+
+#listdetails_container td {
+    border-bottom:1px solid #86A4BE;
+    border-left:1px solid #86A4BE;
+border:0px;
+}
+
+#listdetails_container td {
+    padding:0px;
 }
 
 .listdetails input {
-    width: 80px;
+    width: 65px;
     font-size:10px !important;
     border-bottom:0px;
     border-right:0px;
     height:17px;
 }
 
-.listdetails .z-datebox-inp {
+#listdetails_container .z-datebox-inp,
+#listdetails_container div.z-tree-col-cnt {
     font-family:"Verdana,Tahoma,Arial,Helvetica,sans-serif";
     font-size:10px !important;
     border-bottom:0px;
     border-right:0px;
 }
 
-.task_title {
-    width: 120px !important;
+.depth_1 .task_title {
+    width: 121px !important;
 }
+.depth_2 .task_title {
+    width: 104px !important;
+}
+.depth_3 .task_title {
+    width: 85px;
+}
+.depth_4 .task_title {
+    width: 64px;
+}
+
 
 .taskdetail_grid table {
     height:30px;
     width:280px; /* Ganntz.ListdetailsWidth */
 }
+
 
 
 #listtasks {
@@ -209,20 +240,6 @@ table {
     border:0px;
 }
 
-
-#listdetails_container {
-    float:left;
-    overflow:hidden;
-    height:300px;
-    position:relative;
-    top:50px;
-    overflow: hidden;
-    border-bottom: 1px solid #86A4BE;
-    border-right: 1px solid #86A4BE;
-}
-
-
-
 #scroll_container {
     margin-top:70px;
     /*    border:solid green 1px; */
@@ -262,7 +279,7 @@ tr.z-vbox-sep {
 
 #ganttpanel_scroller_x {
     top: 600px;  /* Calculate initial settings */
-    left: 280px;
+    left: 290px;
     width:635px;
     height:15px;
 }
@@ -274,7 +291,7 @@ tr.z-vbox-sep {
 }
 
 #ganttpanel_scroller_y {
-    top: 230px; /* Calculate initial settings */
+    top: 200px; /* Calculate initial settings */
     left: 920px;
     width:15px;
     height:330px;
