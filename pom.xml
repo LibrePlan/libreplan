@@ -302,11 +302,6 @@
                 <artifactId>navalplanner-gantt-zk</artifactId>
                 <version>1.0.0</version>
             </dependency>
-            <dependency>
-                <groupId>org.navalplanner</groupId>
-                <artifactId>navalplanner-gantt-zk</artifactId>
-                <version>1.0.0</version>
-            </dependency>
             <!-- Naval Planner Business -->
             <dependency>
                 <groupId>org.navalplanner</groupId>
