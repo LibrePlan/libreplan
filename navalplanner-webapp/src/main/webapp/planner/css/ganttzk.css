@@ -27,11 +27,10 @@ zkTasklist.SCROLLBAR_WIDTH = 15
 
 #listdetails_container {
     float:left;
-    overflow:hidden;
     height:300px;
     position:relative;
-    top:20px;
-    overflow: hidden;
+    top:25px;
+    overflow-y: hidden;
     border-bottom: 1px solid #86A4BE;
     border-right: 1px solid #86A4BE;
 }
@@ -291,7 +290,7 @@ tr.z-vbox-sep {
 }
 
 #ganttpanel_scroller_y {
-    top: 200px; /* Calculate initial settings */
+    top: 195px; /* Calculate initial settings */
     left: 920px;
     width:15px;
     height:330px;

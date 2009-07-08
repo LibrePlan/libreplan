@@ -118,13 +118,15 @@ function adjustScrollableDimensions() {
     scroll_container.style["width"] = timetracker.style["width"];
 
     timetracker.style["height"] =
-        (window.innerHeight - TIMETRACKER_OFFSET_TOP +5 ) +"px"; // Extra padding
+        (window.innerHeight - TIMETRACKER_OFFSET_TOP + 5 ) +"px"; // Extra padding
     scroll_container.style["height"] =
-        (window.innerHeight - TIMETRACKER_OFFSET_TOP - 90 ) +"px";
+        (window.innerHeight - TIMETRACKER_OFFSET_TOP -
+        ( FOOTER_HEIGHT + SCROLLBAR_WIDTH*2 )) +"px";
 
     // Watermark heigh also needs recalculations due to the recreation
     document.getElementById('watermark').style["height"]
-        = (window.innerHeight - TIMETRACKER_OFFSET_TOP - 60 ) +"px";
+        = (window.innerHeight - TIMETRACKER_OFFSET_TOP -
+        ( FOOTER_HEIGHT + SCROLLBAR_WIDTH )) +"px";
 
     // Inner divs need recalculation to adjust to new scroll displacement lenght
     document.getElementById('ganttpanel_inner_scroller_y').style["height"]
