@@ -109,7 +109,7 @@ border:0px;
     border-bottom: dotted 1px #CCCCCC;
     margin-bottom: 10px;
     margin-top: 10px;
-    width: 1800px;
+    width: 10000px; /* Defined to be larger than the maximum scroll_inner_x */
 }
 
 /* -------------- TaskGroup -------------- */
@@ -286,7 +286,7 @@ tr.z-vbox-sep {
 
 #ganttpanel_inner_scroller_x {
     /* must be resized on ganttpanel javascript adjust size */
-    width:1900px; /* Real canvas dimensions */
+    width:9000px; /* Real canvas dimensions */
     height:15px; /* Scroll constant */
 }
 

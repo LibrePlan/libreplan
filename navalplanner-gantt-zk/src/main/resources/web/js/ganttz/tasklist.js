@@ -110,6 +110,7 @@ function adjustScrollableDimensions() {
     // Timetracker is recalculated when the window is resized and when zoom
     // level is changed as the component is recreated
     timetracker = document.getElementById('timetracker');
+    watermark = document.getElementById('watermark');
     scroll_container = document.getElementById('scroll_container');
 
     timetracker.style["width"] =
@@ -130,8 +131,6 @@ function adjustScrollableDimensions() {
         = document.getElementById('listdetails_container').scrollHeight + "px";
 
     // Inner divs need recalculation to adjust to new scroll displacement lenght
-/*    It must be recalculated matching taskdetails width
- *    document.getElementById('ganttpanel_inner_scroller_x').style["width"]
-        = timetracker.firstElementChild.clientWidth +"px"; */
-
+    document.getElementById('ganttpanel_inner_scroller_x').style["width"]
+        = watermark.offsetWidth +"px";
 }
