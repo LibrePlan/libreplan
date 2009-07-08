@@ -49,6 +49,8 @@ public class TaskElementServiceTest {
     @Autowired
     private IOrderService orderService;
 
+    private HoursGroup associatedHoursGroup;
+
     @Test
     public void canSaveTask() {
         Task task = createValidTask();
@@ -58,11 +60,15 @@ public class TaskElementServiceTest {
         assertThat(fromDB.getId(), equalTo(task.getId()));
         assertThat(fromDB, is(Task.class));
         checkProperties(task, fromDB);
+        HoursGroup reloaded = ((Task) fromDB).getHoursGroup();
+        assertThat(reloaded.getId(), equalTo(reloaded.getId()));
     }
 
     private Task createValidTask() {
-        Task task = Task.createTask(new HoursGroup());
+        associatedHoursGroup = new HoursGroup();
+        Task task = Task.createTask(associatedHoursGroup);
         OrderLine orderLine = createOrderLine();
+        orderLine.addHoursGroup(associatedHoursGroup);
         task.setOrderElement(orderLine);
         return task;
     }
