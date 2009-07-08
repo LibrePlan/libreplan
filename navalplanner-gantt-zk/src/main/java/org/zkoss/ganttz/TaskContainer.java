@@ -78,6 +78,7 @@ public class TaskContainer extends Task implements AfterCompose {
                 container.close();
             }
             taskList.hideTask(subtask);
+            taskList.redrawDependencies();
         }
     }
 }

@@ -46,6 +46,9 @@ zkTask.init = function(cmp) {
         var dd = zkTask.getDD(cmp);
         //when the tasks is being dragged the related dependencies are redrawn
         dd.on('dragEvent',function(ev){
+            // Slight overload. It could be more efficent to overwrite the YUI method
+            // that is setting the top property
+            cmp.style.top = "";
             if(cmp['relatedDependencies']){
                 for ( var i = 0; i < cmp.relatedDependencies.length; i++) {
                     zkDependency.draw(cmp.relatedDependencies[i]);
@@ -81,7 +84,7 @@ zkTask.init = function(cmp) {
             zkau.send( {
                 uuid : cmp2.id,
                 cmd : "updateProgress",
-                data : [ cmp2.style.width ],
+                data : [ cmp2.style.width ]
             });
         }, zkTask, true);
 

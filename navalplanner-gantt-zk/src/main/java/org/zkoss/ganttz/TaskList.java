@@ -22,7 +22,6 @@ import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.zoom.ZoomLevelChangedListener;
 import org.zkoss.zk.au.out.AuInvoke;
-import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -251,6 +250,10 @@ public class TaskList extends XulElement implements AfterCompose {
     public void hideTask(Task subtask) {
         removeChild(subtask);
         subtask.setParent(null);
+    }
+
+    public void redrawDependencies() {
+        getGanttPanel().getDependencyList().redrawDependencies() ;
     }
 
 }
