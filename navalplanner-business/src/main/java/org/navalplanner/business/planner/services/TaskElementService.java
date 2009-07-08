@@ -1,8 +1,14 @@
 package org.navalplanner.business.planner.services;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.planner.daos.ITaskElementDao;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -32,6 +38,52 @@ public class TaskElementService implements ITaskElementService {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public TaskElement convertToInitialSchedule(OrderElement order) {
+        if (order instanceof OrderLineGroup) {
+            OrderLineGroup group = (OrderLineGroup) order;
+            return convertToTaskGroup(group);
+        } else {
+            OrderLine line = (OrderLine) order;
+            if (line.getHoursGroups().isEmpty())
+                throw new IllegalArgumentException(
+                        "the line must have at least one "
+                                + HoursGroup.class.getSimpleName()
+                                + " associated");
+            return line.getHoursGroups().size() > 1 ? convertToTaskGroup(line)
+                    : convertToTask(line);
+        }
+    }
+
+    private TaskGroup convertToTaskGroup(OrderLine line) {
+        TaskGroup result = new TaskGroup();
+        result.setOrderElement(line);
+        for (HoursGroup hoursGroup : line.getHoursGroups()) {
+            result.addTaskElement(taskFrom(line, hoursGroup));
+        }
+        return result;
+    }
+
+    private Task convertToTask(OrderLine line) {
+        HoursGroup hoursGroup = line.getHoursGroups().get(0);
+        return taskFrom(line, hoursGroup);
+    }
+
+    private Task taskFrom(OrderLine line, HoursGroup hoursGroup) {
+        Task result = Task.createTask(hoursGroup);
+        result.setOrderElement(line);
+        return result;
+    }
+
+    private TaskGroup convertToTaskGroup(OrderLineGroup group) {
+        TaskGroup result = new TaskGroup();
+        result.setOrderElement(group);
+        for (OrderElement orderElement : group.getChildren()) {
+            result.addTaskElement(convertToInitialSchedule(orderElement));
+        }
+        return result;
     }
 
 }

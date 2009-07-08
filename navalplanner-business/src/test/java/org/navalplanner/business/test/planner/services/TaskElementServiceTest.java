@@ -2,6 +2,7 @@ package org.navalplanner.business.test.planner.services;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -14,11 +15,14 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.services.IOrderService;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
@@ -165,5 +169,98 @@ public class TaskElementServiceTest {
                 .getDependenciesWithThisDestination().size(), equalTo(1));
         assertTrue(reloaded.getTaskElements().get(1)
                 .getDependenciesWithThisOrigin().isEmpty());
+    }
+
+    @Test
+    public void aOrderLineGroupIsConvertedToATaskGroup() {
+        OrderLineGroup orderLineGroup = new OrderLineGroup();
+        orderLineGroup.setName("foo");
+        TaskElement task = taskElementService
+                .convertToInitialSchedule(orderLineGroup);
+        assertThat(task, is(TaskGroup.class));
+
+        TaskGroup group = (TaskGroup) task;
+        assertThat(group.getOrderElement(),
+                equalTo((OrderElement) orderLineGroup));
+    }
+
+    @Test
+    public void aOrderLineWithOneHourIsConvertedToATask() {
+        OrderLine orderLine = new OrderLine();
+        orderLine.setName("bla");
+        HoursGroup hoursGroup = createHoursGroup(30);
+        orderLine.addHoursGroup(hoursGroup);
+        TaskElement taskElement = taskElementService
+                .convertToInitialSchedule(orderLine);
+        assertThat(taskElement, is(Task.class));
+
+        Task group = (Task) taskElement;
+        assertThat(group.getOrderElement(), equalTo((OrderElement) orderLine));
+        assertThat(group.getHoursGroup(), equalTo(hoursGroup));
+    }
+
+    @Test
+    public void theSublinesOfAnOrderLineGroupAreConverted() {
+        OrderLineGroup orderLineGroup = new OrderLineGroup();
+        orderLineGroup.setName("foo");
+        OrderLine orderLine = new OrderLine();
+        orderLine.setName("bla");
+        HoursGroup hoursGroup = createHoursGroup(30);
+        orderLine.addHoursGroup(hoursGroup);
+        orderLineGroup.add(orderLine);
+        TaskElement task = taskElementService
+                .convertToInitialSchedule(orderLineGroup);
+        assertThat(task, is(TaskGroup.class));
+
+        TaskGroup group = (TaskGroup) task;
+
+        assertThat(group.getOrderElement(),
+                equalTo((OrderElement) orderLineGroup));
+        assertThat(group.getTaskElements().size(), equalTo(1));
+        assertThat(group.getTaskElements().get(0).getOrderElement(),
+                equalTo((OrderElement) orderLine));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void aOrderLineWithNoHoursIsRejected() {
+        OrderLine orderLine = new OrderLine();
+        orderLine.setName("bla");
+        taskElementService.convertToInitialSchedule(orderLine);
+    }
+
+    private HoursGroup createHoursGroup(int hours) {
+        HoursGroup result = new HoursGroup();
+        result.setWorkingHours(hours);
+        return result;
+    }
+
+    @Test
+    public void aOrderLineWithMoreThanOneHourIsConvertedToATaskGroup() {
+        OrderLine orderLine = new OrderLine();
+        orderLine.setName("bla");
+        HoursGroup hours1 = createHoursGroup(30);
+        orderLine.addHoursGroup(hours1);
+        HoursGroup hours2 = createHoursGroup(10);
+        orderLine.addHoursGroup(hours2);
+        TaskElement taskElement = taskElementService
+                .convertToInitialSchedule(orderLine);
+        assertThat(taskElement, is(TaskGroup.class));
+
+        TaskGroup group = (TaskGroup) taskElement;
+        assertThat(group.getOrderElement(), equalTo((OrderElement) orderLine));
+        assertThat(group.getTaskElements().size(), equalTo(2));
+
+        Task child1 = (Task) group.getTaskElements().get(0);
+        Task child2 = (Task) group.getTaskElements().get(1);
+
+        assertThat(child1.getOrderElement(), equalTo((OrderElement) orderLine));
+        assertThat(child2.getOrderElement(), equalTo((OrderElement) orderLine));
+
+        assertThat(child1.getHoursGroup(), not(equalTo(child2.getHoursGroup())));
+
+        assertThat(child1.getHoursGroup(), JUnitMatchers
+                .either(equalTo(hours1)).or(equalTo(hours2)));
+        assertThat(child2.getHoursGroup(), JUnitMatchers
+                .either(equalTo(hours1)).or(equalTo(hours2)));
     }
 }
