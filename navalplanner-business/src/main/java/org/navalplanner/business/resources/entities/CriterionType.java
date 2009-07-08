@@ -174,4 +174,10 @@ import org.springframework.stereotype.Component;
                     .isEquals();
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (this.name != null ? this.name.hashCode() : 0);
+        return hash;
+    }
 }
