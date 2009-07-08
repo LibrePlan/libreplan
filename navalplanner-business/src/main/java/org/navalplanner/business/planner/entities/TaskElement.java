@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
@@ -21,6 +22,7 @@ public abstract class TaskElement {
 
     private Date endDate;
 
+    @NotNull
     private OrderElement orderElement;
 
     private Set<Dependency> dependenciesWithThisOrigin = new HashSet<Dependency>();

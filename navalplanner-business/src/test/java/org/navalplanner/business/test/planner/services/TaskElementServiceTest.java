@@ -9,12 +9,17 @@ import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.services.IOrderService;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -41,6 +46,9 @@ public class TaskElementServiceTest {
     @Autowired
     private SessionFactory sessionFactory;
 
+    @Autowired
+    private IOrderService orderService;
+
     @Test
     public void canSaveTask() {
         Task task = createValidTask();
@@ -53,7 +61,26 @@ public class TaskElementServiceTest {
     }
 
     private Task createValidTask() {
-        return Task.createTask(new HoursGroup());
+        Task task = Task.createTask(new HoursGroup());
+        OrderLine orderLine = createOrderLine();
+        task.setOrderElement(orderLine);
+        return task;
+    }
+
+    private OrderLine createOrderLine() {
+        OrderLine orderLine = new OrderLine();
+        orderLine.setName("bla");
+        Order order = new Order();
+        order.setName("bla");
+        order.setInitDate(new Date());
+        order.add(orderLine);
+        try {
+            orderService.save(order);
+            sessionFactory.getCurrentSession().flush();
+        } catch (ValidationException e) {
+            throw new RuntimeException(e);
+        }
+        return orderLine;
     }
 
     @Test
@@ -66,13 +93,20 @@ public class TaskElementServiceTest {
 
     @Test
     public void canSaveTaskGroup() {
-        TaskGroup taskGroup = new TaskGroup();
+        TaskGroup taskGroup = createValidTaskGroup();
         taskElementService.save(taskGroup);
         flushAndEvict(taskGroup);
         TaskElement reloaded = taskElementService.findById(taskGroup.getId());
         assertThat(reloaded.getId(), equalTo(taskGroup.getId()));
         assertThat(reloaded, is(TaskGroup.class));
         checkProperties(taskGroup, reloaded);
+    }
+
+    private TaskGroup createValidTaskGroup() {
+        TaskGroup result = new TaskGroup();
+        OrderLine orderLine = createOrderLine();
+        result.setOrderElement(orderLine);
+        return result;
     }
 
     private void checkProperties(TaskElement inMemory, TaskElement fromDB) {
@@ -89,7 +123,7 @@ public class TaskElementServiceTest {
     public void savingGroupSavesAssociatedTaskElements() {
         Task child1 = createValidTask();
         Task child2 = createValidTask();
-        TaskGroup taskGroup = new TaskGroup();
+        TaskGroup taskGroup = createValidTaskGroup();
         taskGroup.addTaskElement(child1);
         taskGroup.addTaskElement(child2);
         taskElementService.save(taskGroup);
@@ -107,7 +141,7 @@ public class TaskElementServiceTest {
     public void savingTaskElementSavesAssociatedDependencies() {
         Task child1 = createValidTask();
         Task child2 = createValidTask();
-        TaskGroup taskGroup = new TaskGroup();
+        TaskGroup taskGroup = createValidTaskGroup();
         taskGroup.addTaskElement(child1);
         taskGroup.addTaskElement(child2);
         Dependency dependency = Dependency.createDependency(child1, child2,
