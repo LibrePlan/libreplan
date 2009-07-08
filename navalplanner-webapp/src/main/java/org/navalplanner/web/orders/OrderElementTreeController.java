@@ -100,13 +100,23 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
     public void move(Component dropedIn, Component dragged) {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        SimpleTreeNode fromNode, toNode;
+
         Treerow from = (Treerow) dragged;
-        Treerow to = (Treerow) dropedIn;
-        SimpleTreeNode fromNode = (SimpleTreeNode) ((Treeitem) from.getParent())
+        fromNode = (SimpleTreeNode) ((Treeitem) from.getParent())
                 .getValue();
-        SimpleTreeNode toNode = (SimpleTreeNode) ((Treeitem) to.getParent())
+
+        if (dropedIn instanceof Tree) {
+            getOrderElementTreeModel().moveToRoot(fromNode);
+        }
+        if (dropedIn instanceof Treerow) {
+            Treerow to = (Treerow) dropedIn;
+            toNode = (SimpleTreeNode) ((Treeitem) to.getParent())
                 .getValue();
-        getOrderElementTreeModel().move(fromNode, toNode);
+
+            getOrderElementTreeModel().move(fromNode, toNode);
+        }
+
         Util.reloadBindings(tree);
     }
 

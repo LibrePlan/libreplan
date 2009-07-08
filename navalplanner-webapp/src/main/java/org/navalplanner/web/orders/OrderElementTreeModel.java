@@ -144,6 +144,11 @@ public class OrderElementTreeModel extends SimpleTreeModel {
         reloadFromOrder();
     }
 
+    public void moveToRoot(SimpleTreeNode toBeMoved) {
+        moveImpl(toBeMoved, getRootAsNode(), 0);
+        reloadFromOrder();
+    }
+
     private void moveImpl(SimpleTreeNode toBeMoved, SimpleTreeNode destination,
             int position) {
         if (destination.getChildren().contains(toBeMoved)) {
