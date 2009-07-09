@@ -1,6 +1,8 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+<?component name="customMenu" inline="true" macroURI="_customMenu.zul"?>
+<zk self="@{define(content)}">
 
 <n:div xmlns:n="http://www.zkoss.org/2005/zk/native">
 <n:table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -15,37 +17,15 @@
           <n:td height="20" align="right"><n:table border="0" cellspacing="0" cellpadding="0">
             <n:tr>
               <n:td class="usuario">usuario: admin</n:td>
-              <n:td><n:a href="#" class="cerrar_sesion">PECHAR SESIÓN </n:a></n:td>
+              <n:td><n:a href="#" class="cerrar_sesion">PECHAR SESIÓN</n:a></n:td>
             <n:td><n:a href="#"><n:img src="/navalplanner-webapp/common/img/axuda.gif" alt="Axuda" width="23" height="24" border="0" /></n:a></n:td>
             </n:tr>
           </n:table></n:td>
         </n:tr>
       </n:table>
-      <n:table border="0" cellspacing="0" cellpadding="0">
-          <n:tr>
-            <n:td><n:a href="/navalplanner-webapp/" class="menuup">${c:l('mainmenu.plannification')}</n:a></n:td>
-            <n:td><n:a href="/navalplanner-webapp/resources/worker/worker.zul" class="menuup">${c:l('mainmenu.resources')}</n:a></n:td>
-            <n:td><n:a href="/navalplanner-webapp/orders/orders.zul" class="menuup">${c:l('mainmenu.orders')}</n:a></n:td>
-            <n:td><n:a href="#" class="menuup">${c:l('mainmenu.work_reports')}</n:a></n:td>
-            <n:td><n:a href="#" class="menuup">${c:l('mainmenu.quality_management')}</n:a></n:td>
-            <n:td><n:a href="#" class="menuup">${c:l('mainmenu.administration')}</n:a></n:td>
-            </n:tr>
-        </n:table>
-          <n:table width="100%" height="30"  border="0" cellpadding="0" cellspacing="0">
-            <n:tr>
-              <n:td bgcolor="#2A83B4">
-<n:table border="0" cellspacing="0" cellpadding="0">
-                <n:tr>
-                  <n:td width="10"></n:td>
-                  <n:td><n:a href="/navalplanner-webapp/resources/worker/worker.zul#list" class="sub_menu">${c:l('mainmenu.list_workers')}</n:a></n:td>
-                  <n:td width="14" background="/navalplanner-webapp/common/img/sub_separacion.gif"></n:td>
-                  <n:td><n:a href="/navalplanner-webapp/resources/criterions/criterions.zul" class="sub_menu">${c:l('mainmenu.manage_criterions')}</n:a></n:td>
-                </n:tr>
-              </n:table>
 
-              </n:td>
-            </n:tr>
-        </n:table>
+        <customMenu top_id="customMenu" title="Main menu"/>
+
           </n:td>
     </n:tr>
   </n:table></n:td>
@@ -74,3 +54,4 @@
   </n:tr>
 </n:table>
 </n:div>
+</zk>
