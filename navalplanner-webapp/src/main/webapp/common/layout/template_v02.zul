@@ -23,17 +23,27 @@
       </n:table>
       <n:table border="0" cellspacing="0" cellpadding="0">
           <n:tr>
-            <n:td><n:a href="planificacion2.html" class="menuup">Planificacion</n:a></n:td>
-            <n:td><n:a href="recurso2.html" class="menuup">Recursos</n:a></n:td>
-            <n:td><n:a href="pedidos2.html" class="menuup">Pedidos</n:a></n:td>
-            <n:td><n:a href="#" class="menuup">Partes de Traballo</n:a></n:td>
-            <n:td><n:a href="#" class="menuup">Informes</n:a></n:td>
-            <n:td><n:a href="#" class="menuup">Xestión da Calidade</n:a></n:td>
+            <n:td><n:a href="/navalplanner-webapp/" class="menuup">${c:l('mainmenu.plannification')}</n:a></n:td>
+            <n:td><n:a href="/navalplanner-webapp/resources/worker/worker.zul" class="menuup">${c:l('mainmenu.resources')}</n:a></n:td>
+            <n:td><n:a href="/navalplanner-webapp/orders/orders.zul" class="menuup">${c:l('mainmenu.orders')}</n:a></n:td>
+            <n:td><n:a href="#" class="menuup">${c:l('mainmenu.work_reports')}</n:a></n:td>
+            <n:td><n:a href="#" class="menuup">${c:l('mainmenu.quality_management')}</n:a></n:td>
+            <n:td><n:a href="#" class="menuup">${c:l('mainmenu.administration')}</n:a></n:td>
             </n:tr>
         </n:table>
           <n:table width="100%" height="30"  border="0" cellpadding="0" cellspacing="0">
             <n:tr>
-              <n:td bgcolor="#CCDCEA"></n:td>
+              <n:td bgcolor="#2A83B4">
+<n:table border="0" cellspacing="0" cellpadding="0">
+                <n:tr>
+                  <n:td width="10"></n:td>
+                  <n:td><n:a href="/navalplanner-webapp/resources/worker/worker.zul#list" class="sub_menu">${c:l('mainmenu.list_workers')}</n:a></n:td>
+                  <n:td width="14" background="/navalplanner-webapp/common/img/sub_separacion.gif"></n:td>
+                  <n:td><n:a href="/navalplanner-webapp/resources/criterions/criterions.zul" class="sub_menu">${c:l('mainmenu.manage_criterions')}</n:a></n:td>
+                </n:tr>
+              </n:table>
+
+              </n:td>
             </n:tr>
         </n:table>
           </n:td>
@@ -49,7 +59,7 @@
     <n:td class="migas_linea"><n:table border="0" cellspacing="0" cellpadding="0">
         <n:tr>
           <n:td width="10"></n:td>
-          <n:td><n:a href="#" class="ruta"><n:strong>INICIO</n:strong></n:a></n:td>
+          <n:td><n:a href="/navalplanner-webapp/" class="ruta"><n:strong>INICIO</n:strong></n:a></n:td>
           <n:td width="15"><n:div align="center"><n:img src="/navalplanner-webapp/common/img/migas_separacion.gif" width="10" height="15" /></n:div></n:td>
         </n:tr>
     </n:table></n:td>
@@ -57,9 +67,9 @@
 </n:table>
 <n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
   <n:tr>
-    <n:td height="400"><div self="@{insert(content)}"/></n:td>
+    <n:td height="400" valign="top"><div self="@{insert(content)}"/></n:td>
   </n:tr>
-  <n:tr>
+  <n:tr class="footer">
     <n:td height="75" align="right" valign="bottom" background="img/linea_down.gif"><n:img src="/navalplanner-webapp/common/img/logos_aplicacion.gif" width="332" height="73" /></n:td>
   </n:tr>
 </n:table>
