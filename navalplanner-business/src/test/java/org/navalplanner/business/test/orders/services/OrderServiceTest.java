@@ -25,6 +25,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.services.IOrderService;
+import org.navalplanner.business.planner.services.ITaskElementService;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.services.CriterionService;
@@ -59,6 +60,9 @@ public class OrderServiceTest {
     private IOrderService orderService;
 
     @Autowired
+    private ITaskElementService taskElementService;
+
+    @Autowired
     private CriterionService criterionService;
 
     @Autowired
@@ -79,8 +83,7 @@ public class OrderServiceTest {
     public void testListing() throws Exception {
         List<Order> list = orderService.getOrders();
         orderService.save(createValidOrder());
-        assertThat(orderService.getOrders().size(), equalTo(list
-                .size() + 1));
+        assertThat(orderService.getOrders().size(), equalTo(list.size() + 1));
     }
 
     @Test
@@ -90,6 +93,25 @@ public class OrderServiceTest {
         assertTrue(orderService.exists(order));
         orderService.remove(order);
         assertFalse(orderService.exists(order));
+    }
+
+    @Test
+    public void removingOrderWithAssociatedTasksDeletesThem()
+            throws ValidationException, InstanceNotFoundException {
+        Order order = createValidOrder();
+        OrderLine orderLine = new OrderLine();
+        orderLine.setName("bla");
+        orderLine.setWorkHours(10);
+        order.add(orderLine);
+        orderService.save(order);
+        taskElementService.convertToScheduleAndSave(order);
+        getSession().flush();
+        getSession().evict(order);
+        Order reloaded = orderService.find(order.getId());
+        OrderElement e = reloaded.getOrderElements().iterator().next();
+        assertThat(e.getTaskElements().size(), equalTo(1));
+        orderService.remove(reloaded);
+        assertFalse(orderService.exists(reloaded));
     }
 
     @Test(expected = ValidationException.class)
@@ -132,8 +154,7 @@ public class OrderServiceTest {
             @Override
             public Void execute() {
                 try {
-                    Order reloaded = orderService.find(order
-                            .getId());
+                    Order reloaded = orderService.find(order.getId());
                     List<OrderElement> elements = reloaded.getOrderElements();
                     for (int i = 0; i < containers.length; i++) {
                         assertThat(elements.get(i).getId(),
@@ -143,8 +164,8 @@ public class OrderServiceTest {
                             .getOrderElements().iterator().next();
                     List<OrderElement> children = container.getChildren();
                     for (int i = 0; i < orderElements.length; i++) {
-                        assertThat(children.get(i).getId(), equalTo(orderElements[i]
-                                .getId()));
+                        assertThat(children.get(i).getId(),
+                                equalTo(orderElements[i].getId()));
                     }
                     return null;
                 } catch (Exception e) {
@@ -181,8 +202,7 @@ public class OrderServiceTest {
             @Override
             public Void execute() {
                 try {
-                    Order reloaded = orderService.find(order
-                            .getId());
+                    Order reloaded = orderService.find(order.getId());
                     assertFalse(order == reloaded);
                     assertThat(reloaded.getOrderElements().size(), equalTo(1));
                     OrderLineGroup containerReloaded = (OrderLineGroup) reloaded
@@ -220,7 +240,8 @@ public class OrderServiceTest {
         orderLine.addHoursGroup(hoursGroup2);
 
         CriterionType criterionType = new CriterionType("test");
-        Criterion criterion = new Criterion("Test" + UUID.randomUUID(), criterionType);
+        Criterion criterion = new Criterion("Test" + UUID.randomUUID(),
+                criterionType);
         criterionService.save(criterion);
 
         hoursGroup.addCriterion(criterion);
