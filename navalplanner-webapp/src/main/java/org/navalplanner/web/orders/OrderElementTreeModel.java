@@ -13,7 +13,6 @@ import org.zkoss.zul.SimpleTreeNode;
 
 /**
  * Model for a the {@link OrderElement} tree for a {@link Order} <br />
- *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class OrderElementTreeModel extends SimpleTreeModel {
@@ -28,11 +27,11 @@ public class OrderElementTreeModel extends SimpleTreeModel {
 
     private static SimpleTreeNode asNode(OrderElement orderElement) {
         orderElement.forceLoadHourGroups();
-        return new SimpleTreeNode(orderElement, asNodes(orderElement.getChildren()));
+        return new SimpleTreeNode(orderElement, asNodes(orderElement
+                .getChildren()));
     }
 
-    private static SimpleTreeNode createRootNodeAndDescendants(
-            Order order) {
+    private static SimpleTreeNode createRootNodeAndDescendants(Order order) {
         return new SimpleTreeNode(order, asNodes(order.getOrderElements()));
     }
 
@@ -53,7 +52,8 @@ public class OrderElementTreeModel extends SimpleTreeModel {
     }
 
     private OrderElement createNewOrderElement() {
-        OrderElement newOrderElement = new OrderLine();
+        OrderElement newOrderElement = OrderLine
+                .createOrderLineWithUnfixedHours(0);
         newOrderElement.setName("New Order Element");
         return newOrderElement;
     }
@@ -82,8 +82,7 @@ public class OrderElementTreeModel extends SimpleTreeModel {
             SimpleTreeNode selectedForTurningIntoContainer) {
         IOrderLineGroup parentContainer = asOrderLineGroup(getParent(selectedForTurningIntoContainer));
         if (selectedForTurningIntoContainer.getData() instanceof IOrderLineGroup)
-            return (IOrderLineGroup) selectedForTurningIntoContainer
-                    .getData();
+            return (IOrderLineGroup) selectedForTurningIntoContainer.getData();
         OrderElement toBeTurned = asOrderLine(selectedForTurningIntoContainer);
         OrderLineGroup asContainer = toBeTurned.toContainer();
         parentContainer.replace(toBeTurned, asContainer);

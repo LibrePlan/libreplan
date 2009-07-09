@@ -10,20 +10,17 @@ import java.math.BigDecimal;
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderLine;
+
 /**
  * Tests for {@link OrderLine}. <br />
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class OrderLineTest {
 
     /**
-     * An empty {@link OrderLine} without any {@link HoursGroup}.
-     *
-     * Trying to set work hours of {@link OrderLine} to 100h.
-     *
-     * Expected: {@link OrderLine} with 100h, with one {@link HoursGroup} with
-     * 100h NO_FIXED.
+     * An empty {@link OrderLine} without any {@link HoursGroup}. Trying to set
+     * work hours of {@link OrderLine} to 100h. Expected: {@link OrderLine} with
+     * 100h, with one {@link HoursGroup} with 100h NO_FIXED.
      */
     @Test
     public void testSetWorkHoursHoursEmptyOrderLine() {
@@ -48,11 +45,8 @@ public class OrderLineTest {
     }
 
     /**
-     * An empty {@link OrderLine} without any {@link HoursGroup}.
-     *
-     * Trying to set work hours of {@link OrderLine} to -100h.
-     *
-     * Expected: Exception.
+     * An empty {@link OrderLine} without any {@link HoursGroup}. Trying to set
+     * work hours of {@link OrderLine} to -100h. Expected: Exception.
      */
     @Test
     public void testSetWorkHoursHoursEmptyOrderLineIllegal() {
@@ -75,10 +69,8 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with just one {@link HoursGroup} of 100h NO_FIXED.
-     *
-     * Trying to set work hours of {@link OrderLine} to 120h.
-     *
-     * Expected: {@link OrderLine} with 120h. {@link HoursGroup} with 120h.
+     * Trying to set work hours of {@link OrderLine} to 120h. Expected:
+     * {@link OrderLine} with 120h. {@link HoursGroup} with 120h.
      */
     @Test
     public void testSetWorkHoursHoursGroupNoFixedIncreaseValue() {
@@ -103,10 +95,8 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with just one {@link HoursGroup} of 100h NO_FIXED.
-     *
-     * Trying to set work hours of {@link OrderLine} to 75h.
-     *
-     * Expected: {@link OrderLine} with 75h. {@link HoursGroup} with 75h.
+     * Trying to set work hours of {@link OrderLine} to 75h. Expected:
+     * {@link OrderLine} with 75h. {@link HoursGroup} with 75h.
      */
     @Test
     public void testSetWorkHoursHoursGroupNoFixedDecreaseValue() {
@@ -132,10 +122,7 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with just one {@link HoursGroup} of 100h 100%
-     * FIXED_PERCENTAGE.
-     *
-     * Trying to set work hours of {@link OrderLine} to 120h.
-     *
+     * FIXED_PERCENTAGE. Trying to set work hours of {@link OrderLine} to 120h.
      * Expected: {@link OrderLine} with 120h. {@link HoursGroup} with 120h 100%.
      */
     @Test
@@ -167,10 +154,7 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with just one {@link HoursGroup} of 100h 100%
-     * FIXED_PERCENTAGE.
-     *
-     * Trying to set work hours of {@link OrderLine} to 75h.
-     *
+     * FIXED_PERCENTAGE. Trying to set work hours of {@link OrderLine} to 75h.
      * Expected: {@link OrderLine} with 100h. {@link HoursGroup} with 75h 100%.
      */
     @Test
@@ -202,10 +186,7 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with two {@link HoursGroup} of 100h and 50h
-     * NO_FIXED.
-     *
-     * Trying to set work hours of {@link OrderLine} to 200h.
-     *
+     * NO_FIXED. Trying to set work hours of {@link OrderLine} to 200h.
      * Expected: {@link OrderLine} with 200h. {@link HoursGroup} with 133h and
      * HoursGroup with 66h.
      */
@@ -237,11 +218,8 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with two {@link HoursGroup} of 100h and 50h
-     * NO_FIXED.
-     *
-     * Trying to set work hours of {@link OrderLine} to 50h.
-     *
-     * Expected: {@link OrderLine} with 50h. {@link HoursGroup} with 33h and
+     * NO_FIXED. Trying to set work hours of {@link OrderLine} to 50h. Expected:
+     * {@link OrderLine} with 50h. {@link HoursGroup} with 33h and
      * {@link HoursGroup} with 16h.
      */
     @Test
@@ -272,12 +250,9 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with two {@link HoursGroup} of 75h 75%
-     * FIXED_PERCENTAGE and 25h NO_FIXED.
-     *
-     * Trying to set work hours of {@link OrderLine} to 200h.
-     *
-     * Expected: {@link OrderLine} with 200h. {@link HoursGroup} with 150h 75%
-     * and {@link HoursGroup} with 50h.
+     * FIXED_PERCENTAGE and 25h NO_FIXED. Trying to set work hours of
+     * {@link OrderLine} to 200h. Expected: {@link OrderLine} with 200h.
+     * {@link HoursGroup} with 150h 75% and {@link HoursGroup} with 50h.
      */
     @Test
     public void testSetWorkHoursHoursGroupFixedPercentageAndHoursGroupNoFixedIncreaseValue() {
@@ -312,12 +287,9 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with two {@link HoursGroup} of 75h 75%
-     * FIXED_PERCENTAGE and 25h NO_FIXED.
-     *
-     * Trying to set work hours of {@link OrderLine} to 50h.
-     *
-     * Expected: {@link OrderLine} with 50h. {@link HoursGroup} with 37h 75% and
-     * HoursGroup with 13h.
+     * FIXED_PERCENTAGE and 25h NO_FIXED. Trying to set work hours of
+     * {@link OrderLine} to 50h. Expected: {@link OrderLine} with 50h.
+     * {@link HoursGroup} with 37h 75% and HoursGroup with 13h.
      */
     @Test
     public void testSetWorkHoursHoursGroupFixedPercentageAndHoursGroupNoFixedDecreaseValue() {
@@ -352,10 +324,7 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with two {@link HoursGroup} of 75h 75% and 25h 25%
-     * FIXED_PERCENTAGE.
-     *
-     * Trying to set work hours of {@link OrderLine} to 200h.
-     *
+     * FIXED_PERCENTAGE. Trying to set work hours of {@link OrderLine} to 200h.
      * Expected: {@link OrderLine} with 200h. {@link HoursGroup} with 150h 75%
      * and {@link HoursGroup} with 50h 25%.
      */
@@ -396,10 +365,7 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with two {@link HoursGroup} of 75h 75% and 25h 25%
-     * FIXED_PERCENTAGE.
-     *
-     * Trying to set work hours of {@link OrderLine} to 80h.
-     *
+     * FIXED_PERCENTAGE. Trying to set work hours of {@link OrderLine} to 80h.
      * Expected: {@link OrderLine} with 80h. {@link HoursGroup} with 60h 75% and
      * {@link HoursGroup} with 20h 25%.
      */
@@ -440,12 +406,10 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with three {@link HoursGroup} of 50h, 50h NO_FIXED
-     * and 100h 50% FIXED_PERCENTAGE.
-     *
-     * Trying to set work hours of {@link OrderLine} to 300h.
-     *
-     * Expected: {@link OrderLine} with 300h. {@link HoursGroup} with 75h,
-     * {@link HoursGroup} with 75h and {@link HoursGroup} with 150h 50%.
+     * and 100h 50% FIXED_PERCENTAGE. Trying to set work hours of
+     * {@link OrderLine} to 300h. Expected: {@link OrderLine} with 300h.
+     * {@link HoursGroup} with 75h, {@link HoursGroup} with 75h and
+     * {@link HoursGroup} with 150h 50%.
      */
     @Test
     public void testSetWorkHoursHoursGroupNoFixedAndHoursGroupNoFixedAndHoursGroupFixedPercentageIncreaseValue() {
@@ -484,12 +448,10 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with three {@link HoursGroup} of 40h, 60h NO_FIXED
-     * and 100h 50% FIXED_PERCENTAGE.
-     *
-     * Trying to set work hours of {@link OrderLine} to 100h.
-     *
-     * Expected: {@link OrderLine} with 100h. {@link HoursGroup} with 20h,
-     * {@link HoursGroup} with 30h and {@link HoursGroup} with 50h 50%.
+     * and 100h 50% FIXED_PERCENTAGE. Trying to set work hours of
+     * {@link OrderLine} to 100h. Expected: {@link OrderLine} with 100h.
+     * {@link HoursGroup} with 20h, {@link HoursGroup} with 30h and
+     * {@link HoursGroup} with 50h 50%.
      */
     @Test
     public void testSetWorkHoursHoursGroupNoFixedAndHoursGroupNoFixedAndHoursGroupFixedPercentageDecreaseValue() {
@@ -528,12 +490,10 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with three {@link HoursGroup} of 50h NO_FIXED, 50h
-     * 25% and 100h 50% FIXED_PERCENTAGE.
-     *
-     * Trying to set work hours of {@link OrderLine} to 400h.
-     *
-     * Expected: {@link OrderLine} with 400h. {@link HoursGroup} with 100h,
-     * {@link HoursGroup} with 100h 25% and {@link HoursGroup} with 200h 50%.
+     * 25% and 100h 50% FIXED_PERCENTAGE. Trying to set work hours of
+     * {@link OrderLine} to 400h. Expected: {@link OrderLine} with 400h.
+     * {@link HoursGroup} with 100h, {@link HoursGroup} with 100h 25% and
+     * {@link HoursGroup} with 200h 50%.
      */
     @Test
     public void testSetWorkHoursHoursGroupNoFixedAndHoursGroupFixedPercentageAndHoursGroupFixedPercentageIncreaseValue() {
@@ -576,12 +536,10 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with three {@link HoursGroup} of 50h NO_FIXED, 50h
-     * 25% and 100h 50% FIXED_PERCENTAGE.
-     *
-     * Trying to set work hours of {@link OrderLine} to 100h.
-     *
-     * Expected: {@link OrderLine} with 400h. {@link HoursGroup} with 25h,
-     * {@link HoursGroup} with 25h 25% and {@link HoursGroup} with 50h 50%.
+     * 25% and 100h 50% FIXED_PERCENTAGE. Trying to set work hours of
+     * {@link OrderLine} to 100h. Expected: {@link OrderLine} with 400h.
+     * {@link HoursGroup} with 25h, {@link HoursGroup} with 25h 25% and
+     * {@link HoursGroup} with 50h 50%.
      */
     @Test
     public void testSetWorkHoursHoursGroupNoFixedAndHoursGroupFixedPercentageAndHoursGroupFixedPercentageDecreaseValue() {
@@ -749,6 +707,20 @@ public class OrderLineTest {
         assertThat(hoursGroup.getWorkingHours(), equalTo(200));
         assertThat(hoursGroup2.getWorkingHours(), equalTo(85));
         assertThat(hoursGroup3.getWorkingHours(), equalTo(114));
+    }
+
+    @Test
+    public void createOrderLineWithAnHoursGroupTakingAll() {
+        int[] hoursValues = { 0, 100, 10, 30 };
+        for (int hours : hoursValues) {
+            OrderLine orderLine = OrderLine
+                    .createOrderLineWithUnfixedHours(hours);
+            assertThat(orderLine.getWorkHours(), equalTo(hours));
+            assertThat(orderLine.getHoursGroups().size(), equalTo(1));
+            orderLine.setWorkHours(20);
+            assertThat(orderLine.getWorkHours(), equalTo(20));
+            assertThat(orderLine.getHoursGroups().size(), equalTo(1));
+        }
     }
 
 }

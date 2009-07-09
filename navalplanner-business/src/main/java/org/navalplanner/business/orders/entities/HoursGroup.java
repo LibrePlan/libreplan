@@ -54,11 +54,18 @@ public class HoursGroup implements Cloneable {
         return workingHours;
     }
 
-    public void setPercentage(BigDecimal percentage)
+    /**
+     * @param proportion
+     *            It's one based, instead of one hundred based
+     * @throws IllegalArgumentException
+     *             if the new sum of percentages in the parent {@link OrderLine}
+     *             surpasses one
+     */
+    public void setPercentage(BigDecimal proportion)
             throws IllegalArgumentException {
         BigDecimal oldPercentage = this.percentage;
 
-        this.percentage = percentage;
+        this.percentage = proportion;
 
         if (!parentOrderLine.isPercentageValid()) {
             this.percentage = oldPercentage;
@@ -153,7 +160,7 @@ public class HoursGroup implements Cloneable {
     }
 
     public boolean isTransient() {
-     // FIXME Review reattachment
+        // FIXME Review reattachment
         return id == null;
     }
 

@@ -8,6 +8,16 @@ import java.util.Set;
 
 public class OrderLine extends OrderElement {
 
+    public static OrderLine createOrderLineWithUnfixedHours(int hours) {
+        OrderLine result = new OrderLine();
+        HoursGroup hoursGroup = new HoursGroup();
+        result.addHoursGroup(hoursGroup);
+        hoursGroup.setFixedPercentage(true);
+        hoursGroup.setPercentage(new BigDecimal(1));
+        hoursGroup.setWorkingHours(hours);
+        return result;
+    }
+
     private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
 
     @Override
@@ -55,7 +65,6 @@ public class OrderLine extends OrderElement {
     /**
      * Set the total working hours of the {@link OrderLine} taking into account
      * the {@link HoursGroup} policies.
-     *
      * @param workHours
      *            The desired value to set as total working hours
      * @throws IllegalArgumentException
@@ -89,20 +98,13 @@ public class OrderLine extends OrderElement {
 
     /**
      * Makes the needed modifications in hoursGroups attribute in order to set
-     * the desired value of working hours.
-     *
-     * This method takes into account the different {@link HoursGroup} policies:
-     *
-     * If policy is FIXED_PERCENTAGE the new value is calculated for each
-     * {@link HoursGroup} with this policy. Using round down in order to avoid
-     * problems.
-     *
-     * Hours are proportionally distributed when there're {@link HoursGroup}
-     * with NO_FIXED policy.
-     *
+     * the desired value of working hours. This method takes into account the
+     * different {@link HoursGroup} policies: If policy is FIXED_PERCENTAGE the
+     * new value is calculated for each {@link HoursGroup} with this policy.
+     * Using round down in order to avoid problems. Hours are proportionally
+     * distributed when there're {@link HoursGroup} with NO_FIXED policy.
      * Finally, it creates new {@link HoursGroup} if the're some remaining hours
      * (it could happen because of the round down used for operations).
-     *
      * @param workHours
      *            The value to set as total working hours
      */
@@ -175,7 +177,6 @@ public class OrderLine extends OrderElement {
     /**
      * Checks if the desired total number of hours is valid taking into account
      * {@link HoursGroup} policy restrictions.
-     *
      * @param total
      *            The desired value
      * @return true if the value is valid
@@ -202,9 +203,7 @@ public class OrderLine extends OrderElement {
     /**
      * Checks if the percentage is or not valid. That means, if the pertentage
      * of all {@link HoursGroup} with FIXED_PERCENTAGE isn't more than 100%.
-     *
      * This method is called from setPercentage at {@link HoursGroup} class.
-     *
      * @return true if the percentage is valid
      */
     public boolean isPercentageValid() {
@@ -227,7 +226,6 @@ public class OrderLine extends OrderElement {
     /**
      * Calculates the total number of working hours in a set of
      * {@link HoursGroup}.
-     *
      * @param hoursGroups
      *            A {@link HoursGroup} set
      * @return The sum of working hours
@@ -244,7 +242,6 @@ public class OrderLine extends OrderElement {
      * Calculates the total number of working hours in a set of
      * {@link HoursGroup} taking into account just {@link HoursGroup} with
      * NO_FIXED as policy.
-     *
      * @param hoursGroups
      *            A {@link HoursGroup} set
      * @return The sum of NO_FIXED {@link HoursGroup}
@@ -263,7 +260,6 @@ public class OrderLine extends OrderElement {
      * Re-calculates the working hours and percentages in the {@link HoursGroup}
      * set of the current {@link OrderLine}, taking into account the policy of
      * each {@link HoursGroup}.
-     *
      */
     public void recalculateHoursGroups() {
         Integer total = calculateTotalHours(hoursGroups);
