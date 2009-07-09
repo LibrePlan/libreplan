@@ -31,6 +31,10 @@
         <property name="mandatoryInit" access="field" />
         <property name="mandatoryEnd" access="field" />
         <property name="description" access="field" />
+        <set name="taskElements" access="field">
+            <key column="ORDER_ELEMENT_ID"/>
+            <one-to-many class="org.navalplanner.business.planner.entities.TaskElement"></one-to-many>
+        </set>
 
         <joined-subclass name="OrderLineGroup">
             <key column="ORDERELEMENTID"></key>

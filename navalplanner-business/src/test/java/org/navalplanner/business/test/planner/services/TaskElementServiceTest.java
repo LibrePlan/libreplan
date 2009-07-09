@@ -263,4 +263,17 @@ public class TaskElementServiceTest {
         assertThat(child2.getHoursGroup(), JUnitMatchers
                 .either(equalTo(hours1)).or(equalTo(hours2)));
     }
+
+    @Test
+    public void testInverseManyToOneRelationshipInOrderElement() {
+        Task task = createValidTask();
+        taskElementService.save(task);
+        flushAndEvict(task);
+        sessionFactory.getCurrentSession().evict(task.getOrderElement());
+        TaskElement fromDB = taskElementService.findById(task.getId());
+        OrderElement orderElement = fromDB.getOrderElement();
+        assertThat(orderElement.getTaskElements().size(), equalTo(1));
+        assertThat(orderElement.getTaskElements().iterator().next(),
+                equalTo(fromDB));
+    }
 }

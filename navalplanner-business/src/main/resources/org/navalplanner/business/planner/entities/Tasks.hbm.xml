@@ -3,15 +3,15 @@
 <hibernate-mapping package="org.navalplanner.business.planner.entities"
     default-access="field">
     <class name="TaskElement">
-        <id name="id">
-            <generator class="native"></generator>
+        <id name="id" column="id" type="long">
+            <generator class="native" />
         </id>
         <version name="version" type="long"></version>
 
         <property name="startDate" type="timestamp" />
         <property name="endDate" type="timestamp" />
 
-        <many-to-one name="orderElement" cascade="none"/>
+        <many-to-one name="orderElement" cascade="none" column="ORDER_ELEMENT_ID"/>
 
         <set name="dependenciesWithThisOrigin">
             <key column="ORIGIN"></key>

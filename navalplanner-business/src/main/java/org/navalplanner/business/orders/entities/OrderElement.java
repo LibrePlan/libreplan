@@ -1,11 +1,13 @@
 package org.navalplanner.business.orders.entities;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.planner.entities.TaskElement;
 
 public abstract class OrderElement {
 
@@ -25,6 +27,8 @@ public abstract class OrderElement {
     private Boolean mandatoryEnd = false;
 
     private String description;
+
+    private Set<TaskElement> taskElements = new HashSet<TaskElement>();
 
     public abstract Integer getWorkHours();
 
@@ -122,8 +126,15 @@ public abstract class OrderElement {
                 transientHoursGroups.add(hoursGroup);
             }
         }
-
         return transientHoursGroups;
+    }
+
+    public Set<TaskElement> getTaskElements() {
+        return Collections.unmodifiableSet(taskElements);
+    }
+
+    public boolean isScheduled() {
+        return !taskElements.isEmpty();
     }
 
 }
