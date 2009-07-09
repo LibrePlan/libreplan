@@ -1,5 +1,6 @@
-<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
-<?link rel="stylesheet" type="text/css" href="/common/css/navalpro.css"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
 <zk>
 
     <window self="@{define(content)}" >
