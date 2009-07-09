@@ -93,7 +93,7 @@ public abstract class OrderElement {
         return description;
     }
 
-    public abstract OrderLineGroup asContainer();
+    public abstract OrderLineGroup toContainer();
 
     public abstract void forceLoadHourGroups();
 

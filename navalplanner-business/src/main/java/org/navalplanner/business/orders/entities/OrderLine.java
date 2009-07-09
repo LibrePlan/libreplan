@@ -26,13 +26,13 @@ public class OrderLine extends OrderElement {
     }
 
     @Override
-    public OrderLineGroup asContainer() {
+    public OrderLineGroup toContainer() {
         OrderLineGroup result = new OrderLineGroup();
         result.setName(getName());
         result.setInitDate(getInitDate());
         result.setEndDate(getEndDate());
-        // FIXME
-        // result.setHoursGroups(getHoursGroups());
+        result.add(this);
+
         return result;
     }
 

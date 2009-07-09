@@ -42,7 +42,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     }
 
     @Override
-    public OrderLineGroup asContainer() {
+    public OrderLineGroup toContainer() {
         return this;
     }
 

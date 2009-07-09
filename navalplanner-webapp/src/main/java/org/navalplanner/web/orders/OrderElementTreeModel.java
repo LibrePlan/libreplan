@@ -68,7 +68,8 @@ public class OrderElementTreeModel extends SimpleTreeModel {
     }
 
     private void addOrderElementAtImpl(SimpleTreeNode node, OrderElement orderElement) {
-        addOrderElementAtImpl(node, orderElement, node.getChildCount());
+        IOrderLineGroup container = turnIntoContainerIfNeeded(node);
+        container.add(orderElement);
     }
 
     private void addOrderElementAtImpl(SimpleTreeNode destinationNode, OrderElement orderElement,
@@ -84,7 +85,7 @@ public class OrderElementTreeModel extends SimpleTreeModel {
             return (IOrderLineGroup) selectedForTurningIntoContainer
                     .getData();
         OrderElement toBeTurned = asOrderLine(selectedForTurningIntoContainer);
-        OrderLineGroup asContainer = toBeTurned.asContainer();
+        OrderLineGroup asContainer = toBeTurned.toContainer();
         parentContainer.replace(toBeTurned, asContainer);
         return asContainer;
     }
