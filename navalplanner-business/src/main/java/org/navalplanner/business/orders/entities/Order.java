@@ -9,7 +9,6 @@ import org.hibernate.validator.NotNull;
 
 /**
  * It represents an {@link Order} with its related information. <br />
- *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class Order implements IOrderLineGroup {
@@ -133,6 +132,14 @@ public class Order implements IOrderLineGroup {
     public void add(int position, OrderElement orderElement) {
         getOrderElementsManipulator().add(position, orderElement);
 
+    }
+
+    public boolean isSomeTaskElementScheduled() {
+        for (OrderElement orderElement : orderElements) {
+            if (orderElement.isScheduled())
+                return true;
+        }
+        return false;
     }
 
 }

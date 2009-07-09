@@ -12,6 +12,7 @@ import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.services.IOrderService;
+import org.navalplanner.business.planner.services.ITaskElementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -38,10 +39,15 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private IOrderElementModel orderElementModel;
 
+    private final ITaskElementService taskElementService;
+
     @Autowired
-    public OrderModel(IOrderService orderService) {
+    public OrderModel(IOrderService orderService,
+            ITaskElementService taskElementService) {
         Validate.notNull(orderService);
+        Validate.notNull(taskElementService);
         this.orderService = orderService;
+        this.taskElementService = taskElementService;
     }
 
     @Override
@@ -54,9 +60,13 @@ public class OrderModel implements IOrderModel {
     @Transactional(readOnly = true)
     public void prepareEditFor(Order order) {
         Validate.notNull(order);
+        this.order = getFromDB(order);
+        this.orderElementTreeModel = new OrderElementTreeModel(this.order);
+    }
+
+    private Order getFromDB(Order order) {
         try {
-            this.order = orderService.find(order.getId());
-            this.orderElementTreeModel = new OrderElementTreeModel(this.order);
+            return orderService.find(order.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -72,8 +82,7 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional
     public void save() throws ValidationException {
-        InvalidValue[] invalidValues = orderValidator
-                .getInvalidValues(order);
+        InvalidValue[] invalidValues = orderValidator.getInvalidValues(order);
         if (invalidValues.length > 0)
             throw new ValidationException(invalidValues);
         this.orderService.save(order);
@@ -109,4 +118,20 @@ public class OrderModel implements IOrderModel {
         return orderElementModel;
     }
 
+    @Override
+    public void prepareForSchedule(Order order) {
+        this.order = order;
+    }
+
+    @Override
+    @Transactional
+    public void schedule() {
+        taskElementService.convertToScheduleAndSave(getFromDB(order));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAlreadyScheduled(Order order) {
+        return getFromDB(order).isSomeTaskElementScheduled();
+    }
 }

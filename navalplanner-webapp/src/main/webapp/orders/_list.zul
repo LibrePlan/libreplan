@@ -20,6 +20,9 @@
                     <button label="Remove"
                         onClick="controller.confirmRemove(self.parent.parent.value);">
                     </button>
+                    <button label="Schedule"
+                        onClick="controller.confirmSchedule(self.parent.parent.value);">
+                    </button>
                 </hbox>
                 <label value="@{order.name}" />
                 <label value="@{order.initDate}" />

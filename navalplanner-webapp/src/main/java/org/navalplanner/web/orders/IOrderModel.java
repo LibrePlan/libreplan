@@ -31,4 +31,10 @@ public interface IOrderModel {
 
     IOrderElementModel getOrderElementModel(OrderElement orderElement);
 
+    void prepareForSchedule(Order order);
+
+    void schedule();
+
+    boolean isAlreadyScheduled(Order order);
+
 }

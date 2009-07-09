@@ -17,7 +17,6 @@ import org.zkoss.zul.api.Window;
 
 /**
  * Controller for CRUD actions <br />
- *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class OrderCRUDController extends GenericForwardComposer {
@@ -40,6 +39,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     private OnlyOneVisible cachedOnlyOneVisible;
 
     private Window confirmRemove;
+
+    private Window confirmSchedule;
+
+    private boolean confirmingSchedule;
 
     public List<Order> getOrders() {
         return orderModel.getOrders();
@@ -79,6 +82,47 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void confirmRemove(Order order) {
         orderModel.prepareForRemove(order);
         showConfirmingWindow();
+    }
+
+    public void confirmSchedule(Order order) {
+        if (!orderModel.isAlreadyScheduled(order)) {
+            orderModel.prepareForSchedule(order);
+            showScheduleConfirmingWindow();
+        } else {
+            messagesForUser
+                    .showMessage(Level.INFO,
+                            "xa se crearon as tarefas de planificacion asociadas o pedido");
+        }
+    }
+
+    private void showScheduleConfirmingWindow() {
+        confirmingSchedule = true;
+        try {
+            Util.reloadBindings(confirmSchedule);
+            confirmSchedule.doModal();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void schedule() {
+        try {
+            orderModel.schedule();
+            Util.reloadBindings(listWindow);
+            messagesForUser.showMessage(Level.INFO,
+                    "crearonse as tarefas de planificación");
+        } finally {
+            hideScheduleConfirmingWindow();
+        }
+    }
+
+    public void cancelSchedule() {
+        hideScheduleConfirmingWindow();
+    }
+
+    private void hideScheduleConfirmingWindow() {
+        confirmingSchedule = false;
+        Util.reloadBindings(confirmSchedule);
     }
 
     public void cancelRemove() {
@@ -150,6 +194,10 @@ public class OrderCRUDController extends GenericForwardComposer {
                 orderModel, orderElementController);
         controller.doAfterCompose(comp.getFellow(window).getFellow(
                 "orderElementTree"));
+    }
+
+    public boolean isConfirmingSchedule() {
+        return confirmingSchedule;
     }
 
 }

@@ -136,5 +136,4 @@ public abstract class OrderElement {
     public boolean isScheduled() {
         return !taskElements.isEmpty();
     }
-
 }

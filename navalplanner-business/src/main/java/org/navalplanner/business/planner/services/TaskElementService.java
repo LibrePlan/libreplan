@@ -1,7 +1,10 @@
 package org.navalplanner.business.planner.services;
 
+import java.util.List;
+
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
@@ -84,6 +87,14 @@ public class TaskElementService implements ITaskElementService {
             result.addTaskElement(convertToInitialSchedule(orderElement));
         }
         return result;
+    }
+
+    @Override
+    public void convertToScheduleAndSave(Order order) {
+        List<OrderElement> orderElements = order.getOrderElements();
+        for (OrderElement orderElement : orderElements) {
+            save(convertToInitialSchedule(orderElement));
+        }
     }
 
 }

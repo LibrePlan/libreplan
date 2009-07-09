@@ -35,6 +35,22 @@
                 </hbox>
             </vbox>
         </window>
+
+        <window visible="@{controller.confirmingSchedule}"
+            id="confirmSchedule" title="Confirmación" width="500px"
+            position="center">
+            <vbox>
+                <hbox>
+                ¿Desexa planificar <label value="@{controller.order.name}"/> ?
+                </hbox>
+                <hbox>
+                    <button label="Yes"
+                        onClick="controller.schedule();" />
+                    <button label="No"
+                        onClick="controller.cancelSchedule();" />
+                </hbox>
+            </vbox>
+        </window>
     </window>
 
 </zk>
