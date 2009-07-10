@@ -22,6 +22,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treecell;
@@ -211,7 +212,10 @@ public class OrderElementTreeController extends GenericForwardComposer {
             // Construct treecells
             int[] path = getOrderElementTreeModel().getPath(t);
             String cssClass = "depth_"+path.length;
-            Treecell cellForName = new Treecell(pathAsString(path));
+            Treecell cellForName = new Treecell();
+            Label tasknumber = new Label(pathAsString(path));
+            tasknumber.setSclass("tasknumber");
+            cellForName.appendChild(tasknumber);
             cellForName.setSclass(cssClass);
             // It would be needed to expand the width for the numbers
             // to make it ready for 2 and 3 digit numbers
