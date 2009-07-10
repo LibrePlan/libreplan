@@ -434,7 +434,8 @@
                 <configuration>
                     <jettyEnvXml>target/jetty/jetty-env.xml</jettyEnvXml>
                     <reload>manual</reload>
-
+                    <stopPort>9966</stopPort>
+                    <stopKey>stop</stopKey>
                     <!-- Log to the console. -->
                     <requestLog implementation="org.mortbay.jetty.NCSARequestLog">
                         <!--
