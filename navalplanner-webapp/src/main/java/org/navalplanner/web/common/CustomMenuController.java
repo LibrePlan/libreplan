@@ -91,6 +91,10 @@ public class CustomMenuController extends Div {
 				"/navalplanner-webapp/");
 		l.add(ci);
 
+		ci = new CustomMenuItem("mainmenu.quality_management",
+		"/navalplanner-webapp/");
+		l.add(ci);
+
 		ci = new CustomMenuItem("mainmenu.administration",
 				"/navalplanner-webapp/");
 		l.add(ci);

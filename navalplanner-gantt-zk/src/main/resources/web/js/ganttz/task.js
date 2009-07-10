@@ -80,7 +80,8 @@ zkTask.init = function(cmp) {
         });
 
         resize2.on('resize', function(ev) {
-
+            cmp.style.top = "";
+            cmp2.style.top = "";
             zkau.send( {
                 uuid : cmp2.id,
                 cmd : "updateProgress",
@@ -90,7 +91,8 @@ zkTask.init = function(cmp) {
 
 
         resize.on('resize', function(ev) {
-
+            cmp.style.top = "";
+            cmp2.style.top = "";
             cmp2 = document.getElementById('completion'+cmp.id);
             resize2 = new YAHOO.util.Resize(cmp2, {
                 handles : [ 'r' ],
