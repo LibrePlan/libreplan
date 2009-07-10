@@ -49,6 +49,15 @@ public class CustomMenuController extends Div {
 			this.children.add(newChildren);
 		}
 
+		public boolean getActiveParent() {
+		    String requestPath = Executions.getCurrent().getDesktop()
+            .getRequestPath();
+            if (requestPath.contains(url) || url.contains(requestPath)) {
+                return true;
+            }
+            return false;
+		}
+
 	}
 
 	public CustomMenuController() {
@@ -60,13 +69,13 @@ public class CustomMenuController extends Div {
 		CustomMenuItem ci;
 
 		ci = new CustomMenuItem("mainmenu.plannification",
-				"/navalplanner-webapp/");
+				"/navalplanner-webapp/planner/main.zul");
 		ci.appendChildren(new CustomMenuItem("mainmenu.plannification",
 				"/navalplanner-webapp/planner/main.zul"));
 		ci.appendChildren(new CustomMenuItem("mainmenu.company_overview",
 				"/navalplanner-webapp/planner/main.zul"));
 		ci.appendChildren(new CustomMenuItem("mainmenu.plannifications_list",
-				"/navalplanner-webapp/planner/main.zul"));
+		"/navalplanner-webapp/planner/main.zul"));
 		l.add(ci);
 
 		ci = new CustomMenuItem("mainmenu.resources",

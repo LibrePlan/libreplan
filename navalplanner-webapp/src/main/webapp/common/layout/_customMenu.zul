@@ -3,7 +3,8 @@
 	<n:table border="0" cellspacing="0" cellpadding="0">
 		<n:tr>
 			<n:td forEach="${menuContainer.customMenuItems}">
-				<n:a href="${each.url}" class="menuup">${c:l(each.name)}</n:a>
+				<n:a href="${each.url}" class=
+					"menuup${(each.activeParent?'_activa':'')}">${c:l(each.name)}</n:a>
 			</n:td>
 		</n:tr>
 	</n:table>
