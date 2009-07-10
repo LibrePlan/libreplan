@@ -3,8 +3,10 @@ package org.zkoss.ganttz;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -72,7 +74,30 @@ public class ListDetails extends HtmlMacroComponent {
         return true;
     }
 
-    private Map<TaskBean, TaskDetail> detailsForBeans = new HashMap<TaskBean, TaskDetail>();
+    private final class DetailsForBeans {
+        private Map<TaskBean, TaskDetail> map = new HashMap<TaskBean, TaskDetail>();
+
+        private Set<TaskBean> focusRequested = new HashSet<TaskBean>();
+
+        public void put(TaskBean taskBean, TaskDetail taskDetail) {
+            map.put(taskBean, taskDetail);
+            if (focusRequested.contains(taskBean)) {
+                focusRequested.remove(taskBean);
+                taskDetail.receiveFocus();
+            }
+        }
+
+        public void requestFocusFor(TaskBean taskBean) {
+            focusRequested.add(taskBean);
+        }
+
+        public TaskDetail get(TaskBean taskbean) {
+            return map.get(taskbean);
+        }
+
+    }
+
+    private DetailsForBeans detailsForBeans = new DetailsForBeans();
 
     private final class TreeNavigator implements ITaskDetailNavigator {
         private final int[] pathToNode;
@@ -201,6 +226,7 @@ public class ListDetails extends HtmlMacroComponent {
     }
 
     private void addTask(TaskBean taskBean) {
+        detailsForBeans.requestFocusFor(taskBean);
         tasksTreeModel.add(tasksTreeModel.getRoot(), taskBean);
     }
 
