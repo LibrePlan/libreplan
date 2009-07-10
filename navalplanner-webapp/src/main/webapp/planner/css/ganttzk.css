@@ -29,15 +29,15 @@ zkTasklist.SCROLLBAR_WIDTH = 15
     float:left;
     height:300px;
     position:relative;
-    top:25px;
+    top:27px;
     overflow-y: hidden;
     border-bottom: 1px solid #86A4BE;
     border-right: 1px solid #86A4BE;
 }
 
-/*.listdetails img {
+.listdetails img {
     display:none;
-} */
+}
 
 #listdetails_container td {
     border-bottom:1px solid #86A4BE;
@@ -81,7 +81,7 @@ border:0px;
 
 .taskdetail_grid table {
     height:30px;
-    width:280px; /* Ganntz.ListdetailsWidth */
+    width:285px; /* Ganntz.ListdetailsWidth */
 }
 
 
@@ -241,20 +241,19 @@ table {
 
 #scroll_container {
     margin-top:70px;
-    /*    border:solid green 1px; */
-    height:300px; /* Recalculate based on window */
-    width:500px; /* Recalculate based on window */
+    height:300px; /* Recalculated based on window */
+    width:500px; /* Recalculated based on window */
     overflow:hidden;
     float:left;
     position:absolute;
-    left:300px;
-
+    left:285px; /* Ganntz.ListdetailsWidth + borders = 280 + 5 */
+    /*    border:solid green 1px; */
 }
 
 #timetracker {
     /* border: solid 1px red; */
     position:absolute;
-    left:300px;
+    left:285px; /* Ganntz.ListdetailsWidth + borders = 280 + 5 */
     width:600px;
     height:400px;
     position:absolute;
@@ -278,7 +277,7 @@ tr.z-vbox-sep {
 
 #ganttpanel_scroller_x {
     top: 600px;  /* Calculate initial settings */
-    left: 290px;
+    left: 285px; /* Ganntz.ListdetailsWidth + borders = 280 + 5 */
     width:635px;
     height:15px;
 }
@@ -290,7 +289,7 @@ tr.z-vbox-sep {
 }
 
 #ganttpanel_scroller_y {
-    top: 195px; /* Calculate initial settings */
+    top: 160px; /* Fixed top position */
     left: 920px;
     width:15px;
     height:330px;

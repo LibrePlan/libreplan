@@ -7,14 +7,14 @@
 zkTasklist = {};
 
 HEIGHT_PER_ROW = 15;             // Ganttz task row height
-HEIGHT_TIME_TRACKER = 200;       //200
+HEIGHT_TIME_TRACKER = -10;        // Timetracker legend height (80)
 
 MIN_RESOLUTION_X = 600;          // Minimun horizontal autoresizable window
 MIN_RESOLUTION_Y = 600;          // Minimun vertical autoresizable window
 
 TASKDETAILS_WIDTH = 300;         // Taskdetails column fixed width (300)
-TASKDETAILS_HEIGHT = 260;        // Design-relative reservated height for taskdetails (300)
-TIMETRACKER_OFFSET_TOP = 200     // Design-relative height above timetracker
+TASKDETAILS_HEIGHT = 180; //260       // Design-relative reservated height for taskdetails (300,260)
+TIMETRACKER_OFFSET_TOP = 120 //    // Design-relative height above timetracker
 
 FOOTER_HEIGHT = 40;             // Design-relative footer height
 
@@ -26,22 +26,6 @@ zkTasklist.init = function(cmp) {
 }
 
 zkTasklist.adjust_height = function(cmp) {
-/*    var height = cmp.style.height;
-      var component_to_adjust = document.getElementById(cmp
-            .getAttribute('sameHeightElementId'));
-
-    function setHeight(element, offset) {
-        if (!offset) {
-            offset = 0;
-        }
-        var newheigth = parseInt(height) + offset;
-        element.style["height"] = document.getElementById('scroll_container').style["height"];
-    }
-    setHeight(document.getElementById('ganttpanel'), HEIGHT_TIME_TRACKER);
-
-    if (component_to_adjust) {
-        setHeight(component_to_adjust);
-    } */
 
     document.getElementById('ganttpanel').style["height"]
         = document.getElementById('scroll_container').style["height"];
@@ -87,14 +71,14 @@ function relocateScrolls() {
     // Shift scroll-y and scroll-x width (Width change)
     if ( window.innerWidth > MIN_RESOLUTION_X ) {
         scroller_y.style["left"] =
-            (window.innerWidth - SCROLLBAR_WIDTH -5 ) +"px"; // Extra padding
+            (window.innerWidth - SCROLLBAR_WIDTH*3 ) +"px"; // Extra padding
         scroller_x.style["width"] =
-            (window.innerWidth - TASKDETAILS_WIDTH - SCROLLBAR_WIDTH +5 ) +"px"; // Extra padding
+            (window.innerWidth - TASKDETAILS_WIDTH - SCROLLBAR_WIDTH*2 ) +"px"; // Extra padding
     }
 
     // Shift scroll-y and scroll-x width (Height change)
     if ( window.innerHeight > MIN_RESOLUTION_Y ) {
-        scroller_x.style["top"] = (window.innerHeight - SCROLLBAR_WIDTH*2 - FOOTER_HEIGHT) +"px";
+        scroller_x.style["top"] = (window.innerHeight - SCROLLBAR_WIDTH*2 - HEIGHT_TIME_TRACKER ) +"px";
         scroller_y.style["height"] = (window.innerHeight - TASKDETAILS_HEIGHT ) +"px";
         listdetails.style["height"] = scroller_y.style["height"];
     }
