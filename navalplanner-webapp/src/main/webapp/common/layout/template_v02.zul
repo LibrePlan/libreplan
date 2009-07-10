@@ -17,7 +17,7 @@
           <n:td height="20" align="right"><n:table border="0" cellspacing="0" cellpadding="0">
             <n:tr>
               <n:td class="usuario">usuario: admin</n:td>
-              <n:td><n:a href="#" class="cerrar_sesion">PECHAR SESIÓN</n:a></n:td>
+              <n:td><n:a href="/navalplanner-webapp/common/layout/login_v01.zul" class="cerrar_sesion">PECHAR SESIÓN </n:a></n:td>
             <n:td><n:a href="#"><n:img src="/navalplanner-webapp/common/img/axuda.gif" alt="Axuda" width="23" height="24" border="0" /></n:a></n:td>
             </n:tr>
           </n:table></n:td>
