@@ -232,6 +232,11 @@ zkTasklist.GANTT_PANEL_LEFT = 300
     background-repeat: repeat-y;
 }
 
+#watermark .bankHoliday {
+	background-color: #FFEEEE; !important;
+}
+
+
 /* Reduce spacing and font-size for watermark legend */
 .z-columns, .z-column {
     font-size: 8px !important;

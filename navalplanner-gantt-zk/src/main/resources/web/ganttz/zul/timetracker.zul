@@ -34,6 +34,7 @@ top = self;
                 </n:tr>
                 <n:tr id="watermark" style="height:100px">
                     <n:td class="timetracker_column${(each.even?'_even':'')}
+                        ${(each.bankHoliday?'bankHoliday':'')}
                         ${(each.currentPeriod?'timetracker_column_today':'')}"
                         forEach="${top.detailsSecondLevel}"
                         style="background-position: ${each.currentDayOffset}px"/>

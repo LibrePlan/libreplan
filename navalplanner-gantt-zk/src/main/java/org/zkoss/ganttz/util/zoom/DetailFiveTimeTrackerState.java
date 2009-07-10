@@ -1,9 +1,14 @@
 package org.zkoss.ganttz.util.zoom;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.ReadablePeriod;
+import org.zkoss.ganttz.util.Interval;
 
 /**
  * Zoom level for weeks in the first level and days in the second level
@@ -65,4 +70,26 @@ public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
         return down ? date.withDayOfWeek(1) : date.withDayOfWeek(1)
                 .plusWeeks(1);
     }
+
+    @Override
+    // Just change styles for holidays
+    public Collection<DetailItem> getSecondLevelDetails(Interval interval) {
+        // Also mark holidays and current date
+        List<DetailItem> items = (List<DetailItem>) createDetailsForSecondLevel(interval);
+        ArrayList<DetailItem> result = new ArrayList<DetailItem>();
+        int dayOfWeek;
+
+        for (DetailItem detailItem : items) {
+            dayOfWeek = detailItem.getStartDate().dayOfWeek().get();
+            if ((dayOfWeek == 6) || (dayOfWeek == 7)) {
+                detailItem.setBankHoliday(true);
+                result.add(detailItem);
+            } else {
+                detailItem.setBankHoliday(false);
+                result.add(detailItem);
+            }
+        }
+        return result;
+    }
+
 }
