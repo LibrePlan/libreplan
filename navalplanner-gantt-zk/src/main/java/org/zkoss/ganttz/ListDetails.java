@@ -1,6 +1,5 @@
 package org.zkoss.ganttz;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.TaskDetail.ITaskDetailNavigator;
+import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.TaskContainerBean;
 import org.zkoss.zk.ui.Component;
@@ -18,7 +18,6 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.OpenEvent;
-import org.zkoss.zul.SimpleTreeModel;
 import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
@@ -30,12 +29,11 @@ public class ListDetails extends HtmlMacroComponent {
 
     private final class TaskBeanRenderer implements TreeitemRenderer {
         public void render(Treeitem item, Object data) throws Exception {
-            SimpleTreeNode node = (SimpleTreeNode) data;
-            TaskBean taskBean = (TaskBean) node.getData();
+            TaskBean taskBean = (TaskBean) data;
             item.setOpen(isOpened(taskBean));
             final int[] path = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
-                    node);
-            String cssClass = "depth_"+path.length;
+                    taskBean);
+            String cssClass = "depth_" + path.length;
             TaskDetail taskDetail = TaskDetail.create(taskBean,
                     new TreeNavigator(tasksTreeModel, path));
             if (taskBean instanceof TaskContainerBean) {
@@ -44,9 +42,10 @@ public class ListDetails extends HtmlMacroComponent {
             Component row = Executions.getCurrent().createComponents(
                     "~./ganttz/zul/taskdetail.zul", item, null);
             taskDetail.doAfterCompose(row);
-            List<Object> rowChildren =  row.getChildren();
-            List<Treecell> treeCells = Planner.findComponentsOfType(Treecell.class, rowChildren);
-            for(Treecell cell : treeCells){
+            List<Object> rowChildren = row.getChildren();
+            List<Treecell> treeCells = Planner.findComponentsOfType(
+                    Treecell.class, rowChildren);
+            for (Treecell cell : treeCells) {
                 cell.setSclass(cssClass);
             }
             detailsForBeans.put(taskBean, taskDetail);
@@ -78,38 +77,31 @@ public class ListDetails extends HtmlMacroComponent {
     private final class TreeNavigator implements ITaskDetailNavigator {
         private final int[] pathToNode;
 
-        private final TreeModel treemodel;
-
-        private SimpleTreeNode parentCached;
-
         private TreeNavigator(TreeModel treemodel, int[] pathToNode) {
-            this.treemodel = treemodel;
             this.pathToNode = pathToNode;
         }
 
         @Override
         public TaskDetail getAboveDetail() {
-            SimpleTreeNode parent = getParent(pathToNode);
+            TaskBean parent = getParent(pathToNode);
             int lastPosition = pathToNode[pathToNode.length - 1];
             if (lastPosition != 0) {
                 return getChild(parent, lastPosition - 1);
-            } else if (treemodel.getRoot() != parent) {
-                return detailsForBeans.get(getTaskBean(parent));
+            } else if (tasksTreeModel.getRoot() != parent) {
+                return detailsForBeans.get(parent);
             }
             return null;
         }
 
-        private TaskDetail getChild(SimpleTreeNode parent, int position) {
-            SimpleTreeNode node = (SimpleTreeNode) parent.getChildren().get(
-                    position);
-            TaskBean bean = getTaskBean(node);
-            return detailsForBeans.get(bean);
+        private TaskDetail getChild(TaskBean parent, int position) {
+            TaskBean child = tasksTreeModel.getChild(parent, position);
+            return detailsForBeans.get(child);
         }
 
         @Override
         public TaskDetail getBelowDetail() {
-            SimpleTreeNode parent = getParent(pathToNode);
-            int childCount = parent.getChildCount();
+            TaskBean parent = getParent(pathToNode);
+            int childCount = tasksTreeModel.getChildCount(parent);
             int lastPosition = pathToNode[pathToNode.length - 1];
             int belowPosition = lastPosition + 1;
             if (belowPosition < childCount) {
@@ -118,14 +110,12 @@ public class ListDetails extends HtmlMacroComponent {
             return null;
         }
 
-        private SimpleTreeNode getParent(int[] path) {
-            if (parentCached != null)
-                return parentCached;
-            SimpleTreeNode current = (SimpleTreeNode) treemodel.getRoot();
+        private TaskBean getParent(int[] path) {
+            TaskBean current = tasksTreeModel.getRoot();
             for (int i = 0; i < path.length - 1; i++) {
-                current = (SimpleTreeNode) current.getChildren().get(path[i]);
+                current = tasksTreeModel.getChild(current, path[i]);
             }
-            return parentCached = current;
+            return current;
         }
 
     }
@@ -136,9 +126,7 @@ public class ListDetails extends HtmlMacroComponent {
 
     private final List<TaskBean> taskBeans;
 
-    private SimpleTreeNode rootNode;
-
-    private SimpleTreeModel tasksTreeModel;
+    private MutableTreeModel<TaskBean> tasksTreeModel;
 
     private Tree tasksTree;
 
@@ -150,23 +138,22 @@ public class ListDetails extends HtmlMacroComponent {
         return (TaskBean) node.getData();
     }
 
-    private static List<SimpleTreeNode> asSimpleTreeNodes(
+    private static void fillModel(MutableTreeModel<TaskBean> treeModel,
             List<TaskBean> taskBeans) {
-        ArrayList<SimpleTreeNode> result = new ArrayList<SimpleTreeNode>();
         for (TaskBean taskBean : taskBeans) {
-            SimpleTreeNode node = asSimpleTreeNode(taskBean);
-            if (taskBean instanceof TaskContainerBean) {
-                TaskContainerBean container = (TaskContainerBean) taskBean;
-                node.getChildren().addAll(
-                        asSimpleTreeNodes(container.getTasks()));
-            }
-            result.add(node);
+            fillModel(treeModel, treeModel.getRoot(), taskBean);
         }
-        return result;
     }
 
-    private static SimpleTreeNode asSimpleTreeNode(TaskBean taskBean) {
-        return new SimpleTreeNode(taskBean, new ArrayList<SimpleTreeNode>());
+    private static void fillModel(MutableTreeModel<TaskBean> treeModel,
+            TaskBean parent, TaskBean node) {
+        treeModel.add(parent, node);
+        if (node instanceof TaskContainerBean) {
+            TaskContainerBean container = (TaskContainerBean) node;
+            for (TaskBean child : container.getTasks()) {
+                fillModel(treeModel, container, child);
+            }
+        }
     }
 
     Planner getPlanner() {
@@ -207,16 +194,14 @@ public class ListDetails extends HtmlMacroComponent {
         setClass("listdetails");
         super.afterCompose();
         tasksTree = (Tree) getFellow("tasksTree");
-        rootNode = new SimpleTreeNode(null, asSimpleTreeNodes(taskBeans));
-        tasksTreeModel = new SimpleTreeModel(rootNode);
+        tasksTreeModel = MutableTreeModel.create(TaskBean.class);
+        fillModel(tasksTreeModel, taskBeans);
         tasksTree.setModel(tasksTreeModel);
         tasksTree.setTreeitemRenderer(new TaskBeanRenderer());
     }
 
     private void addTask(TaskBean taskBean) {
-        rootNode.getChildren().add(
-                new SimpleTreeNode(taskBean, new ArrayList<TaskBean>()));
-        tasksTree.setModel(tasksTreeModel);
+        tasksTreeModel.add(tasksTreeModel.getRoot(), taskBean);
     }
 
 }
