@@ -1,3 +1,4 @@
+<?page title="Navalpro: Resources"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?page  id="Create"?>

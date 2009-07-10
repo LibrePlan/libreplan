@@ -50,7 +50,7 @@
     <n:td height="400" valign="top"><div self="@{insert(content)}"/></n:td>
   </n:tr>
   <n:tr class="footer">
-    <n:td height="75" align="right" valign="bottom" background="img/linea_down.gif"><n:img src="/navalplanner-webapp/common/img/logos_aplicacion.gif" width="332" height="73" /></n:td>
+    <n:td height="75" align="right" valign="bottom" background="/navalplanner-webapp/common/img/linea_down.gif"><n:img src="/navalplanner-webapp/common/img/logos_aplicacion.gif" width="332" height="73" /></n:td>
   </n:tr>
 </n:table>
 </n:div>

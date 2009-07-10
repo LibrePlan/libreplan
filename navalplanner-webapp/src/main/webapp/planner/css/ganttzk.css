@@ -6,10 +6,16 @@ The next constants are used within the planner styling:
 
 Ganntz.ListdetailsWidth = 280
 
+
 zkTasklist.HEIGHT_PER_ROW = 15
 zkTasklist.HEIGHT_TIME_TRACKER = 120
 
 zkTasklist.SCROLLBAR_WIDTH = 15
+
+zkTasklist.SCROLL_CONTAINER_INITIAL_HEIGHT = 500
+zkTasklist.SCROLL_CONTAINER_INITIAL_WIDTH = 600
+
+zkTasklist.GANTT_PANEL_LEFT = 300
 
 */
 
@@ -27,7 +33,7 @@ zkTasklist.SCROLLBAR_WIDTH = 15
 
 #listdetails_container {
     float:left;
-    height:300px;
+    height:500px; /* zkTasklist.SCROLL_CONTAINER_INITIAL_HEIGHT */
     position:relative;
     top:27px;
     overflow-y: hidden;
@@ -42,7 +48,7 @@ zkTasklist.SCROLLBAR_WIDTH = 15
 #listdetails_container td {
     border-bottom:1px solid #86A4BE;
     border-left:1px solid #86A4BE;
-border:0px;
+	border:0px;
 }
 
 #listdetails_container td {
@@ -254,13 +260,16 @@ table {
     /* border: solid 1px red; */
     position:absolute;
     left:285px; /* Ganntz.ListdetailsWidth + borders = 280 + 5 */
-    width:600px;
-    height:400px;
+    height:500px; /* zkTasklist.SCROLL_CONTAINER_INITIAL_HEIGHT (dynamic) */
+    width:600px; /* zkTasklist.SCROLL_CONTAINER_INITIAL_WIDTH (dynamic) */
     position:absolute;
     overflow-x:hidden;
     float:left;
 }
 
+#zoom_buttons {
+	position:relative;
+}
 
 tr.z-vbox-sep {
     height: 0px;
@@ -276,7 +285,8 @@ tr.z-vbox-sep {
 }
 
 #ganttpanel_scroller_x {
-    top: 600px;  /* Calculate initial settings */
+
+    top: 600px;  /* (dynamic) */
     left: 285px; /* Ganntz.ListdetailsWidth + borders = 280 + 5 */
     width:635px;
     height:15px;
@@ -303,4 +313,12 @@ tr.z-vbox-sep {
 .footer {
     /* Pending to calculate general position */
     display:none;
+}
+
+/* Hide at the beginning */
+#ganttpanel_scroller_x {
+	display:none;
+}
+#ganttpanel_scroller_y {
+	display:none;
 }

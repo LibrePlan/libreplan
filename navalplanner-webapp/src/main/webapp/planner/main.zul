@@ -1,4 +1,4 @@
-<?page title="GanttZK demo" contentType="text/html;charset=UTF-8"?>
+<?page title="Navalpro: Scheduling"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="stylesheet" type="text/css" href="/planner/css/ganttzk.css"?>

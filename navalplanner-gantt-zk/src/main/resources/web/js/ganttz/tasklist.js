@@ -22,7 +22,8 @@ FOOTER_HEIGHT = 40;             // Design-relative footer height
 SCROLLBAR_WIDTH = 15;            // Scrollbars default width
 
 zkTasklist.init = function(cmp) {
-    zkTasklist.adjust_height(cmp);
+    zkTasklist.adjust_height();
+    make_visible();
 }
 
 zkTasklist.adjust_height = function(cmp) {
@@ -39,6 +40,7 @@ document.getElementById('ganttpanel_scroller_x').onscroll = function() {
    scroller = document.getElementById('ganttpanel_scroller_x');
    document.getElementById('timetracker').scrollLeft = scroller.scrollLeft;
    document.getElementById('scroll_container').scrollLeft = scroller.scrollLeft;
+   document.getElementById('zoom_buttons').style["left"] = scroller.scrollLeft+"px";
 }
 
 
@@ -119,4 +121,9 @@ function adjustScrollableDimensions() {
     // Inner divs need recalculation to adjust to new scroll displacement lenght
     document.getElementById('ganttpanel_inner_scroller_x').style["width"]
         = watermark.offsetWidth +"px";
+}
+
+function make_visible() {
+    document.getElementById('ganttpanel_scroller_x').style["display"]="inline";
+    document.getElementById('ganttpanel_scroller_y').style["display"]="inline";
 }

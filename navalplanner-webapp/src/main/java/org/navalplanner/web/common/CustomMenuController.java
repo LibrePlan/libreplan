@@ -80,11 +80,11 @@ public class CustomMenuController extends Div {
 		ci = new CustomMenuItem("mainmenu.orders",
 				"/navalplanner-webapp/orders/orders.zul");
 		ci.appendChildren(new CustomMenuItem("mainmenu.list_orders",
-				"/orders/orders.zul"));
+				"/navalplanner-webapp/orders/orders.zul"));
 		ci.appendChildren(new CustomMenuItem("mainmenu.activity_work_types",
-				"/orders/orders.zul"));
+				"/navalplanner-webapp/orders/orders.zul"));
 		ci.appendChildren(new CustomMenuItem("mainmenu.models",
-				"/orders/orders.zul"));
+				"/navalplanner-webapp/orders/orders.zul"));
 		l.add(ci);
 
 		ci = new CustomMenuItem("mainmenu.work_reports",
