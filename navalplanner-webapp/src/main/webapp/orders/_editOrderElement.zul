@@ -1,4 +1,4 @@
-<popup id="${arg.top_id}">
+<popup id="${arg.top_id}" width="400px" height="300px" left="100px" top="100px">
 
     <vbox>
 

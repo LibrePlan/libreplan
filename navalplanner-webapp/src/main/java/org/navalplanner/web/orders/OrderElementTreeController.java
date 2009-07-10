@@ -210,7 +210,11 @@ public class OrderElementTreeController extends GenericForwardComposer {
             }
             // Construct treecells
             int[] path = getOrderElementTreeModel().getPath(t);
+            String cssClass = "depth_"+path.length;
             Treecell cellForName = new Treecell(pathAsString(path));
+            cellForName.setSclass(cssClass);
+            // It would be needed to expand the width for the numbers
+            // to make it ready for 2 and 3 digit numbers
             cellForName.appendChild(Util.bind(new Textbox(),
                     new Util.Getter<String>() {
 

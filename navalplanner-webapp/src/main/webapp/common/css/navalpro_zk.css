@@ -60,3 +60,18 @@ table {
     margin:20px;
     font-size: 12px;
 }
+
+
+/* Styles for order element tree */
+.orderTree .depth_1 input {
+    width: 450px !important;
+}
+.orderTree .depth_2 input {
+    width: 420px !important;
+}
+.orderTree .depth_3 input {
+    width: 390px !important;
+}
+.orderTree .depth_4 input {
+    width: 360px !important;
+}

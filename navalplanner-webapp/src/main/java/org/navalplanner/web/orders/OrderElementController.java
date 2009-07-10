@@ -219,7 +219,8 @@ public class OrderElementController extends GenericForwardComposer {
 
         Util.reloadBindings(popup);
 
-        popup.open(popup.getParent(), "start-after");
+//    Review this positioning parameters (popup.getParent(), "start-after");
+      popup.open(150, 150);
 
         reloadSelectedCriterionTypes();
     }
