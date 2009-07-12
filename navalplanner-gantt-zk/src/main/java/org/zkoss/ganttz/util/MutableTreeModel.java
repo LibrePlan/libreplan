@@ -55,6 +55,13 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
             until(result, parent);
             return result;
         }
+
+        public int remove() {
+            int positionInParent = parentNode.getIndexOf(this);
+            parentNode.children.remove(positionInParent);
+            return positionInParent;
+        }
+
     }
 
     private final Class<T> type;
@@ -148,6 +155,17 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
 
     public void add(T parent, T child) {
         add(find(parent), wrap(child));
+    }
+
+    public void remove(T node) {
+        Node<T> found = find(node);
+        if (found.isRoot())
+            throw new IllegalArgumentException(node
+                    + " is root. It can't be removed");
+        int positionInParent = found.remove();
+        nodesByDomainObject.remove(node);
+        fireEvent(unwrap(found.parentNode), positionInParent, positionInParent,
+                TreeDataEvent.INTERVAL_REMOVED);
     }
 
 }

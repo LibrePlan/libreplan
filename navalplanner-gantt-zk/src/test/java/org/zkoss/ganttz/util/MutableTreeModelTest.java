@@ -127,20 +127,89 @@ public class MutableTreeModelTest {
         Prueba child2 = new Prueba();
         Prueba granChildren1 = new Prueba();
         model.add(model.getRoot(), child1);
-        checkIsValid(getLast(eventsFired), model.getRoot(), 0);
+        checkIsValid(getLast(eventsFired), TreeDataEvent.INTERVAL_ADDED, model
+                .getRoot(), 0);
         model.add(model.getRoot(), child2);
-        checkIsValid(getLast(eventsFired), model.getRoot(), 1);
+        checkIsValid(getLast(eventsFired), TreeDataEvent.INTERVAL_ADDED, model
+                .getRoot(), 1);
         model.add(child1, granChildren1);
-        checkIsValid(getLast(eventsFired), child1, 0);
+        checkIsValid(getLast(eventsFired), TreeDataEvent.INTERVAL_ADDED,
+                child1, 0);
         assertThat(eventsFired.size(), equalTo(3));
     }
 
-    private void checkIsValid(TreeDataEvent event, Prueba expectedParent,
-            int expectedPosition) {
+    @Test
+    public void aNodeCanBeRemoved() {
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
+        Prueba prueba1 = new Prueba();
+        model.add(model.getRoot(), prueba1);
+        model.remove(prueba1);
+        assertThat(model.getChildCount(model.getRoot()), equalTo(0));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void theRootNodeCannotBeRemoved() {
+        Prueba root = new Prueba();
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class,
+                root);
+        model.remove(root);
+    }
+
+    @Test
+    public void removingANodeWithChildrenRemovesTheChildren() {
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
+        Prueba parent = new Prueba();
+        model.add(model.getRoot(), parent);
+        Prueba grandson = new Prueba();
+        model.add(parent, grandson);
+        model.remove(parent);
+        assertThat(model.getPath(parent, grandson).length, equalTo(0));
+    }
+
+    @Test
+    public void removingANodeTriggersEvent() {
+        final MutableTreeModel<Prueba> model = MutableTreeModel
+                .create(Prueba.class);
+        final List<TreeDataEvent> removeEventsFired = new ArrayList<TreeDataEvent>();
+        model.addTreeDataListener(new TreeDataListener() {
+
+            @Override
+            public void onChange(TreeDataEvent event) {
+                if (event.getType() == TreeDataEvent.INTERVAL_REMOVED) {
+                    removeEventsFired.add(event);
+                }
+            }
+        });
+        Prueba prueba1 = new Prueba();
+        Prueba prueba2 = new Prueba();
+        Prueba grandChild = new Prueba();
+        model.add(model.getRoot(), prueba1);
+        model.add(model.getRoot(), prueba2);
+        model.add(prueba1, grandChild);
+
+        model.remove(grandChild);
+        assertThat(removeEventsFired.size(), equalTo(1));
+        checkIsValid(getLast(removeEventsFired),
+                TreeDataEvent.INTERVAL_REMOVED, prueba1, 0);
+
+        model.remove(prueba2);
+        assertThat(getLast(removeEventsFired).getParent(),
+                equalTo((Object) model.getRoot()));
+        checkIsValid(getLast(removeEventsFired),
+                TreeDataEvent.INTERVAL_REMOVED, model.getRoot(), 1);
+
+        model.remove(prueba1);
+        assertThat(removeEventsFired.size(), equalTo(3));
+        checkIsValid(getLast(removeEventsFired),
+                TreeDataEvent.INTERVAL_REMOVED, model.getRoot(), 0);
+    }
+
+    private void checkIsValid(TreeDataEvent event, int type,
+            Prueba expectedParent, int expectedPosition) {
         assertEquals(expectedParent, event.getParent());
         assertThat(event.getIndexFrom(), equalTo(expectedPosition));
         assertThat(event.getIndexTo(), equalTo(expectedPosition));
-        assertThat(event.getType(), equalTo(TreeDataEvent.INTERVAL_ADDED));
+        assertThat(event.getType(), equalTo(type));
     }
 
     private TreeDataEvent getLast(List<TreeDataEvent> list) {
