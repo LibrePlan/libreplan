@@ -186,7 +186,7 @@ public class ListDetails extends HtmlMacroComponent {
     }
 
     public void taskRemoved(TaskBean taskRemoved) {
-        // TODO pending
+        tasksTreeModel.remove(taskRemoved);
     }
 
     public void addTask() {
