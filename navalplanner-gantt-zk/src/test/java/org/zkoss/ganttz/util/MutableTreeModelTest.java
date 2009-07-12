@@ -83,6 +83,36 @@ public class MutableTreeModelTest {
     }
 
     @Test
+    public void getPathReturnsEmptyArrayWhenParentNotFound() {
+        Prueba root = new Prueba();
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class,
+                root);
+        Prueba child = new Prueba();
+        model.add(root, child);
+        assertThat(model.getPath(null, child), equalTo(new int[0]));
+    }
+
+    @Test
+    public void getPathReturnsEmptyArrayWhenChildNotFound() {
+        Prueba root = new Prueba();
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class,
+                root);
+        Prueba child = new Prueba();
+        model.add(root, child);
+        assertThat(model.getPath(root, new Prueba()), equalTo(new int[0]));
+    }
+
+    @Test
+    public void ifThereisNotPathReturnEmptyArray() {
+        Prueba root = new Prueba();
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class,
+                root);
+        Prueba child = new Prueba();
+        model.add(root, child);
+        assertThat(model.getPath(child, root), equalTo(new int[0]));
+    }
+
+    @Test
     public void addingTriggersEvent() {
         MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
         final ArrayList<TreeDataEvent> eventsFired = new ArrayList<TreeDataEvent>();

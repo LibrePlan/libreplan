@@ -32,11 +32,18 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         private void until(LinkedList<Integer> result, Node<T> parent) {
             if (parent.equals(this)) {
                 return;
+            } else if (isRoot()) {
+                // final reached, but parent not found
+                result.clear();
             } else {
                 result.add(0, this.parentNode.getIndexOf(this));
                 this.parentNode.until(result, parent);
             }
 
+        }
+
+        private boolean isRoot() {
+            return parentNode == null;
         }
 
         private int getIndexOf(Node<T> child) {
@@ -61,10 +68,7 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
     }
 
     private Node<T> find(Object domainObject) {
-        Node<T> result = nodesByDomainObject.get(domainObject);
-        if (result == null)
-            throw new RuntimeException("not found " + domainObject);
-        return result;
+        return nodesByDomainObject.get(domainObject);
     }
 
     private static <T> T unwrap(Node<T> node) {
@@ -92,6 +96,8 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
     public int[] getPath(Object parent, Object last) {
         Node<T> parentNode = find(parent);
         Node<T> lastNode = find(last);
+        if (parentNode == null || lastNode == null)
+            return new int[0];
         List<Integer> path = lastNode.until(parentNode);
         return asIntArray(path);
     }
