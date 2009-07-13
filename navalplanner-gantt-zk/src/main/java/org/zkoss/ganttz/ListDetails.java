@@ -37,7 +37,7 @@ public class ListDetails extends HtmlMacroComponent {
                     taskBean);
             String cssClass = "depth_" + path.length;
             TaskDetail taskDetail = TaskDetail.create(taskBean,
-                    new TreeNavigator(tasksTreeModel, path));
+                    new TreeNavigator(tasksTreeModel, taskBean));
             if (taskBean instanceof TaskContainerBean) {
                 expandWhenOpened((TaskContainerBean) taskBean, item);
             }
@@ -101,9 +101,12 @@ public class ListDetails extends HtmlMacroComponent {
 
     private final class TreeNavigator implements ITaskDetailNavigator {
         private final int[] pathToNode;
+        private final TaskBean task;
 
-        private TreeNavigator(TreeModel treemodel, int[] pathToNode) {
-            this.pathToNode = pathToNode;
+        private TreeNavigator(TreeModel treemodel, TaskBean task) {
+            this.task = task;
+            this.pathToNode = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
+                    task);
         }
 
         @Override
@@ -129,10 +132,24 @@ public class ListDetails extends HtmlMacroComponent {
             int childCount = tasksTreeModel.getChildCount(parent);
             int lastPosition = pathToNode[pathToNode.length - 1];
             int belowPosition = lastPosition + 1;
-            if (belowPosition < childCount) {
+            if (isExpanded() && hasChildren()) {
+                return getChild(task, 0);
+            } else if (belowPosition < childCount) {
                 return getChild(parent, belowPosition);
             }
             return null;
+        }
+
+        private boolean hasChildren() {
+            return task instanceof TaskContainerBean
+                    && ((TaskContainerBean) task).getTasks().size() > 0;
+        }
+
+        private boolean isExpanded() {
+            if (task instanceof TaskContainerBean) {
+                return ((TaskContainerBean) task).isExpanded();
+            }
+            return false;
         }
 
         private TaskBean getParent(int[] path) {
