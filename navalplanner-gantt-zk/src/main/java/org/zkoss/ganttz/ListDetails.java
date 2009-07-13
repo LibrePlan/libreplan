@@ -1,10 +1,12 @@
 package org.zkoss.ganttz;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -116,28 +118,82 @@ public class ListDetails extends HtmlMacroComponent {
             if (lastPosition != 0) {
                 return getChild(parent, lastPosition - 1);
             } else if (tasksTreeModel.getRoot() != parent) {
-                return detailsForBeans.get(parent);
+                return getDetailFor(parent);
             }
             return null;
         }
 
         private TaskDetail getChild(TaskBean parent, int position) {
             TaskBean child = tasksTreeModel.getChild(parent, position);
+            return getDetailFor(child);
+        }
+
+        private TaskDetail getDetailFor(TaskBean child) {
             return detailsForBeans.get(child);
         }
 
         @Override
         public TaskDetail getBelowDetail() {
-            TaskBean parent = getParent(pathToNode);
-            int childCount = tasksTreeModel.getChildCount(parent);
-            int lastPosition = pathToNode[pathToNode.length - 1];
-            int belowPosition = lastPosition + 1;
             if (isExpanded() && hasChildren()) {
                 return getChild(task, 0);
-            } else if (belowPosition < childCount) {
-                return getChild(parent, belowPosition);
             }
+            for (ChildAndParent childAndParent : group(task, tasksTreeModel
+                    .getParents(task))) {
+                if (childAndParent.childIsNotLast()) {
+                    return getDetailFor(childAndParent.getNextToChild());
+                }
+            }
+            // it's the last one, it has none below
             return null;
+        }
+
+        public List<ChildAndParent> group(TaskBean origin,
+                List<TaskBean> parents) {
+            ArrayList<ChildAndParent> result = new ArrayList<ChildAndParent>();
+            TaskBean child = origin;
+            TaskBean parent;
+            ListIterator<TaskBean> listIterator = parents.listIterator();
+            while (listIterator.hasNext()) {
+                parent = listIterator.next();
+                result
+                        .add(new ChildAndParent(child,
+                                (TaskContainerBean) parent));
+                child = parent;
+            }
+            return result;
+        }
+
+        private class ChildAndParent {
+            private final TaskContainerBean parent;
+
+            private final TaskBean child;
+
+            private Integer positionOfChildCached;
+
+            private ChildAndParent(TaskBean child, TaskContainerBean parent) {
+                this.parent = parent;
+                this.child = child;
+            }
+
+            public TaskBean getNextToChild() {
+                return tasksTreeModel
+                        .getChild(parent, getPositionOfChild() + 1);
+            }
+
+            public boolean childIsNotLast() {
+                return getPositionOfChild() < numberOfChildrenForParent() - 1;
+            }
+
+            private int numberOfChildrenForParent() {
+                return tasksTreeModel.getChildCount(parent);
+            }
+
+            private int getPositionOfChild() {
+                if (positionOfChildCached != null)
+                    return positionOfChildCached;
+                int[] path = tasksTreeModel.getPath(parent, child);
+                return positionOfChildCached = path[path.length - 1];
+            }
         }
 
         private boolean hasChildren() {
