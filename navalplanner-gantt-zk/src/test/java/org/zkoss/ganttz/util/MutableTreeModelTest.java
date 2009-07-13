@@ -9,6 +9,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -110,6 +111,41 @@ public class MutableTreeModelTest {
         Prueba child = new Prueba();
         model.add(root, child);
         assertThat(model.getPath(child, root), equalTo(new int[0]));
+    }
+
+    @Test
+    public void hasMethodGetParentToMakeNavigationEasier() {
+        Prueba root = new Prueba();
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class,
+                root);
+        Prueba child = new Prueba();
+        model.add(root, child);
+        Prueba grandChild = new Prueba();
+        model.add(child, grandChild);
+        assertThat(model.getParent(grandChild), equalTo(child));
+        assertThat(model.getParent(child), equalTo(root));
+    }
+
+    @Test
+    public void hasMethodGetAllParentsUntilRoot() {
+        Prueba root = new Prueba();
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class,
+                root);
+        Prueba child = new Prueba();
+        model.add(root, child);
+        Prueba grandChild = new Prueba();
+        model.add(child, grandChild);
+        List<Prueba> parents = model.getParents(grandChild);
+        assertThat(parents.size(), equalTo(2));
+        assertThat(parents, equalTo(Arrays.asList(child, root)));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getParentOfRootThrowsException() {
+        Prueba root = new Prueba();
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class,
+                root);
+        model.getParent(root);
     }
 
     @Test

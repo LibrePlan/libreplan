@@ -1,5 +1,6 @@
 package org.zkoss.ganttz.util;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,10 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
             int positionInParent = parentNode.getIndexOf(this);
             parentNode.children.remove(positionInParent);
             return positionInParent;
+        }
+
+        public Node<T> getParent() {
+            return parentNode;
         }
 
     }
@@ -166,6 +171,28 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         nodesByDomainObject.remove(node);
         fireEvent(unwrap(found.parentNode), positionInParent, positionInParent,
                 TreeDataEvent.INTERVAL_REMOVED);
+    }
+
+    public T getParent(T node) {
+        Node<T> associatedNode = find(node);
+        if (associatedNode.equals(root))
+            throw new IllegalArgumentException(node + " is root");
+        return unwrap(associatedNode.getParent());
+    }
+
+    public List<T> getParents(T node) {
+        ArrayList<T> result = new ArrayList<T>();
+        T current = node;
+        while (!isRoot(current)) {
+            current = getParent(current);
+            result.add(current);
+        }
+        return result;
+    }
+
+    public boolean isRoot(T node) {
+        Node<T> associatedNode = find(node);
+        return associatedNode.isRoot();
     }
 
 }
