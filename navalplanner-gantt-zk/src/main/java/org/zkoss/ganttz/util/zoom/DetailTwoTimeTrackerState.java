@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.zkoss.ganttz.util.zoom;
 
 import java.util.ArrayList;
@@ -15,13 +10,19 @@ import org.joda.time.DateTime;
 import org.zkoss.ganttz.util.Interval;
 
 /**
+ * Zoom level with years in the first level and quarters in the second level
  * @author Francisco Javier Moran Rúa
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class DetailTwoTimeTrackerState extends TimeTrackerState {
 
     public static final DetailTwoTimeTrackerState INSTANCE = new DetailTwoTimeTrackerState();
     private static final int FIRST_LEVEL_ITEM_SIZE = 400;
     private static final int SECOND_LEVEL_ITEM_SIZE = 100;
+
+    public final double pixelsPerDay() {
+        return ((double) 365 / FIRST_LEVEL_ITEM_SIZE);
+    }
 
     public Interval getRealIntervalFor(Interval interval) {
         int[] pairYears = calculateInitialEndYear(interval.getStart(), interval

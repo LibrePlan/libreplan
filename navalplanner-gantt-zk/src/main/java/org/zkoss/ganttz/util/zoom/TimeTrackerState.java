@@ -208,4 +208,6 @@ public abstract class TimeTrackerState {
 
     public abstract Interval getRealIntervalFor(Interval testInterval);
 
+    public abstract double pixelsPerDay();
+
 }

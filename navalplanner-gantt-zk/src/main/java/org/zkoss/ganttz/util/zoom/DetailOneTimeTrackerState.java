@@ -9,19 +9,22 @@ import java.util.Collection;
 import java.util.Vector;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.zkoss.ganttz.util.Interval;
 
 /**
- *
+ * Zoom level with years in the first level and semesters in the second level
  * @author Francisco Javier Moran Rúa
- *
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class DetailOneTimeTrackerState extends TimeTrackerState {
 
     public static final DetailOneTimeTrackerState INSTANCE = new DetailOneTimeTrackerState();
     private static final int FIRST_LEVEL_ITEM_SIZE = 200;
     private static final int SECOND_LEVEL_ITEM_SIZE = 100;
+
+    public final double pixelsPerDay() {
+        return ((double) 365 / FIRST_LEVEL_ITEM_SIZE);
+    }
 
     private DetailOneTimeTrackerState() {
     };

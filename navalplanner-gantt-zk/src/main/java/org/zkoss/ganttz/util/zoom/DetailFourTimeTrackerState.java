@@ -9,6 +9,7 @@ import org.joda.time.Weeks;
 /**
  * Zoom level for months and years and weeks in the second level
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
@@ -16,6 +17,10 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
     private static final int FIRST_LEVEL_SIZE = 200;
     private static final int SECOND_LEVEL_SIZE = 50;
+
+    public final double pixelsPerDay() {
+        return ((double) 7 / SECOND_LEVEL_SIZE);
+    }
 
     @Override
     protected IDetailItemCreator getDetailItemCreatorFirstLevel() {

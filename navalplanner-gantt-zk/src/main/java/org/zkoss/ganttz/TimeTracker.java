@@ -16,6 +16,7 @@ import org.zkoss.ganttz.util.zoom.TimeTrackerState;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.zoom.ZoomLevelChangedListener;
 import org.zkoss.ganttz.util.zoom.TimeTrackerState.DetailItem;
+import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 /**
@@ -29,8 +30,6 @@ public class TimeTracker extends HtmlMacroComponent {
                 .year(2012));
     }
 
-//    private AbstractComponent fakeRow;
-
     private List<WeakReference<ZoomLevelChangedListener>> zoomListeners = new LinkedList<WeakReference<ZoomLevelChangedListener>>();
 
     private DatesMapper datesMapper = null;
@@ -41,13 +40,25 @@ public class TimeTracker extends HtmlMacroComponent {
 
     private ZoomLevel detailLevel;
 
-    public TimeTracker() {
+    private final GanttPanel ganttPanel;
+
+    public GanttPanel getGanttPanel() {
+        return ganttPanel;
+    }
+
+    public TimeTracker(GanttPanel ganttPanel) {
+        this.ganttPanel = ganttPanel;
         this.detailLevel = ZoomLevel.DETAIL_ONE;
     }
 
     public void addZoomListener(ZoomLevelChangedListener listener) {
         zoomListeners
                 .add(new WeakReference<ZoomLevelChangedListener>(listener));
+    }
+
+    public void scrollHorizontalPercentage(int displacement) {
+        response("scroll_horizontal", new AuInvoke(this.getParent(),
+                "scroll_horizontal", "" + displacement));
     }
 
     private void fireZoomChanged(ZoomLevel detailLevel) {
@@ -98,21 +109,26 @@ public class TimeTracker extends HtmlMacroComponent {
         return result;
     }
 
-    public void onIncrease() {
-        changeDetailLevel(getDetailLevel().next());
+    public void onIncrease(int offset) {
+        changeDetailLevel(getDetailLevel().next(), offset
+                * getDetailLevel().getTimeTrackerState().pixelsPerDay());
     }
 
-    private void changeDetailLevel(ZoomLevel d) {
+    public void onDecrease(int offset) {
+        changeDetailLevel(getDetailLevel().previous(), offset
+                * getDetailLevel().getTimeTrackerState().pixelsPerDay());
+    }
+
+    private void changeDetailLevel(ZoomLevel d, double days) {
         this.detailLevel = d;
         datesMapper = null;
         detailsFirstLevelCached = null;
         detailsSecondLevelCached = null;
         recreate();
         fireZoomChanged(d);
-    }
 
-    public void onDecrease() {
-        changeDetailLevel(getDetailLevel().previous());
+        scrollHorizontalPercentage((int) Math.floor(days
+                / d.getTimeTrackerState().pixelsPerDay()));
     }
 
     private ZoomLevel getDetailLevel() {

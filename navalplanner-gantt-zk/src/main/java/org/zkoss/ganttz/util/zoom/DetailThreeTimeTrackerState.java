@@ -9,6 +9,7 @@ import org.zkoss.util.Locales;
 /**
  * Zoom level with semesters in the first level and months in the second level
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
@@ -16,6 +17,10 @@ public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
     private static final int FIRST_LEVEL_SIZE = 300;
     protected static final int SECOND_LEVEL_SIZE = 50;
+
+    public final double pixelsPerDay() {
+        return ((double) 182.5 / FIRST_LEVEL_SIZE);
+    }
 
     private DetailThreeTimeTrackerState() {
     }

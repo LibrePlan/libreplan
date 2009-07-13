@@ -13,6 +13,7 @@ import org.zkoss.ganttz.util.Interval;
 /**
  * Zoom level for weeks in the first level and days in the second level
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
@@ -21,6 +22,10 @@ public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
     public static final int SECOND_LEVEL_SIZE = 20;
 
     public static final DetailFiveTimeTrackerState INSTANCE = new DetailFiveTimeTrackerState();
+
+    public final double pixelsPerDay() {
+        return ((double) 1 / SECOND_LEVEL_SIZE);
+    }
 
     private DetailFiveTimeTrackerState() {
 
