@@ -39,6 +39,7 @@ public class TaskContainer extends Task implements AfterCompose {
                 } else {
                     close();
                 }
+                updateClass();
             }
         };
         taskContainerBean.addExpandListener(expandListener);
@@ -70,6 +71,14 @@ public class TaskContainer extends Task implements AfterCompose {
     private TaskContainerBean getTaskContainerBean() {
         return (TaskContainerBean) getTaskBean();
     }
+
+    @Override
+    protected String calculateClass() {
+        return super.calculateClass() +" "+ (getTaskContainerBean().isExpanded()?
+                "expanded":"closed");
+    }
+
+
 
     private void close() {
         for (Task subtask : subtasks) {

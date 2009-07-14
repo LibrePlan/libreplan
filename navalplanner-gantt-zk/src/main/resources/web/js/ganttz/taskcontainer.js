@@ -68,6 +68,9 @@ zkTaskContainer.getElementsByAttribute = function(oElm, strTagName, strAttribute
     zkTask.getElementsByAttribute(oElm, strTagName, strAttributeName, strAttributeValue);
 }
 
+zkTaskContainer.setClass = function(cmp, newclass) {
+    cmp.className = newclass;
+};
 
 /* We will not allow taskcontainer move or resize untill its behaviour its
  * clearly specified

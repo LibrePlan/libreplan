@@ -143,6 +143,15 @@ public class Task extends Div implements AfterCompose {
         setId(UUID.randomUUID().toString());
     }
 
+    protected String calculateClass() {
+        return "box";
+    }
+
+    protected void updateClass() {
+        response(null, new AuInvoke(this, "setClass",
+                new Object[] { calculateClass() }));
+    }
+
     public void afterCompose() {
         updateProperties();
         if (propertiesListener == null) {
@@ -158,6 +167,7 @@ public class Task extends Div implements AfterCompose {
         }
         this.taskBean
                 .addFundamentalPropertiesChangeListener(propertiesListener);
+        updateClass();
     }
 
     private String _color;

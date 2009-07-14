@@ -117,28 +117,6 @@ zkTasklist.GANTT_PANEL_LEFT = 300
     width: 10000px; /* Defined to be larger than the maximum scroll_inner_x */
 }
 
-/* -------------- TaskGroup -------------- */
-.taskgroup_start {
-    background-image: url("/navalplanner-webapp/zkau/web/ganttz/img/group_left.png");
-    height: 10px;
-    width: 10px;
-    float:left;
-}
-
-.taskgroup_end {
-    background-image: url("/navalplanner-webapp/zkau/web/ganttz/img/group_right.png");
-    height: 10px;
-    width: 10px;
-    float:right;
-}
-
-.taskgroup {
-    border-top: solid black 2px;
-    border-bottom: 0px;
-    border-left: 0px;
-    border-right: 0px;
-    background-color: transparent !important;
-}
 
 /* -------------- Dependencies -------------- */
 #listdependencies {
@@ -184,6 +162,34 @@ zkTasklist.GANTT_PANEL_LEFT = 300
     color:#BBBBBB;
     white-space:nowrap;
 }
+
+/* -------------- TaskGroup -------------- */
+.taskgroup_start {
+    background-image: url("/navalplanner-webapp/zkau/web/ganttz/img/group_left.png");
+    height: 10px;
+    width: 10px;
+    float:left;
+}
+
+.taskgroup_end {
+    background-image: url("/navalplanner-webapp/zkau/web/ganttz/img/group_right.png");
+    height: 10px;
+    width: 10px;
+    float:right;
+}
+
+.taskgroup, .row .expanded {
+    border-top: solid black 2px;
+    border-bottom: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    background-color: transparent !important;
+}
+
+.row .closed {
+    border-top: solid black 2px;
+}
+
 
 
 

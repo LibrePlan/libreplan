@@ -126,6 +126,11 @@ YAHOO.util.Event.on(document.body, 'mousemove', function(e) {
 	zkTask.yMouse = arrPos[1];
 });
 
+zkTask.setClass = function(cmp, newclass) {
+    cmp.className = newclass;
+};
+
+
 zkTask.setAttr = function(cmp, nm, val) {
 
     switch (nm) {
