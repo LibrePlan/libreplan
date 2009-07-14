@@ -145,17 +145,17 @@ public class Task extends Div implements AfterCompose {
 
     public void afterCompose() {
         updateProperties();
-        if (propertiesListener != null)
-            return;
-        propertiesListener = new PropertyChangeListener() {
+        if (propertiesListener == null) {
+            propertiesListener = new PropertyChangeListener() {
 
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (isInPage()) {
-                    updateProperties();
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (isInPage()) {
+                        updateProperties();
+                    }
                 }
-            }
-        };
+            };
+        }
         this.taskBean
                 .addFundamentalPropertiesChangeListener(propertiesListener);
     }
