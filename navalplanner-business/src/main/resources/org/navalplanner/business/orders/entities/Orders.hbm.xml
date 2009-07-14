@@ -65,7 +65,7 @@
         <property name="percentage" access="field" />
         <property name="fixedPercentage" access="field" />
 
-        <set name="criterions" table="CriterionHoursGroup"
+        <set name="criterions" table="CriterionHoursGroup" cascade="all"
             access="field" inverse="false">
             <key column="hoursGroupId" not-null="false" />
             <many-to-many column="criterionId"

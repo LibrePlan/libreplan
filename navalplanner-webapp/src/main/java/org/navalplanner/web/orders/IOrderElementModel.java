@@ -10,7 +10,7 @@ public interface IOrderElementModel {
 
     public OrderElement getOrderElement();
 
-    public void setCurrent(OrderElement orderElement);
+    public void setCurrent(OrderElement orderElement, OrderModel order);
 
     public List<CriterionType> getCriterionTypes();
 

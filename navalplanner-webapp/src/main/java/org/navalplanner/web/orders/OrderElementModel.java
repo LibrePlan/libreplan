@@ -1,5 +1,6 @@
 package org.navalplanner.web.orders;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,8 @@ public class OrderElementModel implements IOrderElementModel {
 
     private OrderElement orderElement;
 
+    private OrderModel order;
+
     @Autowired
     private IOrderElementDao orderElementDao;
 
@@ -46,7 +49,7 @@ public class OrderElementModel implements IOrderElementModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void setCurrent(OrderElement orderElement) {
+	public void setCurrent(OrderElement orderElement, OrderModel order) {
         // FIXME Review reattachment
         boolean wasTransient = orderElement.isTransient();
         Set<HoursGroup> transientHoursGroups = orderElement
@@ -60,36 +63,36 @@ public class OrderElementModel implements IOrderElementModel {
             hoursGroup.makeTransientAgain();
         }
         this.orderElement = orderElement;
+        this.order = order;
     }
 
     @Override
     public List<CriterionType> getCriterionTypes() {
-        List<CriterionType> criterionTypes = criterionTypeService.getAll();
+        List<CriterionType> result = new ArrayList<CriterionType>();
 
-        if (mapCriterionTypes.isEmpty()) {
-            for (CriterionType criterionType : criterionTypes) {
-                mapCriterionTypes.put(criterionType.getName(), criterionType);
-            }
-        }
+        if (mapCriterionTypes.isEmpty())
+            loadCriterionTypes();
+        result.addAll(mapCriterionTypes.values());
 
-        return criterionTypes;
+        return result;
     }
 
     @Override
     public CriterionType getCriterionTypeByName(String name) {
-        if (mapCriterionTypes.isEmpty()) {
-            for (CriterionType criterionType : criterionTypeService
-                    .getAll()) {
-                mapCriterionTypes.put(criterionType.getName(), criterionType);
-            }
-        }
+        if (mapCriterionTypes.isEmpty())
+            loadCriterionTypes();
 
         return mapCriterionTypes.get(name);
     }
 
-    @Override
-    public List<Criterion> getCriterionsFor(CriterionType type) {
-        return (List<Criterion>) criterionService.getCriterionsFor(type);
+    private void loadCriterionTypes() {
+        for (CriterionType criterionType : criterionTypeService.getAll()) {
+            mapCriterionTypes.put(criterionType.getName(), criterionType);
+        }
     }
 
+    @Override
+    public List<Criterion> getCriterionsFor(CriterionType type) {
+        return (List<Criterion>) order.getCriterionsFor(type);
+    }
 }

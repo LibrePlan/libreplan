@@ -109,7 +109,7 @@ public class HoursGroup implements Cloneable {
 
     public Criterion getCriterionByType(ICriterionType<?> type) {
         for (Criterion criterion : criterions) {
-            if (criterion.getType().equals(type.getName())) {
+            if (criterion.getType().equals(type)) {
                 return criterion;
             }
         }
@@ -118,8 +118,9 @@ public class HoursGroup implements Cloneable {
     }
 
     public Criterion getCriterionByType(String type) {
+        // TODO: Check if hoursgroup has criterions
         for (Criterion criterion : criterions) {
-            if (criterion.getType().equals(type)) {
+            if (criterion.getType().getName().equals(type)) {
                 return criterion;
             }
         }

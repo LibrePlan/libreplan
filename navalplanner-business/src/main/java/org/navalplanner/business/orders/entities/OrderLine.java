@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.navalplanner.business.resources.entities.Criterion;
+
 public class OrderLine extends OrderElement {
 
     public static OrderLine createOrderLineWithUnfixedHours(int hours) {
@@ -321,7 +323,9 @@ public class OrderLine extends OrderElement {
     @Override
     public void forceLoadHourGroups() {
         for (HoursGroup hoursGroup : hoursGroups) {
-            hoursGroup.getWorkingHours();
+            for (Criterion c : hoursGroup.getCriterions()) {
+                c.getType().getName();
+            }
         }
     }
 
