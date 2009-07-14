@@ -20,7 +20,7 @@
         <edition top_id="editWindow" title="Edit Personal Data"
             save_button_label="Save" cancel_button_label="Cancel" />
         <orderElementPopup top_id="editOrderElementPopup" title="Edit Order Element"
-            save_button_label="Save" cancel_button_label="Cancel" />
+            back_button_label="Back" />
         <window visible="@{controller.confirmingRemove}"
             id="confirmRemove" title="Confirmación" width="500px"
             position="center">

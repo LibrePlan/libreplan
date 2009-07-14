@@ -226,17 +226,10 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     /**
-     * Just close the {@link Popup}
-     */
-    public void cancel() {
-        popup.close();
-    }
-
-    /**
      * Just close the {@link Popup} and refresh parent status. Save actions are
      * managed by "save-when" at .zul file.
      */
-    public void save() {
+    public void back() {
         popup.close();
         Util.reloadBindings(popup.getParent());
     }
