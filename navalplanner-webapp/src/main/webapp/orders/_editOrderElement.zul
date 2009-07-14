@@ -1,4 +1,5 @@
-<popup id="${arg.top_id}" width="600px" left="100px" top="100px">
+<window visible="false" id="${arg.top_id}" title="Edit Order Element"
+    width="600px" left="100px" top="100px">
 
     <vbox>
 
@@ -106,4 +107,4 @@
 
     </vbox>
 
-</popup>
+</window>

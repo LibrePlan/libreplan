@@ -9,7 +9,7 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?component name="list" inline="true" macroURI="_list.zul"?>
 <?component name="edition" inline="true" macroURI="_edition.zul"?>
-<?component name="orderElementPopup" inline="true" macroURI="_editOrderElement.zul"?>
+<?component name="orderElement" inline="true" macroURI="_editOrderElement.zul"?>
 <zk>
     <window self="@{define(content)}"
         apply="org.navalplanner.web.orders.OrderCRUDController">
@@ -19,7 +19,7 @@
             save_button_label="Save" cancel_button_label="Cancel" />
         <edition top_id="editWindow" title="Edit Personal Data"
             save_button_label="Save" cancel_button_label="Cancel" />
-        <orderElementPopup top_id="editOrderElementPopup" title="Edit Order Element"
+        <orderElement top_id="editOrderElement" title="Edit Order Element"
             back_button_label="Back" />
         <window visible="@{controller.confirmingRemove}"
             id="confirmRemove" title="Confirmación" width="500px"

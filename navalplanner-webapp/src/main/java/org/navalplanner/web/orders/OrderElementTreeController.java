@@ -364,7 +364,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 public void onEvent(Event event) throws Exception {
                     IOrderElementModel model = orderModel
                             .getOrderElementModel(orderElement);
-                    orderElementController.openPopup(model);
+                    orderElementController.openWindow(model);
                 }
 
             });

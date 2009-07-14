@@ -180,7 +180,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         OrderElementController orderElementController = new OrderElementController();
         orderElementController.doAfterCompose(comp
-                .getFellow("editOrderElementPopup"));
+                .getFellow("editOrderElement"));
 
         setupOrderElementTreeController(comp, "editWindow",
                 orderElementController);

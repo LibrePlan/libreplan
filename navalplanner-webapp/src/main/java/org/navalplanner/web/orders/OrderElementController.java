@@ -17,6 +17,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -31,8 +32,8 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.Popup;
 import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Listhead;
 
 /**
@@ -48,9 +49,9 @@ public class OrderElementController extends GenericForwardComposer {
     private IOrderElementModel model;
 
     /**
-     * {@link Popup} where {@link OrderElement} edition form is showed
+     * {@link Window} where {@link OrderElement} edition form is showed
      */
-    private Popup popup;
+    private Window window;
 
     /**
      * {@link Listitem} for every {@link HoursGroup}
@@ -152,17 +153,17 @@ public class OrderElementController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         comp.setVariable("orderElementController", this, true);
 
-        popup = (Popup) comp;
+        window = (Window) comp;
     }
 
     /**
-     * Open the popup to edit a {@link OrderElement}. If it's a
+     * Open the window to edit a {@link OrderElement}. If it's a
      * {@link OrderLineGroup} less fields will be enabled.
      *
      * @param orderElement
      *            The {@link OrderElement} to be edited
      */
-    public void openPopup(IOrderElementModel model) {
+    public void openWindow(IOrderElementModel model) {
 
         this.model = model;
 
@@ -171,31 +172,31 @@ public class OrderElementController extends GenericForwardComposer {
         // If is a container
         if (orderElement instanceof OrderLineGroup) {
             // Disable fields just used in the OrderLine
-            ((Intbox) popup.getFellow("totalHours")).setDisabled(true);
+            ((Intbox) window.getFellow("totalHours")).setDisabled(true);
 
             // Hide not needed buttons
-            popup.getFellow("manageCriterions").setVisible(false);
-            popup.getFellow("addHoursGroup").setVisible(false);
-            popup.getFellow("deleteHoursGroup").setVisible(false);
+            window.getFellow("manageCriterions").setVisible(false);
+            window.getFellow("addHoursGroup").setVisible(false);
+            window.getFellow("deleteHoursGroup").setVisible(false);
         } else {
             // Enable fields just used in the OrderLine
-            ((Intbox) popup.getFellow("totalHours")).setDisabled(false);
+            ((Intbox) window.getFellow("totalHours")).setDisabled(false);
 
             // Show needed buttons
-            popup.getFellow("manageCriterions").setVisible(true);
-            popup.getFellow("addHoursGroup").setVisible(true);
-            popup.getFellow("deleteHoursGroup").setVisible(true);
+            window.getFellow("manageCriterions").setVisible(true);
+            window.getFellow("addHoursGroup").setVisible(true);
+            window.getFellow("deleteHoursGroup").setVisible(true);
 
-            // Add EventListener to reload the popup when the value change
-            popup.getFellow("totalHours").addEventListener(Events.ON_CHANGE,
+            // Add EventListener to reload the window when the value change
+            window.getFellow("totalHours").addEventListener(Events.ON_CHANGE,
                     new EventListener() {
 
                         @Override
                         public void onEvent(Event event) throws Exception {
-                            Util.reloadBindings(popup);
+                            Util.reloadBindings(window);
                         }
                     });
-            ((Intbox) popup.getFellow("totalHours"))
+            ((Intbox) window.getFellow("totalHours"))
                     .setConstraint(new Constraint() {
 
                         @Override
@@ -213,25 +214,30 @@ public class OrderElementController extends GenericForwardComposer {
 
         // selectCriterions Vbox is always hidden
         reloadSelectedCriterionTypes();
-        popup.getFellow("selectCriterions").setVisible(false);
+        window.getFellow("selectCriterions").setVisible(false);
 
-        popup.getFellow("hoursGroupsListbox").invalidate();
+        window.getFellow("hoursGroupsListbox").invalidate();
 
-        Util.reloadBindings(popup);
+        Util.reloadBindings(window);
 
-//    Review this positioning parameters (popup.getParent(), "start-after");
-      popup.open(150, 150);
+        try {
+            window.doModal();
+        } catch (SuspendNotAllowedException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         reloadSelectedCriterionTypes();
     }
 
     /**
-     * Just close the {@link Popup} and refresh parent status. Save actions are
+     * Just close the {@link Window} and refresh parent status. Save actions are
      * managed by "save-when" at .zul file.
      */
     public void back() {
-        popup.close();
-        Util.reloadBindings(popup.getParent());
+        window.setVisible(false);
+        Util.reloadBindings(window.getParent());
     }
 
     /**
@@ -246,7 +252,7 @@ public class OrderElementController extends GenericForwardComposer {
 
         orderLine.addHoursGroup(hoursGroup);
 
-        Util.reloadBindings(popup);
+        Util.reloadBindings(window);
     }
 
     /**
@@ -265,14 +271,14 @@ public class OrderElementController extends GenericForwardComposer {
                     .getValue());
         }
 
-        Util.reloadBindings(popup);
+        Util.reloadBindings(window);
     }
 
     /**
      * Toggle visibility of the selectCriterions {@link Vbox}
      */
     public void manageCriterions() {
-        Component selectCriterions = popup.getFellow("selectCriterions");
+        Component selectCriterions = window.getFellow("selectCriterions");
 
         if (selectCriterions.isVisible()) {
             selectCriterions.setVisible(false);
@@ -344,7 +350,7 @@ public class OrderElementController extends GenericForwardComposer {
             CriterionType value = (CriterionType) listitem.getValue();
             selectedCriterionTypes.add(value);
         }
-        Util.reloadBindings(popup);
+        Util.reloadBindings(window);
     }
 
     /**
@@ -361,7 +367,7 @@ public class OrderElementController extends GenericForwardComposer {
             selectedCriterionTypes.remove(value);
             removeCriterionsFromHoursGroup(value);
         }
-        Util.reloadBindings(popup);
+        Util.reloadBindings(window);
     }
 
     /**
@@ -495,7 +501,7 @@ public class OrderElementController extends GenericForwardComposer {
                             }
                         });
 
-                // Add EventListener to reload the popup when the value change
+                // Add EventListener to reload the window when the value change
                 workingHours.addEventListener(Events.ON_CHANGE,
                         new EventListener() {
 
@@ -503,7 +509,7 @@ public class OrderElementController extends GenericForwardComposer {
                             public void onEvent(Event event) throws Exception {
                                 ((OrderLine) getOrderElement())
                                         .recalculateHoursGroups();
-                                Util.reloadBindings(popup);
+                                Util.reloadBindings(window);
                             }
                         });
 
@@ -522,7 +528,7 @@ public class OrderElementController extends GenericForwardComposer {
                             }
                         });
 
-                // Add EventListener to reload the popup when the value change
+                // Add EventListener to reload the window when the value change
                 percentage.addEventListener(Events.ON_CHANGE,
                         new EventListener() {
 
@@ -530,7 +536,7 @@ public class OrderElementController extends GenericForwardComposer {
                             public void onEvent(Event event) throws Exception {
                                 ((OrderLine) getOrderElement())
                                         .recalculateHoursGroups();
-                                Util.reloadBindings(popup);
+                                Util.reloadBindings(window);
                             }
                         });
 
@@ -563,7 +569,7 @@ public class OrderElementController extends GenericForwardComposer {
                             public void onEvent(Event event) throws Exception {
                                 ((OrderLine) getOrderElement())
                                         .recalculateHoursGroups();
-                                Util.reloadBindings(popup);
+                                Util.reloadBindings(window);
                             }
                         });
 
