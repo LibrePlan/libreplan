@@ -136,4 +136,9 @@ public abstract class OrderElement {
     public boolean isScheduled() {
         return !taskElements.isEmpty();
     }
+
+    public boolean checkAtLeastOneHoursGroup() {
+        return (getHoursGroups().size() > 0);
+    }
+
 }

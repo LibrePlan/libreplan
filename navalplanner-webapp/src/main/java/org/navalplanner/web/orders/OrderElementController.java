@@ -236,6 +236,12 @@ public class OrderElementController extends GenericForwardComposer {
      * managed by "save-when" at .zul file.
      */
     public void back() {
+        if (!getOrderElement().checkAtLeastOneHoursGroup()) {
+            throw new WrongValueException(window
+                    .getFellow("hoursGroupsListbox"),
+                    "At least one HoursGroup is needed");
+        }
+
         window.setVisible(false);
         Util.reloadBindings(window.getParent());
     }
