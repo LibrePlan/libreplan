@@ -38,8 +38,14 @@ public class OrderLine extends OrderElement {
     }
 
     @Override
+    public OrderLine toLeaf() {
+        return this;
+    }
+
+    @Override
     public OrderLineGroup toContainer() {
         OrderLineGroup result = new OrderLineGroup();
+
         result.setName(getName());
         result.setInitDate(getInitDate());
         result.setEndDate(getEndDate());

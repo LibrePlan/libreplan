@@ -97,6 +97,8 @@ public abstract class OrderElement {
         return description;
     }
 
+    public abstract OrderLine toLeaf();
+
     public abstract OrderLineGroup toContainer();
 
     public abstract void forceLoadHourGroups();

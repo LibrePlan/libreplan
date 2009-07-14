@@ -14,6 +14,7 @@ import org.zkoss.zul.SimpleTreeNode;
 /**
  * Model for a the {@link OrderElement} tree for a {@link Order} <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public class OrderElementTreeModel extends SimpleTreeModel {
 
@@ -199,8 +200,17 @@ public class OrderElementTreeModel extends SimpleTreeModel {
     private void removeNodeImpl(SimpleTreeNode value) {
         if (value == getRootAsNode())
             return;
-        IOrderLineGroup orderLineGroup = asOrderLineGroup(getParent(value));
+        SimpleTreeNode parent = getParent(value);
+        IOrderLineGroup orderLineGroup = asOrderLineGroup(parent);
         orderLineGroup.remove(asOrderLine(value));
-    }
 
+        // If removed node was the last one and its parent is not the root node
+        if (!getRootAsNode().equals(parent)
+                && parent.getChildCount() == 1) {
+            // Convert parent node (container) to an orderline (leaf)
+            IOrderLineGroup parentContainer = asOrderLineGroup(getParent(parent));
+            OrderElement asOrderLine = ((OrderElement) orderLineGroup).toLeaf();
+            parentContainer.replace((OrderElement)orderLineGroup, asOrderLine);
+        }
+    }
 }

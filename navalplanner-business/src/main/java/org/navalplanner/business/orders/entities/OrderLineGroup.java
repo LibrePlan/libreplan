@@ -42,6 +42,18 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     }
 
     @Override
+    public OrderLine toLeaf() {
+        OrderLine result = new OrderLine();
+
+        result.setName(getName());
+        result.setInitDate(getInitDate());
+        result.setEndDate(getEndDate());
+        result.setWorkHours(0);
+
+        return result;
+    }
+
+    @Override
     public OrderLineGroup toContainer() {
         return this;
     }
@@ -88,5 +100,4 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
             orderElement.forceLoadHourGroupsCriterions();
         }
     }
-
 }
