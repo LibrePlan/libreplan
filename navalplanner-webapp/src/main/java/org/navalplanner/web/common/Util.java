@@ -32,6 +32,15 @@ public class Util {
         }
     }
 
+    public static void saveBindings(Component... toReload) {
+        for (Component reload : toReload) {
+            DataBinder binder = Util.getBinder(reload);
+            if (binder != null) {
+                binder.saveComponent(reload);
+            }
+        }
+    }
+
     public static DataBinder getBinder(Component component) {
         return (DataBinder) component.getVariable("binder", false);
     }
