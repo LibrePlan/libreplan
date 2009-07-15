@@ -22,6 +22,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
@@ -242,6 +243,7 @@ public class OrderElementController extends GenericForwardComposer {
                     "At least one HoursGroup is needed");
         }
 
+        Clients.closeErrorBox(window.getFellow("hoursGroupsListbox"));
         window.setVisible(false);
         Util.reloadBindings(window.getParent());
     }

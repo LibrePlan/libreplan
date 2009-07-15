@@ -80,6 +80,7 @@ public class TaskElementServiceTest {
     private OrderLine createOrderLine() {
         OrderLine orderLine = new OrderLine();
         orderLine.setName("bla");
+        orderLine.addHoursGroup(new HoursGroup());
         Order order = new Order();
         order.setName("bla");
         order.setInitDate(new Date());

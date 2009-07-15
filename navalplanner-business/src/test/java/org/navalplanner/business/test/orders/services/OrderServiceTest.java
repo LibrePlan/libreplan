@@ -141,13 +141,20 @@ public class OrderServiceTest {
             order.add(containers[i]);
         }
         OrderLineGroup container = (OrderLineGroup) containers[0];
-        container.setName("container");
+
         final OrderElement[] orderElements = new OrderElement[10];
         for (int i = 0; i < orderElements.length; i++) {
             OrderLine leaf = createValidLeaf("bla");
             orderElements[i] = leaf;
             container.add(leaf);
         }
+
+        for (int i = 1; i < containers.length; i++) {
+            OrderLineGroup orderLineGroup = (OrderLineGroup) containers[i];
+            OrderLine leaf = createValidLeaf("foo");
+            orderLineGroup.add(leaf);
+        }
+
         orderService.save(order);
         orderService.onTransaction(new OnTransaction<Void>() {
 
@@ -167,6 +174,11 @@ public class OrderServiceTest {
                         assertThat(children.get(i).getId(),
                                 equalTo(orderElements[i].getId()));
                     }
+                    for (int i = 1; i < containers.length; i++) {
+                        OrderLineGroup orderLineGroup = (OrderLineGroup) containers[i];
+                        assertThat(orderLineGroup.getChildren().size(),
+                                equalTo(1));
+                    }
                     return null;
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -180,6 +192,11 @@ public class OrderServiceTest {
     private OrderLine createValidLeaf(String parameter) {
         OrderLine result = new OrderLine();
         result.setName(parameter);
+
+        HoursGroup hoursGroup = new HoursGroup(result);
+        hoursGroup.setWorkingHours(0);
+        result.addHoursGroup(hoursGroup);
+
         return result;
     }
 
@@ -278,6 +295,18 @@ public class OrderServiceTest {
             }
         });
 
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testAtLeastOneHoursGroup() throws Exception {
+        Order order = createValidOrder();
+
+        OrderLine orderLine = new OrderLine();
+        orderLine.setName("foo");
+
+        order.add(orderLine);
+
+        orderService.save(order);
     }
 
 }

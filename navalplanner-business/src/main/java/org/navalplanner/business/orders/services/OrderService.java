@@ -7,6 +7,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderDao;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -36,6 +37,12 @@ public class OrderService implements IOrderService {
     public void save(Order order) throws ValidationException {
         if (order.isEndDateBeforeStart()) {
             throw new ValidationException("endDate must be after startDate");
+        }
+        for (OrderElement orderElement : order.getOrderElements()) {
+            if (!orderElement.checkAtLeastOneHoursGroup()) {
+                throw new ValidationException(
+                        "At least one HoursGroup is needed for each OrderElement");
+            }
         }
         orderDAO.save(order);
     }
