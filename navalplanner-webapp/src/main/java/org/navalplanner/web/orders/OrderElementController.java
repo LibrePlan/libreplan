@@ -3,6 +3,7 @@ package org.navalplanner.web.orders;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -243,6 +244,10 @@ public class OrderElementController extends GenericForwardComposer {
                     "At least one HoursGroup is needed");
         }
 
+        for (CriterionType criterionType : getCriterionTypes()) {
+            removeCriterionsFromHoursGroup(criterionType);
+        }
+
         Clients.closeErrorBox(window.getFellow("hoursGroupsListbox"));
         window.setVisible(false);
         Util.reloadBindings(window.getParent());
@@ -298,18 +303,18 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     /**
-     * Gets the list of possible {@link CriterionType}.
+     * Gets the set of possible {@link CriterionType}.
      *
-     * @return A {@link List} of {@link CriterionType}
+     * @return A {@link Set} of {@link CriterionType}
      */
-    public List<CriterionType> getCriterionTypes() {
+    public Set<CriterionType> getCriterionTypes() {
         if (model == null) {
-            return new ArrayList<CriterionType>();
+            return new HashSet<CriterionType>();
         }
 
         List<CriterionType> list = model.getCriterionTypes();
         list.removeAll(getSelectedCriterionTypes());
-        return list;
+        return new HashSet<CriterionType>(list);
     }
 
     /**
@@ -318,7 +323,13 @@ public class OrderElementController extends GenericForwardComposer {
      * @return A {@link List} of {@link CriterionType}
      */
     public Set<CriterionType> getSelectedCriterionTypes() {
-        return selectedCriterionTypes;
+        return new HashSet<CriterionType>(selectedCriterionTypes);
+    }
+
+    public void setSelectedCriterionTypes(
+            Set<CriterionType> selectedCriterionTypes) {
+        this.selectedCriterionTypes = selectedCriterionTypes;
+        Util.reloadBindings(window);
     }
 
     /**
@@ -343,39 +354,6 @@ public class OrderElementController extends GenericForwardComposer {
 
             selectedCriterionTypes = criterionTypes;
         }
-    }
-
-    /**
-     * Adds the selected {@link CriterionType} to the selectedCriterionTypes
-     * attribute.
-     *
-     * @param selectedItems
-     *            {@link Set} of {@link Listitem} with the selected
-     *            {@link CriterionType}
-     */
-    public void assignCriterions(Set<Listitem> selectedItems) {
-        for (Listitem listitem : selectedItems) {
-            CriterionType value = (CriterionType) listitem.getValue();
-            selectedCriterionTypes.add(value);
-        }
-        Util.reloadBindings(window);
-    }
-
-    /**
-     * Removes the selected {@link CriterionType} from the
-     * selectedCriterionTypes attribute.
-     *
-     * @param selectedItems
-     *            {@link Set} of {@link Listitem} with the selected
-     *            {@link CriterionType}
-     */
-    public void unassignCriterions(Set<Listitem> selectedItems) {
-        for (Listitem listitem : selectedItems) {
-            CriterionType value = (CriterionType) listitem.getValue();
-            selectedCriterionTypes.remove(value);
-            removeCriterionsFromHoursGroup(value);
-        }
-        Util.reloadBindings(window);
     }
 
     /**

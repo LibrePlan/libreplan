@@ -58,40 +58,18 @@
                 onClick="orderElementController.manageCriterions();" />
         </hbox>
 
-        <vbox id="selectCriterions" visible="false">
+        <vbox id="selectCriterions">
 
-            <label value="Manage criterions" />
+        <label value="Manage criterions" />
 
-             <hbox>
-
-                <listbox id="selectedCriterionTypes" model="@{orderElementController.selectedCriterionTypes}"
-                    multiple="true" checkmark="true">
-                    <listhead>
-                        <listheader label="Selected types"></listheader>
-                    </listhead>
-                    <listitem self="@{each='criterion'}" value="@{criterion}">
-                        <listcell label="@{criterion.name}"></listcell>
-                    </listitem>
-                </listbox>
-
-                <vbox>
-                    <button id="assignButton" label="&lt;&lt;"
-                        onClick="orderElementController.assignCriterions(criterionTypes.selectedItems);" />
-                    <button id="unassignButton" label="&gt;&gt;"
-                        onClick="orderElementController.unassignCriterions(selectedCriterionTypes.selectedItems);" />
-                </vbox>
-
-                <listbox id="criterionTypes" model="@{orderElementController.criterionTypes}"
-                    multiple="true" checkmark="true">
-                    <listhead>
-                        <listheader label="Criterion types"></listheader>
-                    </listhead>
-                    <listitem self="@{each='criterion'}" value="@{criterion}">
-                        <listcell label="@{criterion.name}"></listcell>
-                    </listitem>
-                </listbox>
-
-            </hbox>
+            <twowayselector
+                assignedObjects="@{orderElementController.selectedCriterionTypes,
+                    access='both'}"
+                assignedTitle="Selected types"
+                unassignedObjects="@{orderElementController.criterionTypes}"
+                unassignedTitle="Criterion types"
+                columns="name"
+            />
 
         </vbox>
 
