@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.workreports.entities" default-access="field">
+
+<!-- WorkReportType -->
+<class name="WorkReportType" table="WORK_REPORT_TYPE">
+    <id name="id" type="long">
+        <generator class="native"/>
+    </id>
+    <version name="version" type="long"/>
+
+    <property name="name"/>
+
+    <set name="criterionTypes" cascade="all">
+        <key column="WORK_REPORT_TYPE_ID"/>
+        <one-to-many class="org.navalplanner.business.resources.entities.CriterionType"/>
+    </set>
+</class>
+
+<!-- WorkReport -->
+<class name="WorkReport" table="WORK_REPORT">
+    <id name="id" type="long">
+        <generator class="native"/>
+    </id>
+    <version name="version" type="long"/>
+
+    <property name="date"/>
+    <property name="place"/>
+
+    <many-to-one name="workReportType" class="WorkReportType" column="WORK_REPORT_TYPE_ID" not-null="true"/>
+
+    <set name="workReportLines" cascade="all">
+        <key column="WORK_REPORT_ID"/>
+        <one-to-many class="WorkReportLine"/>
+    </set>
+</class>
+
+<!-- WorkReportLine -->
+<class name="WorkReportLine" table="WORK_REPORT_LINE">
+    <id name="id" type="long">
+        <generator class="native"/>
+    </id>
+    <version name="version" type="long"/>
+
+    <property name="numHours"/>
+
+    <set name="resources" cascade="all">
+        <key column="WORK_REPORT_LINE_ID"/>
+        <one-to-many class="org.navalplanner.business.resources.entities.Resource"/>
+    </set>
+
+    <set name="orderElements" cascade="all">
+        <key column="WORK_REPORT_LINE_ID"/>
+        <one-to-many class="org.navalplanner.business.orders.entities.OrderElement"/>
+    </set>
+
+    <set name="criterions" table="CRITERION_WORK_REPORT_LINE" inverse="false">
+        <key column="WORK_REPORT_LINE_ID" not-null="false" />
+        <many-to-many class="org.navalplanner.business.resources.entities.Criterion" column="CRITERION_ID"/>
+    </set>
+</class>
+
+</hibernate-mapping>

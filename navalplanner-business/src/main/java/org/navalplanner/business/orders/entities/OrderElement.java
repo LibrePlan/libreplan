@@ -28,6 +28,8 @@ public abstract class OrderElement {
 
     private String description;
 
+    private String code;
+
     private Set<TaskElement> taskElements = new HashSet<TaskElement>();
 
     public abstract Integer getWorkHours();
