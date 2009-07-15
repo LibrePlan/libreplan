@@ -178,8 +178,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
         handler.registerListener(this, page);
         getVisibility().showOnly(listWindow);
-        handler.registerListener(this, page);
-        getVisibility().showOnly(listWindow);
     }
 
     private void setupWorkRelationshipController(
