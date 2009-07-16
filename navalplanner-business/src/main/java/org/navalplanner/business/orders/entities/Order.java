@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.planner.entities.TaskElement;
 
 /**
  * It represents an {@link Order} with its related information. <br />
@@ -132,6 +133,14 @@ public class Order implements IOrderLineGroup {
     public void add(int position, OrderElement orderElement) {
         getOrderElementsManipulator().add(position, orderElement);
 
+    }
+
+    public List<TaskElement> getAssociatedTasks() {
+        ArrayList<TaskElement> result = new ArrayList<TaskElement>();
+        for (OrderElement orderElement : orderElements) {
+            result.addAll(orderElement.getTaskElements());
+        }
+        return result;
     }
 
     public boolean isSomeTaskElementScheduled() {
