@@ -36,6 +36,14 @@ public class WorkReportLine {
 		this.criterions = criterions;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public long getVersion() {
+		return version;
+	}
+
     public Integer getNumHours() {
         return numHours;
     }

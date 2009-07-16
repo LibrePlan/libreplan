@@ -33,6 +33,14 @@ public class WorkReport {
 		this.workReportLines = workReportLines;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public long getVersion() {
+		return version;
+	}
+
 	public Date getDate() {
 		return date;
 	}
@@ -53,7 +61,7 @@ public class WorkReport {
 		return workReportType;
 	}
 
-	public void setWorkReportType(WorkReportType workReporType) {
+	public void setWorkReportType(WorkReportType workReportType) {
 		this.workReportType = workReportType;
 	}
 

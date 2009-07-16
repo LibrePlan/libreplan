@@ -1,18 +1,16 @@
 package org.navalplanner.business.test.workreports.daos;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
-import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.test.resources.daos.CriterionTypeDAOTest;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,36 +25,38 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Diego Pino García <dpino@igalia.com>
  */
 @Transactional
-public class WorkReportTypeDAOTest {
+public class WorkReportTypeDAOTest extends AbstractWorkReportTest {
 
 	@Autowired
 	private IWorkReportTypeDAO workReportTypeDAO;
 
-	@Autowired
-	private ICriterionTypeDAO criterionTypeDAO;
-
 	@Test
 	public void testSaveWorkReportType() {
-		String unique = UUID.randomUUID().toString();
-		CriterionType criterionType = CriterionTypeDAOTest
-		        .createValidCriterionType();
-		criterionTypeDAO.save(criterionType);
-		Set<CriterionType> criterionTypes = new HashSet<CriterionType>();
-		criterionTypes.add(criterionType);
-
-		WorkReportType workReportType = new WorkReportType(unique,
-		        criterionTypes);
+		WorkReportType workReportType = createValidWorkReportType();
 		workReportTypeDAO.save(workReportType);
 		assertTrue(workReportTypeDAO.exists(workReportType.getId()));
 	}
 
 	@Test
-	public void testRemoveWorkReportType() {
-		assertTrue(true);
+	public void testRemoveWorkReportType() throws InstanceNotFoundException {
+		WorkReportType workReportType = createValidWorkReportType();
+		workReportTypeDAO.save(workReportType);
+		workReportTypeDAO.remove(workReportType.getId());
+		assertFalse(workReportTypeDAO.exists(workReportType.getId()));
 	}
 
 	@Test
 	public void testListWorkReportType() {
-		assertTrue(true);
+		int previous = workReportTypeDAO.list(WorkReportType.class).size();
+
+		WorkReportType workReportType1 = createValidWorkReportType();
+		workReportTypeDAO.save(workReportType1);
+		WorkReportType workReportType2 = createValidWorkReportType();
+		workReportTypeDAO.save(workReportType1);
+		workReportTypeDAO.save(workReportType2);
+
+		List<WorkReportType> list = workReportTypeDAO
+		        .list(WorkReportType.class);
+		assertEquals(previous + 2, list.size());
 	}
 }

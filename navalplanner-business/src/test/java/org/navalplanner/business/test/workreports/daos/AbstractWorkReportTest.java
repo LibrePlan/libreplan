@@ -1,0 +1,70 @@
+package org.navalplanner.business.test.workreports.daos;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import org.navalplanner.business.resources.daos.impl.CriterionTypeDAO;
+import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.workreports.daos.WorkReportTypeDAO;
+import org.navalplanner.business.workreports.entities.WorkReport;
+import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.business.workreports.entities.WorkReportType;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public abstract class AbstractWorkReportTest {
+
+	@Autowired
+	CriterionTypeDAO criterionTypeDAO;
+
+	@Autowired
+	WorkReportTypeDAO workReportTypeDAO;
+
+	// Create a Set of CriterionType
+	public Set<CriterionType> createValidCriterionTypes() {
+		Set<CriterionType> criterionTypes = new HashSet<CriterionType>();
+
+		CriterionType criterionType = new CriterionType(UUID.randomUUID()
+		        .toString());
+		criterionTypeDAO.save(criterionType);
+		criterionTypes.add(criterionType);
+
+		return criterionTypes;
+	}
+
+	public WorkReportType createValidWorkReportType() {
+		Set<CriterionType> criterionTypes = createValidCriterionTypes();
+		return new WorkReportType(UUID.randomUUID().toString(), criterionTypes);
+	}
+
+	public WorkReportLine createValidWorkReportLine() {
+		WorkReportLine workReportLine = new WorkReportLine();
+		workReportLine.setNumHours(100);
+		return workReportLine;
+	}
+
+	public Set<WorkReportLine> createValidWorkReportLines() {
+		Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
+
+		WorkReportLine workReportLine = createValidWorkReportLine();
+		workReportLines.add(workReportLine);
+
+		return workReportLines;
+	}
+
+	public WorkReport createValidWorkReport() {
+		WorkReport workReport = new WorkReport();
+
+		workReport.setDate(new Date());
+		workReport.setPlace(UUID.randomUUID().toString());
+
+		WorkReportType workReportType = createValidWorkReportType();
+		workReportTypeDAO.save(workReportType);
+		workReport.setWorkReportType(workReportType);
+
+		workReport.setWorkReportLines(new HashSet<WorkReportLine>());
+
+		return workReport;
+	}
+}

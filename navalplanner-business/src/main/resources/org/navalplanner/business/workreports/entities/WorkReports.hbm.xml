@@ -11,9 +11,9 @@
 
     <property name="name"/>
 
-    <set name="criterionTypes" cascade="all">
-        <key column="WORK_REPORT_TYPE_ID"/>
-        <one-to-many class="org.navalplanner.business.resources.entities.CriterionType"/>
+    <set name="criterionTypes" table="CRITERION_TYPE_WORK_REPORT_TYPE" inverse="false">
+        <key column="WORK_REPORT_TYPE_ID" not-null="false" />
+        <many-to-many class="org.navalplanner.business.resources.entities.CriterionType" column="CRITERION_TYPE_ID"/>
     </set>
 </class>
 
@@ -44,12 +44,12 @@
 
     <property name="numHours"/>
 
-    <set name="resources" cascade="all">
+    <set name="resources">
         <key column="WORK_REPORT_LINE_ID"/>
         <one-to-many class="org.navalplanner.business.resources.entities.Resource"/>
     </set>
 
-    <set name="orderElements" cascade="all">
+    <set name="orderElements">
         <key column="WORK_REPORT_LINE_ID"/>
         <one-to-many class="org.navalplanner.business.orders.entities.OrderElement"/>
     </set>
