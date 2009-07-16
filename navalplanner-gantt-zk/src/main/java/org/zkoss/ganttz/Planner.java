@@ -1,12 +1,23 @@
 package org.zkoss.ganttz;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zkoss.ganttz.adapters.DomainDependency;
+import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
+import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
+import org.zkoss.ganttz.adapters.IStructureNavigator;
+import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.util.DependencyBean;
 import org.zkoss.ganttz.util.DependencyRegistry;
+import org.zkoss.ganttz.util.ITaskFundamentalProperties;
 import org.zkoss.ganttz.util.TaskBean;
+import org.zkoss.ganttz.util.TaskContainerBean;
+import org.zkoss.ganttz.util.TaskLeafBean;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -22,6 +33,8 @@ public class Planner extends XulElement implements AfterCompose {
     private TaskRemovedListener taskRemovedListener;
     private ListDetails listDetails;
     private GanttPanel ganttPanel;
+
+    private OneToOneMapper<?> domainObjectsMapper;
 
     public Planner() {
     }
@@ -134,14 +147,85 @@ public class Planner extends XulElement implements AfterCompose {
         dependencyRegistry.add(dependency.getDependencyBean());
     }
 
+    private static class OneToOneMapper<T> implements IDomainAndBeansMapper<T> {
+        private Map<T, TaskBean> fromDomainToTaskBean = new HashMap<T, TaskBean>();
+
+        private Map<TaskBean, T> fromTaskBeanToDomain = new HashMap<TaskBean, T>();
+
+        @Override
+        public TaskBean findAssociatedBean(T domainObject)
+                throws IllegalArgumentException {
+            if (domainObject == null)
+                throw new IllegalArgumentException("domainObject is null");
+            if (!fromDomainToTaskBean.containsKey(domainObject))
+                throw new IllegalArgumentException("not found " + domainObject);
+            return fromDomainToTaskBean.get(domainObject);
+        }
+
+        void register(TaskBean taskBean, T domainObject) {
+            fromDomainToTaskBean.put(domainObject, taskBean);
+            fromTaskBeanToDomain.put(taskBean, domainObject);
+        }
+
+        @Override
+        public T findAssociatedDomainObject(TaskBean taskBean)
+                throws IllegalArgumentException {
+            if (taskBean == null)
+                throw new IllegalArgumentException("taskBean is null");
+            if (!fromTaskBeanToDomain.containsKey(taskBean))
+                throw new IllegalArgumentException();
+            return fromTaskBeanToDomain.get(taskBean);
+        }
+
+    }
+
+    public <T> void setConfiguration(PlannerConfiguration<T> configuration) {
+        this.dependencyRegistry = new DependencyRegistry();
+        OneToOneMapper<T> mapper = new OneToOneMapper<T>();
+        domainObjectsMapper = mapper;
+        List<DomainDependency<T>> dependencies = new ArrayList<DomainDependency<T>>();
+        for (T domainObject : configuration.getData()) {
+            this.dependencyRegistry.addTopLevel(extractTaskBean(dependencies,
+                    mapper, domainObject, configuration.getNavigator(),
+                    configuration.getAdapter()));
+        }
+        List<DependencyBean> dependencyBeans = DomainDependency
+                .toDependencyBeans(mapper, dependencies);
+        for (DependencyBean dependencyBean : dependencyBeans) {
+            this.dependencyRegistry.add(dependencyBean);
+        }
+        this.dependencyRegistry.applyAllRestrictions();
+        recreate();
+    }
+
+    private <T> TaskBean extractTaskBean(
+            List<DomainDependency<T>> dependencies, OneToOneMapper<T> mapper,
+            T data, IStructureNavigator<T> navigator,
+            IAdapterToTaskFundamentalProperties<T> adapter) {
+        ITaskFundamentalProperties adapted = adapter.adapt(data);
+        dependencies.addAll(adapter.getDependenciesOriginating(data));
+        TaskBean result;
+        if (navigator.isLeaf(data)) {
+            result = new TaskLeafBean(adapted);
+        } else {
+            TaskContainerBean container = new TaskContainerBean(adapted);
+            for (T child : navigator.getChildren(data)) {
+                container.add(extractTaskBean(dependencies, mapper, child,
+                        navigator, adapter));
+            }
+            return container;
+        }
+        mapper.register(result, data);
+        return result;
+    }
+
     public DependencyRegistry getDependencyRegistry() {
         return dependencyRegistry;
     }
 
-    public void setDependencyRegistry(DependencyRegistry dependencyRegistry) {
-        this.dependencyRegistry = dependencyRegistry;
+    private void recreate() {
         removePreviousDetails();
-        this.listDetails = new ListDetails(dependencyRegistry
+        this.listDetails = new ListDetails(this.dependencyRegistry
                 .getTopLevelTasks());
         insertBefore(this.listDetails,
                 (Component) (getChildren().isEmpty() ? null : getChildren()

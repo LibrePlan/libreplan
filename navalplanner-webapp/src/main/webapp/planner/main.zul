@@ -13,7 +13,7 @@
     <!-- choose lightLoad, mediumLoad or highLoad.
      -->
     <planner id="planner" self="@{define(content)}"
-        dependencyRegistry="${plannerData.mediumLoad}">
+        configuration="${plannerData.mediumLoad}">
         <div id="idContextMenuTaskAssigment"></div>
     </planner>
 

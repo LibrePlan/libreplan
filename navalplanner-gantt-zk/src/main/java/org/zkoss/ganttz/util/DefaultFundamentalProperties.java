@@ -15,6 +15,17 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     private String notes;
 
+    public DefaultFundamentalProperties() {
+    }
+
+    public DefaultFundamentalProperties(String name, Date beginDate,
+            long lengthMilliseconds, String notes) {
+        this.name = name;
+        this.beginDate = beginDate;
+        this.lengthMilliseconds = lengthMilliseconds;
+        this.notes = notes;
+    }
+
     public String getName() {
         return name;
     }

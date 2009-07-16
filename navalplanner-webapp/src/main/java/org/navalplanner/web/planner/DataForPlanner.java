@@ -1,14 +1,19 @@
 package org.navalplanner.web.planner;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-import org.zkoss.ganttz.util.DependencyBean;
+import org.zkoss.ganttz.adapters.AutoAdapter;
+import org.zkoss.ganttz.adapters.DomainDependency;
+import org.zkoss.ganttz.adapters.IStructureNavigator;
+import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.util.DefaultFundamentalProperties;
 import org.zkoss.ganttz.util.DependencyRegistry;
 import org.zkoss.ganttz.util.DependencyType;
-import org.zkoss.ganttz.util.TaskBean;
+import org.zkoss.ganttz.util.ITaskFundamentalProperties;
 import org.zkoss.ganttz.util.TaskContainerBean;
-import org.zkoss.ganttz.util.TaskLeafBean;
 
 /**
  * Some test data for planner <br />
@@ -23,47 +28,74 @@ public class DataForPlanner {
         return new DependencyRegistry();
     }
 
-    public DependencyRegistry getLightLoad() {
+    public PlannerConfiguration<ITaskFundamentalProperties> getLightLoad() {
         return getModelWith(20);
     }
 
-    public DependencyRegistry getMediumLoad() {
+    public PlannerConfiguration<ITaskFundamentalProperties> getMediumLoad() {
         return getModelWith(300);
     }
 
-    public DependencyRegistry getHighLoad() {
+    public PlannerConfiguration<ITaskFundamentalProperties> getHighLoad() {
         return getModelWith(500);
     }
 
-    private DependencyRegistry getModelWith(int tasksToCreate) {
-        DependencyRegistry dependencyRegistry = new DependencyRegistry();
+    private PlannerConfiguration<ITaskFundamentalProperties> getModelWith(
+            int tasksToCreate) {
+        List<ITaskFundamentalProperties> list = new ArrayList<ITaskFundamentalProperties>();
         Date now = new Date();
         Date end = twoMonthsLater(now);
-        TaskContainerBean container = createContainer("container", now, end);
-        TaskBean child1 = createTaskBean("child 1", now, end);
-        container.add(child1);
-        TaskContainerBean containerChild = createContainer("child 2", now, end);
-        containerChild.setExpanded(true);
-        container.add(containerChild);
-        containerChild.add(createTaskBean("another", now, end));
-        dependencyRegistry.addTopLevel(container);
-        TaskBean first = null;
-        TaskBean second = null;
-        for (int i = 0; i < tasksToCreate - 3; i++) {
+        final ITaskFundamentalProperties container = createTask("container",
+                now, end);
+        final List<ITaskFundamentalProperties> containerChildren = new ArrayList<ITaskFundamentalProperties>();
+        final ITaskFundamentalProperties child1 = createTask("child 1", now,
+                end);
+        containerChildren.add(child1);
+        final DefaultFundamentalProperties child2 = createTask("another", now,
+                end);
+        containerChildren.add(child2);
+        list.add(container);
+        final ITaskFundamentalProperties first = createTask("tarefa1", now, end);
+        final ITaskFundamentalProperties second = createTask("tarefa2", now,
+                end);
+        list.add(first);
+        list.add(second);
+        for (int i = 2; i < tasksToCreate - 3; i++) {
             String name = "tarefa " + (i + 1);
-            TaskBean taskBean = createTaskBean(name, now, end);
-            if (i == 0)
-                first = taskBean;
-            if (i == 1)
-                second = taskBean;
-            dependencyRegistry.addTopLevel(taskBean);
+            ITaskFundamentalProperties task = createTask(name, now, end);
+            list.add(task);
         }
-        dependencyRegistry.add(new DependencyBean(child1, containerChild,
-                DependencyType.END_START));
-        dependencyRegistry.add(new DependencyBean(first, second,
-                DependencyType.END_START));
-        dependencyRegistry.applyAllRestrictions();
-        return dependencyRegistry;
+        IStructureNavigator<ITaskFundamentalProperties> navigator = new IStructureNavigator<ITaskFundamentalProperties>() {
+
+            @Override
+            public List<ITaskFundamentalProperties> getChildren(
+                    ITaskFundamentalProperties object) {
+                if (object == container)
+                    return containerChildren;
+                return new ArrayList<ITaskFundamentalProperties>();
+            }
+
+            @Override
+            public boolean isLeaf(ITaskFundamentalProperties object) {
+                return object != container;
+            }
+        };
+        return new PlannerConfiguration<ITaskFundamentalProperties>(
+                new AutoAdapter() {
+                    @Override
+                    public List<DomainDependency<ITaskFundamentalProperties>> getDependenciesOriginating(
+                            ITaskFundamentalProperties object) {
+                        List<DomainDependency<ITaskFundamentalProperties>> result = new ArrayList<DomainDependency<ITaskFundamentalProperties>>();
+                        if (child1 == object) {
+                            result.add(DomainDependency.createDependency(
+                                    child1, child2, DependencyType.END_START));
+                        } else if (first == object) {
+                            result.add(DomainDependency.createDependency(first,
+                                    second, DependencyType.END_START));
+                        }
+                        return result;
+                    }
+                }, navigator, list);
     }
 
     private TaskContainerBean createContainer(String name, Date start, Date end) {
@@ -74,12 +106,10 @@ public class DataForPlanner {
         return container;
     }
 
-    private TaskBean createTaskBean(String name, Date now, Date end) {
-        TaskBean taskBean = new TaskLeafBean();
-        taskBean.setName(name);
-        taskBean.setBeginDate(now);
-        taskBean.setEndDate(end);
-        return taskBean;
+    private DefaultFundamentalProperties createTask(String name, Date now,
+            Date end) {
+        return new DefaultFundamentalProperties(name, end, end.getTime()
+                - now.getTime(), "bla");
     }
 
     private static Date twoMonthsLater(Date now) {
