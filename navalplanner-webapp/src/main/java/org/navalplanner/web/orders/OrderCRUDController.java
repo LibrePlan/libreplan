@@ -11,6 +11,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.planner.IOrderPlanningControllerEntryPoints;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.api.Window;
@@ -43,6 +44,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Window confirmSchedule;
 
     private boolean confirmingSchedule;
+
+    private IOrderPlanningControllerEntryPoints planningControllerEntryPoints;
 
     public List<Order> getOrders() {
         return orderModel.getOrders();
@@ -89,9 +92,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             orderModel.prepareForSchedule(order);
             showScheduleConfirmingWindow();
         } else {
-            messagesForUser
-                    .showMessage(Level.INFO,
-                            "xa se crearon as tarefas de planificacion asociadas o pedido");
+            planningControllerEntryPoints.showSchedule(order);
         }
     }
 

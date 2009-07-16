@@ -1,0 +1,42 @@
+<?page title="Navalpro: Scheduling"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="stylesheet" type="text/css" href="/planner/css/ganttzk.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+<zk>
+
+    <planner id="planner" self="@{define(content)}">
+        <div id="idContextMenuTaskAssigment"></div>
+    </planner>
+
+    <popup width="300px" apply="${planner.modalFormComposer}">
+        <grid>
+            <rows>
+                <row>
+                    ${c:l('task.name')}
+                    <textbox id="name" />
+                </row>
+                <row>
+                    ${c:l('task.start')}
+                    <datebox id="startDateBox" compact="true" />
+                </row>
+                <row>
+                    ${c:l('task.end')}
+                    <datebox id="endDateBox" compact="true" />
+                </row>
+                <row>
+                    ${c:l('task.notes')}
+                    <textbox id="notes" />
+                </row>
+            </rows>
+        </grid>
+        <button id="ok" label=" ${c:l('task.ok')}" />
+    </popup>
+
+    <zscript><![CDATA[
+        orderPlanningController.registerPlanner(planner);
+    ]]>
+    </zscript>
+</zk>
