@@ -92,8 +92,12 @@ public class OrderCRUDController extends GenericForwardComposer {
             orderModel.prepareForSchedule(order);
             showScheduleConfirmingWindow();
         } else {
-            planningControllerEntryPoints.showSchedule(order);
+            goToShedulingView(order);
         }
+    }
+
+    private void goToShedulingView(Order order) {
+        planningControllerEntryPoints.showSchedule(order);
     }
 
     private void showScheduleConfirmingWindow() {
@@ -109,9 +113,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void schedule() {
         try {
             orderModel.schedule();
-            Util.reloadBindings(listWindow);
-            messagesForUser.showMessage(Level.INFO,
-                    "crearonse as tarefas de planificación");
+            goToShedulingView((Order) orderModel.getOrder());
         } finally {
             hideScheduleConfirmingWindow();
         }
