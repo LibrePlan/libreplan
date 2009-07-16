@@ -18,9 +18,10 @@ import org.zkoss.zk.ui.ext.AfterCompose;
  */
 public class TaskContainer extends Task implements AfterCompose {
 
-    public static TaskContainer asTask(TaskContainerBean taskContainerBean,
+    public static TaskContainer asTask(TaskBean taskContainerBean,
             TaskList taskList) {
-        return new TaskContainer(taskContainerBean, taskList);
+        return new TaskContainer((TaskContainerBean) taskContainerBean,
+                taskList);
     }
 
     private List<Task> subtasks = new ArrayList<Task>();
@@ -30,6 +31,8 @@ public class TaskContainer extends Task implements AfterCompose {
 
     public TaskContainer(TaskContainerBean taskContainerBean, TaskList taskList) {
         super(taskContainerBean);
+        if (!taskContainerBean.isContainer())
+            throw new IllegalArgumentException();
         this.expandListener = new IExpandListener() {
 
             @Override

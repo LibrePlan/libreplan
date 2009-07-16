@@ -129,7 +129,7 @@ public class Task extends Div implements AfterCompose {
     };
 
     public static Task asTask(TaskBean taskBean, TaskList taskList) {
-        if (taskBean instanceof TaskContainerBean) {
+        if (taskBean.isContainer()) {
             return TaskContainer.asTask((TaskContainerBean) taskBean, taskList);
         }
         return new Task(taskBean);

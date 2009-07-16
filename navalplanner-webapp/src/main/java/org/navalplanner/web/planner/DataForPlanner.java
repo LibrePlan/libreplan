@@ -8,6 +8,7 @@ import org.zkoss.ganttz.util.DependencyRegistry;
 import org.zkoss.ganttz.util.DependencyType;
 import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.TaskContainerBean;
+import org.zkoss.ganttz.util.TaskLeafBean;
 
 /**
  * Some test data for planner <br />
@@ -74,7 +75,7 @@ public class DataForPlanner {
     }
 
     private TaskBean createTaskBean(String name, Date now, Date end) {
-        TaskBean taskBean = new TaskBean();
+        TaskBean taskBean = new TaskLeafBean();
         taskBean.setName(name);
         taskBean.setBeginDate(now);
         taskBean.setEndDate(end);

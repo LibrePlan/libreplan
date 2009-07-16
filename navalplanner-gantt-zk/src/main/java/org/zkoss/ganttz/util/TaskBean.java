@@ -3,6 +3,7 @@ package org.zkoss.ganttz.util;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This class contains the information of a task. It can be modified and
@@ -10,7 +11,7 @@ import java.util.Date;
  * Created at Apr 24, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class TaskBean {
+public abstract class TaskBean {
 
     private PropertyChangeSupport fundamentalProperties = new PropertyChangeSupport(
             this);
@@ -27,6 +28,17 @@ public class TaskBean {
     private String notes;
 
     private boolean visible = true;
+
+    public abstract boolean isLeaf();
+
+    public boolean isContainer() {
+        return !isLeaf();
+    }
+
+    public abstract boolean isExpanded() throws UnsupportedOperationException;
+
+    public abstract List<TaskBean> getTasks()
+            throws UnsupportedOperationException;
 
     public boolean isVisible() {
         return visible;

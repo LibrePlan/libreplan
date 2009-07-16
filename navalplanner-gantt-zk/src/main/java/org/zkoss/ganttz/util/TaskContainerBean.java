@@ -81,6 +81,7 @@ public class TaskContainerBean extends TaskBean {
         task.setVisible(expanded);
     }
 
+    @Override
     public List<TaskBean> getTasks() {
         return tasks;
     }
@@ -113,6 +114,7 @@ public class TaskContainerBean extends TaskBean {
         return getBiggest(getEndDates());
     }
 
+    @Override
     public boolean isExpanded() {
         return expanded;
     }
@@ -134,8 +136,9 @@ public class TaskContainerBean extends TaskBean {
         for (TaskBean taskBean : tasks) {
             taskBean.setVisible(this.expanded);
         }
-        if(valueChanged){
-            expandListeners.fireEvent(new ListenerNotification<IExpandListener>() {
+        if (valueChanged) {
+            expandListeners
+                    .fireEvent(new ListenerNotification<IExpandListener>() {
 
                         @Override
                         public void doNotify(IExpandListener listener) {
@@ -144,6 +147,11 @@ public class TaskContainerBean extends TaskBean {
                         }
                     });
         }
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return false;
     }
 
 }

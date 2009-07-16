@@ -48,18 +48,19 @@ public class DependencyRegistry {
                 throw new IllegalArgumentException("container cannot be null");
             this.container = container;
             for (TaskBean subtask : this.container.getTasks()) {
-                subtask.addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
+                subtask
+                        .addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
 
-                    @Override
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        Date newBeginDate = container
-                                .getSmallestBeginDateFromChildren();
-                        container.setBeginDate(newBeginDate);
-                        Date newEndDate = container
-                                .getBiggestDateFromChildren();
-                        container.setEndDate(newEndDate);
-                    }
-                });
+                            @Override
+                            public void propertyChange(PropertyChangeEvent evt) {
+                                Date newBeginDate = container
+                                        .getSmallestBeginDateFromChildren();
+                                container.setBeginDate(newBeginDate);
+                                Date newEndDate = container
+                                        .getBiggestDateFromChildren();
+                                container.setEndDate(newEndDate);
+                            }
+                        });
             }
         }
 
@@ -72,14 +73,15 @@ public class DependencyRegistry {
             if (task == null)
                 throw new IllegalArgumentException("task cannot be null");
             this.task = task;
-            this.task.addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
+            this.task
+                    .addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
 
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    DependencyRulesEnforcer.this.update();
-                    updateOutgoing(DependencyRulesEnforcer.this.task);
-                }
-            });
+                        @Override
+                        public void propertyChange(PropertyChangeEvent evt) {
+                            DependencyRulesEnforcer.this.update();
+                            updateOutgoing(DependencyRulesEnforcer.this.task);
+                        }
+                    });
         }
 
         void update() {
@@ -112,15 +114,14 @@ public class DependencyRegistry {
     private void addTask(TaskBean task) {
         graph.addVertex(task);
         rulesEnforcersByTask.put(task, new DependencyRulesEnforcer(task));
-        if (task instanceof TaskContainerBean) {
-            TaskContainerBean container = (TaskContainerBean) task;
-            new ParentShrinkingEnforcer(container);
-            for (TaskBean child : container.getTasks()) {
+        if (task.isContainer()) {
+            new ParentShrinkingEnforcer((TaskContainerBean) task);
+            for (TaskBean child : task.getTasks()) {
                 addTask(child);
-                add(new DependencyBean(child, container,
-                        DependencyType.END_END, false));
-                add(new DependencyBean(container, child,
-                        DependencyType.START_START, false));
+                add(new DependencyBean(child, task, DependencyType.END_END,
+                        false));
+                add(new DependencyBean(task, child, DependencyType.START_START,
+                        false));
             }
         }
     }

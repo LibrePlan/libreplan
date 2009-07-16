@@ -16,13 +16,13 @@ import org.zkoss.ganttz.TaskDetail.ITaskDetailNavigator;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.TaskContainerBean;
+import org.zkoss.ganttz.util.TaskLeafBean;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.OpenEvent;
-import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
@@ -40,7 +40,7 @@ public class ListDetails extends HtmlMacroComponent {
             String cssClass = "depth_" + path.length;
             TaskDetail taskDetail = TaskDetail.create(taskBean,
                     new TreeNavigator(tasksTreeModel, taskBean));
-            if (taskBean instanceof TaskContainerBean) {
+            if (taskBean.isContainer()) {
                 expandWhenOpened((TaskContainerBean) taskBean, item);
             }
             Component row = Executions.getCurrent().createComponents(
@@ -69,11 +69,7 @@ public class ListDetails extends HtmlMacroComponent {
     }
 
     public boolean isOpened(TaskBean taskBean) {
-        if (taskBean instanceof TaskContainerBean) {
-            TaskContainerBean container = (TaskContainerBean) taskBean;
-            return container.isExpanded();
-        }
-        return true;
+        return taskBean.isLeaf() || taskBean.isExpanded();
     }
 
     private final class DetailsForBeans {
@@ -155,22 +151,20 @@ public class ListDetails extends HtmlMacroComponent {
             ListIterator<TaskBean> listIterator = parents.listIterator();
             while (listIterator.hasNext()) {
                 parent = listIterator.next();
-                result
-                        .add(new ChildAndParent(child,
-                                (TaskContainerBean) parent));
+                result.add(new ChildAndParent(child, parent));
                 child = parent;
             }
             return result;
         }
 
         private class ChildAndParent {
-            private final TaskContainerBean parent;
+            private final TaskBean parent;
 
             private final TaskBean child;
 
             private Integer positionOfChildCached;
 
-            private ChildAndParent(TaskBean child, TaskContainerBean parent) {
+            private ChildAndParent(TaskBean child, TaskBean parent) {
                 this.parent = parent;
                 this.child = child;
             }
@@ -197,15 +191,11 @@ public class ListDetails extends HtmlMacroComponent {
         }
 
         private boolean hasChildren() {
-            return task instanceof TaskContainerBean
-                    && ((TaskContainerBean) task).getTasks().size() > 0;
+            return task.isContainer() && task.getTasks().size() > 0;
         }
 
         private boolean isExpanded() {
-            if (task instanceof TaskContainerBean) {
-                return ((TaskContainerBean) task).isExpanded();
-            }
-            return false;
+            return task.isContainer() && task.isExpanded();
         }
 
         private TaskBean getParent(int[] path) {
@@ -232,10 +222,6 @@ public class ListDetails extends HtmlMacroComponent {
         this.taskBeans = taskBeans;
     }
 
-    private static TaskBean getTaskBean(SimpleTreeNode node) {
-        return (TaskBean) node.getData();
-    }
-
     private static void fillModel(MutableTreeModel<TaskBean> treeModel,
             List<TaskBean> taskBeans) {
         for (TaskBean taskBean : taskBeans) {
@@ -246,10 +232,9 @@ public class ListDetails extends HtmlMacroComponent {
     private static void fillModel(MutableTreeModel<TaskBean> treeModel,
             TaskBean parent, TaskBean node) {
         treeModel.add(parent, node);
-        if (node instanceof TaskContainerBean) {
-            TaskContainerBean container = (TaskContainerBean) node;
-            for (TaskBean child : container.getTasks()) {
-                fillModel(treeModel, container, child);
+        if (node.isContainer()) {
+            for (TaskBean child : node.getTasks()) {
+                fillModel(treeModel, node, child);
             }
         }
     }
@@ -263,7 +248,7 @@ public class ListDetails extends HtmlMacroComponent {
     }
 
     public void addTask() {
-        TaskBean newTask = new TaskBean();
+        TaskBean newTask = new TaskLeafBean();
         newTask.setName("Nova Tarefa");
         newTask.setBeginDate(new Date());
         newTask.setEndDate(threeMonthsLater(newTask.getBeginDate()));
