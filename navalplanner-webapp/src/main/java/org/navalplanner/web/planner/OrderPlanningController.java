@@ -1,15 +1,16 @@
 package org.navalplanner.web.planner;
 
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.planner.IOrderPlanningModel.ConfigurationOnTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
-import org.zkoss.ganttz.util.ITaskFundamentalProperties;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -22,6 +23,9 @@ public class OrderPlanningController implements
     @Autowired
     private IURLHandlerRegistry urlHandlerRegistry;
 
+    @Autowired
+    private IOrderPlanningModel model;
+
     private Planner planner;
 
     public OrderPlanningController() {
@@ -29,10 +33,13 @@ public class OrderPlanningController implements
 
     @Override
     public void showSchedule(Order order) {
-        PlannerConfiguration<ITaskFundamentalProperties> configuration = new DataForPlanner()
-                .getMediumLoad();
-        // TODO just for trying passing medium load
-        planner.setConfiguration(configuration);
+        model.createConfiguration(order, new ConfigurationOnTransaction() {
+
+            @Override
+            public void use(PlannerConfiguration<TaskElement> configuration) {
+                planner.setConfiguration(configuration);
+            }
+        });
     }
 
     public void registerPlanner(Planner planner) {
