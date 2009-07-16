@@ -11,23 +11,40 @@ import java.util.List;
  * Created at Apr 24, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public abstract class TaskBean {
+public abstract class TaskBean implements ITaskFundamentalProperties {
 
-    private PropertyChangeSupport fundamentalProperties = new PropertyChangeSupport(
+    private PropertyChangeSupport fundamentalPropertiesListeners = new PropertyChangeSupport(
             this);
 
     private PropertyChangeSupport visibilityProperties = new PropertyChangeSupport(
             this);
 
-    private String name;
-
-    private Date beginDate = null;
-
-    private long lengthMilliseconds = 0;
-
-    private String notes;
+    private ITaskFundamentalProperties fundamentalProperties;
 
     private boolean visible = true;
+
+    public TaskBean(ITaskFundamentalProperties fundamentalProperties) {
+        this.fundamentalProperties = fundamentalProperties;
+    }
+
+    public TaskBean() {
+        this(new DefaultFundamentalProperties());
+    }
+
+    public TaskBean(String name, Date beginDate, long lengthMilliseconds) {
+        this();
+        if (name == null)
+            throw new IllegalArgumentException("name cannot be null");
+        if (beginDate == null)
+            throw new IllegalArgumentException("beginDate cannot be null");
+        if (lengthMilliseconds < 0)
+            throw new IllegalArgumentException(
+                    "length in milliseconds must be positive. Instead it is "
+                            + lengthMilliseconds);
+        this.fundamentalProperties.setName(name);
+        this.fundamentalProperties.setBeginDate(beginDate);
+        this.fundamentalProperties.setLengthMilliseconds(lengthMilliseconds);
+    }
 
     public abstract boolean isLeaf();
 
@@ -51,58 +68,37 @@ public abstract class TaskBean {
                 this.visible);
     }
 
-    public TaskBean() {
-    }
-
-    public TaskBean(String name, Date beginDate, long lengthMilliseconds) {
-        if (name == null)
-            throw new IllegalArgumentException("name cannot be null");
-        if (beginDate == null)
-            throw new IllegalArgumentException("beginDate cannot be null");
-        if (lengthMilliseconds < 0)
-            throw new IllegalArgumentException(
-                    "length in milliseconds must be positive. Instead it is "
-                            + lengthMilliseconds);
-        this.name = name;
-        this.beginDate = beginDate;
-        this.lengthMilliseconds = lengthMilliseconds;
-    }
-
     public String getName() {
-        return name;
+        return fundamentalProperties.getName();
     }
 
     public void setName(String name) {
-        String previousValue = this.name;
-        this.name = name;
-        fundamentalProperties.firePropertyChange("name", previousValue,
-                this.name);
+        String previousValue = fundamentalProperties.getName();
+        fundamentalProperties.setName(name);
+        fundamentalPropertiesListeners.firePropertyChange("name",
+                previousValue, name);
     }
 
     public void setBeginDate(Date beginDate) {
-        Date previousValue = this.beginDate;
-        this.beginDate = beginDate;
-        fundamentalProperties.firePropertyChange("beginDate", previousValue,
-                this.beginDate);
+        Date previousValue = fundamentalProperties.getBeginDate();
+        fundamentalProperties.setBeginDate(beginDate);
+        fundamentalPropertiesListeners.firePropertyChange("beginDate",
+                previousValue, fundamentalProperties.getBeginDate());
     }
 
     public Date getBeginDate() {
-        return new Date(beginDate.getTime());
+        return new Date(fundamentalProperties.getBeginDate().getTime());
     }
 
     public void setLengthMilliseconds(long lengthMilliseconds) {
-        if (lengthMilliseconds < 0)
-            throw new IllegalArgumentException(
-                    "a task must not have a negative length. Received value: "
-                            + lengthMilliseconds);
-        long previousValue = this.lengthMilliseconds;
-        this.lengthMilliseconds = lengthMilliseconds;
-        fundamentalProperties.firePropertyChange("lengthMilliseconds",
-                previousValue, this.lengthMilliseconds);
+        long previousValue = fundamentalProperties.getLengthMilliseconds();
+        fundamentalProperties.setLengthMilliseconds(lengthMilliseconds);
+        fundamentalPropertiesListeners.firePropertyChange("lengthMilliseconds",
+                previousValue, fundamentalProperties.getLengthMilliseconds());
     }
 
     public long getLengthMilliseconds() {
-        return lengthMilliseconds;
+        return fundamentalProperties.getLengthMilliseconds();
     }
 
     public void addVisibilityPropertiesChangeListener(
@@ -112,30 +108,31 @@ public abstract class TaskBean {
 
     public void addFundamentalPropertiesChangeListener(
             PropertyChangeListener listener) {
-        this.fundamentalProperties.addPropertyChangeListener(listener);
+        this.fundamentalPropertiesListeners.addPropertyChangeListener(listener);
     }
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        this.fundamentalProperties.removePropertyChangeListener(listener);
+        this.fundamentalPropertiesListeners
+                .removePropertyChangeListener(listener);
     }
 
     public Date getEndDate() {
-        return new Date(beginDate.getTime() + lengthMilliseconds);
+        return new Date(getBeginDate().getTime() + getLengthMilliseconds());
     }
 
     public String getNotes() {
-        return notes;
+        return fundamentalProperties.getNotes();
     }
 
     public void setNotes(String notes) {
-        String previousValue = this.notes;
-        this.notes = notes;
-        fundamentalProperties.firePropertyChange("notes", previousValue,
-                this.notes);
+        String previousValue = fundamentalProperties.getNotes();
+        this.fundamentalProperties.setNotes(notes);
+        fundamentalPropertiesListeners.firePropertyChange("notes",
+                previousValue, this.fundamentalProperties.getNotes());
     }
 
     public void setEndDate(Date value) {
-        setLengthMilliseconds(value.getTime() - beginDate.getTime());
+        setLengthMilliseconds(value.getTime() - getBeginDate().getTime());
     }
 
 }

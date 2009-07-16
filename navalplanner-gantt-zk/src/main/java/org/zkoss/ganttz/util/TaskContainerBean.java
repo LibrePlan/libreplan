@@ -16,6 +16,14 @@ import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;
  */
 public class TaskContainerBean extends TaskBean {
 
+    public TaskContainerBean() {
+        super();
+    }
+
+    public TaskContainerBean(ITaskFundamentalProperties fundamentalProperties) {
+        super(fundamentalProperties);
+    }
+
     public interface IExpandListener {
         public void expandStateChanged(boolean isNowExpanded);
     }
