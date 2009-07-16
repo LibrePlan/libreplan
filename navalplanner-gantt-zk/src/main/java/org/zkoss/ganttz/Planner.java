@@ -13,7 +13,7 @@ import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.util.DependencyBean;
-import org.zkoss.ganttz.util.DependencyRegistry;
+import org.zkoss.ganttz.util.GanttDiagramGraph;
 import org.zkoss.ganttz.util.ITaskFundamentalProperties;
 import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.TaskContainerBean;
@@ -27,7 +27,7 @@ public class Planner extends XulElement {
     private static final Log LOG = LogFactory.getLog(Planner.class);
 
     private DependencyAddedListener dependencyAddedListener;
-    private DependencyRegistry dependencyRegistry = new DependencyRegistry();
+    private GanttDiagramGraph diagramGraph = new GanttDiagramGraph();
     private DependencyRemovedListener dependencyRemovedListener;
     private TaskRemovedListener taskRemovedListener;
     private ListDetails listDetails;
@@ -102,7 +102,7 @@ public class Planner extends XulElement {
     }
 
     public void registerListeners() {
-        if (dependencyRegistry == null)
+        if (diagramGraph == null)
             throw new IllegalStateException("dependencyRegistry must be set");
         ganttPanel.afterCompose();
         TaskList taskList = getTaskList();
@@ -119,7 +119,7 @@ public class Planner extends XulElement {
 
             @Override
             public void taskRemoved(Task taskRemoved) {
-                dependencyRegistry.remove(taskRemoved.getTaskBean());
+                diagramGraph.remove(taskRemoved.getTaskBean());
                 listDetails.taskRemoved(taskRemoved.getTaskBean());
                 TaskList taskList = getTaskList();
                 setHeight(getHeight());// forcing smart update
@@ -132,7 +132,7 @@ public class Planner extends XulElement {
 
             @Override
             public void dependenceRemoved(Dependency dependency) {
-                dependencyRegistry.remove(dependency);
+                diagramGraph.remove(dependency);
             }
         };
         getDependencyList().addDependencyRemovedListener(
@@ -141,11 +141,11 @@ public class Planner extends XulElement {
 
     public void addTask(TaskBean newTask) {
         getTaskList().addTask(newTask);
-        dependencyRegistry.addTopLevel(newTask);
+        diagramGraph.addTopLevel(newTask);
     }
 
     private void publishDependency(Dependency dependency) {
-        dependencyRegistry.add(dependency.getDependencyBean());
+        diagramGraph.add(dependency.getDependencyBean());
     }
 
     private static class OneToOneMapper<T> implements IDomainAndBeansMapper<T> {
@@ -183,21 +183,21 @@ public class Planner extends XulElement {
     public <T> void setConfiguration(PlannerConfiguration<T> configuration) {
         if (configuration == null)
             return;
-        this.dependencyRegistry = new DependencyRegistry();
+        this.diagramGraph = new GanttDiagramGraph();
         OneToOneMapper<T> mapper = new OneToOneMapper<T>();
         domainObjectsMapper = mapper;
         List<DomainDependency<T>> dependencies = new ArrayList<DomainDependency<T>>();
         for (T domainObject : configuration.getData()) {
-            this.dependencyRegistry.addTopLevel(extractTaskBean(dependencies,
+            this.diagramGraph.addTopLevel(extractTaskBean(dependencies,
                     mapper, domainObject, configuration.getNavigator(),
                     configuration.getAdapter()));
         }
         List<DependencyBean> dependencyBeans = DomainDependency
                 .toDependencyBeans(mapper, dependencies);
         for (DependencyBean dependencyBean : dependencyBeans) {
-            this.dependencyRegistry.add(dependencyBean);
+            this.diagramGraph.add(dependencyBean);
         }
-        this.dependencyRegistry.applyAllRestrictions();
+        this.diagramGraph.applyAllRestrictions();
         recreate();
     }
 
@@ -222,20 +222,20 @@ public class Planner extends XulElement {
         return result;
     }
 
-    public DependencyRegistry getDependencyRegistry() {
-        return dependencyRegistry;
+    public GanttDiagramGraph getGanttDiagramGraph() {
+        return diagramGraph;
     }
 
     private void recreate() {
         removePreviousDetails();
-        this.listDetails = new ListDetails(this.dependencyRegistry
+        this.listDetails = new ListDetails(this.diagramGraph
                 .getTopLevelTasks());
         insertBefore(this.listDetails,
                 (Component) (getChildren().isEmpty() ? null : getChildren()
                         .get(0)));
         this.listDetails.afterCompose();
         removePreviousGanntPanel();
-        this.ganttPanel = new GanttPanel(this.dependencyRegistry,
+        this.ganttPanel = new GanttPanel(this.diagramGraph,
                 taskEditFormComposer);
         appendChild(ganttPanel);
         registerListeners();

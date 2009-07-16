@@ -21,7 +21,7 @@ import org.zkoss.ganttz.Dependency;
  * Created at Apr 24, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class DependencyRegistry {
+public class GanttDiagramGraph {
 
     private final DirectedGraph<TaskBean, DependencyBean> graph = new SimpleDirectedGraph<TaskBean, DependencyBean>(
             DependencyBean.class);

@@ -10,7 +10,7 @@ import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.util.DefaultFundamentalProperties;
-import org.zkoss.ganttz.util.DependencyRegistry;
+import org.zkoss.ganttz.util.GanttDiagramGraph;
 import org.zkoss.ganttz.util.DependencyType;
 import org.zkoss.ganttz.util.ITaskFundamentalProperties;
 import org.zkoss.ganttz.util.TaskContainerBean;
@@ -24,8 +24,8 @@ public class DataForPlanner {
     public DataForPlanner() {
     }
 
-    public DependencyRegistry getEmpty() {
-        return new DependencyRegistry();
+    public GanttDiagramGraph getEmpty() {
+        return new GanttDiagramGraph();
     }
 
     public PlannerConfiguration<ITaskFundamentalProperties> getLightLoad() {

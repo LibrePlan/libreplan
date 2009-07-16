@@ -1,6 +1,6 @@
 package org.zkoss.ganttz;
 
-import org.zkoss.ganttz.util.DependencyRegistry;
+import org.zkoss.ganttz.util.GanttDiagramGraph;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.Command;
 import org.zkoss.zk.au.ComponentCommand;
@@ -15,15 +15,15 @@ public class GanttPanel extends XulElement implements AfterCompose {
 
     private DependencyList dependencyList;
 
-    private final DependencyRegistry dependencyRegistry;
+    private final GanttDiagramGraph diagramGraph;
 
-    public GanttPanel(DependencyRegistry dependencyRegistry,
+    public GanttPanel(GanttDiagramGraph ganttDiagramGraph,
             TaskEditFormComposer taskEditFormComposer) {
-        this.dependencyRegistry = dependencyRegistry;
+        this.diagramGraph = ganttDiagramGraph;
         timeTracker = new TimeTracker(this);
         appendChild(timeTracker);
         tasksLists = TaskList.createFor(taskEditFormComposer,
-                dependencyRegistry.getTopLevelTasks());
+                ganttDiagramGraph.getTopLevelTasks());
         dependencyList = new DependencyList();
         appendChild(tasksLists);
         appendChild(dependencyList);
@@ -33,7 +33,7 @@ public class GanttPanel extends XulElement implements AfterCompose {
     public void afterCompose() {
         tasksLists.afterCompose();
         dependencyList.setDependencies(tasksLists
-                .asDependencies(dependencyRegistry.getVisibleDependencies()));
+                .asDependencies(diagramGraph.getVisibleDependencies()));
         timeTracker.afterCompose();
         dependencyList.afterCompose();
     }
