@@ -17,11 +17,13 @@ public class GanttPanel extends XulElement implements AfterCompose {
 
     private final DependencyRegistry dependencyRegistry;
 
-    public GanttPanel(DependencyRegistry dependencyRegistry) {
+    public GanttPanel(DependencyRegistry dependencyRegistry,
+            TaskEditFormComposer taskEditFormComposer) {
         this.dependencyRegistry = dependencyRegistry;
         timeTracker = new TimeTracker(this);
         appendChild(timeTracker);
-        tasksLists = TaskList.createFor(dependencyRegistry.getTopLevelTasks());
+        tasksLists = TaskList.createFor(taskEditFormComposer,
+                dependencyRegistry.getTopLevelTasks());
         dependencyList = new DependencyList();
         appendChild(tasksLists);
         appendChild(dependencyList);

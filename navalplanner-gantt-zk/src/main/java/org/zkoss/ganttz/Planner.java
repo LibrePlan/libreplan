@@ -20,10 +20,9 @@ import org.zkoss.ganttz.util.TaskContainerBean;
 import org.zkoss.ganttz.util.TaskLeafBean;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
-public class Planner extends XulElement implements AfterCompose {
+public class Planner extends XulElement {
 
     private static final Log LOG = LogFactory.getLog(Planner.class);
 
@@ -32,7 +31,10 @@ public class Planner extends XulElement implements AfterCompose {
     private DependencyRemovedListener dependencyRemovedListener;
     private TaskRemovedListener taskRemovedListener;
     private ListDetails listDetails;
+
     private GanttPanel ganttPanel;
+
+    private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer();
 
     private OneToOneMapper<?> domainObjectsMapper;
 
@@ -96,11 +98,10 @@ public class Planner extends XulElement implements AfterCompose {
     }
 
     public TaskEditFormComposer getModalFormComposer() {
-        return getTaskList().getModalFormComposer();
+        return taskEditFormComposer;
     }
 
-    @Override
-    public void afterCompose() {
+    public void registerListeners() {
         if (dependencyRegistry == null)
             throw new IllegalStateException("dependencyRegistry must be set");
         ganttPanel.afterCompose();
@@ -180,6 +181,8 @@ public class Planner extends XulElement implements AfterCompose {
     }
 
     public <T> void setConfiguration(PlannerConfiguration<T> configuration) {
+        if (configuration == null)
+            return;
         this.dependencyRegistry = new DependencyRegistry();
         OneToOneMapper<T> mapper = new OneToOneMapper<T>();
         domainObjectsMapper = mapper;
@@ -232,7 +235,9 @@ public class Planner extends XulElement implements AfterCompose {
                         .get(0)));
         this.listDetails.afterCompose();
         removePreviousGanntPanel();
-        this.ganttPanel = new GanttPanel(this.dependencyRegistry);
+        this.ganttPanel = new GanttPanel(this.dependencyRegistry,
+                taskEditFormComposer);
         appendChild(ganttPanel);
+        registerListeners();
     }
 }

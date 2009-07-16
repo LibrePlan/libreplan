@@ -46,16 +46,18 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private Menupopup contextMenu;
 
-    private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer();
-
     private List<TaskBean> originalTasks;
 
-    public TaskList(List<TaskBean> tasks) {
+    private final TaskEditFormComposer taskEditFormComposer;
+
+    public TaskList(TaskEditFormComposer formComposer, List<TaskBean> tasks) {
+        this.taskEditFormComposer = formComposer;
         this.originalTasks = tasks;
     }
 
-    public static TaskList createFor(List<TaskBean> tasks) {
-        TaskList result = new TaskList(tasks);
+    public static TaskList createFor(TaskEditFormComposer formComposer,
+            List<TaskBean> tasks) {
+        TaskList result = new TaskList(formComposer, tasks);
         return result;
     }
 
@@ -253,7 +255,7 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     public void redrawDependencies() {
-        getGanttPanel().getDependencyList().redrawDependencies() ;
+        getGanttPanel().getDependencyList().redrawDependencies();
     }
 
 }
