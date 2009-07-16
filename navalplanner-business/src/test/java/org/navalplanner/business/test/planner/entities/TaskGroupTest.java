@@ -25,16 +25,16 @@ public class TaskGroupTest {
 
     @Test
     public void taskGroupHasManyTaskElements() {
-        List<TaskElement> tasks = taskGroup.getTaskElements();
+        List<TaskElement> tasks = taskGroup.getChildren();
         assertTrue("a task group has no task elements initially", tasks
                 .isEmpty());
         TaskElement child1 = new Task();
         taskGroup.addTaskElement(child1);
         TaskGroup child2 = new TaskGroup();
         taskGroup.addTaskElement(child2);
-        List<TaskElement> taskElements = taskGroup.getTaskElements();
+        List<TaskElement> taskElements = taskGroup.getChildren();
         assertThat(taskElements.size(), equalTo(2));
-        assertThat(taskGroup.getTaskElements(), equalTo(Arrays.asList(child1,
+        assertThat(taskGroup.getChildren(), equalTo(Arrays.asList(child1,
                 child2)));
     }
 
@@ -45,6 +45,6 @@ public class TaskGroupTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void taskElementsCollectionCannotBeModified() {
-        taskGroup.getTaskElements().set(0, null);
+        taskGroup.getChildren().set(0, null);
     }
 }

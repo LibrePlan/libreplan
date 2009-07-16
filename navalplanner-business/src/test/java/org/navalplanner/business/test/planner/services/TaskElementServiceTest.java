@@ -141,7 +141,7 @@ public class TaskElementServiceTest {
         flushAndEvict(taskGroup);
         TaskGroup reloaded = (TaskGroup) taskElementService.findById(taskGroup
                 .getId());
-        List<TaskElement> taskElements = reloaded.getTaskElements();
+        List<TaskElement> taskElements = reloaded.getChildren();
         assertThat(taskElements.size(), equalTo(2));
         assertThat(taskElements.get(0).getId(), equalTo(child1.getId()));
         assertThat(taskElements.get(1).getId(), equalTo(child2.getId()));
@@ -161,14 +161,14 @@ public class TaskElementServiceTest {
         flushAndEvict(taskGroup);
         TaskGroup reloaded = (TaskGroup) taskElementService.findById(taskGroup
                 .getId());
-        assertThat(reloaded.getTaskElements().get(0)
+        assertThat(reloaded.getChildren().get(0)
                 .getDependenciesWithThisOrigin().size(), equalTo(1));
-        assertTrue(reloaded.getTaskElements().get(0)
+        assertTrue(reloaded.getChildren().get(0)
                 .getDependenciesWithThisDestination().isEmpty());
 
-        assertThat(reloaded.getTaskElements().get(1)
+        assertThat(reloaded.getChildren().get(1)
                 .getDependenciesWithThisDestination().size(), equalTo(1));
-        assertTrue(reloaded.getTaskElements().get(1)
+        assertTrue(reloaded.getChildren().get(1)
                 .getDependenciesWithThisOrigin().isEmpty());
     }
 
@@ -217,8 +217,8 @@ public class TaskElementServiceTest {
 
         assertThat(group.getOrderElement(),
                 equalTo((OrderElement) orderLineGroup));
-        assertThat(group.getTaskElements().size(), equalTo(1));
-        assertThat(group.getTaskElements().get(0).getOrderElement(),
+        assertThat(group.getChildren().size(), equalTo(1));
+        assertThat(group.getChildren().get(0).getOrderElement(),
                 equalTo((OrderElement) orderLine));
     }
 
@@ -249,10 +249,10 @@ public class TaskElementServiceTest {
 
         TaskGroup group = (TaskGroup) taskElement;
         assertThat(group.getOrderElement(), equalTo((OrderElement) orderLine));
-        assertThat(group.getTaskElements().size(), equalTo(2));
+        assertThat(group.getChildren().size(), equalTo(2));
 
-        Task child1 = (Task) group.getTaskElements().get(0);
-        Task child2 = (Task) group.getTaskElements().get(1);
+        Task child1 = (Task) group.getChildren().get(0);
+        Task child2 = (Task) group.getChildren().get(1);
 
         assertThat(child1.getOrderElement(), equalTo((OrderElement) orderLine));
         assertThat(child2.getOrderElement(), equalTo((OrderElement) orderLine));

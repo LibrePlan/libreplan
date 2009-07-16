@@ -13,13 +13,19 @@ public class TaskGroup extends TaskElement {
 
     private List<TaskElement> taskElements = new ArrayList<TaskElement>();
 
-    public List<TaskElement> getTaskElements() {
-        return Collections.unmodifiableList(taskElements);
-    }
-
     public void addTaskElement(TaskElement task) {
         Validate.notNull(task);
         taskElements.add(task);
+    }
+
+    @Override
+    public List<TaskElement> getChildren() {
+        return Collections.unmodifiableList(taskElements);
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return false;
     }
 
 }

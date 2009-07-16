@@ -3,6 +3,7 @@ package org.navalplanner.business.planner.entities;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -82,5 +83,9 @@ public abstract class TaskElement {
     public Long getId() {
         return id;
     }
+
+    public abstract boolean isLeaf();
+
+    public abstract List<TaskElement> getChildren();
 
 }
