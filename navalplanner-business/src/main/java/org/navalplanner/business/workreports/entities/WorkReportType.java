@@ -50,4 +50,11 @@ public class WorkReportType {
     public void setCriterionTypes(Set<CriterionType> criterionTypes) {
         this.criterionTypes = criterionTypes;
     }
+
+    public void forceLoadCriterionTypes() {
+        for (CriterionType criterionType : criterionTypes) {
+            criterionType.getName();
+        }
+    }
+
 }

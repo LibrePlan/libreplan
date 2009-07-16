@@ -1,0 +1,25 @@
+<window id="${arg.top_id}" title="List">
+    <grid id="listing" model="@{controller.workReportTypes}" mold="paging"
+        pageSize="5">
+        <columns>
+            <column label="Name" sort="auto(name)" />
+            <column label="Operations" />
+        </columns>
+        <rows>
+            <row self="@{each='workReportType'}" value="@{workReportType}">
+                <label value="@{workReportType.name}" />
+                <hbox>
+                    <button label="Edit"
+                        onClick="controller.goToEditForm(self.parent.parent.value);">
+                    </button>
+                    <button label="Remove"
+                        onClick="controller.confirmRemove(self.parent.parent.value);">
+                    </button>
+                </hbox>
+            </row>
+        </rows>
+    </grid>
+    <button id="show_create_form" onClick="controller.goToCreateForm();"
+        label="Create">
+    </button>
+</window>

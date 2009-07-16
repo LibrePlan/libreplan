@@ -41,7 +41,8 @@
             <menu label="${c:l('mainmenu.work_reports')}">
                 <menupopup>
                     <menuitem label="${c:l('mainmenu.work_report_list')}" />
-                    <menuitem label="${c:l('mainmenu.work_report_types')}" />
+                    <menuitem label="${c:l('mainmenu.work_report_types')}"
+                        href="/workreports/workRerpotTypes.zul" />
                     <menuitem label="${c:l('mainmenu.work_report_import')}" />
                 </menupopup>
             </menu>
