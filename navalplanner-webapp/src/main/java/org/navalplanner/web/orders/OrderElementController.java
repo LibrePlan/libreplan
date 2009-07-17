@@ -385,7 +385,7 @@ public class OrderElementController extends GenericForwardComposer {
 
             item.setValue(hoursGroup);
 
-            Listhead header = ((Listbox) item.getParent()).getListheadApi();
+            generateListhead(((Listbox) item.getParent()).getListheadApi());
 
             Listcell cellWorkingHours = new Listcell();
             cellWorkingHours.setParent(item);
@@ -429,11 +429,6 @@ public class OrderElementController extends GenericForwardComposer {
                 for (CriterionType criterionType : getSelectedCriterionTypes()) {
                     Listcell cellCriterion = new Listcell();
                     cellCriterion.setParent(item);
-
-                    // Add a new column on the HoursGroup table
-                    Listheader headerCriterion = new Listheader();
-                    headerCriterion.setLabel(criterionType.getName());
-                    headerCriterion.setParent(header);
 
                     // Add a new Listbox for each CriterionType
                     final Listbox criterionListbox = new Listbox();
@@ -530,10 +525,6 @@ public class OrderElementController extends GenericForwardComposer {
                 Listcell cellFixedPercentage = new Listcell();
                 cellFixedPercentage.setParent(item);
 
-                Listheader headerFixedPercentage = new Listheader();
-                headerFixedPercentage.setLabel("Fixed percentage");
-                headerFixedPercentage.setParent(header);
-
                 Checkbox fixedPercentage = Util.bind(new Checkbox(),
                         new Util.Getter<Boolean>() {
 
@@ -571,11 +562,6 @@ public class OrderElementController extends GenericForwardComposer {
                 for (CriterionType criterionType : getSelectedCriterionTypes()) {
                     Listcell cellCriterion = new Listcell();
                     cellCriterion.setParent(item);
-
-                    // Add a new column on the HoursGroup table
-                    Listheader headerCriterion = new Listheader();
-                    headerCriterion.setLabel(criterionType.getName());
-                    headerCriterion.setParent(header);
 
                     // Add a new Listbox for each CriterionType
                     final Listbox criterionListbox = new Listbox();
@@ -628,6 +614,39 @@ public class OrderElementController extends GenericForwardComposer {
 
                     cellCriterion.appendChild(criterionListbox);
                 }
+            }
+        }
+
+        /**
+         * Generates the {@link Listhead} depending on the {@link CriterionType}
+         * selected.
+         *
+         * @param listhead
+         *            A {@link Listhead} to be updated
+         */
+        private void generateListhead(Listhead listhead) {
+            // Remove the current header
+            listhead.getChildren().clear();
+
+            // Generate basi headers
+            Listheader hours = new Listheader("Hours");
+            listhead.appendChild(hours);
+            Listheader percentage = new Listheader("%");
+            listhead.appendChild(percentage);
+
+            // If it's a leaf add Fixed percentage column
+            if (getOrderElement() instanceof OrderLine) {
+                Listheader headerFixedPercentage = new Listheader(
+                        "Fixed percentage");
+                listhead.appendChild(headerFixedPercentage);
+            }
+
+            // For each CriterionType selected
+            for (CriterionType criterionType : getSelectedCriterionTypes()) {
+                // Add a new column on the HoursGroup table
+                Listheader headerCriterion = new Listheader();
+                headerCriterion.setLabel(criterionType.getName());
+                listhead.appendChild(headerCriterion);
             }
         }
 
