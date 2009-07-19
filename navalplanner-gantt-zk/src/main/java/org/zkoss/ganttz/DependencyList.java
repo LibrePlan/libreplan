@@ -91,7 +91,8 @@ public class DependencyList extends XulElement implements AfterCompose {
         Task destination = dependency.getDestination();
         DependencyVisibilityToggler visibilityToggler = new DependencyVisibilityToggler(
                 source.getTaskBean(), destination.getTaskBean(), dependency);
-        source.getTaskBean().addFundamentalPropertiesChangeListener(visibilityToggler);
+        source.getTaskBean().addVisibilityPropertiesChangeListener(
+                visibilityToggler);
         destination.getTaskBean().addVisibilityPropertiesChangeListener(
                 visibilityToggler);
         visibilityToggler.toggleDependencyExistence(visibilityToggler
