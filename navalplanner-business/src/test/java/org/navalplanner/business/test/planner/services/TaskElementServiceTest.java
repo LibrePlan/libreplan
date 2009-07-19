@@ -152,24 +152,24 @@ public class TaskElementServiceTest {
     public void savingTaskElementSavesAssociatedDependencies() {
         Task child1 = createValidTask();
         Task child2 = createValidTask();
-        TaskGroup taskGroup = createValidTaskGroup();
-        taskGroup.addTaskElement(child1);
-        taskGroup.addTaskElement(child2);
-        Dependency dependency = Dependency.createDependency(child1, child2,
+        taskElementService.save(child2);
+        Task oldChild2 = child2;
+        flushAndEvict(child2);
+        child2 = (Task) taskElementService.findById(child2.getId());
+        Dependency dependency = Dependency.createDependency(child1, oldChild2,
                 Type.START_END);
-        taskElementService.save(taskGroup);
-        flushAndEvict(taskGroup);
-        TaskGroup reloaded = (TaskGroup) taskElementService.findById(taskGroup
-                .getId());
-        assertThat(reloaded.getChildren().get(0)
-                .getDependenciesWithThisOrigin().size(), equalTo(1));
-        assertTrue(reloaded.getChildren().get(0)
-                .getDependenciesWithThisDestination().isEmpty());
+        taskElementService.save(child1);
+        flushAndEvict(child1);
+        TaskElement child1Reloaded = (TaskElement) taskElementService
+                .findById(child1.getId());
+        assertThat(child1Reloaded.getDependenciesWithThisOrigin().size(),
+                equalTo(1));
+        assertTrue(child1Reloaded.getDependenciesWithThisDestination()
+                .isEmpty());
 
-        assertThat(reloaded.getChildren().get(1)
-                .getDependenciesWithThisDestination().size(), equalTo(1));
-        assertTrue(reloaded.getChildren().get(1)
-                .getDependenciesWithThisOrigin().isEmpty());
+        assertThat(child2.getDependenciesWithThisDestination().size(),
+                equalTo(1));
+        assertTrue(child2.getDependenciesWithThisOrigin().isEmpty());
     }
 
     @Test

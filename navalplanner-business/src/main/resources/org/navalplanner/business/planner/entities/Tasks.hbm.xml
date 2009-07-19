@@ -13,7 +13,7 @@
 
         <many-to-one name="orderElement" cascade="none" column="ORDER_ELEMENT_ID"/>
 
-        <set name="dependenciesWithThisOrigin">
+        <set name="dependenciesWithThisOrigin" cascade="all">
             <key column="ORIGIN"></key>
             <one-to-many class="Dependency" />
         </set>
