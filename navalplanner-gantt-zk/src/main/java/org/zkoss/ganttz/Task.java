@@ -241,7 +241,9 @@ public class Task extends Div implements AfterCompose {
     void doAddDependency(String destinyTaskId) {
         Dependency dependency = new Dependency(this,
                 ((Task) getFellow(destinyTaskId)));
-        fireDependenceAdded(dependency);
+        if (getPlanner().canAddDependency(dependency.getDependencyBean())) {
+            fireDependenceAdded(dependency);
+        }
     }
 
     public String getColor() {

@@ -38,6 +38,8 @@ public class Planner extends XulElement {
 
     private OneToOneMapper<?> domainObjectsMapper;
 
+    private DependencyAdderAdapter<?> dependencyAdder;
+
     public Planner() {
     }
 
@@ -101,6 +103,10 @@ public class Planner extends XulElement {
         return taskEditFormComposer;
     }
 
+    public boolean canAddDependency(DependencyBean dependency) {
+        return dependencyAdder.canAddDependency(dependency);
+    }
+
     public void registerListeners() {
         if (diagramGraph == null)
             throw new IllegalStateException("dependencyRegistry must be set");
@@ -112,6 +118,7 @@ public class Planner extends XulElement {
             public void dependenceAdded(Dependency dependency) {
                 getDependencyList().addDependency(dependency);
                 publishDependency(dependency);
+                dependencyAdder.addDependency(dependency.getDependencyBean());
             }
         };
         taskList.addDependencyListener(dependencyAddedListener);
@@ -180,6 +187,37 @@ public class Planner extends XulElement {
 
     }
 
+    private static class DependencyAdderAdapter<T> {
+
+        private final IAdapterToTaskFundamentalProperties<T> adapter;
+        private final OneToOneMapper<T> mapper;
+
+        public DependencyAdderAdapter(
+                IAdapterToTaskFundamentalProperties<T> adapter,
+                OneToOneMapper<T> mapper) {
+            this.adapter = adapter;
+            this.mapper = mapper;
+        }
+
+        public void addDependency(DependencyBean bean) {
+            adapter.addDependency(toDomainDependency(bean));
+        }
+
+        private DomainDependency<T> toDomainDependency(DependencyBean bean) {
+            T source = mapper.findAssociatedDomainObject(bean.getSource());
+            T destination = mapper.findAssociatedDomainObject(bean
+                    .getDestination());
+            DomainDependency<T> dep = DomainDependency.createDependency(source,
+                    destination, bean.getType());
+            return dep;
+        }
+
+        public boolean canAddDependency(DependencyBean bean) {
+            return adapter.canAddDependency(toDomainDependency(bean));
+        }
+
+    }
+
     public <T> void setConfiguration(PlannerConfiguration<T> configuration) {
         if (configuration == null)
             return;
@@ -188,9 +226,10 @@ public class Planner extends XulElement {
         domainObjectsMapper = mapper;
         List<DomainDependency<T>> dependencies = new ArrayList<DomainDependency<T>>();
         for (T domainObject : configuration.getData()) {
-            this.diagramGraph.addTopLevel(extractTaskBean(dependencies,
-                    mapper, domainObject, configuration.getNavigator(),
-                    configuration.getAdapter()));
+            IAdapterToTaskFundamentalProperties<T> adapter = configuration
+                    .getAdapter();
+            this.diagramGraph.addTopLevel(extractTaskBean(dependencies, mapper,
+                    domainObject, configuration.getNavigator(), adapter));
         }
         List<DependencyBean> dependencyBeans = DomainDependency
                 .toDependencyBeans(mapper, dependencies);
@@ -198,6 +237,8 @@ public class Planner extends XulElement {
             this.diagramGraph.add(dependencyBean);
         }
         this.diagramGraph.applyAllRestrictions();
+        dependencyAdder = new DependencyAdderAdapter<T>(configuration
+                .getAdapter(), mapper);
         recreate();
     }
 
@@ -228,8 +269,7 @@ public class Planner extends XulElement {
 
     private void recreate() {
         removePreviousDetails();
-        this.listDetails = new ListDetails(this.diagramGraph
-                .getTopLevelTasks());
+        this.listDetails = new ListDetails(this.diagramGraph.getTopLevelTasks());
         insertBefore(this.listDetails,
                 (Component) (getChildren().isEmpty() ? null : getChildren()
                         .get(0)));

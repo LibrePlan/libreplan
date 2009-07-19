@@ -22,4 +22,16 @@ public class AutoAdapter implements
         return new ArrayList<DomainDependency<ITaskFundamentalProperties>>();
     }
 
+    @Override
+    public void addDependency(
+            DomainDependency<ITaskFundamentalProperties> dependency) {
+        // do nothing
+    }
+
+    @Override
+    public boolean canAddDependency(
+            DomainDependency<ITaskFundamentalProperties> dependency) {
+        return true;
+    }
+
 }

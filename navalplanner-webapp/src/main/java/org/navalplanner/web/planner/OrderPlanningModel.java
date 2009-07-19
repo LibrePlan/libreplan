@@ -39,6 +39,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         private final Order order;
 
+        private List<Dependency> dependenciesCreated = new ArrayList<Dependency>();
+
         private TaskElementToFundamentalProperties(Order order) {
             this.order = order;
         }
@@ -87,6 +89,34 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             default:
                 throw new RuntimeException(type + " not supported yet");
             }
+        }
+
+        private Type toDomainType(DependencyType type) {
+            switch (type) {
+            case END_START:
+                return Type.END_START;
+            case START_START:
+                return Type.START_START;
+            case END_END:
+                return Type.END_END;
+            default:
+                throw new RuntimeException(type + " not supported yet");
+            }
+        }
+
+        @Override
+        public void addDependency(DomainDependency<TaskElement> dependency) {
+            TaskElement source = dependency.getSource();
+            TaskElement destination = dependency.getDestination();
+            Type domainType = toDomainType(dependency.getType());
+            Dependency domainDependency = Dependency.createDependency(source,
+                    destination, domainType);
+
+        }
+
+        @Override
+        public boolean canAddDependency(DomainDependency<TaskElement> dependency) {
+            return true;
         }
     }
 
