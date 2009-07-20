@@ -2,7 +2,7 @@ package org.zkoss.ganttz;
 
 import java.util.List;
 
-import org.zkoss.ganttz.util.TaskBean;
+import org.zkoss.ganttz.data.TaskBean;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Button;

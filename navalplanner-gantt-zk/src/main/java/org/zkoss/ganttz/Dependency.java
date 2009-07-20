@@ -8,8 +8,8 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.zkoss.ganttz.util.DependencyBean;
-import org.zkoss.ganttz.util.DependencyType;
+import org.zkoss.ganttz.data.DependencyBean;
+import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;

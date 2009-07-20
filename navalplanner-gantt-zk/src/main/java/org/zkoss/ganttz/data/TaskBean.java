@@ -1,4 +1,4 @@
-package org.zkoss.ganttz.util;
+package org.zkoss.ganttz.data;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

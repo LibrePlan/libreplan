@@ -13,8 +13,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.adapters.DomainDependency;
-import org.zkoss.ganttz.util.DependencyType;
-import org.zkoss.ganttz.util.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 
 /**
  * Responsible of adaptating a {@link TaskElement} into a

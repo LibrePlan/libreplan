@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.zkoss.ganttz.util.TaskBean;
-import org.zkoss.ganttz.util.TaskContainerBean;
-import org.zkoss.ganttz.util.TaskContainerBean.IExpandListener;
+import org.zkoss.ganttz.data.TaskBean;
+import org.zkoss.ganttz.data.TaskContainerBean;
+import org.zkoss.ganttz.data.TaskContainerBean.IExpandListener;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ext.AfterCompose;
 

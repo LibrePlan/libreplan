@@ -9,15 +9,15 @@ import org.zkoss.ganttz.adapters.AutoAdapter;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.data.DefaultFundamentalProperties;
+import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.GanttDiagramGraph;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.TaskBean;
+import org.zkoss.ganttz.data.TaskContainerBean;
+import org.zkoss.ganttz.data.TaskLeafBean;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.IContext;
-import org.zkoss.ganttz.util.DefaultFundamentalProperties;
-import org.zkoss.ganttz.util.DependencyType;
-import org.zkoss.ganttz.util.GanttDiagramGraph;
-import org.zkoss.ganttz.util.ITaskFundamentalProperties;
-import org.zkoss.ganttz.util.TaskBean;
-import org.zkoss.ganttz.util.TaskContainerBean;
-import org.zkoss.ganttz.util.TaskLeafBean;
 
 /**
  * Some test data for planner <br />

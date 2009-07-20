@@ -3,7 +3,7 @@ package org.zkoss.ganttz.adapters;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.zkoss.ganttz.util.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>

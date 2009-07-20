@@ -1,4 +1,4 @@
-package org.zkoss.ganttz.util;
+package org.zkoss.ganttz.data;
 
 import java.util.Collection;
 import java.util.Date;

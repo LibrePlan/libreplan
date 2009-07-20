@@ -1,6 +1,6 @@
 package org.zkoss.ganttz.adapters;
 
-import org.zkoss.ganttz.util.TaskBean;
+import org.zkoss.ganttz.data.TaskBean;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>

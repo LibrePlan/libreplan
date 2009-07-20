@@ -1,4 +1,4 @@
-package org.zkoss.ganttz.util;
+package org.zkoss.ganttz.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;
 
 /**

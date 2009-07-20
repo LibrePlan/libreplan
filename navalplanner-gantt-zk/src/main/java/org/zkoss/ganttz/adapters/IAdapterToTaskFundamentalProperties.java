@@ -2,7 +2,7 @@ package org.zkoss.ganttz.adapters;
 
 import java.util.List;
 
-import org.zkoss.ganttz.util.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 
 /**
  * Converts a domain object into a {@link ITaskFundamentalProperties}

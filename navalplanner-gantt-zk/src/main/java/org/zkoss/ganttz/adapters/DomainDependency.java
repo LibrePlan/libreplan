@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.zkoss.ganttz.util.DependencyBean;
-import org.zkoss.ganttz.util.DependencyType;
+import org.zkoss.ganttz.data.DependencyBean;
+import org.zkoss.ganttz.data.DependencyType;
 
 /**
  * Represents a dependency in the domain.

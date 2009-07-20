@@ -11,13 +11,13 @@ import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
+import org.zkoss.ganttz.data.DependencyBean;
+import org.zkoss.ganttz.data.GanttDiagramGraph;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.TaskBean;
+import org.zkoss.ganttz.data.TaskContainerBean;
+import org.zkoss.ganttz.data.TaskLeafBean;
 import org.zkoss.ganttz.extensions.IContext;
-import org.zkoss.ganttz.util.DependencyBean;
-import org.zkoss.ganttz.util.GanttDiagramGraph;
-import org.zkoss.ganttz.util.ITaskFundamentalProperties;
-import org.zkoss.ganttz.util.TaskBean;
-import org.zkoss.ganttz.util.TaskContainerBean;
-import org.zkoss.ganttz.util.TaskLeafBean;
 
 public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 

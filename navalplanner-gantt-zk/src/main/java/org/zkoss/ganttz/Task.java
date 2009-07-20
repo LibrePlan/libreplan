@@ -17,8 +17,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.zkoss.ganttz.util.TaskBean;
-import org.zkoss.ganttz.util.TaskContainerBean;
+import org.zkoss.ganttz.data.TaskBean;
+import org.zkoss.ganttz.data.TaskContainerBean;
 import org.zkoss.lang.Objects;
 import org.zkoss.xml.HTMLs;
 import org.zkoss.zk.au.AuRequest;

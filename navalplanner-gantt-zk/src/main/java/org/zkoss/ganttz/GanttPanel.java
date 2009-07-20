@@ -1,6 +1,6 @@
 package org.zkoss.ganttz;
 
-import org.zkoss.ganttz.util.GanttDiagramGraph;
+import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.Command;
 import org.zkoss.zk.au.ComponentCommand;

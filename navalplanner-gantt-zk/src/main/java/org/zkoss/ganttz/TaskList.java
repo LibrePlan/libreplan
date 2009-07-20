@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.zkoss.ganttz.util.DependencyBean;
+import org.zkoss.ganttz.data.DependencyBean;
+import org.zkoss.ganttz.data.TaskBean;
 import org.zkoss.ganttz.util.MenuBuilder;
-import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;

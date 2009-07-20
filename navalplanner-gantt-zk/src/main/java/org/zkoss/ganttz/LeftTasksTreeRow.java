@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zkoss.ganttz.util.TaskBean;
+import org.zkoss.ganttz.data.TaskBean;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
