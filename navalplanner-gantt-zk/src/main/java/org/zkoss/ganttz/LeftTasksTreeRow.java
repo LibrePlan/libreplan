@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zkoss.ganttz.data.TaskBean;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -31,7 +31,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private static final Log LOG = LogFactory.getLog(LeftTasksTreeRow.class);
 
-    private final TaskBean taskBean;
+    private final Task task;
 
     private Textbox nameBox;
 
@@ -47,21 +47,21 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private final ILeftTasksTreeNavigator leftTasksTreeNavigator;
 
-    public static LeftTasksTreeRow create(TaskBean bean,
+    public static LeftTasksTreeRow create(Task bean,
             ILeftTasksTreeNavigator taskDetailnavigator) {
         return new LeftTasksTreeRow(bean, taskDetailnavigator);
     }
 
-    private LeftTasksTreeRow(TaskBean task,
+    private LeftTasksTreeRow(Task task,
             ILeftTasksTreeNavigator leftTasksTreeNavigator) {
-        this.taskBean = task;
+        this.task = task;
         this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales
                 .getCurrent());
         this.leftTasksTreeNavigator = leftTasksTreeNavigator;
     }
 
-    public TaskBean getTaskBean() {
-        return taskBean;
+    public Task getTask() {
+        return task;
     }
 
     public Textbox getNameBox() {
@@ -91,8 +91,8 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         this.endDateBox.setFormat("dd/MM/yyyy");
     }
 
-    public TaskBean getData() {
-        return taskBean;
+    public Task getData() {
+        return task;
     }
 
     /**
@@ -216,7 +216,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         findComponents((Treerow) component);
         registerListeners();
         updateComponents();
-        taskBean
+        task
                 .addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
 
                     @Override
@@ -333,19 +333,19 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         Date begin = getStartDateBox().getValue();
         Date end = getEndDateBox().getValue();
         if (end.before(begin)) {
-            end = new Date(begin.getTime() + taskBean.getLengthMilliseconds());
+            end = new Date(begin.getTime() + task.getLengthMilliseconds());
         }
-        taskBean.setName(getNameBox().getValue());
-        taskBean.setBeginDate(begin);
-        taskBean.setEndDate(end);
+        task.setName(getNameBox().getValue());
+        task.setBeginDate(begin);
+        task.setEndDate(end);
     }
 
     private void updateComponents() {
-        getNameBox().setValue(taskBean.getName());
-        getStartDateBox().setValue(taskBean.getBeginDate());
-        getEndDateBox().setValue(taskBean.getEndDate());
-        getStartDateTextBox().setValue(asString(taskBean.getBeginDate()));
-        getEndDateTextBox().setValue(asString(taskBean.getEndDate()));
+        getNameBox().setValue(task.getName());
+        getStartDateBox().setValue(task.getBeginDate());
+        getEndDateBox().setValue(task.getEndDate());
+        getStartDateTextBox().setValue(asString(task.getBeginDate()));
+        getEndDateTextBox().setValue(asString(task.getEndDate()));
     }
 
     private String asString(Date date) {

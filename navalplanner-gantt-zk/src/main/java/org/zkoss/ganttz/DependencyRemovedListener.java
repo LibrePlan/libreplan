@@ -12,6 +12,6 @@ package org.zkoss.ganttz;
  */
 public interface DependencyRemovedListener {
 
-    public void dependenceRemoved(Dependency dependency);
+    public void dependenceRemoved(DependencyComponent dependencyComponent);
 
 }

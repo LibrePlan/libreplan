@@ -9,25 +9,25 @@ import java.util.Date;
  * Created at Apr 24, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class DependencyBean {
+public class Dependency {
 
     private enum Calculation {
         START, END;
     }
 
-    public static Date calculateStart(TaskBean origin, Date current,
-            Collection<? extends DependencyBean> dependencies) {
+    public static Date calculateStart(Task origin, Date current,
+            Collection<? extends Dependency> dependencies) {
         return apply(Calculation.START, origin, current, dependencies);
     }
 
-    public static Date calculateEnd(TaskBean origin, Date current,
-            Collection<? extends DependencyBean> depencencies) {
+    public static Date calculateEnd(Task origin, Date current,
+            Collection<? extends Dependency> depencencies) {
         return apply(Calculation.END, origin, current, depencencies);
     }
 
-    private static Date apply(Calculation calculation, TaskBean origin,
-            Date current, Collection<? extends DependencyBean> dependencies) {
-        for (DependencyBean dependency : dependencies) {
+    private static Date apply(Calculation calculation, Task origin,
+            Date current, Collection<? extends Dependency> dependencies) {
+        for (Dependency dependency : dependencies) {
             switch (calculation) {
             case START:
                 current = dependency.getType().calculateStartDestinyTask(
@@ -45,15 +45,15 @@ public class DependencyBean {
         return current;
     }
 
-    private final TaskBean source;
+    private final Task source;
 
-    private final TaskBean destination;
+    private final Task destination;
 
     private final DependencyType type;
 
     private final boolean visible;
 
-    public DependencyBean(TaskBean source, TaskBean destination,
+    public Dependency(Task source, Task destination,
             DependencyType type, boolean visible) {
         if (source == null)
             throw new IllegalArgumentException("source cannot be null");
@@ -67,7 +67,7 @@ public class DependencyBean {
         this.visible = visible;
     }
 
-    public DependencyBean(TaskBean source, TaskBean destination,
+    public Dependency(Task source, Task destination,
             DependencyType type) {
         this(source, destination, type, true);
     }
@@ -90,7 +90,7 @@ public class DependencyBean {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        DependencyBean other = (DependencyBean) obj;
+        Dependency other = (Dependency) obj;
         if (destination == null) {
             if (other.destination != null)
                 return false;
@@ -104,11 +104,11 @@ public class DependencyBean {
         return true;
     }
 
-    public TaskBean getSource() {
+    public Task getSource() {
         return source;
     }
 
-    public TaskBean getDestination() {
+    public Task getDestination() {
         return destination;
     }
 

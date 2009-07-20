@@ -8,7 +8,7 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.zkoss.ganttz.data.DependencyBean;
+import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -19,18 +19,18 @@ import org.zkoss.zul.impl.XulElement;
  * @author Francisco Javier Moran Rúa
  *
  */
-public class Dependency extends XulElement implements AfterCompose {
+public class DependencyComponent extends XulElement implements AfterCompose {
 
-    private Task source;
+    private TaskComponent source;
 
-    private Task destination;
+    private TaskComponent destination;
 
-    public Dependency() {
+    public DependencyComponent() {
 
 
     }
 
-    public Dependency(Task source, Task destination) {
+    public DependencyComponent(TaskComponent source, TaskComponent destination) {
         this();
         if (source == null)
             throw new IllegalArgumentException("source cannot be null");
@@ -49,8 +49,8 @@ public class Dependency extends XulElement implements AfterCompose {
                 redrawDependency();
             }
         };
-        this.source.getTaskBean().addFundamentalPropertiesChangeListener(listener);
-        this.destination.getTaskBean().addFundamentalPropertiesChangeListener(listener);
+        this.source.getTask().addFundamentalPropertiesChangeListener(listener);
+        this.destination.getTask().addFundamentalPropertiesChangeListener(listener);
     }
 
     /**
@@ -61,12 +61,12 @@ public class Dependency extends XulElement implements AfterCompose {
     }
 
     public void setIdTaskOrig(String idTaskOrig) {
-        this.source = findTask(idTaskOrig);
+        this.source = findTaskComponent(idTaskOrig);
 
     }
 
-    private Task findTask(String idTaskOrig) {
-        return (Task) getFellow(idTaskOrig);
+    private TaskComponent findTaskComponent(String idTaskOrig) {
+        return (TaskComponent) getFellow(idTaskOrig);
     }
 
     /**
@@ -77,7 +77,7 @@ public class Dependency extends XulElement implements AfterCompose {
     }
 
     public void setIdTaskEnd(String idTaskEnd) {
-        this.destination = findTask(idTaskEnd);
+        this.destination = findTaskComponent(idTaskEnd);
     }
 
     public void zoomChanged() {
@@ -88,21 +88,21 @@ public class Dependency extends XulElement implements AfterCompose {
         response("zoomChanged", new AuInvoke(this, "draw"));
     }
 
-    public boolean contains(Task task) {
-        return getSource().equals(task) || getDestination().equals(task);
+    public boolean contains(TaskComponent taskComponent) {
+        return getSource().equals(taskComponent) || getDestination().equals(taskComponent);
     }
 
-    public Task getSource() {
+    public TaskComponent getSource() {
         return source;
     }
 
-    public Task getDestination() {
+    public TaskComponent getDestination() {
         return destination;
     }
 
-    public DependencyBean getDependencyBean() {
-        return new DependencyBean(source.getTaskBean(), destination
-                .getTaskBean(), DependencyType.END_START);
+    public Dependency getDependency() {
+        return new Dependency(source.getTask(), destination
+                .getTask(), DependencyType.END_START);
     }
 
 }

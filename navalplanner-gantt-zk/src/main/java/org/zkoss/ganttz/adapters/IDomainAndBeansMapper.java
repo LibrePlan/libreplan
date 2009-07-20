@@ -1,6 +1,6 @@
 package org.zkoss.ganttz.adapters;
 
-import org.zkoss.ganttz.data.TaskBean;
+import org.zkoss.ganttz.data.Task;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -8,21 +8,21 @@ import org.zkoss.ganttz.data.TaskBean;
 public interface IDomainAndBeansMapper<T> {
 
     /**
-     * @param taskBean
+     * @param task
      * @return the associated domain object
      * @throws IllegalArgumentException
      *             if <code>taskBean</code> is null or not domain object found
      */
-    T findAssociatedDomainObject(TaskBean taskBean)
+    T findAssociatedDomainObject(Task task)
             throws IllegalArgumentException;
 
     /**
      * @param domainObject
-     * @return the associated {@link TaskBean}
+     * @return the associated {@link Task}
      * @throws IllegalArgumentException
-     *             if <code>domainObject</code> is null or not {@link TaskBean}
+     *             if <code>domainObject</code> is null or not {@link Task}
      *             is found
      */
-    TaskBean findAssociatedBean(T domainObject) throws IllegalArgumentException;
+    Task findAssociatedBean(T domainObject) throws IllegalArgumentException;
 
 }

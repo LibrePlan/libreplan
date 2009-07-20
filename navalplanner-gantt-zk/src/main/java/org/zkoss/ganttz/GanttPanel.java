@@ -32,8 +32,8 @@ public class GanttPanel extends XulElement implements AfterCompose {
     @Override
     public void afterCompose() {
         tasksLists.afterCompose();
-        dependencyList.setDependencies(tasksLists
-                .asDependencies(diagramGraph.getVisibleDependencies()));
+        dependencyList.setDependencyComponents(tasksLists
+                .asDependencyComponents(diagramGraph.getVisibleDependencies()));
         timeTracker.afterCompose();
         dependencyList.afterCompose();
     }

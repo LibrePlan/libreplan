@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.zkoss.ganttz.data.DependencyBean;
-import org.zkoss.ganttz.data.TaskBean;
+import org.zkoss.ganttz.data.Dependency;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
@@ -46,66 +46,66 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private Menupopup contextMenu;
 
-    private List<TaskBean> originalTasks;
+    private List<Task> originalTasks;
 
     private final TaskEditFormComposer taskEditFormComposer;
 
-    public TaskList(TaskEditFormComposer formComposer, List<TaskBean> tasks) {
+    public TaskList(TaskEditFormComposer formComposer, List<Task> tasks) {
         this.taskEditFormComposer = formComposer;
         this.originalTasks = tasks;
     }
 
     public static TaskList createFor(TaskEditFormComposer formComposer,
-            List<TaskBean> tasks) {
+            List<Task> tasks) {
         TaskList result = new TaskList(formComposer, tasks);
         return result;
     }
 
-    public List<Dependency> asDependencies(List<DependencyBean> dependencies) {
+    public List<DependencyComponent> asDependencyComponents(List<Dependency> dependencies) {
         List<? extends Object> children = getChildren();
-        List<Task> tasks = Planner.findComponentsOfType(Task.class, children);
-        Map<TaskBean, Task> taskByTaskBean = new HashMap<TaskBean, Task>();
-        for (Task task : tasks) {
-            task.publishTasks(taskByTaskBean);
+        List<TaskComponent> taskComponents = Planner.findComponentsOfType(TaskComponent.class, children);
+        Map<Task, TaskComponent> taskComponentByTask = new HashMap<Task, TaskComponent>();
+        for (TaskComponent taskComponent : taskComponents) {
+            taskComponent.publishTaskComponents(taskComponentByTask);
         }
-        List<Dependency> result = new ArrayList<Dependency>();
-        for (DependencyBean dependencyBean : dependencies) {
-            result.add(new Dependency(taskByTaskBean.get(dependencyBean
-                    .getSource()), taskByTaskBean.get(dependencyBean
+        List<DependencyComponent> result = new ArrayList<DependencyComponent>();
+        for (Dependency dependency : dependencies) {
+            result.add(new DependencyComponent(taskComponentByTask.get(dependency
+                    .getSource()), taskComponentByTask.get(dependency
                     .getDestination())));
         }
         return result;
     }
 
-    public void addTask(TaskBean newTask) {
-        addTask(Task.asTask(newTask, this), true);
+    public void addTask(Task newTask) {
+        addTaskComponent(TaskComponent.asTaskComponent(newTask, this), true);
     }
 
-    public synchronized void addTask(Component afterThis, final Task task,
+    public synchronized void addTaskComponent(Component afterThis, final TaskComponent taskComponent,
             boolean relocate) {
-        insertBefore(task, afterThis == null ? null : afterThis
+        insertBefore(taskComponent, afterThis == null ? null : afterThis
                 .getNextSibling());
-        addContextMenu(task);
-        addListenerForTaskEditForm(task);
+        addContextMenu(taskComponent);
+        addListenerForTaskComponentEditForm(taskComponent);
         ListIterator<WeakReference<DependencyAddedListener>> iterator = listeners
                 .listIterator();
         while (iterator.hasNext()) {
             DependencyAddedListener listener = iterator.next().get();
             if (listener != null) {
-                task.addDependencyListener(listener);
+                taskComponent.addDependencyListener(listener);
             } else {
                 iterator.remove();
             }
         }
-        task.afterCompose();
+        taskComponent.afterCompose();
         if (relocate) {
-            response(null, new AuInvoke(task, "relocateAfterAdding"));
+            response(null, new AuInvoke(taskComponent, "relocateAfterAdding"));
             setHeight(getHeight());// forcing smart update
             adjustZoomColumnsHeight();
             getGanttPanel().getDependencyList().redrawDependencies();
         }
-        if (task instanceof TaskContainer) {
-            TaskContainer container = (TaskContainer) task;
+        if (taskComponent instanceof TaskContainerComponent) {
+            TaskContainerComponent container = (TaskContainerComponent) taskComponent;
             if (container.isExpanded()) {
                 container.open();
             }
@@ -113,27 +113,27 @@ public class TaskList extends XulElement implements AfterCompose {
 
     }
 
-    public synchronized void addTask(final Task task, boolean relocate) {
-        addTask(null, task, relocate);
+    public synchronized void addTaskComponent(final TaskComponent taskComponent, boolean relocate) {
+        addTaskComponent(null, taskComponent, relocate);
     }
 
-    private void addListenerForTaskEditForm(final Task task) {
-        task.addEventListener("onDoubleClick", new EventListener() {
+    private void addListenerForTaskComponentEditForm(final TaskComponent taskComponent) {
+        taskComponent.addEventListener("onDoubleClick", new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                taskEditFormComposer.showEditFormFor(task);
+                taskEditFormComposer.showEditFormFor(taskComponent);
             }
         });
     }
 
-    private void addContextMenu(final Task task) {
-        task.addEventListener("onRightClick", new EventListener() {
+    private void addContextMenu(final TaskComponent taskComponent) {
+        taskComponent.addEventListener("onRightClick", new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
                 try {
-                    getContextMenuForTasks().open(task);
+                    getContextMenuForTasks().open(taskComponent);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -145,14 +145,14 @@ public class TaskList extends XulElement implements AfterCompose {
         taskRemovedListeners.addListener(listener);
     }
 
-    public void removeTask(final Task task) {
-        removeChild(task);
-        task.detach();
+    public void removeTaskComponent(final TaskComponent taskComponent) {
+        removeChild(taskComponent);
+        taskComponent.detach();
         taskRemovedListeners
                 .fireEvent(new ListenerNotification<TaskRemovedListener>() {
                     @Override
                     public void doNotify(TaskRemovedListener listener) {
-                        listener.taskRemoved(task);
+                        listener.taskComponentRemoved(taskComponent);
                     }
                 });
     }
@@ -170,18 +170,18 @@ public class TaskList extends XulElement implements AfterCompose {
         return getTimeTracker().getMapper();
     }
 
-    private List<Task> getTasks() {
-        ArrayList<Task> result = new ArrayList<Task>();
+    private List<TaskComponent> getTaskComponents() {
+        ArrayList<TaskComponent> result = new ArrayList<TaskComponent>();
         for (Object child : getChildren()) {
-            if (child instanceof Task) {
-                result.add((Task) child);
+            if (child instanceof TaskComponent) {
+                result.add((TaskComponent) child);
             }
         }
         return result;
     }
 
     private int getTasksNumber() {
-        return getTasks().size();
+        return getTaskComponents().size();
     }
 
     public void addTaskRemovedListener(TaskRemovedListener taskRemovedListener) {
@@ -190,22 +190,22 @@ public class TaskList extends XulElement implements AfterCompose {
 
     public void addDependencyListener(DependencyAddedListener listener) {
         listeners.add(new WeakReference<DependencyAddedListener>(listener));
-        for (Task task : getTasks()) {
-            task.addDependencyListener(listener);
+        for (TaskComponent taskComponent : getTaskComponents()) {
+            taskComponent.addDependencyListener(listener);
         }
     }
 
     @Override
     public void afterCompose() {
-        for (TaskBean taskBean : originalTasks) {
-            addTask(Task.asTask(taskBean, this), false);
+        for (Task task : originalTasks) {
+            addTaskComponent(TaskComponent.asTaskComponent(task, this), false);
         }
         if (zoomLevelChangedListener == null) {
             zoomLevelChangedListener = new ZoomLevelChangedListener() {
                 @Override
                 public void zoomLevelChanged(ZoomLevel detailLevel) {
-                    for (Task task : getTasks()) {
-                        task.zoomChanged();
+                    for (TaskComponent taskComponent : getTaskComponents()) {
+                        taskComponent.zoomChanged();
                     }
                     adjustZoomColumnsHeight();
                 }
@@ -216,16 +216,16 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private Menupopup getContextMenuForTasks() {
         if (contextMenu == null) {
-            contextMenu = MenuBuilder.on(getPage(), getTasks()).item(
-                    "Add Dependency", new ItemAction<Task>() {
+            contextMenu = MenuBuilder.on(getPage(), getTaskComponents()).item(
+                    "Add Dependency", new ItemAction<TaskComponent>() {
 
                         @Override
-                        public void onEvent(Task choosen, Event event) {
+                        public void onEvent(TaskComponent choosen, Event event) {
                             choosen.addDependency();
                         }
-                    }).item("Erase", new ItemAction<Task>() {
+                    }).item("Erase", new ItemAction<TaskComponent>() {
                 @Override
-                public void onEvent(Task choosen, Event event) {
+                public void onEvent(TaskComponent choosen, Event event) {
                     choosen.remove();
                 }
             }).createWithoutSettingContext();
@@ -249,9 +249,9 @@ public class TaskList extends XulElement implements AfterCompose {
         response("adjust_height", new AuInvoke(TaskList.this, "adjust_height"));
     }
 
-    public void hideTask(Task subtask) {
-        removeChild(subtask);
-        subtask.setParent(null);
+    public void hideTaskComponent(TaskComponent subtaskComponent) {
+        removeChild(subtaskComponent);
+        subtaskComponent.setParent(null);
     }
 
     public void redrawDependencies() {

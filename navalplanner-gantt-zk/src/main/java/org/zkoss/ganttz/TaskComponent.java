@@ -17,8 +17,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.zkoss.ganttz.data.TaskBean;
-import org.zkoss.ganttz.data.TaskContainerBean;
+import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.lang.Objects;
 import org.zkoss.xml.HTMLs;
 import org.zkoss.zk.au.AuRequest;
@@ -36,7 +36,7 @@ import org.zkoss.zul.Div;
 /**
  * @author javi
  */
-public class Task extends Div implements AfterCompose {
+public class TaskComponent extends Div implements AfterCompose {
 
     private static final int HEIGHT_PER_TASK = 10;
     private static final String STANDARD_TASK_COLOR = "#007bbe";
@@ -58,7 +58,7 @@ public class Task extends Div implements AfterCompose {
 
         protected void process(AuRequest request) {
 
-            final Task ta = (Task) request.getComponent();
+            final TaskComponent ta = (TaskComponent) request.getComponent();
 
             if (ta == null) {
                 throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED,
@@ -84,7 +84,7 @@ public class Task extends Div implements AfterCompose {
 
         protected void process(AuRequest request) {
 
-            final Task ta = (Task) request.getComponent();
+            final TaskComponent ta = (TaskComponent) request.getComponent();
 
             if (ta == null) {
                 throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED,
@@ -109,9 +109,9 @@ public class Task extends Div implements AfterCompose {
 
         protected void process(AuRequest request) {
 
-            final Task task = (Task) request.getComponent();
+            final TaskComponent taskComponent = (TaskComponent) request.getComponent();
 
-            if (task == null) {
+            if (taskComponent == null) {
                 throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED,
                         this);
             }
@@ -122,23 +122,23 @@ public class Task extends Div implements AfterCompose {
                 throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
                         new Object[] { Objects.toString(requestData), this });
             } else {
-                task.doAddDependency(requestData[0]);
-                Events.postEvent(new Event(getId(), task, request.getData()));
+                taskComponent.doAddDependency(requestData[0]);
+                Events.postEvent(new Event(getId(), taskComponent, request.getData()));
             }
         }
     };
 
-    public static Task asTask(TaskBean taskBean, TaskList taskList) {
-        if (taskBean.isContainer()) {
-            return TaskContainer.asTask((TaskContainerBean) taskBean, taskList);
+    public static TaskComponent asTaskComponent(Task task, TaskList taskList) {
+        if (task.isContainer()) {
+            return TaskContainerComponent.asTask((TaskContainer) task, taskList);
         }
-        return new Task(taskBean);
+        return new TaskComponent(task);
     }
 
-    public Task(TaskBean taskBean) {
+    public TaskComponent(Task task) {
         setHeight(HEIGHT_PER_TASK + "px");
         setContext("idContextMenuTaskAssigment");
-        this.taskBean = taskBean;
+        this.task = task;
         setColor(STANDARD_TASK_COLOR);
         setId(UUID.randomUUID().toString());
     }
@@ -165,7 +165,7 @@ public class Task extends Div implements AfterCompose {
                 }
             };
         }
-        this.taskBean
+        this.task
                 .addFundamentalPropertiesChangeListener(propertiesListener);
         updateClass();
     }
@@ -174,15 +174,15 @@ public class Task extends Div implements AfterCompose {
 
     private List<WeakReference<DependencyAddedListener>> dependencyListeners = new LinkedList<WeakReference<DependencyAddedListener>>();
 
-    private final TaskBean taskBean;
+    private final Task task;
     private PropertyChangeListener propertiesListener;
 
-    public TaskBean getTaskBean() {
-        return taskBean;
+    public Task getTask() {
+        return task;
     }
 
     public String getTaskName() {
-        return taskBean.getName();
+        return task.getName();
     }
 
     public String getLength() {
@@ -194,7 +194,7 @@ public class Task extends Div implements AfterCompose {
                 listener));
     }
 
-    private void fireDependenceAdded(Dependency dependency) {
+    private void fireDependenceAdded(DependencyComponent dependencyComponent) {
         ArrayList<DependencyAddedListener> active = new ArrayList<DependencyAddedListener>();
         synchronized (this) {
             ListIterator<WeakReference<DependencyAddedListener>> iterator = dependencyListeners
@@ -210,7 +210,7 @@ public class Task extends Div implements AfterCompose {
             }
         }
         for (DependencyAddedListener listener : active) {
-            listener.dependenceAdded(dependency);
+            listener.dependenceAdded(dependencyComponent);
         }
     }
 
@@ -230,19 +230,19 @@ public class Task extends Div implements AfterCompose {
 
     // Command action to do
     void doUpdatePosition(String leftX, String topY) {
-        this.taskBean.setBeginDate(getMapper().toDate(stripPx(leftX)));
+        this.task.setBeginDate(getMapper().toDate(stripPx(leftX)));
     }
 
     void doUpdateSize(String size) {
         int pixels = stripPx(size);
-        this.taskBean.setLengthMilliseconds(getMapper().toMilliseconds(pixels));
+        this.task.setLengthMilliseconds(getMapper().toMilliseconds(pixels));
     }
 
     void doAddDependency(String destinyTaskId) {
-        Dependency dependency = new Dependency(this,
-                ((Task) getFellow(destinyTaskId)));
-        if (getPlanner().canAddDependency(dependency.getDependencyBean())) {
-            fireDependenceAdded(dependency);
+        DependencyComponent dependencyComponent = new DependencyComponent(this,
+                ((TaskComponent) getFellow(destinyTaskId)));
+        if (getPlanner().canAddDependency(dependencyComponent.getDependency())) {
+            fireDependenceAdded(dependencyComponent);
         }
     }
 
@@ -312,11 +312,11 @@ public class Task extends Div implements AfterCompose {
 
     private void updateProperties() {
         setLeft("0");
-        setLeft(getMapper().toPixels(this.taskBean.getBeginDate()) + "px");
+        setLeft(getMapper().toPixels(this.task.getBeginDate()) + "px");
         setWidth("0");
-        setWidth(getMapper().toPixels(this.taskBean.getLengthMilliseconds())
+        setWidth(getMapper().toPixels(this.task.getLengthMilliseconds())
                 + "px");
-        smartUpdate("name", this.taskBean.getName());
+        smartUpdate("name", this.task.getName());
         DependencyList dependencyList = getDependencyList();
         if (dependencyList != null) {
             dependencyList.redrawDependenciesConnectedTo(this);
@@ -332,15 +332,15 @@ public class Task extends Div implements AfterCompose {
     }
 
     public void remove() {
-        getTaskList().removeTask(this);
+        getTaskList().removeTaskComponent(this);
     }
 
-    void publishTasks(Map<TaskBean, Task> resultAccumulated) {
-        resultAccumulated.put(getTaskBean(), this);
+    void publishTaskComponents(Map<Task, TaskComponent> resultAccumulated) {
+        resultAccumulated.put(getTask(), this);
         publishDescendants(resultAccumulated);
     }
 
-    protected void publishDescendants(Map<TaskBean, Task> resultAccumulated) {
+    protected void publishDescendants(Map<Task, TaskComponent> resultAccumulated) {
 
     }
 }

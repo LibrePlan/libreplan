@@ -13,9 +13,9 @@ import org.zkoss.ganttz.data.DefaultFundamentalProperties;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
-import org.zkoss.ganttz.data.TaskBean;
-import org.zkoss.ganttz.data.TaskContainerBean;
-import org.zkoss.ganttz.data.TaskLeafBean;
+import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.data.TaskContainer;
+import org.zkoss.ganttz.data.TaskLeaf;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.IContext;
 
@@ -135,8 +135,8 @@ public class DataForPlanner {
                 }, navigator, list);
     }
 
-    private TaskContainerBean createContainer(String name, Date start, Date end) {
-        TaskContainerBean container = new TaskContainerBean();
+    private TaskContainer createContainer(String name, Date start, Date end) {
+        TaskContainer container = new TaskContainer();
         container.setBeginDate(start);
         container.setEndDate(end);
         container.setName(name);
@@ -150,7 +150,7 @@ public class DataForPlanner {
     }
 
     private void addNewTask(IContext<ITaskFundamentalProperties> context) {
-        TaskBean newTask = new TaskLeafBean();
+        Task newTask = new TaskLeaf();
         newTask.setName("Nova Tarefa");
         newTask.setBeginDate(new Date());
         newTask.setEndDate(twoMonthsLater(newTask.getBeginDate()));

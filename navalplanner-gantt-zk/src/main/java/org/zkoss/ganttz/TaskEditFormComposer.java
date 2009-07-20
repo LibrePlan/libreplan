@@ -3,7 +3,7 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.zkoss.ganttz.data.TaskBean;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -19,7 +19,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
     private Popup popUp;
 
-    private TaskBean currentTask;
+    private Task currentTask;
 
     private Textbox name;
 
@@ -37,10 +37,10 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         popUp = (Popup) comp;
     }
 
-    public void showEditFormFor(Task task) {
+    public void showEditFormFor(TaskComponent taskComponent) {
         cleanListener();
-        this.currentTask = task.getTaskBean();
-        popUp.open(task, "after_start");
+        this.currentTask = taskComponent.getTask();
+        popUp.open(taskComponent, "after_start");
         propertyChangeListener = new PropertyChangeListener() {
 
             @Override
@@ -61,7 +61,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         }
     }
 
-    private void updateComponentValuesForTask(TaskBean currentTask) {
+    private void updateComponentValuesForTask(Task currentTask) {
         // popUp.setTitle(currentTask.getName());
         name.setValue(currentTask.getName());
         startDateBox.setValue(currentTask.getBeginDate());

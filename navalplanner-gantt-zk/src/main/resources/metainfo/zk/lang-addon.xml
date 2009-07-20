@@ -43,7 +43,7 @@
         
     <component>
         <component-name>task</component-name>
-        <component-class>org.zkoss.ganttz.Task</component-class>
+        <component-class>org.zkoss.ganttz.TaskComponent</component-class>
         <mold>
             <mold-name>default</mold-name>
             <mold-uri>~./ganttz/task.dsp</mold-uri>
@@ -52,7 +52,7 @@
 
     <component>
         <component-name>taskcontainer</component-name>
-        <component-class>org.zkoss.ganttz.TaskContainer</component-class>
+        <component-class>org.zkoss.ganttz.TaskContainerComponent</component-class>
         <mold>
             <mold-name>default</mold-name>
             <mold-uri>~./ganttz/taskcontainer.dsp</mold-uri>
@@ -79,7 +79,7 @@
 
      <component>
         <component-name>dependency</component-name>
-        <component-class>org.zkoss.ganttz.Dependency</component-class>
+        <component-class>org.zkoss.ganttz.DependencyComponent</component-class>
         <mold>
             <mold-name>default</mold-name>
             <mold-uri>~./ganttz/dependency.dsp</mold-uri>

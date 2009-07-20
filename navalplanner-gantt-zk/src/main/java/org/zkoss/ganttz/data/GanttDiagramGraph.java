@@ -12,42 +12,42 @@ import java.util.Set;
 
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
-import org.zkoss.ganttz.Dependency;
+import org.zkoss.ganttz.DependencyComponent;
 
 /**
- * This class contains a graph with the {@link TaskBean tasks} as vertexes and
- * the {@link DependencyBean dependency} as arcs. It enforces the rules embodied
+ * This class contains a graph with the {@link Task tasks} as vertexes and
+ * the {@link Dependency dependency} as arcs. It enforces the rules embodied
  * in the dependencies and in the duration of the tasks using listeners. <br/>
  * Created at Apr 24, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class GanttDiagramGraph {
 
-    private final DirectedGraph<TaskBean, DependencyBean> graph = new SimpleDirectedGraph<TaskBean, DependencyBean>(
-            DependencyBean.class);
+    private final DirectedGraph<Task, Dependency> graph = new SimpleDirectedGraph<Task, Dependency>(
+            Dependency.class);
 
-    private Map<TaskBean, DependencyRulesEnforcer> rulesEnforcersByTask = new HashMap<TaskBean, DependencyRulesEnforcer>();
+    private Map<Task, DependencyRulesEnforcer> rulesEnforcersByTask = new HashMap<Task, DependencyRulesEnforcer>();
 
-    private List<TaskBean> topLevelTasks = new ArrayList<TaskBean>();
+    private List<Task> topLevelTasks = new ArrayList<Task>();
 
-    private List<DependencyRulesEnforcer> getOutgoing(TaskBean task) {
+    private List<DependencyRulesEnforcer> getOutgoing(Task task) {
         ArrayList<DependencyRulesEnforcer> result = new ArrayList<DependencyRulesEnforcer>();
-        for (DependencyBean dependencyBean : graph.outgoingEdgesOf(task)) {
+        for (Dependency dependency : graph.outgoingEdgesOf(task)) {
             result.add(rulesEnforcersByTask
-                    .get(dependencyBean.getDestination()));
+                    .get(dependency.getDestination()));
         }
         return result;
     }
 
     private class ParentShrinkingEnforcer {
 
-        private final TaskContainerBean container;
+        private final TaskContainer container;
 
-        private ParentShrinkingEnforcer(final TaskContainerBean container) {
+        private ParentShrinkingEnforcer(final TaskContainer container) {
             if (container == null)
                 throw new IllegalArgumentException("container cannot be null");
             this.container = container;
-            for (TaskBean subtask : this.container.getTasks()) {
+            for (Task subtask : this.container.getTasks()) {
                 subtask
                         .addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
 
@@ -67,9 +67,9 @@ public class GanttDiagramGraph {
     }
 
     private class DependencyRulesEnforcer {
-        private final TaskBean task;
+        private final Task task;
 
-        private DependencyRulesEnforcer(TaskBean task) {
+        private DependencyRulesEnforcer(Task task) {
             if (task == null)
                 throw new IllegalArgumentException("task cannot be null");
             this.task = task;
@@ -85,14 +85,14 @@ public class GanttDiagramGraph {
         }
 
         void update() {
-            Set<DependencyBean> incoming = graph.incomingEdgesOf(task);
+            Set<Dependency> incoming = graph.incomingEdgesOf(task);
             Date beginDate = task.getBeginDate();
-            Date newStart = DependencyBean.calculateStart(task, beginDate,
+            Date newStart = Dependency.calculateStart(task, beginDate,
                     incoming);
             if (!beginDate.equals(newStart))
                 task.setBeginDate(newStart);
             Date endDate = task.getEndDate();
-            Date newEnd = DependencyBean.calculateEnd(task, endDate, incoming);
+            Date newEnd = Dependency.calculateEnd(task, endDate, incoming);
             if (!endDate.equals(newEnd)) {
                 task.setEndDate(newEnd);
             }
@@ -106,34 +106,34 @@ public class GanttDiagramGraph {
         }
     }
 
-    public void addTopLevel(TaskBean task) {
+    public void addTopLevel(Task task) {
         topLevelTasks.add(task);
         addTask(task);
     }
 
-    private void addTask(TaskBean task) {
+    private void addTask(Task task) {
         graph.addVertex(task);
         rulesEnforcersByTask.put(task, new DependencyRulesEnforcer(task));
         if (task.isContainer()) {
-            new ParentShrinkingEnforcer((TaskContainerBean) task);
-            for (TaskBean child : task.getTasks()) {
+            new ParentShrinkingEnforcer((TaskContainer) task);
+            for (Task child : task.getTasks()) {
                 addTask(child);
-                add(new DependencyBean(child, task, DependencyType.END_END,
+                add(new Dependency(child, task, DependencyType.END_END,
                         false));
-                add(new DependencyBean(task, child, DependencyType.START_START,
+                add(new Dependency(task, child, DependencyType.START_START,
                         false));
             }
         }
     }
 
-    public void remove(TaskBean task) {
+    public void remove(Task task) {
         List<DependencyRulesEnforcer> outgoing = getOutgoing(task);
         graph.removeVertex(task);
         rulesEnforcersByTask.remove(task);
         update(outgoing);
     }
 
-    private void updateOutgoing(TaskBean task) {
+    private void updateOutgoing(Task task) {
         update(getOutgoing(task));
     }
 
@@ -143,39 +143,39 @@ public class GanttDiagramGraph {
         }
     }
 
-    public void remove(Dependency dependency) {
-        graph.removeEdge(dependency.getDependencyBean());
-        TaskBean destination = dependency.getDependencyBean().getDestination();
+    public void remove(DependencyComponent dependencyComponent) {
+        graph.removeEdge(dependencyComponent.getDependency());
+        Task destination = dependencyComponent.getDependency().getDestination();
         rulesEnforcersByTask.get(destination).update();
     }
 
-    public void add(DependencyBean dependency) {
-        TaskBean source = dependency.getSource();
-        TaskBean destination = dependency.getDestination();
+    public void add(Dependency dependency) {
+        Task source = dependency.getSource();
+        Task destination = dependency.getDestination();
         graph.addEdge(source, destination, dependency);
         getEnforcer(destination).update();
     }
 
-    private DependencyRulesEnforcer getEnforcer(TaskBean destination) {
+    private DependencyRulesEnforcer getEnforcer(Task destination) {
         return rulesEnforcersByTask.get(destination);
     }
 
-    public List<TaskBean> getTasks() {
-        return new ArrayList<TaskBean>(graph.vertexSet());
+    public List<Task> getTasks() {
+        return new ArrayList<Task>(graph.vertexSet());
     }
 
-    public List<DependencyBean> getVisibleDependencies() {
-        Set<DependencyBean> edgeSet = graph.edgeSet();
-        ArrayList<DependencyBean> result = new ArrayList<DependencyBean>();
-        for (DependencyBean dependencyBean : edgeSet) {
-            if (dependencyBean.isVisible()) {
-                result.add(dependencyBean);
+    public List<Dependency> getVisibleDependencies() {
+        Set<Dependency> edgeSet = graph.edgeSet();
+        ArrayList<Dependency> result = new ArrayList<Dependency>();
+        for (Dependency dependency : edgeSet) {
+            if (dependency.isVisible()) {
+                result.add(dependency);
             }
         }
         return result;
     }
 
-    public List<TaskBean> getTopLevelTasks() {
+    public List<Task> getTopLevelTasks() {
         return Collections.unmodifiableList(topLevelTasks);
     }
 

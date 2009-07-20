@@ -13,8 +13,8 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.LeftTasksTreeRow.ILeftTasksTreeNavigator;
-import org.zkoss.ganttz.data.TaskBean;
-import org.zkoss.ganttz.data.TaskContainerBean;
+import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -32,15 +32,15 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     private final class TaskBeanRenderer implements TreeitemRenderer {
         public void render(Treeitem item, Object data) throws Exception {
-            TaskBean taskBean = (TaskBean) data;
-            item.setOpen(isOpened(taskBean));
+            Task task = (Task) data;
+            item.setOpen(isOpened(task));
             final int[] path = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
-                    taskBean);
+                    task);
             String cssClass = "depth_" + path.length;
-            LeftTasksTreeRow leftTasksTreeRow = LeftTasksTreeRow.create(taskBean,
-                    new TreeNavigator(tasksTreeModel, taskBean));
-            if (taskBean.isContainer()) {
-                expandWhenOpened((TaskContainerBean) taskBean, item);
+            LeftTasksTreeRow leftTasksTreeRow = LeftTasksTreeRow.create(task,
+                    new TreeNavigator(tasksTreeModel, task));
+            if (task.isContainer()) {
+                expandWhenOpened((TaskContainer) task, item);
             }
             Component row = Executions.getCurrent().createComponents(
                     "~./ganttz/zul/leftTasksTreeRow.zul", item, null);
@@ -51,10 +51,10 @@ public class LeftTasksTree extends HtmlMacroComponent {
             for (Treecell cell : treeCells) {
                 cell.setSclass(cssClass);
             }
-            detailsForBeans.put(taskBean, leftTasksTreeRow);
+            detailsForBeans.put(task, leftTasksTreeRow);
         }
 
-        private void expandWhenOpened(final TaskContainerBean taskBean,
+        private void expandWhenOpened(final TaskContainer taskBean,
                 Treeitem item) {
             item.addEventListener("onOpen", new EventListener() {
                 @Override
@@ -67,28 +67,28 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     }
 
-    public boolean isOpened(TaskBean taskBean) {
-        return taskBean.isLeaf() || taskBean.isExpanded();
+    public boolean isOpened(Task task) {
+        return task.isLeaf() || task.isExpanded();
     }
 
     private final class DetailsForBeans {
-        private Map<TaskBean, LeftTasksTreeRow> map = new HashMap<TaskBean, LeftTasksTreeRow>();
+        private Map<Task, LeftTasksTreeRow> map = new HashMap<Task, LeftTasksTreeRow>();
 
-        private Set<TaskBean> focusRequested = new HashSet<TaskBean>();
+        private Set<Task> focusRequested = new HashSet<Task>();
 
-        public void put(TaskBean taskBean, LeftTasksTreeRow leftTasksTreeRow) {
-            map.put(taskBean, leftTasksTreeRow);
-            if (focusRequested.contains(taskBean)) {
-                focusRequested.remove(taskBean);
+        public void put(Task task, LeftTasksTreeRow leftTasksTreeRow) {
+            map.put(task, leftTasksTreeRow);
+            if (focusRequested.contains(task)) {
+                focusRequested.remove(task);
                 leftTasksTreeRow.receiveFocus();
             }
         }
 
-        public void requestFocusFor(TaskBean taskBean) {
-            focusRequested.add(taskBean);
+        public void requestFocusFor(Task task) {
+            focusRequested.add(task);
         }
 
-        public LeftTasksTreeRow get(TaskBean taskbean) {
+        public LeftTasksTreeRow get(Task taskbean) {
             return map.get(taskbean);
         }
 
@@ -98,9 +98,9 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     private final class TreeNavigator implements ILeftTasksTreeNavigator {
         private final int[] pathToNode;
-        private final TaskBean task;
+        private final Task task;
 
-        private TreeNavigator(TreeModel treemodel, TaskBean task) {
+        private TreeNavigator(TreeModel treemodel, Task task) {
             this.task = task;
             this.pathToNode = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
                     task);
@@ -108,7 +108,7 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
         @Override
         public LeftTasksTreeRow getAboveRow() {
-            TaskBean parent = getParent(pathToNode);
+            Task parent = getParent(pathToNode);
             int lastPosition = pathToNode[pathToNode.length - 1];
             if (lastPosition != 0) {
                 return getChild(parent, lastPosition - 1);
@@ -118,12 +118,12 @@ public class LeftTasksTree extends HtmlMacroComponent {
             return null;
         }
 
-        private LeftTasksTreeRow getChild(TaskBean parent, int position) {
-            TaskBean child = tasksTreeModel.getChild(parent, position);
+        private LeftTasksTreeRow getChild(Task parent, int position) {
+            Task child = tasksTreeModel.getChild(parent, position);
             return getDetailFor(child);
         }
 
-        private LeftTasksTreeRow getDetailFor(TaskBean child) {
+        private LeftTasksTreeRow getDetailFor(Task child) {
             return detailsForBeans.get(child);
         }
 
@@ -142,12 +142,12 @@ public class LeftTasksTree extends HtmlMacroComponent {
             return null;
         }
 
-        public List<ChildAndParent> group(TaskBean origin,
-                List<TaskBean> parents) {
+        public List<ChildAndParent> group(Task origin,
+                List<Task> parents) {
             ArrayList<ChildAndParent> result = new ArrayList<ChildAndParent>();
-            TaskBean child = origin;
-            TaskBean parent;
-            ListIterator<TaskBean> listIterator = parents.listIterator();
+            Task child = origin;
+            Task parent;
+            ListIterator<Task> listIterator = parents.listIterator();
             while (listIterator.hasNext()) {
                 parent = listIterator.next();
                 result.add(new ChildAndParent(child, parent));
@@ -157,18 +157,18 @@ public class LeftTasksTree extends HtmlMacroComponent {
         }
 
         private class ChildAndParent {
-            private final TaskBean parent;
+            private final Task parent;
 
-            private final TaskBean child;
+            private final Task child;
 
             private Integer positionOfChildCached;
 
-            private ChildAndParent(TaskBean child, TaskBean parent) {
+            private ChildAndParent(Task child, Task parent) {
                 this.parent = parent;
                 this.child = child;
             }
 
-            public TaskBean getNextToChild() {
+            public Task getNextToChild() {
                 return tasksTreeModel
                         .getChild(parent, getPositionOfChild() + 1);
             }
@@ -197,8 +197,8 @@ public class LeftTasksTree extends HtmlMacroComponent {
             return task.isContainer() && task.isExpanded();
         }
 
-        private TaskBean getParent(int[] path) {
-            TaskBean current = tasksTreeModel.getRoot();
+        private Task getParent(int[] path) {
+            Task current = tasksTreeModel.getRoot();
             for (int i = 0; i < path.length - 1; i++) {
                 current = tasksTreeModel.getChild(current, path[i]);
             }
@@ -211,30 +211,30 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     private TaskRemovedListener taskRemovedListener;
 
-    private final List<TaskBean> taskBeans;
+    private final List<Task> tasks;
 
-    private MutableTreeModel<TaskBean> tasksTreeModel;
+    private MutableTreeModel<Task> tasksTreeModel;
 
     private Tree tasksTree;
 
     private CommandContextualized<?> goingDownInLastArrowCommand;
 
-    public LeftTasksTree(List<TaskBean> taskBeans) {
-        this.taskBeans = taskBeans;
+    public LeftTasksTree(List<Task> tasks) {
+        this.tasks = tasks;
     }
 
-    private static void fillModel(MutableTreeModel<TaskBean> treeModel,
-            List<TaskBean> taskBeans) {
-        for (TaskBean taskBean : taskBeans) {
-            fillModel(treeModel, treeModel.getRoot(), taskBean);
+    private static void fillModel(MutableTreeModel<Task> treeModel,
+            List<Task> tasks) {
+        for (Task task : tasks) {
+            fillModel(treeModel, treeModel.getRoot(), task);
         }
     }
 
-    private static void fillModel(MutableTreeModel<TaskBean> treeModel,
-            TaskBean parent, TaskBean node) {
+    private static void fillModel(MutableTreeModel<Task> treeModel,
+            Task parent, Task node) {
         treeModel.add(parent, node);
         if (node.isContainer()) {
-            for (TaskBean child : node.getTasks()) {
+            for (Task child : node.getTasks()) {
                 fillModel(treeModel, node, child);
             }
         }
@@ -244,7 +244,7 @@ public class LeftTasksTree extends HtmlMacroComponent {
         return (Planner) getParent();
     }
 
-    public void taskRemoved(TaskBean taskRemoved) {
+    public void taskRemoved(Task taskRemoved) {
         tasksTreeModel.remove(taskRemoved);
     }
 
@@ -260,15 +260,15 @@ public class LeftTasksTree extends HtmlMacroComponent {
         setClass("listdetails");
         super.afterCompose();
         tasksTree = (Tree) getFellow("tasksTree");
-        tasksTreeModel = MutableTreeModel.create(TaskBean.class);
-        fillModel(tasksTreeModel, taskBeans);
+        tasksTreeModel = MutableTreeModel.create(Task.class);
+        fillModel(tasksTreeModel, tasks);
         tasksTree.setModel(tasksTreeModel);
         tasksTree.setTreeitemRenderer(new TaskBeanRenderer());
     }
 
-    void addTask(TaskBean taskBean) {
-        detailsForBeans.requestFocusFor(taskBean);
-        tasksTreeModel.add(tasksTreeModel.getRoot(), taskBean);
+    void addTask(Task task) {
+        detailsForBeans.requestFocusFor(task);
+        tasksTreeModel.add(tasksTreeModel.getRoot(), task);
     }
 
     public CommandContextualized<?> getGoingDownInLastArrowCommand() {

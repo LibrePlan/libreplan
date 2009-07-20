@@ -10,9 +10,9 @@ import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
-import org.zkoss.ganttz.data.DependencyBean;
+import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.TaskBean;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.zk.ui.Component;
@@ -104,7 +104,7 @@ public class Planner extends XulElement {
         return taskEditFormComposer;
     }
 
-    public boolean canAddDependency(DependencyBean dependency) {
+    public boolean canAddDependency(Dependency dependency) {
         return dependencyAdder.canAddDependency(dependency);
     }
 
@@ -114,19 +114,19 @@ public class Planner extends XulElement {
         dependencyAddedListener = new DependencyAddedListener() {
 
             @Override
-            public void dependenceAdded(Dependency dependency) {
-                getDependencyList().addDependency(dependency);
-                diagramGraph.add(dependency.getDependencyBean());
-                dependencyAdder.addDependency(dependency.getDependencyBean());
+            public void dependenceAdded(DependencyComponent dependencyComponent) {
+                getDependencyList().addDependencyComponent(dependencyComponent);
+                diagramGraph.add(dependencyComponent.getDependency());
+                dependencyAdder.addDependency(dependencyComponent.getDependency());
             }
         };
         taskList.addDependencyListener(dependencyAddedListener);
         taskRemovedListener = new TaskRemovedListener() {
 
             @Override
-            public void taskRemoved(Task taskRemoved) {
-                diagramGraph.remove(taskRemoved.getTaskBean());
-                leftPane.taskRemoved(taskRemoved.getTaskBean());
+            public void taskComponentRemoved(TaskComponent taskComponentRemoved) {
+                diagramGraph.remove(taskComponentRemoved.getTask());
+                leftPane.taskRemoved(taskComponentRemoved.getTask());
                 TaskList taskList = getTaskList();
                 setHeight(getHeight());// forcing smart update
                 taskList.adjustZoomColumnsHeight();
@@ -137,15 +137,15 @@ public class Planner extends XulElement {
         dependencyRemovedListener = new DependencyRemovedListener() {
 
             @Override
-            public void dependenceRemoved(Dependency dependency) {
-                diagramGraph.remove(dependency);
+            public void dependenceRemoved(DependencyComponent dependencyComponent) {
+                diagramGraph.remove(dependencyComponent);
             }
         };
         getDependencyList().addDependencyRemovedListener(
                 dependencyRemovedListener);
     }
 
-    public void addTask(TaskBean newTask) {
+    public void addTask(Task newTask) {
         TaskList taskList = getTaskList();
         if (taskList != null && leftPane != null) {
             taskList.addTask(newTask);
@@ -165,11 +165,11 @@ public class Planner extends XulElement {
             this.mapper = mapper;
         }
 
-        public void addDependency(DependencyBean bean) {
+        public void addDependency(Dependency bean) {
             adapter.addDependency(toDomainDependency(bean));
         }
 
-        private DomainDependency<T> toDomainDependency(DependencyBean bean) {
+        private DomainDependency<T> toDomainDependency(Dependency bean) {
             T source = mapper.findAssociatedDomainObject(bean.getSource());
             T destination = mapper.findAssociatedDomainObject(bean
                     .getDestination());
@@ -178,7 +178,7 @@ public class Planner extends XulElement {
             return dep;
         }
 
-        public boolean canAddDependency(DependencyBean bean) {
+        public boolean canAddDependency(Dependency bean) {
             return adapter.canAddDependency(toDomainDependency(bean));
         }
 

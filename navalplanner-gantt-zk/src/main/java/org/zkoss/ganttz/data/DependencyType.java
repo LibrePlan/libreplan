@@ -12,24 +12,24 @@ public enum DependencyType {
 
     VOID {
         @Override
-        public Date calculateEndDestinyTask(TaskBean originalTask, Date current) {
+        public Date calculateEndDestinyTask(Task originalTask, Date current) {
             return current;
         }
 
         @Override
-        public Date calculateStartDestinyTask(TaskBean originalTask,
+        public Date calculateStartDestinyTask(Task originalTask,
                 Date current) {
             return current;
         }
     },
     END_START {
         @Override
-        public Date calculateEndDestinyTask(TaskBean originalTask, Date current) {
+        public Date calculateEndDestinyTask(Task originalTask, Date current) {
             return current;
         }
 
         @Override
-        public Date calculateStartDestinyTask(TaskBean originalTask,
+        public Date calculateStartDestinyTask(Task originalTask,
                 Date current) {
             return getBigger(originalTask.getEndDate(), current);
         }
@@ -37,24 +37,24 @@ public enum DependencyType {
     START_START {
 
         @Override
-        public Date calculateEndDestinyTask(TaskBean originTask, Date current) {
+        public Date calculateEndDestinyTask(Task originTask, Date current) {
             return current;
         }
 
         @Override
-        public Date calculateStartDestinyTask(TaskBean originTask, Date current) {
+        public Date calculateStartDestinyTask(Task originTask, Date current) {
             return getBigger(originTask.getBeginDate(), current);
         }
     },
     END_END {
 
         @Override
-        public Date calculateEndDestinyTask(TaskBean originTask, Date current) {
+        public Date calculateEndDestinyTask(Task originTask, Date current) {
             return getBigger(originTask.getEndDate(), current);
         }
 
         @Override
-        public Date calculateStartDestinyTask(TaskBean originTask, Date current) {
+        public Date calculateStartDestinyTask(Task originTask, Date current) {
             return current;
         }
     };
@@ -65,9 +65,9 @@ public enum DependencyType {
         return date1;
     }
 
-    public abstract Date calculateEndDestinyTask(TaskBean originTask,
+    public abstract Date calculateEndDestinyTask(Task originTask,
             Date current);
 
-    public abstract Date calculateStartDestinyTask(TaskBean originTask,
+    public abstract Date calculateStartDestinyTask(Task originTask,
             Date current);
 }

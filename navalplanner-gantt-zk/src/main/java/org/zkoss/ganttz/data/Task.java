@@ -11,7 +11,7 @@ import java.util.List;
  * Created at Apr 24, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public abstract class TaskBean implements ITaskFundamentalProperties {
+public abstract class Task implements ITaskFundamentalProperties {
 
     private PropertyChangeSupport fundamentalPropertiesListeners = new PropertyChangeSupport(
             this);
@@ -23,15 +23,15 @@ public abstract class TaskBean implements ITaskFundamentalProperties {
 
     private boolean visible = true;
 
-    public TaskBean(ITaskFundamentalProperties fundamentalProperties) {
+    public Task(ITaskFundamentalProperties fundamentalProperties) {
         this.fundamentalProperties = fundamentalProperties;
     }
 
-    public TaskBean() {
+    public Task() {
         this(new DefaultFundamentalProperties());
     }
 
-    public TaskBean(String name, Date beginDate, long lengthMilliseconds) {
+    public Task(String name, Date beginDate, long lengthMilliseconds) {
         this();
         if (name == null)
             throw new IllegalArgumentException("name cannot be null");
@@ -54,7 +54,7 @@ public abstract class TaskBean implements ITaskFundamentalProperties {
 
     public abstract boolean isExpanded() throws UnsupportedOperationException;
 
-    public abstract List<TaskBean> getTasks()
+    public abstract List<Task> getTasks()
             throws UnsupportedOperationException;
 
     public boolean isVisible() {

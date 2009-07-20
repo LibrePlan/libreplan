@@ -3,21 +3,21 @@ package org.zkoss.ganttz.data;
 import java.util.List;
 
 /**
- * A {@link TaskBean} that can't have children
+ * A {@link Task} that can't have children
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class TaskLeafBean extends TaskBean {
+public class TaskLeaf extends Task {
 
-    public TaskLeafBean() {
+    public TaskLeaf() {
         super();
     }
 
-    public TaskLeafBean(ITaskFundamentalProperties fundamentalProperties) {
+    public TaskLeaf(ITaskFundamentalProperties fundamentalProperties) {
         super(fundamentalProperties);
     }
 
     @Override
-    public List<TaskBean> getTasks() throws UnsupportedOperationException {
+    public List<Task> getTasks() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 

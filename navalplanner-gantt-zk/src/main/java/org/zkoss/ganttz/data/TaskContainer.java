@@ -15,13 +15,13 @@ import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;
  * Created at Jul 1, 2009
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class TaskContainerBean extends TaskBean {
+public class TaskContainer extends Task {
 
-    public TaskContainerBean() {
+    public TaskContainer() {
         super();
     }
 
-    public TaskContainerBean(ITaskFundamentalProperties fundamentalProperties) {
+    public TaskContainer(ITaskFundamentalProperties fundamentalProperties) {
         super(fundamentalProperties);
     }
 
@@ -74,7 +74,7 @@ public class TaskContainerBean extends TaskBean {
         });
     }
 
-    private List<TaskBean> tasks = new ArrayList<TaskBean>();
+    private List<Task> tasks = new ArrayList<Task>();
 
     private boolean expanded = false;
 
@@ -85,13 +85,13 @@ public class TaskContainerBean extends TaskBean {
         expandListeners.addListener(expandListener);
     }
 
-    public void add(TaskBean task) {
+    public void add(Task task) {
         tasks.add(task);
         task.setVisible(expanded);
     }
 
     @Override
-    public List<TaskBean> getTasks() {
+    public List<Task> getTasks() {
         return tasks;
     }
 
@@ -103,16 +103,16 @@ public class TaskContainerBean extends TaskBean {
 
     private List<Date> getStartDates() {
         ArrayList<Date> result = new ArrayList<Date>();
-        for (TaskBean taskBean : tasks) {
-            result.add(taskBean.getBeginDate());
+        for (Task task : tasks) {
+            result.add(task.getBeginDate());
         }
         return result;
     }
 
     private List<Date> getEndDates() {
         ArrayList<Date> result = new ArrayList<Date>();
-        for (TaskBean taskBean : tasks) {
-            result.add(taskBean.getEndDate());
+        for (Task task : tasks) {
+            result.add(task.getEndDate());
         }
         return result;
     }
@@ -134,16 +134,16 @@ public class TaskContainerBean extends TaskBean {
         if (!this.expanded) {
             return;
         }
-        for (TaskBean taskBean : tasks) {
-            taskBean.setVisible(true);
+        for (Task task : tasks) {
+            task.setVisible(true);
         }
     }
 
     public void setExpanded(boolean expanded) {
         boolean valueChanged = expanded != this.expanded;
         this.expanded = expanded;
-        for (TaskBean taskBean : tasks) {
-            taskBean.setVisible(this.expanded);
+        for (Task task : tasks) {
+            task.setVisible(this.expanded);
         }
         if (valueChanged) {
             expandListeners
@@ -152,7 +152,7 @@ public class TaskContainerBean extends TaskBean {
                         @Override
                         public void doNotify(IExpandListener listener) {
                             listener
-                                    .expandStateChanged(TaskContainerBean.this.expanded);
+                                    .expandStateChanged(TaskContainer.this.expanded);
                         }
                     });
         }

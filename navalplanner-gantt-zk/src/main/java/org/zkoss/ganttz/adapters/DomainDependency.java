@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.zkoss.ganttz.data.DependencyBean;
+import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 
 /**
@@ -13,12 +13,12 @@ import org.zkoss.ganttz.data.DependencyType;
  */
 public class DomainDependency<T> {
 
-    public static <T> List<DependencyBean> toDependencyBeans(
+    public static <T> List<Dependency> toDependencies(
             IDomainAndBeansMapper<T> mapper,
             Collection<DomainDependency<T>> dependencies) {
-        List<DependencyBean> result = new ArrayList<DependencyBean>();
+        List<Dependency> result = new ArrayList<Dependency>();
         for (DomainDependency<T> domainDependency : dependencies) {
-            result.add(domainDependency.toDependencyBean(mapper));
+            result.add(domainDependency.toDependency(mapper));
         }
         return result;
     }
@@ -53,8 +53,8 @@ public class DomainDependency<T> {
         return type;
     }
 
-    public DependencyBean toDependencyBean(IDomainAndBeansMapper<T> mapper) {
-        return new DependencyBean(mapper.findAssociatedBean(source), mapper
+    public Dependency toDependency(IDomainAndBeansMapper<T> mapper) {
+        return new Dependency(mapper.findAssociatedBean(source), mapper
                 .findAssociatedBean(destination), type);
     }
 }

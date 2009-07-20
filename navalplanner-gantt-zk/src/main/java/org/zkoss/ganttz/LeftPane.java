@@ -2,7 +2,7 @@ package org.zkoss.ganttz;
 
 import java.util.List;
 
-import org.zkoss.ganttz.data.TaskBean;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Button;
@@ -14,7 +14,7 @@ import org.zkoss.zul.Button;
  */
 public class LeftPane extends HtmlMacroComponent {
 
-    private final List<TaskBean> topLevelTasks;
+    private final List<Task> topLevelTasks;
 
     private List<? extends CommandContextualized<?>> commands;
 
@@ -28,7 +28,7 @@ public class LeftPane extends HtmlMacroComponent {
 
     public LeftPane(
             List<? extends CommandContextualized<?>> contextualizedCommands,
-            List<TaskBean> topLevelTasks) {
+            List<Task> topLevelTasks) {
         this.commands = contextualizedCommands;
         this.topLevelTasks = topLevelTasks;
     }
@@ -61,11 +61,11 @@ public class LeftPane extends HtmlMacroComponent {
         return commandsContainer;
     }
 
-    public void taskRemoved(TaskBean taskBean) {
-        leftTasksTree.taskRemoved(taskBean);
+    public void taskRemoved(Task task) {
+        leftTasksTree.taskRemoved(task);
     }
 
-    public void addTask(TaskBean newTask) {
+    public void addTask(Task newTask) {
         leftTasksTree.addTask(newTask);
     }
 
