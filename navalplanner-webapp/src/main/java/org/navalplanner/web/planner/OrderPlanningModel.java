@@ -46,7 +46,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         if (!orderReloaded.isSomeTaskElementScheduled())
             throw new IllegalArgumentException("the order " + order
                     + " must be scheduled");
-        onTransaction.use(createConfiguration(orderReloaded));
+        PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
+        ISaveCommand saveCommand = getSaveCommand();
+        saveCommand.setState(state);
+        configuration.addGlobalCommand(saveCommand);
+        onTransaction.use(configuration);
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(
@@ -75,6 +79,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     // spring method injection
     protected abstract ITaskElementAdapter getTaskElementAdapter();
+
+    protected abstract ISaveCommand getSaveCommand();
 
     private Order reload(Order order) {
         try {

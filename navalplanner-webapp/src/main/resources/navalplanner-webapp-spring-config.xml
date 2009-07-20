@@ -17,6 +17,7 @@
 
     <bean class="org.navalplanner.web.planner.OrderPlanningModel" scope="prototype">
 	  <lookup-method name="getTaskElementAdapter" bean="taskElementAdapter"/>
+      <lookup-method name="getSaveCommand" bean="saveCommand"/>
     </bean>
 
     <context:component-scan base-package="org.navalplanner.web"/>
