@@ -1,3 +1,4 @@
+
 package org.navalplanner.web.orders;
 
 import java.util.Date;
@@ -48,6 +49,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
     private final IOrderModel orderModel;
 
     private final OrderElementController orderElementController;
+
 
     public OrderElementTreeitemRenderer getRenderer() {
         return renderer;
@@ -117,7 +119,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
             getOrderElementTreeModel().move(fromNode, toNode);
         }
-
         Util.reloadBindings(tree);
     }
 
@@ -125,7 +126,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         if (tree.getSelectedCount() == 1) {
             getOrderElementTreeModel().addOrderElementAt(getSelectedNode());
-        } else {
+        }else {
             getOrderElementTreeModel().addOrderElement();
         }
         Util.reloadBindings(tree);
@@ -197,6 +198,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public class OrderElementTreeitemRenderer implements TreeitemRenderer {
 
         private Map<SimpleTreeNode, Intbox> map = new HashMap<SimpleTreeNode, Intbox>();
+        private Map<SimpleTreeNode, Textbox> mapC = new HashMap<SimpleTreeNode, Textbox>();
 
         public OrderElementTreeitemRenderer() {
         }
@@ -212,6 +214,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             // Construct treecells
             int[] path = getOrderElementTreeModel().getPath(t);
             String cssClass = "depth_"+path.length;
+
             Treecell cellForName = new Treecell();
             Label tasknumber = new Label(pathAsString(path));
             tasknumber.setSclass("tasknumber");
@@ -233,6 +236,34 @@ public class OrderElementTreeController extends GenericForwardComposer {
                     orderElement.setName(value);
                 }
             }));
+
+            Textbox textBoxCode = new Textbox();
+            mapC.put(t, textBoxCode);
+            Treecell cellForCode = new Treecell();
+            cellForCode.appendChild(Util.bind(textBoxCode,
+                    new Util.Getter<String>() {
+
+                @Override
+                public String get() {
+                    return orderElement.getCode();
+                }
+            }, new Util.Setter<String>() {
+
+                @Override
+                public void set(String value) {
+                    orderElement.setCode(value);
+                }
+            }));
+
+            textBoxCode.setConstraint(new Constraint() {
+
+                @Override
+                public void validate(Component comp, Object value) throws WrongValueException{
+                    if (!orderElement.isFormatCodeValid((String)value)){
+                            throw new WrongValueException(comp,"Value not is valid.\n The code can not contain chars like '_' \n and not must be empty");                        }
+                    }
+                });
+
             Treecell cellForHours = new Treecell();
             Intbox intboxHours = new Intbox();
             map.put(t, intboxHours);
@@ -293,6 +324,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
                             }
                         }));
             }
+
             Treecell tcDateStart = new Treecell();
             tcDateStart.appendChild(Util.bind(new Datebox(),
                     new Util.Getter<Date>() {
@@ -342,6 +374,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             tr.setDroppable("true");
 
             cellForName.setParent(tr);
+            cellForCode.setParent(tr);
             tcDateStart.setParent(tr);
             tcDateEnd.setParent(tr);
             cellForHours.setParent(tr);

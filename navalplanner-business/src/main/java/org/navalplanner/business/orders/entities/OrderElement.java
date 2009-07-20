@@ -6,7 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.validator.NotNull;
+
+import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.planner.entities.TaskElement;
 
 public abstract class OrderElement {
@@ -15,7 +16,7 @@ public abstract class OrderElement {
 
     private Long version;
 
-    @NotNull
+    @NotEmpty
     private String name;
 
     private Date initDate;
@@ -28,6 +29,7 @@ public abstract class OrderElement {
 
     private String description;
 
+    @NotEmpty
     private String code;
 
     private Set<TaskElement> taskElements = new HashSet<TaskElement>();
@@ -51,8 +53,17 @@ public abstract class OrderElement {
         return name;
     }
 
+
     public void setName(String name) {
         this.name = name;
+    }
+
+     public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public abstract boolean isLeaf();
@@ -144,5 +155,13 @@ public abstract class OrderElement {
     public boolean checkAtLeastOneHoursGroup() {
         return (getHoursGroups().size() > 0);
     }
+
+     public boolean isFormatCodeValid(String code) {
+
+        if (code.contains("_")) return false;
+         if (code.equals("")) return false;
+        return true;
+    }
+
 
 }

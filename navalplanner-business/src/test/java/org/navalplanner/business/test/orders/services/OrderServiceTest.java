@@ -101,6 +101,7 @@ public class OrderServiceTest {
         Order order = createValidOrder();
         OrderLine orderLine = new OrderLine();
         orderLine.setName("bla");
+        orderLine.setCode("00000000");
         orderLine.setWorkHours(10);
         order.add(orderLine);
         orderService.save(order);
@@ -138,6 +139,7 @@ public class OrderServiceTest {
         for (int i = 0; i < containers.length; i++) {
             containers[i] = new OrderLineGroup();
             containers[i].setName("bla");
+            containers[i].setCode("000000000");
             order.add(containers[i]);
         }
         OrderLineGroup container = (OrderLineGroup) containers[0];
@@ -192,6 +194,7 @@ public class OrderServiceTest {
     private OrderLine createValidLeaf(String parameter) {
         OrderLine result = new OrderLine();
         result.setName(parameter);
+        result.setCode("000000000");
 
         HoursGroup hoursGroup = new HoursGroup(result);
         hoursGroup.setWorkingHours(0);
@@ -206,8 +209,10 @@ public class OrderServiceTest {
         final Order order = createValidOrder();
         OrderLineGroup container = new OrderLineGroup();
         container.setName("bla");
+        container.setCode("000000000");
         OrderLine leaf = new OrderLine();
         leaf.setName("leaf");
+        leaf.setCode("000000000");
         container.add(leaf);
         order.add(container);
         HoursGroup hoursGroup = new HoursGroup(leaf);
@@ -246,6 +251,7 @@ public class OrderServiceTest {
 
         OrderLine orderLine = new OrderLine();
         orderLine.setName("Order element");
+        orderLine.setCode("000000000");
         order.add(orderLine);
 
         HoursGroup hoursGroup = new HoursGroup(orderLine);
@@ -303,7 +309,7 @@ public class OrderServiceTest {
 
         OrderLine orderLine = new OrderLine();
         orderLine.setName("foo");
-
+        orderLine.setCode("000000000");
         order.add(orderLine);
 
         orderService.save(order);

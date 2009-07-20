@@ -80,6 +80,7 @@ public class TaskElementServiceTest {
     private OrderLine createOrderLine() {
         OrderLine orderLine = new OrderLine();
         orderLine.setName("bla");
+        orderLine.setCode("000000000");
         orderLine.addHoursGroup(new HoursGroup());
         Order order = new Order();
         order.setName("bla");
@@ -176,6 +177,7 @@ public class TaskElementServiceTest {
     public void aOrderLineGroupIsConvertedToATaskGroup() {
         OrderLineGroup orderLineGroup = new OrderLineGroup();
         orderLineGroup.setName("foo");
+        orderLineGroup.setCode("000000000");
         TaskElement task = taskElementService
                 .convertToInitialSchedule(orderLineGroup);
         assertThat(task, is(TaskGroup.class));
@@ -189,6 +191,7 @@ public class TaskElementServiceTest {
     public void aOrderLineWithOneHourIsConvertedToATask() {
         OrderLine orderLine = new OrderLine();
         orderLine.setName("bla");
+        orderLine.setCode("000000000");
         HoursGroup hoursGroup = createHoursGroup(30);
         orderLine.addHoursGroup(hoursGroup);
         TaskElement taskElement = taskElementService
@@ -204,8 +207,10 @@ public class TaskElementServiceTest {
     public void theSublinesOfAnOrderLineGroupAreConverted() {
         OrderLineGroup orderLineGroup = new OrderLineGroup();
         orderLineGroup.setName("foo");
+        orderLineGroup.setCode("000000000");
         OrderLine orderLine = new OrderLine();
         orderLine.setName("bla");
+        orderLine.setCode("000000000");
         HoursGroup hoursGroup = createHoursGroup(30);
         orderLine.addHoursGroup(hoursGroup);
         orderLineGroup.add(orderLine);
@@ -226,6 +231,7 @@ public class TaskElementServiceTest {
     public void aOrderLineWithNoHoursIsRejected() {
         OrderLine orderLine = new OrderLine();
         orderLine.setName("bla");
+        orderLine.setCode("000000000");
         taskElementService.convertToInitialSchedule(orderLine);
     }
 
@@ -239,6 +245,7 @@ public class TaskElementServiceTest {
     public void aOrderLineWithMoreThanOneHourIsConvertedToATaskGroup() {
         OrderLine orderLine = new OrderLine();
         orderLine.setName("bla");
+        orderLine.setCode("000000000");
         HoursGroup hours1 = createHoursGroup(30);
         orderLine.addHoursGroup(hours1);
         HoursGroup hours2 = createHoursGroup(10);

@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.hibernate.validator.Valid;
 
 /**
  * It represents an {@link Order} with its related information. <br />
@@ -25,6 +26,7 @@ public class Order implements IOrderLineGroup {
     @NotEmpty
     private String name;
 
+
     @NotNull
     private Date initDate;
 
@@ -37,6 +39,7 @@ public class Order implements IOrderLineGroup {
     // TODO turn into a many to one relationship when Customer entity is defined
     private String customer;
 
+    @Valid
     private List<OrderElement> orderElements = new ArrayList<OrderElement>();
 
     public Long getId() {
@@ -46,6 +49,7 @@ public class Order implements IOrderLineGroup {
     public Long getVersion() {
         return version;
     }
+
 
     public String getName() {
         return name;

@@ -45,12 +45,12 @@ public class OrderLine extends OrderElement {
     @Override
     public OrderLineGroup toContainer() {
         OrderLineGroup result = new OrderLineGroup();
-
         result.setName(getName());
+        result.setCode(getCode());
         result.setInitDate(getInitDate());
         result.setEndDate(getEndDate());
+        this.setCode("");
         result.add(this);
-
         return result;
     }
 

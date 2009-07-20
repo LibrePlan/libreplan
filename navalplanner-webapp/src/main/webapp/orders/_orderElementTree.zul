@@ -16,13 +16,14 @@
         </hbox>
     </vbox>
     <vbox>
-        <tree id="tree" width="900px" multiple="true" droppable="true"
+        <tree id="tree" width="1050px" multiple="true" droppable="true"
             onDrop="orderElementTreeController.move(self, event.dragged)"
             model="@{orderElementTreeController.orderElementTreeModel}"
             treeitemRenderer="@{orderElementTreeController.renderer}" pageSize="5"
             sclass="orderTree">
             <treecols sizable="true">
                 <treecol label="Name and description" />
+                <treecol label="Code" />
                 <treecol label="Estimated init" />
                 <treecol label="Estimated end" />
                 <treecol label="Hours" />

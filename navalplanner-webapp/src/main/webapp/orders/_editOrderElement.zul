@@ -10,7 +10,15 @@
             <textbox id="name"
                 value="@{orderElementController.orderElement.name,
                 save-when='backButton.onClick'}" />
+
+
+            <label value="Code " />
+            <textbox id="code"
+                value="@{orderElementController.orderElement.code,
+                save-when='backButton.onClick'}" />
+
         </hbox>
+
 
         <hbox>
             <label value="Init Date" />
