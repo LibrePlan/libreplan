@@ -1,6 +1,7 @@
 package org.zkoss.ganttz;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,8 @@ import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.extensions.ICommand;
+import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.util.DependencyBean;
 import org.zkoss.ganttz.util.GanttDiagramGraph;
 import org.zkoss.ganttz.util.ITaskFundamentalProperties;
@@ -30,7 +33,7 @@ public class Planner extends XulElement {
     private GanttDiagramGraph diagramGraph = new GanttDiagramGraph();
     private DependencyRemovedListener dependencyRemovedListener;
     private TaskRemovedListener taskRemovedListener;
-    private LeftTasksTree leftTasksTree;
+    private LeftPane leftPane;
 
     private GanttPanel ganttPanel;
 
@@ -39,6 +42,8 @@ public class Planner extends XulElement {
     private OneToOneMapper<?> domainObjectsMapper;
 
     private DependencyAdderAdapter<?> dependencyAdder;
+
+    private List<CommandContextualized> contextualizedCommands;
 
     public Planner() {
     }
@@ -93,8 +98,8 @@ public class Planner extends XulElement {
 
     private void removePreviousDetails() {
         List<Object> children = getChildren();
-        for (LeftTasksTree l : Planner.findComponentsOfType(LeftTasksTree.class,
-                children)) {
+        for (LeftTasksTree l : Planner.findComponentsOfType(
+                LeftTasksTree.class, children)) {
             removeChild(l);
         }
     }
@@ -127,7 +132,7 @@ public class Planner extends XulElement {
             @Override
             public void taskRemoved(Task taskRemoved) {
                 diagramGraph.remove(taskRemoved.getTaskBean());
-                leftTasksTree.taskRemoved(taskRemoved.getTaskBean());
+                leftPane.taskRemoved(taskRemoved.getTaskBean());
                 TaskList taskList = getTaskList();
                 setHeight(getHeight());// forcing smart update
                 taskList.adjustZoomColumnsHeight();
@@ -239,7 +244,19 @@ public class Planner extends XulElement {
         this.diagramGraph.applyAllRestrictions();
         dependencyAdder = new DependencyAdderAdapter<T>(configuration
                 .getAdapter(), mapper);
+        contextualizedCommands = contextualize(
+                new FunctionalityExposedForExtensions(this), configuration
+                        .getCommands());
         recreate();
+    }
+
+    private List<CommandContextualized> contextualize(IContext context,
+            Collection<? extends ICommand> commands) {
+        ArrayList<CommandContextualized> result = new ArrayList<CommandContextualized>();
+        for (ICommand command : commands) {
+            result.add(CommandContextualized.create(command, context));
+        }
+        return result;
     }
 
     private <T> TaskBean extractTaskBean(
@@ -257,7 +274,7 @@ public class Planner extends XulElement {
                 container.add(extractTaskBean(dependencies, mapper, child,
                         navigator, adapter));
             }
-            return container;
+            result = container;
         }
         mapper.register(result, data);
         return result;
@@ -269,12 +286,11 @@ public class Planner extends XulElement {
 
     private void recreate() {
         removePreviousDetails();
-        this.leftTasksTree = new LeftTasksTree(this.diagramGraph
+        this.leftPane = new LeftPane(contextualizedCommands, this.diagramGraph
                 .getTopLevelTasks());
-        insertBefore(this.leftTasksTree,
-                (Component) (getChildren().isEmpty() ? null : getChildren()
-                        .get(0)));
-        this.leftTasksTree.afterCompose();
+        insertBefore(this.leftPane, (Component) (getChildren().isEmpty() ? null
+                : getChildren().get(0)));
+        this.leftPane.afterCompose();
         removePreviousGanntPanel();
         this.ganttPanel = new GanttPanel(this.diagramGraph,
                 taskEditFormComposer);

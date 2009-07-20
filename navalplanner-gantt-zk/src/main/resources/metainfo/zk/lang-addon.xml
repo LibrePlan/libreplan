@@ -19,6 +19,12 @@
             <mold-uri>~./ganttz/planner.dsp</mold-uri>
         </mold>
     </component>    
+
+    <component>
+        <component-name>leftPane</component-name>
+        <component-class>org.zkoss.ganttz.LeftPane</component-class>
+        <macro-uri>~./ganttz/zul/leftPane.zul</macro-uri>
+    </component>
      
     <component>
         <component-name>leftTasksTree</component-name>

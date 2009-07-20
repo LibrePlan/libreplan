@@ -1,6 +1,10 @@
 package org.zkoss.ganttz.adapters;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import org.zkoss.ganttz.extensions.ICommand;
 
 /**
  * A object that defines several extension points for gantt planner
@@ -13,6 +17,8 @@ public class PlannerConfiguration<T> {
     private IStructureNavigator<T> navigator;
 
     private List<? extends T> data;
+
+    private List<ICommand> commands = new ArrayList<ICommand>();
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
@@ -31,6 +37,14 @@ public class PlannerConfiguration<T> {
 
     public List<? extends T> getData() {
         return data;
+    }
+
+    public void addCommand(ICommand command) {
+        this.commands.add(command);
+    }
+
+    public List<ICommand> getCommands() {
+        return Collections.unmodifiableList(commands);
     }
 
 }

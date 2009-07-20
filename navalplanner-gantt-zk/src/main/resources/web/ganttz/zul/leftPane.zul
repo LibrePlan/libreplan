@@ -1,0 +1,6 @@
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+    <n:div id="listdetails_container">
+        <hbox id="leftpane_commands">
+        </hbox>
+    </n:div>
+</zk>
