@@ -144,7 +144,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             belowDetail.receiveFocus(position);
         } else {
             LeftTasksTree listDetails = getListDetails();
-            listDetails.addTask();
+            // TODO add comamnd for focus going down
         }
     }
 

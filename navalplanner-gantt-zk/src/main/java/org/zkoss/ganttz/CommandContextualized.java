@@ -7,18 +7,18 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 
-class CommandContextualized {
+class CommandContextualized<T> {
 
-    public static CommandContextualized create(ICommand command,
-            IContext context) {
-        return new CommandContextualized(command, context);
+    public static <T> CommandContextualized<T> create(ICommand<T> command,
+            IContext<T> context) {
+        return new CommandContextualized<T>(command, context);
     }
 
-    private final ICommand command;
+    private final ICommand<T> command;
 
-    private final IContext context;
+    private final IContext<T> context;
 
-    private CommandContextualized(ICommand command, IContext context) {
+    private CommandContextualized(ICommand<T> command, IContext<T> context) {
         this.command = command;
         this.context = context;
     }

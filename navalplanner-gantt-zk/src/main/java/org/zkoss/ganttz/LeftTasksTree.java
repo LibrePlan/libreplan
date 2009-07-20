@@ -16,7 +16,6 @@ import org.zkoss.ganttz.LeftTasksTreeRow.ILeftTasksTreeNavigator;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.TaskContainerBean;
-import org.zkoss.ganttz.util.TaskLeafBean;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -247,24 +246,6 @@ public class LeftTasksTree extends HtmlMacroComponent {
         tasksTreeModel.remove(taskRemoved);
     }
 
-    public void addTask() {
-        TaskBean newTask = new TaskLeafBean();
-        newTask.setName("Nova Tarefa");
-        newTask.setBeginDate(new Date());
-        newTask.setEndDate(threeMonthsLater(newTask.getBeginDate()));
-        addTask(newTask);
-        getPlanner().addTask(newTask);
-    }
-
-    public void addTaskContainer() {
-        TaskContainerBean newTask = new TaskContainerBean();
-        newTask.setName("Novo Contedor de Tarefas");
-        newTask.setBeginDate(new Date());
-        newTask.setEndDate(threeMonthsLater(newTask.getBeginDate()));
-        addTask(newTask);
-        getPlanner().addTask(newTask);
-    }
-
     private static Date threeMonthsLater(Date now) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
@@ -283,7 +264,7 @@ public class LeftTasksTree extends HtmlMacroComponent {
         tasksTree.setTreeitemRenderer(new TaskBeanRenderer());
     }
 
-    private void addTask(TaskBean taskBean) {
+    void addTask(TaskBean taskBean) {
         detailsForBeans.requestFocusFor(taskBean);
         tasksTreeModel.add(tasksTreeModel.getRoot(), taskBean);
     }

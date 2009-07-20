@@ -1,11 +1,12 @@
 package org.zkoss.ganttz.extensions;
 
+
 /**
  * A facade for operations allowed to extensions <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public interface IContext {
+public interface IContext<T> {
 
-    // TODO expose functionality as needed
+    void add(T domainObject);
 
 }

@@ -9,11 +9,15 @@ import org.zkoss.ganttz.adapters.AutoAdapter;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.extensions.ICommand;
+import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.util.DefaultFundamentalProperties;
-import org.zkoss.ganttz.util.GanttDiagramGraph;
 import org.zkoss.ganttz.util.DependencyType;
+import org.zkoss.ganttz.util.GanttDiagramGraph;
 import org.zkoss.ganttz.util.ITaskFundamentalProperties;
+import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.TaskContainerBean;
+import org.zkoss.ganttz.util.TaskLeafBean;
 
 /**
  * Some test data for planner <br />
@@ -28,16 +32,38 @@ public class DataForPlanner {
         return new GanttDiagramGraph();
     }
 
+    private PlannerConfiguration<ITaskFundamentalProperties> addCommands(
+            PlannerConfiguration<ITaskFundamentalProperties> configuration) {
+        configuration.addCommand(new ICommand<ITaskFundamentalProperties>() {
+
+            @Override
+            public String getName() {
+                return "Add Task";
+            }
+
+            @Override
+            public void doAction(IContext<ITaskFundamentalProperties> context) {
+                TaskBean newTask = new TaskLeafBean();
+                newTask.setName("Nova Tarefa");
+                newTask.setBeginDate(new Date());
+                newTask.setEndDate(twoMonthsLater(newTask.getBeginDate()));
+                context.add(newTask);
+
+            }
+        });
+        return configuration;
+    }
+
     public PlannerConfiguration<ITaskFundamentalProperties> getLightLoad() {
-        return getModelWith(20);
+        return addCommands(getModelWith(20));
     }
 
     public PlannerConfiguration<ITaskFundamentalProperties> getMediumLoad() {
-        return getModelWith(300);
+        return addCommands(getModelWith(300));
     }
 
     public PlannerConfiguration<ITaskFundamentalProperties> getHighLoad() {
-        return getModelWith(500);
+        return addCommands(getModelWith(500));
     }
 
     private PlannerConfiguration<ITaskFundamentalProperties> getModelWith(

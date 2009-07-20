@@ -2,25 +2,19 @@ package org.zkoss.ganttz;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
-import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.util.DependencyBean;
 import org.zkoss.ganttz.util.GanttDiagramGraph;
-import org.zkoss.ganttz.util.ITaskFundamentalProperties;
 import org.zkoss.ganttz.util.TaskBean;
-import org.zkoss.ganttz.util.TaskContainerBean;
-import org.zkoss.ganttz.util.TaskLeafBean;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.impl.XulElement;
@@ -39,17 +33,17 @@ public class Planner extends XulElement {
 
     private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer();
 
-    private OneToOneMapper<?> domainObjectsMapper;
-
     private DependencyAdderAdapter<?> dependencyAdder;
 
-    private List<CommandContextualized> contextualizedCommands;
+    private List<? extends CommandContextualized<?>> contextualizedCommands;
 
     public Planner() {
     }
 
     TaskList getTaskList() {
-        List<Object> children = findOneComponentOfType(GanttPanel.class)
+        if (ganttPanel == null)
+            return null;
+        List<Object> children = ganttPanel
                 .getChildren();
         return Planner.findComponentsOfType(TaskList.class, children).get(0);
     }
@@ -113,8 +107,6 @@ public class Planner extends XulElement {
     }
 
     public void registerListeners() {
-        if (diagramGraph == null)
-            throw new IllegalStateException("dependencyRegistry must be set");
         ganttPanel.afterCompose();
         TaskList taskList = getTaskList();
         dependencyAddedListener = new DependencyAddedListener() {
@@ -122,7 +114,7 @@ public class Planner extends XulElement {
             @Override
             public void dependenceAdded(Dependency dependency) {
                 getDependencyList().addDependency(dependency);
-                publishDependency(dependency);
+                diagramGraph.add(dependency.getDependencyBean());
                 dependencyAdder.addDependency(dependency.getDependencyBean());
             }
         };
@@ -152,54 +144,21 @@ public class Planner extends XulElement {
     }
 
     public void addTask(TaskBean newTask) {
-        getTaskList().addTask(newTask);
-        diagramGraph.addTopLevel(newTask);
-    }
-
-    private void publishDependency(Dependency dependency) {
-        diagramGraph.add(dependency.getDependencyBean());
-    }
-
-    private static class OneToOneMapper<T> implements IDomainAndBeansMapper<T> {
-        private Map<T, TaskBean> fromDomainToTaskBean = new HashMap<T, TaskBean>();
-
-        private Map<TaskBean, T> fromTaskBeanToDomain = new HashMap<TaskBean, T>();
-
-        @Override
-        public TaskBean findAssociatedBean(T domainObject)
-                throws IllegalArgumentException {
-            if (domainObject == null)
-                throw new IllegalArgumentException("domainObject is null");
-            if (!fromDomainToTaskBean.containsKey(domainObject))
-                throw new IllegalArgumentException("not found " + domainObject);
-            return fromDomainToTaskBean.get(domainObject);
+        TaskList taskList = getTaskList();
+        if (taskList != null && leftPane != null) {
+            taskList.addTask(newTask);
+            leftPane.addTask(newTask);
         }
-
-        void register(TaskBean taskBean, T domainObject) {
-            fromDomainToTaskBean.put(domainObject, taskBean);
-            fromTaskBeanToDomain.put(taskBean, domainObject);
-        }
-
-        @Override
-        public T findAssociatedDomainObject(TaskBean taskBean)
-                throws IllegalArgumentException {
-            if (taskBean == null)
-                throw new IllegalArgumentException("taskBean is null");
-            if (!fromTaskBeanToDomain.containsKey(taskBean))
-                throw new IllegalArgumentException();
-            return fromTaskBeanToDomain.get(taskBean);
-        }
-
     }
 
     private static class DependencyAdderAdapter<T> {
 
         private final IAdapterToTaskFundamentalProperties<T> adapter;
-        private final OneToOneMapper<T> mapper;
+        private final IDomainAndBeansMapper<T> mapper;
 
         public DependencyAdderAdapter(
                 IAdapterToTaskFundamentalProperties<T> adapter,
-                OneToOneMapper<T> mapper) {
+                IDomainAndBeansMapper<T> mapper) {
             this.adapter = adapter;
             this.mapper = mapper;
         }
@@ -227,56 +186,25 @@ public class Planner extends XulElement {
         if (configuration == null)
             return;
         this.diagramGraph = new GanttDiagramGraph();
-        OneToOneMapper<T> mapper = new OneToOneMapper<T>();
-        domainObjectsMapper = mapper;
-        List<DomainDependency<T>> dependencies = new ArrayList<DomainDependency<T>>();
-        for (T domainObject : configuration.getData()) {
-            IAdapterToTaskFundamentalProperties<T> adapter = configuration
-                    .getAdapter();
-            this.diagramGraph.addTopLevel(extractTaskBean(dependencies, mapper,
-                    domainObject, configuration.getNavigator(), adapter));
-        }
-        List<DependencyBean> dependencyBeans = DomainDependency
-                .toDependencyBeans(mapper, dependencies);
-        for (DependencyBean dependencyBean : dependencyBeans) {
-            this.diagramGraph.add(dependencyBean);
-        }
-        this.diagramGraph.applyAllRestrictions();
+        FunctionalityExposedForExtensions<T> context = new FunctionalityExposedForExtensions<T>(
+                this, configuration.getAdapter(), configuration.getNavigator(),
+                diagramGraph);
+        context.add(configuration.getData());
         dependencyAdder = new DependencyAdderAdapter<T>(configuration
-                .getAdapter(), mapper);
-        contextualizedCommands = contextualize(
-                new FunctionalityExposedForExtensions(this), configuration
-                        .getCommands());
+                .getAdapter(), context.getMapper());
+        this.contextualizedCommands = contextualize(context,
+                configuration
+                .getCommands());
         recreate();
     }
 
-    private List<CommandContextualized> contextualize(IContext context,
-            Collection<? extends ICommand> commands) {
-        ArrayList<CommandContextualized> result = new ArrayList<CommandContextualized>();
-        for (ICommand command : commands) {
+    private <T> List<CommandContextualized<T>> contextualize(
+            IContext<T> context,
+            Collection<? extends ICommand<T>> commands) {
+        ArrayList<CommandContextualized<T>> result = new ArrayList<CommandContextualized<T>>();
+        for (ICommand<T> command : commands) {
             result.add(CommandContextualized.create(command, context));
         }
-        return result;
-    }
-
-    private <T> TaskBean extractTaskBean(
-            List<DomainDependency<T>> dependencies, OneToOneMapper<T> mapper,
-            T data, IStructureNavigator<T> navigator,
-            IAdapterToTaskFundamentalProperties<T> adapter) {
-        ITaskFundamentalProperties adapted = adapter.adapt(data);
-        dependencies.addAll(adapter.getDependenciesOriginating(data));
-        TaskBean result;
-        if (navigator.isLeaf(data)) {
-            result = new TaskLeafBean(adapted);
-        } else {
-            TaskContainerBean container = new TaskContainerBean(adapted);
-            for (T child : navigator.getChildren(data)) {
-                container.add(extractTaskBean(dependencies, mapper, child,
-                        navigator, adapter));
-            }
-            result = container;
-        }
-        mapper.register(result, data);
         return result;
     }
 

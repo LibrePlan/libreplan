@@ -16,13 +16,14 @@ public class LeftPane extends HtmlMacroComponent {
 
     private final List<TaskBean> topLevelTasks;
 
-    private List<CommandContextualized> commands;
+    private List<? extends CommandContextualized<?>> commands;
 
     private LeftTasksTree leftTasksTree;
 
-    public LeftPane(List<CommandContextualized> commands,
+    public LeftPane(
+            List<? extends CommandContextualized<?>> contextualizedCommands,
             List<TaskBean> topLevelTasks) {
-        this.commands = commands;
+        this.commands = contextualizedCommands;
         this.topLevelTasks = topLevelTasks;
     }
 
@@ -37,7 +38,7 @@ public class LeftPane extends HtmlMacroComponent {
 
     private void addCommands() {
         Component commandsContainer = getCommandsContainer();
-        for (CommandContextualized command : commands) {
+        for (CommandContextualized<?> command : commands) {
             Button button = command.toButton();
             commandsContainer.appendChild(button);
         }
@@ -56,6 +57,10 @@ public class LeftPane extends HtmlMacroComponent {
 
     public void taskRemoved(TaskBean taskBean) {
         leftTasksTree.taskRemoved(taskBean);
+    }
+
+    public void addTask(TaskBean newTask) {
+        leftTasksTree.addTask(newTask);
     }
 
 }

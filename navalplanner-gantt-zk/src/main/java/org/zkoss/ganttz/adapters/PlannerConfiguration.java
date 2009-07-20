@@ -18,7 +18,7 @@ public class PlannerConfiguration<T> {
 
     private List<? extends T> data;
 
-    private List<ICommand> commands = new ArrayList<ICommand>();
+    private List<ICommand<T>> commands = new ArrayList<ICommand<T>>();
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
@@ -39,11 +39,11 @@ public class PlannerConfiguration<T> {
         return data;
     }
 
-    public void addCommand(ICommand command) {
+    public void addCommand(ICommand<T> command) {
         this.commands.add(command);
     }
 
-    public List<ICommand> getCommands() {
+    public List<ICommand<T>> getCommands() {
         return Collections.unmodifiableList(commands);
     }
 
