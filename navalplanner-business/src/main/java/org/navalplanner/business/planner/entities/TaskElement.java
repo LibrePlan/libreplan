@@ -1,5 +1,6 @@
 package org.navalplanner.business.planner.entities;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -9,6 +10,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.entities.Dependency.Type;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -102,6 +104,29 @@ public abstract class TaskElement {
 
     public Long getId() {
         return id;
+    }
+
+    private void removeDependenciesWithThisOrigin(TaskElement origin, Type type) {
+        ArrayList<Dependency> toBeRemoved = new ArrayList<Dependency>();
+        for (Dependency dependency : dependenciesWithThisDestination) {
+            if (dependency.getOrigin().equals(origin)
+                    && dependency.getType().equals(type)) {
+                toBeRemoved.add(dependency);
+            }
+        }
+        dependenciesWithThisDestination.removeAll(toBeRemoved);
+    }
+
+    public void removeDependencyWithDestination(TaskElement destination, Type type) {
+        ArrayList<Dependency> toBeRemoved = new ArrayList<Dependency>();
+        for (Dependency dependency : dependenciesWithThisOrigin) {
+            if (dependency.getDestination().equals(destination)
+                    && dependency.getType().equals(type)) {
+                toBeRemoved.add(dependency);
+            }
+        }
+        destination.removeDependenciesWithThisOrigin(this, type);
+        dependenciesWithThisOrigin.removeAll(toBeRemoved);
     }
 
     public abstract boolean isLeaf();

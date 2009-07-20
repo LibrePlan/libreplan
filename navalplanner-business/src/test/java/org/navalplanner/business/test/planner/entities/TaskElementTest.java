@@ -73,4 +73,17 @@ public class TaskElementTest {
         task.setEndDate(now);
         assertThat(task.getEndDate(), equalTo(now));
     }
+
+    @Test
+    public void aDependencyWithThisOriginCanBeRemoved(){
+        Task origin = new Task();
+        Task destination = new Task();
+        Type type = Type.START_END;
+        Dependency dependency = Dependency.createDependency(origin, destination, type);
+        assertThat(origin.getDependenciesWithThisOrigin().size(), equalTo(1));
+        assertThat(destination.getDependenciesWithThisDestination().size(), equalTo(1));
+        origin.removeDependencyWithDestination(destination, type);
+        assertThat(origin.getDependenciesWithThisOrigin().size(), equalTo(0));
+        assertThat(destination.getDependenciesWithThisDestination().size(), equalTo(0));
+    }
 }

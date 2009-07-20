@@ -170,6 +170,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Override
     public void removeDependency(DomainDependency<TaskElement> dependency) {
-        System.out.println("removing dependency: "+dependency);
+        TaskElement source = dependency.getSource();
+        Type type = toDomainType(dependency.getType());
+        source.removeDependencyWithDestination(dependency.getDestination(),
+                type);
     }
 }
