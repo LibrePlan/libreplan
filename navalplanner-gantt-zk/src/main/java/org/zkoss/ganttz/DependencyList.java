@@ -95,8 +95,12 @@ public class DependencyList extends XulElement implements AfterCompose {
                 visibilityToggler);
         destination.getTaskBean().addVisibilityPropertiesChangeListener(
                 visibilityToggler);
-        visibilityToggler.toggleDependencyExistence(visibilityToggler
-                .dependencyMustBeVisible());
+        boolean dependencyMustBeVisible = visibilityToggler
+                .dependencyMustBeVisible();
+        visibilityToggler.toggleDependencyExistence(dependencyMustBeVisible);
+        if (dependencyMustBeVisible) {
+            dependency.redrawDependency();
+        }
     }
 
     private void addContextMenu(Dependency dependency) {
@@ -144,7 +148,6 @@ public class DependencyList extends XulElement implements AfterCompose {
                     taskRemovedListener);
         }
         addContextMenu();
-
     }
 
     private void addContextMenu() {
