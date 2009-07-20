@@ -23,12 +23,32 @@ public abstract class TaskElement {
 
     private Date endDate;
 
+    private String name;
+
+    private String notes;
+
     @NotNull
     private OrderElement orderElement;
 
     private Set<Dependency> dependenciesWithThisOrigin = new HashSet<Dependency>();
 
     private Set<Dependency> dependenciesWithThisDestination = new HashSet<Dependency>();
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 
     public void setOrderElement(OrderElement orderElement)
             throws IllegalArgumentException, IllegalStateException {

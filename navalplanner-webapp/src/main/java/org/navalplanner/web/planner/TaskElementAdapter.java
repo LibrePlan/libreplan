@@ -1,11 +1,11 @@
 package org.navalplanner.web.planner;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.Dependency.Type;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.adapters.DomainDependency;
-import org.zkoss.ganttz.util.DefaultFundamentalProperties;
 import org.zkoss.ganttz.util.DependencyType;
 import org.zkoss.ganttz.util.ITaskFundamentalProperties;
 
@@ -38,20 +37,81 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     public TaskElementAdapter() {
     }
 
+    private class TaskElementWrapper implements ITaskFundamentalProperties {
+
+        private final TaskElement taskElement;
+        private long lengthMilliseconds;
+
+        protected TaskElementWrapper(TaskElement taskElement) {
+            this.taskElement = taskElement;
+            this.lengthMilliseconds = taskElement.getEndDate().getTime()
+                    - taskElement.getStartDate().getTime();
+        }
+
+        @Override
+        public void setName(String name) {
+            taskElement.setName(name);
+        }
+
+        @Override
+        public void setNotes(String notes) {
+            taskElement.setNotes(notes);
+        }
+
+        @Override
+        public String getName() {
+            return taskElement.getName();
+        }
+
+        @Override
+        public String getNotes() {
+            return taskElement.getNotes();
+        }
+
+        @Override
+        public Date getBeginDate() {
+            return taskElement.getStartDate();
+        }
+
+        @Override
+        public long getLengthMilliseconds() {
+            return lengthMilliseconds;
+        }
+
+        @Override
+        public void setBeginDate(Date beginDate) {
+            taskElement.setStartDate(beginDate);
+            updateEndDate();
+        }
+
+        @Override
+        public void setLengthMilliseconds(long lengthMilliseconds) {
+            this.lengthMilliseconds = lengthMilliseconds;
+            updateEndDate();
+        }
+
+        private void updateEndDate() {
+            taskElement.setEndDate(new Date(getBeginDate().getTime()
+                    + this.lengthMilliseconds));
+        }
+
+    }
+
     @Override
     public ITaskFundamentalProperties adapt(final TaskElement taskElement) {
-        // FIXME We'll need a custom ITaskFundamentalProperties
-        // implementation to edit the taskElement
-
-        DefaultFundamentalProperties result = new DefaultFundamentalProperties();
-        result.setName(taskElement.getOrderElement().getName());
-        result.setBeginDate(taskElement.getStartDate() != null ? taskElement
-                .getStartDate() : order.getInitDate());
-        OrderElement orderElement = taskElement.getOrderElement();
-        Integer workHours = orderElement.getWorkHours();
-        result.setLengthMilliseconds(workHours * 3600l * 1000);
-        result.setNotes(null);
-        return result;
+        if (taskElement.getName() == null) {
+            taskElement.setName(taskElement.getOrderElement().getName());
+        }
+        if (taskElement.getStartDate() == null) {
+            taskElement.setStartDate(order.getInitDate());
+        }
+        if (taskElement.getEndDate() == null) {
+            Integer workHours = taskElement.getOrderElement().getWorkHours();
+            long endDateTime = taskElement.getStartDate().getTime()
+                    + (workHours * 3600l * 1000);
+            taskElement.setEndDate(new Date(endDateTime));
+        }
+        return new TaskElementWrapper(taskElement);
     }
 
     @Override

@@ -7,7 +7,8 @@
             <generator class="native" />
         </id>
         <version name="version" type="long"></version>
-
+        <property name="name" />
+        <property name="notes"/>
         <property name="startDate" type="timestamp" />
         <property name="endDate" type="timestamp" />
 
