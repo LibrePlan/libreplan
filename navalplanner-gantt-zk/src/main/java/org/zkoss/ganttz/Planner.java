@@ -139,6 +139,7 @@ public class Planner extends XulElement {
             @Override
             public void dependenceRemoved(DependencyComponent dependencyComponent) {
                 diagramGraph.remove(dependencyComponent);
+                dependencyAdder.removeDependency(dependencyComponent.getDependency());
             }
         };
         getDependencyList().addDependencyRemovedListener(
@@ -167,6 +168,10 @@ public class Planner extends XulElement {
 
         public void addDependency(Dependency bean) {
             adapter.addDependency(toDomainDependency(bean));
+        }
+
+        public void removeDependency(Dependency bean){
+            adapter.removeDependency(toDomainDependency(bean));
         }
 
         private DomainDependency<T> toDomainDependency(Dependency bean) {

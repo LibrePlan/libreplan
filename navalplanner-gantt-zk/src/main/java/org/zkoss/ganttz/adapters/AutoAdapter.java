@@ -34,4 +34,10 @@ public class AutoAdapter implements
         return true;
     }
 
+    @Override
+    public void removeDependency(
+            DomainDependency<ITaskFundamentalProperties> dependency) {
+        //do nothing
+    }
+
 }

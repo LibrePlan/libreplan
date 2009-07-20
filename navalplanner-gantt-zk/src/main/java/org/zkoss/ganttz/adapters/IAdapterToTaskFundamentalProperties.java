@@ -18,4 +18,6 @@ public interface IAdapterToTaskFundamentalProperties<T> {
 
     public void addDependency(DomainDependency<T> dependency);
 
+    public void removeDependency(DomainDependency<T> dependency);
+
 }

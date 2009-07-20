@@ -167,4 +167,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     public boolean canAddDependency(DomainDependency<TaskElement> dependency) {
         return true;
     }
+
+    @Override
+    public void removeDependency(DomainDependency<TaskElement> dependency) {
+        System.out.println("removing dependency: "+dependency);
+    }
 }
