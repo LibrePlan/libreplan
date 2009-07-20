@@ -217,6 +217,8 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     private Tree tasksTree;
 
+    private CommandContextualized<?> goingDownInLastArrowCommand;
+
     public LeftTasksTree(List<TaskBean> taskBeans) {
         this.taskBeans = taskBeans;
     }
@@ -267,6 +269,15 @@ public class LeftTasksTree extends HtmlMacroComponent {
     void addTask(TaskBean taskBean) {
         detailsForBeans.requestFocusFor(taskBean);
         tasksTreeModel.add(tasksTreeModel.getRoot(), taskBean);
+    }
+
+    public CommandContextualized<?> getGoingDownInLastArrowCommand() {
+        return goingDownInLastArrowCommand;
+    }
+
+    public void setGoingDownInLastArrowCommand(
+            CommandContextualized<?> goingDownInLastArrowCommand) {
+        this.goingDownInLastArrowCommand = goingDownInLastArrowCommand;
     }
 
 }

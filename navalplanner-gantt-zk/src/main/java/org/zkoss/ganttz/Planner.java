@@ -37,6 +37,8 @@ public class Planner extends XulElement {
 
     private List<? extends CommandContextualized<?>> contextualizedCommands;
 
+    private CommandContextualized<?> goingDownInLastArrowCommand;
+
     public Planner() {
     }
 
@@ -194,8 +196,15 @@ public class Planner extends XulElement {
                 .getAdapter(), context.getMapper());
         this.contextualizedCommands = contextualize(context,
                 configuration
-                .getCommands());
+                .getGlobalCommands());
+        goingDownInLastArrowCommand = contextualize(context, configuration
+                .getGoingDownInLastArrowCommand());
         recreate();
+    }
+
+    private <T> CommandContextualized<T> contextualize(
+            IContext<T> context, ICommand<T> command) {
+        return CommandContextualized.create(command, context);
     }
 
     private <T> List<CommandContextualized<T>> contextualize(
@@ -203,7 +212,7 @@ public class Planner extends XulElement {
             Collection<? extends ICommand<T>> commands) {
         ArrayList<CommandContextualized<T>> result = new ArrayList<CommandContextualized<T>>();
         for (ICommand<T> command : commands) {
-            result.add(CommandContextualized.create(command, context));
+            result.add(contextualize(context, command));
         }
         return result;
     }
@@ -219,6 +228,8 @@ public class Planner extends XulElement {
         insertBefore(this.leftPane, (Component) (getChildren().isEmpty() ? null
                 : getChildren().get(0)));
         this.leftPane.afterCompose();
+        this.leftPane
+                .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
         removePreviousGanntPanel();
         this.ganttPanel = new GanttPanel(this.diagramGraph,
                 taskEditFormComposer);

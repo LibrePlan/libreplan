@@ -20,6 +20,12 @@ public class LeftPane extends HtmlMacroComponent {
 
     private LeftTasksTree leftTasksTree;
 
+    public void setGoingDownInLastArrowCommand(
+            CommandContextualized<?> goingDownInLastArrowCommand) {
+        this.leftTasksTree
+                .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
+    }
+
     public LeftPane(
             List<? extends CommandContextualized<?>> contextualizedCommands,
             List<TaskBean> topLevelTasks) {

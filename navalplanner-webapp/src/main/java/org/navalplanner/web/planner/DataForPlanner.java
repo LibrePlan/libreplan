@@ -34,23 +34,34 @@ public class DataForPlanner {
 
     private PlannerConfiguration<ITaskFundamentalProperties> addCommands(
             PlannerConfiguration<ITaskFundamentalProperties> configuration) {
-        configuration.addCommand(new ICommand<ITaskFundamentalProperties>() {
+        configuration
+                .addGlobalCommand(new ICommand<ITaskFundamentalProperties>() {
 
-            @Override
-            public String getName() {
-                return "Add Task";
-            }
+                    @Override
+                    public String getName() {
+                        return "Add Task";
+                    }
 
-            @Override
-            public void doAction(IContext<ITaskFundamentalProperties> context) {
-                TaskBean newTask = new TaskLeafBean();
-                newTask.setName("Nova Tarefa");
-                newTask.setBeginDate(new Date());
-                newTask.setEndDate(twoMonthsLater(newTask.getBeginDate()));
-                context.add(newTask);
+                    @Override
+                    public void doAction(
+                            IContext<ITaskFundamentalProperties> context) {
+                        addNewTask(context);
+                    }
+                });
+        configuration
+                .setGoingDownInLastArrowCommand(new ICommand<ITaskFundamentalProperties>() {
 
-            }
-        });
+                    @Override
+                    public void doAction(
+                            IContext<ITaskFundamentalProperties> context) {
+                        addNewTask(context);
+                    }
+
+                    @Override
+                    public String getName() {
+                        return "";
+                    }
+                });
         return configuration;
     }
 
@@ -136,6 +147,14 @@ public class DataForPlanner {
             Date end) {
         return new DefaultFundamentalProperties(name, end, end.getTime()
                 - now.getTime(), "bla");
+    }
+
+    private void addNewTask(IContext<ITaskFundamentalProperties> context) {
+        TaskBean newTask = new TaskLeafBean();
+        newTask.setName("Nova Tarefa");
+        newTask.setBeginDate(new Date());
+        newTask.setEndDate(twoMonthsLater(newTask.getBeginDate()));
+        context.add(newTask);
     }
 
     private static Date twoMonthsLater(Date now) {

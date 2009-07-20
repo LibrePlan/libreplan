@@ -52,7 +52,8 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         return new LeftTasksTreeRow(bean, taskDetailnavigator);
     }
 
-    private LeftTasksTreeRow(TaskBean task, ILeftTasksTreeNavigator leftTasksTreeNavigator) {
+    private LeftTasksTreeRow(TaskBean task,
+            ILeftTasksTreeNavigator leftTasksTreeNavigator) {
         this.taskBean = task;
         this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales
                 .getCurrent());
@@ -143,8 +144,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         if (belowDetail != null) {
             belowDetail.receiveFocus(position);
         } else {
-            LeftTasksTree listDetails = getListDetails();
-            // TODO add comamnd for focus going down
+            getListDetails().getGoingDownInLastArrowCommand().doAction();
         }
     }
 
