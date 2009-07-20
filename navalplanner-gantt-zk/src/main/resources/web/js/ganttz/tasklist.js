@@ -24,6 +24,7 @@ SCROLLBAR_WIDTH = 15;            // Scrollbars default width
 zkTasklist.init = function(cmp) {
     zkTasklist.adjust_height();
     make_visible();
+    relocateScrolls();
 }
 
 zkTasklist.adjust_height = function(cmp) {
@@ -60,7 +61,6 @@ document.getElementById('listdetails_container').onscroll = function() {
 }
 
 window.onresize = relocateScrolls;
-window.onload = relocateScrolls;
 /*
  * Move scrollbars to locate them on left and bottom window borders
  */
