@@ -12,7 +12,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zkoss.ganttz.TaskDetail.ITaskDetailNavigator;
+import org.zkoss.ganttz.LeftTasksTreeRow.ILeftTasksTreeNavigator;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.TaskBean;
 import org.zkoss.ganttz.util.TaskContainerBean;
@@ -29,7 +29,7 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 
-public class ListDetails extends HtmlMacroComponent {
+public class LeftTasksTree extends HtmlMacroComponent {
 
     private final class TaskBeanRenderer implements TreeitemRenderer {
         public void render(Treeitem item, Object data) throws Exception {
@@ -38,21 +38,21 @@ public class ListDetails extends HtmlMacroComponent {
             final int[] path = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
                     taskBean);
             String cssClass = "depth_" + path.length;
-            TaskDetail taskDetail = TaskDetail.create(taskBean,
+            LeftTasksTreeRow leftTasksTreeRow = LeftTasksTreeRow.create(taskBean,
                     new TreeNavigator(tasksTreeModel, taskBean));
             if (taskBean.isContainer()) {
                 expandWhenOpened((TaskContainerBean) taskBean, item);
             }
             Component row = Executions.getCurrent().createComponents(
-                    "~./ganttz/zul/taskdetail.zul", item, null);
-            taskDetail.doAfterCompose(row);
+                    "~./ganttz/zul/leftTasksTreeRow.zul", item, null);
+            leftTasksTreeRow.doAfterCompose(row);
             List<Object> rowChildren = row.getChildren();
             List<Treecell> treeCells = Planner.findComponentsOfType(
                     Treecell.class, rowChildren);
             for (Treecell cell : treeCells) {
                 cell.setSclass(cssClass);
             }
-            detailsForBeans.put(taskBean, taskDetail);
+            detailsForBeans.put(taskBean, leftTasksTreeRow);
         }
 
         private void expandWhenOpened(final TaskContainerBean taskBean,
@@ -73,15 +73,15 @@ public class ListDetails extends HtmlMacroComponent {
     }
 
     private final class DetailsForBeans {
-        private Map<TaskBean, TaskDetail> map = new HashMap<TaskBean, TaskDetail>();
+        private Map<TaskBean, LeftTasksTreeRow> map = new HashMap<TaskBean, LeftTasksTreeRow>();
 
         private Set<TaskBean> focusRequested = new HashSet<TaskBean>();
 
-        public void put(TaskBean taskBean, TaskDetail taskDetail) {
-            map.put(taskBean, taskDetail);
+        public void put(TaskBean taskBean, LeftTasksTreeRow leftTasksTreeRow) {
+            map.put(taskBean, leftTasksTreeRow);
             if (focusRequested.contains(taskBean)) {
                 focusRequested.remove(taskBean);
-                taskDetail.receiveFocus();
+                leftTasksTreeRow.receiveFocus();
             }
         }
 
@@ -89,7 +89,7 @@ public class ListDetails extends HtmlMacroComponent {
             focusRequested.add(taskBean);
         }
 
-        public TaskDetail get(TaskBean taskbean) {
+        public LeftTasksTreeRow get(TaskBean taskbean) {
             return map.get(taskbean);
         }
 
@@ -97,7 +97,7 @@ public class ListDetails extends HtmlMacroComponent {
 
     private DetailsForBeans detailsForBeans = new DetailsForBeans();
 
-    private final class TreeNavigator implements ITaskDetailNavigator {
+    private final class TreeNavigator implements ILeftTasksTreeNavigator {
         private final int[] pathToNode;
         private final TaskBean task;
 
@@ -108,7 +108,7 @@ public class ListDetails extends HtmlMacroComponent {
         }
 
         @Override
-        public TaskDetail getAboveDetail() {
+        public LeftTasksTreeRow getAboveRow() {
             TaskBean parent = getParent(pathToNode);
             int lastPosition = pathToNode[pathToNode.length - 1];
             if (lastPosition != 0) {
@@ -119,17 +119,17 @@ public class ListDetails extends HtmlMacroComponent {
             return null;
         }
 
-        private TaskDetail getChild(TaskBean parent, int position) {
+        private LeftTasksTreeRow getChild(TaskBean parent, int position) {
             TaskBean child = tasksTreeModel.getChild(parent, position);
             return getDetailFor(child);
         }
 
-        private TaskDetail getDetailFor(TaskBean child) {
+        private LeftTasksTreeRow getDetailFor(TaskBean child) {
             return detailsForBeans.get(child);
         }
 
         @Override
-        public TaskDetail getBelowDetail() {
+        public LeftTasksTreeRow getBelowRow() {
             if (isExpanded() && hasChildren()) {
                 return getChild(task, 0);
             }
@@ -208,7 +208,7 @@ public class ListDetails extends HtmlMacroComponent {
 
     }
 
-    private static Log LOG = LogFactory.getLog(ListDetails.class);
+    private static Log LOG = LogFactory.getLog(LeftTasksTree.class);
 
     private TaskRemovedListener taskRemovedListener;
 
@@ -218,7 +218,7 @@ public class ListDetails extends HtmlMacroComponent {
 
     private Tree tasksTree;
 
-    public ListDetails(List<TaskBean> taskBeans) {
+    public LeftTasksTree(List<TaskBean> taskBeans) {
         this.taskBeans = taskBeans;
     }
 

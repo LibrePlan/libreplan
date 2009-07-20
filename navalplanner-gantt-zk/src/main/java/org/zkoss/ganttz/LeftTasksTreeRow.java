@@ -21,15 +21,15 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.api.Treerow;
 
-public class TaskDetail extends GenericForwardComposer {
+public class LeftTasksTreeRow extends GenericForwardComposer {
 
-    public interface ITaskDetailNavigator {
-        TaskDetail getBelowDetail();
+    public interface ILeftTasksTreeNavigator {
+        LeftTasksTreeRow getBelowRow();
 
-        TaskDetail getAboveDetail();
+        LeftTasksTreeRow getAboveRow();
     }
 
-    private static final Log LOG = LogFactory.getLog(TaskDetail.class);
+    private static final Log LOG = LogFactory.getLog(LeftTasksTreeRow.class);
 
     private final TaskBean taskBean;
 
@@ -45,18 +45,18 @@ public class TaskDetail extends GenericForwardComposer {
 
     private DateFormat dateFormat;
 
-    private final ITaskDetailNavigator taskDetailNavigator;
+    private final ILeftTasksTreeNavigator leftTasksTreeNavigator;
 
-    public static TaskDetail create(TaskBean bean,
-            ITaskDetailNavigator taskDetailnavigator) {
-        return new TaskDetail(bean, taskDetailnavigator);
+    public static LeftTasksTreeRow create(TaskBean bean,
+            ILeftTasksTreeNavigator taskDetailnavigator) {
+        return new LeftTasksTreeRow(bean, taskDetailnavigator);
     }
 
-    private TaskDetail(TaskBean task, ITaskDetailNavigator taskDetailNavigator) {
+    private LeftTasksTreeRow(TaskBean task, ILeftTasksTreeNavigator leftTasksTreeNavigator) {
         this.taskBean = task;
         this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales
                 .getCurrent());
-        this.taskDetailNavigator = taskDetailNavigator;
+        this.leftTasksTreeNavigator = leftTasksTreeNavigator;
     }
 
     public TaskBean getTaskBean() {
@@ -124,7 +124,7 @@ public class TaskDetail extends GenericForwardComposer {
     }
 
     public void focusGoUp(int position) {
-        TaskDetail aboveDetail = taskDetailNavigator.getAboveDetail();
+        LeftTasksTreeRow aboveDetail = leftTasksTreeNavigator.getAboveRow();
         if (aboveDetail != null) {
             aboveDetail.receiveFocus(position);
         }
@@ -139,21 +139,21 @@ public class TaskDetail extends GenericForwardComposer {
     }
 
     public void focusGoDown(int position) {
-        TaskDetail belowDetail = taskDetailNavigator.getBelowDetail();
+        LeftTasksTreeRow belowDetail = leftTasksTreeNavigator.getBelowRow();
         if (belowDetail != null) {
             belowDetail.receiveFocus(position);
         } else {
-            ListDetails listDetails = getListDetails();
+            LeftTasksTree listDetails = getListDetails();
             listDetails.addTask();
         }
     }
 
-    private ListDetails getListDetails() {
+    private LeftTasksTree getListDetails() {
         Component current = nameBox;
-        while (!(current instanceof ListDetails)) {
+        while (!(current instanceof LeftTasksTree)) {
             current = current.getParent();
         }
-        return (ListDetails) current;
+        return (LeftTasksTree) current;
     }
 
     public void userWantsToMove(Textbox textbox, KeyEvent keyEvent) {

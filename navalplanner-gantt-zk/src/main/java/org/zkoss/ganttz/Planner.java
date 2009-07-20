@@ -30,7 +30,7 @@ public class Planner extends XulElement {
     private GanttDiagramGraph diagramGraph = new GanttDiagramGraph();
     private DependencyRemovedListener dependencyRemovedListener;
     private TaskRemovedListener taskRemovedListener;
-    private ListDetails listDetails;
+    private LeftTasksTree leftTasksTree;
 
     private GanttPanel ganttPanel;
 
@@ -93,7 +93,7 @@ public class Planner extends XulElement {
 
     private void removePreviousDetails() {
         List<Object> children = getChildren();
-        for (ListDetails l : Planner.findComponentsOfType(ListDetails.class,
+        for (LeftTasksTree l : Planner.findComponentsOfType(LeftTasksTree.class,
                 children)) {
             removeChild(l);
         }
@@ -127,7 +127,7 @@ public class Planner extends XulElement {
             @Override
             public void taskRemoved(Task taskRemoved) {
                 diagramGraph.remove(taskRemoved.getTaskBean());
-                listDetails.taskRemoved(taskRemoved.getTaskBean());
+                leftTasksTree.taskRemoved(taskRemoved.getTaskBean());
                 TaskList taskList = getTaskList();
                 setHeight(getHeight());// forcing smart update
                 taskList.adjustZoomColumnsHeight();
@@ -269,11 +269,12 @@ public class Planner extends XulElement {
 
     private void recreate() {
         removePreviousDetails();
-        this.listDetails = new ListDetails(this.diagramGraph.getTopLevelTasks());
-        insertBefore(this.listDetails,
+        this.leftTasksTree = new LeftTasksTree(this.diagramGraph
+                .getTopLevelTasks());
+        insertBefore(this.leftTasksTree,
                 (Component) (getChildren().isEmpty() ? null : getChildren()
                         .get(0)));
-        this.listDetails.afterCompose();
+        this.leftTasksTree.afterCompose();
         removePreviousGanntPanel();
         this.ganttPanel = new GanttPanel(this.diagramGraph,
                 taskEditFormComposer);

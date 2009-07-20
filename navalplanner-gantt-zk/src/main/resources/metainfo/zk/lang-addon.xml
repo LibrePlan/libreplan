@@ -21,9 +21,9 @@
     </component>    
      
     <component>
-        <component-name>listdetails</component-name>
-        <component-class>org.zkoss.ganttz.ListDetails</component-class>
-        <macro-uri>~./ganttz/zul/listdetails.zul</macro-uri>        
+        <component-name>leftTasksTree</component-name>
+        <component-class>org.zkoss.ganttz.LeftTasksTree</component-class>
+        <macro-uri>~./ganttz/zul/leftTasksTree.zul</macro-uri>
     </component>
     
      <component>
