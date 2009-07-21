@@ -30,7 +30,11 @@ zkDependency.draw = function(dependency) {
 }
 
 zkDependency.init = function(dependency) {
-    zkPlanner.setupArrow(dependency);    
+    zkPlanner.setupArrow(dependency);
+    var parent = dependency.parentNode;
+    if(parent.id !== "listdependencies"){
+        document.getElementById("listdependencies").appendChild(dependency);
+    }
     YAHOO.util.Event.onDOMReady(function() {
         var origin = zkDependency.origin(dependency);
         var destination = zkDependency.destination(dependency);
