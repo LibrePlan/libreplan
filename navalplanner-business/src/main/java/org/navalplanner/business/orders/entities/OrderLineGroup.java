@@ -2,12 +2,14 @@ package org.navalplanner.business.orders.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.validator.Valid;
 
 public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
 
     private List<OrderElement> children = new ArrayList<OrderElement>();
 
     @Override
+    @Valid
     public List<OrderElement> getChildren() {
         return new ArrayList<OrderElement>(children);
     }

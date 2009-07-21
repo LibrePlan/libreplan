@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -93,11 +94,16 @@ public class MessagesForUser extends GenericForwardComposer implements
     }
 
     @Override
+    public void invalidValue(InvalidValue invalidValue, ICustomLabelCreator customLabelCreator) {
+        addMessage(customLabelCreator.createLabelFor(invalidValue));
+    }
+
+    @Override
     public void invalidValue(InvalidValue invalidValue) {
         addMessage(createLabelFor(invalidValue));
     }
 
-    private Component createLabelFor(InvalidValue invalidValue) {
+    private Component createLabelFor(InvalidValue invalidValue){
         Label result = new Label();
         result.setValue(invalidValue.getPropertyName() + ": "
                 + invalidValue.getMessage());
@@ -138,6 +144,13 @@ public class MessagesForUser extends GenericForwardComposer implements
         }
         if (!StringUtils.isEmpty(e.getMessage())) {
             showMessage(Level.INFO, e.getMessage());
+        }
+    }
+
+    @Override
+    public void showInvalidValues(ValidationException e, ICustomLabelCreator customLabelCreator) {
+        for (InvalidValue invalidValue : e.getInvalidValues()) {
+            invalidValue(invalidValue, customLabelCreator);
         }
     }
 

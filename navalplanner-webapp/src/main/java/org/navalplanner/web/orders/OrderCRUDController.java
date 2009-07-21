@@ -3,9 +3,11 @@ package org.navalplanner.web.orders;
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -14,6 +16,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.IOrderPlanningControllerEntryPoints;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -69,7 +72,17 @@ public class OrderCRUDController extends GenericForwardComposer {
             messagesForUser.showMessage(Level.INFO, "order saved");
             goToList();
         } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
+            messagesForUser.showInvalidValues(e, new IMessagesForUser.ICustomLabelCreator() {
+
+                @Override
+                public Component createLabelFor(InvalidValue invalidValue) {
+                    Label result= new Label();
+                    String orderElementName = ((OrderElement)invalidValue.getBean()).getName();
+                    result.setValue(orderElementName+" "+invalidValue.getPropertyName() + ": "
+                    + invalidValue.getMessage());
+                    return result;
+                }
+            });
         }
     }
 
