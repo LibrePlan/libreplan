@@ -18,9 +18,11 @@ public class WorkReportLine {
 
 	Integer numHours;
 
-	Set<Resource> resources;
+	Resource resource;
 
-	Set<OrderElement> orderElements;
+	OrderElement orderElement;
+
+	WorkReport workReport;
 
 	Set<Criterion> criterions;
 
@@ -28,11 +30,11 @@ public class WorkReportLine {
 
 	}
 
-	public WorkReportLine(Integer numHours, Set<Resource> resources,
-	        Set<OrderElement> orderElements, Set<Criterion> criterions) {
+	public WorkReportLine(Integer numHours, Resource resource,
+	        OrderElement orderElement, Set<Criterion> criterions) {
 		this.numHours = numHours;
-		this.resources = resources;
-		this.orderElements = orderElements;
+		this.resource = resource;
+		this.orderElement = orderElement;
 		this.criterions = criterions;
 	}
 
@@ -52,20 +54,20 @@ public class WorkReportLine {
         this.numHours = numHours;
     }
 
-    public Set<Resource> getResources() {
-        return resources;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setResources(Set<Resource> resources) {
-        this.resources = resources;
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 
-    public Set<OrderElement> getOrderElements() {
-        return orderElements;
+    public OrderElement getOrderElement() {
+        return orderElement;
     }
 
-    public void setOrderElements(Set<OrderElement> orderElements) {
-        this.orderElements = orderElements;
+    public void setOrderElement(OrderElement orderElement) {
+        this.orderElement = orderElement;
     }
 
     public Set<Criterion> getCriterions() {
@@ -74,5 +76,13 @@ public class WorkReportLine {
 
     public void setCriterions(Set<Criterion> criterions) {
         this.criterions = criterions;
+    }
+
+    public WorkReport getWorkReport() {
+        return workReport;
+    }
+
+    public void setWorkReport(WorkReport workReport) {
+        this.workReport = workReport;
     }
 }
