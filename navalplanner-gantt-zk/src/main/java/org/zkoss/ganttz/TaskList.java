@@ -50,14 +50,17 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private final TaskEditFormComposer taskEditFormComposer;
 
-    public TaskList(TaskEditFormComposer formComposer, List<Task> tasks) {
+    private final List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized;
+
+    public TaskList(TaskEditFormComposer formComposer, List<Task> tasks, List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized) {
         this.taskEditFormComposer = formComposer;
         this.originalTasks = tasks;
+        this.commandsOnTasksContextualized = commandsOnTasksContextualized;
     }
 
     public static TaskList createFor(TaskEditFormComposer formComposer,
-            List<Task> tasks) {
-        TaskList result = new TaskList(formComposer, tasks);
+            List<Task> tasks, List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized) {
+        TaskList result = new TaskList(formComposer, tasks, commandsOnTasksContextualized);
         return result;
     }
 
@@ -216,7 +219,8 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private Menupopup getContextMenuForTasks() {
         if (contextMenu == null) {
-            contextMenu = MenuBuilder.on(getPage(), getTaskComponents()).item(
+            MenuBuilder<TaskComponent> menuBuilder = MenuBuilder.on(getPage(), getTaskComponents());
+            menuBuilder.item(
                     "Add Dependency", new ItemAction<TaskComponent>() {
 
                         @Override
@@ -228,7 +232,11 @@ public class TaskList extends XulElement implements AfterCompose {
                 public void onEvent(TaskComponent choosen, Event event) {
                     choosen.remove();
                 }
-            }).createWithoutSettingContext();
+            });
+            for (CommandOnTaskContextualized<?> command :  commandsOnTasksContextualized) {
+                menuBuilder.item(command.getName(), command.toItemAction());
+            }
+            contextMenu = menuBuilder.createWithoutSettingContext();
         }
         return contextMenu;
     }

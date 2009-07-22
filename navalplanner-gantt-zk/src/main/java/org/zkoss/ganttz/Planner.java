@@ -14,6 +14,7 @@ import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.ICommand;
+import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -35,9 +36,11 @@ public class Planner extends XulElement {
 
     private DependencyAdderAdapter<?> dependencyAdder;
 
-    private List<? extends CommandContextualized<?>> contextualizedCommands;
+    private List<? extends CommandContextualized<?>> contextualizedGlobalCommands;
 
     private CommandContextualized<?> goingDownInLastArrowCommand;
+
+    private List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized;
 
     public Planner() {
     }
@@ -45,8 +48,7 @@ public class Planner extends XulElement {
     TaskList getTaskList() {
         if (ganttPanel == null)
             return null;
-        List<Object> children = ganttPanel
-                .getChildren();
+        List<Object> children = ganttPanel.getChildren();
         return Planner.findComponentsOfType(TaskList.class, children).get(0);
     }
 
@@ -100,7 +102,8 @@ public class Planner extends XulElement {
             public void dependenceAdded(DependencyComponent dependencyComponent) {
                 getDependencyList().addDependencyComponent(dependencyComponent);
                 diagramGraph.add(dependencyComponent.getDependency());
-                dependencyAdder.addDependency(dependencyComponent.getDependency());
+                dependencyAdder.addDependency(dependencyComponent
+                        .getDependency());
             }
         };
         taskList.addDependencyListener(dependencyAddedListener);
@@ -120,9 +123,11 @@ public class Planner extends XulElement {
         dependencyRemovedListener = new DependencyRemovedListener() {
 
             @Override
-            public void dependenceRemoved(DependencyComponent dependencyComponent) {
+            public void dependenceRemoved(
+                    DependencyComponent dependencyComponent) {
                 diagramGraph.remove(dependencyComponent);
-                dependencyAdder.removeDependency(dependencyComponent.getDependency());
+                dependencyAdder.removeDependency(dependencyComponent
+                        .getDependency());
             }
         };
         getDependencyList().addDependencyRemovedListener(
@@ -153,7 +158,7 @@ public class Planner extends XulElement {
             adapter.addDependency(toDomainDependency(bean));
         }
 
-        public void removeDependency(Dependency bean){
+        public void removeDependency(Dependency bean) {
             adapter.removeDependency(toDomainDependency(bean));
         }
 
@@ -181,9 +186,10 @@ public class Planner extends XulElement {
                 diagramGraph);
         dependencyAdder = new DependencyAdderAdapter<T>(configuration
                 .getAdapter(), context.getMapper());
-        this.contextualizedCommands = contextualize(context,
-                configuration
-                .getGlobalCommands());
+        this.contextualizedGlobalCommands = contextualize(context,
+                configuration.getGlobalCommands());
+        this.commandsOnTasksContextualized = contextualize(context,
+                configuration.getCommandsOnTasks());
         goingDownInLastArrowCommand = contextualize(context, configuration
                 .getGoingDownInLastArrowCommand());
         clear();
@@ -198,14 +204,24 @@ public class Planner extends XulElement {
         getChildren().clear();
     }
 
-    private <T> CommandContextualized<T> contextualize(
-            IContext<T> context, ICommand<T> command) {
+    private <T> List<CommandOnTaskContextualized<T>> contextualize(
+            FunctionalityExposedForExtensions<T> context,
+            List<ICommandOnTask<T>> commands) {
+        List<CommandOnTaskContextualized<T>> result = new ArrayList<CommandOnTaskContextualized<T>>();
+        for (ICommandOnTask<T> c : commands) {
+            result.add(CommandOnTaskContextualized.create(c, context
+                    .getMapper(), context));
+        }
+        return result;
+    }
+
+    private <T> CommandContextualized<T> contextualize(IContext<T> context,
+            ICommand<T> command) {
         return CommandContextualized.create(command, context);
     }
 
     private <T> List<CommandContextualized<T>> contextualize(
-            IContext<T> context,
-            Collection<? extends ICommand<T>> commands) {
+            IContext<T> context, Collection<? extends ICommand<T>> commands) {
         ArrayList<CommandContextualized<T>> result = new ArrayList<CommandContextualized<T>>();
         for (ICommand<T> command : commands) {
             result.add(contextualize(context, command));
@@ -218,13 +234,13 @@ public class Planner extends XulElement {
     }
 
     private void recreate() {
-        this.leftPane = new LeftPane(contextualizedCommands, this.diagramGraph
+        this.leftPane = new LeftPane(contextualizedGlobalCommands, this.diagramGraph
                 .getTopLevelTasks());
         this.leftPane.setParent(this);
         this.leftPane.afterCompose();
         this.leftPane
                 .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
-        this.ganttPanel = new GanttPanel(this.diagramGraph,
+        this.ganttPanel = new GanttPanel(this.diagramGraph, commandsOnTasksContextualized,
                 taskEditFormComposer);
         ganttPanel.setParent(this);
         ganttPanel.afterCompose();

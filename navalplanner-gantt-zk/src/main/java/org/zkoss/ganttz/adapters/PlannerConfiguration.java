@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
  * A object that defines several extension points for gantt planner
@@ -35,6 +36,8 @@ public class PlannerConfiguration<T> {
 
     private List<ICommand<T>> globalCommands = new ArrayList<ICommand<T>>();
 
+    private List<ICommandOnTask<T>> commandsOnTasks = new ArrayList<ICommandOnTask<T>>();
+
     private ICommand<T> goingDownInLastArrowCommand = new NullCommand<T>();
 
 
@@ -57,11 +60,17 @@ public class PlannerConfiguration<T> {
         return data;
     }
 
+    public void addCommandOnTask(ICommandOnTask<T> commandOnTask){
+        this.commandsOnTasks.add(commandOnTask);
+    }
+
     public void addGlobalCommand(ICommand<T> command) {
         this.globalCommands.add(command);
     }
 
-
+    public List<ICommandOnTask<T>> getCommandsOnTasks(){
+        return Collections.unmodifiableList(commandsOnTasks);
+    }
     public List<ICommand<T>> getGlobalCommands() {
         return Collections.unmodifiableList(globalCommands);
     }

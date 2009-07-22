@@ -1,5 +1,7 @@
 package org.zkoss.ganttz;
 
+import java.util.List;
+
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.Command;
@@ -18,12 +20,12 @@ public class GanttPanel extends XulElement implements AfterCompose {
     private final GanttDiagramGraph diagramGraph;
 
     public GanttPanel(GanttDiagramGraph ganttDiagramGraph,
-            TaskEditFormComposer taskEditFormComposer) {
+            List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized, TaskEditFormComposer taskEditFormComposer) {
         this.diagramGraph = ganttDiagramGraph;
         timeTracker = new TimeTracker(this);
         appendChild(timeTracker);
         tasksLists = TaskList.createFor(taskEditFormComposer,
-                ganttDiagramGraph.getTopLevelTasks());
+                ganttDiagramGraph.getTopLevelTasks(), commandsOnTasksContextualized);
         dependencyList = new DependencyList();
         appendChild(tasksLists);
         appendChild(dependencyList);
