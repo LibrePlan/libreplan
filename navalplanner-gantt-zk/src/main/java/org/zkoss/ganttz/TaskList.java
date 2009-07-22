@@ -16,9 +16,7 @@ import java.util.Map;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.MenuBuilder;
-import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
-import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.zoom.ZoomLevelChangedListener;
 import org.zkoss.zk.au.out.AuInvoke;
@@ -40,9 +38,6 @@ public class TaskList extends XulElement implements AfterCompose {
     private List<WeakReference<DependencyAddedListener>> listeners = new LinkedList<WeakReference<DependencyAddedListener>>();
 
     private ZoomLevelChangedListener zoomLevelChangedListener;
-
-    private final WeakReferencedListeners<TaskRemovedListener> taskRemovedListeners = WeakReferencedListeners
-            .create();
 
     private Menupopup contextMenu;
 
@@ -144,22 +139,6 @@ public class TaskList extends XulElement implements AfterCompose {
         });
     }
 
-    public void addRemoveListener(TaskRemovedListener listener) {
-        taskRemovedListeners.addListener(listener);
-    }
-
-    public void removeTaskComponent(final TaskComponent taskComponent) {
-        removeChild(taskComponent);
-        taskComponent.detach();
-        taskRemovedListeners
-                .fireEvent(new ListenerNotification<TaskRemovedListener>() {
-                    @Override
-                    public void doNotify(TaskRemovedListener listener) {
-                        listener.taskComponentRemoved(taskComponent);
-                    }
-                });
-    }
-
     @Override
     public String getHeight() {
         return getTasksNumber() * HEIGHT_PER_ROW + "px";
@@ -185,10 +164,6 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private int getTasksNumber() {
         return getTaskComponents().size();
-    }
-
-    public void addTaskRemovedListener(TaskRemovedListener taskRemovedListener) {
-        taskRemovedListeners.addListener(taskRemovedListener);
     }
 
     public void addDependencyListener(DependencyAddedListener listener) {
@@ -227,11 +202,6 @@ public class TaskList extends XulElement implements AfterCompose {
                         public void onEvent(TaskComponent choosen, Event event) {
                             choosen.addDependency();
                         }
-                    }).item("Erase", new ItemAction<TaskComponent>() {
-                @Override
-                public void onEvent(TaskComponent choosen, Event event) {
-                    choosen.remove();
-                }
             });
             for (CommandOnTaskContextualized<?> command :  commandsOnTasksContextualized) {
                 menuBuilder.item(command.getName(), command.toItemAction());
@@ -264,6 +234,15 @@ public class TaskList extends XulElement implements AfterCompose {
 
     public void redrawDependencies() {
         getGanttPanel().getDependencyList().redrawDependencies();
+    }
+
+    public void remove(Task task) {
+        for (TaskComponent taskComponent : getTaskComponents()) {
+            if (taskComponent.getTask().equals(task)) {
+                taskComponent.remove();
+                return;
+            }
+        }
     }
 
 }

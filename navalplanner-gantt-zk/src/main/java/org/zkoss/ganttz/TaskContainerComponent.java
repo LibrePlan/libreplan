@@ -2,6 +2,7 @@ package org.zkoss.ganttz;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.zkoss.ganttz.data.Task;
@@ -25,7 +26,7 @@ public class TaskContainerComponent extends TaskComponent implements AfterCompos
     }
 
     private List<TaskComponent> subtaskComponents = new ArrayList<TaskComponent>();
-    final TaskList taskList;
+    private final TaskList taskList;
 
     private IExpandListener expandListener;
 
@@ -48,23 +49,46 @@ public class TaskContainerComponent extends TaskComponent implements AfterCompos
         taskContainer.addExpandListener(expandListener);
         this.taskList = taskList;
         for (Task task : taskContainer.getTasks()) {
-            subtaskComponents.add(TaskComponent.asTaskComponent(task, taskList));
+            getCurrentComponents().add(TaskComponent.asTaskComponent(task, taskList));
         }
     }
 
     @Override
     protected void publishDescendants(Map<Task, TaskComponent> resultAccumulated) {
-        for (TaskComponent taskComponent : subtaskComponents) {
+        for (TaskComponent taskComponent : getCurrentComponents()) {
             taskComponent.publishTaskComponents(resultAccumulated);
         }
     }
 
+    @Override
+    protected void remove() {
+        if (isExpanded()) {
+            for (TaskComponent subtaskComponent : getCurrentComponents()) {
+                subtaskComponent.remove();
+            }
+        }
+        super.remove();
+    }
+
     public void open() {
         Component previous = this;
-        for (TaskComponent subtaskComponent : subtaskComponents) {
+        for (TaskComponent subtaskComponent : getCurrentComponents()) {
             taskList.addTaskComponent(previous, subtaskComponent, true);
             previous = subtaskComponent;
         }
+    }
+
+    private List<TaskComponent> getCurrentComponents() {
+        ListIterator<TaskComponent> listIterator = subtaskComponents
+                .listIterator();
+        // one of the subtask components created previously could have been
+        // removed, so we only return the valid ones
+        while (listIterator.hasNext()) {
+            if (!getTaskContainer().contains(listIterator.next().getTask())) {
+                listIterator.remove();
+            }
+        }
+        return subtaskComponents;
     }
 
     public boolean isExpanded() {
@@ -84,7 +108,7 @@ public class TaskContainerComponent extends TaskComponent implements AfterCompos
 
 
     private void close() {
-        for (TaskComponent subtaskComponent : subtaskComponents) {
+        for (TaskComponent subtaskComponent : getCurrentComponents()) {
             if (subtaskComponent instanceof TaskContainerComponent) {
                 TaskContainerComponent container = (TaskContainerComponent) subtaskComponent;
                 container.close();

@@ -163,4 +163,12 @@ public class TaskContainer extends Task {
         return false;
     }
 
+    public void remove(Task toBeRemoved) {
+        tasks.remove(toBeRemoved);
+    }
+
+    public boolean contains(Task task) {
+        return tasks.contains(task);
+    }
+
 }

@@ -71,8 +71,6 @@ public class DependencyList extends XulElement implements AfterCompose {
 
     private static final Log LOG = LogFactory.getLog(DependencyList.class);
 
-    private TaskRemovedListener taskRemovedListener;
-
     private ZoomLevelChangedListener listener;
 
     private final WeakReferencedListeners<DependencyRemovedListener> dependencyRemovedListeners = WeakReferencedListeners
@@ -130,23 +128,6 @@ public class DependencyList extends XulElement implements AfterCompose {
             };
             getTimeTracker().addZoomListener(listener);
         }
-        if (taskRemovedListener == null) {
-            taskRemovedListener = new TaskRemovedListener() {
-
-                @Override
-                public void taskComponentRemoved(TaskComponent taskComponentRemoved) {
-                    for (DependencyComponent dependencyComponent : DependencyList.this
-                            .getDependencyComponents()) {
-                        if (dependencyComponent.contains(taskComponentRemoved)) {
-                            dependencyComponent.detach();
-                        }
-                    }
-                }
-
-            };
-            getGanttPanel().getTaskList().addTaskRemovedListener(
-                    taskRemovedListener);
-        }
         addContextMenu();
     }
 
@@ -197,7 +178,8 @@ public class DependencyList extends XulElement implements AfterCompose {
 
     private List<DependencyComponent> getDependencyComponentsConnectedTo(TaskComponent taskComponent) {
         ArrayList<DependencyComponent> result = new ArrayList<DependencyComponent>();
-        for (DependencyComponent dependencyComponent : getDependencyComponents()) {
+        List<DependencyComponent> dependencies = getDependencyComponents();
+        for (DependencyComponent dependencyComponent : dependencies) {
             if (dependencyComponent.getSource().equals(taskComponent)
                     || dependencyComponent.getDestination().equals(taskComponent)) {
                 result.add(dependencyComponent);
@@ -216,4 +198,12 @@ public class DependencyList extends XulElement implements AfterCompose {
         }
     }
 
+    public void taskRemoved(Task task) {
+        for (DependencyComponent dependencyComponent : DependencyList.this
+                .getDependencyComponents()) {
+            if (dependencyComponent.contains(task)) {
+                this.removeChild(dependencyComponent);
+            }
+        }
+    }
 }

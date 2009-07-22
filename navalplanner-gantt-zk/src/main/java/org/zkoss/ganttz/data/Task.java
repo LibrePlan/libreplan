@@ -135,4 +135,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         setLengthMilliseconds(value.getTime() - getBeginDate().getTime());
     }
 
+    public void removed() {
+        setVisible(false);
+    }
+
 }

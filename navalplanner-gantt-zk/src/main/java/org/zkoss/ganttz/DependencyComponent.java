@@ -10,6 +10,7 @@ import java.beans.PropertyChangeListener;
 
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
@@ -88,8 +89,10 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         response("zoomChanged", new AuInvoke(this, "draw"));
     }
 
-    public boolean contains(TaskComponent taskComponent) {
-        return getSource().equals(taskComponent) || getDestination().equals(taskComponent);
+    public boolean contains(Task task) {
+        Task sourceTask = getSource().getTask();
+        Task destinationTask = getDestination().getTask();
+        return task.equals(sourceTask) || task.equals(destinationTask);
     }
 
     public TaskComponent getSource() {

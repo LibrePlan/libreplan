@@ -17,6 +17,7 @@ import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
 import org.zkoss.ganttz.extensions.ICommand;
+import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
 
 /**
@@ -60,6 +61,21 @@ public class DataForPlanner {
                     @Override
                     public String getName() {
                         return "";
+                    }
+                });
+        configuration
+                .addCommandOnTask(new ICommandOnTask<ITaskFundamentalProperties>() {
+
+                    @Override
+                    public void doAction(
+                            IContext<ITaskFundamentalProperties> context,
+                            ITaskFundamentalProperties task) {
+                        context.remove(task);
+                    }
+
+                    @Override
+                    public String getName() {
+                        return "Remove";
                     }
                 });
         return configuration;

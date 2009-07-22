@@ -209,8 +209,6 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     private static Log LOG = LogFactory.getLog(LeftTasksTree.class);
 
-    private TaskRemovedListener taskRemovedListener;
-
     private final List<Task> tasks;
 
     private MutableTreeModel<Task> tasksTreeModel;

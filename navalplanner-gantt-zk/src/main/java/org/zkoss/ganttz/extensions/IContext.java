@@ -13,4 +13,6 @@ public interface IContext<T> {
 
     void reload(PlannerConfiguration<?> configuration);
 
+    void remove(T domainObject);
+
 }

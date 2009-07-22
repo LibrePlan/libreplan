@@ -27,6 +27,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
         private Map<Task, T> fromTaskToDomain = new HashMap<Task, T>();
 
+        private Map<Task, TaskContainer> fromTaskToParent = new HashMap<Task, TaskContainer>();
+
         @Override
         public Task findAssociatedBean(T domainObject)
                 throws IllegalArgumentException {
@@ -37,9 +39,23 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             return fromDomainToTask.get(domainObject);
         }
 
-        void register(Task task, T domainObject) {
+        void register(Task task, T domainObject, TaskContainer parent) {
             fromDomainToTask.put(domainObject, task);
             fromTaskToDomain.put(task, domainObject);
+            if (parent != null) {
+                fromTaskToParent.put(task, parent);
+            }
+        }
+
+        void remove(T domainObject) {
+            Task toBeRemoved = findAssociatedBean(domainObject);
+            fromDomainToTask.remove(domainObject);
+            fromTaskToDomain.remove(toBeRemoved);
+            TaskContainer parent = fromTaskToParent.get(toBeRemoved);
+            if (parent != null) {
+                parent.remove(toBeRemoved);
+            }
+            fromTaskToParent.remove(toBeRemoved);
         }
 
         @Override
@@ -69,8 +85,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         this.diagramGraph = diagramGraph;
     }
 
-    private Task extractTask(
-            List<DomainDependency<T>> accumulatedDependencies, T data) {
+    private Task extractTask(List<DomainDependency<T>> accumulatedDependencies,
+            T data, TaskContainer parent) {
         ITaskFundamentalProperties adapted = adapter.adapt(data);
         accumulatedDependencies
                 .addAll(adapter.getDependenciesOriginating(data));
@@ -80,23 +96,24 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         } else {
             TaskContainer container = new TaskContainer(adapted);
             for (T child : navigator.getChildren(data)) {
-                container.add(extractTask(accumulatedDependencies, child));
+                container.add(extractTask(accumulatedDependencies, child,
+                        container));
             }
             result = container;
         }
-        mapper.register(result, data);
+        mapper.register(result, data, parent);
         return result;
     }
 
     public void add(Collection<? extends T> domainObjects) {
         List<DomainDependency<T>> totalDependencies = new ArrayList<DomainDependency<T>>();
         for (T object : domainObjects) {
-            Task task = extractTask(totalDependencies, object);
+            Task task = extractTask(totalDependencies, object, null);
             diagramGraph.addTopLevel(task);
             this.planner.addTask(task);
         }
-        for (Dependency dependency : DomainDependency
-                .toDependencies(mapper, totalDependencies)) {
+        for (Dependency dependency : DomainDependency.toDependencies(mapper,
+                totalDependencies)) {
             this.diagramGraph.add(dependency);
         }
         this.diagramGraph.applyAllRestrictions();
@@ -116,6 +133,15 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     @Override
     public void reload(PlannerConfiguration<?> configuration) {
         planner.setConfiguration(configuration);
+    }
+
+    @Override
+    public void remove(T domainObject) {
+        Task task = mapper.findAssociatedBean(domainObject);
+        diagramGraph.remove(task);
+        task.removed();
+        planner.removeTask(task);
+        mapper.remove(domainObject);
     }
 
 }

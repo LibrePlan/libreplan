@@ -331,10 +331,6 @@ public class TaskComponent extends Div implements AfterCompose {
         return getParent() != null;
     }
 
-    public void remove() {
-        getTaskList().removeTaskComponent(this);
-    }
-
     void publishTaskComponents(Map<Task, TaskComponent> resultAccumulated) {
         resultAccumulated.put(getTask(), this);
         publishDescendants(resultAccumulated);
@@ -342,5 +338,10 @@ public class TaskComponent extends Div implements AfterCompose {
 
     protected void publishDescendants(Map<Task, TaskComponent> resultAccumulated) {
 
+    }
+
+    protected void remove() {
+        getDependencyList().taskRemoved(this.getTask());
+        this.detach();
     }
 }
