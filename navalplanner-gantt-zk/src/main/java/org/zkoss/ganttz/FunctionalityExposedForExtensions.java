@@ -11,6 +11,7 @@ import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
+import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
@@ -110,6 +111,11 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
     IDomainAndBeansMapper<T> getMapper() {
         return mapper;
+    }
+
+    @Override
+    public void reload(PlannerConfiguration<?> configuration) {
+        planner.setConfiguration(configuration);
     }
 
 }

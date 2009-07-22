@@ -75,14 +75,6 @@ public class Planner extends XulElement {
         return Executions.getCurrent().getContextPath();
     }
 
-    private void removePreviousGanntPanel() {
-        List<Object> children = getChildren();
-        for (GanttPanel ganttPanel : findComponentsOfType(GanttPanel.class,
-                children)) {
-            removeChild(ganttPanel);
-        }
-    }
-
     public DependencyList getDependencyList() {
         List<Object> children = ganttPanel.getChildren();
         List<DependencyList> found = findComponentsOfType(DependencyList.class,
@@ -90,14 +82,6 @@ public class Planner extends XulElement {
         if (found.isEmpty())
             return null;
         return found.get(0);
-    }
-
-    private void removePreviousDetails() {
-        List<Object> children = getChildren();
-        for (LeftTasksTree l : Planner.findComponentsOfType(
-                LeftTasksTree.class, children)) {
-            removeChild(l);
-        }
     }
 
     public TaskEditFormComposer getModalFormComposer() {
@@ -109,7 +93,6 @@ public class Planner extends XulElement {
     }
 
     public void registerListeners() {
-        ganttPanel.afterCompose();
         TaskList taskList = getTaskList();
         dependencyAddedListener = new DependencyAddedListener() {
 
@@ -196,7 +179,6 @@ public class Planner extends XulElement {
         FunctionalityExposedForExtensions<T> context = new FunctionalityExposedForExtensions<T>(
                 this, configuration.getAdapter(), configuration.getNavigator(),
                 diagramGraph);
-        context.add(configuration.getData());
         dependencyAdder = new DependencyAdderAdapter<T>(configuration
                 .getAdapter(), context.getMapper());
         this.contextualizedCommands = contextualize(context,
@@ -204,7 +186,16 @@ public class Planner extends XulElement {
                 .getGlobalCommands());
         goingDownInLastArrowCommand = contextualize(context, configuration
                 .getGoingDownInLastArrowCommand());
+        clear();
+        context.add(configuration.getData());
         recreate();
+        registerListeners();
+    }
+
+    private void clear() {
+        this.leftPane = null;
+        this.ganttPanel = null;
+        getChildren().clear();
     }
 
     private <T> CommandContextualized<T> contextualize(
@@ -227,18 +218,15 @@ public class Planner extends XulElement {
     }
 
     private void recreate() {
-        removePreviousDetails();
         this.leftPane = new LeftPane(contextualizedCommands, this.diagramGraph
                 .getTopLevelTasks());
-        insertBefore(this.leftPane, (Component) (getChildren().isEmpty() ? null
-                : getChildren().get(0)));
+        this.leftPane.setParent(this);
         this.leftPane.afterCompose();
         this.leftPane
                 .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
-        removePreviousGanntPanel();
         this.ganttPanel = new GanttPanel(this.diagramGraph,
                 taskEditFormComposer);
-        appendChild(ganttPanel);
-        registerListeners();
+        ganttPanel.setParent(this);
+        ganttPanel.afterCompose();
     }
 }

@@ -1,5 +1,7 @@
 package org.zkoss.ganttz.extensions;
 
+import org.zkoss.ganttz.adapters.PlannerConfiguration;
+
 
 /**
  * A facade for operations allowed to extensions <br />
@@ -8,5 +10,7 @@ package org.zkoss.ganttz.extensions;
 public interface IContext<T> {
 
     void add(T domainObject);
+
+    void reload(PlannerConfiguration<?> configuration);
 
 }
