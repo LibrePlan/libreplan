@@ -1,5 +1,6 @@
 package org.navalplanner.web.planner;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -24,7 +25,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     @Autowired
     private IOrderService orderService;
 
-    private List<TaskElement> state;
+    private PlanningState planningState;
 
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
@@ -51,7 +52,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
 
         ISaveCommand saveCommand = getSaveCommand();
-        saveCommand.setState(state);
+        saveCommand.setState(planningState);
         configuration.addGlobalCommand(saveCommand);
         IResourceAllocationCommand resourceAllocationCommand = getResourceAllocationCommand();
         resourceAllocationCommand
@@ -65,13 +66,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             Order orderReloaded) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setOrder(orderReloaded);
-        state = orderReloaded.getAssociatedTasks();
-        forceLoadOfDependenciesCollections(state);
+        planningState = new PlanningState(orderReloaded.getAssociatedTasks());
+        forceLoadOfDependenciesCollections(planningState.getInitial());
         return new PlannerConfiguration<TaskElement>(taskElementAdapter,
-                new TaskElementNavigator(), state);
+                new TaskElementNavigator(), planningState.getInitial());
     }
 
-    private void forceLoadOfDependenciesCollections(List<TaskElement> elements) {
+    private void forceLoadOfDependenciesCollections(
+            Collection<? extends TaskElement> elements) {
         for (TaskElement task : elements) {
             forceLoadOfDepedenciesCollections(task);
             if (!task.isLeaf()) {

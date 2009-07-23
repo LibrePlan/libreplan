@@ -23,19 +23,17 @@ public class SaveCommand implements ISaveCommand {
 
     @Autowired
     private ITaskElementService taskElementService;
-
-    private List<TaskElement> taskElements;
+    private PlanningState state;
 
     @Override
-    public void setState(List<TaskElement> taskElements) {
-        this.taskElements = taskElements;
-
+    public void setState(PlanningState state) {
+        this.state = state;
     }
 
     @Override
     @Transactional
     public void doAction(IContext<TaskElement> context) {
-        for (TaskElement taskElement : taskElements) {
+        for (TaskElement taskElement : state.getTasksToSave()) {
             taskElementService.save(taskElement);
             if (taskElement instanceof Task) {
                 if (!((Task) taskElement).isValidResourceAllocationWorkers()) {
@@ -44,6 +42,10 @@ public class SaveCommand implements ISaveCommand {
                             + "' has some repeated Worker assigned");
                 }
             }
+        }
+        for (TaskElement taskElement : state
+                .getToRemove()) {
+            taskElementService.remove(taskElement);
         }
         // TODO redirect to another page or show message
     }

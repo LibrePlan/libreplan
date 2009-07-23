@@ -1,7 +1,5 @@
 package org.navalplanner.web.planner;
 
-import java.util.List;
-
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.zkoss.ganttz.extensions.ICommand;
 
@@ -11,6 +9,6 @@ import org.zkoss.ganttz.extensions.ICommand;
  */
 public interface ISaveCommand extends ICommand<TaskElement> {
 
-    public void setState(List<TaskElement> taskElements);
+    public void setState(PlanningState planningState);
 
 }
