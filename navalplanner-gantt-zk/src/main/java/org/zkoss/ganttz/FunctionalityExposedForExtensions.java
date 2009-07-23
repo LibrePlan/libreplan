@@ -150,4 +150,12 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         return planner;
     }
 
+	@Override
+    public void replace(T oldDomainObject, T newDomainObject) {
+        remove(oldDomainObject);
+        add(newDomainObject);
+        // FIXME if oldDomainObject was a child from other it adds it to the top
+        // level
+    }
+
 }

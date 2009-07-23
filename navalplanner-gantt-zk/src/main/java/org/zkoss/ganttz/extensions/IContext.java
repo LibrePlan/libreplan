@@ -34,6 +34,7 @@ public interface IContext<T> {
      */
     void remove(T domainObject);
 
+
     /**
      * Retrieves the component associated to the action performed. Normally it
      * is the {@link Planner}, but it can be other. For example, if the action
@@ -42,5 +43,7 @@ public interface IContext<T> {
      * @return the component the action is relative to
      */
     public Component getRelativeTo();
+
+    void replace(T oldDomainObject, T newDomainObject);
 
 }
