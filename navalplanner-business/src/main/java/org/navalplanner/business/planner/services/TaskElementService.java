@@ -97,4 +97,14 @@ public class TaskElementService implements ITaskElementService {
         }
     }
 
+    @Override
+    @Transactional
+    public void remove(TaskElement taskElement) {
+        try {
+            taskElementDao.remove(taskElement.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

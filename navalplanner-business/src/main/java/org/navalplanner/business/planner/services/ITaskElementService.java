@@ -17,4 +17,6 @@ public interface ITaskElementService {
 
     void convertToScheduleAndSave(Order order);
 
+    void remove(TaskElement taskElement);
+
 }

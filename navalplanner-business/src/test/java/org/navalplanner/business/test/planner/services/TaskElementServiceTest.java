@@ -303,4 +303,31 @@ public class TaskElementServiceTest {
         assertThat(orderElement.getTaskElements().iterator().next(),
                 equalTo(fromDB));
     }
+
+    @Test
+    public void aTaskCanBeRemoved() {
+        Task task = createValidTask();
+        taskElementService.save(task);
+        flushAndEvict(task);
+        taskElementService.remove(task);
+        sessionFactory.getCurrentSession().flush();
+        assertNull(sessionFactory.getCurrentSession().get(TaskElement.class,
+                task.getId()));
+    }
+
+    @Test
+    public void aTaskGroupCanBeRemoved() {
+        TaskGroup taskGroup = createValidTaskGroup();
+        Task task = createValidTask();
+        taskGroup.addTaskElement(task);
+        taskElementService.save(taskGroup);
+        flushAndEvict(taskGroup);
+        taskElementService.remove(taskGroup);
+        sessionFactory.getCurrentSession().flush();
+        assertNull(sessionFactory.getCurrentSession().get(TaskGroup.class,
+                taskGroup.getId()));
+        assertNull(sessionFactory.getCurrentSession().get(TaskElement.class,
+                task.getId()));
+    }
+
 }

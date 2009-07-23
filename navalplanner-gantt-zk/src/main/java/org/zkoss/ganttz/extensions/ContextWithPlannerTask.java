@@ -1,6 +1,7 @@
 package org.zkoss.ganttz.extensions;
 
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
 
@@ -44,9 +45,15 @@ public class ContextWithPlannerTask<T> implements IContextWithPlannerTask<T> {
     }
 
     @Override
+    public void replace(T oldDomainObject, T newDomainObject) {
+        context.replace(oldDomainObject, newDomainObject);
+    }
+
+    @Override
     public Task getTask() {
         return task;
     }
+
 
 
 }

@@ -44,4 +44,8 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
         context.remove(domainObject);
     }
 
+    public void replace(T oldDomainObject, T newDomainObject) {
+        context.replace(oldDomainObject, newDomainObject);
+    };
+
 }
