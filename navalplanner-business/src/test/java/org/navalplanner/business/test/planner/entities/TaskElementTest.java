@@ -197,4 +197,36 @@ public class TaskElementTest {
             }
         }
     }
+
+    @Test
+    public void detachRemovesDependenciesFromRelatedTasks() {
+        HoursGroup hoursGroup = new HoursGroup();
+        Task taskToDetach = Task.createTask(hoursGroup);
+        Task sourceDependencyTask = Task.createTask(new HoursGroup());
+        Task destinationDependencyTask = Task.createTask(new HoursGroup());
+        taskToDetach.setName("prueba");
+        taskToDetach.setNotes("blabla");
+        taskToDetach.setStartDate(new Date());
+        Dependency.createDependency(sourceDependencyTask, taskToDetach,
+                Type.END_START);
+        Dependency.createDependency(taskToDetach,
+                destinationDependencyTask, Type.END_START);
+        taskToDetach.detach();
+        assertThat(sourceDependencyTask.getDependenciesWithThisOrigin().size(),
+                equalTo(0));
+        assertThat(destinationDependencyTask
+                .getDependenciesWithThisDestination().size(), equalTo(0));
+    }
+
+    @Test
+    public void detachRemovesTaskFromParent() {
+        TaskGroup parent = new TaskGroup();
+        HoursGroup hoursGroup = new HoursGroup();
+        Task child = Task.createTask(hoursGroup);
+        Task anotherChild = Task.createTask(hoursGroup);
+        parent.addTaskElement(child);
+        parent.addTaskElement(anotherChild);
+        child.detach();
+        assertThat(parent.getChildren().size(), equalTo(1));
+    }
 }

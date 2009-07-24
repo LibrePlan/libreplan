@@ -34,4 +34,8 @@ public class TaskGroup extends TaskElement {
         return getOrderElement().getWorkHours();
     }
 
+    public void remove(TaskElement taskElement) {
+        taskElements.remove(taskElement);
+    }
+
 }

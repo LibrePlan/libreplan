@@ -148,7 +148,75 @@ public abstract class TaskElement {
 
     public abstract List<TaskElement> getChildren();
 
+
     protected void setParent(TaskGroup taskGroup) {
         this.parent = taskGroup;
     }
+
+    public void detach() {
+        detachDependencies();
+        detachFromParent();
+    }
+
+    private void detachFromParent() {
+        if (parent != null) {
+            parent.remove(this);
+        }
+    }
+
+    private void removeDependenciesWithOrigin(TaskElement t) {
+        List<Dependency> dependenciesToRemove = getDependenciesWithOrigin(t);
+        dependenciesWithThisDestination.removeAll(dependenciesToRemove);
+    }
+
+    private void removeDependenciesWithDestination(TaskElement t) {
+        List<Dependency> dependenciesToRemove = getDependenciesWithDestination(t);
+        dependenciesWithThisOrigin.removeAll(dependenciesToRemove);
+    }
+
+    private List<Dependency> getDependenciesWithDestination(TaskElement t) {
+        ArrayList<Dependency> result = new ArrayList<Dependency>();
+        for (Dependency dependency : dependenciesWithThisOrigin) {
+            if (dependency.getDestination().equals(t)) {
+                result.add(dependency);
+            }
+        }
+        return result;
+    }
+
+    private List<Dependency> getDependenciesWithOrigin(TaskElement t) {
+        ArrayList<Dependency> result = new ArrayList<Dependency>();
+        for (Dependency dependency : dependenciesWithThisDestination) {
+            if (dependency.getOrigin().equals(t)) {
+                result.add(dependency);
+            }
+        }
+        return result;
+    }
+
+    private void detachDependencies() {
+        detachOutcomingDependencies();
+        detachIncomingDependencies();
+    }
+
+    private void detachIncomingDependencies() {
+        Set<TaskElement> tasksToNotify = new HashSet<TaskElement>();
+        for (Dependency dependency : dependenciesWithThisDestination) {
+            tasksToNotify.add(dependency.getOrigin());
+        }
+        for (TaskElement taskElement : tasksToNotify) {
+            taskElement.removeDependenciesWithDestination(this);
+        }
+    }
+
+    private void detachOutcomingDependencies() {
+        Set<TaskElement> tasksToNotify = new HashSet<TaskElement>();
+        for (Dependency dependency : dependenciesWithThisOrigin) {
+            tasksToNotify.add(dependency.getDestination());
+        }
+        for (TaskElement taskElement : tasksToNotify) {
+            taskElement.removeDependenciesWithOrigin(this);
+        }
+    }
+
 }
