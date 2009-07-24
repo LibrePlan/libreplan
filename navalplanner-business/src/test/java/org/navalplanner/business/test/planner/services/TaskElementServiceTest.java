@@ -114,6 +114,17 @@ public class TaskElementServiceTest {
         checkProperties(taskGroup, reloaded);
     }
 
+    @Test
+    public void theParentPropertyIsPresentWhenRetrievingTasks() {
+        TaskGroup taskGroup = createValidTaskGroup();
+        taskGroup.addTaskElement(createValidTask());
+        taskElementService.save(taskGroup);
+        flushAndEvict(taskGroup);
+        TaskElement reloaded = taskElementService.findById(taskGroup.getId());
+        TaskElement child = reloaded.getChildren().get(0);
+        assertThat(child.getParent(), equalTo(reloaded));
+    }
+
     private TaskGroup createValidTaskGroup() {
         TaskGroup result = new TaskGroup();
         OrderLine orderLine = createOrderLine();

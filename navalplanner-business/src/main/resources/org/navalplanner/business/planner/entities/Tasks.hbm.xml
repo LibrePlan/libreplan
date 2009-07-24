@@ -14,6 +14,8 @@
 
         <many-to-one name="orderElement" cascade="none" column="ORDER_ELEMENT_ID"/>
 
+        <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"/>
+
         <set name="dependenciesWithThisOrigin" cascade="all">
             <key column="ORIGIN"></key>
             <one-to-many class="Dependency" />

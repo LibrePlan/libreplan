@@ -109,6 +109,9 @@ public class Task extends TaskElement {
                     "the shares don't sum up the work hours");
         TaskGroup result = new TaskGroup();
         result.copyPropertiesFrom(this);
+        if (this.getParent() != null) {
+            this.getParent().addTaskElement(result);
+        }
         for (int i = 0; i < shares.length; i++) {
             Task task = Task.createTask(hoursGroup);
             task.copyPropertiesFrom(this);

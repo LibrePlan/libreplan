@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -36,6 +37,13 @@ public class TaskGroupTest {
         assertThat(taskElements.size(), equalTo(2));
         assertThat(taskGroup.getChildren(), equalTo(Arrays.asList(child1,
                 child2)));
+    }
+
+    @Test
+    public void addingTaskElementToTaskGroupSetsTheParentProperty() {
+        Task child = Task.createTask(new HoursGroup());
+        taskGroup.addTaskElement(child);
+        assertThat(child.getParent(), equalTo(taskGroup));
     }
 
     @Test(expected = IllegalArgumentException.class)

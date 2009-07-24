@@ -29,6 +29,8 @@ public abstract class TaskElement {
 
     private String notes;
 
+    private TaskGroup parent;
+
     @NotNull
     private OrderElement orderElement;
 
@@ -43,6 +45,10 @@ public abstract class TaskElement {
         this.notes = task.getNotes();
         this.startDate = task.getStartDate();
         this.orderElement = task.getOrderElement();
+    }
+
+    public TaskGroup getParent() {
+        return parent;
     }
 
     public String getName() {
@@ -142,4 +148,7 @@ public abstract class TaskElement {
 
     public abstract List<TaskElement> getChildren();
 
+    protected void setParent(TaskGroup taskGroup) {
+        this.parent = taskGroup;
+    }
 }

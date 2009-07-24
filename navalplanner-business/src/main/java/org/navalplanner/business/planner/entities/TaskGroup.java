@@ -15,6 +15,7 @@ public class TaskGroup extends TaskElement {
 
     public void addTaskElement(TaskElement task) {
         Validate.notNull(task);
+        task.setParent(this);
         taskElements.add(task);
     }
 

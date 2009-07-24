@@ -141,7 +141,9 @@ public class TaskElementTest {
     @Test
     public void splittingATaskIntoSeveralKeepsDependencies() {
         HoursGroup hoursGroup = new HoursGroup();
+        TaskGroup root = new TaskGroup();
         Task taskBeingSplitted = Task.createTask(hoursGroup);
+        root.addTaskElement(taskBeingSplitted);
         Task sourceDependencyTask = Task.createTask(new HoursGroup());
         Task destinationDependencyTask = Task.createTask(new HoursGroup());
         taskBeingSplitted.setName("prueba");
@@ -158,7 +160,7 @@ public class TaskElementTest {
 
         int[] shares = { 50, 50 };
         TaskGroup taskResultOfSplit = taskBeingSplitted.split(shares);
-
+        assertThat(taskResultOfSplit.getParent(), equalTo(root));
         assertThat(taskResultOfSplit.getDependenciesWithThisDestination()
                 .size(), equalTo(1));
         Dependency withTaskResultOfSplitDestination = taskResultOfSplit
