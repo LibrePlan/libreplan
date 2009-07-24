@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 
@@ -44,6 +45,34 @@ public class TaskTest {
         HoursGroup hours = new HoursGroup();
         hours.setWorkingHours(20);
         return Task.createTask(hours);
+    }
+
+    @Test
+    public void taskAddResourceAllocation() {
+        assertThat(task.getResourceAllocations().size(), equalTo(0));
+
+        SpecificResourceAllocation resourceAllocation = new SpecificResourceAllocation(
+                task);
+        task.addResourceAllocation(resourceAllocation);
+
+        assertThat(task.getResourceAllocations().size(), equalTo(1));
+        assertThat(
+                resourceAllocation.getTask().getResourceAllocations().size(),
+                equalTo(1));
+    }
+
+    @Test
+    public void taskRemoveResourceAllocation() {
+        assertThat(task.getResourceAllocations().size(), equalTo(0));
+
+        SpecificResourceAllocation resourceAllocation = new SpecificResourceAllocation(
+                task);
+        task.addResourceAllocation(resourceAllocation);
+
+        assertThat(task.getResourceAllocations().size(), equalTo(1));
+
+        task.removeResourceAllocation(resourceAllocation);
+        assertThat(task.getResourceAllocations().size(), equalTo(0));
     }
 
 }
