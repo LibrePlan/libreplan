@@ -31,7 +31,18 @@ public class PlanningState {
     }
 
     public Collection<? extends TaskElement> getToRemove() {
-        return Collections.unmodifiableCollection(toRemove);
+        return Collections.unmodifiableCollection(onlyNotTransient(toRemove));
+    }
+
+    private List<TaskElement> onlyNotTransient(
+            Collection<? extends TaskElement> toRemove) {
+        ArrayList<TaskElement> result = new ArrayList<TaskElement>();
+        for (TaskElement taskElement : toRemove) {
+            if (taskElement.getId() != null) {
+                result.add(taskElement);
+            }
+        }
+        return result;
     }
 
     public void removed(TaskElement taskElement) {
