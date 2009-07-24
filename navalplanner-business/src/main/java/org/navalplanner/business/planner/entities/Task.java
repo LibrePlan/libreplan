@@ -24,6 +24,8 @@ public class Task extends TaskElement {
 
     private Set<ResourceAllocation> resourceAllocations = new HashSet<ResourceAllocation>();
 
+    private Integer shareOfHours;
+
     /**
      * For hibernate, DO NOT USE
      */
@@ -91,6 +93,45 @@ public class Task extends TaskElement {
         }
 
         return true;
+	}
+
+    @Override
+    public Integer getWorkHours() {
+        if (shareOfHours != null)
+            return shareOfHours;
+        return hoursGroup.getWorkingHours();
+    }
+
+    public TaskGroup split(int... shares) {
+        int totalSumOfHours = sum(shares);
+        if (totalSumOfHours != getWorkHours())
+            throw new IllegalArgumentException(
+                    "the shares don't sum up the work hours");
+        TaskGroup result = new TaskGroup();
+        result.copyPropertiesFrom(this);
+        for (int i = 0; i < shares.length; i++) {
+            Task task = Task.createTask(hoursGroup);
+            task.copyPropertiesFrom(this);
+            result.addTaskElement(task);
+            task.shareOfHours = shares[i];
+        }
+        for (Dependency dependency : getDependenciesWithThisOrigin()) {
+            Dependency.createDependency(result, dependency
+                    .getDestination(), dependency.getType());
+        }
+        for (Dependency dependency : getDependenciesWithThisDestination()) {
+            Dependency.createDependency(dependency.getOrigin(), result,
+                    dependency.getType());
+        }
+        return result;
+    }
+
+    private int sum(int[] shares) {
+        int result = 0;
+        for (int share : shares) {
+            result += share;
+        }
+        return result;
     }
 
 }

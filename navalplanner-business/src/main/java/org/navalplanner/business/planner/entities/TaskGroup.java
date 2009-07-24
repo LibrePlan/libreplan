@@ -28,4 +28,9 @@ public class TaskGroup extends TaskElement {
         return false;
     }
 
+    @Override
+    public Integer getWorkHours() {
+        return getOrderElement().getWorkHours();
+    }
+
 }

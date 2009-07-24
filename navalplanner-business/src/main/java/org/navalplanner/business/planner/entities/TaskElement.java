@@ -36,6 +36,15 @@ public abstract class TaskElement {
 
     private Set<Dependency> dependenciesWithThisDestination = new HashSet<Dependency>();
 
+    public abstract Integer getWorkHours();
+
+    protected void copyPropertiesFrom(Task task) {
+        this.name = task.getName();
+        this.notes = task.getNotes();
+        this.startDate = task.getStartDate();
+        this.orderElement = task.getOrderElement();
+    }
+
     public String getName() {
         return name;
     }

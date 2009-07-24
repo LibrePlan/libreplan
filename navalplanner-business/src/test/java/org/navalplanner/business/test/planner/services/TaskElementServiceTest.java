@@ -188,11 +188,12 @@ public class TaskElementServiceTest {
     }
 
     @Test
-    public void aOrderLineWithOneHourIsConvertedToATask() {
+    public void aOrderLineWithOneHourGroupIsConvertedToATask() {
         OrderLine orderLine = new OrderLine();
         orderLine.setName("bla");
         orderLine.setCode("000000000");
-        HoursGroup hoursGroup = createHoursGroup(30);
+        final int hours = 30;
+        HoursGroup hoursGroup = createHoursGroup(hours);
         orderLine.addHoursGroup(hoursGroup);
         TaskElement taskElement = taskElementService
                 .convertToInitialSchedule(orderLine);
@@ -201,7 +202,9 @@ public class TaskElementServiceTest {
         Task group = (Task) taskElement;
         assertThat(group.getOrderElement(), equalTo((OrderElement) orderLine));
         assertThat(group.getHoursGroup(), equalTo(hoursGroup));
+        assertThat(taskElement.getWorkHours(), equalTo(hours));
     }
+
 
     @Test
     public void theSublinesOfAnOrderLineGroupAreConverted() {
@@ -225,6 +228,22 @@ public class TaskElementServiceTest {
         assertThat(group.getChildren().size(), equalTo(1));
         assertThat(group.getChildren().get(0).getOrderElement(),
                 equalTo((OrderElement) orderLine));
+    }
+
+    @Test
+    public void theWorkHoursOfATaskGroupAreTheSameThanTheTaskElement(){
+        OrderLineGroup orderLineGroup = new OrderLineGroup();
+        orderLineGroup.setName("foo");
+        orderLineGroup.setCode("000000000");
+        OrderLine orderLine = new OrderLine();
+        orderLine.setName("bla");
+        orderLine.setCode("000000000");
+        orderLine.addHoursGroup(createHoursGroup(20));
+        orderLine.addHoursGroup(createHoursGroup(30));
+        orderLineGroup.add(orderLine);
+        TaskElement task = taskElementService
+                .convertToInitialSchedule(orderLineGroup);
+        assertThat(task.getWorkHours(), equalTo(orderLineGroup.getWorkHours()));
     }
 
     @Test(expected = IllegalArgumentException.class)

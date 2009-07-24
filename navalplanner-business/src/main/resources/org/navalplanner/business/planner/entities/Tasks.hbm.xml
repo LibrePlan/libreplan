@@ -26,6 +26,7 @@
 
         <joined-subclass name="Task">
             <key column="TASK_ELEMENT_ID"></key>
+            <property name="shareOfHours"></property>
             <many-to-one name="hoursGroup" cascade="none"/>
             <set name="resourceAllocations" cascade="all-delete-orphan">
                 <key column="TASK" />
