@@ -66,6 +66,13 @@ public interface IGenericDao <E, PK extends Serializable>{
 
     public E find(PK id) throws InstanceNotFoundException;
 
+    /**
+     * Unlike <code>find(PK)</code>, it returns a runtime exception if the
+     * entity does not exist. So, this method should be used when the entity
+     * with the key passed as a parameter is supposed to exist.
+     */
+    public E findExistingEntity(PK id);
+
     public boolean exists(PK id);
 
     public void remove(PK id) throws InstanceNotFoundException;

@@ -78,7 +78,13 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
     }
 
     public E merge(E entity) {
-        return entityClass.cast(getSession().merge(entity));
+
+        try {
+            return entityClass.cast(getSession().merge(entity));
+        } catch (HibernateException e) {
+            throw convertHibernateAccessException(e);
+        }
+
     }
 
     public void checkVersion(E entity) {
@@ -159,6 +165,16 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
 
     }
 
+    public E findExistingEntity(PK id) {
+
+        try {
+            return find(id);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public boolean exists(final PK id) {
 
         try {
@@ -187,7 +203,13 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
     @SuppressWarnings("unchecked")
     @Override
     public <T extends E> List<T> list(Class<T> klass) {
-        return getSession().createCriteria(klass).list();
+
+        try {
+            return getSession().createCriteria(klass).list();
+        } catch (HibernateException e) {
+            throw convertHibernateAccessException(e);
+        }
+
     }
 
 }
