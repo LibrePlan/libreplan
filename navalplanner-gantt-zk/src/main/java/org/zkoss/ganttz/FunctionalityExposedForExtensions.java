@@ -117,7 +117,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
                 totalDependencies)) {
             this.diagramGraph.add(dependency);
         }
-        this.diagramGraph.applyAllRestrictions();
+        this.diagramGraph.enforceAllRestrictions();
     }
 
     @Override

@@ -55,13 +55,13 @@ public class GanttDiagramGraph {
 
                             @Override
                             public void propertyChange(PropertyChangeEvent evt) {
-                                update();
+                                enforce();
                             }
                         });
             }
         }
 
-        void update() {
+        void enforce() {
             Date newBeginDate = this.container
                     .getSmallestBeginDateFromChildren();
             this.container.setBeginDate(newBeginDate);
@@ -83,13 +83,13 @@ public class GanttDiagramGraph {
 
                         @Override
                         public void propertyChange(PropertyChangeEvent evt) {
-                            DependencyRulesEnforcer.this.update();
+                            DependencyRulesEnforcer.this.enforce();
                             updateOutgoing(DependencyRulesEnforcer.this.task);
                         }
                     });
         }
 
-        void update() {
+        void enforce() {
             Set<Dependency> incoming = graph.incomingEdgesOf(task);
             Date beginDate = task.getBeginDate();
             Date newStart = Dependency
@@ -104,14 +104,14 @@ public class GanttDiagramGraph {
         }
     }
 
-    public void applyAllRestrictions() {
+    public void enforceAllRestrictions() {
         for (DependencyRulesEnforcer rulesEnforcer : rulesEnforcersByTask
                 .values()) {
-            rulesEnforcer.update();
+            rulesEnforcer.enforce();
         }
         for (ParentShrinkingEnforcer parentShrinkingEnforcer : parentShrinkingEnforcerByTask
                 .values()) {
-            parentShrinkingEnforcer.update();
+            parentShrinkingEnforcer.enforce();
         }
     }
 
@@ -149,21 +149,21 @@ public class GanttDiagramGraph {
 
     private void update(List<DependencyRulesEnforcer> outgoing) {
         for (DependencyRulesEnforcer rulesEnforcer : outgoing) {
-            rulesEnforcer.update();
+            rulesEnforcer.enforce();
         }
     }
 
     public void remove(DependencyComponent dependencyComponent) {
         graph.removeEdge(dependencyComponent.getDependency());
         Task destination = dependencyComponent.getDependency().getDestination();
-        rulesEnforcersByTask.get(destination).update();
+        rulesEnforcersByTask.get(destination).enforce();
     }
 
     public void add(Dependency dependency) {
         Task source = dependency.getSource();
         Task destination = dependency.getDestination();
         graph.addEdge(source, destination, dependency);
-        getEnforcer(destination).update();
+        getEnforcer(destination).enforce();
     }
 
     private DependencyRulesEnforcer getEnforcer(Task destination) {
