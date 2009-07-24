@@ -3,12 +3,14 @@ package org.navalplanner.business.test.resources.entities;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.resources.entities.CriterionCompounder.atom;
+import static org.navalplanner.business.resources.entities.CriterionCompounder.buildAnd;
 import static org.navalplanner.business.resources.entities.CriterionCompounder.build;
 import static org.navalplanner.business.resources.entities.CriterionCompounder.not;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import org.junit.Test;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -23,8 +25,8 @@ import org.navalplanner.business.resources.entities.Worker;
  * Created at May 12, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class CriterionTest {
 
+public class CriterionTest {
     @Test
     public void testCreateWithAType() throws Exception {
         Criterion firedCriterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
@@ -59,6 +61,45 @@ public class CriterionTest {
 
         assertTrue(compositedCriterion.isSatisfiedBy(worker1));
         assertFalse(compositedCriterion.isSatisfiedBy(worker2));
+    }
+
+    @Test
+    public void testWorkerSatisfySeveralCriterions() {
+        Worker worker1 = new Worker();
+        Worker worker2 = new Worker();
+
+        ICriterion criterion1 = justThisResourcesCriterion(worker1);
+        ICriterion criterion2 = justThisResourcesCriterion(worker1);
+        ICriterion criterion3 = justThisResourcesCriterion(worker2);
+        ICriterion criterion4 = justThisResourcesCriterion(worker1, worker2);
+
+        assertTrue(criterion1.isSatisfiedBy(worker1));
+        assertFalse(criterion1.isSatisfiedBy(worker2));
+        assertTrue(criterion2.isSatisfiedBy(worker1));
+        assertFalse(criterion2.isSatisfiedBy(worker2));
+        assertFalse(criterion3.isSatisfiedBy(worker1));
+        assertTrue(criterion3.isSatisfiedBy(worker2));
+        assertTrue(criterion4.isSatisfiedBy(worker1));
+        assertTrue(criterion4.isSatisfiedBy(worker2));
+
+        List<ICriterion> criterionList1 = Arrays.asList(criterion1, criterion2);
+        List<ICriterion> criterionList2 = Arrays.asList(criterion1, criterion2,
+                criterion3);
+        List<ICriterion> criterionList3 = Arrays.asList(criterion3, criterion4);
+
+        ICriterion compositedCriterion1 = CriterionCompounder.buildAnd(
+                criterionList1).getResult();
+        ICriterion compositedCriterion2 = CriterionCompounder.buildAnd(
+                criterionList2).getResult();
+        ICriterion compositedCriterion3 = CriterionCompounder.buildAnd(
+                criterionList3).getResult();
+
+        assertTrue(compositedCriterion1.isSatisfiedBy(worker1));
+        assertFalse(compositedCriterion1.isSatisfiedBy(worker2));
+        assertFalse(compositedCriterion2.isSatisfiedBy(worker1));
+        assertFalse(compositedCriterion2.isSatisfiedBy(worker2));
+        assertFalse(compositedCriterion3.isSatisfiedBy(worker1));
+        assertTrue(compositedCriterion3.isSatisfiedBy(worker2));
     }
 
     @Test

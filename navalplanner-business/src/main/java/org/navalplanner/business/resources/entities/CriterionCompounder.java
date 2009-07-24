@@ -17,6 +17,14 @@ public class CriterionCompounder {
         return new CriterionCompounder();
     }
 
+    public static CriterionCompounder buildAnd(List<ICriterion> criterions) {
+        CriterionCompounder compounder = new CriterionCompounder();
+        for (ICriterion criterion : criterions) {
+            compounder = compounder.and(criterion);
+        }
+        return compounder;
+    }
+
     public static CriterionCompounder atom(ICriterion criterion) {
         return build().and(criterion);
     }
