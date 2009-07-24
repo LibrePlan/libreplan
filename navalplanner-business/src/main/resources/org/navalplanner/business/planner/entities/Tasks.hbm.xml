@@ -27,6 +27,10 @@
         <joined-subclass name="Task">
             <key column="TASK_ELEMENT_ID"></key>
             <many-to-one name="hoursGroup" cascade="none"/>
+            <set name="resourceAllocations" cascade="all">
+                <key column="TASK" />
+                <one-to-many class="ResourceAllocation" />
+            </set>
         </joined-subclass>
 
         <joined-subclass name="TaskGroup">

@@ -43,6 +43,9 @@
                 <value>
                     org/navalplanner/business/workreports/entities/WorkReports.hbm.xml
                 </value>
+                <value>
+                    org/navalplanner/business/planner/entities/ResourceAllocations.hbm.xml
+                </value>
                  <value>
                     TestEntities.hbm.xml
                 </value>

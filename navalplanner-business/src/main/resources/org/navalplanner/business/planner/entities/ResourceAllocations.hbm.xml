@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.planner.entities"
+    default-access="field">
+    <class name="ResourceAllocation">
+        <id name="id" column="id" type="long">
+            <generator class="native" />
+        </id>
+        <version name="version" type="long" />
+
+        <property name="percentage" />
+
+        <many-to-one class="Task" name="task" column="TASK" not-null="true" />
+
+        <joined-subclass name="SpecificResourceAllocation">
+            <key column="RESOURCE_ALLOCATION_ID" />
+            <many-to-one name="worker"
+                class="org.navalplanner.business.resources.entities.Worker" />
+        </joined-subclass>
+
+    </class>
+</hibernate-mapping>
