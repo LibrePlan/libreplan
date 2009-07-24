@@ -9,15 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.zkoss.ganttz.DependencyComponent;
 
 /**
- * This class contains a graph with the {@link Task tasks} as vertexes and
- * the {@link Dependency dependency} as arcs. It enforces the rules embodied
- * in the dependencies and in the duration of the tasks using listeners. <br/>
+ * This class contains a graph with the {@link Task tasks} as vertexes and the
+ * {@link Dependency dependency} as arcs. It enforces the rules embodied in the
+ * dependencies and in the duration of the tasks using listeners. <br/>
  * Created at Apr 24, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
@@ -28,13 +29,14 @@ public class GanttDiagramGraph {
 
     private Map<Task, DependencyRulesEnforcer> rulesEnforcersByTask = new HashMap<Task, DependencyRulesEnforcer>();
 
+    private Map<Task, ParentShrinkingEnforcer> parentShrinkingEnforcerByTask = new WeakHashMap<Task, ParentShrinkingEnforcer>();
+
     private List<Task> topLevelTasks = new ArrayList<Task>();
 
     private List<DependencyRulesEnforcer> getOutgoing(Task task) {
         ArrayList<DependencyRulesEnforcer> result = new ArrayList<DependencyRulesEnforcer>();
         for (Dependency dependency : graph.outgoingEdgesOf(task)) {
-            result.add(rulesEnforcersByTask
-                    .get(dependency.getDestination()));
+            result.add(rulesEnforcersByTask.get(dependency.getDestination()));
         }
         return result;
     }
@@ -53,15 +55,18 @@ public class GanttDiagramGraph {
 
                             @Override
                             public void propertyChange(PropertyChangeEvent evt) {
-                                Date newBeginDate = container
-                                        .getSmallestBeginDateFromChildren();
-                                container.setBeginDate(newBeginDate);
-                                Date newEndDate = container
-                                        .getBiggestDateFromChildren();
-                                container.setEndDate(newEndDate);
+                                update();
                             }
                         });
             }
+        }
+
+        void update() {
+            Date newBeginDate = this.container
+                    .getSmallestBeginDateFromChildren();
+            this.container.setBeginDate(newBeginDate);
+            Date newEndDate = this.container.getBiggestDateFromChildren();
+            this.container.setEndDate(newEndDate);
         }
 
     }
@@ -87,8 +92,8 @@ public class GanttDiagramGraph {
         void update() {
             Set<Dependency> incoming = graph.incomingEdgesOf(task);
             Date beginDate = task.getBeginDate();
-            Date newStart = Dependency.calculateStart(task, beginDate,
-                    incoming);
+            Date newStart = Dependency
+                    .calculateStart(task, beginDate, incoming);
             if (!beginDate.equals(newStart))
                 task.setBeginDate(newStart);
             Date endDate = task.getEndDate();
@@ -104,6 +109,10 @@ public class GanttDiagramGraph {
                 .values()) {
             rulesEnforcer.update();
         }
+        for (ParentShrinkingEnforcer parentShrinkingEnforcer : parentShrinkingEnforcerByTask
+                .values()) {
+            parentShrinkingEnforcer.update();
+        }
     }
 
     public void addTopLevel(Task task) {
@@ -115,11 +124,12 @@ public class GanttDiagramGraph {
         graph.addVertex(task);
         rulesEnforcersByTask.put(task, new DependencyRulesEnforcer(task));
         if (task.isContainer()) {
-            new ParentShrinkingEnforcer((TaskContainer) task);
+            ParentShrinkingEnforcer parentShrinkingEnforcer = new ParentShrinkingEnforcer(
+                    (TaskContainer) task);
+            parentShrinkingEnforcerByTask.put(task, parentShrinkingEnforcer);
             for (Task child : task.getTasks()) {
                 addTask(child);
-                add(new Dependency(child, task, DependencyType.END_END,
-                        false));
+                add(new Dependency(child, task, DependencyType.END_END, false));
                 add(new Dependency(task, child, DependencyType.START_START,
                         false));
             }
