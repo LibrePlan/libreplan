@@ -90,6 +90,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             T data, TaskContainer parent) {
         ITaskFundamentalProperties adapted = adapter.adapt(data);
         accumulatedDependencies.addAll(adapter.getOutcomingDependencies(data));
+        accumulatedDependencies.addAll(adapter.getIncomingDependencies(data));
         final Task result;
         if (navigator.isLeaf(data)) {
             result = new TaskLeaf(adapted);

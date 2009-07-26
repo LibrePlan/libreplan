@@ -7,6 +7,7 @@ package org.zkoss.ganttz;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,7 +65,8 @@ public class TaskList extends XulElement implements AfterCompose {
         return result;
     }
 
-    public List<DependencyComponent> asDependencyComponents(List<Dependency> dependencies) {
+    public List<DependencyComponent> asDependencyComponents(
+            Collection<? extends Dependency> dependencies) {
         List<? extends Object> children = getChildren();
         List<TaskComponent> taskComponents = Planner.findComponentsOfType(TaskComponent.class, children);
         Map<Task, TaskComponent> taskComponentByTask = new HashMap<Task, TaskComponent>();

@@ -66,6 +66,8 @@ public class Planner extends XulElement {
     }
 
     public DependencyList getDependencyList() {
+        if (ganttPanel == null)
+            return null;
         List<Object> children = ganttPanel.getChildren();
         List<DependencyList> found = findComponentsOfType(DependencyList.class,
                 children);
@@ -108,6 +110,17 @@ public class Planner extends XulElement {
         if (taskList != null && leftPane != null) {
             taskList.addTask(newTask);
             leftPane.addTask(newTask);
+        }
+    }
+
+    void addDependencies(Collection<? extends Dependency> dependencies) {
+        DependencyList dependencyList = getDependencyList();
+        if (dependencyList == null) {
+            return;
+        }
+        for (DependencyComponent d : getTaskList().asDependencyComponents(
+                dependencies)) {
+            dependencyList.addDependencyComponent(d);
         }
     }
 
@@ -236,7 +249,6 @@ public class Planner extends XulElement {
 
     void dependencyRemoved(DependencyComponent dependencyComponent) {
         diagramGraph.remove(dependencyComponent);
-        dependencyAdder.removeDependency(dependencyComponent
-                .getDependency());
+        dependencyAdder.removeDependency(dependencyComponent.getDependency());
     }
 }

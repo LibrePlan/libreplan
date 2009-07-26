@@ -166,6 +166,10 @@ public class GanttDiagramGraph {
         getEnforcer(destination).enforce();
     }
 
+    public boolean contains(Dependency dependency) {
+        return graph.containsEdge(dependency);
+    }
+
     private DependencyRulesEnforcer getEnforcer(Task destination) {
         return rulesEnforcersByTask.get(destination);
     }
