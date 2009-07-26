@@ -175,6 +175,68 @@ public class MutableTreeModelTest {
     }
 
     @Test
+    public void canAddSeveral() {
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
+        final ArrayList<TreeDataEvent> eventsFired = new ArrayList<TreeDataEvent>();
+        model.addTreeDataListener(new TreeDataListener() {
+
+            @Override
+            public void onChange(TreeDataEvent event) {
+                eventsFired.add(event);
+            }
+        });
+
+        Prueba child1 = new Prueba();
+        Prueba child2 = new Prueba();
+        model.add(model.getRoot(), Arrays.asList(child1, child2));
+        assertThat(eventsFired.size(), equalTo(1));
+        TreeDataEvent event = getLast(eventsFired);
+        checkIsValid(event, TreeDataEvent.INTERVAL_ADDED, model.getRoot(), 0, 1);
+    }
+
+    @Test
+    public void canAddSeveralAtPosition() {
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
+        Prueba p1 = new Prueba();
+        model.add(model.getRoot(), p1);
+        Prueba p2 = new Prueba();
+        Prueba p3 = new Prueba();
+        model.add(model.getRoot(), 0, Arrays.asList(p2, p3));
+        assertThat(model.getChild(model.getRoot(), 0), equalTo(p2));
+        assertThat(model.getChild(model.getRoot(), 1), equalTo(p3));
+        assertThat(model.getChild(model.getRoot(), 2), equalTo(p1));
+    }
+
+    @Test
+    public void canAddSeveralAtPositionSendEventsWithCorrectValue() {
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
+        Prueba p1 = new Prueba();
+        model.add(model.getRoot(), p1);
+        final ArrayList<TreeDataEvent> eventsFired = new ArrayList<TreeDataEvent>();
+        model.addTreeDataListener(new TreeDataListener() {
+
+            @Override
+            public void onChange(TreeDataEvent event) {
+                eventsFired.add(event);
+            }
+        });
+        model
+                .add(model.getRoot(), 0, Arrays.asList(new Prueba(),
+                        new Prueba()));
+        TreeDataEvent event = getLast(eventsFired);
+        checkIsValid(event, TreeDataEvent.INTERVAL_ADDED, model.getRoot(), 0, 1);
+    }
+
+    @Test
+    public void addingSeveralGroupsEvents() {
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
+        Prueba child1 = new Prueba();
+        Prueba child2 = new Prueba();
+        model.add(model.getRoot(), Arrays.asList(child1, child2));
+        assertThat(model.getChildCount(model.getRoot()), equalTo(2));
+    }
+
+    @Test
     public void aNodeCanBeRemoved() {
         MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
         Prueba prueba1 = new Prueba();
@@ -242,9 +304,16 @@ public class MutableTreeModelTest {
 
     private void checkIsValid(TreeDataEvent event, int type,
             Prueba expectedParent, int expectedPosition) {
+        checkIsValid(event, type, expectedParent, expectedPosition,
+                expectedPosition);
+    }
+
+    private void checkIsValid(TreeDataEvent event, int type,
+            Prueba expectedParent, int expectedFromPosition,
+            int expectedToPosition) {
         assertEquals(expectedParent, event.getParent());
-        assertThat(event.getIndexFrom(), equalTo(expectedPosition));
-        assertThat(event.getIndexTo(), equalTo(expectedPosition));
+        assertThat(event.getIndexFrom(), equalTo(expectedFromPosition));
+        assertThat(event.getIndexTo(), equalTo(expectedToPosition));
         assertThat(event.getType(), equalTo(type));
     }
 

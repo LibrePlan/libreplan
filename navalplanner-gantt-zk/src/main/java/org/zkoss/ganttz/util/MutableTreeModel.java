@@ -1,6 +1,8 @@
 package org.zkoss.ganttz.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +27,15 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
             this.value = value;
         }
 
-        public void add(Node<T> node) {
-            node.parentNode = this;
-            children.add(node);
+        public void addAll(Integer position, List<Node<T>> nodes) {
+            for (Node<T> n : nodes) {
+                n.parentNode = this;
+            }
+            if (position == null) {
+                children.addAll(nodes);
+            } else {
+                children.addAll(position, nodes);
+            }
         }
 
         private void until(LinkedList<Integer> result, Node<T> parent) {
@@ -75,8 +83,20 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
 
     private Map<T, Node<T>> nodesByDomainObject = new WeakHashMap<T, Node<T>>();
 
-    private static <T> Node<T> wrap(T object) {
+    private static <T> Node<T> wrapOne(T object) {
         return new Node<T>(object);
+    }
+
+    private static <T> List<Node<T>> wrap(T... objects) {
+        return wrap(Arrays.asList(objects));
+    }
+
+    private static <T> List<Node<T>> wrap(Collection<? extends T> objects) {
+        List<Node<T>> result = new ArrayList<Node<T>>();
+        for (T o : objects) {
+            result.add(wrapOne(o));
+        }
+        return result;
     }
 
     private Node<T> find(Object domainObject) {
@@ -92,7 +112,7 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
     }
 
     public static <T> MutableTreeModel<T> create(Class<T> type, T root) {
-        return new MutableTreeModel<T>(type, wrap(root));
+        return new MutableTreeModel<T>(type, wrapOne(root));
     }
 
     private MutableTreeModel(Class<T> type, Node<T> root) {
@@ -146,20 +166,39 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         return node.children.isEmpty();
     }
 
+    @SuppressWarnings("unchecked")
     public void addToRoot(T child) {
-        add(root, wrap(child));
+        add(root, null, wrap(child));
     }
 
-    private void add(Node<T> parent, Node<T> child) {
-        parent.add(child);
-        nodesByDomainObject.put(unwrap(child), child);
-        final int position = parent.children.size() - 1;
-        fireEvent(unwrap(parent), position, position,
+    private void add(Node<T> parent, Integer position, List<Node<T>> children) {
+        int indexFrom = position == null ? parent.children.size() : position;
+        int indexTo = indexFrom + children.size() - 1;
+        parent.addAll(position, children);
+        addToNodesAndDomainMapping(children);
+        fireEvent(unwrap(parent), indexFrom, indexTo,
                 TreeDataEvent.INTERVAL_ADDED);
     }
 
+    private void addToNodesAndDomainMapping(Collection<Node<T>> children) {
+        for (Node<T> child : children) {
+            nodesByDomainObject.put(unwrap(child), child);
+        }
+    }
+
     public void add(T parent, T child) {
-        add(find(parent), wrap(child));
+        ArrayList<T> children = new ArrayList<T>();
+        children.add(child);
+        add(parent, children);
+    }
+
+    public void add(T parent, int position, Collection<? extends T> children) {
+        add(find(parent), position, wrap(children));
+    }
+
+    public void add(T parent, Collection<? extends T> children) {
+        Node<T> parentNode = find(parent);
+        add(parentNode, null, wrap(children));
     }
 
     public void remove(T node) {
