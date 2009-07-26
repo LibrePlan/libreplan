@@ -89,8 +89,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     private Task extractTask(List<DomainDependency<T>> accumulatedDependencies,
             T data, TaskContainer parent) {
         ITaskFundamentalProperties adapted = adapter.adapt(data);
-        accumulatedDependencies
-                .addAll(adapter.getDependenciesOriginating(data));
+        accumulatedDependencies.addAll(adapter.getOutcomingDependencies(data));
         final Task result;
         if (navigator.isLeaf(data)) {
             result = new TaskLeaf(adapted);

@@ -156,7 +156,7 @@ public class DataForPlanner {
         return new PlannerConfiguration<ITaskFundamentalProperties>(
                 new AutoAdapter() {
                     @Override
-                    public List<DomainDependency<ITaskFundamentalProperties>> getDependenciesOriginating(
+                    public List<DomainDependency<ITaskFundamentalProperties>> getOutcomingDependencies(
                             ITaskFundamentalProperties object) {
                         List<DomainDependency<ITaskFundamentalProperties>> result = new ArrayList<DomainDependency<ITaskFundamentalProperties>>();
                         if (child1 == object) {

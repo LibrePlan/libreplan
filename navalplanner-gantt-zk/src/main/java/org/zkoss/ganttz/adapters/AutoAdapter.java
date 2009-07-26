@@ -17,7 +17,13 @@ public class AutoAdapter implements
     }
 
     @Override
-    public List<DomainDependency<ITaskFundamentalProperties>> getDependenciesOriginating(
+    public List<DomainDependency<ITaskFundamentalProperties>> getOutcomingDependencies(
+            ITaskFundamentalProperties object) {
+        return new ArrayList<DomainDependency<ITaskFundamentalProperties>>();
+    }
+
+    @Override
+    public List<DomainDependency<ITaskFundamentalProperties>> getIncomingDependencies(
             ITaskFundamentalProperties object) {
         return new ArrayList<DomainDependency<ITaskFundamentalProperties>>();
     }

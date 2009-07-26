@@ -1,9 +1,9 @@
 package org.navalplanner.web.planner;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.Dependency;
@@ -115,13 +115,25 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     }
 
     @Override
-    public List<DomainDependency<TaskElement>> getDependenciesOriginating(
+    public List<DomainDependency<TaskElement>> getIncomingDependencies(
             TaskElement taskElement) {
-        Set<Dependency> dependenciesWithThisOrigin = taskElement
-                .getDependenciesWithThisOrigin();
+        return toDomainDependencies(taskElement
+                .getDependenciesWithThisDestination());
+    }
+
+    @Override
+    public List<DomainDependency<TaskElement>> getOutcomingDependencies(
+            TaskElement taskElement) {
+        return toDomainDependencies(taskElement
+                .getDependenciesWithThisOrigin());
+    }
+
+    private List<DomainDependency<TaskElement>> toDomainDependencies(
+            Collection<? extends Dependency> dependencies) {
         List<DomainDependency<TaskElement>> result = new ArrayList<DomainDependency<TaskElement>>();
-        for (Dependency dependency : dependenciesWithThisOrigin) {
-            result.add(DomainDependency.createDependency(taskElement,
+        for (Dependency dependency : dependencies) {
+            result.add(DomainDependency.createDependency(
+                    dependency.getOrigin(),
                     dependency.getDestination(), toGanntType(dependency
                             .getType())));
         }
@@ -175,4 +187,5 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         source.removeDependencyWithDestination(dependency.getDestination(),
                 type);
     }
+
 }

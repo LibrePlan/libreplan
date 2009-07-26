@@ -12,7 +12,9 @@ public interface IAdapterToTaskFundamentalProperties<T> {
 
     public ITaskFundamentalProperties adapt(T object);
 
-    public List<DomainDependency<T>> getDependenciesOriginating(T object);
+    public List<DomainDependency<T>> getOutcomingDependencies(T object);
+
+    public List<DomainDependency<T>> getIncomingDependencies(T object);
 
     public boolean canAddDependency(DomainDependency<T> dependency);
 
