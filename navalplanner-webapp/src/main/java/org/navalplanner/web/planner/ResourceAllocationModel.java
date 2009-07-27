@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.LockMode;
+import org.hibernate.SessionFactory;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IHoursGroupDao;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -26,7 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Model for UI operations related to {@link Task}.
+ * Model for UI operations related to {@link Task}
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
@@ -39,6 +41,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Autowired
     private IWorkerDao workerDAO;
+
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Autowired
     private IHoursGroupDao hoursGroupDAO;
@@ -139,28 +144,38 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public Worker getWorker() {
         if (resourceAllocation == null) {
             return null;
         }
-        return ((SpecificResourceAllocation) resourceAllocation).getWorker();
+        Worker worker = ((SpecificResourceAllocation) resourceAllocation)
+                .getWorker();
+        if(worker == null) {
+            return null;
+        }
+        try {
+            return workerDAO.find(worker.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean workerSatisfiesCriterions() {
+
+        for (Criterion criterion : getCriterions()) {
+            sessionFactory.getCurrentSession().lock(criterion, LockMode.NONE);
+        }
+
         Worker worker = getWorker();
+
         if (worker == null) {
             return true;
         }
-
-        List<ICriterion> criterions = new ArrayList<ICriterion>(getCriterions());
-        if (criterions.isEmpty()) {
-            return true;
-        }
-
-        ICriterion compositedCriterion = CriterionCompounder.buildAnd(criterions)
-                .getResult();
+        ICriterion compositedCriterion = CriterionCompounder.buildAnd(
+                new ArrayList<ICriterion>(getCriterions())).getResult();
         return compositedCriterion.isSatisfiedBy(worker);
     }
-
 }
