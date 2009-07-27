@@ -10,6 +10,7 @@ import org.navalplanner.business.orders.daos.IOrderElementDao;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.services.CriterionService;
@@ -30,6 +31,9 @@ public class OrderElementModel implements IOrderElementModel {
 
     @Autowired
     private IOrderElementDao orderElementDao;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDao;
 
     @Autowired
     private ICriterionsBootstrap criterionsBootstrap;
@@ -55,7 +59,11 @@ public class OrderElementModel implements IOrderElementModel {
         Set<HoursGroup> transientHoursGroups = orderElement
                 .getTransientHoursGroups();
         orderElementDao.save(orderElement);
-        orderElement.forceLoadHourGroupsCriterions();
+
+        for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+            hoursGroup.getCriterions().size();
+        }
+
         if (wasTransient) {
             orderElement.makeTransientAgain();
         }
@@ -94,5 +102,20 @@ public class OrderElementModel implements IOrderElementModel {
     @Override
     public List<Criterion> getCriterionsFor(CriterionType type) {
         return (List<Criterion>) order.getCriterionsFor(type);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Criterion> getCriterionsHoursGroup(HoursGroup hoursGroup) {
+        return hoursGroup.getCriterions();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CriterionType getCriterionType(Criterion criterion) {
+        CriterionType criterionType = criterion.getType();
+        criterionTypeDao.save(criterionType);
+        criterionType.getName();
+        return criterionType;
     }
 }

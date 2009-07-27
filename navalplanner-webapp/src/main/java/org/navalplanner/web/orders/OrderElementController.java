@@ -357,10 +357,13 @@ public class OrderElementController extends GenericForwardComposer {
             Set<CriterionType> criterionTypes = new LinkedHashSet<CriterionType>();
 
             for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
-                Set<Criterion> criterions = hoursGroup.getCriterions();
+                Set<Criterion> criterions = model
+                        .getCriterionsHoursGroup(hoursGroup);
                 for (Criterion criterion : criterions) {
-                    CriterionType type = criterion.getType();
-                    criterionTypes.add(model.getCriterionTypeByName(type.getName()));
+                    CriterionType type = model.getCriterionType(criterion);
+                    CriterionType criterionTypeByName = model
+                            .getCriterionTypeByName(type.getName());
+                    criterionTypes.add(criterionTypeByName);
                 }
             }
 

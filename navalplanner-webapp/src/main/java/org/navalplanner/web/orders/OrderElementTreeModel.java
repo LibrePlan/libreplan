@@ -27,7 +27,7 @@ public class OrderElementTreeModel extends SimpleTreeModel {
     }
 
     private static SimpleTreeNode asNode(OrderElement orderElement) {
-        orderElement.forceLoadHourGroups();
+        orderElement.getHoursGroups().size();
         return new SimpleTreeNode(orderElement, asNodes(orderElement
                 .getChildren()));
     }

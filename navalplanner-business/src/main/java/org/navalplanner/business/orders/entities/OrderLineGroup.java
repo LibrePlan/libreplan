@@ -2,6 +2,7 @@ package org.navalplanner.business.orders.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.hibernate.validator.Valid;
 
 public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
@@ -89,17 +90,4 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
         return hoursGroups;
     }
 
-    @Override
-    public void forceLoadHourGroups() {
-        for (OrderElement orderElement : children) {
-            orderElement.forceLoadHourGroups();
-        }
-    }
-
-    @Override
-    public void forceLoadHourGroupsCriterions() {
-        for (OrderElement orderElement : children) {
-            orderElement.forceLoadHourGroupsCriterions();
-        }
-    }
 }

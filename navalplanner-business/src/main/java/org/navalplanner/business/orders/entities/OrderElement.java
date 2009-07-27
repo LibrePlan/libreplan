@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.planner.entities.TaskElement;
 
@@ -113,10 +112,6 @@ public abstract class OrderElement {
     public abstract OrderLine toLeaf();
 
     public abstract OrderLineGroup toContainer();
-
-    public abstract void forceLoadHourGroups();
-
-    public abstract void forceLoadHourGroupsCriterions();
 
     public void makeTransientAgain() {
         // FIXME Review reattachment

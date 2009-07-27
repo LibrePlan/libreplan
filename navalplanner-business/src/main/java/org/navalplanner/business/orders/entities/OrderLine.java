@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.navalplanner.business.resources.entities.Criterion;
-
 public class OrderLine extends OrderElement {
 
     public static OrderLine createOrderLineWithUnfixedHours(int hours) {
@@ -323,22 +321,6 @@ public class OrderLine extends OrderElement {
                     hoursGroup.setPercentage(percentage);
                 }
             }
-        }
-    }
-
-    @Override
-    public void forceLoadHourGroups() {
-        for (HoursGroup hoursGroup : hoursGroups) {
-            for (Criterion c : hoursGroup.getCriterions()) {
-                c.getType().getName();
-            }
-        }
-    }
-
-    @Override
-    public void forceLoadHourGroupsCriterions() {
-        for (HoursGroup hoursGroup : hoursGroups) {
-            hoursGroup.forceLoadCriterions();
         }
     }
 
