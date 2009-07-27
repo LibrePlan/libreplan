@@ -21,6 +21,13 @@ public class OrderPlanningController implements
         IOrderPlanningControllerEntryPoints {
 
     @Autowired
+    private ResourceAllocationController resourceAllocationController;
+
+    public ResourceAllocationController getResourceAllocationController() {
+        return resourceAllocationController;
+    }
+
+    @Autowired
     private IURLHandlerRegistry urlHandlerRegistry;
 
     @Autowired
@@ -33,7 +40,8 @@ public class OrderPlanningController implements
 
     @Override
     public void showSchedule(Order order) {
-        model.createConfiguration(order, new ConfigurationOnTransaction() {
+        model.createConfiguration(order, resourceAllocationController,
+                new ConfigurationOnTransaction() {
 
             @Override
             public void use(PlannerConfiguration<TaskElement> configuration) {

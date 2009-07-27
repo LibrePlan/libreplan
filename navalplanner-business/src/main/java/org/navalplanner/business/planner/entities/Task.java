@@ -65,8 +65,4 @@ public class Task extends TaskElement {
         resourceAllocations.remove(resourceAllocation);
     }
 
-    public void forceLoadResourceAllocations() {
-        resourceAllocations.size();
-    }
-
 }

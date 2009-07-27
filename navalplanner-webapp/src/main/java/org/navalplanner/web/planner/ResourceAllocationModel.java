@@ -1,0 +1,166 @@
+package org.navalplanner.web.planner;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.daos.IHoursGroupDao;
+import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
+import org.navalplanner.business.planner.daos.ITaskElementDao;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.resources.daos.IWorkerDao;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionCompounder;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.ICriterion;
+import org.navalplanner.business.resources.entities.Worker;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Model for UI operations related to {@link Task}.
+ *
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ */
+@Service
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+public class ResourceAllocationModel implements IResourceAllocationModel {
+
+    @Autowired
+    private ITaskElementDao taskElementDAO;
+
+    @Autowired
+    private IWorkerDao workerDAO;
+
+    @Autowired
+    private IHoursGroupDao hoursGroupDAO;
+
+    @Autowired
+    private IResourceAllocationDAO resourceAllocationDAO;
+
+    private Task task;
+
+    private ResourceAllocation resourceAllocation;
+
+    @Override
+    @Transactional(readOnly = true)
+    public void setTask(Task task) {
+        taskElementDAO.save(task);
+        task.getResourceAllocations().size();
+
+        HoursGroup hoursGroup = task.getHoursGroup();
+        hoursGroupDAO.save(hoursGroup);
+        hoursGroup.getCriterions().size();
+
+        this.task = task;
+    }
+
+    @Override
+    public Task getTask() {
+        return task;
+    }
+
+    @Override
+    public void addResourceAllocation() {
+        ResourceAllocation resourceAllocation = new SpecificResourceAllocation(
+                task);
+        task.addResourceAllocation(resourceAllocation);
+    }
+
+    @Override
+    public void removeResourceAllocation(ResourceAllocation resourceAllocation) {
+        task.removeResourceAllocation(resourceAllocation);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Worker findWorkerByNif(String nif) {
+        try {
+            return workerDAO.findUniqueByNif(nif);
+        } catch (InstanceNotFoundException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public void setWorker(SpecificResourceAllocation resourceAllocation,
+            Worker worker) {
+        resourceAllocation.setWorker(worker);
+    }
+
+    @Override
+    public Set<Criterion> getCriterions() {
+        if (task == null) {
+            return new HashSet<Criterion>();
+        }
+        return task.getHoursGroup().getCriterions();
+    }
+
+    @Override
+    public Set<ResourceAllocation> getResourceAllocations() {
+        if (task == null) {
+            return new HashSet<ResourceAllocation>();
+        }
+        return task.getResourceAllocations();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void setResourceAllocation(ResourceAllocation resourceAllocation) {
+        boolean wasTransient = resourceAllocation.isTransient();
+
+        resourceAllocationDAO.save(resourceAllocation);
+
+        Worker worker = ((SpecificResourceAllocation) resourceAllocation)
+                .getWorker();
+        if (worker != null) {
+            workerDAO.save(worker);
+            Set<CriterionSatisfaction> criterionSatisfactions = worker
+                    .getAllSatisfactions();
+            for (CriterionSatisfaction criterionSatisfaction : criterionSatisfactions) {
+                criterionSatisfaction.getCriterion().getName();
+                criterionSatisfaction.getCriterion().getType().getName();
+            }
+        }
+
+        if (wasTransient) {
+            resourceAllocation.makeTransientAgain();
+        }
+
+        this.resourceAllocation = resourceAllocation;
+    }
+
+    @Override
+    public Worker getWorker() {
+        if (resourceAllocation == null) {
+            return null;
+        }
+        return ((SpecificResourceAllocation) resourceAllocation).getWorker();
+    }
+
+    @Override
+    public boolean workerSatisfiesCriterions() {
+        Worker worker = getWorker();
+        if (worker == null) {
+            return true;
+        }
+
+        List<ICriterion> criterions = new ArrayList<ICriterion>(getCriterions());
+        if (criterions.isEmpty()) {
+            return true;
+        }
+
+        ICriterion compositedCriterion = CriterionCompounder.buildAnd(criterions)
+                .getResult();
+        return compositedCriterion.isSatisfiedBy(worker);
+    }
+
+}

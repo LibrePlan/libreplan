@@ -1,13 +1,16 @@
 <?page title="Navalpro: Scheduling"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="stylesheet" type="text/css" href="/planner/css/ganttzk.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
 
 <zscript><![CDATA[
     plannerData = new org.navalplanner.web.planner.DataForPlanner();
+    allocationController = resourceAllocationController;
 ]]>
 </zscript>
     <!-- choose lightLoad, mediumLoad or highLoad.

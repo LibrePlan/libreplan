@@ -1,11 +1,18 @@
 <?page title="Navalpro: Scheduling"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="stylesheet" type="text/css" href="/planner/css/ganttzk.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
 <zk>
+
+	<zscript><![CDATA[
+		planningController = orderPlanningController;
+		allocationController = planningController.resourceAllocationController;
+    ]]>
+    </zscript>
 
     <planner id="planner" self="@{define(content)}">
         <div id="idContextMenuTaskAssigment"></div>
@@ -35,8 +42,38 @@
         <button id="ok" label=" ${c:l('task.ok')}" />
     </popup>
 
-    <zscript><![CDATA[
-        orderPlanningController.registerPlanner(planner);
+    <window id="resourceAllocationWindow" visible="false" apply="${allocationController}">
+        <vbox>
+            <label value="Required criterions" />
+            <listbox id="requiredCriterions"
+                model="@{allocationController.criterions}">
+               <listitem self="@{each='criterion'}">
+                    <listcell label="@{criterion.name}"></listcell>
+                </listitem>
+            </listbox>
+            <hbox>
+                <button id="addResourceAllocation" label="Add"
+                    onClick="allocationController.addResourceAllocation();" />
+                <button id="removeResourceAllocation" label="Remove"
+                    onClick="allocationController.removeResourceAllocation();" />
+            </hbox>
+            <listbox id="resourcesList"
+                model="@{allocationController.resourceAllocations}"
+                itemRenderer="@{allocationController.resourceAllocationRenderer}">
+                <listhead>
+                    <listheader label="Resource" />
+                    <listheader label="Percentage" />
+                    <listheader label="Message" />
+                </listhead>
+            </listbox>
+            <button id="closeResourceAllocationWindow" label="Back"
+                onClick="allocationController.back();" />
+        </vbox>
+    </window>
+
+	<zscript><![CDATA[
+        planningController.registerPlanner(planner);
     ]]>
     </zscript>
+
 </zk>

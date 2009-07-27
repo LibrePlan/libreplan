@@ -27,7 +27,7 @@
         <joined-subclass name="Task">
             <key column="TASK_ELEMENT_ID"></key>
             <many-to-one name="hoursGroup" cascade="none"/>
-            <set name="resourceAllocations" cascade="all">
+            <set name="resourceAllocations" cascade="all-delete-orphan">
                 <key column="TASK" />
                 <one-to-many class="ResourceAllocation" />
             </set>

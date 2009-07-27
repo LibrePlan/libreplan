@@ -10,7 +10,7 @@
 
         <property name="percentage" />
 
-        <many-to-one class="Task" name="task" column="TASK" not-null="true" />
+        <many-to-one class="Task" name="task" column="TASK" />
 
         <joined-subclass name="SpecificResourceAllocation">
             <key column="RESOURCE_ALLOCATION_ID" />

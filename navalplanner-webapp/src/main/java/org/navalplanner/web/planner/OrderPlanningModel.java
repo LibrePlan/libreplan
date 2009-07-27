@@ -39,17 +39,25 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
+    @Override
     @Transactional(readOnly = true)
     public void createConfiguration(Order order,
+            ResourceAllocationController resourceAllocationController,
             ConfigurationOnTransaction onTransaction) {
         Order orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled())
             throw new IllegalArgumentException("the order " + order
                     + " must be scheduled");
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
+
         ISaveCommand saveCommand = getSaveCommand();
         saveCommand.setState(state);
         configuration.addGlobalCommand(saveCommand);
+        IResourceAllocationCommand resourceAllocationCommand = getResourceAllocationCommand();
+        resourceAllocationCommand
+                .setResourceAllocationController(resourceAllocationController);
+        configuration.addCommandOnTask(resourceAllocationCommand);
+
         onTransaction.use(configuration);
     }
 
@@ -81,6 +89,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract ITaskElementAdapter getTaskElementAdapter();
 
     protected abstract ISaveCommand getSaveCommand();
+
+    protected abstract IResourceAllocationCommand getResourceAllocationCommand();
 
     private Order reload(Order order) {
         try {

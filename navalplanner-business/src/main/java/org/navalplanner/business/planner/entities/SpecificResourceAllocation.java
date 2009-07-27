@@ -31,10 +31,4 @@ public class SpecificResourceAllocation extends ResourceAllocation {
         this.worker = worker;
     }
 
-    public void forceLoadWorker() {
-        if (worker != null) {
-            worker.getId();
-        }
-    }
-
 }
