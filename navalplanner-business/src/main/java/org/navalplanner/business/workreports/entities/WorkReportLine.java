@@ -12,40 +12,40 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public class WorkReportLine {
 
-	private Long id;
+    private Long id;
 
-	@SuppressWarnings("unused")
-	private long version;
+    @SuppressWarnings("unused")
+    private long version;
 
-	Integer numHours;
+    Integer numHours;
 
-	Resource resource;
+    Resource resource;
 
-	OrderElement orderElement;
+    OrderElement orderElement;
 
-	WorkReport workReport;
+    WorkReport workReport;
 
-	Set<Criterion> criterions;
+    Set<Criterion> criterions;
 
-	public WorkReportLine() {
+    public WorkReportLine() {
 
-	}
+    }
 
-	public WorkReportLine(Integer numHours, Resource resource,
-	        OrderElement orderElement, Set<Criterion> criterions) {
-		this.numHours = numHours;
-		this.resource = resource;
-		this.orderElement = orderElement;
-		this.criterions = criterions;
-	}
+    public WorkReportLine(Integer numHours, Resource resource,
+            OrderElement orderElement, Set<Criterion> criterions) {
+        this.numHours = numHours;
+        this.resource = resource;
+        this.orderElement = orderElement;
+        this.criterions = criterions;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public long getVersion() {
-		return version;
-	}
+    public long getVersion() {
+        return version;
+    }
 
     public Integer getNumHours() {
         return numHours;
@@ -75,11 +75,11 @@ public class WorkReportLine {
         return criterions;
     }
 
-    public void setCriterions(Set<Criterion> criterions){
+    public void setCriterions(Set<Criterion> criterions) {
         this.criterions = criterions;
     }
 
-    public WorkReport getWorkReport(){
+    public WorkReport getWorkReport() {
         return workReport;
     }
 
