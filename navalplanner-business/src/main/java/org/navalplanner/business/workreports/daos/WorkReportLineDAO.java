@@ -10,7 +10,6 @@ import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 
 /**
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-@Service
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class WorkReportLineDAO extends
