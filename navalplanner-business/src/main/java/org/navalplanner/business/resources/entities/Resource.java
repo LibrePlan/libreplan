@@ -1,3 +1,4 @@
+
 package org.navalplanner.business.resources.entities;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import org.navalplanner.business.resources.daos.ResourcesDaoRegistry;
 /**
  * This class acts as the base class for all resources.
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public abstract class Resource {
 
@@ -34,6 +36,8 @@ public abstract class Resource {
     private long version;
 
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
+
+    public abstract String getDescription();
 
     private interface Predicate {
         public boolean accepts(CriterionSatisfaction satisfaction);

@@ -1,0 +1,68 @@
+<vbox id="listOrderElementHours">
+<vbox>
+    <label value="Imputacion directa" />
+    <separator spacing="3px" orient="horizontal"/>
+</vbox>
+<vbox>
+     <grid id="listingWRL" style="border:0px" height="100%" model="@{asignedHoursToOrderElementController.workReportLines}" mold="paging"
+        pageSize="5">
+        <columns>
+            <column label="Data" />
+            <column label="Recurso" />
+            <column label="Horas" />
+        </columns>
+        <rows>
+            <row self="@{each='workReportLine'}">
+                <label value="@{workReportLine.workReport.date}" />
+                <label value="@{workReportLine.resource.description}"/>
+                <label value="@{workReportLine.numHours}" />
+            </row>
+        </rows>
+    </grid>
+    <grid id="total" style="border:0px">
+        <rows>
+            <row>
+                <label value="Total" />
+                <label id="totalID" value="@{asignedHoursToOrderElementController.totalAsignedDirectHours}" />
+            </row>
+        </rows>
+    </grid>
+</vbox>
+<vbox>
+    <separator spacing="5px" orient="horizontal"/>
+    <hbox>
+        <label value="Imputación lineas hijas: "/> <label id="totalIDC" value="@{asignedHoursToOrderElementController.hoursChildren}"/>
+    </hbox>
+    <hbox>
+        <label value="Total:"/><label id="addtotal" value="@{asignedHoursToOrderElementController.totalAsignedHours}"/>
+    </hbox>
+</vbox>
+<separator bar="true" spacing="12px" orient="horizontal"/>
+<vbox>
+    <label value="Porcentaje de consumo horas presupuestadas/horas consumidas."/>
+    <grid style="border:0px" height="100%">
+        <rows>
+            <row>
+                <vbox>
+                     <hbox>
+                        <label value="Horas presupuestadas:"/>
+                        <label id="estimatedHours" value="@{asignedHoursToOrderElementController.estimatedHours}"/>
+                    </hbox>
+                    <hbox>
+                        <label value="Horas imputadas:"/>
+                        <label id="addAsignedHours" value="@{asignedHoursToOrderElementController.totalAsignedHours}"/>
+                    </hbox>
+                </vbox>
+                <hbox>
+                        <label value="@{asignedHoursToOrderElementController.progressWork}"/>
+                        <label value="%       "/>
+                        <progressmeter value="@{asignedHoursToOrderElementController.progressWork}"/>
+                </hbox>
+            </row>
+        </rows>
+    </grid>
+    <hbox>
+       <button id="backButton2" onClick="asignedHoursToOrderElementController.back();" label="back" />
+    </hbox>
+</vbox>
+</vbox>

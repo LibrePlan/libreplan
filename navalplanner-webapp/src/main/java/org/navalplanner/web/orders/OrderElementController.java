@@ -42,6 +42,7 @@ import org.zkoss.zul.api.Listhead;
  * Controller for {@link OrderElement} view of {@link Order} entities <br />
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class OrderElementController extends GenericForwardComposer {
 
@@ -69,6 +70,8 @@ public class OrderElementController extends GenericForwardComposer {
      * List of selected {@link CriterionType} just used in the controller
      */
     private Set<CriterionType> selectedCriterionTypes = new LinkedHashSet<CriterionType>();
+
+    private AsignedHoursToOrderElementController asignedHoursController;
 
     public OrderElement getOrderElement() {
         if (model == null) {
@@ -154,9 +157,16 @@ public class OrderElementController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("orderElementController", this, true);
-
         window = (Window) comp;
+        setupAsignedHoursToOrderElementController(comp);
     }
+
+
+    private void setupAsignedHoursToOrderElementController(Component comp)throws Exception{
+        asignedHoursController = new AsignedHoursToOrderElementController();
+        asignedHoursController.doAfterCompose(comp);
+    }
+
 
     /**
      * Open the window to edit a {@link OrderElement}. If it's a
@@ -165,11 +175,13 @@ public class OrderElementController extends GenericForwardComposer {
      * @param orderElement
      *            The {@link OrderElement} to be edited
      */
-    public void openWindow(IOrderElementModel model) {
+    public void openWindow(IOrderElementModel model){
 
         this.model = model;
 
         final OrderElement orderElement = model.getOrderElement();
+
+        asignedHoursController.openWindow(model);
 
         // If is a container
         if (orderElement instanceof OrderLineGroup) {

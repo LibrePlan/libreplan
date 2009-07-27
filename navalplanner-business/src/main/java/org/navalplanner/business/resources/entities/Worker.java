@@ -6,6 +6,7 @@ import org.hibernate.validator.NotEmpty;
 /**
  * This class models a worker.
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class Worker extends Resource {
     @NotEmpty
@@ -28,6 +29,11 @@ public class Worker extends Resource {
         this.surname = surname;
         this.nif = nif;
         this.dailyHours = dailyHours;
+    }
+
+    @Override
+    public String getDescription(){
+        return getFirstName()+" "+getSurname();
     }
 
     public String getFirstName() {

@@ -8,6 +8,7 @@ import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class WorkReportLine {
 
@@ -74,11 +75,11 @@ public class WorkReportLine {
         return criterions;
     }
 
-    public void setCriterions(Set<Criterion> criterions) {
+    public void setCriterions(Set<Criterion> criterions){
         this.criterions = criterions;
     }
 
-    public WorkReport getWorkReport() {
+    public WorkReport getWorkReport(){
         return workReport;
     }
 

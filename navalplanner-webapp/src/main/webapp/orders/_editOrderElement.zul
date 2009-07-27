@@ -1,6 +1,12 @@
-<window visible="false" id="${arg.top_id}" title="Edit Order Element"
-    width="600px" left="100px" top="100px">
-
+<?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
+<window visible="false" id="${arg.top_id}" title="Edit Order Element"  width="600px" left="100px" top="100px">
+ <tabbox>
+        <tabs>
+            <tab label="Detalles"></tab>
+            <tab label="Horas Imputadas"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
     <vbox>
 
         <label value="${arg.title}" />
@@ -92,5 +98,12 @@
         </hbox>
 
     </vbox>
+ </tabpanel>
+            <tabpanel>
+                <listOrderElementHours/>
+            </tabpanel>
+        </tabpanels>
+  </tabbox>
+
 
 </window>
