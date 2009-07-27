@@ -65,4 +65,15 @@
         class="org.navalplanner.business.resources.daos.ResourcesDaoRegistry"
         factory-method="getInstance" />
 
+    <bean id="ordersDaoRegistry"
+        class="org.navalplanner.business.orders.daos.OrdersDaoRegistry"
+        factory-method="getInstance" />
+
+    <bean id="plannerDaoRegistry"
+        class="org.navalplanner.business.planner.daos.PlannerDaoRegistry"
+        factory-method="getInstance" />
+
+    <bean id="workReportsDaoRegistry"
+        class="org.navalplanner.business.workreports.daos.WorkReportsDaoRegistry"
+        factory-method="getInstance" />
 </beans>
