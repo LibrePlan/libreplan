@@ -2,6 +2,7 @@ package org.navalplanner.web.planner;
 
 import java.util.List;
 
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.services.ITaskElementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,13 @@ public class SaveCommand implements ISaveCommand {
     public void doAction(IContext<TaskElement> context) {
         for (TaskElement taskElement : taskElements) {
             taskElementService.save(taskElement);
+            if (taskElement instanceof Task) {
+                if (!((Task) taskElement).isValidResourceAllocationWorkers()) {
+                    throw new RuntimeException("The Task '"
+                            + taskElement.getName()
+                            + "' has some repeated Worker assigned");
+                }
+            }
         }
         // TODO redirect to another page or show message
     }

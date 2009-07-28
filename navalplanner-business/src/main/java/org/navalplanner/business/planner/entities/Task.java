@@ -8,6 +8,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -63,6 +64,33 @@ public class Task extends TaskElement {
 
     public void removeResourceAllocation(ResourceAllocation resourceAllocation) {
         resourceAllocations.remove(resourceAllocation);
+    }
+
+    /**
+     * Checks if there isn't any {@link Worker} repeated in the {@link Set} of
+     * {@link ResourceAllocation} of this {@link Task}.
+     *
+     * @return <code>true</code> if the {@link Task} is valid, that means there
+     *         isn't any {@link Worker} repeated.
+     */
+    public boolean isValidResourceAllocationWorkers() {
+        Set<Long> workers = new HashSet<Long>();
+
+        for (ResourceAllocation resourceAllocation : resourceAllocations) {
+            if (resourceAllocation instanceof SpecificResourceAllocation) {
+                Worker worker = ((SpecificResourceAllocation) resourceAllocation)
+                        .getWorker();
+                if (worker != null) {
+                    if (workers.contains(worker.getId())) {
+                        return false;
+                    } else {
+                        workers.add(worker.getId());
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
 }

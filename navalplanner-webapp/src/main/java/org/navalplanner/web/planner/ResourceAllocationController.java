@@ -101,6 +101,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
             }
         }
 
+        if (!resourceAllocationModel.getTask()
+                .isValidResourceAllocationWorkers()) {
+            throw new WrongValueException(window.getFellow("resourcesList"),
+                    "There is some Worker assigned twice (or more)");
+        }
+
         Clients.closeErrorBox(window.getFellow("resourcesList"));
         window.setVisible(false);
     }
