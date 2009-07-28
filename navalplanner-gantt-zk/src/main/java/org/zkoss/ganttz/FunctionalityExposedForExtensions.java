@@ -15,6 +15,7 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
@@ -29,6 +30,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         private Map<Task, T> fromTaskToDomain = new HashMap<Task, T>();
 
         private Map<Task, TaskContainer> fromTaskToParent = new HashMap<Task, TaskContainer>();
+
+        private List<Task> topLevel = new ArrayList<Task>();
 
         @Override
         public Task findAssociatedBean(T domainObject)
@@ -45,6 +48,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             fromTaskToDomain.put(task, domainObject);
             if (parent != null) {
                 fromTaskToParent.put(task, parent);
+            } else {
+                topLevel.add(task);
             }
         }
 
@@ -57,6 +62,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
                 parent.remove(toBeRemoved);
             }
             fromTaskToParent.remove(toBeRemoved);
+            topLevel.remove(toBeRemoved);
         }
 
         @Override
@@ -67,6 +73,32 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             if (!fromTaskToDomain.containsKey(task))
                 throw new IllegalArgumentException();
             return fromTaskToDomain.get(task);
+        }
+
+        @Override
+        public Position findPositionFor(Task task) {
+            List<TaskContainer> ancestors = ancestorsOf(task);
+            if (ancestors.isEmpty()) {
+                return Position.createAtTopPosition(topLevel.indexOf(task));
+            }
+            TaskContainer parent = ancestors.get(0);
+            return Position.createPosition(ancestors, parent.getTasks()
+                    .indexOf(task));
+        }
+
+        @Override
+        public Position findPositionFor(T domainObject) {
+            return findPositionFor(findAssociatedBean(domainObject));
+        }
+
+        private List<TaskContainer> ancestorsOf(Task task) {
+            ArrayList<TaskContainer> result = new ArrayList<TaskContainer>();
+            TaskContainer taskContainer = fromTaskToParent.get(task);
+            while (taskContainer != null) {
+                result.add(taskContainer);
+                taskContainer = fromTaskToParent.get(taskContainer);
+            }
+            return result;
         }
 
     }
@@ -106,25 +138,43 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         return result;
     }
 
-    public void add(Collection<? extends T> domainObjects) {
+    public void add(Position position, Collection<? extends T> domainObjects) {
         List<DomainDependency<T>> totalDependencies = new ArrayList<DomainDependency<T>>();
+        List<Task> tasksCreated = new ArrayList<Task>();
         for (T object : domainObjects) {
             Task task = extractTask(totalDependencies, object, null);
-            diagramGraph.addTopLevel(task);
-            this.planner.addTask(task);
+            tasksCreated.add(task);
+        }
+        if (position.isAppendToTop() || position.isAtTop()) {
+            this.diagramGraph.addTopLevel(tasksCreated);
+        } else {
+            this.diagramGraph.addTasks(tasksCreated);
+            TaskContainer parent = position.getParent();
+            parent.addAll(position.getInsertionPosition(), tasksCreated);
+            this.diagramGraph.childrenAddedTo(parent);
         }
         for (Dependency dependency : DomainDependency.toDependencies(mapper,
                 totalDependencies)) {
             this.diagramGraph.add(dependency);
         }
         this.diagramGraph.enforceAllRestrictions();
+        this.planner.addTasks(position, tasksCreated);
+    }
+
+    public void add(Collection<? extends T> domainObjects) {
+        add(Position.createAppendToTopPosition(), domainObjects);
     }
 
     @Override
     public void add(T domainObject) {
+        add(Position.createAppendToTopPosition(), domainObject);
+    }
+
+    @Override
+    public void add(Position position, T domainObject) {
         LinkedList<T> list = new LinkedList<T>();
         list.add(domainObject);
-        add(list);
+        add(position, list);
     }
 
     IDomainAndBeansMapper<T> getMapper() {
@@ -137,12 +187,14 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     @Override
-    public void remove(T domainObject) {
+    public Position remove(T domainObject) {
         Task task = mapper.findAssociatedBean(domainObject);
+        Position position = mapper.findPositionFor(task);
         diagramGraph.remove(task);
         task.removed();
         planner.removeTask(task);
         mapper.remove(domainObject);
+        return position;
     }
 
     @Override
@@ -152,10 +204,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
 	@Override
     public void replace(T oldDomainObject, T newDomainObject) {
-        remove(oldDomainObject);
-        add(newDomainObject);
-        // FIXME if oldDomainObject was a child from other it adds it to the top
-        // level
+        Position position = remove(oldDomainObject);
+        add(position, newDomainObject);
     }
 
 }

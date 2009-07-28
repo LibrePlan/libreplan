@@ -1,7 +1,9 @@
 package org.zkoss.ganttz;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -65,8 +67,12 @@ public class LeftPane extends HtmlMacroComponent {
         leftTasksTree.taskRemoved(task);
     }
 
-    public void addTask(Task newTask) {
-        leftTasksTree.addTask(newTask);
+    public void addTask(Position position, Task newTask) {
+        leftTasksTree.addTask(position, newTask);
+    }
+
+    public void addTasks(Position position, Collection<? extends Task> newTasks) {
+        leftTasksTree.addTasks(position, newTasks);
     }
 
 }

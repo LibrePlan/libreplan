@@ -1,6 +1,7 @@
 package org.zkoss.ganttz.extensions;
 
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.data.Position;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -40,9 +41,13 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
         context.reload(configuration);
     }
 
-    public void remove(T domainObject) {
-        context.remove(domainObject);
+    public Position remove(T domainObject) {
+        return context.remove(domainObject);
     }
+
+    public void add(Position position, T domainObject) {
+        context.add(position, domainObject);
+    };
 
     public void replace(T oldDomainObject, T newDomainObject) {
         context.replace(oldDomainObject, newDomainObject);

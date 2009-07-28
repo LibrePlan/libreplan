@@ -1,6 +1,7 @@
 package org.zkoss.ganttz;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
+import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
@@ -105,12 +107,16 @@ public class Planner extends XulElement {
                 dependencyRemovedListener);
     }
 
-    public void addTask(Task newTask) {
+    public void addTasks(Position position, Collection<? extends Task> newTasks) {
         TaskList taskList = getTaskList();
         if (taskList != null && leftPane != null) {
-            taskList.addTask(newTask);
-            leftPane.addTask(newTask);
+            taskList.addTasks(position, newTasks);
+            leftPane.addTasks(position, newTasks);
         }
+    }
+
+    public void addTask(Position position, Task task) {
+        addTasks(position, Arrays.asList(task));
     }
 
     void addDependencies(Collection<? extends Dependency> dependencies) {

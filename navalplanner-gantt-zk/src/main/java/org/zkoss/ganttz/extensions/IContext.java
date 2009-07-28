@@ -7,6 +7,7 @@ import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.ganttz.data.Position;
 
 /**
  * A facade for operations allowed to extensions <br />
@@ -31,9 +32,10 @@ public interface IContext<T> {
     /**
      * Removing the tasks associated to the domainObject
      * @param domainObject
+     * @return the Position in which the domainObject's task was
      */
-    void remove(T domainObject);
 
+    Position remove(T domainObject);
 
     /**
      * Retrieves the component associated to the action performed. Normally it
@@ -45,5 +47,7 @@ public interface IContext<T> {
     public Component getRelativeTo();
 
     void replace(T oldDomainObject, T newDomainObject);
+
+    void add(Position position, T domainObject);
 
 }

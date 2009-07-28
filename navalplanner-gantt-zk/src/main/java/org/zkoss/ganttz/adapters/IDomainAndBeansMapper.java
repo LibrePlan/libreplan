@@ -1,11 +1,26 @@
 package org.zkoss.ganttz.adapters;
 
+import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public interface IDomainAndBeansMapper<T> {
+
+    /**
+     * @param task
+     * @return the {@link Position} that specifies the path to reach the task
+     */
+    Position findPositionFor(Task task);
+
+    /**
+     * @param domainObject
+     * @return the {@link Position} that specifies the path to reach the task
+     *         associated to the domain object
+     * @see findPositionFor
+     */
+    Position findPositionFor(T domainObject);
 
     /**
      * @param task

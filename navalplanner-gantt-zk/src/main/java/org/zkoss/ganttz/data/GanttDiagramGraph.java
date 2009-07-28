@@ -3,6 +3,7 @@ package org.zkoss.ganttz.data;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,11 +46,19 @@ public class GanttDiagramGraph {
 
         private final TaskContainer container;
 
+        private final Map<Task, Object> alreadyRegistered = new WeakHashMap<Task, Object>();
+
         private ParentShrinkingEnforcer(final TaskContainer container) {
             if (container == null)
                 throw new IllegalArgumentException("container cannot be null");
             this.container = container;
+            registerListeners();
+        }
+
+        void registerListeners() {
             for (Task subtask : this.container.getTasks()) {
+                if (alreadyRegistered.containsKey(subtask))
+                    continue;
                 subtask
                         .addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
 
@@ -120,7 +129,19 @@ public class GanttDiagramGraph {
         addTask(task);
     }
 
-    private void addTask(Task task) {
+    public void addTopLevel(Collection<? extends Task> tasks) {
+        for (Task task : tasks) {
+            addTopLevel(task);
+        }
+    }
+
+    public void addTasks(Collection<? extends Task> tasks) {
+        for (Task t : tasks) {
+            addTask(t);
+        }
+    }
+
+    public void addTask(Task task) {
         graph.addVertex(task);
         rulesEnforcersByTask.put(task, new DependencyRulesEnforcer(task));
         if (task.isContainer()) {
@@ -191,6 +212,13 @@ public class GanttDiagramGraph {
 
     public List<Task> getTopLevelTasks() {
         return Collections.unmodifiableList(topLevelTasks);
+    }
+
+    public void childrenAddedTo(TaskContainer task) {
+        ParentShrinkingEnforcer parentShrinkingEnforcer = parentShrinkingEnforcerByTask
+                .get(task);
+        parentShrinkingEnforcer.registerListeners();
+        parentShrinkingEnforcer.enforce();
     }
 
 }

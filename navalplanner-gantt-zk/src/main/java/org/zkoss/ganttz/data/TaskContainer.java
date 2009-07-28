@@ -171,4 +171,8 @@ public class TaskContainer extends Task {
         return tasks.contains(task);
     }
 
+    public void addAll(int position, Collection<? extends Task> tasksCreated) {
+        tasks.addAll(position, tasksCreated);
+    }
+
 }

@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +16,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.LeftTasksTreeRow.ILeftTasksTreeNavigator;
+import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.util.MutableTreeModel;
@@ -233,7 +235,7 @@ public class LeftTasksTree extends HtmlMacroComponent {
             if (!pendingToAddChildren.contains(parent))
                 return;
             markLoaded(item);
-            fillModel(parent, parent.getTasks(), false);
+            fillModel(parent, 0, parent.getTasks(), false);
             pendingToAddChildren.remove(parent);
         }
 
@@ -245,6 +247,7 @@ public class LeftTasksTree extends HtmlMacroComponent {
                 throw new RuntimeException(e);
             }
         }
+
         private Method setLoadedMethod = null;
 
         private Method getSetLoadedMethod() {
@@ -277,26 +280,29 @@ public class LeftTasksTree extends HtmlMacroComponent {
         this.tasks = tasks;
     }
 
-    private void fillModel(List<Task> tasks, boolean firstTime) {
-        fillModel(this.tasksTreeModel.getRoot(), tasks, firstTime);
+    private void fillModel(Collection<? extends Task> tasks, boolean firstTime) {
+        fillModel(this.tasksTreeModel.getRoot(), 0, tasks, firstTime);
     }
 
-    private void fillModel(Task parent, List<Task> children,
-            final boolean firstTime) {
-        for (Task node : children) {
-            if (firstTime) {
-                this.tasksTreeModel.add(parent, node);
+    private void fillModel(Task parent, Integer insertionPosition,
+            Collection<? extends Task> children, final boolean firstTime) {
+        if (firstTime) {
+            this.tasksTreeModel.add(parent, insertionPosition, children);
+            for (Task node : children) {
                 if (node.isContainer()) {
-                    fillModel(node, node.getTasks(), firstTime);
+                    fillModel(node, 0, node.getTasks(), firstTime);
                 }
-            } else {
+            }
+
+        } else {
+            for (Task node : children) {
                 if (node.isContainer()) {
                     this.deferredFiller.addParentOfPendingToAdd(node);
                 }
-                // the node must be added after, so the multistepTreeFiller is
-                // ready
-                this.tasksTreeModel.add(parent, node);
             }
+            // the node must be added after, so the multistepTreeFiller is
+            // ready
+            this.tasksTreeModel.add(parent, insertionPosition, children);
         }
     }
 
@@ -326,9 +332,28 @@ public class LeftTasksTree extends HtmlMacroComponent {
         tasksTree.setTreeitemRenderer(new TaskBeanRenderer());
     }
 
-    void addTask(Task task) {
-        fillModel(Arrays.asList(task), false);
-        detailsForBeans.requestFocusFor(task);
+    void addTask(Position position, Task task) {
+        if (position.isAppendToTop()) {
+            fillModel(Arrays.asList(task), false);
+            detailsForBeans.requestFocusFor(task);
+        } else {
+            List<Task> toAdd = Arrays.asList(task);
+            fillModel(position.getParent(), position.getInsertionPosition(),
+                    toAdd, false);
+        }
+    }
+
+    public void addTasks(Position position, Collection<? extends Task> newTasks) {
+
+        if (position.isAppendToTop()) {
+            fillModel(newTasks, false);
+        } else if (position.isAtTop()) {
+            fillModel(tasksTreeModel.getRoot(),
+                    position.getInsertionPosition(), newTasks, false);
+        } else {
+            fillModel(position.getParent(), position.getInsertionPosition(),
+                    newTasks, false);
+        }
     }
 
     public CommandContextualized<?> getGoingDownInLastArrowCommand() {
