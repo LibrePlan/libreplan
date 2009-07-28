@@ -37,7 +37,7 @@ public abstract class OrderElement {
 
     public abstract List<HoursGroup> getHoursGroups();
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
