@@ -1,7 +1,10 @@
 package org.navalplanner.web.planner;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
@@ -66,10 +69,48 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             Order orderReloaded) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setOrder(orderReloaded);
-        planningState = new PlanningState(orderReloaded.getAssociatedTasks());
+        planningState = new PlanningState(retainOnlyTopLevel(orderReloaded
+                .getAssociatedTasks()));
         forceLoadOfDependenciesCollections(planningState.getInitial());
+        forceLoadOfWorkingHours(planningState.getInitial());
         return new PlannerConfiguration<TaskElement>(taskElementAdapter,
                 new TaskElementNavigator(), planningState.getInitial());
+    }
+
+    private Collection<? extends TaskElement> retainOnlyTopLevel(
+            List<TaskElement> associatedTasks) {
+        Set<TaskElement> descendantsFromOther = new HashSet<TaskElement>();
+        for (TaskElement taskElement : associatedTasks) {
+            descandants(descendantsFromOther, taskElement);
+        }
+        ArrayList<TaskElement> result = new ArrayList<TaskElement>();
+        for (TaskElement taskElement : associatedTasks) {
+            if (!descendantsFromOther.contains(taskElement)) {
+                result.add(taskElement);
+            }
+        }
+        return result;
+    }
+
+    private void descandants(
+            Set<TaskElement> accumulated,
+            TaskElement taskElement) {
+        if (taskElement.isLeaf()) {
+            return;
+        }
+        for (TaskElement t : taskElement.getChildren()) {
+            accumulated.add(t);
+            descandants(accumulated, t);
+        }
+    }
+
+    private void forceLoadOfWorkingHours(List<TaskElement> initial) {
+        for (TaskElement taskElement : initial) {
+            taskElement.getOrderElement().getWorkHours();
+            if (!taskElement.isLeaf()) {
+                forceLoadOfWorkingHours(taskElement.getChildren());
+            }
+        }
     }
 
     private void forceLoadOfDependenciesCollections(
