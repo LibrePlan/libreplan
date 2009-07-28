@@ -23,6 +23,9 @@
             <button label="Añadir"
                 onClick="controller.addWorkReportLine(listWorkReportLines);"
                 style="margin-top: -30px; margin-left: 300px" />
+            <button label="Borrar"
+                onClick="controller.deleteWorkReportLine(listWorkReportLines);"
+                style="margin-top: -30px; margin-left: 2px" />
         </hbox>
 
         <listbox id="listWorkReportLines"

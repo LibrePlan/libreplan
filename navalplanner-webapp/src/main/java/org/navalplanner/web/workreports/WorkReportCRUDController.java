@@ -142,6 +142,18 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         listBox.appendChild(createListItem(workReportLine));
     }
 
+    /**
+     * Delete @{link WorkReportLine} from listbox
+     *
+     * @param listBox
+     */
+    public void deleteWorkReportLine(Listbox listBox) {
+        Listitem listItem = listBox.getSelectedItem();
+        WorkReportLine workReportLine = (WorkReportLine) listItem.getValue();
+        getWorkReportLines().remove(workReportLine);
+        listBox.removeItemAt(listItem.getIndex());
+    }
+
     public Set<WorkReportLine> getWorkReportLines() {
         return (getWorkReport() != null) ? getWorkReport().getWorkReportLines()
                 : new HashSet<WorkReportLine>();
