@@ -1,8 +1,8 @@
 package org.zkoss.ganttz;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.util.Date;
 
+import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -29,43 +29,25 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
     private Textbox notes;
 
-    private PropertyChangeListener propertyChangeListener;
-
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         popUp = (Popup) comp;
     }
 
-    public void showEditFormFor(TaskComponent taskComponent) {
-        cleanListener();
-        this.currentTask = taskComponent.getTask();
-        popUp.open(taskComponent, "after_start");
-        propertyChangeListener = new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (popUp.isVisible()) {
-                    updateComponentValuesForTask(currentTask);
-                }
-            }
-        };
-        currentTask.addFundamentalPropertiesChangeListener(propertyChangeListener);
+    public void showEditFormFor(Component openRelativeTo, Task task) {
+        this.currentTask = task;
+        popUp.open(openRelativeTo, "after_start");
         updateComponentValuesForTask(currentTask);
     }
 
-    private void cleanListener() {
-        if (this.currentTask != null) {
-            this.currentTask
-                    .removePropertyChangeListener(propertyChangeListener);
-        }
-    }
-
-    private void updateComponentValuesForTask(Task currentTask) {
+    private void updateComponentValuesForTask(
+            ITaskFundamentalProperties currentTask) {
         // popUp.setTitle(currentTask.getName());
         name.setValue(currentTask.getName());
         startDateBox.setValue(currentTask.getBeginDate());
-        endDateBox.setValue(currentTask.getEndDate());
+        endDateBox.setValue(new Date(currentTask.getBeginDate().getTime()
+                + currentTask.getLengthMilliseconds()));
         notes.setValue(currentTask.getNotes());
     }
 
@@ -78,7 +60,8 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     }
 
     public void onChange$endDateBox(Event event) {
-        currentTask.setEndDate(endDateBox.getValue());
+        currentTask.setLengthMilliseconds(endDateBox.getValue().getTime()
+                - currentTask.getBeginDate().getTime());
     }
 
     public void onChange$notes(Event event) {
@@ -87,7 +70,6 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
     public void onClick$ok(Event event) {
         popUp.close();
-        cleanListener();
     }
 
 }

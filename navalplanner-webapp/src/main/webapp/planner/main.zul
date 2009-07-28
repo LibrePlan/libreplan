@@ -20,7 +20,7 @@
         <div id="idContextMenuTaskAssigment"></div>
     </planner>
 
-    <popup width="300px" apply="${planner.modalFormComposer}">
+    <popup width="300px" apply="${plannerData.taskEditForm}">
         <grid>
             <rows>
                 <row>

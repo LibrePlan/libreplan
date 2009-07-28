@@ -30,8 +30,6 @@ public class Planner extends XulElement {
 
     private GanttPanel ganttPanel;
 
-    private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer();
-
     private DependencyAdderAdapter<?> dependencyAdder;
 
     private List<? extends CommandContextualized<?>> contextualizedGlobalCommands;
@@ -39,6 +37,8 @@ public class Planner extends XulElement {
     private CommandContextualized<?> goingDownInLastArrowCommand;
 
     private List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized;
+
+    private CommandOnTaskContextualized<?> editTaskCommand;
 
     public Planner() {
     }
@@ -72,10 +72,6 @@ public class Planner extends XulElement {
         if (found.isEmpty())
             return null;
         return found.get(0);
-    }
-
-    public TaskEditFormComposer getModalFormComposer() {
-        return taskEditFormComposer;
     }
 
     public boolean canAddDependency(Dependency dependency) {
@@ -165,6 +161,8 @@ public class Planner extends XulElement {
                 configuration.getCommandsOnTasks());
         goingDownInLastArrowCommand = contextualize(context, configuration
                 .getGoingDownInLastArrowCommand());
+        editTaskCommand = contextualize(context, configuration
+                .getEditTaskCommand());
         clear();
         context.add(configuration.getData());
         recreate();
@@ -182,14 +180,22 @@ public class Planner extends XulElement {
             List<ICommandOnTask<T>> commands) {
         List<CommandOnTaskContextualized<T>> result = new ArrayList<CommandOnTaskContextualized<T>>();
         for (ICommandOnTask<T> c : commands) {
-            result.add(CommandOnTaskContextualized.create(c, context
-                    .getMapper(), context));
+            result.add(contextualize(context, c));
         }
         return result;
     }
 
+    private <T> CommandOnTaskContextualized<T> contextualize(
+            FunctionalityExposedForExtensions<T> context,
+            ICommandOnTask<T> commandOnTask) {
+        return CommandOnTaskContextualized.create(commandOnTask, context
+                .getMapper(), context);
+    }
+
     private <T> CommandContextualized<T> contextualize(IContext<T> context,
             ICommand<T> command) {
+        if (command == null)
+            return null;
         return CommandContextualized.create(command, context);
     }
 
@@ -214,7 +220,7 @@ public class Planner extends XulElement {
         this.leftPane
                 .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
         this.ganttPanel = new GanttPanel(this.diagramGraph,
-                commandsOnTasksContextualized, taskEditFormComposer);
+                commandsOnTasksContextualized, editTaskCommand);
         ganttPanel.setParent(this);
         ganttPanel.afterCompose();
     }

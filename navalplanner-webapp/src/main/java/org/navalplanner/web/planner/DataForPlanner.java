@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.adapters.AutoAdapter;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
@@ -27,7 +28,10 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
  */
 public class DataForPlanner {
 
+    private TaskEditFormComposer taskEditForm = new TaskEditFormComposer();
+
     public DataForPlanner() {
+
     }
 
     public GanttDiagramGraph getEmpty() {
@@ -78,6 +82,21 @@ public class DataForPlanner {
                         return "Remove";
                     }
 
+                });
+        configuration.setEditTaskCommand(new ICommandOnTask<ITaskFundamentalProperties>() {
+
+                    @Override
+                    public void doAction(
+                            IContextWithPlannerTask<ITaskFundamentalProperties> context,
+                            ITaskFundamentalProperties task) {
+                        taskEditForm.showEditFormFor(context.getRelativeTo(),
+                                context.getTask());
+                    }
+
+                    @Override
+                    public String getName() {
+                        return "";
+                    }
                 });
         return configuration;
     }
@@ -179,5 +198,9 @@ public class DataForPlanner {
         calendar.setTime(now);
         calendar.add(Calendar.MONTH, 2);
         return calendar.getTime();
+    }
+
+    public TaskEditFormComposer getTaskEditForm() {
+        return taskEditForm;
     }
 }

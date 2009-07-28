@@ -55,6 +55,8 @@ public class PlannerConfiguration<T> {
 
     private ICommand<T> goingDownInLastArrowCommand = new NullCommand<T>();
 
+    private ICommandOnTask<T> editTaskCommand = new NullCommandOnTask<T>();
+
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
         this.adapter = adapter;
@@ -97,6 +99,14 @@ public class PlannerConfiguration<T> {
     public void setGoingDownInLastArrowCommand(
             ICommand<T> goingDownInLastArrowCommand) {
         this.goingDownInLastArrowCommand = goingDownInLastArrowCommand;
+    }
+
+    public ICommandOnTask<T> getEditTaskCommand() {
+        return editTaskCommand;
+    }
+
+    public void setEditTaskCommand(ICommandOnTask<T> editTaskCommand) {
+        this.editTaskCommand = editTaskCommand;
     }
 
 }

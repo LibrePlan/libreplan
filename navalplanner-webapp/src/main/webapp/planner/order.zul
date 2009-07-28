@@ -18,30 +18,6 @@
         <div id="idContextMenuTaskAssigment"></div>
     </planner>
 
-    <popup width="300px" apply="${planner.modalFormComposer}">
-        <grid>
-            <rows>
-                <row>
-                    ${c:l('task.name')}
-                    <textbox id="name" />
-                </row>
-                <row>
-                    ${c:l('task.start')}
-                    <datebox id="startDateBox" compact="true" />
-                </row>
-                <row>
-                    ${c:l('task.end')}
-                    <datebox id="endDateBox" compact="true" />
-                </row>
-                <row>
-                    ${c:l('task.notes')}
-                    <textbox id="notes" />
-                </row>
-            </rows>
-        </grid>
-        <button id="ok" label=" ${c:l('task.ok')}" />
-    </popup>
-
     <window id="resourceAllocationWindow" visible="false" apply="${allocationController}">
         <vbox>
             <label value="Required criterions" />
@@ -72,7 +48,7 @@
         </vbox>
     </window>
 
-	<zscript><![CDATA[
+    <zscript><![CDATA[
         planningController.registerPlanner(planner);
     ]]>
     </zscript>

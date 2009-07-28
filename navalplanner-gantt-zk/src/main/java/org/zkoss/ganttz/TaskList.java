@@ -43,19 +43,24 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private List<Task> originalTasks;
 
-    private final TaskEditFormComposer taskEditFormComposer;
+    private final CommandOnTaskContextualized<?> editTaskCommand;
 
     private final List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized;
 
-    public TaskList(TaskEditFormComposer formComposer, List<Task> tasks, List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized) {
-        this.taskEditFormComposer = formComposer;
+    public TaskList(
+            CommandOnTaskContextualized<?> editTaskCommand,
+            List<Task> tasks,
+            List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized) {
+        this.editTaskCommand = editTaskCommand;
         this.originalTasks = tasks;
         this.commandsOnTasksContextualized = commandsOnTasksContextualized;
     }
 
-    public static TaskList createFor(TaskEditFormComposer formComposer,
+    public static TaskList createFor(
+            CommandOnTaskContextualized<?> editTaskCommand,
             List<Task> tasks, List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized) {
-        TaskList result = new TaskList(formComposer, tasks, commandsOnTasksContextualized);
+        TaskList result = new TaskList(editTaskCommand, tasks,
+                commandsOnTasksContextualized);
         return result;
     }
 
@@ -116,11 +121,13 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     private void addListenerForTaskComponentEditForm(final TaskComponent taskComponent) {
+        if (editTaskCommand == null)
+            return;
         taskComponent.addEventListener("onDoubleClick", new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                taskEditFormComposer.showEditFormFor(taskComponent);
+                editTaskCommand.doAction(taskComponent);
             }
         });
     }
@@ -217,10 +224,6 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private GanttPanel getGanttPanel() {
         return (GanttPanel) getParent();
-    }
-
-    public TaskEditFormComposer getModalFormComposer() {
-        return taskEditFormComposer;
     }
 
     public void adjustZoomColumnsHeight() {
