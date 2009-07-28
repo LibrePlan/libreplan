@@ -68,6 +68,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         splitCommand.setState(planningState);
         configuration.addCommandOnTask(splitCommand);
 
+        IMergeTaskCommand mergeCommand = getMergeTaskCommand();
+        mergeCommand.setState(planningState);
+        configuration.addCommandOnTask(mergeCommand);
+
         IEditTaskCommand editTaskCommand = getEditTaskCommand();
         editTaskCommand.setEditTaskController(editTaskController);
         configuration.setEditTaskCommand(editTaskCommand);
@@ -147,6 +151,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract IResourceAllocationCommand getResourceAllocationCommand();
 
     protected abstract ISplitTaskCommand getSplitCommand();
+
+    protected abstract IMergeTaskCommand getMergeTaskCommand();
 
     protected abstract IEditTaskCommand getEditTaskCommand();
 

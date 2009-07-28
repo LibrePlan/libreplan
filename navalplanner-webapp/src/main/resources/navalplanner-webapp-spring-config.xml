@@ -20,6 +20,7 @@
       <lookup-method name="getSaveCommand" bean="saveCommand"/>
       <lookup-method name="getResourceAllocationCommand" bean="resourceAllocationCommand"/>
       <lookup-method name="getSplitCommand" bean="splitTaskCommand"/>
+      <lookup-method name="getMergeTaskCommand" bean="mergeTaskCommand"/>
       <lookup-method name="getEditTaskCommand" bean="editTaskCommand"/>
     </bean>
 
