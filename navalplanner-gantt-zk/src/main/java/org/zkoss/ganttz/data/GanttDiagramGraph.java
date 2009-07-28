@@ -163,6 +163,11 @@ public class GanttDiagramGraph {
         rulesEnforcersByTask.remove(task);
         topLevelTasks.remove(task);
         update(outgoing);
+        if (task.isContainer()) {
+            for (Task t : task.getTasks()) {
+                remove(t);
+            }
+        }
     }
 
     private void updateOutgoing(Task task) {
