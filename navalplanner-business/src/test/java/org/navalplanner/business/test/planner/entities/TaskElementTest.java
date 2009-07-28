@@ -123,7 +123,6 @@ public class TaskElementTest {
         assertThat(first.getWorkHours(), equalTo(20));
         assertThat(second.getWorkHours(), equalTo(30));
         assertThat(third.getWorkHours(), equalTo(50));
-        //TODO specify which will be the value for the end date
     }
 
     private void checkPopertiesAreKept(Task taskBeingSplitted,

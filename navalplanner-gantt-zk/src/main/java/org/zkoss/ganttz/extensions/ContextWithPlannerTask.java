@@ -1,7 +1,6 @@
 package org.zkoss.ganttz.extensions;
 
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
-import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
 

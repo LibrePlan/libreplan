@@ -106,7 +106,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             taskElement.setStartDate(order.getInitDate());
         }
         if (taskElement.getEndDate() == null) {
-            Integer workHours = taskElement.getOrderElement().getWorkHours();
+            Integer workHours = taskElement.getWorkHours();
             long endDateTime = taskElement.getStartDate().getTime()
                     + (workHours * 3600l * 1000);
             taskElement.setEndDate(new Date(endDateTime));

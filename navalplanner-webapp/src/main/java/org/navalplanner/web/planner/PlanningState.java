@@ -35,6 +35,7 @@ public class PlanningState {
     }
 
     public void removed(TaskElement taskElement) {
+        taskElement.detach();
         toSave.remove(taskElement);
         toRemove.add(taskElement);
     }

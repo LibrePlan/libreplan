@@ -57,10 +57,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         ISaveCommand saveCommand = getSaveCommand();
         saveCommand.setState(planningState);
         configuration.addGlobalCommand(saveCommand);
+
         IResourceAllocationCommand resourceAllocationCommand = getResourceAllocationCommand();
         resourceAllocationCommand
                 .setResourceAllocationController(resourceAllocationController);
         configuration.addCommandOnTask(resourceAllocationCommand);
+
+        ISplitTaskCommand splitCommand = getSplitCommand();
+        splitCommand.setState(planningState);
+        configuration.addCommandOnTask(splitCommand);
 
         onTransaction.use(configuration);
     }
@@ -133,7 +138,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     protected abstract ISaveCommand getSaveCommand();
 
+
     protected abstract IResourceAllocationCommand getResourceAllocationCommand();
+
+    protected abstract ISplitTaskCommand getSplitCommand();
 
     private Order reload(Order order) {
         try {
