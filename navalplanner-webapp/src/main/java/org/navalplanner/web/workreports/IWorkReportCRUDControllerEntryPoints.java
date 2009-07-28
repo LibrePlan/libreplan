@@ -1,5 +1,6 @@
 package org.navalplanner.web.workreports;
 
+import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.web.common.entrypoints.EntryPoint;
 import org.navalplanner.web.common.entrypoints.EntryPoints;
@@ -9,5 +10,8 @@ public interface IWorkReportCRUDControllerEntryPoints {
 
     @EntryPoint("edit")
     public abstract void goToCreateForm(WorkReportType workReportType);
+
+    @EntryPoint("list")
+    public abstract void goToList();
 
 }

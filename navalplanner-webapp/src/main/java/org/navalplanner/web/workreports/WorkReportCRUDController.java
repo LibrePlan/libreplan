@@ -48,6 +48,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private Window createWindow;
 
+    private Window listWindow;
+
     private IWorkReportModel workReportModel;
 
     private IURLHandlerRegistry URLHandlerRegistry;
@@ -62,6 +64,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private WorkReportListRenderer workReportListRenderer = new WorkReportListRenderer();
 
+    public List<WorkReport> getWorkReports() {
+        return workReportModel.getWorkReports();
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -75,7 +81,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     private OnlyOneVisible getVisibility() {
-        return (visibility == null) ? new OnlyOneVisible(createWindow)
+        return (visibility == null) ? new OnlyOneVisible(createWindow,
+                listWindow)
                 : visibility;
     }
 
@@ -89,8 +96,18 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
+    @Override
+    public void goToList() {
+        getVisibility().showOnly(listWindow);
+        Util.reloadBindings(listWindow);
+    }
+
     public void cancel() {
-        workReportTypeCRUD.goToList();
+        if (workReportModel.isEditing()) {
+
+        } else {
+            workReportTypeCRUD.goToList();
+        }
     }
 
     public void goToCreateForm(WorkReportType workReportType) {

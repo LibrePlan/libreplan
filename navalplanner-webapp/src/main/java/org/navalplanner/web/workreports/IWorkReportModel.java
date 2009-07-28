@@ -1,5 +1,7 @@
 package org.navalplanner.web.workreports;
 
+import java.util.List;
+
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -68,5 +70,19 @@ public interface IWorkReportModel {
      * @throws InstanceNotFoundException
      */
     Worker asWorker(Resource resource) throws InstanceNotFoundException;
+
+    /**
+     * Get all {@link WorkReport} elements
+     *
+     * @return
+     */
+    List<WorkReport> getWorkReports();
+
+    /**
+     * Returns true if WorkReport is being edited
+     *
+     * @return
+     */
+    boolean isEditing();
 
 }

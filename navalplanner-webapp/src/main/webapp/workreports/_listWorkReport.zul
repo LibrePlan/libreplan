@@ -1,0 +1,20 @@
+<window id="${arg.top_id}" title="Listado de partes de traballo">
+    <grid id="listing" model="@{controller.workReports}" mold="paging"
+        pageSize="5">
+        <columns>
+            <column label="Data" sort="auto(date)" />
+            <column label="Tipo" sort="auto(workReportType.name)"/>
+            <column label="Accións" />
+        </columns>
+        <rows>
+            <row self="@{each='workReport'}" value="@{workReport}">
+                <label value="@{workReport.date, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
+                <label value="@{workReport.workReportType.name}" />
+                <hbox>
+                    <button label="Editar" />
+                    <button label="Eliminar" />
+                </hbox>
+            </row>
+        </rows>
+    </grid>
+</window>

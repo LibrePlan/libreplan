@@ -1,5 +1,8 @@
 package org.navalplanner.web.workreports;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
@@ -150,5 +153,21 @@ public class WorkReportModel implements IWorkReportModel {
     @Transactional
     public Worker asWorker(Resource resource) throws InstanceNotFoundException {
         return workerDAO.find(resource.getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<WorkReport> getWorkReports() {
+        List<WorkReport> result = new ArrayList<WorkReport>();
+        for (WorkReport workReport : workReportDAO.list(WorkReport.class)) {
+            workReport.getWorkReportType().getId();
+            result.add(workReport);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isEditing() {
+        return editing;
     }
 }
