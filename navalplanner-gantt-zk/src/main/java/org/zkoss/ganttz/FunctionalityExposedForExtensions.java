@@ -165,7 +165,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         List<Task> tasksCreated = new ArrayList<Task>();
         for (T object : domainObjects) {
             Task task = extractTask(position.getInsertionPosition(),
-                    totalDependencies, object, null);
+                    totalDependencies, object, position.getParent());
             tasksCreated.add(task);
         }
         if (position.isAppendToTop() || position.isAtTop()) {
