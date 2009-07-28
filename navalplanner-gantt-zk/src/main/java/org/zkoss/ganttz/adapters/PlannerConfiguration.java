@@ -5,8 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.zkoss.ganttz.extensions.ICommand;
-import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
+import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
  * A object that defines several extension points for gantt planner
@@ -18,6 +19,20 @@ public class PlannerConfiguration<T> {
 
         @Override
         public void doAction(IContext<T> context) {
+            // do nothing
+        }
+
+        @Override
+        public String getName() {
+            return "";
+        }
+
+    }
+
+    private static class NullCommandOnTask<T> implements ICommandOnTask<T> {
+
+        @Override
+        public void doAction(IContextWithPlannerTask<T> context, T task) {
             // do nothing
         }
 
@@ -40,7 +55,6 @@ public class PlannerConfiguration<T> {
 
     private ICommand<T> goingDownInLastArrowCommand = new NullCommand<T>();
 
-
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
         this.adapter = adapter;
@@ -60,7 +74,7 @@ public class PlannerConfiguration<T> {
         return data;
     }
 
-    public void addCommandOnTask(ICommandOnTask<T> commandOnTask){
+    public void addCommandOnTask(ICommandOnTask<T> commandOnTask) {
         this.commandsOnTasks.add(commandOnTask);
     }
 
@@ -68,9 +82,10 @@ public class PlannerConfiguration<T> {
         this.globalCommands.add(command);
     }
 
-    public List<ICommandOnTask<T>> getCommandsOnTasks(){
+    public List<ICommandOnTask<T>> getCommandsOnTasks() {
         return Collections.unmodifiableList(commandsOnTasks);
     }
+
     public List<ICommand<T>> getGlobalCommands() {
         return Collections.unmodifiableList(globalCommands);
     }

@@ -2,8 +2,10 @@ package org.zkoss.ganttz;
 
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.extensions.ContextWithPlannerTask;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.ui.event.Event;
 
@@ -30,11 +32,22 @@ public class CommandOnTaskContextualized<T> {
     }
 
     public void doAction(Task task) {
-        doAction(mapper.findAssociatedDomainObject(task));
+        doAction(domainObjectFor(task));
+    }
+
+    private T domainObjectFor(Task task) {
+        return mapper.findAssociatedDomainObject(task);
+    }
+
+    private void doAction(IContext<T> context, T domainObject) {
+        IContextWithPlannerTask<T> contextWithTask = ContextWithPlannerTask
+                .create(context, mapper
+                .findAssociatedBean(domainObject));
+        commandOnTask.doAction(contextWithTask, domainObject);
     }
 
     public void doAction(T task) {
-        commandOnTask.doAction(context, task);
+        doAction(context, task);
     }
 
     public String getName() {

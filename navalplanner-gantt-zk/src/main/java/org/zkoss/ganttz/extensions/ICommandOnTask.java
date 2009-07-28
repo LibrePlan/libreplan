@@ -4,6 +4,6 @@ public interface ICommandOnTask<T> {
 
     public String getName();
 
-    public void doAction(IContext<T> context, T task);
+    public void doAction(IContextWithPlannerTask<T> context, T task);
 
 }

@@ -5,7 +5,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
  * A command that opens a window to make the resource allocation of a task.
@@ -22,7 +22,8 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
     }
 
     @Override
-    public void doAction(IContext<TaskElement> context, TaskElement task) {
+    public void doAction(IContextWithPlannerTask<TaskElement> context,
+            TaskElement task) {
         if (task instanceof Task) {
             this.resourceAllocationController.showWindow((Task) task);
         }
@@ -38,5 +39,6 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
             ResourceAllocationController resourceAllocationController) {
         this.resourceAllocationController = resourceAllocationController;
     }
+
 
 }
