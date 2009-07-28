@@ -35,8 +35,6 @@ public class Task extends TaskElement {
 
     private Set<ResourceAllocation> resourceAllocations = new HashSet<ResourceAllocation>();
 
-    private Integer shareOfHours;
-
     /**
      * For hibernate, DO NOT USE
      */
@@ -177,9 +175,7 @@ public class Task extends TaskElement {
 	}
 
     @Override
-    public Integer getWorkHours() {
-        if (shareOfHours != null)
-            return shareOfHours;
+    public Integer defaultWorkHours() {
         return hoursGroup.getWorkingHours();
     }
 
@@ -190,6 +186,7 @@ public class Task extends TaskElement {
                     "the shares don't sum up the work hours");
         TaskGroup result = new TaskGroup();
         result.copyPropertiesFrom(this);
+        result.shareOfHours = this.shareOfHours;
         if (this.getParent() != null) {
             this.getParent().addTaskElement(result);
         }

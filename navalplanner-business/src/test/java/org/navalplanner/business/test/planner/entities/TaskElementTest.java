@@ -125,6 +125,25 @@ public class TaskElementTest {
         assertThat(third.getWorkHours(), equalTo(50));
     }
 
+    @Test
+    public void splittingATaskKeepsItsShareOfHoursIfPresent() {
+        HoursGroup hoursGroup = new HoursGroup();
+        Task initial = Task.createTask(hoursGroup);
+        initial.setName("prueba");
+        initial.setNotes("blabla");
+        initial.setStartDate(new Date());
+        OrderLine orderLine = new OrderLine();
+        hoursGroup.setWorkingHours(100);
+        orderLine.addHoursGroup(hoursGroup);
+        initial.setOrderElement(orderLine);
+        int[] shares = { 50, 50 };
+        TaskGroup group = initial.split(shares);
+        Task t = (Task) group.getChildren().get(0);
+        TaskGroup childSplittedGroup = t.split(new int[] { 25, 25 });
+        assertThat("the work hours must be the same that it had",
+                childSplittedGroup.getWorkHours(), equalTo(50));
+    }
+
     private void checkPopertiesAreKept(Task taskBeingSplitted,
             TaskElement oneOfTheResult) {
         assertThat(oneOfTheResult.getName(), equalTo(taskBeingSplitted
@@ -208,8 +227,8 @@ public class TaskElementTest {
         taskToDetach.setStartDate(new Date());
         Dependency.createDependency(sourceDependencyTask, taskToDetach,
                 Type.END_START);
-        Dependency.createDependency(taskToDetach,
-                destinationDependencyTask, Type.END_START);
+        Dependency.createDependency(taskToDetach, destinationDependencyTask,
+                Type.END_START);
         taskToDetach.detach();
         assertThat(sourceDependencyTask.getDependenciesWithThisOrigin().size(),
                 equalTo(0));

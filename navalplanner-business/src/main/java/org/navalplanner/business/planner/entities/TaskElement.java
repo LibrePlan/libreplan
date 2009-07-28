@@ -31,6 +31,8 @@ public abstract class TaskElement {
 
     private TaskGroup parent;
 
+    protected Integer shareOfHours;
+
     @NotNull
     private OrderElement orderElement;
 
@@ -38,7 +40,13 @@ public abstract class TaskElement {
 
     private Set<Dependency> dependenciesWithThisDestination = new HashSet<Dependency>();
 
-    public abstract Integer getWorkHours();
+    public Integer getWorkHours() {
+        if (shareOfHours != null)
+            return shareOfHours;
+        return defaultWorkHours();
+    }
+
+    protected abstract Integer defaultWorkHours();
 
     protected void copyPropertiesFrom(Task task) {
         this.name = task.getName();

@@ -30,7 +30,7 @@ public class TaskGroup extends TaskElement {
     }
 
     @Override
-    public Integer getWorkHours() {
+    public Integer defaultWorkHours() {
         return getOrderElement().getWorkHours();
     }
 
