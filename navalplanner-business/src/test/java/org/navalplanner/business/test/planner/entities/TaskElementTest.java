@@ -1,6 +1,7 @@
 package org.navalplanner.business.test.planner.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -11,7 +12,9 @@ import java.util.Date;
 
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -144,16 +147,12 @@ public class TaskElementTest {
                 childSplittedGroup.getWorkHours(), equalTo(50));
     }
 
-    private void checkPopertiesAreKept(Task taskBeingSplitted,
-            TaskElement oneOfTheResult) {
-        assertThat(oneOfTheResult.getName(), equalTo(taskBeingSplitted
-                .getName()));
-        assertThat(oneOfTheResult.getNotes(), equalTo(taskBeingSplitted
-                .getNotes()));
-        assertThat(oneOfTheResult.getStartDate(), equalTo(taskBeingSplitted
-                .getStartDate()));
-        assertThat(oneOfTheResult.getOrderElement(), equalTo(taskBeingSplitted
-                .getOrderElement()));
+    private void checkPopertiesAreKept(TaskElement original, TaskElement result) {
+        assertThat(result.getName(), equalTo(original.getName()));
+        assertThat(result.getNotes(), equalTo(original.getNotes()));
+        assertThat(result.getStartDate(), equalTo(original.getStartDate()));
+        assertThat(result.getOrderElement(),
+                equalTo(original.getOrderElement()));
     }
 
     @Test
@@ -162,15 +161,13 @@ public class TaskElementTest {
         TaskGroup root = new TaskGroup();
         Task taskBeingSplitted = Task.createTask(hoursGroup);
         root.addTaskElement(taskBeingSplitted);
-        Task sourceDependencyTask = Task.createTask(new HoursGroup());
-        Task destinationDependencyTask = Task.createTask(new HoursGroup());
         taskBeingSplitted.setName("prueba");
         taskBeingSplitted.setNotes("blabla");
         taskBeingSplitted.setStartDate(new Date());
-        Dependency.createDependency(sourceDependencyTask, taskBeingSplitted,
-                Type.END_START);
-        Dependency.createDependency(taskBeingSplitted,
-                destinationDependencyTask, Type.END_START);
+        Task sourceDependencyTask = Task.createTask(new HoursGroup());
+        Task destinationDependencyTask = Task.createTask(new HoursGroup());
+        addDependenciesForChecking(taskBeingSplitted, sourceDependencyTask,
+                destinationDependencyTask);
         OrderLine orderLine = new OrderLine();
         hoursGroup.setWorkingHours(100);
         orderLine.addHoursGroup(hoursGroup);
@@ -179,23 +176,40 @@ public class TaskElementTest {
         int[] shares = { 50, 50 };
         TaskGroup taskResultOfSplit = taskBeingSplitted.split(shares);
         assertThat(taskResultOfSplit.getParent(), equalTo(root));
-        assertThat(taskResultOfSplit.getDependenciesWithThisDestination()
-                .size(), equalTo(1));
-        Dependency withTaskResultOfSplitDestination = taskResultOfSplit
+
+        checkDependenciesAreKept(taskResultOfSplit, sourceDependencyTask,
+                destinationDependencyTask);
+    }
+
+    private void checkDependenciesAreKept(
+            TaskElement taskResultOfTransformation, Task sourceDependencyTask,
+            Task destinationDependencyTask) {
+        assertThat(taskResultOfTransformation
+                .getDependenciesWithThisDestination().size(), equalTo(1));
+        Dependency withTaskResultOfSplitDestination = taskResultOfTransformation
                 .getDependenciesWithThisDestination().iterator().next();
         assertThat(withTaskResultOfSplitDestination.getDestination(),
-                equalTo((TaskElement) taskResultOfSplit));
+                equalTo((TaskElement) taskResultOfTransformation));
         assertThat(withTaskResultOfSplitDestination.getOrigin(),
                 equalTo((TaskElement) sourceDependencyTask));
 
-        assertThat(taskResultOfSplit.getDependenciesWithThisOrigin().size(),
-                equalTo(1));
-        Dependency withTaskResultOfSplitSource = taskResultOfSplit
+        assertThat(taskResultOfTransformation.getDependenciesWithThisOrigin()
+                .size(), equalTo(1));
+        Dependency withTaskResultOfSplitSource = taskResultOfTransformation
                 .getDependenciesWithThisOrigin().iterator().next();
         assertThat(withTaskResultOfSplitSource.getDestination(),
                 equalTo((TaskElement) destinationDependencyTask));
         assertThat(withTaskResultOfSplitSource.getOrigin(),
-                equalTo((TaskElement) taskResultOfSplit));
+                equalTo((TaskElement) taskResultOfTransformation));
+    }
+
+    private void addDependenciesForChecking(TaskElement taskBeingTransformed,
+            TaskElement sourceDependencyTask,
+            TaskElement destinationDependencyTask) {
+        Dependency.createDependency(sourceDependencyTask, taskBeingTransformed,
+                Type.END_START);
+        Dependency.createDependency(taskBeingTransformed,
+                destinationDependencyTask, Type.END_START);
     }
 
     @Test
@@ -217,6 +231,116 @@ public class TaskElementTest {
     }
 
     @Test
+    public void aTaskGroupThatIsAssociatedToAnOrderLineGroupCannotBeMerged() {
+        TaskGroup taskGroup = new TaskGroup();
+        taskGroup.setOrderElement(new OrderLineGroup());
+        assertFalse(taskGroup.canBeMerged());
+    }
+
+    @Test
+    public void aTaskGroupWithChildrenAssociatedWithDifferentHourGroups() {
+        TaskGroup taskGroup = new TaskGroup();
+        taskGroup.setOrderElement(new OrderLine());
+        taskGroup.addTaskElement(Task.createTask(new HoursGroup()));
+        taskGroup.addTaskElement(Task.createTask(new HoursGroup()));
+        assertFalse(taskGroup.canBeMerged());
+    }
+
+    @Test
+    public void aTaskGroupWithoutChildrenCannotBeMerged() {
+        TaskGroup taskGroup = new TaskGroup();
+        taskGroup.setOrderElement(new OrderLine());
+        assertFalse(taskGroup.canBeMerged());
+    }
+
+    @Test
+    public void aTaskGroupWithTasksThatExceedHoursCannotBeMerged() {
+        TaskGroup taskGroup = new TaskGroup();
+        taskGroup.setOrderElement(new OrderLine());
+        HoursGroup hoursGroup = new HoursGroup();
+        hoursGroup.setWorkingHours(10);
+        taskGroup.addTaskElement(Task.createTask(hoursGroup));
+        taskGroup.addTaskElement(Task.createTask(hoursGroup));
+        assertFalse(taskGroup.canBeMerged());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void mergingATaskThatCannotBeMergedFails() {
+        TaskGroup taskGroup = new TaskGroup();
+        taskGroup.setOrderElement(new OrderLineGroup());
+        taskGroup.merge();
+    }
+
+    @Test
+    public void mergingATaskGroupSumsTheHoursOfTheChildren() {
+        HoursGroup hoursGroup = new HoursGroup();
+        Task taskBeingSplitted = Task.createTask(hoursGroup);
+        taskBeingSplitted.setName("prueba");
+        taskBeingSplitted.setNotes("blabla");
+        taskBeingSplitted.setStartDate(new Date());
+        OrderLine orderLine = new OrderLine();
+        hoursGroup.setWorkingHours(100);
+        orderLine.addHoursGroup(hoursGroup);
+        taskBeingSplitted.setOrderElement(orderLine);
+        int[] shares = { 20, 30, 50 };
+        TaskGroup taskGroup = taskBeingSplitted.split(shares);
+        Task task = taskGroup.merge();
+        checkPopertiesAreKept(taskGroup, task);
+        assertThat(task.getHoursGroup(), equalTo(hoursGroup));
+        assertThat(task.getOrderElement(), equalTo((OrderElement) orderLine));
+        assertThat(task.getWorkHours(), equalTo(100));
+    }
+
+    @Test
+    public void mergingATaskCanResultInATaskWithAShareOfHours() {
+        HoursGroup hoursGroup = new HoursGroup();
+        Task taskBeingSplitted = Task.createTask(hoursGroup);
+        OrderLine orderLine = new OrderLine();
+        hoursGroup.setWorkingHours(100);
+        orderLine.addHoursGroup(hoursGroup);
+        taskBeingSplitted.setOrderElement(orderLine);
+        int[] shares = { 20, 30, 50 };
+        TaskGroup taskGroup = taskBeingSplitted.split(shares);
+        Task subTask = (Task) taskGroup.getChildren().get(0);
+        TaskGroup group = subTask.split(new int[] { 10, 10 });
+        Task merged = group.merge();
+        assertThat(merged.getWorkHours(), equalTo(20));
+    }
+
+    @Test
+    public void mergingATaskKeepsDependencies() {
+        HoursGroup hoursGroup = new HoursGroup();
+        Task taskBeingSplitted = Task.createTask(hoursGroup);
+        OrderLine orderLine = new OrderLine();
+        hoursGroup.setWorkingHours(100);
+        orderLine.addHoursGroup(hoursGroup);
+        taskBeingSplitted.setOrderElement(orderLine);
+        int[] shares = { 20, 30, 50 };
+        TaskGroup taskGroup = taskBeingSplitted.split(shares);
+        Task source = Task.createTask(new HoursGroup());
+        Task destination = Task.createTask(new HoursGroup());
+        addDependenciesForChecking(taskGroup, source, destination);
+        Task transformed = taskGroup.merge();
+        checkDependenciesAreKept(transformed, source, destination);
+    }
+
+    @Test
+    public void theMergedEntityHasTheSameParent() {
+        HoursGroup hoursGroup = new HoursGroup();
+        Task taskBeingSplitted = Task.createTask(hoursGroup);
+        OrderLine orderLine = new OrderLine();
+        hoursGroup.setWorkingHours(100);
+        orderLine.addHoursGroup(hoursGroup);
+        taskBeingSplitted.setOrderElement(orderLine);
+        int[] shares = { 20, 30, 50 };
+        TaskGroup parent = taskBeingSplitted.split(shares);
+        Task subTask = (Task) parent.getChildren().get(0);
+        TaskGroup group = subTask.split(new int[] { 10, 10 });
+        Task merged = group.merge();
+        assertThat(merged.getParent(), equalTo(parent));
+    }
+
+    @Test
     public void detachRemovesDependenciesFromRelatedTasks() {
         HoursGroup hoursGroup = new HoursGroup();
         Task taskToDetach = Task.createTask(hoursGroup);
@@ -225,10 +349,8 @@ public class TaskElementTest {
         taskToDetach.setName("prueba");
         taskToDetach.setNotes("blabla");
         taskToDetach.setStartDate(new Date());
-        Dependency.createDependency(sourceDependencyTask, taskToDetach,
-                Type.END_START);
-        Dependency.createDependency(taskToDetach, destinationDependencyTask,
-                Type.END_START);
+        addDependenciesForChecking(taskToDetach, sourceDependencyTask,
+                destinationDependencyTask);
         taskToDetach.detach();
         assertThat(sourceDependencyTask.getDependenciesWithThisOrigin().size(),
                 equalTo(0));

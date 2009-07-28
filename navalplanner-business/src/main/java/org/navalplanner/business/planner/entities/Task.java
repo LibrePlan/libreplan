@@ -187,23 +187,14 @@ public class Task extends TaskElement {
         TaskGroup result = new TaskGroup();
         result.copyPropertiesFrom(this);
         result.shareOfHours = this.shareOfHours;
-        if (this.getParent() != null) {
-            this.getParent().addTaskElement(result);
-        }
+        copyParenTo(result);
         for (int i = 0; i < shares.length; i++) {
             Task task = Task.createTask(hoursGroup);
             task.copyPropertiesFrom(this);
             result.addTaskElement(task);
             task.shareOfHours = shares[i];
         }
-        for (Dependency dependency : getDependenciesWithThisOrigin()) {
-            Dependency.createDependency(result, dependency
-                    .getDestination(), dependency.getType());
-        }
-        for (Dependency dependency : getDependenciesWithThisDestination()) {
-            Dependency.createDependency(dependency.getOrigin(), result,
-                    dependency.getType());
-        }
+        copyDependenciesTo(result);
         return result;
     }
 

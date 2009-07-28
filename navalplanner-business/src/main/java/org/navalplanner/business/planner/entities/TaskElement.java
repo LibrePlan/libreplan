@@ -48,11 +48,28 @@ public abstract class TaskElement {
 
     protected abstract Integer defaultWorkHours();
 
-    protected void copyPropertiesFrom(Task task) {
+    protected void copyPropertiesFrom(TaskElement task) {
         this.name = task.getName();
         this.notes = task.getNotes();
         this.startDate = task.getStartDate();
         this.orderElement = task.getOrderElement();
+    }
+
+    protected void copyDependenciesTo(TaskElement result) {
+        for (Dependency dependency : getDependenciesWithThisOrigin()) {
+            Dependency.createDependency(result, dependency.getDestination(),
+                    dependency.getType());
+        }
+        for (Dependency dependency : getDependenciesWithThisDestination()) {
+            Dependency.createDependency(dependency.getOrigin(), result,
+                    dependency.getType());
+        }
+    }
+
+    protected void copyParenTo(TaskElement result) {
+        if (this.getParent() != null) {
+            this.getParent().addTaskElement(result);
+        }
     }
 
     public TaskGroup getParent() {
