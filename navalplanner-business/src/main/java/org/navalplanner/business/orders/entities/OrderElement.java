@@ -33,6 +33,16 @@ public abstract class OrderElement {
 
     private Set<TaskElement> taskElements = new HashSet<TaskElement>();
 
+    private OrderLineGroup parent;
+
+    public OrderLineGroup getParent() {
+        return parent;
+    }
+
+    public void setParent(OrderLineGroup parent) {
+        this.parent = parent;
+    }
+
     public abstract Integer getWorkHours();
 
     public abstract List<HoursGroup> getHoursGroups();
@@ -52,17 +62,8 @@ public abstract class OrderElement {
         return name;
     }
 
-
     public void setName(String name) {
         this.name = name;
-    }
-
-     public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public abstract boolean isLeaf();
@@ -151,12 +152,20 @@ public abstract class OrderElement {
         return (getHoursGroups().size() > 0);
     }
 
-     public boolean isFormatCodeValid(String code) {
+    public boolean isFormatCodeValid(String code) {
 
-        if (code.contains("_")) return false;
-         if (code.equals("")) return false;
+        if (code.contains("_"))
+            return false;
+        if (code.equals(""))
+            return false;
         return true;
     }
 
+    public void setCode(String code) {
+        this.code = code;
+    }
 
+    public String getCode() {
+        return code;
+    }
 }
