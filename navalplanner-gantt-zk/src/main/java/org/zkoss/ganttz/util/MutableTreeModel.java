@@ -172,6 +172,8 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
     }
 
     private void add(Node<T> parent, Integer position, List<Node<T>> children) {
+        if (children.isEmpty())
+            return;
         int indexFrom = position == null ? parent.children.size() : position;
         int indexTo = indexFrom + children.size() - 1;
         parent.addAll(position, children);

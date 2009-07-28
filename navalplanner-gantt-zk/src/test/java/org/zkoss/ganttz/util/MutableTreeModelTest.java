@@ -237,6 +237,21 @@ public class MutableTreeModelTest {
     }
 
     @Test
+    public void addingAnEmptyListOfElementsDontDoNothing() {
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
+        final List<TreeDataEvent> events = new ArrayList<TreeDataEvent>();
+        model.addTreeDataListener(new TreeDataListener() {
+
+            @Override
+            public void onChange(TreeDataEvent event) {
+                events.add(event);
+            }
+        });
+        model.add(model.getRoot(), new ArrayList<Prueba>());
+        assertThat(events.size(), equalTo(0));
+    }
+
+    @Test
     public void aNodeCanBeRemoved() {
         MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
         Prueba prueba1 = new Prueba();
