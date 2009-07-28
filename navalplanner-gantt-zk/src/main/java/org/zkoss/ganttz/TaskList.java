@@ -60,7 +60,8 @@ public class TaskList extends XulElement implements AfterCompose {
 
     public static TaskList createFor(
             CommandOnTaskContextualized<?> editTaskCommand,
-            List<Task> tasks, List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized) {
+            List<Task> tasks,
+            List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized) {
         TaskList result = new TaskList(editTaskCommand, tasks,
                 commandsOnTasksContextualized);
         return result;
@@ -84,16 +85,12 @@ public class TaskList extends XulElement implements AfterCompose {
         return result;
     }
 
-    public synchronized void addTaskComponent(Component afterThis,
+    public synchronized void addTaskComponent(Component beforeThis,
             final TaskComponent taskComponent, boolean relocate) {
-        boolean isFirst = false;
-        if (afterThis == null) {
-            insertBefore(taskComponent, getFirstTaskComponent());
-            isFirst = true;
-        } else {
-            insertBefore(taskComponent, afterThis == null ? null : afterThis
-                    .getNextSibling());
-        }
+        final boolean isFirst = getFirstTopTaskComponent() == null
+                || getFirstTopTaskComponent().equals(beforeThis);
+        insertBefore(taskComponent, beforeThis);
+
         addContextMenu(taskComponent);
         addListenerForTaskComponentEditForm(taskComponent);
         ListIterator<WeakReference<DependencyAddedListener>> iterator = listeners
@@ -126,18 +123,11 @@ public class TaskList extends XulElement implements AfterCompose {
 
     public synchronized void addTaskComponent(
             final TaskComponent taskComponent, boolean relocate) {
-        addTaskComponent(getLastTaskComponent(), taskComponent, relocate);
+        addTaskComponent(null, taskComponent, relocate);
     }
 
-    private TaskComponent getLastTaskComponent() {
-        List<TaskComponent> taskComponents = getTaskComponents();
-        if (taskComponents.isEmpty())
-            return null;
-        return taskComponents.get(taskComponents.size() - 1);
-    }
-
-    private TaskComponent getFirstTaskComponent() {
-        List<TaskComponent> taskComponents = getTaskComponents();
+    private TaskComponent getFirstTopTaskComponent() {
+        List<TaskComponent> taskComponents = getTopLevelTaskComponents();
         if (taskComponents.isEmpty())
             return null;
         return taskComponents.get(0);
@@ -149,15 +139,15 @@ public class TaskList extends XulElement implements AfterCompose {
                 addTaskComponent(TaskComponent.asTaskComponent(t, this), true);
             }
         } else if (position.isAtTop()) {
-            int afterThisPosition = position.getInsertionPosition() - 1;
-            List<TaskComponent> taskComponents = getTaskComponents();
-            TaskComponent afterThis = afterThisPosition < 0 ? null
-                    : afterThisPosition >= taskComponents.size() ? getLastTaskComponent()
-                            : getTaskComponents().get(afterThisPosition);
+            final int insertionPosition = position.getInsertionPosition();
+            List<TaskComponent> topTaskComponents = getTopLevelTaskComponents();
+            Component beforeThis = insertionPosition < topTaskComponents.size() ? topTaskComponents
+                    .get(insertionPosition)
+                    : null;
             for (Task t : newTasks) {
                 TaskComponent toAdd = TaskComponent.asTaskComponent(t, this);
-                addTaskComponent(afterThis, toAdd, true);
-                afterThis = toAdd;
+                addTaskComponent(beforeThis, toAdd, true);
+                beforeThis = toAdd.getNextSibling();
             }
         } else {
             Task mostRemoteAncestor = position.getMostRemoteAncestor();
@@ -182,8 +172,8 @@ public class TaskList extends XulElement implements AfterCompose {
         return null;
     }
 
-
-    private void addListenerForTaskComponentEditForm(final TaskComponent taskComponent) {
+    private void addListenerForTaskComponentEditForm(
+            final TaskComponent taskComponent) {
         if (editTaskCommand == null)
             return;
         taskComponent.addEventListener("onDoubleClick", new EventListener() {
@@ -220,6 +210,16 @@ public class TaskList extends XulElement implements AfterCompose {
 
     DatesMapper getMapper() {
         return getTimeTracker().getMapper();
+    }
+
+    private List<TaskComponent> getTopLevelTaskComponents() {
+        List<TaskComponent> result = new ArrayList<TaskComponent>();
+        for (TaskComponent taskComponent : getTaskComponents()) {
+            if (taskComponent.isTopLevel()) {
+                result.add(taskComponent);
+            }
+        }
+        return result;
     }
 
     private List<TaskComponent> getTaskComponents() {

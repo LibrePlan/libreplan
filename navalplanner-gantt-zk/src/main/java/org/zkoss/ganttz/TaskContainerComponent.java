@@ -53,9 +53,12 @@ public class TaskContainerComponent extends TaskComponent implements
         taskContainer.addExpandListener(expandListener);
         this.taskList = taskList;
         for (Task task : taskContainer.getTasks()) {
-            getCurrentComponents().add(
-                    TaskComponent.asTaskComponent(task, taskList));
+            getCurrentComponents().add(createChild(task));
         }
+    }
+
+    private TaskComponent createChild(Task task) {
+        return TaskComponent.asTaskComponent(task, this.taskList, false);
     }
 
     @Override
@@ -79,7 +82,7 @@ public class TaskContainerComponent extends TaskComponent implements
             Collection<? extends Task> newTasks) {
         List<TaskComponent> taskComponents = new ArrayList<TaskComponent>();
         for (Task task : newTasks) {
-            taskComponents.add(TaskComponent.asTaskComponent(task, taskList));
+            taskComponents.add(createChild(task));
         }
 
         if (insertionPosition == null) {
@@ -103,7 +106,8 @@ public class TaskContainerComponent extends TaskComponent implements
 
     private void addAllAt(Component previous, List<TaskComponent> toAdd) {
         for (TaskComponent subtaskComponent : toAdd) {
-            taskList.addTaskComponent(previous, subtaskComponent, true);
+            taskList.addTaskComponent(previous.getNextSibling(),
+                    subtaskComponent, true);
             previous = subtaskComponent;
         }
     }

@@ -128,11 +128,21 @@ public class TaskComponent extends Div implements AfterCompose {
         }
     };
 
-    public static TaskComponent asTaskComponent(Task task, TaskList taskList) {
+    public static TaskComponent asTaskComponent(Task task, TaskList taskList,
+            boolean isTopLevel) {
+        final TaskComponent result;
         if (task.isContainer()) {
-            return TaskContainerComponent.asTask((TaskContainer) task, taskList);
+            result = TaskContainerComponent
+                    .asTask((TaskContainer) task, taskList);
+        } else {
+            result = new TaskComponent(task);
         }
-        return new TaskComponent(task);
+        result.isTopLevel = isTopLevel;
+        return result;
+    }
+
+    public static TaskComponent asTaskComponent(Task task, TaskList taskList) {
+        return asTaskComponent(task, taskList, true);
     }
 
     public TaskComponent(Task task) {
@@ -173,6 +183,8 @@ public class TaskComponent extends Div implements AfterCompose {
     private String _color;
 
     private List<WeakReference<DependencyAddedListener>> dependencyListeners = new LinkedList<WeakReference<DependencyAddedListener>>();
+
+    private boolean isTopLevel;
 
     private final Task task;
     private PropertyChangeListener propertiesListener;
@@ -344,4 +356,9 @@ public class TaskComponent extends Div implements AfterCompose {
         getDependencyList().taskRemoved(this.getTask());
         this.detach();
     }
+
+    public boolean isTopLevel() {
+        return isTopLevel;
+    }
+
 }
