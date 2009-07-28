@@ -28,15 +28,13 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Column;
-import org.zkoss.zul.Columns;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.Rows;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
 
@@ -92,13 +90,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     public void cancel() {
-        System.out.println("### Cancel");
         workReportTypeCRUD.goToList();
     }
 
     public void goToCreateForm(WorkReportType workReportType) {
         workReportModel.prepareForCreate(workReportType);
-        appendCriterionTypesToColumns(getCriterionTypes());
+        appendCriterionTypesToHeader(getCriterionTypes());
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
@@ -118,10 +115,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     /**
      * Appends a set of {@link CriterionType} to columns header
      */
-    private void appendCriterionTypesToColumns(Set<CriterionType> criterionTypes) {
-        Grid grid = (Grid) createWindow.getFellow("listWorkReportLines");
+    private void appendCriterionTypesToHeader(Set<CriterionType> criterionTypes) {
+        Listbox grid = (Listbox) createWindow.getFellow("listWorkReportLines");
         for (CriterionType criterionType : criterionTypes) {
-            appendCriterionTypeToColumns(criterionType, grid.getColumns());
+            appendCriterionTypeToColumns(criterionType, grid.getListhead());
         }
     }
 
@@ -129,9 +126,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * Appends a new {@link CriterionType} to columns header
      */
     private void appendCriterionTypeToColumns(CriterionType criterionType,
-            Columns columns) {
-        Column column = new Column(criterionType.getName());
-        column.setParent(columns);
+            Listhead columns) {
+        Listheader listHeader = new Listheader(criterionType.getName());
+        listHeader.setParent(columns);
     }
 
     /**
@@ -139,10 +136,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      *
      * @param rows
      */
-    public void addWorkReportLine(Rows rows) {
+    public void addWorkReportLine(Listbox listBox) {
         WorkReportLine workReportLine = new WorkReportLine();
         getWorkReportLines().add(workReportLine);
-        rows.appendChild(createRow(workReportLine));
+        listBox.appendChild(createListItem(workReportLine));
     }
 
     public Set<WorkReportLine> getWorkReportLines() {
@@ -151,40 +148,45 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Returns a new row bound to to a {@link WorkReportLine}
+     * Returns a new listItem bound to to a {@link WorkReportLine}
      *
-     * A row consists of a several textboxes plus several listboxes, one for
-     * every {@link CriterionType} associated with current @{link WorkReport}
+     * A listItem consists of a several textboxes plus several listboxes, one
+     * for every {@link CriterionType} associated with current @{link
+     * WorkReport}
      *
      * @param workReportLine
      * @return
      */
-    private Row createRow(WorkReportLine workReportLine) {
-        Row row = new Row();
+    private Listitem createListItem(WorkReportLine workReportLine) {
+        Listitem listItem = new Listitem();
 
-        // Bind workReportLine to row
-        row.setValue(workReportLine);
+        // Bind workReportLine to listItem
+        listItem.setValue(workReportLine);
 
-        appendTextboxResource(row);
-        appendTextboxOrder(row);
-        appendIntboxNumHours(row);
+        appendTextboxResource(listItem);
+        appendTextboxOrder(listItem);
+        appendIntboxNumHours(listItem);
 
         for (CriterionType criterionType : getCriterionTypes()) {
-            appendListboxCriterionType(criterionType, row);
+            appendListboxCriterionType(criterionType, listItem);
         }
 
-        return row;
+        return listItem;
     }
 
     /**
-     * Append a Textbox @{link Resource} to row
+     * Append a Textbox @{link Resource} to listItem
      *
-     * @param row
+     * @param listItem
      */
-    private void appendTextboxResource(Row row) {
+    private void appendTextboxResource(Listitem listItem) {
         Textbox txtResource = new Textbox();
-        bindTextboxResource(txtResource, (WorkReportLine) row.getValue());
-        row.appendChild(txtResource);
+        bindTextboxResource(txtResource, (WorkReportLine) listItem.getValue());
+
+        // Insert textbox in listcell and append to listItem
+        Listcell listCell = new Listcell();
+        listCell.appendChild(txtResource);
+        listItem.appendChild(listCell);
     }
 
     /**
@@ -224,14 +226,18 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Append a Textbox @{link Order} to row
+     * Append a Textbox @{link Order} to listItem
      *
-     * @param row
+     * @param listItem
      */
-    private void appendTextboxOrder(Row row) {
+    private void appendTextboxOrder(Listitem listItem) {
         Textbox txtOrder = new Textbox();
-        bindTextboxOrder(txtOrder, (WorkReportLine) row.getValue());
-        row.appendChild(txtOrder);
+        bindTextboxOrder(txtOrder, (WorkReportLine) listItem.getValue());
+
+        // Insert textbox in listcell and append to listItem
+        Listcell listCell = new Listcell();
+        listCell.appendChild(txtOrder);
+        listItem.appendChild(listCell);
     }
 
     /**
@@ -269,14 +275,18 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Append a Intbox numHours to row
+     * Append a Intbox numHours to listItem
      *
-     * @param row
+     * @param listItem
      */
-    private void appendIntboxNumHours(Row row) {
+    private void appendIntboxNumHours(Listitem listItem) {
         Intbox intNumHours = new Intbox();
-        bindIntboxNumHours(intNumHours, (WorkReportLine) row.getValue());
-        row.appendChild(intNumHours);
+        bindIntboxNumHours(intNumHours, (WorkReportLine) listItem.getValue());
+
+        // Insert intbox in listcell and append to listItem
+        Listcell listCell = new Listcell();
+        listCell.appendChild(intNumHours);
+        listItem.appendChild(listCell);
     }
 
     /**
@@ -304,18 +314,22 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Appends a {@link CriterionType} listbox to row
+     * Appends a {@link CriterionType} listbox to listItem
      *
      * @param criterionType
-     * @param row
+     * @param listItem
      */
     private void appendListboxCriterionType(final CriterionType criterionType,
-            Row row) {
-        WorkReportLine workReportLine = (WorkReportLine) row.getValue();
+            Listitem listItem) {
+        WorkReportLine workReportLine = (WorkReportLine) listItem.getValue();
         Listbox listBox = createListboxCriterionType(criterionType,
                 getSelectedCriterion(workReportLine, criterionType));
         bindListboxCriterionType(criterionType, listBox, workReportLine);
-        row.appendChild(listBox);
+
+        // Insert listbox in listcell and append to listItem
+        Listcell listCell = new Listcell();
+        listCell.appendChild(listBox);
+        listItem.appendChild(listCell);
     }
 
     /**
@@ -415,10 +429,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @author Diego Pino García <dpino@igalia.com>
      *
      */
-    public class WorkReportListRenderer implements RowRenderer {
+    public class WorkReportListRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Listitem listItem, Object data) throws Exception {
             WorkReportLine workReportLine = (WorkReportLine) data;
 
             // Convert Resource to Worker
@@ -427,17 +441,17 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                         .asWorker(workReportLine.getResource()));
             }
 
-            row.setValue(workReportLine);
+            listItem.setValue(workReportLine);
 
             // Create textboxes
-            appendTextboxResource(row);
-            appendTextboxOrder(row);
-            appendIntboxNumHours(row);
+            appendTextboxResource(listItem);
+            appendTextboxOrder(listItem);
+            appendIntboxNumHours(listItem);
 
-            // Get criterion types for each row and append to it
+            // Get criterion types for each listItem and append to it
             // CriterionTypes
             for (CriterionType criterionType : getCriterionTypes()) {
-                appendListboxCriterionType(criterionType, row);
+                appendListboxCriterionType(criterionType, listItem);
             }
         }
     }

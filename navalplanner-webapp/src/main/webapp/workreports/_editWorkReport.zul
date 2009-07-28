@@ -21,22 +21,22 @@
 
         <hbox>
             <button label="Añadir"
-                onClick="controller.addWorkReportLine(listWorkReportLines.rows);"
+                onClick="controller.addWorkReportLine(listWorkReportLines);"
                 style="margin-top: -30px; margin-left: 300px" />
         </hbox>
 
-        <grid id="listWorkReportLines"
+        <listbox id="listWorkReportLines"
             model="@{controller.workReportLines}"
-            rowRenderer="@{controller.renderer}" mold="paging"
+            itemRenderer="@{controller.renderer}" mold="paging"
             pageSize="10">
-            <columns>
-                <column label="Recurso" />
-                <column label="Código" />
-                <column label="Horas" />
+            <listhead sizable="true">
+                <listheader label="Recurso" />
+                <listheader label="Código" />
+                <listheader label="Horas" />
                 <!-- Extra CriterionType columns are loaded loaded dynamically -->
-            </columns>
+            </listhead>
             <!--  List of rows is created or loaded dynamically -->
-        </grid>
+        </listbox>
 
         <hbox>
             <button onClick="controller.save();"
