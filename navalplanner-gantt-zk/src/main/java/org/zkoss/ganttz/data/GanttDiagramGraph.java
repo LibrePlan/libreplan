@@ -161,6 +161,7 @@ public class GanttDiagramGraph {
         List<DependencyRulesEnforcer> outgoing = getOutgoing(task);
         graph.removeVertex(task);
         rulesEnforcersByTask.remove(task);
+        topLevelTasks.remove(task);
         update(outgoing);
     }
 
