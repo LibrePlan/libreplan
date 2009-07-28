@@ -17,6 +17,8 @@ zkTaskContainer.relocateAfterAdding = function(cmp) {
     zkTask.relocateAfterAdding (cmp);
 };
 
+zkTaskContainer.relocateFirstAfterAdding = zkTask.relocateFirstAfterAdding;
+
 zkTaskContainer.cleanup = function(cmp){
     zkTask.cleanup(cmp);
 };
