@@ -51,6 +51,7 @@
                     <listcell label="@{criterion.name}"></listcell>
                 </listitem>
             </listbox>
+            <label id="requiredCriterionsEmpty" value="None" visible="false" />
             <hbox>
                 <button id="addResourceAllocation" label="Add"
                     onClick="allocationController.addResourceAllocation();" />

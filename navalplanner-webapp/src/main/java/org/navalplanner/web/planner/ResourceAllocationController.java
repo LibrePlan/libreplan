@@ -46,7 +46,16 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Window window;
 
     public Set<Criterion> getCriterions() {
-        return resourceAllocationModel.getCriterions();
+        Set<Criterion> criterions = resourceAllocationModel.getCriterions();
+        if (criterions.isEmpty()) {
+            window.getFellow("requiredCriterions").setVisible(false);
+            window.getFellow("requiredCriterionsEmpty").setVisible(true);
+        } else {
+            window.getFellow("requiredCriterionsEmpty").setVisible(false);
+            window.getFellow("requiredCriterions").setVisible(true);
+        }
+
+        return criterions;
     }
 
     public Set<ResourceAllocation> getResourceAllocations() {
