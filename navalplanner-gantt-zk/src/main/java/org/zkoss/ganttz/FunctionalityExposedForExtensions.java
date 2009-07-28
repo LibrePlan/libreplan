@@ -43,14 +43,26 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             return fromDomainToTask.get(domainObject);
         }
 
-        void register(Task task, T domainObject, TaskContainer parent) {
+        /**
+         * @param insertionPositionForTop
+         *            the position in which to insert the task at the top level,
+         *            if it must be added to the top level. If it is
+         *            <code>null/code> it is appended to the end
+         * @param task
+         * @param domainObject
+         * @param parent
+         */
+        void register(Integer insertionPositionForTop, Task task,
+                T domainObject,
+                TaskContainer parent) {
             fromDomainToTask.put(domainObject, task);
             fromTaskToDomain.put(task, domainObject);
             if (parent != null) {
                 fromTaskToParent.put(task, parent);
-            } else {
+            } else if (insertionPositionForTop != null) {
+                topLevel.add(insertionPositionForTop, task);
+            } else
                 topLevel.add(task);
-            }
         }
 
         void remove(T domainObject) {
@@ -118,7 +130,17 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         this.diagramGraph = diagramGraph;
     }
 
-    private Task extractTask(List<DomainDependency<T>> accumulatedDependencies,
+    /**
+     * @param topInsertionPosition
+     *            the position in which to register the task at top level. It
+     *            can be <code>null</code>
+     * @param accumulatedDependencies
+     * @param data
+     * @param parent
+     * @return
+     */
+    private Task extractTask(Integer topInsertionPosition,
+            List<DomainDependency<T>> accumulatedDependencies,
             T data, TaskContainer parent) {
         ITaskFundamentalProperties adapted = adapter.adapt(data);
         accumulatedDependencies.addAll(adapter.getOutcomingDependencies(data));
@@ -129,12 +151,12 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         } else {
             TaskContainer container = new TaskContainer(adapted);
             for (T child : navigator.getChildren(data)) {
-                container.add(extractTask(accumulatedDependencies, child,
+                container.add(extractTask(null, accumulatedDependencies, child,
                         container));
             }
             result = container;
         }
-        mapper.register(result, data, parent);
+        mapper.register(topInsertionPosition, result, data, parent);
         return result;
     }
 
@@ -142,7 +164,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         List<DomainDependency<T>> totalDependencies = new ArrayList<DomainDependency<T>>();
         List<Task> tasksCreated = new ArrayList<Task>();
         for (T object : domainObjects) {
-            Task task = extractTask(totalDependencies, object, null);
+            Task task = extractTask(position.getInsertionPosition(),
+                    totalDependencies, object, null);
             tasksCreated.add(task);
         }
         if (position.isAppendToTop() || position.isAtTop()) {
