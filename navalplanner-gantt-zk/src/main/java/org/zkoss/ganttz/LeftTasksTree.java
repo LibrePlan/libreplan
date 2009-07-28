@@ -344,11 +344,11 @@ public class LeftTasksTree extends HtmlMacroComponent {
     }
 
     public void addTasks(Position position, Collection<? extends Task> newTasks) {
-
+        Task root = tasksTreeModel.getRoot();
         if (position.isAppendToTop()) {
-            fillModel(newTasks, false);
+            fillModel(root, tasksTreeModel.getChildCount(root), newTasks, false);
         } else if (position.isAtTop()) {
-            fillModel(tasksTreeModel.getRoot(),
+            fillModel(root,
                     position.getInsertionPosition(), newTasks, false);
         } else {
             fillModel(position.getParent(), position.getInsertionPosition(),

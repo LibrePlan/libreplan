@@ -16,7 +16,7 @@
     <!-- choose lightLoad, mediumLoad or highLoad.
      -->
     <planner id="planner" self="@{define(content)}"
-        configuration="${plannerData.mediumLoad}">
+        configuration="${plannerData.lightLoad}">
         <div id="idContextMenuTaskAssigment"></div>
     </planner>
 
