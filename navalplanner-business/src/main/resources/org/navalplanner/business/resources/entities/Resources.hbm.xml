@@ -62,6 +62,10 @@
         <param name="enumClass">org.navalplanner.business.resources.entities.ResourceEnum</param>
       </type>
     </property>
+    <set name="criterions">
+        <key column="id_criterion_type" />
+        <one-to-many class="Criterion" />
+    </set>
   </class>
 
 </hibernate-mapping>

@@ -1,0 +1,50 @@
+<window id="${arg.top_id}" title="${arg.title}" border="normal">
+
+    <vbox>
+
+        <hbox>
+            <grid fixedLayout="false">
+                <rows>
+                    <row>
+                        <label value="Responsable:"
+                            style="font-weight:bold;" />
+                        <textbox
+                            value="@{controller.workReport.responsible}" />
+                    </row>
+                    <row>
+                        <label value="Fecha:" style="font-weight:bold;" />
+                        <datebox value="@{controller.workReport.date}" />
+                    </row>
+                </rows>
+            </grid>
+        </hbox>
+
+        <hbox>
+            <button label="Añadir"
+                onClick="controller.addWorkReportLine(listWorkReportLines.rows);"
+                style="margin-top: -30px; margin-left: 300px" />
+        </hbox>
+
+        <grid id="listWorkReportLines"
+            model="@{controller.workReportLines}"
+            rowRenderer="@{controller.renderer}" mold="paging"
+            pageSize="10">
+            <columns>
+                <column label="Recurso" />
+                <column label="Código" />
+                <column label="Horas" />
+                <!-- Extra CriterionType columns are loaded loaded dynamically -->
+            </columns>
+            <!--  List of rows is created or loaded dynamically -->
+        </grid>
+
+        <hbox>
+            <button onClick="controller.save();"
+                label="${arg.save_button_label}" />
+            <button onClick="controller.cancel();"
+                label="${arg.cancel_button_label}" />
+        </hbox>
+
+    </vbox>
+
+</window>

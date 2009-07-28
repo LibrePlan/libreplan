@@ -9,31 +9,31 @@ import org.navalplanner.business.resources.entities.CriterionType;
  */
 
 public class WorkReportType {
-	private Long id;
+    private Long id;
 
-	@SuppressWarnings("unused")
-	private long version;
+    @SuppressWarnings("unused")
+    private long version;
 
-	String name;
+    String name;
 
-	Set<CriterionType> criterionTypes;
+    Set<CriterionType> criterionTypes;
 
-	public WorkReportType() {
+    public WorkReportType() {
 
-	}
+    }
 
-	public WorkReportType(String name, Set<CriterionType> criterionTypes) {
-		this.name = name;
-		this.criterionTypes = criterionTypes;
-	}
+    public WorkReportType(String name, Set<CriterionType> criterionTypes) {
+        this.name = name;
+        this.criterionTypes = criterionTypes;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public long getVersion() {
-		return version;
-	}
+    public long getVersion() {
+        return version;
+    }
 
     public String getName() {
         return name;
@@ -50,11 +50,4 @@ public class WorkReportType {
     public void setCriterionTypes(Set<CriterionType> criterionTypes) {
         this.criterionTypes = criterionTypes;
     }
-
-    public void forceLoadCriterionTypes() {
-        for (CriterionType criterionType : criterionTypes) {
-            criterionType.getName();
-        }
-    }
-
 }

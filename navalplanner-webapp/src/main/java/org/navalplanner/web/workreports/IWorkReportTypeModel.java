@@ -55,7 +55,7 @@ public interface IWorkReportTypeModel {
      * @param workReportType
      *            The object to be edited
      */
-    void prepareEditFor(WorkReportType workReportType);
+    void prepareForEdit(WorkReportType workReportType);
 
     /**
      * Makes some operations needed before remove a {@link WorkReportType}.

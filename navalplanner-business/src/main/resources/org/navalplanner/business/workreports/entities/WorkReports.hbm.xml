@@ -26,10 +26,11 @@
 
     <property name="date"/>
     <property name="place"/>
+    <property name="responsible"/>
 
     <many-to-one name="workReportType" class="WorkReportType" column="WORK_REPORT_TYPE_ID" not-null="true"/>
 
-    <set name="workReportLines" cascade="all">
+    <set name="workReportLines" cascade="all" inverse="false">
         <key column="WORK_REPORT_ID"/>
         <one-to-many class="WorkReportLine"/>
     </set>

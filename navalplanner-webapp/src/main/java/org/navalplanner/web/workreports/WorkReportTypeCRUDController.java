@@ -13,6 +13,8 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.TwoWaySelector;
+import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
+import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.api.Window;
@@ -22,7 +24,8 @@ import org.zkoss.zul.api.Window;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class WorkReportTypeCRUDController extends GenericForwardComposer {
+public class WorkReportTypeCRUDController extends GenericForwardComposer
+        implements IWorkReportTypeCRUDControllerEntryPoints {
 
     private Window listWindow;
 
@@ -41,6 +44,10 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer {
     private IMessagesForUser messagesForUser;
 
     private Component messagesContainer;
+
+    private IWorkReportCRUDControllerEntryPoints workReportCRUD;
+
+    private IURLHandlerRegistry URLHandlerRegistry;
 
     public List<WorkReportType> getWorkReportTypes() {
         return workReportTypeModel.getWorkReportTypes();
@@ -79,11 +86,14 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
+        final URLHandler<IWorkReportTypeCRUDControllerEntryPoints> handler = URLHandlerRegistry
+                .getRedirectorFor(IWorkReportTypeCRUDControllerEntryPoints.class);
+        handler.registerListener(this, page);
         getVisibility().showOnly(listWindow);
     }
 
     public void cancel() {
-        goToList();
+        // TODO: Check if hoursgroup has criterions
     }
 
     public void goToList() {
@@ -92,7 +102,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer {
     }
 
     public void goToEditForm(WorkReportType workReportType) {
-        workReportTypeModel.prepareEditFor(workReportType);
+        workReportTypeModel.prepareForEdit(workReportType);
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
     }
@@ -176,6 +186,10 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer {
                     editWindow);
         }
         return visibility;
+    }
+
+    public void goToEditNewWorkReportForm(WorkReportType workReportType) {
+        workReportCRUD.goToCreateForm(workReportType);
     }
 
 }

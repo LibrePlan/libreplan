@@ -68,12 +68,11 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void prepareEditFor(WorkReportType workReportType) {
+    public void prepareForEdit(WorkReportType workReportType) {
         editing = true;
         Validate.notNull(workReportType);
 
         this.workReportType = getFromDB(workReportType);
-        this.workReportType.forceLoadCriterionTypes();
     }
 
     @Override

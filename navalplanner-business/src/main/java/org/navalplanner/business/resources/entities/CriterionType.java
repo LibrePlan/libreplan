@@ -1,19 +1,20 @@
 package org.navalplanner.business.resources.entities;
 
+import java.util.Set;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.hibernate.validator.NotEmpty;
-import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.services.CriterionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
 /**
  * Base implementation of {@link ICriterionType} <br />
+
  * @author Diego Pino García <dpino@igalia.com>
  */
 @Component
- public class CriterionType implements ICriterionType<Criterion> {
+public class CriterionType implements ICriterionType<Criterion> {
 
     private Long id;
 
@@ -36,6 +37,8 @@ import org.springframework.stereotype.Component;
 
     private ResourceEnum resource = ResourceEnum.getDefault();
 
+    private Set<Criterion> criterions;
+
     public CriterionType() {
 
     }
@@ -44,13 +47,9 @@ import org.springframework.stereotype.Component;
         this.name = name;
     }
 
-    public CriterionType(
-        String name,
-        boolean allowHierarchy,
-        boolean allowSimultaneousCriterionsPerResource,
-        boolean allowAdding,
-        boolean allowEditing,
-        ResourceEnum resource) {
+    public CriterionType(String name, boolean allowHierarchy,
+            boolean allowSimultaneousCriterionsPerResource,
+            boolean allowAdding, boolean allowEditing, ResourceEnum resource) {
 
         this.allowHierarchy = allowHierarchy;
         this.allowSimultaneousCriterionsPerResource = allowSimultaneousCriterionsPerResource;
@@ -61,13 +60,11 @@ import org.springframework.stereotype.Component;
     }
 
     public static CriterionType asCriterionType(ICriterionType criterionType) {
-        return new CriterionType(
-            criterionType.getName(),
-            criterionType.allowHierarchy(),
-            criterionType.allowSimultaneousCriterionsPerResource(),
-            criterionType.allowAdding(),
-            criterionType.allowEditing(),
-            CriterionType.getResource(criterionType));
+        return new CriterionType(criterionType.getName(), criterionType
+                .allowHierarchy(), criterionType
+                .allowSimultaneousCriterionsPerResource(), criterionType
+                .allowAdding(), criterionType.allowEditing(), CriterionType
+                .getResource(criterionType));
     }
 
     private static ResourceEnum getResource(ICriterionType criterionType) {
@@ -87,6 +84,14 @@ import org.springframework.stereotype.Component;
     @Override
     public String getName() {
         return name;
+    }
+
+    public Set<Criterion> getCriterions() {
+        return criterions;
+    }
+
+    public void setCriterions(Set<Criterion> criterions) {
+        this.criterions = criterions;
     }
 
     @Override
@@ -119,11 +124,10 @@ import org.springframework.stereotype.Component;
     }
 
     public static Criterion createCriterion(
-            PredefinedCriterionTypes predefinedCriterionType,
-            String name) {
+            PredefinedCriterionTypes predefinedCriterionType, String name) {
 
-        CriterionType criterionType = CriterionType.
-                asCriterionType(predefinedCriterionType);
+        CriterionType criterionType = CriterionType
+                .asCriterionType(predefinedCriterionType);
 
         return Criterion.withNameAndType(name, criterionType);
     }
@@ -169,9 +173,8 @@ import org.springframework.stereotype.Component;
 
         CriterionType criterionType = (CriterionType) o;
 
-        return new EqualsBuilder()
-                    .append(criterionType.getName(), this.getName())
-                    .isEquals();
+        return new EqualsBuilder().append(criterionType.getName(),
+                this.getName()).isEquals();
     }
 
     @Override

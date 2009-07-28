@@ -20,7 +20,9 @@ public class OnlyOneVisible {
 
     public void showOnly(Component component) {
         for (Component c : components) {
-            c.setVisible(component != null && c.equals(component));
+            if (c != null) {
+                c.setVisible(component != null && c.equals(component));
+            }
         }
     }
 

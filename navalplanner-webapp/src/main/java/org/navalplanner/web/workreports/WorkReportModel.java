@@ -1,0 +1,154 @@
+package org.navalplanner.web.workreports;
+
+import org.apache.commons.lang.Validate;
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.OrderElementDao;
+import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.resources.daos.impl.WorkerDaoHibernate;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workreports.daos.WorkReportDAO;
+import org.navalplanner.business.workreports.entities.WorkReport;
+import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.business.workreports.entities.WorkReportType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Model for UI operations related to {@link WorkReport}.
+ *
+ * @author Diego Pino García <dpino@igalia.com>
+ */
+@Service
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+public class WorkReportModel implements IWorkReportModel {
+
+    private WorkReport workReport;
+
+    private ClassValidator<WorkReport> workReportValidator = new ClassValidator<WorkReport>(
+            WorkReport.class);
+
+    @Autowired
+    private WorkReportDAO workReportDAO;
+
+    @Autowired
+    private OrderElementDao orderElementDAO;
+
+    @Autowired
+    private WorkerDaoHibernate workerDAO;
+
+    private boolean editing = false;
+
+    @Override
+    public WorkReport getWorkReport() {
+        return workReport;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void prepareForCreate(WorkReportType workReportType) {
+        editing = false;
+        workReport = new WorkReport();
+        workReport.setWorkReportType(workReportType);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void prepareEditFor(WorkReport workReport) {
+        editing = true;
+        Validate.notNull(workReport);
+        workReport = getFromDB(workReport);
+    }
+
+    @Transactional(readOnly = true)
+    private WorkReport getFromDB(WorkReport workReport) {
+        return getFromDB(workReport.getId());
+    }
+
+    @Transactional(readOnly = true)
+    private WorkReport getFromDB(Long id) {
+        try {
+            WorkReport workReport = workReportDAO.find(id);
+            forceLoadEntities(workReport);
+            return workReport;
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Load entities that will be needed in the conversation
+     *
+     * @param workReport
+     */
+    private void forceLoadEntities(WorkReport workReport) {
+        // Load WorkReportType
+        workReport.getWorkReportType().getName();
+
+        // Load CriterionTypes
+        for (CriterionType criterionType : workReport.getWorkReportType()
+                .getCriterionTypes()) {
+            criterionType.getId();
+            // Load Criterions
+            for (Criterion criterion : criterionType.getCriterions()) {
+                criterion.getId();
+            }
+        }
+
+        // Load WorkReportLines
+        for (WorkReportLine workReportLine : workReport.getWorkReportLines()) {
+            workReportLine.getId();
+            workReportLine.getResource().getId();
+            workReportLine.getOrderElement().getId();
+
+            // Load Criterions
+            for (Criterion criterion : workReportLine.getCriterions()) {
+                criterion.getId();
+            }
+        }
+    }
+
+    @Override
+    @Transactional
+    public void save() throws ValidationException {
+        InvalidValue[] invalidValues = workReportValidator
+                .getInvalidValues(workReport);
+        if (invalidValues.length > 0) {
+            throw new ValidationException(invalidValues);
+        }
+        workReportDAO.save(workReport);
+    }
+
+    @Override
+    @Transactional
+    public OrderElement findOrderElement(String orderCode) {
+        String[] parts = orderCode.split("-");
+        OrderElement parent = orderElementDAO.findByCode(parts[0]);
+        for (int i = 1; i < parts.length && parent != null; i++) {
+            OrderElement child = orderElementDAO.findByCode(parent, parts[i]);
+            parent = child;
+        }
+
+        return parent;
+    }
+
+    @Override
+    @Transactional
+    public Worker findWorker(String nif) throws InstanceNotFoundException {
+        return workerDAO.findUniqueByNif(nif);
+    }
+
+    @Override
+    @Transactional
+    public Worker asWorker(Resource resource) throws InstanceNotFoundException {
+        return workerDAO.find(resource.getId());
+    }
+}

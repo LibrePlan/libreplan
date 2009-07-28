@@ -1,6 +1,7 @@
 package org.navalplanner.business.workreports.entities;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -8,68 +9,78 @@ import java.util.Set;
  */
 public class WorkReport {
 
-	private Long id;
+    private Long id;
 
-	@SuppressWarnings("unused")
-	private long version;
+    @SuppressWarnings("unused")
+    private long version;
 
-	Date date;
+    Date date;
 
-	String place;
+    String place;
 
-	WorkReportType workReportType;
+    String responsible;
 
-	Set<WorkReportLine> workReportLines;
+    WorkReportType workReportType;
 
-	public WorkReport() {
+    Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
 
-	}
+    public WorkReport() {
 
-	public WorkReport(Date date, String place, WorkReportType workReportType,
-	        Set<WorkReportLine> workReportLines) {
-		this.date = date;
-		this.place = place;
-		this.workReportType = workReportType;
-		this.workReportLines = workReportLines;
-	}
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public WorkReport(Date date, String place, WorkReportType workReportType,
+            Set<WorkReportLine> workReportLines) {
+        this.date = date;
+        this.place = place;
+        this.workReportType = workReportType;
+        this.workReportLines = workReportLines;
+    }
 
-	public long getVersion() {
-		return version;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Date getDate() {
-		return date;
-	}
+    public long getVersion() {
+        return version;
+    }
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    public Date getDate() {
+        return date;
+    }
 
-	public String getPlace() {
-		return place;
-	}
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
-	public void setPlace(String place) {
-		this.place = place;
-	}
+    public String getPlace() {
+        return place;
+    }
 
-	public WorkReportType getWorkReportType() {
-		return workReportType;
-	}
+    public void setPlace(String place) {
+        this.place = place;
+    }
 
-	public void setWorkReportType(WorkReportType workReportType) {
-		this.workReportType = workReportType;
-	}
+    public String getResponsible() {
+        return responsible;
+    }
 
-	public Set<WorkReportLine> getWorkReportLines() {
-		return workReportLines;
-	}
+    public void setResponsible(String responsible) {
+        this.responsible = responsible;
+    }
 
-	public void setWorkReportLines(Set<WorkReportLine> workReportLines) {
-		this.workReportLines = workReportLines;
-	}
+    public WorkReportType getWorkReportType() {
+        return workReportType;
+    }
+
+    public void setWorkReportType(WorkReportType workReportType) {
+        this.workReportType = workReportType;
+    }
+
+    public Set<WorkReportLine> getWorkReportLines() {
+        return workReportLines;
+    }
+
+    public void setWorkReportLines(Set<WorkReportLine> workReportLines) {
+        this.workReportLines = workReportLines;
+    }
 }

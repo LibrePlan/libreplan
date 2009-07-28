@@ -15,6 +15,11 @@
                     <button label="Remove"
                         onClick="controller.confirmRemove(self.parent.parent.value);">
                     </button>
+
+                    <button label="Alta parte"
+                        onClick="controller.goToEditNewWorkReportForm(self.parent.parent.value);">
+                    </button>
+
                 </hbox>
             </row>
         </rows>

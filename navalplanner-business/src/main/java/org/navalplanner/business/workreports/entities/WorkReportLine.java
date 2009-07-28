@@ -1,5 +1,6 @@
 package org.navalplanner.business.workreports.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -25,7 +26,7 @@ public class WorkReportLine {
 
     WorkReport workReport;
 
-    Set<Criterion> criterions;
+    Set<Criterion> criterions = new HashSet<Criterion>();
 
     public WorkReportLine() {
 
