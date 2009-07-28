@@ -1,6 +1,7 @@
 package org.zkoss.ganttz.extensions;
 
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.zk.ui.Component;
 
 
 /**
@@ -14,5 +15,7 @@ public interface IContext<T> {
     void reload(PlannerConfiguration<?> configuration);
 
     void remove(T domainObject);
+
+    public Component getRelativeTo();
 
 }

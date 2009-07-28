@@ -2,6 +2,7 @@ package org.zkoss.ganttz.extensions;
 
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.zk.ui.Component;
 
 /**
  * An implementation of {@link IContextWithPlannerTask} that wraps another
@@ -38,8 +39,14 @@ public class ContextWithPlannerTask<T> implements IContextWithPlannerTask<T> {
     }
 
     @Override
+    public Component getRelativeTo() {
+        return context.getRelativeTo();
+    }
+
+    @Override
     public Task getTask() {
         return task;
     }
+
 
 }

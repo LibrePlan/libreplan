@@ -19,6 +19,7 @@ import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.zk.ui.Component;
 
 public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
@@ -142,6 +143,11 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         task.removed();
         planner.removeTask(task);
         mapper.remove(domainObject);
+    }
+
+    @Override
+    public Component getRelativeTo() {
+        return planner;
     }
 
 }

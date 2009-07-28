@@ -2,6 +2,7 @@ package org.zkoss.ganttz;
 
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.extensions.ContextRelativeToOtherComponent;
 import org.zkoss.ganttz.extensions.ContextWithPlannerTask;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
@@ -31,6 +32,11 @@ public class CommandOnTaskContextualized<T> {
         this.context = context;
     }
 
+    public void doAction(TaskComponent taskComponent) {
+        doAction(ContextRelativeToOtherComponent.makeRelativeTo(context,
+                taskComponent), domainObjectFor(taskComponent.getTask()));
+    }
+
     public void doAction(Task task) {
         doAction(domainObjectFor(task));
     }
@@ -41,8 +47,7 @@ public class CommandOnTaskContextualized<T> {
 
     private void doAction(IContext<T> context, T domainObject) {
         IContextWithPlannerTask<T> contextWithTask = ContextWithPlannerTask
-                .create(context, mapper
-                .findAssociatedBean(domainObject));
+                .create(context, mapper.findAssociatedBean(domainObject));
         commandOnTask.doAction(contextWithTask, domainObject);
     }
 
