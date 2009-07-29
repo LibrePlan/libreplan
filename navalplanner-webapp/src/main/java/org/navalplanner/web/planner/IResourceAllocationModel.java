@@ -103,4 +103,21 @@ public interface IResourceAllocationModel {
      */
     boolean workerSatisfiesCriterions();
 
+    /**
+     * Sets the current Gantt {@link org.zkoss.ganttz.data.Task ganttTask},
+     * where the user is allocating resources.
+     *
+     * @param ganttTask
+     */
+    void setGanttTask(org.zkoss.ganttz.data.Task ganttTask);
+
+    /**
+     * Update the duration of the current Gantt
+     * {@link org.zkoss.ganttz.data.Task ganttTask}, depending on the resources
+     * assigned and the dedication.
+     *
+     * @param ganttTask
+     */
+    void updateGanttTaskDuration();
+
 }

@@ -88,8 +88,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
 
-    public void showWindow(Task task) {
+    public void showWindow(Task task, org.zkoss.ganttz.data.Task ganttTask) {
         resourceAllocationModel.setTask(task);
+        resourceAllocationModel.setGanttTask(ganttTask);
         Util.reloadBindings(window);
         try {
             window.doModal();
@@ -117,6 +118,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
 
         Clients.closeErrorBox(window.getFellow("resourcesList"));
+
+        resourceAllocationModel.updateGanttTaskDuration();
+
         window.setVisible(false);
     }
 

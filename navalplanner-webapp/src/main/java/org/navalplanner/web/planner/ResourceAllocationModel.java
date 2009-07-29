@@ -2,7 +2,6 @@ package org.navalplanner.web.planner;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.hibernate.LockMode;
@@ -52,6 +51,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private IResourceAllocationDAO resourceAllocationDAO;
 
     private Task task;
+
+    private org.zkoss.ganttz.data.Task ganttTask;
 
     private ResourceAllocation resourceAllocation;
 
@@ -178,4 +179,18 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 new ArrayList<ICriterion>(getCriterions())).getResult();
         return compositedCriterion.isSatisfiedBy(worker);
     }
+
+    @Override
+    public void setGanttTask(org.zkoss.ganttz.data.Task ganttTask) {
+        this.ganttTask = ganttTask;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void updateGanttTaskDuration() {
+        taskElementDAO.save(task);
+        task.getDuration();
+        ganttTask.setEndDate(task.getEndDate());
+    }
+
 }

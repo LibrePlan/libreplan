@@ -25,7 +25,8 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement task) {
         if (task instanceof Task) {
-            this.resourceAllocationController.showWindow((Task) task);
+            this.resourceAllocationController.showWindow((Task) task, context
+                    .getTask());
         }
     }
 
