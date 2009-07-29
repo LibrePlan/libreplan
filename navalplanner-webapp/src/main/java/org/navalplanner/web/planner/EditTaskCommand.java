@@ -1,10 +1,13 @@
 package org.navalplanner.web.planner;
 
+import org.navalplanner.business.planner.daos.TaskElementDao;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.zkoss.ganttz.TaskEditFormComposer;
+import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
@@ -16,13 +19,27 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class EditTaskCommand implements IEditTaskCommand {
 
-    private TaskEditFormComposer taskEditFormComposer;
+    @Autowired
+    private TaskElementDao taskElementDAO;
+
+    private EditTaskController editTaskController;
 
     @Override
+    @Transactional(readOnly = true)
     public void doAction(IContextWithPlannerTask<TaskElement> context,
-            TaskElement task) {
-        taskEditFormComposer.showEditFormFor(context.getRelativeTo(), context
-                .getTask());
+            TaskElement taskElement) {
+
+        taskElementDAO.save(taskElement);
+        if (taskElement instanceof Task) {
+            forceLoadHoursGroup((Task) taskElement);
+        }
+
+        editTaskController.showEditFormFor(context.getRelativeTo(), context
+                .getTask(), taskElement);
+    }
+
+    private void forceLoadHoursGroup(Task task) {
+        task.getHoursGroup();
     }
 
     @Override
@@ -31,9 +48,8 @@ public class EditTaskCommand implements IEditTaskCommand {
     }
 
     @Override
-    public void setTaskEditFormComposer(
-            TaskEditFormComposer taskEditFormComposer) {
-        this.taskEditFormComposer = taskEditFormComposer;
+    public void setEditTaskController(EditTaskController editTaskController) {
+        this.editTaskController = editTaskController;
     }
 
 }

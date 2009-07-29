@@ -18,7 +18,7 @@
         <div id="idContextMenuTaskAssigment"></div>
     </planner>
 
-    <popup width="300px" apply="${planningController.taskEditFormComposer}">
+    <popup width="300px" apply="${planningController.editTaskController}">
         <grid>
             <rows>
                 <row>
@@ -36,6 +36,18 @@
                 <row>
                     ${c:l('task.notes')}
                     <textbox id="notes" />
+                </row>
+                <row>
+                    Hours
+                    <intbox id="hours" disabled="true" />
+                </row>
+                <row id="fixedDurationRow">
+                    Fixed duration
+                    <checkbox id="fixedDuration" />
+                </row>
+                <row id="durationRow">
+                    Duration (days)
+                    <intbox id="duration" />
                 </row>
             </rows>
         </grid>

@@ -15,7 +15,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 
@@ -48,7 +47,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     @Transactional(readOnly = true)
     public void createConfiguration(Order order,
             ResourceAllocationController resourceAllocationController,
-            TaskEditFormComposer taskEditFormComposer,
+            EditTaskController editTaskController,
             ConfigurationOnTransaction onTransaction) {
         Order orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled())
@@ -70,7 +69,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration.addCommandOnTask(splitCommand);
 
         IEditTaskCommand editTaskCommand = getEditTaskCommand();
-        editTaskCommand.setTaskEditFormComposer(taskEditFormComposer);
+        editTaskCommand.setEditTaskController(editTaskController);
         configuration.setEditTaskCommand(editTaskCommand);
 
         onTransaction.use(configuration);

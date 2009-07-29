@@ -1,7 +1,6 @@
 package org.navalplanner.web.planner;
 
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
@@ -11,6 +10,6 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
  */
 public interface IEditTaskCommand extends ICommandOnTask<TaskElement> {
 
-    void setTaskEditFormComposer(TaskEditFormComposer taskEditFormComposer);
+    void setEditTaskController(EditTaskController editTaskController);
 
 }

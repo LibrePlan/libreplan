@@ -30,6 +30,8 @@
             <key column="TASK_ELEMENT_ID"></key>
             <property name="shareOfHours"></property>
             <many-to-one name="hoursGroup" cascade="none"/>
+            <property name="fixedDuration" />
+            <property name="duration" />
             <set name="resourceAllocations" cascade="all-delete-orphan">
                 <key column="TASK" />
                 <one-to-many class="ResourceAllocation" />

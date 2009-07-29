@@ -2,7 +2,6 @@ package org.navalplanner.web.planner;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 
 /**
@@ -16,7 +15,7 @@ public interface IOrderPlanningModel {
 
     void createConfiguration(Order order,
             ResourceAllocationController resourceAllocationController,
-            TaskEditFormComposer taskEditFormComposer,
+            EditTaskController editTaskController,
             ConfigurationOnTransaction onTransaction);
 
 }

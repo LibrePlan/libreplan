@@ -148,7 +148,6 @@ public abstract class TaskElement {
 
     public abstract List<TaskElement> getChildren();
 
-
     protected void setParent(TaskGroup taskGroup) {
         this.parent = taskGroup;
     }
