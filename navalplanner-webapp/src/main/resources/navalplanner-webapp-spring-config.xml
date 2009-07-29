@@ -20,6 +20,7 @@
       <lookup-method name="getSaveCommand" bean="saveCommand"/>
       <lookup-method name="getResourceAllocationCommand" bean="resourceAllocationCommand"/>
       <lookup-method name="getSplitCommand" bean="splitTaskCommand"/>
+      <lookup-method name="getEditTaskCommand" bean="editTaskCommand"/>
     </bean>
 
     <context:component-scan base-package="org.navalplanner.web"/>

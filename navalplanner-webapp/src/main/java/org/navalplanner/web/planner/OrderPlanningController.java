@@ -10,6 +10,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.Planner;
+import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 
 /**
@@ -27,6 +28,12 @@ public class OrderPlanningController implements
         return resourceAllocationController;
     }
 
+    private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer();
+
+    public TaskEditFormComposer getTaskEditFormComposer() {
+        return taskEditFormComposer;
+    }
+
     @Autowired
     private IURLHandlerRegistry urlHandlerRegistry;
 
@@ -41,6 +48,7 @@ public class OrderPlanningController implements
     @Override
     public void showSchedule(Order order) {
         model.createConfiguration(order, resourceAllocationController,
+                taskEditFormComposer,
                 new ConfigurationOnTransaction() {
 
             @Override
