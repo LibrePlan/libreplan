@@ -145,14 +145,14 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public Worker getWorker() {
         if (resourceAllocation == null) {
             return null;
         }
         Worker worker = ((SpecificResourceAllocation) resourceAllocation)
                 .getWorker();
-        if(worker == null) {
+        if (worker == null) {
             return null;
         }
         try {
@@ -188,9 +188,27 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public void updateGanttTaskDuration() {
+
+        // A set of resourceAllocation objects of the task with the ones which
+        // are transiet is filled
+        Set<ResourceAllocation> transietResourceAllocations = new HashSet<ResourceAllocation>();
+
+        for (ResourceAllocation resourceAllocation : task
+                .getResourceAllocations()) {
+            if (resourceAllocation.isTransient()) {
+                transietResourceAllocations.add(resourceAllocation);
+            }
+        }
+
         taskElementDAO.save(task);
         task.getDuration();
         ganttTask.setEndDate(task.getEndDate());
+
+        // The set of resourceAllocation objects which are previously transiet
+        // are put to transiet again
+        for (ResourceAllocation resourceAllocation : transietResourceAllocations) {
+            resourceAllocation.makeTransientAgain();
+        }
     }
 
 }
