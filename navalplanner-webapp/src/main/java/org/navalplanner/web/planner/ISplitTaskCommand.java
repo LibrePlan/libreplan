@@ -7,4 +7,6 @@ public interface ISplitTaskCommand extends ICommandOnTask<TaskElement> {
 
     public void setState(PlanningState planningState);
 
+    public void setSplitWindowController(SplittingController splittingController);
+
 }

@@ -16,6 +16,7 @@ public interface IOrderPlanningModel {
     void createConfiguration(Order order,
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
+            SplittingController splittingController,
             ConfigurationOnTransaction onTransaction);
 
 }

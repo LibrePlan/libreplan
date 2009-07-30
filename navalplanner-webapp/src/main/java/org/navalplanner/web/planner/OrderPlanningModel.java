@@ -48,6 +48,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     public void createConfiguration(Order order,
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
+            SplittingController splittingController,
             ConfigurationOnTransaction onTransaction) {
         Order orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled())
@@ -66,6 +67,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         ISplitTaskCommand splitCommand = getSplitCommand();
         splitCommand.setState(planningState);
+        splitCommand.setSplitWindowController(splittingController);
         configuration.addCommandOnTask(splitCommand);
 
         IMergeTaskCommand mergeCommand = getMergeTaskCommand();

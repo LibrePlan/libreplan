@@ -23,9 +23,13 @@ public class OrderPlanningController implements
     @Autowired
     private ResourceAllocationController resourceAllocationController;
 
+    @Autowired
+    private SplittingController splittingController;
+
     public ResourceAllocationController getResourceAllocationController() {
         return resourceAllocationController;
     }
+
 
     @Autowired
     private EditTaskController editTaskController;
@@ -48,7 +52,7 @@ public class OrderPlanningController implements
     @Override
     public void showSchedule(Order order) {
         model.createConfiguration(order, resourceAllocationController,
-                editTaskController,
+                editTaskController, splittingController,
                 new ConfigurationOnTransaction() {
 
             @Override
@@ -63,6 +67,10 @@ public class OrderPlanningController implements
         final URLHandler<IOrderPlanningControllerEntryPoints> handler = urlHandlerRegistry
                 .getRedirectorFor(IOrderPlanningControllerEntryPoints.class);
         handler.registerListener(this, planner.getPage());
+    }
+
+    public SplittingController getSplittingController() {
+        return splittingController;
     }
 
 }

@@ -11,6 +11,7 @@
 	<zscript><![CDATA[
 		planningController = orderPlanningController;
 		allocationController = planningController.resourceAllocationController;
+		splittingTaskController = planningController.splittingController;
     ]]>
     </zscript>
 
@@ -81,6 +82,30 @@
             </listbox>
             <button id="closeResourceAllocationWindow" label="Back"
                 onClick="allocationController.back();" />
+        </vbox>
+    </window>
+
+    <window id="splittingWindow" visible="false" apply="${splittingTaskController}" minwidth="${400}" >
+        <vbox>
+            <hbox>
+            <label value="Total hours:" /> <label id="totalHoursLabel"/>
+            </hbox>
+            <grid id="sharesListing" fixedLayout="true">
+                <columns sizable="true">
+                    <column label="Name" />
+                    <column label="Hours" />
+                </columns>
+                <rows>
+                    <row self="@{each='share'}">
+                        <textbox value="@{share.name}" constraint="no empty"/>
+                        <intbox value="@{share.hours}" constraint="no negative,no zero"/>
+                    </row>
+                </rows>
+            </grid>
+            <hbox>
+                <button label="Ok" id="splitOk" />
+                <button label="Cancel" id="splitCancel" />
+            </hbox>
         </vbox>
     </window>
 
