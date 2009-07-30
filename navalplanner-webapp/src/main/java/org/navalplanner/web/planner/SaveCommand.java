@@ -42,9 +42,11 @@ public class SaveCommand implements ISaveCommand {
                 }
             }
         }
-        for (TaskElement taskElement : state
-                .getToRemove()) {
-            taskElementService.remove(taskElement);
+        for (TaskElement taskElement : state.getToRemove()) {
+            if (taskElementService.exists(taskElement)) {
+                // it might have already been saved in a previous save action
+                taskElementService.remove(taskElement);
+            }
         }
 
         try {

@@ -107,4 +107,9 @@ public class TaskElementService implements ITaskElementService {
         }
     }
 
+    @Override
+    public boolean exists(TaskElement taskElement) {
+        return taskElementDao.exists(taskElement.getId());
+    }
+
 }

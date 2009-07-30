@@ -19,4 +19,6 @@ public interface ITaskElementService {
 
     void remove(TaskElement taskElement);
 
+    boolean exists(TaskElement taskElement);
+
 }
