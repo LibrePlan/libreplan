@@ -184,4 +184,11 @@ public class WorkReportModel implements IWorkReportModel {
     public boolean isEditing() {
         return editing;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getDistinguishedCode(OrderElement orderElement) throws InstanceNotFoundException {
+        orderElementDAO.save(orderElement);
+        return orderElementDAO.getDistinguishedCode(orderElement);
+    }
 }

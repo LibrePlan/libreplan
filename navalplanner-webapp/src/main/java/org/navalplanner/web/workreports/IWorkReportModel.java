@@ -85,4 +85,13 @@ public interface IWorkReportModel {
      */
     boolean isEditing();
 
+    /**
+     * Returns distinguished code for {@link OrderElement}
+     *
+     * @param orderElement
+     * @return
+     */
+    String getDistinguishedCode(OrderElement orderElement)
+            throws InstanceNotFoundException;
+
 }

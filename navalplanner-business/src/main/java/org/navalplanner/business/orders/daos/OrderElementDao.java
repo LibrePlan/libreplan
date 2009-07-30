@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -40,5 +41,17 @@ public class OrderElementDao extends GenericDaoHibernate<OrderElement, Long>
                 .createCriteria("children").add(
                         Restrictions.idEq(orderElement.getId()));
         return ((List<OrderElement>) c.list());
+    }
+
+    public String getDistinguishedCode(OrderElement orderElement)
+            throws InstanceNotFoundException {
+        String code = orderElement.getCode();
+
+        while (orderElement.getParent() != null) {
+            OrderElement parent = find(orderElement.getParent().getId());
+            code = parent.getCode() + "-" + code;
+            orderElement = parent;
+        }
+        return code;
     }
 }

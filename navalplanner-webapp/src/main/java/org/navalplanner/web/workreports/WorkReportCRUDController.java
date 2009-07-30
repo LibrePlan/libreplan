@@ -398,9 +398,15 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
             @Override
             public String get() {
-                return (workReportLine.getOrderElement() != null) ? workReportLine
-                        .getOrderElement().getCode()
-                        : "";
+                if (workReportLine.getOrderElement() != null) {
+                    try {
+                        return workReportModel
+                                .getDistinguishedCode(workReportLine
+                                        .getOrderElement());
+                    } catch (InstanceNotFoundException e) {
+                    }
+                }
+                return "";
             }
 
         }, new Util.Setter<String>() {

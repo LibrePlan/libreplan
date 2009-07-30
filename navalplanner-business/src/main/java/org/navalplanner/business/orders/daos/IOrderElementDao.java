@@ -2,6 +2,7 @@ package org.navalplanner.business.orders.daos;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDao;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
@@ -21,6 +22,17 @@ public interface IOrderElementDao extends IGenericDao<OrderElement, Long> {
      * @return the {@link OrderElement} found
      */
     public OrderElement findByCode(OrderElement parent, String code);
+
     public List<OrderElement> findParent(
             OrderElement orderElement);
+
+    /**
+     * Returns the unique code that distinguishes an OrderElement (unique path
+     * from root to OrderElement)
+     *
+     * @param orderElement must be attached
+     * @return
+     */
+    public String getDistinguishedCode(OrderElement orderElement)
+            throws InstanceNotFoundException;
 }

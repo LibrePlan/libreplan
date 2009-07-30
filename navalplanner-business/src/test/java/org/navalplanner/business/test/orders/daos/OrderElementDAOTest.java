@@ -9,7 +9,9 @@ import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderElementDao;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,5 +97,35 @@ public class OrderElementDAOTest {
         OrderLine found = (OrderLine) orderElementDAO.findByCode(
                 orderLineGroup, orderLine.getCode());
         assertTrue(found != null && found.getCode().equals(orderLine.getCode()));
+    }
+
+    @Test
+    public void testFindDistinguishedCode() {
+        // Create OrderLineGroupLine
+        OrderLineGroup orderLineGroup = createValidOrderLineGroup();
+        orderElementDAO.save(orderLineGroup);
+        orderLineGroup.setCode(((Long) orderLineGroup.getId()).toString());
+        orderElementDAO.save(orderLineGroup);
+
+        // Create OrderLineGroup
+        OrderLine orderLine = createValidOrderLine();
+        orderElementDAO.save(orderLine);
+        orderLine.setCode(((Long) orderLine.getId()).toString());
+        orderLine.setParent(orderLineGroup);
+        orderElementDAO.save(orderLine);
+
+        try {
+            String distinguishedCode = orderElementDAO
+                    .getDistinguishedCode(orderLine);
+            String code = orderLine.getCode();
+            OrderElement orderElement = orderLine;
+            while (orderElement.getParent() != null) {
+                code = orderLine.getParent().getCode() + "-" + code;
+                orderElement = orderElement.getParent();
+            }
+            assertTrue(distinguishedCode.equals(code));
+        } catch (InstanceNotFoundException e) {
+
+        }
     }
 }
