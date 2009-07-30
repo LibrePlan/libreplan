@@ -104,8 +104,8 @@ public class Task extends TaskElement {
     }
 
     public Integer getDuration() {
-        if (!isFixedDuration()) {
-            // If it is not fixed the duration is calculated
+        if ((isFixedDuration() == null) || !isFixedDuration()) {
+            // If it is not fixed, the duration is calculated
             Integer duration = calculateDaysDuration();
             setDuration(duration);
             return duration;
