@@ -77,6 +77,16 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
 
     }
 
+    public void reattachUnmodifiedEntity(E entity) {
+
+        try {
+            getSession().lock(entity, LockMode.NONE);
+        } catch (HibernateException e) {
+            throw convertHibernateAccessException(e);
+        }
+
+    }
+
     public E merge(E entity) {
 
         try {

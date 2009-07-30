@@ -18,20 +18,44 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 public interface IGenericDao <E, PK extends Serializable>{
 
     /**
-     * It updates or inserts the instance passed as a parameter. If the
-     * instance passed as parameter already exists in the database, the
-     * instance is reattached to the underlying ORM session. In this case, if
-     * the version field is not equal to the one in the database,
+     * It inserts the object passed as a parameter in the ORM session, planning
+     * it for updating (even though it is not modified before or after the call
+     * to this method) or insertion, depending if it is was detached or
+     * transient. If another instance with the same key already exists in the
+     * ORM session, an exception is thrown. When updating, version check is
+     * executed (if the entity has version control enabled) with the possible
      * <code>org.springframework.dao.OptimisticLockingFailureException</code>
-     * is thrown.
+     * being thrown.
      */
     public void save(E entity);
 
     /**
-     * Merges an entity, useful when saving an entity and a different object
-     *
-     * Unlike save, it does not launch an Exception if there is already a
-     * persistent instance with the same identifier in the session
+     * It inserts the object passed as a parameter in the ORM session. Unlike
+     * <code>save</code>, the entity passed as a parameter must not have been
+     * modified, and after calling the method, the entity is not considered
+     * dirty (but it will be considered dirty if it is modified after calling
+     * the method). Like <code>save</code>, if another instance with the same
+     * key already exists in the ORM session, an exception is thrown.
+     * <p/>
+     * The intended use of the method is for reattachment of detached objects
+     * which have not been modified before calling this method and will not
+     * be modified during the transaction.
+     */
+    public void reattachUnmodifiedEntity(E entity);
+
+    /**
+     * It merges an entity. The caller must discard the reference passed as
+     * a parameter and work with the returned reference. Merging is an
+     * alternative technique to reattachment with <code>save</code>, which must
+     * be used when it cannot be assessed another instance with the same
+     * identifier as the one passed as a parameter already exists in the
+     * underlying ORM session. Like <code>save</code>, version check is
+     * executed when updating.
+     * <p/>
+     * Since the caller must discard the reference passed as a parameter and
+     * work with the returned reference, merging is a technique more complicated
+     * than reattachmnent. Reattachment (by using <code>save</code> and/or
+     * <code>reattachUnmodifiedEntity</code>) should be the preferred technique.
      *
      * @param entity
      */
@@ -54,13 +78,18 @@ public interface IGenericDao <E, PK extends Serializable>{
     public void checkVersion(E entity);
 
     /**
-     * It sets a WRITE lock on the instance passed as a parameter. The instance
-     * must exist in the database and cannot have been previously modified.
-     * Other concurrent transactions will be blocked if they try to write (but
-     * they can read) on the same persistent instance. If the version field is
-     * not equal to the one in the database,
+     * It sets a WRITE lock on the instance passed as a parameter, causing the
+     * same kind of reattachment as <code>reattachUnmodifiedEntity</code>.
+     * Other concurrent transactions will be blocked if they try to write or
+     * set a WRITE lock (but they can read) on the same persistent instance. If
+     * the version field is not equal to the one in the database,
      * <code>org.springframework.dao.OptimisticLockingFailureException</code>
      * is thrown. The lock is released when the transaction finishes.
+     * <p/>
+     * The intended use of this method is to enable pessimistic locking when
+     * the version check mechanism is not enough for controlling concurrent
+     * access. Most concurrent cases can be automatically managed with the usual
+     * version check mechanism.
      */
     public void lock(E entity);
 
