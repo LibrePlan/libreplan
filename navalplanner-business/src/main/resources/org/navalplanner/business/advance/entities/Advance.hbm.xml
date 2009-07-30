@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.advance.entities" default-access="field">
+
+<!-- AdvanceType -->
+<class name="AdvanceType" table="ADVANCE_TYPE">
+    <id name="id" type="long">
+        <generator class="native"/>
+    </id>
+    <version name="version" type="long"/>
+
+    <property name="unitName"/>
+    <property name="defaultMaxValue"/>
+    <property name="updatable"/>
+</class>
+
+<!-- AdvanceAssigment -->
+<class name="AdvanceAssigment" table="ADVANCE_ASSIGMENT">
+    <id name="id" type="long">
+        <generator class="native"/>
+    </id>
+    <version name="version" type="long"/>
+
+    <property name="maxValue"/>
+    <property name="reportGlobalAdvance"/>
+
+    <many-to-one name="advanceType" class="AdvanceType" column="ADVANCE_TYPE_ID"/>
+
+    <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID"/>
+
+    <set name="advanceMeasurements" cascade="all" inverse="true">
+        <key column="ADVANCE_ASSIGMENT_ID"/>
+        <one-to-many class="AdvanceMeasurement"/>
+    </set>
+</class>
+
+<!-- AdvanceMeasurement -->
+<class name="AdvanceMeasurement" table="ADVANCE_MEASUREMENT">
+    <id name="id" type="long">
+        <generator class="native"/>
+    </id>
+    <version name="version" type="long"/>
+
+    <property name="date"/>
+    <property name="value"/>
+
+    <many-to-one name="advanceAssigment" class="AdvanceAssigment" column="ADVANCE_ASSIGMENT_ID" />
+</class>
+</hibernate-mapping>

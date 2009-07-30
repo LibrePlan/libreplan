@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.validator.NotEmpty;
+import org.navalplanner.business.advance.entities.AdvanceAssigment;
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.orders.daos.OrdersDaoRegistry;
 import org.navalplanner.business.planner.entities.TaskElement;
 
 public abstract class OrderElement {
@@ -27,6 +31,8 @@ public abstract class OrderElement {
     private Boolean mandatoryEnd = false;
 
     private String description;
+
+    private Set<AdvanceAssigment> advanceAssigments = new HashSet<AdvanceAssigment>();
 
     @NotEmpty
     private String code;
@@ -168,4 +174,67 @@ public abstract class OrderElement {
     public String getCode() {
         return code;
     }
+
+    public void setAdvanceAssigments(Set<AdvanceAssigment> advanceAssigments) {
+        this.advanceAssigments = advanceAssigments;
+    }
+
+    public Set<AdvanceAssigment> getAdvanceAssigments() {
+        return this.advanceAssigments;
+    }
+
+    /**
+     * Validate if the advanceAssigment can be added to the order element.The
+     * list of advanceAssigments must be attached.
+     * @param advanceAssigment
+     *            must be attached
+     */
+    public void addAvanceAssigment(AdvanceAssigment newAdvanceAssigment)
+            throws Exception {
+        if (!this.advanceAssigments.isEmpty()) {
+            for (AdvanceAssigment advanceAssigment : getAdvanceAssigments()) {
+                if (advanceAssigment.getAdvanceType().getId() == newAdvanceAssigment
+                        .getAdvanceType().getId()) {
+                    System.out.println("bien");
+                    throw new DuplicateAdvanceAssigmentForOrderElementException(
+                            "Duplicate Advance Assigment For Order Element",
+                            this,
+                            "org.navalplanner.business.orders.entities.OrderElement");
+                }
+
+                if (advanceAssigment.getReportGlobalAdvance()
+                        && newAdvanceAssigment.getReportGlobalAdvance())
+                    throw new DuplicateValueTrueReportGlobalAdvanceException(
+                            "Duplicate Value True ReportGlobalAdvance For Order Element",
+                            this,
+                            "org.navalplanner.business.orders.entities.OrderElement");
+            }
+        }
+        existParentsWithSameAdvanceType(this, newAdvanceAssigment);
+        this.advanceAssigments.add(newAdvanceAssigment);
+    }
+
+    private void existParentsWithSameAdvanceType(OrderElement orderElement,
+            AdvanceAssigment newAdvanceAssigment)
+            throws DuplicateAdvanceAssigmentForOrderElementException {
+
+        List<OrderElement> parents = OrdersDaoRegistry.getOrderElementDao()
+                .findParent(orderElement);
+        for (OrderElement orderElementParent : parents) {
+            for (AdvanceAssigment advanceAssigment : orderElementParent
+                    .getAdvanceAssigments()) {
+                if (advanceAssigment.getAdvanceType().getId() == newAdvanceAssigment
+                        .getAdvanceType().getId()) {
+                    throw new DuplicateAdvanceAssigmentForOrderElementException(
+                            "Duplicate Advance Assigment For Order Element",
+                            this,
+                            "org.navalplanner.business.orders.entities.OrderElement");
+                }
+            }
+            existParentsWithSameAdvanceType(orderElementParent,
+                    newAdvanceAssigment);
+        }
+
+    }
+
 }

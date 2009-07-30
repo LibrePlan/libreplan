@@ -5,7 +5,7 @@
         <id access="field" type="long" name="id">
             <generator class="native" />
         </id>
-        <version name="version" access="field" type="long" />
+        <version name="version" access="field" type="long"/>
         <property name="initDate" access="field"></property>
         <property name="endDate" access="field"></property>
         <property name="name" access="field"></property>
@@ -15,7 +15,7 @@
         <list name="orderElements" access="field" cascade="all">
             <key column="orderId" not-null="false"></key>
             <index column="positionInOrder"></index>
-            <one-to-many class="OrderElement" />
+            <one-to-many class="OrderElement"/>
         </list>
     </class>
 
@@ -31,10 +31,14 @@
         <property name="mandatoryInit" access="field" />
         <property name="mandatoryEnd" access="field" />
         <property name="description" access="field" />
-        <property name="code" access="field"/>
+        <property name="code" access="field" />
         <set name="taskElements" access="field" cascade="delete">
-            <key column="ORDER_ELEMENT_ID"/>
+            <key column="ORDER_ELEMENT_ID" />
             <one-to-many class="org.navalplanner.business.planner.entities.TaskElement"></one-to-many>
+        </set>
+        <set name="advanceAssigments" cascade="all" inverse="true">
+            <key column="ORDER_ELEMENT_ID" />
+            <one-to-many class="org.navalplanner.business.advance.entities.AdvanceAssigment"></one-to-many>
         </set>
 
         <!-- Inverse navigation from OrderElement to OrderLineGroup -->
@@ -77,8 +81,8 @@
         </set>
 
         <many-to-one name="parentOrderLine" column="PARENT_ORDER_LINE"
-            not-null="true"/>
+            not-null="true" />
 
-    </class>
+</class>
 
 </hibernate-mapping>

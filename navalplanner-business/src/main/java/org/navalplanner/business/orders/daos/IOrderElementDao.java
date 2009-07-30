@@ -1,14 +1,14 @@
 package org.navalplanner.business.orders.daos;
+import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDao;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * Contract for {@link OrderElementDao}
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface IOrderElementDao extends IGenericDao<OrderElement, Long> {
     public OrderElement findByCode(String code);
@@ -21,4 +21,6 @@ public interface IOrderElementDao extends IGenericDao<OrderElement, Long> {
      * @return the {@link OrderElement} found
      */
     public OrderElement findByCode(OrderElement parent, String code);
+    public List<OrderElement> findParent(
+            OrderElement orderElement);
 }

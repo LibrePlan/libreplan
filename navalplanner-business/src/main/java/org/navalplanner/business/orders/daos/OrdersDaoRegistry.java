@@ -17,6 +17,7 @@ public class OrdersDaoRegistry {
     @Autowired
     private IOrderDao order;
 
+    @Autowired
     private IOrderElementDao orderElement;
 
     private OrdersDaoRegistry() {

@@ -14,12 +14,14 @@
 
     <!-- Hibernate Session Factory. -->
     <bean id="sessionFactory"
-        class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
-        p:dataSource-ref="dataSource"
-        p:configLocation="classpath:/navalplanner-business-hibernate.cfg.xml">
+    class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+        p:dataSource-ref="dataSource" p:configLocation="classpath:/navalplanner-business-hibernate.cfg.xml">
 
         <property name="mappingResources">
             <list>
+                <value>
+                    org/navalplanner/business/advance/entities/Advance.hbm.xml
+                </value>
                 <value>
                     org/navalplanner/business/resources/entities/Resources.hbm.xml
                 </value>
@@ -35,7 +37,7 @@
                 <value>
                     org/navalplanner/business/workreports/entities/WorkReports.hbm.xml
                 </value>
-            </list>
+                </list>
         </property>
     </bean>
 
@@ -45,8 +47,7 @@
         p:sessionFactory-ref="sessionFactory" />
 
     <!--
-        Enable configuration of transactional behavior based on
-        annotations
+        Enable configuration of transactional behavior based on annotations
     -->
     <tx:annotation-driven transaction-manager="transactionManager" />
 
@@ -56,10 +57,12 @@
     -->
     <context:annotation-config />
 
-    <context:component-scan base-package="org.navalplanner.business"/>
+    <context:component-scan base-package="org.navalplanner.business" />
 
-    <!--  DAO registries (to be used from non-Spring managed objects
-          (e.g. entities)  -->
+    <!--
+        DAO registries (to be used from non-Spring managed objects (e.g.
+        entities)
+    -->
 
     <bean id="resourcesDaoRegistry"
         class="org.navalplanner.business.resources.daos.ResourcesDaoRegistry"
@@ -76,4 +79,9 @@
     <bean id="workReportsDaoRegistry"
         class="org.navalplanner.business.workreports.daos.WorkReportsDaoRegistry"
         factory-method="getInstance" />
+
+    <bean id="advanceDaoRegistry"
+        class="org.navalplanner.business.advance.daos.AdvanceDaoRegistry"
+        factory-method="getInstance" />
+
 </beans>
