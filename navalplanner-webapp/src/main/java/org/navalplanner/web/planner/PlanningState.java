@@ -47,11 +47,21 @@ public class PlanningState {
 
     public void removed(TaskElement taskElement) {
         taskElement.detach();
+        if (!isTopLevel(taskElement)) {
+            return;
+        }
         toSave.remove(taskElement);
         toRemove.add(taskElement);
     }
 
+    private boolean isTopLevel(TaskElement taskElement) {
+        return taskElement.getParent() == null;
+    }
+
     public void added(TaskElement taskElement) {
+        if (!isTopLevel(taskElement)) {
+            return;
+        }
         toRemove.remove(taskElement);
         toSave.add(taskElement);
     }
