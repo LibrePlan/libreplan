@@ -1,7 +1,5 @@
 package org.navalplanner.web.planner;
 
-import java.util.List;
-
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.services.ITaskElementService;
@@ -11,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.zul.Messagebox;
 
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -47,7 +46,14 @@ public class SaveCommand implements ISaveCommand {
                 .getToRemove()) {
             taskElementService.remove(taskElement);
         }
-        // TODO redirect to another page or show message
+
+        try {
+            Messagebox.show("Scheduling saved", "Information", Messagebox.OK,
+                    Messagebox.INFORMATION);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
