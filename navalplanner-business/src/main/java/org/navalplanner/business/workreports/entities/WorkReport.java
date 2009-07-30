@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
+
 /**
  * @author Diego Pino García <dpino@igalia.com>
  */
@@ -14,15 +17,21 @@ public class WorkReport {
     @SuppressWarnings("unused")
     private long version;
 
+    @NotNull
     Date date;
 
     String place;
 
+    @NotEmpty
     String responsible;
 
     WorkReportType workReportType;
 
     Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
+
+    public static final String DATE = "date";
+
+    public static final String RESPONSIBLE = "responsible";
 
     public WorkReport() {
 

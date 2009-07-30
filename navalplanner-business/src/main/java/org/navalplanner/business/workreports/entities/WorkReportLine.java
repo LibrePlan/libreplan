@@ -3,6 +3,7 @@ package org.navalplanner.business.workreports.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -20,13 +21,19 @@ public class WorkReportLine {
 
     Integer numHours;
 
+    @NotNull
     Resource resource;
 
+    @NotNull
     OrderElement orderElement;
 
     WorkReport workReport;
 
     Set<Criterion> criterions = new HashSet<Criterion>();
+
+    public static final String RESOURCE = "resource";
+
+    public static final String ORDER_ELEMENT = "orderElement";
 
     public WorkReportLine() {
 

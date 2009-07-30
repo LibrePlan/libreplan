@@ -39,6 +39,9 @@ public class WorkReportModel implements IWorkReportModel {
     private ClassValidator<WorkReport> workReportValidator = new ClassValidator<WorkReport>(
             WorkReport.class);
 
+    private ClassValidator<WorkReportLine> workReportLineValidator = new ClassValidator<WorkReportLine>(
+            WorkReportLine.class);
+
     @Autowired
     private WorkReportDAO workReportDAO;
 
@@ -124,8 +127,19 @@ public class WorkReportModel implements IWorkReportModel {
     public void save() throws ValidationException {
         InvalidValue[] invalidValues = workReportValidator
                 .getInvalidValues(workReport);
+
         if (invalidValues.length > 0) {
             throw new ValidationException(invalidValues);
+        }
+
+        // Check WorkReportLines
+        for (WorkReportLine workReportLine : workReport.getWorkReportLines()) {
+            invalidValues = workReportLineValidator
+                    .getInvalidValues(workReportLine);
+
+            if (invalidValues.length > 0) {
+                throw new ValidationException(invalidValues);
+            }
         }
         workReportDAO.save(workReport);
     }

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.Order;
@@ -28,6 +29,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -64,6 +66,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private WorkReportListRenderer workReportListRenderer = new WorkReportListRenderer();
 
+    public final static String ID_WORK_REPORT_LINES = "workReportLines";
+
     public List<WorkReport> getWorkReports() {
         return workReportModel.getWorkReports();
     }
@@ -92,8 +96,121 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             messagesForUser.showMessage(Level.ERROR,
                     "Parte de traballo gardado");
         } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
+            showInvalidValues(e);
         }
+    }
+
+    /**
+     * Shows invalid values for {@link WorkReport} and {@link WorkReportLine}
+     * entities
+     *
+     * @param e
+     */
+    private void showInvalidValues(ValidationException e) {
+        for (InvalidValue invalidValue : e.getInvalidValues()) {
+            Object value = invalidValue.getBean();
+            if (value instanceof WorkReport) {
+                validateWorkReport(invalidValue);
+            }
+            if (value instanceof WorkReportLine) {
+                validateWorkReportLine(invalidValue);
+            }
+        }
+    }
+
+    /**
+     * Validates {@link WorkReport} data constraints
+     *
+     * @param invalidValue
+     */
+    private void validateWorkReport(InvalidValue invalidValue) {
+        String propertyName = invalidValue.getPropertyName();
+
+        if (WorkReport.DATE.equals(propertyName)) {
+            Datebox datebox = (Datebox) createWindow.getFellowIfAny(propertyName);
+            throw new WrongValueException(datebox, "Data non pode ser nulo");
+        }
+        if (WorkReport.RESPONSIBLE.equals(propertyName)) {
+            Textbox textbox = (Textbox) createWindow.getFellowIfAny(propertyName);
+            throw new WrongValueException(textbox,
+                    "Responsable non poder ser nulo");
+        }
+    }
+
+    /**
+     * Validates {@link WorkReportLine} data constraints
+     *
+     * @param invalidValue
+     */
+    private void validateWorkReportLine(InvalidValue invalidValue) {
+        Listbox listBox = (Listbox) createWindow
+                .getFellowIfAny(ID_WORK_REPORT_LINES);
+        if (listBox != null) {
+            // Find which listItem contains workReportLine inside listBox
+            Listitem listItem = findWorkReportLine(listBox.getItems(),
+                    (WorkReportLine) invalidValue.getBean());
+
+            if (listItem != null) {
+                String propertyName = invalidValue.getPropertyName();
+
+                if (WorkReportLine.RESOURCE.equals(propertyName)) {
+                    // Locate TextboxResource
+                    Textbox txtResource = getTextboxResource(listItem);
+                    // Value is incorrect, clear
+                    txtResource.setValue("");
+                    throw new WrongValueException(txtResource,
+                            "Recurso non pode ser nulo");
+                }
+                if (WorkReportLine.ORDER_ELEMENT.equals(propertyName)) {
+                    // Locate TextboxOrder
+                    Textbox txtOrder = getTextboxOrder(listItem);
+                    // Value is incorrect, clear
+                    txtOrder.setValue("");
+                    throw new WrongValueException(txtOrder,
+                            "Código non pode ser nulo");
+                }
+            }
+        }
+    }
+
+    /**
+     * Locates which {@link Listitem} is bound to {@link WorkReportLine} in
+     * listItems
+     *
+     * @param listItems
+     * @param workReportLine
+     * @return
+     */
+    private Listitem findWorkReportLine(List<Listitem> listItems,
+            WorkReportLine workReportLine) {
+        for (Listitem listItem : listItems) {
+            if (workReportLine.equals(listItem.getValue())) {
+                return listItem;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Locates {@link Textbox} Resource in {@link Listitem}
+     *
+     * @param listItem
+     * @return
+     */
+    private Textbox getTextboxResource(Listitem listItem) {
+        return (Textbox) ((Listcell) listItem.getChildren().get(0))
+                .getChildren().get(0);
+    }
+
+    /**
+     * Locates {@link Textbox} Order in {@link Listitem}
+     *
+     * @param listItem
+     * @return
+     */
+    private Textbox getTextboxOrder(Listitem listItem) {
+        return (Textbox) ((Listcell) listItem.getChildren().get(1))
+                .getChildren().get(0);
     }
 
     @Override
@@ -133,7 +250,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * Appends a set of {@link CriterionType} to columns header
      */
     private void appendCriterionTypesToHeader(Set<CriterionType> criterionTypes) {
-        Listbox grid = (Listbox) createWindow.getFellow("listWorkReportLines");
+        Listbox grid = (Listbox) createWindow.getFellow(ID_WORK_REPORT_LINES);
         for (CriterionType criterionType : criterionTypes) {
             appendCriterionTypeToColumns(criterionType, grid.getListhead());
         }

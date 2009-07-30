@@ -8,12 +8,16 @@
                     <row>
                         <label value="Responsable:"
                             style="font-weight:bold;" />
-                        <textbox
+                        <textbox id="responsible"
                             value="@{controller.workReport.responsible}" />
                     </row>
                     <row>
-                        <label value="Fecha:" style="font-weight:bold;" />
-                        <datebox value="@{controller.workReport.date}" />
+                        <label value="Lugar:" style="font-weight:bold;" />
+                        <textbox value="@{controller.workReport.place}" />
+                    </row>
+                    <row>
+                        <label value="Data:" style="font-weight:bold;" />
+                        <datebox id="date" value="@{controller.workReport.date}" />
                     </row>
                 </rows>
             </grid>
@@ -21,14 +25,14 @@
 
         <hbox>
             <button label="Añadir"
-                onClick="controller.addWorkReportLine(listWorkReportLines);"
+                onClick="controller.addWorkReportLine(workReportLines);"
                 style="margin-top: -30px; margin-left: 300px" />
             <button label="Borrar"
-                onClick="controller.deleteWorkReportLine(listWorkReportLines);"
+                onClick="controller.deleteWorkReportLine(workReportLines);"
                 style="margin-top: -30px; margin-left: 2px" />
         </hbox>
 
-        <listbox id="listWorkReportLines"
+        <listbox id="workReportLines"
             model="@{controller.workReportLines}"
             itemRenderer="@{controller.renderer}" mold="paging"
             pageSize="10">
