@@ -580,6 +580,38 @@ public class OrderLineTest {
 
     }
 
+    /**
+     * An {@link OrderLine} with two {@link HoursGroup} of 0h NO_FIXED. Trying
+     * to set work hours of {@link OrderLine} to 200h. Expected:
+     * {@link OrderLine} with 200h. {@link HoursGroup} with 100h and
+     * {@link HoursGroup} with 100h.
+     */
+    @Test
+    public void testSetWorkHoursHoursGroupNoFixedZeroValue() {
+
+        OrderLine orderLine = new OrderLine();
+        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        hoursGroup.setWorkingHours(0);
+        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        hoursGroup2.setWorkingHours(0);
+        orderLine.addHoursGroup(hoursGroup);
+        orderLine.addHoursGroup(hoursGroup2);
+
+        assertThat(orderLine.getWorkHours(), equalTo(0));
+
+        try {
+            orderLine.setWorkHours(200);
+        } catch (IllegalArgumentException e) {
+            fail("It should not throw an exception");
+        }
+
+        assertThat(orderLine.getWorkHours(), equalTo(200));
+        assertThat(orderLine.getHoursGroups().size(), equalTo(2));
+        assertThat(hoursGroup.getWorkingHours(), equalTo(100));
+        assertThat(hoursGroup2.getWorkingHours(), equalTo(100));
+
+    }
+
     @Test
     public void testAddNewEmptyHoursGroup() {
         OrderLine orderLine = new OrderLine();
@@ -714,7 +746,7 @@ public class OrderLineTest {
         int[] hoursValues = { 0, 100, 10, 30 };
         for (int hours : hoursValues) {
             OrderLine orderLine = OrderLine
-                    .createOrderLineWithUnfixedHours(hours);
+                    .createOrderLineWithUnfixedPercentage(hours);
             assertThat(orderLine.getWorkHours(), equalTo(hours));
             assertThat(orderLine.getHoursGroups().size(), equalTo(1));
             orderLine.setWorkHours(20);

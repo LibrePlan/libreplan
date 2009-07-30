@@ -54,7 +54,7 @@ public class OrderElementTreeModel extends SimpleTreeModel {
 
     private OrderElement createNewOrderElement() {
         OrderElement newOrderElement = OrderLine
-                .createOrderLineWithUnfixedHours(0);
+                .createOrderLineWithUnfixedPercentage(0);
         newOrderElement.setName("New Order Element");
         return newOrderElement;
     }

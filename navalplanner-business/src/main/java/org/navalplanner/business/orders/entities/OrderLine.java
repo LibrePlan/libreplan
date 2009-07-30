@@ -8,11 +8,11 @@ import java.util.Set;
 
 public class OrderLine extends OrderElement {
 
-    public static OrderLine createOrderLineWithUnfixedHours(int hours) {
+    public static OrderLine createOrderLineWithUnfixedPercentage(int hours) {
         OrderLine result = new OrderLine();
         HoursGroup hoursGroup = new HoursGroup();
         result.addHoursGroup(hoursGroup);
-        hoursGroup.setFixedPercentage(true);
+        hoursGroup.setFixedPercentage(false);
         hoursGroup.setPercentage(new BigDecimal(1));
         hoursGroup.setWorkingHours(hours);
         return result;
@@ -155,8 +155,13 @@ public class OrderLine extends OrderElement {
             Integer newNoFixed = workHours - newTotal;
 
             for (HoursGroup hoursGroup : noFixedGroups) {
-                Integer newHours = (int) ((float) hoursGroup.getWorkingHours()
-                        / oldNoFixed * newNoFixed);
+                Integer newHours;
+                if (oldNoFixed == 0) {
+                    newHours = (int) ((float) newNoFixed / hoursGroups.size());
+                } else {
+                    newHours = (int) ((float) hoursGroup.getWorkingHours()
+                            / oldNoFixed * newNoFixed);
+                }
                 hoursGroup.setWorkingHours(newHours);
 
                 newHoursGroups.add(hoursGroup);
