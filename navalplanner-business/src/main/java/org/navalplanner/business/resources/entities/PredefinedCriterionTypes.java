@@ -27,6 +27,24 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
         public List<String> getPredefined() {
             return LeaveCriterions.getCriterionNames();
         }
+    },
+    TRAINING(true, true, true, true, ResourceEnum.WORKER) {
+        @Override
+        public List<String> getPredefined() {
+            return Arrays.asList();
+        }
+    },
+    JOB(true, true, true, true, ResourceEnum.WORKER) {
+        @Override
+        public List<String> getPredefined() {
+            return Arrays.asList();
+        }
+    },
+    CATEGORY(true, true, true, true, ResourceEnum.WORKER) {
+        @Override
+        public List<String> getPredefined() {
+            return Arrays.asList();
+        }
     };
 
     private final boolean allowHierarchy;
