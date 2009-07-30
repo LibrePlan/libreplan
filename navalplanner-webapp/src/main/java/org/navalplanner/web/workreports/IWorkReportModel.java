@@ -51,7 +51,7 @@ public interface IWorkReportModel {
      * @param code
      * @return
      */
-    OrderElement findOrderElement(String code);
+    OrderElement findOrderElement(String code) throws InstanceNotFoundException;
 
     /**
      * Find a @{link Worker} by nif

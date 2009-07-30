@@ -1,10 +1,12 @@
 package org.navalplanner.business.test.orders.daos;
 
 import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -68,19 +70,21 @@ public class OrderElementDAOTest {
     }
 
     @Test
-    public void testFindByCode() {
+    public void testFindUniqueByCode() throws InstanceNotFoundException {
         OrderLine orderLine = createValidOrderLine();
         orderElementDAO.save(orderLine);
         orderLine.setCode(((Long) orderLine.getId()).toString());
         orderElementDAO.save(orderLine);
 
-        OrderLine found = (OrderLine) orderElementDAO.findByCode(orderLine
+        OrderLine found = (OrderLine) orderElementDAO
+                .findUniqueByCode(orderLine
                 .getCode());
         assertTrue(found != null && found.getCode().equals(orderLine.getCode()));
     }
 
     @Test
-    public void testFindByCodeAndOrderLineGroup() {
+    public void testFindUniqueByCodeAndOrderLineGroup()
+            throws InstanceNotFoundException {
         // Create OrderLineGroupLine
         OrderLineGroup orderLineGroup = createValidOrderLineGroup();
         orderElementDAO.save(orderLineGroup);
@@ -94,9 +98,23 @@ public class OrderElementDAOTest {
         orderLine.setParent(orderLineGroup);
         orderElementDAO.save(orderLine);
 
-        OrderLine found = (OrderLine) orderElementDAO.findByCode(
+        OrderLine found = (OrderLine) orderElementDAO
+                .findUniqueByCodeAndParent(
                 orderLineGroup, orderLine.getCode());
         assertTrue(found != null && found.getCode().equals(orderLine.getCode()));
+    }
+
+    @Test
+    public void testFindByCodeInRoot() throws InstanceNotFoundException {
+        // Create OrderLineGroupLine
+        OrderLineGroup orderLineGroup = createValidOrderLineGroup();
+        orderElementDAO.save(orderLineGroup);
+        orderLineGroup.setCode(((Long) orderLineGroup.getId()).toString());
+        orderElementDAO.save(orderLineGroup);
+
+        List<OrderElement> list = orderElementDAO.findByCodeAndParent(null,
+                orderLineGroup.getCode());
+        assertFalse(list.isEmpty());
     }
 
     @Test

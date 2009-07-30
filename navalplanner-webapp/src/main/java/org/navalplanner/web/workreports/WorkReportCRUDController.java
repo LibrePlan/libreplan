@@ -414,13 +414,13 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             @Override
             public void set(String value) {
                 if (value.length() > 0) {
-                    OrderElement orderElement = workReportModel
-                            .findOrderElement(value);
-                    if (orderElement == null) {
+                    try {
+                        workReportLine.setOrderElement(workReportModel
+                            .findOrderElement(value));
+                    } catch (InstanceNotFoundException e) {
                         throw new WrongValueException(txtOrder,
-                                "OrderElement not found");
+                            "OrderElement not found");
                     }
-                    workReportLine.setOrderElement(orderElement);
                 }
             }
         });

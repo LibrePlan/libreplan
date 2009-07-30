@@ -146,11 +146,15 @@ public class WorkReportModel implements IWorkReportModel {
 
     @Override
     @Transactional
-    public OrderElement findOrderElement(String orderCode) {
+    public OrderElement findOrderElement(String orderCode)
+            throws InstanceNotFoundException {
         String[] parts = orderCode.split("-");
-        OrderElement parent = orderElementDAO.findByCode(parts[0]);
+
+        OrderElement parent = orderElementDAO.findUniqueByCodeAndParent(null,
+                parts[0]);
         for (int i = 1; i < parts.length && parent != null; i++) {
-            OrderElement child = orderElementDAO.findByCode(parent, parts[i]);
+            OrderElement child = orderElementDAO.findUniqueByCodeAndParent(
+                    parent, parts[i]);
             parent = child;
         }
 

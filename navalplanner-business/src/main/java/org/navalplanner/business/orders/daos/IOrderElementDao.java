@@ -12,16 +12,24 @@ import org.navalplanner.business.orders.entities.OrderElement;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface IOrderElementDao extends IGenericDao<OrderElement, Long> {
-    public OrderElement findByCode(String code);
+    public List<OrderElement> findByCode(String code);
+
+    public OrderElement findUniqueByCode(String code)
+            throws InstanceNotFoundException;
+
+    public List<OrderElement> findByCodeAndParent(OrderElement parent,
+            String code);
 
     /**
      * Find an order element with the <code>code</code> passed as parameter
      * and which is a son of the <code>parent</code> {@link OrderElement}
+     *
      * @param parent Parent {@link OrderElement}
      * @param code code of the {@link OrderElement} to find
      * @return the {@link OrderElement} found
      */
-    public OrderElement findByCode(OrderElement parent, String code);
+    public OrderElement findUniqueByCodeAndParent(OrderElement parent,
+            String code) throws InstanceNotFoundException;
 
     public List<OrderElement> findParent(
             OrderElement orderElement);

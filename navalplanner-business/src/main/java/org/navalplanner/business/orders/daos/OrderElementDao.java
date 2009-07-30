@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Dao for {@link OrderElement}
+ *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -22,17 +23,42 @@ import org.springframework.stereotype.Repository;
 public class OrderElementDao extends GenericDaoHibernate<OrderElement, Long>
         implements IOrderElementDao {
 
-    public OrderElement findByCode(String code) {
+    public List<OrderElement> findByCode(String code) {
         Criteria c = getSession().createCriteria(OrderElement.class);
         c.add(Restrictions.eq("code", code));
-        return (OrderElement) c.uniqueResult();
+        return (List<OrderElement>) c.list();
     }
 
-    public OrderElement findByCode(OrderElement orderElement, String code) {
+    public OrderElement findUniqueByCode(String code)
+            throws InstanceNotFoundException {
+        List<OrderElement> list = findByCode(code);
+        if (list.size() > 1) {
+            throw new InstanceNotFoundException(code, OrderElement.class
+                    .getName());
+        }
+        return list.get(0);
+    }
+
+    public List<OrderElement> findByCodeAndParent(OrderElement parent,
+            String code) {
         Criteria c = getSession().createCriteria(OrderElement.class);
         c.add(Restrictions.eq("code", code));
-        c.add(Restrictions.eq("parent", orderElement));
-        return (OrderElement) c.uniqueResult();
+        if (parent != null) {
+            c.add(Restrictions.eq("parent", parent));
+        } else {
+            c.add(Restrictions.isNull("parent"));
+        }
+        return c.list();
+    }
+
+    public OrderElement findUniqueByCodeAndParent(OrderElement parent,
+            String code) throws InstanceNotFoundException {
+        List<OrderElement> list = findByCodeAndParent(parent, code);
+        if (list.isEmpty() || list.size() > 1) {
+            throw new InstanceNotFoundException(code, OrderElement.class
+                    .getName());
+        }
+        return list.get(0);
     }
 
     @Override
