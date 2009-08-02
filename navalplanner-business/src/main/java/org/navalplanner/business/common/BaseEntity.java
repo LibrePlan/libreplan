@@ -25,6 +25,10 @@ public abstract class BaseEntity {
         return version;
     }
 
+    protected void setVersion(Long version) {
+        this.version = version;
+    }
+
     protected void setNewObject(boolean newObject) {
         this.newObject = newObject;
     }
