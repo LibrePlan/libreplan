@@ -67,7 +67,7 @@
         <id name="id" type="long" access="field">
             <generator class="native" />
         </id>
-        <version name="version" access="field" type="long" />
+        <version name="version" access="property" type="long" />
 
         <property name="workingHours" access="field" />
         <property name="percentage" access="field" />

@@ -5,18 +5,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 
-public class HoursGroup implements Cloneable {
-
-    private Long id;
-
-    private Long version;
-
-    public Long getId() {
-        return id;
-    }
+public class HoursGroup extends BaseEntity implements Cloneable {
 
     @NotNull
     private Integer workingHours = 0;
@@ -156,13 +149,11 @@ public class HoursGroup implements Cloneable {
 
     public void makeTransientAgain() {
         // FIXME Review reattachment
-        id = null;
-        version = null;
+        setVersion(null);
     }
 
     public boolean isTransient() {
         // FIXME Review reattachment
-        return id == null;
+        return getVersion() == null;
     }
-
 }
