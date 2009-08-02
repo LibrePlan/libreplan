@@ -25,6 +25,8 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.services.IOrderService;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.services.ITaskElementService;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -111,6 +113,13 @@ public class OrderServiceTest {
         Order reloaded = orderService.find(order.getId());
         OrderElement e = reloaded.getOrderElements().iterator().next();
         assertThat(e.getTaskElements().size(), equalTo(1));
+        Set<TaskElement> taskElements = e.getTaskElements();
+        for (TaskElement t : taskElements) {
+            if (t instanceof Task) {
+                Task task = (Task) t;
+                task.getHoursGroup().dontPoseAsTransientObjectAnymore();
+            }
+        }
         orderService.remove(reloaded);
         assertFalse(orderService.exists(reloaded));
     }
@@ -196,7 +205,7 @@ public class OrderServiceTest {
         result.setName(parameter);
         result.setCode("000000000");
 
-        HoursGroup hoursGroup = new HoursGroup(result);
+        HoursGroup hoursGroup = HoursGroup.create(result);
         hoursGroup.setWorkingHours(0);
         result.addHoursGroup(hoursGroup);
 
@@ -215,7 +224,7 @@ public class OrderServiceTest {
         leaf.setCode("000000000");
         container.add(leaf);
         order.add(container);
-        HoursGroup hoursGroup = new HoursGroup(leaf);
+        HoursGroup hoursGroup = HoursGroup.create(leaf);
         hoursGroup.setWorkingHours(3);
         leaf.addHoursGroup(hoursGroup);
         orderService.save(order);
@@ -254,9 +263,9 @@ public class OrderServiceTest {
         orderLine.setCode("000000000");
         order.add(orderLine);
 
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(10);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(5);
 
         orderLine.addHoursGroup(hoursGroup);

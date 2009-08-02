@@ -76,7 +76,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         OrderLine result = new OrderLine();
         result.setName(name);
         result.setCode(code);
-        HoursGroup hoursGroup = new HoursGroup(result);
+        HoursGroup hoursGroup = HoursGroup.create(result);
         hoursGroup.setWorkingHours(0);
         result.addHoursGroup(hoursGroup);
         return result;

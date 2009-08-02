@@ -56,8 +56,6 @@ public class OrderElementModel implements IOrderElementModel {
 	public void setCurrent(OrderElement orderElement, OrderModel order) {
         // FIXME Review reattachment
         boolean wasTransient = orderElement.isTransient();
-        Set<HoursGroup> transientHoursGroups = orderElement
-                .getTransientHoursGroups();
         orderElementDao.save(orderElement);
 
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
@@ -66,9 +64,6 @@ public class OrderElementModel implements IOrderElementModel {
 
         if (wasTransient) {
             orderElement.makeTransientAgain();
-        }
-        for (HoursGroup hoursGroup : transientHoursGroups) {
-            hoursGroup.makeTransientAgain();
         }
         this.orderElement = orderElement;
         this.order = order;

@@ -272,8 +272,7 @@ public class OrderElementController extends GenericForwardComposer {
      */
     public void addHoursGroup() {
         OrderLine orderLine = (OrderLine) getOrderElement();
-
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
 
         orderLine.addHoursGroup(hoursGroup);
 

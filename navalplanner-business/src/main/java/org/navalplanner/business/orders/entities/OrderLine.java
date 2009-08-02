@@ -85,7 +85,7 @@ public class OrderLine extends OrderElement {
         }
 
         if (hoursGroups.isEmpty()) {
-            HoursGroup hoursGroup = new HoursGroup(this);
+            HoursGroup hoursGroup = HoursGroup.create(this);
             hoursGroup.setWorkingHours(workHours);
             hoursGroup.setPercentage((new BigDecimal(1).setScale(2)));
 
@@ -172,7 +172,7 @@ public class OrderLine extends OrderElement {
         newTotal = calculateTotalHours(newHoursGroups);
         if (newTotal.compareTo(workHours) < 0) {
             // Add a new HourGroup with the remaining hours
-            HoursGroup hoursGroup = new HoursGroup(this);
+            HoursGroup hoursGroup = HoursGroup.create(this);
             hoursGroup.setWorkingHours(workHours - newTotal);
 
             newHoursGroups.add(hoursGroup);
@@ -307,7 +307,7 @@ public class OrderLine extends OrderElement {
         // If there's still some remaining hours
         if (newTotal.compareTo(total) < 0) {
             // Add a new HourGroup with the remaining hours
-            HoursGroup hoursGroup = new HoursGroup(this);
+            HoursGroup hoursGroup = HoursGroup.create(this);
             hoursGroup.setWorkingHours(total - newTotal);
             hoursGroups.add(hoursGroup);
         }

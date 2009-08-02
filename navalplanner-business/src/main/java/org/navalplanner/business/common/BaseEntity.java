@@ -2,7 +2,6 @@ package org.navalplanner.business.common;
 
 /**
  * TODO
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public abstract class BaseEntity {
@@ -35,6 +34,15 @@ public abstract class BaseEntity {
 
     protected boolean isNewObject() {
         return newObject;
+    }
+
+    /**
+     * Once the has been really saved in DB (not a readonly transaction), it
+     * could be necessary to unmark the object as newObject. This is the case if
+     * you must use the same instance after the transaction. <br />
+     */
+    public void dontPoseAsTransientObjectAnymore() {
+        setNewObject(false);
     }
 
 }

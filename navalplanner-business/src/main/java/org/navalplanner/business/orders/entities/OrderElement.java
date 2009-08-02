@@ -124,26 +124,11 @@ public abstract class OrderElement {
         // FIXME Review reattachment
         id = null;
         version = null;
-        for (HoursGroup hoursGroup : getHoursGroups()) {
-            hoursGroup.makeTransientAgain();
-        }
     }
 
     public boolean isTransient() {
         // FIXME Review reattachment
         return id == null;
-    }
-
-    public Set<HoursGroup> getTransientHoursGroups() {
-        // FIXME Review reattachment
-        Set<HoursGroup> transientHoursGroups = new HashSet<HoursGroup>();
-
-        for (HoursGroup hoursGroup : getHoursGroups()) {
-            if (hoursGroup.isTransient()) {
-                transientHoursGroups.add(hoursGroup);
-            }
-        }
-        return transientHoursGroups;
     }
 
     public Set<TaskElement> getTaskElements() {

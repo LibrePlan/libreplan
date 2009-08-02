@@ -11,6 +11,12 @@ import org.navalplanner.business.resources.entities.ICriterionType;
 
 public class HoursGroup extends BaseEntity implements Cloneable {
 
+    public static HoursGroup create(OrderLine parentOrderLine) {
+        HoursGroup result = new HoursGroup(parentOrderLine);
+        result.setNewObject(true);
+        return result;
+    }
+
     @NotNull
     private Integer workingHours = 0;
 
@@ -29,7 +35,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
     public HoursGroup() {
     }
 
-    public HoursGroup(OrderLine parentOrderLine) {
+    private HoursGroup(OrderLine parentOrderLine) {
         this.parentOrderLine = parentOrderLine;
     }
 
@@ -147,13 +153,4 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return parentOrderLine;
     }
 
-    public void makeTransientAgain() {
-        // FIXME Review reattachment
-        setVersion(null);
-    }
-
-    public boolean isTransient() {
-        // FIXME Review reattachment
-        return getVersion() == null;
-    }
 }

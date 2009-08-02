@@ -76,7 +76,7 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupNoFixedIncreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(100);
         orderLine.addHoursGroup(hoursGroup);
 
@@ -102,7 +102,7 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupNoFixedDecreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(100);
         orderLine.addHoursGroup(hoursGroup);
 
@@ -129,7 +129,7 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupFixedPercentageIncreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(100);
         orderLine.addHoursGroup(hoursGroup);
 
@@ -161,7 +161,7 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupFixedPercentageDecreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(100);
         orderLine.addHoursGroup(hoursGroup);
 
@@ -194,9 +194,9 @@ public class OrderLineTest {
     public void testSetWorkHoursTwoHoursGroupNoFixedIncreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(100);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(50);
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
@@ -226,9 +226,9 @@ public class OrderLineTest {
     public void testSetWorkHoursTwoHoursGroupNoFixedDecreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(100);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(50);
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
@@ -258,9 +258,9 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupFixedPercentageAndHoursGroupNoFixedIncreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(75);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(25);
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
@@ -295,9 +295,9 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupFixedPercentageAndHoursGroupNoFixedDecreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(75);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(25);
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
@@ -332,9 +332,9 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupFixedPercentageAndHoursGroupFixedPercentageIncreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(75);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(25);
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
@@ -373,9 +373,9 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupFixedPercentageAndHoursGroupFixedPercentageDecreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(75);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(25);
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
@@ -415,11 +415,11 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupNoFixedAndHoursGroupNoFixedAndHoursGroupFixedPercentageIncreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(50);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(50);
-        HoursGroup hoursGroup3 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup3 = HoursGroup.create(orderLine);
         hoursGroup3.setWorkingHours(100);
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
@@ -457,11 +457,11 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupNoFixedAndHoursGroupNoFixedAndHoursGroupFixedPercentageDecreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(40);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(60);
-        HoursGroup hoursGroup3 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup3 = HoursGroup.create(orderLine);
         hoursGroup3.setWorkingHours(100);
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
@@ -499,11 +499,11 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupNoFixedAndHoursGroupFixedPercentageAndHoursGroupFixedPercentageIncreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(50);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(50);
-        HoursGroup hoursGroup3 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup3 = HoursGroup.create(orderLine);
         hoursGroup3.setWorkingHours(100);
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
@@ -545,11 +545,11 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupNoFixedAndHoursGroupFixedPercentageAndHoursGroupFixedPercentageDecreaseValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(50);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(50);
-        HoursGroup hoursGroup3 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup3 = HoursGroup.create(orderLine);
         hoursGroup3.setWorkingHours(100);
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
@@ -590,9 +590,9 @@ public class OrderLineTest {
     public void testSetWorkHoursHoursGroupNoFixedZeroValue() {
 
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(0);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(0);
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
@@ -615,7 +615,7 @@ public class OrderLineTest {
     @Test
     public void testAddNewEmptyHoursGroup() {
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
 
         orderLine.addHoursGroup(hoursGroup);
 
@@ -626,7 +626,7 @@ public class OrderLineTest {
     @Test
     public void testSetWorkingHoursIllegal() {
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
 
         try {
             hoursGroup.setWorkingHours(-50);
@@ -640,9 +640,9 @@ public class OrderLineTest {
     @Test
     public void testSetPercentageIllegal() {
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(50);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(150);
 
         orderLine.addHoursGroup(hoursGroup);
@@ -668,9 +668,9 @@ public class OrderLineTest {
     @Test
     public void testSetPercentageTwoHoursGroupIncrease() {
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(50);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(150);
 
         orderLine.addHoursGroup(hoursGroup);
@@ -692,9 +692,9 @@ public class OrderLineTest {
     @Test
     public void testSetPercentageTwoHoursGroupDecrease() {
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(50);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(100);
 
         orderLine.addHoursGroup(hoursGroup);
@@ -716,11 +716,11 @@ public class OrderLineTest {
     @Test
     public void testSetPercentageThreeHoursGroupIncrease() {
         OrderLine orderLine = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup(orderLine);
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(50);
-        HoursGroup hoursGroup2 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
         hoursGroup2.setWorkingHours(150);
-        HoursGroup hoursGroup3 = new HoursGroup(orderLine);
+        HoursGroup hoursGroup3 = HoursGroup.create(orderLine);
         hoursGroup3.setWorkingHours(200);
 
         orderLine.addHoursGroup(hoursGroup);
