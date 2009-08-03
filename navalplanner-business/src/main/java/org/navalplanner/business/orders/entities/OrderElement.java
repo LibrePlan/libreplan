@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.advance.entities.AdvanceAssigment;
+import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -209,8 +210,8 @@ public abstract class OrderElement {
             throws DuplicateAdvanceAssigmentForOrderElementException {
         for (AdvanceAssigment advanceAssigment : orderElement
                 .getAdvanceAssigments()) {
-            if (advanceAssigment.getAdvanceType().getId().equals(
-                    newAdvanceAssigment.getAdvanceType().getId())) {
+            if (AdvanceType.equivalentInDB(advanceAssigment.getAdvanceType(),
+                    newAdvanceAssigment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssigmentForOrderElementException(
                         "Duplicate Advance Assigment For Order Element", this,
                         OrderElement.class);

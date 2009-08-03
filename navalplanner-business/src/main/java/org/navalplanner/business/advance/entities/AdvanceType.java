@@ -123,4 +123,10 @@ public class AdvanceType {
         return true;
     }
 
+    public static boolean equivalentInDB(AdvanceType type, AdvanceType otherType) {
+        if (type.getId() == null || otherType.getId() == null)
+            return false;
+        return type.getId().equals(otherType.getId());
+    }
+
 }
