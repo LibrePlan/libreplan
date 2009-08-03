@@ -3,7 +3,6 @@ package org.navalplanner.business.resources.daos;
 import java.util.List;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.daos.impl.CriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
 
 /**

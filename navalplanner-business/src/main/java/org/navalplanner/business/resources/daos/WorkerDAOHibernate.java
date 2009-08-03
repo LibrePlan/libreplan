@@ -1,12 +1,11 @@
-package org.navalplanner.business.resources.daos.impl;
+package org.navalplanner.business.resources.daos;
 
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;

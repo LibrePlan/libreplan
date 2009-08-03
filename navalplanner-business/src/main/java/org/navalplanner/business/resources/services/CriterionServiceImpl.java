@@ -1,4 +1,4 @@
-package org.navalplanner.business.resources.services.impl;
+package org.navalplanner.business.resources.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,8 +10,8 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.CriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.impl.CriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -20,9 +20,6 @@ import org.navalplanner.business.resources.entities.ICriterionOnData;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.services.ICriterionService;
-import org.navalplanner.business.resources.services.ICriterionTypeService;
-import org.navalplanner.business.resources.services.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;

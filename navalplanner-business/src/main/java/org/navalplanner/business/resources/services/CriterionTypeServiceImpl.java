@@ -1,14 +1,13 @@
-package org.navalplanner.business.resources.services.impl;
+package org.navalplanner.business.resources.services;
 
 
 import java.util.List;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.CriterionTypeDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
-import org.navalplanner.business.resources.daos.impl.CriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

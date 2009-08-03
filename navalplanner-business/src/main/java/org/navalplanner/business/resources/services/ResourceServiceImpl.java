@@ -1,4 +1,4 @@
-package org.navalplanner.business.resources.services.impl;
+package org.navalplanner.business.resources.services;
 
 import java.util.HashSet;
 import java.util.List;
@@ -11,8 +11,6 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.ICriterionTypeService;
-import org.navalplanner.business.resources.services.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;

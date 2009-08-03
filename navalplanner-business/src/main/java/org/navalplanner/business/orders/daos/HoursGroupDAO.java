@@ -1,6 +1,6 @@
 package org.navalplanner.business.orders.daos;
 
-import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;

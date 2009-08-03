@@ -1,7 +1,6 @@
-package org.navalplanner.business.resources.daos.impl;
+package org.navalplanner.business.resources.daos;
 
-import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
-import org.navalplanner.business.resources.daos.ICriterionSatisfactionDAO;
+import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;

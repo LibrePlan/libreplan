@@ -9,7 +9,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionSatisfactionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
-import org.navalplanner.business.resources.daos.impl.WorkerDAOHibernate;
+import org.navalplanner.business.resources.daos.WorkerDAOHibernate;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;

@@ -1,4 +1,4 @@
-package org.navalplanner.business.common.daos.impl;
+package org.navalplanner.business.common.daos;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -13,7 +13,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;

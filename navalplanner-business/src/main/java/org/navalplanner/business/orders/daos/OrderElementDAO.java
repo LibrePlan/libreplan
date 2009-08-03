@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.springframework.beans.factory.config.BeanDefinition;

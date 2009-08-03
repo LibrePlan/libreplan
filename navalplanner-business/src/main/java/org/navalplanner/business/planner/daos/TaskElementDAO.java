@@ -1,6 +1,6 @@
 package org.navalplanner.business.planner.daos;
 
-import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;

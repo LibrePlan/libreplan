@@ -1,12 +1,11 @@
-package org.navalplanner.business.resources.daos.impl;
+package org.navalplanner.business.resources.daos;
 
 import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.stereotype.Component;
 
