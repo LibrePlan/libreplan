@@ -102,22 +102,22 @@ public class WorkReportModel implements IWorkReportModel {
         // Load CriterionTypes
         for (CriterionType criterionType : workReport.getWorkReportType()
                 .getCriterionTypes()) {
-            criterionType.getId();
+            criterionType.getName();
             // Load Criterions
             for (Criterion criterion : criterionType.getCriterions()) {
-                criterion.getId();
+                criterion.getName();
             }
         }
 
         // Load WorkReportLines
         for (WorkReportLine workReportLine : workReport.getWorkReportLines()) {
-            workReportLine.getId();
-            workReportLine.getResource().getId();
-            workReportLine.getOrderElement().getId();
+            workReportLine.getNumHours();
+            workReportLine.getResource().getDescription();
+            workReportLine.getOrderElement().getName();
 
             // Load Criterions
             for (Criterion criterion : workReportLine.getCriterions()) {
-                criterion.getId();
+                criterion.getName();
             }
         }
     }

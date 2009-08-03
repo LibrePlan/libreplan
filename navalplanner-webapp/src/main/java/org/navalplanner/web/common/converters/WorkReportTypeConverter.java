@@ -54,10 +54,10 @@ public class WorkReportTypeConverter implements IConverter<WorkReportType> {
     private void forceLoadCriterionTypes(WorkReportType workReportType) {
         // Load CriterionType
         for (CriterionType criterionType : workReportType.getCriterionTypes()) {
-            criterionType.getId();
+            criterionType.getName();
             // Load Criterion
             for (Criterion criterion : criterionType.getCriterions()) {
-                criterion.getId();
+                criterion.getName();
             }
         }
     }
