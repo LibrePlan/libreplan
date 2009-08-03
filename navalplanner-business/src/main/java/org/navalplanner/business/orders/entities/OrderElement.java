@@ -172,9 +172,12 @@ public abstract class OrderElement {
      * list of advanceAssigments must be attached.
      * @param advanceAssigment
      *            must be attached
+     * @throws DuplicateValueTrueReportGlobalAdvanceException
+     * @throws DuplicateAdvanceAssigmentForOrderElementException
      */
     public void addAvanceAssigment(AdvanceAssigment newAdvanceAssigment)
-            throws Exception {
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssigmentForOrderElementException {
         checkNoOtherGlobalAdvanceAssignment(newAdvanceAssigment);
         checkNoOtherAssignmentWithSameAdvanceType(this, newAdvanceAssigment);
         this.advanceAssigments.add(newAdvanceAssigment);
