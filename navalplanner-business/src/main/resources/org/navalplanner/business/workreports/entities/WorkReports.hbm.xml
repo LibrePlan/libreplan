@@ -47,9 +47,9 @@
 
     <many-to-one name="workReport" class="org.navalplanner.business.workreports.entities.WorkReport" column="WORK_REPORT_ID" />
 
-    <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource" column="RESOURCE_ID" />
+    <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource" column="RESOURCE_ID" not-null="true"/>
 
-    <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID" />
+    <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID" not-null="true"/>
 
     <set name="criterions" table="CRITERION_WORK_REPORT_LINE" inverse="false">
         <key column="WORK_REPORT_LINE_ID" not-null="false" />
