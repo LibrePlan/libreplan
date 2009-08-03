@@ -2,7 +2,7 @@ package org.navalplanner.business.orders.services;
 
 import java.util.List;
 
-import org.navalplanner.business.common.OnTransaction;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.Order;
@@ -23,6 +23,6 @@ public interface IOrderService {
 
     Order find(Long workerId) throws InstanceNotFoundException;
 
-    public <T> T onTransaction(OnTransaction<T> onTransaction);
+    public <T> T onTransaction(IOnTransaction<T> onTransaction);
 
 }

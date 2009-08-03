@@ -23,8 +23,8 @@ import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.CriterionService;
-import org.navalplanner.business.resources.services.ResourceService;
+import org.navalplanner.business.resources.services.ICriterionService;
+import org.navalplanner.business.resources.services.IResourceService;
 import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
 import org.navalplanner.business.test.resources.entities.CriterionTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +45,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class ResourceServiceTest {
 
     @Autowired
-    private ResourceService resourceService;
+    private IResourceService resourceService;
 
     @Autowired
     private IResourceDAO resourceDao;
 
     @Autowired
-    private CriterionService criterionService;
+    private ICriterionService criterionService;
 
     @Test
     public void testRemoveResource() throws InstanceNotFoundException {

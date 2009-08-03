@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
-import org.navalplanner.business.common.OnTransaction;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -20,9 +20,9 @@ import org.navalplanner.business.resources.entities.ICriterionOnData;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.services.CriterionService;
-import org.navalplanner.business.resources.services.CriterionTypeService;
-import org.navalplanner.business.resources.services.ResourceService;
+import org.navalplanner.business.resources.services.ICriterionService;
+import org.navalplanner.business.resources.services.ICriterionTypeService;
+import org.navalplanner.business.resources.services.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Implementation of {@link CriterionService} using {@link CriterionDAO} <br />
+ * Implementation of {@link ICriterionService} using {@link CriterionDAO} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Diego Pino García <dpino@igalia.com>
@@ -39,16 +39,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 @Transactional
-public class CriterionServiceImpl implements CriterionService {
+public class CriterionServiceImpl implements ICriterionService {
 
     @Autowired
     private ICriterionDAO criterionDAO;
 
     @Autowired
-    private ResourceService resourceService;
+    private IResourceService resourceService;
 
     @Autowired
-    private CriterionTypeService criterionTypeService;
+    private ICriterionTypeService criterionTypeService;
 
     public boolean exists(Criterion criterion) {
         return criterionDAO.exists(criterion.getId())
@@ -159,7 +159,7 @@ public class CriterionServiceImpl implements CriterionService {
 
     @Override
     public ICriterionOnData empower(final ICriterion criterion) {
-        final CriterionService criterionService = getProxifiedCriterionService();
+        final ICriterionService criterionService = getProxifiedCriterionService();
         return new ICriterionOnData() {
             @Override
             public boolean isSatisfiedBy(Resource resource) {
@@ -191,9 +191,9 @@ public class CriterionServiceImpl implements CriterionService {
     // this is a hack to avoid using the this variable in empower method. The
     // this instance is not proxified because spring uses an transparent proxy,
     // so it doesn't open the transacion
-    private CriterionService getProxifiedCriterionService() {
-        return (CriterionService) applicationContext.getBeansOfType(
-                CriterionService.class).values().iterator().next();
+    private ICriterionService getProxifiedCriterionService() {
+        return (ICriterionService) applicationContext.getBeansOfType(
+                ICriterionService.class).values().iterator().next();
     }
 
     @Override
@@ -232,7 +232,7 @@ public class CriterionServiceImpl implements CriterionService {
     }
 
     @Transactional(readOnly = true)
-    public <T> T onTransaction(OnTransaction<T> onTransaction) {
+    public <T> T onTransaction(IOnTransaction<T> onTransaction) {
         return onTransaction.execute();
     }
 

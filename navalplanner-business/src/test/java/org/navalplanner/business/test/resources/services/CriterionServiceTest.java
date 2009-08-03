@@ -16,7 +16,7 @@ import org.hibernate.validator.InvalidStateException;
 import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.navalplanner.business.common.OnTransaction;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -29,9 +29,9 @@ import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.CriterionService;
-import org.navalplanner.business.resources.services.CriterionTypeService;
-import org.navalplanner.business.resources.services.ResourceService;
+import org.navalplanner.business.resources.services.ICriterionService;
+import org.navalplanner.business.resources.services.ICriterionTypeService;
+import org.navalplanner.business.resources.services.IResourceService;
 import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
 import org.navalplanner.business.test.resources.entities.ResourceTest;
@@ -43,7 +43,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Test cases for {@link CriterionService} <br />
+ * Test cases for {@link ICriterionService} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  */
@@ -54,13 +54,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class CriterionServiceTest {
 
     @Autowired
-    private CriterionService criterionService;
+    private ICriterionService criterionService;
 
     @Autowired
-    private CriterionTypeService criterionTypeService;
+    private ICriterionTypeService criterionTypeService;
 
     @Autowired
-    private ResourceService resourceService;
+    private IResourceService resourceService;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -257,7 +257,7 @@ public class CriterionServiceTest {
         worker1.addSatisfaction(new CriterionWithItsType(criterion.getType(), criterion));
         resourceService.saveResource(worker1);
         Resource workerReloaded = criterionService
-                .onTransaction(new OnTransaction<Resource>() {
+                .onTransaction(new IOnTransaction<Resource>() {
 
                     @Override
                     public Resource execute() {

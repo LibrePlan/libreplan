@@ -13,8 +13,8 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.CriterionService;
-import org.navalplanner.business.resources.services.ResourceService;
+import org.navalplanner.business.resources.services.ICriterionService;
+import org.navalplanner.business.resources.services.IResourceService;
 import org.navalplanner.web.resources.worker.WorkerModel;
 
 /**
@@ -26,8 +26,8 @@ public class WorkerModelTest {
     @Test
     public void testWorkerValid() throws ValidationException,
             InstanceNotFoundException {
-        ResourceService resourceServiceMock = createMock(ResourceService.class);
-        CriterionService criterionServiceMock = createMock(CriterionService.class);
+        IResourceService resourceServiceMock = createMock(IResourceService.class);
+        ICriterionService criterionServiceMock = createMock(ICriterionService.class);
         Worker workerToReturn = new Worker();
         workerToReturn.setDailyHours(2);
         workerToReturn.setFirstName("firstName");
@@ -54,8 +54,8 @@ public class WorkerModelTest {
     @Test(expected = ValidationException.class)
     public void testWorkerInvalid() throws ValidationException,
             InstanceNotFoundException {
-        ResourceService resourceServiceMock = createMock(ResourceService.class);
-        CriterionService criterionServiceMock = createMock(CriterionService.class);
+        IResourceService resourceServiceMock = createMock(IResourceService.class);
+        ICriterionService criterionServiceMock = createMock(ICriterionService.class);
         Worker workerToReturn = new Worker();
         // expectations
         Collection<Criterion> criterions = new ArrayList<Criterion>();

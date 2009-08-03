@@ -7,7 +7,7 @@ import java.util.ListIterator;
 
 public class WeakReferencedListeners<T> {
 
-    public interface ListenerNotification<T> {
+    public interface IListenerNotification<T> {
 
         void doNotify(T listener);
 
@@ -30,7 +30,7 @@ public class WeakReferencedListeners<T> {
     }
 
     public synchronized void fireEvent(
-            ListenerNotification<? super T> notification) {
+            IListenerNotification<? super T> notification) {
         ListIterator<WeakReference<T>> listIterator = listeners.listIterator();
         ArrayList<T> active = new ArrayList<T>();
         while (listIterator.hasNext()) {

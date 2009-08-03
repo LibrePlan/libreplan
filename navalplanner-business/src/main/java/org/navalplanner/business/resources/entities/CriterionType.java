@@ -4,7 +4,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.hibernate.validator.NotEmpty;
-import org.navalplanner.business.resources.services.CriterionTypeService;
+import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ public class CriterionType implements ICriterionType<Criterion> {
     private long version;
 
     @Autowired
-    CriterionTypeService criterionTypeService;
+    ICriterionTypeService criterionTypeService;
 
     @NotEmpty
     private String name;

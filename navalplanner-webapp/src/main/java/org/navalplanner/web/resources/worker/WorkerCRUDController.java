@@ -6,7 +6,7 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.CriterionService;
+import org.navalplanner.business.resources.services.ICriterionService;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -53,7 +53,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private LocalizationsController localizationsForCreationController;
 
-    private CriterionService criterionService;
+    private ICriterionService criterionService;
 
     private WorkRelationshipsController editWorkRelationship;
 

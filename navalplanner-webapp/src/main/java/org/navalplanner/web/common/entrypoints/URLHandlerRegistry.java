@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class URLHandlerRegistry implements IURLHandlerRegistry {
 
     @Autowired
-    private ExecutorRetriever executorRetriever;
+    private IExecutorRetriever executorRetriever;
 
     @Autowired
     private IConverterFactory converterFactory;

@@ -3,7 +3,7 @@
  */
 package org.zkoss.ganttz;
 
-public interface DependencyAddedListener {
+public interface IDependencyAddedListener {
 
     public void dependenceAdded(DependencyComponent dependencyComponent);
 }

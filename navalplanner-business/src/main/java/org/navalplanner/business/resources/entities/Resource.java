@@ -39,13 +39,13 @@ public abstract class Resource {
 
     public abstract String getDescription();
 
-    private interface Predicate {
+    private interface IPredicate {
         public boolean accepts(CriterionSatisfaction satisfaction);
     }
 
     public class Query {
 
-        private List<Predicate> predicates = new ArrayList<Predicate>();
+        private List<IPredicate> predicates = new ArrayList<IPredicate>();
         private boolean sort = false;
 
         private Query() {
@@ -53,7 +53,7 @@ public abstract class Resource {
         }
 
         public Query from(final ICriterionType<?> type) {
-            return withNewPredicate(new Predicate() {
+            return withNewPredicate(new IPredicate() {
 
                 @Override
                 public boolean accepts(CriterionSatisfaction satisfaction) {
@@ -62,7 +62,7 @@ public abstract class Resource {
             });
         }
 
-        private Query withNewPredicate(Predicate newPredicate) {
+        private Query withNewPredicate(IPredicate newPredicate) {
             predicates.add(newPredicate);
             return this;
         }
@@ -76,7 +76,7 @@ public abstract class Resource {
         }
 
         public Query enforcedInAll(final Interval interval) {
-            return withNewPredicate(new Predicate() {
+            return withNewPredicate(new IPredicate() {
 
                 @Override
                 public boolean accepts(CriterionSatisfaction satisfaction) {
@@ -86,7 +86,7 @@ public abstract class Resource {
         }
 
         public Query overlapsWith(final Interval interval) {
-            return withNewPredicate(new Predicate() {
+            return withNewPredicate(new IPredicate() {
 
                 @Override
                 public boolean accepts(CriterionSatisfaction satisfaction) {
@@ -96,7 +96,7 @@ public abstract class Resource {
         }
 
         public Query from(final ICriterion criterion) {
-            return withNewPredicate(new Predicate() {
+            return withNewPredicate(new IPredicate() {
 
                 @Override
                 public boolean accepts(CriterionSatisfaction satisfaction) {
@@ -123,7 +123,7 @@ public abstract class Resource {
 
         private boolean isAcceptedByAllPredicates(
                 CriterionSatisfaction criterionSatisfaction) {
-            for (Predicate predicate : predicates) {
+            for (IPredicate predicate : predicates) {
                 if (!predicate.accepts(criterionSatisfaction))
                     return false;
             }
@@ -131,7 +131,7 @@ public abstract class Resource {
         }
 
         public Query current() {
-            return withNewPredicate(new Predicate() {
+            return withNewPredicate(new IPredicate() {
 
                 @Override
                 public boolean accepts(CriterionSatisfaction satisfaction) {
@@ -153,7 +153,7 @@ public abstract class Resource {
         }
 
         public Query oneOf(final Collection<? extends ICriterionType<?>> types) {
-            return withNewPredicate(new Predicate() {
+            return withNewPredicate(new IPredicate() {
 
                 @Override
                 public boolean accepts(CriterionSatisfaction satisfaction) {

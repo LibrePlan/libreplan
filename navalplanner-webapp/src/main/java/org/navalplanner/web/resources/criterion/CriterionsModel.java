@@ -18,9 +18,9 @@ import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.CriterionService;
-import org.navalplanner.business.resources.services.CriterionTypeService;
-import org.navalplanner.business.resources.services.ResourceService;
+import org.navalplanner.business.resources.services.ICriterionService;
+import org.navalplanner.business.resources.services.ICriterionTypeService;
+import org.navalplanner.business.resources.services.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -44,13 +44,13 @@ public class CriterionsModel implements ICriterionsModel {
     private ICriterionsBootstrap criterionsBootstrap;
 
     @Autowired
-    private CriterionService criterionService;
+    private ICriterionService criterionService;
 
     @Autowired
-    private CriterionTypeService criterionTypeService;
+    private ICriterionTypeService criterionTypeService;
 
     @Autowired
-    private ResourceService resourceService;
+    private IResourceService resourceService;
 
     private ICriterionType<?> criterionType;
 

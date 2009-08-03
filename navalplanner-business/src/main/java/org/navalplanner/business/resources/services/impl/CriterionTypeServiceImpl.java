@@ -8,18 +8,18 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.impl.CriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.services.CriterionTypeService;
+import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Implementation of {@link CriterionTypeService} using {@link CriterionTypeDAO} <br />
+ * Implementation of {@link ICriterionTypeService} using {@link CriterionTypeDAO} <br />
  * @author Diego Pino García <dpino@igalia.com>
  */
 @Transactional
 @Component
-public class CriterionTypeServiceImpl implements CriterionTypeService {
+public class CriterionTypeServiceImpl implements ICriterionTypeService {
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;

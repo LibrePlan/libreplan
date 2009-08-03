@@ -7,7 +7,7 @@ import java.util.Date;
 
 import org.zkoss.ganttz.util.Interval;
 
-public class DatesMapperOnInterval implements DatesMapper {
+public class DatesMapperOnInterval implements IDatesMapper {
     private final int horizontalSize;
     private final Interval stubInterval;
     private long millisecondsPerPixel;

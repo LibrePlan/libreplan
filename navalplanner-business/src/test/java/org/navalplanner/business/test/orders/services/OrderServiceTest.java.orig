@@ -16,7 +16,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.OnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -30,7 +30,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.services.ITaskElementService;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.services.ICriterionService;
+import org.navalplanner.business.resources.services.CriterionService;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
@@ -65,7 +65,7 @@ public class OrderServiceTest {
     private ITaskElementService taskElementService;
 
     @Autowired
-    private ICriterionService criterionService;
+    private CriterionService criterionService;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -167,7 +167,7 @@ public class OrderServiceTest {
         }
 
         orderService.save(order);
-        orderService.onTransaction(new IOnTransaction<Void>() {
+        orderService.onTransaction(new OnTransaction<Void>() {
 
             @Override
             public Void execute() {
@@ -228,7 +228,7 @@ public class OrderServiceTest {
         hoursGroup.setWorkingHours(3);
         leaf.addHoursGroup(hoursGroup);
         orderService.save(order);
-        orderService.onTransaction(new IOnTransaction<Void>() {
+        orderService.onTransaction(new OnTransaction<Void>() {
 
             @Override
             public Void execute() {
@@ -281,7 +281,7 @@ public class OrderServiceTest {
 
         orderService.save(order);
 
-        orderService.onTransaction(new IOnTransaction<Void>() {
+        orderService.onTransaction(new OnTransaction<Void>() {
 
             @Override
             public Void execute() {

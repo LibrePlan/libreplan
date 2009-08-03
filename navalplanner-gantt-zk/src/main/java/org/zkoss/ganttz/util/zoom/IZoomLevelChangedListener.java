@@ -1,7 +1,7 @@
 package org.zkoss.ganttz.util.zoom;
 
 
-public interface ZoomLevelChangedListener {
+public interface IZoomLevelChangedListener {
 
     public void zoomLevelChanged(ZoomLevel detailLevel);
 

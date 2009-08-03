@@ -4,7 +4,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
-import org.navalplanner.web.planner.IOrderPlanningModel.ConfigurationOnTransaction;
+import org.navalplanner.web.planner.IOrderPlanningModel.IConfigurationOnTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -53,7 +53,7 @@ public class OrderPlanningController implements
     public void showSchedule(Order order) {
         model.createConfiguration(order, resourceAllocationController,
                 editTaskController, splittingController,
-                new ConfigurationOnTransaction() {
+                new IConfigurationOnTransaction() {
 
             @Override
             public void use(PlannerConfiguration<TaskElement> configuration) {

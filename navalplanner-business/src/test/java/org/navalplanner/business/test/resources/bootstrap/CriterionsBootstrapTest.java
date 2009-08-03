@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
 import org.navalplanner.business.resources.entities.WorkingRelationship;
-import org.navalplanner.business.resources.services.CriterionService;
+import org.navalplanner.business.resources.services.ICriterionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,7 +24,7 @@ public class CriterionsBootstrapTest {
     private ICriterionsBootstrap criterionsBootstrap;
 
     @Autowired
-    private CriterionService criterionService;
+    private ICriterionService criterionService;
 
     @Test
     public void testBootstrap() throws Exception {

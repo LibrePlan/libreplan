@@ -10,7 +10,7 @@ import org.navalplanner.business.resources.entities.CriterionType;
  * Services for {@link CriterionType} <br />
  * @author Diego Pino García <dpino@igalia.com>
  */
-public interface CriterionTypeService {
+public interface ICriterionTypeService {
 
     void createIfNotExists(CriterionType criterionType) throws ValidationException;
 

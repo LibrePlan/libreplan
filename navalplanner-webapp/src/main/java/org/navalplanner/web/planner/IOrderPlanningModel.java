@@ -9,7 +9,7 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration;
  */
 public interface IOrderPlanningModel {
 
-    public interface ConfigurationOnTransaction {
+    public interface IConfigurationOnTransaction {
         public void use(PlannerConfiguration<TaskElement> configuration);
     }
 
@@ -17,6 +17,6 @@ public interface IOrderPlanningModel {
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
             SplittingController splittingController,
-            ConfigurationOnTransaction onTransaction);
+            IConfigurationOnTransaction onTransaction);
 
 }

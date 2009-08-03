@@ -13,8 +13,8 @@ import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.services.CriterionService;
-import org.navalplanner.business.resources.services.CriterionTypeService;
+import org.navalplanner.business.resources.services.ICriterionService;
+import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -39,10 +39,10 @@ public class OrderElementModel implements IOrderElementModel {
     private ICriterionsBootstrap criterionsBootstrap;
 
     @Autowired
-    private CriterionService criterionService;
+    private ICriterionService criterionService;
 
     @Autowired
-    private CriterionTypeService criterionTypeService;
+    private ICriterionTypeService criterionTypeService;
 
     private Map<String, CriterionType> mapCriterionTypes = new HashMap<String, CriterionType>();
 

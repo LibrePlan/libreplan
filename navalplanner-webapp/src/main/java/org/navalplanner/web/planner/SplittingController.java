@@ -17,7 +17,7 @@ import org.zkoss.zul.api.Grid;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class SplittingController extends GenericForwardComposer {
 
-    private ActionOnOk curentAction;
+    private IActionOnOk curentAction;
     private Window window;
 
     private Grid sharesListing;
@@ -26,12 +26,12 @@ public class SplittingController extends GenericForwardComposer {
     private List<ShareBean> sharesList;
     private Integer totalHours;
 
-    public interface ActionOnOk {
+    public interface IActionOnOk {
         public void doOkAction(ShareBean[] shares);
     }
 
     public void show(List<ShareBean> initialSharesList, Integer totalHours,
-            ActionOnOk ok) {
+            IActionOnOk ok) {
         this.sharesList = initialSharesList;
         this.totalHours = totalHours;
         this.curentAction = ok;

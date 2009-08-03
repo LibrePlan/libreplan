@@ -5,7 +5,7 @@ import java.util.List;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
-import org.navalplanner.web.planner.SplittingController.ActionOnOk;
+import org.navalplanner.web.planner.SplittingController.IActionOnOk;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class SplitTaskCommand implements ISplitTaskCommand {
         int[] shares = createTwoEqualShares(taskElement);
         splittingController.show(
                 ShareBean.toShareBeans(task.getName(), shares), task
-                        .getWorkHours(), new ActionOnOk() {
+                        .getWorkHours(), new IActionOnOk() {
 
                     @Override
                     public void doOkAction(ShareBean[] shares) {

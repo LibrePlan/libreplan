@@ -182,7 +182,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private String _color;
 
-    private List<WeakReference<IDependencyAddedListener>> dependencyListeners = new LinkedList<WeakReference<IDependencyAddedListener>>();
+    private List<WeakReference<DependencyAddedListener>> dependencyListeners = new LinkedList<WeakReference<DependencyAddedListener>>();
 
     private boolean isTopLevel;
 
@@ -201,19 +201,19 @@ public class TaskComponent extends Div implements AfterCompose {
         return null;
     }
 
-    public void addDependencyListener(IDependencyAddedListener listener) {
-        dependencyListeners.add(new WeakReference<IDependencyAddedListener>(
+    public void addDependencyListener(DependencyAddedListener listener) {
+        dependencyListeners.add(new WeakReference<DependencyAddedListener>(
                 listener));
     }
 
     private void fireDependenceAdded(DependencyComponent dependencyComponent) {
-        ArrayList<IDependencyAddedListener> active = new ArrayList<IDependencyAddedListener>();
+        ArrayList<DependencyAddedListener> active = new ArrayList<DependencyAddedListener>();
         synchronized (this) {
-            ListIterator<WeakReference<IDependencyAddedListener>> iterator = dependencyListeners
+            ListIterator<WeakReference<DependencyAddedListener>> iterator = dependencyListeners
                     .listIterator();
             while (iterator.hasNext()) {
-                WeakReference<IDependencyAddedListener> next = iterator.next();
-                IDependencyAddedListener listener = next.get();
+                WeakReference<DependencyAddedListener> next = iterator.next();
+                DependencyAddedListener listener = next.get();
                 if (listener == null) {
                     iterator.remove();
                 } else {
@@ -221,7 +221,7 @@ public class TaskComponent extends Div implements AfterCompose {
                 }
             }
         }
-        for (IDependencyAddedListener listener : active) {
+        for (DependencyAddedListener listener : active) {
             listener.dependenceAdded(dependencyComponent);
         }
     }
@@ -299,7 +299,7 @@ public class TaskComponent extends Div implements AfterCompose {
         response("depkey", new AuInvoke(this, "addDependency"));
     }
 
-    private IDatesMapper getMapper() {
+    private DatesMapper getMapper() {
         return getTaskList().getMapper();
     }
 

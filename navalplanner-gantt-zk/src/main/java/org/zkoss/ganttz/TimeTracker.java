@@ -14,7 +14,7 @@ import java.util.ListIterator;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.zoom.TimeTrackerState;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
-import org.zkoss.ganttz.util.zoom.ZoomLevelChangedListener;
+import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.util.zoom.TimeTrackerState.DetailItem;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -30,9 +30,9 @@ public class TimeTracker extends HtmlMacroComponent {
                 .year(2012));
     }
 
-    private List<WeakReference<ZoomLevelChangedListener>> zoomListeners = new LinkedList<WeakReference<ZoomLevelChangedListener>>();
+    private List<WeakReference<IZoomLevelChangedListener>> zoomListeners = new LinkedList<WeakReference<IZoomLevelChangedListener>>();
 
-    private DatesMapper datesMapper = null;
+    private IDatesMapper datesMapper = null;
 
     private Collection<DetailItem> detailsFirstLevelCached = null;
 
@@ -51,9 +51,9 @@ public class TimeTracker extends HtmlMacroComponent {
         this.detailLevel = ZoomLevel.DETAIL_ONE;
     }
 
-    public void addZoomListener(ZoomLevelChangedListener listener) {
+    public void addZoomListener(IZoomLevelChangedListener listener) {
         zoomListeners
-                .add(new WeakReference<ZoomLevelChangedListener>(listener));
+                .add(new WeakReference<IZoomLevelChangedListener>(listener));
     }
 
     public void scrollHorizontalPercentage(int displacement) {
@@ -62,10 +62,10 @@ public class TimeTracker extends HtmlMacroComponent {
     }
 
     private void fireZoomChanged(ZoomLevel detailLevel) {
-        ListIterator<WeakReference<ZoomLevelChangedListener>> listIterator = zoomListeners
+        ListIterator<WeakReference<IZoomLevelChangedListener>> listIterator = zoomListeners
                 .listIterator();
         while (listIterator.hasNext()) {
-            ZoomLevelChangedListener listener = listIterator.next().get();
+            IZoomLevelChangedListener listener = listIterator.next().get();
             if (listener == null) {
                 listIterator.remove();
             } else {
@@ -135,7 +135,7 @@ public class TimeTracker extends HtmlMacroComponent {
         return detailLevel;
     }
 
-    public DatesMapper getMapper() {
+    public IDatesMapper getMapper() {
         if (datesMapper == null) {
             datesMapper = new DatesMapperOnInterval(getHorizontalSize(),
                     getRealInterval());

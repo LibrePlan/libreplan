@@ -12,7 +12,7 @@ import org.zkoss.zk.ui.Executions;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class DefaultExecutorRetriever implements ExecutorRetriever {
+public class DefaultExecutorRetriever implements IExecutorRetriever {
 
     @Override
     public Execution getCurrent() {

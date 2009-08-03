@@ -25,9 +25,9 @@ public class Planner extends XulElement {
 
     private static final Log LOG = LogFactory.getLog(Planner.class);
 
-    private DependencyAddedListener dependencyAddedListener;
+    private IDependencyAddedListener dependencyAddedListener;
     private GanttDiagramGraph diagramGraph = new GanttDiagramGraph();
-    private DependencyRemovedListener dependencyRemovedListener;
+    private IDependencyRemovedListener dependencyRemovedListener;
     private LeftPane leftPane;
 
     private GanttPanel ganttPanel;
@@ -84,7 +84,7 @@ public class Planner extends XulElement {
 
     public void registerListeners() {
         TaskList taskList = getTaskList();
-        dependencyAddedListener = new DependencyAddedListener() {
+        dependencyAddedListener = new IDependencyAddedListener() {
 
             @Override
             public void dependenceAdded(DependencyComponent dependencyComponent) {
@@ -95,7 +95,7 @@ public class Planner extends XulElement {
             }
         };
         taskList.addDependencyListener(dependencyAddedListener);
-        dependencyRemovedListener = new DependencyRemovedListener() {
+        dependencyRemovedListener = new IDependencyRemovedListener() {
 
             @Override
             public void dependenceRemoved(

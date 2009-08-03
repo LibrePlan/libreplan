@@ -11,8 +11,8 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterionType;
-import org.navalplanner.business.resources.services.CriterionService;
-import org.navalplanner.business.resources.services.CriterionTypeService;
+import org.navalplanner.business.resources.services.ICriterionService;
+import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -31,10 +31,10 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
     private static final Log LOG = LogFactory.getLog(CriterionsBootstrap.class);
 
     @Autowired
-    private CriterionService criterionService;
+    private ICriterionService criterionService;
 
     @Autowired
-    private CriterionTypeService criterionTypeService;
+    private ICriterionTypeService criterionTypeService;
 
     @Autowired
     private List<ICriterionTypeProvider> providers;

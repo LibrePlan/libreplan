@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.zkoss.ganttz.util.WeakReferencedListeners;
-import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;
+import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 
 /**
  * This class contains the information of a task container. It can be modified
@@ -147,7 +147,7 @@ public class TaskContainer extends Task {
         }
         if (valueChanged) {
             expandListeners
-                    .fireEvent(new ListenerNotification<IExpandListener>() {
+                    .fireEvent(new IListenerNotification<IExpandListener>() {
 
                         @Override
                         public void doNotify(IExpandListener listener) {

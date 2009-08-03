@@ -7,6 +7,6 @@ package org.navalplanner.web.common.converters;
  */
 public interface IConverterFactory {
 
-    <T> Converter<? super T> getConverterFor(Class<T> klass);
+    <T> IConverter<? super T> getConverterFor(Class<T> klass);
 
 }

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.navalplanner.business.common.OnTransaction;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -18,7 +18,7 @@ import org.navalplanner.business.resources.entities.Resource;
  * Services for {@link Criterion} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public interface CriterionService {
+public interface ICriterionService {
 
     List<Criterion> list();
 
@@ -57,6 +57,6 @@ public interface CriterionService {
 
     Criterion load(Criterion criterion);
 
-    <T> T onTransaction(OnTransaction<T> onTransaction);
+    <T> T onTransaction(IOnTransaction<T> onTransaction);
 
 }

@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class WorkReportTypeConverter implements Converter<WorkReportType> {
+public class WorkReportTypeConverter implements IConverter<WorkReportType> {
 
     @Autowired
     private IWorkReportTypeDAO workReportTypeDAO;

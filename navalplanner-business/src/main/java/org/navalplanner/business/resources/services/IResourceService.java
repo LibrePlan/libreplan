@@ -13,7 +13,7 @@ import org.navalplanner.business.resources.entities.Worker;
  * Interface for the resource management service.
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public interface ResourceService {
+public interface IResourceService {
 
     /**
      * It updates or inserts the resource passed as a parameter. If the resource

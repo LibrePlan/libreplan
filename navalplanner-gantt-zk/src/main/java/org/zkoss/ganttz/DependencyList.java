@@ -16,9 +16,9 @@ import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
-import org.zkoss.ganttz.util.WeakReferencedListeners.ListenerNotification;
+import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
-import org.zkoss.ganttz.util.zoom.ZoomLevelChangedListener;
+import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Menupopup;
@@ -71,9 +71,9 @@ public class DependencyList extends XulElement implements AfterCompose {
 
     private static final Log LOG = LogFactory.getLog(DependencyList.class);
 
-    private ZoomLevelChangedListener listener;
+    private IZoomLevelChangedListener listener;
 
-    private final WeakReferencedListeners<DependencyRemovedListener> dependencyRemovedListeners = WeakReferencedListeners
+    private final WeakReferencedListeners<IDependencyRemovedListener> dependencyRemovedListeners = WeakReferencedListeners
             .create();
 
     public DependencyList() {
@@ -118,7 +118,7 @@ public class DependencyList extends XulElement implements AfterCompose {
     @Override
     public void afterCompose() {
         if (listener == null) {
-            listener = new ZoomLevelChangedListener() {
+            listener = new IZoomLevelChangedListener() {
                 @Override
                 public void zoomLevelChanged(ZoomLevel detailLevel) {
                     for (DependencyComponent dependencyComponent : getDependencyComponents()) {
@@ -148,11 +148,11 @@ public class DependencyList extends XulElement implements AfterCompose {
                                 Event event) {
                             removeChild(choosen);
                             dependencyRemovedListeners
-                                    .fireEvent(new ListenerNotification<DependencyRemovedListener>() {
+                                    .fireEvent(new IListenerNotification<IDependencyRemovedListener>() {
 
                                         @Override
                                         public void doNotify(
-                                                DependencyRemovedListener listener) {
+                                                IDependencyRemovedListener listener) {
                                             listener.dependenceRemoved(choosen);
 
                                         }
@@ -164,7 +164,7 @@ public class DependencyList extends XulElement implements AfterCompose {
     }
 
     public void addDependencyRemovedListener(
-            DependencyRemovedListener removedListener) {
+            IDependencyRemovedListener removedListener) {
         dependencyRemovedListeners.addListener(removedListener);
     }
 

@@ -5,7 +5,7 @@ package org.navalplanner.web.common.converters;
  * back <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public interface Converter<T> {
+public interface IConverter<T> {
 
     Class<T> getType();
 

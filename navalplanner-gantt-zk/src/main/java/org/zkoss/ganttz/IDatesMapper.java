@@ -2,7 +2,7 @@ package org.zkoss.ganttz;
 
 import java.util.Date;
 
-public interface DatesMapper {
+public interface IDatesMapper {
 
     int toPixels(Date date);
 

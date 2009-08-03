@@ -18,8 +18,8 @@ import org.navalplanner.business.orders.services.IOrderService;
 import org.navalplanner.business.planner.services.ITaskElementService;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.services.CriterionService;
-import org.navalplanner.business.resources.services.CriterionTypeService;
+import org.navalplanner.business.resources.services.ICriterionService;
+import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -37,10 +37,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderModel implements IOrderModel {
 
     @Autowired
-    CriterionService criterionService;
+    ICriterionService criterionService;
 
     @Autowired
-    CriterionTypeService criterionTypeService;
+    ICriterionTypeService criterionTypeService;
 
     private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
 

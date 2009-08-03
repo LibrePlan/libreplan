@@ -11,8 +11,8 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.CriterionTypeService;
-import org.navalplanner.business.resources.services.ResourceService;
+import org.navalplanner.business.resources.services.ICriterionTypeService;
+import org.navalplanner.business.resources.services.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 @Transactional
-public class ResourceServiceImpl implements ResourceService {
+public class ResourceServiceImpl implements IResourceService {
 
     @Autowired
     private IResourceDAO resourceDao;
@@ -36,7 +36,7 @@ public class ResourceServiceImpl implements ResourceService {
     private ICriterionsBootstrap criterionsBootstrap;
 
     @Autowired
-    private CriterionTypeService criterionTypeService;
+    private ICriterionTypeService criterionTypeService;
 
 
     @Transactional

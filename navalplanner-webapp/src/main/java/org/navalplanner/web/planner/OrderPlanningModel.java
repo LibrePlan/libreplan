@@ -49,7 +49,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
             SplittingController splittingController,
-            ConfigurationOnTransaction onTransaction) {
+            IConfigurationOnTransaction onTransaction) {
         Order orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled())
             throw new IllegalArgumentException("the order " + order

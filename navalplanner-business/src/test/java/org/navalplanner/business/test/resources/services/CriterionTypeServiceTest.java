@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.services.CriterionTypeService;
+import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,7 +20,7 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 /**
- * Test cases for {@link CriterionTypeService} <br />
+ * Test cases for {@link ICriterionTypeService} <br />
  * @author Diego Pino García <dpino@igalia.com>
  * @author Javier Moran Rúa <jmoran@igalia.com>
  */
@@ -31,7 +31,7 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 public class CriterionTypeServiceTest {
 
     @Autowired
-    private CriterionTypeService criterionTypeService;
+    private ICriterionTypeService criterionTypeService;
 
     public CriterionType createValidCriterionType() {
         String unique = UUID.randomUUID().toString();

@@ -10,7 +10,7 @@ package org.zkoss.ganttz;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
-public interface DependencyRemovedListener {
+public interface IDependencyRemovedListener {
 
     public void dependenceRemoved(DependencyComponent dependencyComponent);
 

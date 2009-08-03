@@ -20,7 +20,7 @@ import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
-import org.zkoss.ganttz.util.zoom.ZoomLevelChangedListener;
+import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -37,9 +37,9 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private static final int HEIGHT_PER_ROW = 20; /* 30 */
 
-    private List<WeakReference<DependencyAddedListener>> listeners = new LinkedList<WeakReference<DependencyAddedListener>>();
+    private List<WeakReference<IDependencyAddedListener>> listeners = new LinkedList<WeakReference<IDependencyAddedListener>>();
 
-    private ZoomLevelChangedListener zoomLevelChangedListener;
+    private IZoomLevelChangedListener zoomLevelChangedListener;
 
     private Menupopup contextMenu;
 
@@ -93,10 +93,10 @@ public class TaskList extends XulElement implements AfterCompose {
 
         addContextMenu(taskComponent);
         addListenerForTaskComponentEditForm(taskComponent);
-        ListIterator<WeakReference<DependencyAddedListener>> iterator = listeners
+        ListIterator<WeakReference<IDependencyAddedListener>> iterator = listeners
                 .listIterator();
         while (iterator.hasNext()) {
-            DependencyAddedListener listener = iterator.next().get();
+            IDependencyAddedListener listener = iterator.next().get();
             if (listener != null) {
                 taskComponent.addDependencyListener(listener);
             } else {
@@ -208,7 +208,7 @@ public class TaskList extends XulElement implements AfterCompose {
         return getGanttPanel().getTimeTracker();
     }
 
-    DatesMapper getMapper() {
+    IDatesMapper getMapper() {
         return getTimeTracker().getMapper();
     }
 
@@ -236,8 +236,8 @@ public class TaskList extends XulElement implements AfterCompose {
         return getTaskComponents().size();
     }
 
-    public void addDependencyListener(DependencyAddedListener listener) {
-        listeners.add(new WeakReference<DependencyAddedListener>(listener));
+    public void addDependencyListener(IDependencyAddedListener listener) {
+        listeners.add(new WeakReference<IDependencyAddedListener>(listener));
         for (TaskComponent taskComponent : getTaskComponents()) {
             taskComponent.addDependencyListener(listener);
         }
@@ -249,7 +249,7 @@ public class TaskList extends XulElement implements AfterCompose {
             addTaskComponent(TaskComponent.asTaskComponent(task, this), false);
         }
         if (zoomLevelChangedListener == null) {
-            zoomLevelChangedListener = new ZoomLevelChangedListener() {
+            zoomLevelChangedListener = new IZoomLevelChangedListener() {
                 @Override
                 public void zoomLevelChanged(ZoomLevel detailLevel) {
                     for (TaskComponent taskComponent : getTaskComponents()) {

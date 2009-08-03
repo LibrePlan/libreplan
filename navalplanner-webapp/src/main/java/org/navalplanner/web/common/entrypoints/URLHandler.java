@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.navalplanner.web.common.converters.Converter;
+import org.navalplanner.web.common.converters.IConverter;
 import org.navalplanner.web.common.converters.IConverterFactory;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Page;
@@ -43,7 +43,7 @@ public class URLHandler<T> {
         }
     }
 
-    private final ExecutorRetriever executorRetriever;
+    private final IExecutorRetriever executorRetriever;
 
     private Map<String, EntryPointMetadata> metadata = new HashMap<String, EntryPointMetadata>();
 
@@ -52,7 +52,7 @@ public class URLHandler<T> {
     private final IConverterFactory converterFactory;
 
     public URLHandler(IConverterFactory converterFactory,
-            ExecutorRetriever executorRetriever,
+            IExecutorRetriever executorRetriever,
             Class<T> interfaceDefiningEntryPoints) {
         Validate.isTrue(interfaceDefiningEntryPoints.isInterface());
         this.converterFactory = converterFactory;
@@ -89,7 +89,7 @@ public class URLHandler<T> {
         String[] stringRepresentations = new String[parameterNames.length];
         for (int i = 0; i < types.length; i++) {
             Class<?> type = types[i];
-            Converter<?> converterFor = converterFactory.getConverterFor(type);
+            IConverter<?> converterFor = converterFactory.getConverterFor(type);
             stringRepresentations[i] = converterFor
                     .asStringUngeneric(values[i]);
         }
@@ -213,7 +213,7 @@ public class URLHandler<T> {
         for (int i = 0; i < parameterTypes.length; i++) {
             Object argumentName = linkToStateAnnotation.value()[i];
             String parameterValue = matrixParams.get(argumentName);
-            Converter<?> converter = converterFactory
+            IConverter<?> converter = converterFactory
                     .getConverterFor(parameterTypes[i]);
             result[i] = converter.asObject(parameterValue);
         }

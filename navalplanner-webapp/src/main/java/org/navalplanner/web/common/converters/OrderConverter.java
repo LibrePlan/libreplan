@@ -9,12 +9,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
- * A {@link Converter} for {@link Order} <br />
+ * A {@link IConverter} for {@link Order} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class OrderConverter implements Converter<Order> {
+public class OrderConverter implements IConverter<Order> {
 
     @Autowired
     private IOrderService orderService;

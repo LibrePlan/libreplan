@@ -17,24 +17,24 @@ import org.springframework.stereotype.Component;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ConverterFactory implements IConverterFactory {
 
-    private Map<Class<?>, Converter<?>> convertersByType = new HashMap<Class<?>, Converter<?>>();
+    private Map<Class<?>, IConverter<?>> convertersByType = new HashMap<Class<?>, IConverter<?>>();
 
     @Autowired
-    public ConverterFactory(List<Converter<?>> converters) {
-        for (Converter<?> converter : converters) {
+    public ConverterFactory(List<IConverter<?>> converters) {
+        for (IConverter<?> converter : converters) {
             convertersByType.put(converter.getType(), converter);
         }
     }
 
     @Override
-    public <T> Converter<? super T> getConverterFor(Class<T> klass) {
+    public <T> IConverter<? super T> getConverterFor(Class<T> klass) {
         if (convertersByType.containsKey(klass))
-            return (Converter<? super T>) convertersByType.get(klass);
+            return (IConverter<? super T>) convertersByType.get(klass);
         for (Class<?> registeredKlass : convertersByType.keySet()) {
             if (registeredKlass.isAssignableFrom(klass)) {
-                Converter<?> result = convertersByType.get(registeredKlass);
+                IConverter<?> result = convertersByType.get(registeredKlass);
                 convertersByType.put(klass, result);
-                return (Converter<? super T>) result;
+                return (IConverter<? super T>) result;
             }
         }
         throw new RuntimeException("not found converter for " + klass);

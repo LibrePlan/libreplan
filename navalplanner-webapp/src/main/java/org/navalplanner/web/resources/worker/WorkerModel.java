@@ -23,8 +23,8 @@ import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.CriterionService;
-import org.navalplanner.business.resources.services.ResourceService;
+import org.navalplanner.business.resources.services.ICriterionService;
+import org.navalplanner.business.resources.services.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -40,19 +40,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class WorkerModel implements IWorkerModel {
 
-    private final ResourceService resourceService;
+    private final IResourceService resourceService;
     private final ICriterionType<?>[] laboralRelatedTypes = {
             PredefinedCriterionTypes.LEAVE,
             PredefinedCriterionTypes.WORK_RELATIONSHIP };
     private Worker worker;
     private ClassValidator<Worker> workerValidator;
-    private final CriterionService criterionService;
+    private final ICriterionService criterionService;
 
     private IMultipleCriterionActiveAssigner localizationsAssigner;
 
     @Autowired
-    public WorkerModel(ResourceService resourceService,
-            CriterionService criterionService) {
+    public WorkerModel(IResourceService resourceService,
+            ICriterionService criterionService) {
         Validate.notNull(resourceService);
         Validate.notNull(criterionService);
         this.resourceService = resourceService;
@@ -224,7 +224,7 @@ public class WorkerModel implements IWorkerModel {
             IMultipleCriterionActiveAssigner {
         private final Resource resource;
         private final ICriterionType<?> type;
-        private final CriterionService criterionService;
+        private final ICriterionService criterionService;
         private List<CriterionSatisfaction> history;
         private List<Criterion> initialCriterionsNotAssigned;
         private Set<CriterionSatisfaction> initialActive;
@@ -234,7 +234,7 @@ public class WorkerModel implements IWorkerModel {
         private Set<CriterionSatisfaction> added = new HashSet<CriterionSatisfaction>();
 
         public MultipleCriterionActiveAssigner(
-                CriterionService criterionService, Resource resource,
+                ICriterionService criterionService, Resource resource,
                 ICriterionType<?> type) {
             Validate
                     .isTrue(
