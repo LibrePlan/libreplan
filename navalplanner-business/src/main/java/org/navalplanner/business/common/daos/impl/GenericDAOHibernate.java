@@ -13,7 +13,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.IGenericDao;
+import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -37,8 +37,8 @@ import org.springframework.orm.hibernate3.SessionFactoryUtils;
  * @param <PK>
  *            Primary key class
  */
-public class GenericDaoHibernate<E, PK extends Serializable> implements
-        IGenericDao<E, PK> {
+public class GenericDAOHibernate<E, PK extends Serializable> implements
+        IGenericDAO<E, PK> {
 
     private Class<E> entityClass;
 
@@ -46,12 +46,12 @@ public class GenericDaoHibernate<E, PK extends Serializable> implements
     private SessionFactory sessionFactory;
 
     @SuppressWarnings("unchecked")
-    public GenericDaoHibernate() {
+    public GenericDAOHibernate() {
         this.entityClass = (Class<E>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-    public GenericDaoHibernate(Class<E> entityClass) {
+    public GenericDAOHibernate(Class<E> entityClass) {
         Validate.notNull(entityClass);
         this.entityClass = entityClass;
     }

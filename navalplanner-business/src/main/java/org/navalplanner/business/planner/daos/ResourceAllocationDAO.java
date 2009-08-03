@@ -1,6 +1,6 @@
 package org.navalplanner.business.planner.daos;
 
-import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
+import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ResourceAllocationDAO extends
-        GenericDaoHibernate<ResourceAllocation, Long> implements
+        GenericDAOHibernate<ResourceAllocation, Long> implements
         IResourceAllocationDAO {
 
 }

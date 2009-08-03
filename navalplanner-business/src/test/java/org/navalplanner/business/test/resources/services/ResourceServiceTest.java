@@ -16,7 +16,7 @@ import org.hibernate.validator.InvalidValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.daos.IResourceDao;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -48,7 +48,7 @@ public class ResourceServiceTest {
     private ResourceService resourceService;
 
     @Autowired
-    private IResourceDao resourceDao;
+    private IResourceDAO resourceDao;
 
     @Autowired
     private CriterionService criterionService;

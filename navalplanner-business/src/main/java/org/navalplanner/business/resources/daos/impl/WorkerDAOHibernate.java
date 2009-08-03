@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
+import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.daos.IWorkerDao;
+import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -21,8 +21,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class WorkerDaoHibernate extends GenericDaoHibernate<Worker, Long>
-    implements IWorkerDao {
+public class WorkerDAOHibernate extends GenericDAOHibernate<Worker, Long>
+    implements IWorkerDAO {
 
     @Override
     public Worker findUniqueByNif(String nif) throws InstanceNotFoundException {

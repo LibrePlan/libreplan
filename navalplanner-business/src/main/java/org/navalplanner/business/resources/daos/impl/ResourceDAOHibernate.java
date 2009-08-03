@@ -1,7 +1,7 @@
 package org.navalplanner.business.resources.daos.impl;
 
-import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
-import org.navalplanner.business.resources.daos.IResourceDao;
+import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -15,5 +15,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class ResourceDaoHibernate extends GenericDaoHibernate<Resource, Long>
-    implements IResourceDao {}
+public class ResourceDAOHibernate extends GenericDAOHibernate<Resource, Long>
+    implements IResourceDAO {}

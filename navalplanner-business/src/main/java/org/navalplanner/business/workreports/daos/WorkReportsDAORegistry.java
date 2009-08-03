@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-public final class WorkReportsDaoRegistry {
+public final class WorkReportsDAORegistry {
 
-    private static WorkReportsDaoRegistry instance = new WorkReportsDaoRegistry();
+    private static WorkReportsDAORegistry instance = new WorkReportsDAORegistry();
 
     @Autowired
     private IWorkReportDAO workReport;
@@ -23,10 +23,10 @@ public final class WorkReportsDaoRegistry {
     @Autowired
     private IWorkReportLineDAO workReportLine;
 
-    private WorkReportsDaoRegistry() {
+    private WorkReportsDAORegistry() {
     }
 
-    public static WorkReportsDaoRegistry getInstance() {
+    public static WorkReportsDAORegistry getInstance() {
         return instance;
     }
 

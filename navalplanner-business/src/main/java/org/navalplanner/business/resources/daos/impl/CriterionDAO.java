@@ -8,7 +8,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
+import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class CriterionDAO extends GenericDaoHibernate<Criterion, Long>
+public class CriterionDAO extends GenericDAOHibernate<Criterion, Long>
         implements ICriterionDAO {
 
     private static final Log log = LogFactory.getLog(CriterionDAO.class);

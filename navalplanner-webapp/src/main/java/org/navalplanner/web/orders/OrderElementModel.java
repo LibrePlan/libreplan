@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.navalplanner.business.orders.daos.IOrderElementDao;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
@@ -30,7 +30,7 @@ public class OrderElementModel implements IOrderElementModel {
     private OrderModel order;
 
     @Autowired
-    private IOrderElementDao orderElementDao;
+    private IOrderElementDAO orderElementDao;
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDao;

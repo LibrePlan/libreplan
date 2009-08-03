@@ -1,6 +1,6 @@
 package org.navalplanner.business.orders.daos;
 
-import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
+import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class HoursGroupDao extends GenericDaoHibernate<HoursGroup, Long>
-        implements IHoursGroupDao {
+public class HoursGroupDAO extends GenericDAOHibernate<HoursGroup, Long>
+        implements IHoursGroupDAO {
 }

@@ -1,6 +1,6 @@
 package org.navalplanner.business.resources.daos;
 
-import org.navalplanner.business.common.daos.IGenericDao;
+import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 
 /**
@@ -8,6 +8,6 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public interface ICriterionSatisfactionDAO extends
-        IGenericDao<CriterionSatisfaction, Long> {
+        IGenericDAO<CriterionSatisfaction, Long> {
 
 }

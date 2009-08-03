@@ -1,7 +1,7 @@
 package org.navalplanner.business.advance.daos;
 
 import org.navalplanner.business.advance.entities.AdvanceAssigment;
-import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
+import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class AdvanceAssigmentDAO extends
-        GenericDaoHibernate<AdvanceAssigment, Long> implements
+        GenericDAOHibernate<AdvanceAssigment, Long> implements
         IAdvanceAssigmentDAO {
 }

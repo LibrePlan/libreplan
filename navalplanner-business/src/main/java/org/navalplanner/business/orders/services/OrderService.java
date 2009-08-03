@@ -5,7 +5,7 @@ import java.util.List;
 import org.navalplanner.business.common.OnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.orders.daos.IOrderDao;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService implements IOrderService {
 
     @Autowired
-    private IOrderDao orderDAO;
+    private IOrderDAO orderDAO;
 
     @Override
     @Transactional(readOnly = true)

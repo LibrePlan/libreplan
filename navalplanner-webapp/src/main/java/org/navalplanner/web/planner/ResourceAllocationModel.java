@@ -7,14 +7,14 @@ import java.util.Set;
 import org.hibernate.LockMode;
 import org.hibernate.SessionFactory;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.daos.IHoursGroupDao;
+import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
-import org.navalplanner.business.planner.daos.ITaskElementDao;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.resources.daos.IWorkerDao;
+import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -36,16 +36,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Autowired
-    private ITaskElementDao taskElementDAO;
+    private ITaskElementDAO taskElementDAO;
 
     @Autowired
-    private IWorkerDao workerDAO;
+    private IWorkerDAO workerDAO;
 
     @Autowired
     private SessionFactory sessionFactory;
 
     @Autowired
-    private IHoursGroupDao hoursGroupDAO;
+    private IHoursGroupDAO hoursGroupDAO;
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;

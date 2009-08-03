@@ -1,6 +1,6 @@
 package org.navalplanner.business.resources.daos.impl;
 
-import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
+import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
 import org.navalplanner.business.resources.daos.ICriterionSatisfactionDAO;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class CriterionSatisfactionDAO extends
-        GenericDaoHibernate<CriterionSatisfaction, Long> implements
+        GenericDAOHibernate<CriterionSatisfaction, Long> implements
         ICriterionSatisfactionDAO {
 }

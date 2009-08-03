@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
+import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -20,8 +20,8 @@ import org.springframework.stereotype.Repository;
  **/
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class OrderElementDao extends GenericDaoHibernate<OrderElement, Long>
-        implements IOrderElementDao {
+public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
+        implements IOrderElementDAO {
 
     public List<OrderElement> findByCode(String code) {
         Criteria c = getSession().createCriteria(OrderElement.class);

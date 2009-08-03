@@ -8,9 +8,9 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.orders.daos.OrderElementDao;
+import org.navalplanner.business.orders.daos.OrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.resources.daos.impl.WorkerDaoHibernate;
+import org.navalplanner.business.resources.daos.impl.WorkerDAOHibernate;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
@@ -46,10 +46,10 @@ public class WorkReportModel implements IWorkReportModel {
     private WorkReportDAO workReportDAO;
 
     @Autowired
-    private OrderElementDao orderElementDAO;
+    private OrderElementDAO orderElementDAO;
 
     @Autowired
-    private WorkerDaoHibernate workerDAO;
+    private WorkerDAOHibernate workerDAO;
 
     private boolean editing = false;
 

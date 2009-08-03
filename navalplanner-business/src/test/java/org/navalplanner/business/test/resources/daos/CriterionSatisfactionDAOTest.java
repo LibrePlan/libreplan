@@ -9,7 +9,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionSatisfactionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
-import org.navalplanner.business.resources.daos.impl.WorkerDaoHibernate;
+import org.navalplanner.business.resources.daos.impl.WorkerDAOHibernate;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -48,7 +48,7 @@ public class CriterionSatisfactionDAOTest {
     private ICriterionTypeDAO criterionTypeDAO;
 
     @Autowired
-    private WorkerDaoHibernate workerDAO;
+    private WorkerDAOHibernate workerDAO;
 
     @Test
     public void testSaveCriterions() throws Exception {

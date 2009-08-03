@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
-import org.navalplanner.business.resources.daos.IResourceDao;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
-    private IResourceDao resourceDao;
+    private IResourceDAO resourceDao;
 
     @Autowired
     private ICriterionsBootstrap criterionsBootstrap;

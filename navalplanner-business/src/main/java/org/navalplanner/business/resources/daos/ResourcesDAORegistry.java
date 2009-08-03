@@ -13,28 +13,28 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Spring DI is a more convenient option.
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public final class ResourcesDaoRegistry {
+public final class ResourcesDAORegistry {
 
-    private static ResourcesDaoRegistry instance = new ResourcesDaoRegistry();
-
-    @Autowired
-    private IResourceDao resourceDao;
+    private static ResourcesDAORegistry instance = new ResourcesDAORegistry();
 
     @Autowired
-    private IWorkerDao workerDao;
+    private IResourceDAO resourceDao;
 
-    private ResourcesDaoRegistry() {
+    @Autowired
+    private IWorkerDAO workerDao;
+
+    private ResourcesDAORegistry() {
     }
 
-    public static ResourcesDaoRegistry getInstance() {
+    public static ResourcesDAORegistry getInstance() {
         return instance;
     }
 
-    public static IResourceDao getResourceDao() {
+    public static IResourceDAO getResourceDao() {
         return getInstance().resourceDao;
     }
 
-    public static IWorkerDao getWorkerDao() {
+    public static IWorkerDAO getWorkerDao() {
         return getInstance().workerDao;
     }
 

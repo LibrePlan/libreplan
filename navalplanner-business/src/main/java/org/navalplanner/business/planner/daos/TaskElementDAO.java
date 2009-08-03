@@ -1,6 +1,6 @@
 package org.navalplanner.business.planner.daos;
 
-import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
+import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class TaskElementDao extends GenericDaoHibernate<TaskElement, Long>
-        implements ITaskElementDao {
+public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
+        implements ITaskElementDAO {
 
 }

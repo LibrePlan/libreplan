@@ -10,7 +10,7 @@ import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.advance.entities.AdvanceAssigment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
-import org.navalplanner.business.orders.daos.OrdersDaoRegistry;
+import org.navalplanner.business.orders.daos.OrdersDAORegistry;
 import org.navalplanner.business.planner.entities.TaskElement;
 
 public abstract class OrderElement {
@@ -203,7 +203,7 @@ public abstract class OrderElement {
             AdvanceAssigment newAdvanceAssigment)
             throws DuplicateAdvanceAssigmentForOrderElementException {
 
-        List<OrderElement> parents = OrdersDaoRegistry.getOrderElementDao()
+        List<OrderElement> parents = OrdersDAORegistry.getOrderElementDao()
                 .findParent(orderElement);
         for (OrderElement orderElementParent : parents) {
             for (AdvanceAssigment advanceAssigment : orderElementParent

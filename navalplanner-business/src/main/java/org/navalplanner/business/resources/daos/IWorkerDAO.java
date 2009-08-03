@@ -1,6 +1,6 @@
 package org.navalplanner.business.resources.daos;
 
-import org.navalplanner.business.common.daos.IGenericDao;
+import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Worker;
 
@@ -11,7 +11,7 @@ import org.navalplanner.business.resources.entities.Worker;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  *
  */
-public interface IWorkerDao extends IGenericDao<Worker, Long> {
+public interface IWorkerDAO extends IGenericDAO<Worker, Long> {
 
     /**
      * Finds a {@link Worker} with the NIF param that should be unique.

@@ -65,23 +65,23 @@
     -->
 
     <bean id="resourcesDaoRegistry"
-        class="org.navalplanner.business.resources.daos.ResourcesDaoRegistry"
+        class="org.navalplanner.business.resources.daos.ResourcesDAORegistry"
         factory-method="getInstance" />
 
     <bean id="ordersDaoRegistry"
-        class="org.navalplanner.business.orders.daos.OrdersDaoRegistry"
+        class="org.navalplanner.business.orders.daos.OrdersDAORegistry"
         factory-method="getInstance" />
 
     <bean id="plannerDaoRegistry"
-        class="org.navalplanner.business.planner.daos.PlannerDaoRegistry"
+        class="org.navalplanner.business.planner.daos.PlannerDAORegistry"
         factory-method="getInstance" />
 
     <bean id="workReportsDaoRegistry"
-        class="org.navalplanner.business.workreports.daos.WorkReportsDaoRegistry"
+        class="org.navalplanner.business.workreports.daos.WorkReportsDAORegistry"
         factory-method="getInstance" />
 
     <bean id="advanceDaoRegistry"
-        class="org.navalplanner.business.advance.daos.AdvanceDaoRegistry"
+        class="org.navalplanner.business.advance.daos.AdvanceDAORegistry"
         factory-method="getInstance" />
 
 </beans>

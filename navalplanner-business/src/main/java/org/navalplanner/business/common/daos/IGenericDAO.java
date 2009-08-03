@@ -15,7 +15,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
  * @param <E> Entity class
  * @param <PK> Primary key class
  */
-public interface IGenericDao <E, PK extends Serializable>{
+public interface IGenericDAO <E, PK extends Serializable>{
 
     /**
      * It inserts the object passed as a parameter in the ORM session, planning

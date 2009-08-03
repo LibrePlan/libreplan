@@ -10,28 +10,28 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-public class OrdersDaoRegistry {
+public class OrdersDAORegistry {
 
-    private static OrdersDaoRegistry instance = new OrdersDaoRegistry();
-
-    @Autowired
-    private IOrderDao order;
+    private static OrdersDAORegistry instance = new OrdersDAORegistry();
 
     @Autowired
-    private IOrderElementDao orderElement;
+    private IOrderDAO order;
 
-    private OrdersDaoRegistry() {
+    @Autowired
+    private IOrderElementDAO orderElement;
+
+    private OrdersDAORegistry() {
     }
 
-    public static OrdersDaoRegistry getInstance() {
+    public static OrdersDAORegistry getInstance() {
         return instance;
     }
 
-    public static IOrderDao getOrderDao() {
+    public static IOrderDAO getOrderDao() {
         return getInstance().order;
     }
 
-    public static IOrderElementDao getOrderElementDao() {
+    public static IOrderElementDAO getOrderElementDao() {
         return getInstance().orderElement;
     }
 }

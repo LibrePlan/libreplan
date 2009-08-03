@@ -14,7 +14,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.daos.ResourcesDaoRegistry;
+import org.navalplanner.business.resources.daos.ResourcesDAORegistry;
 
 // FIXME: Alternatively, Resource can be modeled with the style:
 // Resource.getParent() & Resource.getChilds(). This way, Resource does not
@@ -199,7 +199,7 @@ public abstract class Resource {
     public void remove() {
         /* Remove from the database. */
         try {
-            ResourcesDaoRegistry.getResourceDao().remove(getId());
+            ResourcesDAORegistry.getResourceDao().remove(getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

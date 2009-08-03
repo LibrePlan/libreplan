@@ -1,6 +1,6 @@
 package org.navalplanner.web.planner;
 
-import org.navalplanner.business.planner.daos.ITaskElementDao;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EditTaskModel implements IEditTaskModel {
 
     @Autowired
-    private ITaskElementDao taskElementDAO;
+    private ITaskElementDAO taskElementDAO;
 
     @Override
     @Transactional(readOnly = true)

@@ -20,8 +20,8 @@ import org.navalplanner.business.advance.entities.AdvanceAssigment;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
-import org.navalplanner.business.orders.daos.IOrderDao;
-import org.navalplanner.business.orders.daos.IOrderElementDao;
+import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -47,10 +47,10 @@ public class AddAdvanceAssigmentsToOrderElementTest {
     private SessionFactory sessionFactory;
 
     @Autowired
-    private IOrderElementDao orderElementDao;
+    private IOrderElementDAO orderElementDao;
 
     @Autowired
-    private IOrderDao orderDao;
+    private IOrderDAO orderDao;
 
     @Autowired
     private IAdvanceAssigmentDAO advanceAssigmentDao;

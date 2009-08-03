@@ -8,7 +8,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
-import org.navalplanner.business.planner.daos.ITaskElementDao;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TaskElementService implements ITaskElementService {
 
     @Autowired
-    private ITaskElementDao taskElementDao;
+    private ITaskElementDAO taskElementDao;
 
     @Override
     public void save(TaskElement task) {

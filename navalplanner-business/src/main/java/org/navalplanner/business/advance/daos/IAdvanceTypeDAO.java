@@ -1,6 +1,6 @@
 package org.navalplanner.business.advance.daos;
 
-import org.navalplanner.business.common.daos.IGenericDao;
+import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.advance.entities.AdvanceType;
 
 /**
@@ -8,5 +8,5 @@ import org.navalplanner.business.advance.entities.AdvanceType;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-public interface IAdvanceTypeDAO extends IGenericDao<AdvanceType, Long>{
+public interface IAdvanceTypeDAO extends IGenericDAO<AdvanceType, Long>{
 }

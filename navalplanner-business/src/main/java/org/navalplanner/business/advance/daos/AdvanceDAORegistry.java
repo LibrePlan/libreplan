@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-public class AdvanceDaoRegistry {
+public class AdvanceDAORegistry {
 
-    private static AdvanceDaoRegistry instance = new AdvanceDaoRegistry();
+    private static AdvanceDAORegistry instance = new AdvanceDAORegistry();
 
     @Autowired
     private IAdvanceAssigmentDAO advanceAssigmentDao;
@@ -23,10 +23,10 @@ public class AdvanceDaoRegistry {
     @Autowired
     private IAdvanceMeasurementDAO advanceMeasurementDao;
 
-    private AdvanceDaoRegistry() {
+    private AdvanceDAORegistry() {
     }
 
-    public static AdvanceDaoRegistry getInstance() {
+    public static AdvanceDAORegistry getInstance() {
         return instance;
     }
 

@@ -12,7 +12,7 @@ import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.daos.IOrderElementDao;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderElementDAOTest {
 
     @Autowired
-    private IOrderElementDao orderElementDAO;
+    private IOrderElementDAO orderElementDAO;
 
     @Test
     public void testInSpringContainer() {

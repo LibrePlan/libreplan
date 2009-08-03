@@ -5,11 +5,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.navalplanner.business.orders.daos.OrderElementDao;
+import org.navalplanner.business.orders.daos.OrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.daos.impl.CriterionTypeDAO;
-import org.navalplanner.business.resources.daos.impl.ResourceDaoHibernate;
+import org.navalplanner.business.resources.daos.impl.ResourceDAOHibernate;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -28,10 +28,10 @@ public abstract class AbstractWorkReportTest {
     WorkReportTypeDAO workReportTypeDAO;
 
     @Autowired
-    ResourceDaoHibernate resourceDAO;
+    ResourceDAOHibernate resourceDAO;
 
     @Autowired
-    OrderElementDao orderElementDAO;
+    OrderElementDAO orderElementDAO;
 
     // Create a Set of CriterionType
     public Set<CriterionType> createValidCriterionTypes() {

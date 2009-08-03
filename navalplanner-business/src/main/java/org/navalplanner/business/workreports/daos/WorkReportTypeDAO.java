@@ -1,6 +1,6 @@
 package org.navalplanner.business.workreports.daos;
 
-import org.navalplanner.business.common.daos.impl.GenericDaoHibernate;
+import org.navalplanner.business.common.daos.impl.GenericDAOHibernate;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -14,6 +14,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class WorkReportTypeDAO extends
-        GenericDaoHibernate<WorkReportType, Long> implements IWorkReportTypeDAO {
+        GenericDAOHibernate<WorkReportType, Long> implements IWorkReportTypeDAO {
 
 }

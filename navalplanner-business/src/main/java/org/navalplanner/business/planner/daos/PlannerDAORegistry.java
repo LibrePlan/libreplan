@@ -10,21 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-public class PlannerDaoRegistry {
+public class PlannerDAORegistry {
 
-    private static PlannerDaoRegistry instance = new PlannerDaoRegistry();
+    private static PlannerDAORegistry instance = new PlannerDAORegistry();
 
     @Autowired
-    private ITaskElementDao taskElement;
+    private ITaskElementDAO taskElement;
 
-    private PlannerDaoRegistry() {
+    private PlannerDAORegistry() {
     }
 
-    public static PlannerDaoRegistry getInstance() {
+    public static PlannerDAORegistry getInstance() {
         return instance;
     }
 
-    public static ITaskElementDao getTaskElementDao() {
+    public static ITaskElementDAO getTaskElementDao() {
         return getInstance().taskElement;
     }
 }
