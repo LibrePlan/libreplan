@@ -177,15 +177,6 @@ public abstract class OrderElement {
             throws Exception {
         if (!this.advanceAssigments.isEmpty()) {
             for (AdvanceAssigment advanceAssigment : getAdvanceAssigments()) {
-                if (advanceAssigment.getAdvanceType().getId() == newAdvanceAssigment
-                        .getAdvanceType().getId()) {
-                    System.out.println("bien");
-                    throw new DuplicateAdvanceAssigmentForOrderElementException(
-                            "Duplicate Advance Assigment For Order Element",
-                            this,
-                            "org.navalplanner.business.orders.entities.OrderElement");
-                }
-
                 if (advanceAssigment.getReportGlobalAdvance()
                         && newAdvanceAssigment.getReportGlobalAdvance())
                     throw new DuplicateValueTrueReportGlobalAdvanceException(
