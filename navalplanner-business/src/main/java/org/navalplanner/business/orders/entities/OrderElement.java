@@ -175,15 +175,13 @@ public abstract class OrderElement {
      */
     public void addAvanceAssigment(AdvanceAssigment newAdvanceAssigment)
             throws Exception {
-        if (!this.advanceAssigments.isEmpty()) {
-            for (AdvanceAssigment advanceAssigment : getAdvanceAssigments()) {
-                if (advanceAssigment.getReportGlobalAdvance()
-                        && newAdvanceAssigment.getReportGlobalAdvance())
-                    throw new DuplicateValueTrueReportGlobalAdvanceException(
-                            "Duplicate Value True ReportGlobalAdvance For Order Element",
-                            this,
-                            "org.navalplanner.business.orders.entities.OrderElement");
-            }
+        for (AdvanceAssigment advanceAssigment : getAdvanceAssigments()) {
+            if (advanceAssigment.getReportGlobalAdvance()
+                    && newAdvanceAssigment.getReportGlobalAdvance())
+                throw new DuplicateValueTrueReportGlobalAdvanceException(
+                        "Duplicate Value True ReportGlobalAdvance For Order Element",
+                        this,
+                        "org.navalplanner.business.orders.entities.OrderElement");
         }
         existParentsWithSameAdvanceType(this, newAdvanceAssigment);
         this.advanceAssigments.add(newAdvanceAssigment);
