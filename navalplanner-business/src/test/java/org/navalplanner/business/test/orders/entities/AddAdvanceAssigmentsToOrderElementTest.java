@@ -20,6 +20,7 @@ import org.navalplanner.business.advance.entities.AdvanceAssigment;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -427,6 +428,42 @@ public class AddAdvanceAssigmentsToOrderElementTest {
             fail("It should throw an exception  ");
         } catch (Exception e) {
             // Ok
+        }
+    }
+
+    @Test(expected = DuplicateAdvanceAssigmentForOrderElementException.class)
+    public void addingAnotherAdvanceAssigmentWithAnEquivalentTypeButDifferentInstance()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssigmentForOrderElementException {
+        final Order order = createValidOrder();
+        OrderLine line = createValidLeaf("GranSon", "75757");
+        order.add(line);
+        orderDao.save(order);
+
+        AdvanceType type = createValidAdvanceType("tipoA");
+        advanceTypeDao.save(type);
+        getSession().flush();
+        getSession().evict(type);
+
+        AdvanceType typeReloaded = reloadType(type);
+
+        AdvanceAssigment assigment = createValidAdvanceAssigment(false);
+        assigment.setAdvanceType(type);
+        AdvanceAssigment assigmentWithSameType = createValidAdvanceAssigment(false);
+        assigmentWithSameType.setAdvanceType(typeReloaded);
+
+        line.addAvanceAssigment(assigment);
+        line.addAvanceAssigment(assigmentWithSameType);
+    }
+
+    private AdvanceType reloadType(AdvanceType type) {
+        try {
+            // new instance of id is created to avoid both types have the same
+            // id object
+            Long newLong = new Long(type.getId());
+            return advanceTypeDao.find(newLong);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

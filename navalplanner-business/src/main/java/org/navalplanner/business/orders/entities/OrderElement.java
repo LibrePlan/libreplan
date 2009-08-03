@@ -209,8 +209,8 @@ public abstract class OrderElement {
             throws DuplicateAdvanceAssigmentForOrderElementException {
         for (AdvanceAssigment advanceAssigment : orderElement
                 .getAdvanceAssigments()) {
-            if (advanceAssigment.getAdvanceType().getId() == newAdvanceAssigment
-                    .getAdvanceType().getId()) {
+            if (advanceAssigment.getAdvanceType().getId().equals(
+                    newAdvanceAssigment.getAdvanceType().getId())) {
                 throw new DuplicateAdvanceAssigmentForOrderElementException(
                         "Duplicate Advance Assigment For Order Element", this,
                         OrderElement.class);
