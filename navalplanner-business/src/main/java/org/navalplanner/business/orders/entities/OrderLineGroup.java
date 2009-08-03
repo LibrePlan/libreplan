@@ -41,7 +41,8 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     }
 
     private OrderLineGroupManipulator getManipulator() {
-        return new OrderLineGroupManipulator(children);
+        return OrderLineGroupManipulator.createManipulatorForOrderLineGroup(
+                this, children);
     }
 
     @Override

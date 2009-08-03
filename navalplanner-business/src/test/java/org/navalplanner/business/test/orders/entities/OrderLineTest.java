@@ -10,12 +10,21 @@ import java.math.BigDecimal;
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 
 /**
  * Tests for {@link OrderLine}. <br />
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class OrderLineTest {
+
+    @Test
+    public void parentPropertyMustBeSetWhenAddingOrderLineToContainer() {
+        OrderLineGroup orderLineGroup = new OrderLineGroup();
+        OrderLine orderLine = new OrderLine();
+        orderLineGroup.add(orderLine);
+        assertThat(orderLine.getParent(), equalTo(orderLineGroup));
+    }
 
     /**
      * An empty {@link OrderLine} without any {@link HoursGroup}. Trying to set

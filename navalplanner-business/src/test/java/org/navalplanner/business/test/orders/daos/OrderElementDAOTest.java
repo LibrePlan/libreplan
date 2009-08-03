@@ -95,7 +95,7 @@ public class OrderElementDAOTest {
         OrderLine orderLine = createValidOrderLine();
         orderElementDAO.save(orderLine);
         orderLine.setCode(((Long) orderLine.getId()).toString());
-        orderLine.setParent(orderLineGroup);
+        orderLineGroup.add(orderLine);
         orderElementDAO.save(orderLine);
 
         OrderLine found = (OrderLine) orderElementDAO
@@ -129,7 +129,7 @@ public class OrderElementDAOTest {
         OrderLine orderLine = createValidOrderLine();
         orderElementDAO.save(orderLine);
         orderLine.setCode(((Long) orderLine.getId()).toString());
-        orderLine.setParent(orderLineGroup);
+        orderLineGroup.add(orderLine);
         orderElementDAO.save(orderLine);
 
         try {

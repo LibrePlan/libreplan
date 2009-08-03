@@ -108,7 +108,7 @@ public class Order implements IOrderLineGroup {
     }
 
     private OrderLineGroupManipulator getOrderElementsManipulator() {
-        return new OrderLineGroupManipulator(orderElements);
+        return OrderLineGroupManipulator.createManipulatorForOrder(orderElements);
     }
 
     public List<OrderElement> getOrderElements() {

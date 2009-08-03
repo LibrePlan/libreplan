@@ -45,7 +45,7 @@ public abstract class OrderElement {
         return parent;
     }
 
-    public void setParent(OrderLineGroup parent) {
+    protected void setParent(OrderLineGroup parent) {
         this.parent = parent;
     }
 
