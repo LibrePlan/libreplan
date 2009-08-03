@@ -68,10 +68,6 @@
         class="org.navalplanner.business.resources.daos.ResourcesDAORegistry"
         factory-method="getInstance" />
 
-    <bean id="ordersDaoRegistry"
-        class="org.navalplanner.business.orders.daos.OrdersDAORegistry"
-        factory-method="getInstance" />
-
     <bean id="plannerDaoRegistry"
         class="org.navalplanner.business.planner.daos.PlannerDAORegistry"
         factory-method="getInstance" />
