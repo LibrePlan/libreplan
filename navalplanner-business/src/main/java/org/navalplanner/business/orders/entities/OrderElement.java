@@ -190,8 +190,7 @@ public abstract class OrderElement {
             if (advanceAssigment.getReportGlobalAdvance())
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
                         "Duplicate Value True ReportGlobalAdvance For Order Element",
-                        this,
-                        "org.navalplanner.business.orders.entities.OrderElement");
+                        this, OrderElement.class);
         }
     }
 
@@ -202,8 +201,8 @@ public abstract class OrderElement {
      * @param newAdvanceAssigment
      * @throws DuplicateAdvanceAssigmentForOrderElementException
      */
-    private void checkNoOtherAssignmentWithSameAdvanceType(OrderElement orderElement,
-            AdvanceAssigment newAdvanceAssigment)
+    private void checkNoOtherAssignmentWithSameAdvanceType(
+            OrderElement orderElement, AdvanceAssigment newAdvanceAssigment)
             throws DuplicateAdvanceAssigmentForOrderElementException {
         for (AdvanceAssigment advanceAssigment : orderElement
                 .getAdvanceAssigments()) {
@@ -211,7 +210,7 @@ public abstract class OrderElement {
                     .getAdvanceType().getId()) {
                 throw new DuplicateAdvanceAssigmentForOrderElementException(
                         "Duplicate Advance Assigment For Order Element", this,
-                        "org.navalplanner.business.orders.entities.OrderElement");
+                        OrderElement.class);
             }
         }
         if (orderElement.getParent() != null) {

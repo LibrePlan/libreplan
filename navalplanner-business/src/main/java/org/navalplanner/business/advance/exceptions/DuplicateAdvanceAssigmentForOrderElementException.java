@@ -1,5 +1,6 @@
 package org.navalplanner.business.advance.exceptions;
 
+
 /**
  * An exception for modeling a problem with duplicated advance assigment of the
  * same type for an order element. It contains a message, the key of the
@@ -19,6 +20,11 @@ public class DuplicateAdvanceAssigmentForOrderElementException extends
                 + className + "')");
         this.key = key;
         this.className = className;
+    }
+
+    public DuplicateAdvanceAssigmentForOrderElementException(
+            String specificMessage, Object key, Class<?> klass) {
+        this(specificMessage, key, klass.getName());
     }
 
     public Object getKey() {
