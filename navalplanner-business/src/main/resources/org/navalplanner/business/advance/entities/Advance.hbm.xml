@@ -44,7 +44,7 @@
     <version name="version" type="long"/>
 
     <property name="date"/>
-    <property name="value"/>
+    <property name="value" scale="2"/>
 
     <many-to-one name="advanceAssigment" class="AdvanceAssigment" column="ADVANCE_ASSIGMENT_ID" />
 </class>
