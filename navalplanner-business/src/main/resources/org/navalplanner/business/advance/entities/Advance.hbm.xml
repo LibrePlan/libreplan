@@ -9,9 +9,11 @@
     </id>
     <version name="version" type="long"/>
 
-    <property name="unitName"/>
-    <property name="defaultMaxValue"/>
-    <property name="updatable"/>
+    <property name="unitName" access="field"/>
+    <property name="defaultMaxValue" access="field" scale="4"/>
+    <property name="updatable" access="field"/>
+    <property name="precision" access="field" scale="4"/>
+    <property name="active" access="field"/>
 </class>
 
 <!-- AdvanceAssigment -->
@@ -21,7 +23,7 @@
     </id>
     <version name="version" type="long"/>
 
-    <property name="maxValue"/>
+    <property name="maxValue" />
     <property name="reportGlobalAdvance"/>
 
     <many-to-one name="advanceType" class="AdvanceType" column="ADVANCE_TYPE_ID"/>

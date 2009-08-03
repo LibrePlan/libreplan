@@ -84,7 +84,9 @@ public class AddAdvanceAssigmentsToOrderElementTest {
 
     private AdvanceType createValidAdvanceType(String name) {
         BigDecimal value = new BigDecimal(120).setScale(2);
-        AdvanceType advanceType = new AdvanceType(name, value, true);
+        BigDecimal precision = new BigDecimal(10).setScale(4);
+        AdvanceType advanceType = new AdvanceType(name, value, true, precision,
+                true);
         return advanceType;
     }
 

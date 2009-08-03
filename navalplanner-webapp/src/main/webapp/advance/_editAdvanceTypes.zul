@@ -1,0 +1,42 @@
+<window id="${arg.top_id}" title="${arg.title}">
+    <tabbox>
+        <tabs>
+            <tab label="Edición"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <grid fixedLayout="false">
+                    <rows>
+                        <row>
+                            <label value="unitName" />
+                            <textbox value="@{controller.advanceType.unitName}" constraint="@{controller.distinctNames}"/>
+                        </row>
+                        <row>
+                            <label value="Active" />
+                            <checkbox checked="@{controller.advanceType.active}"/>
+                        </row>
+                        <row>
+                            <label value="Default max value" />
+                            <decimalbox id="defaultMaxValue" scale="2"
+                                value="@{controller.advanceType.defaultMaxValue}" constraint="@{controller.greaterThanPrecision}"/>
+                        </row>
+                        <row>
+                            <label value="Precision" />
+                            <decimalbox id="precision" scale="4"
+                                value = "@{controller.advanceType.precision}" constraint = "@{controller.lessThanDefaultMaxValue}"/>
+                        </row>
+                        <row>
+                            <label value="Type" />
+                            <label value="@{controller.advanceType.type}" />
+                        </row>
+                    </rows>
+                </grid>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+    <button onClick="controller.save();"
+        label="${arg.save_button_label}" />
+    <button onClick="controller.cancel();"
+        label="${arg.cancel_button_label}" />
+</window>
