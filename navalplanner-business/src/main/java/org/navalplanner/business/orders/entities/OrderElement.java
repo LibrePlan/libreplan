@@ -175,19 +175,34 @@ public abstract class OrderElement {
      */
     public void addAvanceAssigment(AdvanceAssigment newAdvanceAssigment)
             throws Exception {
+        checkNoOtherGlobalAdvanceAssignment(newAdvanceAssigment);
+        checkNoOtherAssignmentWithSameAdvanceType(this, newAdvanceAssigment);
+        this.advanceAssigments.add(newAdvanceAssigment);
+    }
+
+    private void checkNoOtherGlobalAdvanceAssignment(
+            AdvanceAssigment newAdvanceAssigment)
+            throws DuplicateValueTrueReportGlobalAdvanceException {
+        if (!newAdvanceAssigment.getReportGlobalAdvance()) {
+            return;
+        }
         for (AdvanceAssigment advanceAssigment : getAdvanceAssigments()) {
-            if (advanceAssigment.getReportGlobalAdvance()
-                    && newAdvanceAssigment.getReportGlobalAdvance())
+            if (advanceAssigment.getReportGlobalAdvance())
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
                         "Duplicate Value True ReportGlobalAdvance For Order Element",
                         this,
                         "org.navalplanner.business.orders.entities.OrderElement");
         }
-        existParentsWithSameAdvanceType(this, newAdvanceAssigment);
-        this.advanceAssigments.add(newAdvanceAssigment);
     }
 
-    private void existParentsWithSameAdvanceType(OrderElement orderElement,
+    /**
+     * It checks there are no {@link AdvanceAssigment} with the same type in
+     * orderElement and ancestors
+     * @param orderElement
+     * @param newAdvanceAssigment
+     * @throws DuplicateAdvanceAssigmentForOrderElementException
+     */
+    private void checkNoOtherAssignmentWithSameAdvanceType(OrderElement orderElement,
             AdvanceAssigment newAdvanceAssigment)
             throws DuplicateAdvanceAssigmentForOrderElementException {
         for (AdvanceAssigment advanceAssigment : orderElement
@@ -200,7 +215,7 @@ public abstract class OrderElement {
             }
         }
         if (orderElement.getParent() != null) {
-            existParentsWithSameAdvanceType(orderElement.getParent(),
+            checkNoOtherAssignmentWithSameAdvanceType(orderElement.getParent(),
                     newAdvanceAssigment);
         }
     }
