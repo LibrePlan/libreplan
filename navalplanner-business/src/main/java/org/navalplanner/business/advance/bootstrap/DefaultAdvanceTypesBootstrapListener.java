@@ -1,4 +1,4 @@
-package org.navalplanner.web.bootstrap;
+package org.navalplanner.business.advance.bootstrap;
 
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
