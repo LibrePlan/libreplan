@@ -9,7 +9,7 @@
     </id>
     <version name="version" access="property" type="long" />
 
-    <property name="unitName" access="field"/>
+    <property name="unitName" access="field" unique="true"/>
     <property name="defaultMaxValue" access="field" scale="4"/>
     <property name="updatable" access="field"/>
     <property name="precision" access="field" scale="4"/>
