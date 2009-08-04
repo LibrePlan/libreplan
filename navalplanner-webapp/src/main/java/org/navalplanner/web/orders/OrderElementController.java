@@ -434,6 +434,9 @@ public class OrderElementController extends GenericForwardComposer {
                                 BigDecimal total = new BigDecimal(model
                                         .getOrderElement()
                                                 .getWorkHours()).setScale(2);
+                                if (total.equals(new BigDecimal(0).setScale(2))) {
+                                    return new BigDecimal(0).setScale(2);
+                                }
                                 return workingHours.divide(total,
                                         BigDecimal.ROUND_DOWN);
                             }
