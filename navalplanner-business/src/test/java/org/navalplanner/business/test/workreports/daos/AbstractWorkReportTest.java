@@ -69,7 +69,7 @@ public abstract class AbstractWorkReportTest {
     }
 
     private OrderElement createValidOrderElement() {
-        OrderLine orderLine = new OrderLine();
+        OrderLine orderLine = OrderLine.create();
         orderLine.setName(UUID.randomUUID().toString());
         orderLine.setCode(UUID.randomUUID().toString());
         orderElementDAO.save(orderLine);

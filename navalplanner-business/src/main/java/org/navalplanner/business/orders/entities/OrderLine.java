@@ -8,14 +8,27 @@ import java.util.Set;
 
 public class OrderLine extends OrderElement {
 
-    public static OrderLine createOrderLineWithUnfixedPercentage(int hours) {
+    public static OrderLine create() {
         OrderLine result = new OrderLine();
+        result.setNewObject(true);
+        return result;
+    }
+
+    public static OrderLine createOrderLineWithUnfixedPercentage(int hours) {
+        OrderLine result = create();
         HoursGroup hoursGroup = HoursGroup.create(result);
         result.addHoursGroup(hoursGroup);
         hoursGroup.setFixedPercentage(false);
         hoursGroup.setPercentage(new BigDecimal(1));
         hoursGroup.setWorkingHours(hours);
         return result;
+    }
+
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    public OrderLine() {
+
     }
 
     private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
@@ -42,7 +55,7 @@ public class OrderLine extends OrderElement {
 
     @Override
     public OrderLineGroup toContainer() {
-        OrderLineGroup result = new OrderLineGroup();
+        OrderLineGroup result = OrderLineGroup.create();
         result.setName(getName());
         result.setCode(getCode());
         result.setInitDate(getInitDate());

@@ -75,7 +75,7 @@ public class OrderElementController extends GenericForwardComposer {
 
     public OrderElement getOrderElement() {
         if (model == null) {
-            return new OrderLine();
+            return OrderLine.create();
         }
 
         return model.getOrderElement();

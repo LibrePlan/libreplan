@@ -78,7 +78,7 @@ public class TaskElementServiceTest {
     }
 
     private OrderLine createOrderLine() {
-        OrderLine orderLine = new OrderLine();
+        OrderLine orderLine = OrderLine.create();
         orderLine.setName("bla");
         orderLine.setCode("000000000");
         orderLine.addHoursGroup(new HoursGroup());
@@ -186,7 +186,7 @@ public class TaskElementServiceTest {
 
     @Test
     public void aOrderLineGroupIsConvertedToATaskGroup() {
-        OrderLineGroup orderLineGroup = new OrderLineGroup();
+        OrderLineGroup orderLineGroup = OrderLineGroup.create();
         orderLineGroup.setName("foo");
         orderLineGroup.setCode("000000000");
         TaskElement task = taskElementService
@@ -200,7 +200,7 @@ public class TaskElementServiceTest {
 
     @Test
     public void aOrderLineWithOneHourGroupIsConvertedToATask() {
-        OrderLine orderLine = new OrderLine();
+        OrderLine orderLine = OrderLine.create();
         orderLine.setName("bla");
         orderLine.setCode("000000000");
         final int hours = 30;
@@ -219,10 +219,10 @@ public class TaskElementServiceTest {
 
     @Test
     public void theSublinesOfAnOrderLineGroupAreConverted() {
-        OrderLineGroup orderLineGroup = new OrderLineGroup();
+        OrderLineGroup orderLineGroup = OrderLineGroup.create();
         orderLineGroup.setName("foo");
         orderLineGroup.setCode("000000000");
-        OrderLine orderLine = new OrderLine();
+        OrderLine orderLine = OrderLine.create();
         orderLine.setName("bla");
         orderLine.setCode("000000000");
         HoursGroup hoursGroup = createHoursGroup(30);
@@ -243,10 +243,10 @@ public class TaskElementServiceTest {
 
     @Test
     public void theWorkHoursOfATaskGroupAreTheSameThanTheTaskElement(){
-        OrderLineGroup orderLineGroup = new OrderLineGroup();
+        OrderLineGroup orderLineGroup = OrderLineGroup.create();
         orderLineGroup.setName("foo");
         orderLineGroup.setCode("000000000");
-        OrderLine orderLine = new OrderLine();
+        OrderLine orderLine = OrderLine.create();
         orderLine.setName("bla");
         orderLine.setCode("000000000");
         orderLine.addHoursGroup(createHoursGroup(20));
@@ -259,7 +259,7 @@ public class TaskElementServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void aOrderLineWithNoHoursIsRejected() {
-        OrderLine orderLine = new OrderLine();
+        OrderLine orderLine = OrderLine.create();
         orderLine.setName("bla");
         orderLine.setCode("000000000");
         taskElementService.convertToInitialSchedule(orderLine);
@@ -273,7 +273,7 @@ public class TaskElementServiceTest {
 
     @Test
     public void aOrderLineWithMoreThanOneHourIsConvertedToATaskGroup() {
-        OrderLine orderLine = new OrderLine();
+        OrderLine orderLine = OrderLine.create();
         orderLine.setName("bla");
         orderLine.setCode("000000000");
         HoursGroup hours1 = createHoursGroup(30);

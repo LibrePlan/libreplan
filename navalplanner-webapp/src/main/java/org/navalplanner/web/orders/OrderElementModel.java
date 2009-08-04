@@ -54,17 +54,12 @@ public class OrderElementModel implements IOrderElementModel {
     @Override
     @Transactional(readOnly = true)
 	public void setCurrent(OrderElement orderElement, OrderModel order) {
-        // FIXME Review reattachment
-        boolean wasTransient = orderElement.isTransient();
         orderElementDao.save(orderElement);
 
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
             hoursGroup.getCriterions().size();
         }
 
-        if (wasTransient) {
-            orderElement.makeTransientAgain();
-        }
         this.orderElement = orderElement;
         this.order = order;
     }

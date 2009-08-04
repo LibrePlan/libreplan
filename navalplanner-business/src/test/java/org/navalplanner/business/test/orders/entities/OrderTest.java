@@ -18,8 +18,8 @@ public class OrderTest {
     @Test
     public void testAddingOrderElement() throws Exception {
         Order order = new Order();
-        OrderLineGroup container = new OrderLineGroup();
-        OrderLine leaf = new OrderLine();
+        OrderLineGroup container = OrderLineGroup.create();
+        OrderLine leaf = OrderLine.create();
         container.add(leaf);
         order.add(container);
         assertThat(order.getOrderElements().size(), equalTo(1));
@@ -27,11 +27,11 @@ public class OrderTest {
 
     @Test
     public void testPreservesOrder() throws Exception {
-        OrderLineGroup container = new OrderLineGroup();
+        OrderLineGroup container = OrderLineGroup.create();
 
         OrderLine[] created = new OrderLine[100];
         for (int i = 0; i < created.length; i++) {
-            created[i] = new OrderLine();
+            created[i] = OrderLine.create();
             container.add(created[i]);
         }
         for (int i = 0; i < created.length; i++) {

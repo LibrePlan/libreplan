@@ -1,7 +1,10 @@
 package org.navalplanner.business.common;
 
 /**
- * TODO
+ * Base class for all the application entities.
+ *
+ * It provides the basic behavior for id and version fields.
+ *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public abstract class BaseEntity {

@@ -101,7 +101,7 @@ public class OrderServiceTest {
     public void removingOrderWithAssociatedTasksDeletesThem()
             throws ValidationException, InstanceNotFoundException {
         Order order = createValidOrder();
-        OrderLine orderLine = new OrderLine();
+        OrderLine orderLine = OrderLine.create();
         orderLine.setName("bla");
         orderLine.setCode("00000000");
         orderLine.setWorkHours(10);
@@ -118,6 +118,7 @@ public class OrderServiceTest {
             if (t instanceof Task) {
                 Task task = (Task) t;
                 task.getHoursGroup().dontPoseAsTransientObjectAnymore();
+                task.getOrderElement().dontPoseAsTransientObjectAnymore();
             }
         }
         orderService.remove(reloaded);
@@ -146,7 +147,7 @@ public class OrderServiceTest {
         final Order order = createValidOrder();
         final OrderElement[] containers = new OrderLineGroup[10];
         for (int i = 0; i < containers.length; i++) {
-            containers[i] = new OrderLineGroup();
+            containers[i] = OrderLineGroup.create();
             containers[i].setName("bla");
             containers[i].setCode("000000000");
             order.add(containers[i]);
@@ -201,7 +202,7 @@ public class OrderServiceTest {
     }
 
     private OrderLine createValidLeaf(String parameter) {
-        OrderLine result = new OrderLine();
+        OrderLine result = OrderLine.create();
         result.setName(parameter);
         result.setCode("000000000");
 
@@ -216,10 +217,10 @@ public class OrderServiceTest {
     @NotTransactional
     public void testAddingOrderElement() throws Exception {
         final Order order = createValidOrder();
-        OrderLineGroup container = new OrderLineGroup();
+        OrderLineGroup container = OrderLineGroup.create();
         container.setName("bla");
         container.setCode("000000000");
-        OrderLine leaf = new OrderLine();
+        OrderLine leaf = OrderLine.create();
         leaf.setName("leaf");
         leaf.setCode("000000000");
         container.add(leaf);
@@ -258,7 +259,7 @@ public class OrderServiceTest {
     public void testManyToManyHoursGroupCriterionMapping() throws Exception {
         final Order order = createValidOrder();
 
-        OrderLine orderLine = new OrderLine();
+        OrderLine orderLine = OrderLine.create();
         orderLine.setName("Order element");
         orderLine.setCode("000000000");
         order.add(orderLine);
@@ -316,7 +317,7 @@ public class OrderServiceTest {
     public void testAtLeastOneHoursGroup() throws Exception {
         Order order = createValidOrder();
 
-        OrderLine orderLine = new OrderLine();
+        OrderLine orderLine = OrderLine.create();
         orderLine.setName("foo");
         orderLine.setCode("000000000");
         order.add(orderLine);

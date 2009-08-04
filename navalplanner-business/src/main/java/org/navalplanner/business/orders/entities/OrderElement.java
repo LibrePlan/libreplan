@@ -11,13 +11,10 @@ import org.navalplanner.business.advance.entities.AdvanceAssigment;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.TaskElement;
 
-public abstract class OrderElement {
-
-    private Long id;
-
-    private Long version;
+public abstract class OrderElement extends BaseEntity {
 
     @NotEmpty
     private String name;
@@ -52,10 +49,6 @@ public abstract class OrderElement {
     public abstract Integer getWorkHours();
 
     public abstract List<HoursGroup> getHoursGroups();
-
-    public Long getId() {
-        return id;
-    }
 
     /**
      * @return the duration in milliseconds
@@ -119,17 +112,6 @@ public abstract class OrderElement {
     public abstract OrderLine toLeaf();
 
     public abstract OrderLineGroup toContainer();
-
-    public void makeTransientAgain() {
-        // FIXME Review reattachment
-        id = null;
-        version = null;
-    }
-
-    public boolean isTransient() {
-        // FIXME Review reattachment
-        return id == null;
-    }
 
     public Set<TaskElement> getTaskElements() {
         return Collections.unmodifiableSet(taskElements);

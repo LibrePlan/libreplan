@@ -7,7 +7,20 @@ import org.hibernate.validator.Valid;
 
 public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
 
+    public static OrderLineGroup create() {
+        OrderLineGroup result = new OrderLineGroup();
+        result.setNewObject(true);
+        return result;
+    }
+
     private List<OrderElement> children = new ArrayList<OrderElement>();
+
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    public OrderLineGroup() {
+
+    }
 
     @Override
     @Valid
@@ -47,7 +60,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
 
     @Override
     public OrderLine toLeaf() {
-        OrderLine result = new OrderLine();
+        OrderLine result = OrderLine.create();
 
         result.setName(getName());
         result.setInitDate(getInitDate());

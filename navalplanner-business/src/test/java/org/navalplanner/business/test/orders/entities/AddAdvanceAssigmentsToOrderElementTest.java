@@ -74,7 +74,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
     }
 
     private OrderLine createValidLeaf(String name, String code) {
-        OrderLine result = new OrderLine();
+        OrderLine result = OrderLine.create();
         result.setName(name);
         result.setCode(code);
         HoursGroup hoursGroup = HoursGroup.create(result);
@@ -262,7 +262,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         final Order order = createValidOrder();
         final OrderElement[] containers = new OrderLineGroup[2];
         for (int i = 0; i < containers.length; i++) {
-            containers[i] = new OrderLineGroup();
+            containers[i] = OrderLineGroup.create();
             containers[i].setName("bla");
             containers[i].setCode("000000000");
             order.add(containers[i]);
@@ -322,7 +322,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         final Order order = createValidOrder();
         final OrderElement[] containers = new OrderLineGroup[2];
         for (int i = 0; i < containers.length; i++) {
-            containers[i] = new OrderLineGroup();
+            containers[i] = OrderLineGroup.create();
             containers[i].setName("bla");
             containers[i].setCode("000000000");
             order.add(containers[i]);
@@ -382,13 +382,13 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         final Order order = createValidOrder();
         final OrderElement[] containers = new OrderLineGroup[2];
         for (int i = 0; i < containers.length; i++) {
-            containers[i] = new OrderLineGroup();
+            containers[i] = OrderLineGroup.create();
             containers[i].setName("bla_" + i);
             containers[i].setCode("000000000");
             order.add(containers[i]);
         }
         OrderLineGroup container = (OrderLineGroup) containers[0];
-        OrderLineGroup containerSon = (OrderLineGroup) new OrderLineGroup();
+        OrderLineGroup containerSon = (OrderLineGroup) OrderLineGroup.create();
         containerSon.setName("Son");
         containerSon.setCode("11111111");
         container.add(containerSon);

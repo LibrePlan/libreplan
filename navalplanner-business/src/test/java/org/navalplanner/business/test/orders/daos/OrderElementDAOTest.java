@@ -44,7 +44,7 @@ public class OrderElementDAOTest {
     }
 
     private OrderLine createValidOrderLine(String name, String code) {
-        OrderLine orderLine = new OrderLine();
+        OrderLine orderLine = OrderLine.create();
         orderLine.setName(name);
         orderLine.setCode(code);
         return orderLine;
@@ -56,7 +56,7 @@ public class OrderElementDAOTest {
     }
 
     private OrderLineGroup createValidOrderLineGroup(String name, String code) {
-        OrderLineGroup orderLineGroup = new OrderLineGroup();
+        OrderLineGroup orderLineGroup = OrderLineGroup.create();
         orderLineGroup.setName(name);
         orderLineGroup.setCode(code);
         return orderLineGroup;

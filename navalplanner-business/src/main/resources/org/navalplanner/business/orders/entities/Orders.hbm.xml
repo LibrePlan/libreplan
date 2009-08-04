@@ -23,7 +23,7 @@
         <id name="id" type="long" access="field">
             <generator class="native" />
         </id>
-        <version name="version" access="field" type="long" />
+        <version name="version" access="property" type="long" />
 
         <property name="name" access="field" />
         <property name="initDate" access="field" />
