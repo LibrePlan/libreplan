@@ -4,7 +4,7 @@
 
 <!-- AdvanceType -->
 <class name="AdvanceType" table="ADVANCE_TYPE">
-    <id name="id" type="long">
+    <id name="id" type="long" access="property">
         <generator class="native"/>
     </id>
     <version name="version" access="property" type="long" />
@@ -18,7 +18,7 @@
 
 <!-- AdvanceAssigment -->
 <class name="AdvanceAssigment" table="ADVANCE_ASSIGMENT">
-    <id name="id" type="long">
+    <id name="id" type="long" access="property">
         <generator class="native"/>
     </id>
     <version name="version" access="property" type="long" />
@@ -38,7 +38,7 @@
 
 <!-- AdvanceMeasurement -->
 <class name="AdvanceMeasurement" table="ADVANCE_MEASUREMENT">
-    <id name="id" type="long">
+    <id name="id" type="long" access="property">
         <generator class="native"/>
     </id>
     <version name="version" access="property" type="long" />

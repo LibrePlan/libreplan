@@ -4,7 +4,7 @@
 
 <!-- WorkReportType -->
 <class name="WorkReportType" table="WORK_REPORT_TYPE">
-    <id name="id" type="long">
+    <id name="id" type="long" access="property">
         <generator class="native"/>
     </id>
     <version name="version" access="property" type="long" />
@@ -19,7 +19,7 @@
 
 <!-- WorkReport -->
 <class name="WorkReport" table="WORK_REPORT">
-    <id name="id" type="long">
+    <id name="id" type="long" access="property">
         <generator class="native"/>
     </id>
     <version name="version" access="property" type="long" />
@@ -38,7 +38,7 @@
 
 <!-- WorkReportLine -->
 <class name="WorkReportLine" table="WORK_REPORT_LINE">
-    <id name="id" type="long">
+    <id name="id" type="long" access="property">
         <generator class="native"/>
     </id>
     <version name="version" access="property" type="long" />

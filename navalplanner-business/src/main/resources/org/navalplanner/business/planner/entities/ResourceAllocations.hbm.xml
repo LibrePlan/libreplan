@@ -3,7 +3,7 @@
 <hibernate-mapping package="org.navalplanner.business.planner.entities"
     default-access="field">
     <class name="ResourceAllocation">
-        <id name="id" column="id" type="long">
+        <id name="id" column="id" type="long" access="property">
             <generator class="native" />
         </id>
         <version name="version" access="property" type="long" />

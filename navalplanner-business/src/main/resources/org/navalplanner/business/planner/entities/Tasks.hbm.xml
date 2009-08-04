@@ -3,7 +3,7 @@
 <hibernate-mapping package="org.navalplanner.business.planner.entities"
     default-access="field">
     <class name="TaskElement">
-        <id name="id" column="id" type="long">
+        <id name="id" column="id" type="long" access="property">
             <generator class="native" />
         </id>
         <version name="version" access="property" type="long" />
@@ -48,7 +48,7 @@
         </joined-subclass>
     </class>
     <class name="Dependency">
-        <id name="id">
+        <id name="id" type="long" access="property">
             <generator class="native"></generator>
         </id>
         <version name="version" access="property" type="long" />

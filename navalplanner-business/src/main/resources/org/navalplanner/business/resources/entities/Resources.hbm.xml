@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping default-access="field" package="org.navalplanner.business.resources.entities">
   <class name="Resource">
-    <id access="field" name="id">
+    <id name="id" access="property" type="long">
       <generator class="native"/>
     </id>
     <!--
@@ -25,7 +25,7 @@
 
   <!-- Criterion -->
   <class name="Criterion">
-    <id access="field" name="id">
+    <id name="id" access="property" type="long">
       <generator class="native"/>
     </id>
     <version name="version" access="property" type="long" />
@@ -36,7 +36,7 @@
 
   <!-- CriterionSatisfaction -->
   <class name="CriterionSatisfaction">
-    <id access="field" name="id">
+    <id name="id" access="property" type="long">
       <generator class="native"/>
     </id>
     <version name="version" access="property" type="long" />
@@ -48,7 +48,7 @@
 
   <!-- CriterionType -->
   <class name="CriterionType">
-    <id name="id">
+    <id name="id" access="property" type="long">
       <generator class="native"/>
     </id>
     <version name="version" access="property" type="long" />
