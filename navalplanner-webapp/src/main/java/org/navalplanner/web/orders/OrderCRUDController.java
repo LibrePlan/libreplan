@@ -76,11 +76,20 @@ public class OrderCRUDController extends GenericForwardComposer {
 
                 @Override
                 public Component createLabelFor(InvalidValue invalidValue) {
-                    Label result= new Label();
-                    String orderElementName = ((OrderElement)invalidValue.getBean()).getName();
-                    result.setValue(orderElementName+" "+invalidValue.getPropertyName() + ": "
-                    + invalidValue.getMessage());
-                    return result;
+                    if (invalidValue.getBean() instanceof OrderElement) {
+                        Label result = new Label();
+
+                        String orderElementName = ((OrderElement) invalidValue
+                                        .getBean()).getName();
+
+                        result.setValue(orderElementName + " "
+                                        + invalidValue.getPropertyName() + ": "
+                                        + invalidValue.getMessage());
+                        return result;
+                    } else {
+                        return MessagesForUser
+                                        .createLabelFor(invalidValue);
+                    }
                 }
             });
         }

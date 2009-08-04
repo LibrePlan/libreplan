@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -103,7 +102,7 @@ public class MessagesForUser extends GenericForwardComposer implements
         addMessage(createLabelFor(invalidValue));
     }
 
-    private Component createLabelFor(InvalidValue invalidValue){
+    public static Label createLabelFor(InvalidValue invalidValue) {
         Label result = new Label();
         result.setValue(invalidValue.getPropertyName() + ": "
                 + invalidValue.getMessage());
