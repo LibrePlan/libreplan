@@ -7,19 +7,13 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
-import org.navalplanner.business.resources.services.ICriterionTypeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.navalplanner.business.common.BaseEntity;
 
 /**
  * A criterion stored in the database <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Criterion implements ICriterion {
-
-    private Long id;
-
-    @SuppressWarnings("unused")
-    private long version;
+public class Criterion extends BaseEntity implements ICriterion {
 
     @NotEmpty
     private String name;
@@ -55,10 +49,6 @@ public class Criterion implements ICriterion {
 
         this.name = name;
         this.type = type;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     @Override

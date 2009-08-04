@@ -9,7 +9,7 @@
             IMPORTANT: type="long" must be specified (otherwise,
             Hibernate infers type="integer".
         -->
-    <version access="field" name="version" type="long"/>
+    <version name="version" access="property" type="long" />
     <set access="field" cascade="all-delete-orphan" inverse="true" name="criterionSatisfactions">
       <key column="resource" not-null="true"/>
       <one-to-many class="CriterionSatisfaction"/>
@@ -28,7 +28,7 @@
     <id access="field" name="id">
       <generator class="native"/>
     </id>
-    <version access="field" name="version" type="long"/>
+    <version name="version" access="property" type="long" />
     <property access="field" name="name"/>
     <property access="field" name="active"/>
     <many-to-one access="field" name="type" column="id_criterion_type" not-null="true" />
@@ -39,7 +39,7 @@
     <id access="field" name="id">
       <generator class="native"/>
     </id>
-    <version access="field" name="version" type="long"/>
+    <version name="version" access="property" type="long" />
     <property access="field" name="startDate" not-null="true"/>
     <property access="field" name="finishDate"/>
     <many-to-one access="field" name="criterion" not-null="true"/>
@@ -51,7 +51,7 @@
     <id name="id">
       <generator class="native"/>
     </id>
-    <version name="version" type="long"/>
+    <version name="version" access="property" type="long" />
     <property name="name" unique="true"/>
     <property name="allowSimultaneousCriterionsPerResource"/>
     <property name="allowHierarchy"/>

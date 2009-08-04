@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -12,12 +13,7 @@ import org.navalplanner.business.resources.entities.Resource;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class WorkReportLine {
-
-    private Long id;
-
-    @SuppressWarnings("unused")
-    private long version;
+public class WorkReportLine extends BaseEntity {
 
     Integer numHours;
 
@@ -45,14 +41,6 @@ public class WorkReportLine {
         this.resource = resource;
         this.orderElement = orderElement;
         this.criterions = criterions;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public long getVersion() {
-        return version;
     }
 
     public Integer getNumHours() {

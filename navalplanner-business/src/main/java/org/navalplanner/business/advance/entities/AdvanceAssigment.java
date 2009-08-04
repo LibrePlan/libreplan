@@ -3,14 +3,10 @@ package org.navalplanner.business.advance.entities;
 import java.math.BigDecimal;
 import java.util.Set;
 
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.workreports.entities.WorkReportLine;
 
-public class AdvanceAssigment{
-    private Long id;
-
-    @SuppressWarnings("unused")
-    private long version;
+public class AdvanceAssigment extends BaseEntity {
 
     private boolean reportGlobalAdvance;
 
@@ -26,14 +22,6 @@ public class AdvanceAssigment{
         this.reportGlobalAdvance = reportGlobalAdvance;
         this.maxValue = maxValue;
         this.maxValue.setScale(2);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public long getVersion() {
-        return version;
     }
 
     public void setMaxValue(BigDecimal maxValue) {

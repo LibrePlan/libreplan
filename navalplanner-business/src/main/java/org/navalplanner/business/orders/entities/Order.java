@@ -6,22 +6,19 @@ import java.util.List;
 
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
-import org.navalplanner.business.planner.entities.TaskElement;
 import org.hibernate.validator.Valid;
+import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.entities.TaskElement;
 
 /**
  * It represents an {@link Order} with its related information. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Order implements IOrderLineGroup {
+public class Order extends BaseEntity implements IOrderLineGroup {
 
     private static Date copy(Date date) {
         return date != null ? new Date(date.getTime()) : date;
     }
-
-    private Long id;
-
-    private Long version;
 
     @NotEmpty
     private String name;
@@ -41,15 +38,6 @@ public class Order implements IOrderLineGroup {
 
     @Valid
     private List<OrderElement> orderElements = new ArrayList<OrderElement>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
 
     public String getName() {
         return name;

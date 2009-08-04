@@ -6,16 +6,12 @@ import java.util.Set;
 
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.common.BaseEntity;
 
 /**
  * @author Diego Pino García <dpino@igalia.com>
  */
-public class WorkReport {
-
-    private Long id;
-
-    @SuppressWarnings("unused")
-    private long version;
+public class WorkReport extends BaseEntity {
 
     @NotNull
     Date date;
@@ -43,14 +39,6 @@ public class WorkReport {
         this.place = place;
         this.workReportType = workReportType;
         this.workReportLines = workReportLines;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public long getVersion() {
-        return version;
     }
 
     public Date getDate() {

@@ -5,12 +5,13 @@ import java.util.Date;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.navalplanner.business.common.BaseEntity;
 
 /**
  * Declares a interval of time in which the criterion is satisfied <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class CriterionSatisfaction {
+public class CriterionSatisfaction extends BaseEntity {
 
     public static final Comparator<CriterionSatisfaction> BY_START_COMPARATOR;
 
@@ -24,11 +25,6 @@ public class CriterionSatisfaction {
             }
         };
     }
-
-    private Long id;
-
-    @SuppressWarnings("unused")
-    private long version;
 
     public CriterionSatisfaction() {
 
@@ -50,10 +46,6 @@ public class CriterionSatisfaction {
         if (interval.getEnd() != null) {
             this.finish(interval.getEnd());
         }
-    }
-
-    public Long getId() {
-        return id;
     }
 
     private Date startDate;

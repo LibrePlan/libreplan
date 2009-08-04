@@ -6,7 +6,7 @@
         <id name="id" column="id" type="long">
             <generator class="native" />
         </id>
-        <version name="version" type="long"></version>
+        <version name="version" access="property" type="long" />
         <property name="shareOfHours"></property>
         <property name="name" />
         <property name="notes"/>
@@ -51,7 +51,7 @@
         <id name="id">
             <generator class="native"></generator>
         </id>
-        <version name="version" type="long"></version>
+        <version name="version" access="property" type="long" />
         <many-to-one class="TaskElement" name="origin"
             column="ORIGIN" />
         <many-to-one class="TaskElement" name="destination"

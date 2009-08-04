@@ -9,17 +9,14 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public abstract class TaskElement {
-
-    private Long id;
-
-    private Long version;
+public abstract class TaskElement extends BaseEntity {
 
     private Date startDate;
 
@@ -136,14 +133,6 @@ public abstract class TaskElement {
         if (this.equals(dependency.getDestination())) {
             dependenciesWithThisDestination.add(dependency);
         }
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     private void removeDependenciesWithThisOrigin(TaskElement origin, Type type) {

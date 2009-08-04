@@ -7,7 +7,7 @@
     <id name="id" type="long">
         <generator class="native"/>
     </id>
-    <version name="version" type="long"/>
+    <version name="version" access="property" type="long" />
 
     <property name="unitName" access="field"/>
     <property name="defaultMaxValue" access="field" scale="4"/>
@@ -21,7 +21,7 @@
     <id name="id" type="long">
         <generator class="native"/>
     </id>
-    <version name="version" type="long"/>
+    <version name="version" access="property" type="long" />
 
     <property name="maxValue" />
     <property name="reportGlobalAdvance"/>
@@ -41,7 +41,7 @@
     <id name="id" type="long">
         <generator class="native"/>
     </id>
-    <version name="version" type="long"/>
+    <version name="version" access="property" type="long" />
 
     <property name="date"/>
     <property name="value" scale="2"/>

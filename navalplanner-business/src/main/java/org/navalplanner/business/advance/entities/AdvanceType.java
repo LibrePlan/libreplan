@@ -4,17 +4,14 @@ import java.math.BigDecimal;
 
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-public class AdvanceType {
-    private Long id;
-
-    @SuppressWarnings("unused")
-    private long version;
+public class AdvanceType extends BaseEntity {
 
     @NotEmpty
     private String unitName;
@@ -45,14 +42,6 @@ public class AdvanceType {
         this.precision = precision;
         this.precision.setScale(4, BigDecimal.ROUND_HALF_UP);
         this.active = active;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public long getVersion() {
-        return version;
     }
 
     public void setUnitName(String unitName) {

@@ -5,7 +5,7 @@
         <id access="field" type="long" name="id">
             <generator class="native" />
         </id>
-        <version name="version" access="field" type="long"/>
+        <version name="version" access="property" type="long" />
         <property name="initDate" access="field"></property>
         <property name="endDate" access="field"></property>
         <property name="name" access="field"></property>

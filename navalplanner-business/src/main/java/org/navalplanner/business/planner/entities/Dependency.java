@@ -1,11 +1,12 @@
 package org.navalplanner.business.planner.entities;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.BaseEntity;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Dependency {
+public class Dependency extends BaseEntity {
 
     public enum Type {
         END_START, START_START, END_END, START_END;
@@ -18,10 +19,6 @@ public class Dependency {
         destination.add(dependency);
         return dependency;
     }
-
-    private Long id;
-
-    private Long version;
 
     private TaskElement origin;
 
@@ -58,11 +55,4 @@ public class Dependency {
         return type;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
 }

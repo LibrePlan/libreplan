@@ -7,7 +7,7 @@
     <id name="id" type="long">
         <generator class="native"/>
     </id>
-    <version name="version" type="long"/>
+    <version name="version" access="property" type="long" />
 
     <property name="name"/>
 
@@ -22,7 +22,7 @@
     <id name="id" type="long">
         <generator class="native"/>
     </id>
-    <version name="version" type="long"/>
+    <version name="version" access="property" type="long" />
 
     <property name="date"/>
     <property name="place"/>
@@ -41,7 +41,7 @@
     <id name="id" type="long">
         <generator class="native"/>
     </id>
-    <version name="version" type="long"/>
+    <version name="version" access="property" type="long" />
 
     <property name="numHours"/>
 

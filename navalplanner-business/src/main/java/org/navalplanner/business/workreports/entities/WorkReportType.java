@@ -2,17 +2,14 @@ package org.navalplanner.business.workreports.entities;
 
 import java.util.Set;
 
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.CriterionType;
 
 /**
  * @author Diego Pino García <dpino@igalia.com>
  */
 
-public class WorkReportType {
-    private Long id;
-
-    @SuppressWarnings("unused")
-    private long version;
+public class WorkReportType extends BaseEntity {
 
     String name;
 
@@ -25,14 +22,6 @@ public class WorkReportType {
     public WorkReportType(String name, Set<CriterionType> criterionTypes) {
         this.name = name;
         this.criterionTypes = criterionTypes;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public long getVersion() {
-        return version;
     }
 
     public String getName() {

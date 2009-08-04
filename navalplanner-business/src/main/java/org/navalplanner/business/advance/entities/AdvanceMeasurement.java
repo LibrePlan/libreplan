@@ -3,11 +3,9 @@ package org.navalplanner.business.advance.entities;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class AdvanceMeasurement {
-    private Long id;
+import org.navalplanner.business.common.BaseEntity;
 
-    @SuppressWarnings("unused")
-    private long version;
+public class AdvanceMeasurement extends BaseEntity {
 
     private Date date;
 
@@ -19,14 +17,6 @@ public class AdvanceMeasurement {
         this.date = date;
         this.value = value;
         this.value.setScale(2);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public long getVersion() {
-        return version;
     }
 
     public void setDate(Date date) {

@@ -13,6 +13,7 @@ import java.util.ListIterator;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ResourcesDAORegistry;
 
@@ -29,11 +30,7 @@ import org.navalplanner.business.resources.daos.ResourcesDAORegistry;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public abstract class Resource {
-
-    private Long id;
-
-    private long version;
+public abstract class Resource extends BaseEntity {
 
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
 
@@ -173,10 +170,6 @@ public abstract class Resource {
         return new Query();
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public void forceLoadSatisfactions() {
         for (CriterionSatisfaction criterionSatisfaction : criterionSatisfactions) {
             criterionSatisfaction.getCriterion().getName();
@@ -185,10 +178,6 @@ public abstract class Resource {
     }
 
     public abstract int getDailyCapacity();
-
-    public long getVersion() {
-        return version;
-    }
 
     /**
      * It removes the resource from the database and updates references. The
