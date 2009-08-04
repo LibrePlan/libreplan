@@ -10,7 +10,7 @@ public class OrderLine extends OrderElement {
 
     public static OrderLine createOrderLineWithUnfixedPercentage(int hours) {
         OrderLine result = new OrderLine();
-        HoursGroup hoursGroup = new HoursGroup();
+        HoursGroup hoursGroup = HoursGroup.create(result);
         result.addHoursGroup(hoursGroup);
         hoursGroup.setFixedPercentage(false);
         hoursGroup.setPercentage(new BigDecimal(1));
