@@ -26,4 +26,10 @@ public class AdvanceTypeDAO extends GenericDAOHibernate<AdvanceType, Long>
             throw convertHibernateAccessException(e);
         }
     }
+
+    @Override
+    public AdvanceType findByName(String name) {
+        return (AdvanceType) getSession().createCriteria(AdvanceType.class)
+                .add(Restrictions.eq("unitName", name)).uniqueResult();
+    }
 }

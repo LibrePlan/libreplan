@@ -2,6 +2,7 @@ package org.navalplanner.business.advance.bootstrap;
 
 import java.math.BigDecimal;
 
+import org.navalplanner.business.advance.daos.AdvanceDAORegistry;
 import org.navalplanner.business.advance.entities.AdvanceType;
 
 public enum PredefinedAdvancedTypes {
@@ -28,6 +29,10 @@ public enum PredefinedAdvancedTypes {
 
     public String getTypeName() {
         return name;
+    }
+
+    public AdvanceType getType() {
+        return AdvanceDAORegistry.getAdvanceTypeDao().findByName(name);
     }
 
 }

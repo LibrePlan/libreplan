@@ -10,4 +10,6 @@ import org.navalplanner.business.common.daos.IGenericDAO;
 
 public interface IAdvanceTypeDAO extends IGenericDAO<AdvanceType, Long>{
     public boolean existsNameAdvanceType(String unitName);
+
+    public AdvanceType findByName(String name);
 }
