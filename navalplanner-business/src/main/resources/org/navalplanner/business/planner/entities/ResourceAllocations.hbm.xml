@@ -6,7 +6,7 @@
         <id name="id" column="id" type="long">
             <generator class="native" />
         </id>
-        <version name="version" type="long" />
+        <version name="version" access="property" type="long" />
 
         <property name="percentage" />
 

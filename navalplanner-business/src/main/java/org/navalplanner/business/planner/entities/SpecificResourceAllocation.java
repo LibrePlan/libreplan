@@ -10,6 +10,12 @@ import org.navalplanner.business.resources.entities.Worker;
  */
 public class SpecificResourceAllocation extends ResourceAllocation {
 
+    public static SpecificResourceAllocation create(Task task) {
+        SpecificResourceAllocation result = new SpecificResourceAllocation(task);
+        result.setNewObject(true);
+        return result;
+    }
+
     @NotNull
     private Worker worker;
 
@@ -19,7 +25,7 @@ public class SpecificResourceAllocation extends ResourceAllocation {
     public SpecificResourceAllocation() {
     }
 
-    public SpecificResourceAllocation(Task task) {
+    private SpecificResourceAllocation(Task task) {
         super(task);
     }
 

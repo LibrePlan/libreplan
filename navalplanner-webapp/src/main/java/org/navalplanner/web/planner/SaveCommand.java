@@ -1,5 +1,6 @@
 package org.navalplanner.web.planner;
 
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.services.ITaskElementService;
@@ -39,6 +40,10 @@ public class SaveCommand implements ISaveCommand {
                     throw new RuntimeException("The Task '"
                             + taskElement.getName()
                             + "' has some repeated Worker assigned");
+                }
+                for (ResourceAllocation resourceAllocation : ((Task) taskElement)
+                        .getResourceAllocations()) {
+                    resourceAllocation.dontPoseAsTransientObjectAnymore();
                 }
             }
         }

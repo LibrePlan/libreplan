@@ -51,8 +51,7 @@ public class TaskTest {
     public void taskAddResourceAllocation() {
         assertThat(task.getResourceAllocations().size(), equalTo(0));
 
-        SpecificResourceAllocation resourceAllocation = new SpecificResourceAllocation(
-                task);
+        SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
         task.addResourceAllocation(resourceAllocation);
 
         assertThat(task.getResourceAllocations().size(), equalTo(1));
@@ -65,8 +64,7 @@ public class TaskTest {
     public void taskRemoveResourceAllocation() {
         assertThat(task.getResourceAllocations().size(), equalTo(0));
 
-        SpecificResourceAllocation resourceAllocation = new SpecificResourceAllocation(
-                task);
+        SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
         task.addResourceAllocation(resourceAllocation);
 
         assertThat(task.getResourceAllocations().size(), equalTo(1));

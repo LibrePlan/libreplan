@@ -76,8 +76,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     public void addResourceAllocation() {
-        ResourceAllocation resourceAllocation = new SpecificResourceAllocation(
-                task);
+        ResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
         task.addResourceAllocation(resourceAllocation);
     }
 
@@ -121,8 +120,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public void setResourceAllocation(ResourceAllocation resourceAllocation) {
-        boolean wasTransient = resourceAllocation.isTransient();
-
         resourceAllocationDAO.save(resourceAllocation);
 
         Worker worker = ((SpecificResourceAllocation) resourceAllocation)
@@ -135,10 +132,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 criterionSatisfaction.getCriterion().getName();
                 criterionSatisfaction.getCriterion().getType().getName();
             }
-        }
-
-        if (wasTransient) {
-            resourceAllocation.makeTransientAgain();
         }
 
         this.resourceAllocation = resourceAllocation;
@@ -188,27 +181,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public void updateGanttTaskDuration() {
-
-        // A set of resourceAllocation objects of the task with the ones which
-        // are transiet is filled
-        Set<ResourceAllocation> transietResourceAllocations = new HashSet<ResourceAllocation>();
-
-        for (ResourceAllocation resourceAllocation : task
-                .getResourceAllocations()) {
-            if (resourceAllocation.isTransient()) {
-                transietResourceAllocations.add(resourceAllocation);
-            }
-        }
-
         taskElementDAO.save(task);
         task.getDuration();
         ganttTask.setEndDate(task.getEndDate());
-
-        // The set of resourceAllocation objects which are previously transiet
-        // are put to transiet again
-        for (ResourceAllocation resourceAllocation : transietResourceAllocations) {
-            resourceAllocation.makeTransientAgain();
-        }
     }
 
 }
