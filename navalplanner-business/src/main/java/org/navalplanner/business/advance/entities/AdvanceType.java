@@ -40,10 +40,10 @@ public class AdvanceType {
             boolean updatable, BigDecimal precision, boolean active) {
         this.unitName = unitName;
         this.defaultMaxValue = defaultMaxValue;
-        this.defaultMaxValue.setScale(2);
+        this.defaultMaxValue.setScale(2, BigDecimal.ROUND_HALF_UP);
         this.updatable = updatable;
         this.precision = precision;
-        this.precision.setScale(4);
+        this.precision.setScale(4, BigDecimal.ROUND_HALF_UP);
         this.active = active;
     }
 
@@ -65,7 +65,7 @@ public class AdvanceType {
 
     public void setDefaultMaxValue(BigDecimal defaultMaxValue) {
         this.defaultMaxValue = defaultMaxValue;
-        this.defaultMaxValue.setScale(2);
+        this.defaultMaxValue.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getDefaultMaxValue() {
@@ -82,7 +82,7 @@ public class AdvanceType {
 
     public void setPrecision(BigDecimal precision) {
         this.precision = precision;
-        this.precision.setScale(4);
+        this.precision.setScale(4, BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getPrecision() {

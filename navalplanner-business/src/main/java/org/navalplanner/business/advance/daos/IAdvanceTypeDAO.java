@@ -1,7 +1,7 @@
 package org.navalplanner.business.advance.daos;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.advance.entities.AdvanceType;
+import org.navalplanner.business.common.daos.IGenericDAO;
 
 /**
  * Contract for {@link AdvanceTypeDao}
@@ -9,4 +9,5 @@ import org.navalplanner.business.advance.entities.AdvanceType;
  */
 
 public interface IAdvanceTypeDAO extends IGenericDAO<AdvanceType, Long>{
+    public boolean existsNameAdvanceType(String unitName);
 }

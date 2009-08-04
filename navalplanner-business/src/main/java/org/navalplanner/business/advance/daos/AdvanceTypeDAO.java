@@ -1,7 +1,9 @@
 package org.navalplanner.business.advance.daos;
 
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.hibernate.HibernateException;
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.advance.entities.AdvanceType;
+import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -12,5 +14,16 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class AdvanceTypeDAO extends GenericDAOHibernate<AdvanceType, Long> implements IAdvanceTypeDAO{
+public class AdvanceTypeDAO extends GenericDAOHibernate<AdvanceType, Long>
+        implements IAdvanceTypeDAO {
+    public boolean existsNameAdvanceType(String unitName) {
+        try {
+
+            return getSession().createCriteria(AdvanceType.class).add(
+                    Restrictions.eq("unitName", unitName)).uniqueResult() != null;
+
+        } catch (HibernateException e) {
+            throw convertHibernateAccessException(e);
+        }
+    }
 }
