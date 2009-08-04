@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import org.navalplanner.business.advance.entities.AdvanceType;
 
 public enum PredefinedAdvancedTypes {
-    PERCENTAGE("porcentaxe", new BigDecimal(100), new BigDecimal(0.01)), UNITS(
-            "unidades", new BigDecimal(Integer.MAX_VALUE), new BigDecimal(1));
+    PERCENTAGE("percentage", new BigDecimal(100), new BigDecimal(0.01)), UNITS(
+            "units", new BigDecimal(Integer.MAX_VALUE), new BigDecimal(1));
 
     private PredefinedAdvancedTypes(String name, BigDecimal defaultMaxValue,
             BigDecimal precision) {
