@@ -5,13 +5,12 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 
 import java.math.BigDecimal;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +24,7 @@ public class AdvanceTypeTest {
     @Autowired
     private IAdvanceTypeDAO dao;
 
-    @Autowired
-    private SessionFactory sessionFactory;
-
-    @Test(expected = ConstraintViolationException.class)
+    @Test(expected = DataIntegrityViolationException.class)
     public void typeNameMustBeUniqueInDB() {
         String repeatedName = "bla";
         AdvanceType advanceType = new AdvanceType(repeatedName, new BigDecimal(
@@ -37,6 +33,6 @@ public class AdvanceTypeTest {
                 false, new BigDecimal(2), true);
         dao.save(advanceType);
         dao.save(other);
-        sessionFactory.getCurrentSession().flush();
+        dao.flush();
     }
 }
