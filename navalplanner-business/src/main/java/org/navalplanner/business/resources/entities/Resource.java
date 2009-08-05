@@ -170,13 +170,6 @@ public abstract class Resource extends BaseEntity {
         return new Query();
     }
 
-    public void forceLoadSatisfactions() {
-        for (CriterionSatisfaction criterionSatisfaction : criterionSatisfactions) {
-            criterionSatisfaction.getCriterion().getName();
-            criterionSatisfaction.getCriterion().getType().getName();
-        }
-    }
-
     public abstract int getDailyCapacity();
 
     /**

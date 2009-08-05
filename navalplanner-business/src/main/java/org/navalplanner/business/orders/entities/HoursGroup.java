@@ -141,10 +141,6 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         }
     }
 
-    public void forceLoadCriterions() {
-        criterions.size();
-    }
-
     public void setParentOrderLine(OrderLine parentOrderLine) {
         this.parentOrderLine = parentOrderLine;
     }

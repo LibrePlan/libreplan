@@ -264,7 +264,7 @@ public class CriterionServiceTest {
                         try {
                             Resource result = resourceService
                                     .findResource(worker1.getId());
-                            result.forceLoadSatisfactions();
+                            forceLoadSatisfactions(result);
                             return result;
                         } catch (InstanceNotFoundException e) {
                             throw new RuntimeException(e);
@@ -278,6 +278,14 @@ public class CriterionServiceTest {
         Assume.assumeTrue(!reloadedCriterion.getClass().equals(
                 criterion.getClass()));
         assertTrue(reloadedCriterion.isEquivalent(criterion));
+    }
+
+    private void forceLoadSatisfactions(Resource resource) {
+        for (CriterionSatisfaction criterionSatisfaction : resource
+                .getAllSatisfactions()) {
+            criterionSatisfaction.getCriterion().getName();
+            criterionSatisfaction.getCriterion().getType().getName();
+        }
     }
 
     @Test

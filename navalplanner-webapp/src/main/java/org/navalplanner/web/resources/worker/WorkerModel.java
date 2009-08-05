@@ -100,12 +100,20 @@ public class WorkerModel implements IWorkerModel {
         Validate.notNull(worker, "worker must be not null");
         try {
             this.worker = (Worker) resourceService.findResource(worker.getId());
-            this.worker.forceLoadSatisfactions();
+            forceLoadSatisfactions(this.worker);
             localizationsAssigner = new MultipleCriterionActiveAssigner(
                     criterionService, this.worker,
                     PredefinedCriterionTypes.LOCATION_GROUP);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static void forceLoadSatisfactions(Resource resource) {
+        for (CriterionSatisfaction criterionSatisfaction : resource
+                .getAllSatisfactions()) {
+            criterionSatisfaction.getCriterion().getName();
+            criterionSatisfaction.getCriterion().getType().getName();
         }
     }
 
@@ -243,7 +251,7 @@ public class WorkerModel implements IWorkerModel {
             this.criterionService = criterionService;
             this.resource = resource;
             this.type = type;
-            this.resource.forceLoadSatisfactions();
+            forceLoadSatisfactions(this.resource);
             this.history = calculateInitialHistory();
             this.initialCriterionsNotAssigned = calculateInitialCriterionsNotAssigned();
             for (Criterion criterion : initialCriterionsNotAssigned) {
