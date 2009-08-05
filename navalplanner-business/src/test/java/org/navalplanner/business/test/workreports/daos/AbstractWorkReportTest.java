@@ -5,15 +5,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.navalplanner.business.orders.daos.OrderElementDAO;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
-import org.navalplanner.business.resources.daos.CriterionTypeDAO;
-import org.navalplanner.business.resources.daos.ResourceDAO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.workreports.daos.WorkReportTypeDAO;
+import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
@@ -22,16 +22,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractWorkReportTest {
 
     @Autowired
-    CriterionTypeDAO criterionTypeDAO;
+    ICriterionTypeDAO criterionTypeDAO;
 
     @Autowired
-    WorkReportTypeDAO workReportTypeDAO;
+    IWorkReportTypeDAO workReportTypeDAO;
 
     @Autowired
-    ResourceDAO resourceDAO;
+    IResourceDAO resourceDAO;
 
     @Autowired
-    OrderElementDAO orderElementDAO;
+    IOrderElementDAO orderElementDAO;
 
     // Create a Set of CriterionType
     public Set<CriterionType> createValidCriterionTypes() {
