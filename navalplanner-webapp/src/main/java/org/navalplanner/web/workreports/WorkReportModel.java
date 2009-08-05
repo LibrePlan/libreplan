@@ -15,7 +15,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.workreports.daos.WorkReportDAO;
+import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
@@ -43,7 +43,7 @@ public class WorkReportModel implements IWorkReportModel {
             WorkReportLine.class);
 
     @Autowired
-    private WorkReportDAO workReportDAO;
+    private IWorkReportDAO workReportDAO;
 
     @Autowired
     private OrderElementDAO orderElementDAO;

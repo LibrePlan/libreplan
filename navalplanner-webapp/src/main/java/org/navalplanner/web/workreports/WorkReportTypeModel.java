@@ -11,7 +11,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.services.ICriterionTypeService;
-import org.navalplanner.business.workreports.daos.WorkReportTypeDAO;
+import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -37,7 +37,7 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
             WorkReportType.class);
 
     @Autowired
-    private WorkReportTypeDAO workReportTypeDAO;
+    private IWorkReportTypeDAO workReportTypeDAO;
 
     private boolean editing = false;
 

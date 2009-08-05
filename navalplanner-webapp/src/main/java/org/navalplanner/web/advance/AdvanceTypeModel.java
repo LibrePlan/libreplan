@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
-import org.navalplanner.business.advance.daos.AdvanceTypeDAO;
+import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -31,7 +31,7 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
             AdvanceType.class);
 
     @Autowired
-    private AdvanceTypeDAO advanceTypeDAO;
+    private IAdvanceTypeDAO advanceTypeDAO;
 
     @Override
     public AdvanceType getAdvanceType() {
