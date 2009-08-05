@@ -16,6 +16,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.services.IOrderService;
 import org.navalplanner.business.planner.services.ITaskElementService;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.services.ICriterionService;
@@ -59,6 +60,9 @@ public class OrderModel implements IOrderModel {
     private final ITaskElementService taskElementService;
 
     @Autowired
+    private ICriterionDAO criterionDAO;
+
+    @Autowired
     public OrderModel(IOrderService orderService,
             ITaskElementService taskElementService) {
         Validate.notNull(orderService);
@@ -89,7 +93,6 @@ public class OrderModel implements IOrderModel {
     public void prepareEditFor(Order order) {
         Validate.notNull(order);
         loadCriterions();
-
         this.order = getFromDB(order);
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
     }
@@ -114,11 +117,20 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional
     public void save() throws ValidationException {
+        reattachCriterions();
         InvalidValue[] invalidValues = orderValidator.getInvalidValues(order);
         if (invalidValues.length > 0)
             throw new ValidationException(invalidValues);
 
         this.orderService.save(order);
+    }
+
+    private void reattachCriterions() {
+        for (List<Criterion> list : mapCriterions.values()) {
+            for (Criterion criterion : list) {
+                criterionDAO.reattachUnmodifiedEntity(criterion);
+            }
+        }
     }
 
     @Override
@@ -146,7 +158,9 @@ public class OrderModel implements IOrderModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public IOrderElementModel getOrderElementModel(OrderElement orderElement) {
+        reattachCriterions();
         orderElementModel.setCurrent(orderElement, this);
         return orderElementModel;
     }
