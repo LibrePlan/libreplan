@@ -12,6 +12,9 @@
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"
         p:jndiName="${dataSource.jndiName}" p:resourceRef="true" />
 
+   <!-- Letting Spring do automatically exception translation -->
+   <bean  class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+
     <!-- Hibernate Session Factory. -->
     <bean id="sessionFactory"
     class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"

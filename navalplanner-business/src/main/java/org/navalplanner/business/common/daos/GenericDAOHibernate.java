@@ -6,7 +6,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,8 +14,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
 
 /**
  * An implementation of <code>IGenericDao</code> based on Hibernate's native
@@ -59,40 +56,19 @@ public class GenericDAOHibernate<E, PK extends Serializable> implements
         return sessionFactory.getCurrentSession();
     }
 
-    protected DataAccessException convertHibernateAccessException(
-            HibernateException e) {
-
-        return SessionFactoryUtils.convertHibernateAccessException(e);
-
-    }
-
     public void save(E entity) {
-
-        try {
-            getSession().saveOrUpdate(entity);
-        } catch (HibernateException e) {
-            throw convertHibernateAccessException(e);
-        }
-
+        getSession().saveOrUpdate(entity);
     }
 
     public void reattachUnmodifiedEntity(E entity) {
 
-        try {
-            getSession().lock(entity, LockMode.NONE);
-        } catch (HibernateException e) {
-            throw convertHibernateAccessException(e);
-        }
+        getSession().lock(entity, LockMode.NONE);
 
     }
 
     public E merge(E entity) {
 
-        try {
-            return entityClass.cast(getSession().merge(entity));
-        } catch (HibernateException e) {
-            throw convertHibernateAccessException(e);
-        }
+        return entityClass.cast(getSession().merge(entity));
 
     }
 
@@ -123,55 +99,36 @@ public class GenericDAOHibernate<E, PK extends Serializable> implements
         }
 
         /* Check version. */
-        try {
+        Long versionValueInDB = (Long) getSession().createCriteria(entityClass)
+                .add(Restrictions.idEq(id)).setProjection(
+                        Projections.property("version")).uniqueResult();
 
-            Long versionValueInDB = (Long)
-                getSession().createCriteria(entityClass).
-                add(Restrictions.idEq(id)).
-                setProjection(Projections.property("version")).
-                uniqueResult();
+        if (versionValueInDB == null) {
+            return;
+        }
 
-            if (versionValueInDB == null) {
-                return;
-            }
-
-            if (!versionValueInMemory.equals(versionValueInDB)) {
-                throw new StaleObjectStateException(entityClass.getName(), id);
-            }
-
-        } catch (HibernateException e) {
-            throw convertHibernateAccessException(e);
+        if (!versionValueInMemory.equals(versionValueInDB)) {
+            throw new StaleObjectStateException(entityClass.getName(), id);
         }
 
     }
 
     public void lock(E entity) {
 
-        try {
-            getSession().lock(entity, LockMode.UPGRADE);
-        } catch (HibernateException e) {
-            throw convertHibernateAccessException(e);
-        }
+        getSession().lock(entity, LockMode.UPGRADE);
 
     }
 
     @SuppressWarnings("unchecked")
     public E find(PK id) throws InstanceNotFoundException {
 
-        try {
+        E entity = (E) getSession().get(entityClass, id);
 
-            E entity = (E) getSession().get(entityClass, id);
-
-            if (entity == null) {
-                throw new InstanceNotFoundException(id, entityClass.getName());
-            }
-
-            return entity;
-
-        } catch (HibernateException e) {
-            throw convertHibernateAccessException(e);
+        if (entity == null) {
+            throw new InstanceNotFoundException(id, entityClass.getName());
         }
 
+        return entity;
     }
 
     public E findExistingEntity(PK id) {
@@ -186,39 +143,25 @@ public class GenericDAOHibernate<E, PK extends Serializable> implements
 
     public boolean exists(final PK id) {
 
-        try {
-
-            return getSession().createCriteria(entityClass).
-                add(Restrictions.idEq(id)).
-                setProjection(Projections.id()).
-                uniqueResult() != null;
-
-        } catch (HibernateException e) {
-            throw convertHibernateAccessException(e);
-        }
+        return getSession().createCriteria(entityClass).add(
+                Restrictions.idEq(id)).setProjection(Projections.id())
+                .uniqueResult() != null;
 
     }
 
     public void remove(PK id) throws InstanceNotFoundException {
-
-        try {
-            getSession().delete(find(id));
-        } catch (HibernateException e) {
-            throw convertHibernateAccessException(e);
-        }
-
+        getSession().delete(find(id));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends E> List<T> list(Class<T> klass) {
+        return getSession().createCriteria(klass).list();
+    }
 
-        try {
-            return getSession().createCriteria(klass).list();
-        } catch (HibernateException e) {
-            throw convertHibernateAccessException(e);
-        }
-
+    @Override
+    public void flush() {
+        getSession().flush();
     }
 
 }

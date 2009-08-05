@@ -108,4 +108,6 @@ public interface IGenericDAO <E, PK extends Serializable>{
 
     public <T extends E> List<T> list(Class<T> klass);
 
+    public void flush();
+
 }
