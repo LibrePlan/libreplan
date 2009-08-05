@@ -20,7 +20,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class WorkerDAOHibernate extends GenericDAOHibernate<Worker, Long>
+public class WorkerDAO extends GenericDAOHibernate<Worker, Long>
     implements IWorkerDAO {
 
     @Override

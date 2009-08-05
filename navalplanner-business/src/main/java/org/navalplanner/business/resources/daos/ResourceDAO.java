@@ -14,5 +14,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class ResourceDAOHibernate extends GenericDAOHibernate<Resource, Long>
+public class ResourceDAO extends GenericDAOHibernate<Resource, Long>
     implements IResourceDAO {}

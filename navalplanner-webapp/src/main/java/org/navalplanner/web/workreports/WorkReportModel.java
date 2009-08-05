@@ -10,7 +10,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.OrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.resources.daos.WorkerDAOHibernate;
+import org.navalplanner.business.resources.daos.WorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
@@ -49,7 +49,7 @@ public class WorkReportModel implements IWorkReportModel {
     private OrderElementDAO orderElementDAO;
 
     @Autowired
-    private WorkerDAOHibernate workerDAO;
+    private WorkerDAO workerDAO;
 
     private boolean editing = false;
 

@@ -9,7 +9,7 @@ import org.navalplanner.business.orders.daos.OrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.daos.CriterionTypeDAO;
-import org.navalplanner.business.resources.daos.ResourceDAOHibernate;
+import org.navalplanner.business.resources.daos.ResourceDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -28,7 +28,7 @@ public abstract class AbstractWorkReportTest {
     WorkReportTypeDAO workReportTypeDAO;
 
     @Autowired
-    ResourceDAOHibernate resourceDAO;
+    ResourceDAO resourceDAO;
 
     @Autowired
     OrderElementDAO orderElementDAO;
