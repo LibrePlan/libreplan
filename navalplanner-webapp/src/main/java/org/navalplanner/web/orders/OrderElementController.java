@@ -233,6 +233,7 @@ public class OrderElementController extends GenericForwardComposer {
         window.getFellow("hoursGroupsListbox").invalidate();
 
         Util.reloadBindings(window);
+        generateListhead();
 
         try {
             window.doModal();
@@ -341,6 +342,7 @@ public class OrderElementController extends GenericForwardComposer {
             Set<CriterionType> selectedCriterionTypes) {
         this.selectedCriterionTypes = selectedCriterionTypes;
         Util.reloadBindings(window);
+        generateListhead();
     }
 
     /**
@@ -398,8 +400,6 @@ public class OrderElementController extends GenericForwardComposer {
             hoursGroup.getCriterions();
 
             item.setValue(hoursGroup);
-
-            generateListhead(((Listbox) item.getParent()).getListheadApi());
 
             Listcell cellWorkingHours = new Listcell();
             cellWorkingHours.setParent(item);
@@ -635,39 +635,6 @@ public class OrderElementController extends GenericForwardComposer {
         }
 
         /**
-         * Generates the {@link Listhead} depending on the {@link CriterionType}
-         * selected.
-         *
-         * @param listhead
-         *            A {@link Listhead} to be updated
-         */
-        private void generateListhead(Listhead listhead) {
-            // Remove the current header
-            listhead.getChildren().clear();
-
-            // Generate basi headers
-            Listheader hours = new Listheader("Hours");
-            listhead.appendChild(hours);
-            Listheader percentage = new Listheader("%");
-            listhead.appendChild(percentage);
-
-            // If it's a leaf add Fixed percentage column
-            if (getOrderElement() instanceof OrderLine) {
-                Listheader headerFixedPercentage = new Listheader(
-                        "Fixed percentage");
-                listhead.appendChild(headerFixedPercentage);
-            }
-
-            // For each CriterionType selected
-            for (CriterionType criterionType : getSelectedCriterionTypes()) {
-                // Add a new column on the HoursGroup table
-                Listheader headerCriterion = new Listheader();
-                headerCriterion.setLabel(criterionType.getName());
-                listhead.appendChild(headerCriterion);
-            }
-        }
-
-        /**
          * Disable workingHours and percentage components depending on the
          * policy selected by the user.
          *
@@ -692,6 +659,38 @@ public class OrderElementController extends GenericForwardComposer {
                 // Percentage not editable
                 percentage.setDisabled(true);
             }
+        }
+    }
+
+    /**
+     * Generates the {@link Listhead} of the {@link HoursGroup} {@link Listbox}
+     * depending on the {@link CriterionType} selected.
+     */
+    private void generateListhead() {
+        Listhead listhead = hoursGroupsListbox.getListheadApi();
+
+        // Remove the current header
+        listhead.getChildren().clear();
+
+        // Generate basi headers
+        Listheader hours = new Listheader("Hours");
+        listhead.appendChild(hours);
+        Listheader percentage = new Listheader("%");
+        listhead.appendChild(percentage);
+
+        // If it's a leaf add Fixed percentage column
+        if (getOrderElement() instanceof OrderLine) {
+            Listheader headerFixedPercentage = new Listheader(
+                    "Fixed percentage");
+            listhead.appendChild(headerFixedPercentage);
+        }
+
+        // For each CriterionType selected
+        for (CriterionType criterionType : getSelectedCriterionTypes()) {
+            // Add a new column on the HoursGroup table
+            Listheader headerCriterion = new Listheader();
+            headerCriterion.setLabel(criterionType.getName());
+            listhead.appendChild(headerCriterion);
         }
     }
 
