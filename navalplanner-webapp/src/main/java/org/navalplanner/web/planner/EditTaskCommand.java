@@ -1,6 +1,6 @@
 package org.navalplanner.web.planner;
 
-import org.navalplanner.business.planner.daos.TaskElementDAO;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 public class EditTaskCommand implements IEditTaskCommand {
 
     @Autowired
-    private TaskElementDAO taskElementDAO;
+    private ITaskElementDAO taskElementDAO;
 
     private EditTaskController editTaskController;
 
