@@ -53,10 +53,11 @@
                         <label id="addAsignedHours" value="@{asignedHoursToOrderElementController.totalAsignedHours}"/>
                     </hbox>
                 </vbox>
-                <hbox>
+                <hbox id = "Percentage">
                         <label value="@{asignedHoursToOrderElementController.progressWork}"/>
                         <label value="%       "/>
-                        <progressmeter value="@{asignedHoursToOrderElementController.progressWork}"/>
+                        <progressmeter id="HoursProgressBar"/>
+                        <progressmeter id="exceedHoursProgressBar"/>
                 </hbox>
             </row>
         </rows>
