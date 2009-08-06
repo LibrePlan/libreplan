@@ -23,7 +23,7 @@ public class AdvanceType extends BaseEntity {
     private boolean updatable;
 
     @NotNull
-    private BigDecimal precision;
+    private BigDecimal unitPrecision;
 
     @NotNull
     private boolean active;
@@ -34,13 +34,13 @@ public class AdvanceType extends BaseEntity {
     }
 
     public AdvanceType(String unitName, BigDecimal defaultMaxValue,
-            boolean updatable, BigDecimal precision, boolean active) {
+            boolean updatable, BigDecimal unitPrecision, boolean active) {
         this.unitName = unitName;
         this.defaultMaxValue = defaultMaxValue;
         this.defaultMaxValue.setScale(2, BigDecimal.ROUND_HALF_UP);
         this.updatable = updatable;
-        this.precision = precision;
-        this.precision.setScale(4, BigDecimal.ROUND_HALF_UP);
+        this.unitPrecision = unitPrecision;
+        this.unitPrecision.setScale(4, BigDecimal.ROUND_HALF_UP);
         this.active = active;
     }
 
@@ -69,13 +69,13 @@ public class AdvanceType extends BaseEntity {
         return this.updatable;
     }
 
-    public void setPrecision(BigDecimal precision) {
-        this.precision = precision;
-        this.precision.setScale(4, BigDecimal.ROUND_HALF_UP);
+    public void setUnitPrecision(BigDecimal precision) {
+        this.unitPrecision = precision;
+        this.unitPrecision.setScale(4, BigDecimal.ROUND_HALF_UP);
     }
 
-    public BigDecimal getPrecision() {
-        return this.precision;
+    public BigDecimal getUnitPrecision() {
+        return this.unitPrecision;
     }
 
     public void setActive(boolean active) {
@@ -105,9 +105,9 @@ public class AdvanceType extends BaseEntity {
     }
 
     public boolean isDefaultMaxValueValid(BigDecimal defaultMaxValue) {
-        if ((this.precision == null) || (defaultMaxValue == null))
+        if ((this.unitPrecision == null) || (defaultMaxValue == null))
             return true;
-        if (this.precision.compareTo(defaultMaxValue) > 0)
+        if (this.unitPrecision.compareTo(defaultMaxValue) > 0)
             return false;
         return true;
     }

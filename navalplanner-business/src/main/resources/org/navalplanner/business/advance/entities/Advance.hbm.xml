@@ -3,7 +3,7 @@
 <hibernate-mapping package="org.navalplanner.business.advance.entities" default-access="field">
 
 <!-- AdvanceType -->
-<class name="AdvanceType" table="ADVANCE_TYPE">
+<class name="AdvanceType" >
     <id name="id" type="long" access="property">
         <generator class="native"/>
     </id>
@@ -12,12 +12,12 @@
     <property name="unitName" access="field" unique="true"/>
     <property name="defaultMaxValue" access="field" scale="4"/>
     <property name="updatable" access="field"/>
-    <property name="precision" access="field" scale="4"/>
+    <property name="unitPrecision" access="field" scale="4"/>
     <property name="active" access="field"/>
 </class>
 
 <!-- AdvanceAssigment -->
-<class name="AdvanceAssigment" table="ADVANCE_ASSIGMENT">
+<class name="AdvanceAssigment">
     <id name="id" type="long" access="property">
         <generator class="native"/>
     </id>
@@ -37,7 +37,7 @@
 </class>
 
 <!-- AdvanceMeasurement -->
-<class name="AdvanceMeasurement" table="ADVANCE_MEASUREMENT">
+<class name="AdvanceMeasurement">
     <id name="id" type="long" access="property">
         <generator class="native"/>
     </id>

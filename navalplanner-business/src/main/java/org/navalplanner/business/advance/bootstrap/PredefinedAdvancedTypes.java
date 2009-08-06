@@ -14,17 +14,18 @@ public enum PredefinedAdvancedTypes {
         this.name = name;
         this.defaultMaxValue = defaultMaxValue.setScale(4,
                 BigDecimal.ROUND_HALF_UP);
-        this.precision = precision.setScale(4, BigDecimal.ROUND_HALF_UP);
+        this.unitPrecision = precision.setScale(4, BigDecimal.ROUND_HALF_UP);
     }
 
     private final String name;
 
     private final BigDecimal defaultMaxValue;
 
-    private final BigDecimal precision;
+    private final BigDecimal unitPrecision;
 
     public AdvanceType createType() {
-        return new AdvanceType(name, defaultMaxValue, false, precision, true);
+        return new AdvanceType(name, defaultMaxValue, false, unitPrecision,
+                true);
     }
 
     public String getTypeName() {
