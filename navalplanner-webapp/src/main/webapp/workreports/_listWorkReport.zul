@@ -15,7 +15,7 @@
                 <label value="@{workReport.place}" />
                 <label value="@{workReport.workReportType.name}" />
                 <hbox>
-                    <button label="Editar" />
+                    <button label="Editar" onClick="controller.goToEditForm(self.parent.parent.value);" />
                     <button label="Eliminar" />
                 </hbox>
             </row>

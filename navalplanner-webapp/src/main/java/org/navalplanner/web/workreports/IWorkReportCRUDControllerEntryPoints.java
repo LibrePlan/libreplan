@@ -9,6 +9,9 @@ import org.navalplanner.web.common.entrypoints.EntryPoints;
 public interface IWorkReportCRUDControllerEntryPoints {
 
     @EntryPoint("edit")
+    public abstract void goToEditForm(WorkReport workReport);
+
+    @EntryPoint("create")
     public abstract void goToCreateForm(WorkReportType workReportType);
 
     @EntryPoint("list")

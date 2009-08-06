@@ -31,13 +31,13 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     @Autowired
     private ICriterionTypeService criterionTypeService;
 
+    @Autowired
+    private IWorkReportTypeDAO workReportTypeDAO;
+
     private WorkReportType workReportType;
 
     private ClassValidator<WorkReportType> workReportTypeValidator = new ClassValidator<WorkReportType>(
             WorkReportType.class);
-
-    @Autowired
-    private IWorkReportTypeDAO workReportTypeDAO;
 
     private boolean editing = false;
 

@@ -8,6 +8,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.entities.WorkReport;
+import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 
 /**
@@ -94,4 +95,10 @@ public interface IWorkReportModel {
     String getDistinguishedCode(OrderElement orderElement)
             throws InstanceNotFoundException;
 
+    /**
+     * Add new {@link WorkReportLine} to {@link WorkReport}
+     *
+     * @return
+     */
+    WorkReportLine addWorkReportLine();
 }

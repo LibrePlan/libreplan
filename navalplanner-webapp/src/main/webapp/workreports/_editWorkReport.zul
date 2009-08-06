@@ -32,18 +32,7 @@
                 style="margin-top: -30px; margin-left: 2px" />
         </hbox>
 
-        <listbox id="workReportLines"
-            model="@{controller.workReportLines}"
-            itemRenderer="@{controller.renderer}" mold="paging"
-            pageSize="10">
-            <listhead sizable="true">
-                <listheader label="Recurso" />
-                <listheader label="Código" />
-                <listheader label="Horas" />
-                <!-- Extra CriterionType columns are loaded loaded dynamically -->
-            </listhead>
-            <!--  List of rows is created or loaded dynamically -->
-        </listbox>
+       <listbox id="workReportLines"/>
 
         <hbox>
             <button onClick="controller.save();"

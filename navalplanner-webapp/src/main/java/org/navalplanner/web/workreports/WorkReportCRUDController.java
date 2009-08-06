@@ -9,7 +9,6 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
@@ -31,12 +30,14 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
 
@@ -67,6 +68,17 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private WorkReportListRenderer workReportListRenderer = new WorkReportListRenderer();
 
     public final static String ID_WORK_REPORT_LINES = "workReportLines";
+
+    private final static String RESOURCE = "Recurso";
+
+    private final static String CODE = "Código";
+
+    private final static String NUM_HOURS = "Horas";
+
+    private final static String MOLD = "paging";
+
+    private final static int PAGING = 10;
+
 
     public List<WorkReport> getWorkReports() {
         return workReportModel.getWorkReports();
@@ -221,7 +233,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     public void cancel() {
         if (workReportModel.isEditing()) {
-
+            goToList();
         } else {
             workReportTypeCRUD.goToList();
         }
@@ -229,9 +241,102 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     public void goToCreateForm(WorkReportType workReportType) {
         workReportModel.prepareForCreate(workReportType);
-        appendCriterionTypesToHeader(getCriterionTypes());
+        prepareWorkReportList();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
+    }
+
+    public void goToEditForm(WorkReport workReport) {
+        workReportModel.prepareEditFor(workReport);
+        prepareWorkReportList();
+        getVisibility().showOnly(createWindow);
+        Util.reloadBindings(createWindow);
+    }
+
+    /**
+     * {@link WorkReportLine} list is finally constructed dynamically
+     *
+     * It seems there are some problems when a list of data is rendered,
+     * modified (the data model changes), and it's rendered again. Deleting
+     * previous settings and re-establishing the settings again each time the
+     * list is rendered, solve those problems.
+     *
+     */
+    private void prepareWorkReportList() {
+        Listbox listbox = (Listbox) createWindow
+                .getFellow(ID_WORK_REPORT_LINES);
+
+        // The only way to clean the listhead, is to clean all its attributes
+        // and children
+        // The paging component cannot be removed manually. It is removed automatically when changing the mold
+        listbox.setMold(null);
+        listbox.getChildren().clear();
+
+        // Set ListModel
+        Set<WorkReportLine> setWorkReportLines = getWorkReportLines();
+        WorkReportLine workReportLines[] = setWorkReportLines
+                .toArray(new WorkReportLine[setWorkReportLines.size()]);
+        ListModel listModel = new SimpleListModel(workReportLines);
+        listbox.setModel(listModel);
+
+        // Set Renderer
+        // listbox.setItemRenderer((ListitemRenderer) null);
+        listbox.setItemRenderer(getRenderer());
+
+        // Set mold and pagesize
+        listbox.setMold(MOLD);
+        listbox.setPageSize(PAGING);
+
+        appendListHead(listbox);
+    }
+
+    /**
+     * Appends list headers to {@link WorkReportLine} list
+     *
+     * @param listBox
+     */
+    private void appendListHead(Listbox listBox) {
+
+        Listhead listHead = listBox.getListhead();
+        // Create listhead first time is rendered
+        if (listHead == null) {
+            listHead = new Listhead();
+        }
+        // Delete all headers
+        listHead.getChildren().clear();
+        listHead.setSizable(true);
+
+        // Add static headers
+        Listheader listHeadResource = new Listheader(RESOURCE);
+        listHead.appendChild(listHeadResource);
+        Listheader listHeadCode = new Listheader(CODE);
+        listHead.appendChild(listHeadCode);
+        Listheader listHeadNumHours = new Listheader(NUM_HOURS);
+        listHead.appendChild(listHeadNumHours);
+
+        // Add dynamic headers
+        appendCriterionTypesToListHead(getCriterionTypes(), listHead);
+
+        listHead.setParent(listBox);
+    }
+
+    /**
+     * Appends a set of {@link CriterionType} to {@link Listhead}
+     */
+    private void appendCriterionTypesToListHead(
+            Set<CriterionType> criterionTypes, Listhead listHead) {
+        for (CriterionType criterionType : criterionTypes) {
+            appendCriterionTypeToListHead(criterionType, listHead);
+        }
+    }
+
+    /**
+     * Appends a {@link CriterionType} to {@link Listhead}
+     */
+    private void appendCriterionTypeToListHead(CriterionType criterionType,
+            Listhead listHead) {
+        Listheader listHeader = new Listheader(criterionType.getName());
+        listHeader.setParent(listHead);
     }
 
     private Set<CriterionType> getCriterionTypes() {
@@ -247,32 +352,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Appends a set of {@link CriterionType} to columns header
-     */
-    private void appendCriterionTypesToHeader(Set<CriterionType> criterionTypes) {
-        Listbox grid = (Listbox) createWindow.getFellow(ID_WORK_REPORT_LINES);
-        for (CriterionType criterionType : criterionTypes) {
-            appendCriterionTypeToColumns(criterionType, grid.getListhead());
-        }
-    }
-
-    /**
-     * Appends a new {@link CriterionType} to columns header
-     */
-    private void appendCriterionTypeToColumns(CriterionType criterionType,
-            Listhead columns) {
-        Listheader listHeader = new Listheader(criterionType.getName());
-        listHeader.setParent(columns);
-    }
-
-    /**
      * Adds a new {@link WorkReportLine} to the list of rows
      *
      * @param rows
      */
     public void addWorkReportLine(Listbox listBox) {
-        WorkReportLine workReportLine = new WorkReportLine();
-        getWorkReportLines().add(workReportLine);
+        WorkReportLine workReportLine = workReportModel.addWorkReportLine();
         listBox.appendChild(createListItem(workReportLine));
     }
 

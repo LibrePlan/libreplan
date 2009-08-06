@@ -8,9 +8,9 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.orders.daos.OrderElementDAO;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.resources.daos.WorkerDAO;
+import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
@@ -34,6 +34,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class WorkReportModel implements IWorkReportModel {
 
+    @Autowired
+    private IWorkReportDAO workReportDAO;
+
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IWorkerDAO workerDAO;
+
     private WorkReport workReport;
 
     private ClassValidator<WorkReport> workReportValidator = new ClassValidator<WorkReport>(
@@ -41,15 +50,6 @@ public class WorkReportModel implements IWorkReportModel {
 
     private ClassValidator<WorkReportLine> workReportLineValidator = new ClassValidator<WorkReportLine>(
             WorkReportLine.class);
-
-    @Autowired
-    private IWorkReportDAO workReportDAO;
-
-    @Autowired
-    private OrderElementDAO orderElementDAO;
-
-    @Autowired
-    private WorkerDAO workerDAO;
 
     private boolean editing = false;
 
@@ -71,7 +71,7 @@ public class WorkReportModel implements IWorkReportModel {
     public void prepareEditFor(WorkReport workReport) {
         editing = true;
         Validate.notNull(workReport);
-        workReport = getFromDB(workReport);
+        this.workReport = getFromDB(workReport);
     }
 
     @Transactional(readOnly = true)
@@ -178,7 +178,7 @@ public class WorkReportModel implements IWorkReportModel {
     public List<WorkReport> getWorkReports() {
         List<WorkReport> result = new ArrayList<WorkReport>();
         for (WorkReport workReport : workReportDAO.list(WorkReport.class)) {
-            workReport.getWorkReportType().getId();
+            workReport.getWorkReportType().getName();
             result.add(workReport);
         }
         return result;
@@ -194,5 +194,12 @@ public class WorkReportModel implements IWorkReportModel {
     public String getDistinguishedCode(OrderElement orderElement) throws InstanceNotFoundException {
         orderElementDAO.save(orderElement);
         return orderElementDAO.getDistinguishedCode(orderElement);
+    }
+
+    @Override
+    public WorkReportLine addWorkReportLine() {
+        WorkReportLine workReportLine = new WorkReportLine();
+        workReport.getWorkReportLines().add(workReportLine);
+        return workReportLine;
     }
 }
