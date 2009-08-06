@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Model for UI operations related to {@link WorkReportType}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -58,21 +59,34 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
         this.workReportType = new WorkReportType();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public void initEdit(WorkReportType workReportType) {
+        editing = true;
+        Validate.notNull(workReportType);
+
+        this.workReportType = getFromDB(workReportType);
+    }
+
     private WorkReportType getFromDB(WorkReportType workReportType) {
+        return getFromDB(workReportType.getId());
+    }
+
+    @Transactional(readOnly = true)
+    private WorkReportType getFromDB(Long id) {
         try {
-            return workReportTypeDAO.find(workReportType.getId());
+            WorkReportType workReportType = workReportTypeDAO.find(id);
+            reattachCriterionTypes(workReportType);
+            return workReportType;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public void prepareForEdit(WorkReportType workReportType) {
-        editing = true;
-        Validate.notNull(workReportType);
-
-        this.workReportType = getFromDB(workReportType);
+    private void reattachCriterionTypes(WorkReportType workReportType) {
+        for (CriterionType criterionType : workReportType.getCriterionTypes()) {
+            criterionType.getName();
+        }
     }
 
     @Override

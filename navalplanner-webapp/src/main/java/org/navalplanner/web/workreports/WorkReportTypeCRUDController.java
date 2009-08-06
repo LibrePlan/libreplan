@@ -102,7 +102,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     }
 
     public void goToEditForm(WorkReportType workReportType) {
-        workReportTypeModel.prepareForEdit(workReportType);
+        workReportTypeModel.initEdit(workReportType);
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
     }

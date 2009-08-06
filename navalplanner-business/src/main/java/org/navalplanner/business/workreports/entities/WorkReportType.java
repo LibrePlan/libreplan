@@ -11,9 +11,9 @@ import org.navalplanner.business.resources.entities.CriterionType;
 
 public class WorkReportType extends BaseEntity {
 
-    String name;
+    private String name;
 
-    Set<CriterionType> criterionTypes;
+    private Set<CriterionType> criterionTypes;
 
     public WorkReportType() {
 
