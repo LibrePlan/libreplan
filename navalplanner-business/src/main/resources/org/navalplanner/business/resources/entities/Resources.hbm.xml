@@ -3,7 +3,9 @@
 <hibernate-mapping default-access="field" package="org.navalplanner.business.resources.entities">
   <class name="Resource">
     <id name="id" access="property" type="long">
-      <generator class="native"/>
+      <generator class="hilo">
+        <param name="max_lo">100</param>
+      </generator>
     </id>
     <!--
             IMPORTANT: type="long" must be specified (otherwise,
@@ -26,7 +28,9 @@
   <!-- Criterion -->
   <class name="Criterion">
     <id name="id" access="property" type="long">
-      <generator class="native"/>
+      <generator class="hilo">
+        <param name="max_lo">100</param>
+      </generator>
     </id>
     <version name="version" access="property" type="long" />
     <property access="field" name="name"/>
@@ -37,7 +41,9 @@
   <!-- CriterionSatisfaction -->
   <class name="CriterionSatisfaction">
     <id name="id" access="property" type="long">
-      <generator class="native"/>
+      <generator class="hilo">
+        <param name="max_lo">100</param>
+      </generator>
     </id>
     <version name="version" access="property" type="long" />
     <property access="field" name="startDate" not-null="true"/>
@@ -49,7 +55,7 @@
   <!-- CriterionType -->
   <class name="CriterionType">
     <id name="id" access="property" type="long">
-      <generator class="native"/>
+      <generator class="hilo"/>
     </id>
     <version name="version" access="property" type="long" />
     <property name="name" unique="true"/>

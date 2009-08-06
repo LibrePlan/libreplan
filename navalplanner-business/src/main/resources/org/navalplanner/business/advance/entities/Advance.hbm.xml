@@ -5,7 +5,9 @@
 <!-- AdvanceType -->
 <class name="AdvanceType" >
     <id name="id" type="long" access="property">
-        <generator class="native"/>
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
     </id>
     <version name="version" access="property" type="long" />
 
@@ -19,7 +21,9 @@
 <!-- AdvanceAssigment -->
 <class name="AdvanceAssigment">
     <id name="id" type="long" access="property">
-        <generator class="native"/>
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
     </id>
     <version name="version" access="property" type="long" />
 
@@ -39,7 +43,9 @@
 <!-- AdvanceMeasurement -->
 <class name="AdvanceMeasurement">
     <id name="id" type="long" access="property">
-        <generator class="native"/>
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
     </id>
     <version name="version" access="property" type="long" />
 

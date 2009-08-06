@@ -3,7 +3,9 @@
 <hibernate-mapping default-access="field">
   <class name="org.navalplanner.business.common.test.partialtime.EntityContainingPartialDate">
     <id name="id">
-      <generator class="native"/>
+      <generator class="hilo">
+        <param name="max_lo">100</param>
+      </generator>
     </id>
     <version name="version" type="long"/>
     <property name="partialDate" type="org.navalplanner.business.common.partialtime.hibernate.PartialDateType">
@@ -13,7 +15,9 @@
   </class>
   <class name="org.navalplanner.business.common.test.partialtime.EntityContainingIntervalOfPartialDates">
       <id name="id">
-      <generator class="native"/>
+      <generator class="hilo">
+        <param name="max_lo">100</param>
+      </generator>
     </id>
     <version name="version" type="long"/>
     <property name="interval" type="org.navalplanner.business.common.partialtime.hibernate.IntervalOfPartialDatesType">
@@ -25,7 +29,9 @@
   </class>
   <class name="org.navalplanner.business.common.test.partialtime.EntityContainingTimeQuantity">
       <id name="id">
-      <generator class="native"/>
+      <generator class="hilo">
+        <param name="max_lo">100</param>
+      </generator>
     </id>
     <version name="version" type="long"/>
     <property name="timeQuantity" type="org.navalplanner.business.common.partialtime.hibernate.TimeQuantityType"></property>

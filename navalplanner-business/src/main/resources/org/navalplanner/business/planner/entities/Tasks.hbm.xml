@@ -4,7 +4,9 @@
     default-access="field">
     <class name="TaskElement">
         <id name="id" column="id" type="long" access="property">
-            <generator class="native" />
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
         </id>
         <version name="version" access="property" type="long" />
         <property name="shareOfHours"></property>
@@ -49,7 +51,7 @@
     </class>
     <class name="Dependency">
         <id name="id" type="long" access="property">
-            <generator class="native"></generator>
+            <generator class="hilo"></generator>
         </id>
         <version name="version" access="property" type="long" />
         <many-to-one class="TaskElement" name="origin"

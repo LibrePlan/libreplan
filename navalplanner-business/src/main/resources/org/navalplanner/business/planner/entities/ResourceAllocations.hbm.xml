@@ -4,7 +4,9 @@
     default-access="field">
     <class name="ResourceAllocation">
         <id name="id" column="id" type="long" access="property">
-            <generator class="native" />
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
         </id>
         <version name="version" access="property" type="long" />
 

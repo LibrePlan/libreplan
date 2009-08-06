@@ -3,7 +3,9 @@
 <hibernate-mapping package="org.navalplanner.business.orders.entities">
     <class name="Order" table="order_table">
         <id name="id" access="property" type="long">
-            <generator class="native" />
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
         </id>
         <version name="version" access="property" type="long" />
         <property name="initDate" access="field"></property>
@@ -21,7 +23,9 @@
 
     <class name="OrderElement" abstract="true">
         <id name="id" access="property" type="long">
-            <generator class="native" />
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
         </id>
         <version name="version" access="property" type="long" />
 
@@ -65,7 +69,9 @@
 
     <class name="HoursGroup">
         <id name="id" access="property" type="long">
-            <generator class="native" />
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
         </id>
         <version name="version" access="property" type="long" />
 
