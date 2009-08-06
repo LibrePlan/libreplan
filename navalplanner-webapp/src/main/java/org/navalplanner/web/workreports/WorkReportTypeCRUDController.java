@@ -93,7 +93,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     }
 
     public void cancel() {
-        // TODO: Check if hoursgroup has criterions
+        goToList();
     }
 
     public void goToList() {
