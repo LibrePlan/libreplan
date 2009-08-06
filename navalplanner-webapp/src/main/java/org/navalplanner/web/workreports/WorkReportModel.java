@@ -192,7 +192,6 @@ public class WorkReportModel implements IWorkReportModel {
     @Override
     @Transactional(readOnly = true)
     public String getDistinguishedCode(OrderElement orderElement) throws InstanceNotFoundException {
-        orderElementDAO.save(orderElement);
         return orderElementDAO.getDistinguishedCode(orderElement);
     }
 
@@ -201,5 +200,14 @@ public class WorkReportModel implements IWorkReportModel {
         WorkReportLine workReportLine = new WorkReportLine();
         workReport.getWorkReportLines().add(workReportLine);
         return workReportLine;
+    }
+
+    @Transactional
+    public void remove(WorkReport workReport) {
+        try {
+            workReportDAO.remove(workReport.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

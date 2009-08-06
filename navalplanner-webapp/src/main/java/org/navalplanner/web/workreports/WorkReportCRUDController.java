@@ -37,6 +37,7 @@ import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
@@ -79,6 +80,24 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private final static int PAGING = 10;
 
+    /**
+     * Delete {@link WorkReport}
+     *
+     * FIXME: Should show a {@link Messagebox} to confirm deletion. Popping up a
+     * {@link Messagebox} from a page where there is also a {@link Listbox}
+     * causes an unexpected error. Bug reported to ZK.
+     *
+     * ZK Bug Tracker URL:
+     * http://sourceforge.net/tracker/?atid=785191&group_id=152762&func=browse
+     * Bug ID: 2832573
+     *
+     * @param workReport
+     */
+    public void showConfirmDelete(WorkReport workReport) {
+        workReportModel.remove(workReport);
+        Util.reloadBindings(listWindow);
+        messagesForUser.showMessage(Level.INFO, "Parte de traballo eliminado");
+    }
 
     public List<WorkReport> getWorkReports() {
         return workReportModel.getWorkReports();

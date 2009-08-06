@@ -101,4 +101,11 @@ public interface IWorkReportModel {
      * @return
      */
     WorkReportLine addWorkReportLine();
+
+    /**
+     * Removes {@link WorkReport}
+     *
+     * @param workReport
+     */
+    void remove(WorkReport workReport);
 }

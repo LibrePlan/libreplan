@@ -16,7 +16,7 @@
                 <label value="@{workReport.workReportType.name}" />
                 <hbox>
                     <button label="Editar" onClick="controller.goToEditForm(self.parent.parent.value);" />
-                    <button label="Eliminar" />
+                    <button label="Eliminar"  onClick="controller.showConfirmDelete(self.parent.parent.value)" />
                 </hbox>
             </row>
         </rows>

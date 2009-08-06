@@ -14,16 +14,16 @@ import org.navalplanner.business.common.BaseEntity;
 public class WorkReport extends BaseEntity {
 
     @NotNull
-    Date date;
+    private Date date;
 
-    String place;
+    private String place;
 
     @NotEmpty
-    String responsible;
+    private String responsible;
 
-    WorkReportType workReportType;
+    private WorkReportType workReportType;
 
-    Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
+    private Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
 
     public static final String DATE = "date";
 
