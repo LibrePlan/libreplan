@@ -8,13 +8,15 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IValidable;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.TaskElement;
 
 /**
  * It represents an {@link Order} with its related information. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Order extends BaseEntity implements IOrderLineGroup {
+public class Order extends BaseEntity implements IOrderLineGroup, IValidable {
 
     private static Date copy(Date date) {
         return date != null ? new Date(date.getTime()) : date;
@@ -141,6 +143,20 @@ public class Order extends BaseEntity implements IOrderLineGroup {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public void checkValid() throws ValidationException {
+        if (this.isEndDateBeforeStart()) {
+            throw new ValidationException("endDate must be after startDate");
+        }
+
+        for (OrderElement orderElement : this.getOrderElements()) {
+            if (!orderElement.checkAtLeastOneHoursGroup()) {
+                throw new ValidationException(
+                        "At least one HoursGroup is needed for each OrderElement");
+            }
+        }
     }
 
 }

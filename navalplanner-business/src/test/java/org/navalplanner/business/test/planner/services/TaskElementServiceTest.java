@@ -18,12 +18,12 @@ import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
-import org.navalplanner.business.orders.services.IOrderService;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -51,7 +51,7 @@ public class TaskElementServiceTest {
     private SessionFactory sessionFactory;
 
     @Autowired
-    private IOrderService orderService;
+    private IOrderDAO orderDAO;
 
     private HoursGroup associatedHoursGroup;
 
@@ -87,7 +87,8 @@ public class TaskElementServiceTest {
         order.setInitDate(new Date());
         order.add(orderLine);
         try {
-            orderService.save(order);
+            order.checkValid();
+            orderDAO.save(order);
             sessionFactory.getCurrentSession().flush();
         } catch (ValidationException e) {
             throw new RuntimeException(e);

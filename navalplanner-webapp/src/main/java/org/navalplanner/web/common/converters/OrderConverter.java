@@ -1,12 +1,13 @@
 package org.navalplanner.web.common.converters;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.services.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * A {@link IConverter} for {@link Order} <br />
@@ -17,12 +18,13 @@ import org.springframework.stereotype.Component;
 public class OrderConverter implements IConverter<Order> {
 
     @Autowired
-    private IOrderService orderService;
+    private IOrderDAO orderDAO;
 
     @Override
+    @Transactional(readOnly = true)
     public Order asObject(String stringRepresentation) {
         try {
-            return orderService.find(Long.parseLong(stringRepresentation));
+            return orderDAO.find(Long.parseLong(stringRepresentation));
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

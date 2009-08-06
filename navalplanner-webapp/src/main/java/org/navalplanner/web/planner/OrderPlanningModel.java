@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.services.IOrderService;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -26,7 +26,7 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration;
 public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     @Autowired
-    private IOrderService orderService;
+    private IOrderDAO orderDAO;
 
     private PlanningState planningState;
 
@@ -160,7 +160,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private Order reload(Order order) {
         try {
-            return orderService.find(order.getId());
+            return orderDAO.find(order.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

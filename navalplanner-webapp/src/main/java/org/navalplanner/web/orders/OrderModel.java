@@ -11,10 +11,10 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.services.IOrderService;
 import org.navalplanner.business.planner.services.ITaskElementService;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -45,7 +45,8 @@ public class OrderModel implements IOrderModel {
 
     private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
 
-    private final IOrderService orderService;
+    @Autowired
+    private IOrderDAO orderDAO;
 
     private Order order;
 
@@ -57,24 +58,22 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private IOrderElementModel orderElementModel;
 
-    private final ITaskElementService taskElementService;
-
     @Autowired
     private ICriterionDAO criterionDAO;
 
     @Autowired
-    public OrderModel(IOrderService orderService,
-            ITaskElementService taskElementService) {
-        Validate.notNull(orderService);
+    private ITaskElementService taskElementService;
+
+    @Autowired
+    public OrderModel(ITaskElementService taskElementService) {
         Validate.notNull(taskElementService);
-        this.orderService = orderService;
         this.taskElementService = taskElementService;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
-        return orderService.getOrders();
+        return orderDAO.getOrders();
     }
 
     private void loadCriterions() {
@@ -99,7 +98,7 @@ public class OrderModel implements IOrderModel {
 
     private Order getFromDB(Order order) {
         try {
-            return orderService.find(order.getId());
+            return orderDAO.find(order.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -121,8 +120,7 @@ public class OrderModel implements IOrderModel {
         InvalidValue[] invalidValues = orderValidator.getInvalidValues(order);
         if (invalidValues.length > 0)
             throw new ValidationException(invalidValues);
-
-        this.orderService.save(order);
+        this.orderDAO.save(order);
     }
 
     private void reattachCriterions() {
@@ -139,9 +137,10 @@ public class OrderModel implements IOrderModel {
     }
 
     @Override
+    @Transactional
     public void remove(Order order) {
         try {
-            this.orderService.remove(order);
+            this.orderDAO.remove(order.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
