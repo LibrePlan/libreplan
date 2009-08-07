@@ -1,9 +1,7 @@
 package org.navalplanner.business.advance.daos;
 
-import java.util.List;
-import org.navalplanner.business.common.daos.IGenericDAO;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.advance.entities.AdvanceAssigment;
+import org.navalplanner.business.common.daos.IGenericDAO;
 
 /**
  * Contract for {@link AdvanceAssigmentDao}

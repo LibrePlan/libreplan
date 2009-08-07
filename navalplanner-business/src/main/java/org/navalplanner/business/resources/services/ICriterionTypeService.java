@@ -2,6 +2,7 @@ package org.navalplanner.business.resources.services;
 
 
 import java.util.List;
+
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.CriterionType;

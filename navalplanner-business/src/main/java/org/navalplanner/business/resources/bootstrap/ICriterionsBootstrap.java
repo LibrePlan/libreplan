@@ -1,9 +1,6 @@
 package org.navalplanner.business.resources.bootstrap;
 
-import java.util.List;
-
 import org.navalplanner.business.IDataBootstrap;
-import org.navalplanner.business.resources.entities.ICriterionType;
 
 /**
  * Contract for {@link CriterionsBootstrap}. <br />

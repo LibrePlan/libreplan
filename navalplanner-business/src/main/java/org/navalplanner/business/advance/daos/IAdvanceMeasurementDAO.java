@@ -1,7 +1,7 @@
 package org.navalplanner.business.advance.daos;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
+import org.navalplanner.business.common.daos.IGenericDAO;
 
 /**
  * Contract for {@link AdvanceMeasurementDao}

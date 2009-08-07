@@ -5,7 +5,6 @@
 
 package org.navalplanner.business.resources.entities;
 
-import java.util.List;
 
 /**
  *

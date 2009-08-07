@@ -1,6 +1,7 @@
 package org.navalplanner.business.workreports.daos;
 
 import java.util.List;
+
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.workreports.entities.WorkReportLine;

@@ -1,6 +1,7 @@
 package org.navalplanner.business.resources.daos;
 
 import java.util.List;
+
 import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;

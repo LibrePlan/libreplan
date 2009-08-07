@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.util.zoom.TimeTrackerState;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
-import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.util.zoom.TimeTrackerState.DetailItem;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.HtmlMacroComponent;
