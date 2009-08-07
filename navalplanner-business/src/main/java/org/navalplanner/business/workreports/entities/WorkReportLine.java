@@ -69,7 +69,7 @@ public class WorkReportLine extends BaseEntity {
     }
 
     public Set<Criterion> getCriterions() {
-        return criterions;
+        return new HashSet<Criterion>(criterions);
     }
 
     public void setCriterions(Set<Criterion> criterions) {

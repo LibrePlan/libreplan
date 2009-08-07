@@ -1,6 +1,7 @@
 package org.navalplanner.business.advance.entities;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.navalplanner.business.common.BaseEntity;
@@ -62,6 +63,6 @@ public class AdvanceAssigment extends BaseEntity {
     }
 
     public Set<AdvanceMeasurement> getAdvanceMeasurements() {
-        return this.advanceMeasurements;
+        return new HashSet<AdvanceMeasurement>(this.advanceMeasurements);
     }
 }

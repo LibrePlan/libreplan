@@ -1,5 +1,6 @@
 package org.navalplanner.business.workreports.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.navalplanner.business.common.BaseEntity;
@@ -33,7 +34,7 @@ public class WorkReportType extends BaseEntity {
     }
 
     public Set<CriterionType> getCriterionTypes() {
-        return criterionTypes;
+        return new HashSet<CriterionType>(criterionTypes);
     }
 
     public void setCriterionTypes(Set<CriterionType> criterionTypes) {
