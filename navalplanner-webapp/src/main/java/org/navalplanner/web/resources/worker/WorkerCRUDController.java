@@ -53,8 +53,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private LocalizationsController localizationsForCreationController;
 
-    private ICriterionService criterionService;
-
     private WorkRelationshipsController editWorkRelationship;
 
     private IWorkerCRUDControllerEntryPoints workerCRUD;

@@ -169,7 +169,7 @@ public class TaskElementServiceTest {
         Task oldChild2 = child2;
         flushAndEvict(child2);
         child2 = (Task) taskElementService.findById(child2.getId());
-        Dependency dependency = Dependency.createDependency(child1, oldChild2,
+        Dependency.createDependency(child1, oldChild2,
                 Type.START_END);
         taskElementService.save(child1);
         flushAndEvict(child1);

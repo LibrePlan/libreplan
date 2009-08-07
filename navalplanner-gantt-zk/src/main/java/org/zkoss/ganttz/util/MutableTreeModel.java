@@ -77,8 +77,6 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
 
     }
 
-    private final Class<T> type;
-
     private final Node<T> root;
 
     private Map<T, Node<T>> nodesByDomainObject = new WeakHashMap<T, Node<T>>();
@@ -120,7 +118,6 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         if (type == null)
             throw new IllegalArgumentException("type cannot be null");
         nodesByDomainObject.put(unwrap(root), root);
-        this.type = type;
         this.root = root;
     }
 

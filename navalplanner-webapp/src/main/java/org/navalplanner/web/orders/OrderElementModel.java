@@ -36,12 +36,6 @@ public class OrderElementModel implements IOrderElementModel {
     private ICriterionTypeDAO criterionTypeDao;
 
     @Autowired
-    private ICriterionsBootstrap criterionsBootstrap;
-
-    @Autowired
-    private ICriterionService criterionService;
-
-    @Autowired
     private ICriterionTypeService criterionTypeService;
 
     private Map<String, CriterionType> mapCriterionTypes = new HashMap<String, CriterionType>();

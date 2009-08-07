@@ -41,9 +41,6 @@ public class CriterionsModel implements ICriterionsModel {
             Criterion.class);
 
     @Autowired
-    private ICriterionsBootstrap criterionsBootstrap;
-
-    @Autowired
     private ICriterionService criterionService;
 
     @Autowired

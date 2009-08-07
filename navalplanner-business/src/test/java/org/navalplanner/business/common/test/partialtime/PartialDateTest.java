@@ -81,7 +81,7 @@ public class PartialDateTest {
             PartialDate partialDate = PartialDate.createFrom(now).with(g);
             assertFalse(partialDate.canBeConvertedToLocalDate());
             try {
-                LocalDate converted = partialDate.tryToConvertToLocalDate();
+                partialDate.tryToConvertToLocalDate();
                 fail("the partial date cannot be converted to a LocalDate");
             } catch (IllegalArgumentException e) {
                 // ok

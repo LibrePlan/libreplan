@@ -31,9 +31,6 @@ public class ResourceServiceImpl implements IResourceService {
     private IResourceDAO resourceDao;
 
     @Autowired
-    private ICriterionsBootstrap criterionsBootstrap;
-
-    @Autowired
     private ICriterionTypeService criterionTypeService;
 
 

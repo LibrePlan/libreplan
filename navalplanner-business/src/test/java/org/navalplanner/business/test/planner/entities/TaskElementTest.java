@@ -86,7 +86,7 @@ public class TaskElementTest {
         Task origin = new Task();
         Task destination = new Task();
         Type type = Type.START_END;
-        Dependency dependency = Dependency.createDependency(origin,
+        Dependency.createDependency(origin,
                 destination, type);
         assertThat(origin.getDependenciesWithThisOrigin().size(), equalTo(1));
         assertThat(destination.getDependenciesWithThisDestination().size(),

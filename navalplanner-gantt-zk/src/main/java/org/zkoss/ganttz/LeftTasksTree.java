@@ -314,13 +314,6 @@ public class LeftTasksTree extends HtmlMacroComponent {
         tasksTreeModel.remove(taskRemoved);
     }
 
-    private static Date threeMonthsLater(Date now) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.add(Calendar.MONTH, 3);
-        return calendar.getTime();
-    }
-
     @Override
     public void afterCompose() {
         setClass("listdetails");

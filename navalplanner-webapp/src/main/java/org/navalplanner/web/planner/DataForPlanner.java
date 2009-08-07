@@ -171,14 +171,6 @@ public class DataForPlanner {
                 }, navigator, list);
     }
 
-    private TaskContainer createContainer(String name, Date start, Date end) {
-        TaskContainer container = new TaskContainer();
-        container.setBeginDate(start);
-        container.setEndDate(end);
-        container.setName(name);
-        return container;
-    }
-
     private DefaultFundamentalProperties createTask(String name, Date now,
             Date end) {
         return new DefaultFundamentalProperties(name, end, end.getTime()

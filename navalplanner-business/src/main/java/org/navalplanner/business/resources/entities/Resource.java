@@ -41,8 +41,6 @@ public abstract class Resource extends BaseEntity {
     public class Query {
 
         private List<IPredicate> predicates = new ArrayList<IPredicate>();
-        private boolean sort = false;
-
         private Query() {
 
         }
@@ -101,7 +99,6 @@ public abstract class Resource extends BaseEntity {
         }
 
         public Query sortByStartDate() {
-            sort = true;
             return this;
         }
 

@@ -1,5 +1,12 @@
 package org.navalplanner.business.test.resources.entities;
 
+import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.year;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -11,13 +18,6 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
-
-import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.year;
 
 /**
  * Tests for {@link CriterionSatisfaction} <br />
@@ -131,7 +131,6 @@ public class CriterionSatisfactionTest {
     @Test
     public void testGoesBeforeWithoutOverlapping() {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = new Worker("firstName", "surName", "2333232", 10);
         CriterionSatisfaction posterior = new CriterionSatisfaction();
         posterior.setCriterion(criterion);
         posterior.setStartDate(year(2000));

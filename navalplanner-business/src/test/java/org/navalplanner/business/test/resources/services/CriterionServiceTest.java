@@ -253,7 +253,7 @@ public class CriterionServiceTest {
         resourceService.saveResource(worker1);
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         criterionService.save(criterion);
-        ICriterionType<?> type = createTypeThatMatches(criterion);
+        createTypeThatMatches(criterion);
         worker1.addSatisfaction(new CriterionWithItsType(criterion.getType(), criterion));
         resourceService.saveResource(worker1);
         Resource workerReloaded = adHocTransactionService

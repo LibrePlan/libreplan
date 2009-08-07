@@ -3,7 +3,6 @@ package org.navalplanner.business.test.resources.entities;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.resources.entities.CriterionCompounder.atom;
-import static org.navalplanner.business.resources.entities.CriterionCompounder.buildAnd;
 import static org.navalplanner.business.resources.entities.CriterionCompounder.build;
 import static org.navalplanner.business.resources.entities.CriterionCompounder.not;
 
