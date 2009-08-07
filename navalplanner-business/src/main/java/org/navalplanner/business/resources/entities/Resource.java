@@ -98,10 +98,12 @@ public abstract class Resource extends BaseEntity {
             });
         }
 
-        public Query sortByStartDate() {
-            return this;
-        }
-
+        /**
+         * Method called to retrieve the result. If no predicate was set, it
+         * returns all satisfactions
+         * @return the satisfactions matched by all predicates specified ordered
+         *         by start date.
+         */
         public List<CriterionSatisfaction> result() {
             ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
             for (CriterionSatisfaction criterionSatisfaction : criterionSatisfactions) {
@@ -341,8 +343,7 @@ public abstract class Resource extends BaseEntity {
 
     private CriterionSatisfaction getNext(ICriterionType<?> type,
             CriterionSatisfaction newSatisfaction) {
-        List<CriterionSatisfaction> ordered = query().from(type)
-                .sortByStartDate().result();
+        List<CriterionSatisfaction> ordered = query().from(type).result();
         int position = findPlace(ordered, newSatisfaction);
         CriterionSatisfaction next = position != ordered.size() ? ordered
                 .get(position) : null;
@@ -351,8 +352,7 @@ public abstract class Resource extends BaseEntity {
 
     private CriterionSatisfaction getPrevious(ICriterionType<?> type,
             CriterionSatisfaction newSatisfaction) {
-        List<CriterionSatisfaction> ordered = query().from(type)
-                .sortByStartDate().result();
+        List<CriterionSatisfaction> ordered = query().from(type).result();
         int position = findPlace(ordered, newSatisfaction);
         CriterionSatisfaction previous = position > 0 ? ordered
                 .get(position - 1) : null;
@@ -371,7 +371,7 @@ public abstract class Resource extends BaseEntity {
         for (CriterionType criterionType : types) {
             if (!criterionType.allowSimultaneousCriterionsPerResource()) {
                 List<CriterionSatisfaction> satisfactions = query().from(
-                        criterionType).sortByStartDate().result();
+                        criterionType).result();
                 ListIterator<CriterionSatisfaction> listIterator = satisfactions
                         .listIterator();
                 while (listIterator.hasNext()) {

@@ -179,7 +179,7 @@ public class WorkerModel implements IWorkerModel {
     @Override
     @Transactional(readOnly = true)
     public void unassignSatisfactions(
-        Collection<? extends CriterionSatisfaction> satisfactions) {
+            Collection<? extends CriterionSatisfaction> satisfactions) {
 
         /* Check worker's version. */
         Worker worker = getWorker();
@@ -380,9 +380,7 @@ public class WorkerModel implements IWorkerModel {
     }
 
     @Override
-    public List<CriterionSatisfaction>
-        getLaboralRelatedCriterionSatisfactions() {
-        return worker.query().oneOf(laboralRelatedTypes).sortByStartDate()
-                .result();
+    public List<CriterionSatisfaction> getLaboralRelatedCriterionSatisfactions() {
+        return worker.query().oneOf(laboralRelatedTypes).result();
     }
 }
