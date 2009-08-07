@@ -15,21 +15,22 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public class WorkReportLine extends BaseEntity {
 
-    Integer numHours;
-
-    @NotNull
-    Resource resource;
-
-    @NotNull
-    OrderElement orderElement;
-
-    WorkReport workReport;
-
-    Set<Criterion> criterions = new HashSet<Criterion>();
-
     public static final String RESOURCE = "resource";
 
     public static final String ORDER_ELEMENT = "orderElement";
+
+    private Integer numHours;
+
+    @NotNull
+    private Resource resource;
+
+    @NotNull
+    private OrderElement orderElement;
+
+    private WorkReport workReport;
+
+    private Set<Criterion> criterions = new HashSet<Criterion>();
+
 
     public WorkReportLine() {
 

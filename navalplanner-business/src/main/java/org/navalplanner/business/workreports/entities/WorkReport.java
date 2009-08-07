@@ -13,6 +13,10 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class WorkReport extends BaseEntity {
 
+    public static final String DATE = "date";
+
+    public static final String RESPONSIBLE = "responsible";
+
     @NotNull
     private Date date;
 
@@ -25,9 +29,6 @@ public class WorkReport extends BaseEntity {
 
     private Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
 
-    public static final String DATE = "date";
-
-    public static final String RESPONSIBLE = "responsible";
 
     public WorkReport() {
 

@@ -16,7 +16,7 @@ public class AdvanceAssigment extends BaseEntity {
 
     private AdvanceType advanceType;
 
-    Set<AdvanceMeasurement> advanceMeasurements;
+    private Set<AdvanceMeasurement> advanceMeasurements;
 
     public AdvanceAssigment(boolean reportGlobalAdvance, BigDecimal maxValue) {
         this.reportGlobalAdvance = reportGlobalAdvance;
