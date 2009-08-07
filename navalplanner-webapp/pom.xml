@@ -26,11 +26,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate</artifactId>
         </dependency>
-        <!-- JUnit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
