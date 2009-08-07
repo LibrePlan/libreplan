@@ -67,10 +67,6 @@
         entities)
     -->
 
-    <bean id="resourcesDaoRegistry"
-        class="org.navalplanner.business.resources.daos.ResourcesDAORegistry"
-        factory-method="getInstance" />
-
     <bean id="plannerDaoRegistry"
         class="org.navalplanner.business.planner.daos.PlannerDAORegistry"
         factory-method="getInstance" />

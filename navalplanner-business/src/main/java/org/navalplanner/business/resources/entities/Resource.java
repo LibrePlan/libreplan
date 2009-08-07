@@ -14,8 +14,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.daos.ResourcesDAORegistry;
 
 // FIXME: Alternatively, Resource can be modeled with the style:
 // Resource.getParent() & Resource.getChilds(). This way, Resource does not
@@ -171,21 +169,6 @@ public abstract class Resource extends BaseEntity {
     }
 
     public abstract int getDailyCapacity();
-
-    /**
-     * It removes the resource from the database and updates references. The
-     * default implementation removes the resource from the resource group it
-     * belongs to (if it belongs to someone) and from the database. This
-     * implementation should be valid for simple resources.
-     */
-    public void remove() {
-        /* Remove from the database. */
-        try {
-            ResourcesDAORegistry.getResourceDao().remove(getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public Set<CriterionSatisfaction> getAllSatisfactions() {
         return new HashSet<CriterionSatisfaction>(criterionSatisfactions);

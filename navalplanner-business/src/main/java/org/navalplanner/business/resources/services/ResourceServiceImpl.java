@@ -71,8 +71,7 @@ public class ResourceServiceImpl implements IResourceService {
 
     public void removeResource(Long resourceId)
             throws InstanceNotFoundException {
-
-        resourceDao.find(resourceId).remove();
+        resourceDao.remove(resourceId);
     }
 
     @Override
