@@ -71,10 +71,6 @@
         class="org.navalplanner.business.planner.daos.PlannerDAORegistry"
         factory-method="getInstance" />
 
-    <bean id="advanceDaoRegistry"
-        class="org.navalplanner.business.advance.daos.AdvanceDAORegistry"
-        factory-method="getInstance" />
-
     <bean id="registry"
         class="org.navalplanner.business.common.Registry"
         factory-method="getInstance" />

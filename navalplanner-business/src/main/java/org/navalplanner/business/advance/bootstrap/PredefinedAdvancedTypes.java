@@ -2,8 +2,8 @@ package org.navalplanner.business.advance.bootstrap;
 
 import java.math.BigDecimal;
 
-import org.navalplanner.business.advance.daos.AdvanceDAORegistry;
 import org.navalplanner.business.advance.entities.AdvanceType;
+import org.navalplanner.business.common.Registry;
 
 public enum PredefinedAdvancedTypes {
     PERCENTAGE("percentage", new BigDecimal(100), new BigDecimal(0.01)), UNITS(
@@ -33,7 +33,7 @@ public enum PredefinedAdvancedTypes {
     }
 
     public AdvanceType getType() {
-        return AdvanceDAORegistry.getAdvanceTypeDao().findByName(name);
+        return Registry.getAdvanceTypeDao().findByName(name);
     }
 
 }

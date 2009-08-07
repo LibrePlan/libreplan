@@ -1,5 +1,8 @@
 package org.navalplanner.business.common;
 
+import org.navalplanner.business.advance.daos.IAdvanceAssigmentDAO;
+import org.navalplanner.business.advance.daos.IAdvanceMeasurementDAO;
+import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
@@ -25,6 +28,15 @@ public class Registry {
     @Autowired
     private IWorkReportLineDAO workReportLine;
 
+    @Autowired
+    private IAdvanceAssigmentDAO advanceAssigmentDao;
+
+    @Autowired
+    private IAdvanceTypeDAO advanceTypeDao;
+
+    @Autowired
+    private IAdvanceMeasurementDAO advanceMeasurementDao;
+
     private Registry() {
 
     }
@@ -43,6 +55,18 @@ public class Registry {
 
     public static IWorkReportLineDAO getWorkReportLineDao() {
         return getInstance().workReportLine;
+    }
+
+    public static IAdvanceMeasurementDAO getAdvanceMeasurementDao() {
+        return getInstance().advanceMeasurementDao;
+    }
+
+    public static IAdvanceTypeDAO getAdvanceTypeDao() {
+        return getInstance().advanceTypeDao;
+    }
+
+    public static IAdvanceAssigmentDAO getAdvanceAssigmentDao() {
+        return getInstance().advanceAssigmentDao;
     }
 
 }
