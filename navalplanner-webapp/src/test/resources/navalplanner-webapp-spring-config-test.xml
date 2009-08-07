@@ -13,10 +13,9 @@
           parallel.
     -->
     <bean id="dataSource"
-        class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
+        class="org.springframework.jdbc.datasource.DriverManagerDataSource"
         p:driverClassName="${jdbcDriver.className}" p:url="${testDataSource.url}"
-        p:username="${testDataSource.user}" p:password="${testDataSource.password}"
-        p:suppressClose="true" />
+        p:username="${testDataSource.user}" p:password="${testDataSource.password}" />
 
 
     <!-- Hibernate Session Factory. -->
