@@ -1,0 +1,46 @@
+<?page title="Navalpro: Scheduling"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_ganttzk_demo.zul"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="stylesheet" type="text/css" href="/planner/css/ganttzk.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+
+<zscript><![CDATA[
+    plannerData = new org.navalplanner.web.planner.DataForPlanner();
+]]>
+</zscript>
+    <!-- choose lightLoad, mediumLoad or highLoad.
+     -->
+    <planner id="planner" self="@{define(content)}"
+        configuration="${plannerData.lightLoad}">
+        <div id="idContextMenuTaskAssigment"></div>
+    </planner>
+
+    <popup width="300px" apply="${plannerData.taskEditForm}">
+        <grid>
+            <rows>
+                <row>
+                    ${c:l('task.name')}
+                    <textbox id="name" />
+                </row>
+                <row>
+                    ${c:l('task.start')}
+                    <datebox id="startDateBox" compact="true" />
+                </row>
+                <row>
+                    ${c:l('task.end')}
+                    <datebox id="endDateBox" compact="true" />
+                </row>
+                <row>
+                    ${c:l('task.notes')}
+                    <textbox id="notes" />
+                </row>
+            </rows>
+        </grid>
+        <button id="ok" label=" ${c:l('task.ok')}" />
+    </popup>
+
+</zk>

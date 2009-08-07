@@ -1,0 +1,46 @@
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+<?component name="customMenu" inline="true" macroURI="_customMenu.zul"?>
+<zk self="@{define(content)}">
+
+<n:div xmlns:n="http://www.zkoss.org/2005/zk/native">
+<n:table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <n:tr>
+    <n:td width="200" valign="bottom">
+        <n:a href="/ganttzk-demo-webapp/">
+        <n:img src="/ganttzk-demo-webapp/common/img/ganttzk-demo.png" width="300" height="60" /></n:a></n:td>
+  <n:td valign="top"><n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
+    <n:tr>
+      <n:td><n:table width="98%"  border="0" cellspacing="0" cellpadding="0">
+        <n:tr>
+          <n:td height="20" align="right"><n:table border="0" cellspacing="0" cellpadding="0">
+            <n:tr>
+              <n:td class="usuario">about</n:td>
+              <n:td><n:a href="www.igalia.com" class="cerrar_sesion">ganttZK</n:a></n:td>
+            <n:td><n:a href="#"><n:img src="/ganttzk-demo-webapp/common/img/axuda.gif" alt="Axuda" width="23" height="24" border="0" /></n:a></n:td>
+            </n:tr>
+          </n:table></n:td>
+        </n:tr>
+      </n:table>
+
+          </n:td>
+    </n:tr>
+  </n:table></n:td>
+  </n:tr>
+</n:table>
+<n:table width="100%"  border="0" cellpadding="0" cellspacing="0">
+  <n:tr>
+    <n:td class="migas_linea"></n:td>
+  </n:tr>
+</n:table>
+<n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
+  <n:tr>
+    <n:td height="400" valign="top"><div self="@{insert(content)}"/></n:td>
+  </n:tr>
+  <n:tr class="footer">
+    <n:td height="75" align="right" valign="bottom" background="/ganttzk-demo-webapp/common/img/linea_down.gif"><n:img src="/ganttzk-demo-webapp/common/img/logos_aplicacion.gif" width="332" height="73" /></n:td>
+  </n:tr>
+</n:table>
+</n:div>
+</zk>

@@ -1,0 +1,19 @@
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_ganttzk_demo.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+<zk>
+    <window self="@{define(content)}" >
+
+        <vbox apply="org.navalplanner.web.error.PageForErrorOnEvent"
+            sclass="errorbox">
+            <vbox>A páxina que está solicitando non existe.</vbox>
+            <vbox>Se introduciu a dirección directamente na barra de navegación
+            do navegador revísea ou pulse na seguinte ligazón para ir á páxina
+            inicial: Ir a inicio</vbox>
+            <vbox>Se chegou a esta páxina dende outra páxina do portal
+            rogámoslle nolo notifique para que sexa subsanado no menor
+            intervalo de tempo posible.</vbox>
+            <vbox>Desculpe as molestias.</vbox>
+        </vbox>
+    </window>
+</zk>
