@@ -1,4 +1,4 @@
-package org.navalplanner.business.test.orders.services;
+package org.navalplanner.web.orders;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -6,8 +6,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
-import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
+import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -19,19 +22,18 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
-import org.navalplanner.business.orders.services.IOrderService;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.services.ITaskElementService;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.services.ICriterionService;
-import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,33 +41,46 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Tests for {@link Order}. <br />
+ * Tests for {@link OrderModel}. <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+        WEBAPP_SPRING_CONFIG_FILE,
+        WEBAPP_SPRING_CONFIG_TEST_FILE })
 @Transactional
-public class OrderServiceTest {
+public class OrderModelTest {
+
+    public static Date year(int year) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.YEAR, year);
+        return calendar.getTime();
+    }
 
     private static Order createValidOrder() {
         Order order = new Order();
         order.setDescription("description");
         order.setCustomer("blabla");
-        order.setInitDate(CriterionSatisfactionDAOTest.year(2000));
+        order.setInitDate(year(2000));
         order.setName("name");
         order.setResponsible("responsible");
         return order;
     }
 
     @Autowired
-    private IOrderService orderService;
+    private IOrderModel orderModel;
 
     @Autowired
     private ITaskElementService taskElementService;
 
     @Autowired
     private ICriterionService criterionService;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -77,24 +92,28 @@ public class OrderServiceTest {
     @Test
     public void testCreation() throws ValidationException {
         Order order = createValidOrder();
-        orderService.save(order);
-        assertTrue(orderService.exists(order));
+        orderModel.setOrder(order);
+        orderModel.save();
+        assertTrue(orderDAO.exists(order.getId()));
     }
 
     @Test
     public void testListing() throws Exception {
-        List<Order> list = orderService.getOrders();
-        orderService.save(createValidOrder());
-        assertThat(orderService.getOrders().size(), equalTo(list.size() + 1));
+        List<Order> list = orderModel.getOrders();
+        Order order = createValidOrder();
+        orderModel.setOrder(order);
+        orderModel.save();
+        assertThat(orderModel.getOrders().size(), equalTo(list.size() + 1));
     }
 
     @Test
     public void testRemove() throws Exception {
         Order order = createValidOrder();
-        orderService.save(order);
-        assertTrue(orderService.exists(order));
-        orderService.remove(order);
-        assertFalse(orderService.exists(order));
+        orderModel.setOrder(order);
+        orderModel.save();
+        assertTrue(orderDAO.exists(order.getId()));
+        orderModel.remove(order);
+        assertFalse(orderDAO.exists(order.getId()));
     }
 
     @Test
@@ -106,11 +125,12 @@ public class OrderServiceTest {
         orderLine.setCode("00000000");
         orderLine.setWorkHours(10);
         order.add(orderLine);
-        orderService.save(order);
+        orderModel.setOrder(order);
+        orderModel.save();
         taskElementService.convertToScheduleAndSave(order);
         getSession().flush();
         getSession().evict(order);
-        Order reloaded = orderService.find(order.getId());
+        Order reloaded = orderDAO.find(order.getId());
         OrderElement e = reloaded.getOrderElements().iterator().next();
         assertThat(e.getTaskElements().size(), equalTo(1));
         Set<TaskElement> taskElements = e.getTaskElements();
@@ -121,23 +141,26 @@ public class OrderServiceTest {
                 task.getOrderElement().dontPoseAsTransientObjectAnymore();
             }
         }
-        orderService.remove(reloaded);
-        assertFalse(orderService.exists(reloaded));
+        orderModel.remove(reloaded);
+        orderModel.setOrder(reloaded);
+        assertFalse(orderDAO.exists(order.getId()));
     }
 
     @Test(expected = ValidationException.class)
     public void shouldSendValidationExceptionIfEndDateIsBeforeThanStartingDate()
             throws ValidationException {
         Order order = createValidOrder();
-        order.setEndDate(CriterionSatisfactionDAOTest.year(0));
-        orderService.save(order);
+        order.setEndDate(year(0));
+        orderModel.setOrder(order);
+        orderModel.save();
     }
 
     @Test
     public void testFind() throws Exception {
         Order order = createValidOrder();
-        orderService.save(order);
-        assertThat(orderService.find(order.getId()), notNullValue());
+        orderModel.setOrder(order);
+        orderModel.save();
+        assertThat(orderDAO.find(order.getId()), notNullValue());
     }
 
     @Test
@@ -167,13 +190,14 @@ public class OrderServiceTest {
             orderLineGroup.add(leaf);
         }
 
-        orderService.save(order);
-        orderService.onTransaction(new IOnTransaction<Void>() {
+        orderModel.setOrder(order);
+        orderModel.save();
+        orderModel.onTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
                 try {
-                    Order reloaded = orderService.find(order.getId());
+                    Order reloaded = orderDAO.find(order.getId());
                     List<OrderElement> elements = reloaded.getOrderElements();
                     for (int i = 0; i < containers.length; i++) {
                         assertThat(elements.get(i).getId(),
@@ -198,7 +222,7 @@ public class OrderServiceTest {
             }
 
         });
-        orderService.remove(order);
+        orderModel.remove(order);
     }
 
     private OrderLine createValidLeaf(String parameter) {
@@ -228,13 +252,14 @@ public class OrderServiceTest {
         HoursGroup hoursGroup = HoursGroup.create(leaf);
         hoursGroup.setWorkingHours(3);
         leaf.addHoursGroup(hoursGroup);
-        orderService.save(order);
-        orderService.onTransaction(new IOnTransaction<Void>() {
+        orderModel.setOrder(order);
+        orderModel.save();
+        orderModel.onTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
                 try {
-                    Order reloaded = orderService.find(order.getId());
+                    Order reloaded = orderDAO.find(order.getId());
                     assertFalse(order == reloaded);
                     assertThat(reloaded.getOrderElements().size(), equalTo(1));
                     OrderLineGroup containerReloaded = (OrderLineGroup) reloaded
@@ -245,7 +270,7 @@ public class OrderServiceTest {
                             equalTo(1));
                     OrderElement leaf = containerReloaded.getChildren().get(0);
                     assertThat(leaf.getHoursGroups().size(), equalTo(1));
-                    orderService.remove(order);
+                    orderModel.remove(order);
                 } catch (InstanceNotFoundException e) {
                     throw new RuntimeException(e);
                 }
@@ -280,14 +305,15 @@ public class OrderServiceTest {
         hoursGroup.addCriterion(criterion);
         hoursGroup2.addCriterion(criterion);
 
-        orderService.save(order);
+        orderModel.setOrder(order);
+        orderModel.save();
 
-        orderService.onTransaction(new IOnTransaction<Void>() {
+        orderModel.onTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
                 try {
-                    Order reloaded = orderService.find(order.getId());
+                    Order reloaded = orderDAO.find(order.getId());
 
                     List<OrderElement> orderElements = reloaded
                             .getOrderElements();
@@ -322,7 +348,8 @@ public class OrderServiceTest {
         orderLine.setCode("000000000");
         order.add(orderLine);
 
-        orderService.save(order);
+        orderModel.setOrder(order);
+        orderModel.save();
     }
 
 }
