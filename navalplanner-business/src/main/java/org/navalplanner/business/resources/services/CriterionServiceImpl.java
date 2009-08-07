@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
-import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.CriterionDAO;
@@ -226,11 +225,6 @@ public class CriterionServiceImpl implements ICriterionService {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Transactional(readOnly = true)
-    public <T> T onTransaction(IOnTransaction<T> onTransaction) {
-        return onTransaction.execute();
     }
 
 }

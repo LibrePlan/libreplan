@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
-import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -186,12 +185,6 @@ public class OrderModel implements IOrderModel {
 
     public List<Criterion> getCriterionsFor(CriterionType criterionType) {
         return mapCriterions.get(criterionType);
-    }
-
-    @Override
-    @Transactional
-    public <T> T onTransaction(IOnTransaction<T> onTransaction) {
-        return onTransaction.execute();
     }
 
     @Override

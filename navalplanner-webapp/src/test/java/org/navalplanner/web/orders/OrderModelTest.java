@@ -19,6 +19,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -84,6 +85,9 @@ public class OrderModelTest {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private IAdHocTransactionService adHocTransaction;
 
     private Session getSession() {
         return sessionFactory.getCurrentSession();
@@ -192,7 +196,7 @@ public class OrderModelTest {
 
         orderModel.setOrder(order);
         orderModel.save();
-        orderModel.onTransaction(new IOnTransaction<Void>() {
+        adHocTransaction.onTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
@@ -254,7 +258,7 @@ public class OrderModelTest {
         leaf.addHoursGroup(hoursGroup);
         orderModel.setOrder(order);
         orderModel.save();
-        orderModel.onTransaction(new IOnTransaction<Void>() {
+        adHocTransaction.onTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
@@ -308,7 +312,7 @@ public class OrderModelTest {
         orderModel.setOrder(order);
         orderModel.save();
 
-        orderModel.onTransaction(new IOnTransaction<Void>() {
+        adHocTransaction.onTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {

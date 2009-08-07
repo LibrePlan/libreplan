@@ -2,7 +2,6 @@ package org.navalplanner.web.orders;
 
 import java.util.List;
 
-import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
@@ -37,8 +36,6 @@ public interface IOrderModel {
     void schedule();
 
     boolean isAlreadyScheduled(Order order);
-
-    <T> T onTransaction(IOnTransaction<T> onTransaction);
 
     void setOrder(Order order);
 

@@ -16,6 +16,7 @@ import org.hibernate.validator.InvalidStateException;
 import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -30,7 +31,6 @@ import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.ICriterionService;
-import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.navalplanner.business.resources.services.IResourceService;
 import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
@@ -57,7 +57,7 @@ public class CriterionServiceTest {
     private ICriterionService criterionService;
 
     @Autowired
-    private ICriterionTypeService criterionTypeService;
+    IAdHocTransactionService adHocTransactionService;
 
     @Autowired
     private IResourceService resourceService;
@@ -256,7 +256,7 @@ public class CriterionServiceTest {
         ICriterionType<?> type = createTypeThatMatches(criterion);
         worker1.addSatisfaction(new CriterionWithItsType(criterion.getType(), criterion));
         resourceService.saveResource(worker1);
-        Resource workerReloaded = criterionService
+        Resource workerReloaded = adHocTransactionService
                 .onTransaction(new IOnTransaction<Resource>() {
 
                     @Override
