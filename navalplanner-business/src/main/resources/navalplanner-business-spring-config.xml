@@ -62,15 +62,6 @@
 
     <context:component-scan base-package="org.navalplanner.business" />
 
-    <!--
-        DAO registries (to be used from non-Spring managed objects (e.g.
-        entities)
-    -->
-
-    <bean id="plannerDaoRegistry"
-        class="org.navalplanner.business.planner.daos.PlannerDAORegistry"
-        factory-method="getInstance" />
-
     <bean id="registry"
         class="org.navalplanner.business.common.Registry"
         factory-method="getInstance" />
