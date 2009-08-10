@@ -463,6 +463,9 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
+            <!-- =========================================================== -->
+            <!-- Tomcat configuration -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>tomcat-maven-plugin</artifactId>
@@ -471,14 +474,18 @@
                     <server>${tomcatServer}</server>
                 </configuration>
             </plugin>
-        </plugins>
-    </build>
-    <reporting>
-        <plugins>
+
+            <!-- =========================================================== -->
+            <!-- Cobertura configuration -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
+                <configuration>
+                    <formats>
+                        <format>xml</format>
+                    </formats>
+                </configuration>
             </plugin>
         </plugins>
-    </reporting>
+    </build>
 </project>
