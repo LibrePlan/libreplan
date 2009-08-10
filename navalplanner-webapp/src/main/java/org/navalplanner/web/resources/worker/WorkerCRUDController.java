@@ -1,12 +1,13 @@
 package org.navalplanner.web.resources.worker;
 
+import static org.navalplanner.web.common.ConcurrentModificationDetector.detectConcurrentModification;
+
 import java.util.List;
 
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.ICriterionService;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -155,6 +156,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        this.workerModel = detectConcurrentModification(IWorkerModel.class,
+                this.workerModel, "/resources/worker/worker.zul");
         localizationsForEditionController = createLocalizationsController(comp,
                 "editWindow");
         localizationsForCreationController = createLocalizationsController(
