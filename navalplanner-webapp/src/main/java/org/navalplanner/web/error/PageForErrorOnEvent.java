@@ -10,39 +10,39 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 
 public class PageForErrorOnEvent extends GenericForwardComposer {
 
-	private static final Log LOG = LogFactory.getLog(PageForErrorOnEvent.class);
+    private static final Log LOG = LogFactory.getLog(PageForErrorOnEvent.class);
 
-	private Component modalWindow;
+    private Component modalWindow;
 
-	@Override
-	public void doAfterCompose(Component comp) throws Exception {
-		super.doAfterCompose(comp);
-		logError();
-		modalWindow = comp;
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        logError();
+        modalWindow = comp;
 
-	}
+    }
 
-	private void logError() {
-		Throwable exception = (Throwable) Executions.getCurrent().getAttribute(
-				"javax.servlet.error.exception");
-		String errorMessage = (String) Executions.getCurrent().getAttribute(
-				"javax.servlet.error.message");
-		LOG.error(errorMessage, exception);
-	}
+    private void logError() {
+        Throwable exception = (Throwable) Executions.getCurrent().getAttribute(
+                "javax.servlet.error.exception");
+        String errorMessage = (String) Executions.getCurrent().getAttribute(
+                "javax.servlet.error.message");
+        LOG.error(errorMessage, exception);
+    }
 
-	public void onClick$continueWorking() {
-		modalWindow.detach();
-	}
+    public void onClick$continueWorking() {
+        modalWindow.detach();
+    }
 
-	public void onClick$reload() {
-		Executions.sendRedirect(null);
-	}
+    public void onClick$reload() {
+        Executions.sendRedirect(null);
+    }
 
-	public void onClick$quitSession() {
-		HttpServletRequest nativeRequest = (HttpServletRequest) Executions
-				.getCurrent().getNativeRequest();
-		nativeRequest.getSession().invalidate();
-		Executions.sendRedirect("/");
-	}
+    public void onClick$quitSession() {
+        HttpServletRequest nativeRequest = (HttpServletRequest) Executions
+                .getCurrent().getNativeRequest();
+        nativeRequest.getSession().invalidate();
+        Executions.sendRedirect("/");
+    }
 
 }

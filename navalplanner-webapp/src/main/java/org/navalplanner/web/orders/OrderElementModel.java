@@ -47,7 +47,7 @@ public class OrderElementModel implements IOrderElementModel {
 
     @Override
     @Transactional(readOnly = true)
-	public void setCurrent(OrderElement orderElement, OrderModel order) {
+    public void setCurrent(OrderElement orderElement, OrderModel order) {
         orderElementDao.save(orderElement);
 
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {

@@ -225,7 +225,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         return planner;
     }
 
-	@Override
+    @Override
     public void replace(T oldDomainObject, T newDomainObject) {
         Position position = remove(oldDomainObject);
         add(position, newDomainObject);

@@ -27,36 +27,36 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class WorkReportLineDAOTest extends AbstractWorkReportTest {
 
-	@Autowired
-	private IWorkReportLineDAO workReportLineDAO;
+    @Autowired
+    private IWorkReportLineDAO workReportLineDAO;
 
-	@Test
-	public void testSaveWorkReportLine() {
-		WorkReportLine workReportLine = createValidWorkReportLine();
-		workReportLineDAO.save(workReportLine);
-		assertTrue(workReportLineDAO.exists(workReportLine.getId()));
-	}
+    @Test
+    public void testSaveWorkReportLine() {
+        WorkReportLine workReportLine = createValidWorkReportLine();
+        workReportLineDAO.save(workReportLine);
+        assertTrue(workReportLineDAO.exists(workReportLine.getId()));
+    }
 
-	@Test
-	public void testRemoveWorkReportLine() throws InstanceNotFoundException {
-		WorkReportLine workReportLine = createValidWorkReportLine();
-		workReportLineDAO.save(workReportLine);
-		workReportLineDAO.remove(workReportLine.getId());
-		assertFalse(workReportLineDAO.exists(workReportLine.getId()));
-	}
+    @Test
+    public void testRemoveWorkReportLine() throws InstanceNotFoundException {
+        WorkReportLine workReportLine = createValidWorkReportLine();
+        workReportLineDAO.save(workReportLine);
+        workReportLineDAO.remove(workReportLine.getId());
+        assertFalse(workReportLineDAO.exists(workReportLine.getId()));
+    }
 
-	@Test
-	public void testListWorkReportLine() {
-		int previous = workReportLineDAO.list(WorkReportLine.class).size();
+    @Test
+    public void testListWorkReportLine() {
+        int previous = workReportLineDAO.list(WorkReportLine.class).size();
 
-		WorkReportLine workReportType1 = createValidWorkReportLine();
-		workReportLineDAO.save(workReportType1);
-		WorkReportLine workReportType2 = createValidWorkReportLine();
-		workReportLineDAO.save(workReportType1);
-		workReportLineDAO.save(workReportType2);
+        WorkReportLine workReportType1 = createValidWorkReportLine();
+        workReportLineDAO.save(workReportType1);
+        WorkReportLine workReportType2 = createValidWorkReportLine();
+        workReportLineDAO.save(workReportType1);
+        workReportLineDAO.save(workReportType2);
 
-		List<WorkReportLine> list = workReportLineDAO
-		        .list(WorkReportLine.class);
-		assertEquals(previous + 2, list.size());
-	}
+        List<WorkReportLine> list = workReportLineDAO
+                .list(WorkReportLine.class);
+        assertEquals(previous + 2, list.size());
+    }
 }

@@ -28,41 +28,41 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class WorkReportDAOTest extends AbstractWorkReportTest {
 
-	@Autowired
-	private IWorkReportDAO workReportDAO;
+    @Autowired
+    private IWorkReportDAO workReportDAO;
 
-	@Test
-	public void testInSpringContainer() {
-		assertNotNull(workReportDAO);
-	}
+    @Test
+    public void testInSpringContainer() {
+        assertNotNull(workReportDAO);
+    }
 
-	@Test
-	public void testSaveWorkReport() {
-		WorkReport workReport = createValidWorkReport();
-		workReportDAO.save(workReport);
-		assertTrue(workReportDAO.exists(workReport.getId()));
-	}
+    @Test
+    public void testSaveWorkReport() {
+        WorkReport workReport = createValidWorkReport();
+        workReportDAO.save(workReport);
+        assertTrue(workReportDAO.exists(workReport.getId()));
+    }
 
-	@Test
-	public void testRemoveWorkReport() throws InstanceNotFoundException {
-		WorkReport workReport = createValidWorkReport();
-		workReportDAO.save(workReport);
-		workReportDAO.remove(workReport.getId());
-		assertFalse(workReportDAO.exists(workReport.getId()));
-	}
+    @Test
+    public void testRemoveWorkReport() throws InstanceNotFoundException {
+        WorkReport workReport = createValidWorkReport();
+        workReportDAO.save(workReport);
+        workReportDAO.remove(workReport.getId());
+        assertFalse(workReportDAO.exists(workReport.getId()));
+    }
 
-	@Test
-	public void testListWorkReport() {
-		int previous = workReportDAO.list(WorkReport.class).size();
+    @Test
+    public void testListWorkReport() {
+        int previous = workReportDAO.list(WorkReport.class).size();
 
-		WorkReport workReport1 = createValidWorkReport();
-		workReportDAO.save(workReport1);
-		WorkReport workReport2 = createValidWorkReport();
-		workReportDAO.save(workReport1);
-		workReportDAO.save(workReport2);
+        WorkReport workReport1 = createValidWorkReport();
+        workReportDAO.save(workReport1);
+        WorkReport workReport2 = createValidWorkReport();
+        workReportDAO.save(workReport1);
+        workReportDAO.save(workReport2);
 
-		List<WorkReport> list = workReportDAO
-		        .list(WorkReport.class);
-		assertEquals(previous + 2, list.size());
-	}
+        List<WorkReport> list = workReportDAO
+                .list(WorkReport.class);
+        assertEquals(previous + 2, list.size());
+    }
 }

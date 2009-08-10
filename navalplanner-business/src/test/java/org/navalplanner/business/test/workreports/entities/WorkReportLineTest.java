@@ -9,9 +9,9 @@ import org.junit.Test;
  */
 public class WorkReportLineTest {
 
-	@Test
-	public void testWorkReportLineTest() {
-		assertTrue(true);
-	}
+    @Test
+    public void testWorkReportLineTest() {
+        assertTrue(true);
+    }
 
 }

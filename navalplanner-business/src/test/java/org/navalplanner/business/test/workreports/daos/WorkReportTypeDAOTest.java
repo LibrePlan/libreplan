@@ -27,36 +27,36 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class WorkReportTypeDAOTest extends AbstractWorkReportTest {
 
-	@Autowired
-	private IWorkReportTypeDAO workReportTypeDAO;
+    @Autowired
+    private IWorkReportTypeDAO workReportTypeDAO;
 
-	@Test
-	public void testSaveWorkReportType() {
-		WorkReportType workReportType = createValidWorkReportType();
-		workReportTypeDAO.save(workReportType);
-		assertTrue(workReportTypeDAO.exists(workReportType.getId()));
-	}
+    @Test
+    public void testSaveWorkReportType() {
+        WorkReportType workReportType = createValidWorkReportType();
+        workReportTypeDAO.save(workReportType);
+        assertTrue(workReportTypeDAO.exists(workReportType.getId()));
+    }
 
-	@Test
-	public void testRemoveWorkReportType() throws InstanceNotFoundException {
-		WorkReportType workReportType = createValidWorkReportType();
-		workReportTypeDAO.save(workReportType);
-		workReportTypeDAO.remove(workReportType.getId());
-		assertFalse(workReportTypeDAO.exists(workReportType.getId()));
-	}
+    @Test
+    public void testRemoveWorkReportType() throws InstanceNotFoundException {
+        WorkReportType workReportType = createValidWorkReportType();
+        workReportTypeDAO.save(workReportType);
+        workReportTypeDAO.remove(workReportType.getId());
+        assertFalse(workReportTypeDAO.exists(workReportType.getId()));
+    }
 
-	@Test
-	public void testListWorkReportType() {
-		int previous = workReportTypeDAO.list(WorkReportType.class).size();
+    @Test
+    public void testListWorkReportType() {
+        int previous = workReportTypeDAO.list(WorkReportType.class).size();
 
-		WorkReportType workReportType1 = createValidWorkReportType();
-		workReportTypeDAO.save(workReportType1);
-		WorkReportType workReportType2 = createValidWorkReportType();
-		workReportTypeDAO.save(workReportType1);
-		workReportTypeDAO.save(workReportType2);
+        WorkReportType workReportType1 = createValidWorkReportType();
+        workReportTypeDAO.save(workReportType1);
+        WorkReportType workReportType2 = createValidWorkReportType();
+        workReportTypeDAO.save(workReportType1);
+        workReportTypeDAO.save(workReportType2);
 
-		List<WorkReportType> list = workReportTypeDAO
-		        .list(WorkReportType.class);
-		assertEquals(previous + 2, list.size());
-	}
+        List<WorkReportType> list = workReportTypeDAO
+                .list(WorkReportType.class);
+        assertEquals(previous + 2, list.size());
+    }
 }

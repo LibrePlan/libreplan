@@ -172,7 +172,7 @@ public class Task extends TaskElement {
         }
 
         return true;
-	}
+    }
 
     @Override
     public Integer defaultWorkHours() {

@@ -10,6 +10,6 @@ import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
  */
 public interface ITaskElementAdapter extends IAdapterToTaskFundamentalProperties<TaskElement>{
 
-	void setOrder(Order order);
+    void setOrder(Order order);
 
 }
