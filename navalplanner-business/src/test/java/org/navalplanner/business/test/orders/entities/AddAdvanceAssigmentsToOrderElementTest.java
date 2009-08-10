@@ -106,7 +106,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
      * advanceAssigment of {@link OrderElement}.
      */
     @Test
-    public void testSetAdvanceAssigmentEmptyOrderElement() throws Exception{
+    public void savingTheOrderSavesAlsoTheAddedAssigments() throws Exception {
         Order order = createValidOrder();
         OrderElement orderLine = createValidLeaf("OrderLineA", "1k1k1k1k");
 
@@ -124,8 +124,6 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         order.add(orderLine);
         orderDao.save(order);
         this.sessionFactory.getCurrentSession().flush();
-        assertTrue(orderDao.exists(order.getId()));
-        assertTrue(orderElementDao.exists(orderLine.getId()));
 
         assertFalse(orderLine.getAdvanceAssigments().isEmpty());
         assertTrue(advanceAssigmentDao.exists(advanceAssigment.getId()));
@@ -144,7 +142,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
      * the list a new {@link AdvanceAssigment} of diferent type.
      */
     @Test
-    public void testSetOtherAdvanceAssigmentOrderElement() throws Exception {
+    public void addingSeveralAssignmentsOfDifferentTypes() throws Exception {
         Order order = createValidOrder();
         OrderLine orderLine = createValidLeaf("OrderLineA", "1111111");
 
@@ -171,8 +169,8 @@ public class AddAdvanceAssigmentsToOrderElementTest {
      * DuplicateAdvanceAssigmentForOrderElementException Exception.
      */
     @Test
-    public void testSetOtherAdvanceAssigmentOrderElementIllegal() throws Exception{
-        Order order = createValidOrder();
+    public void cannotAddDuplicatedAssignment()
+            throws Exception {
         OrderLine orderLine = createValidLeaf("OrderLineA", "22222222");
 
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
@@ -180,18 +178,16 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
 
-        order.add(orderLine);
-        orderDao.save(order);
-
         orderLine.addAvanceAssigment(advanceAssigmentA);
 
         AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
         advanceAssigmentB.setAdvanceType(advanceTypeA);
+
         try {
             orderLine.addAvanceAssigment(advanceAssigmentB);
             fail("It should throw an exception");
-        } catch (Exception e) {
-            // Ok } }
+        } catch (DuplicateAdvanceAssigmentForOrderElementException e) {
+            // Ok
         }
     }
 
@@ -202,8 +198,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
      * DuplicateValueTrueReportGlobalAdvanceException Exception.
      */
     @Test
-    public void testSetWithSameReportGloblalAdvance() throws Exception{
-        Order order = createValidOrder();
+    public void cannotAddTwoAssignmetsWithGlobalReportValue() throws Exception {
         OrderLine orderLine = createValidLeaf("OrderLineA", "101010101");
 
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
@@ -212,8 +207,6 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
 
-        order.add(orderLine);
-        orderDao.save(order);
 
         orderLine.addAvanceAssigment(advanceAssigmentA);
 
@@ -224,8 +217,6 @@ public class AddAdvanceAssigmentsToOrderElementTest {
             fail("It should throw an exception  ");
         } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
             // Ok
-        } catch (Exception e) {
-            fail("It should not throw an exception");
         }
     }
 
@@ -235,163 +226,100 @@ public class AddAdvanceAssigmentsToOrderElementTest {
      * not throw any exception.
      **/
     @Test
-    public void testSetAdvanceAssigmentOrdeElementSon() throws Exception{
-        final Order order = createValidOrder();
-        final OrderElement[] containers = new OrderLineGroup[2];
-        for (int i = 0; i < containers.length; i++) {
-            containers[i] = OrderLineGroup.create();
-            containers[i].setName("bla");
-            containers[i].setCode("000000000");
-            order.add(containers[i]);
-        }
-        OrderLineGroup container = (OrderLineGroup) containers[0];
-        final OrderElement[] orderElements = new OrderElement[4];
-        for (int i = 0; i < orderElements.length; i++) {
-            OrderLine leaf = createValidLeaf("bla", "787887");
-            orderElements[i] = leaf;
-            container.add(leaf);
-        }
-
-        for (int i = 1; i < containers.length; i++) {
-            OrderLineGroup orderLineGroup = (OrderLineGroup) containers[i];
-            OrderLine leaf = createValidLeaf("foo", "156325");
-            orderLineGroup.add(leaf);
-        }
+    public void addingAssignmentsOfAnotherTypeToSon() throws Exception {
+        OrderLineGroup container = OrderLineGroup.create();
+        container.setName("bla");
+        container.setCode("000000000");
+        OrderLine son = createValidLeaf("bla", "132");
+        container.add(son);
 
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
         AdvanceType advanceTypeB = createAndSaveType("tipoB");
 
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
-        AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(true);
+        AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
         advanceAssigmentB.setAdvanceType(advanceTypeB);
 
-        orderDao.save(order);
+
+        container.addAvanceAssigment(advanceAssigmentA);
+        son.addAvanceAssigment(advanceAssigmentB);
+    }
+
+    @Test
+    public void addingAnAdvanceAssignmentIncreasesTheNumberOfAdvanceAssignments()
+            throws Exception {
+        final OrderLineGroup container = OrderLineGroup.create();
+        container.setName("bla");
+        container.setCode("000000000");
+        container.add(createValidLeaf("bla", "979"));
+
+        AdvanceType advanceTypeA = createAndSaveType("tipoA");
+        AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
+        advanceAssigmentA.setAdvanceType(advanceTypeA);
 
         container.addAvanceAssigment(advanceAssigmentA);
 
         assertThat(container.getAdvanceAssigments().size(), equalTo(1));
-        assertThat(
-                container.getChildren().get(0).getAdvanceAssigments().size(),
-                equalTo(0));
-            ((OrderElement) container.getChildren().get(0))
-                    .addAvanceAssigment(advanceAssigmentB);
     }
 
-    /**
-     * Trying define an AdvanceAssigment object when any father of OrderElement
-     * with an AdvanceAssigment object that has the same AdvanceType Expected:
-     * It must throw DuplicateAdvanceAssigmentForOrderElementException
-     * Exception.
-     **/
     @Test
-    public void testSetAdvanceAssigmentOrdeElementSonIllegal() throws Exception{
-        final Order order = createValidOrder();
-        final OrderElement[] containers = new OrderLineGroup[2];
-        for (int i = 0; i < containers.length; i++) {
-            containers[i] = OrderLineGroup.create();
-            containers[i].setName("bla");
-            containers[i].setCode("000000000");
-            order.add(containers[i]);
-        }
-        OrderLineGroup container = (OrderLineGroup) containers[0];
-
-        final OrderElement[] orderElements = new OrderElement[4];
-        for (int i = 0; i < orderElements.length; i++) {
-            OrderLine leaf = createValidLeaf("bla", "97979");
-            orderElements[i] = leaf;
-            container.add(leaf);
-        }
-
-        for (int i = 1; i < containers.length; i++) {
-            OrderLineGroup orderLineGroup = (OrderLineGroup) containers[i];
-            OrderLine leaf = createValidLeaf("foo", "797900");
-            orderLineGroup.add(leaf);
-        }
+    public void cannotAddDuplicatedAssigmentToSon() throws Exception {
+        final OrderLineGroup father = OrderLineGroup.create();
+        father.setName("bla");
+        father.setCode("000000000");
+        father.add(createValidLeaf("bla", "979"));
 
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
 
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
-        AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(true);
-        advanceAssigmentB.setAdvanceType(advanceTypeA);
+        AdvanceAssigment anotherAssigmentWithSameType = createValidAdvanceAssigment(false);
+        anotherAssigmentWithSameType.setAdvanceType(advanceTypeA);
 
-        orderDao.save(order);
-        container.addAvanceAssigment(advanceAssigmentA);
+        father.addAvanceAssigment(advanceAssigmentA);
 
-        assertThat(container.getAdvanceAssigments().size(), equalTo(1));
-        assertThat(
-                container.getChildren().get(0).getAdvanceAssigments().size(),
-                equalTo(0));
         try {
-            ((OrderElement) container.getChildren().get(0))
-                    .addAvanceAssigment(advanceAssigmentB);
+            OrderElement child = (OrderElement) father.getChildren().get(0);
+            child.addAvanceAssigment(anotherAssigmentWithSameType);
             fail("It should throw an exception  ");
-        } catch (Exception e) {
+        } catch (DuplicateAdvanceAssigmentForOrderElementException e) {
             // Ok
         }
     }
 
-    /**
-     * Trying define an AdvanceAssigment object when any child of OrderElement
-     * with an AdvanceAssigment object that has the same AdvanceType Expected:
-     * It must throw DuplicateAdvanceAssigmentForOrderElementException
-     * Exception.
-     **/
     @Test
-    public void testSetAdvanceAssigmentOrdeElementParentIllegal() throws Exception{
-        final Order order = createValidOrder();
-        final OrderElement[] containers = new OrderLineGroup[2];
-        for (int i = 0; i < containers.length; i++) {
-            containers[i] = OrderLineGroup.create();
-            containers[i].setName("bla_" + i);
-            containers[i].setCode("000000000");
-            order.add(containers[i]);
-        }
-        OrderLineGroup container = (OrderLineGroup) containers[0];
-        OrderLineGroup containerSon = (OrderLineGroup) OrderLineGroup.create();
-        containerSon.setName("Son");
-        containerSon.setCode("11111111");
-        container.add(containerSon);
-        OrderLine orderLineGranSon = createValidLeaf("GranSon", "75757");
-        containerSon.add(orderLineGranSon);
-        final OrderElement[] orderElements = new OrderElement[2];
-        for (int i = 1; i < orderElements.length; i++) {
-            OrderLine leaf = createValidLeaf("bla", "979879");
-            orderElements[i] = leaf;
-            container.add(leaf);
-        }
-        for (int i = 1; i < containers.length; i++) {
-            OrderLineGroup orderLineGroup = (OrderLineGroup) containers[i];
-            OrderLine leaf = createValidLeaf("foo", "79799");
-            orderLineGroup.add(leaf);
-        }
+    public void cannotAddDuplicateAssignmentToGrandParent() throws Exception {
+        OrderLineGroup parent = OrderLineGroup.create();
+        parent.setName("bla_");
+        parent.setCode("000000000");
+        OrderLineGroup son = (OrderLineGroup) OrderLineGroup.create();
+        son.setName("Son");
+        son.setCode("11111111");
+        parent.add(son);
+        OrderLine grandSon = createValidLeaf("GranSon", "75757");
+        son.add(grandSon);
+
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
 
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
-        AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(true);
+        AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
         advanceAssigmentB.setAdvanceType(advanceTypeA);
 
-        orderDao.save(order);
-
-        orderLineGranSon.addAvanceAssigment(advanceAssigmentA);
-
-        assertThat(orderLineGranSon.getAdvanceAssigments().size(), equalTo(1));
+        grandSon.addAvanceAssigment(advanceAssigmentA);
 
         try {
-            container.addAvanceAssigment(advanceAssigmentB);
+            parent.addAvanceAssigment(advanceAssigmentB);
             fail("It should throw an exception  ");
-        } catch (Exception e) {
+        } catch (DuplicateAdvanceAssigmentForOrderElementException e) {
             // Ok
         }
     }
-
 
     @Test(expected = DuplicateAdvanceAssigmentForOrderElementException.class)
     public void addingAnotherAdvanceAssigmentWithAnEquivalentTypeButDifferentInstance()
-            throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssigmentForOrderElementException {
+            throws Exception {
         final Order order = createValidOrder();
         OrderLine line = createValidLeaf("GranSon", "75757");
         order.add(line);
