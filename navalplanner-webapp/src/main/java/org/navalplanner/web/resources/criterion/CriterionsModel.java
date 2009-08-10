@@ -77,6 +77,7 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void workOn(Criterion criterion) {
         Validate.notNull(criterion);
         this.criterion = criterion;
