@@ -99,12 +99,6 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         return advanceAssigment;
     }
 
-    /**
-     * An empty {@link OrderElement} without any {@link AdvanceAssigment}.
-     * Trying to add a new {@link AdvanceAssigment} to {@link OrderElement} .
-     * Expected: Add new {@link AdvanceAssigment} to the list of
-     * advanceAssigment of {@link OrderElement}.
-     */
     @Test
     public void savingTheOrderSavesAlsoTheAddedAssigments() throws Exception {
         Order order = createValidOrder();
@@ -136,11 +130,6 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         return advanceType;
     }
 
-    /**
-     * An {@link OrderElement} with an {@link AdvanceAssigment}. Trying to add a
-     * new {@link AdvanceAssigment} to {@link OrderElement} . Expected: Add to
-     * the list a new {@link AdvanceAssigment} of diferent type.
-     */
     @Test
     public void addingSeveralAssignmentsOfDifferentTypes() throws Exception {
         Order order = createValidOrder();
@@ -162,12 +151,6 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         orderLine.addAvanceAssigment(advanceAssigmentB);
     }
 
-    /**
-     * An {@link OrderElement} with an {@link AdvanceAssigment}. Trying to add a
-     * new {@link AdvanceAssigment} of the same type.to {@link OrderElement}
-     * Expected: It must throw a
-     * DuplicateAdvanceAssigmentForOrderElementException Exception.
-     */
     @Test
     public void cannotAddDuplicatedAssignment()
             throws Exception {
@@ -191,12 +174,6 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         }
     }
 
-    /**
-     * An {@link OrderElement} with an {@link AdvanceAssigment}. Trying to add a
-     * new {@link AdvanceAssigment} with the ReportGloblalAdvance value true to
-     * {@link OrderElement} Expected: It must throw a
-     * DuplicateValueTrueReportGlobalAdvanceException Exception.
-     */
     @Test
     public void cannotAddTwoAssignmetsWithGlobalReportValue() throws Exception {
         OrderLine orderLine = createValidLeaf("OrderLineA", "101010101");
@@ -220,11 +197,6 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         }
     }
 
-    /**
-     * Trying define an AdvanceAssigment object when any father of OrderElement
-     * with an AdvanceAssigment object that has the other AdvanceType. It must
-     * not throw any exception.
-     **/
     @Test
     public void addingAssignmentsOfAnotherTypeToSon() throws Exception {
         OrderLineGroup container = OrderLineGroup.create();
