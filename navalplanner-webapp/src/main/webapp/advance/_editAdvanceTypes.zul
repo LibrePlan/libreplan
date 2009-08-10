@@ -23,7 +23,7 @@
                         <row>
                             <label value="Precision" />
                             <decimalbox id="precision" scale="4"
-                                value = "@{controller.advanceType.precision}" constraint = "@{controller.lessThanDefaultMaxValue}"/>
+                                value = "@{controller.advanceType.unitPrecision}" constraint = "@{controller.lessThanDefaultMaxValue}"/>
                         </row>
                         <row>
                             <label value="Type" />
