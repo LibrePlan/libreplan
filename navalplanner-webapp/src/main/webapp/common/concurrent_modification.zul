@@ -1,0 +1,19 @@
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+<zk>
+
+    <window self="@{define(content)}" >
+        <!--caption>
+            Erro ${requestScope['javax.servlet.error.status_code']}
+        </caption-->
+        <vbox apply="org.navalplanner.web.common.ConcurrentModificationController"
+            sclass="errorbox">
+            Another user has modified the same data, so the operation couldn't be completed.
+
+            <hbox style="margin-left:auto; margin-right:auto">
+                <button id="continue" label="Continue" />
+            </hbox>
+        </vbox>
+    </window>
+</zk>
