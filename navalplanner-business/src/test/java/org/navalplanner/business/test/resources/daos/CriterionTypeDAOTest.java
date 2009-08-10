@@ -5,25 +5,28 @@
 
 package org.navalplanner.business.test.resources.daos;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+
 import java.util.List;
 import java.util.UUID;
+
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertEquals;
-
-import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
-import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 /**
  *
@@ -62,6 +65,32 @@ public class CriterionTypeDAOTest {
     }
 
     @Test
+    public void testCriterionTypeCanBeSavedTwice() throws ValidationException {
+        CriterionType criterionType = createValidCriterionType();
+        criterionTypeDAO.save(criterionType);
+        criterionTypeDAO.save(criterionType);
+        assertTrue(criterionTypeDAO.exists(criterionType.getId())
+                || criterionTypeDAO.existsByName(criterionType));
+    }
+
+    @Test
+    public void testCannotSaveTwoDifferentCriterionTypesWithTheSameName()
+            throws ValidationException {
+         try {
+            CriterionType criterionType = createValidCriterionType("bla");
+            criterionTypeDAO.save(criterionType);
+            criterionType = createValidCriterionType("bla");
+            criterionTypeDAO.save(criterionType);
+            criterionTypeDAO.flush();
+            fail("must send exception since thereis a duplicated criterion type");
+        } catch (ConstraintViolationException c) {
+            // This exception is raised in postgresql
+        } catch (DataIntegrityViolationException d) {
+            // This exception is raised in HSQL
+        }
+    }
+
+    @Test
     public void testRemove() throws InstanceNotFoundException {
         CriterionType criterionType = createValidCriterionType();
         criterionTypeDAO.save(criterionType);
@@ -79,4 +108,16 @@ public class CriterionTypeDAOTest {
         List<CriterionType> list = criterionTypeDAO.list(CriterionType.class);
         assertEquals(previous + 2, list.size());
     }
+
+    @Test
+    public void testGetCriterionTypes() {
+        int previous = criterionTypeDAO.list(CriterionType.class).size();
+        CriterionType criterion1 = createValidCriterionType();
+        CriterionType criterion2 = createValidCriterionType();
+        criterionTypeDAO.save(criterion1);
+        criterionTypeDAO.save(criterion2);
+        List<CriterionType> list = criterionTypeDAO.getCriterionTypes();
+        assertEquals(previous + 2, list.size());
+    }
+
 }
