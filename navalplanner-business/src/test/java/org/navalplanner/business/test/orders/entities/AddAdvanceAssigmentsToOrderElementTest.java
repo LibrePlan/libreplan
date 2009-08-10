@@ -106,7 +106,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
      * advanceAssigment of {@link OrderElement}.
      */
     @Test
-    public void testSetAdvanceAssigmentEmptyOrderElement() {
+    public void testSetAdvanceAssigmentEmptyOrderElement() throws Exception{
         Order order = createValidOrder();
         OrderElement orderLine = createValidLeaf("OrderLineA", "1k1k1k1k");
 
@@ -119,13 +119,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         order.add(orderLine);
         orderDao.save(order);
 
-        try {
-            orderLine.addAvanceAssigment(advanceAssigment);
-        } catch (DuplicateAdvanceAssigmentForOrderElementException e) {
-            fail("Duplicate Exception");
-        } catch (Exception e) {
-            fail("It should not throw an exception  ");
-        }
+        orderLine.addAvanceAssigment(advanceAssigment);
 
         order.add(orderLine);
         orderDao.save(order);
@@ -150,7 +144,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
      * the list a new {@link AdvanceAssigment} of diferent type.
      */
     @Test
-    public void testSetOtherAdvanceAssigmentOrderElement() {
+    public void testSetOtherAdvanceAssigmentOrderElement() throws Exception {
         Order order = createValidOrder();
         OrderLine orderLine = createValidLeaf("OrderLineA", "1111111");
 
@@ -163,19 +157,11 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         order.add(orderLine);
         orderDao.save(order);
 
-        try {
-            orderLine.addAvanceAssigment(advanceAssigmentA);
-        } catch (Exception e) {
-            fail("It should not throw an exception  ");
-        }
+        orderLine.addAvanceAssigment(advanceAssigmentA);
 
         AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
         advanceAssigmentB.setAdvanceType(advanceTypeB);
-        try {
-            orderLine.addAvanceAssigment(advanceAssigmentB);
-        } catch (Exception e) {
-            fail("It should not throw an exception  ");
-        }
+        orderLine.addAvanceAssigment(advanceAssigmentB);
     }
 
     /**
@@ -185,7 +171,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
      * DuplicateAdvanceAssigmentForOrderElementException Exception.
      */
     @Test
-    public void testSetOtherAdvanceAssigmentOrderElementIllegal() {
+    public void testSetOtherAdvanceAssigmentOrderElementIllegal() throws Exception{
         Order order = createValidOrder();
         OrderLine orderLine = createValidLeaf("OrderLineA", "22222222");
 
@@ -197,11 +183,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         order.add(orderLine);
         orderDao.save(order);
 
-        try {
-            orderLine.addAvanceAssigment(advanceAssigmentA);
-        } catch (Exception e) {
-            fail("It should not throw an exception  ");
-        }
+        orderLine.addAvanceAssigment(advanceAssigmentA);
 
         AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
         advanceAssigmentB.setAdvanceType(advanceTypeA);
@@ -220,7 +202,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
      * DuplicateValueTrueReportGlobalAdvanceException Exception.
      */
     @Test
-    public void testSetWithSameReportGloblalAdvance() {
+    public void testSetWithSameReportGloblalAdvance() throws Exception{
         Order order = createValidOrder();
         OrderLine orderLine = createValidLeaf("OrderLineA", "101010101");
 
@@ -233,11 +215,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         order.add(orderLine);
         orderDao.save(order);
 
-        try {
-            orderLine.addAvanceAssigment(advanceAssigmentA);
-        } catch (Exception e) {
-            fail("It should not throw an exception  ");
-        }
+        orderLine.addAvanceAssigment(advanceAssigmentA);
 
         AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(true);
         advanceAssigmentB.setAdvanceType(advanceTypeB);
@@ -257,7 +235,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
      * not throw any exception.
      **/
     @Test
-    public void testSetAdvanceAssigmentOrdeElementSon() {
+    public void testSetAdvanceAssigmentOrdeElementSon() throws Exception{
         final Order order = createValidOrder();
         final OrderElement[] containers = new OrderLineGroup[2];
         for (int i = 0; i < containers.length; i++) {
@@ -290,22 +268,14 @@ public class AddAdvanceAssigmentsToOrderElementTest {
 
         orderDao.save(order);
 
-        try {
-            container.addAvanceAssigment(advanceAssigmentA);
-        } catch (Exception e) {
-            fail("It should not throw an exception  ");
-        }
+        container.addAvanceAssigment(advanceAssigmentA);
 
         assertThat(container.getAdvanceAssigments().size(), equalTo(1));
         assertThat(
                 container.getChildren().get(0).getAdvanceAssigments().size(),
                 equalTo(0));
-        try {
             ((OrderElement) container.getChildren().get(0))
                     .addAvanceAssigment(advanceAssigmentB);
-        } catch (Exception e) {
-            fail("It should not throw an exception  ");
-        }
     }
 
     /**
@@ -315,7 +285,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
      * Exception.
      **/
     @Test
-    public void testSetAdvanceAssigmentOrdeElementSonIllegal() {
+    public void testSetAdvanceAssigmentOrdeElementSonIllegal() throws Exception{
         final Order order = createValidOrder();
         final OrderElement[] containers = new OrderLineGroup[2];
         for (int i = 0; i < containers.length; i++) {
@@ -347,12 +317,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         advanceAssigmentB.setAdvanceType(advanceTypeA);
 
         orderDao.save(order);
-
-        try {
-            container.addAvanceAssigment(advanceAssigmentA);
-        } catch (Exception e) {
-            fail("It should not throw an exception  ");
-        }
+        container.addAvanceAssigment(advanceAssigmentA);
 
         assertThat(container.getAdvanceAssigments().size(), equalTo(1));
         assertThat(
@@ -374,7 +339,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
      * Exception.
      **/
     @Test
-    public void testSetAdvanceAssigmentOrdeElementParentIllegal() {
+    public void testSetAdvanceAssigmentOrdeElementParentIllegal() throws Exception{
         final Order order = createValidOrder();
         final OrderElement[] containers = new OrderLineGroup[2];
         for (int i = 0; i < containers.length; i++) {
@@ -410,11 +375,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
 
         orderDao.save(order);
 
-        try {
-            orderLineGranSon.addAvanceAssigment(advanceAssigmentA);
-        } catch (Exception e) {
-            fail("It should not throw an exception  ");
-        }
+        orderLineGranSon.addAvanceAssigment(advanceAssigmentA);
 
         assertThat(orderLineGranSon.getAdvanceAssigments().size(), equalTo(1));
 
