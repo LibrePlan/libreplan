@@ -53,7 +53,6 @@ public class CriterionTypeServiceImpl implements ICriterionTypeService {
         return criterionTypeDAO.list(CriterionType.class);
     }
 
-    @Override
     public void remove(CriterionType criterionType) throws InstanceNotFoundException {
         if (criterionType.getId() != null ) {
             criterionTypeDAO.remove(criterionType.getId());

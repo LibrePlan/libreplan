@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -31,7 +31,7 @@ public class ResourceServiceImpl implements IResourceService {
     private IResourceDAO resourceDao;
 
     @Autowired
-    private ICriterionTypeService criterionTypeService;
+    private ICriterionTypeDAO criterionTypeDAO;
 
 
     @Transactional
@@ -46,7 +46,7 @@ public class ResourceServiceImpl implements IResourceService {
     }
 
     private void checkResourceIsOk(Resource resource) {
-        List<CriterionType> types = criterionTypeService.getAll();
+        List<CriterionType> types = criterionTypeDAO.getCriterionTypes();
         resource.checkNotOverlaps(types);
     }
 

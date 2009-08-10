@@ -23,4 +23,6 @@ public interface ICriterionTypeDAO extends IGenericDAO<CriterionType, Long> {
     public boolean existsByName(CriterionType criterionType);
 
     public void removeByName(CriterionType criterionType);
+
+    List<CriterionType> getCriterionTypes();
 }

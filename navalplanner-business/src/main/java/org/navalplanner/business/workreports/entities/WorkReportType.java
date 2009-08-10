@@ -14,7 +14,7 @@ public class WorkReportType extends BaseEntity {
 
     private String name;
 
-    private Set<CriterionType> criterionTypes;
+    private Set<CriterionType> criterionTypes = new HashSet<CriterionType>();
 
     public WorkReportType() {
 

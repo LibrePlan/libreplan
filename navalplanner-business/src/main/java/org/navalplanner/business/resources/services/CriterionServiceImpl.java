@@ -11,6 +11,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.CriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -44,7 +45,7 @@ public class CriterionServiceImpl implements ICriterionService {
     private IResourceService resourceService;
 
     @Autowired
-    private ICriterionTypeService criterionTypeService;
+    private ICriterionTypeDAO criterionTypeDAO;
 
     public boolean exists(Criterion criterion) {
         return criterionDAO.exists(criterion.getId())
@@ -91,10 +92,16 @@ public class CriterionServiceImpl implements ICriterionService {
     }
 
     private CriterionType saveCriterionType(CriterionType criterionType) throws ValidationException {
-        if (criterionTypeService.exists(criterionType)) {
-            criterionType = criterionTypeService.findUniqueByName(criterionType.getName());
+        if (criterionTypeDAO.exists(criterionType.getId())
+                || criterionTypeDAO.existsByName(criterionType)) {
+            try {
+                criterionType = criterionTypeDAO
+                        .findUniqueByName(criterionType.getName());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         } else {
-            criterionTypeService.save(criterionType);
+            criterionTypeDAO.save(criterionType);
         }
 
         return criterionType;

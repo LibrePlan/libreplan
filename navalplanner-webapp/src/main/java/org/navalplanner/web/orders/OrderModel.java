@@ -17,10 +17,10 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.services.ITaskElementService;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.services.ICriterionService;
-import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -41,7 +41,7 @@ public class OrderModel implements IOrderModel {
     ICriterionService criterionService;
 
     @Autowired
-    ICriterionTypeService criterionTypeService;
+    ICriterionTypeDAO criterionTypeDAO;
 
     private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
 
@@ -78,7 +78,8 @@ public class OrderModel implements IOrderModel {
 
     private void loadCriterions() {
         mapCriterions.clear();
-        List<CriterionType> criterionTypes = criterionTypeService.getAll();
+        List<CriterionType> criterionTypes = criterionTypeDAO
+                .getCriterionTypes();
         for (CriterionType criterionType : criterionTypes) {
             List<Criterion> criterions = new ArrayList<Criterion>(
                     criterionService.getCriterionsFor(criterionType));
@@ -105,6 +106,7 @@ public class OrderModel implements IOrderModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void prepareForCreate() {
         loadCriterions();
 

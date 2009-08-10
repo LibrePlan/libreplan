@@ -11,7 +11,7 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
@@ -19,7 +19,6 @@ import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.ICriterionService;
-import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.navalplanner.business.resources.services.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -44,7 +43,7 @@ public class CriterionsModel implements ICriterionsModel {
     private ICriterionService criterionService;
 
     @Autowired
-    private ICriterionTypeService criterionTypeService;
+    private ICriterionTypeDAO criterionDAO;
 
     @Autowired
     private IResourceService resourceService;
@@ -56,7 +55,7 @@ public class CriterionsModel implements ICriterionsModel {
     @Override
     @Transactional(readOnly = true)
     public List<CriterionType> getTypes() {
-        return criterionTypeService.getAll();
+        return criterionDAO.getCriterionTypes();
     }
 
     @Override
@@ -85,6 +84,7 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ICriterionType<?> getTypeFor(Criterion criterion) {
         for (ICriterionType<?> criterionType : getTypes()) {
             if (criterionType.contains(criterion))
@@ -116,6 +116,7 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isApplyableToWorkers(Criterion criterion) {
         ICriterionType<?> type = getTypeFor(criterion);
         return type != null && type.criterionCanBeRelatedTo(Worker.class);

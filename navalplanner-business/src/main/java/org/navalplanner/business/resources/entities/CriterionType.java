@@ -5,8 +5,6 @@ import java.util.Set;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.resources.services.ICriterionTypeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,9 +15,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CriterionType extends BaseEntity implements
         ICriterionType<Criterion> {
-
-    @Autowired
-    ICriterionTypeService criterionTypeService;
 
     @NotEmpty
     private String name;

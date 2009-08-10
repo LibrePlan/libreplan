@@ -64,4 +64,10 @@ public class CriterionTypeDAO extends GenericDAOHibernate<CriterionType, Long>
             throw new RuntimeException(ex);
         }
     }
+
+    @Override
+    public List<CriterionType> getCriterionTypes() {
+        return list(CriterionType.class);
+    }
+
 }

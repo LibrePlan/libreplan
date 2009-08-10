@@ -9,8 +9,8 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WorkReportTypeModel implements IWorkReportTypeModel {
 
     @Autowired
-    private ICriterionTypeService criterionTypeService;
+    private ICriterionTypeDAO criterionTypeDAO;
 
     @Autowired
     private IWorkReportTypeDAO workReportTypeDAO;
@@ -117,8 +117,9 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Set<CriterionType> getCriterionTypes() {
-        return new HashSet<CriterionType>(criterionTypeService.getAll());
+        return new HashSet<CriterionType>(criterionTypeDAO.getCriterionTypes());
     }
 
     @Override

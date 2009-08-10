@@ -3,7 +3,6 @@ package org.navalplanner.business.resources.services;
 
 import java.util.List;
 
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.CriterionType;
 
 /**
@@ -21,8 +20,6 @@ public interface ICriterionTypeService {
     CriterionType findUniqueByName(String name);
 
     List<CriterionType> getAll();
-
-    void remove(CriterionType criterionType) throws InstanceNotFoundException;
 
     void save(CriterionType entity);
 

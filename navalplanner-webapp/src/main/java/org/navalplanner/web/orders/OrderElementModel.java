@@ -9,12 +9,9 @@ import java.util.Set;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.services.ICriterionService;
-import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -36,7 +33,7 @@ public class OrderElementModel implements IOrderElementModel {
     private ICriterionTypeDAO criterionTypeDao;
 
     @Autowired
-    private ICriterionTypeService criterionTypeService;
+    private ICriterionTypeDAO criterionTypeDAO;
 
     private Map<String, CriterionType> mapCriterionTypes = new HashMap<String, CriterionType>();
 
@@ -59,6 +56,7 @@ public class OrderElementModel implements IOrderElementModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CriterionType> getCriterionTypes() {
         List<CriterionType> result = new ArrayList<CriterionType>();
 
@@ -70,6 +68,7 @@ public class OrderElementModel implements IOrderElementModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CriterionType getCriterionTypeByName(String name) {
         if (mapCriterionTypes.isEmpty())
             loadCriterionTypes();
@@ -78,7 +77,7 @@ public class OrderElementModel implements IOrderElementModel {
     }
 
     private void loadCriterionTypes() {
-        for (CriterionType criterionType : criterionTypeService.getAll()) {
+        for (CriterionType criterionType : criterionTypeDAO.getCriterionTypes()) {
             mapCriterionTypes.put(criterionType.getName(), criterionType);
         }
     }

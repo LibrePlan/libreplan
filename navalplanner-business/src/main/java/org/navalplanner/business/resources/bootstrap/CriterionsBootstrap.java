@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.services.ICriterionService;
-import org.navalplanner.business.resources.services.ICriterionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -34,7 +37,7 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
     private ICriterionService criterionService;
 
     @Autowired
-    private ICriterionTypeService criterionTypeService;
+    private ICriterionTypeDAO criterionTypeDAO;
 
     @Autowired
     private List<ICriterionTypeProvider> providers;
@@ -45,39 +48,43 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
     @Override
     @Transactional
     public void loadRequiredData() {
-        LOG.debug("### loadRequiredData()");
-
         Map<CriterionType, List<String>> typesWithCriterions = getTypesWithCriterions();
 
         // Insert predefined criterions
         for (Entry<CriterionType, List<String>> entry :
                     typesWithCriterions.entrySet()) {
-            // Create PredefinedCriterionType
-            CriterionType criterionType = entry.getKey();
-            try {
-                criterionTypeService.createIfNotExists(criterionType);
-            } catch (ValidationException e) {
-
-            }
-            // Retrieve existing criterionType if not exists
-            if (criterionType.getId() == null) {
-                criterionType = criterionTypeService.findUniqueByName(criterionType.getName());
-            }
-
+            CriterionType criterionType = retrieveOrCreate(entry.getKey());
             // Create predefined criterions for criterionType
             for (String criterionName : entry.getValue()) {
-                try {
-                    Criterion criterion = new Criterion(criterionName, criterionType);
-                    criterionService.createIfNotExists(criterion);
-
-                    LOG.debug("### Create criterion: ("  + criterionName +
-                            "; " + criterionType.getName());
-                } catch (ValidationException e) {
-                    e.printStackTrace();
-                }
+                ensureCriterionExists(criterionName, criterionType);
             }
         }
     }
+
+	private void ensureCriterionExists(String criterionName,
+			CriterionType criterionType) {
+		try {
+		    Criterion criterion = new Criterion(criterionName, criterionType);
+		    criterionService.createIfNotExists(criterion);
+		} catch (ValidationException e) {
+		    throw new RuntimeException(e);
+		}
+	}
+
+	private CriterionType retrieveOrCreate(CriterionType criterionType) {
+		if (!criterionTypeDAO.exists(criterionType.getId())
+		        && !criterionTypeDAO.existsByName(criterionType)) {
+		    criterionTypeDAO.save(criterionType);
+		}else{
+		    try {
+		        criterionType = criterionTypeDAO
+		                .findUniqueByName(criterionType.getName());
+		    } catch (InstanceNotFoundException e) {
+		        throw new RuntimeException(e);
+		    }
+		}
+		return criterionType;
+	}
 
     private Map<CriterionType, List<String>> getTypesWithCriterions() {
         HashMap<CriterionType, List<String>> result = new HashMap<CriterionType, List<String>>();
