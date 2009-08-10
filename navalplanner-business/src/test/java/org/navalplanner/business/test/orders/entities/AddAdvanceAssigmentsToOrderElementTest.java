@@ -110,9 +110,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         Order order = createValidOrder();
         OrderElement orderLine = createValidLeaf("OrderLineA", "1k1k1k1k");
 
-        AdvanceType advanceType = createValidAdvanceType("tipoA");
-        advanceTypeDao.save(advanceType);
-        assertTrue(advanceTypeDao.exists(advanceType.getId()));
+        AdvanceType advanceType = createAndSaveType("tipoA");
 
         AdvanceAssigment advanceAssigment = createValidAdvanceAssigment(true);
         assertTrue(orderLine.getAdvanceAssigments().isEmpty());
@@ -140,6 +138,12 @@ public class AddAdvanceAssigmentsToOrderElementTest {
 
     }
 
+    private AdvanceType createAndSaveType(String typeName) {
+        AdvanceType advanceType = createValidAdvanceType(typeName);
+        advanceTypeDao.save(advanceType);
+        return advanceType;
+    }
+
     /**
      * An {@link OrderElement} with an {@link AdvanceAssigment}. Trying to add a
      * new {@link AdvanceAssigment} to {@link OrderElement} . Expected: Add to
@@ -150,10 +154,8 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         Order order = createValidOrder();
         OrderLine orderLine = createValidLeaf("OrderLineA", "1111111");
 
-        AdvanceType advanceTypeA = createValidAdvanceType("tipoA");
-        advanceTypeDao.save(advanceTypeA);
-        AdvanceType advanceTypeB = createValidAdvanceType("tipoB");
-        advanceTypeDao.save(advanceTypeB);
+        AdvanceType advanceTypeA = createAndSaveType("tipoA");
+        AdvanceType advanceTypeB = createAndSaveType("tipoB");
 
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
@@ -187,8 +189,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         Order order = createValidOrder();
         OrderLine orderLine = createValidLeaf("OrderLineA", "22222222");
 
-        AdvanceType advanceTypeA = createValidAdvanceType("tipoA");
-        advanceTypeDao.save(advanceTypeA);
+        AdvanceType advanceTypeA = createAndSaveType("tipoA");
 
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
@@ -223,10 +224,8 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         Order order = createValidOrder();
         OrderLine orderLine = createValidLeaf("OrderLineA", "101010101");
 
-        AdvanceType advanceTypeA = createValidAdvanceType("tipoA");
-        advanceTypeDao.save(advanceTypeA);
-        AdvanceType advanceTypeB = createValidAdvanceType("tipoB");
-        advanceTypeDao.save(advanceTypeB);
+        AdvanceType advanceTypeA = createAndSaveType("tipoA");
+        AdvanceType advanceTypeB = createAndSaveType("tipoB");
 
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
@@ -281,10 +280,8 @@ public class AddAdvanceAssigmentsToOrderElementTest {
             orderLineGroup.add(leaf);
         }
 
-        AdvanceType advanceTypeA = createValidAdvanceType("tipoA");
-        advanceTypeDao.save(advanceTypeA);
-        AdvanceType advanceTypeB = createValidAdvanceType("tipoB");
-        advanceTypeDao.save(advanceTypeB);
+        AdvanceType advanceTypeA = createAndSaveType("tipoA");
+        AdvanceType advanceTypeB = createAndSaveType("tipoB");
 
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
@@ -342,8 +339,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
             orderLineGroup.add(leaf);
         }
 
-        AdvanceType advanceTypeA = createValidAdvanceType("tipoA");
-        advanceTypeDao.save(advanceTypeA);
+        AdvanceType advanceTypeA = createAndSaveType("tipoA");
 
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
@@ -405,8 +401,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
             OrderLine leaf = createValidLeaf("foo", "79799");
             orderLineGroup.add(leaf);
         }
-        AdvanceType advanceTypeA = createValidAdvanceType("tipoA");
-        advanceTypeDao.save(advanceTypeA);
+        AdvanceType advanceTypeA = createAndSaveType("tipoA");
 
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
@@ -441,8 +436,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         order.add(line);
         orderDao.save(order);
 
-        AdvanceType type = createValidAdvanceType("tipoA");
-        advanceTypeDao.save(type);
+        AdvanceType type = createAndSaveType("tipoA");
         getSession().flush();
         getSession().evict(type);
 
