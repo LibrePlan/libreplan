@@ -1,15 +1,15 @@
 <window id="${arg.top_id}" title="${arg.title}">
     <grid id="edit">
-		<columns>
-			<column label="Date start"/>
-			<column label="Date end"/>
-			<column label="Relationship"/>
-		</columns>
+        <columns>
+            <column label="Date start"/>
+            <column label="Date end"/>
+            <column label="Relationship"/>
+        </columns>
         <rows>
-			<row>
-				<datebox id="editWorkRelationshipStartDate" width="180px"
+            <row>
+                <datebox id="editWorkRelationshipStartDate" width="180px"
                     value="@{workRelationship.editRelationship.startDate}" />
-				<datebox id="editWorkRelationshipEndDate" width="180px"
+                <datebox id="editWorkRelationshipEndDate" width="180px"
                     value="@{workRelationship.editRelationship.endDate}" />
                 <listbox onSelect="" mold="select" rows="1" id="selectedWorkCriterion"
                     model="@{workRelationship.workCriterions}" disabled="@{! workRelationship.editing}">
@@ -17,8 +17,8 @@
                             label="@{workCriterion.name}"
                             value="@{workCriterion}" />
                 </listbox>
-			</row>
-		</rows>
+            </row>
+        </rows>
       </grid>
     <button onClick="workRelationship.saveCriterionSatisfaction();"
         label="Save Work Relationship" />

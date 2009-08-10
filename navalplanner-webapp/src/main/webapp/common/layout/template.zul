@@ -15,8 +15,8 @@
                         onClick="alert(self.label)" />
                     <menuitem label="${c:l('mainmenu.plannifications_list')}"
                         onClick="alert(self.label)" />
-    			</menupopup>
-    		</menu>
+                </menupopup>
+            </menu>
 
             <menu label="${c:l('mainmenu.resources')}">
                 <menupopup>
@@ -57,16 +57,16 @@
             </menu>
 
             <menu label="${c:l('mainmenu.help')}">
-    			<menupopup>
-    				<menu label="${c:l('mainmenu.about')}">
-    					<menupopup>
-        					<menuitem label="${c:l('mainmenu.aclunaga')}"
+                <menupopup>
+                    <menu label="${c:l('mainmenu.about')}">
+                        <menupopup>
+                            <menuitem label="${c:l('mainmenu.aclunaga')}"
                                 href='/common/aclunaga.zul' />
-    					</menupopup>
-    				</menu>
-    			</menupopup>
-    		</menu>
-    	</menubar>
+                        </menupopup>
+                    </menu>
+                </menupopup>
+            </menu>
+        </menubar>
 
     <div self="@{insert(content)}"/>
 

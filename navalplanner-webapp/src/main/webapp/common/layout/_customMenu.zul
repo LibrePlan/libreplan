@@ -1,29 +1,29 @@
 <div id="menuContainer" xmlns:n="http://www.zkoss.org/2005/zk/native"
-	use="org.navalplanner.web.common.CustomMenuController">
-	<n:table border="0" cellspacing="0" cellpadding="0">
-		<n:tr>
-			<n:td forEach="${menuContainer.customMenuItems}">
-				<n:a href="${each.url}" class=
-					"menuup${(each.activeParent?'_activa':'')}">${c:l(each.name)}</n:a>
-			</n:td>
-		</n:tr>
-	</n:table>
-	<n:table width="100%" height="30" border="0" cellpadding="0"
-		cellspacing="0">
-		<n:tr>
-			<n:td bgcolor="#2A83B4">
-				<n:table border="0" cellspacing="0" cellpadding="0">
-					<n:tr>
-						<n:td width="10" />
-						<n:td forEach="${menuContainer.customMenuSecondaryItems}">
-							<n:a href="${each.url}" class="sub_menu">${c:l(each.name)}</n:a>
-							<n:td width="14"
-								background="/navalplanner-webapp/common/img/sub_separacion.gif" />
-						</n:td>
-					</n:tr>
-				</n:table>
+    use="org.navalplanner.web.common.CustomMenuController">
+    <n:table border="0" cellspacing="0" cellpadding="0">
+        <n:tr>
+            <n:td forEach="${menuContainer.customMenuItems}">
+                <n:a href="${each.url}" class=
+                    "menuup${(each.activeParent?'_activa':'')}">${c:l(each.name)}</n:a>
+            </n:td>
+        </n:tr>
+    </n:table>
+    <n:table width="100%" height="30" border="0" cellpadding="0"
+        cellspacing="0">
+        <n:tr>
+            <n:td bgcolor="#2A83B4">
+                <n:table border="0" cellspacing="0" cellpadding="0">
+                    <n:tr>
+                        <n:td width="10" />
+                        <n:td forEach="${menuContainer.customMenuSecondaryItems}">
+                            <n:a href="${each.url}" class="sub_menu">${c:l(each.name)}</n:a>
+                            <n:td width="14"
+                                background="/navalplanner-webapp/common/img/sub_separacion.gif" />
+                        </n:td>
+                    </n:tr>
+                </n:table>
 
-			</n:td>
-		</n:tr>
-	</n:table>
+            </n:td>
+        </n:tr>
+    </n:table>
 </div>
