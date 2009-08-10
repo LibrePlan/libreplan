@@ -4,7 +4,6 @@ package org.navalplanner.business.resources.services;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.CriterionType;
 
 /**
@@ -13,7 +12,7 @@ import org.navalplanner.business.resources.entities.CriterionType;
  */
 public interface ICriterionTypeService {
 
-    void createIfNotExists(CriterionType criterionType) throws ValidationException;
+    void createIfNotExists(CriterionType criterionType);
 
     boolean exists(CriterionType criterionType);
 
@@ -25,6 +24,6 @@ public interface ICriterionTypeService {
 
     void remove(CriterionType criterionType) throws InstanceNotFoundException;
 
-    void save(CriterionType entity) throws ValidationException;
+    void save(CriterionType entity);
 
 }

@@ -3,9 +3,7 @@ package org.navalplanner.business.resources.services;
 
 import java.util.List;
 
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.CriterionTypeDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -25,7 +23,7 @@ public class CriterionTypeServiceImpl implements ICriterionTypeService {
     private ICriterionTypeDAO criterionTypeDAO;
 
     @Override
-    public void createIfNotExists(CriterionType criterionType) throws ValidationException {
+    public void createIfNotExists(CriterionType criterionType) {
         if (!exists(criterionType))
             save(criterionType);
     }
@@ -64,21 +62,9 @@ public class CriterionTypeServiceImpl implements ICriterionTypeService {
         }
     }
 
-    @Transactional(rollbackFor=ValidationException.class)
     @Override
-    public void save(CriterionType entity) throws ValidationException {
+    public void save(CriterionType entity) {
         criterionTypeDAO.save(entity);
-
-        if (criterionTypeDAO.findByName(entity).size() > 1) {
-
-            InvalidValue[] invalidValues = {
-                new InvalidValue(entity.getName() + " already exists",
-                    CriterionType.class, "name", entity.getName(), entity)
-            };
-
-            throw new ValidationException(invalidValues,
-                "Couldn't save new criterionType");
-        }
     }
 
 }
