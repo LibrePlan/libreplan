@@ -11,8 +11,6 @@ public class AdvanceAssigment extends BaseEntity {
 
     private boolean reportGlobalAdvance;
 
-    private BigDecimal maxValue;
-
     private OrderElement orderElement;
 
     private AdvanceType advanceType;
@@ -21,17 +19,6 @@ public class AdvanceAssigment extends BaseEntity {
 
     public AdvanceAssigment(boolean reportGlobalAdvance, BigDecimal maxValue) {
         this.reportGlobalAdvance = reportGlobalAdvance;
-        this.maxValue = maxValue;
-        this.maxValue.setScale(2);
-    }
-
-    public void setMaxValue(BigDecimal maxValue) {
-        this.maxValue = maxValue;
-        this.maxValue.setScale(2);
-    }
-
-    public BigDecimal getMaxValue() {
-        return this.maxValue;
     }
 
     public void setReportGlobalAdvance(boolean reportGlobalAdvance) {
