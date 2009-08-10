@@ -372,13 +372,13 @@ public class AddAdvanceAssigmentsToOrderElementTest {
     }
 
     /**
-     * Trying define an AdvanceAssigment object when any grandfather of
-     * OrderElement with an AdvanceAssigment object that has the same
-     * AdvanceType Expected: It must throw
-     * DuplicateAdvanceAssigmentForOrderElementException Exception.
+     * Trying define an AdvanceAssigment object when any child of OrderElement
+     * with an AdvanceAssigment object that has the same AdvanceType Expected:
+     * It must throw DuplicateAdvanceAssigmentForOrderElementException
+     * Exception.
      **/
     @Test
-    public void testSetAdvanceAssigmentOrdeElementGrandSonIllegal() {
+    public void testSetAdvanceAssigmentOrdeElementParentIllegal() {
         final Order order = createValidOrder();
         final OrderElement[] containers = new OrderLineGroup[2];
         for (int i = 0; i < containers.length; i++) {
@@ -416,20 +416,21 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         orderDao.save(order);
 
         try {
-            container.addAvanceAssigment(advanceAssigmentA);
+            orderLineGranSon.addAvanceAssigment(advanceAssigmentA);
         } catch (Exception e) {
             fail("It should not throw an exception  ");
         }
 
-        assertThat(container.getAdvanceAssigments().size(), equalTo(1));
+        assertThat(orderLineGranSon.getAdvanceAssigments().size(), equalTo(1));
 
         try {
-            orderLineGranSon.addAvanceAssigment(advanceAssigmentB);
+            container.addAvanceAssigment(advanceAssigmentB);
             fail("It should throw an exception  ");
         } catch (Exception e) {
             // Ok
         }
     }
+
 
     @Test(expected = DuplicateAdvanceAssigmentForOrderElementException.class)
     public void addingAnotherAdvanceAssigmentWithAnEquivalentTypeButDifferentInstance()

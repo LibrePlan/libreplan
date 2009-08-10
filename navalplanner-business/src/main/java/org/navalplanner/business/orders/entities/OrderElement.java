@@ -162,7 +162,10 @@ public abstract class OrderElement extends BaseEntity {
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssigmentForOrderElementException {
         checkNoOtherGlobalAdvanceAssignment(newAdvanceAssigment);
-        checkNoOtherAssignmentWithSameAdvanceType(this, newAdvanceAssigment);
+        checkAncestorsNoOtherAssignmentWithSameAdvanceType(this,
+                newAdvanceAssigment);
+        checkChildrenNoOtherAssignmentWithSameAdvanceType(this,
+                newAdvanceAssigment);
         this.advanceAssigments.add(newAdvanceAssigment);
     }
 
@@ -187,7 +190,7 @@ public abstract class OrderElement extends BaseEntity {
      * @param newAdvanceAssigment
      * @throws DuplicateAdvanceAssigmentForOrderElementException
      */
-    private void checkNoOtherAssignmentWithSameAdvanceType(
+    private void checkAncestorsNoOtherAssignmentWithSameAdvanceType(
             OrderElement orderElement, AdvanceAssigment newAdvanceAssigment)
             throws DuplicateAdvanceAssigmentForOrderElementException {
         for (AdvanceAssigment advanceAssigment : orderElement
@@ -200,9 +203,35 @@ public abstract class OrderElement extends BaseEntity {
             }
         }
         if (orderElement.getParent() != null) {
-            checkNoOtherAssignmentWithSameAdvanceType(orderElement.getParent(),
-                    newAdvanceAssigment);
+            checkAncestorsNoOtherAssignmentWithSameAdvanceType(orderElement
+                    .getParent(), newAdvanceAssigment);
         }
     }
 
+    /**
+     * It checks there are no {@link AdvanceAssigment} with the same type in
+     * orderElement and its children
+     * @param orderElement
+     * @param newAdvanceAssigment
+     * @throws DuplicateAdvanceAssigmentForOrderElementException
+     */
+    private void checkChildrenNoOtherAssignmentWithSameAdvanceType(
+            OrderElement orderElement, AdvanceAssigment newAdvanceAssigment)
+            throws DuplicateAdvanceAssigmentForOrderElementException {
+        for (AdvanceAssigment advanceAssigment : orderElement
+                .getAdvanceAssigments()) {
+            if (AdvanceType.equivalentInDB(advanceAssigment.getAdvanceType(),
+                    newAdvanceAssigment.getAdvanceType())) {
+                throw new DuplicateAdvanceAssigmentForOrderElementException(
+                        "Duplicate Advance Assigment For Order Element", this,
+                        OrderElement.class);
+            }
+        }
+        if (!orderElement.getChildren().isEmpty()) {
+            for (OrderElement child : orderElement.getChildren()) {
+                checkChildrenNoOtherAssignmentWithSameAdvanceType(child,
+                        newAdvanceAssigment);
+            }
+        }
+    }
 }
