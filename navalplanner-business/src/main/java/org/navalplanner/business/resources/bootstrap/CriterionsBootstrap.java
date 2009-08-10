@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -51,8 +49,8 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
         Map<CriterionType, List<String>> typesWithCriterions = getTypesWithCriterions();
 
         // Insert predefined criterions
-        for (Entry<CriterionType, List<String>> entry :
-                    typesWithCriterions.entrySet()) {
+        for (Entry<CriterionType, List<String>> entry : typesWithCriterions
+                .entrySet()) {
             CriterionType criterionType = retrieveOrCreate(entry.getKey());
             // Create predefined criterions for criterionType
             for (String criterionName : entry.getValue()) {
@@ -61,30 +59,30 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
         }
     }
 
-	private void ensureCriterionExists(String criterionName,
-			CriterionType criterionType) {
-		try {
-		    Criterion criterion = new Criterion(criterionName, criterionType);
-		    criterionService.createIfNotExists(criterion);
-		} catch (ValidationException e) {
-		    throw new RuntimeException(e);
-		}
-	}
+    private void ensureCriterionExists(String criterionName,
+            CriterionType criterionType) {
+        try {
+            Criterion criterion = new Criterion(criterionName, criterionType);
+            criterionService.createIfNotExists(criterion);
+        } catch (ValidationException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	private CriterionType retrieveOrCreate(CriterionType criterionType) {
-		if (!criterionTypeDAO.exists(criterionType.getId())
-		        && !criterionTypeDAO.existsByName(criterionType)) {
-		    criterionTypeDAO.save(criterionType);
-		}else{
-		    try {
-		        criterionType = criterionTypeDAO
-		                .findUniqueByName(criterionType.getName());
-		    } catch (InstanceNotFoundException e) {
-		        throw new RuntimeException(e);
-		    }
-		}
-		return criterionType;
-	}
+    private CriterionType retrieveOrCreate(CriterionType criterionType) {
+        if (!criterionTypeDAO.exists(criterionType.getId())
+                && !criterionTypeDAO.existsByName(criterionType)) {
+            criterionTypeDAO.save(criterionType);
+        } else {
+            try {
+                criterionType = criterionTypeDAO.findUniqueByName(criterionType
+                        .getName());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return criterionType;
+    }
 
     private Map<CriterionType, List<String>> getTypesWithCriterions() {
         HashMap<CriterionType, List<String>> result = new HashMap<CriterionType, List<String>>();
