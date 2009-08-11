@@ -1,9 +1,10 @@
 package org.navalplanner.web.planner;
 
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.services.ITaskElementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -22,7 +23,7 @@ import org.zkoss.zul.Messagebox;
 public class SaveCommand implements ISaveCommand {
 
     @Autowired
-    private ITaskElementService taskElementService;
+    private ITaskElementDAO taskElementDAO;
     private PlanningState state;
 
     @Override
@@ -34,7 +35,7 @@ public class SaveCommand implements ISaveCommand {
     @Transactional
     public void doAction(IContext<TaskElement> context) {
         for (TaskElement taskElement : state.getTasksToSave()) {
-            taskElementService.save(taskElement);
+            taskElementDAO.save(taskElement);
             if (taskElement instanceof Task) {
                 if (!((Task) taskElement).isValidResourceAllocationWorkers()) {
                     throw new RuntimeException("The Task '"
@@ -48,9 +49,13 @@ public class SaveCommand implements ISaveCommand {
             }
         }
         for (TaskElement taskElement : state.getToRemove()) {
-            if (taskElementService.exists(taskElement)) {
+            if (taskElementDAO.exists(taskElement.getId())) {
                 // it might have already been saved in a previous save action
-                taskElementService.remove(taskElement);
+                try {
+                    taskElementDAO.remove(taskElement.getId());
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 

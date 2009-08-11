@@ -2,7 +2,6 @@ package org.navalplanner.business.planner.services;
 
 import java.util.List;
 
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -28,20 +27,6 @@ public class TaskElementService implements ITaskElementService {
 
     @Autowired
     private ITaskElementDAO taskElementDao;
-
-    @Override
-    public void save(TaskElement task) {
-        taskElementDao.save(task);
-    }
-
-    @Override
-    public TaskElement findById(Long id) {
-        try {
-            return taskElementDao.find(id);
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     public TaskElement convertToInitialSchedule(OrderElement order) {
@@ -93,23 +78,8 @@ public class TaskElementService implements ITaskElementService {
     public void convertToScheduleAndSave(Order order) {
         List<OrderElement> orderElements = order.getOrderElements();
         for (OrderElement orderElement : orderElements) {
-            save(convertToInitialSchedule(orderElement));
+            taskElementDao.save(convertToInitialSchedule(orderElement));
         }
-    }
-
-    @Override
-    @Transactional
-    public void remove(TaskElement taskElement) {
-        try {
-            taskElementDao.remove(taskElement.getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public boolean exists(TaskElement taskElement) {
-        return taskElementDao.exists(taskElement.getId());
     }
 
 }

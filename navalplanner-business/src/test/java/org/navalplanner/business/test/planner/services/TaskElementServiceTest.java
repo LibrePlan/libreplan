@@ -17,6 +17,7 @@ import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -24,6 +25,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -48,6 +50,9 @@ public class TaskElementServiceTest {
     private ITaskElementService taskElementService;
 
     @Autowired
+    private ITaskElementDAO taskElementDAO;
+
+    @Autowired
     private SessionFactory sessionFactory;
 
     @Autowired
@@ -58,9 +63,14 @@ public class TaskElementServiceTest {
     @Test
     public void canSaveTask() {
         Task task = createValidTask();
-        taskElementService.save(task);
+        taskElementDAO.save(task);
         flushAndEvict(task);
-        TaskElement fromDB = taskElementService.findById(task.getId());
+        TaskElement fromDB;
+        try {
+            fromDB = taskElementDAO.find(task.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         assertThat(fromDB.getId(), equalTo(task.getId()));
         assertThat(fromDB, is(Task.class));
         checkProperties(task, fromDB);
@@ -100,16 +110,21 @@ public class TaskElementServiceTest {
     public void afterSavingTheVersionIsIncreased() {
         Task task = createValidTask();
         assertNull(task.getVersion());
-        taskElementService.save(task);
+        taskElementDAO.save(task);
         assertNotNull(task.getVersion());
     }
 
     @Test
     public void canSaveTaskGroup() {
         TaskGroup taskGroup = createValidTaskGroup();
-        taskElementService.save(taskGroup);
+        taskElementDAO.save(taskGroup);
         flushAndEvict(taskGroup);
-        TaskElement reloaded = taskElementService.findById(taskGroup.getId());
+        TaskElement reloaded;
+        try {
+            reloaded = taskElementDAO.find(taskGroup.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         assertThat(reloaded.getId(), equalTo(taskGroup.getId()));
         assertThat(reloaded, is(TaskGroup.class));
         checkProperties(taskGroup, reloaded);
@@ -119,9 +134,14 @@ public class TaskElementServiceTest {
     public void theParentPropertyIsPresentWhenRetrievingTasks() {
         TaskGroup taskGroup = createValidTaskGroup();
         taskGroup.addTaskElement(createValidTask());
-        taskElementService.save(taskGroup);
+        taskElementDAO.save(taskGroup);
         flushAndEvict(taskGroup);
-        TaskElement reloaded = taskElementService.findById(taskGroup.getId());
+        TaskElement reloaded;
+        try {
+            reloaded = taskElementDAO.find(taskGroup.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         TaskElement child = reloaded.getChildren().get(0);
         assertThat(child.getParent(), equalTo(reloaded));
     }
@@ -150,10 +170,14 @@ public class TaskElementServiceTest {
         TaskGroup taskGroup = createValidTaskGroup();
         taskGroup.addTaskElement(child1);
         taskGroup.addTaskElement(child2);
-        taskElementService.save(taskGroup);
+        taskElementDAO.save(taskGroup);
         flushAndEvict(taskGroup);
-        TaskGroup reloaded = (TaskGroup) taskElementService.findById(taskGroup
-                .getId());
+        TaskGroup reloaded;
+        try {
+            reloaded = (TaskGroup) taskElementDAO.find(taskGroup.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         List<TaskElement> taskElements = reloaded.getChildren();
         assertThat(taskElements.size(), equalTo(2));
         assertThat(taskElements.get(0).getId(), equalTo(child1.getId()));
@@ -165,16 +189,24 @@ public class TaskElementServiceTest {
     public void savingTaskElementSavesAssociatedDependencies() {
         Task child1 = createValidTask();
         Task child2 = createValidTask();
-        taskElementService.save(child2);
+        taskElementDAO.save(child2);
         Task oldChild2 = child2;
         flushAndEvict(child2);
-        child2 = (Task) taskElementService.findById(child2.getId());
+        try {
+            child2 = (Task) taskElementDAO.find(child2.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         Dependency.createDependency(child1, oldChild2,
                 Type.START_END);
-        taskElementService.save(child1);
+        taskElementDAO.save(child1);
         flushAndEvict(child1);
-        TaskElement child1Reloaded = (TaskElement) taskElementService
-                .findById(child1.getId());
+        TaskElement child1Reloaded;
+        try {
+            child1Reloaded = (TaskElement) taskElementDAO.find(child1.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         assertThat(child1Reloaded.getDependenciesWithThisOrigin().size(),
                 equalTo(1));
         assertTrue(child1Reloaded.getDependenciesWithThisDestination()
@@ -306,10 +338,15 @@ public class TaskElementServiceTest {
     @Test
     public void testInverseManyToOneRelationshipInOrderElement() {
         Task task = createValidTask();
-        taskElementService.save(task);
+        taskElementDAO.save(task);
         flushAndEvict(task);
         sessionFactory.getCurrentSession().evict(task.getOrderElement());
-        TaskElement fromDB = taskElementService.findById(task.getId());
+        TaskElement fromDB;
+        try {
+            fromDB = taskElementDAO.find(task.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         OrderElement orderElement = fromDB.getOrderElement();
         assertThat(orderElement.getTaskElements().size(), equalTo(1));
         assertThat(orderElement.getTaskElements().iterator().next(),
@@ -319,9 +356,13 @@ public class TaskElementServiceTest {
     @Test
     public void aTaskCanBeRemoved() {
         Task task = createValidTask();
-        taskElementService.save(task);
+        taskElementDAO.save(task);
         flushAndEvict(task);
-        taskElementService.remove(task);
+        try {
+            taskElementDAO.remove(task.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         sessionFactory.getCurrentSession().flush();
         assertNull(sessionFactory.getCurrentSession().get(TaskElement.class,
                 task.getId()));
@@ -332,9 +373,13 @@ public class TaskElementServiceTest {
         TaskGroup taskGroup = createValidTaskGroup();
         Task task = createValidTask();
         taskGroup.addTaskElement(task);
-        taskElementService.save(taskGroup);
+        taskElementDAO.save(taskGroup);
         flushAndEvict(taskGroup);
-        taskElementService.remove(taskGroup);
+        try {
+            taskElementDAO.remove(taskGroup.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         sessionFactory.getCurrentSession().flush();
         assertNull(sessionFactory.getCurrentSession().get(TaskGroup.class,
                 taskGroup.getId()));
