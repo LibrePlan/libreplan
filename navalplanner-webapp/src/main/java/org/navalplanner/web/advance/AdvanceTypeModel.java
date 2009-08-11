@@ -61,11 +61,21 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
     @Transactional(readOnly = true)
     public void prepareForEdit(AdvanceType advanceType) {
         Validate.notNull(advanceType);
+        checkCanBeModified(advanceType);
         this.advanceType = getFromDB(advanceType);
     }
 
+    private void checkCanBeModified(AdvanceType advanceType) {
+        if (!canBeModified(advanceType)) {
+            throw new IllegalArgumentException(
+                    "the advanceType cannot be modified");
+        }
+    }
+
     @Override
+    @Transactional(readOnly = true)
     public void prepareForRemove(AdvanceType advanceType) {
+        checkCanBeModified(advanceType);
         this.advanceType = advanceType;
     }
 
@@ -78,6 +88,7 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
             throw new ValidationException(invalidValues);
         }
         advanceTypeDAO.save(advanceType);
+        checkCanBeModified(advanceType);
     }
 
     @Override
@@ -88,6 +99,12 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean canBeModified(AdvanceType advanceType) {
+        return advanceType.isUpdatable();
     }
 
     @Override

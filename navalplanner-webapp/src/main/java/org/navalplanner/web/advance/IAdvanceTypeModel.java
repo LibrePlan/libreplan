@@ -48,6 +48,9 @@ public interface IAdvanceTypeModel {
      * Makes some operations needed before edit a {@link AdvanceType}.
      * @param AdvanceType
      *            The object to be edited
+     * @throws IllegalArgumentException
+     *             if {@link IAdvanceTypeModel#canBeModified(AdvanceType)} is
+     *             false
      */
     void prepareForEdit(AdvanceType advanceType);
 
@@ -55,8 +58,12 @@ public interface IAdvanceTypeModel {
      * Makes some operations needed before remove a {@link AdvanceType}.
      * @param AdvanceType
      *            The object to be removed
+     * @throws IllegalArgumentException
+     *             if {@link IAdvanceTypeModel#canBeModified(AdvanceType)} is
+     *             false
      */
-    void prepareForRemove(AdvanceType advanceType);
+    void prepareForRemove(AdvanceType advanceType)
+            throws IllegalArgumentException;
 
     /**
      * Check if it's or not updatable a {@link AdvanceType}
@@ -69,6 +76,13 @@ public interface IAdvanceTypeModel {
      * @return true if the names is not similar
      */
     public boolean distinctNames(String name);
+
+    /**
+     * Check if the advance type is updatable and the it can be removed or
+     * modified.
+     * @return false if the attribute updatable is false.
+     */
+    public boolean canBeModified(AdvanceType advanceType);
 
     /**
      * Check if the precision value is less than default max value.
