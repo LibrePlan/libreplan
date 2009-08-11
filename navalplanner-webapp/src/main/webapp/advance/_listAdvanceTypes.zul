@@ -9,9 +9,9 @@
         <rows>
             <row self="@{each='advanceType'}" value="@{advanceType}">
                 <hbox>
-                    <button label="Edit" onClick="controller.goToEditForm(self.parent.parent.value);">
+                    <button label="Edit" disabled="@{advanceType.immutable}" onClick="controller.goToEditForm(self.parent.parent.value);">
                     </button>
-                    <button label="Remove" onClick="controller.confirmRemove(self.parent.parent.value);">
+                    <button label="Remove" disabled="@{advanceType.immutable}" onClick="controller.confirmRemove(self.parent.parent.value);">
                     </button>
                 </hbox>
                 <label value="@{advanceType.unitName}"/>

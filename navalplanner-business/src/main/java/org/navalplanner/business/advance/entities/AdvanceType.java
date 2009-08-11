@@ -69,6 +69,10 @@ public class AdvanceType extends BaseEntity {
         return this.updatable;
     }
 
+    public boolean isImmutable() {
+        return !this.updatable;
+    }
+
     public void setUnitPrecision(BigDecimal precision) {
         this.unitPrecision = precision;
         this.unitPrecision.setScale(4, BigDecimal.ROUND_HALF_UP);
