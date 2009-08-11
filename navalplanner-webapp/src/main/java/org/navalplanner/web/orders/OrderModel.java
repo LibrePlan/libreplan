@@ -26,7 +26,6 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.services.ICriterionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -42,9 +41,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class OrderModel implements IOrderModel {
-
-    @Autowired
-    ICriterionService criterionService;
 
     @Autowired
     ICriterionTypeDAO criterionTypeDAO;
@@ -82,7 +78,8 @@ public class OrderModel implements IOrderModel {
                 .getCriterionTypes();
         for (CriterionType criterionType : criterionTypes) {
             List<Criterion> criterions = new ArrayList<Criterion>(
-                    criterionService.getCriterionsFor(criterionType));
+                    criterionDAO
+                    .findByType(criterionType));
 
             mapCriterions.put(criterionType, criterions);
         }

@@ -45,4 +45,6 @@ public interface ICriterionsModel {
 
     void deactivateAll(Collection<? extends Resource> unSelectedWorkers);
 
+    void save(Criterion criterion) throws ValidationException;
+
 }

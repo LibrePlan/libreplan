@@ -15,7 +15,11 @@ import org.hibernate.validator.InvalidStateException;
 import org.hibernate.validator.InvalidValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
@@ -23,7 +27,6 @@ import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.ICriterionService;
 import org.navalplanner.business.resources.services.IResourceService;
 import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
 import org.navalplanner.business.test.resources.entities.CriterionTest;
@@ -51,7 +54,13 @@ public class ResourceServiceTest {
     private IResourceDAO resourceDao;
 
     @Autowired
-    private ICriterionService criterionService;
+    private ICriterionDAO criterionDAO;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
+    @Autowired
+    private IAdHocTransactionService adHocTransactionService;
 
     @Test
     public void testRemoveResource() throws InstanceNotFoundException {
@@ -134,13 +143,83 @@ public class ResourceServiceTest {
                 "11111111A", 8);
         resourceService.saveResource(worker1);
         long versionValueAfterSave = worker1.getVersion();
-        Criterion criterion = CriterionDAOTest.createValidCriterion();
-        criterionService.save(criterion);
-        ICriterionType<Criterion> type = CriterionServiceTest
-                .createTypeThatMatches(criterion);
+        final Criterion criterion = CriterionDAOTest.createValidCriterion();
+
+        adHocTransactionService.onTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                if (!(criterionTypeDAO.exists(criterion.getType().getId()) || criterionTypeDAO
+                        .existsByName(criterion.getType()))) {
+                    criterionTypeDAO.save(criterion.getType());
+                }
+                criterionDAO.save(criterion);
+                return null;
+            }
+        });
+
+        ICriterionType<Criterion> type = createTypeThatMatches(criterion);
         worker1.addSatisfaction(new CriterionWithItsType(type, criterion));
         resourceService.saveResource(worker1);
         assertThat(worker1.getVersion(), not(equalTo(versionValueAfterSave)));
+    }
+
+    private static ICriterionType<Criterion> createTypeThatMatches(
+            final Criterion criterion) {
+        return createTypeThatMatches(false, criterion);
+    }
+
+    private static ICriterionType<Criterion> createTypeThatMatches(
+            final boolean allowSimultaneousCriterionsPerResource,
+            final Criterion criterion) {
+        return new ICriterionType<Criterion>() {
+
+            @Override
+            public boolean allowSimultaneousCriterionsPerResource() {
+                return allowSimultaneousCriterionsPerResource;
+            }
+
+            @Override
+            public boolean allowHierarchy() {
+                return false;
+            }
+
+            @Override
+            public boolean contains(ICriterion c) {
+                return criterion.isEquivalent(c);
+            }
+
+            @Override
+            public Criterion createCriterion(String name) {
+                return null;
+            }
+
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public boolean allowAdding() {
+                return false;
+            }
+
+            @Override
+            public boolean allowEditing() {
+                return false;
+            }
+
+            @Override
+            public boolean criterionCanBeRelatedTo(
+                    Class<? extends Resource> klass) {
+                return true;
+            }
+
+            @Override
+            public Criterion createCriterionWithoutNameYet() {
+                return null;
+            }
+        };
     }
 
     public void testResourcesSatisfying() {

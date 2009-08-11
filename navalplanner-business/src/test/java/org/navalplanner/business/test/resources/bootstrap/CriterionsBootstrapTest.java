@@ -7,8 +7,9 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.resources.bootstrap.ICriterionsBootstrap;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.WorkingRelationship;
-import org.navalplanner.business.resources.services.ICriterionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,21 +25,37 @@ public class CriterionsBootstrapTest {
     private ICriterionsBootstrap criterionsBootstrap;
 
     @Autowired
-    private ICriterionService criterionService;
+    private ICriterionDAO criterionDAO;
 
     @Test
     public void testBootstrap() throws Exception {
-        if (criterionService.exists(WorkingRelationship.FIRED.criterion())) {
-            criterionService.remove(WorkingRelationship.FIRED.criterion());
+        Criterion criterion = WorkingRelationship.FIRED.criterion();
+        if (criterionDAO.exists(criterion.getId())
+                || criterionDAO.existsByNameAndType(criterion)) {
+            if (criterion.getId() != null) {
+                criterionDAO.remove(criterion.getId());
+            } else {
+                criterionDAO.removeByNameAndType(criterion);
+            }
         }
-        if (criterionService.exists(WorkingRelationship.HIRED.criterion())) {
-            criterionService.remove(WorkingRelationship.HIRED.criterion());
+
+        criterion = WorkingRelationship.HIRED.criterion();
+        if (criterionDAO.exists(criterion.getId())
+                || criterionDAO.existsByNameAndType(criterion)) {
+            if (criterion.getId() != null) {
+                criterionDAO.remove(criterion.getId());
+            } else {
+                criterionDAO.removeByNameAndType(criterion);
+            }
         }
+
         criterionsBootstrap.loadRequiredData();
-        assertTrue(criterionService.exists(WorkingRelationship.FIRED
-                .criterion()));
-        assertTrue(criterionService.exists(WorkingRelationship.HIRED
-                .criterion()));
+        criterion = WorkingRelationship.FIRED.criterion();
+        assertTrue(criterionDAO.exists(criterion.getId())
+                || criterionDAO.existsByNameAndType(criterion));
+        criterion = WorkingRelationship.HIRED.criterion();
+        assertTrue(criterionDAO.exists(criterion.getId())
+                || criterionDAO.existsByNameAndType(criterion));
     }
 
 }

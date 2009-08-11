@@ -7,6 +7,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,10 +19,12 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.ICriterion;
+import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
+import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -116,4 +119,83 @@ public class CriterionDAOTest {
         criterionDAO.save(criterion2);
         criterionDAO.flush();
     }
+
+    @Test
+    public void testCriterionsForType() throws Exception {
+        final Criterion one = CriterionDAOTest.createValidCriterion();
+        Criterion other = CriterionDAOTest.createValidCriterion();
+        save(one);
+        save(other);
+        ICriterionType<Criterion> type = createTypeThatMatches(one);
+        Collection<Criterion> criterions = criterionDAO.findByType(type);
+        assertEquals(1, criterions.size());
+        assertTrue(criterions.contains(one));
+    }
+
+    private void save(Criterion criterion) {
+        if (!(criterionTypeDAO.exists(criterion.getType().getId()) || criterionTypeDAO
+                .existsByName(criterion.getType()))) {
+            criterionTypeDAO.save(criterion.getType());
+        }
+        criterionDAO.save(criterion);
+    }
+
+    public static ICriterionType<Criterion> createTypeThatMatches(
+            final Criterion criterion) {
+        return createTypeThatMatches(false, criterion);
+    }
+
+    public static ICriterionType<Criterion> createTypeThatMatches(
+            final boolean allowSimultaneousCriterionsPerResource,
+            final Criterion criterion) {
+        return new ICriterionType<Criterion>() {
+
+            @Override
+            public boolean allowSimultaneousCriterionsPerResource() {
+                return allowSimultaneousCriterionsPerResource;
+            }
+
+            @Override
+            public boolean allowHierarchy() {
+                return false;
+            }
+
+            @Override
+            public boolean contains(ICriterion c) {
+                return criterion.isEquivalent(c);
+            }
+
+            @Override
+            public Criterion createCriterion(String name) {
+                return null;
+            }
+
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public boolean allowAdding() {
+                return false;
+            }
+
+            @Override
+            public boolean allowEditing() {
+                return false;
+            }
+
+            @Override
+            public boolean criterionCanBeRelatedTo(
+                    Class<? extends Resource> klass) {
+                return true;
+            }
+
+            @Override
+            public Criterion createCriterionWithoutNameYet() {
+                return null;
+            }
+        };
+    }
+
 }

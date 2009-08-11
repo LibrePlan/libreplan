@@ -37,7 +37,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.services.ICriterionService;
+import org.navalplanner.web.resources.criterion.ICriterionsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
@@ -78,9 +78,6 @@ public class OrderModelTest {
     private IOrderModel orderModel;
 
     @Autowired
-    private ICriterionService criterionService;
-
-    @Autowired
     private IOrderDAO orderDAO;
 
     @Autowired
@@ -88,6 +85,9 @@ public class OrderModelTest {
 
     @Autowired
     private IAdHocTransactionService adHocTransaction;
+
+    @Autowired
+    private ICriterionsModel criterionModel;
 
     private Session getSession() {
         return sessionFactory.getCurrentSession();
@@ -304,7 +304,7 @@ public class OrderModelTest {
         CriterionType criterionType = new CriterionType("test");
         Criterion criterion = new Criterion("Test" + UUID.randomUUID(),
                 criterionType);
-        criterionService.save(criterion);
+        criterionModel.save(criterion);
 
         hoursGroup.addCriterion(criterion);
         hoursGroup2.addCriterion(criterion);

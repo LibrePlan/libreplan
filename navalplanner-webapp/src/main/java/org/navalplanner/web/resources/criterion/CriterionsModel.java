@@ -11,6 +11,7 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -18,7 +19,6 @@ import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.ICriterionService;
 import org.navalplanner.business.resources.services.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -40,10 +40,10 @@ public class CriterionsModel implements ICriterionsModel {
             Criterion.class);
 
     @Autowired
-    private ICriterionService criterionService;
+    private ICriterionDAO criterionDAO;
 
     @Autowired
-    private ICriterionTypeDAO criterionDAO;
+    private ICriterionTypeDAO criterionTypeDAO;
 
     @Autowired
     private IResourceService resourceService;
@@ -55,13 +55,13 @@ public class CriterionsModel implements ICriterionsModel {
     @Override
     @Transactional(readOnly = true)
     public List<CriterionType> getTypes() {
-        return criterionDAO.getCriterionTypes();
+        return criterionTypeDAO.getCriterionTypes();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Collection<Criterion> getCriterionsFor(ICriterionType<?> type) {
-        return criterionService.getCriterionsFor(type);
+        return criterionDAO.findByType(type);
     }
 
     @Override
@@ -95,6 +95,7 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
+    @Transactional
     public void saveCriterion() throws ValidationException {
         InvalidValue[] invalidValues = criterionValidator
                 .getInvalidValues(criterion);
@@ -102,13 +103,62 @@ public class CriterionsModel implements ICriterionsModel {
             throw new ValidationException(invalidValues);
 
         try {
-            criterionService.save(criterion);
+            save(criterion);
         } catch (ValidationException ve) {
             throw ve;
         } finally {
             criterion = null;
             criterionType = null;
         }
+    }
+
+    @Override
+    @Transactional
+    public void save(Criterion entity) throws ValidationException {
+        // Save criterion.type if it's new
+        CriterionType criterionType = entity.getType();
+        if (criterionType.getId() == null) {
+            entity.setType(saveCriterionType(criterionType));
+        }
+        if (threIsOtherWithSameNameAndType(entity)) {
+            InvalidValue[] invalidValues = { new InvalidValue(entity.getName()
+                    + " already exists", Criterion.class, "name", entity
+                    .getName(), entity) };
+            throw new ValidationException(invalidValues,
+                    "Couldn't save new criterion");
+        }
+        criterionDAO.save(entity);
+    }
+
+    private boolean threIsOtherWithSameNameAndType(Criterion toSave) {
+        List<Criterion> withSameNameAndType = criterionDAO
+                .findByNameAndType(toSave);
+        if (withSameNameAndType.isEmpty())
+            return false;
+        if (withSameNameAndType.size() > 1)
+            return true;
+        return !areSameInDB(withSameNameAndType.get(0), toSave);
+    }
+
+    private boolean areSameInDB(Criterion existentCriterion, Criterion other) {
+        return existentCriterion.getId().equals(other.getId());
+    }
+
+    private CriterionType saveCriterionType(CriterionType criterionType)
+            throws ValidationException {
+        if (criterionTypeDAO.exists(criterionType.getId())
+                || criterionTypeDAO.existsByName(criterionType)) {
+            try {
+                criterionType = criterionTypeDAO.findUniqueByName(criterionType
+                        .getName());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            criterionTypeDAO.save(criterionType);
+        }
+
+        return criterionType;
     }
 
     @Override
@@ -124,11 +174,25 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public <T extends Resource> List<T> getResourcesSatisfyingCurrentCriterionOfType(
             Class<T> klass) {
         if (criterion == null)
             return new ArrayList<T>();
-        return criterionService.getResourcesSatisfying(klass, criterion);
+        return getResourcesSatisfying(klass, criterion);
+    }
+
+    private <T extends Resource> List<T> getResourcesSatisfying(
+            Class<T> resourceType, Criterion criterion) {
+        Validate.notNull(resourceType, "resourceType must be not null");
+        Validate.notNull(criterion, "criterion must be not null");
+        List<T> result = new ArrayList<T>();
+        for (T r : resourceService.getResources(resourceType)) {
+            if (criterion.isSatisfiedBy(r)) {
+                result.add(r);
+            }
+        }
+        return result;
     }
 
     @Override

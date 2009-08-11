@@ -15,6 +15,7 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
@@ -23,7 +24,6 @@ import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.ICriterionService;
 import org.navalplanner.business.resources.services.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -46,18 +46,18 @@ public class WorkerModel implements IWorkerModel {
             PredefinedCriterionTypes.WORK_RELATIONSHIP };
     private Worker worker;
     private ClassValidator<Worker> workerValidator;
-    private final ICriterionService criterionService;
+    private final ICriterionDAO criterionDAO;
 
     private IMultipleCriterionActiveAssigner localizationsAssigner;
 
     @Autowired
     public WorkerModel(IResourceService resourceService,
-            ICriterionService criterionService) {
+            ICriterionDAO criterionDAO) {
         Validate.notNull(resourceService);
-        Validate.notNull(criterionService);
+        Validate.notNull(criterionDAO);
         this.resourceService = resourceService;
         this.workerValidator = new ClassValidator<Worker>(Worker.class);
-        this.criterionService = criterionService;
+        this.criterionDAO = criterionDAO;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class WorkerModel implements IWorkerModel {
     public void prepareForCreate() {
         worker = new Worker();
         localizationsAssigner = new MultipleCriterionActiveAssigner(
-                criterionService, worker,
+                criterionDAO, worker,
                 PredefinedCriterionTypes.LOCATION_GROUP);
     }
 
@@ -102,7 +102,7 @@ public class WorkerModel implements IWorkerModel {
             this.worker = (Worker) resourceService.findResource(worker.getId());
             forceLoadSatisfactions(this.worker);
             localizationsAssigner = new MultipleCriterionActiveAssigner(
-                    criterionService, this.worker,
+                    criterionDAO, this.worker,
                     PredefinedCriterionTypes.LOCATION_GROUP);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
@@ -232,7 +232,7 @@ public class WorkerModel implements IWorkerModel {
             IMultipleCriterionActiveAssigner {
         private final Resource resource;
         private final ICriterionType<?> type;
-        private final ICriterionService criterionService;
+        private final ICriterionDAO criterionDAO;
         private List<CriterionSatisfaction> history;
         private List<Criterion> initialCriterionsNotAssigned;
         private Set<CriterionSatisfaction> initialActive;
@@ -242,13 +242,14 @@ public class WorkerModel implements IWorkerModel {
         private Set<CriterionSatisfaction> added = new HashSet<CriterionSatisfaction>();
 
         public MultipleCriterionActiveAssigner(
-                ICriterionService criterionService, Resource resource,
+                ICriterionDAO criterionDAO,
+                Resource resource,
                 ICriterionType<?> type) {
             Validate
                     .isTrue(
                             type.allowSimultaneousCriterionsPerResource(),
                             "must allow multiple active criterions for this type to use this assignment strategy");
-            this.criterionService = criterionService;
+            this.criterionDAO = criterionDAO;
             this.resource = resource;
             this.type = type;
             forceLoadSatisfactions(this.resource);
@@ -282,8 +283,8 @@ public class WorkerModel implements IWorkerModel {
         }
 
         private List<Criterion> calculateInitialCriterionsNotAssigned() {
-            Map<Long, Criterion> allCriterions = byId(criterionService
-                    .getCriterionsFor(type));
+            Map<Long, Criterion> allCriterions = byId(criterionDAO
+                    .findByType(type));
             for (Long activeId : asIds(resource.getCurrentCriterionsFor(type))) {
                 allCriterions.remove(activeId);
             }
@@ -374,7 +375,7 @@ public class WorkerModel implements IWorkerModel {
     public Map<ICriterionType<?>, Collection<Criterion>> getLaboralRelatedCriterions() {
         Map<ICriterionType<?>, Collection<Criterion>> result = new HashMap<ICriterionType<?>, Collection<Criterion>>();
         for (ICriterionType<?> type : laboralRelatedTypes) {
-            result.put(type, criterionService.getCriterionsFor(type));
+            result.put(type, criterionDAO.findByType(type));
         }
         return result;
     }

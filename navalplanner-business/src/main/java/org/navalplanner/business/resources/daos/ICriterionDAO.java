@@ -5,6 +5,7 @@ import java.util.List;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.ICriterionType;
 
 /**
  * Contract for {@link CriterionDAO} <br />
@@ -21,5 +22,7 @@ public interface ICriterionDAO extends IGenericDAO<Criterion, Long> {
     boolean existsByNameAndType(Criterion entity);
 
     Criterion find(Criterion criterion) throws InstanceNotFoundException;
+
+    List<Criterion> findByType(ICriterionType<?> type);
 
 }

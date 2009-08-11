@@ -9,11 +9,10 @@ import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.services.ICriterionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -32,7 +31,7 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
     private static final Log LOG = LogFactory.getLog(CriterionsBootstrap.class);
 
     @Autowired
-    private ICriterionService criterionService;
+    private ICriterionDAO criterionDAO;
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
@@ -61,11 +60,14 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
 
     private void ensureCriterionExists(String criterionName,
             CriterionType criterionType) {
-        try {
-            Criterion criterion = new Criterion(criterionName, criterionType);
-            criterionService.createIfNotExists(criterion);
-        } catch (ValidationException e) {
-            throw new RuntimeException(e);
+        Criterion criterion = new Criterion(criterionName, criterionType);
+        if (!(criterionDAO.exists(criterion.getId()) || criterionDAO
+                .existsByNameAndType(criterion))) {
+            if (!(criterionTypeDAO.exists(criterion.getType().getId()) || criterionTypeDAO
+                    .existsByName(criterion.getType()))) {
+                criterionTypeDAO.save(criterion.getType());
+            }
+            criterionDAO.save(criterion);
         }
     }
 

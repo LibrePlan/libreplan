@@ -10,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.ICriterionType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -76,4 +77,17 @@ public class CriterionDAO extends GenericDAOHibernate<Criterion, Long>
             throw new RuntimeException(ex);
         }
     }
+
+    @Override
+    public List<Criterion> findByType(ICriterionType<?> type) {
+        List<Criterion> list = list(Criterion.class);
+        ArrayList<Criterion> result = new ArrayList<Criterion>();
+        for (Criterion criterion : list) {
+            if (type.contains(criterion)) {
+                result.add(criterion);
+            }
+        }
+        return result;
+    }
+
 }

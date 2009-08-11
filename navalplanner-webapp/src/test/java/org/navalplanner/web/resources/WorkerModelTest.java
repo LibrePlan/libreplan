@@ -5,15 +5,15 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.ICriterionService;
 import org.navalplanner.business.resources.services.IResourceService;
 import org.navalplanner.web.resources.worker.WorkerModel;
 
@@ -27,17 +27,17 @@ public class WorkerModelTest {
     public void testWorkerValid() throws ValidationException,
             InstanceNotFoundException {
         IResourceService resourceServiceMock = createMock(IResourceService.class);
-        ICriterionService criterionServiceMock = createMock(ICriterionService.class);
+        ICriterionDAO criterionServiceMock = createMock(ICriterionDAO.class);
         Worker workerToReturn = new Worker();
         workerToReturn.setDailyHours(2);
         workerToReturn.setFirstName("firstName");
         workerToReturn.setSurname("surname");
         workerToReturn.setNif("232344243");
         // expectations
-        Collection<Criterion> criterions = new ArrayList<Criterion>();
+        List<Criterion> criterions = new ArrayList<Criterion>();
         expect(
                 criterionServiceMock
-                        .getCriterionsFor(PredefinedCriterionTypes.LOCATION_GROUP))
+                        .findByType(PredefinedCriterionTypes.LOCATION_GROUP))
                 .andReturn(criterions).anyTimes();
         expect(resourceServiceMock.findResource(workerToReturn.getId()))
                 .andReturn(workerToReturn);
@@ -55,13 +55,13 @@ public class WorkerModelTest {
     public void testWorkerInvalid() throws ValidationException,
             InstanceNotFoundException {
         IResourceService resourceServiceMock = createMock(IResourceService.class);
-        ICriterionService criterionServiceMock = createMock(ICriterionService.class);
+        ICriterionDAO criterionServiceMock = createMock(ICriterionDAO.class);
         Worker workerToReturn = new Worker();
         // expectations
-        Collection<Criterion> criterions = new ArrayList<Criterion>();
+        List<Criterion> criterions = new ArrayList<Criterion>();
         expect(
                 criterionServiceMock
-                        .getCriterionsFor(PredefinedCriterionTypes.LOCATION_GROUP))
+                        .findByType(PredefinedCriterionTypes.LOCATION_GROUP))
                 .andReturn(criterions).anyTimes();
         expect(resourceServiceMock.findResource(workerToReturn.getId()))
                 .andReturn(workerToReturn);
