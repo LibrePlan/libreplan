@@ -106,7 +106,7 @@ public class CriterionServiceTest {
     }
 
     @Test
-    public void testSaveCriterionTwice() throws ValidationException {
+    public void testSaveSameCriterionTwice() throws ValidationException {
         String unique = UUID.randomUUID().toString();
         Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
                 .createCriterion(unique);
