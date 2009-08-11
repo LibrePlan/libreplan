@@ -1,0 +1,15 @@
+<?page title="Navalpro: Scheduling"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="stylesheet" type="text/css" href="/planner/css/ganttzk.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+
+    <resourcesLoadPanel id="planner" self="@{define(content)}">
+        <div id="idContextMenuTaskAssigment"></div>
+    </resourcesLoadPanel>
+
+</zk>

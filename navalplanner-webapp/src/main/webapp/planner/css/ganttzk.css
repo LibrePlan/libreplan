@@ -326,10 +326,44 @@ tr.z-vbox-sep {
     display:none;
 }
 
-/* Hide at the beginning */
+/* Hidden at the beginning to avoid the first scalation effect */
 #ganttpanel_scroller_x {
 	display:none;
 }
 #ganttpanel_scroller_y {
+	display:none;
+}
+
+/* -------------- ResourceLoad -------------- */
+.taskassignmentinterval {
+	float:left;
+	height:10px;
+	position:relative;
+}
+
+.fullplanificated {
+    background-color:green;
+}
+
+.planificated {
+    background-color:orange;
+}
+
+.overplanificated {
+    background-color:red;
+}
+.not_planificated {
+    background-color:#007bbe;
+}
+
+.row_resourceload {
+    height: 10px;
+    border: solid 1px #000000;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    width: auto;
+}
+
+.resourceload_name {
 	display:none;
 }

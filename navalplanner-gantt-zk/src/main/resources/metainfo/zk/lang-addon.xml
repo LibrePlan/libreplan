@@ -21,6 +21,15 @@
     </component>    
 
     <component>
+        <component-name>resourcesLoadPanel</component-name>
+        <component-class>org.zkoss.ganttz.ResourcesLoadPanel</component-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>~./ganttz/resourcesLoadPanel.dsp</mold-uri>
+        </mold>
+    </component>
+
+    <component>
         <component-name>leftPane</component-name>
         <component-class>org.zkoss.ganttz.LeftPane</component-class>
         <macro-uri>~./ganttz/zul/leftPane.zul</macro-uri>
@@ -41,6 +50,15 @@
         </mold>
     </component>
         
+    <component>
+        <component-name>resourceload</component-name>
+        <component-class>org.zkoss.ganttz.ResourceLoadComponent</component-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>~./ganttz/resourceload.dsp</mold-uri>
+        </mold>
+    </component>
+
     <component>
         <component-name>task</component-name>
         <component-class>org.zkoss.ganttz.TaskComponent</component-class>
