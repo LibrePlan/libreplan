@@ -114,18 +114,6 @@ public class CriterionServiceTest {
         criterionService.save(criterion);
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
-    @NotTransactional
-    public void testCannotExistTwoDifferentCriterionsWithSameNameAndType() throws ValidationException {
-        String unique = UUID.randomUUID().toString();
-        Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
-                .createCriterion(unique);
-        criterionService.save(criterion);
-        Criterion criterion2 = PredefinedCriterionTypes.WORK_RELATIONSHIP
-                .createCriterion(unique);
-        criterionService.save(criterion2);
-    }
-
     @Test
     public void testCreateIfNotExists() throws ValidationException {
         String unique = UUID.randomUUID().toString();
@@ -208,7 +196,8 @@ public class CriterionServiceTest {
     }
 
     @Test
-    public void testGetSetOfResourcesSubclassSatisfyingCriterion() throws ValidationException {
+    public void testGetSetOfResourcesSubclassSatisfyingCriterion()
+            throws ValidationException {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         criterionService.save(criterion);
         ICriterionType<Criterion> type = createTypeThatMatches(criterion);
@@ -231,7 +220,8 @@ public class CriterionServiceTest {
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        worker.addSatisfaction(new CriterionWithItsType(type, criterion), Interval.from(CriterionSatisfactionDAOTest.year(2000)));
+        worker.addSatisfaction(new CriterionWithItsType(type, criterion),
+                Interval.from(CriterionSatisfactionDAOTest.year(2000)));
         ICriterionOnData criterionOnData = criterionService.empower(criterion);
         assertTrue(criterionOnData.isSatisfiedBy(worker));
         assertEquals(1, criterionOnData.getResourcesSatisfying().size());
@@ -254,7 +244,8 @@ public class CriterionServiceTest {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         criterionService.save(criterion);
         createTypeThatMatches(criterion);
-        worker1.addSatisfaction(new CriterionWithItsType(criterion.getType(), criterion));
+        worker1.addSatisfaction(new CriterionWithItsType(criterion.getType(),
+                criterion));
         resourceService.saveResource(worker1);
         Resource workerReloaded = adHocTransactionService
                 .onTransaction(new IOnTransaction<Resource>() {
@@ -290,13 +281,15 @@ public class CriterionServiceTest {
 
     @Test
     @NotTransactional
-    public void shouldntThrowExceptionDueToTransparentProxyGotcha() throws ValidationException {
+    public void shouldntThrowExceptionDueToTransparentProxyGotcha()
+            throws ValidationException {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         ICriterionType<Criterion> type = createTypeThatMatches(criterion);
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        worker.addSatisfaction(new CriterionWithItsType(type, criterion), Interval.from(CriterionSatisfactionDAOTest.year(2000)));
+        worker.addSatisfaction(new CriterionWithItsType(type, criterion),
+                Interval.from(CriterionSatisfactionDAOTest.year(2000)));
         ICriterionOnData criterionOnData = criterionService.empower(criterion);
         criterionOnData.getResourcesSatisfying();
         criterionOnData.getResourcesSatisfying(CriterionSatisfactionDAOTest
@@ -321,8 +314,8 @@ public class CriterionServiceTest {
                 type, criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        worker.addSatisfaction(criterionWithItsType, Interval.from(CriterionSatisfactionDAOTest
-        .year(2000)));
+        worker.addSatisfaction(criterionWithItsType, Interval
+                .from(CriterionSatisfactionDAOTest.year(2000)));
 
         assertEquals(1, criterionService.getResourcesSatisfying(criterion,
                 CriterionSatisfactionDAOTest.year(2001),
@@ -331,7 +324,8 @@ public class CriterionServiceTest {
                 CriterionSatisfactionDAOTest.year(1999),
                 CriterionSatisfactionDAOTest.year(2005)).size());
 
-        worker.addSatisfaction(new CriterionWithItsType(type, criterion), Interval.from(CriterionSatisfactionDAOTest.year(1998)));
+        worker.addSatisfaction(new CriterionWithItsType(type, criterion),
+                Interval.from(CriterionSatisfactionDAOTest.year(1998)));
 
         assertEquals(1, criterionService.getResourcesSatisfying(criterion,
                 CriterionSatisfactionDAOTest.year(1999),
@@ -347,10 +341,10 @@ public class CriterionServiceTest {
         criterionService.save(criterion);
         Worker worker = new Worker("firstName", "surName", "2333232", 10);
         resourceService.saveResource(worker);
-        worker.addSatisfaction(criterionWithItsType, Interval.from(CriterionSatisfactionDAOTest
-        .year(2000)));
-        worker.addSatisfaction(criterionWithItsType, Interval.from(CriterionSatisfactionDAOTest
-        .year(1998)));
+        worker.addSatisfaction(criterionWithItsType, Interval
+                .from(CriterionSatisfactionDAOTest.year(2000)));
+        worker.addSatisfaction(criterionWithItsType, Interval
+                .from(CriterionSatisfactionDAOTest.year(1998)));
 
         ICriterionType<?> criterionType = ResourceTest
                 .createTypeThatMatches(criterion);
@@ -365,8 +359,8 @@ public class CriterionServiceTest {
                 CriterionSatisfactionDAOTest.year(1997),
                 CriterionSatisfactionDAOTest.year(2005)).size());
 
-        worker.addSatisfaction(criterionWithItsType, Interval.from(CriterionSatisfactionDAOTest
-        .year(1997)));
+        worker.addSatisfaction(criterionWithItsType, Interval
+                .from(CriterionSatisfactionDAOTest.year(1997)));
         assertEquals(2, criterionService.getSatisfactionsFor(criterionType,
                 CriterionSatisfactionDAOTest.year(1999),
                 CriterionSatisfactionDAOTest.year(2005)).size());

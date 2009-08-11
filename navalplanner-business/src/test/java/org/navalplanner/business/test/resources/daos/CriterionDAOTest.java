@@ -13,11 +13,15 @@ import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,5 +101,19 @@ public class CriterionDAOTest {
         criterionDAO.save(criterion2);
         List<Criterion> list = criterionDAO.list(Criterion.class);
         assertEquals(previous + 2, list.size());
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void schemaEnsuresCannotExistTwoDifferentCriterionsWithSameNameAndType()
+            throws ValidationException {
+        String unique = UUID.randomUUID().toString();
+        Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique);
+        criterionDAO.save(criterion);
+        criterionDAO.flush();
+        Criterion criterion2 = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique);
+        criterionDAO.save(criterion2);
+        criterionDAO.flush();
     }
 }
