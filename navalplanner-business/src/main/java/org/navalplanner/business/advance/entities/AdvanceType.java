@@ -65,7 +65,7 @@ public class AdvanceType extends BaseEntity {
         this.updatable = updatable;
     }
 
-    public boolean getUpdatable() {
+    public boolean isUpdatable() {
         return this.updatable;
     }
 
@@ -87,7 +87,7 @@ public class AdvanceType extends BaseEntity {
     }
 
     public String getType() {
-        if (getUpdatable())
+        if (isUpdatable())
             return "De Usuario";
         return "Predefinido";
     }
