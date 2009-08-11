@@ -19,13 +19,15 @@
         <edition top_id="editWindow" title="Edit Advance Type Data"
             save_button_label="Save" cancel_button_label="Cancel" />
         <window visible="@{controller.confirmingRemove}"
-            id="confirmRemove" title="Confirmación" width="500px"
+            id="confirmRemove" title="Confirmation" sizable="true"
             position="center">
-            <vbox>
-                <hbox>
-                ¿Desexa borrar <label value="@{controller.advanceType.unitName}"/> ?
+            <vbox align = "center">
+                <hbox align = "center">
+                    <label value = "¿ Do you want to delete"/>
+                    <label value ="@{controller.advanceType.unitName}"/>
+                    <label value = "?"/>
                 </hbox>
-                <hbox>
+                <hbox align = "center">
                     <button label="Yes"
                         onClick="controller.remove(controller.advanceType);" />
                     <button label="No"
