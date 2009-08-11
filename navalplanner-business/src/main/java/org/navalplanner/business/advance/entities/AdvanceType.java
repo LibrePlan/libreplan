@@ -61,10 +61,6 @@ public class AdvanceType extends BaseEntity {
         return this.defaultMaxValue;
     }
 
-    public void setUpdatable(boolean updatable) {
-        this.updatable = updatable;
-    }
-
     public boolean isUpdatable() {
         return this.updatable;
     }
