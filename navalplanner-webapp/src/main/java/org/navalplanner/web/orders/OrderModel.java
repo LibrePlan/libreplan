@@ -12,10 +12,16 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.planner.services.ITaskElementService;
+import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -62,13 +68,7 @@ public class OrderModel implements IOrderModel {
     private ICriterionDAO criterionDAO;
 
     @Autowired
-    private ITaskElementService taskElementService;
-
-    @Autowired
-    public OrderModel(ITaskElementService taskElementService) {
-        Validate.notNull(taskElementService);
-        this.taskElementService = taskElementService;
-    }
+    private ITaskElementDAO taskElementDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -176,7 +176,7 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional
     public void schedule() {
-        taskElementService.convertToScheduleAndSave(getFromDB(order));
+        convertToScheduleAndSave(getFromDB(order));
     }
 
     @Override
@@ -192,6 +192,61 @@ public class OrderModel implements IOrderModel {
     @Override
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    @Override
+    public TaskElement convertToInitialSchedule(OrderElement order) {
+        if (order instanceof OrderLineGroup) {
+            OrderLineGroup group = (OrderLineGroup) order;
+            return convertToTaskGroup(group);
+        } else {
+            OrderLine line = (OrderLine) order;
+            if (line.getHoursGroups().isEmpty())
+                throw new IllegalArgumentException(
+                        "the line must have at least one "
+                                + HoursGroup.class.getSimpleName()
+                                + " associated");
+            return line.getHoursGroups().size() > 1 ? convertToTaskGroup(line)
+                    : convertToTask(line);
+        }
+    }
+
+    private TaskGroup convertToTaskGroup(OrderLine line) {
+        TaskGroup result = new TaskGroup();
+        result.setOrderElement(line);
+        for (HoursGroup hoursGroup : line.getHoursGroups()) {
+            result.addTaskElement(taskFrom(line, hoursGroup));
+        }
+        return result;
+    }
+
+    private Task convertToTask(OrderLine line) {
+        HoursGroup hoursGroup = line.getHoursGroups().get(0);
+        return taskFrom(line, hoursGroup);
+    }
+
+    private Task taskFrom(OrderLine line, HoursGroup hoursGroup) {
+        Task result = Task.createTask(hoursGroup);
+        result.setOrderElement(line);
+        return result;
+    }
+
+    private TaskGroup convertToTaskGroup(OrderLineGroup group) {
+        TaskGroup result = new TaskGroup();
+        result.setOrderElement(group);
+        for (OrderElement orderElement : group.getChildren()) {
+            result.addTaskElement(convertToInitialSchedule(orderElement));
+        }
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public void convertToScheduleAndSave(Order order) {
+        List<OrderElement> orderElements = order.getOrderElements();
+        for (OrderElement orderElement : orderElements) {
+            taskElementDAO.save(convertToInitialSchedule(orderElement));
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.entities.TaskElement;
 
 /**
  * Contract for {@link OrderModel}<br />
@@ -38,5 +39,9 @@ public interface IOrderModel {
     boolean isAlreadyScheduled(Order order);
 
     void setOrder(Order order);
+
+    TaskElement convertToInitialSchedule(OrderElement order);
+
+    void convertToScheduleAndSave(Order order);
 
 }
