@@ -126,6 +126,19 @@ public class CriterionServiceTest {
                         .createCriterion(unique));
     }
 
+    @Test(expected = ValidationException.class)
+    @NotTransactional
+    public void twoDifferentCriterionsWithSameNameAndTypeAreDetectedIfPossible()
+            throws ValidationException {
+        String unique = UUID.randomUUID().toString();
+        Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique);
+        criterionService.save(criterion);
+        Criterion criterion2 = PredefinedCriterionTypes.WORK_RELATIONSHIP
+                .createCriterion(unique);
+        criterionService.save(criterion2);
+    }
+
     @Test(expected = DataIntegrityViolationException.class)
     public void testCreateCriterionSatisfactionOnTransientCriterion()
             throws Exception {

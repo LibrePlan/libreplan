@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.CriterionDAO;
@@ -60,32 +61,52 @@ public class CriterionServiceImpl implements ICriterionService {
     }
 
     public void remove(Criterion criterion) throws InstanceNotFoundException {
-        if (criterion.getId() != null ) {
+        if (criterion.getId() != null) {
             criterionDAO.remove(criterion.getId());
         } else {
             criterionDAO.removeByNameAndType(criterion);
         }
     }
 
-    @Transactional(rollbackFor=ValidationException.class)
+    @Transactional(rollbackFor = ValidationException.class)
     @Override
     public void save(Criterion entity) throws ValidationException {
-
         // Save criterion.type if it's new
         CriterionType criterionType = entity.getType();
         if (criterionType.getId() == null) {
             entity.setType(saveCriterionType(criterionType));
         }
-
+        if (threIsOtherWithSameNameAndType(entity)) {
+            InvalidValue[] invalidValues = { new InvalidValue(entity.getName()
+                    + " already exists", Criterion.class, "name", entity
+                    .getName(), entity) };
+            throw new ValidationException(invalidValues,
+                    "Couldn't save new criterion");
+        }
         criterionDAO.save(entity);
     }
 
-    private CriterionType saveCriterionType(CriterionType criterionType) throws ValidationException {
+    private boolean threIsOtherWithSameNameAndType(Criterion toSave) {
+        List<Criterion> withSameNameAndType = criterionDAO
+                .findByNameAndType(toSave);
+        if (withSameNameAndType.isEmpty())
+            return false;
+        if (withSameNameAndType.size() > 1)
+            return true;
+        return !areSameInDB(withSameNameAndType.get(0), toSave);
+    }
+
+    private boolean areSameInDB(Criterion existentCriterion, Criterion other) {
+        return existentCriterion.getId().equals(other.getId());
+    }
+
+    private CriterionType saveCriterionType(CriterionType criterionType)
+            throws ValidationException {
         if (criterionTypeDAO.exists(criterionType.getId())
                 || criterionTypeDAO.existsByName(criterionType)) {
             try {
-                criterionType = criterionTypeDAO
-                        .findUniqueByName(criterionType.getName());
+                criterionType = criterionTypeDAO.findUniqueByName(criterionType
+                        .getName());
             } catch (InstanceNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -144,7 +165,8 @@ public class CriterionServiceImpl implements ICriterionService {
     }
 
     @Override
-    public void createIfNotExists(Criterion criterion) throws ValidationException {
+    public void createIfNotExists(Criterion criterion)
+            throws ValidationException {
         if (!exists(criterion))
             save(criterion);
     }
