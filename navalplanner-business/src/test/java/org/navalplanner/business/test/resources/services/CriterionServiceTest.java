@@ -114,7 +114,7 @@ public class CriterionServiceTest {
         criterionService.save(criterion);
     }
 
-    @Test(expected=ValidationException.class)
+    @Test(expected = DataIntegrityViolationException.class)
     @NotTransactional
     public void testCannotExistTwoDifferentCriterionsWithSameNameAndType() throws ValidationException {
         String unique = UUID.randomUUID().toString();

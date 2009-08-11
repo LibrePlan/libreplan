@@ -23,6 +23,12 @@ public class Criterion extends BaseEntity implements ICriterion {
 
     private boolean active = true;
 
+    /*
+     * Just for Hibernate mapping in order to have an unique constraint with
+     * name and type properties.
+     */
+    private Long typeId;
+
     public static Criterion ofType(CriterionType type) {
         return new Criterion(type);
     }

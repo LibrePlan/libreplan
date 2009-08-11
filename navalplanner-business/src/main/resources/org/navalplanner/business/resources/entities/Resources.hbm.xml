@@ -36,6 +36,13 @@
     <property access="field" name="name"/>
     <property access="field" name="active"/>
     <many-to-one access="field" name="type" column="id_criterion_type" not-null="true" />
+
+    <properties name="nameAndType" unique="true">
+        <property access="field" name="name" insert="false" update="false"/>
+        <property access="field" name="typeId" insert="false" update="false"
+            column="id_criterion_type"/>
+    </properties>
+
   </class>
 
   <!-- CriterionSatisfaction -->

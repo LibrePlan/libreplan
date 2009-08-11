@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.CriterionDAO;
@@ -79,16 +78,6 @@ public class CriterionServiceImpl implements ICriterionService {
         }
 
         criterionDAO.save(entity);
-        if (criterionDAO.findByNameAndType(entity).size() > 1) {
-
-            InvalidValue[] invalidValues = {
-                new InvalidValue(entity.getName() + " already exists",
-                    Criterion.class, "name", entity.getName(), entity)
-            };
-
-            throw new ValidationException(invalidValues,
-                "Couldn't save new criterion");
-        }
     }
 
     private CriterionType saveCriterionType(CriterionType criterionType) throws ValidationException {
