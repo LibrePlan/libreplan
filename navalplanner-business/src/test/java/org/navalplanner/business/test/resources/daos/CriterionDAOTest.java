@@ -56,7 +56,8 @@ public class CriterionDAOTest {
     }
 
     public static Criterion createValidCriterion(String name) {
-        CriterionType criterionType = CriterionTypeDAOTest.createValidCriterionType();
+        CriterionType criterionType = CriterionTypeDAOTest
+                .createValidCriterionType();
 
         return Criterion.withNameAndType(name, criterionType);
     }
@@ -65,7 +66,8 @@ public class CriterionDAOTest {
         CriterionType criterionType = criterion.getType();
         if (criterionTypeDAO.existsByName(criterionType)) {
             try {
-                criterionType = criterionTypeDAO.findUniqueByName(criterionType);
+                criterionType = criterionTypeDAO
+                        .findUniqueByName(criterionType);
             } catch (InstanceNotFoundException ex) {
 
             }
@@ -73,6 +75,12 @@ public class CriterionDAOTest {
             criterionTypeDAO.save(criterionType);
         }
         criterion.setType(criterionType);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void aCriterionRelatedToATransientTypeCannotBeSaved() {
+        Criterion criterion = createValidCriterion();
+        criterionDAO.save(criterion);
     }
 
     @Test
@@ -87,7 +95,7 @@ public class CriterionDAOTest {
     @Test
     public void testRemove() throws InstanceNotFoundException {
         Criterion criterion = createValidCriterion();
-         saveCriterionType(criterion);
+        saveCriterionType(criterion);
         criterionDAO.save(criterion);
         criterionDAO.remove(criterion.getId());
         assertFalse(criterionDAO.exists(criterion.getId()));
