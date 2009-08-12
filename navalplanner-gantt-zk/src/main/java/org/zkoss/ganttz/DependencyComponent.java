@@ -21,8 +21,11 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     private TaskComponent destination;
 
+    private DependencyType type;
+
     public DependencyComponent() {
 
+        this.type = DependencyType.END_START;
 
     }
 
@@ -103,8 +106,12 @@ public class DependencyComponent extends XulElement implements AfterCompose {
                 .getTask(), DependencyType.END_START);
     }
 
-    public String getDependencyType() {
-        return this.getDependency().getType().name().toString();
+    public DependencyType getDependencyType() {
+        return this.type;
+    }
+
+    public void setType(DependencyType type) {
+        this.type = type;
     }
 
 }

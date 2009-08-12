@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.zkoss.ganttz;
 
 import java.beans.PropertyChangeEvent;
@@ -12,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
@@ -25,7 +21,8 @@ import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- * @author Francisco Javier Moran Rúa
+ * @author Francisco Javier Moran Rúa <jmoran@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class DependencyList extends XulElement implements AfterCompose {
 
@@ -141,7 +138,7 @@ public class DependencyList extends XulElement implements AfterCompose {
 
     private Menupopup getContextMenu() {
         if (contextMenu == null) {
-            contextMenu = MenuBuilder.on(getPage(), getDependencyComponents()).item(
+            MenuBuilder <DependencyComponent> contextMenuBuilder = MenuBuilder.on(getPage(), getDependencyComponents()).item(
                     "Erase", new ItemAction<DependencyComponent>() {
                         @Override
                         public void onEvent(final DependencyComponent choosen,
@@ -158,7 +155,38 @@ public class DependencyList extends XulElement implements AfterCompose {
                                         }
                                     });
                         }
-                    }).create();
+                    });
+            contextMenuBuilder.item("Set End-Start",
+                    new ItemAction<DependencyComponent>() {
+                        @Override
+                        public void onEvent(final DependencyComponent choosen,
+                                Event event) {
+                            choosen.setType(DependencyType.END_START);
+                            choosen.invalidate();
+                        }
+                    });
+
+            contextMenuBuilder.item("Set Start-Start", new ItemAction<DependencyComponent> () {
+                @Override
+                        public void onEvent(final DependencyComponent choosen,
+                                Event event) {
+                            choosen.setType(DependencyType.START_START);
+                            choosen.invalidate();
+                }
+            });
+
+            contextMenuBuilder.item("Set End-End",
+                    new ItemAction<DependencyComponent>() {
+                        @Override
+                        public void onEvent(final DependencyComponent choosen,
+                                Event event) {
+                            choosen.setType(DependencyType.END_END);
+                            choosen.invalidate();
+                        }
+                    });
+
+            contextMenu = contextMenuBuilder.create();
+
         }
         return contextMenu;
     }

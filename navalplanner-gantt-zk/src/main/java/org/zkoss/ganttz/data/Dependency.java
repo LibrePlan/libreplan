@@ -52,7 +52,7 @@ public class Dependency {
 
     private final Task destination;
 
-    private final DependencyType type;
+    private DependencyType type;
 
     private final boolean visible;
 
@@ -109,6 +109,10 @@ public class Dependency {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    public void setType(DependencyType type) {
+        this.type = type;
     }
 
 }
