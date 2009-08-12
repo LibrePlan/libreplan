@@ -50,6 +50,18 @@ zkPlanner.setupArrow = function(arrowDiv){
     }
 }
 
+zkPlanner.drawArrow = function(dependency, orig, dest) {
+	switch(dependency.getAttribute('type'))
+    {
+	case zkDependency.START_START: 
+		zkPlanner.drawArrowStartStart(dependency, orig, dest);
+		break;
+	case zkDependency.END_START:
+	default:		
+		zkPlanner.drawArrowEndStart(dependency, orig, dest);				
+    }
+}
+
 zkPlanner.drawArrowStartStart = function(arrow, orig, dest){
     var xorig = orig[0] - zkTask.HALF_DEPENDENCY_PADDING;
     var yorig = orig[1] - zkTask.CORNER_WIDTH/2 + zkTask.HALF_DEPENDENCY_PADDING;
@@ -95,20 +107,7 @@ zkPlanner.drawArrowStartStart = function(arrow, orig, dest){
     }
 
 
-zkPlanner.drawArrow = function(dependency, orig, dest) {
-
-	switch(dependency.getAttribute('type'))
-    {
-	case zkDependency.START_START: 
-		zkPlanner.drawArrowStartStart(dependency, orig, dest);
-		break;
-	case zkDependency.START_END:
-	default:		
-		zkPlanner.drawArrowStartEnd(dependency, orig, dest);				
-    }
-}
-
-zkPlanner.drawArrowStartEnd = function(arrow, orig, dest){
+zkPlanner.drawArrowEndStart = function(arrow, orig, dest){
     var xorig = orig[0] - zkTask.DEPENDENCY_PADDING;
     var yorig = orig[1] - zkTask.HALF_DEPENDENCY_PADDING;
     var xend = dest[0] - zkTask.DEPENDENCY_PADDING;

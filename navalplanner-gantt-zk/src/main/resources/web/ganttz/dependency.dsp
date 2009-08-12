@@ -5,5 +5,5 @@
 
 <div class="dependency" id="${self.uuid}" z.type="ganttz.dependency.Dependency"
     idTaskOrig="${self.idTaskOrig}" idTaskEnd="${self.idTaskEnd}" ${self.outerAttrs}
-    type="start_end">
+    type=${self.dependencyType}>
 </div>

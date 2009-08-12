@@ -1,8 +1,14 @@
+/**
+ * Javascript behaviuor for TaskList elements
+ * @author Javier Morán Rúa <jmoran@igalia.com>
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ */
 zkDependency = {};
 
-zkDependency.START_END = "start_end";
-zkDependency.START_START = "start_start";
-zkDependency.END_END = "end_end";
+zkDependency.END_START = "END_START";
+zkDependency.START_START = "START_START";
+zkDependency.END_END = "END_END";
 
 zkDependency.origin = function(dependency) {
     var id = dependency.getAttribute("idTaskOrig");
@@ -25,7 +31,7 @@ zkDependency.draw = function(dependency) {
     if (separation > 0 ) {
         offsetX = offsetX - separation;
     }
-    if (dependency.getAttribute('type') == zkDependency.START_END ||
+    if (dependency.getAttribute('type') == zkDependency.END_START ||
     		dependency.getAttribute('type') == null ) {
     	orig[0] = orig[0] + Math.max( 0, offsetX );
     }

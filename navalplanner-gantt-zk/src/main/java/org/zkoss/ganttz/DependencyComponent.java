@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.zkoss.ganttz;
 
 import java.beans.PropertyChangeEvent;
@@ -16,9 +11,9 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- *
- * @author Francisco Javier Moran Rúa
- *
+ * 
+ * @author Francisco Javier Moran Rúa <jmoran@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class DependencyComponent extends XulElement implements AfterCompose {
 
@@ -106,6 +101,10 @@ public class DependencyComponent extends XulElement implements AfterCompose {
     public Dependency getDependency() {
         return new Dependency(source.getTask(), destination
                 .getTask(), DependencyType.END_START);
+    }
+
+    public String getDependencyType() {
+        return this.getDependency().getType().name().toString();
     }
 
 }
