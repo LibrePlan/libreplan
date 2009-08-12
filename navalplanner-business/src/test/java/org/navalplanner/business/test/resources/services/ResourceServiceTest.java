@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
@@ -24,8 +23,6 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterion;
-import org.navalplanner.business.resources.entities.ICriterionType;
-import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.resources.services.IResourceService;
 import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
@@ -62,187 +59,124 @@ public class ResourceServiceTest {
     @Autowired
     private IAdHocTransactionService adHocTransactionService;
 
+    private Worker worker;
+
+    private Worker[] invalidWorkers;
+
+    private Criterion criterion;
+
     @Test
-    public void testRemoveResource() throws InstanceNotFoundException {
+    public void afterRemovingASavedWorkerNoLongerExists()
+            throws InstanceNotFoundException {
+        givenSavedWorker();
+        resourceService.removeResource(worker.getId());
+        assertFalse(resourceDao.exists(worker.getId()));
+    }
 
-        /* A group of three workers. */
-        Worker worker1 = new Worker("worker-1", "worker-2-surname",
-                "11111111A", 8);
-        Worker worker2 = new Worker("worker-2", "worker-3-surname",
-                "22222222B", 6);
-        Worker worker3 = new Worker("worker-3", "worker-3-surname",
-                "33333333C", 4);
-        resourceService.saveResource(worker1);
-        resourceService.saveResource(worker2);
-        resourceService.saveResource(worker3);
-
-        resourceService.removeResource(worker3.getId());
-
-        assertFalse(resourceDao.exists(worker3.getId()));
-        assertTrue(resourceDao.exists(worker2.getId()));
+    private void givenSavedWorker() {
+        this.worker = new Worker("worker-1", "worker-2-surname", "11111111A", 8);
+        resourceService.saveResource(this.worker);
     }
 
     @Test
-    public void testListWorkers() throws Exception {
+    public void getWorkersReturnsTheNewlyCreatedResources() {
         final int previousWorkers = resourceService.getWorkers().size();
-        Worker worker1 = new Worker("worker-1", "worker-2-surname",
-                "11111111A", 8);
-        Worker worker2 = new Worker("worker-2", "worker-3-surname",
-                "22222222B", 6);
-        Resource worker3 = new Worker("worker-3", "worker-3-surname",
-                "33333333C", 4);
-        resourceService.saveResource(worker1);
-        resourceService.saveResource(worker2);
-        assertEquals("Two workers have been created", previousWorkers + 2,
-                resourceService.getWorkers().size());
-        resourceService.saveResource(worker3);
-        assertEquals("Three workers has been created", previousWorkers + 3,
+        givenSavedWorker();
+        givenSavedWorker();
+        assertEquals("Two workers has been saved", previousWorkers + 2,
                 resourceService.getWorkers().size());
     }
 
     @Test
-    @NotTransactional
-    public void testWorkerValidation() throws Exception {
-        ClassValidator<Worker> workerValidator = new ClassValidator<Worker>(
-                Worker.class);
-        Worker[] invalidWorkers = {
-                new Worker("first name", null, "233233", 3),
-                new Worker("first name", "second name", "233233", -1),
-                new Worker(null, "second name", "233233", 3),
-                new Worker("first name", "second name", null, 3) };
+    public void invalidValuesAreReportedByClassValidator() {
+        givenInvalidWorkers();
         for (Worker invalidWorker : invalidWorkers) {
-            InvalidValue[] invalidValues = workerValidator
-                    .getInvalidValues(invalidWorker);
-            assertEquals(1, invalidValues.length);
-            try {
-                resourceService.saveResource(invalidWorker);
-                fail("must send invalid state exception");
-            } catch (InvalidStateException e) {
-                // ok
-            }
+            thenHasSomeInvalidValue(invalidWorker);
         }
     }
 
     @Test
     @NotTransactional
-    public void versionIsIncreased() throws Exception {
-        Worker worker1 = new Worker("worker-1", "worker-2-surname",
-                "11111111A", 8);
-        resourceService.saveResource(worker1);
-        long versionValueAfterSave = worker1.getVersion();
-        worker1.setFirstName("blabla");
-        resourceService.saveResource(worker1);
-        assertThat(worker1.getVersion(), not(equalTo(versionValueAfterSave)));
+    public void invalidWorkerCannotBeSaved() {
+        givenInvalidWorkers();
+        for (Worker invalidWorker : invalidWorkers) {
+            thenCannotBeSaved(invalidWorker);
+        }
+    }
+
+    private void thenCannotBeSaved(Worker invalidWorker) {
+        try {
+            resourceService.saveResource(invalidWorker);
+            fail("must send invalid state exception");
+        } catch (InvalidStateException e) {
+            // ok
+        }
+    }
+
+    private void thenHasSomeInvalidValue(Worker invalidWorker) {
+        ClassValidator<Worker> workerValidator = new ClassValidator<Worker>(
+                Worker.class);
+        InvalidValue[] invalidValues = workerValidator
+                .getInvalidValues(invalidWorker);
+        assertEquals(1, invalidValues.length);
+    }
+
+    private void givenInvalidWorkers() {
+        invalidWorkers = new Worker[] {
+                new Worker("first name", null, "233233", 3),
+                new Worker("first name", "second name", "233233", -1),
+                new Worker(null, "second name", "233233", 3),
+                new Worker("first name", "second name", null, 3) };
     }
 
     @Test
     @NotTransactional
-    public void versionIsIncreasedWhenAddingSatisfactions()
-            throws Exception {
-        Worker worker1 = new Worker("worker-1", "worker-2-surname",
-                "11111111A", 8);
-        resourceService.saveResource(worker1);
-        long versionValueAfterSave = worker1.getVersion();
-        final Criterion criterion = CriterionDAOTest.createValidCriterion();
+    public void versionIsIncreased() {
+        givenSavedWorker();
 
+        long versionValueAfterSave = worker.getVersion();
+        worker.setFirstName("blabla");
+        resourceService.saveResource(worker);
+
+        assertThat(worker.getVersion(), not(equalTo(versionValueAfterSave)));
+    }
+
+    @Test
+    @NotTransactional
+    public void versionIsIncreasedWhenAddingSatisfactions() throws Exception {
+        givenSavedWorker();
+        givenCriterion();
+
+        long versionValueAfterSave = worker.getVersion();
+
+        worker.addSatisfaction(new CriterionWithItsType(criterion.getType(),
+                criterion));
+        resourceService.saveResource(worker);
+
+        assertThat(worker.getVersion(), not(equalTo(versionValueAfterSave)));
+    }
+
+    private void givenCriterion() {
+        this.criterion = CriterionDAOTest.createValidCriterion();
         adHocTransactionService.onTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
-                if (!(criterionTypeDAO.exists(criterion.getType().getId()) || criterionTypeDAO
-                        .existsByName(criterion.getType()))) {
-                    criterionTypeDAO.save(criterion.getType());
-                }
+                criterionTypeDAO.save(criterion.getType());
                 criterionDAO.save(criterion);
                 return null;
             }
         });
-
-        ICriterionType<Criterion> type = createTypeThatMatches(criterion);
-        worker1.addSatisfaction(new CriterionWithItsType(type, criterion));
-        resourceService.saveResource(worker1);
-        assertThat(worker1.getVersion(), not(equalTo(versionValueAfterSave)));
     }
 
-    private static ICriterionType<Criterion> createTypeThatMatches(
-            final Criterion criterion) {
-        return createTypeThatMatches(false, criterion);
-    }
+    @Test
+    public void setOfResourcesSatisfyingReturnTheResourcesMatchedByCriterion() {
+        givenSavedWorker();
 
-    private static ICriterionType<Criterion> createTypeThatMatches(
-            final boolean allowSimultaneousCriterionsPerResource,
-            final Criterion criterion) {
-        return new ICriterionType<Criterion>() {
+        ICriterion criterion = CriterionTest.justThisResourcesCriterion(worker);
 
-            @Override
-            public boolean allowSimultaneousCriterionsPerResource() {
-                return allowSimultaneousCriterionsPerResource;
-            }
-
-            @Override
-            public boolean allowHierarchy() {
-                return false;
-            }
-
-            @Override
-            public boolean contains(ICriterion c) {
-                return criterion.isEquivalent(c);
-            }
-
-            @Override
-            public Criterion createCriterion(String name) {
-                return null;
-            }
-
-            @Override
-            public String getName() {
-                return null;
-            }
-
-            @Override
-            public boolean allowAdding() {
-                return false;
-            }
-
-            @Override
-            public boolean allowEditing() {
-                return false;
-            }
-
-            @Override
-            public boolean criterionCanBeRelatedTo(
-                    Class<? extends Resource> klass) {
-                return true;
-            }
-
-            @Override
-            public Criterion createCriterionWithoutNameYet() {
-                return null;
-            }
-        };
-    }
-
-    public void testResourcesSatisfying() {
-        Worker worker1 = new Worker("worker-1", "worker-2-surname",
-                "11111111A", 8);
-        Worker worker2 = new Worker("worker-2", "worker-3-surname",
-                "22222222B", 6);
-        resourceService.saveResource(worker1);
-        resourceService.saveResource(worker2);
-        ICriterion firstCriterion = CriterionTest
-                .justThisResourcesCriterion(worker1);
-        ICriterion secondCriterion = CriterionTest
-                .justThisResourcesCriterion(worker2);
-        ICriterion bothCriterion = CriterionTest.justThisResourcesCriterion(
-                worker1, worker2);
         assertEquals(1, resourceService.getSetOfResourcesSatisfying(
-                firstCriterion).size());
-        assertEquals(worker1, resourceService.getSetOfResourcesSatisfying(
-                firstCriterion).iterator().next());
-        assertEquals(1, resourceService.getSetOfResourcesSatisfying(
-                secondCriterion).size());
-        assertEquals(2, resourceService.getSetOfResourcesSatisfying(
-                bothCriterion).size());
+                criterion).size());
     }
 
 }
