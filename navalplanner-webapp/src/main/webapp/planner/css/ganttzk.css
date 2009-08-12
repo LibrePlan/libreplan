@@ -242,6 +242,11 @@ zkTasklist.GANTT_PANEL_LEFT = 300
 	background-color: #FFEEEE; !important;
 }
 
+#watermark .weekend {
+	background-color: #FFEEEE; !important;
+}
+
+
 
 /* Reduce spacing and font-size for watermark legend */
 .z-columns, .z-column {

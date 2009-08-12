@@ -57,11 +57,21 @@ function onDecrease(id) {
                     </n:th>
                 </n:tr>
                 <n:tr id="watermark" style="height:100px">
-                    <n:td class="timetracker_column${(each.even?'_even':'')}
+                    <n:td class="timetracker_column${((each.even and (top.zoomLevel != 'DETAIL_FOUR'))?'_even':'')}
                         ${(each.bankHoliday?'bankHoliday':'')}
                         ${(each.currentPeriod?'timetracker_column_today':'')}"
                         forEach="${top.detailsSecondLevel}"
-                        style="background-position: ${each.currentDayOffset}px"/>
+                        style="background-position: ${each.currentDayOffset}px">
+
+                        <n:table class="week_element" width="100%" height="100%" if="${top.zoomLevel == 'DETAIL_FOUR'}">
+                        <n:tr>
+                            <n:td/><n:td/><n:td/><n:td/><n:td/>
+                            <n:td class="weekend" />
+                            <n:td class="weekend" />
+                        </n:tr>
+                      </n:table>
+
+                    </n:td>
                 </n:tr>
             </n:table>
         </n:div>

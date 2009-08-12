@@ -51,6 +51,10 @@ public class TimeTracker extends HtmlMacroComponent {
         this.detailLevel = ZoomLevel.DETAIL_ONE;
     }
 
+    public ZoomLevel getZoomLevel() {
+        return this.detailLevel;
+    }
+
     public void addZoomListener(IZoomLevelChangedListener listener) {
         zoomListeners
                 .add(new WeakReference<IZoomLevelChangedListener>(listener));
