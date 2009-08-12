@@ -15,8 +15,14 @@ zkDependency.draw = function(dependency) {
 	var dest = zkPlanner.findPos(this.destination(dependency));
 
    // This corner case may depend on dependence type
-    orig[0] = orig[0] + Math.max( 0,
-        this.origin(dependency).offsetWidth - zkTask.CORNER_WIDTH);
+    offsetX = this.origin(dependency).offsetWidth - zkTask.CORNER_WIDTH;
+    separation = orig[0] + this.origin(dependency).offsetWidth - dest[0];
+
+    if (separation > 0 ) {
+        offsetX = offsetX - separation;
+    }
+    orig[0] = orig[0] + Math.max( 0, offsetX );
+
     orig[1] = orig[1] + zkTask.HEIGHT;
     dest[1] = dest[1] + zkTask.HALF_HEIGHT;
 
