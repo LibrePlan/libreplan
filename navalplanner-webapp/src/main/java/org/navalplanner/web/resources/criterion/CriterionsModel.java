@@ -120,7 +120,7 @@ public class CriterionsModel implements ICriterionsModel {
         if (criterionType.getId() == null) {
             entity.setType(saveCriterionType(criterionType));
         }
-        if (threIsOtherWithSameNameAndType(entity)) {
+        if (thereIsOtherWithSameNameAndType(entity)) {
             InvalidValue[] invalidValues = { new InvalidValue(entity.getName()
                     + " already exists", Criterion.class, "name", entity
                     .getName(), entity) };
@@ -130,7 +130,7 @@ public class CriterionsModel implements ICriterionsModel {
         criterionDAO.save(entity);
     }
 
-    private boolean threIsOtherWithSameNameAndType(Criterion toSave) {
+    private boolean thereIsOtherWithSameNameAndType(Criterion toSave) {
         List<Criterion> withSameNameAndType = criterionDAO
                 .findByNameAndType(toSave);
         if (withSameNameAndType.isEmpty())
