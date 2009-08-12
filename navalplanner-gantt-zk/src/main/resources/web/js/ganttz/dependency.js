@@ -1,5 +1,9 @@
 zkDependency = {};
 
+zkDependency.START_END = "start_end";
+zkDependency.START_START = "start_start";
+zkDependency.END_END = "end_end";
+
 zkDependency.origin = function(dependency) {
     var id = dependency.getAttribute("idTaskOrig");
     return document.getElementById(id);
@@ -21,7 +25,10 @@ zkDependency.draw = function(dependency) {
     if (separation > 0 ) {
         offsetX = offsetX - separation;
     }
-    orig[0] = orig[0] + Math.max( 0, offsetX );
+    if (dependency.getAttribute('type') == zkDependency.START_END ||
+    		dependency.getAttribute('type') == null ) {
+    	orig[0] = orig[0] + Math.max( 0, offsetX );
+    }
 
     orig[1] = orig[1] + zkTask.HEIGHT;
     dest[1] = dest[1] + zkTask.HALF_HEIGHT;
