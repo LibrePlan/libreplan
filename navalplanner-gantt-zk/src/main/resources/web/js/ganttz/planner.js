@@ -1,11 +1,15 @@
+/**
+ * Javascript behaviuor for Planner elements
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ */
 zkPlanner = {};
 
-zkPlanner.getImagesDir = function() {      
+zkPlanner.getImagesDir = function() {
     return webapp_context_path + "/zkau/web/ganttz/img/";
 }
 
-zkPlanner.init = function(planner){   
-    
+zkPlanner.init = function(planner){
+
 }
 
 zkPlanner.findImageElement = function(arrow, name) {
@@ -39,7 +43,7 @@ function getContextPath(element){
 }
 
 zkPlanner.setupArrow = function(arrowDiv){
-    
+
     var image_data = [ [ "start", "pixel.gif" ], [ "mid", "pixel.gif" ],
             [ "end", "pixel.gif" ], [ "arrow", "arrow.png" ] ];
     for ( var i = 0; i < image_data.length; i++) {
@@ -53,12 +57,15 @@ zkPlanner.setupArrow = function(arrowDiv){
 zkPlanner.drawArrow = function(dependency, orig, dest) {
 	switch(dependency.getAttribute('type'))
     {
-	case zkDependency.START_START: 
+	case zkDependency.START_START:
 		zkPlanner.drawArrowStartStart(dependency, orig, dest);
 		break;
+	case zkDependency.END_END:
+		zkPlanner.drawArrowEndEnd(dependency, orig, dest);
+		break;
 	case zkDependency.END_START:
-	default:		
-		zkPlanner.drawArrowEndStart(dependency, orig, dest);				
+	default:
+		zkPlanner.drawArrowEndStart(dependency, orig, dest);
     }
 }
 
@@ -70,8 +77,8 @@ zkPlanner.drawArrowStartStart = function(arrow, orig, dest){
 
     width1 = zkTask.CORNER_WIDTH;
     width2 = Math.abs(xend - xorig) + zkTask.CORNER_WIDTH;
-    height = Math.abs(yend - yorig); 
-   
+    height = Math.abs(yend - yorig);
+
 	if (xorig > xend) {
 		width1 = width2;
 		width2 = zkTask.CORNER_WIDTH;
@@ -79,16 +86,16 @@ zkPlanner.drawArrowStartStart = function(arrow, orig, dest){
 
 	// First segment
 	var depstart = this.findImageElement(arrow, 'start');
-	depstart.style.left = (xorig - width1) + "px";	
+	depstart.style.left = (xorig - width1) + "px";
 	depstart.style.top = yorig + "px";
 	depstart.style.width = width1 + "px";
 	depstart.style.display = "inline";
 
 	// Second segment
 	var depmid = this.findImageElement(arrow, 'mid');
-	depmid.style.left = depstart.style.left;	
+	depmid.style.left = depstart.style.left;
 	if (yend > yorig) {
-	  depmid.style.top = yorig + "px";	  
+	  depmid.style.top = yorig + "px";
 	} else {
 	  depmid.style.top = yend + "px";
 	}
@@ -96,14 +103,59 @@ zkPlanner.drawArrowStartStart = function(arrow, orig, dest){
 
 	// Third segment
 	var depend = this.findImageElement(arrow, 'end');
-	depend.style.left = depstart.style.left;	
+	depend.style.left = depstart.style.left;
 	depend.style.top = yend + "px";
 	depend.style.width = width2 + "px";
 
     var deparrow = this.findImageElement(arrow, 'arrow');
-    deparrow.src = this.getImagesDir()+"arrow.png"; 
+    deparrow.src = this.getImagesDir()+"arrow.png";
     deparrow.style.top = yend - 5 + "px";
     deparrow.style.left = xend - 15 + "px";
+    }
+
+
+zkPlanner.drawArrowEndEnd = function(arrow, orig, dest){
+    var xorig = orig[0] - zkTask.DEPENDENCY_PADDING;
+    var yorig = orig[1] - zkTask.CORNER_WIDTH/2 + zkTask.HALF_DEPENDENCY_PADDING;
+    var xend = dest[0] + zkTask.HALF_DEPENDENCY_PADDING;
+    var yend = dest[1] - zkTask.DEPENDENCY_PADDING;
+
+    width1 = Math.abs(xend - xorig) + zkTask.CORNER_WIDTH;
+    width2 = zkTask.CORNER_WIDTH;
+    height = Math.abs(yend - yorig);
+
+	if (xorig > xend) {
+		width2 = width1;
+		width1 = zkTask.CORNER_WIDTH;
+    }
+
+	// First segment
+	var depstart = this.findImageElement(arrow, 'start');
+	depstart.style.left = xorig + "px";
+	depstart.style.top = yorig + "px";
+	depstart.style.width = width1 + "px";
+	depstart.style.display = "inline";
+
+	// Second segment
+	var depmid = this.findImageElement(arrow, 'mid');
+	depmid.style.left = (xorig + width1) + "px";
+	if (yend > yorig) {
+	  depmid.style.top = yorig + "px";
+	} else {
+	  depmid.style.top = yend + "px";
+	}
+	depmid.style.height = height + "px";
+
+	// Third segment
+	var depend = this.findImageElement(arrow, 'end');
+	depend.style.left = (xorig + width1 - width2) + "px";
+	depend.style.top = yend + "px";
+	depend.style.width = width2 + "px";
+
+    var deparrow = this.findImageElement(arrow, 'arrow');
+    deparrow.src = this.getImagesDir()+"arrow3.png";
+    deparrow.style.top = yend - 5 + "px";
+    deparrow.style.left = xend - 5 + "px";
     }
 
 
@@ -159,5 +211,5 @@ zkPlanner.drawArrowEndStart = function(arrow, orig, dest){
             deparrow.style.left = xend + "px";
             deparrow.style.top = yend - 5 + "px";
         }
-    } 
+    }
 }
