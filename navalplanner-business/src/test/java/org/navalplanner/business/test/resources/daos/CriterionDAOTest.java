@@ -11,7 +11,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -21,7 +23,6 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
-import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -46,6 +47,8 @@ public class CriterionDAOTest {
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
 
+    private Criterion criterion;
+
     @Test
     public void testInSpringContainer() {
         assertNotNull(criterionDAO);
@@ -58,102 +61,103 @@ public class CriterionDAOTest {
     public static Criterion createValidCriterion(String name) {
         CriterionType criterionType = CriterionTypeDAOTest
                 .createValidCriterionType();
-
         return Criterion.withNameAndType(name, criterionType);
     }
 
-    private void saveCriterionType(Criterion criterion) {
-        CriterionType criterionType = criterion.getType();
+    private CriterionType ensureTypeExists(CriterionType criterionType) {
         if (criterionTypeDAO.existsByName(criterionType)) {
             try {
-                criterionType = criterionTypeDAO
+                return criterionType = criterionTypeDAO
                         .findUniqueByName(criterionType);
-            } catch (InstanceNotFoundException ex) {
-
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
             }
         } else {
             criterionTypeDAO.save(criterionType);
+            return criterionType;
         }
-        criterion.setType(criterionType);
+
     }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void aCriterionRelatedToATransientTypeCannotBeSaved() {
-        Criterion criterion = createValidCriterion();
+        givenACriterionWithATransientCriterionType();
         criterionDAO.save(criterion);
     }
 
+    private void givenACriterionWithATransientCriterionType() {
+        this.criterion = createValidCriterion();
+    }
+
     @Test
-    public void testSaveCriterions() throws Exception {
-        Criterion criterion = createValidCriterion();
-        // A valid CriterionType must exists before saving Criterion
-        saveCriterionType(criterion);
+    public void afterSavingACriterionItExists() throws Exception {
+        givenACriterionWithAnExistentType();
         criterionDAO.save(criterion);
         assertTrue(criterionDAO.exists(criterion.getId()));
     }
 
     @Test
-    public void testRemove() throws InstanceNotFoundException {
-        Criterion criterion = createValidCriterion();
-        saveCriterionType(criterion);
+    public void afterRemovingTheCriterionNoLongerExists()
+            throws InstanceNotFoundException {
+        givenACriterionWithAnExistentType();
         criterionDAO.save(criterion);
         criterionDAO.remove(criterion.getId());
         assertFalse(criterionDAO.exists(criterion.getId()));
     }
 
+    private Criterion givenACriterionWithAnExistentType() {
+        this.criterion = createValidCriterion();
+        CriterionType type = ensureTypeExists(CriterionTypeDAOTest
+                .createValidCriterionType());
+        this.criterion.setType(type);
+        return this.criterion;
+    }
+
     @Test
-    public void testList() {
+    public void listReturnsTheNewlyCreatedCriterions() {
         int previous = criterionDAO.list(Criterion.class).size();
-        Criterion criterion1 = createValidCriterion();
-        saveCriterionType(criterion1);
-        Criterion criterion2 = createValidCriterion();
-        saveCriterionType(criterion2);
-        criterionDAO.save(criterion1);
-        criterionDAO.save(criterion2);
+        givenASavedCriterionWithAnExistentType();
+        givenASavedCriterionWithAnExistentType();
         List<Criterion> list = criterionDAO.list(Criterion.class);
         assertEquals(previous + 2, list.size());
+    }
+
+    private Criterion givenASavedCriterionWithAnExistentType() {
+        Criterion c = givenACriterionWithAnExistentType();
+        criterionDAO.save(c);
+        return c;
     }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void schemaEnsuresCannotExistTwoDifferentCriterionsWithSameNameAndType()
             throws ValidationException {
-        String unique = UUID.randomUUID().toString();
-        Criterion criterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
-                .createCriterion(unique);
-        criterionDAO.save(criterion);
+        Criterion c = givenASavedCriterionWithAnExistentType();
+        Criterion repeated = anotherCriterionWithSameNameAndType(c);
+        criterionDAO.save(repeated);
         criterionDAO.flush();
-        Criterion criterion2 = PredefinedCriterionTypes.WORK_RELATIONSHIP
-                .createCriterion(unique);
-        criterionDAO.save(criterion2);
-        criterionDAO.flush();
+    }
+
+    private Criterion anotherCriterionWithSameNameAndType(Criterion c) {
+        return new Criterion(c.getName(), c.getType());
     }
 
     @Test
-    public void testCriterionsForType() throws Exception {
-        final Criterion one = CriterionDAOTest.createValidCriterion();
-        Criterion other = CriterionDAOTest.createValidCriterion();
-        save(one);
-        save(other);
-        ICriterionType<Criterion> type = createTypeThatMatches(one);
+    public void findByTypeOnlyReturnsTheCriterionsMatchedByType(){
+        givenASavedCriterionWithAnExistentType();
+        //saving another
+        givenASavedCriterionWithAnExistentType();
+        ICriterionType<Criterion> type = createTypeThatMatches(criterion);
         Collection<Criterion> criterions = criterionDAO.findByType(type);
         assertEquals(1, criterions.size());
-        assertTrue(criterions.contains(one));
+        assertTrue(criterions.contains(criterion));
     }
 
-    private void save(Criterion criterion) {
-        if (!(criterionTypeDAO.exists(criterion.getType().getId()) || criterionTypeDAO
-                .existsByName(criterion.getType()))) {
-            criterionTypeDAO.save(criterion.getType());
-        }
-        criterionDAO.save(criterion);
-    }
-
-    public static ICriterionType<Criterion> createTypeThatMatches(
+    private static ICriterionType<Criterion> createTypeThatMatches(
             final Criterion criterion) {
         return createTypeThatMatches(false, criterion);
     }
 
-    public static ICriterionType<Criterion> createTypeThatMatches(
+    private static ICriterionType<Criterion> createTypeThatMatches(
             final boolean allowSimultaneousCriterionsPerResource,
             final Criterion criterion) {
         return new ICriterionType<Criterion>() {
