@@ -3,5 +3,7 @@
 
 <c:set var="self" value="${requestScope.arg.self}"/>
 
-<div class="dependency" id="${self.uuid}" z.type="ganttz.dependency.Dependency" idTaskOrig="${self.idTaskOrig}"  idTaskEnd="${self.idTaskEnd}" ${self.outerAttrs}">    
+<div class="dependency" id="${self.uuid}" z.type="ganttz.dependency.Dependency"
+    idTaskOrig="${self.idTaskOrig}" idTaskEnd="${self.idTaskEnd}" ${self.outerAttrs}
+    type="start_end">
 </div>

@@ -50,11 +50,11 @@ zkPlanner.setupArrow = function(arrowDiv){
     }
 }
 
-zkPlanner.drawArrow = function(arrow, orig, dest){
-    var xorig = orig[0] - zkTask.CORNER_WIDTH/2;
-    var yorig = orig[1] - zkTask.CORNER_WIDTH/2;
-    var xend = dest[0];
-    var yend = dest[1];
+zkPlanner.drawArrowStartStart = function(arrow, orig, dest){
+    var xorig = orig[0] - zkTask.HALF_DEPENDENCY_PADDING;
+    var yorig = orig[1] - zkTask.CORNER_WIDTH/2 + zkTask.HALF_DEPENDENCY_PADDING;
+    var xend = dest[0] + zkTask.HALF_DEPENDENCY_PADDING;
+    var yend = dest[1] - zkTask.DEPENDENCY_PADDING;
 
     width1 = zkTask.CORNER_WIDTH;
     width2 = Math.abs(xend - xorig) + zkTask.CORNER_WIDTH;
@@ -100,7 +100,8 @@ zkPlanner.drawArrow = function(dependency, orig, dest) {
 	switch(dependency.getAttribute('type'))
     {
 	case zkDependency.START_START: 
-		zkPlanner.drawArrowStartEnd(dependency, orig, dest);
+		zkPlanner.drawArrowStartStart(dependency, orig, dest);
+		break;
 	case zkDependency.START_END:
 	default:		
 		zkPlanner.drawArrowStartEnd(dependency, orig, dest);				
