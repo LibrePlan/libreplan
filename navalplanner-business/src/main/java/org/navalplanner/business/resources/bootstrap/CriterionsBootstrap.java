@@ -63,10 +63,6 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
         Criterion criterion = new Criterion(criterionName, criterionType);
         if (!(criterionDAO.exists(criterion.getId()) || criterionDAO
                 .existsByNameAndType(criterion))) {
-            if (!(criterionTypeDAO.exists(criterion.getType().getId()) || criterionTypeDAO
-                    .existsByName(criterion.getType()))) {
-                criterionTypeDAO.save(criterion.getType());
-            }
             criterionDAO.save(criterion);
         }
     }
