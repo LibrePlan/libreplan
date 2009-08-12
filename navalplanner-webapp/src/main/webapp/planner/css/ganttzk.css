@@ -341,18 +341,19 @@ tr.z-vbox-sep {
 	position:relative;
 }
 
-.fullplanificated {
+.FULL_PLANIFICATED {
     background-color:green;
 }
 
-.planificated {
+.PLANIFICATED {
     background-color:orange;
 }
 
-.overplanificated {
+.OVER_PLANIFICATED {
     background-color:red;
 }
-.not_planificated {
+
+.NOT_PLANIFICATED {
     background-color:#007bbe;
 }
 

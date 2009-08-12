@@ -9,7 +9,7 @@
         <span class="resourceload_name" id="${self.uuid}!real">${self.resourceLoadName}</span>
         <c:forEach var="child" items="${self.children}">
             <div id="loadinterval${child.uuid}" style="width: ${child.lenght}%;"
-                class="taskassignmentinterval ${child.plannificationType}"></div>
+                class="taskassignmentinterval ${child.loadLevel}"></div>
 	    </c:forEach>
     </div>
 </div>

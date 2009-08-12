@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.zkoss.ganttz.data.ResourceLoad;
+import org.zkoss.ganttz.data.ResourceLoadLevel;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Div;
@@ -23,19 +24,21 @@ public class ResourceLoadComponent extends Div implements AfterCompose {
     public class ResourceLoadInterval extends Div {
 
         private int length;
-        private String plannificationType;
+        private ResourceLoadLevel loadLevel;
+        private int loadPercentage;
 
-        public ResourceLoadInterval(int length, String plannificationType) {
+        public ResourceLoadInterval(int length, int loadPercentage) {
             this.length = length;
-            this.plannificationType = plannificationType;
+            this.loadPercentage = loadPercentage;
+            this.loadLevel= ResourceLoadLevel.getFromPercentage(loadPercentage);
         }
 
         public int getLenght() {
             return this.length;
         }
 
-        public String getPlannificationType() {
-            return this.plannificationType;
+        public ResourceLoadLevel getLoadLevel() {
+            return this.loadLevel;
         }
     }
 
@@ -84,8 +87,8 @@ public class ResourceLoadComponent extends Div implements AfterCompose {
         return this.children;
     }
 
-    public void addInterval(int length, String plannificationType) {
-        this.children.add(new ResourceLoadInterval(length, plannificationType));
+    public void addInterval(int length, int plannificationPercentage) {
+        this.children.add(new ResourceLoadInterval(length, plannificationPercentage));
     }
 
 }

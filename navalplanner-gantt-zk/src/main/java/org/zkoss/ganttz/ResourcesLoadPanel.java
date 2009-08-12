@@ -14,16 +14,16 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
         ResourceLoadComponent rlc2 = new ResourceLoadComponent(
                 new ResourceLoad("ResourceLoad 1"));
 
-        rlc1.addInterval(40, "fullplanificated");
-        rlc1.addInterval(20, "planificated");
-        rlc1.addInterval(30, "overplanificated");
-        rlc1.addInterval(10, "not_planificated");
+        rlc1.addInterval(40, 100);
+        rlc1.addInterval(20, 80);
+        rlc1.addInterval(30, 150);
+        rlc1.addInterval(10, 0);
 
-        rlc2.addInterval(10, "overplanificated");
-        rlc2.addInterval(20, "planificated");
-        rlc2.addInterval(30, "fullplanificated");
-        rlc2.addInterval(20, "planificated");
-        rlc2.addInterval(20, "not_planificated");
+        rlc2.addInterval(10, 100);
+        rlc2.addInterval(20, 60);
+        rlc2.addInterval(30, 100);
+        rlc2.addInterval(20, 0);
+        rlc2.addInterval(20, 60);
 
         appendChild(rlc1);
         appendChild(rlc2);
