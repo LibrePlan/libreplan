@@ -81,8 +81,8 @@ function relocateScrolls() {
     // Shift scroll-y and scroll-x width (Height change)
     if ( window.innerHeight > MIN_RESOLUTION_Y ) {
         scroller_x.style["top"] = (window.innerHeight - SCROLLBAR_WIDTH*2 - HEIGHT_TIME_TRACKER ) +"px";
-        scroller_y.style["height"] = (window.innerHeight - TASKDETAILS_HEIGHT ) +"px";
-        listdetails.style["height"] = scroller_y.style["height"];
+        scroller_y.style["height"] = (window.innerHeight - TASKDETAILS_HEIGHT + SCROLLBAR_WIDTH*2) +"px";
+        listdetails.style["height"] = (window.innerHeight - TASKDETAILS_HEIGHT + SCROLLBAR_WIDTH*2) +"px";
     }
 
     adjustScrollableDimensions();

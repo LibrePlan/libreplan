@@ -310,7 +310,7 @@ tr.z-vbox-sep {
 }
 
 #ganttpanel_scroller_y {
-    top: 160px; /* Fixed top position */
+    top: 145px; /* Fixed top position */
     left: 920px;
     width:15px;
     height:330px;
