@@ -30,32 +30,19 @@ public class CriterionsBootstrapTest {
     @Test
     public void testBootstrap() throws Exception {
         Criterion criterion = WorkingRelationship.FIRED.criterion();
-        if (criterionDAO.exists(criterion.getId())
-                || criterionDAO.existsByNameAndType(criterion)) {
-            if (criterion.getId() != null) {
-                criterionDAO.remove(criterion.getId());
-            } else {
-                criterionDAO.removeByNameAndType(criterion);
-            }
+        if (criterionDAO.existsByNameAndType(criterion)) {
+            criterionDAO.removeByNameAndType(criterion);
         }
-
         criterion = WorkingRelationship.HIRED.criterion();
-        if (criterionDAO.exists(criterion.getId())
-                || criterionDAO.existsByNameAndType(criterion)) {
-            if (criterion.getId() != null) {
-                criterionDAO.remove(criterion.getId());
-            } else {
-                criterionDAO.removeByNameAndType(criterion);
-            }
+        if (criterionDAO.existsByNameAndType(criterion)) {
+            criterionDAO.removeByNameAndType(criterion);
         }
 
         criterionsBootstrap.loadRequiredData();
         criterion = WorkingRelationship.FIRED.criterion();
-        assertTrue(criterionDAO.exists(criterion.getId())
-                || criterionDAO.existsByNameAndType(criterion));
+        assertTrue(criterionDAO.existsByNameAndType(criterion));
         criterion = WorkingRelationship.HIRED.criterion();
-        assertTrue(criterionDAO.exists(criterion.getId())
-                || criterionDAO.existsByNameAndType(criterion));
+        assertTrue(criterionDAO.existsByNameAndType(criterion));
     }
 
 }
