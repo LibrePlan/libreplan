@@ -35,6 +35,7 @@ import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.web.resources.criterion.ICriterionsModel;
@@ -46,14 +47,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Tests for {@link OrderModel}. <br />
- *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_TEST_FILE })
+        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE })
 @Transactional
 public class OrderModelTest {
 
@@ -81,6 +80,9 @@ public class OrderModelTest {
     private IOrderDAO orderDAO;
 
     @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
+    @Autowired
     private SessionFactory sessionFactory;
 
     @Autowired
@@ -88,6 +90,8 @@ public class OrderModelTest {
 
     @Autowired
     private ICriterionsModel criterionModel;
+
+    private Criterion criterion;
 
     private Session getSession() {
         return sessionFactory.getCurrentSession();
@@ -286,6 +290,7 @@ public class OrderModelTest {
     @Test
     @NotTransactional
     public void testManyToManyHoursGroupCriterionMapping() throws Exception {
+        givenCriterion();
         final Order order = createValidOrder();
 
         OrderLine orderLine = OrderLine.create();
@@ -300,11 +305,6 @@ public class OrderModelTest {
 
         orderLine.addHoursGroup(hoursGroup);
         orderLine.addHoursGroup(hoursGroup2);
-
-        CriterionType criterionType = new CriterionType("test");
-        Criterion criterion = new Criterion("Test" + UUID.randomUUID(),
-                criterionType);
-        criterionModel.save(criterion);
 
         hoursGroup.addCriterion(criterion);
         hoursGroup2.addCriterion(criterion);
@@ -333,7 +333,8 @@ public class OrderModelTest {
 
                     Criterion criterion = criterions.iterator().next();
 
-                    assertThat(criterion.getType().getName(), equalTo("test"));
+                    assertThat(criterion.getName(),
+                            equalTo(OrderModelTest.this.criterion.getName()));
                 } catch (InstanceNotFoundException e) {
                     throw new RuntimeException(e);
                 }
@@ -341,6 +342,28 @@ public class OrderModelTest {
             }
         });
 
+    }
+
+    private void givenCriterion() throws ValidationException {
+        this.criterion = adHocTransaction
+                .onTransaction(new IOnTransaction<Criterion>() {
+
+                    @Override
+                    public Criterion execute() {
+                        // TODO Auto-generated method stub
+                        CriterionType criterionType = new CriterionType("test"
+                                + UUID.randomUUID());
+                        criterionTypeDAO.save(criterionType);
+                        Criterion criterion = new Criterion("Test"
+                                + UUID.randomUUID(), criterionType);
+                        try {
+                            criterionModel.save(criterion);
+                        } catch (ValidationException e) {
+                            throw new RuntimeException(e);
+                        }
+                        return criterion;
+                    }
+                });
     }
 
     @Test(expected = ValidationException.class)

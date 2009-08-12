@@ -101,11 +101,8 @@ public class CriterionsModel implements ICriterionsModel {
                 .getInvalidValues(criterion);
         if (invalidValues.length > 0)
             throw new ValidationException(invalidValues);
-
         try {
             save(criterion);
-        } catch (ValidationException ve) {
-            throw ve;
         } finally {
             criterion = null;
             criterionType = null;
@@ -115,11 +112,6 @@ public class CriterionsModel implements ICriterionsModel {
     @Override
     @Transactional
     public void save(Criterion entity) throws ValidationException {
-        // Save criterion.type if it's new
-        CriterionType criterionType = entity.getType();
-        if (criterionType.getId() == null) {
-            entity.setType(saveCriterionType(criterionType));
-        }
         if (thereIsOtherWithSameNameAndType(entity)) {
             InvalidValue[] invalidValues = { new InvalidValue(entity.getName()
                     + " already exists", Criterion.class, "name", entity
@@ -211,8 +203,8 @@ public class CriterionsModel implements ICriterionsModel {
     public void activateAll(Collection<? extends Resource> resources) {
         for (Resource resource : resources) {
             Resource reloaded = find(resource.getId());
-            reloaded
-                    .addSatisfaction(new CriterionWithItsType(criterionType, criterion));
+            reloaded.addSatisfaction(new CriterionWithItsType(criterionType,
+                    criterion));
             resourceService.saveResource(reloaded);
         }
     }
@@ -222,8 +214,7 @@ public class CriterionsModel implements ICriterionsModel {
     public void deactivateAll(Collection<? extends Resource> resources) {
         for (Resource resource : resources) {
             Resource reloaded = find(resource.getId());
-            reloaded.finish(new CriterionWithItsType(criterionType,
-                    criterion));
+            reloaded.finish(new CriterionWithItsType(criterionType, criterion));
             resourceService.saveResource(reloaded);
         }
     }
