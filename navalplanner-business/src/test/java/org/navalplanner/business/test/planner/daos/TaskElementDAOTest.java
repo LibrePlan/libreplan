@@ -70,7 +70,7 @@ public class TaskElementDAOTest {
         orderLine.setName("bla");
         orderLine.setCode("000000000");
         orderLine.addHoursGroup(new HoursGroup());
-        Order order = new Order();
+        Order order = Order.create();
         order.setName("bla");
         order.setInitDate(new Date());
         order.add(orderLine);

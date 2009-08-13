@@ -64,7 +64,7 @@ public class OrderModelTest {
     }
 
     private static Order createValidOrder() {
-        Order order = new Order();
+        Order order = Order.create();
         order.setDescription("description");
         order.setCustomer("blabla");
         order.setInitDate(year(2000));

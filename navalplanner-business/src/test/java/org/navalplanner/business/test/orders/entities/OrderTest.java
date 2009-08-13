@@ -17,7 +17,7 @@ public class OrderTest {
 
     @Test
     public void testAddingOrderElement() throws Exception {
-        Order order = new Order();
+        Order order = Order.create();
         OrderLineGroup container = OrderLineGroup.create();
         OrderLine leaf = OrderLine.create();
         container.add(leaf);

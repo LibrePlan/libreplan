@@ -107,7 +107,7 @@ public class OrderModel implements IOrderModel {
     public void prepareForCreate() {
         loadCriterions();
 
-        this.order = new Order();
+        this.order = Order.create();
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
         this.order.setInitDate(new Date());
     }

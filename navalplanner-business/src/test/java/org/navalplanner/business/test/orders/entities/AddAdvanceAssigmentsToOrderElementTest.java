@@ -64,7 +64,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
     }
 
     private static Order createValidOrder() {
-        Order order = new Order();
+        Order order = Order.create();
         order.setDescription("description");
         order.setCustomer("blabla");
         order.setInitDate(CriterionSatisfactionDAOTest.year(2000));

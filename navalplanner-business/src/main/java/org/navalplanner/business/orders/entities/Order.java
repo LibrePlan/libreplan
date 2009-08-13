@@ -18,6 +18,19 @@ import org.navalplanner.business.planner.entities.TaskElement;
  */
 public class Order extends BaseEntity implements IOrderLineGroup, IValidable {
 
+    public static Order create() {
+        Order order = new Order();
+        order.setNewObject(true);
+        return order;
+    }
+
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    public Order() {
+
+    }
+
     private static Date copy(Date date) {
         return date != null ? new Date(date.getTime()) : date;
     }
