@@ -11,11 +11,34 @@
     <packaging>war</packaging>
     <name>Naval Planner Web Client Module</name>
 
-    <build>
+	<build>
         <finalName>navalplanner-webapp</finalName>
+
+        <!--
+            Gettext Commons plugin
+               goals:
+                    merge: parses source code and generates keys.pot
+                    dist: generates binary Resoruce Bundle (Messages_XX.class)
+        -->
+        <plugins>
+            <plugin>
+                <groupId>org.xnap.commons</groupId>
+                <artifactId>maven-gettext-plugin</artifactId>
+                <configuration>
+                    <targetBundle>i18n.Messages</targetBundle>
+                    <poDirectory>${project.build.sourceDirectory}/../resources/i18n</poDirectory>
+                    <keywords>-k_</keywords>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>
+        <!-- Gettext commons -->
+        <dependency>
+            <groupId>org.xnap.commons</groupId>
+            <artifactId>gettext-commons</artifactId>
+        </dependency>
         <!-- JDBC driver -->
         <dependency>
             <groupId>${jdbcDriver.groupId}</groupId>
@@ -83,10 +106,9 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
     </dependencies>
-
 </project>

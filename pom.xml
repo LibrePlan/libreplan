@@ -159,9 +159,24 @@
     <!--
         ===================================================================
     -->
+
+    <repositories>
+        <!-- Getttext commons -->
+        <repository>
+            <id>gettext-commons-site</id>
+            <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
+        </repository>
+    </repositories>
+
     <!-- Dependency management -->
     <dependencyManagement>
         <dependencies>
+            <!-- Gettext commons -->
+            <dependency>
+                <groupId>org.xnap.commons</groupId>
+                <artifactId>gettext-commons</artifactId>
+                <version>0.9.6</version>
+            </dependency>
             <!-- JDBC driver -->
             <dependency>
                 <groupId>${jdbcDriver.groupId}</groupId>
@@ -383,6 +398,18 @@
         </testResources>
 
         <plugins>
+
+            <!-- =========================================================== -->
+            <!-- Gettext configuration -->
+            <plugin>
+                <!-- <groupId>org.xnap.commons</groupId> -->
+                <groupId>org.xnap.commons</groupId>
+                <artifactId>maven-gettext-plugin</artifactId>
+                <version>1.2.0</version>
+                <configuration>
+                    <targetBundle>i18n.Messages</targetBundle>
+                </configuration>
+            </plugin>
 
             <!-- =========================================================== -->
             <!-- Compiler configuration -->
