@@ -35,6 +35,10 @@
             <key column="BASE_CALENDAR_ID" />
             <one-to-many class="ExceptionDay" />
         </set>
+
+        <joined-subclass name="ResourceCalendar">
+            <key column="BASE_CALENDAR_ID" />
+        </joined-subclass>
     </class>
 
     <!-- ExceptionDay -->
