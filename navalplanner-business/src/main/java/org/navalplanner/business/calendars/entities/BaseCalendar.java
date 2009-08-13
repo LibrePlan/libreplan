@@ -192,11 +192,18 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
     public void addExceptionDay(ExceptionDay day)
             throws IllegalArgumentException {
-        if (isExceptionDayAlreadyInExceptions(day)) {
-            throw new IllegalArgumentException(
-                    "This day is already in the exception days");
+        if (shouldUsePreviousCalendar(day.getDate())) {
+            previousCalendar.addExceptionDay(day);
+        } else if (shouldUseNextCalendar(day.getDate())) {
+            nextCalendar.addExceptionDay(day);
+        } else {
+            if (isExceptionDayAlreadyInExceptions(day)) {
+                throw new IllegalArgumentException(
+                        "This day is already in the exception days");
+            }
+
+            exceptions.add(day);
         }
-        exceptions.add(day);
     }
 
     public void removeExceptionDay(Date date) throws IllegalArgumentException {
@@ -205,14 +212,19 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
     public void removeExceptionDay(LocalDate date)
             throws IllegalArgumentException {
+        if (shouldUsePreviousCalendar(date)) {
+            previousCalendar.removeExceptionDay(date);
+        } else if (shouldUseNextCalendar(date)) {
+            nextCalendar.removeExceptionDay(date);
+        } else {
+            ExceptionDay day = getExceptionDay(date);
+            if (day == null) {
+                throw new IllegalArgumentException(
+                        "There is not an exception day on that date");
+            }
 
-        ExceptionDay day = getExceptionDay(date);
-        if (day == null) {
-            throw new IllegalArgumentException(
-                    "There is not an exception day on that date");
+            exceptions.remove(day);
         }
-
-        exceptions.remove(day);
     }
 
     public void updateExceptionDay(LocalDate date, Integer hours)

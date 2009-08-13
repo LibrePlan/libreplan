@@ -379,4 +379,19 @@ public class BaseCalendarTest {
                 .getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE)));
     }
 
+    @Test
+    public void testAddExceptionToNewVersionCalendar() {
+        BaseCalendar calendar = createBasicCalendar();
+        BaseCalendar newVersion = calendar.newVersion(CHRISTMAS_DAY_LOCAL_DATE
+                .plusDays(1));
+
+        ExceptionDay day = ExceptionDay.create(CHRISTMAS_DAY_LOCAL_DATE, 0);
+        newVersion.addExceptionDay(day);
+
+        assertThat(calendar.getExceptions().size(), equalTo(1));
+        assertThat(newVersion.getExceptions().size(), equalTo(0));
+        assertThat(calendar.getExceptions().iterator().next().getDate(),
+                equalTo(CHRISTMAS_DAY_LOCAL_DATE));
+    }
+
 }
