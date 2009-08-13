@@ -12,21 +12,29 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 
 /**
  * Tests for {@link BaseCalendar}.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class BaseCalendarTest {
 
     public static final LocalDate MONDAY_LOCAL_DATE = new LocalDate(2009, 8, 10);
-    public static final LocalDate TUESDAY_LOCAL_DATE = new LocalDate(2009, 8, 11);
-    public static final LocalDate WEDNESDAY_LOCAL_DATE = new LocalDate(2009, 8, 12);
-    public static final LocalDate THURSDAY_LOCAL_DATE = new LocalDate(2009, 8, 13);
+    public static final LocalDate TUESDAY_LOCAL_DATE = new LocalDate(2009, 8,
+            11);
+    public static final LocalDate WEDNESDAY_LOCAL_DATE = new LocalDate(2009, 8,
+            12);
+    public static final LocalDate THURSDAY_LOCAL_DATE = new LocalDate(2009, 8,
+            13);
     public static final LocalDate FRIDAY_LOCAL_DATE = new LocalDate(2009, 8, 14);
-    public static final LocalDate SATURDAY_LOCAL_DATE = new LocalDate(2009, 8, 15);
+    public static final LocalDate SATURDAY_LOCAL_DATE = new LocalDate(2009, 8,
+            15);
     public static final LocalDate SUNDAY_LOCAL_DATE = new LocalDate(2009, 8, 16);
 
-    public static final LocalDate CHRISTMAS_DAY_LOCAL_DATE = new LocalDate(2009, 12,
-            25);
+    private static final LocalDate[] DAYS_OF_A_WEEK_EXAMPLE = {
+            MONDAY_LOCAL_DATE, TUESDAY_LOCAL_DATE, WEDNESDAY_LOCAL_DATE,
+            THURSDAY_LOCAL_DATE, FRIDAY_LOCAL_DATE, SATURDAY_LOCAL_DATE,
+            SUNDAY_LOCAL_DATE };
+
+    public static final LocalDate CHRISTMAS_DAY_LOCAL_DATE = new LocalDate(
+            2009, 12, 25);
 
     public static BaseCalendar createBasicCalendar() {
         BaseCalendar calendar = BaseCalendar.create();
@@ -44,8 +52,15 @@ public class BaseCalendarTest {
         return calendar;
     }
 
+    private BaseCalendar calendarFixture;
+
+    private void givenUnitializedCalendar() {
+        calendarFixture = BaseCalendar.create();
+    }
+
     public static void addChristmasAsExceptionDay(BaseCalendar calendar) {
-        ExceptionDay christmasDay = ExceptionDay.create(CHRISTMAS_DAY_LOCAL_DATE, 0);
+        ExceptionDay christmasDay = ExceptionDay.create(
+                CHRISTMAS_DAY_LOCAL_DATE, 0);
 
         calendar.addExceptionDay(christmasDay);
     }
@@ -150,8 +165,8 @@ public class BaseCalendarTest {
     public void testGettWorkableHoursInterval() {
         BaseCalendar calendar = createBasicCalendar();
 
-        int mondayToWednesdayHours = calendar.getWorkableHours(MONDAY_LOCAL_DATE,
-                WEDNESDAY_LOCAL_DATE);
+        int mondayToWednesdayHours = calendar.getWorkableHours(
+                MONDAY_LOCAL_DATE, WEDNESDAY_LOCAL_DATE);
         assertThat(mondayToWednesdayHours, equalTo(24));
     }
 
@@ -186,14 +201,12 @@ public class BaseCalendarTest {
     @Test
     public void testGettWorkableHoursNewVersion() {
         BaseCalendar origCalendar = createBasicCalendar();
-        BaseCalendar newCalendar = origCalendar.newVersion(
-                MONDAY_LOCAL_DATE);
+        BaseCalendar newCalendar = origCalendar.newVersion(MONDAY_LOCAL_DATE);
 
         newCalendar.setWednesday(4);
         newCalendar.setSunday(4);
 
-        int wednesdayHours = newCalendar
-                .getWorkableHours(WEDNESDAY_LOCAL_DATE);
+        int wednesdayHours = newCalendar.getWorkableHours(WEDNESDAY_LOCAL_DATE);
         assertThat(wednesdayHours, equalTo(4));
         assertThat(wednesdayHours, equalTo(origCalendar
                 .getWorkableHours(WEDNESDAY_LOCAL_DATE)));
@@ -210,8 +223,7 @@ public class BaseCalendarTest {
                 .getWorkableHours(SUNDAY_LOCAL_DATE)));
 
         int sundayHoursPastWeek = newCalendar
-                .getWorkableHours(SUNDAY_LOCAL_DATE
-                .minusWeeks(1));
+                .getWorkableHours(SUNDAY_LOCAL_DATE.minusWeeks(1));
         assertThat(sundayHoursPastWeek, equalTo(0));
         assertThat(sundayHoursPastWeek, equalTo(origCalendar
                 .getWorkableHours(SUNDAY_LOCAL_DATE.minusWeeks(1))));
@@ -220,8 +232,7 @@ public class BaseCalendarTest {
     @Test
     public void testGettWorkableHoursNewVersionCheckingLimits() {
         BaseCalendar origCalendar = createBasicCalendar();
-        BaseCalendar newCalendar = origCalendar.newVersion(
-                MONDAY_LOCAL_DATE);
+        BaseCalendar newCalendar = origCalendar.newVersion(MONDAY_LOCAL_DATE);
 
         newCalendar.setMonday(1);
         newCalendar.setSunday(2);
@@ -236,8 +247,8 @@ public class BaseCalendarTest {
         assertThat(sundayHours, equalTo(origCalendar
                 .getWorkableHours(SUNDAY_LOCAL_DATE)));
 
-        int mondayHoursPastWeek = newCalendar.getWorkableHours(MONDAY_LOCAL_DATE
-                .minusWeeks(1));
+        int mondayHoursPastWeek = newCalendar
+                .getWorkableHours(MONDAY_LOCAL_DATE.minusWeeks(1));
         assertThat(mondayHoursPastWeek, equalTo(8));
         assertThat(mondayHoursPastWeek, equalTo(origCalendar
                 .getWorkableHours(MONDAY_LOCAL_DATE.minusWeeks(1))));
@@ -268,8 +279,7 @@ public class BaseCalendarTest {
     @Test
     public void testRemoveExceptionDayNewVersionCalendar() {
         BaseCalendar origCalendar = createChristmasCalendar();
-        BaseCalendar newCalendar = origCalendar.newVersion(
-                MONDAY_LOCAL_DATE);
+        BaseCalendar newCalendar = origCalendar.newVersion(MONDAY_LOCAL_DATE);
 
         newCalendar.removeExceptionDay(CHRISTMAS_DAY_LOCAL_DATE);
 
@@ -285,15 +295,13 @@ public class BaseCalendarTest {
         origCalendar.addExceptionDay(day);
 
         BaseCalendar newCalendar = origCalendar
-                .newVersion(
-                CHRISTMAS_DAY_LOCAL_DATE.plusDays(1));
+                .newVersion(CHRISTMAS_DAY_LOCAL_DATE.plusDays(1));
 
         newCalendar
                 .updateExceptionDay(CHRISTMAS_DAY_LOCAL_DATE.plusYears(1), 8);
 
         int christmasHours = newCalendar
-                .getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE
-                .plusYears(1));
+                .getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE.plusYears(1));
         assertThat(christmasHours, equalTo(8));
 
         int christmasHoursPastYear = newCalendar
@@ -319,8 +327,7 @@ public class BaseCalendarTest {
         BaseCalendar calendar2 = calendar.newVersion(TUESDAY_LOCAL_DATE);
         setHoursForAllDays(calendar2, 4);
 
-        BaseCalendar calendar3 = calendar2.newVersion(
-                FRIDAY_LOCAL_DATE);
+        BaseCalendar calendar3 = calendar2.newVersion(FRIDAY_LOCAL_DATE);
         setHoursForAllDays(calendar3, 2);
 
         int hoursMonday = calendar.getWorkableHours(MONDAY_LOCAL_DATE);
@@ -392,6 +399,18 @@ public class BaseCalendarTest {
         assertThat(newVersion.getExceptions().size(), equalTo(0));
         assertThat(calendar.getExceptions().iterator().next().getDate(),
                 equalTo(CHRISTMAS_DAY_LOCAL_DATE));
+    }
+
+    public void anUnitializedCalendarShouldReturnZeroHours() {
+        givenUnitializedCalendar();
+        thenForAllDaysReturnsZero();
+    }
+
+
+    private void thenForAllDaysReturnsZero() {
+        for (LocalDate localDate : DAYS_OF_A_WEEK_EXAMPLE) {
+            assertThat(calendarFixture.getWorkableHours(localDate), equalTo(0));
+        }
     }
 
 }

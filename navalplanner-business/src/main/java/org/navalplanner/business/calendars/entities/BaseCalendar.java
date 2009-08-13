@@ -24,6 +24,8 @@ import org.navalplanner.business.common.exceptions.ValidationException;
  */
 public class BaseCalendar extends BaseEntity implements IValidable {
 
+    private static final Integer DEFAULT_VALUE = 0;
+
     public static BaseCalendar create() {
         BaseCalendar baseCalendar = new BaseCalendar();
         baseCalendar.setNewObject(true);
@@ -32,13 +34,13 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
     private String name;
 
-    private Integer monday = -1;
-    private Integer tuesday = -1;
-    private Integer wednesday = -1;
-    private Integer thursday = -1;
-    private Integer friday = -1;
-    private Integer saturday = -1;
-    private Integer sunday = -1;
+    private Integer monday = null;
+    private Integer tuesday = null;
+    private Integer wednesday = null;
+    private Integer thursday = null;
+    private Integer friday = null;
+    private Integer saturday = null;
+    private Integer sunday = null;
 
     private BaseCalendar parent;
 
@@ -70,11 +72,18 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     public Integer getMonday() {
-        if ((monday == -1) && (parent != null)) {
+        if ((monday == null) && (parent != null)) {
             return parent.getMonday();
         } else {
-            return monday;
+            return valueIfNotNullElseDefaultValue(monday);
         }
+    }
+
+    private Integer valueIfNotNullElseDefaultValue(Integer hours) {
+        if (hours == null) {
+            return DEFAULT_VALUE;
+        }
+        return hours;
     }
 
     public void setTuesday(Integer tuesday) {
@@ -82,10 +91,10 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     public Integer getTuesday() {
-        if ((tuesday == -1) && (parent != null)) {
+        if ((tuesday == null) && (parent != null)) {
             return parent.getTuesday();
         } else {
-            return tuesday;
+            return valueIfNotNullElseDefaultValue(tuesday);
         }
     }
 
@@ -94,10 +103,10 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     public Integer getWednesday() {
-        if ((wednesday == -1) && (parent != null)) {
+        if ((wednesday == null) && (parent != null)) {
             return parent.getWednesday();
         } else {
-            return wednesday;
+            return valueIfNotNullElseDefaultValue(wednesday);
         }
     }
 
@@ -106,10 +115,10 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     public Integer getThursday() {
-        if ((thursday == -1) && (parent != null)) {
+        if ((thursday == null) && (parent != null)) {
             return parent.getThursday();
         } else {
-            return thursday;
+            return valueIfNotNullElseDefaultValue(thursday);
         }
     }
 
@@ -118,10 +127,10 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     public Integer getFriday() {
-        if ((friday == -1) && (parent != null)) {
+        if ((friday == null) && (parent != null)) {
             return parent.getFriday();
         } else {
-            return friday;
+            return valueIfNotNullElseDefaultValue(friday);
         }
     }
 
@@ -130,10 +139,10 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     public Integer getSaturday() {
-        if ((saturday == -1) && (parent != null)) {
+        if ((saturday == null) && (parent != null)) {
             return parent.getSaturday();
         } else {
-            return saturday;
+            return valueIfNotNullElseDefaultValue(saturday);
         }
     }
 
@@ -142,10 +151,10 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     public Integer getSunday() {
-        if ((sunday == -1) && (parent != null)) {
+        if ((sunday == null) && (parent != null)) {
             return parent.getSunday();
         } else {
-            return sunday;
+            return valueIfNotNullElseDefaultValue(sunday);
         }
     }
 
@@ -365,9 +374,9 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     @Override
     public void checkValid() throws ValidationException {
         if (parent == null) {
-            if ((monday == -1) || (thursday == -1) || (wednesday == -1)
-                    || (tuesday == -1) || (friday == -1) || (saturday == -1)
-                    || (sunday == -1)) {
+            if ((monday == null) || (thursday == null) || (wednesday == null)
+                    || (tuesday == null) || (friday == null) || (saturday == null)
+                    || (sunday == null)) {
                 throw new ValidationException(
                         "Daily hours could not have the default value "
                                 + "if the calendar is not derivated");
