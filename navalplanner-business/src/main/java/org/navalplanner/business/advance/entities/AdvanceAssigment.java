@@ -1,8 +1,8 @@
 package org.navalplanner.business.advance.entities;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -15,7 +15,7 @@ public class AdvanceAssigment extends BaseEntity {
 
     private AdvanceType advanceType;
 
-    private Set<AdvanceMeasurement> advanceMeasurements;
+    private List<AdvanceMeasurement> advanceMeasurements;
 
     public AdvanceAssigment(boolean reportGlobalAdvance, BigDecimal maxValue) {
         this.reportGlobalAdvance = reportGlobalAdvance;
@@ -45,11 +45,13 @@ public class AdvanceAssigment extends BaseEntity {
         return this.advanceType;
     }
 
-    public void setAdvanceMeasurements(Set<AdvanceMeasurement> advanceMeasurements) {
+    public void setAdvanceMeasurements(
+            List<AdvanceMeasurement> advanceMeasurements) {
         this.advanceMeasurements = advanceMeasurements;
     }
 
-    public Set<AdvanceMeasurement> getAdvanceMeasurements() {
-        return new HashSet<AdvanceMeasurement>(this.advanceMeasurements);
+    public List<AdvanceMeasurement> getAdvanceMeasurements() {
+
+        return new LinkedList<AdvanceMeasurement>(this.advanceMeasurements);
     }
 }
