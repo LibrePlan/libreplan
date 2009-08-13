@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping default-access="field"
+    package="org.navalplanner.business.calendars.entities">
+
+    <!-- BaseCalendar -->
+    <class name="BaseCalendar">
+        <id name="id" access="property" type="long">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <property name="name" access="field"/>
+
+        <property name="monday" access="field"/>
+        <property name="tuesday" access="field"/>
+        <property name="wednesday" access="field"/>
+        <property name="thursday" access="field"/>
+        <property name="friday" access="field"/>
+        <property name="saturday" access="field"/>
+        <property name="sunday" access="field"/>
+
+        <one-to-one name="parent" class="BaseCalendar" access="field"/>
+
+        <one-to-one name="previousCalendar" class="BaseCalendar" access="field"/>
+
+        <one-to-one name="nextCalendar" class="BaseCalendar" access="field"/>
+
+        <property name="expiringDate" access="field"
+            type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+
+        <set name="exceptions" access="field" cascade="all-delete-orphan">
+            <key column="BASE_CALENDAR_ID" />
+            <one-to-many class="ExceptionDay" />
+        </set>
+    </class>
+
+    <!-- ExceptionDay -->
+    <class name="ExceptionDay">
+        <id name="id" access="property" type="long">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <property name="date" access="field"
+            type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+        <property name="hours" access="field"/>
+
+    </class>
+
+</hibernate-mapping>
