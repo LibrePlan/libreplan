@@ -16,6 +16,10 @@
       <key column="resource" not-null="true"/>
       <one-to-many class="CriterionSatisfaction"/>
     </set>
+
+    <one-to-one name="calendar" access="field"
+        class="org.navalplanner.business.calendars.entities.ResourceCalendar"/>
+
     <joined-subclass name="org.navalplanner.business.resources.entities.Worker">
       <key column="WORKER_ID"/>
       <property name="firstName"/>

@@ -13,6 +13,7 @@ import java.util.ListIterator;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.BaseEntity;
 
 // FIXME: Alternatively, Resource can be modeled with the style:
@@ -29,6 +30,8 @@ import org.navalplanner.business.common.BaseEntity;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public abstract class Resource extends BaseEntity {
+
+    private ResourceCalendar calendar;
 
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
 
@@ -427,6 +430,14 @@ public abstract class Resource extends BaseEntity {
         } finally {
             listIterator.next();
         }
+    }
+
+    public void setCalendar(ResourceCalendar calendar) {
+        this.calendar = calendar;
+    }
+
+    public ResourceCalendar getCalendar() {
+        return calendar;
     }
 
 }
