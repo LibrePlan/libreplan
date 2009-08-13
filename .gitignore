@@ -2,6 +2,8 @@
 navalplanner-webapp/target
 navalplanner-business/target
 navalplanner-gantt-zk/target
+ganttzk-demo-webapp/target
+ganttzk/target
 
 # ignore eclipse configuration files
 .classpath
@@ -14,3 +16,4 @@ navalplanner-gantt-zk/target
 #ignore backup files
 *~
 \#*\#
+*MF

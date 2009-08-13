@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<language-addon>
+	<addon-name>ganttz</addon-name>
+	<language-name>xul/html</language-name>
+
+	<extension>zul</extension>
+	<extension>xul</extension>
+
+	<zscript>
+		import org.zkoss.ganttz.*;
+    </zscript>
+
+	<component>
+		<component-name>planner</component-name>
+		<component-class>org.zkoss.ganttz.Planner</component-class>
+		<mold>
+			<mold-name>default</mold-name>
+			<mold-uri>~./ganttz/planner.dsp</mold-uri>
+		</mold>
+	</component>
+
+	<component>
+		<component-name>resourcesLoadPanel</component-name>
+		<component-class>org.zkoss.ganttz.ResourcesLoadPanel</component-class>
+		<mold>
+			<mold-name>default</mold-name>
+			<mold-uri>~./ganttz/resourcesLoadPanel.dsp</mold-uri>
+		</mold>
+	</component>
+
+	<component>
+		<component-name>leftPane</component-name>
+		<component-class>org.zkoss.ganttz.LeftPane</component-class>
+		<macro-uri>~./ganttz/zul/leftPane.zul</macro-uri>
+	</component>
+
+	<component>
+		<component-name>leftTasksTree</component-name>
+		<component-class>org.zkoss.ganttz.LeftTasksTree</component-class>
+		<macro-uri>~./ganttz/zul/leftTasksTree.zul</macro-uri>
+	</component>
+
+	<component>
+		<component-name>ganttpanel</component-name>
+		<component-class>org.zkoss.ganttz.GanttPanel</component-class>
+		<mold>
+			<mold-name>default</mold-name>
+			<mold-uri>~./ganttz/ganttpanel.dsp</mold-uri>
+		</mold>
+	</component>
+
+	<component>
+		<component-name>resourceload</component-name>
+		<component-class>org.zkoss.ganttz.ResourceLoadComponent
+		</component-class>
+		<mold>
+			<mold-name>default</mold-name>
+			<mold-uri>~./ganttz/resourceload.dsp</mold-uri>
+		</mold>
+	</component>
+
+	<component>
+		<component-name>task</component-name>
+		<component-class>org.zkoss.ganttz.TaskComponent</component-class>
+		<mold>
+			<mold-name>default</mold-name>
+			<mold-uri>~./ganttz/task.dsp</mold-uri>
+		</mold>
+	</component>
+
+	<component>
+		<component-name>taskcontainer</component-name>
+		<component-class>org.zkoss.ganttz.TaskContainerComponent
+		</component-class>
+		<mold>
+			<mold-name>default</mold-name>
+			<mold-uri>~./ganttz/taskcontainer.dsp</mold-uri>
+		</mold>
+	</component>
+
+	<component>
+		<component-name>tasklist</component-name>
+		<component-class>org.zkoss.ganttz.TaskList</component-class>
+		<mold>
+			<mold-name>default</mold-name>
+			<mold-uri>~./ganttz/tasklist.dsp</mold-uri>
+		</mold>
+	</component>
+
+	<component>
+		<component-name>dependencylist</component-name>
+		<component-class>org.zkoss.ganttz.DependencyList</component-class>
+		<mold>
+			<mold-name>default</mold-name>
+			<mold-uri>~./ganttz/dependencylist.dsp</mold-uri>
+		</mold>
+	</component>
+
+	<component>
+		<component-name>dependency</component-name>
+		<component-class>org.zkoss.ganttz.DependencyComponent
+		</component-class>
+		<mold>
+			<mold-name>default</mold-name>
+			<mold-uri>~./ganttz/dependency.dsp</mold-uri>
+		</mold>
+	</component>
+
+	<component>
+		<component-name>timetracker</component-name>
+		<component-class>org.zkoss.ganttz.TimeTracker</component-class>
+		<macro-uri>~./ganttz/zul/timetracker.zul</macro-uri>
+		<property>
+			<property-name>detailLevel</property-name>
+			<property-value>1</property-value>
+		</property>
+	</component>
+
+</language-addon>
