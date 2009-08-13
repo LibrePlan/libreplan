@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.navalplanner.business.test.resources.daos;
 
 import static junit.framework.Assert.assertEquals;
