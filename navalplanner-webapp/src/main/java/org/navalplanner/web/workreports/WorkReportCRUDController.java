@@ -1,5 +1,7 @@
 package org.navalplanner.web.workreports;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +44,7 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
 
+
 /**
  * Controller for CRUD actions over a {@link WorkReport}
  *
@@ -79,6 +82,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private final static String MOLD = "paging";
 
     private final static int PAGING = 10;
+
 
     /**
      * Delete {@link WorkReport}
@@ -326,11 +330,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         listHead.setSizable(true);
 
         // Add static headers
-        Listheader listHeadResource = new Listheader(RESOURCE);
+        Listheader listHeadResource = new Listheader(_("Resource"));
         listHead.appendChild(listHeadResource);
-        Listheader listHeadCode = new Listheader(CODE);
+        Listheader listHeadCode = new Listheader(_("Code"));
         listHead.appendChild(listHeadCode);
-        Listheader listHeadNumHours = new Listheader(NUM_HOURS);
+        Listheader listHeadNumHours = new Listheader(_("Hours"));
         listHead.appendChild(listHeadNumHours);
 
         // Add dynamic headers

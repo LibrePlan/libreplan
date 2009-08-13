@@ -1,3 +1,5 @@
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
+
 <window id="${arg.top_id}" title="${arg.title}" border="normal">
 
     <vbox>
@@ -24,10 +26,10 @@
         </hbox>
 
         <hbox>
-            <button label="Añadir"
+            <button label="${i18n:_('Add')}"
                 onClick="controller.addWorkReportLine(workReportLines);"
                 style="margin-top: -30px; margin-left: 300px" />
-            <button label="Borrar"
+            <button label="${i18n:_('Delete')}"
                 onClick="controller.deleteWorkReportLine(workReportLines);"
                 style="margin-top: -30px; margin-left: 2px" />
         </hbox>
