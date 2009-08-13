@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.Dependency.Type;
@@ -36,6 +37,8 @@ public abstract class TaskElement extends BaseEntity {
     private Set<Dependency> dependenciesWithThisOrigin = new HashSet<Dependency>();
 
     private Set<Dependency> dependenciesWithThisDestination = new HashSet<Dependency>();
+
+    private BaseCalendar calendar;
 
     public Integer getWorkHours() {
         if (shareOfHours != null)
@@ -230,6 +233,14 @@ public abstract class TaskElement extends BaseEntity {
         for (TaskElement taskElement : tasksToNotify) {
             taskElement.removeDependenciesWithOrigin(this);
         }
+    }
+
+    public void setCalendar(BaseCalendar calendar) {
+        this.calendar = calendar;
+    }
+
+    public BaseCalendar getCalendar() {
+        return calendar;
     }
 
 }
