@@ -9,7 +9,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * This class represents a dependency. Contains the source and the destination.
  * It also specifies the type of the relationship. <br/>
- * Created at Apr 24, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class Dependency {

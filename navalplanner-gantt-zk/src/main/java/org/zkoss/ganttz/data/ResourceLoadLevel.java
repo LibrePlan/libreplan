@@ -2,7 +2,6 @@ package org.zkoss.ganttz.data;
 
 /**
  * This enum handles the different load Levels assinged to ResourceLoad intervals . <br/>
- * Created at Aug 12, 2009
  * @author Lorenzo Tilve Álvaro <ogonzalez@igalia.com>
  */
 public enum ResourceLoadLevel {

@@ -32,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Test cases for CriterionDAO <br />
- * Created at May 13, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)

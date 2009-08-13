@@ -5,7 +5,6 @@ import java.util.Date;
 /**
  * This enum tells the type of a depepdency. Each instance contanins the correct
  * behaviour for that type of dependency . <br/>
- * Created at Apr 24, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public enum DependencyType {

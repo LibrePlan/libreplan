@@ -8,7 +8,6 @@ import org.zkoss.zul.impl.XulElement;
 
 /**
  * Component to include a list of ResourceLoads inside the ResourcesLoadPanel.
- * Created at Aug 11, 2009
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class ResourceLoadList extends XulElement implements AfterCompose {

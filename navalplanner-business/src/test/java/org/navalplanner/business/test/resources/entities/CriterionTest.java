@@ -21,7 +21,6 @@ import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * Tests for criterion. <br />
- * Created at May 12, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 

@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * Compounds some {@link ICriterion} into one <br />
- * Created at May 12, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class CriterionCompounder {

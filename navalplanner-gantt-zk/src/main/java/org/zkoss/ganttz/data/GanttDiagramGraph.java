@@ -20,7 +20,6 @@ import org.zkoss.ganttz.DependencyComponent;
  * This class contains a graph with the {@link Task tasks} as vertexes and the
  * {@link Dependency dependency} as arcs. It enforces the rules embodied in the
  * dependencies and in the duration of the tasks using listeners. <br/>
- * Created at Apr 24, 2009
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class GanttDiagramGraph {

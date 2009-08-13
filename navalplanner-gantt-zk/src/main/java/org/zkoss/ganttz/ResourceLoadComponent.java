@@ -12,7 +12,6 @@ import org.zkoss.zul.Div;
 
 /**
  * This class wraps ResourceLoad data inside an specific HTML Div component.
- * Created at Aug 11, 2009
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class ResourceLoadComponent extends Div implements AfterCompose {
