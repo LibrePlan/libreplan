@@ -136,23 +136,6 @@ public class CriterionsModel implements ICriterionsModel {
         return existentCriterion.getId().equals(other.getId());
     }
 
-    private CriterionType saveCriterionType(CriterionType criterionType)
-            throws ValidationException {
-        if (criterionTypeDAO.exists(criterionType.getId())
-                || criterionTypeDAO.existsByName(criterionType)) {
-            try {
-                criterionType = criterionTypeDAO.findUniqueByName(criterionType
-                        .getName());
-            } catch (InstanceNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            criterionTypeDAO.save(criterionType);
-        }
-
-        return criterionType;
-    }
-
     @Override
     public boolean isEditing() {
         return criterion != null;
