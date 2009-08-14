@@ -401,6 +401,7 @@ public class BaseCalendarTest {
                 equalTo(CHRISTMAS_DAY_LOCAL_DATE));
     }
 
+    @Test
     public void anUnitializedCalendarShouldReturnZeroHours() {
         givenUnitializedCalendar();
         thenForAllDaysReturnsZero();
