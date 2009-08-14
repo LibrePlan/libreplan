@@ -16,15 +16,16 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -40,22 +41,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class WorkerModel implements IWorkerModel {
 
-    private final IResourceService resourceService;
+    @Autowired
+    private IResourceDAO resourceDAO;
+
     private final ICriterionType<?>[] laboralRelatedTypes = {
             PredefinedCriterionTypes.LEAVE,
             PredefinedCriterionTypes.WORK_RELATIONSHIP };
     private Worker worker;
     private ClassValidator<Worker> workerValidator;
+
     private final ICriterionDAO criterionDAO;
 
     private IMultipleCriterionActiveAssigner localizationsAssigner;
 
     @Autowired
-    public WorkerModel(IResourceService resourceService,
+    public WorkerModel(IResourceDAO resourceDAO,
             ICriterionDAO criterionDAO) {
-        Validate.notNull(resourceService);
+        Validate.notNull(resourceDAO);
         Validate.notNull(criterionDAO);
-        this.resourceService = resourceService;
+        this.resourceDAO = resourceDAO;
         this.workerValidator = new ClassValidator<Worker>(Worker.class);
         this.criterionDAO = criterionDAO;
     }
@@ -69,7 +73,8 @@ public class WorkerModel implements IWorkerModel {
             throw new ValidationException(invalidValues);
         }
         getLocalizationsAssigner().applyChanges();
-        resourceService.saveResource(worker);
+        resourceDAO.save(worker);
+        worker.checkNotOverlaps();
         worker = null;
         localizationsAssigner = null;
     }
@@ -77,7 +82,7 @@ public class WorkerModel implements IWorkerModel {
     @Override
     @Transactional(readOnly = true)
     public List<Worker> getWorkers() {
-        return resourceService.getWorkers();
+        return resourceDAO.getWorkers();
     }
 
     @Override
@@ -99,7 +104,7 @@ public class WorkerModel implements IWorkerModel {
     public void prepareEditFor(Worker worker) {
         Validate.notNull(worker, "worker must be not null");
         try {
-            this.worker = (Worker) resourceService.findResource(worker.getId());
+            this.worker = (Worker) resourceDAO.find(worker.getId());
             forceLoadSatisfactions(this.worker);
             localizationsAssigner = new MultipleCriterionActiveAssigner(
                     criterionDAO, this.worker,
@@ -124,7 +129,7 @@ public class WorkerModel implements IWorkerModel {
 
         /* Check worker's version. */
         Worker worker = getWorker();
-        resourceService.checkVersion(worker);
+        resourceDAO.checkVersion(worker);
 
         /* Add criterion satisfaction. */
         edited.setResource(worker);
@@ -157,7 +162,7 @@ public class WorkerModel implements IWorkerModel {
 
         /* Check worker's version. */
         Worker worker = getWorker();
-        resourceService.checkVersion(worker);
+        resourceDAO.checkVersion(worker);
 
         /* Remove criterion satisfaction. */
         worker.removeCriterionSatisfaction(satisfaction);
@@ -170,7 +175,7 @@ public class WorkerModel implements IWorkerModel {
 
         /* Check worker's version. */
         Worker worker = getWorker();
-        resourceService.checkVersion(worker);
+        resourceDAO.checkVersion(worker);
 
         /* Assign criteria. */
         getLocalizationsAssigner().assign(criteria);
@@ -183,7 +188,7 @@ public class WorkerModel implements IWorkerModel {
 
         /* Check worker's version. */
         Worker worker = getWorker();
-        resourceService.checkVersion(worker);
+        resourceDAO.checkVersion(worker);
 
         /* Unassign criterion satisfactions. */
         getLocalizationsAssigner().unassign(satisfactions);
@@ -383,5 +388,23 @@ public class WorkerModel implements IWorkerModel {
     @Override
     public List<CriterionSatisfaction> getLaboralRelatedCriterionSatisfactions() {
         return worker.query().oneOf(laboralRelatedTypes).result();
+    }
+
+    @Override
+    public void setWorker(Worker worker) {
+        this.worker = worker;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Resource> getSetOfResourcesSatisfying(ICriterion criterion) {
+        List<Resource> resources = resourceDAO.list(Resource.class);
+        HashSet<Resource> result = new HashSet<Resource>();
+        for (Resource resource : resources) {
+            if (criterion.isSatisfiedBy(resource)) {
+                result.add(resource);
+            }
+        }
+        return result;
     }
 }

@@ -3,11 +3,14 @@ package org.navalplanner.web.resources.worker;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 
 /**
@@ -88,4 +91,7 @@ public interface IWorkerModel {
     void unassignSatisfactions(
             Collection<? extends CriterionSatisfaction> satisfactions);
 
+    void setWorker(Worker worker);
+
+    Set<Resource> getSetOfResourcesSatisfying(ICriterion criterion);
 }

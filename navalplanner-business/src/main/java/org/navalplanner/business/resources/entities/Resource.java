@@ -1,4 +1,3 @@
-
 package org.navalplanner.business.resources.entities;
 
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ import org.navalplanner.business.common.BaseEntity;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public abstract class Resource extends BaseEntity {
+public abstract class Resource extends BaseEntity{
 
     private ResourceCalendar calendar;
 
@@ -370,7 +369,19 @@ public abstract class Resource extends BaseEntity {
         return criterionSatisfactions.contains(satisfaction);
     }
 
-    public void checkNotOverlaps(List<CriterionType> types) {
+    public void checkNotOverlaps() {
+        checkNotOverlaps(getRelatedTypes());
+    }
+
+    private List<CriterionType> getRelatedTypes() {
+        List<CriterionType> types = new ArrayList<CriterionType>();
+        for (CriterionSatisfaction criterionSatisfaction : getAllSatisfactions()) {
+            types.add(criterionSatisfaction.getCriterion().getType());
+        }
+        return types;
+    }
+
+    private void checkNotOverlaps(List<CriterionType> types) {
         for (CriterionType criterionType : types) {
             if (!criterionType.allowSimultaneousCriterionsPerResource()) {
                 List<CriterionSatisfaction> satisfactions = query().from(

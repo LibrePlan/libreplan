@@ -13,13 +13,13 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -46,7 +46,7 @@ public class CriterionsModel implements ICriterionsModel {
     private ICriterionTypeDAO criterionTypeDAO;
 
     @Autowired
-    private IResourceService resourceService;
+    private IResourceDAO resourceDAO;
 
     private ICriterionType<?> criterionType;
 
@@ -179,7 +179,7 @@ public class CriterionsModel implements ICriterionsModel {
         Validate.notNull(resourceType, "resourceType must be not null");
         Validate.notNull(criterion, "criterion must be not null");
         List<T> result = new ArrayList<T>();
-        for (T r : resourceService.getResources(resourceType)) {
+        for (T r : resourceDAO.list(resourceType)) {
             if (criterion.isSatisfiedBy(r)) {
                 result.add(r);
             }
@@ -188,8 +188,9 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Worker> getAllWorkers() {
-        return resourceService.getWorkers();
+        return resourceDAO.getWorkers();
     }
 
     @Override
@@ -203,9 +204,10 @@ public class CriterionsModel implements ICriterionsModel {
     public void activateAll(Collection<? extends Resource> resources) {
         for (Resource resource : resources) {
             Resource reloaded = find(resource.getId());
-            reloaded.addSatisfaction(new CriterionWithItsType(criterionType,
-                    criterion));
-            resourceService.saveResource(reloaded);
+            reloaded
+                    .addSatisfaction(new CriterionWithItsType(criterionType, criterion));
+            resourceDAO.save(reloaded);
+            reloaded.checkNotOverlaps();
         }
     }
 
@@ -214,15 +216,17 @@ public class CriterionsModel implements ICriterionsModel {
     public void deactivateAll(Collection<? extends Resource> resources) {
         for (Resource resource : resources) {
             Resource reloaded = find(resource.getId());
-            reloaded.finish(new CriterionWithItsType(criterionType, criterion));
-            resourceService.saveResource(reloaded);
+            reloaded.finish(new CriterionWithItsType(criterionType,
+                    criterion));
+            resourceDAO.save(reloaded);
+            reloaded.checkNotOverlaps();
         }
     }
 
     private Resource find(Long id) {
         Resource reloaded;
         try {
-            reloaded = resourceService.findResource(id);
+            reloaded = resourceDAO.find(id);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

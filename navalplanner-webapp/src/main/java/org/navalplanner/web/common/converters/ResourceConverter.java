@@ -1,12 +1,13 @@
 package org.navalplanner.web.common.converters;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.services.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * A {@link IConverter} for {@link Resource} <br />
@@ -17,13 +18,14 @@ import org.springframework.stereotype.Component;
 public class ResourceConverter implements IConverter<Resource> {
 
     @Autowired
-    private IResourceService resourceService;
+    private IResourceDAO resourceDAO;
 
     @Override
+    @Transactional(readOnly = true)
     public Resource asObject(String stringRepresentation) {
         long id = Long.parseLong(stringRepresentation);
         try {
-            return resourceService.findResource(id);
+            return resourceDAO.find(id);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

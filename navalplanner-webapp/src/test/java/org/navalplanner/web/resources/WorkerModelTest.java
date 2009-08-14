@@ -11,10 +11,10 @@ import org.junit.Test;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.resources.services.IResourceService;
 import org.navalplanner.web.resources.worker.WorkerModel;
 
 /**
@@ -26,7 +26,7 @@ public class WorkerModelTest {
     @Test
     public void testWorkerValid() throws ValidationException,
             InstanceNotFoundException {
-        IResourceService resourceServiceMock = createMock(IResourceService.class);
+        IResourceDAO resourceDAOMock = createMock(IResourceDAO.class);
         ICriterionDAO criterionServiceMock = createMock(ICriterionDAO.class);
         Worker workerToReturn = new Worker();
         workerToReturn.setDailyHours(2);
@@ -39,12 +39,13 @@ public class WorkerModelTest {
                 criterionServiceMock
                         .findByType(PredefinedCriterionTypes.LOCATION_GROUP))
                 .andReturn(criterions).anyTimes();
-        expect(resourceServiceMock.findResource(workerToReturn.getId()))
+        expect(resourceDAOMock.find(workerToReturn.getId()))
                 .andReturn(workerToReturn);
-        resourceServiceMock.saveResource(workerToReturn);
-        replay(resourceServiceMock, criterionServiceMock);
+        resourceDAOMock.save(workerToReturn);
+        workerToReturn.checkNotOverlaps();
+        replay(resourceDAOMock, criterionServiceMock);
         // perform actions
-        WorkerModel workerModel = new WorkerModel(resourceServiceMock,
+        WorkerModel workerModel = new WorkerModel(resourceDAOMock,
                 criterionServiceMock);
 
         workerModel.prepareEditFor(workerToReturn);
@@ -54,7 +55,7 @@ public class WorkerModelTest {
     @Test(expected = ValidationException.class)
     public void testWorkerInvalid() throws ValidationException,
             InstanceNotFoundException {
-        IResourceService resourceServiceMock = createMock(IResourceService.class);
+        IResourceDAO resourceDAOMock = createMock(IResourceDAO.class);
         ICriterionDAO criterionServiceMock = createMock(ICriterionDAO.class);
         Worker workerToReturn = new Worker();
         // expectations
@@ -63,11 +64,11 @@ public class WorkerModelTest {
                 criterionServiceMock
                         .findByType(PredefinedCriterionTypes.LOCATION_GROUP))
                 .andReturn(criterions).anyTimes();
-        expect(resourceServiceMock.findResource(workerToReturn.getId()))
+        expect(resourceDAOMock.find(workerToReturn.getId()))
                 .andReturn(workerToReturn);
-        replay(resourceServiceMock, criterionServiceMock);
+        replay(resourceDAOMock, criterionServiceMock);
         // perform actions
-        WorkerModel workerModel = new WorkerModel(resourceServiceMock,
+        WorkerModel workerModel = new WorkerModel(resourceDAOMock,
                 criterionServiceMock);
         workerModel.prepareEditFor(workerToReturn);
         workerModel.save();
