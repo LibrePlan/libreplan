@@ -168,6 +168,13 @@
         </repository>
     </repositories>
 
+     <pluginRepositories>
+        <pluginRepository>
+          <id>gettext-commons-site</id>
+          <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
+        </pluginRepository>
+     </pluginRepositories>
+
     <!-- Dependency management -->
     <dependencyManagement>
         <dependencies>
@@ -402,7 +409,6 @@
             <!-- =========================================================== -->
             <!-- Gettext configuration -->
             <plugin>
-                <!-- <groupId>org.xnap.commons</groupId> -->
                 <groupId>org.xnap.commons</groupId>
                 <artifactId>maven-gettext-plugin</artifactId>
                 <version>1.2.0</version>
