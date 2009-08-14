@@ -1,4 +1,4 @@
-<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
 <?component name="customMenu" inline="true" macroURI="_customMenu.zul"?>

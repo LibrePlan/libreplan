@@ -1,4 +1,4 @@
-<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 <div xmlns:n="http://www.zkoss.org/2005/zk/native">
         <n:div class="headings">
             <n:div class="logo"></n:div>
@@ -7,60 +7,60 @@
         <menubar id="menubar" width="65%" top="0px" left="320px"
             ctrlKeys="^k#f2" onCtrlKey="doCtrlKey()" sclass="mainmenu">
 
-            <menu label="${c:l('mainmenu.plannification')}">
+            <menu label="${i18n:_('Planification')}">
                 <menupopup>
-                    <menuitem label="${c:l('mainmenu.plannification')}"
+                    <menuitem label="${i18n:_('Planification')}"
                         href='/planner/main.zul' />
-                    <menuitem label="${c:l('mainmenu.company_overview')}"
+                    <menuitem label="${i18n:_('Company overview')}"
                         onClick="alert(self.label)" />
-                    <menuitem label="${c:l('mainmenu.plannifications_list')}"
+                    <menuitem label="${i18n:_('Planifications list')}"
                         onClick="alert(self.label)" />
                 </menupopup>
             </menu>
 
-            <menu label="${c:l('mainmenu.resources')}">
+            <menu label="${i18n:_('Resources')}">
                 <menupopup>
-                    <menuitem label="${c:l('mainmenu.list_workers')}"
+                    <menuitem label="${i18n:_('Workers list')}"
                         href='/resources/worker/worker.zul#list' />
-                        <menuitem label="${c:l('mainmenu.manage_criterions')}"
+                        <menuitem label="${i18n:_('Manage criterions')}"
                         href='/resources/criterions/criterions.zul' />
-                    <menuitem label="${c:l('mainmenu.manage_machines')}"
+                    <menuitem label="${i18n:_('Manage machines')}"
                         onClick="alert(self.label)" />
                 </menupopup>
             </menu>
 
-            <menu label="${c:l('mainmenu.orders')}">
+            <menu label="${i18n:_('Orders')}">
                 <menupopup>
-                    <menuitem label="${c:l('mainmenu.list_orders')}"
+                    <menuitem label="${i18n:_('Orders list')}"
                         href='/orders/orders.zul' />
-                    <menuitem label="${c:l('mainmenu.activity_work_types')}" />
-                    <menuitem label="${c:l('mainmenu.models')}" />
+                    <menuitem label="${i18n:_('Work activities types')}" />
+                    <menuitem label="${i18n:_('Models')}" />
                 </menupopup>
             </menu>
 
-            <menu label="${c:l('mainmenu.work_reports')}">
+            <menu label="${i18n:_('Work reports')}">
                 <menupopup>
-                    <menuitem label="${c:l('mainmenu.work_report_list')}" />
-                    <menuitem label="${c:l('mainmenu.work_report_types')}"
+                    <menuitem label="${i18n:_('Work report list')}" />
+                    <menuitem label="${i18n:_('Work report types')}"
                         href="/workreports/workRerpotTypes.zul" />
-                    <menuitem label="${c:l('mainmenu.work_report_import')}" />
+                    <menuitem label="${i18n:_('Import work report')}" />
                 </menupopup>
             </menu>
 
-            <menu label="${c:l('mainmenu.administration')}">
+            <menu label="${i18n:_('Administration')}">
                 <menupopup>
-                    <menuitem label="${c:l('mainmenu.manage_users')}" />
+                    <menuitem label="${i18n:_('Manage users')}" />
                 </menupopup>
             </menu>
 
-            <menu label="${c:l('mainmenu.quality_management')}">
+            <menu label="${i18n:_('Quality management')}">
             </menu>
 
-            <menu label="${c:l('mainmenu.help')}">
+            <menu label="${i18n:_('Help')}">
                 <menupopup>
-                    <menu label="${c:l('mainmenu.about')}">
+                    <menu label="${i18n:_('About')}">
                         <menupopup>
-                            <menuitem label="${c:l('mainmenu.aclunaga')}"
+                            <menuitem label="${i18n:_('Aclunaga')}"
                                 href='/common/aclunaga.zul' />
                         </menupopup>
                     </menu>

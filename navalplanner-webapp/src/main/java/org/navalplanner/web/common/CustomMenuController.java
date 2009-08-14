@@ -6,6 +6,8 @@ import java.util.List;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Div;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Controller for customMenu <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
@@ -68,49 +70,49 @@ public class CustomMenuController extends Div {
         List<CustomMenuItem> l = new ArrayList<CustomMenuItem>();
         CustomMenuItem ci;
 
-        ci = new CustomMenuItem("mainmenu.plannification",
+        ci = new CustomMenuItem(_("Planification"),
                 "/navalplanner-webapp/planner/main.zul");
-        ci.appendChildren(new CustomMenuItem("mainmenu.plannification",
+        ci.appendChildren(new CustomMenuItem(_("Planification"),
                 "/navalplanner-webapp/planner/main.zul"));
-        ci.appendChildren(new CustomMenuItem("mainmenu.company_overview",
+        ci.appendChildren(new CustomMenuItem(_("Company overview"),
                 "/navalplanner-webapp/planner/main.zul"));
-        ci.appendChildren(new CustomMenuItem("mainmenu.plannifications_list",
+        ci.appendChildren(new CustomMenuItem(_("Planifications list"),
                 "/navalplanner-webapp/planner/main.zul"));
         l.add(ci);
 
-        ci = new CustomMenuItem("mainmenu.resources",
+        ci = new CustomMenuItem(_("Resources"),
                 "/navalplanner-webapp/resources/worker/worker.zul");
-        ci.appendChildren(new CustomMenuItem("mainmenu.list_workers",
+        ci.appendChildren(new CustomMenuItem(_("Workers list"),
                 "/navalplanner-webapp/resources/worker/worker.zul#list"));
-        ci.appendChildren(new CustomMenuItem("mainmenu.manage_criterions",
+        ci.appendChildren(new CustomMenuItem(_("Manage criterions"),
                 "/navalplanner-webapp/resources/criterions/criterions.zul"));
         l.add(ci);
 
-        ci = new CustomMenuItem("mainmenu.orders",
+        ci = new CustomMenuItem(_("Orders"),
                 "/navalplanner-webapp/orders/orders.zul");
-        ci.appendChildren(new CustomMenuItem("mainmenu.list_orders",
+        ci.appendChildren(new CustomMenuItem(_("Orders list"),
                 "/navalplanner-webapp/orders/orders.zul"));
-        ci.appendChildren(new CustomMenuItem("mainmenu.activity_work_types",
+        ci.appendChildren(new CustomMenuItem(_("Work activities types"),
                 "/navalplanner-webapp/orders/orders.zul"));
-        ci.appendChildren(new CustomMenuItem("mainmenu.models",
+        ci.appendChildren(new CustomMenuItem(_("Models"),
                 "/navalplanner-webapp/orders/orders.zul"));
         l.add(ci);
 
-        ci = new CustomMenuItem("mainmenu.work_reports",
+        ci = new CustomMenuItem(_("Work reports"),
                 "/navalplanner-webapp/workreports/workReportTypes.zul");
-        ci.appendChildren(new CustomMenuItem("mainmenu.work_report_types",
+        ci.appendChildren(new CustomMenuItem(_("Work report types"),
                 "navalplanner-webapp/workreports/workReportTypes.zul"));
-        ci.appendChildren(new CustomMenuItem("mainmenu.work_report_list",
+        ci.appendChildren(new CustomMenuItem(_("Work report list"),
                 "/navalplanner-webapp/workreports/workReport.zul#list"));
         l.add(ci);
 
-        ci = new CustomMenuItem("mainmenu.quality_management",
+        ci = new CustomMenuItem(_("Quality management"),
                 "/navalplanner-webapp/");
         l.add(ci);
 
-        ci = new CustomMenuItem("mainmenu.administration",
+        ci = new CustomMenuItem(_("Administration"),
                 "/navalplanner-webapp/advance/advanceTypes.zul");
-        ci.appendChildren(new CustomMenuItem("mainmenu.manageAdvancesTypes",
+        ci.appendChildren(new CustomMenuItem(_("Manage advances types"),
                 "/navalplanner-webapp/advance/advanceTypes.zul"));
         l.add(ci);
 

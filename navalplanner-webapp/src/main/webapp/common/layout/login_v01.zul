@@ -1,4 +1,3 @@
-<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/login_v01.css"?>
 
 <div xmlns:n="http://www.zkoss.org/2005/zk/native">

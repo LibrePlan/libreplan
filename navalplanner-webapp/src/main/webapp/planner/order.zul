@@ -2,7 +2,7 @@
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
-<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 <?link rel="stylesheet" type="text/css" href="/planner/css/ganttzk.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
@@ -23,19 +23,19 @@
         <grid>
             <rows>
                 <row>
-                    ${c:l('task.name')}
+                    ${i18n:_('Name')}
                     <textbox id="name" />
                 </row>
                 <row>
-                    ${c:l('task.start')}
+                    ${i18n:_('Start')}
                     <datebox id="startDateBox" compact="true" />
                 </row>
                 <row>
-                    ${c:l('task.end')}
+                    ${i18n:_('End')}
                     <datebox id="endDateBox" compact="true" />
                 </row>
                 <row>
-                    ${c:l('task.notes')}
+                    ${i18n:_('Notes')}
                     <textbox id="notes" />
                 </row>
                 <row>
@@ -52,7 +52,7 @@
                 </row>
             </rows>
         </grid>
-        <button id="ok" label=" ${c:l('task.ok')}" />
+        <button id="ok" label=" ${i18n:_('Accept')}" />
     </popup>
 
     <window id="resourceAllocationWindow" visible="false" apply="${allocationController}">

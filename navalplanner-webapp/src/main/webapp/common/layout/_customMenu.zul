@@ -4,7 +4,7 @@
         <n:tr>
             <n:td forEach="${menuContainer.customMenuItems}">
                 <n:a href="${each.url}" class=
-                    "menuup${(each.activeParent?'_activa':'')}">${c:l(each.name)}</n:a>
+                    "menuup${(each.activeParent?'_activa':'')}">${i18n:_(each.name)}</n:a>
             </n:td>
         </n:tr>
     </n:table>
@@ -16,7 +16,7 @@
                     <n:tr>
                         <n:td width="10" />
                         <n:td forEach="${menuContainer.customMenuSecondaryItems}">
-                            <n:a href="${each.url}" class="sub_menu">${c:l(each.name)}</n:a>
+                            <n:a href="${each.url}" class="sub_menu">${i18n:_(each.name)}</n:a>
                             <n:td width="14"
                                 background="/navalplanner-webapp/common/img/sub_separacion.gif" />
                         </n:td>
