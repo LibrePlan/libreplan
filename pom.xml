@@ -322,7 +322,7 @@
             <!-- Naval Planner ZK Components -->
             <dependency>
                 <groupId>org.navalplanner</groupId>
-                <artifactId>navalplanner-gantt-zk</artifactId>
+                <artifactId>ganttzk</artifactId>
                 <version>1.0.0</version>
             </dependency>
             <!-- Naval Planner Business -->
