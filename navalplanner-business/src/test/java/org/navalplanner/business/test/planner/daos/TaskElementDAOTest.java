@@ -124,6 +124,7 @@ public class TaskElementDAOTest {
         Task task = createValidTask();
         assertNull(task.getVersion());
         taskElementDAO.save(task);
+        task.dontPoseAsTransientObjectAnymore();
         assertNotNull(task.getVersion());
     }
 
@@ -195,6 +196,7 @@ public class TaskElementDAOTest {
         }
         Dependency.create(child1, oldChild2, Type.START_END);
         taskElementDAO.save(child1);
+        oldChild2.dontPoseAsTransientObjectAnymore();
         flushAndEvict(child1);
         TaskElement child1Reloaded;
         try {

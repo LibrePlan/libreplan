@@ -132,6 +132,7 @@ public class CriterionModelTest {
             @Override
             public Void execute() {
                 givenCreatedCriterionFor(PredefinedCriterionTypes.WORK_RELATIONSHIP);
+                criterion.getType().dontPoseAsTransientObjectAnymore();
                 return null;
             }
         });

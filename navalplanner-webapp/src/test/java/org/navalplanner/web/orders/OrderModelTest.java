@@ -364,6 +364,8 @@ public class OrderModelTest {
                         return criterion;
                     }
                 });
+        this.criterion.dontPoseAsTransientObjectAnymore();
+        this.criterion.getType().dontPoseAsTransientObjectAnymore();
     }
 
     @Test(expected = ValidationException.class)
