@@ -19,6 +19,20 @@ public class WorkReportLine extends BaseEntity {
 
     public static final String ORDER_ELEMENT = "orderElement";
 
+    public static WorkReportLine create() {
+        WorkReportLine workReportLine = new WorkReportLine();
+        workReportLine.setNewObject(true);
+        return workReportLine;
+    }
+
+    public static WorkReportLine create(Integer numHours, Resource resource,
+            OrderElement orderElement, Set<Criterion> criterions) {
+        WorkReportLine workReportLine = new WorkReportLine(numHours, resource,
+                orderElement, criterions);
+        workReportLine.setNewObject(true);
+        return workReportLine;
+    }
+
     private Integer numHours;
 
     @NotNull
@@ -31,12 +45,14 @@ public class WorkReportLine extends BaseEntity {
 
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
-
+    /**
+     * Constructor for hibernate. Do not use!
+     */
     public WorkReportLine() {
 
     }
 
-    public WorkReportLine(Integer numHours, Resource resource,
+    private WorkReportLine(Integer numHours, Resource resource,
             OrderElement orderElement, Set<Criterion> criterions) {
         this.numHours = numHours;
         this.resource = resource;

@@ -632,7 +632,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         // Add empty option to list
         List<Criterion> criterions = new ArrayList<Criterion>(criterionType
                 .getCriterions());
-        criterions.add(0, new Criterion(" ", criterionType));
+        criterions.add(0, Criterion.create(" ", criterionType));
 
         // Adds a new item to list for each criterion
         for (Criterion criterion : criterions) {

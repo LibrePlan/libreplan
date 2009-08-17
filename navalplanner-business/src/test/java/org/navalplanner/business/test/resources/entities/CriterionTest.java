@@ -35,8 +35,8 @@ public class CriterionTest {
 
     @Test
     public void testCompounding() throws Exception {
-        Worker worker1 = new Worker();
-        Worker worker2 = new Worker();
+        Worker worker1 = Worker.create();
+        Worker worker2 = Worker.create();
 
         ICriterion criterionForWorker1 = justThisResourcesCriterion(worker1);
         ICriterion criterionForWorker2 = justThisResourcesCriterion(worker2);
@@ -63,8 +63,8 @@ public class CriterionTest {
 
     @Test
     public void testWorkerSatisfySeveralCriterions() {
-        Worker worker1 = new Worker();
-        Worker worker2 = new Worker();
+        Worker worker1 = Worker.create();
+        Worker worker2 = Worker.create();
 
         ICriterion criterion1 = justThisResourcesCriterion(worker1);
         ICriterion criterion2 = justThisResourcesCriterion(worker1);
@@ -102,14 +102,14 @@ public class CriterionTest {
 
     @Test
     public void testEmptyMatchesAll() throws Exception {
-        assertTrue(build().getResult().isSatisfiedBy(new Worker()));
+        assertTrue(build().getResult().isSatisfiedBy(Worker.create()));
     }
 
     @Test
     public void testSimpleNegation() throws Exception {
-        Worker worker1 = new Worker();
-        Worker worker2 = new Worker();
-        Worker worker3 = new Worker();
+        Worker worker1 = Worker.create();
+        Worker worker2 = Worker.create();
+        Worker worker3 = Worker.create();
         ICriterion criterionForWorker1 = justThisResourcesCriterion(worker1);
         ICriterion criterionForWorker2 = justThisResourcesCriterion(worker2);
         ICriterion worker1Negated = not(criterionForWorker1);
@@ -124,9 +124,9 @@ public class CriterionTest {
 
     @Test
     public void testNegateAnd() throws Exception {
-        Worker worker1 = new Worker();
-        Worker worker2 = new Worker();
-        Worker worker3 = new Worker();
+        Worker worker1 = Worker.create();
+        Worker worker2 = Worker.create();
+        Worker worker3 = Worker.create();
         ICriterion criterionForWorker1 = justThisResourcesCriterion(worker1);
         ICriterion both = justThisResourcesCriterion(worker1, worker2);
         ICriterion andNegated = not(atom(criterionForWorker1).and(both));
@@ -137,9 +137,9 @@ public class CriterionTest {
 
     @Test
     public void testOr() throws Exception {
-        Worker worker1 = new Worker();
-        Worker worker2 = new Worker();
-        Worker worker3 = new Worker();
+        Worker worker1 = Worker.create();
+        Worker worker2 = Worker.create();
+        Worker worker3 = Worker.create();
         ICriterion both = justThisResourcesCriterion(worker1, worker2);
         assertFalse(both.isSatisfiedBy(worker3));
 
@@ -153,9 +153,9 @@ public class CriterionTest {
 
     @Test
     public void testOrHasLessPrecendenceThanAnd() throws Exception {
-        Worker worker1 = new Worker();
-        Worker worker2 = new Worker();
-        Worker worker3 = new Worker();
+        Worker worker1 = Worker.create();
+        Worker worker2 = Worker.create();
+        Worker worker3 = Worker.create();
         ICriterion criterionForWorker1 = justThisResourcesCriterion(worker1);
         ICriterion both = justThisResourcesCriterion(worker1, worker2);
 

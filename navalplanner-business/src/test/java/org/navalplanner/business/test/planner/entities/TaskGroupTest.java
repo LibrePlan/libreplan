@@ -17,7 +17,7 @@ import org.navalplanner.business.planner.entities.TaskGroup;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class TaskGroupTest {
-    private TaskGroup taskGroup = new TaskGroup();
+    private TaskGroup taskGroup = TaskGroup.create();
 
     @Test
     public void taskGroupIsAnInstanceOfTaskElement() {
@@ -31,7 +31,7 @@ public class TaskGroupTest {
                 .isEmpty());
         TaskElement child1 = new Task();
         taskGroup.addTaskElement(child1);
-        TaskGroup child2 = new TaskGroup();
+        TaskGroup child2 = TaskGroup.create();
         taskGroup.addTaskElement(child2);
         List<TaskElement> taskElements = taskGroup.getChildren();
         assertThat(taskElements.size(), equalTo(2));

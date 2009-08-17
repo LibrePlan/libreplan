@@ -26,11 +26,35 @@ public class CriterionSatisfaction extends BaseEntity {
         };
     }
 
+    public static CriterionSatisfaction create() {
+        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction();
+        criterionSatisfaction.setNewObject(true);
+        return criterionSatisfaction;
+    }
+
+    public static CriterionSatisfaction create(Date startDate,
+            Criterion criterion, Resource resource) {
+        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
+                startDate, criterion, resource);
+        criterionSatisfaction.setNewObject(true);
+        return criterionSatisfaction;
+    }
+
+    public static CriterionSatisfaction create(Criterion criterion,
+            Resource resource, Interval interval) {
+        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(criterion, resource, interval);
+        criterionSatisfaction.setNewObject(true);
+        return criterionSatisfaction;
+    }
+
+    /**
+     * Constructor for hibernate. Do not use!
+     */
     public CriterionSatisfaction() {
 
     }
 
-    public CriterionSatisfaction(Date startDate, Criterion criterion,
+    private CriterionSatisfaction(Date startDate, Criterion criterion,
             Resource resource) {
         Validate.notNull(startDate, "startDate must be not null");
         Validate.notNull(criterion, "criterion must be not null");
@@ -40,7 +64,7 @@ public class CriterionSatisfaction extends BaseEntity {
         this.resource = resource;
     }
 
-    public CriterionSatisfaction(Criterion criterion, Resource resource,
+    private CriterionSatisfaction(Criterion criterion, Resource resource,
             Interval interval) {
         this(interval.getStart(), criterion, resource);
         if (interval.getEnd() != null) {
@@ -62,7 +86,7 @@ public class CriterionSatisfaction extends BaseEntity {
     }
 
     public CriterionSatisfaction copy() {
-        CriterionSatisfaction result = new CriterionSatisfaction();
+        CriterionSatisfaction result = create();
         result.startDate = startDate;
         result.finishDate = finishDate;
         result.criterion = criterion;

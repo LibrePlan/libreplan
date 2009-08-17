@@ -16,6 +16,28 @@ import org.springframework.stereotype.Component;
 public class CriterionType extends BaseEntity implements
         ICriterionType<Criterion> {
 
+    public static CriterionType create() {
+        CriterionType criterionType = new CriterionType();
+        criterionType.setNewObject(true);
+        return criterionType;
+    }
+
+    public static CriterionType create(String name) {
+        CriterionType criterionType = new CriterionType(name);
+        criterionType.setNewObject(true);
+        return criterionType;
+    }
+
+    public static CriterionType create(String name, boolean allowHierarchy,
+            boolean allowSimultaneousCriterionsPerResource,
+            boolean allowAdding, boolean allowEditing, ResourceEnum resource) {
+        CriterionType criterionType = new CriterionType(name, allowHierarchy,
+                allowSimultaneousCriterionsPerResource, allowAdding,
+                allowEditing, resource);
+        criterionType.setNewObject(true);
+        return criterionType;
+    }
+
     @NotEmpty
     private String name;
 
@@ -31,15 +53,18 @@ public class CriterionType extends BaseEntity implements
 
     private Set<Criterion> criterions;
 
+    /**
+     * Constructor for hibernate. Do not use!
+     */
     public CriterionType() {
 
     }
 
-    public CriterionType(String name) {
+    private CriterionType(String name) {
         this.name = name;
     }
 
-    public CriterionType(String name, boolean allowHierarchy,
+    private CriterionType(String name, boolean allowHierarchy,
             boolean allowSimultaneousCriterionsPerResource,
             boolean allowAdding, boolean allowEditing, ResourceEnum resource) {
 
@@ -52,11 +77,11 @@ public class CriterionType extends BaseEntity implements
     }
 
     public static CriterionType asCriterionType(ICriterionType criterionType) {
-        return new CriterionType(criterionType.getName(), criterionType
+        return create(criterionType.getName(), criterionType
                 .allowHierarchy(), criterionType
-                .allowSimultaneousCriterionsPerResource(), criterionType
-                .allowAdding(), criterionType.allowEditing(), CriterionType
-                .getResource(criterionType));
+        .allowSimultaneousCriterionsPerResource(),
+                criterionType.allowAdding(), criterionType.allowEditing(),
+                CriterionType.getResource(criterionType));
     }
 
     private static ResourceEnum getResource(ICriterionType criterionType) {

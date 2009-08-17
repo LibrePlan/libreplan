@@ -26,9 +26,10 @@ public abstract class ResourceAllocation extends BaseEntity {
     private BigDecimal percentage = new BigDecimal(0).setScale(2);
 
     /**
-     * For hibernate, DO NOT USE
+     * Constructor for hibernate. Do not use!
      */
     public ResourceAllocation() {
+
     }
 
     public ResourceAllocation(Task task) {

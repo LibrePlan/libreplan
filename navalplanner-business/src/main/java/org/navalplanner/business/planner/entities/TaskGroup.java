@@ -13,7 +13,20 @@ import org.navalplanner.business.orders.entities.OrderLine;
  */
 public class TaskGroup extends TaskElement {
 
+    public static TaskGroup create() {
+        TaskGroup taskGroup = new TaskGroup();
+        taskGroup.setNewObject(true);
+        return taskGroup;
+    }
+
     private List<TaskElement> taskElements = new ArrayList<TaskElement>();
+
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    public TaskGroup() {
+
+    }
 
     public void addTaskElement(TaskElement task) {
         Validate.notNull(task);

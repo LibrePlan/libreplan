@@ -23,8 +23,7 @@ public enum LeaveCriterions {
     private final String criterionName;
 
     public Criterion criterion() {
-        return new Criterion(criterionName,
-            CriterionType.asCriterionType(PredefinedCriterionTypes.LEAVE));
+        return Criterion.create(criterionName, CriterionType.asCriterionType(PredefinedCriterionTypes.LEAVE));
     }
 
     private LeaveCriterions(String name) {

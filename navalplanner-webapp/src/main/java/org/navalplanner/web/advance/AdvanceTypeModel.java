@@ -46,7 +46,7 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
 
     @Override
     public void prepareForCreate() {
-        this.advanceType = new AdvanceType();
+        this.advanceType = AdvanceType.create();
     }
 
     private AdvanceType getFromDB(AdvanceType advanceType) {

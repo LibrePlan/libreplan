@@ -13,6 +13,21 @@ import org.navalplanner.business.orders.entities.OrderElement;
 
 public class AdvanceType extends BaseEntity {
 
+    public static AdvanceType create() {
+        AdvanceType advanceType = new AdvanceType();
+        advanceType.setNewObject(true);
+        return advanceType;
+    }
+
+    public static AdvanceType create(String unitName,
+            BigDecimal defaultMaxValue, boolean updatable,
+            BigDecimal unitPrecision, boolean active) {
+        AdvanceType advanceType = new AdvanceType(unitName, defaultMaxValue, updatable,
+                        unitPrecision, active);
+        advanceType.setNewObject(true);
+        return advanceType;
+    }
+
     @NotEmpty
     private String unitName;
 
@@ -20,20 +35,22 @@ public class AdvanceType extends BaseEntity {
     private BigDecimal defaultMaxValue;
 
     @NotNull
-    private boolean updatable;
+    private boolean updatable = true;
 
     @NotNull
     private BigDecimal unitPrecision;
 
     @NotNull
-    private boolean active;
+    private boolean active = true;
 
+    /**
+     * Constructor for hibernate. Do not use!
+     */
     public AdvanceType() {
-        this.updatable = true;
-        this.active = true;
+
     }
 
-    public AdvanceType(String unitName, BigDecimal defaultMaxValue,
+    private AdvanceType(String unitName, BigDecimal defaultMaxValue,
             boolean updatable, BigDecimal unitPrecision, boolean active) {
         this.unitName = unitName;
         this.defaultMaxValue = defaultMaxValue;

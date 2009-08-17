@@ -62,7 +62,7 @@ public class WorkReportModel implements IWorkReportModel {
     @Transactional(readOnly = true)
     public void prepareForCreate(WorkReportType workReportType) {
         editing = false;
-        workReport = new WorkReport();
+        workReport = WorkReport.create();
         workReport.setWorkReportType(workReportType);
     }
 
@@ -197,7 +197,7 @@ public class WorkReportModel implements IWorkReportModel {
 
     @Override
     public WorkReportLine addWorkReportLine() {
-        WorkReportLine workReportLine = new WorkReportLine();
+        WorkReportLine workReportLine = WorkReportLine.create();
         workReport.getWorkReportLines().add(workReportLine);
         return workReportLine;
     }

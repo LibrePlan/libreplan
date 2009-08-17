@@ -9,6 +9,12 @@ import org.navalplanner.business.orders.entities.OrderElement;
 
 public class AdvanceAssigment extends BaseEntity {
 
+    public static AdvanceAssigment create() {
+        AdvanceAssigment advanceAssigment = new AdvanceAssigment();
+        advanceAssigment.setNewObject(true);
+        return advanceAssigment;
+    }
+
     private boolean reportGlobalAdvance;
 
     private OrderElement orderElement;
@@ -16,6 +22,13 @@ public class AdvanceAssigment extends BaseEntity {
     private AdvanceType advanceType;
 
     private List<AdvanceMeasurement> advanceMeasurements;
+
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    public AdvanceAssigment() {
+
+    }
 
     public AdvanceAssigment(boolean reportGlobalAdvance, BigDecimal maxValue) {
         this.reportGlobalAdvance = reportGlobalAdvance;

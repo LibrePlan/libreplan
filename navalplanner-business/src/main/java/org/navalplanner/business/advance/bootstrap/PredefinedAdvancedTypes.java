@@ -24,8 +24,7 @@ public enum PredefinedAdvancedTypes {
     private final BigDecimal unitPrecision;
 
     public AdvanceType createType() {
-        return new AdvanceType(name, defaultMaxValue, false, unitPrecision,
-                true);
+        return AdvanceType.create(name, defaultMaxValue, false, unitPrecision, true);
     }
 
     public String getTypeName() {

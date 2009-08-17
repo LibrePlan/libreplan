@@ -12,9 +12,10 @@ public class Dependency extends BaseEntity {
         END_START, START_START, END_END, START_END;
     }
 
-    public static Dependency createDependency(TaskElement origin,
+    public static Dependency create(TaskElement origin,
             TaskElement destination, Type type) {
         Dependency dependency = new Dependency(origin, destination, type);
+        dependency.setNewObject(true);
         origin.add(dependency);
         destination.add(dependency);
         return dependency;
@@ -27,7 +28,7 @@ public class Dependency extends BaseEntity {
     private Type type;
 
     /**
-     * It's needed by Hibernate. DO NOT USE.
+     * Constructor for hibernate. Do not use!
      */
     public Dependency() {
     }

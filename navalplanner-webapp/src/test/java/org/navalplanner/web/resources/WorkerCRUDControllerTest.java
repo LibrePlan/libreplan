@@ -60,7 +60,7 @@ public class WorkerCRUDControllerTest {
     public void testSave() throws Exception {
         IWorkerModel workerModel = createMock(IWorkerModel.class);
         IMessagesForUser messagesForUser = createMock(IMessagesForUser.class);
-        Worker workerToReturn = new Worker();
+        Worker workerToReturn = Worker.create();
 
         WorkerCRUDController workerCRUDController = createControllerForModel(
                 workerModel, messagesForUser);
@@ -86,7 +86,7 @@ public class WorkerCRUDControllerTest {
     @Test
     public void testGoToSaveAndThenCancel() {
         IWorkerModel workerModel = createMock(IWorkerModel.class);
-        Worker workerToReturn = new Worker();
+        Worker workerToReturn = Worker.create();
         // expectations
         WorkerCRUDController workerCRUDController = createControllerForModel(workerModel);
         workerModel.prepareForCreate();
@@ -113,8 +113,7 @@ public class WorkerCRUDControllerTest {
         WorkerCRUDController workerCRUDController = createControllerForModel(
                 workerModel, messagesForUser);
         List<Worker> workersToReturn = new ArrayList<Worker>(Arrays.asList(
-                new Worker("firstName", "surname", "nif", 4), new Worker(
-                        "firstName", "surname", "nif", 4)));
+                Worker.create("firstName", "surname", "nif", 4), Worker.create("firstName", "surname", "nif", 4)));
         // expectations
         expect(workerModel.getWorkers()).andReturn(workersToReturn);
         workerModel.prepareEditFor(workersToReturn.get(0));

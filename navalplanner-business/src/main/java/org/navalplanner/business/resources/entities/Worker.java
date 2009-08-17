@@ -9,6 +9,20 @@ import org.hibernate.validator.NotEmpty;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class Worker extends Resource {
+
+    public static Worker create() {
+        Worker worker = new Worker();
+        worker.setNewObject(true);
+        return worker;
+    }
+
+    public static Worker create(String firstName, String surname, String nif,
+            int dailyHours) {
+        Worker worker = new Worker(firstName, surname, nif, dailyHours);
+        worker.setNewObject(true);
+        return worker;
+    }
+
     @NotEmpty
     private String firstName;
 
@@ -21,10 +35,14 @@ public class Worker extends Resource {
     @Min(0)
     private int dailyHours;
 
+    /**
+     * Constructor for hibernate. Do not use!
+     */
     public Worker() {
+
     }
 
-    public Worker(String firstName, String surname, String nif, int dailyHours) {
+    private Worker(String firstName, String surname, String nif, int dailyHours) {
         this.firstName = firstName;
         this.surname = surname;
         this.nif = nif;

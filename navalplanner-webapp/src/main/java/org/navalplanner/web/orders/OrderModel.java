@@ -209,7 +209,7 @@ public class OrderModel implements IOrderModel {
     }
 
     private TaskGroup convertToTaskGroup(OrderLine line) {
-        TaskGroup result = new TaskGroup();
+        TaskGroup result = TaskGroup.create();
         result.setOrderElement(line);
         for (HoursGroup hoursGroup : line.getHoursGroups()) {
             result.addTaskElement(taskFrom(line, hoursGroup));
@@ -229,7 +229,7 @@ public class OrderModel implements IOrderModel {
     }
 
     private TaskGroup convertToTaskGroup(OrderLineGroup group) {
-        TaskGroup result = new TaskGroup();
+        TaskGroup result = TaskGroup.create();
         result.setOrderElement(group);
         for (OrderElement orderElement : group.getChildren()) {
             result.addTaskElement(convertToInitialSchedule(orderElement));

@@ -137,7 +137,7 @@ public class CriterionDAOTest {
     }
 
     private Criterion anotherCriterionWithSameNameAndType(Criterion c) {
-        return new Criterion(c.getName(), c.getType());
+        return Criterion.create(c.getName(), c.getType());
     }
 
     @Test

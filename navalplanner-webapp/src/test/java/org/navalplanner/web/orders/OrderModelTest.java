@@ -351,10 +351,10 @@ public class OrderModelTest {
                     @Override
                     public Criterion execute() {
                         // TODO Auto-generated method stub
-                        CriterionType criterionType = new CriterionType("test"
+                        CriterionType criterionType = CriterionType.create("test"
                                 + UUID.randomUUID());
                         criterionTypeDAO.save(criterionType);
-                        Criterion criterion = new Criterion("Test"
+                        Criterion criterion = Criterion.create("Test"
                                 + UUID.randomUUID(), criterionType);
                         try {
                             criterionModel.save(criterion);

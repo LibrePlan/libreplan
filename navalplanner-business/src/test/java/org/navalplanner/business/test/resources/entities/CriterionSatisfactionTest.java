@@ -28,9 +28,8 @@ public class CriterionSatisfactionTest {
     @Test
     public void testFinish() {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = new Worker("firstName", "surName", "2333232", 10);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                year(2000), criterion, worker);
+        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        CriterionSatisfaction criterionSatisfaction = CriterionSatisfaction.create(year(2000), criterion, worker);
         Date end = year(2006);
         criterionSatisfaction.finish(end);
         assertTrue(criterionSatisfaction.isFinished());
@@ -43,10 +42,9 @@ public class CriterionSatisfactionTest {
     @Test
     public void canFinishWhenItStarted() throws Exception {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = new Worker("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
         Date start = year(2000);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                start, criterion, worker);
+        CriterionSatisfaction criterionSatisfaction = CriterionSatisfaction.create(start, criterion, worker);
         criterionSatisfaction.finish(start);
         assertTrue(criterionSatisfaction.isFinished());
     }
@@ -54,18 +52,16 @@ public class CriterionSatisfactionTest {
     @Test(expected = IllegalArgumentException.class)
     public void testCantFinishBeforeStart() {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = new Worker("firstName", "surName", "2333232", 10);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                year(2000), criterion, worker);
+        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        CriterionSatisfaction criterionSatisfaction = CriterionSatisfaction.create(year(2000), criterion, worker);
         criterionSatisfaction.finish(year(1999));
     }
 
     @Test
     public void testIsEnforcedAtDate() {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = new Worker("firstName", "surName", "2333232", 10);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                year(2000), criterion, worker);
+        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        CriterionSatisfaction criterionSatisfaction = CriterionSatisfaction.create(year(2000), criterion, worker);
         assertTrue(criterionSatisfaction.isEnforcedAt(year(3000)));
         assertTrue(criterionSatisfaction.isEnforcedAt(year(2000)));
         assertFalse(criterionSatisfaction.isEnforcedAt(year(1999)));
@@ -81,9 +77,8 @@ public class CriterionSatisfactionTest {
     @Test
     public void testEnforcedAtSomePointInInterval() {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = new Worker("firstName", "surName", "2333232", 10);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                year(2000), criterion, worker);
+        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        CriterionSatisfaction criterionSatisfaction = CriterionSatisfaction.create(year(2000), criterion, worker);
         assertTrue(criterionSatisfaction.overlapsWith(Interval.range(
                 year(2001), year(4000))));
         assertTrue(criterionSatisfaction.overlapsWith(Interval.range(
@@ -108,15 +103,14 @@ public class CriterionSatisfactionTest {
     @Test
     public void testCriterionSatisfactionsStartComparator() {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = new Worker("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
         Interval[] intervals = { Interval.from(year(1000)),
                 Interval.range(year(1100), year(9000)),
                 Interval.point(year(1101)), Interval.from(year(1200)),
                 Interval.range(year(3000), year(4000)) };
         List<CriterionSatisfaction> orderedSatisfactions = new ArrayList<CriterionSatisfaction>();
         for (Interval interval : intervals) {
-            orderedSatisfactions.add(new CriterionSatisfaction(criterion,
-                    worker, interval));
+            orderedSatisfactions.add(CriterionSatisfaction.create(criterion, worker, interval));
         }
         List<CriterionSatisfaction> copy = new ArrayList<CriterionSatisfaction>(
                 orderedSatisfactions);
@@ -131,7 +125,7 @@ public class CriterionSatisfactionTest {
     @Test
     public void testGoesBeforeWithoutOverlapping() {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
-        CriterionSatisfaction posterior = new CriterionSatisfaction();
+        CriterionSatisfaction posterior = CriterionSatisfaction.create();
         posterior.setCriterion(criterion);
         posterior.setStartDate(year(2000));
         posterior.setEndDate(year(2008));

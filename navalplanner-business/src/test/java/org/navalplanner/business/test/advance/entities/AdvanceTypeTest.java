@@ -27,10 +27,9 @@ public class AdvanceTypeTest {
     @Test(expected = DataIntegrityViolationException.class)
     public void typeNameMustBeUniqueInDB() {
         String repeatedName = "bla";
-        AdvanceType advanceType = new AdvanceType(repeatedName, new BigDecimal(
+        AdvanceType advanceType = AdvanceType.create(repeatedName, new BigDecimal(
                 5), false, new BigDecimal(1), true);
-        AdvanceType other = new AdvanceType(repeatedName, new BigDecimal(4),
-                false, new BigDecimal(2), true);
+        AdvanceType other = AdvanceType.create(repeatedName, new BigDecimal(4), false, new BigDecimal(2), true);
         dao.save(advanceType);
         dao.save(other);
         dao.flush();

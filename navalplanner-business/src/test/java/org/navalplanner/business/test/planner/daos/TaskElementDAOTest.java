@@ -85,7 +85,7 @@ public class TaskElementDAOTest {
     }
 
     private TaskGroup createValidTaskGroup() {
-        TaskGroup result = new TaskGroup();
+        TaskGroup result = TaskGroup.create();
         OrderLine orderLine = createOrderLine();
         result.setOrderElement(orderLine);
         return result;
@@ -193,7 +193,7 @@ public class TaskElementDAOTest {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
-        Dependency.createDependency(child1, oldChild2, Type.START_END);
+        Dependency.create(child1, oldChild2, Type.START_END);
         taskElementDAO.save(child1);
         flushAndEvict(child1);
         TaskElement child1Reloaded;

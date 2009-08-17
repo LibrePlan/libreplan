@@ -84,7 +84,7 @@ public class CriterionModelTest {
     }
 
     public static CriterionType createValidCriterionType(String name) {
-        return new CriterionType(name);
+        return CriterionType.create(name);
     }
 
     public static CriterionType createValidCriterionType() {

@@ -37,7 +37,7 @@ public abstract class AbstractWorkReportTest {
     public Set<CriterionType> createValidCriterionTypes() {
         Set<CriterionType> criterionTypes = new HashSet<CriterionType>();
 
-        CriterionType criterionType = new CriterionType(UUID.randomUUID()
+        CriterionType criterionType = CriterionType.create(UUID.randomUUID()
                 .toString());
         criterionTypeDAO.save(criterionType);
         criterionTypes.add(criterionType);
@@ -47,11 +47,11 @@ public abstract class AbstractWorkReportTest {
 
     public WorkReportType createValidWorkReportType() {
         Set<CriterionType> criterionTypes = createValidCriterionTypes();
-        return new WorkReportType(UUID.randomUUID().toString(), criterionTypes);
+        return WorkReportType.create(UUID.randomUUID().toString(), criterionTypes);
     }
 
     public WorkReportLine createValidWorkReportLine() {
-        WorkReportLine workReportLine = new WorkReportLine();
+        WorkReportLine workReportLine = WorkReportLine.create();
         workReportLine.setNumHours(100);
         workReportLine.setResource(createValidWorker());
         workReportLine.setOrderElement(createValidOrderElement());
@@ -59,7 +59,7 @@ public abstract class AbstractWorkReportTest {
     }
 
     private Resource createValidWorker() {
-        Worker worker = new Worker();
+        Worker worker = Worker.create();
         worker.setFirstName(UUID.randomUUID().toString());
         worker.setSurname(UUID.randomUUID().toString());
         worker.setNif(UUID.randomUUID().toString());
@@ -86,7 +86,7 @@ public abstract class AbstractWorkReportTest {
     }
 
     public WorkReport createValidWorkReport() {
-        WorkReport workReport = new WorkReport();
+        WorkReport workReport = WorkReport.create();
 
         workReport.setDate(new Date());
         workReport.setPlace(UUID.randomUUID().toString());

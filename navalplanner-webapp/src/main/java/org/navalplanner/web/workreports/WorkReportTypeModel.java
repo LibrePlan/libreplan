@@ -56,7 +56,7 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     @Override
     public void prepareForCreate() {
         editing = false;
-        this.workReportType = new WorkReportType();
+        this.workReportType = WorkReportType.create();
     }
 
     @Override

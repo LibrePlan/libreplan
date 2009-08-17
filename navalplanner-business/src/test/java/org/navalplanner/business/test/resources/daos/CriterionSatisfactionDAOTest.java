@@ -61,10 +61,9 @@ public class CriterionSatisfactionDAOTest {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         saveCriterionType(criterion);
         criterionDAO.save(criterion);
-        Worker worker = new Worker("firstname", "surname", "nif", 4);
+        Worker worker = Worker.create("firstname", "surname", "nif", 4);
         workerDAO.save(worker);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                year(year), criterion, worker);
+        CriterionSatisfaction criterionSatisfaction = CriterionSatisfaction.create(year(year), criterion, worker);
         return criterionSatisfaction;
     }
 
@@ -85,9 +84,8 @@ public class CriterionSatisfactionDAOTest {
     public void testNotSaveWithTransientCriterionAndWorker() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         saveCriterionType(criterion);
-        Worker worker = new Worker("firstname", "surname", "nif", 4);
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                year(2007), criterion, worker);
+        Worker worker = Worker.create("firstname", "surname", "nif", 4);
+        CriterionSatisfaction criterionSatisfaction = CriterionSatisfaction.create(year(2007), criterion, worker);
         satisfactionDAO.save(criterionSatisfaction);
     }
 

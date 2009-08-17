@@ -44,7 +44,7 @@ public class CriterionTypeDAOTest {
     public static final String DEFAULT_CRITERION_TYPE = "TEST_DEFAULT";
 
     public static CriterionType createValidCriterionType(String name) {
-        return new CriterionType(name);
+        return CriterionType.create(name);
     }
 
     public static CriterionType createValidCriterionType() {

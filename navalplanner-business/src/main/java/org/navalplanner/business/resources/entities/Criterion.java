@@ -15,6 +15,18 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class Criterion extends BaseEntity implements ICriterion {
 
+    public static Criterion create(CriterionType type) {
+        Criterion criterion = new Criterion(type);
+        criterion.setNewObject(true);
+        return criterion;
+    }
+
+    public static Criterion create(String name, CriterionType type) {
+        Criterion criterion = new Criterion(name, type);
+        criterion.setNewObject(true);
+        return criterion;
+    }
+
     @NotEmpty
     private String name;
 
@@ -30,11 +42,11 @@ public class Criterion extends BaseEntity implements ICriterion {
     private Long typeId;
 
     public static Criterion ofType(CriterionType type) {
-        return new Criterion(type);
+        return create(type);
     }
 
     public static Criterion withNameAndType(String name, CriterionType type) {
-        return new Criterion(name, type);
+        return create(name, type);
     }
 
     /**
@@ -43,13 +55,13 @@ public class Criterion extends BaseEntity implements ICriterion {
     public Criterion() {
     }
 
-    public Criterion(CriterionType type) {
+    private Criterion(CriterionType type) {
         Validate.notNull(type);
 
         this.type = type;
     }
 
-    public Criterion(String name, CriterionType type) {
+    private Criterion(String name, CriterionType type) {
         Validate.notEmpty(name);
         Validate.notNull(type);
 

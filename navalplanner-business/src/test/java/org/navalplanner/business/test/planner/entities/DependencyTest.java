@@ -24,7 +24,7 @@ public class DependencyTest {
         origin = TaskTest.createValidTask();
         destination = TaskTest.createValidTask();
         type = Type.END_START;
-        dependency = Dependency.createDependency(origin, destination, type);
+        dependency = Dependency.create(origin, destination, type);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class DependencyTest {
             TaskElement destination = (TaskElement) cloned[1];
             Type type = (Type) cloned[2];
             try {
-                Dependency.createDependency(origin, destination, type);
+                Dependency.create(origin, destination, type);
                 fail("must send IllegalArgumentException");
             } catch (IllegalArgumentException e) {
                 // ok
@@ -63,7 +63,7 @@ public class DependencyTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void dependencyMustNotAllowTheSameOriginAndDestination() {
-        Dependency.createDependency(origin, origin, type);
+        Dependency.create(origin, origin, type);
     }
 
     @Test

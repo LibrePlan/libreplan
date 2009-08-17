@@ -7,6 +7,14 @@ import org.navalplanner.business.common.BaseEntity;
 
 public class AdvanceMeasurement extends BaseEntity {
 
+    public static AdvanceMeasurement create(Date date, BigDecimal value,
+            BigDecimal maxValue) {
+        AdvanceMeasurement advanceMeasurement = new AdvanceMeasurement(date,
+                value, maxValue);
+        advanceMeasurement.setNewObject(true);
+        return advanceMeasurement;
+    }
+
     private Date date;
 
     private BigDecimal value;
@@ -15,7 +23,14 @@ public class AdvanceMeasurement extends BaseEntity {
 
     private AdvanceAssigment advanceAssigment;
 
-    public AdvanceMeasurement(Date date, BigDecimal value, BigDecimal maxValue) {
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    public AdvanceMeasurement() {
+
+    }
+
+    private AdvanceMeasurement(Date date, BigDecimal value, BigDecimal maxValue) {
         this.date = date;
         this.value = value;
         this.value.setScale(2);

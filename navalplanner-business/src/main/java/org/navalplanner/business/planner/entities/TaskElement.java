@@ -57,11 +57,11 @@ public abstract class TaskElement extends BaseEntity {
 
     protected void copyDependenciesTo(TaskElement result) {
         for (Dependency dependency : getDependenciesWithThisOrigin()) {
-            Dependency.createDependency(result, dependency.getDestination(),
+            Dependency.create(result, dependency.getDestination(),
                     dependency.getType());
         }
         for (Dependency dependency : getDependenciesWithThisDestination()) {
-            Dependency.createDependency(dependency.getOrigin(), result,
+            Dependency.create(dependency.getOrigin(), result,
                     dependency.getType());
         }
     }

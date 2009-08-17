@@ -60,7 +60,7 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
 
     private void ensureCriterionExists(String criterionName,
             CriterionType criterionType) {
-        Criterion criterion = new Criterion(criterionName, criterionType);
+        Criterion criterion = Criterion.create(criterionName, criterionType);
         if (!criterionDAO.existsByNameAndType(criterion)) {
             criterionDAO.save(criterion);
         }

@@ -93,7 +93,7 @@ public class WorkerModel implements IWorkerModel {
     @Override
     @Transactional(readOnly = true)
     public void prepareForCreate() {
-        worker = new Worker();
+        worker = Worker.create();
         localizationsAssigner = new MultipleCriterionActiveAssigner(
                 criterionDAO, worker,
                 PredefinedCriterionTypes.LOCATION_GROUP);
@@ -331,7 +331,7 @@ public class WorkerModel implements IWorkerModel {
         }
 
         private CriterionSatisfaction createSatisfactionFor(Criterion criterion) {
-            return new CriterionSatisfaction(new Date(), criterion, resource);
+            return CriterionSatisfaction.create(new Date(), criterion, resource);
         }
 
         @Override

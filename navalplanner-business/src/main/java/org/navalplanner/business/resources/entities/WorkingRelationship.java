@@ -23,8 +23,7 @@ public enum WorkingRelationship {
     private final String criterionName;
 
     public Criterion criterion() {
-        return new Criterion(criterionName,
-            CriterionType.asCriterionType(PredefinedCriterionTypes.WORK_RELATIONSHIP));
+        return Criterion.create(criterionName, CriterionType.asCriterionType(PredefinedCriterionTypes.WORK_RELATIONSHIP));
     }
 
     public String getCriterionName() {

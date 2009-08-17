@@ -20,9 +20,10 @@ public class SpecificResourceAllocation extends ResourceAllocation {
     private Worker worker;
 
     /**
-     * For hibernate, DO NOT USE
+     * Constructor for hibernate. Do not use!
      */
     public SpecificResourceAllocation() {
+
     }
 
     private SpecificResourceAllocation(Task task) {

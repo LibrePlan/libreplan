@@ -263,8 +263,7 @@ public abstract class Resource extends BaseEntity{
 
     private CriterionSatisfaction createNewSatisfaction(Interval interval,
             Criterion criterion) {
-        CriterionSatisfaction newSatisfaction = new CriterionSatisfaction(
-                criterion, this, interval);
+        CriterionSatisfaction newSatisfaction = CriterionSatisfaction.create(criterion, this, interval);
         return newSatisfaction;
     }
 

@@ -172,7 +172,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         TaskElement source = dependency.getSource();
         TaskElement destination = dependency.getDestination();
         Type domainType = toDomainType(dependency.getType());
-        Dependency.createDependency(source, destination, domainType);
+        Dependency.create(source, destination, domainType);
     }
 
     @Override

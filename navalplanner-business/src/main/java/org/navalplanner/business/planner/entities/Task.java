@@ -20,7 +20,9 @@ import org.navalplanner.business.resources.entities.Worker;
 public class Task extends TaskElement {
 
     public static Task createTask(HoursGroup hoursGroup) {
-        return new Task(hoursGroup);
+        Task task = new Task(hoursGroup);
+        task.setNewObject(true);
+        return task;
     }
 
     @NotNull
@@ -36,7 +38,7 @@ public class Task extends TaskElement {
     private Set<ResourceAllocation> resourceAllocations = new HashSet<ResourceAllocation>();
 
     /**
-     * For hibernate, DO NOT USE
+     * Constructor for hibernate. Do not use!
      */
     public Task() {
 
@@ -184,7 +186,7 @@ public class Task extends TaskElement {
         if (totalSumOfHours != getWorkHours())
             throw new IllegalArgumentException(
                     "the shares don't sum up the work hours");
-        TaskGroup result = new TaskGroup();
+        TaskGroup result = TaskGroup.create();
         result.copyPropertiesFrom(this);
         result.shareOfHours = this.shareOfHours;
         copyParenTo(result);

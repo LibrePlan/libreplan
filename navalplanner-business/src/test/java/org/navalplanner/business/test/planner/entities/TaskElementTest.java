@@ -35,7 +35,7 @@ public class TaskElementTest {
     public TaskElementTest() {
         this.taskWithOrderLine = new Task();
         this.taskWithOrderLine.setOrderElement(OrderLine.create());
-        this.exampleDependency = Dependency.createDependency(new Task(),
+        this.exampleDependency = Dependency.create(new Task(),
                 new Task(), Type.END_START);
     }
 
@@ -86,7 +86,7 @@ public class TaskElementTest {
         Task origin = new Task();
         Task destination = new Task();
         Type type = Type.START_END;
-        Dependency.createDependency(origin,
+        Dependency.create(origin,
                 destination, type);
         assertThat(origin.getDependenciesWithThisOrigin().size(), equalTo(1));
         assertThat(destination.getDependenciesWithThisDestination().size(),
@@ -158,7 +158,7 @@ public class TaskElementTest {
     @Test
     public void splittingATaskIntoSeveralKeepsDependencies() {
         HoursGroup hoursGroup = new HoursGroup();
-        TaskGroup root = new TaskGroup();
+        TaskGroup root = TaskGroup.create();
         Task taskBeingSplitted = Task.createTask(hoursGroup);
         root.addTaskElement(taskBeingSplitted);
         taskBeingSplitted.setName("prueba");
@@ -206,9 +206,9 @@ public class TaskElementTest {
     private void addDependenciesForChecking(TaskElement taskBeingTransformed,
             TaskElement sourceDependencyTask,
             TaskElement destinationDependencyTask) {
-        Dependency.createDependency(sourceDependencyTask, taskBeingTransformed,
+        Dependency.create(sourceDependencyTask, taskBeingTransformed,
                 Type.END_START);
-        Dependency.createDependency(taskBeingTransformed,
+        Dependency.create(taskBeingTransformed,
                 destinationDependencyTask, Type.END_START);
     }
 
@@ -232,14 +232,14 @@ public class TaskElementTest {
 
     @Test
     public void aTaskGroupThatIsAssociatedToAnOrderLineGroupCannotBeMerged() {
-        TaskGroup taskGroup = new TaskGroup();
+        TaskGroup taskGroup = TaskGroup.create();
         taskGroup.setOrderElement(OrderLineGroup.create());
         assertFalse(taskGroup.canBeMerged());
     }
 
     @Test
     public void aTaskGroupWithChildrenAssociatedWithDifferentHourGroups() {
-        TaskGroup taskGroup = new TaskGroup();
+        TaskGroup taskGroup = TaskGroup.create();
         taskGroup.setOrderElement(OrderLine.create());
         taskGroup.addTaskElement(Task.createTask(new HoursGroup()));
         taskGroup.addTaskElement(Task.createTask(new HoursGroup()));
@@ -248,14 +248,14 @@ public class TaskElementTest {
 
     @Test
     public void aTaskGroupWithoutChildrenCannotBeMerged() {
-        TaskGroup taskGroup = new TaskGroup();
+        TaskGroup taskGroup = TaskGroup.create();
         taskGroup.setOrderElement(OrderLine.create());
         assertFalse(taskGroup.canBeMerged());
     }
 
     @Test
     public void aTaskGroupWithTasksThatExceedHoursCannotBeMerged() {
-        TaskGroup taskGroup = new TaskGroup();
+        TaskGroup taskGroup = TaskGroup.create();
         taskGroup.setOrderElement(OrderLine.create());
         HoursGroup hoursGroup = new HoursGroup();
         hoursGroup.setWorkingHours(10);
@@ -266,7 +266,7 @@ public class TaskElementTest {
 
     @Test(expected = IllegalStateException.class)
     public void mergingATaskThatCannotBeMergedFails() {
-        TaskGroup taskGroup = new TaskGroup();
+        TaskGroup taskGroup = TaskGroup.create();
         taskGroup.setOrderElement(OrderLineGroup.create());
         taskGroup.merge();
     }
@@ -360,7 +360,7 @@ public class TaskElementTest {
 
     @Test
     public void detachRemovesTaskFromParent() {
-        TaskGroup parent = new TaskGroup();
+        TaskGroup parent = TaskGroup.create();
         HoursGroup hoursGroup = new HoursGroup();
         Task child = Task.createTask(hoursGroup);
         Task anotherChild = Task.createTask(hoursGroup);

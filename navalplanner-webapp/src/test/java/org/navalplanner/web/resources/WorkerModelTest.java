@@ -28,7 +28,7 @@ public class WorkerModelTest {
             InstanceNotFoundException {
         IResourceDAO resourceDAOMock = createMock(IResourceDAO.class);
         ICriterionDAO criterionServiceMock = createMock(ICriterionDAO.class);
-        Worker workerToReturn = new Worker();
+        Worker workerToReturn = Worker.create();
         workerToReturn.setDailyHours(2);
         workerToReturn.setFirstName("firstName");
         workerToReturn.setSurname("surname");
@@ -57,7 +57,7 @@ public class WorkerModelTest {
             InstanceNotFoundException {
         IResourceDAO resourceDAOMock = createMock(IResourceDAO.class);
         ICriterionDAO criterionServiceMock = createMock(ICriterionDAO.class);
-        Worker workerToReturn = new Worker();
+        Worker workerToReturn = Worker.create();
         // expectations
         List<Criterion> criterions = new ArrayList<Criterion>();
         expect(

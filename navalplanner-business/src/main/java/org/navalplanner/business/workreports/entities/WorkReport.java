@@ -17,6 +17,20 @@ public class WorkReport extends BaseEntity {
 
     public static final String RESPONSIBLE = "responsible";
 
+    public static WorkReport create() {
+        WorkReport workReport = new WorkReport();
+        workReport.setNewObject(true);
+        return workReport;
+    }
+
+    public static WorkReport create(Date date, String place,
+            WorkReportType workReportType, Set<WorkReportLine> workReportLines) {
+        WorkReport workReport = new WorkReport(date, place, workReportType,
+                workReportLines);
+        workReport.setNewObject(true);
+        return workReport;
+    }
+
     @NotNull
     private Date date;
 
@@ -29,12 +43,14 @@ public class WorkReport extends BaseEntity {
 
     private Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
 
-
+    /**
+     * Constructor for hibernate. Do not use!
+     */
     public WorkReport() {
 
     }
 
-    public WorkReport(Date date, String place, WorkReportType workReportType,
+    private WorkReport(Date date, String place, WorkReportType workReportType,
             Set<WorkReportLine> workReportLines) {
         this.date = date;
         this.place = place;

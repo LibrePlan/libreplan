@@ -37,7 +37,7 @@ public class WorkRelationshipsController extends GenericForwardComposer {
      * CriterionSatisfaction();
      */
 
-    private CriterionSatisfaction satisfactionEdited = new CriterionSatisfaction();
+    private CriterionSatisfaction satisfactionEdited = CriterionSatisfaction.create();
 
     private List<Criterion> workCriterions;
 
@@ -89,7 +89,7 @@ public class WorkRelationshipsController extends GenericForwardComposer {
     }
 
     public void prepareForCreate() {
-        this.satisfactionEdited = new CriterionSatisfaction();
+        this.satisfactionEdited = CriterionSatisfaction.create();
         this.originalSatisfaction = this.satisfactionEdited;
         Util.reloadBindings(containerComponent);
         editing = false;

@@ -12,15 +12,31 @@ import org.navalplanner.business.resources.entities.CriterionType;
 
 public class WorkReportType extends BaseEntity {
 
+    public static WorkReportType create() {
+        WorkReportType workReportType = new WorkReportType();
+        workReportType.setNewObject(true);
+        return workReportType;
+    }
+
+    public static WorkReportType create(String name,
+            Set<CriterionType> criterionTypes) {
+        WorkReportType workReportType = new WorkReportType(name, criterionTypes);
+        workReportType.setNewObject(true);
+        return workReportType;
+    }
+
     private String name;
 
     private Set<CriterionType> criterionTypes = new HashSet<CriterionType>();
 
+    /**
+     * Constructor for hibernate. Do not use!
+     */
     public WorkReportType() {
 
     }
 
-    public WorkReportType(String name, Set<CriterionType> criterionTypes) {
+    private WorkReportType(String name, Set<CriterionType> criterionTypes) {
         this.name = name;
         this.criterionTypes = criterionTypes;
     }
