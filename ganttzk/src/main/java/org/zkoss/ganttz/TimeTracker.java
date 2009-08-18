@@ -110,12 +110,12 @@ public class TimeTracker extends HtmlMacroComponent {
 
     public void onIncrease(int offset) {
         changeDetailLevel(getDetailLevel().next(), offset
-                * getDetailLevel().getTimeTrackerState().pixelsPerDay());
+                * getDetailLevel().getTimeTrackerState().daysPerPixel());
     }
 
     public void onDecrease(int offset) {
         changeDetailLevel(getDetailLevel().previous(), offset
-                * getDetailLevel().getTimeTrackerState().pixelsPerDay());
+                * getDetailLevel().getTimeTrackerState().daysPerPixel());
     }
 
     private void changeDetailLevel(ZoomLevel d, double days) {
@@ -127,7 +127,7 @@ public class TimeTracker extends HtmlMacroComponent {
         fireZoomChanged(d);
 
         scrollHorizontalPercentage((int) Math.floor(days
-                / d.getTimeTrackerState().pixelsPerDay()));
+                / d.getTimeTrackerState().daysPerPixel()));
     }
 
     private ZoomLevel getDetailLevel() {

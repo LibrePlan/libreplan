@@ -18,7 +18,7 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
     private static final int FIRST_LEVEL_SIZE = 200;
     private static final int SECOND_LEVEL_SIZE = 50;
 
-    public final double pixelsPerDay() {
+    public final double daysPerPixel() {
         return ((double) 7 / SECOND_LEVEL_SIZE);
     }
 

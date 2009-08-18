@@ -23,7 +23,7 @@ public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
     public static final DetailFiveTimeTrackerState INSTANCE = new DetailFiveTimeTrackerState();
 
-    public final double pixelsPerDay() {
+    public final double daysPerPixel() {
         return ((double) 1 / SECOND_LEVEL_SIZE);
     }
 

@@ -20,7 +20,7 @@ public class DetailTwoTimeTrackerState extends TimeTrackerState {
     private static final int FIRST_LEVEL_ITEM_SIZE = 400;
     private static final int SECOND_LEVEL_ITEM_SIZE = 100;
 
-    public final double pixelsPerDay() {
+    public final double daysPerPixel() {
         return ((double) 365 / FIRST_LEVEL_ITEM_SIZE);
     }
 
