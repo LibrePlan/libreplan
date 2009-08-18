@@ -52,6 +52,10 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
     private Set<ExceptionDay> exceptions = new HashSet<ExceptionDay>();
 
+    public enum DayType {
+        NORMAL, ZERO_HOURS, OWN_EXCEPTION, ANCESTOR_EXCEPTION;
+    }
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -79,6 +83,14 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         }
     }
 
+    public boolean isDefaultMonday() {
+        return (this.monday == null);
+    }
+
+    public void setDefaultMonday() {
+        this.monday = null;
+    }
+
     private Integer valueIfNotNullElseDefaultValue(Integer hours) {
         if (hours == null) {
             return DEFAULT_VALUE;
@@ -98,6 +110,14 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         }
     }
 
+    public boolean isDefaultTuesday() {
+        return (this.tuesday == null);
+    }
+
+    public void setDefaultTuesday() {
+        this.tuesday = null;
+    }
+
     public void setWednesday(Integer wednesday) {
         this.wednesday = wednesday;
     }
@@ -108,6 +128,14 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         } else {
             return valueIfNotNullElseDefaultValue(wednesday);
         }
+    }
+
+    public boolean isDefaultWednesday() {
+        return (this.wednesday == null);
+    }
+
+    public void setDefaultWednesday() {
+        this.wednesday = null;
     }
 
     public void setThursday(Integer thursday) {
@@ -122,6 +150,14 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         }
     }
 
+    public boolean isDefaultThursday() {
+        return (this.thursday == null);
+    }
+
+    public void setDefaultThursday() {
+        this.thursday = null;
+    }
+
     public void setFriday(Integer friday) {
         this.friday = friday;
     }
@@ -132,6 +168,14 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         } else {
             return valueIfNotNullElseDefaultValue(friday);
         }
+    }
+
+    public boolean isDefaultFriday() {
+        return (this.friday == null);
+    }
+
+    public void setDefaultFriday() {
+        this.friday = null;
     }
 
     public void setSaturday(Integer saturday) {
@@ -146,6 +190,14 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         }
     }
 
+    public boolean isDefaultSaturday() {
+        return (this.saturday == null);
+    }
+
+    public void setDefaultSaturday() {
+        this.saturday = null;
+    }
+
     public void setSunday(Integer sunday) {
         this.sunday = sunday;
     }
@@ -158,8 +210,20 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         }
     }
 
+    public boolean isDefaultSunday() {
+        return (this.sunday == null);
+    }
+
+    public void setDefaultSunday() {
+        this.sunday = null;
+    }
+
     public BaseCalendar getParent() {
         return parent;
+    }
+
+    public boolean isDerived() {
+        return (parent != null);
     }
 
     public BaseCalendar getPreviousCalendar() {
@@ -172,6 +236,10 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
     public LocalDate getExpiringDate() {
         return expiringDate;
+    }
+
+    public Set<ExceptionDay> getOwnExceptions() {
+        return Collections.unmodifiableSet(exceptions);
     }
 
     public Set<ExceptionDay> getExceptions() {
@@ -226,7 +294,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         } else if (shouldUseNextCalendar(date)) {
             nextCalendar.removeExceptionDay(date);
         } else {
-            ExceptionDay day = getExceptionDay(date);
+            ExceptionDay day = getOwnExceptionDay(date);
             if (day == null) {
                 throw new IllegalArgumentException(
                         "There is not an exception day on that date");
@@ -236,6 +304,11 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         }
     }
 
+    public void updateExceptionDay(Date date, Integer hours)
+            throws IllegalArgumentException {
+        updateExceptionDay(new LocalDate(date), hours);
+    }
+
     public void updateExceptionDay(LocalDate date, Integer hours)
             throws IllegalArgumentException {
         removeExceptionDay(date);
@@ -243,8 +316,26 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         addExceptionDay(day);
     }
 
-    private ExceptionDay getExceptionDay(LocalDate date) {
+    public ExceptionDay getOwnExceptionDay(Date date) {
+        return getOwnExceptionDay(new LocalDate(date));
+    }
+
+    public ExceptionDay getOwnExceptionDay(LocalDate date) {
         for (ExceptionDay exceptionDay : exceptions) {
+            if (exceptionDay.getDate().equals(date)) {
+                return exceptionDay;
+            }
+        }
+
+        return null;
+    }
+
+    public ExceptionDay getExceptionDay(Date date) {
+        return getExceptionDay(new LocalDate(date));
+    }
+
+    public ExceptionDay getExceptionDay(LocalDate date) {
+        for (ExceptionDay exceptionDay : getExceptions()) {
             if (exceptionDay.getDate().equals(date)) {
                 return exceptionDay;
             }
@@ -461,6 +552,26 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         copy.parent = this.parent;
 
         return copy;
+    }
+
+    public DayType getType(Date date) {
+        return getType(new LocalDate(date));
+    }
+
+    public DayType getType(LocalDate date) {
+        ExceptionDay exceptionDay = getExceptionDay(date);
+        if (exceptionDay != null) {
+            if (exceptions.contains(exceptionDay)) {
+                return DayType.OWN_EXCEPTION;
+            }
+            return DayType.ANCESTOR_EXCEPTION;
+        }
+
+        if (getWorkableHours(date) == 0) {
+            return DayType.ZERO_HOURS;
+        }
+
+        return DayType.NORMAL;
     }
 
 }

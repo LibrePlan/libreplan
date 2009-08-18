@@ -1,6 +1,7 @@
 package org.navalplanner.business.test.calendars.daos;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -54,6 +55,29 @@ public class BaseCalendarDAOTest {
         } catch (InstanceNotFoundException e) {
             fail("It should not throw an exception");
         }
+    }
+
+    @Test
+    public void saveDerivedCalendar() {
+        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
+        baseCalendarDAO.save(calendar);
+
+        BaseCalendar derivedCalendar = calendar.newDerivedCalendar();
+        baseCalendarDAO.save(derivedCalendar);
+
+        try {
+
+            BaseCalendar savedCalendar = baseCalendarDAO.find(calendar.getId());
+            assertFalse(savedCalendar.isDerived());
+
+            BaseCalendar savedDerivedCalendar = baseCalendarDAO
+                    .find(derivedCalendar.getId());
+            assertTrue(savedDerivedCalendar.isDerived());
+
+        } catch (InstanceNotFoundException e) {
+            fail("It should not throw an exception");
+        }
+
     }
 
 }

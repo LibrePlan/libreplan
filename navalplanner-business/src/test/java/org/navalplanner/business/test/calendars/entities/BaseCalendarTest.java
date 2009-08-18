@@ -1,13 +1,18 @@
 package org.navalplanner.business.test.calendars.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ExceptionDay;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.common.exceptions.ValidationException;
 
 /**
@@ -407,11 +412,87 @@ public class BaseCalendarTest {
         thenForAllDaysReturnsZero();
     }
 
-
     private void thenForAllDaysReturnsZero() {
         for (LocalDate localDate : DAYS_OF_A_WEEK_EXAMPLE) {
             assertThat(calendarFixture.getWorkableHours(localDate), equalTo(0));
         }
     }
 
+    @Test
+    public void anUnitializedCalendarShouldHaveDefaultValues() {
+        givenUnitializedCalendar();
+        thenForAllDaysValueByDefault();
+    }
+
+    private void thenForAllDaysValueByDefault() {
+        assertTrue(calendarFixture.isDefaultMonday());
+        assertTrue(calendarFixture.isDefaultTuesday());
+        assertTrue(calendarFixture.isDefaultWednesday());
+        assertTrue(calendarFixture.isDefaultThursday());
+        assertTrue(calendarFixture.isDefaultFriday());
+        assertTrue(calendarFixture.isDefaultSaturday());
+        assertTrue(calendarFixture.isDefaultSunday());
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testDefaultValues() throws ValidationException {
+        BaseCalendar calendar = createBasicCalendar();
+
+        assertFalse(calendar.isDefaultMonday());
+
+        calendar.setDefaultMonday();
+        assertTrue(calendar.isDefaultMonday());
+
+        calendar.checkValid();
+    }
+
+    @Test
+    public void testIsDerivedCalendar() {
+        BaseCalendar calendar = BaseCalendar.create();
+        BaseCalendar derivedCalendar = calendar.newDerivedCalendar();
+
+        assertFalse(calendar.isDerived());
+        assertTrue(derivedCalendar.isDerived());
+    }
+
+    @Test
+    public void testGetExceptionDay() {
+        BaseCalendar calendar = createChristmasCalendar();
+        BaseCalendar derived = calendar.newDerivedCalendar();
+
+        assertThat(calendar.getExceptionDay(CHRISTMAS_DAY_LOCAL_DATE),
+                notNullValue());
+        assertThat(derived.getExceptionDay(CHRISTMAS_DAY_LOCAL_DATE),
+                notNullValue());
+
+        assertThat(calendar.getOwnExceptionDay(CHRISTMAS_DAY_LOCAL_DATE),
+                notNullValue());
+        assertThat(derived.getOwnExceptionDay(CHRISTMAS_DAY_LOCAL_DATE),
+                nullValue());
+    }
+
+    @Test
+    public void testGetType() {
+        BaseCalendar calendar = createChristmasCalendar();
+
+        assertThat(calendar.getType(MONDAY_LOCAL_DATE), equalTo(DayType.NORMAL));
+        assertThat(calendar.getType(SUNDAY_LOCAL_DATE),
+                equalTo(DayType.ZERO_HOURS));
+        assertThat(calendar.getType(CHRISTMAS_DAY_LOCAL_DATE),
+                equalTo(DayType.OWN_EXCEPTION));
+    }
+
+    @Test
+    public void testGetTypeDerivedCalendar() {
+        BaseCalendar calendar = createChristmasCalendar();
+        BaseCalendar derived = calendar.newDerivedCalendar();
+
+        assertThat(derived.getType(MONDAY_LOCAL_DATE), equalTo(DayType.NORMAL));
+        assertThat(derived.getType(SUNDAY_LOCAL_DATE), equalTo(DayType.ZERO_HOURS));
+        assertThat(derived.getType(CHRISTMAS_DAY_LOCAL_DATE),
+                equalTo(DayType.ANCESTOR_EXCEPTION));
+
+        assertThat(calendar.getType(CHRISTMAS_DAY_LOCAL_DATE),
+                equalTo(DayType.OWN_EXCEPTION));
+    }
 }
