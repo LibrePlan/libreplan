@@ -25,6 +25,7 @@ zkTasklist.init = function(cmp) {
     zkTasklist.adjust_height();
     make_visible();
     relocateScrolls();
+    listenToScroll();
 }
 
 zkTasklist.adjust_height = function(cmp) {
@@ -35,23 +36,24 @@ zkTasklist.adjust_height = function(cmp) {
     adjustScrollableDimensions();
 }
 
-
-// Simultaneous timetracker and canvas horizontal scroll
-document.getElementById('ganttpanel_scroller_x').onscroll = function() {
-   scroller = document.getElementById('ganttpanel_scroller_x');
-   document.getElementById('timetracker').scrollLeft = scroller.scrollLeft;
-   document.getElementById('scroll_container').scrollLeft = scroller.scrollLeft;
-   document.getElementById('zoom_buttons').style["left"] = scroller.scrollLeft+"px";
+function listenToScroll(){
+    var onHorizontalScroll = function() {
+        var scroller = document.getElementById('ganttpanel_scroller_x');
+        document.getElementById('timetracker').scrollLeft = scroller.scrollLeft;
+        document.getElementById('scroll_container').scrollLeft = scroller.scrollLeft;
+        document.getElementById('zoom_buttons').style["left"] = scroller.scrollLeft+"px";
+    };
+    var onVerticalScroll = function() {
+        var offset = document.getElementById('ganttpanel_scroller_y').scrollTop;
+        document.getElementById('listdetails_container').scrollTop = offset;
+        document.getElementById('scroll_container').scrollTop = offset;
+    };
+    document.getElementById('ganttpanel_scroller_x').onscroll = onHorizontalScroll;
+    document.getElementById('ganttpanel_scroller_y').onscroll = onVerticalScroll;
+ // TODO listen to container onwheel scroll move
 }
 
 
-// Simultaneous listdetails and canvas vertical scroll
-// Pending to listen to container onwheel scroll move
-document.getElementById('ganttpanel_scroller_y').onscroll = function() {
-    offset = document.getElementById('ganttpanel_scroller_y').scrollTop;
-    document.getElementById('listdetails_container').scrollTop = offset;
-    document.getElementById('scroll_container').scrollTop = offset;
-}
 
 window.onresize = relocateScrolls;
 /*
