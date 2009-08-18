@@ -9,6 +9,9 @@ import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.util.zoom.TimeTrackerState;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.zoom.TimeTrackerState.DetailItem;
+import org.zkoss.zk.au.AuRequest;
+import org.zkoss.zk.au.Command;
+import org.zkoss.zk.au.ComponentCommand;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
@@ -34,14 +37,7 @@ public class TimeTrackerComponent extends HtmlMacroComponent {
 
     private ZoomLevel detailLevel;
 
-    private final GanttPanel ganttPanel;
-
-    public GanttPanel getGanttPanel() {
-        return ganttPanel;
-    }
-
-    public TimeTrackerComponent(GanttPanel ganttPanel) {
-        this.ganttPanel = ganttPanel;
+    public TimeTrackerComponent() {
         this.detailLevel = ZoomLevel.DETAIL_ONE;
     }
 
@@ -102,6 +98,37 @@ public class TimeTrackerComponent extends HtmlMacroComponent {
             result += item.getSize();
         }
         return result;
+    }
+
+    private Command _onincreasecmd = new ComponentCommand("onIncrease", 0) {
+
+        protected void process(AuRequest request) {
+            String[] requestData = request.getData();
+            int pixelsOffset = Integer.parseInt(requestData[0]);
+            onIncrease(pixelsOffset);
+        }
+
+    };
+
+    private Command _ondecreasecmd = new ComponentCommand("onDecrease", 0) {
+
+        protected void process(AuRequest request) {
+            String[] requestData = request.getData();
+            int pixelsOffset = Integer.parseInt(requestData[0]);
+            onDecrease(pixelsOffset);
+        }
+
+    };
+
+    private Command[] commands = { _onincreasecmd, _ondecreasecmd };
+
+    public Command getCommand(String cmdId) {
+        for (Command command : commands) {
+            if (command.getId().equals(cmdId)) {
+                return command;
+            }
+        }
+        throw new RuntimeException("not found command for " + cmdId);
     }
 
     public void onIncrease(int offset) {
