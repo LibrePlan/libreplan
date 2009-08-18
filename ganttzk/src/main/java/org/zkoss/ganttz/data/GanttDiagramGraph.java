@@ -14,7 +14,6 @@ import java.util.WeakHashMap;
 
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
-import org.zkoss.ganttz.DependencyComponent;
 
 /**
  * This class contains a graph with the {@link Task tasks} as vertexes and the
@@ -179,9 +178,9 @@ public class GanttDiagramGraph {
         }
     }
 
-    public void remove(DependencyComponent dependencyComponent) {
-        graph.removeEdge(dependencyComponent.getDependency());
-        Task destination = dependencyComponent.getDependency().getDestination();
+    public void remove(Dependency dependency) {
+        graph.removeEdge(dependency);
+        Task destination = dependency.getDestination();
         rulesEnforcersByTask.get(destination).enforce();
     }
 

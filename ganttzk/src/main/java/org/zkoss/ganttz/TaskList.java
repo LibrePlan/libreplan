@@ -1,12 +1,9 @@
 package org.zkoss.ganttz;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.zkoss.ganttz.data.Dependency;
@@ -42,20 +39,25 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private final List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized;
 
+    private final FunctionalityExposedForExtensions<?> context;
+
     public TaskList(
+            FunctionalityExposedForExtensions<?> context,
             CommandOnTaskContextualized<?> editTaskCommand,
             List<Task> tasks,
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized) {
+        this.context = context;
         this.editTaskCommand = editTaskCommand;
         this.originalTasks = tasks;
         this.commandsOnTasksContextualized = commandsOnTasksContextualized;
     }
 
     public static TaskList createFor(
+            FunctionalityExposedForExtensions<?> context,
             CommandOnTaskContextualized<?> editTaskCommand,
-            List<Task> tasks,
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized) {
-        TaskList result = new TaskList(editTaskCommand, tasks,
+        TaskList result = new TaskList(context, editTaskCommand, context
+                .getDiagramGraph().getTopLevelTasks(),
                 commandsOnTasksContextualized);
         return result;
     }
@@ -71,7 +73,7 @@ public class TaskList extends XulElement implements AfterCompose {
         }
         List<DependencyComponent> result = new ArrayList<DependencyComponent>();
         for (Dependency dependency : dependencies) {
-            result.add(new DependencyComponent(taskComponentByTask
+            result.add(new DependencyComponent(context, taskComponentByTask
                     .get(dependency.getSource()), taskComponentByTask
                     .get(dependency.getDestination())));
         }
@@ -219,11 +221,6 @@ public class TaskList extends XulElement implements AfterCompose {
         return getTaskComponents().size();
     }
 
-    public void addDependencyListener(IDependencyAddedListener listener) {
-        dependencyListeners.add(new WeakReference<IDependencyAddedListener>(
-                listener));
-    }
-
     @Override
     public void afterCompose() {
         for (Task task : originalTasks) {
@@ -295,31 +292,6 @@ public class TaskList extends XulElement implements AfterCompose {
     public void addDependency(TaskComponent source, TaskComponent destination) {
         DependencyComponent dependencyComponent = new DependencyComponent(
                 source, destination);
-        if (getPlanner().canAddDependency(dependencyComponent.getDependency())) {
-            fireDependenceAdded(dependencyComponent);
-        }
+        context.addDependency(dependencyComponent);
     }
-
-    private List<WeakReference<IDependencyAddedListener>> dependencyListeners = new LinkedList<WeakReference<IDependencyAddedListener>>();
-
-    private void fireDependenceAdded(DependencyComponent dependencyComponent) {
-        ArrayList<IDependencyAddedListener> active = new ArrayList<IDependencyAddedListener>();
-        synchronized (this) {
-            ListIterator<WeakReference<IDependencyAddedListener>> iterator = dependencyListeners
-                    .listIterator();
-            while (iterator.hasNext()) {
-                WeakReference<IDependencyAddedListener> next = iterator.next();
-                IDependencyAddedListener listener = next.get();
-                if (listener == null) {
-                    iterator.remove();
-                } else {
-                    active.add(listener);
-                }
-            }
-        }
-        for (IDependencyAddedListener listener : active) {
-            listener.dependenceAdded(dependencyComponent);
-        }
-    }
-
 }

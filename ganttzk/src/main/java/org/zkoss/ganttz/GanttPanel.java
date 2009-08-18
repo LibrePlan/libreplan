@@ -19,14 +19,15 @@ public class GanttPanel extends XulElement implements AfterCompose {
 
     private final GanttDiagramGraph diagramGraph;
 
-    public GanttPanel(GanttDiagramGraph ganttDiagramGraph,
+    public GanttPanel(
+            FunctionalityExposedForExtensions<?> context,
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
             CommandOnTaskContextualized<?> editTaskCommand) {
-        this.diagramGraph = ganttDiagramGraph;
+        this.diagramGraph = context.getDiagramGraph();
         timeTracker = new TimeTracker(this);
         appendChild(timeTracker);
-        tasksLists = TaskList.createFor(editTaskCommand,
-                ganttDiagramGraph.getTopLevelTasks(), commandsOnTasksContextualized);
+        tasksLists = TaskList.createFor(context, editTaskCommand,
+                commandsOnTasksContextualized);
         dependencyList = new DependencyList();
         appendChild(tasksLists);
         appendChild(dependencyList);

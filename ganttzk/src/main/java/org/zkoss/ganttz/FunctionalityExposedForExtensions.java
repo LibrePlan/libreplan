@@ -53,8 +53,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
          * @param parent
          */
         void register(Integer insertionPositionForTop, Task task,
-                T domainObject,
-                TaskContainer parent) {
+                T domainObject, TaskContainer parent) {
             fromDomainToTask.put(domainObject, task);
             fromTaskToDomain.put(task, domainObject);
             if (parent != null) {
@@ -229,6 +228,41 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     public void replace(T oldDomainObject, T newDomainObject) {
         Position position = remove(oldDomainObject);
         add(position, newDomainObject);
+    }
+
+    public GanttDiagramGraph getDiagramGraph() {
+        return diagramGraph;
+    }
+
+    private DomainDependency<T> toDomainDependency(Dependency bean) {
+        T source = mapper.findAssociatedDomainObject(bean.getSource());
+        T destination = mapper
+                .findAssociatedDomainObject(bean.getDestination());
+        DomainDependency<T> dep = DomainDependency.createDependency(source,
+                destination, bean.getType());
+        return dep;
+    }
+
+    public void addDependency(DependencyComponent dependencyComponent) {
+        Dependency dependency = dependencyComponent.getDependency();
+        if (!canAddDependency(dependency))
+            return;
+        getDependencyList().addDependencyComponent(dependencyComponent);
+        diagramGraph.add(dependency);
+        adapter.addDependency(toDomainDependency(dependency));
+    }
+
+    private boolean canAddDependency(Dependency dependency) {
+        return adapter.canAddDependency(toDomainDependency(dependency));
+    }
+
+    private DependencyList getDependencyList() {
+        return planner.getDependencyList();
+    }
+
+    public void removeDependency(Dependency dependency) {
+        adapter.removeDependency(toDomainDependency(dependency));
+        diagramGraph.remove(dependency);
     }
 
 }
