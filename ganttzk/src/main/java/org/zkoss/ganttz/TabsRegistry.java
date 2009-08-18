@@ -27,6 +27,7 @@ public class TabsRegistry {
     public void show(ITab tab) {
         hideAllExcept(tab);
         tab.show();
+        parent.invalidate();
     }
 
     private void hideAllExcept(ITab tab) {

@@ -1,10 +1,13 @@
 package org.navalplanner.web.planner;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.zkoss.ganttz.ResourcesLoadPanel;
 import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.adapters.AutoAdapter;
 import org.zkoss.ganttz.adapters.DomainDependency;
@@ -15,14 +18,14 @@ import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Task;
-import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
-
-import static org.navalplanner.web.I18nHelper._;
+import org.zkoss.ganttz.extensions.ITab;
+import org.zkoss.ganttz.extensions.ITabFactory;
+import org.zkoss.zk.ui.Component;
 
 /**
  * Some test data for planner <br />
@@ -40,7 +43,53 @@ public class DataForPlanner {
         return new GanttDiagramGraph();
     }
 
-    private PlannerConfiguration<ITaskFundamentalProperties> addCommands(
+    private PlannerConfiguration<ITaskFundamentalProperties> setup(
+            PlannerConfiguration<ITaskFundamentalProperties> configuration) {
+        addCommands(configuration);
+        addTabs(configuration);
+        return configuration;
+    }
+
+    private void addTabs(
+            PlannerConfiguration<ITaskFundamentalProperties> configuration) {
+        configuration.addTab(new ITabFactory<ITaskFundamentalProperties>() {
+
+            @Override
+            public ITab create(IContext<ITaskFundamentalProperties> context) {
+                return new ITab() {
+
+                    private Component parent;
+
+                    private ResourcesLoadPanel loadPanel;
+
+                    @Override
+                    public void show() {
+                        loadPanel = new ResourcesLoadPanel();
+                        parent.appendChild(loadPanel);
+                    }
+
+                    @Override
+                    public void hide() {
+                        if (loadPanel != null) {
+                            loadPanel.detach();
+                        }
+                    }
+
+                    @Override
+                    public String getName() {
+                        return _("Resource Load");
+                    }
+
+                    @Override
+                    public void addToParent(Component parent) {
+                        this.parent = parent;
+                    }
+                };
+            }
+        });
+    }
+
+    private void addCommands(
             PlannerConfiguration<ITaskFundamentalProperties> configuration) {
         configuration
                 .addGlobalCommand(new ICommand<ITaskFundamentalProperties>() {
@@ -100,19 +149,18 @@ public class DataForPlanner {
                         return "";
                     }
                 });
-        return configuration;
     }
 
     public PlannerConfiguration<ITaskFundamentalProperties> getLightLoad() {
-        return addCommands(getModelWith(20));
+        return setup(getModelWith(20));
     }
 
     public PlannerConfiguration<ITaskFundamentalProperties> getMediumLoad() {
-        return addCommands(getModelWith(300));
+        return setup(getModelWith(300));
     }
 
     public PlannerConfiguration<ITaskFundamentalProperties> getHighLoad() {
-        return addCommands(getModelWith(500));
+        return setup(getModelWith(500));
     }
 
     private PlannerConfiguration<ITaskFundamentalProperties> getModelWith(
