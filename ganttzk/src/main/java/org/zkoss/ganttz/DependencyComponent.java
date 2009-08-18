@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -21,15 +22,17 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     private TaskComponent destination;
 
-    private FunctionalityExposedForExtensions<?> context;
+    private DependencyType type;
 
-    public DependencyComponent(FunctionalityExposedForExtensions<?> context,
-            TaskComponent source, TaskComponent destination) {
-        this.context = context;
+    public DependencyComponent(TaskComponent source, TaskComponent destination,
+            DependencyType type) {
+        this.type = type;
         if (source == null)
             throw new IllegalArgumentException("source cannot be null");
         if (destination == null)
             throw new IllegalArgumentException("destination cannot be null");
+        if (type == null)
+            throw new IllegalArgumentException("type must be not null");
         this.source = source;
         this.destination = destination;
     }
@@ -96,13 +99,13 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         return destination;
     }
 
-    public Dependency getDependency() {
-        return context.getDiagramGraph().getDependencyFrom(source.getTask(),
+    public Dependency getDependency(GanttDiagramGraph diagramGraph) {
+        return diagramGraph.getDependencyFrom(source.getTask(),
                 destination.getTask());
     }
 
     public DependencyType getDependencyType() {
-        return getDependency().getType();
+        return type;
     }
 
     public boolean hasSameSourceAndDestination(Dependency dependency) {
