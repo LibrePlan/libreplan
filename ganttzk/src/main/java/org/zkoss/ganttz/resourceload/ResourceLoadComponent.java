@@ -1,4 +1,4 @@
-package org.zkoss.ganttz;
+package org.zkoss.ganttz.resourceload;
 
 import java.util.ArrayList;
 import java.util.List;

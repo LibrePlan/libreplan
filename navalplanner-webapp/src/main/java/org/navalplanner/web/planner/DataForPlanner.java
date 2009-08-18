@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.zkoss.ganttz.ResourcesLoadPanel;
 import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.adapters.AutoAdapter;
 import org.zkoss.ganttz.adapters.DomainDependency;
@@ -25,6 +24,7 @@ import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.extensions.ITabFactory;
+import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
 import org.zkoss.zk.ui.Component;
 
 /**

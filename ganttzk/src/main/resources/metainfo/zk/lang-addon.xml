@@ -22,7 +22,7 @@
 
 	<component>
 		<component-name>resourcesLoadPanel</component-name>
-		<component-class>org.zkoss.ganttz.ResourcesLoadPanel</component-class>
+		<component-class>org.zkoss.ganttz.resourceload.ResourcesLoadPanel</component-class>
 		<mold>
 			<mold-name>default</mold-name>
 			<mold-uri>~./ganttz/resourcesLoadPanel.dsp</mold-uri>
@@ -52,7 +52,7 @@
 
 	<component>
 		<component-name>resourceload</component-name>
-		<component-class>org.zkoss.ganttz.ResourceLoadComponent
+		<component-class>org.zkoss.ganttz.resourceload.ResourceLoadComponent
 		</component-class>
 		<mold>
 			<mold-name>default</mold-name>

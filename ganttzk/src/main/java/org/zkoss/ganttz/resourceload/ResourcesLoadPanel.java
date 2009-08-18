@@ -1,5 +1,8 @@
-package org.zkoss.ganttz;
+package org.zkoss.ganttz.resourceload;
 
+import org.zkoss.ganttz.Planner;
+import org.zkoss.ganttz.TimeTracker;
+import org.zkoss.ganttz.TimeTrackerComponent;
 import org.zkoss.ganttz.data.ResourceLoad;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
