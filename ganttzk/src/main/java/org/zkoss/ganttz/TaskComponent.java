@@ -283,6 +283,8 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private void updateProperties() {
+        if (!isInPage())
+            return;
         setLeft("0");
         setLeft(getMapper().toPixels(this.task.getBeginDate()) + "px");
         setWidth("0");
@@ -300,7 +302,7 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private boolean isInPage() {
-        return getParent() != null;
+        return getParent() != null && getPlanner() != null;
     }
 
     void publishTaskComponents(Map<Task, TaskComponent> resultAccumulated) {

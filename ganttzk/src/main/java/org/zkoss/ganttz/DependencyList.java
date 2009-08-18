@@ -133,6 +133,8 @@ public class DependencyList extends XulElement implements AfterCompose {
             listener = new IZoomLevelChangedListener() {
                 @Override
                 public void zoomLevelChanged(ZoomLevel detailLevel) {
+                    if (!isInPage())
+                        return;
                     for (DependencyComponent dependencyComponent : getDependencyComponents()) {
                         dependencyComponent.zoomChanged();
                     }
@@ -141,6 +143,11 @@ public class DependencyList extends XulElement implements AfterCompose {
             getTimeTracker().addZoomListener(listener);
         }
         addContextMenu();
+    }
+
+    private boolean isInPage() {
+        return getParent() != null && getGanttPanel() != null
+                && getGanttPanel().getParent() != null;
     }
 
     private TimeTracker getTimeTracker() {
