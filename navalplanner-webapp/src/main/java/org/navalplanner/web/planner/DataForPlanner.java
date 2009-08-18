@@ -55,7 +55,8 @@ public class DataForPlanner {
         configuration.addTab(new ITabFactory<ITaskFundamentalProperties>() {
 
             @Override
-            public ITab create(IContext<ITaskFundamentalProperties> context) {
+            public ITab create(
+                    final IContext<ITaskFundamentalProperties> context) {
                 return new ITab() {
 
                     private Component parent;
@@ -64,7 +65,8 @@ public class DataForPlanner {
 
                     @Override
                     public void show() {
-                        loadPanel = new ResourcesLoadPanel();
+                        loadPanel = new ResourcesLoadPanel(context
+                                .getTimeTracker());
                         parent.appendChild(loadPanel);
                     }
 

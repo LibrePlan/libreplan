@@ -1,5 +1,6 @@
 package org.zkoss.ganttz.extensions;
 
+import org.zkoss.ganttz.TimeTracker;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.zk.ui.Component;
@@ -51,6 +52,11 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
 
     public void replace(T oldDomainObject, T newDomainObject) {
         context.replace(oldDomainObject, newDomainObject);
+    }
+
+    @Override
+    public TimeTracker getTimeTracker() {
+        return context.getTimeTracker();
     };
 
 }

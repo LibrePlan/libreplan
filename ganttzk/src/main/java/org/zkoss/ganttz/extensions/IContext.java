@@ -2,6 +2,7 @@ package org.zkoss.ganttz.extensions;
 
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.TaskComponent;
+import org.zkoss.ganttz.TimeTracker;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
@@ -68,5 +69,11 @@ public interface IContext<T> {
      *            the domain object from which a task will be created
      */
     void add(Position position, T domainObject);
+
+    /**
+     * Makes the time tracker available.
+     * @return the in use {@link TimeTracker Time Tracker}
+     */
+    TimeTracker getTimeTracker();
 
 }

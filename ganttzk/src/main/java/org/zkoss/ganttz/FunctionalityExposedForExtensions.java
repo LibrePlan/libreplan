@@ -288,6 +288,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         addDependency(dependency.createWithType(type));
     }
 
+    @Override
     public TimeTracker getTimeTracker() {
         return timeTracker;
     }

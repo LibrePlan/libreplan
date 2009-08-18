@@ -1,5 +1,6 @@
 package org.zkoss.ganttz.extensions;
 
+import org.zkoss.ganttz.TimeTracker;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
@@ -56,6 +57,11 @@ public class ContextWithPlannerTask<T> implements IContextWithPlannerTask<T> {
     @Override
     public Task getTask() {
         return task;
+    }
+
+    @Override
+    public TimeTracker getTimeTracker() {
+        return context.getTimeTracker();
     }
 
 }

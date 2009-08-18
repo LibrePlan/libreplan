@@ -8,7 +8,7 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
 
     private TimeTrackerComponent timeTrackerComponent;
 
-    public ResourcesLoadPanel() {
+    public ResourcesLoadPanel(TimeTracker timeTracker) {
         ResourceLoadComponent rlc1 = new ResourceLoadComponent(
                 new ResourceLoad("ResourceLoad 1"));
         ResourceLoadComponent rlc2 = new ResourceLoadComponent(
