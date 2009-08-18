@@ -243,13 +243,17 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         return dep;
     }
 
-    public void addDependency(DependencyComponent dependencyComponent) {
-        Dependency dependency = dependencyComponent.getDependency();
+    public void addDependency(Dependency dependency) {
         if (!canAddDependency(dependency))
             return;
-        getDependencyList().addDependencyComponent(dependencyComponent);
         diagramGraph.add(dependency);
+        getDependencyList().addDependencyComponent(
+                getTaskList().asDependencyComponent(dependency));
         adapter.addDependency(toDomainDependency(dependency));
+    }
+
+    private TaskList getTaskList() {
+        return planner.getTaskList();
     }
 
     private boolean canAddDependency(Dependency dependency) {

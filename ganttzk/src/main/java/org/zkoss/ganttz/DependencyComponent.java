@@ -100,8 +100,8 @@ public class DependencyComponent extends XulElement implements AfterCompose {
     }
 
     public Dependency getDependency() {
-        return new Dependency(source.getTask(), destination
-                .getTask(), DependencyType.END_START);
+        return context.getDiagramGraph().getDependencyFrom(source.getTask(),
+                destination.getTask());
     }
 
     public DependencyType getDependencyType() {

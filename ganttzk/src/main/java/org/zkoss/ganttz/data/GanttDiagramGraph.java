@@ -225,4 +225,8 @@ public class GanttDiagramGraph {
         parentShrinkingEnforcer.enforce();
     }
 
+    public Dependency getDependencyFrom(Task from, Task to) {
+        return graph.getEdge(from, to);
+    }
+
 }

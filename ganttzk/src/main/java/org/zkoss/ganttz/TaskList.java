@@ -1,12 +1,14 @@
 package org.zkoss.ganttz;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.zkoss.ganttz.data.Dependency;
+import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.MenuBuilder;
@@ -78,6 +80,10 @@ public class TaskList extends XulElement implements AfterCompose {
                     .get(dependency.getDestination())));
         }
         return result;
+    }
+
+    public DependencyComponent asDependencyComponent(Dependency dependency) {
+        return asDependencyComponents(Arrays.asList(dependency)).get(0);
     }
 
     public synchronized void addTaskComponent(Component beforeThis,
@@ -290,9 +296,7 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     public void addDependency(TaskComponent source, TaskComponent destination) {
-        DependencyComponent dependencyComponent = new DependencyComponent(
-                context,
-                source, destination);
-        context.addDependency(dependencyComponent);
+        context.addDependency(new Dependency(source.getTask(), destination
+                .getTask(), DependencyType.END_START));
     }
 }
