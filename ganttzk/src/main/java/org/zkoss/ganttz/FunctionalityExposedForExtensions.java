@@ -21,6 +21,8 @@ import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.util.Interval;
+import org.zkoss.ganttz.util.zoom.TimeTrackerState;
 import org.zkoss.zk.ui.Component;
 
 public class FunctionalityExposedForExtensions<T> implements IContext<T> {
@@ -120,6 +122,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     private final IStructureNavigator<T> navigator;
     private final OneToOneMapper<T> mapper = new OneToOneMapper<T>();
     private final GanttDiagramGraph diagramGraph;
+    private TimeTracker timeTracker;
 
     public FunctionalityExposedForExtensions(Planner planner,
             IAdapterToTaskFundamentalProperties<T> adapter,
@@ -128,6 +131,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         this.adapter = adapter;
         this.navigator = navigator;
         this.diagramGraph = diagramGraph;
+        this.timeTracker = new TimeTracker(new Interval(TimeTrackerState
+                .year(2009), TimeTrackerState.year(2011)));
     }
 
     /**
@@ -168,6 +173,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
                     totalDependencies, object, position.getParent());
             tasksCreated.add(task);
         }
+        updateTimeTracker(tasksCreated);
         if (position.isAppendToTop() || position.isAtTop()) {
             this.diagramGraph.addTopLevel(tasksCreated);
         } else {
@@ -182,6 +188,12 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         }
         this.diagramGraph.enforceAllRestrictions();
         this.planner.addTasks(position, tasksCreated);
+    }
+
+    private void updateTimeTracker(List<Task> tasksCreated) {
+        for (Task task : tasksCreated) {
+            timeTracker.trackPosition(task);
+        }
     }
 
     public void add(Collection<? extends T> domainObjects) {
@@ -274,6 +286,10 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     public void changeType(Dependency dependency, DependencyType type) {
         removeDependency(dependency);
         addDependency(dependency.createWithType(type));
+    }
+
+    public TimeTracker getTimeTracker() {
+        return timeTracker;
     }
 
 }

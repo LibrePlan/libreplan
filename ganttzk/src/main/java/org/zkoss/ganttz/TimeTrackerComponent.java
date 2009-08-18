@@ -2,7 +2,7 @@ package org.zkoss.ganttz;
 
 import java.util.Collection;
 
-import org.zkoss.ganttz.util.Interval;
+import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.util.zoom.TimeTrackerState;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.zk.au.AuRequest;
@@ -17,10 +17,18 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 public class TimeTrackerComponent extends HtmlMacroComponent {
 
     private final TimeTracker timeTracker;
+    private IZoomLevelChangedListener zoomListener;
 
-    public TimeTrackerComponent() {
-        this.timeTracker = new TimeTracker(new Interval(TimeTrackerState
-                .year(2009), TimeTrackerState.year(2012)));
+    public TimeTrackerComponent(TimeTracker timeTracker) {
+        this.timeTracker = timeTracker;
+        zoomListener = new IZoomLevelChangedListener() {
+
+            @Override
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                recreate();
+            }
+        };
+        this.timeTracker.addZoomListener(zoomListener);
     }
 
     public ZoomLevel getZoomLevel() {
@@ -100,7 +108,6 @@ public class TimeTrackerComponent extends HtmlMacroComponent {
     }
 
     private void changeDetailLevel(double days) {
-        recreate();
         scrollHorizontalPercentage((int) Math.floor(days
                 / getTimeTrackerState().daysPerPixel()));
     }

@@ -1,7 +1,12 @@
 package org.zkoss.ganttz;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collection;
+import java.util.Date;
 
+import org.joda.time.LocalDate;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
@@ -23,10 +28,10 @@ public class TimeTracker {
 
     private Collection<DetailItem> detailsSecondLevelCached = null;
 
-    private final Interval initialInterval;
+    private Interval interval;
 
     public TimeTracker(Interval interval) {
-        this.initialInterval = interval;
+        this.interval = interval;
 
     }
 
@@ -41,7 +46,7 @@ public class TimeTracker {
     public Collection<TimeTrackerState.DetailItem> getDetailsFirstLevel() {
         if (detailsFirstLevelCached == null) {
             detailsFirstLevelCached = getTimeTrackerState()
-                    .getFirstLevelDetails(initialInterval);
+                    .getFirstLevelDetails(interval);
         }
         return detailsFirstLevelCached;
     }
@@ -49,13 +54,13 @@ public class TimeTracker {
     public Collection<TimeTrackerState.DetailItem> getDetailsSecondLevel() {
         if (detailsSecondLevelCached == null) {
             detailsSecondLevelCached = getTimeTrackerState()
-                    .getSecondLevelDetails(initialInterval);
+                    .getSecondLevelDetails(interval);
         }
         return detailsSecondLevelCached;
     }
 
     private Interval getRealInterval() {
-        return getTimeTrackerState().getRealIntervalFor(initialInterval);
+        return getTimeTrackerState().getRealIntervalFor(interval);
     }
 
     private TimeTrackerState getTimeTrackerState() {
@@ -96,16 +101,58 @@ public class TimeTracker {
     }
 
     public void goToNextDetailLevel() {
-        clearDetailLevelDependantData();
         detailLevel = detailLevel.next();
+        invalidatingChangeHappened();
+    }
+
+    private void invalidatingChangeHappened() {
+        clearDetailLevelDependantData();
         fireZoomChanged();
     }
 
     public void goToPreviousDetailLvel() {
-        clearDetailLevelDependantData();
-        datesMapper = null;
         detailLevel = detailLevel.previous();
-        fireZoomChanged();
+        invalidatingChangeHappened();
+    }
+
+    public void trackPosition(final Task task) {
+        task
+                .addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
+
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        updateIntervalIfNeeded(task);
+                    }
+                });
+        updateIntervalIfNeeded(task);
+    }
+
+    private void updateIntervalIfNeeded(Task task) {
+        Date newStart = interval.getStart();
+        Date newFinish = interval.getFinish();
+        boolean changed = false;
+        if (getRealInterval().getStart().compareTo(startMinusOneYear(task)) > 0) {
+            newStart = startMinusOneYear(task);
+            changed = true;
+        }
+        if (getRealInterval().getFinish()
+                .compareTo(endPlusOneYear(task)) < 0) {
+            newFinish = endPlusOneYear(task);
+            changed = true;
+        }
+        if (changed) {
+            interval = new Interval(newStart, newFinish);
+            invalidatingChangeHappened();
+        }
+    }
+
+    private Date endPlusOneYear(Task task) {
+        return new LocalDate(task.getEndDate()).plusYears(1).toDateMidnight().toDate();
+    }
+
+    private Date startMinusOneYear(Task task) {
+        return new LocalDate(task.getBeginDate()).minusYears(1)
+                .toDateMidnight().toDate();
     }
 
 }
