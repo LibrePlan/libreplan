@@ -13,6 +13,10 @@ import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.extensions.ITab;
+import org.zkoss.ganttz.extensions.ITabFactory;
+import org.zkoss.ganttz.util.IMenuItemsRegister;
+import org.zkoss.ganttz.util.MenuItemsRegisterLocator;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.impl.XulElement;
 
@@ -111,7 +115,34 @@ public class Planner extends XulElement {
         this.context = context;
         clear();
         context.add(configuration.getData());
-        createTasksPlanningTab();
+        visualizeTabs(context, configuration
+                .getTabFactories());
+    }
+
+    private <T> TabsRegistry createTabs(IContext<T> context,
+            List<ITabFactory<T>> factories) {
+        List<ITab> tabs = new ArrayList<ITab>();
+        tabs.add(createTasksPlanningTab());
+        for (ITabFactory<T> factory : factories) {
+            tabs.add(factory.create(context));
+        }
+        TabsRegistry tabsRegistry = new TabsRegistry(this);
+        for (ITab t : tabs) {
+            tabsRegistry.add(t);
+        }
+        return tabsRegistry;
+    }
+
+    private <T> void visualizeTabs(
+            FunctionalityExposedForExtensions<T> context,
+            List<ITabFactory<T>> tabFactories) {
+        TabsRegistry tabs = createTabs(context, tabFactories);
+        registryTabs(tabs);
+        tabs.showFirst();
+    }
+
+    private void registryTabs(TabsRegistry tabs) {
+        tabs.registerAtMenu(MenuItemsRegisterLocator.retrieve());
     }
 
     private void clear() {

@@ -1,6 +1,9 @@
 package org.zkoss.ganttz;
 
-public class TasksPlanningTab {
+import org.zkoss.ganttz.extensions.ITab;
+import org.zkoss.zk.ui.Component;
+
+public class TasksPlanningTab implements ITab {
 
     private final Planner planner;
     private final LeftPane leftPane;
@@ -18,5 +21,26 @@ public class TasksPlanningTab {
         ganttPanel.setParent(planner);
         leftPane.afterCompose();
         ganttPanel.afterCompose();
+    }
+
+    @Override
+    public void addToParent(Component parent) {
+    }
+
+    @Override
+    public void hide() {
+        leftPane.detach();
+        ganttPanel.detach();
+    }
+
+    @Override
+    public void show() {
+        leftPane.setParent(planner);
+        ganttPanel.setParent(planner);
+    }
+
+    @Override
+    public String getName() {
+        return "Tasks Planning";
     }
 }
