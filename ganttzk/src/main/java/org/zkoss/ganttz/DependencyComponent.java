@@ -21,13 +21,10 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     private TaskComponent destination;
 
-    private DependencyType type;
-
     private FunctionalityExposedForExtensions<?> context;
 
     public DependencyComponent(FunctionalityExposedForExtensions<?> context,
             TaskComponent source, TaskComponent destination) {
-        this.type = DependencyType.END_START;
         this.context = context;
         if (source == null)
             throw new IllegalArgumentException("source cannot be null");
@@ -105,11 +102,7 @@ public class DependencyComponent extends XulElement implements AfterCompose {
     }
 
     public DependencyType getDependencyType() {
-        return this.type;
-    }
-
-    public void setType(DependencyType type) {
-        this.type = type;
+        return getDependency().getType();
     }
 
     public boolean hasSameSourceAndDestination(Dependency dependency) {

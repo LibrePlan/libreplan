@@ -110,8 +110,8 @@ public class Dependency {
         return visible;
     }
 
-    public void setType(DependencyType type) {
-        this.type = type;
+    public Dependency createWithType(DependencyType type) {
+        return new Dependency(source, destination, type, visible);
     }
 
 }

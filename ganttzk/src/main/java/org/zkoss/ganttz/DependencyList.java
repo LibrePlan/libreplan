@@ -155,8 +155,8 @@ public class DependencyList extends XulElement implements AfterCompose {
                         @Override
                         public void onEvent(final DependencyComponent choosen,
                                 Event event) {
-                            choosen.setType(DependencyType.END_START);
-                            choosen.invalidate();
+                            context.changeType(choosen.getDependency(),
+                                    DependencyType.END_START);
                         }
                     });
 
@@ -165,8 +165,8 @@ public class DependencyList extends XulElement implements AfterCompose {
                         @Override
                         public void onEvent(final DependencyComponent choosen,
                                 Event event) {
-                            choosen.setType(DependencyType.START_START);
-                            choosen.invalidate();
+                            context.changeType(choosen.getDependency(),
+                                    DependencyType.START_START);
                         }
                     });
 
@@ -175,8 +175,8 @@ public class DependencyList extends XulElement implements AfterCompose {
                         @Override
                         public void onEvent(final DependencyComponent choosen,
                                 Event event) {
-                            choosen.setType(DependencyType.END_END);
-                            choosen.invalidate();
+                            context.changeType(choosen.getDependency(),
+                                    DependencyType.END_END);
                         }
                     });
 

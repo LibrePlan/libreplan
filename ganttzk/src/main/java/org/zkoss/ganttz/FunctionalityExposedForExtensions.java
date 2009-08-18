@@ -13,6 +13,7 @@ import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
+import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Position;
@@ -268,6 +269,11 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         adapter.removeDependency(toDomainDependency(dependency));
         diagramGraph.remove(dependency);
         getDependencyList().remove(dependency);
+    }
+
+    public void changeType(Dependency dependency, DependencyType type) {
+        removeDependency(dependency);
+        addDependency(dependency.createWithType(type));
     }
 
 }
