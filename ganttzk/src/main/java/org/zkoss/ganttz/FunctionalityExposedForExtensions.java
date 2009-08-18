@@ -267,6 +267,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     public void removeDependency(Dependency dependency) {
         adapter.removeDependency(toDomainDependency(dependency));
         diagramGraph.remove(dependency);
+        getDependencyList().remove(dependency);
     }
 
 }

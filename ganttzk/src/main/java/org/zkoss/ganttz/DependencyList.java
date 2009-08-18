@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.MenuBuilder;
@@ -147,7 +148,6 @@ public class DependencyList extends XulElement implements AfterCompose {
                                         Event event) {
                                     context.removeDependency(choosen
                                             .getDependency());
-                                    removeChild(choosen);
                                 }
                             });
             contextMenuBuilder.item("Set End-Start",
@@ -223,6 +223,15 @@ public class DependencyList extends XulElement implements AfterCompose {
         for (DependencyComponent dependencyComponent : DependencyList.this
                 .getDependencyComponents()) {
             if (dependencyComponent.contains(task)) {
+                this.removeChild(dependencyComponent);
+            }
+        }
+    }
+
+    public void remove(Dependency dependency) {
+        for (DependencyComponent dependencyComponent : DependencyList.this
+                .getDependencyComponents()) {
+            if (dependencyComponent.hasSameSourceAndDestination(dependency)) {
                 this.removeChild(dependencyComponent);
             }
         }

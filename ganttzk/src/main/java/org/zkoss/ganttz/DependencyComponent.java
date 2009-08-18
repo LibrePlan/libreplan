@@ -112,4 +112,11 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         this.type = type;
     }
 
+    public boolean hasSameSourceAndDestination(Dependency dependency) {
+        Task sourceTask = source.getTask();
+        Task destinationTask = destination.getTask();
+        return sourceTask.equals(dependency.getSource())
+                && destinationTask.equals(dependency.getDestination());
+    }
+
 }
