@@ -73,7 +73,7 @@ public class TaskList extends XulElement implements AfterCompose {
         }
         List<DependencyComponent> result = new ArrayList<DependencyComponent>();
         for (Dependency dependency : dependencies) {
-            result.add(new DependencyComponent(context, taskComponentByTask
+            result.add(new DependencyComponent(taskComponentByTask
                     .get(dependency.getSource()), taskComponentByTask
                     .get(dependency.getDestination())));
         }

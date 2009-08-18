@@ -28,7 +28,7 @@ public class GanttPanel extends XulElement implements AfterCompose {
         appendChild(timeTracker);
         tasksLists = TaskList.createFor(context, editTaskCommand,
                 commandsOnTasksContextualized);
-        dependencyList = new DependencyList();
+        dependencyList = new DependencyList(context);
         appendChild(tasksLists);
         appendChild(dependencyList);
     }

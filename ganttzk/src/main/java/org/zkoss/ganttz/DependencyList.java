@@ -10,9 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.MenuBuilder;
-import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
-import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.zk.ui.event.Event;
@@ -32,8 +30,8 @@ public class DependencyList extends XulElement implements AfterCompose {
         private final Task destination;
         private final DependencyComponent dependencyComponent;
 
-        private DependencyVisibilityToggler(Task source,
-                Task destination, DependencyComponent dependencyComponent) {
+        private DependencyVisibilityToggler(Task source, Task destination,
+                DependencyComponent dependencyComponent) {
             this.source = source;
             this.destination = destination;
             this.dependencyComponent = dependencyComponent;
@@ -70,15 +68,16 @@ public class DependencyList extends XulElement implements AfterCompose {
 
     private IZoomLevelChangedListener listener;
 
-    private final WeakReferencedListeners<IDependencyRemovedListener> dependencyRemovedListeners = WeakReferencedListeners
-            .create();
+    private final FunctionalityExposedForExtensions<?> context;
 
-    public DependencyList() {
+    public DependencyList(FunctionalityExposedForExtensions<?> context) {
+        this.context = context;
     }
 
     private List<DependencyComponent> getDependencyComponents() {
         List<Object> children = getChildren();
-        return Planner.findComponentsOfType(DependencyComponent.class, children);
+        return Planner
+                .findComponentsOfType(DependencyComponent.class, children);
     }
 
     void addDependencyComponent(final DependencyComponent dependencyComponent) {
@@ -106,7 +105,8 @@ public class DependencyList extends XulElement implements AfterCompose {
         return (GanttPanel) getParent();
     }
 
-    public void setDependencyComponents(List<DependencyComponent> dependencyComponents) {
+    public void setDependencyComponents(
+            List<DependencyComponent> dependencyComponents) {
         for (DependencyComponent dependencyComponent : dependencyComponents) {
             addDependencyComponent(dependencyComponent);
         }
@@ -138,24 +138,18 @@ public class DependencyList extends XulElement implements AfterCompose {
 
     private Menupopup getContextMenu() {
         if (contextMenu == null) {
-            MenuBuilder <DependencyComponent> contextMenuBuilder = MenuBuilder.on(getPage(), getDependencyComponents()).item(
-                    "Erase", new ItemAction<DependencyComponent>() {
-                        @Override
-                        public void onEvent(final DependencyComponent choosen,
-                                Event event) {
-                            removeChild(choosen);
-                            dependencyRemovedListeners
-                                    .fireEvent(new IListenerNotification<IDependencyRemovedListener>() {
-
-                                        @Override
-                                        public void doNotify(
-                                                IDependencyRemovedListener listener) {
-                                            listener.dependenceRemoved(choosen);
-
-                                        }
-                                    });
-                        }
-                    });
+            MenuBuilder<DependencyComponent> contextMenuBuilder = MenuBuilder
+                    .on(getPage(), getDependencyComponents()).item("Erase",
+                            new ItemAction<DependencyComponent>() {
+                                @Override
+                                public void onEvent(
+                                        final DependencyComponent choosen,
+                                        Event event) {
+                                    context.removeDependency(choosen
+                                            .getDependency());
+                                    removeChild(choosen);
+                                }
+                            });
             contextMenuBuilder.item("Set End-Start",
                     new ItemAction<DependencyComponent>() {
                         @Override
@@ -166,14 +160,15 @@ public class DependencyList extends XulElement implements AfterCompose {
                         }
                     });
 
-            contextMenuBuilder.item("Set Start-Start", new ItemAction<DependencyComponent> () {
-                @Override
+            contextMenuBuilder.item("Set Start-Start",
+                    new ItemAction<DependencyComponent>() {
+                        @Override
                         public void onEvent(final DependencyComponent choosen,
                                 Event event) {
                             choosen.setType(DependencyType.START_START);
                             choosen.invalidate();
-                }
-            });
+                        }
+                    });
 
             contextMenuBuilder.item("Set End-End",
                     new ItemAction<DependencyComponent>() {
@@ -191,11 +186,6 @@ public class DependencyList extends XulElement implements AfterCompose {
         return contextMenu;
     }
 
-    public void addDependencyRemovedListener(
-            IDependencyRemovedListener removedListener) {
-        dependencyRemovedListeners.addListener(removedListener);
-    }
-
     private TimeTracker getTimeTracker() {
         return getGanttPanel().getTimeTracker();
     }
@@ -204,12 +194,14 @@ public class DependencyList extends XulElement implements AfterCompose {
         redrawDependencyComponents(getDependencyComponentsConnectedTo(taskComponent));
     }
 
-    private List<DependencyComponent> getDependencyComponentsConnectedTo(TaskComponent taskComponent) {
+    private List<DependencyComponent> getDependencyComponentsConnectedTo(
+            TaskComponent taskComponent) {
         ArrayList<DependencyComponent> result = new ArrayList<DependencyComponent>();
         List<DependencyComponent> dependencies = getDependencyComponents();
         for (DependencyComponent dependencyComponent : dependencies) {
             if (dependencyComponent.getSource().equals(taskComponent)
-                    || dependencyComponent.getDestination().equals(taskComponent)) {
+                    || dependencyComponent.getDestination().equals(
+                            taskComponent)) {
                 result.add(dependencyComponent);
             }
         }
@@ -220,7 +212,8 @@ public class DependencyList extends XulElement implements AfterCompose {
         redrawDependencyComponents(getDependencyComponents());
     }
 
-    public void redrawDependencyComponents(List<DependencyComponent> dependencyComponents) {
+    public void redrawDependencyComponents(
+            List<DependencyComponent> dependencyComponents) {
         for (DependencyComponent dependencyComponent : dependencyComponents) {
             dependencyComponent.redrawDependency();
         }

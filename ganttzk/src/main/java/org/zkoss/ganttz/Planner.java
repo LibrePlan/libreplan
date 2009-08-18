@@ -19,7 +19,7 @@ import org.zkoss.zul.impl.XulElement;
 public class Planner extends XulElement {
 
     private GanttDiagramGraph diagramGraph = new GanttDiagramGraph();
-    private IDependencyRemovedListener dependencyRemovedListener;
+
     private LeftPane leftPane;
 
     private GanttPanel ganttPanel;
@@ -70,20 +70,6 @@ public class Planner extends XulElement {
         return found.get(0);
     }
 
-    public void registerListeners() {
-        TaskList taskList = getTaskList();
-        dependencyRemovedListener = new IDependencyRemovedListener() {
-
-            @Override
-            public void dependenceRemoved(
-                    DependencyComponent dependencyComponent) {
-                context.removeDependency(dependencyComponent.getDependency());
-            }
-        };
-        getDependencyList().addDependencyRemovedListener(
-                dependencyRemovedListener);
-    }
-
     public void addTasks(Position position, Collection<? extends Task> newTasks) {
         TaskList taskList = getTaskList();
         if (taskList != null && leftPane != null) {
@@ -126,7 +112,6 @@ public class Planner extends XulElement {
         clear();
         context.add(configuration.getData());
         recreate();
-        registerListeners();
     }
 
     private void clear() {
