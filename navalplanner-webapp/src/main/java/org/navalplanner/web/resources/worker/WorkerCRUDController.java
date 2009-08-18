@@ -1,6 +1,7 @@
 package org.navalplanner.web.resources.worker;
 
-import static org.navalplanner.web.common.ConcurrentModificationDetector.detectConcurrentModification;
+import static org.navalplanner.web.I18nHelper._;
+import static org.navalplanner.web.common.ConcurrentModificationDetector.addAutomaticHandlingOfConcurrentModification;
 
 import java.util.List;
 
@@ -18,8 +19,6 @@ import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.api.Window;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Controller for {@link Worker} resource <br />
@@ -158,8 +157,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        this.workerModel = detectConcurrentModification(IWorkerModel.class,
-                this.workerModel, "/resources/worker/worker.zul");
+        this.workerModel = addAutomaticHandlingOfConcurrentModification(
+                IWorkerModel.class, this.workerModel,
+                "/resources/worker/worker.zul");
         localizationsForEditionController = createLocalizationsController(comp,
                 "editWindow");
         localizationsForCreationController = createLocalizationsController(
