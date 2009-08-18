@@ -1,0 +1,26 @@
+<window id="${arg.top_id}" title="Calendars List">
+    <grid id="listing" model="@{controller.calendars}" mold="paging"
+        pageSize="5">
+        <columns>
+            <column label="Operations" />
+            <column label="Name" sort="auto(name)" />
+        </columns>
+        <rows>
+            <row self="@{each='calendar'}" value="@{calendar}">
+                <hbox>
+                    <button label="Edit"
+                        onClick="controller.goToEditForm(self.parent.parent.value);">
+                    </button>
+
+                    <button label="Remove"
+                        onClick="controller.confirmRemove(self.parent.parent.value);">
+                    </button>
+                </hbox>
+                <label value="@{calendar.name}" />
+            </row>
+        </rows>
+    </grid>
+    <button id="show_create_form" onClick="controller.goToCreateForm();"
+        label="Create">
+    </button>
+</window>

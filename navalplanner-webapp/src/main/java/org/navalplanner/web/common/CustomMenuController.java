@@ -1,12 +1,12 @@
 package org.navalplanner.web.common;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Div;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Controller for customMenu <br />
@@ -114,6 +114,8 @@ public class CustomMenuController extends Div {
                 "/navalplanner-webapp/advance/advanceTypes.zul");
         ci.appendChildren(new CustomMenuItem(_("Manage advances types"),
                 "/navalplanner-webapp/advance/advanceTypes.zul"));
+        ci.appendChildren(new CustomMenuItem(_("Calendars"),
+                "/navalplanner-webapp/calendars/calendars.zul"));
         l.add(ci);
 
         this.firstLevel = l;

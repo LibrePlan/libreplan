@@ -1,0 +1,24 @@
+<window id="${arg.top_id}" title="${arg.title}">
+    <tabbox>
+        <tabs>
+            <tab label="Edition"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <grid fixedLayout="false">
+                    <rows>
+                        <row>
+                            <label value="Name" />
+                            <textbox value="@{controller.calendar.name}" />
+                        </row>
+                    </rows>
+                </grid>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+    <button onClick="controller.save();"
+        label="${arg.save_button_label}" />
+    <button onClick="controller.cancel();"
+        label="${arg.cancel_button_label}" />
+</window>
