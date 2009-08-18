@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
@@ -77,10 +78,12 @@ public class PlannerConfiguration<T> {
     }
 
     public void addCommandOnTask(ICommandOnTask<T> commandOnTask) {
+        Validate.notNull(commandOnTask);
         this.commandsOnTasks.add(commandOnTask);
     }
 
     public void addGlobalCommand(ICommand<T> command) {
+        Validate.notNull(command);
         this.globalCommands.add(command);
     }
 
@@ -98,6 +101,7 @@ public class PlannerConfiguration<T> {
 
     public void setGoingDownInLastArrowCommand(
             ICommand<T> goingDownInLastArrowCommand) {
+        Validate.notNull(goingDownInLastArrowCommand);
         this.goingDownInLastArrowCommand = goingDownInLastArrowCommand;
     }
 
