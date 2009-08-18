@@ -20,13 +20,21 @@ public class MenuItemsRegisterLocator {
         return Executions.getCurrent().getDesktop();
     }
 
+    public static boolean isRegistered() {
+        Object result = get();
+        return result != null;
+    }
+
+    private static Object get() {
+        return getDesktop().getAttribute(MENU_ATTRIBUTE);
+    }
+
     public static IMenuItemsRegister retrieve()
             throws IllegalStateException {
-        Object result = getDesktop().getAttribute(MENU_ATTRIBUTE);
-        if (result == null)
+        if (!isRegistered())
             throw new IllegalStateException("no "
                     + IMenuItemsRegister.class.getSimpleName() + " registered");
-        return (IMenuItemsRegister) result;
+        return (IMenuItemsRegister) get();
     }
 
 }

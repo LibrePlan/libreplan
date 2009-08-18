@@ -15,7 +15,6 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.extensions.ITabFactory;
-import org.zkoss.ganttz.util.IMenuItemsRegister;
 import org.zkoss.ganttz.util.MenuItemsRegisterLocator;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.impl.XulElement;
@@ -142,6 +141,8 @@ public class Planner extends XulElement {
     }
 
     private void registryTabs(TabsRegistry tabs) {
+        if (!MenuItemsRegisterLocator.isRegistered())
+            return;
         tabs.registerAtMenu(MenuItemsRegisterLocator.retrieve());
     }
 
