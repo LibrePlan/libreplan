@@ -127,7 +127,7 @@ public class CriterionModelTest {
     @Test
     @NotTransactional
     public void modificationsAreSaved() throws Exception {
-        adHocTransactionService.onTransaction(new IOnTransaction<Void>() {
+        adHocTransactionService.runOnTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
@@ -140,7 +140,7 @@ public class CriterionModelTest {
         criterion.setName(newName);
         criterionModel.save(criterion);
         Criterion retrieved = adHocTransactionService
-                .onTransaction(new IOnTransaction<Criterion>() {
+                .runOnTransaction(new IOnTransaction<Criterion>() {
 
                     @Override
                     public Criterion execute() {
@@ -177,7 +177,7 @@ public class CriterionModelTest {
 
     private int getCriterionsNumber(final ICriterionType<?> type) {
         return adHocTransactionService
-                .onTransaction(new IOnTransaction<Integer>() {
+                .runOnTransaction(new IOnTransaction<Integer>() {
 
                     @Override
                     public Integer execute() {

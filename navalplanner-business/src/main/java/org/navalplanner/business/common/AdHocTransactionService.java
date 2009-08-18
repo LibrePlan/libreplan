@@ -8,13 +8,13 @@ public class AdHocTransactionService implements IAdHocTransactionService {
 
     @Override
     @Transactional
-    public <T> T onTransaction(IOnTransaction<T> onTransaction) {
+    public <T> T runOnTransaction(IOnTransaction<T> onTransaction) {
         return onTransaction.execute();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public <T> T onReadOnlyTransaction(IOnTransaction<T> onTransaction) {
+    public <T> T runOnReadOnlyTransaction(IOnTransaction<T> onTransaction) {
         return onTransaction.execute();
     }
 

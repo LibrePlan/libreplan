@@ -200,7 +200,7 @@ public class OrderModelTest {
 
         orderModel.setOrder(order);
         orderModel.save();
-        adHocTransaction.onTransaction(new IOnTransaction<Void>() {
+        adHocTransaction.runOnTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
@@ -262,7 +262,7 @@ public class OrderModelTest {
         leaf.addHoursGroup(hoursGroup);
         orderModel.setOrder(order);
         orderModel.save();
-        adHocTransaction.onTransaction(new IOnTransaction<Void>() {
+        adHocTransaction.runOnTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
@@ -312,7 +312,7 @@ public class OrderModelTest {
         orderModel.setOrder(order);
         orderModel.save();
 
-        adHocTransaction.onTransaction(new IOnTransaction<Void>() {
+        adHocTransaction.runOnTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
@@ -346,7 +346,7 @@ public class OrderModelTest {
 
     private void givenCriterion() throws ValidationException {
         this.criterion = adHocTransaction
-                .onTransaction(new IOnTransaction<Criterion>() {
+                .runOnTransaction(new IOnTransaction<Criterion>() {
 
                     @Override
                     public Criterion execute() {
