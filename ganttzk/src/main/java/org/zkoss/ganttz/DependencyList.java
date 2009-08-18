@@ -138,7 +138,7 @@ public class DependencyList extends XulElement implements AfterCompose {
                     }
                 }
             };
-            getTimeTracker().addZoomListener(listener);
+            getTimeTrackerComponent().addZoomListener(listener);
         }
         addContextMenu();
     }
@@ -179,8 +179,8 @@ public class DependencyList extends XulElement implements AfterCompose {
         return contextMenu;
     }
 
-    private TimeTracker getTimeTracker() {
-        return getGanttPanel().getTimeTracker();
+    private TimeTrackerComponent getTimeTrackerComponent() {
+        return getGanttPanel().getTimeTrackerComponent();
     }
 
     public void redrawDependenciesConnectedTo(TaskComponent taskComponent) {

@@ -6,7 +6,7 @@ import org.zkoss.zul.impl.XulElement;
 
 public class ResourcesLoadPanel extends XulElement implements AfterCompose {
 
-    private TimeTracker timeTracker;
+    private TimeTrackerComponent timeTrackerComponent;
 
     public ResourcesLoadPanel() {
         ResourceLoadComponent rlc1 = new ResourceLoadComponent(
@@ -35,8 +35,8 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
         //timeTracker.afterCompose();
     }
 
-    public TimeTracker getTimeTracker() {
-        return timeTracker;
+    public TimeTrackerComponent getTimeTrackerComponent() {
+        return timeTrackerComponent;
     }
 
     public Planner getPlanner() {

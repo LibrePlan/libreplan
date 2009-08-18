@@ -18,7 +18,7 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
 
-public class TimeTracker extends HtmlMacroComponent {
+public class TimeTrackerComponent extends HtmlMacroComponent {
 
     private static Interval getTestInterval() {
         return new Interval(TimeTrackerState.year(2009), TimeTrackerState
@@ -41,7 +41,7 @@ public class TimeTracker extends HtmlMacroComponent {
         return ganttPanel;
     }
 
-    public TimeTracker(GanttPanel ganttPanel) {
+    public TimeTrackerComponent(GanttPanel ganttPanel) {
         this.ganttPanel = ganttPanel;
         this.detailLevel = ZoomLevel.DETAIL_ONE;
     }

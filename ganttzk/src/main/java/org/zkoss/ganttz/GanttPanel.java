@@ -13,7 +13,7 @@ public class GanttPanel extends XulElement implements AfterCompose {
 
     private TaskList tasksLists;
 
-    private TimeTracker timeTracker;
+    private TimeTrackerComponent timeTrackerComponent;
 
     private DependencyList dependencyList;
 
@@ -24,8 +24,8 @@ public class GanttPanel extends XulElement implements AfterCompose {
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
             CommandOnTaskContextualized<?> editTaskCommand) {
         this.diagramGraph = context.getDiagramGraph();
-        timeTracker = new TimeTracker(this);
-        appendChild(timeTracker);
+        timeTrackerComponent = new TimeTrackerComponent(this);
+        appendChild(timeTrackerComponent);
         tasksLists = TaskList.createFor(context, editTaskCommand,
                 commandsOnTasksContextualized);
         dependencyList = new DependencyList(context);
@@ -38,12 +38,12 @@ public class GanttPanel extends XulElement implements AfterCompose {
         tasksLists.afterCompose();
         dependencyList.setDependencyComponents(tasksLists
                 .asDependencyComponents(diagramGraph.getVisibleDependencies()));
-        timeTracker.afterCompose();
+        timeTrackerComponent.afterCompose();
         dependencyList.afterCompose();
     }
 
-    public TimeTracker getTimeTracker() {
-        return timeTracker;
+    public TimeTrackerComponent getTimeTrackerComponent() {
+        return timeTrackerComponent;
     }
 
     public TaskList getTaskList() {
@@ -63,7 +63,7 @@ public class GanttPanel extends XulElement implements AfterCompose {
         protected void process(AuRequest request) {
             String[] requestData = request.getData();
             int offset = Integer.parseInt(requestData[0]);
-            getTimeTracker().onIncrease(offset);
+            getTimeTrackerComponent().onIncrease(offset);
         }
 
     };
@@ -73,7 +73,7 @@ public class GanttPanel extends XulElement implements AfterCompose {
         protected void process(AuRequest request) {
             String[] requestData = request.getData();
             int offset = Integer.parseInt(requestData[0]);
-            getTimeTracker().onDecrease(offset);
+            getTimeTrackerComponent().onDecrease(offset);
         }
 
     };
