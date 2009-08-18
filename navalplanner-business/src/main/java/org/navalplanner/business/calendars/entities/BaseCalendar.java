@@ -2,7 +2,9 @@ package org.navalplanner.business.calendars.entities;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.joda.time.DateTime;
@@ -34,13 +36,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
     private String name;
 
-    private Integer monday = null;
-    private Integer tuesday = null;
-    private Integer wednesday = null;
-    private Integer thursday = null;
-    private Integer friday = null;
-    private Integer saturday = null;
-    private Integer sunday = null;
+    private Map<Integer, Integer> hoursPerDay;
 
     private BaseCalendar parent;
 
@@ -52,15 +48,26 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
     private Set<ExceptionDay> exceptions = new HashSet<ExceptionDay>();
 
+    public enum Days {
+        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+    }
+
     public enum DayType {
-        NORMAL, ZERO_HOURS, OWN_EXCEPTION, ANCESTOR_EXCEPTION;
+        NORMAL, ZERO_HOURS, OWN_EXCEPTION, ANCESTOR_EXCEPTION
     }
 
     /**
      * Constructor for hibernate. Do not use!
      */
     public BaseCalendar() {
-
+        hoursPerDay = new HashMap<Integer, Integer>();
+        setHoursForDay(Days.MONDAY, null);
+        setHoursForDay(Days.TUESDAY, null);
+        setHoursForDay(Days.WEDNESDAY, null);
+        setHoursForDay(Days.THURSDAY, null);
+        setHoursForDay(Days.FRIDAY, null);
+        setHoursForDay(Days.SATURDAY, null);
+        setHoursForDay(Days.SUNDAY, null);
     }
 
     public void setName(String name) {
@@ -71,24 +78,12 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         return name;
     }
 
-    public void setMonday(Integer monday) {
-        this.monday = monday;
-    }
-
-    public Integer getMonday() {
-        if ((monday == null) && (parent != null)) {
-            return parent.getMonday();
+    public Integer getHours(Days day) {
+        if ((getHoursForDay(day) == null) && (parent != null)) {
+            return parent.getHours(day);
         } else {
-            return valueIfNotNullElseDefaultValue(monday);
+            return valueIfNotNullElseDefaultValue(getHoursForDay(day));
         }
-    }
-
-    public boolean isDefaultMonday() {
-        return (this.monday == null);
-    }
-
-    public void setDefaultMonday() {
-        this.monday = null;
     }
 
     private Integer valueIfNotNullElseDefaultValue(Integer hours) {
@@ -98,124 +93,24 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         return hours;
     }
 
-    public void setTuesday(Integer tuesday) {
-        this.tuesday = tuesday;
+    public void setHours(Days day, Integer hours) {
+        setHoursForDay(day, hours);
     }
 
-    public Integer getTuesday() {
-        if ((tuesday == null) && (parent != null)) {
-            return parent.getTuesday();
-        } else {
-            return valueIfNotNullElseDefaultValue(tuesday);
-        }
+    private void setHoursForDay(Days day, Integer hours) {
+        hoursPerDay.put(day.ordinal(), hours);
     }
 
-    public boolean isDefaultTuesday() {
-        return (this.tuesday == null);
+    private Integer getHoursForDay(Days day) {
+        return hoursPerDay.get(day.ordinal());
     }
 
-    public void setDefaultTuesday() {
-        this.tuesday = null;
+    public boolean isDefault(Days day) {
+        return (getHoursForDay(day) == null);
     }
 
-    public void setWednesday(Integer wednesday) {
-        this.wednesday = wednesday;
-    }
-
-    public Integer getWednesday() {
-        if ((wednesday == null) && (parent != null)) {
-            return parent.getWednesday();
-        } else {
-            return valueIfNotNullElseDefaultValue(wednesday);
-        }
-    }
-
-    public boolean isDefaultWednesday() {
-        return (this.wednesday == null);
-    }
-
-    public void setDefaultWednesday() {
-        this.wednesday = null;
-    }
-
-    public void setThursday(Integer thursday) {
-        this.thursday = thursday;
-    }
-
-    public Integer getThursday() {
-        if ((thursday == null) && (parent != null)) {
-            return parent.getThursday();
-        } else {
-            return valueIfNotNullElseDefaultValue(thursday);
-        }
-    }
-
-    public boolean isDefaultThursday() {
-        return (this.thursday == null);
-    }
-
-    public void setDefaultThursday() {
-        this.thursday = null;
-    }
-
-    public void setFriday(Integer friday) {
-        this.friday = friday;
-    }
-
-    public Integer getFriday() {
-        if ((friday == null) && (parent != null)) {
-            return parent.getFriday();
-        } else {
-            return valueIfNotNullElseDefaultValue(friday);
-        }
-    }
-
-    public boolean isDefaultFriday() {
-        return (this.friday == null);
-    }
-
-    public void setDefaultFriday() {
-        this.friday = null;
-    }
-
-    public void setSaturday(Integer saturday) {
-        this.saturday = saturday;
-    }
-
-    public Integer getSaturday() {
-        if ((saturday == null) && (parent != null)) {
-            return parent.getSaturday();
-        } else {
-            return valueIfNotNullElseDefaultValue(saturday);
-        }
-    }
-
-    public boolean isDefaultSaturday() {
-        return (this.saturday == null);
-    }
-
-    public void setDefaultSaturday() {
-        this.saturday = null;
-    }
-
-    public void setSunday(Integer sunday) {
-        this.sunday = sunday;
-    }
-
-    public Integer getSunday() {
-        if ((sunday == null) && (parent != null)) {
-            return parent.getSunday();
-        } else {
-            return valueIfNotNullElseDefaultValue(sunday);
-        }
-    }
-
-    public boolean isDefaultSunday() {
-        return (this.sunday == null);
-    }
-
-    public void setDefaultSunday() {
-        this.sunday = null;
+    public void setDefault(Days day) {
+        setHoursForDay(day, null);
     }
 
     public BaseCalendar getParent() {
@@ -389,31 +284,30 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         }
 
         switch (date.getDayOfWeek()) {
-            case DateTimeConstants.MONDAY:
-                return getMonday();
+        case DateTimeConstants.MONDAY:
+            return getHours(Days.MONDAY);
 
-            case DateTimeConstants.TUESDAY:
-                return getTuesday();
+        case DateTimeConstants.TUESDAY:
+            return getHours(Days.TUESDAY);
 
-            case DateTimeConstants.WEDNESDAY:
-                return getWednesday();
+        case DateTimeConstants.WEDNESDAY:
+            return getHours(Days.WEDNESDAY);
 
-            case DateTimeConstants.THURSDAY:
-                return getThursday();
+        case DateTimeConstants.THURSDAY:
+            return getHours(Days.THURSDAY);
 
-            case DateTimeConstants.FRIDAY:
-                return getFriday();
+        case DateTimeConstants.FRIDAY:
+            return getHours(Days.FRIDAY);
 
-            case DateTimeConstants.SATURDAY:
-                return getSaturday();
+        case DateTimeConstants.SATURDAY:
+            return getHours(Days.SATURDAY);
 
-            case DateTimeConstants.SUNDAY:
-                return getSunday();
+        case DateTimeConstants.SUNDAY:
+            return getHours(Days.SUNDAY);
 
-            default:
-                throw new RuntimeException("Day of week out of range!");
+        default:
+            throw new RuntimeException("Day of week out of range!");
         }
-
     }
 
     /**
@@ -465,9 +359,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     @Override
     public void checkValid() throws ValidationException {
         if (parent == null) {
-            if ((monday == null) || (thursday == null) || (wednesday == null)
-                    || (tuesday == null) || (friday == null) || (saturday == null)
-                    || (sunday == null)) {
+            if (isNullSomeDay()) {
                 throw new ValidationException(
                         "Daily hours could not have the default value "
                                 + "if the calendar is not derivated");
@@ -482,6 +374,15 @@ public class BaseCalendar extends BaseEntity implements IValidable {
             throw new ValidationException("A expiring date should be fixed"
                     + "if current calendar has a next calendar");
         }
+    }
+
+    private boolean isNullSomeDay() {
+        for (Integer hours : hoursPerDay.values()) {
+            if (hours == null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -539,13 +440,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
         copy.name = this.name;
 
-        copy.monday = this.monday;
-        copy.tuesday = this.tuesday;
-        copy.wednesday = this.wednesday;
-        copy.thursday = this.thursday;
-        copy.friday = this.friday;
-        copy.saturday = this.saturday;
-        copy.sunday = this.sunday;
+        copy.hoursPerDay = new HashMap<Integer, Integer>(this.hoursPerDay);
 
         copy.exceptions = new HashSet<ExceptionDay>(this.exceptions);
 

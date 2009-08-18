@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ExceptionDay;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
+import org.navalplanner.business.calendars.entities.BaseCalendar.Days;
 import org.navalplanner.business.common.exceptions.ValidationException;
 
 /**
@@ -46,13 +47,13 @@ public class BaseCalendarTest {
 
         calendar.setName("Test");
 
-        calendar.setMonday(8);
-        calendar.setTuesday(8);
-        calendar.setWednesday(8);
-        calendar.setThursday(8);
-        calendar.setFriday(8);
-        calendar.setSaturday(0);
-        calendar.setSunday(0);
+        calendar.setHours(Days.MONDAY, 8);
+        calendar.setHours(Days.TUESDAY, 8);
+        calendar.setHours(Days.WEDNESDAY, 8);
+        calendar.setHours(Days.THURSDAY, 8);
+        calendar.setHours(Days.FRIDAY, 8);
+        calendar.setHours(Days.SATURDAY, 0);
+        calendar.setHours(Days.SUNDAY, 0);
 
         return calendar;
     }
@@ -208,8 +209,8 @@ public class BaseCalendarTest {
         BaseCalendar origCalendar = createBasicCalendar();
         BaseCalendar newCalendar = origCalendar.newVersion(MONDAY_LOCAL_DATE);
 
-        newCalendar.setWednesday(4);
-        newCalendar.setSunday(4);
+        newCalendar.setHours(Days.WEDNESDAY, 4);
+        newCalendar.setHours(Days.SUNDAY, 4);
 
         int wednesdayHours = newCalendar.getWorkableHours(WEDNESDAY_LOCAL_DATE);
         assertThat(wednesdayHours, equalTo(4));
@@ -239,8 +240,8 @@ public class BaseCalendarTest {
         BaseCalendar origCalendar = createBasicCalendar();
         BaseCalendar newCalendar = origCalendar.newVersion(MONDAY_LOCAL_DATE);
 
-        newCalendar.setMonday(1);
-        newCalendar.setSunday(2);
+        newCalendar.setHours(Days.MONDAY, 1);
+        newCalendar.setHours(Days.SUNDAY, 2);
 
         int mondayHours = newCalendar.getWorkableHours(MONDAY_LOCAL_DATE);
         assertThat(mondayHours, equalTo(1));
@@ -315,13 +316,13 @@ public class BaseCalendarTest {
     }
 
     public static void setHoursForAllDays(BaseCalendar calendar, Integer hours) {
-        calendar.setMonday(hours);
-        calendar.setTuesday(hours);
-        calendar.setWednesday(hours);
-        calendar.setThursday(hours);
-        calendar.setFriday(hours);
-        calendar.setSaturday(hours);
-        calendar.setSunday(hours);
+        calendar.setHours(Days.MONDAY, hours);
+        calendar.setHours(Days.TUESDAY, hours);
+        calendar.setHours(Days.WEDNESDAY, hours);
+        calendar.setHours(Days.THURSDAY, hours);
+        calendar.setHours(Days.FRIDAY, hours);
+        calendar.setHours(Days.SATURDAY, hours);
+        calendar.setHours(Days.SUNDAY, hours);
     }
 
     @Test
@@ -425,23 +426,23 @@ public class BaseCalendarTest {
     }
 
     private void thenForAllDaysValueByDefault() {
-        assertTrue(calendarFixture.isDefaultMonday());
-        assertTrue(calendarFixture.isDefaultTuesday());
-        assertTrue(calendarFixture.isDefaultWednesday());
-        assertTrue(calendarFixture.isDefaultThursday());
-        assertTrue(calendarFixture.isDefaultFriday());
-        assertTrue(calendarFixture.isDefaultSaturday());
-        assertTrue(calendarFixture.isDefaultSunday());
+        assertTrue(calendarFixture.isDefault(Days.MONDAY));
+        assertTrue(calendarFixture.isDefault(Days.TUESDAY));
+        assertTrue(calendarFixture.isDefault(Days.WEDNESDAY));
+        assertTrue(calendarFixture.isDefault(Days.THURSDAY));
+        assertTrue(calendarFixture.isDefault(Days.FRIDAY));
+        assertTrue(calendarFixture.isDefault(Days.SATURDAY));
+        assertTrue(calendarFixture.isDefault(Days.SUNDAY));
     }
 
     @Test(expected = ValidationException.class)
     public void testDefaultValues() throws ValidationException {
         BaseCalendar calendar = createBasicCalendar();
 
-        assertFalse(calendar.isDefaultMonday());
+        assertFalse(calendar.isDefault(Days.MONDAY));
 
-        calendar.setDefaultMonday();
-        assertTrue(calendar.isDefaultMonday());
+        calendar.setDefault(Days.MONDAY);
+        assertTrue(calendar.isDefault(Days.MONDAY));
 
         calendar.checkValid();
     }

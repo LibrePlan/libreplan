@@ -14,13 +14,11 @@
 
         <property name="name" access="field"/>
 
-        <property name="monday" access="field"/>
-        <property name="tuesday" access="field"/>
-        <property name="wednesday" access="field"/>
-        <property name="thursday" access="field"/>
-        <property name="friday" access="field"/>
-        <property name="saturday" access="field"/>
-        <property name="sunday" access="field"/>
+        <map name="hoursPerDay">
+            <key column="BASE_CALENDAR_ID"/>
+            <index column="DAY_ID" type="integer" />
+            <element column="HOURS" type="integer" />
+        </map>
 
         <one-to-one name="parent" class="BaseCalendar" access="field"/>
 
