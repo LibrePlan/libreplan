@@ -23,14 +23,12 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     private DependencyType type;
 
-    public DependencyComponent() {
+    private FunctionalityExposedForExtensions<?> context;
 
+    public DependencyComponent(FunctionalityExposedForExtensions<?> context,
+            TaskComponent source, TaskComponent destination) {
         this.type = DependencyType.END_START;
-
-    }
-
-    public DependencyComponent(TaskComponent source, TaskComponent destination) {
-        this();
+        this.context = context;
         if (source == null)
             throw new IllegalArgumentException("source cannot be null");
         if (destination == null)

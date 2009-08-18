@@ -139,8 +139,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
      * @return
      */
     private Task extractTask(Integer topInsertionPosition,
-            List<DomainDependency<T>> accumulatedDependencies,
-            T data, TaskContainer parent) {
+            List<DomainDependency<T>> accumulatedDependencies, T data,
+            TaskContainer parent) {
         ITaskFundamentalProperties adapted = adapter.adapt(data);
         accumulatedDependencies.addAll(adapter.getOutcomingDependencies(data));
         accumulatedDependencies.addAll(adapter.getIncomingDependencies(data));
