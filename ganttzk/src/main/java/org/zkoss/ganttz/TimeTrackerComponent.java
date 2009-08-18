@@ -1,12 +1,10 @@
 package org.zkoss.ganttz;
 
-import java.lang.ref.WeakReference;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.ganttz.util.WeakReferencedListeners;
+import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.util.zoom.TimeTrackerState;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
@@ -25,7 +23,8 @@ public class TimeTrackerComponent extends HtmlMacroComponent {
                 .year(2012));
     }
 
-    private List<WeakReference<IZoomLevelChangedListener>> zoomListeners = new LinkedList<WeakReference<IZoomLevelChangedListener>>();
+    private WeakReferencedListeners<IZoomLevelChangedListener> zoomListeners = WeakReferencedListeners
+            .create();
 
     private IDatesMapper datesMapper = null;
 
@@ -51,8 +50,7 @@ public class TimeTrackerComponent extends HtmlMacroComponent {
     }
 
     public void addZoomListener(IZoomLevelChangedListener listener) {
-        zoomListeners
-                .add(new WeakReference<IZoomLevelChangedListener>(listener));
+        zoomListeners.addListener(listener);
     }
 
     public void scrollHorizontalPercentage(int displacement) {
@@ -60,17 +58,15 @@ public class TimeTrackerComponent extends HtmlMacroComponent {
                 "scroll_horizontal", "" + displacement));
     }
 
-    private void fireZoomChanged(ZoomLevel detailLevel) {
-        ListIterator<WeakReference<IZoomLevelChangedListener>> listIterator = zoomListeners
-                .listIterator();
-        while (listIterator.hasNext()) {
-            IZoomLevelChangedListener listener = listIterator.next().get();
-            if (listener == null) {
-                listIterator.remove();
-            } else {
-                listener.zoomLevelChanged(detailLevel);
-            }
-        }
+    private void fireZoomChanged(final ZoomLevel detailLevel) {
+        zoomListeners
+                .fireEvent(new IListenerNotification<IZoomLevelChangedListener>() {
+
+                    @Override
+                    public void doNotify(IZoomLevelChangedListener listener) {
+                        listener.zoomLevelChanged(detailLevel);
+                    }
+                });
     }
 
     public Collection<TimeTrackerState.DetailItem> getDetailsFirstLevel() {
