@@ -1,5 +1,5 @@
 <?page title="${i18n:_('Navalpro: Scheduling')}"?>
-<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
