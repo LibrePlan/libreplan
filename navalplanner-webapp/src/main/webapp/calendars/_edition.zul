@@ -9,7 +9,7 @@
                     <rows>
                         <row>
                             <label value="Name" />
-                            <textbox value="@{controller.calendar.name}" />
+                            <textbox value="@{controller.baseCalendar.name}" />
                         </row>
                     </rows>
                 </grid>

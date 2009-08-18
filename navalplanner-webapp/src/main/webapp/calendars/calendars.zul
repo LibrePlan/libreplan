@@ -25,12 +25,12 @@
             <vbox align = "center">
                 <hbox align = "center">
                     <label value = "¿ Do you want to delete"/>
-                    <label value ="@{controller.calendar.name}"/>
+                    <label value ="@{controller.baseCalendar.name}"/>
                     <label value = "?"/>
                 </hbox>
                 <hbox align = "center">
                     <button label="Yes"
-                        onClick="controller.remove(controller.calendar);" />
+                        onClick="controller.remove(controller.baseCalendar);" />
                     <button label="No"
                         onClick="controller.cancelRemove();" />
                 </hbox>

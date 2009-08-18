@@ -1,12 +1,12 @@
 <window id="${arg.top_id}" title="Calendars List">
-    <grid id="listing" model="@{controller.calendars}" mold="paging"
+    <grid id="listing" model="@{controller.baseCalendars}" mold="paging"
         pageSize="5">
         <columns>
             <column label="Operations" />
             <column label="Name" sort="auto(name)" />
         </columns>
         <rows>
-            <row self="@{each='calendar'}" value="@{calendar}">
+            <row self="@{each='baseCalendar'}" value="@{baseCalendar}">
                 <hbox>
                     <button label="Edit"
                         onClick="controller.goToEditForm(self.parent.parent.value);">
@@ -16,7 +16,7 @@
                         onClick="controller.confirmRemove(self.parent.parent.value);">
                     </button>
                 </hbox>
-                <label value="@{calendar.name}" />
+                <label value="@{baseCalendar.name}" />
             </row>
         </rows>
     </grid>
