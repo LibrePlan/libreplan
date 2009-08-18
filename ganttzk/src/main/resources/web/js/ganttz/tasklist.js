@@ -51,13 +51,6 @@ document.getElementById('ganttpanel_scroller_y').onscroll = function() {
     offset = document.getElementById('ganttpanel_scroller_y').scrollTop;
     document.getElementById('listdetails_container').scrollTop = offset;
     document.getElementById('scroll_container').scrollTop = offset;
-   }
-
-// Scroll panel when detected movements on listdetails container
-document.getElementById('listdetails_container').onscroll = function() {
-    offset = document.getElementById('listdetails_container').scrollTop;
-    document.getElementById('scroll_container').scrollTop = offset;
-    document.getElementById('ganttpanel_scroller_y').scrollTop = offset;
 }
 
 window.onresize = relocateScrolls;
