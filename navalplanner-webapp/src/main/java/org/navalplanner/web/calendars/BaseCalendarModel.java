@@ -25,6 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class BaseCalendarModel implements IBaseCalendarModel {
 
+    /**
+     * Conversation state
+     */
     private BaseCalendar baseCalendar;
 
     private boolean editing = false;
@@ -35,11 +38,59 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
 
+
+    /*
+     * Non conversational steps
+     */
+
     @Override
     @Transactional(readOnly = true)
     public List<BaseCalendar> getBaseCalendars() {
         return baseCalendarDAO.getBaseCalendars();
     }
+
+
+    /*
+     * Initial conversation steps
+     */
+
+    @Override
+    public void initCreate() {
+        editing = false;
+        this.baseCalendar = BaseCalendar.create();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void initEdit(BaseCalendar baseCalendar) {
+        editing = true;
+        Validate.notNull(baseCalendar);
+
+        this.baseCalendar = getFromDB(baseCalendar);
+    }
+
+    private BaseCalendar getFromDB(BaseCalendar baseCalendar) {
+        return getFromDB(baseCalendar.getId());
+    }
+
+    @Override
+    public void initRemove(BaseCalendar baseCalendar) {
+        this.baseCalendar = baseCalendar;
+    }
+
+    @Transactional(readOnly = true)
+    private BaseCalendar getFromDB(Long id) {
+        try {
+            BaseCalendar baseCalendar = baseCalendarDAO.find(id);
+            return baseCalendar;
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*
+     * Intermediate conversation steps
+     */
 
     @Override
     public BaseCalendar getBaseCalendar() {
@@ -47,42 +98,18 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
-    public void prepareForCreate() {
-        editing = false;
-        this.baseCalendar = BaseCalendar.create();
+    public boolean isEditing() {
+        return this.editing;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public void initEdit(BaseCalendar BaseCalendar) {
-        editing = true;
-        Validate.notNull(BaseCalendar);
 
-        this.baseCalendar = getFromDB(BaseCalendar);
-    }
-
-    private BaseCalendar getFromDB(BaseCalendar BaseCalendar) {
-        return getFromDB(BaseCalendar.getId());
-    }
-
-    @Transactional(readOnly = true)
-    private BaseCalendar getFromDB(Long id) {
-        try {
-            BaseCalendar BaseCalendar = baseCalendarDAO.find(id);
-            return BaseCalendar;
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void prepareForRemove(BaseCalendar BaseCalendar) {
-        this.baseCalendar = BaseCalendar;
-    }
+    /*
+     * Final conversation steps
+     */
 
     @Override
     @Transactional
-    public void save() throws ValidationException {
+    public void confirmSave() throws ValidationException {
         InvalidValue[] invalidValues = baseCalendarValidator
                 .getInvalidValues(baseCalendar);
         if (invalidValues.length > 0) {
@@ -94,7 +121,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
     @Override
     @Transactional
-    public void remove(BaseCalendar BaseCalendar) {
+    public void confirmRemove() {
         try {
             baseCalendarDAO.remove(baseCalendar.getId());
         } catch (InstanceNotFoundException e) {
@@ -103,8 +130,12 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
-    public boolean isEditing() {
-        return this.editing;
+    public void cancel() {
+        resetState();
+    }
+
+    private void resetState() {
+        baseCalendar = null;
     }
 
 }

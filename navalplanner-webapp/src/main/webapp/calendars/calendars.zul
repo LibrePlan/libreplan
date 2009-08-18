@@ -30,7 +30,7 @@
                 </hbox>
                 <hbox align = "center">
                     <button label="Yes"
-                        onClick="controller.remove(controller.baseCalendar);" />
+                        onClick="controller.remove();" />
                     <button label="No"
                         onClick="controller.cancelRemove();" />
                 </hbox>

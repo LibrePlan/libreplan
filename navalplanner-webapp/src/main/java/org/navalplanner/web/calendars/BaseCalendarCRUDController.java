@@ -55,6 +55,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public void cancel() {
+        baseCalendarModel.cancel();
         goToList();
     }
 
@@ -63,15 +64,15 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         getVisibility().showOnly(listWindow);
     }
 
-    public void goToEditForm(BaseCalendar BaseCalendar) {
-        baseCalendarModel.initEdit(BaseCalendar);
+    public void goToEditForm(BaseCalendar baseCalendar) {
+        baseCalendarModel.initEdit(baseCalendar);
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
     }
 
     public void save() {
         try {
-            baseCalendarModel.save();
+            baseCalendarModel.confirmSave();
             messagesForUser.showMessage(Level.INFO, "base calendar saved");
             goToList();
         } catch (ValidationException e) {
@@ -79,13 +80,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         }
     }
 
-    public void confirmRemove(BaseCalendar BaseCalendar) {
-        baseCalendarModel.prepareForRemove(BaseCalendar);
+    public void confirmRemove(BaseCalendar baseCalendar) {
+        baseCalendarModel.initRemove(baseCalendar);
         showConfirmingWindow();
     }
 
     public void cancelRemove() {
         confirmingRemove = false;
+        baseCalendarModel.cancel();
         confirmRemove.setVisible(false);
         Util.reloadBindings(confirmRemove);
     }
@@ -109,12 +111,12 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         }
     }
 
-    public void remove(BaseCalendar BaseCalendar) {
-        baseCalendarModel.remove(BaseCalendar);
+    public void remove() {
+        String name = baseCalendarModel.getBaseCalendar().getName();
+        baseCalendarModel.confirmRemove();
         hideConfirmingWindow();
         Util.reloadBindings(listWindow);
-        messagesForUser.showMessage(Level.INFO, "removed "
-                + BaseCalendar.getName());
+        messagesForUser.showMessage(Level.INFO, "removed " + name);
     }
 
     public void goToEditForm() {
@@ -123,7 +125,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public void goToCreateForm() {
-        baseCalendarModel.prepareForCreate();
+        baseCalendarModel.initCreate();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
