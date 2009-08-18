@@ -18,11 +18,11 @@
                         <n:td forEach="${menuContainer.customMenuSecondaryItems}">
                             <n:a href="${each.url}" class="sub_menu">${i18n:_(each.name)}</n:a>
                             <n:td width="14"
-                                background="/navalplanner-webapp/common/img/sub_separacion.gif" />
+                                background="${menuContainer.contextPath}/common/img/sub_separacion.gif" />
                         </n:td>
+                        <hbox id="registeredItemsInsertionPoint" />
                     </n:tr>
                 </n:table>
-
             </n:td>
         </n:tr>
     </n:table>

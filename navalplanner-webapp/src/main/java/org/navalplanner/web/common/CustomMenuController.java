@@ -5,14 +5,20 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zkoss.ganttz.util.IMenuItemsRegister;
+import org.zkoss.ganttz.util.MenuItemsRegisterLocator;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Hbox;
 
 /**
  * Controller for customMenu <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class CustomMenuController extends Div {
+public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     private List<CustomMenuItem> firstLevel;
 
@@ -64,6 +70,7 @@ public class CustomMenuController extends Div {
 
     public CustomMenuController() {
         initializeMenu();
+        MenuItemsRegisterLocator.store(this);
     }
 
     public void initializeMenu() {
@@ -72,12 +79,6 @@ public class CustomMenuController extends Div {
 
         ci = new CustomMenuItem(_("Planification"),
                 "/navalplanner-webapp/planner/main.zul");
-        ci.appendChildren(new CustomMenuItem(_("Planification"),
-                "/navalplanner-webapp/planner/main.zul"));
-        ci.appendChildren(new CustomMenuItem(_("Company overview"),
-                "/navalplanner-webapp/planner/main.zul"));
-        ci.appendChildren(new CustomMenuItem(_("Planifications list"),
-                "/navalplanner-webapp/planner/main.zul"));
         l.add(ci);
 
         ci = new CustomMenuItem(_("Resources"),
@@ -121,6 +122,10 @@ public class CustomMenuController extends Div {
         this.firstLevel = l;
     }
 
+    private Hbox getRegisteredItemsInsertionPoint() {
+        return (Hbox) getFellow("registeredItemsInsertionPoint");
+    }
+
     public List<CustomMenuItem> getCustomMenuItems() {
         return this.firstLevel;
     }
@@ -134,6 +139,28 @@ public class CustomMenuController extends Div {
             }
         }
         return this.firstLevel.get(0).getChildren();
+    }
+
+    @Override
+    public void addMenuItem(String name,
+            org.zkoss.zk.ui.event.EventListener eventListener) {
+        Hbox insertionPoint = getRegisteredItemsInsertionPoint();
+        Button button = new Button();
+        button.setLabel(_(name));
+        button.addEventListener(Events.ON_CLICK, eventListener);
+        insertionPoint.appendChild(button);
+        insertionPoint.appendChild(separator());
+    }
+
+    private Component separator() {
+        Div div = new Div();
+        div.setStyle("width: 14px; background: /" + getContextPath()
+                + "common/img/sub_separacion.gif");
+        return div;
+    }
+
+    public String getContextPath() {
+        return Executions.getCurrent().getContextPath();
     }
 
 }
