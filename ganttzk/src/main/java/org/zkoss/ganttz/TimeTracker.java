@@ -59,8 +59,14 @@ public class TimeTracker {
         return detailsSecondLevelCached;
     }
 
+    private Interval realIntervalCached;
+
     private Interval getRealInterval() {
-        return getTimeTrackerState().getRealIntervalFor(interval);
+        if (realIntervalCached == null) {
+            realIntervalCached = getTimeTrackerState().getRealIntervalFor(
+                    interval);
+        }
+        return realIntervalCached;
     }
 
     private TimeTrackerState getTimeTrackerState() {
@@ -90,6 +96,7 @@ public class TimeTracker {
     private void clearDetailLevelDependantData() {
         datesMapper = null;
         detailsFirstLevelCached = detailsSecondLevelCached = null;
+        realIntervalCached = null;
     }
 
     public IDatesMapper getMapper() {
