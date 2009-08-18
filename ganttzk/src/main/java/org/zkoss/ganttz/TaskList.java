@@ -200,7 +200,11 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     IDatesMapper getMapper() {
-        return getTimeTrackerComponent().getMapper();
+        return getTimeTracker().getMapper();
+    }
+
+    private TimeTracker getTimeTracker() {
+        return getTimeTrackerComponent().getTimeTracker();
     }
 
     private List<TaskComponent> getTopLevelTaskComponents() {
@@ -242,7 +246,7 @@ public class TaskList extends XulElement implements AfterCompose {
                     adjustZoomColumnsHeight();
                 }
             };
-            getTimeTrackerComponent().addZoomListener(zoomLevelChangedListener);
+            getTimeTracker().addZoomListener(zoomLevelChangedListener);
         }
     }
 

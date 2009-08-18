@@ -138,9 +138,13 @@ public class DependencyList extends XulElement implements AfterCompose {
                     }
                 }
             };
-            getTimeTrackerComponent().addZoomListener(listener);
+            getTimeTracker().addZoomListener(listener);
         }
         addContextMenu();
+    }
+
+    private TimeTracker getTimeTracker() {
+        return getTimeTrackerComponent().getTimeTracker();
     }
 
     private void addContextMenu() {
