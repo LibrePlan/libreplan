@@ -9,6 +9,7 @@ import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
+import org.zkoss.ganttz.extensions.ITabFactory;
 
 /**
  * A object that defines several extension points for gantt planner
@@ -57,6 +58,8 @@ public class PlannerConfiguration<T> {
     private ICommand<T> goingDownInLastArrowCommand = new NullCommand<T>();
 
     private ICommandOnTask<T> editTaskCommand = new NullCommandOnTask<T>();
+
+    private List<ITabFactory<T>> tabFactories = new ArrayList<ITabFactory<T>>();
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
@@ -110,7 +113,16 @@ public class PlannerConfiguration<T> {
     }
 
     public void setEditTaskCommand(ICommandOnTask<T> editTaskCommand) {
+        Validate.notNull(editTaskCommand);
         this.editTaskCommand = editTaskCommand;
     }
 
+    public void addTab(ITabFactory<T> tabCreator) {
+        Validate.notNull(tabCreator);
+        this.tabFactories.add(tabCreator);
+    }
+
+    public List<ITabFactory<T>> getTabFactories() {
+        return Collections.unmodifiableList(tabFactories);
+    }
 }
