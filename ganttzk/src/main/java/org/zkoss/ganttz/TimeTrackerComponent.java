@@ -8,13 +8,12 @@ import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.Command;
 import org.zkoss.zk.au.ComponentCommand;
-import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 /**
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
-public class TimeTrackerComponent extends HtmlMacroComponent {
+public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
     private final TimeTracker timeTracker;
     private IZoomLevelChangedListener zoomListener;
@@ -35,10 +34,7 @@ public class TimeTrackerComponent extends HtmlMacroComponent {
         return this.getTimeTracker().getDetailLevel();
     }
 
-    public void scrollHorizontalPercentage(int displacement) {
-        response("scroll_horizontal", new AuInvoke(this.getParent(),
-                "scroll_horizontal", "" + displacement));
-    }
+    protected abstract void scrollHorizontalPercentage(int pixelsDisplacement);
 
     public Collection<TimeTrackerState.DetailItem> getDetailsFirstLevel() {
         return timeTracker.getDetailsFirstLevel();

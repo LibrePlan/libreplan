@@ -3,6 +3,7 @@ package org.zkoss.ganttz;
 import java.util.List;
 
 import org.zkoss.ganttz.data.GanttDiagramGraph;
+import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
@@ -21,7 +22,7 @@ public class GanttPanel extends XulElement implements AfterCompose {
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
             CommandOnTaskContextualized<?> editTaskCommand) {
         this.diagramGraph = context.getDiagramGraph();
-        timeTrackerComponent = new TimeTrackerComponent(context
+        timeTrackerComponent = timeTrackerForGanttPanel(context
                 .getTimeTracker());
         appendChild(timeTrackerComponent);
         tasksLists = TaskList.createFor(context, editTaskCommand,
@@ -29,6 +30,17 @@ public class GanttPanel extends XulElement implements AfterCompose {
         dependencyList = new DependencyList(context);
         appendChild(tasksLists);
         appendChild(dependencyList);
+    }
+
+    private TimeTrackerComponent timeTrackerForGanttPanel(
+            TimeTracker timeTracker) {
+        return new TimeTrackerComponent(timeTracker) {
+            @Override
+            protected void scrollHorizontalPercentage(int pixelsDisplacement) {
+                response("scroll_horizontal", new AuInvoke(GanttPanel.this,
+                        "scroll_horizontal", "" + pixelsDisplacement));
+            }
+        };
     }
 
     @Override
