@@ -111,7 +111,7 @@ public class Planner extends XulElement {
         this.context = context;
         clear();
         context.add(configuration.getData());
-        recreate();
+        createTasksPlanningTab();
     }
 
     private void clear() {
@@ -157,17 +157,17 @@ public class Planner extends XulElement {
         return diagramGraph;
     }
 
-    private void recreate() {
+    private TasksPlanningTab createTasksPlanningTab() {
         this.leftPane = new LeftPane(contextualizedGlobalCommands,
                 this.diagramGraph.getTopLevelTasks());
-        this.leftPane.setParent(this);
-        this.leftPane.afterCompose();
-        this.leftPane
-                .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
         this.ganttPanel = new GanttPanel(this.context,
                 commandsOnTasksContextualized, editTaskCommand);
-        ganttPanel.setParent(this);
-        ganttPanel.afterCompose();
+        TasksPlanningTab result = new TasksPlanningTab(this, leftPane,
+                ganttPanel);
+        result.afterCompose();
+        this.leftPane
+                .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
+        return result;
     }
 
     void removeTask(Task task) {
