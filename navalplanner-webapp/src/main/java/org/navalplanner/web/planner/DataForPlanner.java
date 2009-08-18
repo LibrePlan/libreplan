@@ -68,6 +68,7 @@ public class DataForPlanner {
                         loadPanel = new ResourcesLoadPanel(context
                                 .getTimeTracker());
                         parent.appendChild(loadPanel);
+                        loadPanel.afterCompose();
                     }
 
                     @Override

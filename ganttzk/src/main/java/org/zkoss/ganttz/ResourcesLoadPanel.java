@@ -24,15 +24,26 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
         rlc2.addInterval(30, 100);
         rlc2.addInterval(20, 0);
         rlc2.addInterval(20, 60);
-
+        timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
+        appendChild(timeTrackerComponent);
         appendChild(rlc1);
         appendChild(rlc2);
+    }
 
+    private TimeTrackerComponent timeTrackerForResourcesLoadPanel(
+            TimeTracker timeTracker) {
+        return new TimeTrackerComponent(timeTracker) {
+
+            @Override
+            protected void scrollHorizontalPercentage(int pixelsDisplacement) {
+                // TODO do the scroll displacement
+            }
+        };
     }
 
     @Override
     public void afterCompose() {
-        //timeTracker.afterCompose();
+        timeTrackerComponent.afterCompose();
     }
 
     public TimeTrackerComponent getTimeTrackerComponent() {
