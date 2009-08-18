@@ -25,6 +25,20 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class DependencyList extends XulElement implements AfterCompose {
 
+    private final class ChangeTypeAction implements
+            ItemAction<DependencyComponent> {
+        private final DependencyType type;
+
+        private ChangeTypeAction(DependencyType type) {
+            this.type = type;
+        }
+
+        @Override
+        public void onEvent(final DependencyComponent choosen, Event event) {
+            context.changeType(choosen.getDependency(), type);
+        }
+    }
+
     private final class DependencyVisibilityToggler implements
             PropertyChangeListener {
         private final Task source;
@@ -150,35 +164,14 @@ public class DependencyList extends XulElement implements AfterCompose {
                                             .getDependency());
                                 }
                             });
-            contextMenuBuilder.item("Set End-Start",
-                    new ItemAction<DependencyComponent>() {
-                        @Override
-                        public void onEvent(final DependencyComponent choosen,
-                                Event event) {
-                            context.changeType(choosen.getDependency(),
-                                    DependencyType.END_START);
-                        }
-                    });
+            contextMenuBuilder.item("Set End-Start", new ChangeTypeAction(
+                    DependencyType.END_START));
 
-            contextMenuBuilder.item("Set Start-Start",
-                    new ItemAction<DependencyComponent>() {
-                        @Override
-                        public void onEvent(final DependencyComponent choosen,
-                                Event event) {
-                            context.changeType(choosen.getDependency(),
-                                    DependencyType.START_START);
-                        }
-                    });
+            contextMenuBuilder.item("Set Start-Start", new ChangeTypeAction(
+                    DependencyType.START_START));
 
-            contextMenuBuilder.item("Set End-End",
-                    new ItemAction<DependencyComponent>() {
-                        @Override
-                        public void onEvent(final DependencyComponent choosen,
-                                Event event) {
-                            context.changeType(choosen.getDependency(),
-                                    DependencyType.END_END);
-                        }
-                    });
+            contextMenuBuilder.item("Set End-End", new ChangeTypeAction(
+                    DependencyType.END_END));
 
             contextMenu = contextMenuBuilder.create();
 
