@@ -2,11 +2,6 @@ package org.zkoss.ganttz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -177,8 +172,6 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private String _color;
 
-    private List<WeakReference<IDependencyAddedListener>> dependencyListeners = new LinkedList<WeakReference<IDependencyAddedListener>>();
-
     private boolean isTopLevel;
 
     private final Task task;
@@ -194,31 +187,6 @@ public class TaskComponent extends Div implements AfterCompose {
 
     public String getLength() {
         return null;
-    }
-
-    public void addDependencyListener(IDependencyAddedListener listener) {
-        dependencyListeners.add(new WeakReference<IDependencyAddedListener>(
-                listener));
-    }
-
-    private void fireDependenceAdded(DependencyComponent dependencyComponent) {
-        ArrayList<IDependencyAddedListener> active = new ArrayList<IDependencyAddedListener>();
-        synchronized (this) {
-            ListIterator<WeakReference<IDependencyAddedListener>> iterator = dependencyListeners
-                    .listIterator();
-            while (iterator.hasNext()) {
-                WeakReference<IDependencyAddedListener> next = iterator.next();
-                IDependencyAddedListener listener = next.get();
-                if (listener == null) {
-                    iterator.remove();
-                } else {
-                    active.add(listener);
-                }
-            }
-        }
-        for (IDependencyAddedListener listener : active) {
-            listener.dependenceAdded(dependencyComponent);
-        }
     }
 
     public Command getCommand(String cmdId) {
@@ -246,11 +214,8 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     void doAddDependency(String destinyTaskId) {
-        DependencyComponent dependencyComponent = new DependencyComponent(this,
+        getTaskList().addDependency(this,
                 ((TaskComponent) getFellow(destinyTaskId)));
-        if (getPlanner().canAddDependency(dependencyComponent.getDependency())) {
-            fireDependenceAdded(dependencyComponent);
-        }
     }
 
     public String getColor() {

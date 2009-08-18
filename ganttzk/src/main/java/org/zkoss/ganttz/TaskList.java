@@ -32,8 +32,6 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private static final int HEIGHT_PER_ROW = 20; /* 30 */
 
-    private List<WeakReference<IDependencyAddedListener>> listeners = new LinkedList<WeakReference<IDependencyAddedListener>>();
-
     private IZoomLevelChangedListener zoomLevelChangedListener;
 
     private Menupopup contextMenu;
@@ -88,16 +86,6 @@ public class TaskList extends XulElement implements AfterCompose {
 
         addContextMenu(taskComponent);
         addListenerForTaskComponentEditForm(taskComponent);
-        ListIterator<WeakReference<IDependencyAddedListener>> iterator = listeners
-                .listIterator();
-        while (iterator.hasNext()) {
-            IDependencyAddedListener listener = iterator.next().get();
-            if (listener != null) {
-                taskComponent.addDependencyListener(listener);
-            } else {
-                iterator.remove();
-            }
-        }
         taskComponent.afterCompose();
         if (relocate) {
             response(null, new AuInvoke(taskComponent,
@@ -232,10 +220,8 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     public void addDependencyListener(IDependencyAddedListener listener) {
-        listeners.add(new WeakReference<IDependencyAddedListener>(listener));
-        for (TaskComponent taskComponent : getTaskComponents()) {
-            taskComponent.addDependencyListener(listener);
-        }
+        dependencyListeners.add(new WeakReference<IDependencyAddedListener>(
+                listener));
     }
 
     @Override
@@ -303,6 +289,36 @@ public class TaskList extends XulElement implements AfterCompose {
                 taskComponent.remove();
                 return;
             }
+        }
+    }
+
+    public void addDependency(TaskComponent source, TaskComponent destination) {
+        DependencyComponent dependencyComponent = new DependencyComponent(
+                source, destination);
+        if (getPlanner().canAddDependency(dependencyComponent.getDependency())) {
+            fireDependenceAdded(dependencyComponent);
+        }
+    }
+
+    private List<WeakReference<IDependencyAddedListener>> dependencyListeners = new LinkedList<WeakReference<IDependencyAddedListener>>();
+
+    private void fireDependenceAdded(DependencyComponent dependencyComponent) {
+        ArrayList<IDependencyAddedListener> active = new ArrayList<IDependencyAddedListener>();
+        synchronized (this) {
+            ListIterator<WeakReference<IDependencyAddedListener>> iterator = dependencyListeners
+                    .listIterator();
+            while (iterator.hasNext()) {
+                WeakReference<IDependencyAddedListener> next = iterator.next();
+                IDependencyAddedListener listener = next.get();
+                if (listener == null) {
+                    iterator.remove();
+                } else {
+                    active.add(listener);
+                }
+            }
+        }
+        for (IDependencyAddedListener listener : active) {
+            listener.dependenceAdded(dependencyComponent);
         }
     }
 
