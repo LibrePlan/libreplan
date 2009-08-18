@@ -3,7 +3,7 @@
 
 <c:set var="self" value="${requestScope.arg.self}"/>
 <h3>Resources Load</h3>
-<div id="${self.uuid}" z.type="ganttz.ganttpanel.GanttPanel" ${self.outerAttrs}>
+<div id="${self.uuid}" z.type="ganttz.resourcesloadpanel.ResourcesLoadPanel" ${self.outerAttrs}>
     <div id="ganttpanel">
         <c:forEach var="child" items="${self.children}">
             ${z:redraw(child, null)}
