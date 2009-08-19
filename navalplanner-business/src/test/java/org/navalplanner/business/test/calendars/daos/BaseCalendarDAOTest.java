@@ -10,6 +10,8 @@ import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -147,6 +149,36 @@ public class BaseCalendarDAOTest {
         baseCalendarDAO.flush();
 
         baseCalendarDAO.find(newCalendar.getId());
+    }
+
+    @Test
+    public void findChildrens() {
+        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
+        baseCalendarDAO.save(calendar);
+        BaseCalendar derivedCalendar = calendar.newDerivedCalendar();
+        baseCalendarDAO.save(derivedCalendar);
+        BaseCalendar derivedCalendar2 = calendar.newDerivedCalendar();
+        baseCalendarDAO.save(derivedCalendar2);
+
+        baseCalendarDAO.flush();
+        session.getCurrentSession().evict(calendar);
+        session.getCurrentSession().evict(derivedCalendar);
+        session.getCurrentSession().evict(derivedCalendar2);
+
+        calendar.dontPoseAsTransientObjectAnymore();
+        derivedCalendar.dontPoseAsTransientObjectAnymore();
+        derivedCalendar2.dontPoseAsTransientObjectAnymore();
+
+        List<BaseCalendar> children = baseCalendarDAO.findByParent(calendar);
+        assertThat(children.size(), equalTo(2));
+        assertTrue(children.get(0).getId().equals(derivedCalendar.getId())
+                || children.get(0).getId().equals(derivedCalendar2.getId()));
+
+        children = baseCalendarDAO.findByParent(derivedCalendar);
+        assertThat(children.size(), equalTo(0));
+
+        children = baseCalendarDAO.findByParent(derivedCalendar2);
+        assertThat(children.size(), equalTo(0));
     }
 
 }

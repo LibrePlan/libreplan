@@ -1,7 +1,10 @@
 package org.navalplanner.business.calendars.daos;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -21,6 +24,18 @@ public class BaseCalendarDAO extends GenericDAOHibernate<BaseCalendar, Long>
     @Override
     public List<BaseCalendar> getBaseCalendars() {
         return list(BaseCalendar.class);
+    }
+
+    @Override
+    public List<BaseCalendar> findByParent(BaseCalendar baseCalendar) {
+        if (baseCalendar == null) {
+            return new ArrayList<BaseCalendar>();
+        }
+
+        Criteria c = getSession().createCriteria(BaseCalendar.class);
+        c.add(Restrictions.eq("parent", baseCalendar));
+
+        return (List<BaseCalendar>) c.list();
     }
 
 }

@@ -3,6 +3,7 @@ package org.navalplanner.business.common.daos;
 import java.io.Serializable;
 import java.util.List;
 
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 
 /**
