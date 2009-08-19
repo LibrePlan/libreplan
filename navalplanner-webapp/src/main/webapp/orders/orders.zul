@@ -27,7 +27,7 @@
             position="center">
             <vbox>
                 <hbox>
-                    <i18n value="Confirm deleting {0} ?" arg1="@{controller.order.name}"/>
+                    <i18n value="Confirm deleting {0} ?" arg0="@{controller.order.name}"/>
                 </hbox>
                 <hbox>
                     <button label="${i18n:_('Yes')}"
@@ -43,7 +43,7 @@
             position="center">
             <vbox>
                 <hbox>
-                    <i18n value="Confirm scheduling {0} ?" arg1="@{controller.order.name}"/>
+                    <i18n value="Confirm scheduling {0} ?" arg0="@{controller.order.name}"/>
                 </hbox>
                 <hbox>
                     <button label="${i18n:_('Yes')}"

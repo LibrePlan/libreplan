@@ -9,9 +9,12 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
  *
  * @author Diego Pino García <dpino@igalia.com>
  */
+@SuppressWarnings("serial")
 public class I18n extends HtmlMacroComponent {
 
     public String value;
+
+    public String arg0;
 
     public String arg1;
 
@@ -19,18 +22,8 @@ public class I18n extends HtmlMacroComponent {
 
     public String arg3;
 
-    public String arg4;
-
     public I18n() {
 
-    }
-
-    public String getArg1() {
-        return arg1;
-    }
-
-    public void setArg1(String arg1) {
-        this.arg1 = arg1;
     }
 
     public String getValue() {
@@ -39,6 +32,22 @@ public class I18n extends HtmlMacroComponent {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getArg0() {
+        return arg0;
+    }
+
+    public void setArg0(String arg0) {
+        this.arg0 = arg0;
+    }
+
+    public String getArg1() {
+        return arg1;
+    }
+
+    public void setArg1(String arg1) {
+        this.arg1 = arg1;
     }
 
     public String getArg2() {
@@ -57,32 +66,20 @@ public class I18n extends HtmlMacroComponent {
         this.arg3 = arg3;
     }
 
-    public String getArg4() {
-        return arg4;
-    }
-
-    public void setArg4(String arg4) {
-        this.arg4 = arg4;
-    }
-
     public String getI18n() {
-        if (arg1 != null && arg2 != null && arg3 != null && arg4 != null) {
-            return I18nHelper._(value, arg1, arg2, arg3, arg4);
+        if (arg0 != null && arg1 != null && arg2 != null && arg3 != null) {
+            return I18nHelper._(value, arg0, arg1, arg2, arg3);
         }
-        if (arg1 != null && arg2 != null && arg3 != null) {
-            return I18nHelper._(value, arg1, arg2, arg3);
+        if (arg0 != null && arg1 != null && arg2 != null) {
+            return I18nHelper._(value, arg0, arg1, arg2);
         }
-        if (arg1 != null && arg2 != null) {
-            return I18nHelper._(value, arg1, arg2);
+        if (arg0 != null && arg1 != null) {
+            return I18nHelper._(value, arg0, arg1);
         }
-        if (arg1 != null) {
-            return I18nHelper._(value, arg1);
+        if (arg0 != null) {
+            return I18nHelper._(value, arg0);
         }
 
         return I18nHelper._(value);
-    }
-
-    public void afterCompose() {
-        super.afterCompose();
     }
 }
