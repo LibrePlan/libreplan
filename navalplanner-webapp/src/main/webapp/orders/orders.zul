@@ -1,4 +1,4 @@
-<?page title="Navalpro: Orders"?>
+<?page title="${i18n:_('Navalpro: Orders')}"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?page  id="List"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
@@ -9,44 +9,46 @@
 <?component name="list" inline="true" macroURI="_list.zul"?>
 <?component name="edition" inline="true" macroURI="_edition.zul"?>
 <?component name="orderElement" inline="true" macroURI="_editOrderElement.zul"?>
+
 <zk>
     <window self="@{define(content)}"
         apply="org.navalplanner.web.orders.OrderCRUDController">
         <vbox id="messagesContainer"></vbox>
         <list top_id="listWindow" />
-        <edition top_id="createWindow" title="Create"
-            save_button_label="Save" cancel_button_label="Cancel" />
-        <edition top_id="editWindow" title="Edit Personal Data"
-            save_button_label="Save" cancel_button_label="Cancel" />
-        <orderElement top_id="editOrderElement" title="Edit Order Element"
-            back_button_label="Back" />
+        <edition top_id="createWindow" title="${i18n:_('Create')}"
+            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
+        <edition top_id="editWindow" title="${i18n:_('Edit personal data')}"
+            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
+        <orderElement top_id="editOrderElement" title="${i18n:_('Edit order element')}"
+            back_button_label="${i18n:_('Back')}" />
+
         <window visible="@{controller.confirmingRemove}"
-            id="confirmRemove" title="Confirmación" width="500px"
+            id="confirmRemove" title="${i18n:_('Confirm')}" width="500px"
             position="center">
             <vbox>
                 <hbox>
-                ¿Desexa borrar <label value="@{controller.order.name}"/> ?
+                    <i18n value="Confirm deleting {0} ?" arg1="@{controller.order.name}"/>
                 </hbox>
                 <hbox>
-                    <button label="Yes"
+                    <button label="${i18n:_('Yes')}"
                         onClick="controller.remove(controller.order);" />
-                    <button label="No"
+                    <button label="${i18n:_('No')}"
                         onClick="controller.cancelRemove();" />
                 </hbox>
             </vbox>
         </window>
 
         <window visible="@{controller.confirmingSchedule}"
-            id="confirmSchedule" title="Confirmación" width="500px"
+            id="confirmSchedule" title="${i18n:_('Confirm')}" width="500px"
             position="center">
             <vbox>
                 <hbox>
-                ¿Desexa planificar <label value="@{controller.order.name}"/> ?
+                    <i18n value="Confirm scheduling {0} ?" arg1="@{controller.order.name}"/>
                 </hbox>
                 <hbox>
-                    <button label="Yes"
+                    <button label="${i18n:_('Yes')}"
                         onClick="controller.schedule();" />
-                    <button label="No"
+                    <button label="${i18n:_('No')}"
                         onClick="controller.cancelSchedule();" />
                 </hbox>
             </vbox>

@@ -1,18 +1,18 @@
 <vbox id="orderElementTree">
     <vbox>
         <hbox>
-            <button label="New order element"
+            <button label="${i18n:_('New order element')}"
                 onClick="orderElementTreeController.addOrderElement();">
             </button>
-            <button label="Remove order element"
+            <button label="${i18n:_('Delete order element')}"
                 onClick="orderElementTreeController.removeOrderElement();">
             </button>
-            <button label="Indent"
+            <button label="${i18n:_('Indent')}"
                 onClick="orderElementTreeController.indent();">
             </button>
-            <button label="Unindent" onClick="orderElementTreeController.unindent();" />
-            <button label="Down" onClick="orderElementTreeController.up();"></button>
-            <button label="Up" onClick="orderElementTreeController.down();"></button>
+            <button label="${i18n:_('Unindent')}" onClick="orderElementTreeController.unindent();" />
+            <button label="${i18n:_('Down')}" onClick="orderElementTreeController.up();"></button>
+            <button label="${i18n:_('Up')}" onClick="orderElementTreeController.down();"></button>
         </hbox>
     </vbox>
     <vbox>
@@ -22,11 +22,11 @@
             treeitemRenderer="@{orderElementTreeController.renderer}" pageSize="5"
             sclass="orderTree">
             <treecols sizable="true">
-                <treecol label="Name and description" />
-                <treecol label="Code" />
-                <treecol label="Estimated init" />
-                <treecol label="Estimated end" />
-                <treecol label="Hours" />
+                <treecol label="${i18n:_('Name and description')}" />
+                <treecol label="${i18n:_('Code')}" />
+                <treecol label="${i18n:_('Estimated init')}" />
+                <treecol label="${i18n:_('Estimated end')}" />
+                <treecol label="${i18n:_('Hours')}" />
             </treecols>
         </tree>
     </vbox>

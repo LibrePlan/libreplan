@@ -2,14 +2,14 @@
  <grid model="@{controller.workers.workersForCurrentCriterion}"
   mold="paging" pageSize="5" apply="${controller.workers}">
   <columns>
-   <column label="Operacións" />
-   <column label="Nome" sort="auto(firstName)" />
-   <column label="Apellidos" sort="auto(surname)" />
-   <column label="nif" sort="auto(nif)" />
+   <column label="${i18n:_('Operations')}" />
+   <column label="${i18n:_('Name')}" sort="auto(firstName)" />
+   <column label="${i18n:_('Surname')}" sort="auto(surname)" />
+   <column label="${i18n:_('NIF')}" sort="auto(nif)" />
   </columns>
   <rows>
    <row self="@{each='worker'}" value="@{worker}">
-    <button label="Edición" onClick="controller.workers.goToEditPage(self.getParent().getValue());"></button>
+    <button label="${i18n:_('Edit')}" onClick="controller.workers.goToEditPage(self.getParent().getValue());"></button>
     <label value="@{worker.firstName}" />
     <label value="@{worker.surname}" />
     <label value="@{worker.nif}" />
@@ -17,15 +17,15 @@
   </rows>
  </grid>
 
- <button id="adminButton" label="Administrar" disabled="@{controller.workers.changeAssignmentsDisabled}" onClick="controller.workers.showList(event);"></button>
+ <button id="adminButton" label="${i18n:_('Administration')}" disabled="@{controller.workers.changeAssignmentsDisabled}" onClick="controller.workers.showList(event);"></button>
  <window visible="false"  id="workersWindow">
     <listbox id="list" model="@{controller.workers.allWorkers}" mold="paging" multiple="true" checkmark="true">
         <listhead>
-            <listheader label="Name" sort="auto(surname)"></listheader>
+            <listheader label="${i18n:_('Name')}" sort="auto(surname)"></listheader>
         </listhead>
     </listbox>
-    <button label="Gardar" id="saveList"></button>
-    <button label="Cancelar" id="cancelList"></button>
+    <button label="${i18n:_('Save')}" id="saveList"></button>
+    <button label="${i18n:_('Cancel')}" id="cancelList"></button>
  </window>
  <button onClick="controller.cancel();"
   label="${arg.cancel_button_label}" />

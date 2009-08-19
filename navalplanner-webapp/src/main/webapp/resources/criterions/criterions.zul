@@ -14,10 +14,10 @@
   sclass="workerwindow">
   <vbox id="messagesContainer"></vbox>
   <list top_id="listWindow" />
-  <edition top_id="createComponent" title="Crear"
-   save_button_label="Save" cancel_button_label="Cancelar" />
-  <edition top_id="editComponent" title="Editar"
-   save_button_label="Save" cancel_button_label="Cancelar" />
-  <workers top_id="workersComponent" title="Workers" cancel_button_label="Volver"/>
+  <edition top_id="createComponent" title="${i18n:_('Create')}"
+   save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
+  <edition top_id="editComponent" title="${i18n:_('Edit')}"
+   save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
+  <workers top_id="workersComponent" title="${i18n:_('Workers')}" cancel_button_label="${i18n:_('Return')}"/>
  </window>
 </zk>

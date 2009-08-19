@@ -1,17 +1,17 @@
-<window id="${arg.top_id}" title="Tipos de avance">
+<window id="${arg.top_id}" title="${i18n:_('Progress types')}">
     <grid id="listing" model="@{controller.advanceTypes}" mold="paging"
         pageSize="5">
         <columns>
-            <column label="Operacións"/>
-            <column label="Nome" sort="auto(name)"/>
-            <column label="Activo"/>
+            <column label="${i18n:_('Operations')}"/>
+            <column label="${i18n:_('Name')}" sort="auto(name)"/>
+            <column label="${i18n:_('Enabled')}"/>
         </columns>
         <rows>
             <row self="@{each='advanceType'}" value="@{advanceType}">
                 <hbox>
-                    <button label="Edit" disabled="@{advanceType.immutable}" onClick="controller.goToEditForm(self.parent.parent.value);">
+                    <button label="${i18n:_('Edit')}" disabled="@{advanceType.immutable}" onClick="controller.goToEditForm(self.parent.parent.value);">
                     </button>
-                    <button label="Remove" disabled="@{advanceType.immutable}" onClick="controller.confirmRemove(self.parent.parent.value);">
+                    <button label="${i18n:_('Delete')}" disabled="@{advanceType.immutable}" onClick="controller.confirmRemove(self.parent.parent.value);">
                     </button>
                 </hbox>
                 <label value="@{advanceType.unitName}"/>
@@ -19,6 +19,6 @@
             </row>
         </rows>
     </grid>
-    <button id="show_create_form" onClick="controller.goToCreateForm();" label="Create">
+    <button id="show_create_form" onClick="controller.goToCreateForm();" label="${i18n:_('Create')}">
     </button>
 </window>

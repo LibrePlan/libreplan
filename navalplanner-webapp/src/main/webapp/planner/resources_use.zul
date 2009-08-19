@@ -1,4 +1,4 @@
-<?page title="Navalpro: Scheduling"?>
+<?page title="${i18n:_('Navalpro: Scheduling')}"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
 <?link rel="stylesheet" type="text/css" href="/planner/css/ganttzk.css"?>

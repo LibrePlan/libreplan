@@ -1,4 +1,4 @@
-<?page title="Navalpro: Resources"?>
+<?page title="${i18n:_('Resources')}"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?page  id="Create"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
@@ -18,20 +18,20 @@
         <vbox id="messagesContainer">
         </vbox>
         <list top_id="listWindow" />
-        <edition top_id="createWindow" title="Create"
-            save_button_label="Save" cancel_button_label="Cancel" />
-        <edition top_id="editWindow" title="Edit Personal Data"
-            save_button_label="Save" cancel_button_label="Cancel" />
-        <workRelationships top_id="workRelationshipsWindow" title="Work Relationships"
-            save_button_label="Save" cancel_button_label="Cancel" />
-        <!--addWorkRelationship top_id="addWorkRelationshipWindow" title="Add Work Relationship"
-            save_button_label="Save" cancel_button_label="Cancel" /-->
-        <editWorkRelationship top_id="editWorkRelationshipWindow" title="Edit Work Relationship"
-            save_button_label="Save" cancel_button_label="Cancel"
-            add_button_label="Edit"/>
-        <editWorkRelationship top_id="addWorkRelationshipWindow" title="Add Work Relationship"
-            save_button_label="Save" cancel_button_label="Cancel"
-            add_button_label="Add"/>
+        <edition top_id="createWindow" title="${i18n:_('Create')}"
+            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
+        <edition top_id="editWindow" title="${i18n:_('Edit personal data')}"
+            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
+        <workRelationships top_id="workRelationshipsWindow" title="${i18n:_('Work relationships')}"
+            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
+        <!--addWorkRelationship top_id="addWorkRelationshipWindow" title="${i18n:_('Add work relationship')}"
+            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" /-->
+        <editWorkRelationship top_id="editWorkRelationshipWindow" title="${i18n:_('Edit work relationship')}"
+            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}"
+            add_button_label="${i18n:_('Edit')}"/>
+        <editWorkRelationship top_id="addWorkRelationshipWindow" title="${i18n:_('Add work relationship')}"
+            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}"
+            add_button_label="${i18n:_('Add')}"/>
 
     </window>
 </zk>

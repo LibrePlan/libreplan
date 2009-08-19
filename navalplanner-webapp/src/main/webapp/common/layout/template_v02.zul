@@ -16,15 +16,15 @@
         <n:tr>
           <n:td height="20" align="right"><n:table border="0" cellspacing="0" cellpadding="0">
             <n:tr>
-              <n:td class="usuario">usuario: admin</n:td>
-              <n:td><n:a href="/navalplanner-webapp/common/layout/login_v01.zul" class="cerrar_sesion">PECHAR SESIÓN </n:a></n:td>
+              <n:td class="usuario">${i18n:_('user: admin')}</n:td>
+              <n:td><n:a href="/navalplanner-webapp/common/layout/login_v01.zul" class="cerrar_sesion">${i18n:_('SIGN OUT')}</n:a></n:td>
             <n:td><n:a href="#"><n:img src="/navalplanner-webapp/common/img/axuda.gif" alt="Axuda" width="23" height="24" border="0" /></n:a></n:td>
             </n:tr>
           </n:table></n:td>
         </n:tr>
       </n:table>
 
-        <customMenu top_id="customMenu" title="Main menu"/>
+        <customMenu top_id="customMenu" title="${i18n:_('Main menu')}"/>
 
           </n:td>
     </n:tr>
@@ -39,7 +39,7 @@
     <n:td class="migas_linea"><n:table border="0" cellspacing="0" cellpadding="0">
         <n:tr>
           <n:td width="10"></n:td>
-          <n:td><n:a href="/navalplanner-webapp/" class="ruta"><n:strong>INICIO</n:strong></n:a></n:td>
+          <n:td><n:a href="/navalplanner-webapp/" class="ruta"><n:strong>${i18n:_('START')}</n:strong></n:a></n:td>
           <n:td width="15"><n:div align="center"><n:img src="/navalplanner-webapp/common/img/migas_separacion.gif" width="10" height="15" /></n:div></n:td>
         </n:tr>
     </n:table></n:td>

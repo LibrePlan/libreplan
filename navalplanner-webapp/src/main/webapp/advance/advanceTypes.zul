@@ -1,4 +1,4 @@
-<?page title="Navalpro: AdvanceTypes"?>
+<?page title="${i18n:_('Navalpro: AdvanceTypes')}"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?page  id="List"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
@@ -13,23 +13,23 @@
         apply="org.navalplanner.web.advance.AdvanceTypeCRUDController">
         <vbox id="messagesContainer"></vbox>
         <list top_id="listWindow" />
-        <edition top_id="createWindow" title="Create"
-            save_button_label="Save" cancel_button_label="Cancel" />
-        <edition top_id="editWindow" title="Edit Advance Type Data"
-            save_button_label="Save" cancel_button_label="Cancel" />
+        <edition top_id="createWindow" title="${i18n:_('Create')}"
+            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
+        <edition top_id="editWindow" title="${i18n:_('Edit advance type data')}"
+            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
         <window visible="@{controller.confirmingRemove}"
-            id="confirmRemove" title="Confirmation" sizable="true"
+            id="confirmRemove" title="${i18n:_('Confirm')}" sizable="true"
             position="center">
             <vbox align = "center">
                 <hbox align = "center">
-                    <label value = "¿ Do you want to delete"/>
+                    <label value = "Confirm deleting"/>
                     <label value ="@{controller.advanceType.unitName}"/>
                     <label value = "?"/>
                 </hbox>
                 <hbox align = "center">
-                    <button label="Yes"
+                    <button label="${i18n:_('Yes')}"
                         onClick="controller.remove(controller.advanceType);" />
-                    <button label="No"
+                    <button label="${i18n:_('No')}"
                         onClick="controller.cancelRemove();" />
                 </hbox>
             </vbox>

@@ -1,4 +1,4 @@
-<?page title="Navalpro: Scheduling"?>
+<?page title="${i18n:_('Navalpro: Scheduling')}"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_v02.zul"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
@@ -52,35 +52,35 @@
                 </row>
             </rows>
         </grid>
-        <button id="ok" label=" ${i18n:_('Accept')}" />
+        <button id="ok" label="${i18n:_('Accept')}" />
     </popup>
 
     <window id="resourceAllocationWindow" visible="false" apply="${allocationController}">
         <vbox>
-            <label value="Required criterions" />
+            <label value="${i18n:_('Required criterions')}" />
             <listbox id="requiredCriterions"
                 model="@{allocationController.criterions}">
                <listitem self="@{each='criterion'}">
                     <listcell label="@{criterion.name}"></listcell>
                 </listitem>
             </listbox>
-            <label id="requiredCriterionsEmpty" value="None" visible="false" />
+            <label id="requiredCriterionsEmpty" value="${i18n:_('None')}" visible="false" />
             <hbox>
-                <button id="addResourceAllocation" label="Add"
+                <button id="addResourceAllocation" label="${i18n:_('Add')}"
                     onClick="allocationController.addResourceAllocation();" />
-                <button id="removeResourceAllocation" label="Remove"
+                <button id="removeResourceAllocation" label="${i18n:_('Delete')}"
                     onClick="allocationController.removeResourceAllocation();" />
             </hbox>
             <listbox id="resourcesList"
                 model="@{allocationController.resourceAllocations}"
                 itemRenderer="@{allocationController.resourceAllocationRenderer}">
                 <listhead>
-                    <listheader label="Resource" />
-                    <listheader label="Percentage" />
-                    <listheader label="Message" />
+                    <listheader label="${i18n:_('Resource')}" />
+                    <listheader label="${i18n:_('Percentage')}" />
+                    <listheader label="${i18n:_('Message')}" />
                 </listhead>
             </listbox>
-            <button id="closeResourceAllocationWindow" label="Back"
+            <button id="closeResourceAllocationWindow" label="${i18n:_('Back')}"
                 onClick="allocationController.back();" />
         </vbox>
     </window>
@@ -88,12 +88,12 @@
     <window id="splittingWindow" visible="false" apply="${splittingTaskController}" minwidth="${400}" >
         <vbox>
             <hbox>
-            <label value="Total hours:" /> <label id="totalHoursLabel"/>
+            <label value="${i18n:_('Total hours:')}" /> <label id="totalHoursLabel"/>
             </hbox>
             <grid id="sharesListing" fixedLayout="true">
                 <columns sizable="true">
-                    <column label="Name" />
-                    <column label="Hours" />
+                    <column label="${i18n:_('Name')}" />
+                    <column label="${i18n:_('Hours')}" />
                 </columns>
                 <rows>
                     <row self="@{each='share'}">
@@ -103,8 +103,8 @@
                 </rows>
             </grid>
             <hbox>
-                <button label="Ok" id="splitOk" />
-                <button label="Cancel" id="splitCancel" />
+                <button label="${i18n:_('Accept')}" id="splitOk" />
+                <button label="${i18n:_('Cancel')}" id="splitCancel" />
             </hbox>
         </vbox>
     </window>

@@ -1,26 +1,26 @@
-<window id="${arg.top_id}" title="Orders List">
+<window id="${arg.top_id}" title="${i18n:_('Orders list')}">
     <grid id="listing" model="@{controller.orders}" mold="paging"
         pageSize="5">
         <columns>
-            <column label="Operations" />
-            <column label="Name" sort="auto(name)" />
-            <column label="Init date" sort="auto(initDate)" />
-            <column label="End date" sort="auto(endDate)" />
-            <column label="Responsible" sort="auto(responsible)" />
-            <column label="Customer" sort="auto(customer)" />
-            <column label="Description" sort="auto(description)" />
+            <column label="${i18n:_('Operations')}" />
+            <column label="${i18n:_('Name')}" sort="auto(name)" />
+            <column label="${i18n:_('Starting date')}" sort="auto(initDate)" />
+            <column label="${i18n:_('Ending date')}" sort="auto(endDate)" />
+            <column label="${i18n:_('Responsible')}" sort="auto(responsible)" />
+            <column label="${i18n:_('Customer')}" sort="auto(customer)" />
+            <column label="${i18n:_('Description')}" sort="auto(description)" />
         </columns>
         <rows>
             <row self="@{each='order'}" value="@{order}">
                 <hbox>
-                    <button label="Edit"
+                    <button label="${i18n:_('Edit')}"
                         onClick="controller.goToEditForm(self.parent.parent.value);">
                     </button>
 
-                    <button label="Remove"
+                    <button label="${i18n:_('Delete')}"
                         onClick="controller.confirmRemove(self.parent.parent.value);">
                     </button>
-                    <button label="Schedule"
+                    <button label="${i18n:_('Schedule')}"
                         onClick="controller.confirmSchedule(self.parent.parent.value);">
                     </button>
                 </hbox>
@@ -34,6 +34,6 @@
         </rows>
     </grid>
     <button id="show_create_form" onClick="controller.goToCreateForm();"
-        label="Create">
+        label="${i18n:_('Create')}">
     </button>
 </window>

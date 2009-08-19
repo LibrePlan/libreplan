@@ -3,34 +3,34 @@
 <window id="${arg.top_id}" title="${arg.title}">
     <tabbox>
         <tabs>
-            <tab label="Edición"></tab>
-            <tab label="Localizacións"></tab>
-            <tab label="Historial Laboral"></tab>
+            <tab label="${i18n:_('Edit')}"></tab>
+            <tab label="${i18n:_('Places')}"></tab>
+            <tab label="${i18n:_('Work record')}"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>
                 <grid fixedLayout="false">
                     <columns>
-                        <column label="Type" />
-                        <column label="Content" />
+                        <column label="${i18n:_('Type')}" />
+                        <column label="${i18n:_('Content')}" />
                     </columns>
                     <rows>
                         <row>
-                            <label value="first_name" />
+                            <label value="${i18n:_('First name')}" />
                             <textbox
                                 value="@{controller.worker.firstName}" />
                         </row>
                         <row>
-                            <label value="last_name" />
+                            <label value="${i18n:_('Last name')}" />
                             <textbox
                                 value="@{controller.worker.surname}" />
                         </row>
                         <row>
-                            <label value="nif" />
+                            <label value="${i18n:_('NIF')}" />
                             <textbox value="@{controller.worker.nif}" />
                         </row>
                         <row>
-                            <label value="daily_hours" />
+                            <label value="${i18n:_('Daily hours')}" />
                             <textbox
                                 value="@{controller.worker.dailyHours}" />
                         </row>
@@ -42,8 +42,8 @@
             </tabpanel>
             <tabpanel>
                 <workRelationships top_id="workRelationshipsWindow"
-                    title="Work Relationships" save_button_label="Save"
-                    cancel_button_label="Cancel" />
+                    title="${i18n:_('Work relationships')}" save_button_label="${i18n:_('Save')}"
+                    cancel_button_label="${i18n:_('Cancel')}" />
             </tabpanel>
         </tabpanels>
     </tabbox>

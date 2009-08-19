@@ -9,11 +9,11 @@
     <n:td height="20" class="migas_linea"><n:table border="0" cellspacing="0" cellpadding="0">
       <n:tr>
         <n:td width="26"></n:td>
-        <n:td><n:a href="layout.html" class="ruta"><n:strong>INICIO</n:strong></n:a></n:td>
+        <n:td><n:a href="layout.html" class="ruta"><n:strong>${i18n:_('START')}</n:strong></n:a></n:td>
       <n:td width="15"><n:div align="center"><n:img src="/navalplanner-webapp/common/img/migas_separacion.gif" width="10" height="15" /></n:div></n:td>
-        <n:td><n:a href="#" class="ruta">Planificacion</n:a></n:td>
+        <n:td><n:a href="#" class="ruta">${i18n:_('Scheduling')}</n:a></n:td>
       <n:td width="15"><n:div align="center"><n:img src="/navalplanner-webapp/common/img/migas_separacion.gif" width="10" height="15" /></n:div></n:td>
-        <n:td><n:a href="#" class="ruta">Listado de planificacion</n:a></n:td>
+        <n:td><n:a href="#" class="ruta">${i18n:_('Scheduling listing')}</n:a></n:td>
       </n:tr>
     </n:table></n:td>
   </n:tr>
@@ -23,19 +23,19 @@
     <n:td><n:table border="0" cellspacing="0" cellpadding="0">
       <n:tr>
         <n:td width="20"></n:td>
-        <n:td><n:a href="#" class="menuup_activa">Planificacion</n:a></n:td>
-        <n:td><n:a href="recurso.html" class="menuup">Recursos</n:a></n:td>
-        <n:td><n:a href="pedidos.html" class="menuup">Pedidos</n:a></n:td>
-        <n:td><n:a href="#" class="menuup">Partes de Traballo</n:a></n:td>
-        <n:td><n:a href="#" class="menuup">Informes</n:a></n:td>
-      <n:td><n:a href="#" class="menuup">Xestión da Calidade</n:a></n:td>
+        <n:td><n:a href="#" class="menuup_activa">${i18n:_('Scheduling')}</n:a></n:td>
+        <n:td><n:a href="recurso.html" class="menuup">${i18n:_('Resources')}</n:a></n:td>
+        <n:td><n:a href="pedidos.html" class="menuup">${i18n:_('Orders')}</n:a></n:td>
+        <n:td><n:a href="#" class="menuup">${i18n:_('Work reports')}</n:a></n:td>
+        <n:td><n:a href="#" class="menuup">${i18n:_('Reports')}</n:a></n:td>
+      <n:td><n:a href="#" class="menuup">${i18n:_('Quality management')}</n:a></n:td>
       <n:td width="60" valign="bottom"><n:div align="center"><n:a href="#"><n:img src="/navalplanner-webapp/common/img/axuda.gif" alt="Axuda" width="23" height="24" border="0" /></n:a></n:div></n:td>
       </n:tr>
     </n:table></n:td>
   <n:td align="right"><n:table border="0" cellspacing="0" cellpadding="0">
     <n:tr>
-      <n:td class="usuario">usuario: admin</n:td>
-      <n:td><n:a href="#" class="cerrar_sesion">PECHAR SESIoN </n:a></n:td>
+      <n:td class="usuario">${i18n:_('usuario: admin')}</n:td>
+      <n:td><n:a href="#" class="cerrar_sesion">${i18n:_('SIGN OUT')}</n:a></n:td>
     </n:tr>
   </n:table></n:td>
   </n:tr>
@@ -45,11 +45,11 @@
     <n:td bgcolor="#2A83B4"><n:table border="0" cellspacing="0" cellpadding="0">
       <n:tr>
         <n:td width="26"></n:td>
-        <n:td><n:a href="#" class="sub_menu">Planificacion</n:a></n:td>
+        <n:td><n:a href="#" class="sub_menu">${i18n:_('Scheduling'})</n:a></n:td>
         <n:td width="14" background="/common/img/sub_separacion.gif"></n:td>
-        <n:td><n:a href="#" class="sub_menu">Vista de empresas </n:a></n:td>
+        <n:td><n:a href="#" class="sub_menu">${i18n:_('Company overview')}</n:a></n:td>
       <n:td width="14" background="/common/img/sub_separacion.gif"></n:td>
-        <n:td><n:a href="#" class="sub_menu">Listado de planificacion </n:a></n:td>
+        <n:td><n:a href="#" class="sub_menu">${i18n:_('Scheduling listing')}</n:a></n:td>
       </n:tr>
     </n:table></n:td>
   </n:tr>

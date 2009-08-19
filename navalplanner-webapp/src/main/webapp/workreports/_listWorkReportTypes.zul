@@ -1,22 +1,22 @@
-<window id="${arg.top_id}" title="List">
+<window id="${arg.top_id}" title="${i18n:_('List')}">
     <grid id="listing" model="@{controller.workReportTypes}" mold="paging"
         pageSize="5">
         <columns>
-            <column label="Name" sort="auto(name)" />
-            <column label="Operations" />
+            <column label="${i18n:_('Name')}" sort="auto(name)" />
+            <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>
             <row self="@{each='workReportType'}" value="@{workReportType}">
                 <label value="@{workReportType.name}" />
                 <hbox>
-                    <button label="Edit"
+                    <button label="${i18n:_('Edit')}"
                         onClick="controller.goToEditForm(self.parent.parent.value);">
                     </button>
-                    <button label="Remove"
+                    <button label="${i18n:_('Delete')}"
                         onClick="controller.confirmRemove(self.parent.parent.value);">
                     </button>
 
-                    <button label="Alta parte"
+                    <button label="${i18n:_('New work report')}"
                         onClick="controller.goToEditNewWorkReportForm(self.parent.parent.value);">
                     </button>
 
@@ -25,6 +25,6 @@
         </rows>
     </grid>
     <button id="show_create_form" onClick="controller.goToCreateForm();"
-        label="Create">
+        label="${i18n:_('Create')}">
     </button>
 </window>

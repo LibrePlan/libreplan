@@ -12,21 +12,21 @@
         apply="org.navalplanner.web.workreports.WorkReportTypeCRUDController">
         <vbox id="messagesContainer"></vbox>
         <list top_id="listWindow" />
-        <edition top_id="createWindow" title="Create"
-            save_button_label="Save" cancel_button_label="Cancel" />
-        <edition top_id="editWindow" title="Edit"
-            save_button_label="Save" cancel_button_label="Cancel" />
+        <edition top_id="createWindow" title="${i18n:_('Create')}"
+            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
+        <edition top_id="editWindow" title="${i18n:_('Edit')}"
+            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
         <window visible="@{controller.confirmingRemove}"
-            id="confirmRemove" title="Confirmación" width="500px"
+            id="confirmRemove" title="${i18n:_('Confirm')}" width="500px"
             position="center">
             <vbox>
                 <hbox>
                 ¿Do you want to delete <label value="@{controller.workReportType.name}"/>?
                 </hbox>
                 <hbox>
-                    <button label="Yes"
+                    <button label="${i18n:_('Yes')}"
                         onClick="controller.remove(controller.workReportType);" />
-                    <button label="No"
+                    <button label="${i18n:_('No')}"
                         onClick="controller.cancelRemove();" />
                 </hbox>
             </vbox>

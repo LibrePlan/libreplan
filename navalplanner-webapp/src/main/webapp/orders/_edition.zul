@@ -2,39 +2,39 @@
 <window id="${arg.top_id}" title="${arg.title}">
     <tabbox>
         <tabs>
-            <tab label="Edition"></tab>
-            <tab label="Order Elements"></tab>
+            <tab label="${i18n:_('Edit')}"></tab>
+            <tab label="${i18n:_('Order elements')}"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>
                 <grid fixedLayout="false">
                     <rows>
                         <row>
-                            <label value="Name" />
+                            <label value="${i18n:_('Name')}" />
                             <textbox value="@{controller.order.name}" />
                         </row>
                         <row>
-                            <label value="Init date" />
+                            <label value="${i18n:_('Starting date')}" />
                             <datebox
                                 value="@{controller.order.initDate}" />
                         </row>
                         <row>
-                            <label value="End date" />
+                            <label value="${i18n:_('Ending date')}" />
                             <datebox
                                 value="@{controller.order.endDate}" />
                         </row>
                         <row>
-                            <label value="Responsible" />
+                            <label value="${i18n:_('Responsible')}" />
                             <textbox
                                 value="@{controller.order.responsible}" />
                         </row>
                         <row>
-                            <label value="Customer" />
+                            <label value="${i18n:_('Customer')}" />
                             <textbox
                                 value="@{controller.order.customer}" />
                         </row>
                         <row>
-                            <label value="Description" />
+                            <label value="${i18n:_('Description')}" />
                             <textbox
                                 value="@{controller.order.description}"
                                 rows="4" />

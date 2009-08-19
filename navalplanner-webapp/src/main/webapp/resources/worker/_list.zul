@@ -1,12 +1,12 @@
-<window id="${arg.top_id}" title="List">
+<window id="${arg.top_id}" title="${i18n:_('List')}">
     <grid id="listing" model="@{controller.workers}" mold="paging"
         pageSize="5">
         <columns>
-            <column label="First Name" sort="auto(firstName)" />
-            <column label="Surname" sort="auto(surname)" />
-            <column label="nif" sort="auto(nif)" />
-            <column label="daily_hours" sort="auto(dailyHours)" />
-            <column label="operations" />
+            <column label="${i18n:_('First name')}" sort="auto(firstName)" />
+            <column label="${i18n:_('Surname')}" sort="auto(surname)" />
+            <column label="${i18n:_('NIF')}" sort="auto(nif)" />
+            <column label="${i18n:_('Daily hours')}" sort="auto(dailyHours)" />
+            <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>
             <row self="@{each='worker'}" value="@{worker}">
@@ -15,7 +15,7 @@
                 <label value="@{worker.nif}" />
                 <label value="@{worker.dailyHours}" />
                 <hbox>
-                    <button label="Edit"
+                    <button label="${i18n:_('Edit')}"
                         onClick="controller.goToEditForm(self.getParent().getParent().value);">
                     </button>
                 </hbox>
@@ -23,6 +23,6 @@
         </rows>
     </grid>
     <button id="show_create_form" onClick="controller.goToCreateForm();"
-        label="Create">
+        label="${i18n:_('Create')}">
     </button>
 </window>

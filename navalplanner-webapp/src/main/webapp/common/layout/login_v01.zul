@@ -13,7 +13,7 @@
 </n:table>
 <n:table width="850" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
   <n:tr>
-    <n:td class="identificacion">ACCESO AL SISTEMA</n:td>
+    <n:td class="identificacion">${i18n:_('AUTHENTICATE')}</n:td>
   </n:tr>
 </n:table>
 <n:table width="850" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="fondo_identificacion">
@@ -23,7 +23,7 @@
           <n:td></n:td>
         </n:tr>
         <n:tr>
-          <n:td class="usuario_clave">Usuario</n:td>
+          <n:td class="usuario_clave">${i18n:_('User')}</n:td>
         </n:tr>
         <n:tr>
           <n:td><n:label> </n:label>
@@ -32,7 +32,7 @@
             </n:div></n:td>
         </n:tr>
         <n:tr>
-          <n:td class="usuario_clave">Clave</n:td>
+          <n:td class="usuario_clave">${i18n:_('Password')}</n:td>
         </n:tr>
         <n:tr>
           <n:td><n:div align="center">
@@ -45,7 +45,7 @@
         <n:tr>
           <n:td><n:label> </n:label>
               <n:div align="center">
-                <n:input name="button" type="submit" class="entrar" id="button" value="Validarse para entrar" />
+                <n:input name="button" type="submit" class="entrar" id="button" value="${i18n:_('Sign in')}" />
             </n:div></n:td>
         </n:tr>
     </n:table></n:td>

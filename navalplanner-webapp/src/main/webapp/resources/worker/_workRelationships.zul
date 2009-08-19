@@ -4,10 +4,10 @@
         model="@{controller.workRelationship.criterionSatisfactions}"
         mold="paging" pageSize="5">
         <columns>
-            <column label="Date start" width="150px"/>
-            <column label="Date end" width="150px"/>
-            <column label="Relationship"/>
-            <column label="Operations"/>
+            <column label="${i18n:_('Starting date')}" width="150px"/>
+            <column label="${i18n:_('Ending date')}" width="150px"/>
+            <column label="${i18n:_('Relationship')}"/>
+            <column label="${i18n:_('Operations')}"/>
         </columns>
         <rows>
             <row self="@{each='criterionSatisfaction'}"
@@ -18,18 +18,18 @@
                     value="@{criterionSatisfaction.endDate}" width="150px" />
                 <label value="@{criterionSatisfaction.criterion.name}" />
                 <hbox>
-                    <button label="Editar"
+                    <button label="${i18n:_('Edit')}"
                         onClick="controller.goToEditWorkRelationshipForm(
                         self.getParent().getParent().value);">
                     </button>
-                    <button label="Borrar"
+                    <button label="${i18n:_('Delete')}"
                         onClick="controller.workRelationship.deleteCriterionSatisfaction(self.getParent().getParent().value);">
                     </button>
                 </hbox>
             </row>
         </rows>
       </grid>
-    <button label="New entry"
+    <button label="${i18n:_('New entry')}"
         onClick="controller.goToAddWorkRelationshipForm()">
     </button>
 </window>

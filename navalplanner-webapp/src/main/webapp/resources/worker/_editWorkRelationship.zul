@@ -1,9 +1,9 @@
 <window id="${arg.top_id}" title="${arg.title}">
     <grid id="edit">
         <columns>
-            <column label="Date start"/>
-            <column label="Date end"/>
-            <column label="Relationship"/>
+            <column label="${i18n:_('Starting date')}"/>
+            <column label="${i18n:_('Ending date')}"/>
+            <column label="${i18n:_('Relationship')}"/>
         </columns>
         <rows>
             <row>
@@ -21,7 +21,7 @@
         </rows>
       </grid>
     <button onClick="workRelationship.saveCriterionSatisfaction();"
-        label="Save Work Relationship" />
+        label="${i18n:_('Save')}" />
     <button onClick="controller.goToEditForm()"
-        label="Cancel and back to Work Relationships"/>
+        label="${i18n:_('Cancel and return')}"/>
 </window>

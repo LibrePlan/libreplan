@@ -3,12 +3,12 @@
     <vbox>
 
         <hbox>
-            <label value="Name" />
+            <label value="${i18n:_('Name')}" />
             <textbox
                 value="@{controller.workReportType.name}" />
         </hbox>
 
-        <label value="Criterion types" />
+        <label value="${i18n:_('Criterion types')}" />
 
         <twowayselector
             id="criterionTypesSelector"

@@ -1,6 +1,6 @@
 <vbox id="${arg.top_id}">
  <hbox>
-  <label value="name" />
+  <label value="${i18n:_('Name')}" />
   <textbox value="@{controller.edition.criterion.name}" />
   <checkbox checked="@{controller.edition.criterion.active}"
    visible="@{controller.edition.editing}">

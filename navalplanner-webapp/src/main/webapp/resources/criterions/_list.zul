@@ -1,7 +1,7 @@
 <grid id="listing" fixedLayout="true">
     <columns sizable="true">
-        <column label="Operacións" />
-        <column label="Nome" />
-        <column label="Activo" />
+        <column label="${i18n:_('Operations')}" />
+        <column label="${i18n:_('Name')}" />
+        <column label="${i18n:_('Enabled')}" />
     </columns>
 </grid>

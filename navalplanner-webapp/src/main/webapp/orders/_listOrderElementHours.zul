@@ -1,15 +1,15 @@
 <vbox id="listOrderElementHours">
 <vbox>
-    <label value="Imputacion directa" />
+    <label value="${i18n:_('Direct imputation')}" />
     <separator spacing="3px" orient="horizontal"/>
 </vbox>
 <vbox>
      <grid id="listingWRL" style="border:0px" height="100%" model="@{asignedHoursToOrderElementController.workReportLines}" mold="paging"
         pageSize="5">
         <columns>
-            <column label="Data" />
-            <column label="Recurso" />
-            <column label="Horas" />
+            <column label="${i18n:_('Date')}" />
+            <column label="${i18n:_('Resource')}" />
+            <column label="${i18n:_('Hours')}" />
         </columns>
         <rows>
             <row self="@{each='workReportLine'}">
@@ -22,7 +22,7 @@
     <grid id="total" style="border:0px">
         <rows>
             <row>
-                <label value="Total" />
+                <label value="${i18n:_('Total')}" />
                 <label id="totalID" value="@{asignedHoursToOrderElementController.totalAsignedDirectHours}" />
             </row>
         </rows>
@@ -31,7 +31,7 @@
 <vbox>
     <separator spacing="5px" orient="horizontal"/>
     <hbox>
-        <label value="Imputación lineas hijas: "/> <label id="totalIDC" value="@{asignedHoursToOrderElementController.hoursChildren}"/>
+        <label value="Order lines imputation: "/> <label id="totalIDC" value="@{asignedHoursToOrderElementController.hoursChildren}"/>
     </hbox>
     <hbox>
         <label value="Total:"/><label id="addtotal" value="@{asignedHoursToOrderElementController.totalAsignedHours}"/>
@@ -39,23 +39,23 @@
 </vbox>
 <separator bar="true" spacing="12px" orient="horizontal"/>
 <vbox>
-    <label value="Porcentaje de consumo horas presupuestadas/horas consumidas."/>
+    <label value="${i18n:_('Percentage of consumed budget hours / hours consumed.')}"/>
     <grid style="border:0px" height="100%">
         <rows>
             <row>
                 <vbox>
                      <hbox>
-                        <label value="Horas presupuestadas:"/>
+                        <label value="${i18n:_('Budget hours:')}"/>
                         <label id="estimatedHours" value="@{asignedHoursToOrderElementController.estimatedHours}"/>
                     </hbox>
                     <hbox>
-                        <label value="Horas imputadas:"/>
+                        <label value="${i18n:_('Imputed hours:')}"/>
                         <label id="addAsignedHours" value="@{asignedHoursToOrderElementController.totalAsignedHours}"/>
                     </hbox>
                 </vbox>
                 <hbox id = "Percentage">
                         <label value="@{asignedHoursToOrderElementController.progressWork}"/>
-                        <label value="%       "/>
+                        <label value="${i18n:_('%       ')}"/>
                         <progressmeter id="HoursProgressBar"/>
                         <progressmeter id="exceedHoursProgressBar"/>
                 </hbox>
@@ -63,7 +63,7 @@
         </rows>
     </grid>
     <hbox>
-       <button id="backButton2" onClick="asignedHoursToOrderElementController.back();" label="back" />
+       <button id="backButton2" onClick="asignedHoursToOrderElementController.back();" label="${i18n:_('Back')}" />
     </hbox>
 </vbox>
 </vbox>

@@ -1,32 +1,32 @@
 <window id="${arg.top_id}" title="${arg.title}">
     <tabbox>
         <tabs>
-            <tab label="Edición"></tab>
+            <tab label="${i18n:_('Edit')}"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>
                 <grid fixedLayout="false">
                     <rows>
                         <row>
-                            <label value="unitName" />
+                            <label value="${i18n:_('Unit name')}" />
                             <textbox value="@{controller.advanceType.unitName}" constraint="@{controller.distinctNames}"/>
                         </row>
                         <row>
-                            <label value="Active" />
+                            <label value="${i18n:_('Active')}" />
                             <checkbox checked="@{controller.advanceType.active}"/>
                         </row>
                         <row>
-                            <label value="Default max value" />
+                            <label value="${i18n:_('Default max value')}" />
                             <decimalbox id="defaultMaxValue" scale="2"
                                 value="@{controller.advanceType.defaultMaxValue}" constraint="@{controller.greaterThanPrecision}"/>
                         </row>
                         <row>
-                            <label value="Precision" />
+                            <label value="${i18n:_('Precision')}" />
                             <decimalbox id="precision" scale="4"
                                 value = "@{controller.advanceType.unitPrecision}" constraint = "@{controller.lessThanDefaultMaxValue}"/>
                         </row>
                         <row>
-                            <label value="Type" />
+                            <label value="${i18n:_('Type')}" />
                             <label value="@{controller.advanceType.type}" />
                         </row>
                     </rows>

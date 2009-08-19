@@ -8,17 +8,17 @@
             <grid fixedLayout="false">
                 <rows>
                     <row>
-                        <label value="Responsable:"
+                        <label value="${i18n:_('Responsible:')}"
                             style="font-weight:bold;" />
                         <textbox id="responsible"
                             value="@{controller.workReport.responsible}" />
                     </row>
                     <row>
-                        <label value="Lugar:" style="font-weight:bold;" />
+                        <label value="${i18n:_('Place:')}" style="font-weight:bold;" />
                         <textbox value="@{controller.workReport.place}" />
                     </row>
                     <row>
-                        <label value="Data:" style="font-weight:bold;" />
+                        <label value="${i18n:_('Date:')}" style="font-weight:bold;" />
                         <datebox id="date" value="@{controller.workReport.date}" />
                     </row>
                 </rows>
