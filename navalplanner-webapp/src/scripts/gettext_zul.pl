@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Parses ZUL files for TOKEN and adds entries to a keys.pot file
+# Parses ZUL files for REG_EXPS and adds ENTRIES to a keys.pot file
 # (respecting keys.pot format)
 #
 # If keys.pot exists, appends new elements to it
@@ -9,7 +9,7 @@
 # pointing to that entry
 #
 
-# Copyright (C) 2008 Diego Pino García <dpino@igalia.com>
+# Copyright (C) 2009 Diego Pino García <dpino@igalia.com>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -30,9 +30,11 @@ use File::Spec;
 use Getopt::Long qw(:config gnu_getopt no_ignore_case);
 use Date::Format;
 
-$DEBUG = 0;
-$TOKEN = 'i18n:_';
-$DEFAULT_KEYS_FILE = "./keys.pot";
+my $DEBUG = 0;
+my $TOKEN = 'i18n:_';
+my @REG_EXPS = qw(i18n:_\\('(.*?)'\\) <i18n\s.*?value=["'](.*?)["']);
+my $DEFAULT_KEYS_FILE = "./keys.pot";
+my %ENTRIES;
 
 GetOptions('dir|d=s' => \$OPTS{'DIR'},
            'help|h!' => \$OPTS{'HELP'},
@@ -50,22 +52,22 @@ if (!$OPTS{'KEYS'}) {
 if (-s $OPTS{'KEYS'} != 0) {
     &parse_KEYS($OPTS{'KEYS'});
     $header = &get_keys_header($OPTS{'KEYS'});
-    &create_keys_file($OPTS{'KEYS'}, $header);
+    &create_keys_file($OPTS{'KEYS'}, $header) || die("Could not create file: $OPTS{'KEYS'}");
 } else {
-    &create_keys_file($OPTS{'KEYS'});
+    &create_keys_file($OPTS{'KEYS'}) || die("Could not create file: $OPTS{'KEYS'}");
 }
-
-# Open keys.pot file to append
-open FILE, ">>$OPTS{'KEYS'}";
 
 # Find all .zul files from dir
 @filenames = split "\n", `find $OPTS{'DIR'} -name "*.zul" | grep -v target`;
-# Parse all files and store parsed elements into %entries
+# Parse all files and store parsed elements into %ENTRIES
 map {&parse_ZUL($_)} @filenames;
+&debug("Total entries: ".scalar keys %ENTRIES);
 
-# Print entries to file
-foreach $msgid (keys %entries) {
-    foreach $filename (@{$entries{$msgid}}) {
+# Open keys.pot file to append
+open FILE, ">>$OPTS{'KEYS'}" || die("Could not open file: $OPTS{'KEYS'}");
+# Print ENTRIES to file
+foreach $msgid (keys %ENTRIES) {
+    foreach $filename (@{$ENTRIES{$msgid}}) {
         print FILE "\#: $filename\n";
     }
     print FILE "msgid \"$msgid\"\n";
@@ -156,9 +158,9 @@ sub parse_KEYS()
 # &debug("filenames: ".$1);
             push @filenames, $1;
         }
-        if (/^msgid "(\w+)"/) {
+        if (/^msgid "(.*?)"/) {
 # &debug("msgid: $1");
-            $entries{$1} = [@filenames];
+            $ENTRIES{$1} = [@filenames];
             @filenames = ();
         }
     }
@@ -166,9 +168,9 @@ sub parse_KEYS()
 }
 
 ##
-# Parses ZUL file and stores elements successfully parsed into entries array
+# Parses ZUL file and stores elements successfully parsed into ENTRIES array
 #
-# %entries is an associative array storing:
+# %ENTRIES is an associative array storing:
 #
 # key, msgid (Message identifier, must be unique in a keys.pot file)
 # value, array of filenames that references that entry
@@ -181,28 +183,37 @@ sub parse_KEYS()
 sub parse_ZUL()
 {
     my($filename) = @_;
+    $filename = File::Spec->rel2abs(&trim($filename));
 
-    @lines = split "\n",`grep -RHn "$TOKEN" $filename`;
+    open FILE, $filename;
+    @lines = <FILE>;
+    close FILE;
+
+    my $line = 1;
     foreach $line (@lines) {
-        &debug($line);
-        # relative_path_to_file:line_number     match
-        ($filename, $matching) = ($line =~ /(^[a-zA-Z\.\/_]+:[0-9]+):\s+(.*)/);
-        ($msgid) = ($matching =~ /$TOKEN\('(\w+)'\)/);
+        $line = &trim($line);
+        foreach $regexp (@REG_EXPS) {
+            ($msgid) = $line =~ /$regexp/;
 
-        &debug("msgid: $msgid");
-        &debug("filename: $filename");
-        &debug("matching: $matching");
-
-        # Get absolute path of file (passing line number aswell is OK)
-        $filename = File::Spec->rel2abs(&trim($filename));
-        if (!$entries{$msgid}) {
-            # Create new array with element filename
-            $entries{$msgid} = [($filename)];
-        } else {
-            if (!&in_array($filename, @{$entries{$msgid}})) {
-                # Append filename to array of filenames in that entry
-                $entries{$msgid} = [(@{$entries{$msgid}}, $filename)];
+            if ($msgid ne "") {
+                &addEntry($msgid, $filename.":".$line);
             }
+        }
+        $line++;
+    }
+}
+
+sub addEntry()
+{
+    my($msgid, $filename) = @_;
+
+    if (!$ENTRIES{$msgid}) {
+        # Create new array with element filename
+        $ENTRIES{$msgid} = [($filename)];
+    } else {
+        if (!&in_array($filename, @{$ENTRIES{$msgid}})) {
+            # Append filename to array of filenames in that entry
+            $ENTRIES{$msgid} = [(@{$ENTRIES{$msgid}}, $filename)];
         }
     }
 }
@@ -230,7 +241,7 @@ sub debug()
 
 sub help()
 {
-    print "Parses ZUL files searching for gettext entries and append to keys.pot file\n";
+    print "Parses ZUL files searching for gettext ENTRIES and append to keys.pot file\n";
     print "\t--dir, -d\tMANDATORY\tBase directory\n";
     print "\t--keys, -k\tOPTIONAL\tPath to keys.pot file\n";
     print "\t--help, -h\tOPTIONAL\tShow this help\n";
