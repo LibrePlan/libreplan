@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Command to edit a {@link TaskElement}.
  *
@@ -44,7 +46,7 @@ public class EditTaskCommand implements IEditTaskCommand {
 
     @Override
     public String getName() {
-        return "Edit";
+        return _("Edit");
     }
 
     @Override

@@ -22,6 +22,8 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Some test data for planner <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -45,7 +47,7 @@ public class DataForPlanner {
 
                     @Override
                     public String getName() {
-                        return "Add Task";
+                        return _("Add Task");
                     }
 
                     @Override
@@ -79,7 +81,7 @@ public class DataForPlanner {
 
                     @Override
                     public String getName() {
-                        return "Remove";
+                        return _("Remove");
                     }
 
                 });
@@ -118,23 +120,23 @@ public class DataForPlanner {
         List<ITaskFundamentalProperties> list = new ArrayList<ITaskFundamentalProperties>();
         Date now = new Date();
         Date end = twoMonthsLater(now);
-        final ITaskFundamentalProperties container = createTask("container",
+        final ITaskFundamentalProperties container = createTask(_("container"),
                 now, end);
         final List<ITaskFundamentalProperties> containerChildren = new ArrayList<ITaskFundamentalProperties>();
-        final ITaskFundamentalProperties child1 = createTask("child 1", now,
+        final ITaskFundamentalProperties child1 = createTask(_("child 1"), now,
                 end);
         containerChildren.add(child1);
-        final DefaultFundamentalProperties child2 = createTask("another", now,
+        final DefaultFundamentalProperties child2 = createTask(_("another"), now,
                 end);
         containerChildren.add(child2);
         list.add(container);
-        final ITaskFundamentalProperties first = createTask("tarefa1", now, end);
-        final ITaskFundamentalProperties second = createTask("tarefa2", now,
+        final ITaskFundamentalProperties first = createTask(_("task1"), now, end);
+        final ITaskFundamentalProperties second = createTask(_("task2"), now,
                 end);
         list.add(first);
         list.add(second);
         for (int i = 2; i < tasksToCreate - 3; i++) {
-            String name = "tarefa " + (i + 1);
+            String name = _("task{0}", (i + 1));
             ITaskFundamentalProperties task = createTask(name, now, end);
             list.add(task);
         }
@@ -174,12 +176,12 @@ public class DataForPlanner {
     private DefaultFundamentalProperties createTask(String name, Date now,
             Date end) {
         return new DefaultFundamentalProperties(name, end, end.getTime()
-                - now.getTime(), "bla");
+                - now.getTime(), _("bla"));
     }
 
     private void addNewTask(IContext<ITaskFundamentalProperties> context) {
         Task newTask = new TaskLeaf();
-        newTask.setName("Nova Tarefa");
+        newTask.setName(_("New task"));
         newTask.setBeginDate(new Date());
         newTask.setEndDate(twoMonthsLater(newTask.getBeginDate()));
         context.add(newTask);

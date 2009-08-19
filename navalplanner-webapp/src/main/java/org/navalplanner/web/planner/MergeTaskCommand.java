@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
+import static org.navalplanner.web.I18nHelper._;
+
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MergeTaskCommand implements IMergeTaskCommand {
@@ -36,7 +38,7 @@ public class MergeTaskCommand implements IMergeTaskCommand {
 
     @Override
     public String getName() {
-        return "Merge";
+        return _("Merge");
     }
 
 }

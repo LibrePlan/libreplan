@@ -28,6 +28,8 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Controller for {@link ResourceAllocation} view.
  *
@@ -107,14 +109,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
             if (((SpecificResourceAllocation) resourceAllocation).getWorker() == null) {
                 throw new WrongValueException(
                         window.getFellow("resourcesList"),
-                        "Worker not valid in some resource allocation");
+                        _("Worker not valid in some resource allocation"));
             }
         }
 
         if (!resourceAllocationModel.getTask()
                 .isValidResourceAllocationWorkers()) {
             throw new WrongValueException(window.getFellow("resourcesList"),
-                    "There is some Worker assigned twice (or more)");
+                    _("There is some Worker assigned twice (or more)"));
         }
 
         Clients.closeErrorBox(window.getFellow("resourcesList"));
@@ -161,7 +163,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
                             .findWorkerByNif(value);
                     if (worker == null) {
                         throw new WrongValueException(resourceTextbox,
-                                "Worker not found");
+                                _("Worker not found"));
                     } else {
                         resourceAllocationModel
                                 .setWorker(
@@ -204,7 +206,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             if (worker != null) {
                 if (!resourceAllocationModel.workerSatisfiesCriterions()) {
-                    message = "The worker does not satisfy the criterions";
+                    message = _("The worker does not satisfy the criterions");
                 }
             }
 
@@ -212,5 +214,4 @@ public class ResourceAllocationController extends GenericForwardComposer {
             cellMessage.setParent(item);
         }
     }
-
 }

@@ -19,6 +19,8 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * ZK macro component that shows two {@link Listbox} allowing to move objects
  * between each other.
@@ -42,7 +44,7 @@ public class TwoWaySelector extends HtmlMacroComponent {
     /**
      * Title for the left {@link Listbox} (where assigned objects are shown)
      */
-    private String assignedTitle = "Assigned";
+    private String assignedTitle = _("Assigned");
 
     /**
      * A {@link Set} of objects that are not assigned (so they're shown on the
@@ -53,7 +55,7 @@ public class TwoWaySelector extends HtmlMacroComponent {
     /**
      * Title for the right {@link Listbox} (where unassigned objects are shown)
      */
-    private String unassignedTitle = "Unassigned";
+    private String unassignedTitle = _("Unassigned");
 
     /**
      * A {@link List} of properties to be shown on the {@link Listbox} for each
@@ -84,8 +86,7 @@ public class TwoWaySelector extends HtmlMacroComponent {
                             .get(column);
                     if (propertyDescriptor == null) {
                         throw new RuntimeException(
-                                "Unknown attribute '"
-                                + column + "' in class " + klass.getName());
+                            _("Unknown attribute '{0}' in class {1}", column, klass.getName()));
                     }
 
                     String label = Objects.toString(propertyDescriptor

@@ -19,6 +19,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.api.Window;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Controller for CRUD actions over a {@link WorkReportType}
  *
@@ -114,7 +116,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
             workReportTypeModel.setCriterionTypes(criterionTypes);
             workReportTypeModel.save();
-            messagesForUser.showMessage(Level.INFO, "work report type saved");
+            messagesForUser.showMessage(Level.INFO, _("Work report type saved"));
             goToList();
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
@@ -165,8 +167,8 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         workReportTypeModel.remove(workReportType);
         hideConfirmingWindow();
         Util.reloadBindings(listWindow);
-        messagesForUser.showMessage(Level.INFO, "removed "
-                + workReportType.getName());
+        messagesForUser.showMessage(
+            Level.INFO, _("Removed {0}", workReportType.getName()));
     }
 
     public void goToEditForm() {

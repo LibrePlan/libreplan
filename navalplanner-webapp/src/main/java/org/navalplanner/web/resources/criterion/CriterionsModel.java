@@ -26,6 +26,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Model for criterions. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -91,7 +93,7 @@ public class CriterionsModel implements ICriterionsModel {
             if (criterionType.contains(criterion))
                 return criterionType;
         }
-        throw new RuntimeException("not found type for criterion " + criterion);
+        throw new RuntimeException(_("{0} not found type for criterion ", criterion));
     }
 
     @Override
@@ -113,11 +115,14 @@ public class CriterionsModel implements ICriterionsModel {
     @Transactional
     public void save(Criterion entity) throws ValidationException {
         if (thereIsOtherWithSameNameAndType(entity)) {
-            InvalidValue[] invalidValues = { new InvalidValue(entity.getName()
-                    + " already exists", Criterion.class, "name", entity
-                    .getName(), entity) };
+            InvalidValue[] invalidValues = {
+                new InvalidValue(
+                    _("{0} already exists", entity.getName()),
+                    Criterion.class, "name",
+                    entity.getName(), entity
+                )};
             throw new ValidationException(invalidValues,
-                    "Couldn't save new criterion");
+                        _("Could not save new criterion"));
         }
         criterionDAO.save(entity);
     }
@@ -159,8 +164,8 @@ public class CriterionsModel implements ICriterionsModel {
 
     private <T extends Resource> List<T> getResourcesSatisfying(
             Class<T> resourceType, Criterion criterion) {
-        Validate.notNull(resourceType, "resourceType must be not null");
-        Validate.notNull(criterion, "criterion must be not null");
+        Validate.notNull(resourceType, _("ResourceType must be not-null"));
+        Validate.notNull(criterion, _("Criterion must be not-null"));
         List<T> result = new ArrayList<T>();
         for (T r : resourceDAO.list(resourceType)) {
             if (criterion.isSatisfiedBy(r)) {

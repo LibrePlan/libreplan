@@ -21,6 +21,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Listbox;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Subcontroller for {@link Worker} resource <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
@@ -31,11 +33,6 @@ public class WorkRelationshipsController extends GenericForwardComposer {
     private IWorkerModel workerModel;
 
     private WorkerCRUDController workerCRUDController;
-
-    /*
-     * private CriterionSatisfaction newRelationship = new
-     * CriterionSatisfaction();
-     */
 
     private CriterionSatisfaction satisfactionEdited = CriterionSatisfaction.create();
 
@@ -115,7 +112,7 @@ public class WorkRelationshipsController extends GenericForwardComposer {
             }
             i++;
         }
-        throw new RuntimeException("not found criterion" + criterion);
+        throw new RuntimeException(_("Couldn't find criterion {0}", criterion));
     }
 
     public void saveCriterionSatisfaction() {
@@ -128,22 +125,22 @@ public class WorkRelationshipsController extends GenericForwardComposer {
                 satisfactionEdited);
         switch (addSatisfaction) {
         case OK:
-            messagesForUser.showMessage(Level.INFO, "Periodo gardado");
+            messagesForUser.showMessage(Level.INFO, _("Time period saved"));
             this.workerCRUDController.goToEditForm();
             break;
         case SATISFACTION_WRONG:
             messagesForUser
                     .showMessage(Level.WARNING,
-                            "O periodo ten datos inválidos. A fecha de fin debe ser posterior á de inicio");
+                            _("Time period contains non valid data. Ending data must be older than starting date"));
             break;
         case DONT_COMPLY_OVERLAPPING_RESTRICTIONS:
             messagesForUser
                     .showMessage(Level.WARNING,
-                            "O periodo non se puido gardar. Solápase cun periodo non compatible.");
+                            _("Could not save time period. Time period overlaps with another non-compatible time period"));
             this.workerCRUDController.goToEditForm();
             break;
         default:
-            throw new RuntimeException("unexpected: " + addSatisfaction);
+            throw new RuntimeException(_("Unexpected: {0}", addSatisfaction));
         }
     }
 

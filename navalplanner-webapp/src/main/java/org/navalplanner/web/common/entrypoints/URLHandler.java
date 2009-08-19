@@ -21,6 +21,8 @@ import org.zkoss.zk.ui.event.BookmarkEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -59,9 +61,9 @@ public class URLHandler<T> {
         this.executorRetriever = executorRetriever;
         EntryPoints entryPoints = interfaceDefiningEntryPoints
                 .getAnnotation(EntryPoints.class);
-        Validate.notNull(entryPoints, EntryPoints.class.getName()
-                + " annotation required on "
-                + interfaceDefiningEntryPoints.getName());
+        Validate.notNull(entryPoints,
+                _("{0} annotation required on {1}", EntryPoints.class.getName(),
+                    interfaceDefiningEntryPoints.getName()));
         this.page = entryPoints.page();
         for (Method method : interfaceDefiningEntryPoints.getMethods()) {
             EntryPoint entryPoint = method.getAnnotation(EntryPoint.class);

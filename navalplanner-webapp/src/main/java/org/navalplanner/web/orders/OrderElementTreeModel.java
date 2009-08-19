@@ -11,6 +11,8 @@ import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.zkoss.zul.SimpleTreeModel;
 import org.zkoss.zul.SimpleTreeNode;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Model for a the {@link OrderElement} tree for a {@link Order} <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
@@ -55,7 +57,7 @@ public class OrderElementTreeModel extends SimpleTreeModel {
     private OrderElement createNewOrderElement() {
         OrderElement newOrderElement = OrderLine
                 .createOrderLineWithUnfixedPercentage(0);
-        newOrderElement.setName("New Order Element");
+        newOrderElement.setName(_("New order element"));
         return newOrderElement;
     }
 

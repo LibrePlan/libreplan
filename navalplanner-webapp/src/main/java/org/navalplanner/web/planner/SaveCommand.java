@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.zul.Messagebox;
 
+import static org.navalplanner.web.I18nHelper._;
+
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 /**
@@ -38,9 +40,8 @@ public class SaveCommand implements ISaveCommand {
             taskElementDAO.save(taskElement);
             if (taskElement instanceof Task) {
                 if (!((Task) taskElement).isValidResourceAllocationWorkers()) {
-                    throw new RuntimeException("The Task '"
-                            + taskElement.getName()
-                            + "' has some repeated Worker assigned");
+                    throw new RuntimeException(_("The task '{0}' has some repeated Worker assigned",
+                                taskElement.getName()));
                 }
                 for (ResourceAllocation resourceAllocation : ((Task) taskElement)
                         .getResourceAllocations()) {
@@ -60,7 +61,7 @@ public class SaveCommand implements ISaveCommand {
         }
 
         try {
-            Messagebox.show("Scheduling saved", "Information", Messagebox.OK,
+            Messagebox.show(_("Scheduling saved"), _("Information"), Messagebox.OK,
                     Messagebox.INFORMATION);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -70,7 +71,7 @@ public class SaveCommand implements ISaveCommand {
 
     @Override
     public String getName() {
-        return "Gardar";
+        return _("Save");
     }
 
 }

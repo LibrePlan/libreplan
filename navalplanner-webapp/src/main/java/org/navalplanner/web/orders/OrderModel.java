@@ -32,6 +32,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Model for UI operations related to {@link Order}. <br />
  *
@@ -200,9 +202,8 @@ public class OrderModel implements IOrderModel {
             OrderLine line = (OrderLine) order;
             if (line.getHoursGroups().isEmpty())
                 throw new IllegalArgumentException(
-                        "the line must have at least one "
-                                + HoursGroup.class.getSimpleName()
-                                + " associated");
+                    _("The line must have at least one {0} associated",
+                        HoursGroup.class.getSimpleName()));
             return line.getHoursGroups().size() > 1 ? convertToTaskGroup(line)
                     : convertToTask(line);
         }

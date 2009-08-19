@@ -29,6 +29,8 @@ import org.zkoss.zul.SimpleGroupsModel;
 import org.zkoss.zul.api.Grid;
 import org.zkoss.zul.api.Group;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Controller for Criterions <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -68,7 +70,7 @@ public class CriterionAdminController extends GenericForwardComposer {
                 final Criterion criterion = (Criterion) data;
                 Hbox operations = new Hbox();
                 operations.setParent(row);
-                Button editButton = new Button("Editar");
+                Button editButton = new Button(_("Edit"));
                 editButton.setParent(operations);
                 editButton.setDisabled(!criterionsModel.getTypeFor(criterion)
                         .allowEditing());
@@ -79,7 +81,7 @@ public class CriterionAdminController extends GenericForwardComposer {
                         goToEditForm(criterion);
                     }
                 });
-                Button traballadoresButton = new Button("Traballadores");
+                Button traballadoresButton = new Button(_("Workers"));
                 traballadoresButton.setParent(operations);
                 traballadoresButton.setDisabled(!criterionsModel
                         .isApplyableToWorkers(criterion));
@@ -99,7 +101,7 @@ public class CriterionAdminController extends GenericForwardComposer {
             } else if (data instanceof ICriterionType) {
                 final ICriterionType<?> type = (ICriterionType<?>) data;
                 Div div = new Div();
-                Button createButton = new Button("Engadir");
+                Button createButton = new Button(_("Add"));
                 createButton.setDisabled(!type.allowAdding());
                 createButton.addEventListener("onClick", new EventListener() {
 
@@ -150,7 +152,7 @@ public class CriterionAdminController extends GenericForwardComposer {
         onlyOneVisible.showOnly(listing);
         try {
             criterionsModel.saveCriterion();
-            messagesForUser.showMessage(Level.INFO, "Criterio gardado");
+            messagesForUser.showMessage(Level.INFO, _("Criterion saved"));
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
         } finally {

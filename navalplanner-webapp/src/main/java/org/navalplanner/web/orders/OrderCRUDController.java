@@ -19,6 +19,8 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.api.Window;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Controller for CRUD actions <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -69,7 +71,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void save() {
         try {
             orderModel.save();
-            messagesForUser.showMessage(Level.INFO, "order saved");
+            messagesForUser.showMessage(Level.INFO, _("Order saved"));
             goToList();
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e, new IMessagesForUser.ICustomLabelCreator() {
@@ -187,7 +189,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderModel.remove(order);
         hideConfirmingWindow();
         Util.reloadBindings(listWindow);
-        messagesForUser.showMessage(Level.INFO, "removed " + order.getName());
+        messagesForUser.showMessage(Level.INFO, _("Removed {0}", order.getName()));
     }
 
     public void goToCreateForm() {

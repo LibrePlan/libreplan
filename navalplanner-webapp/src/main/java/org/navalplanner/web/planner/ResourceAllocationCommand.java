@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * A command that opens a window to make the resource allocation of a task.
  *
@@ -32,7 +34,7 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
 
     @Override
     public String getName() {
-        return "Resource allocation";
+        return _("Resource allocation");
     }
 
     @Override

@@ -19,6 +19,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.api.Window;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Controller for {@link Worker} resource <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -97,7 +99,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             workerModel.save();
             goToList();
             Util.reloadBindings(listWindow);
-            messages.showMessage(Level.INFO, "traballador gardado");
+            messages.showMessage(Level.INFO, _("Worker saved"));
         } catch (ValidationException e) {
             for (InvalidValue invalidValue : e.getInvalidValues()) {
                 messages.invalidValue(invalidValue);
@@ -164,7 +166,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 comp, "createWindow");
         comp.setVariable("controller", this, true);
         if (messagesContainer == null)
-            throw new RuntimeException("messagesContainer is needed");
+            throw new RuntimeException(_("MessagesContainer is needed"));
         messages = new MessagesForUser(messagesContainer);
         this.addWorkRelationship = new WorkRelationshipsController(
                 this.workerModel, this, messages);

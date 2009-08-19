@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
@@ -52,8 +54,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             IConfigurationOnTransaction onTransaction) {
         Order orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled())
-            throw new IllegalArgumentException("the order " + order
-                    + " must be scheduled");
+            throw new IllegalArgumentException(_("The order {0} must be scheduled", order));
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
 
         ISaveCommand saveCommand = getSaveCommand();

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Default implementation for {@link IConverterFactory} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -37,6 +39,6 @@ public class ConverterFactory implements IConverterFactory {
                 return (IConverter<? super T>) result;
             }
         }
-        throw new RuntimeException("not found converter for " + klass);
+        throw new RuntimeException(_("Not found converter for {0}",  klass));
     }
 }

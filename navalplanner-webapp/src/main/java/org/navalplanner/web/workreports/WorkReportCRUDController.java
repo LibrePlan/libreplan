@@ -1,7 +1,5 @@
 package org.navalplanner.web.workreports;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +42,7 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
 
+import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Controller for CRUD actions over a {@link WorkReport}
@@ -73,12 +72,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     public final static String ID_WORK_REPORT_LINES = "workReportLines";
 
-    private final static String RESOURCE = "Recurso";
-
-    private final static String CODE = "Código";
-
-    private final static String NUM_HOURS = "Horas";
-
     private final static String MOLD = "paging";
 
     private final static int PAGING = 10;
@@ -100,7 +93,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     public void showConfirmDelete(WorkReport workReport) {
         workReportModel.remove(workReport);
         Util.reloadBindings(listWindow);
-        messagesForUser.showMessage(Level.INFO, "Parte de traballo eliminado");
+        messagesForUser.showMessage(Level.INFO, _("Work report deleted"));
     }
 
     public List<WorkReport> getWorkReports() {
@@ -129,7 +122,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         try {
             workReportModel.save();
             messagesForUser.showMessage(Level.ERROR,
-                    "Parte de traballo gardado");
+                    _("Work report saved"));
         } catch (ValidationException e) {
             showInvalidValues(e);
         }
@@ -163,12 +156,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
         if (WorkReport.DATE.equals(propertyName)) {
             Datebox datebox = (Datebox) createWindow.getFellowIfAny(propertyName);
-            throw new WrongValueException(datebox, "Data non pode ser nulo");
+            throw new WrongValueException(datebox, _("Date cannot be null"));
         }
         if (WorkReport.RESPONSIBLE.equals(propertyName)) {
             Textbox textbox = (Textbox) createWindow.getFellowIfAny(propertyName);
             throw new WrongValueException(textbox,
-                    "Responsable non poder ser nulo");
+                    _("Responsible cannot be null"));
         }
     }
 
@@ -194,7 +187,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     // Value is incorrect, clear
                     txtResource.setValue("");
                     throw new WrongValueException(txtResource,
-                            "Recurso non pode ser nulo");
+                            _("Resource cannot be null"));
                 }
                 if (WorkReportLine.ORDER_ELEMENT.equals(propertyName)) {
                     // Locate TextboxOrder
@@ -202,7 +195,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     // Value is incorrect, clear
                     txtOrder.setValue("");
                     throw new WrongValueException(txtOrder,
-                            "Código non pode ser nulo");
+                            _("Código cannot be null"));
                 }
             }
         }
@@ -471,7 +464,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                         worker = workReportModel.findWorker(value);
                     } catch (InstanceNotFoundException e) {
                         throw new WrongValueException(txtResource,
-                                "Worker not found");
+                                _("Worker not found"));
                     }
                     workReportLine.setResource(worker);
                 }
@@ -527,7 +520,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                             .findOrderElement(value));
                     } catch (InstanceNotFoundException e) {
                         throw new WrongValueException(txtOrder,
-                            "OrderElement not found");
+                            _("OrderElement not found"));
                     }
                 }
             }

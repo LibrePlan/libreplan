@@ -16,6 +16,8 @@ import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Responsible of adaptating a {@link TaskElement} into a
  * {@link ITaskFundamentalProperties} <br />
@@ -150,7 +152,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return DependencyType.END_END;
         case START_END:
         default:
-            throw new RuntimeException(type + " not supported yet");
+            throw new RuntimeException(_("{0} not supported yet", type));
         }
     }
 
@@ -163,7 +165,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         case END_END:
             return Type.END_END;
         default:
-            throw new RuntimeException(type + " not supported yet");
+            throw new RuntimeException(_("{0} not supported yet", type));
         }
     }
 

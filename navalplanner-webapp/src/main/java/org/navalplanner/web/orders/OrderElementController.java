@@ -38,6 +38,8 @@ import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Listhead;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Controller for {@link OrderElement} view of {@link Order} entities <br />
  *
@@ -219,8 +221,7 @@ public class OrderElementController extends GenericForwardComposer {
                             if (!((OrderLine) orderElement)
                                     .isTotalHoursValid((Integer) value)) {
                                 throw new WrongValueException(comp,
-                                        "Value is not valid, taking into account "
-                                                + "the current list of HoursGroup");
+                                        _("Value is not valid, taking into account the current list of HoursGroup"));
                             }
                         }
                     });
@@ -254,7 +255,7 @@ public class OrderElementController extends GenericForwardComposer {
         if (!getOrderElement().checkAtLeastOneHoursGroup()) {
             throw new WrongValueException(window
                     .getFellow("hoursGroupsListbox"),
-                    "At least one HoursGroup is needed");
+                    _("At least one HoursGroup is needed"));
         }
 
         for (CriterionType criterionType : getCriterionTypes()) {
@@ -673,15 +674,15 @@ public class OrderElementController extends GenericForwardComposer {
         listhead.getChildren().clear();
 
         // Generate basi headers
-        Listheader hours = new Listheader("Hours");
+        Listheader hours = new Listheader(_("Hours"));
         listhead.appendChild(hours);
-        Listheader percentage = new Listheader("%");
+        Listheader percentage = new Listheader(_("%"));
         listhead.appendChild(percentage);
 
         // If it's a leaf add Fixed percentage column
         if (getOrderElement() instanceof OrderLine) {
             Listheader headerFixedPercentage = new Listheader(
-                    "Fixed percentage");
+                    _("Fixed percentage"));
             listhead.appendChild(headerFixedPercentage);
         }
 

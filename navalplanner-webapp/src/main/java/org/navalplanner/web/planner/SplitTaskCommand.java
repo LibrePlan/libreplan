@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
+import static org.navalplanner.web.I18nHelper._;
+
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class SplitTaskCommand implements ISplitTaskCommand {
@@ -59,7 +61,7 @@ public class SplitTaskCommand implements ISplitTaskCommand {
 
     @Override
     public String getName() {
-        return "Split task";
+        return _("Split task");
     }
 
     @Override

@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Model for UI operations related to {@link AdvanceType}.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -68,7 +70,7 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
     private void checkCanBeModified(AdvanceType advanceType) {
         if (!canBeModified(advanceType)) {
             throw new IllegalArgumentException(
-                    "the advanceType cannot be modified");
+                    _("The advanceType cannot be modified"));
         }
     }
 

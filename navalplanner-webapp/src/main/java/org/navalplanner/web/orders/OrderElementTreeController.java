@@ -32,6 +32,8 @@ import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 import org.zkoss.zul.api.Tree;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Controller for {@link OrderElement} tree view of {@link Order} entities <br />
  *
@@ -259,8 +261,9 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
                 @Override
                 public void validate(Component comp, Object value) throws WrongValueException{
-                    if (!orderElement.isFormatCodeValid((String)value)){
-                            throw new WrongValueException(comp,"Value not is valid.\n The code can not contain chars like '_' \n and not must be empty");                        }
+                    if (!orderElement.isFormatCodeValid((String)value)) {
+                            throw new WrongValueException(comp, _("Value is not valid.\n Code cannot contain chars like '_' \n and should not be empty"));
+                        }
                     }
                 });
 
@@ -306,8 +309,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
                         if (!((OrderLine) orderElement)
                                 .isTotalHoursValid((Integer) value)) {
                             throw new WrongValueException(comp,
-                                    "Value is not valid, taking into account "
-                                            + "the current list of HoursGroup");
+                                    _("Value is not valid, taking into account the current list of HoursGroup"));
                         }
                     }
                 });

@@ -13,6 +13,8 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Grid;
 
+import static org.navalplanner.web.I18nHelper._;
+
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class SplittingController extends GenericForwardComposer {
@@ -51,7 +53,7 @@ public class SplittingController extends GenericForwardComposer {
         int sum = ShareBean.sum(sharesList);
         if (sum != totalHours) {
             throw new WrongValueException(totalHoursLabel,
-                    "the sum is not equal: " + sum);
+                    _("The sum is not equal: {0}", sum));
         }
     }
 

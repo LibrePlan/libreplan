@@ -21,6 +21,8 @@ import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.util.ClassUtils;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Creates implemnetations of controllers that sends http redirects to the
  * proper page <br />
@@ -96,7 +98,7 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
                                     .convertClassNameToResourcePath("org.navalplanner.web")
                             + "/" + "**/*.class");
         } catch (IOException e) {
-            throw new RuntimeException("couldn't load any resource", e);
+            throw new RuntimeException(_("Could not load any resource"), e);
         }
     }
 

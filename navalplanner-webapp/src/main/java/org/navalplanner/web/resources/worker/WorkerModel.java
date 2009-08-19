@@ -32,6 +32,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Model for worker <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -102,7 +104,7 @@ public class WorkerModel implements IWorkerModel {
     @Override
     @Transactional(readOnly = true)
     public void prepareEditFor(Worker worker) {
-        Validate.notNull(worker, "worker must be not null");
+        Validate.notNull(worker, _("Worker must be not-null"));
         try {
             this.worker = (Worker) resourceDAO.find(worker.getId());
             forceLoadSatisfactions(this.worker);
@@ -253,7 +255,7 @@ public class WorkerModel implements IWorkerModel {
             Validate
                     .isTrue(
                             type.allowSimultaneousCriterionsPerResource(),
-                            "must allow multiple active criterions for this type to use this assignment strategy");
+                            _("Must allow multiple active criterions for this type to use this assignment strategy"));
             this.criterionDAO = criterionDAO;
             this.resource = resource;
             this.type = type;

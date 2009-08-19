@@ -17,6 +17,8 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.api.Window;
 
+import static org.navalplanner.web.I18nHelper._;
+
 /**
  * Controller for CRUD actions over a {@link AdvanceType}
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -82,12 +84,12 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
                     throws WrongValueException {
                 if (((BigDecimal) value) == null)
                     throw new WrongValueException(comp,
-                            "Value is not valid, the default max value must be not null");
+                            _("Value is not valid, the default max value must not be null"));
 
                 if (!(advanceTypeModel.isPrecisionValid((BigDecimal) value))) {
                     throw new WrongValueException(
                             comp,
-                            "Value is not valid, the Precision value must be less than the defalt max value and not null ");
+                            _("Value is not valid, the Precision value must be less than the defalt max value and not null"));
                 }
             }
         };
@@ -101,12 +103,12 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
                     throws WrongValueException {
                 if (((BigDecimal) value) == null)
                     throw new WrongValueException(comp,
-                            "Value is not valid, the Precision value must be not null");
+                            _("Value is not valid, the Precision value must not be null "));
                 if (!(advanceTypeModel
                         .isDefaultMaxValueValid((BigDecimal) value))) {
                     throw new WrongValueException(
                             comp,
-                            "Value is not valid, the Precision value must be less than the defalt max value");
+                            _("Value is not valid, the Precision value must be less than the defalt max value "));
                 }
             }
         };
@@ -120,10 +122,10 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
                     throws WrongValueException {
                 if (((String) value).isEmpty())
                     throw new WrongValueException(comp,
-                            "The name is not valid, the name must be not null ");
+                            _("The name is not valid, the name must not be null "));
                 if (!(advanceTypeModel.distinctNames((String) value))) {
                     throw new WrongValueException(comp,
-                            "The name is not valid, Exist other advance type with a similar name. ");
+                            _("The name is not valid, Exist other advance type with a similar name. "));
                 }
             }
         };
@@ -133,7 +135,7 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
     public void save() {
         try {
             advanceTypeModel.save();
-            messagesForUser.showMessage(Level.INFO, "advance type saved");
+            messagesForUser.showMessage(Level.INFO, _("Advance type saved"));
             goToList();
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
@@ -174,8 +176,8 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
         advanceTypeModel.remove(advanceType);
         hideConfirmingWindow();
         Util.reloadBindings(listWindow);
-        messagesForUser.showMessage(Level.INFO, "removed "
-                + advanceType.getUnitName());
+        messagesForUser.showMessage(
+            Level.INFO, _("Removed {0}", advanceType.getUnitName()));
     }
 
     public void goToCreateForm() {
