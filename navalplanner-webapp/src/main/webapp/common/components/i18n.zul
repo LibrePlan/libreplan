@@ -1,0 +1,8 @@
+<zk>
+	<zscript><![CDATA[
+		top = self;
+	]]>
+	</zscript>
+
+	<label value="@{top.i18n}" />
+</zk>

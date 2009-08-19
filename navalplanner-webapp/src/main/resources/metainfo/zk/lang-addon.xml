@@ -11,4 +11,10 @@
         <macro-uri>/common/components/twowayselector.zul</macro-uri>
     </component>
 
+     <component>
+        <component-name>i18n</component-name>
+        <component-class>org.navalplanner.web.common.components.I18n</component-class>
+        <macro-uri>/common/components/i18n.zul</macro-uri>
+    </component>
+
 </language-addon>
