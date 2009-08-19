@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
@@ -76,6 +75,10 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
     public String getName() {
         return name;
+    }
+
+    public Map<Integer, Integer> getHoursPerDay() {
+        return hoursPerDay;
     }
 
     public Integer getHours(Days day) {
@@ -338,11 +341,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
      * calendar restrictions.
      */
     public Integer getWorkableHoursPerWeek(Date date) {
-        DateTime week = new DateTime(date);
-        DateTime init = week.dayOfWeek().withMinimumValue();
-        DateTime end = week.dayOfWeek().withMaximumValue();
-
-        return getWorkableHours(init.toDate(), end.toDate());
+        return getWorkableHoursPerWeek(new LocalDate(date));
     }
 
     /**
@@ -358,14 +357,6 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
     @Override
     public void checkValid() throws ValidationException {
-        if (parent == null) {
-            if (isNullSomeDay()) {
-                throw new ValidationException(
-                        "Daily hours could not have the default value "
-                                + "if the calendar is not derivated");
-            }
-        }
-
         if ((nextCalendar == null) && (expiringDate != null)) {
             throw new ValidationException("A next calendar should exist "
                     + "if current calendar has a expiring date fixed");
@@ -374,15 +365,6 @@ public class BaseCalendar extends BaseEntity implements IValidable {
             throw new ValidationException("A expiring date should be fixed"
                     + "if current calendar has a next calendar");
         }
-    }
-
-    private boolean isNullSomeDay() {
-        for (Integer hours : hoursPerDay.values()) {
-            if (hours == null) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

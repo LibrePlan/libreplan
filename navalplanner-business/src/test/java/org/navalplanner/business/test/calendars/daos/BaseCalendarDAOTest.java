@@ -1,6 +1,8 @@
 package org.navalplanner.business.test.calendars.daos;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -73,6 +75,35 @@ public class BaseCalendarDAOTest {
             BaseCalendar savedDerivedCalendar = baseCalendarDAO
                     .find(derivedCalendar.getId());
             assertTrue(savedDerivedCalendar.isDerived());
+
+        } catch (InstanceNotFoundException e) {
+            fail("It should not throw an exception");
+        }
+
+    }
+
+    @Test
+    public void saveNextCalendar() {
+        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
+        baseCalendarDAO.save(calendar);
+
+        BaseCalendar nextCalendar = calendar.newVersion();
+        baseCalendarDAO.save(nextCalendar);
+
+        try {
+
+            BaseCalendar savedCalendar = baseCalendarDAO.find(calendar.getId());
+            assertThat(savedCalendar.getPreviousCalendar(), nullValue());
+            assertThat(savedCalendar.getNextCalendar(), notNullValue());
+            assertThat(savedCalendar.getNextCalendar(), equalTo(nextCalendar));
+
+            BaseCalendar savedNextCalendar = baseCalendarDAO
+                    .find(nextCalendar
+                    .getId());
+            assertThat(savedNextCalendar.getPreviousCalendar(), notNullValue());
+            assertThat(savedNextCalendar.getNextCalendar(), nullValue());
+            assertThat(savedNextCalendar.getPreviousCalendar(),
+                    equalTo(calendar));
 
         } catch (InstanceNotFoundException e) {
             fail("It should not throw an exception");

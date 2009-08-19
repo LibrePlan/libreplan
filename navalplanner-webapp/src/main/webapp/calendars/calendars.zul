@@ -15,9 +15,9 @@
         apply="org.navalplanner.web.calendars.BaseCalendarCRUDController">
                 <vbox id="messagesContainer"></vbox>
         <list top_id="listWindow" />
-        <edition top_id="createWindow" title="Create"
+        <edition top_id="createWindow" title="Create Calendar"
             save_button_label="Save" cancel_button_label="Cancel" />
-        <edition top_id="editWindow" title="Edit Advance Type Data"
+        <edition top_id="editWindow" title="Edit Calendar"
             save_button_label="Save" cancel_button_label="Cancel" />
         <window visible="@{controller.confirmingRemove}"
             id="confirmRemove" title="Confirmation" sizable="true"

@@ -1,8 +1,11 @@
 package org.navalplanner.web.calendars;
 
+import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
+import org.navalplanner.business.calendars.entities.BaseCalendar.Days;
 import org.navalplanner.business.common.exceptions.ValidationException;
 
 /**
@@ -61,6 +64,27 @@ public interface IBaseCalendarModel {
 
     boolean isEditing();
 
+    void selectDay(Date date);
+
+    DayType getTypeOfDay();
+
+    Integer getHoursOfDay();
+
+    void createException(Integer hours);
+
+    Integer getHours(Days day);
+
+    void setHours(Days day, Integer hours);
+
+    Boolean isDefault(Days day);
+
+    void setDefault(Days day);
+
+    boolean isExceptional();
+
+    void removeException();
+
+    boolean isDerived();
 
     /*
      * Final conversation steps

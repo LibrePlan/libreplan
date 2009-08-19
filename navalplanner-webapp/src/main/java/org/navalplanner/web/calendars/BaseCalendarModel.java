@@ -1,5 +1,6 @@
 package org.navalplanner.web.calendars;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -7,6 +8,9 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.ExceptionDay;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
+import org.navalplanner.business.calendars.entities.BaseCalendar.Days;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,8 @@ public class BaseCalendarModel implements IBaseCalendarModel {
      * Conversation state
      */
     private BaseCalendar baseCalendar;
+
+    private Date selectedDate;
 
     private boolean editing = false;
 
@@ -67,6 +73,12 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         Validate.notNull(baseCalendar);
 
         this.baseCalendar = getFromDB(baseCalendar);
+        forceLoadExceptionDays();
+    }
+
+    private void forceLoadExceptionDays() {
+        baseCalendar.getHoursPerDay().size();
+        baseCalendar.getExceptions().size();
     }
 
     private BaseCalendar getFromDB(BaseCalendar baseCalendar) {
@@ -102,6 +114,97 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         return this.editing;
     }
 
+    @Override
+    public void selectDay(Date date) {
+        this.selectedDate = date;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer getHoursOfDay() {
+        if (baseCalendar == null) {
+            return null;
+        }
+
+        return baseCalendar.getWorkableHours(selectedDate);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public DayType getTypeOfDay() {
+        if (baseCalendar == null) {
+            return null;
+        }
+
+        return baseCalendar.getType(selectedDate);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void createException(Integer hours) {
+        if (getTypeOfDay().equals(DayType.OWN_EXCEPTION)) {
+            baseCalendar.updateExceptionDay(selectedDate, hours);
+        } else {
+            ExceptionDay day = ExceptionDay.create(selectedDate, hours);
+            baseCalendar.addExceptionDay(day);
+        }
+    }
+
+    @Override
+    public Integer getHours(Days day) {
+        if (baseCalendar == null) {
+            return null;
+        }
+
+        return baseCalendar.getHours(day);
+    }
+
+    @Override
+    public Boolean isDefault(Days day) {
+        if (baseCalendar == null) {
+            return false;
+        }
+
+        return baseCalendar.isDefault(day);
+    }
+
+    @Override
+    public void setDefault(Days day) {
+        if (baseCalendar != null) {
+            baseCalendar.setDefault(day);
+        }
+    }
+
+    @Override
+    public void setHours(Days day, Integer hours) {
+        if (baseCalendar != null) {
+            baseCalendar.setHours(day, hours);
+        }
+    }
+
+    @Override
+    public boolean isExceptional() {
+        if (baseCalendar == null) {
+            return false;
+        }
+
+        ExceptionDay day = baseCalendar.getOwnExceptionDay(selectedDate);
+        return (day != null);
+    }
+
+    @Override
+    public void removeException() {
+        baseCalendar.removeExceptionDay(selectedDate);
+    }
+
+    @Override
+    public boolean isDerived() {
+        if (baseCalendar == null) {
+            return false;
+        }
+
+        return baseCalendar.isDerived();
+    }
 
     /*
      * Final conversation steps
@@ -116,6 +219,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
             throw new ValidationException(invalidValues);
         }
 
+        baseCalendar.checkValid();
         baseCalendarDAO.save(baseCalendar);
     }
 

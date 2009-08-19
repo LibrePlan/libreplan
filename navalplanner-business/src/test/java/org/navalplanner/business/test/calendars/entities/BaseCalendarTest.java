@@ -87,12 +87,6 @@ public class BaseCalendarTest {
         }
     }
 
-    @Test(expected = ValidationException.class)
-    public void testInvalidCalendar() throws ValidationException {
-        BaseCalendar calendar = new BaseCalendar();
-        calendar.checkValid();
-    }
-
     @Test
     public void testGetWorkableHoursBasic() {
         BaseCalendar calendar = createBasicCalendar();
@@ -435,16 +429,14 @@ public class BaseCalendarTest {
         assertTrue(calendarFixture.isDefault(Days.SUNDAY));
     }
 
-    @Test(expected = ValidationException.class)
-    public void testDefaultValues() throws ValidationException {
+    @Test
+    public void testDefaultValues() {
         BaseCalendar calendar = createBasicCalendar();
 
         assertFalse(calendar.isDefault(Days.MONDAY));
 
         calendar.setDefault(Days.MONDAY);
         assertTrue(calendar.isDefault(Days.MONDAY));
-
-        calendar.checkValid();
     }
 
     @Test

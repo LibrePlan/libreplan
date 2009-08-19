@@ -20,11 +20,11 @@
             <element column="HOURS" type="integer" />
         </map>
 
-        <one-to-one name="parent" class="BaseCalendar" access="field"/>
+        <many-to-one name="parent" class="BaseCalendar" access="field"/>
 
-        <one-to-one name="previousCalendar" class="BaseCalendar" access="field"/>
+        <many-to-one name="previousCalendar" class="BaseCalendar" unique="true" />
 
-        <one-to-one name="nextCalendar" class="BaseCalendar" access="field"/>
+        <many-to-one name="nextCalendar" class="BaseCalendar" unique="true" />
 
         <property name="expiringDate" access="field"
             type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>

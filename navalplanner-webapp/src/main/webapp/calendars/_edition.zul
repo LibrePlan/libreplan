@@ -1,24 +1,76 @@
-<window id="${arg.top_id}" title="${arg.title}">
-    <tabbox>
-        <tabs>
-            <tab label="Edition"></tab>
-        </tabs>
-        <tabpanels>
-            <tabpanel>
-                <grid fixedLayout="false">
-                    <rows>
-                        <row>
-                            <label value="Name" />
-                            <textbox value="@{controller.baseCalendar.name}" />
-                        </row>
-                    </rows>
-                </grid>
-            </tabpanel>
-        </tabpanels>
-    </tabbox>
+<window id="${arg.top_id}" title="${arg.title}" border="normal">
 
-    <button onClick="controller.save();"
-        label="${arg.save_button_label}" />
-    <button onClick="controller.cancel();"
-        label="${arg.cancel_button_label}" />
+<vbox>
+
+    <hbox>
+
+    <vbox>
+
+    <hbox>
+        <label value="Name" />
+        <textbox value="@{controller.baseCalendar.name}" />
+    </hbox>
+
+    <hbox>
+        <label value="Type" />
+        <vbox>
+            <label value="Normal" if="${!controller.isDerived}" />
+            <label value="Derived" if="${controller.isDerived}" />
+            <combobox if="${controller.isDerived}"
+                model="@{controller.baseCalendars}">
+                <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
+                    label="@{baseCalnedar.name}" />
+            </combobox>
+        </vbox>
+    </hbox>
+
+    <listbox id="hoursPerDay"
+        model="@{controller.getHoursPerDay}"
+        itemRenderer="@{controller.hoursPerDayRenderer}">
+        <listhead>
+            <listheader label="Day of week" />
+            <listheader label="Hours" />
+            <listheader label="By default" />
+        </listhead>
+    </listbox>
+
+    </vbox>
+
+    <vbox id="dayInformation">
+        <calendar id="calendarWidget"
+            onChange="controller.selectDay(calendarWidget.value);" />
+
+        <hbox>
+            <label value="Type of day" />
+            <label value="@{controller.typeOfDay}" />
+        </hbox>
+
+        <hbox>
+            <label value="Hours of day" />
+            <label value="@{controller.hoursOfDay}" />
+        </hbox>
+
+        <hbox>
+            <vbox>
+                <button label="Create exception"
+                    onClick="controller.createException(exceptionHours.value);" />
+                <button disabled="@{controller.isNotExceptional}"
+                    label="Remove exception"
+                    onClick="controller.removeException();" />
+            </vbox>
+            <intbox id="exceptionHours" value="0" />
+        </hbox>
+    </vbox>
+
+    </hbox>
+
+    <hbox>
+        <button onClick="controller.save();"
+            label="${arg.save_button_label}" />
+        <button onClick="controller.cancel();"
+            label="${arg.cancel_button_label}" />
+    </hbox>
+
+</vbox>
+
 </window>
