@@ -10,6 +10,7 @@ import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.daos.BaseCalendarDAO;
@@ -18,6 +19,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.test.calendars.entities.BaseCalendarTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +36,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class BaseCalendarDAOTest {
 
     @Autowired
-    IBaseCalendarDAO baseCalendarDAO;
+    private IBaseCalendarDAO baseCalendarDAO;
+
+    @Autowired
+    private SessionFactory session;
 
     @Test
     public void saveBasicCalendar() {
@@ -109,6 +114,22 @@ public class BaseCalendarDAOTest {
             fail("It should not throw an exception");
         }
 
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void notAllowSaveCalendarWithChildren()
+            throws InstanceNotFoundException {
+        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
+        baseCalendarDAO.save(calendar);
+        BaseCalendar derivedCalendar = calendar.newDerivedCalendar();
+        baseCalendarDAO.save(derivedCalendar);
+
+        baseCalendarDAO.flush();
+        session.getCurrentSession().evict(calendar);
+        session.getCurrentSession().evict(derivedCalendar);
+
+        baseCalendarDAO.remove(calendar.getId());
+        baseCalendarDAO.flush();
     }
 
 }
