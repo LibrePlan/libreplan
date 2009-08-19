@@ -132,4 +132,21 @@ public class BaseCalendarDAOTest {
         baseCalendarDAO.flush();
     }
 
+    @Test(expected = InstanceNotFoundException.class)
+    public void removeVersions() throws InstanceNotFoundException {
+        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
+        baseCalendarDAO.save(calendar);
+        BaseCalendar newCalendar = calendar.newVersion();
+        baseCalendarDAO.save(newCalendar);
+
+        baseCalendarDAO.flush();
+        session.getCurrentSession().evict(calendar);
+        session.getCurrentSession().evict(newCalendar);
+
+        baseCalendarDAO.remove(calendar.getId());
+        baseCalendarDAO.flush();
+
+        baseCalendarDAO.find(newCalendar.getId());
+    }
+
 }

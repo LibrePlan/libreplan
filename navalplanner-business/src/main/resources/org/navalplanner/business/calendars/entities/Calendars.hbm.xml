@@ -22,9 +22,11 @@
 
         <many-to-one name="parent" class="BaseCalendar" access="field"/>
 
-        <many-to-one name="previousCalendar" class="BaseCalendar" unique="true" />
+        <many-to-one name="previousCalendar" class="BaseCalendar" unique="true"
+            cascade="all" />
 
-        <many-to-one name="nextCalendar" class="BaseCalendar" unique="true" />
+        <many-to-one name="nextCalendar" class="BaseCalendar" unique="true"
+            cascade="all" />
 
         <property name="expiringDate" access="field"
             type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
