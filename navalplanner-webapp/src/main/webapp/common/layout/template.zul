@@ -42,7 +42,7 @@
                 <menupopup>
                     <menuitem label="${i18n:_('Work report list')}" />
                     <menuitem label="${i18n:_('Work report types')}"
-                        href="/workreports/workRerpotTypes.zul" />
+                        href="/workreports/workReportTypes.zul" />
                     <menuitem label="${i18n:_('Import work report')}" />
                 </menupopup>
             </menu>

@@ -101,7 +101,7 @@ public class CustomMenuController extends Div {
         ci = new CustomMenuItem(_("Work reports"),
                 "/navalplanner-webapp/workreports/workReportTypes.zul");
         ci.appendChildren(new CustomMenuItem(_("Work report types"),
-                "navalplanner-webapp/workreports/workReportTypes.zul"));
+                "/navalplanner-webapp/workreports/workReportTypes.zul"));
         ci.appendChildren(new CustomMenuItem(_("Work report list"),
                 "/navalplanner-webapp/workreports/workReport.zul#list"));
         l.add(ci);
