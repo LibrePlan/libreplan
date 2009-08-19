@@ -12,4 +12,15 @@
         <description>
         </description>
     </function>
+
+    <!-- Pass one extra argument -->
+    <function>
+        <name>__</name>
+        <function-class>org.navalplanner.web.I18nHelper</function-class>
+        <function-signature>
+            java.lang.String _(java.lang.String name, java.lang.Object arg0)
+        </function-signature>
+        <description>
+        </description>
+    </function>
 </taglib>
