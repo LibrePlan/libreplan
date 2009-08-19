@@ -13,9 +13,33 @@
 
     <build>
         <finalName>ganttzk-demo-webapp</finalName>
+
+	<!--
+            Gettext Commons plugin
+               goals:
+                    merge: parses source code and generates keys.pot
+                    dist: generates binary Resoruce Bundle (Messages_XX.class)
+        -->
+        <plugins>
+            <plugin>
+                <groupId>org.xnap.commons</groupId>
+                <artifactId>maven-gettext-plugin</artifactId>
+                <configuration>
+                    <targetBundle>i18n.Messages</targetBundle>
+                    <poDirectory>${project.build.sourceDirectory}/../resources/i18n</poDirectory>
+                    <keywords>-k_</keywords>
+                </configuration>
+            </plugin>
+        </plugins>
+
     </build>
 
     <dependencies>
+	  <!-- Gettext commons -->
+        <dependency>
+            <groupId>org.xnap.commons</groupId>
+            <artifactId>gettext-commons</artifactId>
+        </dependency>
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -68,6 +92,16 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+        </dependency>
+         <!--
+            Apache Commons IO (required by Commons Fileupload but
+            declared as optional it commons-fileupload.pom)
+        -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.2</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
