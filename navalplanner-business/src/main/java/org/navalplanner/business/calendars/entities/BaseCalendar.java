@@ -451,4 +451,9 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         return DayType.NORMAL;
     }
 
+    public void setParent(BaseCalendar parent)
+            throws IllegalArgumentException {
+        this.parent = parent;
+    }
+
 }

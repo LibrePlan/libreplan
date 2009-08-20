@@ -488,4 +488,26 @@ public class BaseCalendarTest {
         assertThat(calendar.getType(CHRISTMAS_DAY_LOCAL_DATE),
                 equalTo(DayType.OWN_EXCEPTION));
     }
+
+    @Test
+    public void testSetParent() {
+        BaseCalendar calendar = createBasicCalendar();
+        BaseCalendar calendar2 = createBasicCalendar();
+        BaseCalendar derived = calendar.newDerivedCalendar();
+
+        derived.setParent(calendar2);
+
+        assertThat(derived.getParent(), equalTo(calendar2));
+    }
+
+    @Test
+    public void testSetParentInACalendarWithoutParent() {
+        BaseCalendar calendar = createBasicCalendar();
+        BaseCalendar parent = createBasicCalendar();
+
+        calendar.setParent(parent);
+
+        assertThat(calendar.getParent(), equalTo(parent));
+    }
+
 }
