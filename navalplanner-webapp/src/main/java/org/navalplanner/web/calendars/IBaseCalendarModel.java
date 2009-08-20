@@ -55,6 +55,7 @@ public interface IBaseCalendarModel {
 
     void initRemove(BaseCalendar baseCalendar);
 
+    void initCreateDerived(BaseCalendar baseCalendar);
 
     /*
      * Intermediate conversation steps
@@ -80,11 +81,19 @@ public interface IBaseCalendarModel {
 
     void setDefault(Days day);
 
+    void unsetDefault(Days day);
+
     boolean isExceptional();
 
     void removeException();
 
     boolean isDerived();
+
+    List<BaseCalendar> getPossibleParentCalendars();
+
+    BaseCalendar getParent();
+
+    boolean isParent();
 
     /*
      * Final conversation steps

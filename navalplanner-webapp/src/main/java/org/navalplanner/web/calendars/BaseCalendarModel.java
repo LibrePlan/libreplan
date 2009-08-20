@@ -73,21 +73,35 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         Validate.notNull(baseCalendar);
 
         this.baseCalendar = getFromDB(baseCalendar);
-        forceLoadExceptionDays();
+        forceLoadExceptionDays(this.baseCalendar);
     }
 
-    private void forceLoadExceptionDays() {
-        baseCalendar.getHoursPerDay().size();
-        baseCalendar.getExceptions().size();
-    }
+    @Override
+    @Transactional(readOnly = true)
+    public void initCreateDerived(BaseCalendar baseCalendar) {
+        editing = false;
+        Validate.notNull(baseCalendar);
 
-    private BaseCalendar getFromDB(BaseCalendar baseCalendar) {
-        return getFromDB(baseCalendar.getId());
+        this.baseCalendar = getFromDB(baseCalendar).newDerivedCalendar();
+        forceLoadExceptionDays(this.baseCalendar);
     }
 
     @Override
     public void initRemove(BaseCalendar baseCalendar) {
         this.baseCalendar = baseCalendar;
+    }
+
+    private void forceLoadExceptionDays(BaseCalendar baseCalendar) {
+        if (baseCalendar == null) {
+            return;
+        }
+
+        baseCalendar.getHoursPerDay().size();
+        baseCalendar.getExceptions().size();
+
+        forceLoadExceptionDays(baseCalendar.getParent());
+        forceLoadExceptionDays(baseCalendar.getPreviousCalendar());
+        forceLoadExceptionDays(baseCalendar.getNextCalendar());
     }
 
     @Transactional(readOnly = true)
@@ -98,6 +112,27 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private BaseCalendar getFromDB(BaseCalendar baseCalendar) {
+        return getFromDB(baseCalendar.getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BaseCalendar> getPossibleParentCalendars() {
+        List<BaseCalendar> baseCalendars = baseCalendarDAO.getBaseCalendars();
+
+        if (baseCalendar != null) {
+            for (BaseCalendar calendar : baseCalendars) {
+                if (calendar.getId().equals(baseCalendar.getId())) {
+                    baseCalendars.remove(calendar);
+                    break;
+                }
+            }
+        }
+
+        return baseCalendars;
     }
 
     /*
@@ -169,6 +204,13 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
+    public void unsetDefault(Days day) {
+        if (baseCalendar != null) {
+            baseCalendar.setHours(day, 0);
+        }
+    }
+
+    @Override
     public void setDefault(Days day) {
         if (baseCalendar != null) {
             baseCalendar.setDefault(day);
@@ -204,6 +246,25 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         }
 
         return baseCalendar.isDerived();
+    }
+
+    @Override
+    public BaseCalendar getParent() {
+        if (baseCalendar == null) {
+            return null;
+        }
+
+        return baseCalendar.getParent();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isParent() {
+        if (baseCalendar == null) {
+            return false;
+        }
+
+        return !baseCalendarDAO.findByParent(baseCalendar).isEmpty();
     }
 
     /*

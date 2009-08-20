@@ -19,6 +19,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
@@ -81,6 +82,9 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public void goToEditForm(BaseCalendar baseCalendar) {
         baseCalendarModel.initEdit(baseCalendar);
+        if (baseCalendarModel.isDerived()) {
+            markSelecedParentCombo();
+        }
         selectDay(new Date());
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
@@ -129,10 +133,18 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public void remove() {
         String name = baseCalendarModel.getBaseCalendar().getName();
-        baseCalendarModel.confirmRemove();
-        hideConfirmingWindow();
-        Util.reloadBindings(listWindow);
-        messagesForUser.showMessage(Level.INFO, "removed " + name);
+        if (baseCalendarModel.isParent()) {
+            hideConfirmingWindow();
+            messagesForUser
+                    .showMessage(Level.ERROR,
+                            "The calendar was not removed because it still has children. "
+                            + "Some other calendar is derived from this.");
+        } else {
+            baseCalendarModel.confirmRemove();
+            hideConfirmingWindow();
+            Util.reloadBindings(listWindow);
+            messagesForUser.showMessage(Level.INFO, "removed " + name);
+        }
     }
 
     public void goToCreateForm() {
@@ -230,6 +242,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                                     value);
                         }
                     });
+
             hoursIntbox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
                 @Override
@@ -238,12 +251,18 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                 }
 
             });
+
+            if (baseCalendarModel.isDerived()
+                    && baseCalendarModel.isDefault(day)) {
+                hoursIntbox.setDisabled(true);
+            }
+
             hoursListcell.appendChild(hoursIntbox);
             item.appendChild(hoursListcell);
 
             if (baseCalendarModel.isDerived()) {
                 Listcell defaultListcell = new Listcell();
-                defaultListcell.appendChild(Util.bind(new Checkbox(),
+                Checkbox defaultCheckbox = Util.bind(new Checkbox(),
                         new Util.Getter<Boolean>() {
 
                             @Override
@@ -254,9 +273,23 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
                             @Override
                             public void set(Boolean value) {
-                                baseCalendarModel.setDefault(day);
+                                if (value) {
+                                    baseCalendarModel.setDefault(day);
+                                } else {
+                                    baseCalendarModel.unsetDefault(day);
+                                }
                             }
-                        }));
+                        });
+                defaultCheckbox.addEventListener(Events.ON_CHECK,
+                        new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        reloadCurrentWindow();
+                    }
+
+                });
+                defaultListcell.appendChild(defaultCheckbox);
                 item.appendChild(defaultListcell);
             }
         }
@@ -269,6 +302,53 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         } else {
             Util.reloadBindings(createWindow);
         }
+    }
+
+    public void goToCreateDerivedForm(BaseCalendar baseCalendar) {
+        baseCalendarModel.initCreateDerived(baseCalendar);
+        if (baseCalendarModel.isDerived()) {
+            markSelecedParentCombo();
+        }
+        selectDay(new Date());
+        getVisibility().showOnly(createWindow);
+        Util.reloadBindings(createWindow);
+    }
+
+    private void markSelecedParentCombo() {
+        Combobox parentCalendars;
+        if (baseCalendarModel.isEditing()) {
+            parentCalendars = (Combobox) editWindow
+                    .getFellow("parentCalendars");
+        } else {
+            parentCalendars = (Combobox) createWindow
+                    .getFellow("parentCalendars");
+        }
+
+        BaseCalendar parent = baseCalendarModel.getParent();
+
+        List<BaseCalendar> possibleParentCalendars = getParentCalendars();
+        for (BaseCalendar baseCalendar : possibleParentCalendars) {
+            if (baseCalendar.getId().equals(parent.getId())) {
+                parentCalendars.setSelectedIndex(possibleParentCalendars
+                        .indexOf(baseCalendar));
+                break;
+            }
+        }
+    }
+
+    public boolean isDerived() {
+        return baseCalendarModel.isDerived();
+    }
+
+    public String getCalendarType() {
+        if (baseCalendarModel.isDerived()) {
+            return "Derived";
+        }
+        return "Normal";
+    }
+
+    public List<BaseCalendar> getParentCalendars() {
+        return baseCalendarModel.getPossibleParentCalendars();
     }
 
 }

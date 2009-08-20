@@ -8,6 +8,10 @@
         <rows>
             <row self="@{each='baseCalendar'}" value="@{baseCalendar}">
                 <hbox>
+                    <button label="Create derived"
+                        onClick="controller.goToCreateDerivedForm(self.parent.parent.value);">
+                    </button>
+
                     <button label="Edit"
                         onClick="controller.goToEditForm(self.parent.parent.value);">
                     </button>

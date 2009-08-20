@@ -14,10 +14,10 @@
     <hbox>
         <label value="Type" />
         <vbox>
-            <label value="Normal" if="${!controller.isDerived}" />
-            <label value="Derived" if="${controller.isDerived}" />
-            <combobox if="${controller.isDerived}"
-                model="@{controller.baseCalendars}">
+            <label value="@{controller.calendarType}" />
+            <combobox id="parentCalendars"
+                visible="@{controller.isDerived}"
+                model="@{controller.parentCalendars}">
                 <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
                     label="@{baseCalnedar.name}" />
             </combobox>
