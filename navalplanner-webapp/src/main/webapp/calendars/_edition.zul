@@ -37,8 +37,7 @@
     </vbox>
 
     <vbox id="dayInformation">
-        <calendar id="calendarWidget"
-            onChange="controller.selectDay(calendarWidget.value);" />
+        <calendar id="calendarWidget" value="@{controller.selectedDay}" />
 
         <hbox>
             <label value="Type of day" />
@@ -62,6 +61,11 @@
         </hbox>
     </vbox>
 
+    </hbox>
+
+    <hbox visible="@{controller.isEditing}">
+        <label value="Valid from" />
+        <datebox value="@{controller.expiringDate}" />
     </hbox>
 
     <hbox>

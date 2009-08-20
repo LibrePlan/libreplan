@@ -65,7 +65,9 @@ public interface IBaseCalendarModel {
 
     boolean isEditing();
 
-    void selectDay(Date date);
+    void setSelectedDay(Date date);
+
+    Date getSelectedDay();
 
     DayType getTypeOfDay();
 
@@ -93,7 +95,13 @@ public interface IBaseCalendarModel {
 
     BaseCalendar getParent();
 
+    void setParent(BaseCalendar parent);
+
     boolean isParent();
+
+    Date getExpiringDate();
+
+    void setExpiringDate(Date date);
 
     /*
      * Final conversation steps

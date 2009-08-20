@@ -136,6 +136,27 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         return expiringDate;
     }
 
+    public void setExpiringDate(Date expiringDate)
+            throws UnsupportedOperationException, IllegalArgumentException {
+        setExpiringDate(new LocalDate(expiringDate));
+    }
+
+    public void setExpiringDate(LocalDate expiringDate)
+            throws UnsupportedOperationException, IllegalArgumentException {
+        if (nextCalendar == null) {
+            throw new UnsupportedOperationException(
+                    "Can not set the expiring date "
+                            + "because of it does not have a next calendar");
+        }
+        if (previousCalendar != null) {
+            if (previousCalendar.getExpiringDate().compareTo(expiringDate) <= 0) {
+                throw new IllegalArgumentException(
+                        "Expering date must be greater than expiring date of previous calendars");
+            }
+        }
+        this.expiringDate = expiringDate;
+    }
+
     public Set<ExceptionDay> getOwnExceptions() {
         return Collections.unmodifiableSet(exceptions);
     }
@@ -219,6 +240,12 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     public ExceptionDay getOwnExceptionDay(LocalDate date) {
+        if (shouldUsePreviousCalendar(date)) {
+            return previousCalendar.getOwnExceptionDay(date);
+        } else if (shouldUseNextCalendar(date)) {
+            return nextCalendar.getOwnExceptionDay(date);
+        }
+
         for (ExceptionDay exceptionDay : exceptions) {
             if (exceptionDay.getDate().equals(date)) {
                 return exceptionDay;
@@ -233,6 +260,12 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     public ExceptionDay getExceptionDay(LocalDate date) {
+        if (shouldUsePreviousCalendar(date)) {
+            return previousCalendar.getExceptionDay(date);
+        } else if (shouldUseNextCalendar(date)) {
+            return nextCalendar.getExceptionDay(date);
+        }
+
         for (ExceptionDay exceptionDay : getExceptions()) {
             if (exceptionDay.getDate().equals(date)) {
                 return exceptionDay;
@@ -438,7 +471,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     public DayType getType(LocalDate date) {
         ExceptionDay exceptionDay = getExceptionDay(date);
         if (exceptionDay != null) {
-            if (exceptions.contains(exceptionDay)) {
+            if (getOwnExceptionDay(date) != null) {
                 return DayType.OWN_EXCEPTION;
             }
             return DayType.ANCESTOR_EXCEPTION;

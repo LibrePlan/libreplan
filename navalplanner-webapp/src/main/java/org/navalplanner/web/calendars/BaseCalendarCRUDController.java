@@ -83,9 +83,9 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void goToEditForm(BaseCalendar baseCalendar) {
         baseCalendarModel.initEdit(baseCalendar);
         if (baseCalendarModel.isDerived()) {
-            markSelecedParentCombo();
+            prepareParentCombo();
         }
-        selectDay(new Date());
+        setSelectedDay(new Date());
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
     }
@@ -149,7 +149,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public void goToCreateForm() {
         baseCalendarModel.initCreate();
-        selectDay(new Date());
+        setSelectedDay(new Date());
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
@@ -162,10 +162,18 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         return visibility;
     }
 
-    public void selectDay(Date date) {
-        baseCalendarModel.selectDay(date);
+    public void setSelectedDay(Date date) {
+        baseCalendarModel.setSelectedDay(date);
 
         reloadCurrentWindow();
+    }
+
+    public Date getSelectedDay() {
+        Date selectedDay = baseCalendarModel.getSelectedDay();
+        if (selectedDay == null) {
+            return new Date();
+        }
+        return selectedDay;
     }
 
     public String getTypeOfDay() {
@@ -307,14 +315,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void goToCreateDerivedForm(BaseCalendar baseCalendar) {
         baseCalendarModel.initCreateDerived(baseCalendar);
         if (baseCalendarModel.isDerived()) {
-            markSelecedParentCombo();
+            prepareParentCombo();
         }
-        selectDay(new Date());
+        setSelectedDay(new Date());
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
 
-    private void markSelecedParentCombo() {
+    private void prepareParentCombo() {
         Combobox parentCalendars;
         if (baseCalendarModel.isEditing()) {
             parentCalendars = (Combobox) editWindow
@@ -324,6 +332,11 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                     .getFellow("parentCalendars");
         }
 
+        markSelectedParentCombo(parentCalendars);
+        addListenerParentCombo(parentCalendars);
+    }
+
+    private void markSelectedParentCombo(final Combobox parentCalendars) {
         BaseCalendar parent = baseCalendarModel.getParent();
 
         List<BaseCalendar> possibleParentCalendars = getParentCalendars();
@@ -334,6 +347,21 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                 break;
             }
         }
+    }
+
+    private void addListenerParentCombo(final Combobox parentCalendars) {
+        parentCalendars.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                BaseCalendar selected = (BaseCalendar) parentCalendars
+                        .getSelectedItem()
+                        .getValue();
+                baseCalendarModel.setParent(selected);
+                reloadCurrentWindow();
+            }
+
+        });
     }
 
     public boolean isDerived() {
@@ -349,6 +377,22 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public List<BaseCalendar> getParentCalendars() {
         return baseCalendarModel.getPossibleParentCalendars();
+    }
+
+    public boolean isEditing() {
+        return baseCalendarModel.isEditing();
+    }
+
+    public Date getExpiringDate() {
+        return baseCalendarModel.getExpiringDate();
+    }
+
+    public void setExpiringDate(Date date) {
+        try {
+            baseCalendarModel.setExpiringDate(date);
+        } catch (IllegalArgumentException e) {
+            ;
+        }
     }
 
 }
