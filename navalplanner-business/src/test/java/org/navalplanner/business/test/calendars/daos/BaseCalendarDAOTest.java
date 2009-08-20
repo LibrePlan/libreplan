@@ -181,4 +181,19 @@ public class BaseCalendarDAOTest {
         assertThat(children.size(), equalTo(0));
     }
 
+    @Test
+    public void findLastVersions() {
+        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
+        baseCalendarDAO.save(calendar);
+        baseCalendarDAO.flush();
+
+        assertThat(baseCalendarDAO.findLastVersions().size(), equalTo(1));
+
+        BaseCalendar newCalendar = calendar.newVersion();
+        baseCalendarDAO.save(newCalendar);
+        baseCalendarDAO.flush();
+
+        assertThat(baseCalendarDAO.findLastVersions().size(), equalTo(1));
+    }
+
 }

@@ -38,4 +38,12 @@ public class BaseCalendarDAO extends GenericDAOHibernate<BaseCalendar, Long>
         return (List<BaseCalendar>) c.list();
     }
 
+    @Override
+    public List<BaseCalendar> findLastVersions() {
+        Criteria c = getSession().createCriteria(BaseCalendar.class);
+        c.add(Restrictions.isNull("nextCalendar"));
+
+        return (List<BaseCalendar>) c.list();
+    }
+
 }
