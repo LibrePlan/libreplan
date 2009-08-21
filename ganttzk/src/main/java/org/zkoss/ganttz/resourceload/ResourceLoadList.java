@@ -2,7 +2,7 @@ package org.zkoss.ganttz.resourceload;
 
 import java.util.List;
 
-import org.zkoss.ganttz.data.ResourceLoad;
+import org.zkoss.ganttz.data.resourceload.ResourceLoad;
 import org.zkoss.zul.impl.XulElement;
 
 /**

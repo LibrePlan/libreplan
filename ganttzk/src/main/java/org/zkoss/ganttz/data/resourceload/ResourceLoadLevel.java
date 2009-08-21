@@ -1,4 +1,4 @@
-package org.zkoss.ganttz.data;
+package org.zkoss.ganttz.data.resourceload;
 
 /**
  * This enum handles the different load Levels assinged to ResourceLoad intervals . <br/>

@@ -1,4 +1,4 @@
-package org.zkoss.ganttz.data;
+package org.zkoss.ganttz.data.resourceload;
 
 /**
  * This class contains the information of a ResourceLoad unit. It will fetch
