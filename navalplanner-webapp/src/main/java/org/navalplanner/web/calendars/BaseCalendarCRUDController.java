@@ -20,6 +20,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Intbox;
@@ -27,6 +28,11 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.SimpleTreeNode;
+import org.zkoss.zul.Treecell;
+import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.TreeitemRenderer;
+import org.zkoss.zul.Treerow;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -56,9 +62,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private HoursPerDayRenderer hoursPerDayRenderer = new HoursPerDayRenderer();
 
-    public List<BaseCalendar> getBaseCalendars() {
-        return baseCalendarModel.getBaseCalendars();
-    }
+    private BaseCalendarsTreeitemRenderer baseCalendarsTreeitemRenderer = new BaseCalendarsTreeitemRenderer();
 
     public BaseCalendar getBaseCalendar() {
         return baseCalendarModel.getBaseCalendar();
@@ -408,6 +412,86 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         setSelectedDay(new Date());
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
+    }
+
+    public BaseCalendarsTreeModel getBaseCalendarsTreeModel() {
+        return new BaseCalendarsTreeModel(new BaseCalendarTreeRoot(
+                baseCalendarModel.getBaseCalendars()));
+    }
+
+    public BaseCalendarsTreeitemRenderer getBaseCalendarsTreeitemRenderer() {
+        return baseCalendarsTreeitemRenderer;
+    }
+
+    public class BaseCalendarsTreeitemRenderer implements TreeitemRenderer {
+
+        @Override
+        public void render(Treeitem item, Object data) throws Exception {
+            SimpleTreeNode simpleTreeNode = (SimpleTreeNode) data;
+            final BaseCalendar baseCalendar = (BaseCalendar) simpleTreeNode
+                    .getData();
+            item.setValue(data);
+
+            Treerow treerow = new Treerow();
+
+            Treecell nameTreecell = new Treecell();
+            Label nameLabel = new Label(baseCalendar.getName());
+            nameTreecell.appendChild(nameLabel);
+            treerow.appendChild(nameTreecell);
+
+            Treecell operationsTreecell = new Treecell();
+
+            Button createDerivedButton = new Button(_("Create derived"));
+            createDerivedButton.addEventListener(Events.ON_CLICK,
+                    new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    goToCreateDerivedForm(baseCalendar);
+                }
+
+            });
+            operationsTreecell.appendChild(createDerivedButton);
+
+            Button createCopyButton = new Button(_("Create copy"));
+            createCopyButton.addEventListener(Events.ON_CLICK,
+                    new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    goToCreateCopyForm(baseCalendar);
+                }
+
+            });
+            operationsTreecell.appendChild(createCopyButton);
+
+            Button editButton = new Button(_("Edit"));
+            editButton.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    goToEditForm(baseCalendar);
+                }
+
+            });
+            operationsTreecell.appendChild(editButton);
+
+            Button removeButton = new Button(_("Remove"));
+            removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    confirmRemove(baseCalendar);
+                }
+
+            });
+            operationsTreecell.appendChild(removeButton);
+
+            treerow.appendChild(operationsTreecell);
+
+            item.appendChild(treerow);
+        }
+
     }
 
 }
