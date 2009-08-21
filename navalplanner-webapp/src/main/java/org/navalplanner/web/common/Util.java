@@ -113,7 +113,7 @@ public class Util {
     public static Textbox bind(final Textbox textBox,
             final Getter<String> getter, final Setter<String> setter) {
         textBox.setValue(getter.get());
-        textBox.addEventListener("onChange", new EventListener() {
+        textBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
@@ -159,7 +159,7 @@ public class Util {
     public static Intbox bind(final Intbox intBox,
             final Getter<Integer> getter, final Setter<Integer> setter) {
         intBox.setValue(getter.get());
-        intBox.addEventListener("onChange", new EventListener() {
+        intBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
@@ -206,7 +206,7 @@ public class Util {
     public static Datebox bind(final Datebox dateBox,
             final Getter<Date> getter, final Setter<Date> setter) {
         dateBox.setValue(getter.get());
-        dateBox.addEventListener("onChange", new EventListener() {
+        dateBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
@@ -252,7 +252,7 @@ public class Util {
     public static Decimalbox bind(final Decimalbox decimalBox,
             final Getter<BigDecimal> getter, final Setter<BigDecimal> setter) {
         decimalBox.setValue(getter.get());
-        decimalBox.addEventListener("onChange", new EventListener() {
+        decimalBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
