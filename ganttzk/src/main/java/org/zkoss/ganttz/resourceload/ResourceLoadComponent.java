@@ -63,21 +63,6 @@ public class ResourceLoadComponent extends Div implements AfterCompose {
     public void afterCompose() {
     }
 
-    private String _color;
-
-    public static ResourceLoadComponent asResourceLoadComponent(
-            ResourceLoad ResourceLoad, ResourceLoadList ResourceLoadList,
-            boolean isTopLevel) {
-        final ResourceLoadComponent result;
-        result = new ResourceLoadComponent(ResourceLoad);
-        return result;
-    }
-
-    public static ResourceLoadComponent asResourceLoadComponent(
-            ResourceLoad ResourceLoad, ResourceLoadList ResourceLoadList) {
-        return asResourceLoadComponent(ResourceLoad, ResourceLoadList, true);
-    }
-
     public String getResourceLoadName() {
         return this.resourceLoad.getName();
     }
