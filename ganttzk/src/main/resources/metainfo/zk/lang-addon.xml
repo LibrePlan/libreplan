@@ -38,6 +38,15 @@
         </mold>
     </component>
 
+    <component>
+        <component-name>resourceLoadLeftPane</component-name>
+        <component-class>org.zkoss.ganttz.resourceload.ResourceLoadLeftPane</component-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>~./ganttz/resourceload/resourceloadleftpane.dsp</mold-uri>
+        </mold>
+    </component>
+
 	<component>
 		<component-name>leftPane</component-name>
 		<component-class>org.zkoss.ganttz.LeftPane</component-class>

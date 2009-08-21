@@ -13,13 +13,17 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
 
     private TimeTrackerComponent timeTrackerComponent;
 
+    private ResourceLoadLeftPane leftPane;
+
     private ResourceLoadList resourceLoadList;
 
     public ResourcesLoadPanel(TimeTracker timeTracker) {
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
         resourceLoadList = new ResourceLoadList(Collections
                 .<ResourceLoad> emptyList());
+        leftPane = new ResourceLoadLeftPane();
         appendChild(timeTrackerComponent);
+        appendChild(leftPane);
         appendChild(resourceLoadList);
     }
 

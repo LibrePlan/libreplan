@@ -361,7 +361,6 @@ tr.z-vbox-sep {
 .NOT_PLANIFICATED {
     background-color:#007bbe;
 }
-
 .row_resourceload {
     height: 10px;
     border: solid 1px #000000;
@@ -370,6 +369,26 @@ tr.z-vbox-sep {
     width: auto;
 }
 
+.resourcesloadpanel {
+}
+
 .resourceload_name {
 	display:none;
+}
+
+.resourceloadleftpane {
+	top:27px;
+	position: relative;
+	float: left;
+	width: 285px;
+	padding-right: 15px;
+    overflow-y: hidden;
+}
+.resourceloadlist {
+	margin-top: 70px;
+	float: right;
+	width: 400px;/*TODO remove percentages at bars and do not specify width*/
+	overflow: visible;
+	position: absolute;
+	left: 285px;
 }
