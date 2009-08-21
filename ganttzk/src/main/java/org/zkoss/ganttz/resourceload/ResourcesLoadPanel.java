@@ -1,5 +1,7 @@
 package org.zkoss.ganttz.resourceload;
 
+import java.util.Collections;
+
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.TimeTracker;
 import org.zkoss.ganttz.TimeTrackerComponent;
@@ -11,26 +13,14 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
 
     private TimeTrackerComponent timeTrackerComponent;
 
+    private ResourceLoadList resourceLoadList;
+
     public ResourcesLoadPanel(TimeTracker timeTracker) {
-        ResourceLoadComponent rlc1 = new ResourceLoadComponent(
-                new ResourceLoad("ResourceLoad 1"));
-        ResourceLoadComponent rlc2 = new ResourceLoadComponent(
-                new ResourceLoad("ResourceLoad 1"));
-
-        rlc1.addInterval(40, 100);
-        rlc1.addInterval(20, 80);
-        rlc1.addInterval(30, 150);
-        rlc1.addInterval(10, 0);
-
-        rlc2.addInterval(10, 100);
-        rlc2.addInterval(20, 60);
-        rlc2.addInterval(30, 100);
-        rlc2.addInterval(20, 0);
-        rlc2.addInterval(20, 60);
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
+        resourceLoadList = new ResourceLoadList(Collections
+                .<ResourceLoad> emptyList());
         appendChild(timeTrackerComponent);
-        appendChild(rlc1);
-        appendChild(rlc2);
+        appendChild(resourceLoadList);
     }
 
     private TimeTrackerComponent timeTrackerForResourcesLoadPanel(
