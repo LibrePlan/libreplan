@@ -407,7 +407,7 @@ public class OrderElementController extends GenericForwardComposer {
             Listcell cellPercentage = new Listcell();
             cellPercentage.setParent(item);
 
-            Decimalbox decimalBox = new Decimalbox();
+            final Decimalbox decimalBox = new Decimalbox();
             decimalBox.setScale(2);
 
             // If is a container
@@ -439,7 +439,7 @@ public class OrderElementController extends GenericForwardComposer {
                                     return new BigDecimal(0).setScale(2);
                                 }
                                 return workingHours.divide(total,
-                                        BigDecimal.ROUND_DOWN);
+                                        BigDecimal.ROUND_DOWN).scaleByPowerOfTen(2);
                             }
                         }));
 
@@ -517,13 +517,18 @@ public class OrderElementController extends GenericForwardComposer {
 
                             @Override
                             public BigDecimal get() {
-                                return hoursGroup.getPercentage();
+                                return hoursGroup.getPercentage().scaleByPowerOfTen(2);
                             }
                         }, new Util.Setter<BigDecimal>() {
 
                             @Override
                             public void set(BigDecimal value) {
-                                hoursGroup.setPercentage(value);
+                                value = value.divide(new BigDecimal(100),BigDecimal.ROUND_DOWN);
+                                try {
+                                    hoursGroup.setPercentage(value);
+                                } catch (IllegalArgumentException e) {
+                                    throw new WrongValueException(decimalBox, e.getMessage());
+                                }
                             }
                         });
 
