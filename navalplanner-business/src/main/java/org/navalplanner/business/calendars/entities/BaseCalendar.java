@@ -440,7 +440,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
             nextCalendar.newVersion(date);
         }
 
-        BaseCalendar nextCalendar = copy();
+        BaseCalendar nextCalendar = newCopy();
 
         this.expiringDate = date;
 
@@ -450,15 +450,16 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         return nextCalendar;
     }
 
-    private BaseCalendar copy() {
+    public BaseCalendar newCopy() {
+        if (nextCalendar != null) {
+            nextCalendar.newCopy();
+        }
+
         BaseCalendar copy = create();
 
         copy.name = this.name;
-
         copy.hoursPerDay = new HashMap<Integer, Integer>(this.hoursPerDay);
-
         copy.exceptions = new HashSet<ExceptionDay>(this.exceptions);
-
         copy.parent = this.parent;
 
         return copy;

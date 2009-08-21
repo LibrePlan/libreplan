@@ -503,11 +503,25 @@ public class BaseCalendarTest {
     @Test
     public void testSetParentInACalendarWithoutParent() {
         BaseCalendar calendar = createBasicCalendar();
-        BaseCalendar parent = createBasicCalendar();
+        BaseCalendar parent = createChristmasCalendar();
 
         calendar.setParent(parent);
 
         assertThat(calendar.getParent(), equalTo(parent));
+        assertThat(calendar.getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE),
+                equalTo(0));
+    }
+
+    @Test
+    public void testNewCopy() {
+        BaseCalendar calendar = createChristmasCalendar();
+        BaseCalendar derived = calendar.newDerivedCalendar();
+        BaseCalendar copy = derived.newCopy();
+
+        assertThat(copy.getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE), equalTo(0));
+        assertThat(copy.getParent(), equalTo(calendar));
+        assertThat(copy.getNextCalendar(), nullValue());
+        assertThat(copy.getPreviousCalendar(), nullValue());
     }
 
 }
