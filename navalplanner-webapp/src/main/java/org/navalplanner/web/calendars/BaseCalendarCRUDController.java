@@ -1,5 +1,7 @@
 package org.navalplanner.web.calendars;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -93,7 +95,9 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void save() {
         try {
             baseCalendarModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO, "base calendar saved");
+            messagesForUser.showMessage(Level.INFO, _(
+                    "Base calendar \"{0}\" saved", baseCalendarModel
+                            .getBaseCalendar().getName()));
             goToList();
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
@@ -137,13 +141,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             hideConfirmingWindow();
             messagesForUser
                     .showMessage(Level.ERROR,
-                            "The calendar was not removed because it still has children. "
-                            + "Some other calendar is derived from this.");
+                            _("The calendar was not removed because it still has children. "
+                                    + "Some other calendar is derived from this."));
         } else {
             baseCalendarModel.confirmRemove();
             hideConfirmingWindow();
             Util.reloadBindings(listWindow);
-            messagesForUser.showMessage(Level.INFO, "removed " + name);
+            messagesForUser.showMessage(Level.INFO, _(
+                    "Removed calendar \"{0}\"", name));
         }
     }
 
@@ -184,14 +189,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
         switch (typeOfDay) {
         case ANCESTOR_EXCEPTION:
-            return "Derived excpetion";
+            return _("Derived excpetion");
         case OWN_EXCEPTION:
-            return "Exception";
+            return _("Exception");
         case ZERO_HOURS:
-            return "Not working day";
+            return _("Not working day");
         case NORMAL:
         default:
-            return "Normal";
+            return _("Normal");
         }
     }
 
@@ -370,9 +375,9 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public String getCalendarType() {
         if (baseCalendarModel.isDerived()) {
-            return "Derived";
+            return _("Derived");
         }
-        return "Normal";
+        return _("Normal");
     }
 
     public List<BaseCalendar> getParentCalendars() {

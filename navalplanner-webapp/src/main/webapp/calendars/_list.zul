@@ -1,26 +1,26 @@
-<window id="${arg.top_id}" title="Calendars List">
+<window id="${arg.top_id}" title="${i18n:_('Calendars List')}">
     <grid id="listing" model="@{controller.baseCalendars}" mold="paging"
         pageSize="5">
         <columns>
-            <column label="Operations" />
-            <column label="Name" sort="auto(name)" />
+            <column label="${i18n:_('Operations')}" />
+            <column label="${i18n:_('Name')}" sort="auto(name)" />
         </columns>
         <rows>
             <row self="@{each='baseCalendar'}" value="@{baseCalendar}">
                 <hbox>
-                    <button label="Create derived"
+                    <button label="${i18n:_('Create derived')}"
                         onClick="controller.goToCreateDerivedForm(self.parent.parent.value);">
                     </button>
 
-                    <button label="Create copy"
+                    <button label="${i18n:_('Create copy')}"
                         onClick="controller.goToCreateCopyForm(self.parent.parent.value);">
                     </button>
 
-                    <button label="Edit"
+                    <button label="${i18n:_('Edit')}"
                         onClick="controller.goToEditForm(self.parent.parent.value);">
                     </button>
 
-                    <button label="Remove"
+                    <button label="${i18n:_('Remove')}"
                         onClick="controller.confirmRemove(self.parent.parent.value);">
                     </button>
                 </hbox>
@@ -29,6 +29,6 @@
         </rows>
     </grid>
     <button id="show_create_form" onClick="controller.goToCreateForm();"
-        label="Create">
+        label="${i18n:_('Create')}">
     </button>
 </window>

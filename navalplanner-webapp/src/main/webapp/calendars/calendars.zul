@@ -1,4 +1,4 @@
-<?page title="Navalpro: Calendars"?>
+<?page title="${i18n:_('Navalpro: Calendars')}"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?page  id="List"?>
@@ -15,23 +15,24 @@
         apply="org.navalplanner.web.calendars.BaseCalendarCRUDController">
                 <vbox id="messagesContainer"></vbox>
         <list top_id="listWindow" />
-        <edition top_id="createWindow" title="Create Calendar"
-            save_button_label="Save" cancel_button_label="Cancel" />
-        <edition top_id="editWindow" title="Edit Calendar"
-            save_button_label="Save" cancel_button_label="Cancel" />
+        <edition top_id="createWindow" title="${i18n:_('Create Calendar')}"
+            save_button_label="${i18n:_('Save')}"
+            cancel_button_label="${i18n:_('Cancel')}" />
+        <edition top_id="editWindow" title="${i18n:_('Edit Calendar')}"
+            save_button_label="${i18n:_('Save')}"
+            cancel_button_label="${i18n:_('Cancel')}" />
         <window visible="@{controller.confirmingRemove}"
-            id="confirmRemove" title="Confirmation" sizable="true"
+            id="confirmRemove" title="${i18n:_('Confirmation')}" sizable="true"
             position="center">
             <vbox align = "center">
                 <hbox align = "center">
-                    <label value = "¿ Do you want to delete"/>
-                    <label value ="@{controller.baseCalendar.name}"/>
-                    <label value = "?"/>
+                    <i18n value="Do you want to delete &quot;{0}&quot;?"
+                        arg0="@{controller.baseCalendar.name}"/>
                 </hbox>
                 <hbox align = "center">
-                    <button label="Yes"
+                    <button label="${i18n:_('Yes')}"
                         onClick="controller.remove();" />
-                    <button label="No"
+                    <button label="${i18n:_('No')}"
                         onClick="controller.cancelRemove();" />
                 </hbox>
             </vbox>

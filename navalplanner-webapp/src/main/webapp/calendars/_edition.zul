@@ -7,12 +7,12 @@
     <vbox>
 
     <hbox>
-        <label value="Name" />
+        <label value="${i18n:_('Name')}" />
         <textbox value="@{controller.baseCalendar.name}" />
     </hbox>
 
     <hbox>
-        <label value="Type" />
+        <label value="${i18n:_('Type')}" />
         <vbox>
             <label value="@{controller.calendarType}" />
             <combobox id="parentCalendars"
@@ -28,9 +28,9 @@
         model="@{controller.getHoursPerDay}"
         itemRenderer="@{controller.hoursPerDayRenderer}">
         <listhead>
-            <listheader label="Day of week" />
-            <listheader label="Hours" />
-            <listheader label="By default" />
+            <listheader label="${i18n:_('Day of week')}" />
+            <listheader label="${i18n:_('Hours')}" />
+            <listheader label="${i18n:_('By default')}" />
         </listhead>
     </listbox>
 
@@ -40,21 +40,21 @@
         <calendar id="calendarWidget" value="@{controller.selectedDay}" />
 
         <hbox>
-            <label value="Type of day" />
+            <label value="${i18n:_('Type of day')}" />
             <label value="@{controller.typeOfDay}" />
         </hbox>
 
         <hbox>
-            <label value="Hours of day" />
+            <label value="${i18n:_('Hours of day')}" />
             <label value="@{controller.hoursOfDay}" />
         </hbox>
 
         <hbox>
             <vbox>
-                <button label="Create exception"
+                <button label="${i18n:_('Create exception')}"
                     onClick="controller.createException(exceptionHours.value);" />
                 <button disabled="@{controller.isNotExceptional}"
-                    label="Remove exception"
+                    label="${i18n:_('Remove exception')}"
                     onClick="controller.removeException();" />
             </vbox>
             <intbox id="exceptionHours" value="0" />
@@ -64,7 +64,7 @@
     </hbox>
 
     <hbox visible="@{controller.isEditing}">
-        <label value="Valid from" />
+        <label value="${i18n:_('Valid from')}" />
         <datebox value="@{controller.expiringDate}" />
     </hbox>
 
