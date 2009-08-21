@@ -57,6 +57,8 @@ public interface IBaseCalendarModel {
 
     void initCreateDerived(BaseCalendar baseCalendar);
 
+    void initCreateCopy(BaseCalendar baseCalendar);
+
     /*
      * Intermediate conversation steps
      */

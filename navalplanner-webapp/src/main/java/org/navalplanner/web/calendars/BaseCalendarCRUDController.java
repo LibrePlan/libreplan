@@ -395,4 +395,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         }
     }
 
+    public void goToCreateCopyForm(BaseCalendar baseCalendar) {
+        baseCalendarModel.initCreateCopy(baseCalendar);
+        if (baseCalendarModel.isDerived()) {
+            prepareParentCombo();
+        }
+        setSelectedDay(new Date());
+        getVisibility().showOnly(createWindow);
+        Util.reloadBindings(createWindow);
+    }
+
 }

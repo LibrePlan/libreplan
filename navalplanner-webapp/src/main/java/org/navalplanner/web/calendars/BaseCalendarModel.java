@@ -88,6 +88,16 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public void initCreateCopy(BaseCalendar baseCalendar) {
+        editing = false;
+        Validate.notNull(baseCalendar);
+
+        this.baseCalendar = getFromDB(baseCalendar).newCopy();
+        forceLoadHoursPerDayAndExceptionDays(this.baseCalendar);
+    }
+
+    @Override
     public void initRemove(BaseCalendar baseCalendar) {
         this.baseCalendar = baseCalendar;
     }
@@ -139,6 +149,15 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         return getFromDB(baseCalendar.getId());
     }
 
+    /*
+     * Intermediate conversation steps
+     */
+
+    @Override
+    public BaseCalendar getBaseCalendar() {
+        return baseCalendar;
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<BaseCalendar> getPossibleParentCalendars() {
@@ -162,15 +181,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         }
 
         return baseCalendars;
-    }
-
-    /*
-     * Intermediate conversation steps
-     */
-
-    @Override
-    public BaseCalendar getBaseCalendar() {
-        return baseCalendar;
     }
 
     @Override

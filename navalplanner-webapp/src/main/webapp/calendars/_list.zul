@@ -12,6 +12,10 @@
                         onClick="controller.goToCreateDerivedForm(self.parent.parent.value);">
                     </button>
 
+                    <button label="Create copy"
+                        onClick="controller.goToCreateCopyForm(self.parent.parent.value);">
+                    </button>
+
                     <button label="Edit"
                         onClick="controller.goToEditForm(self.parent.parent.value);">
                     </button>
