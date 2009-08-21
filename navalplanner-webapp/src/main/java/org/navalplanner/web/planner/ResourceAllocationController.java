@@ -190,13 +190,13 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
                         @Override
                         public BigDecimal get() {
-                            return resourceAllocation.getPercentage();
+                            return resourceAllocation.getPercentage().scaleByPowerOfTen(2);
                         }
                     }, new Util.Setter<BigDecimal>() {
 
                         @Override
                         public void set(BigDecimal value) {
-                            resourceAllocation.setPercentage(value);
+                           resourceAllocation.setPercentage(value.setScale(2).divide(new BigDecimal(100),BigDecimal.ROUND_DOWN));
                         }
                     }));
             cellPercentage.setParent(item);
