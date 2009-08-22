@@ -3,10 +3,14 @@ package org.navalplanner.web.planner;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.adapters.AutoAdapter;
 import org.zkoss.ganttz.adapters.DomainDependency;
@@ -18,6 +22,10 @@ import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskLeaf;
+import org.zkoss.ganttz.data.resourceload.LoadLevel;
+import org.zkoss.ganttz.data.resourceload.LoadPeriod;
+import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
+import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
@@ -65,8 +73,9 @@ public class DataForPlanner {
 
                     @Override
                     public void show() {
-                        loadPanel = new ResourcesLoadPanel(context
-                                .getTimeTracker());
+                        loadPanel = new ResourcesLoadPanel(
+                                createFakeDataForResourcesLoad(), context
+                                        .getTimeTracker());
                         parent.appendChild(loadPanel);
                         loadPanel.afterCompose();
                     }
@@ -90,6 +99,45 @@ public class DataForPlanner {
                 };
             }
         });
+    }
+
+    private List<LoadTimelinesGroup> createFakeDataForResourcesLoad() {
+        List<LoadTimelinesGroup> result = new ArrayList<LoadTimelinesGroup>();
+        LoadTimeLine resource1 = new LoadTimeLine("resource1",
+                createFakePeriodsStartingAt(new LocalDate(2009, 2, 3), Duration
+                        .standardDays(20), Duration.standardDays(90), 3));
+        LoadTimeLine task1 = new LoadTimeLine("task1",
+                createFakePeriodsStartingAt(new LocalDate(2009, 5, 4), Duration
+                        .standardDays(20), Duration.standardDays(70), 3));
+        LoadTimeLine task2 = new LoadTimeLine("task2",
+                createFakePeriodsStartingAt(new LocalDate(2009, 4, 1), Duration
+                        .standardDays(20), Duration.standardDays(90), 3));
+        LoadTimeLine task3 = new LoadTimeLine("task3",
+                createFakePeriodsStartingAt(new LocalDate(2009, 6, 1), Duration
+                        .standardDays(20), Duration.standardDays(40), 4));
+        LoadTimeLine resource2 = new LoadTimeLine(
+                "resource1",
+                createFakePeriodsStartingAt(new LocalDate(2009, 10, 1),
+                        Duration.standardDays(20), Duration.standardDays(90), 2));
+        result.add(new LoadTimelinesGroup(resource1, Arrays
+                .asList(task1, task2)));
+        result.add(new LoadTimelinesGroup(resource2, Arrays.asList(task3)));
+        return result;
+    }
+
+    private List<LoadPeriod> createFakePeriodsStartingAt(LocalDate start,
+            Duration separation, Duration periodLength, int numberOfPeriods) {
+        DateTime current = start.toDateMidnight().toDateTime();
+        List<LoadPeriod> result = new ArrayList<LoadPeriod>();
+        for (int i = 0; i < numberOfPeriods; i++) {
+            DateTime previous = current.plus(separation);
+            current = previous.plus(periodLength);
+            result
+                    .add(new LoadPeriod(previous.toLocalDate(), current
+                            .toLocalDate(), new LoadLevel(
+                            (int) (Math.random() * 150))));
+        }
+        return result;
     }
 
     private void addCommands(
@@ -137,7 +185,8 @@ public class DataForPlanner {
                     }
 
                 });
-        configuration.setEditTaskCommand(new ICommandOnTask<ITaskFundamentalProperties>() {
+        configuration
+                .setEditTaskCommand(new ICommandOnTask<ITaskFundamentalProperties>() {
 
                     @Override
                     public void doAction(
@@ -177,11 +226,12 @@ public class DataForPlanner {
         final ITaskFundamentalProperties child1 = createTask(_("child 1"), now,
                 end);
         containerChildren.add(child1);
-        final DefaultFundamentalProperties child2 = createTask(_("another"), now,
-                end);
+        final DefaultFundamentalProperties child2 = createTask(_("another"),
+                now, end);
         containerChildren.add(child2);
         list.add(container);
-        final ITaskFundamentalProperties first = createTask(_("task1"), now, end);
+        final ITaskFundamentalProperties first = createTask(_("task1"), now,
+                end);
         final ITaskFundamentalProperties second = createTask(_("task2"), now,
                 end);
         list.add(first);

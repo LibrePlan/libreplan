@@ -2,77 +2,98 @@ package org.zkoss.ganttz.resourceload;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import org.zkoss.ganttz.data.resourceload.ResourceLoad;
-import org.zkoss.ganttz.data.resourceload.ResourceLoadLevel;
-import org.zkoss.zk.au.out.AuInvoke;
-import org.zkoss.zk.ui.ext.AfterCompose;
+import org.joda.time.LocalDate;
+import org.zkoss.ganttz.IDatesMapper;
+import org.zkoss.ganttz.TimeTracker;
+import org.zkoss.ganttz.data.resourceload.LoadPeriod;
+import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
+import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
+import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.impl.XulElement;
 
 /**
  * This class wraps ResourceLoad data inside an specific HTML Div component.
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class ResourceLoadComponent extends Div implements AfterCompose {
+public class ResourceLoadComponent extends XulElement {
 
-    private static final int HEIGHT_PER_ROW = 10;
-    private final ResourceLoad resourceLoad;
-    private List<ResourceLoadInterval> children;
+    public static ResourceLoadComponent create(TimeTracker timeTracker,
+            LoadTimeLine loadLine) {
+        return new ResourceLoadComponent(timeTracker, loadLine);
+    }
 
-    public class ResourceLoadInterval extends Div {
+    private final LoadTimeLine loadLine;
+    private final TimeTracker timeTracker;
+    private IZoomLevelChangedListener zoomChangedListener;
 
-        private int length;
-        private ResourceLoadLevel loadLevel;
-        private int loadPercentage;
+    private ResourceLoadComponent(final TimeTracker timeTracker,
+            final LoadTimeLine loadLine) {
+        this.loadLine = loadLine;
+        this.timeTracker = timeTracker;
+        createChildren(loadLine, timeTracker.getMapper());
+        zoomChangedListener = new IZoomLevelChangedListener() {
 
-        public ResourceLoadInterval(int length, int loadPercentage) {
-            this.length = length;
-            this.loadPercentage = loadPercentage;
-            this.loadLevel= ResourceLoadLevel.getFromPercentage(loadPercentage);
+            @Override
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                getChildren().clear();
+                createChildren(loadLine, timeTracker.getMapper());
+            }
+        };
+        this.timeTracker.addZoomListener(zoomChangedListener);
+    }
+
+    private void createChildren(LoadTimeLine loadLine, IDatesMapper mapper) {
+        List<Div> divs = createDivsForPeriods(mapper, loadLine.getLoadPeriods());
+        for (Div div : divs) {
+            appendChild(div);
         }
-
-        public int getLenght() {
-            return this.length;
-        }
-
-        public ResourceLoadLevel getLoadLevel() {
-            return this.loadLevel;
-        }
-    }
-
-    public ResourceLoadComponent(ResourceLoad resourceLoad) {
-        setHeight(HEIGHT_PER_ROW + "px");
-        setContext("idContextMenuTaskAssigment");
-        this.resourceLoad = resourceLoad;
-
-        // Added some example ResourceLoadIntervals
-        this.children = new ArrayList<ResourceLoadInterval>();
-        setId(UUID.randomUUID().toString());
-    }
-
-    protected String calculateClass() {
-        return "box";
-    }
-
-    protected void updateClass() {
-        response(null, new AuInvoke(this, "setClass",
-                new Object[] { calculateClass() }));
-    }
-
-    public void afterCompose() {
     }
 
     public String getResourceLoadName() {
-        return this.resourceLoad.getName();
+        return loadLine.getConceptName();
     }
 
-    public List<ResourceLoadInterval> getChildren() {
-        return this.children;
+    private static List<Div> createDivsForPeriods(IDatesMapper datesMapper,
+            List<LoadPeriod> loadPeriods) {
+        List<Div> result = new ArrayList<Div>();
+        for (LoadPeriod loadPeriod : loadPeriods) {
+            result.add(createDivForPeriod(datesMapper, loadPeriod));
+        }
+        return result;
     }
 
-    public void addInterval(int length, int plannificationPercentage) {
-        this.children.add(new ResourceLoadInterval(length, plannificationPercentage));
+    private static Div createDivForPeriod(IDatesMapper datesMapper,
+            LoadPeriod loadPeriod) {
+        Div result = new Div();
+        result.setClass(String.format("taskassignmentinterval %s", loadPeriod
+                .getLoadLevel().getCategory()));
+        result.setLeft(forCSS(getStartPixels(datesMapper, loadPeriod)));
+        result.setWidth(forCSS(getWidthPixels(datesMapper, loadPeriod)));
+        return result;
+    }
+
+    private static int getWidthPixels(IDatesMapper datesMapper,
+            LoadPeriod loadPeriod) {
+        LocalDate start = loadPeriod.getStart();
+        LocalDate end = loadPeriod.getEnd();
+        return datesMapper
+                .toPixels(toMilliseconds(end) - toMilliseconds(start));
+    }
+
+    private static long toMilliseconds(LocalDate localDate) {
+        return localDate.toDateMidnight().getMillis();
+    }
+
+    private static String forCSS(int pixels) {
+        return String.format("%dpx", pixels);
+    }
+
+    private static int getStartPixels(IDatesMapper datesMapper,
+            LoadPeriod loadPeriod) {
+        return datesMapper.toPixels(loadPeriod.getStart().toDateMidnight()
+                .toDate());
     }
 
 }

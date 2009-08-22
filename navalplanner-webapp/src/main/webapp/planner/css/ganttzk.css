@@ -343,24 +343,25 @@ tr.z-vbox-sep {
 .taskassignmentinterval {
 	float:left;
 	height:10px;
-	position:relative;
+	position:absolute;
 }
 
-.FULL_PLANIFICATED {
+.FULL_LOAD {
     background-color:green;
 }
 
-.PLANIFICATED {
+.SOME_LOAD {
     background-color:orange;
 }
 
-.OVER_PLANIFICATED {
+.OVERLOAD {
     background-color:red;
 }
 
-.NOT_PLANIFICATED {
+.NO_LOAD {
     background-color:#007bbe;
 }
+
 .row_resourceload {
     height: 10px;
     border: solid 1px #000000;
