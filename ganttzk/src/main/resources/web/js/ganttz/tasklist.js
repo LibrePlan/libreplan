@@ -54,8 +54,7 @@ function listenToScroll(){
 }
 
 
-
-window.onresize = relocateScrolls;
+YAHOO.util.Event.addListener(window, 'resize',relocateScrolls);
 /*
  * Move scrollbars to locate them on left and bottom window borders
  */
