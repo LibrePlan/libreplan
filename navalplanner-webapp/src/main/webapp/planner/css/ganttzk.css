@@ -364,10 +364,11 @@ tr.z-vbox-sep {
 
 .row_resourceload {
     height: 10px;
-    border: 1px solid;
+    border: 1px;
     margin-bottom: 10px;
     margin-top: 10px;
-    width: auto;
+    width: 100%;
+    border-bottom: 1px dotted #CCCCCC;
 }
 
 .resourcesloadpanel {
@@ -378,31 +379,32 @@ tr.z-vbox-sep {
 }
 
 .resourceloadleftpane {
+	border: 1px;
 	margin-top: 70px;
-	position: relative;
 	float: left;
 	width: 285px;
 	padding-right: 15px;
     overflow-y: hidden;
 }
 .resourceloadleftpane .firstlevel {
-	border: 1px solid;
 	height:10px;
+	border: 1px;
 	margin-bottom:10px;
 	margin-top:10px;
+	border-bottom: 1px dotted #CCCCCC;
 }
 
 .resourceloadleftpane .secondlevel {
-	border: 1px solid;
     height:10px;
     margin-bottom:10px;
     margin-top:10px;
+    margin-left: 8px;
+    border-bottom: 1px dotted #CCCCCC;
 }
 .resourceloadlist {
 	margin-top: 70px;
-	float: right;
-	width: 400px;/*TODO remove percentages at bars and do not specify width*/
-	overflow: visible;
+	width: 80%;
+	overflow: auto;
 	position: absolute;
 	left: 285px;
 }
