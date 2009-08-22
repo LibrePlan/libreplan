@@ -39,6 +39,7 @@ public class ResourceLoadComponent extends XulElement {
             public void zoomLevelChanged(ZoomLevel detailLevel) {
                 getChildren().clear();
                 createChildren(loadLine, timeTracker.getMapper());
+                invalidate();
             }
         };
         this.timeTracker.addZoomListener(zoomChangedListener);
