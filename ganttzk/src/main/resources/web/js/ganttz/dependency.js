@@ -6,10 +6,6 @@
  */
 zkDependency = {};
 
-zkDependency.END_START = "END_START";
-zkDependency.START_START = "START_START";
-zkDependency.END_END = "END_END";
-
 zkDependency.origin = function(dependency) {
 	var id = dependency.getAttribute("idTaskOrig");
 	return document.getElementById(id);
@@ -31,10 +27,10 @@ zkDependency.draw = function(dependency) {
 	if (separation > 0) {
 		offsetX = offsetX - separation;
 	}
-	if (dependency.getAttribute('type') == zkDependency.END_START
+	if (dependency.getAttribute('type') == zkPlanner.constants.END_START
 			|| dependency.getAttribute('type') == null) {
 		orig[0] = orig[0] + Math.max(0, offsetX);
-	} else if (dependency.getAttribute('type') == zkDependency.END_END) {
+	} else if (dependency.getAttribute('type') == zkPlanner.constants.END_END) {
 		orig[0] = orig[0] + this.origin(dependency).offsetWidth;
 		dest[0] = dest[0] + this.destination(dependency).offsetWidth;
 	}

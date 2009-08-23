@@ -53,6 +53,11 @@ function ScrollSync(element){
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 zkPlanner = {};
+zkPlanner.constants = {
+    END_START: "END_START",
+    START_START: "START_START",
+    END_END: "END_END"
+};
 
 zkPlanner.getImagesDir = function() {
     return webapp_context_path + "/zkau/web/ganttz/img/";
@@ -107,13 +112,13 @@ zkPlanner.setupArrow = function(arrowDiv){
 zkPlanner.drawArrow = function(dependency, orig, dest) {
 	switch(dependency.getAttribute('type'))
     {
-	case zkDependency.START_START:
+	case zkPlanner.constants.START_START:
 		zkPlanner.drawArrowStartStart(dependency, orig, dest);
 		break;
-	case zkDependency.END_END:
+	case zkPlanner.constants.END_END:
 		zkPlanner.drawArrowEndEnd(dependency, orig, dest);
 		break;
-	case zkDependency.END_START:
+	case zkPlanner.constants.END_START:
 	default:
 		zkPlanner.drawArrowEndStart(dependency, orig, dest);
     }
