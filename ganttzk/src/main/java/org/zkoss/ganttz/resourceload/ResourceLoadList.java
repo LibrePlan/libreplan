@@ -38,6 +38,8 @@ public class ResourceLoadList extends XulElement {
             public void zoomLevelChanged(ZoomLevel detailLevel) {
                 response(null, new AuInvoke(ResourceLoadList.this,
                         "adjustTimeTrackerSize"));
+                response(null, new AuInvoke(ResourceLoadList.this,
+                        "adjustResourceLoadRows"));
             }
         };
     }

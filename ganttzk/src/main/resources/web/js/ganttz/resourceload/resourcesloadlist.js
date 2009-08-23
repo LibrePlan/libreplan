@@ -26,11 +26,18 @@ function addResourcesLoadListMethods(object) {
             zoom_buttons().style["left"] = scroll+"px";
         });
         scrollSync.synchXChangeTo(timetracker);
-    }
+    };
 
     object.adjustTimeTrackerSize = function(cmp) {
         watermark().style["height"] = cmp.clientHeight + "px";
         timetracker().style["width"] = cmp.clientWidth + "px";
-    }
+    };
+
+    object.adjustResourceLoadRows = function(cmp) {
+        YAHOO.util.Selector.query('.row_resourceload').each(function(node){
+            node.style["width"] = cmp.clientWidth + "px";
+        });
+    };
+
     return object;
 }
