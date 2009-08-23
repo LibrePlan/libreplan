@@ -1,8 +1,10 @@
 var TIMETRACKER_OFFSET_TOP = 120;
 
-zkResourcesLoadList = initializeClass( {});
+zkResourcesLoadList = addResourcesLoadListMethods({});
 
-function initializeClass(classObject) {
+function addResourcesLoadListMethods(object) {
+    var scrollSync;
+
     function watermark() {
         return document.getElementById('watermark');
     }
@@ -11,15 +13,17 @@ function initializeClass(classObject) {
         return document.getElementById('timetracker');
     }
 
-    classObject.init = function(cmp) {
+    object.init = function(cmp) {
         this.adjustTimeTrackerSize(cmp);
         YAHOO.util.Event.addListener(window, 'resize',
                 zkResourcesLoadList.adjustTimeTrackerSize, cmp);
+        scrollSync = new ScrollSync(cmp);
+        scrollSync.synchXChangeTo(timetracker);
     }
 
-    classObject.adjustTimeTrackerSize = function(cmp) {
+    object.adjustTimeTrackerSize = function(cmp) {
         watermark().style["height"] = cmp.clientHeight + "px";
         timetracker().style["width"] = cmp.clientWidth + "px";
     }
-    return classObject;
+    return object;
 }

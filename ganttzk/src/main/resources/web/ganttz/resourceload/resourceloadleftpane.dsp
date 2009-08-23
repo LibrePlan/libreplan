@@ -3,7 +3,8 @@
 
 <c:set var="self" value="${requestScope.arg.self}"/>
 
-<div id="${self.uuid}" ${self.outerAttrs} class="resourceloadleftpane">
+<div id="${self.uuid}" ${self.outerAttrs} class="resourceloadleftpane"
+    z.type="ganttz.resourceload.resourcesloadleftpane.ResourcesLoadLeftPane" >
     <c:forEach var="child" items="${self.children}">
         ${z:redraw(child, null)}
     </c:forEach>
