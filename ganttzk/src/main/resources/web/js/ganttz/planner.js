@@ -31,6 +31,19 @@ function ScrollSync(element){
         var target = toFunction(synched);
         yChanges.push(function(){ target().scrollTop = element.scrollTop; });
     };
+
+    this.notifyXChangeTo = function(listenerReceivingScroll){
+        xChanges.push(function(){
+            listenerReceivingScroll(element.scrollLeft);
+        });
+    };
+
+    this.notifyYChangeTo = function(listenerReceivingScroll){
+        yChanges.push(function() {
+            listenerReceivingScroll(element.scrollTop);
+        });
+    };
+
     YAHOO.util.Event.addListener(element,'scroll', notifyListeners);
     return this;
 }
