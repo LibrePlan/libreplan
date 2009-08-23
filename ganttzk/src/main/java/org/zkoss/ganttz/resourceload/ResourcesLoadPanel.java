@@ -6,6 +6,7 @@ import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.TimeTracker;
 import org.zkoss.ganttz.TimeTrackerComponent;
 import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
+import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
@@ -36,7 +37,9 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
 
             @Override
             protected void scrollHorizontalPercentage(int pixelsDisplacement) {
-                // TODO do the scroll displacement
+                response("", new AuInvoke(resourceLoadList,
+                        "adjustScrollHorizontalPosition", pixelsDisplacement
+                                + ""));
             }
         };
     }

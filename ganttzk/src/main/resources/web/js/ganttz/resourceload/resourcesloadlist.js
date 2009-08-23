@@ -39,5 +39,9 @@ function addResourcesLoadListMethods(object) {
         });
     };
 
+    object.adjustScrollHorizontalPosition = function(cmp, offsetInPx) {
+        cmp.scrollLeft = offsetInPx;
+    }
+
     return object;
 }
