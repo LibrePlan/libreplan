@@ -161,6 +161,7 @@ public class LoadPeriodTest {
         new LoadPeriod(start, end, null);
     }
 
+    @Test
     public void theLoadLevelCanBeRetrieved() {
         givenExampleLoadPeriod();
         assertThat(loadPeriod.getLoadLevel(), equalTo(loadLevel));
