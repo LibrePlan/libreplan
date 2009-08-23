@@ -1,5 +1,6 @@
 package org.zkoss.ganttz.data.resourceload;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
@@ -11,6 +12,9 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 
 public class LoadTimelineTest {
+
+    private LoadTimeLine loadTimeLine;
+    private String conceptName;
 
     @Test(expected = IllegalArgumentException.class)
     public void aLoadTimelineMustHaveANotNullName() {
@@ -25,6 +29,19 @@ public class LoadTimelineTest {
     @Test(expected = IllegalArgumentException.class)
     public void aLoadTimelineCannotHaveNullLoadPeriods() {
         new LoadTimeLine("bla", null);
+    }
+
+    @Test
+    public void theConceptNameCanBeRetrieved() {
+        givenValidLoadTimeLine();
+        assertThat(conceptName, equalTo(loadTimeLine.getConceptName()));
+    }
+
+    private void givenValidLoadTimeLine() {
+        conceptName = "bla";
+        loadTimeLine = new LoadTimeLine(conceptName, Arrays
+                .asList(new LoadPeriod(new LocalDate(2009, 10, 5),
+                        new LocalDate(2009, 10, 11), new LoadLevel(20))));
     }
 
     @Test
