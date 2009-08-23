@@ -15,7 +15,7 @@ public class LoadLevel {
         SOME_LOAD {
             @Override
             public boolean contains(int percentage) {
-                return percentage < 100;
+                return percentage > 0 && percentage < 100;
             }
         },
         FULL_LOAD {
@@ -37,7 +37,7 @@ public class LoadLevel {
                 if (category.contains(percentage))
                     return category;
             }
-            throw new RuntimeException("couldn't handle " + percentage);
+            throw new IllegalArgumentException("couldn't handle " + percentage);
         }
     }
 

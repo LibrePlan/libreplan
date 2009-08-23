@@ -60,4 +60,9 @@ public class LoadLevelTest {
         thenTheCategoryIs(Category.OVERLOAD);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void theCategoryThrowsExceptionIfCantHandleThePercentage() {
+        Category.categoryFor(-1);
+    }
+
 }
