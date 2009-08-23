@@ -37,6 +37,7 @@ public class TasksPlanningTab implements ITab {
     public void show() {
         leftPane.setParent(planner);
         ganttPanel.setParent(planner);
+        ganttPanel.comingFromAnotherTab();
     }
 
     @Override
