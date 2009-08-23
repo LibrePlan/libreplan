@@ -124,10 +124,22 @@ public class LoadPeriodTest {
         thenIsSorted(sorted);
     }
 
+    @Test
+    public void aZeroDaysLoadPeriodStartingTheSameDateThanANoZeroDaysLoadPeriodGoesAfter() {
+        givenUnsortedListOfPeriods(create(2009, 4, 10, 2010, 1, 12), create(
+                2009, 4, 10, 2009, 4, 10));
+        List<LoadPeriod> sorted = LoadPeriod.sort(unsortedList);
+        thenIsSorted(sorted);
+    }
+
     private void givenUnsortedListOfPeriods() {
-        unsortedList = Arrays.asList(create(2009, 4, 10, 2010, 1, 12), create(
+        givenUnsortedListOfPeriods(create(2009, 4, 10, 2010, 1, 12), create(
                 2010, 1, 12, 2010, 1, 12), create(2010, 2, 13, 2010, 5, 7),
                 create(2009, 3, 5, 2009, 3, 10));
+    }
+
+    private void givenUnsortedListOfPeriods(LoadPeriod... periods) {
+        unsortedList = Arrays.asList(periods);
     }
 
     private void thenIsSorted(List<LoadPeriod> sorted) {

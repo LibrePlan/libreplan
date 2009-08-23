@@ -51,21 +51,20 @@ public class LoadPeriod {
             throws IllegalArgumentException {
         ArrayList<LoadPeriod> result = new ArrayList<LoadPeriod>(
                 notOverlappingPeriods);
-        Collections.sort(result,
-                new Comparator<LoadPeriod>() {
+        Collections.sort(result, new Comparator<LoadPeriod>() {
 
-                    @Override
-                    public int compare(LoadPeriod o1, LoadPeriod o2) {
-                        if (o1.overlaps(o2)) {
-                            throw new IllegalArgumentException(o1
-                                    + " overlaps with " + o2);
-                        }
-                        int comparison = compareLocalDates(o1.start, o2.end);
-                        if (comparison != 0)
-                            return comparison;
-                        return compareLocalDates(o1.end, o2.end);
-                    }
-                });
+            @Override
+            public int compare(LoadPeriod o1, LoadPeriod o2) {
+                if (o1.overlaps(o2)) {
+                    throw new IllegalArgumentException(o1 + " overlaps with "
+                            + o2);
+                }
+                int comparison = compareLocalDates(o1.start, o2.start);
+                if (comparison != 0)
+                    return comparison;
+                return compareLocalDates(o1.end, o2.end);
+            }
+        });
         return result;
     }
 
