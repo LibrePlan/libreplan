@@ -174,7 +174,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void setSelectedDay(Date date) {
         baseCalendarModel.setSelectedDay(date);
 
-        reloadCurrentWindow();
+        reloadDayInformation();
     }
 
     public Date getSelectedDay() {
@@ -212,7 +212,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         // TODO check hours parameter is >= 0
         baseCalendarModel.createException(hours);
 
-        reloadCurrentWindow();
+        reloadDayInformation();
     }
 
     public List<Days> getHoursPerDay() {
@@ -226,7 +226,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void removeException() {
         baseCalendarModel.removeException();
 
-        reloadCurrentWindow();
+        reloadDayInformation();
     }
 
     public HoursPerDayRenderer getHoursPerDayRenderer() {
@@ -264,7 +264,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    reloadCurrentWindow();
+                    reloadDayInformation();
                 }
 
             });
@@ -302,7 +302,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        reloadCurrentWindow();
+                        reloadDayInformation();
                     }
 
                 });
@@ -318,6 +318,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             Util.reloadBindings(editWindow);
         } else {
             Util.reloadBindings(createWindow);
+        }
+    }
+
+    private void reloadDayInformation() {
+        if (baseCalendarModel.isEditing()) {
+            Util.reloadBindings(editWindow.getFellow("dayInformation"));
+        } else {
+            Util.reloadBindings(createWindow.getFellow("dayInformation"));
         }
     }
 
