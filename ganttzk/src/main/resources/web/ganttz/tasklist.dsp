@@ -2,9 +2,7 @@
 <%@ taglib uri="http://www.zkoss.org/dsp/zk/core" prefix="z" %>
 
 <script type="text/javascript">
-document.body.class = "yui-skin-sam";
-/*var myContainer = document.body.insertBefore(document.createElement("div"),document.body.childNodes[0]);
-var myLogReader = new YAHOO.widget.LogReader(myContainer);*/
+    document.body.class = "yui-skin-sam";
 </script>
 
 <div id="scroll_container">

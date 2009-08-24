@@ -1,23 +1,20 @@
-<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/selector/selector-min.js"></script>
-
-<!-- Combo-handled YUI JS files: -->
-<script type="text/javascript" src="http://yui.yahooapis.com/combo?2.7.0/build/yahoo-dom-event/yahoo-dom-event.js&2.7.0/build/dragdrop/dragdrop-min.js"></script>
-
-<!-- Combo-handled YUI CSS files: -->
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/resize/assets/skins/sam/resize.css">
-
-<c:include page="~./ganttz/css/task.css.dsp"/>
-
-<!-- Combo-handled YUI JS files: -->
-<script type="text/javascript" src="http://yui.yahooapis.com/combo?2.7.0/build/yahoo-dom-event/yahoo-dom-event.js&2.7.0/build/element/element-min.js&2.7.0/build/dragdrop/dragdrop-min.js&2.7.0/build/resize/resize-min.js"></script>
-<!-- Source file -->
-
-<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/logger/logger-min.js"></script>
-
 <%@ taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c" %>
 <%@ taglib uri="http://www.zkoss.org/dsp/zk/core" prefix="z" %>
 
 <c:set var="self" value="${requestScope.arg.self}"/>
+
+<link rel="stylesheet" type="text/css" href="${self.contextPath}/zkau/web/js/yui/2.7.0/resize/assets/skins/sam/resize.css">
+
+<script type='text/javascript' src='${self.contextPath}/zkau/web/js/yui/2.7.0/yahoo/yahoo-min.js'></script>
+<script type='text/javascript' src='${self.contextPath}/zkau/web/js/yui/2.7.0/selector/selector-min.js'></script>
+<script type='text/javascript' src='${self.contextPath}/zkau/web/js/yui/2.7.0/yahoo-dom-event/yahoo-dom-event.js'></script>
+<script type='text/javascript' src='${self.contextPath}/zkau/web/js/yui/2.7.0/dragdrop/dragdrop-min.js'></script>
+
+<c:include page="~./ganttz/css/task.css.dsp"/>
+
+<script type='text/javascript' src='${self.contextPath}/zkau/web/js/yui/2.7.0/element/element-min.js'></script>
+<script type='text/javascript' src='${self.contextPath}/zkau/web/js/yui/2.7.0/resize/resize-min.js'></script>
+<script type='text/javascript' src='${self.contextPath}/zkau/web/js/yui/2.7.0/logger/logger-min.js'></script>
 
 <script type="text/javascript">
 /*<![CDATA[ */
