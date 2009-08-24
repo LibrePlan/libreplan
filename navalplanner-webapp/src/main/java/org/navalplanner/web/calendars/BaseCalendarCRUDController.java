@@ -16,9 +16,11 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
@@ -208,11 +210,25 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         return baseCalendarModel.getHoursOfDay();
     }
 
-    public void createException(Integer hours) {
-        // TODO check hours parameter is >= 0
-        baseCalendarModel.createException(hours);
+    public void createException() {
+        Component exceptionHoursIntbox;
+        if (baseCalendarModel.isEditing()) {
+            exceptionHoursIntbox = editWindow.getFellow("exceptionHours");
+        } else {
+            exceptionHoursIntbox = createWindow.getFellow("exceptionHours");
+        }
 
-        reloadDayInformation();
+        Integer hours = ((Intbox) exceptionHoursIntbox).getValue();
+
+        if (hours < 0) {
+            throw new WrongValueException(
+                    exceptionHoursIntbox,
+                    _("Hours for an exception day should be greater or equal than zero"));
+        } else {
+            Clients.closeErrorBox(exceptionHoursIntbox);
+            baseCalendarModel.createException(hours);
+            reloadDayInformation();
+        }
     }
 
     public List<Days> getHoursPerDay() {

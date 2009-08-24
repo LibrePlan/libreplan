@@ -52,7 +52,7 @@
         <hbox>
             <vbox>
                 <button label="${i18n:_('Create exception')}"
-                    onClick="controller.createException(exceptionHours.value);" />
+                    onClick="controller.createException();" />
                 <button disabled="@{controller.isNotExceptional}"
                     label="${i18n:_('Remove exception')}"
                     onClick="controller.removeException();" />
