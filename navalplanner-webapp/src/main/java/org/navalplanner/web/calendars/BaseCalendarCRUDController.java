@@ -490,6 +490,9 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             treerow.appendChild(operationsTreecell);
 
             item.appendChild(treerow);
+
+            // Show the tree expanded at start
+            item.setOpen(true);
         }
 
     }
