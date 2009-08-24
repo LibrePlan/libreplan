@@ -1,13 +1,5 @@
 package org.navalplanner.business.advance.entities;
 
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-
-import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import org.navalplanner.business.common.BaseEntity;
@@ -33,9 +25,8 @@ public class AdvanceAssigment extends BaseEntity {
 
     private AdvanceType advanceType;
 
-    //private Set<AdvanceMeasurement> advanceMeasurements = new HashSet<AdvanceMeasurement>();
-    //private Map<AdvanceMeasurement,> advanceMeasurements = new HashMap<AdvanceMeasurement,>();
-    private SortedSet<AdvanceMeasurement> advanceMeasurements = new TreeSet<AdvanceMeasurement>();
+    private SortedSet<AdvanceMeasurement> advanceMeasurements =
+            new TreeSet<AdvanceMeasurement>(new AdvanceMeasurementComparator());
 
     public AdvanceAssigment() {
         this.reportGlobalAdvance = false;
@@ -68,15 +59,6 @@ public class AdvanceAssigment extends BaseEntity {
     public AdvanceType getAdvanceType() {
         return this.advanceType;
     }
-
-   /* public void setAdvanceMeasurements(
-            List<AdvanceMeasurement> advanceMeasurements) {
-        this.advanceMeasurements = advanceMeasurements;
-    }
-
-    public List<AdvanceMeasurement> getAdvanceMeasurements() {
-        return this.advanceMeasurements;
-    }*/
 
     public void setAdvanceMeasurements(SortedSet<AdvanceMeasurement> advanceMeasurements) {
         this.advanceMeasurements = advanceMeasurements;
