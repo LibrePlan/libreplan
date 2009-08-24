@@ -75,6 +75,8 @@ public class OrderElementController extends GenericForwardComposer {
 
     private AsignedHoursToOrderElementController asignedHoursController;
 
+    private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
+
     public OrderElement getOrderElement() {
         if (model == null) {
             return OrderLine.create();
@@ -161,6 +163,7 @@ public class OrderElementController extends GenericForwardComposer {
         comp.setVariable("orderElementController", this, true);
         window = (Window) comp;
         setupAsignedHoursToOrderElementController(comp);
+        setupManageOrderElementAdvancesController(comp);
     }
 
 
@@ -169,11 +172,15 @@ public class OrderElementController extends GenericForwardComposer {
         asignedHoursController.doAfterCompose(comp);
     }
 
+    private void setupManageOrderElementAdvancesController(Component comp)
+            throws Exception {
+        manageOrderElementAdvancesController = new ManageOrderElementAdvancesController();
+        manageOrderElementAdvancesController.doAfterCompose(comp);
+    }
 
     /**
      * Open the window to edit a {@link OrderElement}. If it's a
      * {@link OrderLineGroup} less fields will be enabled.
-     *
      * @param orderElement
      *            The {@link OrderElement} to be edited
      */
@@ -184,6 +191,7 @@ public class OrderElementController extends GenericForwardComposer {
         final OrderElement orderElement = model.getOrderElement();
 
         asignedHoursController.openWindow(model);
+        manageOrderElementAdvancesController.openWindow(model);
 
         // If is a container
         if (orderElement instanceof OrderLineGroup) {

@@ -92,9 +92,8 @@ public class AddAdvanceAssigmentsToOrderElementTest {
 
     private AdvanceAssigment createValidAdvanceAssigment(
             boolean reportGlobalAdvance) {
-        BigDecimal value = new BigDecimal(120).setScale(2);
-        AdvanceAssigment advanceAssigment = new AdvanceAssigment(
-                reportGlobalAdvance, value);
+        AdvanceAssigment advanceAssigment = AdvanceAssigment.create(
+                reportGlobalAdvance);
         return advanceAssigment;
     }
 

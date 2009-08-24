@@ -1,9 +1,15 @@
 package org.navalplanner.business.advance.entities;
 
-import java.math.BigDecimal;
-import java.util.LinkedList;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 
@@ -15,22 +21,27 @@ public class AdvanceAssigment extends BaseEntity {
         return advanceAssigment;
     }
 
+    public static AdvanceAssigment create(boolean reportGlobalAdvance) {
+        AdvanceAssigment advanceAssigment = new AdvanceAssigment(reportGlobalAdvance);
+        advanceAssigment.setNewObject(true);
+        return advanceAssigment;
+    }
+
     private boolean reportGlobalAdvance;
 
     private OrderElement orderElement;
 
     private AdvanceType advanceType;
 
-    private List<AdvanceMeasurement> advanceMeasurements;
+    //private Set<AdvanceMeasurement> advanceMeasurements = new HashSet<AdvanceMeasurement>();
+    //private Map<AdvanceMeasurement,> advanceMeasurements = new HashMap<AdvanceMeasurement,>();
+    private SortedSet<AdvanceMeasurement> advanceMeasurements = new TreeSet<AdvanceMeasurement>();
 
-    /**
-     * Constructor for hibernate. Do not use!
-     */
     public AdvanceAssigment() {
-
+        this.reportGlobalAdvance = false;
     }
 
-    public AdvanceAssigment(boolean reportGlobalAdvance, BigDecimal maxValue) {
+    private AdvanceAssigment(boolean reportGlobalAdvance) {
         this.reportGlobalAdvance = reportGlobalAdvance;
     }
 
@@ -58,13 +69,20 @@ public class AdvanceAssigment extends BaseEntity {
         return this.advanceType;
     }
 
-    public void setAdvanceMeasurements(
+   /* public void setAdvanceMeasurements(
             List<AdvanceMeasurement> advanceMeasurements) {
         this.advanceMeasurements = advanceMeasurements;
     }
 
     public List<AdvanceMeasurement> getAdvanceMeasurements() {
+        return this.advanceMeasurements;
+    }*/
 
-        return new LinkedList<AdvanceMeasurement>(this.advanceMeasurements);
+    public void setAdvanceMeasurements(SortedSet<AdvanceMeasurement> advanceMeasurements) {
+        this.advanceMeasurements = advanceMeasurements;
+    }
+
+    public SortedSet<AdvanceMeasurement> getAdvanceMeasurements() {
+        return this.advanceMeasurements;
     }
 }

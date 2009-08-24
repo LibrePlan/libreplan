@@ -33,11 +33,13 @@
 
     <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID"/>
 
-    <list name="advanceMeasurements" cascade="all" inverse="true">
-        <key column="ADVANCE_ASSIGMENT_ID"/>
-        <list-index column ="date"/>
-        <one-to-many class="AdvanceMeasurement"/>
-    </list>
+    <set name="advanceMeasurements"
+         cascade="all,delete-orphan"
+         inverse="true"
+         sort="org.navalplanner.business.advance.entities.AdvanceMeasurementComparator">
+            <key column="ADVANCE_ASSIGMENT_ID" />
+            <one-to-many class="org.navalplanner.business.advance.entities.AdvanceMeasurement"></one-to-many>
+    </set>
 </class>
 
 <!-- AdvanceMeasurement -->

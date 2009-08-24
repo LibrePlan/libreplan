@@ -40,7 +40,7 @@
             <key column="ORDER_ELEMENT_ID" />
             <one-to-many class="org.navalplanner.business.planner.entities.TaskElement"></one-to-many>
         </set>
-        <set name="advanceAssigments" cascade="all" inverse="true">
+        <set name="advanceAssigments" cascade="all,delete-orphan" inverse="true">
             <key column="ORDER_ELEMENT_ID" />
             <one-to-many class="org.navalplanner.business.advance.entities.AdvanceAssigment"></one-to-many>
         </set>

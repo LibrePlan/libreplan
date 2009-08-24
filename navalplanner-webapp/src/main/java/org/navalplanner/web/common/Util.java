@@ -10,16 +10,19 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zkplus.databind.DataBinder;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 
 /**
  * Utilities class. <br />
- *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class Util {
 
@@ -47,16 +50,13 @@ public class Util {
 
     /**
      * Generic interface to represent a class with a typical get method.
-     *
      * @author Manuel Rego Casasnovas <mrego@igalia.com>
-     *
      * @param <T>
-     *            The type of the variable to be returned.
+     *           The type of the variable to be returned.
      */
     public static interface Getter<T> {
         /**
          * Typical get method that returns a variable.
-         *
          * @return A variable of type <T>.
          */
         public T get();
@@ -64,16 +64,13 @@ public class Util {
 
     /**
      * Generic interface to represent a class with a typical set method.
-     *
      * @author Manuel Rego Casasnovas <mrego@igalia.com>
-     *
      * @param <T>
      *            The type of the variable to be set.
      */
     public static interface Setter<T> {
         /**
          * Typical set method to store a variable.
-         *
          * @param value
          *            A variable of type <T> to be set.
          */
@@ -83,7 +80,6 @@ public class Util {
     /**
      * Binds a {@link Textbox} with a {@link Getter}. The {@link Getter} will be
      * used to get the value that is going to be showed in the {@link Textbox}.
-     *
      * @param textBox
      *            The {@link Textbox} to be bound
      * @param getter
@@ -101,7 +97,6 @@ public class Util {
      * used to get the value that is going to be showed in the {@link Textbox}.
      * The {@link Setter} will be used to store the value inserted by the user
      * in the {@link Textbox}.
-     *
      * @param textBox
      *            The {@link Textbox} to be bound
      * @param getter
@@ -127,9 +122,50 @@ public class Util {
     }
 
     /**
+     * Binds a {@link Textbox} with a {@link Getter}. The {@link Getter} will be
+     * used to get the value that is going to be showed in the {@link Textbox}.
+     * @param textBox
+     *            The {@link Textbox} to be bound
+     * @param getter
+     *            The {@link Getter} interface that will implement a get method.
+     * @return The {@link Textbox} bound
+     */
+    public static Combobox bind(Combobox comboBox, Getter<Comboitem> getter) {
+        comboBox.setSelectedItem(getter.get());
+        comboBox.setDisabled(true);
+        return comboBox;
+    }
+
+    /**
+     * Binds a {@link Textbox} with a {@link Getter}. The {@link Getter} will be
+     * used to get the value that is going to be showed in the {@link Textbox}.
+     * The {@link Setter} will be used to store the value inserted by the user
+     * in the {@link Textbox}.
+     * @param textBox
+     *            The {@link Textbox} to be bound
+     * @param getter
+     *            The {@link Getter} interface that will implement a get method.
+     * @param setter
+     *            The {@link Setter} interface that will implement a set method.
+     * @return The {@link Textbox} bound
+     */
+    public static Combobox bind(final Combobox comboBox,
+            final Getter<Comboitem> getter, final Setter<Comboitem> setter) {
+        comboBox.setSelectedItem(getter.get());
+        comboBox.addEventListener("onSelect", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                setter.set(comboBox.getSelectedItem());
+                comboBox.setSelectedItem(getter.get());
+            }
+        });
+        return comboBox;
+    }
+
+    /**
      * Binds a {@link Intbox} with a {@link Getter}. The {@link Getter} will be
      * used to get the value that is going to be showed in the {@link Intbox}.
-     *
      * @param intBox
      *            The {@link Intbox} to be bound
      * @param getter
@@ -147,7 +183,6 @@ public class Util {
      * used to get the value that is going to be showed in the {@link Intbox}.
      * The {@link Setter} will be used to store the value inserted by the user
      * in the {@link Intbox}.
-     *
      * @param intBox
      *            The {@link Intbox} to be bound
      * @param getter
@@ -175,15 +210,13 @@ public class Util {
     /**
      * Binds a {@link Datebox} with a {@link Getter}. The {@link Getter} will be
      * used to get the value that is going to be showed in the {@link Datebox}.
-     *
      * @param dateBox
      *            The {@link Datebox} to be bound
      * @param getter
      *            The {@link Getter} interface that will implement a get method.
      * @return The {@link Datebox} bound
      */
-    public static Datebox bind(final Datebox dateBox,
-            final Getter<Date> getter) {
+    public static Datebox bind(final Datebox dateBox, final Getter<Date> getter) {
         dateBox.setValue(getter.get());
         dateBox.setDisabled(true);
         return dateBox;
@@ -194,7 +227,6 @@ public class Util {
      * used to get the value that is going to be showed in the {@link Datebox}.
      * The {@link Setter} will be used to store the value inserted by the user
      * in the {@link Datebox}.
-     *
      * @param dateBox
      *            The {@link Datebox} to be bound
      * @param getter
@@ -221,7 +253,6 @@ public class Util {
      * Binds a {@link Decimalbox} with a {@link Getter}. The {@link Getter} will
      * be used to get the value that is going to be showed in the
      * {@link Decimalbox}.
-     *
      * @param decimalBox
      *            The {@link Decimalbox} to be bound
      * @param getter
@@ -240,7 +271,6 @@ public class Util {
      * be used to get the value that is going to be showed in the
      * {@link Decimalbox}. The {@link Setter} will be used to store the value
      * inserted by the user in the {@link Decimalbox}.
-     *
      * @param decimalBox
      *            The {@link Decimalbox} to be bound
      * @param getter
@@ -267,7 +297,6 @@ public class Util {
      * Binds a {@link Checkbox} with a {@link Getter}. The {@link Getter} will
      * be used to get the value that is going to be showed in the
      * {@link Checkbox}.
-     *
      * @param decimalBox
      *            The {@link Checkbox} to be bound
      * @param getter
@@ -286,9 +315,7 @@ public class Util {
      * be used to get the value that is going to be showed in the
      * {@link Checkbox}. The {@link Setter} will be used to store the value
      * inserted by the user in the {@link Checkbox}.
-     *
      * @param decimalBox
-     *            The {@link Checkbox} to be bound
      * @param getter
      *            The {@link Getter} interface that will implement a get method.
      * @param setter
@@ -307,6 +334,49 @@ public class Util {
             }
         });
         return checkBox;
+    }
+
+    /**
+     * Binds a {@link Checkbox} with a {@link Getter}. The {@link Getter} will
+     * be used to get the value that is going to be showed in the
+     * {@link Checkbox}.
+     * @param Radio
+     *            The {@link Radio} to be bound
+     * @param getter
+     *            The {@link Getter} interface that will implement a get method.
+     * @return The {@link Radio} bound
+     */
+    public static Radio bind(final Radio radio, final Getter<Boolean> getter) {
+        radio.setSelected(getter.get());
+        radio.setDisabled(true);
+        return radio;
+    }
+
+    /**
+     * Binds a {@link Radio} with a {@link Getter}. The {@link Getter} will be
+     * used to get the value that is going to be showed in the {@link Radio}.
+     * The {@link Setter} will be used to store the value inserted by the user
+     * in the {@link Radio}.
+     * @param decimalBox
+     *            The {@link Radio} to be bound
+     * @param getter
+     *            he {@link Getter} interface that will implement a get method.
+     * @param setter
+     *            The {@link Setter} interface that will implement a set method.
+     * @return The {@link Radio} bound
+     */
+    public static Radio bind(final Radio radio, final Getter<Boolean> getter,
+            final Setter<Boolean> setter) {
+        radio.setSelected(getter.get());
+        radio.addEventListener(Events.ON_CHECK, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                setter.set(radio.isSelected());
+                radio.setChecked(getter.get());
+            }
+        });
+        return radio;
     }
 
 }

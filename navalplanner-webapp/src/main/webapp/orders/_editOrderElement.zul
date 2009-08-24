@@ -1,9 +1,11 @@
 <?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
+<?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <window visible="false" id="${arg.top_id}" title="${i18n:_('Edit order element')}"  width="600px" left="100px" top="100px">
  <tabbox>
         <tabs>
             <tab label="${i18n:_('Details')}"></tab>
             <tab label="${i18n:_('Assigned hours')}"></tab>
+            <tab label="${i18n:_('Advances')}"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -102,8 +104,9 @@
             <tabpanel>
                 <listOrderElementHours/>
             </tabpanel>
+            <tabpanel>
+                <listOrderElementAdvances/>
+            </tabpanel>
         </tabpanels>
   </tabbox>
-
-
 </window>

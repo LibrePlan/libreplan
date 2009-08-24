@@ -1,0 +1,31 @@
+<vbox id="listOrderElementAdvances">
+    <vbox>
+        <hbox>
+            <button label="${i18n:_('Add')}" onClick="manageOrderElementAdvancesController.goToCreateLine();">
+            </button>
+            <button label="${i18n:_('Remove')}" onClick="manageOrderElementAdvancesController.goToRemoveLine();">
+            </button>
+        </hbox>
+    </vbox>
+    <vbox>
+     <listbox id="editAdvances"
+             model="@{manageOrderElementAdvancesController.advanceMeasurementDTOs}"
+             itemRenderer="@{manageOrderElementAdvancesController.advancesRenderer}" mold="paging"
+             pageSize="10">
+
+             <listhead sizable="true">
+                 <listheader label="${i18n:_('Advance Type')}" />
+                 <listheader label="${i18n:_('Max value')}"/>
+                 <listheader label="${i18n:_('Current value')}"/>
+                 <listheader label="${i18n:_('Percentage')}"/>
+                 <listheader label="${i18n:_('Date')}"/>
+                 <listheader label="${i18n:_('Spread')}"/>
+             </listhead>
+    </listbox>
+    </vbox>
+    <separator bar="true" spacing="12px" orient="horizontal"/>
+    <hbox>
+       <button id="aceptAdvance" onClick="manageOrderElementAdvancesController.acept();" label="${i18n:_('Acept')}"/>
+       <button id="cancelAdvance" onClick="manageOrderElementAdvancesController.cancel();" label="${i18n:_('Cancel')}"/>
+    </hbox>
+</vbox>
