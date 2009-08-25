@@ -119,7 +119,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test(expected = DataIntegrityViolationException.class)
-    public void notAllowSaveCalendarWithChildren()
+    public void notAllowRemoveCalendarWithChildren()
             throws InstanceNotFoundException {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
@@ -194,6 +194,39 @@ public class BaseCalendarDAOTest {
         baseCalendarDAO.flush();
 
         assertThat(baseCalendarDAO.findLastVersions().size(), equalTo(1));
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void notAllowRemoveCalendarWithChildrenInOtherVersions()
+            throws InstanceNotFoundException {
+        BaseCalendar parent1 = BaseCalendarTest.createBasicCalendar();
+        BaseCalendar parent2 = BaseCalendarTest.createBasicCalendar();
+        baseCalendarDAO.save(parent1);
+        baseCalendarDAO.save(parent2);
+
+        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
+        calendar.setParent(parent1);
+
+        baseCalendarDAO.save(calendar);
+        baseCalendarDAO.flush();
+
+        assertThat(baseCalendarDAO.findByParent(parent1).get(0).getId(),
+                equalTo(calendar.getId()));
+
+        BaseCalendar newVersion = calendar.newVersion();
+        newVersion.setParent(parent2);
+
+        baseCalendarDAO.save(newVersion);
+        baseCalendarDAO.flush();
+
+        assertThat(baseCalendarDAO.findByParent(parent2).get(0).getId(),
+                equalTo(newVersion.getId()));
+
+        assertThat(baseCalendarDAO.findByParent(parent1).get(0).getId(),
+                equalTo(calendar.getId()));
+
+        baseCalendarDAO.remove(parent1.getId());
+        baseCalendarDAO.flush();
     }
 
 }
