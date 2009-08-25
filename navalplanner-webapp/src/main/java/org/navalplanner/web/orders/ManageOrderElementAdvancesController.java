@@ -66,7 +66,7 @@ public class ManageOrderElementAdvancesController extends
         Util.reloadBindings(window.getParent());
     }
 
-    public void acept() throws org.navalplanner.business.common.exceptions.InstanceNotFoundException, DuplicateValueTrueReportGlobalAdvanceException {
+    public void accept() throws org.navalplanner.business.common.exceptions.InstanceNotFoundException, DuplicateValueTrueReportGlobalAdvanceException {
         if(!validateDataForm()){
                messagesForUser.showMessage(
             Level.INFO, _("Values are not valid, the values must not be null"));
@@ -78,7 +78,7 @@ public class ManageOrderElementAdvancesController extends
             return;
         }
         try{
-            this.manageOrderElementAdvancesModel.confirm();
+            this.manageOrderElementAdvancesModel.accept();
             window.setVisible(false);
             Util.reloadBindings(window.getParent());
         }catch(DuplicateAdvanceAssigmentForOrderElementException e){
@@ -98,7 +98,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     public void goToCreateLine() {
-        manageOrderElementAdvancesModel.prepareForCreate();
+        manageOrderElementAdvancesModel.addNewLine();
         Util.reloadBindings(window);
     }
 
@@ -107,7 +107,7 @@ public class ManageOrderElementAdvancesController extends
         Listitem listItem = listAdvances.getSelectedItem();
         if(listItem != null){
             IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO) listItem.getValue();
-            manageOrderElementAdvancesModel.prepareForRemove(advanceDTO);
+            manageOrderElementAdvancesModel.removeLine(advanceDTO);
             Util.reloadBindings(window);
         }
     }

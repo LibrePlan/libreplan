@@ -97,13 +97,13 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public void prepareForCreate() {
+    public void addNewLine() {
         AdvanceMeasurementDTO newAdvance = new AdvanceMeasurementDTO();
         this.advanceMeasurementDTOs.add(newAdvance);
     }
 
     @Override
-    public void prepareForRemove(IAdvanceMeasurementDTO advanceDTO) {
+    public void removeLine(IAdvanceMeasurementDTO advanceDTO) {
         this.advanceMeasurementDTOs.remove(advanceDTO);
     }
 
@@ -122,7 +122,7 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public void confirm()throws InstanceNotFoundException,
+    public void accept()throws InstanceNotFoundException,
             DuplicateAdvanceAssigmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
             orderElementDAO.checkVersion(orderElement);

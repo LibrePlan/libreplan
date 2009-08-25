@@ -25,7 +25,7 @@
     </vbox>
     <separator bar="true" spacing="12px" orient="horizontal"/>
     <hbox>
-       <button id="aceptAdvance" onClick="manageOrderElementAdvancesController.acept();" label="${i18n:_('Acept')}"/>
+       <button id="aceptAdvance" onClick="manageOrderElementAdvancesController.accept();" label="${i18n:_('Accept')}"/>
        <button id="cancelAdvance" onClick="manageOrderElementAdvancesController.cancel();" label="${i18n:_('Cancel')}"/>
     </hbox>
 </vbox>

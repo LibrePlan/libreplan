@@ -16,13 +16,13 @@ import org.navalplanner.business.orders.entities.OrderElement;
 public interface IManageOrderElementAdvancesModel {
     public List<IAdvanceMeasurementDTO> getAdvanceMeasurements();
     public void init(OrderElement orderElement);
-    public void prepareForCreate();
-    public void prepareForRemove(IAdvanceMeasurementDTO advanceDTO);
+    public void addNewLine();
+    public void removeLine(IAdvanceMeasurementDTO advanceDTO);
     public List<AdvanceType> getActivesAdvanceTypes();
     public boolean isPrecisionValid(IAdvanceMeasurementDTO advanceDTO, BigDecimal value);
     public boolean greatThanMaxValue(IAdvanceMeasurementDTO advanceDTO, BigDecimal value);
     public boolean isGreatValidDate(IAdvanceMeasurementDTO advanceDTO, Date value);
-    public void confirm()throws InstanceNotFoundException,
+    public void accept()throws InstanceNotFoundException,
             DuplicateAdvanceAssigmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException;
 }
