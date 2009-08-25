@@ -40,7 +40,7 @@ public class ManageOrderElementAdvancesModel implements
 
     private OrderElement orderElement;
 
-    private List<IAdvanceMeasurementDTO> advanceMeasurementDTOs;
+    private List<AdvanceMeasurementDTO> advanceMeasurementDTOs;
 
     private List<AdvanceType> listAdvanceTypes;
 
@@ -59,9 +59,9 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public List<IAdvanceMeasurementDTO> getAdvanceMeasurements() {
+    public List<AdvanceMeasurementDTO> getAdvanceMeasurements() {
         if (this.orderElement == null) {
-            return new ArrayList<IAdvanceMeasurementDTO>();
+            return new ArrayList<AdvanceMeasurementDTO>();
         }
         return this.advanceMeasurementDTOs;
     }
@@ -83,12 +83,12 @@ public class ManageOrderElementAdvancesModel implements
 
     public void createAdvanceMeasurementDTOs() {
         this.listAdvanceMeasurement = new ArrayList<AdvanceMeasurement>();
-        this.advanceMeasurementDTOs = new ArrayList<IAdvanceMeasurementDTO>();
+        this.advanceMeasurementDTOs = new ArrayList<AdvanceMeasurementDTO>();
         for (AdvanceAssigment advanceAssigment : this.orderElement
                 .getAdvanceAssigments()) {
             AdvanceMeasurement advanceMeasurement = ((SortedSet<AdvanceMeasurement>) advanceAssigment
                     .getAdvanceMeasurements()).last();
-            IAdvanceMeasurementDTO advanceDTO = new AdvanceMeasurementDTO(
+            AdvanceMeasurementDTO advanceDTO = new AdvanceMeasurementDTO(
                     advanceAssigment.getAdvanceType(), advanceAssigment,
                     advanceMeasurement);
             this.listAdvanceMeasurement.add(advanceMeasurement);
@@ -103,7 +103,7 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public void removeLine(IAdvanceMeasurementDTO advanceDTO) {
+    public void removeLine(AdvanceMeasurementDTO advanceDTO) {
         this.advanceMeasurementDTOs.remove(advanceDTO);
     }
 
@@ -133,7 +133,7 @@ public class ManageOrderElementAdvancesModel implements
             DuplicateAdvanceAssigmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
         updateRemoveAdvanceMeasurement();
-        for(IAdvanceMeasurementDTO advanceDTO : this.advanceMeasurementDTOs){
+        for(AdvanceMeasurementDTO advanceDTO : this.advanceMeasurementDTOs){
             validateBasicData(advanceDTO);
         }
     }
@@ -146,7 +146,7 @@ public class ManageOrderElementAdvancesModel implements
         }
     }
 
-    private void validateBasicData(IAdvanceMeasurementDTO advanceDTO)
+    private void validateBasicData(AdvanceMeasurementDTO advanceDTO)
         throws InstanceNotFoundException,DuplicateAdvanceAssigmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
         if(advanceDTO.getIsNewDTO()){
@@ -162,7 +162,7 @@ public class ManageOrderElementAdvancesModel implements
         }
     }
 
-    private void updateAdvanceMeasurement(IAdvanceMeasurementDTO advanceDTO){
+    private void updateAdvanceMeasurement(AdvanceMeasurementDTO advanceDTO){
         AdvanceAssigment advanceAssigment = advanceDTO.getAdvanceAssigment();
         advanceAssigment.setReportGlobalAdvance(advanceDTO.getReportGlobalAdvance());
         AdvanceMeasurement advanceMeasurement = advanceDTO.getAdvanceMeasurement();
@@ -174,7 +174,7 @@ public class ManageOrderElementAdvancesModel implements
         }
     }
 
-    private void addAdvanceMeasurement(IAdvanceMeasurementDTO advanceDTO){
+    private void addAdvanceMeasurement(AdvanceMeasurementDTO advanceDTO){
         AdvanceMeasurement newAdvanceMeasurement = AdvanceMeasurement.create(advanceDTO.getDate(),
         advanceDTO.getValue(),advanceDTO.getMaxValue());
         AdvanceAssigment advanceAssigment = advanceDTO.getAdvanceAssigment();
@@ -183,7 +183,7 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     private boolean yetExistAdvanceMeasurement(AdvanceMeasurement advanceMeasurement){
-        for(IAdvanceMeasurementDTO advanceDTO : this.advanceMeasurementDTOs){
+        for(AdvanceMeasurementDTO advanceDTO : this.advanceMeasurementDTOs){
             if((!advanceDTO.getIsNewDTO()) &&
                 (advanceDTO.getAdvanceMeasurement().equals(advanceMeasurement)))
                     return true;
@@ -192,7 +192,7 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Transactional(readOnly = true)
-    private AdvanceAssigment createNewAdvance(IAdvanceMeasurementDTO advanceDTO)
+    private AdvanceAssigment createNewAdvance(AdvanceMeasurementDTO advanceDTO)
             throws InstanceNotFoundException{
             //create AdvanceMeasurement
             AdvanceMeasurement newAdvanceMeasurement = AdvanceMeasurement.create(advanceDTO.getDate(),
@@ -225,7 +225,7 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public boolean isPrecisionValid(IAdvanceMeasurementDTO advanceDTO, BigDecimal value){
+    public boolean isPrecisionValid(AdvanceMeasurementDTO advanceDTO, BigDecimal value){
         if(advanceDTO.getAdvanceType() != null){
             BigDecimal precision = advanceDTO.getAdvanceType().getUnitPrecision();
             BigDecimal result[] = value.divideAndRemainder(precision);
@@ -236,7 +236,7 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public boolean greatThanMaxValue(IAdvanceMeasurementDTO advanceDTO, BigDecimal value){
+    public boolean greatThanMaxValue(AdvanceMeasurementDTO advanceDTO, BigDecimal value){
         if(advanceDTO.getMaxValue() == null)
             return false;
         if(value.compareTo(advanceDTO.getMaxValue())>0)
@@ -245,7 +245,7 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public boolean isGreatValidDate(IAdvanceMeasurementDTO advanceDTO, Date value){
+    public boolean isGreatValidDate(AdvanceMeasurementDTO advanceDTO, Date value){
         if((advanceDTO.getIsNewDTO())||(advanceDTO.getIsNewObject()))
             return true;
 

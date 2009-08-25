@@ -7,7 +7,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import javax.management.InstanceNotFoundException;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -57,7 +56,7 @@ public class ManageOrderElementAdvancesController extends
         messagesForUser = new MessagesForUser(window.getFellow("listOrderElementAdvances"));
     }
 
-    public List<IAdvanceMeasurementDTO> getAdvanceMeasurementDTOs() {
+    public List<AdvanceMeasurementDTO> getAdvanceMeasurementDTOs() {
         return manageOrderElementAdvancesModel.getAdvanceMeasurements();
     }
 
@@ -106,7 +105,7 @@ public class ManageOrderElementAdvancesController extends
         Listbox listAdvances = (Listbox) window.getFellow("editAdvances");
         Listitem listItem = listAdvances.getSelectedItem();
         if(listItem != null){
-            IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO) listItem.getValue();
+            AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO) listItem.getValue();
             manageOrderElementAdvancesModel.removeLine(advanceDTO);
             Util.reloadBindings(window);
         }
@@ -123,7 +122,7 @@ public class ManageOrderElementAdvancesController extends
     public class AdvanceTypeListRenderer implements ListitemRenderer {
          @Override
          public void render(Listitem listItem, Object data) throws Exception {
-            final IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO) data;
+            final AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO) data;
             listItem.setValue(advanceDTO);
             listItem.setDraggable("true");
             listItem.setDroppable("true");
@@ -142,7 +141,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendComboboxAdvancType(final Listitem listItem){
-        final IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO)listItem.getValue();
+        final AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO)listItem.getValue();
         final Combobox comboAdvanceTypes = new Combobox();
         final List<AdvanceType> listAdvanceType = manageOrderElementAdvancesModel
                 .getActivesAdvanceTypes();
@@ -189,7 +188,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendLabelAdvanceType(final Listitem listItem){
-        final IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO)listItem.getValue();
+        final AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO)listItem.getValue();
         Label unitName = new Label(advanceDTO.getAdvanceType().getUnitName());
         Listcell listCell = new Listcell();
         listCell.appendChild(unitName);
@@ -197,7 +196,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendDecimalBoxMaxValue(final Listitem listItem){
-        final IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO)listItem.getValue();
+        final AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO)listItem.getValue();
         Decimalbox maxValue = new Decimalbox();
         maxValue.setScale(2);
         Util.bind(maxValue,
@@ -227,7 +226,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendDecimalBoxValue(final Listitem listItem){
-        final IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO)listItem.getValue();
+        final AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO)listItem.getValue();
         Decimalbox value = new Decimalbox();
         value.setScale(2);
         Util.bind(value, new Util.Getter<BigDecimal>() {
@@ -258,7 +257,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendLabelPercentage(final Listitem listItem){
-        final IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO)listItem.getValue();
+        final AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO)listItem.getValue();
         Label percentage = new Label();
         percentage.setValue(advanceDTO.getPercentage() + " %");
         Listcell listCell = new Listcell();
@@ -267,7 +266,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendDateBoxDate(final Listitem listItem){
-        final IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO)listItem.getValue();
+        final AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO)listItem.getValue();
         Datebox date = new Datebox();
         Util.bind(date, new Util.Getter<Date>() {
                 @Override
@@ -288,7 +287,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendRadioSpread(final Listitem listItem){
-        final IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO)listItem.getValue();
+        final AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO)listItem.getValue();
         Radio reportGlobalAdvance = new Radio();
         reportGlobalAdvance.setChecked(advanceDTO.getReportGlobalAdvance());
 
@@ -311,7 +310,7 @@ public class ManageOrderElementAdvancesController extends
         if(selectedItem != null){
             AdvanceType advanceType = ((AdvanceType) selectedItem.getValue());
             if(advanceType != null){
-                IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO)item.getValue();
+                AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO)item.getValue();
                 advanceDTO.setMaxValue(advanceType.getDefaultMaxValue());
                 miBox.setValue(advanceType.getDefaultMaxValue());
             }
@@ -319,20 +318,20 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void setPercentage(final Listitem item){
-        final IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO) item.getValue();
+        final AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO) item.getValue();
         Listcell celdaPercentage = (Listcell)item.getChildren().get(3);
         ((Label)celdaPercentage.getFirstChild()).setValue(advanceDTO.getPercentage()+" %");
     }
 
     private void cleanDate(final Listitem item){
-        final IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO) item.getValue();
+        final AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO) item.getValue();
         advanceDTO.setDate(null);
         Listcell celdaDate = (Listcell)item.getChildren().get(4);
         ((Datebox)celdaDate.getFirstChild()).setValue(null);
     }
 
     private void cleanFields(final Listitem item){
-        IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO) item.getValue();
+        AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO) item.getValue();
 
         Listcell celdaValue = (Listcell) item.getChildren().get(2);
         ((Decimalbox)celdaValue.getFirstChild()).setValue(null);
@@ -358,12 +357,12 @@ public class ManageOrderElementAdvancesController extends
                 Listitem listItem = (Listitem) listAdvances.getChildren().get(i);
                 Listcell celdaSpread = (Listcell) listItem.getChildren().get(5);
                 ((Radio)celdaSpread.getFirstChild()).setChecked(false);
-                ((IAdvanceMeasurementDTO)listItem.getValue()).setReportGlobalAdvance(false);
+                ((AdvanceMeasurementDTO)listItem.getValue()).setReportGlobalAdvance(false);
             }
         }
         Listcell celdaSpread = (Listcell) item.getChildren().get(5);
         ((Radio)celdaSpread.getFirstChild()).setChecked(true);
-        ((IAdvanceMeasurementDTO)item.getValue()).setReportGlobalAdvance(true);
+        ((AdvanceMeasurementDTO)item.getValue()).setReportGlobalAdvance(true);
     }
 
     private Constraint checkValidValue() {
@@ -373,7 +372,7 @@ public class ManageOrderElementAdvancesController extends
                     throws WrongValueException {
                 if (((BigDecimal) value) != null){
                     Listitem listItem = ((Listitem)comp.getParent().getParent());
-                    IAdvanceMeasurementDTO advanceDTO = ((IAdvanceMeasurementDTO)listItem.getValue());
+                    AdvanceMeasurementDTO advanceDTO = ((AdvanceMeasurementDTO)listItem.getValue());
                     if(manageOrderElementAdvancesModel.greatThanMaxValue(advanceDTO,(BigDecimal)value)){
                         throw new WrongValueException(
                                 comp,
@@ -398,7 +397,7 @@ public class ManageOrderElementAdvancesController extends
                     throws WrongValueException {
                 if (((Date) value) != null) {
                     Listitem listItem = ((Listitem)comp.getParent().getParent());
-                    IAdvanceMeasurementDTO advanceDTO = ((IAdvanceMeasurementDTO)listItem.getValue());
+                    AdvanceMeasurementDTO advanceDTO = ((AdvanceMeasurementDTO)listItem.getValue());
                     if(!manageOrderElementAdvancesModel.isGreatValidDate(advanceDTO,(Date)value)){
                         throw new WrongValueException(
                                 comp,
@@ -415,7 +414,7 @@ public class ManageOrderElementAdvancesController extends
         for(int i=0; i< listAdvances.getChildren().size(); i++){
             if(listAdvances.getChildren().get(i) instanceof Listitem){
                 Listitem listItem = (Listitem) listAdvances.getChildren().get(i);
-                IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO) listItem.getValue();
+                AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO) listItem.getValue();
                 if(advanceDTO.getAdvanceType() == null)return false;
                 if(advanceDTO.getMaxValue() == null)return false;
                 if(advanceDTO.getValue() == null)return false;
@@ -432,7 +431,7 @@ public class ManageOrderElementAdvancesController extends
             if(listAdvances.getChildren().get(i) instanceof Listitem){
                 existItems = true;
                 Listitem listItem = (Listitem) listAdvances.getChildren().get(i);
-                IAdvanceMeasurementDTO advanceDTO = (IAdvanceMeasurementDTO) listItem.getValue();
+                AdvanceMeasurementDTO advanceDTO = (AdvanceMeasurementDTO) listItem.getValue();
                 if(advanceDTO.getReportGlobalAdvance())
                     return true;
             }

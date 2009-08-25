@@ -7,7 +7,7 @@ import org.navalplanner.business.advance.entities.AdvanceAssigment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceType;
 
-public class AdvanceMeasurementDTO implements IAdvanceMeasurementDTO {
+public class AdvanceMeasurementDTO{
 
     private AdvanceType advanceType;
 
@@ -61,41 +61,34 @@ public class AdvanceMeasurementDTO implements IAdvanceMeasurementDTO {
         }
     }
 
-    @Override
     public boolean getIsNewObject() {
         return this.isNewObject;
     }
 
-    @Override
     public boolean getIsNewDTO() {
         return this.isNewDTO;
     }
 
-    @Override
     public void setAdvanceType(AdvanceType advanceType){
         this.advanceType = advanceType;
     }
-    @Override
+
     public AdvanceType getAdvanceType() {
         return this.advanceType;
     }
 
-    @Override
     public AdvanceAssigment getAdvanceAssigment() {
         return this.advanceAssigment;
     }
 
-    @Override
     public AdvanceMeasurement getAdvanceMeasurement() {
         return this.advanceMeasurement;
     }
 
-    @Override
     public void setPercentage(String percentage) {
         this.percentage = percentage;
     }
 
-    @Override
     public String getPercentage() {
         if((value != null)&&(maxValue != null)){
             BigDecimal percentage = new BigDecimal(0);
@@ -109,52 +102,42 @@ public class AdvanceMeasurementDTO implements IAdvanceMeasurementDTO {
         return "";
     }
 
-    @Override
     public void setReportGlobalAdvance(boolean reportGlobalAdvance) {
         this.reportGlobalAdvance = reportGlobalAdvance;
     }
 
-    @Override
     public boolean getReportGlobalAdvance() {
         return this.reportGlobalAdvance;
     }
 
-    @Override
     public void setDate(Date date) {
         this.date = date;
     }
 
-    @Override
     public Date getDate() {
         return this.date;
     }
 
-    @Override
     public void setValue(BigDecimal value) {
         this.value = value;
     }
 
-    @Override
     public BigDecimal getValue() {
         return this.value;
     }
 
-    @Override
     public BigDecimal getMaxValue() {
         return this.maxValue;
     }
 
-    @Override
     public void setMaxValue(BigDecimal maxValue) {
         this.maxValue = maxValue;
     }
 
-    @Override
     public boolean isSelectedForRemove(){
         return this.selectedRemove;
     }
 
-    @Override
     public void setSelectedForRemove(boolean selectedRemove){
         this.selectedRemove = selectedRemove;
     }
