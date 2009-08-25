@@ -43,6 +43,11 @@ public abstract class BaseEntity {
         return newObject;
     }
 
+    protected static BaseEntity create(BaseEntity baseEntity) {
+        baseEntity.newObject = true;
+        return baseEntity;
+    }
+
     /**
      * Once the has been really saved in DB (not a readonly transaction), it
      * could be necessary to unmark the object as newObject. This is the case if

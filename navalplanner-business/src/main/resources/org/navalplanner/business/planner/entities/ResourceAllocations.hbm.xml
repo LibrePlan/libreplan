@@ -2,6 +2,8 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.navalplanner.business.planner.entities"
     default-access="field">
+
+    <!-- ResourceAllocation -->
     <class name="ResourceAllocation">
         <id name="id" column="id" type="long" access="property">
             <generator class="hilo" >
@@ -14,11 +16,80 @@
 
         <many-to-one class="Task" name="task" column="TASK" />
 
-        <joined-subclass name="SpecificResourceAllocation">
+        <set name="assigmentFunction" inverse="false">
+            <key column="RESOURCE_ALLOCATION_ID"/>
+            <one-to-many class="AssigmentFunction"/>
+        </set>
+
+        <joined-subclass name="SpecificResourceAllocation" table="SPECIFIC_RESOURCE_ALLOCATION">
             <key column="RESOURCE_ALLOCATION_ID" />
+
             <many-to-one name="worker"
                 class="org.navalplanner.business.resources.entities.Worker" />
         </joined-subclass>
 
+        <joined-subclass name="GenericResourceAllocation" table="GENERIC_RESOURCE_ALLOCATION">
+            <key column="RESOURCE_ALLOCATION_ID" />
+
+            <set name="criterions" inverse="false">
+                <key column="GENERIC_RESOURCE_ALLOCATION_ID"/>
+                <one-to-many class="org.navalplanner.business.resources.entities.Criterion"/>
+            </set>
+
+            <set name="genericDayAssigments" inverse="false">
+                <key column="GENERIC_RESOURCE_ALLOCATION_ID"/>
+                <one-to-many class="GenericDayAssigment"/>
+            </set>
+        </joined-subclass>
+
     </class>
+
+    <!-- DayAssigment -->
+    <class name="DayAssigment" table="DAY_ASSIGMENT">
+        <id name="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+		<discriminator column="DAY_ASSIGMENT_TYPE" type="string"/>
+
+        <version name="version" access="property" type="long" />
+
+		<property name="hours"/>
+
+        <set name="workers" inverse="false">
+            <key column="DAY_ASSIGMENT_ID"/>
+            <one-to-many class="org.navalplanner.business.resources.entities.Worker"/>
+        </set>
+
+        <!-- SpecificDayAssigment -->
+        <subclass name="SpecificDayAssigment" discriminator-value="SPECIFIC_DAY">
+            <many-to-one name="specificResourceAllocation"
+                class="SpecificResourceAllocation" column="SPECIFIC_RESOURCE_ALLOCATION_ID"/>
+        </subclass>
+
+        <!-- GenericDayAssigment -->
+        <subclass name="GenericDayAssigment" discriminator-value="GENERIC_DAY">
+            <many-to-one name="genericResourceAllocation"
+                class="GenericResourceAllocation" column="GENERIC_RESOURCE_ALLOCATION_ID" />
+
+            <set name="criterions" inverse="false">
+                <key column="GENERIC_DAY_ASSIGMENT_ID"/>
+                <one-to-many class="org.navalplanner.business.resources.entities.Criterion"/>
+            </set>
+        </subclass>
+    </class>
+
+    <!-- AssigmentFunction -->
+    <class name="AssigmentFunction" table="ASSIGMENT_FUNCTION">
+        <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <many-to-one name="resourceAllocation" class="ResourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
+    </class>
+
 </hibernate-mapping>

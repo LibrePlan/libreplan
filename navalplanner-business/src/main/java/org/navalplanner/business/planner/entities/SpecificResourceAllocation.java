@@ -1,5 +1,8 @@
 package org.navalplanner.business.planner.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.resources.entities.Worker;
 
@@ -11,13 +14,14 @@ import org.navalplanner.business.resources.entities.Worker;
 public class SpecificResourceAllocation extends ResourceAllocation {
 
     public static SpecificResourceAllocation create(Task task) {
-        SpecificResourceAllocation result = new SpecificResourceAllocation(task);
-        result.setNewObject(true);
-        return result;
+        return (SpecificResourceAllocation) create(new SpecificResourceAllocation(
+                task));
     }
 
     @NotNull
     private Worker worker;
+
+    Set<SpecificDayAssigment> specificDaysAssigment = new HashSet<SpecificDayAssigment>();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -38,4 +42,12 @@ public class SpecificResourceAllocation extends ResourceAllocation {
         this.worker = worker;
     }
 
+    public Set<SpecificDayAssigment> getSpecificDaysAssigment() {
+        return specificDaysAssigment;
+    }
+
+    public void setSpecificDaysAssigment(
+            Set<SpecificDayAssigment> specificDaysAssigment) {
+        this.specificDaysAssigment = specificDaysAssigment;
+    }
 }
