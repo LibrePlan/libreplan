@@ -211,9 +211,11 @@ public class ManageOrderElementAdvancesModel implements
             return newAdvanceAssigment;
     }
 
+    @Transactional(readOnly = true)
     private void addAdvanceAssigment(AdvanceAssigment newAdvanceAssigment)
             throws DuplicateAdvanceAssigmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
+                this.orderElementDAO.save(this.orderElement);
                 this.orderElement.addAvanceAssigment(newAdvanceAssigment);
      }
 
