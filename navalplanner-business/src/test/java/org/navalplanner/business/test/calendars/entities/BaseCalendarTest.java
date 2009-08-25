@@ -198,6 +198,14 @@ public class BaseCalendarTest {
         assertThat(nextCalendar, equalTo(calendar.getNextCalendar()));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateInvalidNewVersion() {
+        BaseCalendar nextCalendar = createBasicCalendar().newVersion(
+                FRIDAY_LOCAL_DATE);
+
+        nextCalendar.newVersion(MONDAY_LOCAL_DATE);
+    }
+
     @Test
     public void testGettWorkableHoursNewVersion() {
         BaseCalendar origCalendar = createBasicCalendar();

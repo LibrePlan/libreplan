@@ -1,5 +1,6 @@
 package org.navalplanner.web.calendars;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +40,10 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
     private boolean editing = false;
 
+    private BaseCalendar baseCalendarHistory;
+
+    private boolean viewingHistory = false;
+
     private ClassValidator<BaseCalendar> baseCalendarValidator = new ClassValidator<BaseCalendar>(
             BaseCalendar.class);
 
@@ -56,7 +61,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         return baseCalendarDAO.findLastVersions();
     }
 
-
     /*
      * Initial conversation steps
      */
@@ -73,7 +77,15 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         editing = true;
         Validate.notNull(baseCalendar);
 
-        this.baseCalendar = getFromDB(baseCalendar).newVersion();
+        this.baseCalendar = getFromDB(baseCalendar);
+        try {
+            this.baseCalendar = this.baseCalendar.newVersion();
+        } catch (IllegalArgumentException e) {
+            LocalDate expiringDate = this.baseCalendar.getPreviousCalendar()
+                    .getExpiringDate();
+            this.baseCalendar = this.baseCalendar.newVersion(expiringDate
+                    .plusDays(1));
+        }
         forceLoadHoursPerDayAndExceptionDays(this.baseCalendar);
     }
 
@@ -100,6 +112,16 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Override
     public void initRemove(BaseCalendar baseCalendar) {
         this.baseCalendar = baseCalendar;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void initHistoryView(BaseCalendar baseCalendar) {
+        viewingHistory = true;
+        Validate.notNull(baseCalendar);
+
+        this.baseCalendarHistory = getFromDB(baseCalendar);
+        forceLoadHoursPerDayAndExceptionDays(this.baseCalendarHistory);
     }
 
     private void forceLoadHoursPerDayAndExceptionDays(BaseCalendar baseCalendar) {
@@ -155,6 +177,9 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
     @Override
     public BaseCalendar getBaseCalendar() {
+        if (viewingHistory) {
+            return baseCalendarHistory;
+        }
         return baseCalendar;
     }
 
@@ -163,16 +188,17 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     public List<BaseCalendar> getPossibleParentCalendars() {
         List<BaseCalendar> baseCalendars = getBaseCalendars();
 
-        if (baseCalendar != null) {
+        if (getBaseCalendar() != null) {
             for (BaseCalendar calendar : baseCalendars) {
                 if (isEditing()) {
-                    if (calendar.getId().equals(
-                            baseCalendar.getPreviousCalendar().getId())) {
+                    if ((getBaseCalendar().getPreviousCalendar() != null)
+                            && (calendar.getId().equals(getBaseCalendar()
+                                    .getPreviousCalendar().getId()))) {
                         baseCalendars.remove(calendar);
                         break;
                     }
                 } else {
-                    if (calendar.getId().equals(baseCalendar.getId())) {
+                    if (calendar.getId().equals(getBaseCalendar().getId())) {
                         baseCalendars.remove(calendar);
                         break;
                     }
@@ -201,104 +227,104 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Override
     @Transactional(readOnly = true)
     public Integer getHoursOfDay() {
-        if (baseCalendar == null) {
+        if (getBaseCalendar() == null) {
             return null;
         }
 
-        return baseCalendar.getWorkableHours(selectedDate);
+        return getBaseCalendar().getWorkableHours(selectedDate);
     }
 
     @Override
     @Transactional(readOnly = true)
     public DayType getTypeOfDay() {
-        if (baseCalendar == null) {
+        if (getBaseCalendar() == null) {
             return null;
         }
 
-        return baseCalendar.getType(selectedDate);
+        return getBaseCalendar().getType(selectedDate);
     }
 
     @Override
     @Transactional(readOnly = true)
     public void createException(Integer hours) {
         if (getTypeOfDay().equals(DayType.OWN_EXCEPTION)) {
-            baseCalendar.updateExceptionDay(selectedDate, hours);
+            getBaseCalendar().updateExceptionDay(selectedDate, hours);
         } else {
             ExceptionDay day = ExceptionDay.create(selectedDate, hours);
-            baseCalendar.addExceptionDay(day);
+            getBaseCalendar().addExceptionDay(day);
         }
     }
 
     @Override
     public Integer getHours(Days day) {
-        if (baseCalendar == null) {
+        if (getBaseCalendar() == null) {
             return null;
         }
 
-        return baseCalendar.getHours(day);
+        return getBaseCalendar().getHours(day);
     }
 
     @Override
     public Boolean isDefault(Days day) {
-        if (baseCalendar == null) {
+        if (getBaseCalendar() == null) {
             return false;
         }
 
-        return baseCalendar.isDefault(day);
+        return getBaseCalendar().isDefault(day);
     }
 
     @Override
     public void unsetDefault(Days day) {
-        if (baseCalendar != null) {
-            baseCalendar.setHours(day, 0);
+        if (getBaseCalendar() != null) {
+            getBaseCalendar().setHours(day, 0);
         }
     }
 
     @Override
     public void setDefault(Days day) {
-        if (baseCalendar != null) {
-            baseCalendar.setDefault(day);
+        if (getBaseCalendar() != null) {
+            getBaseCalendar().setDefault(day);
         }
     }
 
     @Override
     public void setHours(Days day, Integer hours) {
-        if (baseCalendar != null) {
-            baseCalendar.setHours(day, hours);
+        if (getBaseCalendar() != null) {
+            getBaseCalendar().setHours(day, hours);
         }
     }
 
     @Override
     public boolean isExceptional() {
-        if (baseCalendar == null) {
+        if (getBaseCalendar() == null) {
             return false;
         }
 
-        ExceptionDay day = baseCalendar.getOwnExceptionDay(selectedDate);
+        ExceptionDay day = getBaseCalendar().getOwnExceptionDay(selectedDate);
         return (day != null);
     }
 
     @Override
     public void removeException() {
-        baseCalendar.removeExceptionDay(selectedDate);
+        getBaseCalendar().removeExceptionDay(selectedDate);
     }
 
     @Override
     public boolean isDerived() {
-        if (baseCalendar == null) {
+        if (getBaseCalendar() == null) {
             return false;
         }
 
-        return baseCalendar.isDerived();
+        return getBaseCalendar().isDerived();
     }
 
     @Override
     public BaseCalendar getParent() {
-        if (baseCalendar == null) {
+        if (getBaseCalendar() == null) {
             return null;
         }
 
-        return baseCalendar.getParent();
+        return getBaseCalendar().getParent();
     }
 
     @Override
@@ -311,26 +337,37 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         }
         forceLoadHoursPerDayAndExceptionDays(parent);
 
-        if (baseCalendar != null) {
-            baseCalendar.setParent(parent);
+        if (getBaseCalendar() != null) {
+            getBaseCalendar().setParent(parent);
         }
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean isParent() {
-        if (baseCalendar == null) {
+        if (getBaseCalendar() == null) {
             return false;
         }
 
-        return !baseCalendarDAO.findByParent(baseCalendar).isEmpty();
+        return !baseCalendarDAO.findByParent(getBaseCalendar()).isEmpty();
     }
 
     @Override
     public Date getExpiringDate() {
-        if ((baseCalendar != null)
-                && (baseCalendar.getPreviousCalendar() != null)) {
-            LocalDate expiringDate = baseCalendar.getPreviousCalendar()
+        if ((getBaseCalendar() != null)
+                && (getBaseCalendar().getExpiringDate() != null)) {
+            return getBaseCalendar().getExpiringDate().toDateTimeAtStartOfDay()
+                    .toDate();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Date getDateValidFrom() {
+        if ((getBaseCalendar() != null)
+                && (getBaseCalendar().getPreviousCalendar() != null)) {
+            LocalDate expiringDate = getBaseCalendar().getPreviousCalendar()
                     .getExpiringDate();
             return expiringDate.toDateTimeAtStartOfDay().toDate();
         }
@@ -339,11 +376,33 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
-    public void setExpiringDate(Date date) {
-        if ((baseCalendar != null)
-                && (baseCalendar.getPreviousCalendar() != null)) {
-            baseCalendar.getPreviousCalendar().setExpiringDate(date);
+    public void setDateValidFrom(Date date) {
+        if ((getBaseCalendar() != null)
+                && (getBaseCalendar().getPreviousCalendar() != null)) {
+            getBaseCalendar().getPreviousCalendar().setExpiringDate(date);
         }
+    }
+
+    @Override
+    public List<BaseCalendar> getHistoryVersions() {
+        if (getBaseCalendar() == null) {
+            return null;
+        }
+
+        List<BaseCalendar> history = new ArrayList<BaseCalendar>();
+
+        BaseCalendar current = getBaseCalendar().getPreviousCalendar();
+        while (current != null) {
+            history.add(current);
+            current = current.getPreviousCalendar();
+        }
+
+        return history;
+    }
+
+    @Override
+    public boolean isViewingHistory() {
+        return this.viewingHistory;
     }
 
     /*
@@ -354,20 +413,20 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Transactional
     public void confirmSave() throws ValidationException {
         InvalidValue[] invalidValues = baseCalendarValidator
-                .getInvalidValues(baseCalendar);
+                .getInvalidValues(getBaseCalendar());
         if (invalidValues.length > 0) {
             throw new ValidationException(invalidValues);
         }
 
-        baseCalendar.checkValid();
-        baseCalendarDAO.save(baseCalendar);
+        getBaseCalendar().checkValid();
+        baseCalendarDAO.save(getBaseCalendar());
     }
 
     @Override
     @Transactional
     public void confirmRemove() {
         try {
-            baseCalendarDAO.remove(baseCalendar.getId());
+            baseCalendarDAO.remove(getBaseCalendar().getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -378,8 +437,18 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         resetState();
     }
 
+    @Override
+    public void cancelHistoryView() {
+        viewingHistory = false;
+        resetStateHistory();
+    }
+
     private void resetState() {
         baseCalendar = null;
+    }
+
+    private void resetStateHistory() {
+        baseCalendarHistory = null;
     }
 
 }

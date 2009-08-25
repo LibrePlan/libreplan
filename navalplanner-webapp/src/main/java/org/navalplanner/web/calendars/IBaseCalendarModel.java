@@ -59,6 +59,8 @@ public interface IBaseCalendarModel {
 
     void initCreateCopy(BaseCalendar baseCalendar);
 
+    void initHistoryView(BaseCalendar baseCalendar);
+
     /*
      * Intermediate conversation steps
      */
@@ -103,7 +105,13 @@ public interface IBaseCalendarModel {
 
     Date getExpiringDate();
 
-    void setExpiringDate(Date date);
+    Date getDateValidFrom();
+
+    void setDateValidFrom(Date date);
+
+    List<BaseCalendar> getHistoryVersions();
+
+    boolean isViewingHistory();
 
     /*
      * Final conversation steps
@@ -114,5 +122,7 @@ public interface IBaseCalendarModel {
     void confirmRemove();
 
     void cancel();
+
+    void cancelHistoryView();
 
 }

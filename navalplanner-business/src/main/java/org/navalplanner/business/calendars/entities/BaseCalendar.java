@@ -149,7 +149,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
                             + "because of it does not have a next calendar");
         }
         if (previousCalendar != null) {
-            if (previousCalendar.getExpiringDate().compareTo(expiringDate) <= 0) {
+            if (expiringDate.compareTo(previousCalendar.getExpiringDate()) <= 0) {
                 throw new IllegalArgumentException(
                         "Expering date must be greater than expiring date of previous calendars");
             }
@@ -417,7 +417,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
      * It makes that the current calendar expires in the current date. And the
      * new calendar will be used from now onwards.
      */
-    public BaseCalendar newVersion() {
+    public BaseCalendar newVersion() throws IllegalArgumentException {
         return newVersion(new LocalDate());
     }
 
@@ -426,7 +426,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
      * It makes that the current calendar expires in the specific date. And the
      * new calendar will be used from that date onwards.
      */
-    public BaseCalendar newVersion(Date date) {
+    public BaseCalendar newVersion(Date date) throws IllegalArgumentException {
         return newVersion(new LocalDate(date));
     }
 
@@ -435,9 +435,17 @@ public class BaseCalendar extends BaseEntity implements IValidable {
      * It makes that the current calendar expires in the specific date. And the
      * new calendar will be used from that date onwards.
      */
-    public BaseCalendar newVersion(LocalDate date) {
+    public BaseCalendar newVersion(LocalDate date)
+            throws IllegalArgumentException {
         if (nextCalendar != null) {
             nextCalendar.newVersion(date);
+        }
+
+        if (previousCalendar != null) {
+            if (date.compareTo(previousCalendar.getExpiringDate()) <= 0) {
+                throw new IllegalArgumentException(
+                        "Version date must be greater than expiring date of previous calendars");
+            }
         }
 
         BaseCalendar nextCalendar = newCopy();

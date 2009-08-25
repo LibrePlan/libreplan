@@ -16,6 +16,7 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -52,6 +53,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private Window editWindow;
 
+    private Window historyWindow;
+
     private Window confirmRemove;
 
     private boolean confirmingRemove = false;
@@ -75,6 +78,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
+        historyWindow.setVisible(false);
         getVisibility().showOnly(listWindow);
     }
 
@@ -290,6 +294,10 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                 hoursIntbox.setDisabled(true);
             }
 
+            if (baseCalendarModel.isViewingHistory()) {
+                hoursIntbox.setDisabled(true);
+            }
+
             hoursListcell.appendChild(hoursIntbox);
             item.appendChild(hoursListcell);
 
@@ -322,6 +330,11 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                     }
 
                 });
+
+                if (baseCalendarModel.isViewingHistory()) {
+                    defaultCheckbox.setDisabled(true);
+                }
+
                 defaultListcell.appendChild(defaultCheckbox);
                 item.appendChild(defaultListcell);
             }
@@ -331,7 +344,11 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private void reloadCurrentWindow() {
         if (baseCalendarModel.isEditing()) {
-            Util.reloadBindings(editWindow);
+            if (baseCalendarModel.isViewingHistory()) {
+                Util.reloadBindings(historyWindow);
+            } else {
+                Util.reloadBindings(editWindow);
+            }
         } else {
             Util.reloadBindings(createWindow);
         }
@@ -339,7 +356,11 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private void reloadDayInformation() {
         if (baseCalendarModel.isEditing()) {
-            Util.reloadBindings(editWindow.getFellow("dayInformation"));
+            if (baseCalendarModel.isViewingHistory()) {
+                Util.reloadBindings(historyWindow.getFellow("dayInformation"));
+            } else {
+                Util.reloadBindings(editWindow.getFellow("dayInformation"));
+            }
         } else {
             Util.reloadBindings(createWindow.getFellow("dayInformation"));
         }
@@ -357,7 +378,10 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private void prepareParentCombo() {
         Combobox parentCalendars;
-        if (baseCalendarModel.isEditing()) {
+        if (baseCalendarModel.isViewingHistory()) {
+            parentCalendars = (Combobox) historyWindow
+                    .getFellow("parentCalendars");
+        } else if (baseCalendarModel.isEditing()) {
             parentCalendars = (Combobox) editWindow
                     .getFellow("parentCalendars");
         } else {
@@ -416,16 +440,22 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         return baseCalendarModel.isEditing();
     }
 
-    public Date getExpiringDate() {
-        return baseCalendarModel.getExpiringDate();
+    public Date getDateValidFrom() {
+        return baseCalendarModel.getDateValidFrom();
     }
 
-    public void setExpiringDate(Date date) {
+    public void setDateValidFrom(Date date) {
         try {
-            baseCalendarModel.setExpiringDate(date);
+            baseCalendarModel.setDateValidFrom(date);
         } catch (IllegalArgumentException e) {
-            ;
+            throw new WrongValueException(
+                    editWindow.getFellow("dateValidFrom"),
+                    e.getMessage());
         }
+    }
+
+    public Date getExpiringDate() {
+        return baseCalendarModel.getExpiringDate();
     }
 
     public void goToCreateCopyForm(BaseCalendar baseCalendar) {
@@ -519,6 +549,47 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             item.setOpen(true);
         }
 
+    }
+
+    public List<BaseCalendar> getHistoryVersions() {
+        return baseCalendarModel.getHistoryVersions();
+    }
+
+    public void goToHistoryView(BaseCalendar baseCalendar) {
+        baseCalendarModel.initHistoryView(baseCalendar);
+        if (baseCalendarModel.isDerived()) {
+            prepareParentCombo();
+        }
+
+        try {
+            Util.reloadBindings(historyWindow);
+            historyWindow.setVisible(true);
+            historyWindow.doModal();
+        } catch (SuspendNotAllowedException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean isViewingHistory() {
+        return baseCalendarModel.isViewingHistory();
+    }
+
+    public boolean isNotViewingHistory() {
+        return !isViewingHistory();
+    }
+
+    public boolean isEditingAndNotViewingHistory() {
+        return isEditing() && !isViewingHistory();
+    }
+
+    public void back() {
+        baseCalendarModel.cancelHistoryView();
+        historyWindow.setVisible(false);
+
+        Util.reloadBindings(editWindow);
+        getVisibility().showOnly(editWindow);
     }
 
 }
