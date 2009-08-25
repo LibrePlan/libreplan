@@ -96,11 +96,17 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         return hours;
     }
 
-    public void setHours(Days day, Integer hours) {
+    public void setHours(Days day, Integer hours)
+            throws IllegalArgumentException {
         setHoursForDay(day, hours);
     }
 
-    private void setHoursForDay(Days day, Integer hours) {
+    private void setHoursForDay(Days day, Integer hours)
+            throws IllegalArgumentException {
+        if ((hours != null) && (hours < 0)) {
+            throw new IllegalArgumentException(
+                    "The number of hours for a day can not be negative");
+        }
         hoursPerDay.put(day.ordinal(), hours);
     }
 

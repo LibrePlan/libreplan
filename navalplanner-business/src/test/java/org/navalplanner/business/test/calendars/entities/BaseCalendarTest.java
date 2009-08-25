@@ -532,4 +532,11 @@ public class BaseCalendarTest {
         assertThat(copy.getPreviousCalendar(), nullValue());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetHoursInvalid() {
+        BaseCalendar calendar = createBasicCalendar();
+
+        calendar.setHours(Days.MONDAY, -5);
+    }
+
 }

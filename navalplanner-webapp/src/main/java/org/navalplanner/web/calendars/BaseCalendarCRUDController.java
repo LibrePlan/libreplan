@@ -264,7 +264,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             item.appendChild(labelListcell);
 
             Listcell hoursListcell = new Listcell();
-            Intbox hoursIntbox = Util.bind(new Intbox(),
+            final Intbox intBox = new Intbox();
+            Intbox hoursIntbox = Util.bind(intBox,
                     new Util.Getter<Integer>() {
 
                         @Override
@@ -275,8 +276,12 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
                         @Override
                         public void set(Integer value) {
-                            baseCalendarModel.setHours(day,
-                                    value);
+                            try {
+                                baseCalendarModel.setHours(day, value);
+                            } catch (IllegalArgumentException e) {
+                                throw new WrongValueException(intBox, e
+                                        .getMessage());
+                            }
                         }
                     });
 
