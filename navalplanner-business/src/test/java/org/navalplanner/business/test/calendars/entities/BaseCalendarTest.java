@@ -539,4 +539,31 @@ public class BaseCalendarTest {
         calendar.setHours(Days.MONDAY, -5);
     }
 
+    @Test
+    public void testGettWorkableHoursNewVersionChangeParent() {
+        BaseCalendar parent1 = createBasicCalendar();
+        setHoursForAllDays(parent1, 8);
+        BaseCalendar parent2 = createBasicCalendar();
+        setHoursForAllDays(parent2, 4);
+
+        BaseCalendar calendar = parent1.newDerivedCalendar();
+
+        BaseCalendar newVersion = calendar.newVersion(WEDNESDAY_LOCAL_DATE);
+        newVersion.setParent(parent2);
+
+        assertThat(newVersion.getParent(), equalTo(parent2));
+        assertThat(newVersion.getPreviousCalendar().getParent(),
+                equalTo(parent1));
+
+        int mondayHours = newVersion.getWorkableHours(MONDAY_LOCAL_DATE);
+        assertThat(mondayHours, equalTo(8));
+        assertThat(calendar.getWorkableHours(MONDAY_LOCAL_DATE),
+                equalTo(mondayHours));
+
+        int fridayHours = newVersion.getWorkableHours(FRIDAY_LOCAL_DATE);
+        assertThat(fridayHours, equalTo(4));
+        assertThat(calendar.getWorkableHours(FRIDAY_LOCAL_DATE),
+                equalTo(fridayHours));
+    }
+
 }
