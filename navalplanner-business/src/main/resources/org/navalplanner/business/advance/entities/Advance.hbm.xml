@@ -27,7 +27,8 @@
     </id>
     <version name="version" access="property" type="long" />
 
-    <property name="reportGlobalAdvance"/>
+    <property name="reportGlobalAdvance" access="field"/>
+    <property name="type" access="field"/>
 
     <many-to-one name="advanceType" class="AdvanceType" column="ADVANCE_TYPE_ID"/>
 

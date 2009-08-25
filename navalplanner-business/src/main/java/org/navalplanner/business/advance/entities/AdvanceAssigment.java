@@ -7,6 +7,8 @@ import org.navalplanner.business.orders.entities.OrderElement;
 
 public class AdvanceAssigment extends BaseEntity {
 
+    public enum Type { DIRECTO, CALCULADO };
+
     public static AdvanceAssigment create() {
         AdvanceAssigment advanceAssigment = new AdvanceAssigment();
         advanceAssigment.setNewObject(true);
@@ -20,6 +22,8 @@ public class AdvanceAssigment extends BaseEntity {
     }
 
     private boolean reportGlobalAdvance;
+
+    private Type type;
 
     private OrderElement orderElement;
 
@@ -66,5 +70,13 @@ public class AdvanceAssigment extends BaseEntity {
 
     public SortedSet<AdvanceMeasurement> getAdvanceMeasurements() {
         return this.advanceMeasurements;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public Type getType() {
+        return this.type;
     }
 }
