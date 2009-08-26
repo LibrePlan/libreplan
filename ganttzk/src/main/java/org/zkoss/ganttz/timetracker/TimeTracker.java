@@ -9,10 +9,10 @@ import org.joda.time.LocalDate;
 import org.zkoss.ganttz.DatesMapperOnInterval;
 import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState.DetailItem;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
@@ -45,7 +45,7 @@ public class TimeTracker {
         zoomListeners.addListener(listener);
     }
 
-    public Collection<TimeTrackerState.DetailItem> getDetailsFirstLevel() {
+    public Collection<DetailItem> getDetailsFirstLevel() {
         if (detailsFirstLevelCached == null) {
             detailsFirstLevelCached = getTimeTrackerState()
                     .getFirstLevelDetails(interval);
@@ -53,7 +53,7 @@ public class TimeTracker {
         return detailsFirstLevelCached;
     }
 
-    public Collection<TimeTrackerState.DetailItem> getDetailsSecondLevel() {
+    public Collection<DetailItem> getDetailsSecondLevel() {
         if (detailsSecondLevelCached == null) {
             detailsSecondLevelCached = getTimeTrackerState()
                     .getSecondLevelDetails(interval);
@@ -89,7 +89,7 @@ public class TimeTracker {
         // Code to improve. Not optimus. We have to calculate the details twice
         int result = 0;
         Collection<DetailItem> detailsFirstLevel = getDetailsFirstLevel();
-        for (TimeTrackerState.DetailItem item : detailsFirstLevel) {
+        for (DetailItem item : detailsFirstLevel) {
             result += item.getSize();
         }
         return result;

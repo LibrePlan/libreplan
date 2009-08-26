@@ -2,6 +2,7 @@ package org.zkoss.ganttz.timetracker;
 
 import java.util.Collection;
 
+import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -64,11 +65,11 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
     protected abstract void scrollHorizontalPercentage(int pixelsDisplacement);
 
-    public Collection<TimeTrackerState.DetailItem> getDetailsFirstLevel() {
+    public Collection<DetailItem> getDetailsFirstLevel() {
         return timeTracker.getDetailsFirstLevel();
     }
 
-    public Collection<TimeTrackerState.DetailItem> getDetailsSecondLevel() {
+    public Collection<DetailItem> getDetailsSecondLevel() {
         return timeTracker.getDetailsSecondLevel();
     }
 
