@@ -29,7 +29,6 @@
             <label value="@{controller.calendarType}" />
             <combobox id="parentCalendars"
                 visible="@{controller.isDerived}"
-                model="@{controller.parentCalendars}"
                 disabled="@{controller.isViewingHistory}">
                 <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
                     label="@{baseCalnedar.name}" />

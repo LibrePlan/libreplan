@@ -30,6 +30,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
@@ -417,19 +418,20 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                     .getFellow("parentCalendars");
         }
 
-        markSelectedParentCombo(parentCalendars);
+        fillParentCombo(parentCalendars);
         addListenerParentCombo(parentCalendars);
     }
 
-    private void markSelectedParentCombo(final Combobox parentCalendars) {
+    private void fillParentCombo(Combobox parentCalendars) {
         BaseCalendar parent = baseCalendarModel.getParent();
 
         List<BaseCalendar> possibleParentCalendars = getParentCalendars();
         for (BaseCalendar baseCalendar : possibleParentCalendars) {
+            Comboitem item = new Comboitem(baseCalendar.getName());
+            item.setValue(baseCalendar);
+            parentCalendars.appendChild(item);
             if (baseCalendar.getId().equals(parent.getId())) {
-                parentCalendars.setSelectedIndex(possibleParentCalendars
-                        .indexOf(baseCalendar));
-                break;
+                parentCalendars.setSelectedItem(item);
             }
         }
     }
