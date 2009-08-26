@@ -40,10 +40,10 @@ function highlightDays(ancestorExceptionDays, ancestorExceptionColor, ancestorEx
                         "color:" + zeroHoursColor + ";background-color:" + zeroHoursBgColor);
             } else if (ownExceptions.in_array(day)) {
                 nodes[i].setAttribute("style",
-                        "color:" + ownExceptionColor + ";background-color:" + ownExceptionBgColor);
+                        "color:" + ownExceptionColor + ";background-color:" + ownExceptionBgColor + ";font-weight: bold");
             } else if (ancestorExceptions.in_array(day)) {
                 nodes[i].setAttribute("style",
-                        "color:" + ancestorExceptionColor + ";background-color:" + ancestorExceptionBgColor);
+                        "color:" + ancestorExceptionColor + ";background-color:" + ancestorExceptionBgColor + ";font-weight: bold");
             } else {
                 nodes[i].removeAttribute("style");
             }

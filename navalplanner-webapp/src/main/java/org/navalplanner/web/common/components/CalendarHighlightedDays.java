@@ -68,9 +68,9 @@ public class CalendarHighlightedDays extends HtmlMacroComponent {
 
     public void highlightDays() {
         String javascript = "highlightDays('" + ancestorExceptionDays
-                + "', 'black', 'orange', '" + ownExceptionDays
-                + "', 'black', 'red', '" + zeroHoursDays
-                + "', 'white', 'lightgrey', 'lightgrey', 'white', '"
+                + "', 'white', 'orange', '" + ownExceptionDays
+                + "', 'white', 'red', '" + zeroHoursDays
+                + "', 'red', 'white', 'lightgrey', 'white', '"
                 + getCalendarUuid() + "');";
 
         Clients.evalJavaScript(javascript);
