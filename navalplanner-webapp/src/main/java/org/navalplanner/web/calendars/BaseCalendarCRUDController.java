@@ -4,7 +4,9 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -598,14 +600,17 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         getVisibility().showOnly(editWindow);
     }
 
-    public String getDays() {
+    private Map<DayType, String> getDaysCurrentMonthByType() {
         LocalDate currentDate = new LocalDate(baseCalendarModel
                 .getSelectedDay());
 
         LocalDate minDate = currentDate.dayOfMonth().withMinimumValue();
         LocalDate maxDate = currentDate.dayOfMonth().withMaximumValue();
 
-        String days = "";
+        String ancestorExceptionsDays = "";
+        String ownExceptionDays = "";
+        String zeroHoursDays = "";
+        String normalDays = "";
 
         for (LocalDate date = minDate; date.compareTo(maxDate) <= 0; date = date
                 .plusDays(1)) {
@@ -613,22 +618,58 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             if (typeOfDay != null) {
                 switch (typeOfDay) {
                 case ANCESTOR_EXCEPTION:
+                    ancestorExceptionsDays += date.getDayOfMonth() + ",";
+                    break;
                 case OWN_EXCEPTION:
-                    days += date.getDayOfMonth() + ",";
+                    ownExceptionDays += date.getDayOfMonth() + ",";
                     break;
                 case ZERO_HOURS:
+                    zeroHoursDays += date.getDayOfMonth() + ",";
+                    break;
                 case NORMAL:
                 default:
+                    normalDays += date.getDayOfMonth() + ",";
                     break;
                 }
             }
         }
 
-        if (days.length() > 0) {
-            days = days.substring(0, days.length() - 1);
+        if (ancestorExceptionsDays.length() > 0) {
+            ancestorExceptionsDays = ancestorExceptionsDays.substring(0,
+                    ancestorExceptionsDays.length() - 1);
+        }
+        if (ownExceptionDays.length() > 0) {
+            ownExceptionDays = ownExceptionDays.substring(0, ownExceptionDays
+                    .length() - 1);
+        }
+        if (zeroHoursDays.length() > 0) {
+            zeroHoursDays = zeroHoursDays.substring(0,
+                    zeroHoursDays.length() - 1);
+        }
+        if (normalDays.length() > 0) {
+            normalDays = normalDays.substring(0, normalDays.length() - 1);
         }
 
-        return days;
+        Map<DayType, String> result = new HashMap<DayType, String>();
+
+        result.put(DayType.ANCESTOR_EXCEPTION, ancestorExceptionsDays);
+        result.put(DayType.OWN_EXCEPTION, ownExceptionDays);
+        result.put(DayType.ZERO_HOURS, zeroHoursDays);
+        result.put(DayType.NORMAL, normalDays);
+
+        return result;
+    }
+
+    public String getAncestorExceptionDays() {
+        return getDaysCurrentMonthByType().get(DayType.ANCESTOR_EXCEPTION);
+    }
+
+    public String getOwnExceptionDays() {
+        return getDaysCurrentMonthByType().get(DayType.OWN_EXCEPTION);
+    }
+
+    public String getZeroHoursDays() {
+        return getDaysCurrentMonthByType().get(DayType.ZERO_HOURS);
     }
 
 }

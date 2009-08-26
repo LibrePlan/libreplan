@@ -17,12 +17,32 @@ Array.prototype.in_array = function(p_val) {
     return false;
 }
 
-function highlightDays(days, color, bgcolor) {
+function cleanHighlightedDays() {
+    var candidates = document.getElementsByTagName("td");
+    var nodes = YAHOO.util.Selector.filter(candidates, "[zk_day]");
+
+    for (var i = 0; i < nodes.length; i++) {
+        var month = nodes[i].getAttribute("zk_monofs");
+
+        if (month == 0) {
+            nodes[i].removeAttribute("style");
+        } else {
+            nodes[i].setAttribute("style", "color:lightgrey;background-color:white");
+        }
+    }
+}
+
+function highlightDays(ancestorExceptionDays, ancestorExceptionColor, ancestorExceptionBgColor,
+        ownExceptionDays, ownExceptionColor, ownExceptionBgColor,
+        zeroHoursDays, zeroHoursColor, zeroHoursBgColor,
+        outOfMonthColor, outOfMonghBgColor) {
 
     var candidates = document.getElementsByTagName("td");
     var nodes = YAHOO.util.Selector.filter(candidates, "[zk_day]");
 
-    var exceptions = days.split(",");
+    var ancestorExceptions = ancestorExceptionDays.split(",");
+    var ownExceptions = ownExceptionDays.split(",");
+    var zeroHours = zeroHoursDays.split(",");
 
     for (var i = 0; i < nodes.length; i++) {
         var month = nodes[i].getAttribute("zk_monofs");
@@ -30,14 +50,21 @@ function highlightDays(days, color, bgcolor) {
         if (month == 0) {
             var day = nodes[i].getAttribute("zk_day");
 
-            if (exceptions.in_array(day)) {
+            if (zeroHours.in_array(day)) {
                 nodes[i].setAttribute("style",
-                        "color:" + color + ";background-color:" + bgcolor);
+                        "color:" + zeroHoursColor + ";background-color:" + zeroHoursBgColor);
+            } else if (ownExceptions.in_array(day)) {
+                nodes[i].setAttribute("style",
+                        "color:" + ownExceptionColor + ";background-color:" + ownExceptionBgColor);
+            } else if (ancestorExceptions.in_array(day)) {
+                nodes[i].setAttribute("style",
+                        "color:" + ancestorExceptionColor + ";background-color:" + ancestorExceptionBgColor);
             } else {
                 nodes[i].removeAttribute("style");
             }
         } else {
-            nodes[i].setAttribute("style", "color:lightgrey;background-color:white");
+            nodes[i].setAttribute("style",
+                    "color:" + outOfMonthColor + ";background-color:" + outOfMonghBgColor);
         }
     }
 

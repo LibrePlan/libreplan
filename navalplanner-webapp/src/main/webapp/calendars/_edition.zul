@@ -53,7 +53,9 @@
 
         <calendarhighlighteddays id="calendarWidget"
             value="@{controller.selectedDay,access='both'}"
-            days="@{controller.days,access='both'}"/>
+            ancestorExceptionDays="@{controller.ancestorExceptionDays,access='both'}"
+            ownExceptionDays="@{controller.ownExceptionDays,access='both'}"
+            zeroHoursDays="@{controller.zeroHoursDays,access='both'}" />
 
         <hbox>
             <label value="${i18n:_('Type of day')}" />

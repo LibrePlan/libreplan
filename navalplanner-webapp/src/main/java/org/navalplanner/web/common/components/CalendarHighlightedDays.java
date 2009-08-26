@@ -17,7 +17,9 @@ public class CalendarHighlightedDays extends HtmlMacroComponent {
 
     private Date value;
 
-    private String days;
+    private String ancestorExceptionDays;
+    private String ownExceptionDays;
+    private String zeroHoursDays;
 
     public void setInternalValue(Date value) {
         this.value = value;
@@ -39,18 +41,35 @@ public class CalendarHighlightedDays extends HtmlMacroComponent {
         return value;
     }
 
-    public void setDays(String days) {
-        this.days = days;
+    public void setAncestorExceptionDays(String ancestorExceptionDays) {
+        this.ancestorExceptionDays = ancestorExceptionDays;
     }
 
-    public String getDays() {
-        return days;
+    public String getAncestorExceptionDays() {
+        return ancestorExceptionDays;
+    }
+
+    public void setOwnExceptionDays(String ownExceptionDays) {
+        this.ownExceptionDays = ownExceptionDays;
+    }
+
+    public String getOwnExceptionDays() {
+        return ownExceptionDays;
+    }
+
+    public void setZeroHoursDays(String zeroHoursDays) {
+        this.zeroHoursDays = zeroHoursDays;
+    }
+
+    public String getZeroHoursDays() {
+        return zeroHoursDays;
     }
 
     private void highlightDays() {
-        Clients
-                .evalJavaScript("highlightDays('" + days
-                        + "', 'black', 'red');");
+        Clients.evalJavaScript("highlightDays('" + ancestorExceptionDays
+                + "', 'black', 'orange', '" + ownExceptionDays
+                + "', 'black', 'red', '" + zeroHoursDays
+                + "', 'white', 'lightgrey', 'lightgrey', 'white');");
     }
 
 }
