@@ -1,0 +1,53 @@
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+
+
+<n:script src="http://yui.yahooapis.com/2.7.0/build/yahoo/yahoo-min.js" />
+<n:script src="http://yui.yahooapis.com/2.7.0/build/selector/selector-min.js" />
+
+
+<n:script language="javascript">
+<![CDATA[
+
+Array.prototype.in_array = function(p_val) {
+    for(var i = 0, l = this.length; i < l; i++) {
+        if(this[i] == p_val) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function highlightDays(days, color, bgcolor) {
+
+    var candidates = document.getElementsByTagName("td");
+    var nodes = YAHOO.util.Selector.filter(candidates, "[zk_day]");
+
+    var exceptions = days.split(",");
+
+    for (var i = 0; i < nodes.length; i++) {
+        var month = nodes[i].getAttribute("zk_monofs");
+
+        if (month == 0) {
+            var day = nodes[i].getAttribute("zk_day");
+
+            if (exceptions.in_array(day)) {
+                nodes[i].setAttribute("style",
+                        "color:" + color + ";background-color:" + bgcolor);
+            } else {
+                nodes[i].removeAttribute("style");
+            }
+        } else {
+            nodes[i].setAttribute("style", "color:lightgrey;background-color:white");
+        }
+    }
+
+}
+
+]]>
+</n:script>
+
+
+<calendar value="@{self.parent.internalValue}" />
+
+
+</zk>

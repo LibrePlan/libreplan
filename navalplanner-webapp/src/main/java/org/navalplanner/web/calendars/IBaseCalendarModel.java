@@ -3,6 +3,7 @@ package org.navalplanner.web.calendars;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.BaseCalendar.Days;
@@ -74,6 +75,8 @@ public interface IBaseCalendarModel {
     Date getSelectedDay();
 
     DayType getTypeOfDay();
+
+    DayType getTypeOfDay(LocalDate date);
 
     Integer getHoursOfDay();
 

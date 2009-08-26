@@ -50,7 +50,10 @@
     </vbox>
 
     <vbox id="dayInformation">
-        <calendar id="calendarWidget" value="@{controller.selectedDay}" />
+
+        <calendarhighlighteddays id="calendarWidget"
+            value="@{controller.selectedDay,access='both'}"
+            days="@{controller.days,access='both'}"/>
 
         <hbox>
             <label value="${i18n:_('Type of day')}" />

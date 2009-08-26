@@ -246,6 +246,16 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
     @Override
     @Transactional(readOnly = true)
+    public DayType getTypeOfDay(LocalDate date) {
+        if (getBaseCalendar() == null) {
+            return null;
+        }
+
+        return getBaseCalendar().getType(date);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public void createException(Integer hours) {
         if (getTypeOfDay().equals(DayType.OWN_EXCEPTION)) {
             getBaseCalendar().updateExceptionDay(selectedDate, hours);

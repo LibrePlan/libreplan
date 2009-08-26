@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.BaseCalendar.Days;
@@ -595,6 +596,39 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
         Util.reloadBindings(editWindow);
         getVisibility().showOnly(editWindow);
+    }
+
+    public String getDays() {
+        LocalDate currentDate = new LocalDate(baseCalendarModel
+                .getSelectedDay());
+
+        LocalDate minDate = currentDate.dayOfMonth().withMinimumValue();
+        LocalDate maxDate = currentDate.dayOfMonth().withMaximumValue();
+
+        String days = "";
+
+        for (LocalDate date = minDate; date.compareTo(maxDate) <= 0; date = date
+                .plusDays(1)) {
+            DayType typeOfDay = baseCalendarModel.getTypeOfDay(date);
+            if (typeOfDay != null) {
+                switch (typeOfDay) {
+                case ANCESTOR_EXCEPTION:
+                case OWN_EXCEPTION:
+                    days += date.getDayOfMonth() + ",";
+                    break;
+                case ZERO_HOURS:
+                case NORMAL:
+                default:
+                    break;
+                }
+            }
+        }
+
+        if (days.length() > 0) {
+            days = days.substring(0, days.length() - 1);
+        }
+
+        return days;
     }
 
 }
