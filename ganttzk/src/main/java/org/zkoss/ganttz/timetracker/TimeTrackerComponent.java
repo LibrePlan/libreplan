@@ -8,6 +8,8 @@ import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.Command;
 import org.zkoss.zk.au.ComponentCommand;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 /**
@@ -17,8 +19,15 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
     private final TimeTracker timeTracker;
     private IZoomLevelChangedListener zoomListener;
+    private final String secondLevelZul;
 
     public TimeTrackerComponent(TimeTracker timeTracker) {
+        this(timeTracker, "~./ganttz/zul/timetrackersecondlevel.zul");
+    }
+
+    protected TimeTrackerComponent(TimeTracker timeTracker,
+            String secondLevelZul) {
+        this.secondLevelZul = secondLevelZul;
         this.timeTracker = timeTracker;
         zoomListener = new IZoomLevelChangedListener() {
 
@@ -28,6 +37,18 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
             }
         };
         this.timeTracker.addZoomListener(zoomListener);
+    }
+
+    @Override
+    public void afterCompose() {
+        super.afterCompose();
+        Component fellow = getFellow("firstleveldetails");
+        addSecondLevels(fellow.getParent());
+    }
+
+    private void addSecondLevels(Component parent) {
+        Executions.getCurrent().createComponents(secondLevelZul, parent,
+                getAttributes());
     }
 
     public ZoomLevel getZoomLevel() {
