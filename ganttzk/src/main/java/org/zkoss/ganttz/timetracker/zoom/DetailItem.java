@@ -4,8 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 /**
- * This class was conceived as an immutable class but it required to
- * procesate twice DetailItem collections so it has now proper setters
+ * One of each of the subintervals a time line is divided into
  * @author Francisco Javier Moran Rúa <jmoran@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
