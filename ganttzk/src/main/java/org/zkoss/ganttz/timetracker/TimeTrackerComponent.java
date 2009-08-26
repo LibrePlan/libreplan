@@ -20,13 +20,15 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
     private final TimeTracker timeTracker;
     private IZoomLevelChangedListener zoomListener;
     private final String secondLevelZul;
+    private String timeTrackerElementId;
 
     public TimeTrackerComponent(TimeTracker timeTracker) {
-        this(timeTracker, "~./ganttz/zul/timetrackersecondlevel.zul");
+        this(timeTracker, "~./ganttz/zul/timetrackersecondlevel.zul",
+                "timetracker");
     }
 
     protected TimeTrackerComponent(TimeTracker timeTracker,
-            String secondLevelZul) {
+            String secondLevelZul, String timetrackerId) {
         this.secondLevelZul = secondLevelZul;
         this.timeTracker = timeTracker;
         zoomListener = new IZoomLevelChangedListener() {
@@ -37,6 +39,11 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
             }
         };
         this.timeTracker.addZoomListener(zoomListener);
+        timeTrackerElementId = timetrackerId;
+    }
+
+    public String getTimeTrackerId() {
+        return timeTrackerElementId;
     }
 
     @Override

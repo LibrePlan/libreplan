@@ -9,7 +9,7 @@ top = self;
 <n:script language="javascript">
 
 function getHorizontalScroll(timetracker) {
-    return document.getElementById('timetracker').scrollLeft;
+    return document.getElementById('${top.timeTrackerId}').scrollLeft;
 }
 
 function onIncrease(timetracker) {
@@ -29,7 +29,7 @@ function onDecrease(timetracker) {
 }
 
 </n:script>
-<n:div id="timetracker">
+<n:div id="${top.timeTrackerId}">
     <vbox>
 
         <n:div id="zoom_buttons">
