@@ -18,6 +18,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.CalendarHighlightedDays;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
@@ -101,8 +102,24 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             prepareParentCombo();
         }
         setSelectedDay(new Date());
+        highlightDaysOnCalendar();
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
+    }
+
+    private void highlightDaysOnCalendar() {
+        if (baseCalendarModel.isEditing()) {
+            if (baseCalendarModel.isViewingHistory()) {
+                ((CalendarHighlightedDays) historyWindow
+                        .getFellow("calendarWidget")).highlightDays();
+            } else {
+                ((CalendarHighlightedDays) editWindow
+                        .getFellow("calendarWidget")).highlightDays();
+            }
+        } else {
+            ((CalendarHighlightedDays) createWindow.getFellow("calendarWidget"))
+                    .highlightDays();
+        }
     }
 
     public void save() {
@@ -168,6 +185,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void goToCreateForm() {
         baseCalendarModel.initCreate();
         setSelectedDay(new Date());
+        highlightDaysOnCalendar();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
@@ -380,6 +398,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             prepareParentCombo();
         }
         setSelectedDay(new Date());
+        highlightDaysOnCalendar();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
@@ -472,6 +491,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             prepareParentCombo();
         }
         setSelectedDay(new Date());
+        highlightDaysOnCalendar();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
@@ -570,6 +590,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         }
 
         try {
+            setSelectedDay(new Date());
+            highlightDaysOnCalendar();
             Util.reloadBindings(historyWindow);
             historyWindow.setVisible(true);
             historyWindow.doModal();
@@ -634,21 +656,10 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             }
         }
 
-        if (ancestorExceptionsDays.length() > 0) {
-            ancestorExceptionsDays = ancestorExceptionsDays.substring(0,
-                    ancestorExceptionsDays.length() - 1);
-        }
-        if (ownExceptionDays.length() > 0) {
-            ownExceptionDays = ownExceptionDays.substring(0, ownExceptionDays
-                    .length() - 1);
-        }
-        if (zeroHoursDays.length() > 0) {
-            zeroHoursDays = zeroHoursDays.substring(0,
-                    zeroHoursDays.length() - 1);
-        }
-        if (normalDays.length() > 0) {
-            normalDays = normalDays.substring(0, normalDays.length() - 1);
-        }
+        ancestorExceptionsDays = removeLastCommaIfNeeded(ancestorExceptionsDays);
+        ownExceptionDays = removeLastCommaIfNeeded(ownExceptionDays);
+        zeroHoursDays = removeLastCommaIfNeeded(zeroHoursDays);
+        normalDays = removeLastCommaIfNeeded(normalDays);
 
         Map<DayType, String> result = new HashMap<DayType, String>();
 
@@ -658,6 +669,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         result.put(DayType.NORMAL, normalDays);
 
         return result;
+    }
+
+    private String removeLastCommaIfNeeded(String ancestorExceptionsDays) {
+        if (ancestorExceptionsDays.length() > 0) {
+            ancestorExceptionsDays = ancestorExceptionsDays.substring(0,
+                    ancestorExceptionsDays.length() - 1);
+        }
+        return ancestorExceptionsDays;
     }
 
     public String getAncestorExceptionDays() {

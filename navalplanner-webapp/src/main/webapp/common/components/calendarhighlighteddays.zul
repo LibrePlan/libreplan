@@ -1,10 +1,6 @@
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
 
-<n:script src="http://yui.yahooapis.com/2.7.0/build/yahoo/yahoo-min.js" />
-<n:script src="http://yui.yahooapis.com/2.7.0/build/selector/selector-min.js" />
-
-
 <n:script language="javascript">
 <![CDATA[
 
@@ -17,28 +13,14 @@ Array.prototype.in_array = function(p_val) {
     return false;
 }
 
-function cleanHighlightedDays() {
-    var candidates = document.getElementsByTagName("td");
-    var nodes = YAHOO.util.Selector.filter(candidates, "[zk_day]");
-
-    for (var i = 0; i < nodes.length; i++) {
-        var month = nodes[i].getAttribute("zk_monofs");
-
-        if (month == 0) {
-            nodes[i].removeAttribute("style");
-        } else {
-            nodes[i].setAttribute("style", "color:lightgrey;background-color:white");
-        }
-    }
-}
-
 function highlightDays(ancestorExceptionDays, ancestorExceptionColor, ancestorExceptionBgColor,
         ownExceptionDays, ownExceptionColor, ownExceptionBgColor,
         zeroHoursDays, zeroHoursColor, zeroHoursBgColor,
-        outOfMonthColor, outOfMonghBgColor) {
+        outOfMonthColor, outOfMonghBgColor,
+        calendarUuid) {
 
-    var candidates = document.getElementsByTagName("td");
-    var nodes = YAHOO.util.Selector.filter(candidates, "[zk_day]");
+    var calendar = document.getElementById(calendarUuid);
+    var nodes = calendar.getElementsByTagName("td");
 
     var ancestorExceptions = ancestorExceptionDays.split(",");
     var ownExceptions = ownExceptionDays.split(",");
@@ -46,6 +28,9 @@ function highlightDays(ancestorExceptionDays, ancestorExceptionColor, ancestorEx
 
     for (var i = 0; i < nodes.length; i++) {
         var month = nodes[i].getAttribute("zk_monofs");
+        if (month == null) {
+            continue;
+        }
 
         if (month == 0) {
             var day = nodes[i].getAttribute("zk_day");

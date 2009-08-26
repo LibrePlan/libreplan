@@ -235,7 +235,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public DayType getTypeOfDay() {
         if (getBaseCalendar() == null) {
             return null;
@@ -245,7 +244,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public DayType getTypeOfDay(LocalDate date) {
         if (getBaseCalendar() == null) {
             return null;

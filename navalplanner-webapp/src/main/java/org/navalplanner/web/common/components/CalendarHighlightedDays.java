@@ -21,6 +21,8 @@ public class CalendarHighlightedDays extends HtmlMacroComponent {
     private String ownExceptionDays;
     private String zeroHoursDays;
 
+    private String calendarUuid;
+
     public void setInternalValue(Date value) {
         this.value = value;
 
@@ -29,7 +31,6 @@ public class CalendarHighlightedDays extends HtmlMacroComponent {
     }
 
     public Date getInternalValue() {
-        highlightDays();
         return value;
     }
 
@@ -65,11 +66,22 @@ public class CalendarHighlightedDays extends HtmlMacroComponent {
         return zeroHoursDays;
     }
 
-    private void highlightDays() {
-        Clients.evalJavaScript("highlightDays('" + ancestorExceptionDays
+    public void highlightDays() {
+        String javascript = "highlightDays('" + ancestorExceptionDays
                 + "', 'black', 'orange', '" + ownExceptionDays
                 + "', 'black', 'red', '" + zeroHoursDays
-                + "', 'white', 'lightgrey', 'lightgrey', 'white');");
+                + "', 'white', 'lightgrey', 'lightgrey', 'white', '"
+                + getCalendarUuid() + "');";
+
+        Clients.evalJavaScript(javascript);
+    }
+
+    public String getCalendarUuid() {
+        if (calendarUuid == null) {
+            Calendar calendar = (Calendar) getLastChild();
+            calendarUuid = calendar.getUuid();
+        }
+        return calendarUuid;
     }
 
 }
