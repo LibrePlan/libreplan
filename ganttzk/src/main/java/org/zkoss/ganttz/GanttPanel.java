@@ -3,6 +3,8 @@ package org.zkoss.ganttz;
 import java.util.List;
 
 import org.zkoss.ganttz.data.GanttDiagramGraph;
+import org.zkoss.ganttz.timetracker.TimeTracker;
+import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;

@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.IDatesMapper;
-import org.zkoss.ganttz.TimeTracker;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
+import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.zul.Div;

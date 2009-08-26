@@ -1,4 +1,4 @@
-package org.zkoss.ganttz;
+package org.zkoss.ganttz.timetracker;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.joda.time.LocalDate;
+import org.zkoss.ganttz.DatesMapperOnInterval;
+import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.WeakReferencedListeners;

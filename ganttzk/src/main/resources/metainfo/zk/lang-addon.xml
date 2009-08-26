@@ -127,8 +127,8 @@
 
 	<component>
 		<component-name>timetracker</component-name>
-		<component-class>org.zkoss.ganttz.TimeTrackerComponent</component-class>
-		<macro-uri>~./ganttz/zul/timetracker.zul</macro-uri>
+		<component-class>org.zkoss.ganttz.timetracker.TimeTrackerComponent</component-class>
+		<macro-uri>~./ganttz/zul/timetracker/timetracker.zul</macro-uri>
 	</component>
 
 </language-addon>

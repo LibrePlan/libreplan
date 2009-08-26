@@ -3,9 +3,9 @@ package org.zkoss.ganttz.resourceload;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.zkoss.ganttz.TimeTracker;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
+import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.util.zoom.ZoomLevel;
 import org.zkoss.zk.au.out.AuInvoke;

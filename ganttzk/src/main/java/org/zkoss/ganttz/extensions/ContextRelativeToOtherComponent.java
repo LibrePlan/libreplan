@@ -1,8 +1,8 @@
 package org.zkoss.ganttz.extensions;
 
-import org.zkoss.ganttz.TimeTracker;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Position;
+import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.zk.ui.Component;
 
 /**
