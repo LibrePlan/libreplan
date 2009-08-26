@@ -9,13 +9,13 @@ import org.joda.time.LocalDate;
 import org.zkoss.ganttz.DatesMapperOnInterval;
 import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
+import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState.DetailItem;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
-import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
-import org.zkoss.ganttz.util.zoom.TimeTrackerState;
-import org.zkoss.ganttz.util.zoom.ZoomLevel;
-import org.zkoss.ganttz.util.zoom.TimeTrackerState.DetailItem;
 
 public class TimeTracker {
 

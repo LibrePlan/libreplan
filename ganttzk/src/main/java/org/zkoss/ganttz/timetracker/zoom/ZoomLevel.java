@@ -1,4 +1,4 @@
-package org.zkoss.ganttz.util.zoom;
+package org.zkoss.ganttz.timetracker.zoom;
 
 /**
  * @author Francisco Javier Moran Rúa

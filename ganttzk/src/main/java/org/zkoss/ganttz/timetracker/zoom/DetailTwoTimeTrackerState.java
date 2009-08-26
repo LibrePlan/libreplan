@@ -1,4 +1,4 @@
-package org.zkoss.ganttz.util.zoom;
+package org.zkoss.ganttz.timetracker.zoom;
 
 import java.util.ArrayList;
 import java.util.Calendar;

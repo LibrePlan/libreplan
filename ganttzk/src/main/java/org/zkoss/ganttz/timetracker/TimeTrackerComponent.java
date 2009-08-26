@@ -2,9 +2,9 @@ package org.zkoss.ganttz.timetracker;
 
 import java.util.Collection;
 
-import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
-import org.zkoss.ganttz.util.zoom.TimeTrackerState;
-import org.zkoss.ganttz.util.zoom.ZoomLevel;
+import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
+import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.Command;
 import org.zkoss.zk.au.ComponentCommand;

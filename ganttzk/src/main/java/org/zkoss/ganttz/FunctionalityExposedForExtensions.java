@@ -22,8 +22,8 @@ import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
+import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.util.Interval;
-import org.zkoss.ganttz.util.zoom.TimeTrackerState;
 import org.zkoss.zk.ui.Component;
 
 public class FunctionalityExposedForExtensions<T> implements IContext<T> {

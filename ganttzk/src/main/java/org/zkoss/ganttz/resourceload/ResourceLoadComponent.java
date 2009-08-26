@@ -8,8 +8,8 @@ import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.ganttz.util.zoom.IZoomLevelChangedListener;
-import org.zkoss.ganttz.util.zoom.ZoomLevel;
+import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.impl.XulElement;
 
