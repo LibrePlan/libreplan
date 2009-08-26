@@ -390,6 +390,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         } else {
             Util.reloadBindings(createWindow.getFellow("dayInformation"));
         }
+        highlightDaysOnCalendar();
     }
 
     public void goToCreateDerivedForm(BaseCalendar baseCalendar) {
