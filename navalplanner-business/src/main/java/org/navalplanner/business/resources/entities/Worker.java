@@ -70,6 +70,10 @@ public class Worker extends Resource {
         this.surname = surname;
     }
 
+    public String getName() {
+        return firstName + " " + surname;
+    }
+
     public String getNif() {
         return nif;
     }

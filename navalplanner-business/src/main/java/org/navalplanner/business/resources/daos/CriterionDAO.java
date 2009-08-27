@@ -90,4 +90,8 @@ public class CriterionDAO extends GenericDAOHibernate<Criterion, Long>
         return result;
     }
 
+    public List<Criterion> getAll() {
+        return list(Criterion.class);
+    }
+
 }

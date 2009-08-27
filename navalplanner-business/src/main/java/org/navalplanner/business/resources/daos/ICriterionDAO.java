@@ -9,7 +9,9 @@ import org.navalplanner.business.resources.entities.ICriterionType;
 
 /**
  * Contract for {@link CriterionDAO} <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public interface ICriterionDAO extends IGenericDAO<Criterion, Long> {
 
@@ -24,5 +26,7 @@ public interface ICriterionDAO extends IGenericDAO<Criterion, Long> {
     Criterion find(Criterion criterion) throws InstanceNotFoundException;
 
     List<Criterion> findByType(ICriterionType<?> type);
+
+    List<Criterion> getAll();
 
 }

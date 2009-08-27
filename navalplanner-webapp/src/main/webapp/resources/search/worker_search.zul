@@ -1,0 +1,44 @@
+<?page title="${i18n:_('Worker search')}"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+<?link rel="stylesheet" type="text/css" href="/resources/css/resources.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+<zk>
+    <window self="@{define(content)}"
+        apply="org.navalplanner.web.resources.search.WorkerSearchController"
+        class="resource_search">
+
+        <vbox id="messagesContainer">
+        </vbox>
+
+		<hbox style="margin-top: 3px">
+			<vbox style="margin-right: 5px">
+				<!-- Name  -->
+				<label value="${i18n:_('Name/ID')}" />
+				<textbox id="txtName" onChanging="controller.searchWorkers(event)"/>
+
+		        <!-- Criterions -->
+		        <label value="${i18n:_('Criterions')}" />
+                <tree id="criterionsTree" width="280px" model="@{controller.criterions}" multiple="true">
+                    <treecols>
+                        <treecol label="Name" />
+                    </treecols>
+                </tree>
+			</vbox>
+
+			<vbox>
+				<!--Matchings -->
+				<listbox id="listBoxWorkers" width="200px" mold="paging"
+					pageSize="10" rows="10" itemRenderer="@{controller.listitemRenderer}">
+					<listhead>
+						<listheader label="${i18n:_('Found workers')}" sort="auto"/>
+					</listhead>
+				</listbox>
+			</vbox>
+		</hbox>
+
+    </window>
+</zk>
