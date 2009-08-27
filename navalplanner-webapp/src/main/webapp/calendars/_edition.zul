@@ -3,9 +3,9 @@
 
 <tabbox>
     <tabs>
-        <tab label="${i18n:_('Data')}" />
+        <tab label="${i18n:_('Data')}" id="dataTab" />
         <tab label="${i18n:_('History')}"
-            visible="@{controller.isEditing}" />
+            visible="@{controller.isEditing}" id="historyTab" />
     </tabs>
 <tabpanels>
 
@@ -104,6 +104,7 @@
     <listbox model="@{controller.historyVersions}">
         <listhead>
             <listheader label="${i18n:_('Name')}" />
+            <!-- listheader label="${i18n:_('Valid from')}" / -->
             <listheader label="${i18n:_('Expiring Date')}" />
             <listheader label="${i18n:_('Operations')}" />
         </listhead>
@@ -112,7 +113,7 @@
             <listcell label="@{calendar.expiringDate}" />
             <listcell>
                 <button label="${i18n:_('Go to this calendar')}"
-                    onClick="controller.goToCalendar(self.parent.parent.value);">
+                    onClick="controller.goToCalendarVersion(self.parent.parent.value);">
                 </button>
             </listcell>
         </listitem>

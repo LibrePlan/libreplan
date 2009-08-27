@@ -36,6 +36,7 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.SimpleTreeNode;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -638,8 +639,20 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         return getDaysCurrentMonthByType().get(DayType.ZERO_HOURS);
     }
 
-    public void goToCalendar(BaseCalendar calendar) {
-        // TODO
+    public void goToCalendarVersion(BaseCalendar calendar) {
+        if (calendar.getPreviousCalendar() != null) {
+            setSelectedDay(calendar.getPreviousCalendar().getExpiringDate()
+                    .toDateTimeAtStartOfDay().toDate());
+        } else if (calendar.getExpiringDate() != null) {
+            setSelectedDay(calendar.getExpiringDate().minusDays(1)
+                    .toDateTimeAtStartOfDay()
+                    .toDate());
+        } else {
+            setSelectedDay(new Date());
+        }
+
+        ((Tab) editWindow.getFellow("dataTab")).setSelected(true);
+        Util.reloadBindings(editWindow);
     }
 
     public boolean isDateValidFromPast() {

@@ -391,7 +391,12 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
         List<BaseCalendar> history = new ArrayList<BaseCalendar>();
 
-        BaseCalendar current = getBaseCalendar().getPreviousCalendar();
+        BaseCalendar lastVersion = getBaseCalendar();
+        while (lastVersion.getNextCalendar() != null) {
+            lastVersion = lastVersion.getNextCalendar();
+        }
+
+        BaseCalendar current = lastVersion;
         while (current != null) {
             history.add(current);
             current = current.getPreviousCalendar();
