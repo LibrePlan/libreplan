@@ -72,6 +72,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private BaseCalendarsTreeitemRenderer baseCalendarsTreeitemRenderer = new BaseCalendarsTreeitemRenderer();
 
+    private HistoryVersionsRenderer historyVersionsRenderer = new HistoryVersionsRenderer();
+
     public BaseCalendar getBaseCalendar() {
         return baseCalendarModel.getBaseCalendar();
     }
@@ -619,12 +621,11 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         return result;
     }
 
-    private String removeLastCommaIfNeeded(String ancestorExceptionsDays) {
-        if (ancestorExceptionsDays.length() > 0) {
-            ancestorExceptionsDays = ancestorExceptionsDays.substring(0,
-                    ancestorExceptionsDays.length() - 1);
+    private String removeLastCommaIfNeeded(String string) {
+        if (string.length() > 0) {
+            string = string.substring(0, string.length() - 1);
         }
-        return ancestorExceptionsDays;
+        return string;
     }
 
     public String getAncestorExceptionDays() {
@@ -681,6 +682,69 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public boolean isNotSelectedDateFromPast() {
         return !isSelectedDateFromPast();
+    }
+
+    public HistoryVersionsRenderer getHistoryVersionsRenderer() {
+        return historyVersionsRenderer;
+    }
+
+    public class HistoryVersionsRenderer implements ListitemRenderer {
+
+        @Override
+        public void render(Listitem item, Object data) throws Exception {
+            final BaseCalendar calendar = (BaseCalendar) data;
+
+            Listcell nameListcell = new Listcell();
+            nameListcell.appendChild(new Label(calendar.getName()));
+            item.appendChild(nameListcell);
+
+            Listcell validFromListcell = new Listcell();
+            Label validFromLabel = new Label();
+            if (calendar.getPreviousCalendar() != null) {
+                LocalDate validFrom = calendar.getPreviousCalendar()
+                        .getExpiringDate();
+                validFromLabel.setValue(validFrom.toString());
+            }
+            validFromListcell.appendChild(validFromLabel);
+            item.appendChild(validFromListcell);
+
+            Listcell expiringDateListcell = new Listcell();
+            LocalDate expiringDate = calendar.getExpiringDate();
+            Label expiringDateLabel = new Label();
+            if (expiringDate != null) {
+                LocalDate date = new LocalDate(expiringDate).minusDays(1);
+                expiringDateLabel.setValue(date.toString());
+            }
+            expiringDateListcell.appendChild(expiringDateLabel);
+            item.appendChild(expiringDateListcell);
+
+            Listcell summaryListcell = new Listcell();
+            String summary = "";
+            for (Days day : Days.values()) {
+                Integer hours = calendar.getHours(day);
+                if (hours == null) {
+                    summary += "D - ";
+                } else {
+                    summary += hours + " - ";
+                }
+            }
+            summary = summary.substring(0, summary.length() - 3);
+            summaryListcell.appendChild(new Label(summary));
+            item.appendChild(summaryListcell);
+
+            Listcell buttonListcell = new Listcell();
+            Button button = new Button(_("Go to this calendar"));
+            button.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    goToCalendarVersion(calendar);
+                }
+            });
+            buttonListcell.appendChild(button);
+            item.appendChild(buttonListcell);
+        }
+
     }
 
 }

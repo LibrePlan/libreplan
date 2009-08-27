@@ -101,22 +101,15 @@
 
 <tabpanel>
 
-    <listbox model="@{controller.historyVersions}">
+    <listbox model="@{controller.historyVersions}"
+        itemRenderer="@{controller.historyVersionsRenderer}">
         <listhead>
             <listheader label="${i18n:_('Name')}" />
-            <!-- listheader label="${i18n:_('Valid from')}" / -->
+            <listheader label="${i18n:_('Valid from')}" />
             <listheader label="${i18n:_('Expiring Date')}" />
+            <listheader label="${i18n:_('Summary')}" />
             <listheader label="${i18n:_('Operations')}" />
         </listhead>
-        <listitem self="@{each='calendar'}" value="@{calendar}">
-            <listcell label="@{calendar.name}" />
-            <listcell label="@{calendar.expiringDate}" />
-            <listcell>
-                <button label="${i18n:_('Go to this calendar')}"
-                    onClick="controller.goToCalendarVersion(self.parent.parent.value);">
-                </button>
-            </listcell>
-        </listitem>
     </listbox>
 
 </tabpanel>
