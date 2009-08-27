@@ -346,11 +346,21 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     public Date getExpiringDate() {
         if ((getBaseCalendar() != null)
                 && (getBaseCalendar().getExpiringDate() != null)) {
-            return getBaseCalendar().getExpiringDate().toDateTimeAtStartOfDay()
+            return getBaseCalendar().getExpiringDate().minusDays(1)
+                    .toDateTimeAtStartOfDay()
                     .toDate();
         }
 
         return null;
+    }
+
+    @Override
+    public void setExpiringDate(Date date) {
+        if ((getBaseCalendar() != null)
+                && (getBaseCalendar().getExpiringDate() != null)) {
+            getBaseCalendar()
+                    .setExpiringDate((new LocalDate(date)).plusDays(1));
+        }
     }
 
     @Override

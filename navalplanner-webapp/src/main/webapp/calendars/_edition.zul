@@ -19,7 +19,8 @@
 
     <hbox>
         <label value="${i18n:_('Name')}" />
-        <textbox value="@{controller.baseCalendar.name}" />
+        <textbox value="@{controller.baseCalendar.name}"
+            disabled="@{controller.isDateValidFromPast}" />
     </hbox>
 
     <hbox>
@@ -27,7 +28,8 @@
         <vbox>
             <label value="@{controller.calendarType}" />
             <combobox id="parentCalendars"
-                visible="@{controller.isDerived}" >
+                visible="@{controller.isDerived}"
+                disabled="@{controller.isDateValidFromPast}" >
                 <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
                     label="@{baseCalnedar.name}" />
             </combobox>
@@ -64,7 +66,7 @@
             <label value="@{controller.hoursOfDay}" />
         </hbox>
 
-        <hbox>
+        <hbox visible="@{controller.isNotSelectedDateFromPast}">
             <vbox>
                 <button label="${i18n:_('Create exception')}"
                     onClick="controller.createException();" />
@@ -80,7 +82,8 @@
 
     <hbox visible="@{controller.isEditing}">
         <label value="${i18n:_('Valid from')}" />
-        <datebox id="dateValidFrom" value="@{controller.dateValidFrom}" />
+        <datebox id="dateValidFrom" value="@{controller.dateValidFrom}"
+            disabled="@{controller.isDateValidFromPast}" />
         <label value="${i18n:_('to')}" />
         <datebox value="@{controller.expiringDate}" />
     </hbox>

@@ -106,6 +106,8 @@ public interface IBaseCalendarModel {
 
     Date getExpiringDate();
 
+    void setExpiringDate(Date date);
+
     Date getDateValidFrom();
 
     void setDateValidFrom(Date date);

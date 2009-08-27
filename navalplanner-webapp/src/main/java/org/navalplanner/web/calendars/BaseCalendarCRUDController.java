@@ -307,7 +307,9 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
             });
 
-            if (baseCalendarModel.isDerived()
+            if (isDateValidFromPast()) {
+                hoursIntbox.setDisabled(true);
+            } else if (baseCalendarModel.isDerived()
                     && baseCalendarModel.isDefault(day)) {
                 hoursIntbox.setDisabled(true);
             }
@@ -344,6 +346,10 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                     }
 
                 });
+
+                if (isDateValidFromPast()) {
+                    defaultCheckbox.setDisabled(true);
+                }
 
                 defaultListcell.appendChild(defaultCheckbox);
                 item.appendChild(defaultListcell);
@@ -458,6 +464,11 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public Date getExpiringDate() {
         return baseCalendarModel.getExpiringDate();
+    }
+
+    public void setExpiringDate(Date date) {
+        // TODO check possible wrong dates
+        baseCalendarModel.setExpiringDate(date);
     }
 
     public void goToCreateCopyForm(BaseCalendar baseCalendar) {
@@ -629,6 +640,34 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public void goToCalendar(BaseCalendar calendar) {
         // TODO
+    }
+
+    public boolean isDateValidFromPast() {
+        Date dateValidFrom = baseCalendarModel.getDateValidFrom();
+        if (dateValidFrom != null) {
+            return isPast(dateValidFrom);
+        }
+
+        return true;
+    }
+
+    private boolean isPast(Date date) {
+        LocalDate localDate = new LocalDate(date);
+        LocalDate currentLocalDate = new LocalDate();
+        return localDate.compareTo(currentLocalDate) <= 0;
+    }
+
+    public boolean isSelectedDateFromPast() {
+        Date selectedDay = baseCalendarModel.getSelectedDay();
+        if (selectedDay != null) {
+            return isPast(selectedDay);
+        }
+
+        return true;
+    }
+
+    public boolean isNotSelectedDateFromPast() {
+        return !isSelectedDateFromPast();
     }
 
 }
