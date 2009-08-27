@@ -22,17 +22,24 @@ import org.navalplanner.business.common.exceptions.ValidationException;
  */
 public class BaseCalendarTest {
 
-    public static final LocalDate MONDAY_LOCAL_DATE = new LocalDate(2009, 8, 10);
-    public static final LocalDate TUESDAY_LOCAL_DATE = new LocalDate(2009, 8,
-            11);
-    public static final LocalDate WEDNESDAY_LOCAL_DATE = new LocalDate(2009, 8,
-            12);
-    public static final LocalDate THURSDAY_LOCAL_DATE = new LocalDate(2009, 8,
-            13);
-    public static final LocalDate FRIDAY_LOCAL_DATE = new LocalDate(2009, 8, 14);
-    public static final LocalDate SATURDAY_LOCAL_DATE = new LocalDate(2009, 8,
-            15);
-    public static final LocalDate SUNDAY_LOCAL_DATE = new LocalDate(2009, 8, 16);
+    public static final LocalDate JUNE_NEXT_YEAR = new LocalDate(
+            (new LocalDate())
+            .getYear(), 6, 1).plusYears(1);
+
+    public static final LocalDate MONDAY_LOCAL_DATE = JUNE_NEXT_YEAR
+            .dayOfWeek().withMinimumValue();
+    public static final LocalDate TUESDAY_LOCAL_DATE = MONDAY_LOCAL_DATE
+            .plusDays(1);
+    public static final LocalDate WEDNESDAY_LOCAL_DATE = MONDAY_LOCAL_DATE
+            .plusDays(2);
+    public static final LocalDate THURSDAY_LOCAL_DATE = MONDAY_LOCAL_DATE
+            .plusDays(3);
+    public static final LocalDate FRIDAY_LOCAL_DATE = MONDAY_LOCAL_DATE
+            .plusDays(4);
+    public static final LocalDate SATURDAY_LOCAL_DATE = MONDAY_LOCAL_DATE
+            .plusDays(5);
+    public static final LocalDate SUNDAY_LOCAL_DATE = MONDAY_LOCAL_DATE
+            .plusDays(6);
 
     private static final LocalDate[] DAYS_OF_A_WEEK_EXAMPLE = {
             MONDAY_LOCAL_DATE, TUESDAY_LOCAL_DATE, WEDNESDAY_LOCAL_DATE,
@@ -40,7 +47,7 @@ public class BaseCalendarTest {
             SUNDAY_LOCAL_DATE };
 
     public static final LocalDate CHRISTMAS_DAY_LOCAL_DATE = new LocalDate(
-            2009, 12, 25);
+            JUNE_NEXT_YEAR.getYear(), 12, 25);
 
     public static BaseCalendar createBasicCalendar() {
         BaseCalendar calendar = BaseCalendar.create();
@@ -600,6 +607,25 @@ public class BaseCalendarTest {
                 equalTo(newVersion));
         assertThat(lastVersion.getCalendarVersion(SUNDAY_LOCAL_DATE),
                 equalTo(lastVersion));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNotAllowCreateExceptionsInThePast() {
+        BaseCalendar calendar = createBasicCalendar();
+
+        LocalDate pastMonth = (new LocalDate()).minusMonths(1);
+        ExceptionDay exceptionDay = ExceptionDay.create(pastMonth, 0);
+
+        calendar.addExceptionDay(exceptionDay);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNotAllowRemoveExceptionsInThePast() {
+        BaseCalendar calendar = createBasicCalendar();
+
+        LocalDate pastMonth = (new LocalDate()).minusMonths(1);
+
+        calendar.removeExceptionDay(pastMonth);
     }
 
 }

@@ -194,6 +194,11 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
     public void addExceptionDay(ExceptionDay day)
             throws IllegalArgumentException {
+        if (day.getDate().compareTo(new LocalDate()) <= 0) {
+            throw new IllegalArgumentException(
+                    "You can not modify the past adding a new exception day");
+        }
+
         if (shouldUsePreviousCalendar(day.getDate())) {
             previousCalendar.addExceptionDay(day);
         } else if (shouldUseNextCalendar(day.getDate())) {
@@ -214,6 +219,11 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
     public void removeExceptionDay(LocalDate date)
             throws IllegalArgumentException {
+        if (date.compareTo(new LocalDate()) <= 0) {
+            throw new IllegalArgumentException(
+                    "You can not modify the past removing an exception day");
+        }
+
         if (shouldUsePreviousCalendar(date)) {
             previousCalendar.removeExceptionDay(date);
         } else if (shouldUseNextCalendar(date)) {
