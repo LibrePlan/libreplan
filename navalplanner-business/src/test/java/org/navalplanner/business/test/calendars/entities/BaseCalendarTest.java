@@ -566,4 +566,26 @@ public class BaseCalendarTest {
                 equalTo(fridayHours));
     }
 
+    @Test
+    public void testExceptionsInDifferentVersions() {
+        BaseCalendar calendar = createBasicCalendar();
+        BaseCalendar newVersion = calendar.newVersion(WEDNESDAY_LOCAL_DATE);
+
+        newVersion.addExceptionDay(ExceptionDay.create(MONDAY_LOCAL_DATE, 0));
+        newVersion.addExceptionDay(ExceptionDay.create(FRIDAY_LOCAL_DATE, 0));
+
+        Integer mondayHours = newVersion.getWorkableHours(MONDAY_LOCAL_DATE);
+        assertThat(mondayHours, equalTo(0));
+        assertThat(calendar.getWorkableHours(MONDAY_LOCAL_DATE),
+                equalTo(mondayHours));
+
+        Integer fridayHours = newVersion.getWorkableHours(FRIDAY_LOCAL_DATE);
+        assertThat(fridayHours, equalTo(0));
+        assertThat(calendar.getWorkableHours(FRIDAY_LOCAL_DATE),
+                equalTo(fridayHours));
+
+        assertThat(calendar.getOwnExceptions().size(), equalTo(1));
+        assertThat(newVersion.getOwnExceptions().size(), equalTo(1));
+    }
+
 }
