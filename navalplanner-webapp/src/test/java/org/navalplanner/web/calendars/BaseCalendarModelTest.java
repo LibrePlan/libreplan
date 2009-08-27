@@ -7,6 +7,7 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -74,6 +75,30 @@ public class BaseCalendarModelTest {
             assertThat(baseCalendarModel.getBaseCalendars().size(), equalTo(1));
             assertThat(baseCalendarModel.getBaseCalendars().get(0).getId(),
                     equalTo(baseCalendar.getId()));
+            assertThat(baseCalendarModel.getBaseCalendars().get(0).getHours(
+                    Days.MONDAY), equalTo(4));
+        } catch (ValidationException e) {
+            fail("It should not throw an exception");
+        }
+    }
+
+    @Test
+    public void testEditAndNewVersion() {
+        assertThat(baseCalendarModel.getBaseCalendars().size(), equalTo(0));
+        saveOneCalendar();
+
+        BaseCalendar baseCalendar = baseCalendarModel.getBaseCalendars().get(0);
+        baseCalendarModel.initEdit(baseCalendar);
+        baseCalendarModel.createNewVersion((new LocalDate()).plusWeeks(1)
+                .toDateTimeAtStartOfDay().toDate());
+        setHours(baseCalendarModel.getBaseCalendar(), 4);
+        try {
+            baseCalendarModel.confirmSave();
+
+            assertThat(baseCalendarModel.getBaseCalendars().size(), equalTo(1));
+            assertThat(baseCalendarModel.getBaseCalendars().get(0)
+                    .getPreviousCalendar().getId(), equalTo(baseCalendar
+                    .getId()));
             assertThat(baseCalendarModel.getBaseCalendars().get(0).getHours(
                     Days.MONDAY), equalTo(4));
         } catch (ValidationException e) {
