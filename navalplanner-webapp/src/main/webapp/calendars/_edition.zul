@@ -93,6 +93,9 @@
             label="${arg.save_button_label}" />
         <button onClick="controller.cancel();"
             label="${arg.cancel_button_label}" />
+        <button onClick="controller.createNewVersion();"
+            label="${i18n:_('Create new version')}"
+            visible="@{controller.isEditing}" />
     </hbox>
 
 </vbox>

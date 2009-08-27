@@ -154,6 +154,10 @@ public class BaseCalendar extends BaseEntity implements IValidable {
                     "Can not set the expiring date "
                             + "because of it does not have a next calendar");
         }
+        if (expiringDate.compareTo(new LocalDate()) <= 0) {
+            throw new IllegalArgumentException(
+                    "Expering date must be greater than current date");
+        }
         if (previousCalendar != null) {
             if (expiringDate.compareTo(previousCalendar.getExpiringDate()) <= 0) {
                 throw new IllegalArgumentException(

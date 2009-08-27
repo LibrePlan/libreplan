@@ -60,7 +60,11 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private Window confirmRemove;
 
+    private Window createNewVersion;
+
     private boolean confirmingRemove = false;
+
+    private boolean creatingNewVersion = false;
 
     private OnlyOneVisible visibility;
 
@@ -749,6 +753,44 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             item.appendChild(buttonListcell);
         }
 
+    }
+
+    public Date getDateValidFromNewVersion() {
+        return new Date();
+    }
+
+    public void setDateValidFromNewVersion(Date date) {
+        // Just for ZK binding not needed
+    }
+
+    public boolean isCreatingNewVersion() {
+        return creatingNewVersion;
+    }
+
+    public void createNewVersion() {
+        creatingNewVersion = true;
+        try {
+            Util.reloadBindings(createNewVersion);
+            createNewVersion.doModal();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void aceptCreateNewVersion(Date date) {
+        // TODO manage errors if date is current date or date is not greater
+        // than last expiring date
+        baseCalendarModel.createNewVersion(date);
+
+        creatingNewVersion = false;
+        Util.reloadBindings(createNewVersion);
+        setSelectedDay(date);
+        Util.reloadBindings(editWindow);
+    }
+
+    public void cancelNewVersion() {
+        creatingNewVersion = false;
+        Util.reloadBindings(createNewVersion);
     }
 
 }

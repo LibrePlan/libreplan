@@ -114,6 +114,8 @@ public interface IBaseCalendarModel {
 
     List<BaseCalendar> getHistoryVersions();
 
+    void createNewVersion(Date date);
+
     /*
      * Final conversation steps
      */

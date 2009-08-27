@@ -405,6 +405,13 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         return history;
     }
 
+    @Override
+    public void createNewVersion(Date date) {
+        if (getBaseCalendar() != null) {
+            this.baseCalendar = getBaseCalendar().newVersion(date);
+        }
+    }
+
     /*
      * Final conversation steps
      */

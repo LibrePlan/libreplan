@@ -628,4 +628,20 @@ public class BaseCalendarTest {
         calendar.removeExceptionDay(pastMonth);
     }
 
+    @Test
+    public void testNotAllowSetExpiringDateInThePast() {
+        BaseCalendar calendar = createBasicCalendar();
+
+        LocalDate pastMonth = (new LocalDate()).minusMonths(1);
+        calendar.newVersion(pastMonth);
+
+        LocalDate pastWeek = (new LocalDate()).minusWeeks(1);
+        try {
+            calendar.setExpiringDate(pastWeek);
+            fail("It should throw an exception");
+        } catch (IllegalArgumentException e) {
+
+        }
+    }
+
 }
