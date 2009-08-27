@@ -444,7 +444,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     public BaseCalendar newVersion(LocalDate date)
             throws IllegalArgumentException {
         if (nextCalendar != null) {
-            nextCalendar.newVersion(date);
+            return nextCalendar.newVersion(date);
         }
 
         if (previousCalendar != null) {
@@ -466,7 +466,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
     public BaseCalendar newCopy() {
         if (nextCalendar != null) {
-            nextCalendar.newCopy();
+            return nextCalendar.newCopy();
         }
 
         BaseCalendar copy = create();
@@ -502,6 +502,20 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     public void setParent(BaseCalendar parent)
             throws IllegalArgumentException {
         this.parent = parent;
+    }
+
+    public BaseCalendar getCalendarVersion(Date date) {
+        return getCalendarVersion(new LocalDate(date));
+    }
+
+    public BaseCalendar getCalendarVersion(LocalDate date) {
+        if (shouldUsePreviousCalendar(date)) {
+            return previousCalendar.getCalendarVersion(date);
+        } else if (shouldUseNextCalendar(date)) {
+            return nextCalendar.getCalendarVersion(date);
+        } else {
+            return this;
+        }
     }
 
 }

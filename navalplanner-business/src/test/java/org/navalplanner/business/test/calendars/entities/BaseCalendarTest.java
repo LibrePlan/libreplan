@@ -588,4 +588,18 @@ public class BaseCalendarTest {
         assertThat(newVersion.getOwnExceptions().size(), equalTo(1));
     }
 
+    @Test
+    public void testGetVersion() {
+        BaseCalendar calendar = createBasicCalendar();
+        BaseCalendar newVersion = calendar.newVersion(WEDNESDAY_LOCAL_DATE);
+        BaseCalendar lastVersion = newVersion.newVersion(SATURDAY_LOCAL_DATE);
+
+        assertThat(lastVersion.getCalendarVersion(MONDAY_LOCAL_DATE),
+                equalTo(calendar));
+        assertThat(lastVersion.getCalendarVersion(THURSDAY_LOCAL_DATE),
+                equalTo(newVersion));
+        assertThat(lastVersion.getCalendarVersion(SUNDAY_LOCAL_DATE),
+                equalTo(lastVersion));
+    }
+
 }
