@@ -41,6 +41,7 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
+import org.zkoss.zul.api.Datebox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -756,7 +757,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public Date getDateValidFromNewVersion() {
-        return new Date();
+        return (new LocalDate()).plusDays(1).toDateTimeAtStartOfDay().toDate();
     }
 
     public void setDateValidFromNewVersion(Date date) {
@@ -777,11 +778,18 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         }
     }
 
-    public void aceptCreateNewVersion(Date date) {
-        // TODO manage errors if date is current date or date is not greater
-        // than last expiring date
-        baseCalendarModel.createNewVersion(date);
+    public void acceptCreateNewVersion() {
+        Component component = createNewVersion
+                .getFellow("dateValidFromNewVersion");
+        Date date = ((Datebox) component).getValue();
 
+        try {
+            baseCalendarModel.createNewVersion(date);
+        } catch (IllegalArgumentException e) {
+            throw new WrongValueException(component, e.getMessage());
+        }
+
+        Clients.closeErrorBox(component);
         creatingNewVersion = false;
         Util.reloadBindings(createNewVersion);
         setSelectedDay(date);

@@ -13,6 +13,7 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 import java.util.List;
 
 import org.hibernate.SessionFactory;
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.daos.BaseCalendarDAO;
@@ -94,7 +95,8 @@ public class BaseCalendarDAOTest {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
 
-        BaseCalendar nextCalendar = calendar.newVersion();
+        BaseCalendar nextCalendar = calendar.newVersion((new LocalDate())
+                .plusDays(1));
         baseCalendarDAO.save(nextCalendar);
 
         try {
@@ -138,7 +140,8 @@ public class BaseCalendarDAOTest {
     public void removeVersions() throws InstanceNotFoundException {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
-        BaseCalendar newCalendar = calendar.newVersion();
+        BaseCalendar newCalendar = calendar.newVersion((new LocalDate())
+                .plusDays(1));
         baseCalendarDAO.save(newCalendar);
 
         baseCalendarDAO.flush();
@@ -189,7 +192,8 @@ public class BaseCalendarDAOTest {
 
         assertThat(baseCalendarDAO.findLastVersions().size(), equalTo(1));
 
-        BaseCalendar newCalendar = calendar.newVersion();
+        BaseCalendar newCalendar = calendar.newVersion((new LocalDate())
+                .plusDays(1));
         baseCalendarDAO.save(newCalendar);
         baseCalendarDAO.flush();
 
@@ -213,7 +217,8 @@ public class BaseCalendarDAOTest {
         assertThat(baseCalendarDAO.findByParent(parent1).get(0).getId(),
                 equalTo(calendar.getId()));
 
-        BaseCalendar newVersion = calendar.newVersion();
+        BaseCalendar newVersion = calendar.newVersion((new LocalDate())
+                .plusDays(1));
         newVersion.setParent(parent2);
 
         baseCalendarDAO.save(newVersion);

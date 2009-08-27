@@ -199,7 +199,8 @@ public class BaseCalendarTest {
     @Test
     public void testCreateNewVersion() {
         BaseCalendar calendar = createBasicCalendar();
-        BaseCalendar nextCalendar = calendar.newVersion();
+        BaseCalendar nextCalendar = calendar.newVersion((new LocalDate())
+                .plusDays(1));
 
         assertThat(calendar, equalTo(nextCalendar.getPreviousCalendar()));
         assertThat(nextCalendar, equalTo(calendar.getNextCalendar()));
@@ -632,8 +633,7 @@ public class BaseCalendarTest {
     public void testNotAllowSetExpiringDateInThePast() {
         BaseCalendar calendar = createBasicCalendar();
 
-        LocalDate pastMonth = (new LocalDate()).minusMonths(1);
-        calendar.newVersion(pastMonth);
+        calendar.newVersion((new LocalDate()).plusDays(1));
 
         LocalDate pastWeek = (new LocalDate()).minusWeeks(1);
         try {
@@ -642,6 +642,13 @@ public class BaseCalendarTest {
         } catch (IllegalArgumentException e) {
 
         }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNotAllowNewVersionOnCurrentDate() {
+        BaseCalendar calendar = createBasicCalendar();
+
+        calendar.newVersion(new LocalDate());
     }
 
 }

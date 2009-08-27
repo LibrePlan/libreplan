@@ -433,15 +433,6 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     /**
-     * Creates a new version this {@link BaseCalendar} from the current moment.
-     * It makes that the current calendar expires in the current date. And the
-     * new calendar will be used from now onwards.
-     */
-    public BaseCalendar newVersion() throws IllegalArgumentException {
-        return newVersion(new LocalDate());
-    }
-
-    /**
      * Creates a new version this {@link BaseCalendar} from the specific date.
      * It makes that the current calendar expires in the specific date. And the
      * new calendar will be used from that date onwards.
@@ -457,6 +448,11 @@ public class BaseCalendar extends BaseEntity implements IValidable {
      */
     public BaseCalendar newVersion(LocalDate date)
             throws IllegalArgumentException {
+        if (date.compareTo(new LocalDate()) <= 0) {
+            throw new IllegalArgumentException(
+                    "Date for new version must be greater than current date");
+        }
+
         if (nextCalendar != null) {
             return nextCalendar.newVersion(date);
         }
@@ -464,7 +460,8 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         if (previousCalendar != null) {
             if (date.compareTo(previousCalendar.getExpiringDate()) <= 0) {
                 throw new IllegalArgumentException(
-                        "Version date must be greater than expiring date of previous calendars");
+                        "Version date must be greater than expiring date of " +
+                        "all versions of this calendar");
             }
         }
 

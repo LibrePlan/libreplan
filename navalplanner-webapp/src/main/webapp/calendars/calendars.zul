@@ -48,7 +48,7 @@
                 </hbox>
                 <hbox>
                     <button label="${i18n:_('Create')}"
-                        onClick="controller.aceptCreateNewVersion(dateValidFromNewVersion.value);" />
+                        onClick="controller.acceptCreateNewVersion();" />
                     <button label="${i18n:_('Cancel')}"
                         onClick="controller.cancelNewVersion();" />
                 </hbox>
