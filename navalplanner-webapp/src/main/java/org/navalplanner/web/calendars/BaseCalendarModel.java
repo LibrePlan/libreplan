@@ -40,10 +40,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
     private boolean editing = false;
 
-    private BaseCalendar baseCalendarHistory;
-
-    private boolean viewingHistory = false;
-
     private ClassValidator<BaseCalendar> baseCalendarValidator = new ClassValidator<BaseCalendar>(
             BaseCalendar.class);
 
@@ -114,16 +110,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         this.baseCalendar = baseCalendar;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public void initHistoryView(BaseCalendar baseCalendar) {
-        viewingHistory = true;
-        Validate.notNull(baseCalendar);
-
-        this.baseCalendarHistory = getFromDB(baseCalendar);
-        forceLoadHoursPerDayAndExceptionDays(this.baseCalendarHistory);
-    }
-
     private void forceLoadHoursPerDayAndExceptionDays(BaseCalendar baseCalendar) {
         forceLoadHoursPerDayAndExceptionDaysBasic(baseCalendar);
         forceLoadHoursPerDayAndExceptionDaysPrevious(baseCalendar);
@@ -177,9 +163,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
     @Override
     public BaseCalendar getBaseCalendar() {
-        if (viewingHistory) {
-            return baseCalendarHistory;
-        }
         return baseCalendar;
     }
 
@@ -408,11 +391,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         return history;
     }
 
-    @Override
-    public boolean isViewingHistory() {
-        return this.viewingHistory;
-    }
-
     /*
      * Final conversation steps
      */
@@ -445,18 +423,8 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         resetState();
     }
 
-    @Override
-    public void cancelHistoryView() {
-        viewingHistory = false;
-        resetStateHistory();
-    }
-
     private void resetState() {
         baseCalendar = null;
-    }
-
-    private void resetStateHistory() {
-        baseCalendarHistory = null;
     }
 
 }

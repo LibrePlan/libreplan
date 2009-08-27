@@ -5,7 +5,7 @@
     <tabs>
         <tab label="${i18n:_('Data')}" />
         <tab label="${i18n:_('History')}"
-            visible="@{controller.isEditingAndNotViewingHistory}" />
+            visible="@{controller.isEditing}" />
     </tabs>
 <tabpanels>
 
@@ -19,8 +19,7 @@
 
     <hbox>
         <label value="${i18n:_('Name')}" />
-        <textbox value="@{controller.baseCalendar.name}"
-            disabled="@{controller.isViewingHistory}" />
+        <textbox value="@{controller.baseCalendar.name}" />
     </hbox>
 
     <hbox>
@@ -28,8 +27,7 @@
         <vbox>
             <label value="@{controller.calendarType}" />
             <combobox id="parentCalendars"
-                visible="@{controller.isDerived}"
-                disabled="@{controller.isViewingHistory}">
+                visible="@{controller.isDerived}" >
                 <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
                     label="@{baseCalnedar.name}" />
             </combobox>
@@ -66,7 +64,7 @@
             <label value="@{controller.hoursOfDay}" />
         </hbox>
 
-        <hbox visible="@{controller.isNotViewingHistory}">
+        <hbox>
             <vbox>
                 <button label="${i18n:_('Create exception')}"
                     onClick="controller.createException();" />
@@ -80,26 +78,21 @@
 
     </hbox>
 
-    <hbox visible="@{controller.isEditingAndNotViewingHistory}">
+    <hbox visible="@{controller.isEditing}">
         <label value="${i18n:_('Valid from')}" />
         <datebox id="dateValidFrom" value="@{controller.dateValidFrom}" />
     </hbox>
 
-    <hbox visible="@{controller.isViewingHistory}">
+    <!-- hbox>
         <label value="${i18n:_('Expiring date')}" />
         <datebox value="@{controller.expiringDate}" disabled="true" />
-    </hbox>
+    </hbox -->
 
     <hbox>
         <button onClick="controller.save();"
-            label="${arg.save_button_label}"
-            visible="@{controller.isNotViewingHistory}" />
+            label="${arg.save_button_label}" />
         <button onClick="controller.cancel();"
-            label="${arg.cancel_button_label}"
-            visible="@{controller.isNotViewingHistory}" />
-        <button onClick="controller.back();"
-            label="${arg.back_button_label}"
-            visible="@{controller.isViewingHistory}" />
+            label="${arg.cancel_button_label}" />
     </hbox>
 
 </vbox>
@@ -118,8 +111,8 @@
             <listcell label="@{calendar.name}" />
             <listcell label="@{calendar.expiringDate}" />
             <listcell>
-                <button label="${i18n:_('View')}"
-                    onClick="controller.goToHistoryView(self.parent.parent.value);">
+                <button label="${i18n:_('Go to this calendar')}"
+                    onClick="controller.goToCalendar(self.parent.parent.value);">
                 </button>
             </listcell>
         </listitem>

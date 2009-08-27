@@ -60,8 +60,6 @@ public interface IBaseCalendarModel {
 
     void initCreateCopy(BaseCalendar baseCalendar);
 
-    void initHistoryView(BaseCalendar baseCalendar);
-
     /*
      * Intermediate conversation steps
      */
@@ -114,8 +112,6 @@ public interface IBaseCalendarModel {
 
     List<BaseCalendar> getHistoryVersions();
 
-    boolean isViewingHistory();
-
     /*
      * Final conversation steps
      */
@@ -125,7 +121,5 @@ public interface IBaseCalendarModel {
     void confirmRemove();
 
     void cancel();
-
-    void cancelHistoryView();
 
 }

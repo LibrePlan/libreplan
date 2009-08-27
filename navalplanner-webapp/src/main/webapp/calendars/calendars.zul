@@ -21,8 +21,6 @@
         <edition top_id="editWindow" title="${i18n:_('Edit Calendar')}"
             save_button_label="${i18n:_('Save')}"
             cancel_button_label="${i18n:_('Cancel')}" />
-        <edition top_id="historyWindow" title="${i18n:_('History')}"
-            back_button_label="${i18n:_('Back')}" />
         <window visible="@{controller.confirmingRemove}"
             id="confirmRemove" title="${i18n:_('Confirmation')}" sizable="true"
             position="center">

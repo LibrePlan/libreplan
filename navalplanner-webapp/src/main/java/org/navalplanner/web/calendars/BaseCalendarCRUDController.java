@@ -20,7 +20,6 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.CalendarHighlightedDays;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -58,8 +57,6 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private Window editWindow;
 
-    private Window historyWindow;
-
     private Window confirmRemove;
 
     private boolean confirmingRemove = false;
@@ -83,7 +80,6 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
-        historyWindow.setVisible(false);
         getVisibility().showOnly(listWindow);
     }
 
@@ -110,13 +106,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private void highlightDaysOnCalendar() {
         if (baseCalendarModel.isEditing()) {
-            if (baseCalendarModel.isViewingHistory()) {
-                ((CalendarHighlightedDays) historyWindow
-                        .getFellow("calendarWidget")).highlightDays();
-            } else {
-                ((CalendarHighlightedDays) editWindow
-                        .getFellow("calendarWidget")).highlightDays();
-            }
+            ((CalendarHighlightedDays) editWindow.getFellow("calendarWidget"))
+                    .highlightDays();
         } else {
             ((CalendarHighlightedDays) createWindow.getFellow("calendarWidget"))
                     .highlightDays();
@@ -321,10 +312,6 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                 hoursIntbox.setDisabled(true);
             }
 
-            if (baseCalendarModel.isViewingHistory()) {
-                hoursIntbox.setDisabled(true);
-            }
-
             hoursListcell.appendChild(hoursIntbox);
             item.appendChild(hoursListcell);
 
@@ -358,10 +345,6 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
                 });
 
-                if (baseCalendarModel.isViewingHistory()) {
-                    defaultCheckbox.setDisabled(true);
-                }
-
                 defaultListcell.appendChild(defaultCheckbox);
                 item.appendChild(defaultListcell);
             }
@@ -371,11 +354,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private void reloadCurrentWindow() {
         if (baseCalendarModel.isEditing()) {
-            if (baseCalendarModel.isViewingHistory()) {
-                Util.reloadBindings(historyWindow);
-            } else {
-                Util.reloadBindings(editWindow);
-            }
+            Util.reloadBindings(editWindow);
         } else {
             Util.reloadBindings(createWindow);
         }
@@ -383,11 +362,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private void reloadDayInformation() {
         if (baseCalendarModel.isEditing()) {
-            if (baseCalendarModel.isViewingHistory()) {
-                Util.reloadBindings(historyWindow.getFellow("dayInformation"));
-            } else {
-                Util.reloadBindings(editWindow.getFellow("dayInformation"));
-            }
+            Util.reloadBindings(editWindow.getFellow("dayInformation"));
         } else {
             Util.reloadBindings(createWindow.getFellow("dayInformation"));
         }
@@ -407,10 +382,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private void prepareParentCombo() {
         Combobox parentCalendars;
-        if (baseCalendarModel.isViewingHistory()) {
-            parentCalendars = (Combobox) historyWindow
-                    .getFellow("parentCalendars");
-        } else if (baseCalendarModel.isEditing()) {
+        if (baseCalendarModel.isEditing()) {
             parentCalendars = (Combobox) editWindow
                     .getFellow("parentCalendars");
         } else {
@@ -586,45 +558,6 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         return baseCalendarModel.getHistoryVersions();
     }
 
-    public void goToHistoryView(BaseCalendar baseCalendar) {
-        baseCalendarModel.initHistoryView(baseCalendar);
-        if (baseCalendarModel.isDerived()) {
-            prepareParentCombo();
-        }
-
-        try {
-            setSelectedDay(new Date());
-            highlightDaysOnCalendar();
-            Util.reloadBindings(historyWindow);
-            historyWindow.setVisible(true);
-            historyWindow.doModal();
-        } catch (SuspendNotAllowedException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean isViewingHistory() {
-        return baseCalendarModel.isViewingHistory();
-    }
-
-    public boolean isNotViewingHistory() {
-        return !isViewingHistory();
-    }
-
-    public boolean isEditingAndNotViewingHistory() {
-        return isEditing() && !isViewingHistory();
-    }
-
-    public void back() {
-        baseCalendarModel.cancelHistoryView();
-        historyWindow.setVisible(false);
-
-        Util.reloadBindings(editWindow);
-        getVisibility().showOnly(editWindow);
-    }
-
     private Map<DayType, String> getDaysCurrentMonthByType() {
         LocalDate currentDate = new LocalDate(baseCalendarModel
                 .getSelectedDay());
@@ -692,6 +625,10 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public String getZeroHoursDays() {
         return getDaysCurrentMonthByType().get(DayType.ZERO_HOURS);
+    }
+
+    public void goToCalendar(BaseCalendar calendar) {
+        // TODO
     }
 
 }
