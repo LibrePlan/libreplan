@@ -657,6 +657,10 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public boolean isDateValidFromPast() {
+        if (!isEditing()) {
+            return false;
+        }
+
         Date dateValidFrom = baseCalendarModel.getDateValidFrom();
         if (dateValidFrom != null) {
             return isPast(dateValidFrom);
