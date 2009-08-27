@@ -74,14 +74,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         Validate.notNull(baseCalendar);
 
         this.baseCalendar = getFromDB(baseCalendar);
-        try {
-            this.baseCalendar = this.baseCalendar.newVersion();
-        } catch (IllegalArgumentException e) {
-            LocalDate expiringDate = this.baseCalendar.getPreviousCalendar()
-                    .getExpiringDate();
-            this.baseCalendar = this.baseCalendar.newVersion(expiringDate
-                    .plusDays(1));
-        }
         forceLoadHoursPerDayAndExceptionDays(this.baseCalendar);
     }
 
@@ -198,8 +190,15 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void setSelectedDay(Date date) {
         this.selectedDate = date;
+
+        BaseCalendar validCalendar = baseCalendar.getCalendarVersion(date);
+        if (!validCalendar.equals(baseCalendar)) {
+            baseCalendar = validCalendar;
+            forceLoadHoursPerDayAndExceptionDays(baseCalendar);
+        }
     }
 
     @Override

@@ -72,8 +72,7 @@ public class BaseCalendarModelTest {
             baseCalendarModel.confirmSave();
 
             assertThat(baseCalendarModel.getBaseCalendars().size(), equalTo(1));
-            assertThat(baseCalendarModel.getBaseCalendars().get(0)
-                    .getPreviousCalendar().getId(),
+            assertThat(baseCalendarModel.getBaseCalendars().get(0).getId(),
                     equalTo(baseCalendar.getId()));
             assertThat(baseCalendarModel.getBaseCalendars().get(0).getHours(
                     Days.MONDAY), equalTo(4));

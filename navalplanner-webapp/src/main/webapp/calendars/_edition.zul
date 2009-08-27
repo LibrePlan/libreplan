@@ -81,12 +81,9 @@
     <hbox visible="@{controller.isEditing}">
         <label value="${i18n:_('Valid from')}" />
         <datebox id="dateValidFrom" value="@{controller.dateValidFrom}" />
+        <label value="${i18n:_('to')}" />
+        <datebox value="@{controller.expiringDate}" />
     </hbox>
-
-    <!-- hbox>
-        <label value="${i18n:_('Expiring date')}" />
-        <datebox value="@{controller.expiringDate}" disabled="true" />
-    </hbox -->
 
     <hbox>
         <button onClick="controller.save();"
