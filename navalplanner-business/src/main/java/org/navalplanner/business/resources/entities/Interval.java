@@ -3,6 +3,7 @@ package org.navalplanner.business.resources.entities;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Represents a time interval <br />
@@ -49,6 +50,11 @@ public abstract class Interval {
                     && dateEquals(end, interval.end);
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(start).append(end).toHashCode();
     }
 
     private boolean dateEquals(Date date1, Date date2) {
