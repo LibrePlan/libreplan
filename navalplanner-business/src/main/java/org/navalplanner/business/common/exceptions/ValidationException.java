@@ -17,27 +17,28 @@ public class ValidationException extends Exception {
 
     public ValidationException(InvalidValue[] invalidValues) {
         super();
+        storeInvalidValues(invalidValues);
+    }
+
+    private void storeInvalidValues(InvalidValue[] invalidValues) {
         Validate.noNullElements(invalidValues);
-        this.invalidValues = invalidValues;
+        this.invalidValues = invalidValues.clone();
     }
 
     public ValidationException(InvalidValue[] invalidValues, String message,
             Throwable cause) {
         super(message, cause);
-        Validate.noNullElements(invalidValues);
-        this.invalidValues = invalidValues;
+        storeInvalidValues(invalidValues);
     }
 
     public ValidationException(InvalidValue[] invalidValues, String message) {
         super(message);
-        Validate.noNullElements(invalidValues);
-        this.invalidValues = invalidValues;
+        storeInvalidValues(invalidValues);
     }
 
     public ValidationException(InvalidValue[] invalidValues, Throwable cause) {
         super(cause);
-        Validate.noNullElements(invalidValues);
-        this.invalidValues = invalidValues;
+        storeInvalidValues(invalidValues);
     }
 
     public ValidationException(String message) {
