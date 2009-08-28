@@ -116,6 +116,8 @@ public interface IBaseCalendarModel {
 
     void createNewVersion(Date date);
 
+    boolean isLastVersion();
+
     /*
      * Final conversation steps
      */

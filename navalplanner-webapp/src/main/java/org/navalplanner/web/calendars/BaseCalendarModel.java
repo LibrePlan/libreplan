@@ -359,7 +359,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         if ((getBaseCalendar() != null)
                 && (getBaseCalendar().getExpiringDate() != null)) {
             getBaseCalendar()
-                    .setExpiringDate((new LocalDate(date)).plusDays(1));
+                    .setExpiringDate(date);
         }
     }
 
@@ -410,6 +410,14 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         if (getBaseCalendar() != null) {
             this.baseCalendar = getBaseCalendar().newVersion(date);
         }
+    }
+
+    @Override
+    public boolean isLastVersion() {
+        if (getBaseCalendar() != null) {
+            return (getBaseCalendar().getNextCalendar() == null);
+        }
+        return false;
     }
 
     /*

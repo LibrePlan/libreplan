@@ -651,4 +651,12 @@ public class BaseCalendarTest {
         calendar.newVersion(new LocalDate());
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void testNotAllowSetExpiringDateIfNotNextCalendar() {
+        BaseCalendar calendar = createBasicCalendar();
+        assertThat(calendar.getNextCalendar(), nullValue());
+
+        calendar.setExpiringDate(WEDNESDAY_LOCAL_DATE);
+    }
+
 }

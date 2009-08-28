@@ -85,7 +85,8 @@
         <datebox id="dateValidFrom" value="@{controller.dateValidFrom}"
             disabled="@{controller.isDateValidFromPast}" />
         <label value="${i18n:_('to')}" />
-        <datebox value="@{controller.expiringDate}" />
+        <datebox id="expiringDate" value="@{controller.expiringDate}"
+            disabled="@{controller.isLastVersion}" />
     </hbox>
 
     <hbox>

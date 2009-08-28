@@ -461,13 +461,16 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public void setDateValidFrom(Date date) {
+        Component component = editWindow.getFellow("dateValidFrom");
+
         try {
             baseCalendarModel.setDateValidFrom(date);
         } catch (IllegalArgumentException e) {
-            throw new WrongValueException(
-                    editWindow.getFellow("dateValidFrom"),
-                    e.getMessage());
+            throw new WrongValueException(component, e.getMessage());
+        } catch (UnsupportedOperationException e) {
+            throw new WrongValueException(component, e.getMessage());
         }
+        Clients.closeErrorBox(component);
     }
 
     public Date getExpiringDate() {
@@ -475,8 +478,17 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public void setExpiringDate(Date date) {
-        // TODO check possible wrong dates
-        baseCalendarModel.setExpiringDate(date);
+        Component component = editWindow.getFellow("expiringDate");
+
+        try {
+            baseCalendarModel.setExpiringDate((new LocalDate(date)).plusDays(1)
+                    .toDateTimeAtStartOfDay().toDate());
+        } catch (IllegalArgumentException e) {
+            throw new WrongValueException(component, e.getMessage());
+        } catch (UnsupportedOperationException e) {
+            throw new WrongValueException(component, e.getMessage());
+        }
+        Clients.closeErrorBox(component);
     }
 
     public void goToCreateCopyForm(BaseCalendar baseCalendar) {
@@ -799,6 +811,10 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void cancelNewVersion() {
         creatingNewVersion = false;
         Util.reloadBindings(createNewVersion);
+    }
+
+    public boolean isLastVersion() {
+        return baseCalendarModel.isLastVersion();
     }
 
 }
