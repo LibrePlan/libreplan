@@ -72,7 +72,6 @@ public class ExceptionCatcherProxy<T> {
                             // we don't know what would be the result, so we
                             // return null
                             return null;
-                        } finally {
                         }
                     }
 
