@@ -7,6 +7,8 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 
+import java.util.List;
+
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -125,6 +127,32 @@ public class BaseCalendarModelTest {
         baseCalendarModel.initRemove(baseCalendar);
         baseCalendarModel.confirmRemove();
         assertThat(baseCalendarModel.getBaseCalendars().size(), equalTo(0));
+    }
+
+    @Test
+    public void testPossibleParentCalendars() throws ValidationException {
+        baseCalendarModel.initCreate();
+        setHours(baseCalendarModel.getBaseCalendar(), 8);
+        BaseCalendar parent = baseCalendarModel.getBaseCalendar();
+        baseCalendarModel.createNewVersion((new LocalDate()).plusMonths(1)
+                .toDateTimeAtStartOfDay().toDate());
+        BaseCalendar parentNewVersion = baseCalendarModel.getBaseCalendar();
+        baseCalendarModel.confirmSave();
+
+        baseCalendarModel.initCreateDerived(parent);
+        BaseCalendar child = baseCalendarModel.getBaseCalendar();
+        baseCalendarModel.confirmSave();
+
+        baseCalendarModel.initEdit(child);
+        List<BaseCalendar> possibleParentCalendars = baseCalendarModel
+                .getPossibleParentCalendars();
+
+        assertThat(possibleParentCalendars.size(), equalTo(1));
+        assertThat(possibleParentCalendars.get(0).getId(),
+                equalTo(parentNewVersion.getId()));
+        assertThat(
+                possibleParentCalendars.get(0).getPreviousCalendar().getId(),
+                equalTo(parent.getId()));
     }
 
 }

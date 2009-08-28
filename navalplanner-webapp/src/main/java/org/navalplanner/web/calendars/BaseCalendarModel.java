@@ -165,18 +165,9 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
         if (getBaseCalendar() != null) {
             for (BaseCalendar calendar : baseCalendars) {
-                if (isEditing()) {
-                    if ((getBaseCalendar().getPreviousCalendar() != null)
-                            && (calendar.getId().equals(getBaseCalendar()
-                                    .getPreviousCalendar().getId()))) {
-                        baseCalendars.remove(calendar);
-                        break;
-                    }
-                } else {
-                    if (calendar.getId().equals(getBaseCalendar().getId())) {
-                        baseCalendars.remove(calendar);
-                        break;
-                    }
+                if (calendar.getId().equals(getBaseCalendar().getId())) {
+                    baseCalendars.remove(calendar);
+                    break;
                 }
             }
         }
