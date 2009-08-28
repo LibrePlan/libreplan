@@ -181,7 +181,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public void setSelectedDay(Date date) {
         this.selectedDate = date;
 
@@ -198,7 +197,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Integer getHoursOfDay() {
         if (getBaseCalendar() == null) {
             return null;
@@ -226,7 +224,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public void createException(Integer hours) {
         if (getTypeOfDay().equals(DayType.OWN_EXCEPTION)) {
             getBaseCalendar().updateExceptionDay(selectedDate, hours);
