@@ -372,6 +372,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         } else {
             Util.reloadBindings(createWindow);
         }
+        highlightDaysOnCalendar();
     }
 
     private void reloadDayInformation() {
@@ -404,11 +405,12 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                     .getFellow("parentCalendars");
         }
 
-        fillParentCombo(parentCalendars);
+        fillParentComboAndMarkSelectedItem(parentCalendars);
         addListenerParentCombo(parentCalendars);
     }
 
-    private void fillParentCombo(Combobox parentCalendars) {
+    private void fillParentComboAndMarkSelectedItem(Combobox parentCalendars) {
+        parentCalendars.getChildren().clear();
         BaseCalendar parent = baseCalendarModel.getParent();
 
         List<BaseCalendar> possibleParentCalendars = getParentCalendars();
