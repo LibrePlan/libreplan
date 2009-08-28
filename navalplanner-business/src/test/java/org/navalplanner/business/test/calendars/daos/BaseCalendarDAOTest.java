@@ -126,6 +126,7 @@ public class BaseCalendarDAOTest {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
         BaseCalendar derivedCalendar = calendar.newDerivedCalendar();
+        derivedCalendar.setName("Derived from " + calendar.getName());
         baseCalendarDAO.save(derivedCalendar);
 
         baseCalendarDAO.flush();
@@ -142,6 +143,7 @@ public class BaseCalendarDAOTest {
         baseCalendarDAO.save(calendar);
         BaseCalendar newCalendar = calendar.newVersion((new LocalDate())
                 .plusDays(1));
+        System.out.println(newCalendar.getName());
         baseCalendarDAO.save(newCalendar);
 
         baseCalendarDAO.flush();
@@ -159,8 +161,10 @@ public class BaseCalendarDAOTest {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
         BaseCalendar derivedCalendar = calendar.newDerivedCalendar();
+        derivedCalendar.setName("derived from " + calendar.getName() + " 1");
         baseCalendarDAO.save(derivedCalendar);
         BaseCalendar derivedCalendar2 = calendar.newDerivedCalendar();
+        derivedCalendar2.setName("derived from " + calendar.getName() + " 2");
         baseCalendarDAO.save(derivedCalendar2);
 
         baseCalendarDAO.flush();

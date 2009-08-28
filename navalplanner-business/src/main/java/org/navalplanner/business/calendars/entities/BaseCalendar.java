@@ -70,10 +70,18 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (nextCalendar != null) {
+            nextCalendar.setName(name);
+        } else {
+            this.name = name;
+        }
     }
 
     public String getName() {
+        if (nextCalendar != null) {
+            return nextCalendar.getName();
+        }
+
         return name;
     }
 
@@ -471,6 +479,8 @@ public class BaseCalendar extends BaseEntity implements IValidable {
 
         this.nextCalendar = nextCalendar;
         nextCalendar.previousCalendar = this;
+
+        nextCalendar.name = this.name;
 
         return nextCalendar;
     }

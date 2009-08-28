@@ -19,8 +19,7 @@
 
     <hbox>
         <label value="${i18n:_('Name')}" />
-        <textbox value="@{controller.baseCalendar.name}"
-            disabled="@{controller.isDateValidFromPast}" />
+        <textbox value="@{controller.baseCalendar.name}" />
     </hbox>
 
     <hbox>

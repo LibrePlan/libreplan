@@ -206,6 +206,46 @@ public class BaseCalendarTest {
         assertThat(nextCalendar, equalTo(calendar.getNextCalendar()));
     }
 
+    @Test
+    public void testCreateNewVersionPreservesName() {
+        BaseCalendar calendar = createBasicCalendar();
+        BaseCalendar nextCalendar = calendar.newVersion((new LocalDate())
+                .plusDays(1));
+
+        assertThat(nextCalendar.getName(), equalTo(calendar.getName()));
+    }
+
+    @Test
+    public void testChangeNameForAllVersions() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.setName("Test");
+        BaseCalendar nextCalendar = calendar.newVersion((new LocalDate())
+                .plusDays(1));
+
+        String name = "Name";
+        nextCalendar.setName(name);
+
+        assertThat(calendar.getName(), equalTo(name));
+        assertThat(nextCalendar.getName(), equalTo(name));
+    }
+
+    @Test
+    public void testChangeNameForAllVersionsWithThreeVersions() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.setName("Test");
+        BaseCalendar nextCalendar = calendar.newVersion((new LocalDate())
+                .plusDays(1));
+        BaseCalendar nextCalendar2 = calendar.newVersion((new LocalDate())
+                .plusDays(2));
+
+        String name = "Name";
+        calendar.setName(name);
+
+        assertThat(calendar.getName(), equalTo(name));
+        assertThat(nextCalendar.getName(), equalTo(name));
+        assertThat(nextCalendar2.getName(), equalTo(name));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testCreateInvalidNewVersion() {
         BaseCalendar nextCalendar = createBasicCalendar().newVersion(
