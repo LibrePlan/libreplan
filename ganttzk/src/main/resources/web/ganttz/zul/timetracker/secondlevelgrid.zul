@@ -1,0 +1,8 @@
+<zk>
+<grid width="${top.horizontalSize+2}" model="${top.tableModel}">
+    <columns>
+        <column label="${each.name}" width="${each.size}"
+                    forEach="${top.detailsSecondLevel}"></column>
+    </columns>
+</grid>
+</zk>
