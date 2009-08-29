@@ -8,7 +8,9 @@ import java.util.concurrent.Callable;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
-import org.zkoss.ganttz.timetracker.TimeTrackedTable;
+import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
+import org.zkoss.ganttz.timetracker.PairOfLists;
+import org.zkoss.ganttz.timetracker.TimeTrackedTableWithLeftPane;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.util.Interval;
@@ -16,39 +18,63 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.api.Column;
 
 public class FakeTimeTrackableTableController extends GenericForwardComposer {
 
     private Div insertionPoint;
-    private TimeTrackedTable<FakeData> timeTrackedTable;
+    private TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData> timeTrackedTableWithLeftPane;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-
-        timeTrackedTable = new TimeTrackedTable<FakeData>(getDataSource(),
-                getRenderer(), new TimeTracker(createExampleInterval()),
-                "timetrackedtable");
-        insertionPoint.appendChild(timeTrackedTable);
-        timeTrackedTable.afterCompose();
+        this.timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData>(
+                getDataSource(), getColumnsForLeft(), getLeftRenderer(),
+                getRightRenderer(), new TimeTracker(createExampleInterval()));
+        insertionPoint.appendChild(timeTrackedTableWithLeftPane);
     }
 
-    private Callable<List<FakeData>> getDataSource() {
-        return new Callable<List<FakeData>>() {
+    private ICellForDetailItemRenderer<FakeColumn, FakeDataLeft> getLeftRenderer() {
+        return new ICellForDetailItemRenderer<FakeColumn, FakeDataLeft>() {
 
             @Override
-            public List<FakeData> call() throws Exception {
-                List<FakeData> result = new ArrayList<FakeData>();
-                for (int i = 0; i < 10; i++) {
-                    result.add(new FakeData(6));
-                }
-                return result;
+            public Component cellFor(FakeColumn column, FakeDataLeft data) {
+                return new Label(column.getName() + data.getRowNumber());
             }
         };
     }
 
-    private ICellForDetailItemRenderer<FakeData> getRenderer() {
-        return new ICellForDetailItemRenderer<FakeData>() {
+    private List<FakeColumn> getColumnsForLeft() {
+        String[] names = { "A", "B", "C" };
+        List<FakeColumn> result = new ArrayList<FakeColumn>();
+        for (final String columnName : names) {
+            result.add(createColumnWithLabel(columnName));
+        }
+        return result;
+    }
+
+    private FakeColumn createColumnWithLabel(final String columnName) {
+        return new FakeColumn(columnName);
+    }
+
+    private Callable<PairOfLists<FakeDataLeft, FakeData>> getDataSource() {
+        return new Callable<PairOfLists<FakeDataLeft, FakeData>>() {
+
+            @Override
+            public PairOfLists<FakeDataLeft, FakeData> call() throws Exception {
+                List<FakeData> right = new ArrayList<FakeData>();
+                List<FakeDataLeft> left = new ArrayList<FakeDataLeft>();
+                for (int i = 0; i < 10; i++) {
+                    right.add(new FakeData(6));
+                    left.add(new FakeDataLeft(i + 1));
+                }
+                return new PairOfLists<FakeDataLeft, FakeData>(left, right);
+            }
+        };
+    }
+
+    private ICellForDetailItemRenderer<DetailItem, FakeData> getRightRenderer() {
+        return new ICellForDetailItemRenderer<DetailItem, FakeData>() {
 
             @Override
             public Component cellFor(DetailItem item, FakeData data) {
@@ -71,6 +97,38 @@ public class FakeTimeTrackableTableController extends GenericForwardComposer {
 
 }
 
+class FakeColumn implements IConvertibleToColumn {
+    private final String columnName;
+
+    FakeColumn(String columnName) {
+        this.columnName = columnName;
+    }
+
+    @Override
+    public Column toColumn() {
+        Column column = new org.zkoss.zul.Column();
+        column.setLabel(columnName);
+        return column;
+    }
+
+    public String getName() {
+        return columnName;
+    }
+}
+
+class FakeDataLeft {
+    private final int row;
+
+    FakeDataLeft(int row) {
+        this.row = row;
+    }
+
+    public int getRowNumber() {
+        return row;
+    }
+
+}
+
 class FakeData {
     private final int hoursPerDay;
 
@@ -79,8 +137,8 @@ class FakeData {
     }
 
     public int getHoursForDetailItem(DetailItem detail) {
-        Days daysBetween = Days.daysBetween(detail.getStartDate(),
-                detail.getEndDate());
+        Days daysBetween = Days.daysBetween(detail.getStartDate(), detail
+                .getEndDate());
         return daysBetween.getDays() * hoursPerDay;
     }
 }

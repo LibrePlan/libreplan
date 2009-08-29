@@ -131,4 +131,13 @@
 		<macro-uri>~./ganttz/zul/timetracker/timetracker.zul</macro-uri>
 	</component>
 
+	<component>
+	   <component-name>timetrackedTableWithLeftPane</component-name>
+	   <component-class>org.zkoss.ganttz.timetracker.TimeTrackedTableWithLeftPane</component-class>
+	   <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>~./ganttz/timetrackedTableWithLeftPane.dsp</mold-uri>
+        </mold>
+	</component>
+
 </language-addon>
