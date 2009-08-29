@@ -1,10 +1,9 @@
 package org.zkoss.ganttz.timetracker;
 
-import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.zk.ui.Component;
 
-public interface ICellForDetailItemRenderer<T> {
+public interface ICellForDetailItemRenderer<C, T> {
 
-    Component cellFor(DetailItem item, T data);
+    Component cellFor(C column, T data);
 
 }

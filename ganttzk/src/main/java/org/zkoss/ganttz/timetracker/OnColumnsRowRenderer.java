@@ -7,34 +7,32 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
-public class OnDetailItemsRowRenderer<T> implements RowRenderer {
+public class OnColumnsRowRenderer<C, T> implements RowRenderer {
 
-    public static <T> OnDetailItemsRowRenderer<T> create(
-            ICellForDetailItemRenderer<T> cellRenderer,
-            Collection<DetailItem> detailItems) {
-        return create(inferGenericType(cellRenderer), cellRenderer, detailItems);
+    public static <C, T> OnColumnsRowRenderer<C, T> create(
+            ICellForDetailItemRenderer<C, T> cellRenderer, Collection<C> columns) {
+        return create(inferGenericType(cellRenderer), cellRenderer, columns);
     }
 
-    public static <T> OnDetailItemsRowRenderer<T> create(Class<T> type,
-            ICellForDetailItemRenderer<T> cellRenderer,
-            Collection<DetailItem> detailItems) {
-        return new OnDetailItemsRowRenderer<T>(type, cellRenderer, detailItems);
+    public static <C, T> OnColumnsRowRenderer<C, T> create(Class<T> type,
+            ICellForDetailItemRenderer<C, T> cellRenderer, Collection<C> columns) {
+        return new OnColumnsRowRenderer<C, T>(type, cellRenderer, columns);
     }
 
     private static <T> Class<T> inferGenericType(
-            ICellForDetailItemRenderer<T> renderer) {
+            ICellForDetailItemRenderer<?, T> renderer) {
         ParameterizedType parametrizedType = findRenderererInterfaceType(renderer);
         Type[] actualTypeArguments = parametrizedType.getActualTypeArguments();
-        Type type = actualTypeArguments[0];
+        final int genericTypePosition = 1;
+        Type type = actualTypeArguments[genericTypePosition];
         if (!isActualType(type)) {
             informCannotBeInferred(renderer);
         }
-        return (Class<T>) actualTypeArguments[0];
+        return (Class<T>) actualTypeArguments[genericTypePosition];
     }
 
     private static boolean isActualType(Type t) {
@@ -42,7 +40,7 @@ public class OnDetailItemsRowRenderer<T> implements RowRenderer {
     }
 
     private static ParameterizedType findRenderererInterfaceType(
-            ICellForDetailItemRenderer<?> renderer) {
+            ICellForDetailItemRenderer<?, ?> renderer) {
         Type[] genericInterfaces = renderer.getClass().getGenericInterfaces();
         for (Type type : genericInterfaces) {
             if (isTypeForInterface(type, ICellForDetailItemRenderer.class)) {
@@ -67,7 +65,7 @@ public class OnDetailItemsRowRenderer<T> implements RowRenderer {
     }
 
     private static void informCannotBeInferred(
-            ICellForDetailItemRenderer<?> renderer) {
+            ICellForDetailItemRenderer<?, ?> renderer) {
         throw new IllegalArgumentException(
                 "the generic type cannot be inferred "
                         + "if actual type parameters are not declared "
@@ -75,19 +73,18 @@ public class OnDetailItemsRowRenderer<T> implements RowRenderer {
                         + renderer.getClass().getName());
     }
 
-    private final List<DetailItem> detailItems;
-    private final ICellForDetailItemRenderer<T> cellRenderer;
+    private final List<C> columns;
+    private final ICellForDetailItemRenderer<C, T> cellRenderer;
     private Class<T> type;
 
-    private OnDetailItemsRowRenderer(Class<T> type,
-            ICellForDetailItemRenderer<T> cellRenderer,
-            Collection<DetailItem> detailItems) {
+    private OnColumnsRowRenderer(Class<T> type,
+            ICellForDetailItemRenderer<C, T> cellRenderer, Collection<C> columns) {
         Validate.notNull(type);
-        Validate.notNull(detailItems);
+        Validate.notNull(columns);
         Validate.notNull(cellRenderer);
-        Validate.noNullElements(detailItems);
+        Validate.noNullElements(columns);
         this.cellRenderer = cellRenderer;
-        this.detailItems = new ArrayList<DetailItem>(detailItems);
+        this.columns = new ArrayList<C>(columns);
         this.type = type;
     }
 
@@ -96,7 +93,7 @@ public class OnDetailItemsRowRenderer<T> implements RowRenderer {
         if (!type.isInstance(data))
             throw new IllegalArgumentException(data + " is not instance of "
                     + type);
-        for (DetailItem item : detailItems) {
+        for (C item : columns) {
             Component child = cellRenderer.cellFor(item, type.cast(data));
             child.setParent(row);
         }

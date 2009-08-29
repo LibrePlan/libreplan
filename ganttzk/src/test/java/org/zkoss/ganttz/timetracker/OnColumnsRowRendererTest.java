@@ -20,14 +20,14 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.api.Label;
 
-public class OnDetailItemsRowRendererTest {
+public class OnColumnsRowRendererTest {
 
     private static class Data {
 
     }
 
     private static class CellRenderer implements
-            ICellForDetailItemRenderer<Data> {
+            ICellForDetailItemRenderer<DetailItem, Data> {
 
         @Override
         public Component cellFor(DetailItem item, Data data) {
@@ -37,7 +37,7 @@ public class OnDetailItemsRowRendererTest {
     }
 
     private static class CellRendererNotInferable<T> implements
-            ICellForDetailItemRenderer<T> {
+            ICellForDetailItemRenderer<DetailItem, T> {
 
         @Override
         public Component cellFor(DetailItem item, T data) {
@@ -48,18 +48,18 @@ public class OnDetailItemsRowRendererTest {
 
     private List<DetailItem> detailItems;
 
-    private OnDetailItemsRowRenderer<Data> rowRenderer;
+    private OnColumnsRowRenderer<DetailItem, Data> rowRenderer;
 
     private DateTime start;
 
     private List<Data> data;
 
     private void givenOnDetailItemsRowRenderer(
-            ICellForDetailItemRenderer<Data> cellRenderer) {
+            ICellForDetailItemRenderer<DetailItem, Data> cellRenderer) {
         if (detailItems == null) {
             givenDetailItems();
         }
-        rowRenderer = OnDetailItemsRowRenderer.create(Data.class, cellRenderer,
+        rowRenderer = OnColumnsRowRenderer.create(Data.class, cellRenderer,
                 detailItems);
     }
 
@@ -84,49 +84,49 @@ public class OnDetailItemsRowRendererTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void itNeedsNotNullDetailItems() {
-        OnDetailItemsRowRenderer.create(Data.class, createStub(), null);
+        OnColumnsRowRenderer.create(Data.class, createStub(), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void itNeedsNotNullCellRenderer() {
-        OnDetailItemsRowRenderer.create(Data.class, null,
+        OnColumnsRowRenderer.create(Data.class, null,
                 new ArrayList<DetailItem>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void itNeedsTheTypeAsClass() {
-        OnDetailItemsRowRenderer.create(null, createStub(),
+        OnColumnsRowRenderer.create(null, createStub(),
                 new ArrayList<DetailItem>());
     }
 
     @Test
     public void itCanHaveEmptyDetailItems() {
-        OnDetailItemsRowRenderer.create(Data.class, createStub(),
+        OnColumnsRowRenderer.create(Data.class, createStub(),
                 new ArrayList<DetailItem>());
     }
 
     @Test
     public void itCanInferTheGenericType() {
-        OnDetailItemsRowRenderer.create(new CellRenderer(),
+        OnColumnsRowRenderer.create(new CellRenderer(),
                 new ArrayList<DetailItem>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ifComesFromRawTypeIsNotInferrable() {
-        OnDetailItemsRowRenderer.create(createStub(),
+        OnColumnsRowRenderer.create(createStub(),
                 new ArrayList<DetailItem>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ifItNotShowsTheActualTypeIsNotInferrable() {
-        OnDetailItemsRowRenderer.create(new CellRendererNotInferable<Data>(),
+        OnColumnsRowRenderer.create(new CellRendererNotInferable<Data>(),
                 new ArrayList<DetailItem>());
     }
 
     @SuppressWarnings("serial")
     @Test(expected = IllegalArgumentException.class)
     public void noDetailItemCanBeNull() {
-        OnDetailItemsRowRenderer.create(Data.class, createStub(),
+        OnColumnsRowRenderer.create(Data.class, createStub(),
                 new ArrayList<DetailItem>() {
                     {
                         add(new DetailItem(300, "bla"));
@@ -141,7 +141,7 @@ public class OnDetailItemsRowRendererTest {
         rowRenderer.render(new Row(), "");
     }
 
-    private ICellForDetailItemRenderer<Data> createStub() {
+    private ICellForDetailItemRenderer<DetailItem, Data> createStub() {
         return createNiceMock(ICellForDetailItemRenderer.class);
     }
 
@@ -149,7 +149,7 @@ public class OnDetailItemsRowRendererTest {
     public void theCellRendererIsUsedForEachCell() {
         givenData();
         givenDetailItems();
-        ICellForDetailItemRenderer<Data> mock = expectTheCellRendererIsCalledForEachCell();
+        ICellForDetailItemRenderer<DetailItem, Data> mock = expectTheCellRendererIsCalledForEachCell();
         givenOnDetailItemsRowRenderer(mock);
 
         renderingTheData();
@@ -163,8 +163,8 @@ public class OnDetailItemsRowRendererTest {
         }
     }
 
-    private ICellForDetailItemRenderer<Data> expectTheCellRendererIsCalledForEachCell() {
-        ICellForDetailItemRenderer<Data> mock = createStrictMock(ICellForDetailItemRenderer.class);
+    private ICellForDetailItemRenderer<DetailItem, Data> expectTheCellRendererIsCalledForEachCell() {
+        ICellForDetailItemRenderer<DetailItem, Data> mock = createStrictMock(ICellForDetailItemRenderer.class);
         Label labelMock = createNiceMock(Label.class);
         for (Data d : data) {
             for (DetailItem item : detailItems) {
@@ -179,7 +179,7 @@ public class OnDetailItemsRowRendererTest {
     public void theCreatedComponentsAreAddedToTheParents() {
         givenData();
         givenDetailItems();
-        ICellForDetailItemRenderer<Data> mock = createMock(ICellForDetailItemRenderer.class);
+        ICellForDetailItemRenderer<DetailItem, Data> mock = createMock(ICellForDetailItemRenderer.class);
         Label labelMock = expectTheCreatedLabelIsAddedToTheRow(mock);
         givenOnDetailItemsRowRenderer(mock);
 
@@ -189,7 +189,7 @@ public class OnDetailItemsRowRendererTest {
     }
 
     private Label expectTheCreatedLabelIsAddedToTheRow(
-            ICellForDetailItemRenderer<Data> mock) {
+            ICellForDetailItemRenderer<DetailItem, Data> mock) {
         Label labelMock = createStrictMock(Label.class);
         for (Data d : data) {
             for (DetailItem item : detailItems) {
