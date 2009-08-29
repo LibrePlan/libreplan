@@ -408,3 +408,15 @@ tr.z-vbox-sep {
 	position: absolute;
 	left: 285px;
 }
+/* Advanced resources assignment */
+
+.timetrackedTableWithLeftPane {
+	width: 1000px;
+}
+.leftPaneOfTimeTrackedTable {
+	width: 390px;
+}
+#timetrackedtable {
+	width: 600px;
+	overflow: auto;
+}
