@@ -1,5 +1,6 @@
 <zk>
-<grid width="${top.horizontalSize+2}" model="${top.tableModel}">
+<grid width="${top.horizontalSize+2}" model="${top.tableModel}"
+    rowRenderer="${top.rowRenderer}">
     <columns>
         <column label="${each.name}" width="${each.size}"
                     forEach="${top.detailsSecondLevel}"></column>
