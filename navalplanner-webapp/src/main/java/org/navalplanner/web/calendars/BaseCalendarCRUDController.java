@@ -2,12 +2,14 @@ package org.navalplanner.web.calendars;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
@@ -598,10 +600,10 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         LocalDate minDate = currentDate.dayOfMonth().withMinimumValue();
         LocalDate maxDate = currentDate.dayOfMonth().withMaximumValue();
 
-        String ancestorExceptionsDays = "";
-        String ownExceptionDays = "";
-        String zeroHoursDays = "";
-        String normalDays = "";
+        List<Integer> ancestorExceptionsDays = new ArrayList<Integer>();
+        List<Integer> ownExceptionDays = new ArrayList<Integer>();
+        List<Integer> zeroHoursDays = new ArrayList<Integer>();
+        List<Integer> normalDays = new ArrayList<Integer>();
 
         for (LocalDate date = minDate; date.compareTo(maxDate) <= 0; date = date
                 .plusDays(1)) {
@@ -609,42 +611,32 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             if (typeOfDay != null) {
                 switch (typeOfDay) {
                 case ANCESTOR_EXCEPTION:
-                    ancestorExceptionsDays += date.getDayOfMonth() + ",";
+                    ancestorExceptionsDays.add(date.getDayOfMonth());
                     break;
                 case OWN_EXCEPTION:
-                    ownExceptionDays += date.getDayOfMonth() + ",";
+                    ownExceptionDays.add(date.getDayOfMonth());
                     break;
                 case ZERO_HOURS:
-                    zeroHoursDays += date.getDayOfMonth() + ",";
+                    zeroHoursDays.add(date.getDayOfMonth());
                     break;
                 case NORMAL:
                 default:
-                    normalDays += date.getDayOfMonth() + ",";
+                    normalDays.add(date.getDayOfMonth());
                     break;
                 }
             }
         }
 
-        ancestorExceptionsDays = removeLastCommaIfNeeded(ancestorExceptionsDays);
-        ownExceptionDays = removeLastCommaIfNeeded(ownExceptionDays);
-        zeroHoursDays = removeLastCommaIfNeeded(zeroHoursDays);
-        normalDays = removeLastCommaIfNeeded(normalDays);
-
         Map<DayType, String> result = new HashMap<DayType, String>();
 
-        result.put(DayType.ANCESTOR_EXCEPTION, ancestorExceptionsDays);
-        result.put(DayType.OWN_EXCEPTION, ownExceptionDays);
-        result.put(DayType.ZERO_HOURS, zeroHoursDays);
-        result.put(DayType.NORMAL, normalDays);
+        result.put(DayType.ANCESTOR_EXCEPTION, StringUtils.join(
+                ancestorExceptionsDays, ","));
+        result.put(DayType.OWN_EXCEPTION, StringUtils.join(ownExceptionDays,
+                ","));
+        result.put(DayType.ZERO_HOURS, StringUtils.join(zeroHoursDays, ","));
+        result.put(DayType.NORMAL, StringUtils.join(normalDays, ","));
 
         return result;
-    }
-
-    private String removeLastCommaIfNeeded(String string) {
-        if (string.length() > 0) {
-            string = string.substring(0, string.length() - 1);
-        }
-        return string;
     }
 
     public String getAncestorExceptionDays() {
@@ -742,17 +734,17 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             item.appendChild(expiringDateListcell);
 
             Listcell summaryListcell = new Listcell();
-            String summary = "";
+            List<String> summary = new ArrayList<String>();
             for (Days day : Days.values()) {
                 Integer hours = calendar.getHours(day);
                 if (hours == null) {
-                    summary += "D - ";
+                    summary.add("D");
                 } else {
-                    summary += hours + " - ";
+                    summary.add(hours.toString());
                 }
             }
-            summary = summary.substring(0, summary.length() - 3);
-            summaryListcell.appendChild(new Label(summary));
+            summaryListcell.appendChild(new Label(StringUtils.join(summary,
+                    " - ")));
             item.appendChild(summaryListcell);
 
             Listcell buttonListcell = new Listcell();
