@@ -54,17 +54,36 @@ public class WorkerSearchController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
+        initController();
+    }
 
+    /**
+     * Initializes ZUL components
+     */
+    private void initController() {
         // Add event listener onSelect to criterionsTree widget
-        criterionsTree.addEventListener("onSelect", new EventListener() {
+        Tree tree = (Tree) self.getFellowIfAny("criterionsTree");
+        if (tree != null) {
+            tree.addEventListener("onSelect", new EventListener() {
 
-            // Whenever an element of the tree is selected, a search query
-            // is executed, refreshing the results into the workers listbox
-            @Override
-            public void onEvent(Event event) throws Exception {
-                searchWorkers(txtName.getValue(), getSelectedCriterions());
-            }
-        });
+                // Whenever an element of the tree is selected, a search query
+                // is executed, refreshing the results into the workers listbox
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    searchWorkers(txtName.getValue(), getSelectedCriterions());
+                }
+            });
+        }
+
+        // Feed criterionsTree with criterions
+        if (criterionsTree.getModel() == null) {
+            criterionsTree.setModel(getCriterions());
+        }
+
+        // Set renderer for listboxWorkers
+        if (listBoxWorkers.getItemRenderer() == null) {
+            listBoxWorkers.setItemRenderer(getListitemRenderer());
+        }
     }
 
     /**
