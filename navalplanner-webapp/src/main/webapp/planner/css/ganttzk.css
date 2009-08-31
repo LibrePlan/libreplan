@@ -414,9 +414,12 @@ tr.z-vbox-sep {
 	width: 1000px;
 }
 .leftPaneOfTimeTrackedTable {
+	margin-top: 45px;
 	width: 390px;
+	float: left;
 }
 #timetrackedtable {
+	float: right;
 	width: 600px;
 	overflow: auto;
 }

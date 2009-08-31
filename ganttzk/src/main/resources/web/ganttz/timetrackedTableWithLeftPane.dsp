@@ -6,6 +6,8 @@
 <div id="${self.uuid}" class="timetrackedTableWithLeftPane"
     z.type="ganttz.timetrackedTableWithLeftPane.TimeTrackedTableWithLeftPane"
     ${self.outerAttrs}">
-    ${z:redraw(self.leftPane, null)}
+    <div class="leftPaneOfTimeTrackedTable">
+        ${z:redraw(self.leftPane, null)}
+    </div>
     ${z:redraw(self.timeTrackedTable, null)}
 </div>

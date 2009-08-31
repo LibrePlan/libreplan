@@ -33,7 +33,6 @@ public class TimeTrackedTableWithLeftPane<A, B> extends Div {
                 dataForTimeTracker(dataSource), cellRendererForTimeTracker,
                 timeTracker, "timetrackedtable");
         leftPane = new Grid();
-        leftPane.setSclass("leftPaneOfTimeTrackedTable");
         zoomLevelListener = new IZoomLevelChangedListener() {
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
