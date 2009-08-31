@@ -15,16 +15,16 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
-public class ScriptExtractorTest {
+public class ScriptExtractionTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void aClassWithoutScriptRequiredAnnotationIsNotIncluded() {
-        ScriptExtractor.extractFrom(String.class);
+        ScriptDependenciesSorter.extractFrom(String.class);
     }
 
     @Test
     public void onlyPublicStringFieldsAreIncluded() {
-        List<ScriptDependency> scripts = ScriptExtractor
+        List<ScriptDependency> scripts = ScriptDependenciesSorter
                 .extractFrom(ScriptsDeclarationsExample.class);
         assertThat(scripts.size(), equalTo(2));
         assertThat(scripts,
@@ -33,7 +33,7 @@ public class ScriptExtractorTest {
 
     @Test
     public void testIncludesDependencies() {
-        List<ScriptDependency> scripts = ScriptExtractor
+        List<ScriptDependency> scripts = ScriptDependenciesSorter
                 .extractFrom(ScriptsDeclarationsExample.class);
         assertThat(scripts, each(withDependencies(ScriptIncludedExample.base,
                 ScriptIncludedExample.other)));
