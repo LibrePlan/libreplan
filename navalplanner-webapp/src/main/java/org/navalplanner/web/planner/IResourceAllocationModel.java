@@ -120,4 +120,11 @@ public interface IResourceAllocationModel {
      */
     void updateGanttTaskDuration();
 
+    /**
+     * Adds {@link SpecificResourceAllocation} to {@link Task}
+     *
+     * @param worker
+     */
+    void addSpecificResourceAllocation(Worker worker);
+
 }

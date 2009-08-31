@@ -1,5 +1,6 @@
 package org.navalplanner.web.planner;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -184,6 +185,15 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         taskElementDAO.save(task);
         task.getDuration();
         ganttTask.setEndDate(task.getEndDate());
+    }
+
+    @Override
+    public void addSpecificResourceAllocation(Worker worker) {
+        SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation
+                .create(task);
+        resourceAllocation.setWorker(worker);
+        resourceAllocation.setPercentage(new BigDecimal(1));
+        task.addResourceAllocation(resourceAllocation);
     }
 
 }

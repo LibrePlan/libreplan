@@ -1,6 +1,9 @@
 package org.navalplanner.web.planner;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -9,6 +12,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.WorkerSearch;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
@@ -16,19 +20,16 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Controller for {@link ResourceAllocation} view.
@@ -41,7 +42,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private IResourceAllocationModel resourceAllocationModel;
 
-    private ResourceAllocationListitemRender resourceAllocationRenderer = new ResourceAllocationListitemRender();
+    private ResourceAllocationRenderer resourceAllocationRenderer = new ResourceAllocationRenderer();
 
     private Listbox resourcesList;
 
@@ -64,7 +65,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return resourceAllocationModel.getResourceAllocations();
     }
 
-    public ResourceAllocationListitemRender getResourceAllocationRenderer() {
+    public ResourceAllocationRenderer getResourceAllocationRenderer() {
         return resourceAllocationRenderer;
     }
 
@@ -126,92 +127,136 @@ public class ResourceAllocationController extends GenericForwardComposer {
         window.setVisible(false);
     }
 
+    public void showSearchResources(Event e) {
+        WorkerSearch workerSearch = new WorkerSearch();
+        workerSearch.setParent(self.getParent());
+        workerSearch.afterCompose();
+
+        Window window = workerSearch.getWindow();
+        try {
+            window.doModal();
+        } catch (SuspendNotAllowedException e1) {
+            e1.printStackTrace();
+            return;
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+            return;
+        }
+
+        // Get selected workers and add specificResourceAllocations
+        List<Worker> workers = workerSearch.getWorkers();
+        for (Worker worker : workers) {
+            resourceAllocationModel.addSpecificResourceAllocation(worker);
+        }
+
+        Util.reloadBindings(resourcesList);
+    }
+
     /**
-     * Renders every {@link ResourceAllocation} showing a form to modify its
-     * information.
      *
-     * @author Manuel Rego Casasnovas <mrego@igalia.com>
+     * Renders a {@link SpecificResourceAllocation} item
+     *
+     * @author Diego Pino Garcia <dpino@igalia.com>
+     *
      */
-    public class ResourceAllocationListitemRender implements ListitemRenderer {
+    private class ResourceAllocationRenderer implements ListitemRenderer {
 
         @Override
         public void render(Listitem item, Object data) throws Exception {
-            final ResourceAllocation resourceAllocation = (ResourceAllocation) data;
+            final SpecificResourceAllocation resourceAllocation = (SpecificResourceAllocation) data;
+
             item.setValue(resourceAllocation);
 
-            resourceAllocationModel.setResourceAllocation(resourceAllocation);
-
-            final Worker worker = resourceAllocationModel.getWorker();
-
-            Listcell cellResource = new Listcell();
-            final Textbox resourceTextbox = new Textbox();
-            Util.bind(
-                resourceTextbox, new Util.Getter<String>() {
-
-                    @Override
-                public String get() {
-                    if (worker == null) {
-                        return "";
-                        }
-                        return worker.getNif();
-                }
-            }, new Util.Setter<String>() {
-
-                    @Override
-                public void set(String value) {
-                    Worker worker = resourceAllocationModel
-                            .findWorkerByNif(value);
-                    if (worker == null) {
-                        throw new WrongValueException(resourceTextbox,
-                                _("Worker not found"));
-                    } else {
-                        resourceAllocationModel
-                                .setWorker(
-                                        (SpecificResourceAllocation) resourceAllocation,
-                                        worker);
-                        }
-                    }
-            });
-            resourceTextbox.addEventListener(Events.ON_CHANGE,
+            // Label fields are fixed, can only be viewed
+            appendLabel(item, resourceAllocation.getWorker().getName());
+            appendLabel(item, resourceAllocation.getWorker().getNif());
+            // Pecentage field is editable
+            bindPercentage(appendDecimalbox(item), resourceAllocation);
+            // On click delete button
+            appendButton(item, _("Delete")).addEventListener("onClick",
                     new EventListener() {
 
                         @Override
                         public void onEvent(Event event) throws Exception {
+                            resourceAllocationModel
+                                    .removeResourceAllocation(resourceAllocation);
                             Util.reloadBindings(resourcesList);
                         }
                     });
-            cellResource.appendChild(resourceTextbox);
-            cellResource.setParent(item);
+        }
 
-            Listcell cellPercentage = new Listcell();
-            cellPercentage.appendChild(Util.bind(
-                    new Decimalbox(),
-                    new Util.Getter<BigDecimal>() {
+        /**
+         * Appends {@link Label} to {@link Listitem}
+         *
+         * @param listitem
+         * @param name value for {@link Label}
+         */
+        private void appendLabel(Listitem listitem, String name) {
+            Label label = new Label(name);
 
-                        @Override
-                        public BigDecimal get() {
-                            return resourceAllocation.getPercentage().scaleByPowerOfTen(2);
-                        }
-                    }, new Util.Setter<BigDecimal>() {
+            Listcell listCell = new Listcell();
+            listCell.appendChild(label);
+            listitem.appendChild(listCell);
+        }
 
-                        @Override
-                        public void set(BigDecimal value) {
-                           resourceAllocation.setPercentage(value.setScale(2).divide(new BigDecimal(100),BigDecimal.ROUND_DOWN));
-                        }
-                    }));
-            cellPercentage.setParent(item);
+        /**
+         * Appends {@link Button} to {@link Listitem}
+         *
+         * @param listitem
+         * @param label value for {@link Button}
+         * @return
+         */
+        private Button appendButton(Listitem listitem, String label) {
+            Button button = new Button(label);
 
-            Listcell cellMessage = new Listcell();
-            String message = "";
+            Listcell listCell = new Listcell();
+            listCell.appendChild(button);
+            listitem.appendChild(listCell);
 
-            if (worker != null) {
-                if (!resourceAllocationModel.workerSatisfiesCriterions()) {
-                    message = _("The worker does not satisfy the criterions");
+            return button;
+        }
+
+        /**
+         * Append a Textbox @{link Percentage} to listItem
+         *
+         * @param listItem
+         */
+        private Decimalbox appendDecimalbox(Listitem item) {
+            Decimalbox decimalbox = new Decimalbox();
+
+            // Insert textbox in listcell and append to listItem
+            Listcell listCell = new Listcell();
+            listCell.appendChild(decimalbox);
+            item.appendChild(listCell);
+
+            return decimalbox;
+        }
+
+        /**
+         * Binds Textbox @{link Percentage} to a {@link ResourceAllocation}
+         * {@link Percentage}
+         *
+         * @param txtPercentage
+         * @param resourceAllocation
+         */
+        private void bindPercentage(final Decimalbox decimalbox,
+                final ResourceAllocation resourceAllocation) {
+            Util.bind(decimalbox, new Util.Getter<BigDecimal>() {
+
+                @Override
+                public BigDecimal get() {
+                    return resourceAllocation.getPercentage().scaleByPowerOfTen(2);
                 }
-            }
 
-            cellMessage.appendChild(new Label(message));
-            cellMessage.setParent(item);
+            }, new Util.Setter<BigDecimal>() {
+
+                @Override
+                public void set(BigDecimal value) {
+                    resourceAllocation
+                            .setPercentage(value.setScale(2).divide(
+                            new BigDecimal(100), BigDecimal.ROUND_DOWN));
+                }
+            });
         }
     }
 }

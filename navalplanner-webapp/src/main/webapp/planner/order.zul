@@ -6,6 +6,11 @@
 <?link rel="stylesheet" type="text/css" href="/planner/css/ganttzk.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+
+<?component name="workerSearch"
+    class="org.navalplanner.web.common.components.WorkerSearch"
+    macroURI="/resources/search/worker_search.zul" ?>
+
 <zk>
 
     <zscript><![CDATA[
@@ -55,34 +60,40 @@
         <button id="ok" label="${i18n:_('Accept')}" />
     </popup>
 
-    <window id="resourceAllocationWindow" visible="false" apply="${allocationController}">
-        <vbox>
-            <label value="${i18n:_('Required criterions')}" />
-            <listbox id="requiredCriterions"
-                model="@{allocationController.criterions}">
-               <listitem self="@{each='criterion'}">
-                    <listcell label="@{criterion.name}"></listcell>
-                </listitem>
-            </listbox>
-            <label id="requiredCriterionsEmpty" value="${i18n:_('None')}" visible="false" />
-            <hbox>
-                <button id="addResourceAllocation" label="${i18n:_('Add')}"
-                    onClick="allocationController.addResourceAllocation();" />
-                <button id="removeResourceAllocation" label="${i18n:_('Delete')}"
-                    onClick="allocationController.removeResourceAllocation();" />
-            </hbox>
-            <listbox id="resourcesList"
-                model="@{allocationController.resourceAllocations}"
-                itemRenderer="@{allocationController.resourceAllocationRenderer}">
-                <listhead>
-                    <listheader label="${i18n:_('Resource')}" />
-                    <listheader label="${i18n:_('Percentage')}" />
-                    <listheader label="${i18n:_('Message')}" />
-                </listhead>
-            </listbox>
-            <button id="closeResourceAllocationWindow" label="${i18n:_('Back')}"
-                onClick="allocationController.back();" />
-        </vbox>
+    <window id="resourceAllocationWindow" self="@{define(content)}"
+        apply="${allocationController}"
+        title="${i18n:_('Resource allocation')}" width="600px"
+        closable="true" visible="false">
+        <tabbox>
+            <tabs>
+                <tab
+                    label="${i18n:_('Specific resource allocation')}">
+                </tab>
+            </tabs>
+
+            <tabpanels>
+                <tabpanel>
+                    <listbox id="resourcesList"
+                        model="@{allocationController.resourceAllocations}"
+                        itemRenderer="@{allocationController.resourceAllocationRenderer}">
+                        <listhead>
+                            <listheader label="${i18n:_('Name')}" />
+                            <listheader label="${i18n:_('NIF')}" />
+                            <listheader label="${i18n:_('Percentage')}" />
+                            <listheader label="" />
+                        </listhead>
+                    </listbox>
+                </tabpanel>
+            </tabpanels>
+        </tabbox>
+
+        <hbox>
+            <button label="${i18n:_('Save')}" />
+            <button label="${i18n:_('Cancel')}" />
+            <button label="${i18n:_('Search resources...')}"
+                onClick="allocationController.showSearchResources(event)" />
+            <button label="${i18n:_('Advance allocation')}" />
+        </hbox>
     </window>
 
     <window id="splittingWindow" visible="false" apply="${splittingTaskController}" minwidth="${400}" >
