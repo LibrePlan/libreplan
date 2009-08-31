@@ -12,7 +12,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 
-public class ScriptDependenciesSorter {
+public class ScriptDependenciesSorter implements IScriptsRegister {
 
     private List<ScriptDependency> allScripts = new ArrayList<ScriptDependency>();
 
@@ -105,6 +105,12 @@ public class ScriptDependenciesSorter {
             }
         }
         return stringFields;
+    }
+
+    @Override
+    public void register(Class<?> klassContainingScripts)
+            throws IllegalArgumentException {
+        addAll(extractFrom(klassContainingScripts));
     }
 
 }
