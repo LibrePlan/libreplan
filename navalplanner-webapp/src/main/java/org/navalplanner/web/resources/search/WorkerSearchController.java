@@ -8,6 +8,7 @@ import java.util.Set;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.common.components.WorkerSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -161,7 +162,19 @@ public class WorkerSearchController extends GenericForwardComposer {
 
     public void onAccept(Event event) {
         self.setVisible(false);
+        ((WorkerSearch) self.getParent()).setWorkers(getSelectedWorkers());
         clearAll();
+    }
+
+    private List<Worker> getSelectedWorkers() {
+        List<Worker> result = new ArrayList<Worker>();
+
+        Set<Listitem> selectedItems = listBoxWorkers.getSelectedItems();
+        for (Listitem item : selectedItems) {
+            Worker worker = (Worker) item.getValue();
+            result.add(worker);
+        }
+        return result;
     }
 
     /**
