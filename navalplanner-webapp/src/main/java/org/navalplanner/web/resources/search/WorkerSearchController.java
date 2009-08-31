@@ -155,7 +155,6 @@ public class WorkerSearchController extends GenericForwardComposer {
          */
         @Override
         public String toString() {
-            System.out.println("### toString:" + getData());
             if (getData() instanceof CriterionType) {
                 return ((CriterionType) getData()).getName();
             }

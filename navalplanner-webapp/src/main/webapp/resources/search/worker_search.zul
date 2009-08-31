@@ -11,34 +11,31 @@
         apply="org.navalplanner.web.resources.search.WorkerSearchController"
         class="resource_search">
 
-        <vbox id="messagesContainer">
-        </vbox>
+        <hbox style="margin-top: 3px">
+            <vbox style="margin-right: 5px">
+                <!-- Name  -->
+                <label value="${i18n:_('Name/ID')}" />
+                <textbox id="txtName" onChanging="controller.searchWorkers(event)"/>
 
-		<hbox style="margin-top: 3px">
-			<vbox style="margin-right: 5px">
-				<!-- Name  -->
-				<label value="${i18n:_('Name/ID')}" />
-				<textbox id="txtName" onChanging="controller.searchWorkers(event)"/>
-
-		        <!-- Criterions -->
-		        <label value="${i18n:_('Criterions')}" />
+                <!-- Criterions -->
+                <label value="${i18n:_('Criterions')}" />
                 <tree id="criterionsTree" width="280px" model="@{controller.criterions}" multiple="true">
                     <treecols>
                         <treecol label="Name" />
                     </treecols>
                 </tree>
-			</vbox>
+            </vbox>
 
-			<vbox>
-				<!--Matchings -->
-				<listbox id="listBoxWorkers" width="200px" mold="paging"
-					pageSize="10" rows="10" itemRenderer="@{controller.listitemRenderer}">
-					<listhead>
-						<listheader label="${i18n:_('Found workers')}" sort="auto"/>
-					</listhead>
-				</listbox>
-			</vbox>
-		</hbox>
+            <vbox>
+                <!--Matchings -->
+                <listbox id="listBoxWorkers" width="200px" mold="paging"
+                    pageSize="10" rows="10" itemRenderer="@{controller.listitemRenderer}">
+                    <listhead>
+                        <listheader label="${i18n:_('Found workers')}" sort="auto"/>
+                    </listhead>
+                </listbox>
+            </vbox>
+        </hbox>
 
     </window>
 </zk>
