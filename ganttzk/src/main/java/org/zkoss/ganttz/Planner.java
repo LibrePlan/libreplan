@@ -15,7 +15,8 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.extensions.ITabFactory;
-import org.zkoss.ganttz.util.MenuItemsRegisterLocator;
+import org.zkoss.ganttz.util.IMenuItemsRegister;
+import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.impl.XulElement;
 
@@ -114,8 +115,7 @@ public class Planner extends XulElement {
         this.context = context;
         clear();
         context.add(configuration.getData());
-        visualizeTabs(context, configuration
-                .getTabFactories());
+        visualizeTabs(context, configuration.getTabFactories());
     }
 
     private <T> TabsRegistry createTabs(IContext<T> context,
@@ -141,9 +141,13 @@ public class Planner extends XulElement {
     }
 
     private void registryTabs(TabsRegistry tabs) {
-        if (!MenuItemsRegisterLocator.isRegistered())
+        if (!getMenuItemsRegisterLocator().isRegistered())
             return;
-        tabs.registerAtMenu(MenuItemsRegisterLocator.retrieve());
+        tabs.registerAtMenu(getMenuItemsRegisterLocator().retrieve());
+    }
+
+    private OnZKDesktopRegistry<IMenuItemsRegister> getMenuItemsRegisterLocator() {
+        return OnZKDesktopRegistry.getLocatorFor(IMenuItemsRegister.class);
     }
 
     private void clear() {

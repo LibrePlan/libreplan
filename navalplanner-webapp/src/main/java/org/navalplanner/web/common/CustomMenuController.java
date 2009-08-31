@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.ganttz.util.IMenuItemsRegister;
-import org.zkoss.ganttz.util.MenuItemsRegisterLocator;
+import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Events;
@@ -70,7 +70,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     public CustomMenuController() {
         initializeMenu();
-        MenuItemsRegisterLocator.store(this);
+        getLocator().store(this);
+    }
+
+    private OnZKDesktopRegistry<IMenuItemsRegister> getLocator() {
+        return OnZKDesktopRegistry.getLocatorFor(IMenuItemsRegister.class);
     }
 
     public void initializeMenu() {
