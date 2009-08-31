@@ -40,6 +40,12 @@ public class WorkerSearchController extends GenericForwardComposer {
 
     private WorkerListRenderer workerListRenderer = new WorkerListRenderer();
 
+    private Textbox txtName;
+
+    private Tree criterionsTree;
+
+    private Listbox listBoxWorkers;
+
     public WorkerSearchController() {
 
     }
@@ -50,22 +56,15 @@ public class WorkerSearchController extends GenericForwardComposer {
         comp.setVariable("controller", this, true);
 
         // Add event listener onSelect to criterionsTree widget
-        Tree tree = (Tree) self.getFellowIfAny("criterionsTree");
-        if (tree != null) {
-            tree.addEventListener("onSelect", new EventListener() {
+        criterionsTree.addEventListener("onSelect", new EventListener() {
 
-                // Whenever an element of the tree is selected, a search query
-                // is executed, refreshing the results into the workers listbox
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    Textbox txtBox = (Textbox) self.getFellowIfAny("txtName");
-                    if (txtBox != null) {
-                        searchWorkers(txtBox.getValue(),
-                                getSelectedCriterions());
-                    }
-                }
-            });
-        }
+            // Whenever an element of the tree is selected, a search query
+            // is executed, refreshing the results into the workers listbox
+            @Override
+            public void onEvent(Event event) throws Exception {
+                searchWorkers(txtName.getValue(), getSelectedCriterions());
+            }
+        });
     }
 
     /**
@@ -105,17 +104,15 @@ public class WorkerSearchController extends GenericForwardComposer {
     private List<Criterion> getSelectedCriterions() {
         List<Criterion> result = new ArrayList<Criterion>();
 
-        Tree tree = (Tree) self.getFellowIfAny("criterionsTree");
-        if (tree != null) {
-            Set<Treeitem> selectedItems = tree.getSelectedItems();
-            for (Treeitem item : selectedItems) {
-                CriterionTreeNode node = (CriterionTreeNode) item.getValue();
+        Set<Treeitem> selectedItems = criterionsTree.getSelectedItems();
+        for (Treeitem item : selectedItems) {
+            CriterionTreeNode node = (CriterionTreeNode) item.getValue();
 
-                if (node.getData() instanceof Criterion) {
-                    result.add((Criterion) node.getData());
-                }
+            if (node.getData() instanceof Criterion) {
+                result.add((Criterion) node.getData());
             }
         }
+
         return result;
     }
 
@@ -126,11 +123,7 @@ public class WorkerSearchController extends GenericForwardComposer {
      *            array of {@link Worker}
      */
     private void refreshListBoxWorkers(Worker[] workers) {
-        Listbox listbox = (Listbox) self.getFellowIfAny("listBoxWorkers");
-
-        if (listbox != null) {
-            listbox.setModel(new SimpleListModel(workers));
-        }
+        listBoxWorkers.setModel(new SimpleListModel(workers));
     }
 
     public WorkerListRenderer getListitemRenderer() {
