@@ -14,6 +14,15 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 public class ScriptDependency {
 
+    public static List<String> getOnlyURLs(
+            Collection<? extends ScriptDependency> dependencies) {
+        List<String> result = new ArrayList<String>();
+        for (ScriptDependency scriptDependency : dependencies) {
+            result.add(scriptDependency.getURL());
+        }
+        return result;
+    }
+
     private final String url;
     private final List<ScriptDependency> dependsOn;
 
@@ -50,6 +59,11 @@ public class ScriptDependency {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(url).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return url;
     }
 
 }
