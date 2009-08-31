@@ -2,10 +2,6 @@
     apply="org.navalplanner.web.resources.search.WorkerSearchController"
     title="${i18n:_('Search worker')}" closable="true" visible="false">
 
-<window self="@{define(content)}"
-    apply="org.navalplanner.web.resources.search.WorkerSearchController"
-    class="resource_search">
-
 	<hbox style="margin-top: 3px">
 		<vbox style="margin-right: 5px">
 			<!-- Name  -->
