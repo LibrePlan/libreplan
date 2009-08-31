@@ -36,4 +36,9 @@
 		</vbox>
 	</hbox>
 
+	<hbox>
+        <button style="margin-top: 5px" label="${i18n:_('Accept')}"
+            onClick="controller.onAccept(event)" />
+    </hbox>
+
 </window>

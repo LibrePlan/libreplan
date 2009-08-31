@@ -149,6 +149,21 @@ public class WorkerSearchController extends GenericForwardComposer {
         return workerListRenderer;
     }
 
+    public void onClose() {
+        clearAll();
+    }
+
+    private void clearAll() {
+        txtName.setValue("");
+        listBoxWorkers.setModel(new SimpleListModel(new ArrayList<Worker>()));
+        criterionsTree.setModel(getCriterions());
+    }
+
+    public void onAccept(Event event) {
+        self.setVisible(false);
+        clearAll();
+    }
+
     /**
      * Encapsulates {@link SimpleTreeNode}
      *
