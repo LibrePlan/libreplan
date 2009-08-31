@@ -164,8 +164,4 @@ public class TimeTracker {
                 .toDateMidnight().toDate();
     }
 
-    public void forceNotifyZoom() {
-        fireZoomChanged();
-    }
-
 }

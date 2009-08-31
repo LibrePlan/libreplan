@@ -71,6 +71,6 @@ public class GanttPanel extends XulElement implements AfterCompose {
     }
 
     public void comingFromAnotherTab() {
-        timeTrackerComponent.getTimeTracker().forceNotifyZoom();
+        timeTrackerComponent.recreate();
     }
 }
