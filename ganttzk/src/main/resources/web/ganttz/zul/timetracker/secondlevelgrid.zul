@@ -1,6 +1,6 @@
 <zk>
 <grid width="${top.horizontalSize+2}" model="${top.tableModel}"
-    rowRenderer="${top.rowRenderer}">
+    rowRenderer="${top.rowRenderer}" fixedLayout="${true}">
     <columns>
         <column label="${each.name}" width="${each.size}"
                     forEach="${top.detailsSecondLevel}"></column>
