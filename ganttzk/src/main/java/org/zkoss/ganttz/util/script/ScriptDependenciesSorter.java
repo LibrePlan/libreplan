@@ -14,43 +14,6 @@ import org.apache.commons.lang.Validate;
 
 public class ScriptDependenciesSorter implements IScriptsRegister {
 
-    private List<ScriptDependency> allScripts = new ArrayList<ScriptDependency>();
-
-    public ScriptDependenciesSorter() {
-    }
-
-    public void add(ScriptDependency scriptDependency) {
-        addAll(Arrays.asList(scriptDependency));
-    }
-
-    public void addAll(List<ScriptDependency> dependencies) {
-        Validate.noNullElements(dependencies);
-        allScripts.addAll(dependencies);
-    }
-
-    public List<ScriptDependency> getScriptDependenciesOrderered() {
-        List<ScriptDependency> result = new ArrayList<ScriptDependency>();
-        Set<ScriptDependency> alreadyAdded = new HashSet<ScriptDependency>();
-        for (ScriptDependency scriptDependency : allScripts) {
-            result.addAll(extract(alreadyAdded, scriptDependency));
-        }
-        return Collections.unmodifiableList(result);
-    }
-
-    private List<ScriptDependency> extract(Set<ScriptDependency> alreadyAdded,
-            ScriptDependency scriptDependency) {
-        List<ScriptDependency> result = new ArrayList<ScriptDependency>();
-        if (alreadyAdded.contains(scriptDependency)) {
-            return result;
-        }
-        for (ScriptDependency d : scriptDependency.getDependsOn()) {
-            result.addAll(extract(alreadyAdded, d));
-        }
-        result.add(scriptDependency);
-        alreadyAdded.add(scriptDependency);
-        return result;
-    }
-
     public static List<ScriptDependency> extractFrom(Class<?> classWithScripts) {
         ScriptsRequiredDeclaration annotation = classWithScripts
                 .getAnnotation(ScriptsRequiredDeclaration.class);
@@ -104,6 +67,43 @@ public class ScriptDependenciesSorter implements IScriptsRegister {
             }
         }
         return stringFields;
+    }
+
+    private List<ScriptDependency> allScripts = new ArrayList<ScriptDependency>();
+
+    public ScriptDependenciesSorter() {
+    }
+
+    public void add(ScriptDependency scriptDependency) {
+        addAll(Arrays.asList(scriptDependency));
+    }
+
+    public void addAll(List<ScriptDependency> dependencies) {
+        Validate.noNullElements(dependencies);
+        allScripts.addAll(dependencies);
+    }
+
+    public List<ScriptDependency> getScriptDependenciesOrderered() {
+        List<ScriptDependency> result = new ArrayList<ScriptDependency>();
+        Set<ScriptDependency> alreadyAdded = new HashSet<ScriptDependency>();
+        for (ScriptDependency scriptDependency : allScripts) {
+            result.addAll(extract(alreadyAdded, scriptDependency));
+        }
+        return Collections.unmodifiableList(result);
+    }
+
+    private List<ScriptDependency> extract(Set<ScriptDependency> alreadyAdded,
+            ScriptDependency scriptDependency) {
+        List<ScriptDependency> result = new ArrayList<ScriptDependency>();
+        if (alreadyAdded.contains(scriptDependency)) {
+            return result;
+        }
+        for (ScriptDependency d : scriptDependency.getDependsOn()) {
+            result.addAll(extract(alreadyAdded, d));
+        }
+        result.add(scriptDependency);
+        alreadyAdded.add(scriptDependency);
+        return result;
     }
 
     @Override
