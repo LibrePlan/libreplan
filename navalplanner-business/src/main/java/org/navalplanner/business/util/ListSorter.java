@@ -61,7 +61,7 @@ public class ListSorter<T> {
      * @throws NoSuchElementException
      *             if there is no element e in list such e == element
      */
-    public void modify(T element) throws NoSuchElementException {
+    public void modified(T element) throws NoSuchElementException {
         int index = indexOfElement(element);
         if ((index == list.size()))
             throw new NoSuchElementException("not found: " + element);

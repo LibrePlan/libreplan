@@ -61,14 +61,14 @@ public class ListSorterTest {
         givenSortedList();
         DumbContainer first = initialElements.get(0);
         first.setData("D");
-        listSorter.modify(first);
+        listSorter.modified(first);
         assertThat(listSorter.toList(), equalTo(containers("B", "C", "D")));
     }
 
     @Test(expected = NoSuchElementException.class)
-    public void modifyCanOnlyBeCalledWithElementsWithSameReference() {
+    public void modifiedCanOnlyBeCalledWithElementsContained() {
         givenSortedList();
-        listSorter.modify(new DumbContainer("B"));
+        listSorter.modified(new DumbContainer("B"));
     }
 
     @Test(expected = IllegalArgumentException.class)
