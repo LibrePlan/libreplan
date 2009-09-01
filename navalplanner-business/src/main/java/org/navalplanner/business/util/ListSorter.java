@@ -50,7 +50,12 @@ public class ListSorter<T> {
         Collections.sort(this.list, this.comparator);
     }
 
-    public List<T> toList() {
+    /**
+     * Called to retrieve a view to a list that will be kept sorted and updated
+     * with modifications
+     * @return an unmodifiable view of the list. It's sorted
+     */
+    public List<T> toListView() {
         return Collections.unmodifiableList(list);
     }
 

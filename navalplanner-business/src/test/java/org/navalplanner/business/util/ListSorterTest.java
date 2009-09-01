@@ -39,7 +39,7 @@ public class ListSorterTest {
     @Test
     public void itSortsInitialElements() {
         givenSortedList();
-        assertThat(listSorter.toList(), equalTo(containers("A", "B", "C")));
+        assertThat(listSorter.toListView(), equalTo(containers("A", "B", "C")));
     }
 
     private static List<DumbContainer> containers(String... strings) {
@@ -53,7 +53,15 @@ public class ListSorterTest {
     @Test(expected = UnsupportedOperationException.class)
     public void theListReturnedCannotBeModified() {
         givenSortedList();
-        listSorter.toList().clear();
+        listSorter.toListView().clear();
+    }
+
+    @Test
+    public void theListKeepsTrackOfChanges() {
+        givenSortedList();
+        List<DumbContainer> listView = listSorter.toListView();
+        listSorter.add(new DumbContainer("D"));
+        assertThat(listView, equalTo(containers("A", "B", "C", "D")));
     }
 
     @Test
@@ -62,7 +70,7 @@ public class ListSorterTest {
         DumbContainer first = initialElements.get(0);
         first.setData("D");
         listSorter.modified(first);
-        assertThat(listSorter.toList(), equalTo(containers("B", "C", "D")));
+        assertThat(listSorter.toListView(), equalTo(containers("B", "C", "D")));
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -87,7 +95,7 @@ public class ListSorterTest {
     public void addInsertsAtRightPosition() {
         givenSortedList();
         listSorter.add(new DumbContainer("0"));
-        assertThat(listSorter.toList(), equalTo(containers("0", "A", "B", "C")));
+        assertThat(listSorter.toListView(), equalTo(containers("0", "A", "B", "C")));
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -100,7 +108,7 @@ public class ListSorterTest {
     public void removingExistent() {
         givenSortedList();
         listSorter.remove(initialElements.get(0));
-        assertThat(listSorter.toList(), equalTo(containers("B", "C")));
+        assertThat(listSorter.toListView(), equalTo(containers("B", "C")));
     }
 
 }
