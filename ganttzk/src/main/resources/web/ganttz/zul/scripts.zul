@@ -1,0 +1,8 @@
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+<zscript><![CDATA[
+top = self;
+]]>
+</zscript>
+<n:script type="text/javascript" src="${each.URL}" forEach="${top.scriptDependencies}" />
+</zk>
