@@ -11,6 +11,6 @@ public class ScriptsDeclarationsExample {
 
     public static int NOT_INCLUDED_BECAUSE_IS_NOT_STRING = 4;
 
-    private String NOT_INCLUDED_BECAUSE_IS_NOT_STATIC = "balbla/bladsfafa/ba.js";
+    public String NOT_INCLUDED_BECAUSE_IS_NOT_STATIC = "balbla/bladsfafa/ba.js";
 
 }
