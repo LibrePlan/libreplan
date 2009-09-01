@@ -17,6 +17,7 @@ import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.extensions.ITabFactory;
 import org.zkoss.ganttz.util.IMenuItemsRegister;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
+import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.impl.XulElement;
 
@@ -39,6 +40,12 @@ public class Planner extends XulElement {
     private FunctionalityExposedForExtensions<?> context;
 
     public Planner() {
+        registerNeededScripts();
+    }
+
+    private void registerNeededScripts() {
+        IScriptsRegister register = getScriptsRegister();
+        register.register(ScriptsRequiredByPlanner.class);
     }
 
     TaskList getTaskList() {
@@ -213,5 +220,10 @@ public class Planner extends XulElement {
         setHeight(getHeight());// forcing smart update
         taskList.adjustZoomColumnsHeight();
         getDependencyList().redrawDependencies();
+    }
+
+    private IScriptsRegister getScriptsRegister() {
+        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
+                .retrieve();
     }
 }
