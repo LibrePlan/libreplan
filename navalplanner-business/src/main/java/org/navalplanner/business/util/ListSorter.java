@@ -76,9 +76,8 @@ public class ListSorter<T> {
 
     private void insert(T element) {
         int position = Collections.binarySearch(list, element, comparator);
-        if (position < 0) {
-            position = (-position) - 1;
-        }
+        assert position < 0 : "the object must not be in the list";
+        position = (-position) - 1;
         list.add(position, element);
     }
 
