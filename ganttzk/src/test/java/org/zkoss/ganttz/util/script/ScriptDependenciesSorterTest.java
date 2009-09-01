@@ -52,8 +52,9 @@ public class ScriptDependenciesSorterTest {
                 .asList(new ScriptDependency("B"))));
         scriptDependenciesSorter.add(new ScriptDependency("C", Arrays
                 .asList(new ScriptDependency("B"))));
+        scriptDependenciesSorter.add(new ScriptDependency("D"));
         assertThat(scriptDependenciesSorter.getScriptDependenciesOrderered(),
-                scriptsReturnedAre("B", "A", "C"));
+                scriptsReturnedAre("B", "A", "C", "D"));
     }
 
     private Matcher<List<ScriptDependency>> scriptsReturnedAre(String... urls) {

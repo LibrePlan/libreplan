@@ -40,15 +40,14 @@ public class ScriptDependenciesSorter implements IScriptsRegister {
     private List<ScriptDependency> extract(Set<ScriptDependency> alreadyAdded,
             ScriptDependency scriptDependency) {
         List<ScriptDependency> result = new ArrayList<ScriptDependency>();
+        if (alreadyAdded.contains(scriptDependency)) {
+            return result;
+        }
         for (ScriptDependency d : scriptDependency.getDependsOn()) {
-            if (!alreadyAdded.contains(d)) {
-                result.addAll(extract(alreadyAdded, d));
-            }
+            result.addAll(extract(alreadyAdded, d));
         }
-        if (!alreadyAdded.contains(scriptDependency)) {
-            result.add(scriptDependency);
-            alreadyAdded.add(scriptDependency);
-        }
+        result.add(scriptDependency);
+        alreadyAdded.add(scriptDependency);
         return result;
     }
 
