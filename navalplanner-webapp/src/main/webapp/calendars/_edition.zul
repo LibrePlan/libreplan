@@ -108,6 +108,7 @@
         itemRenderer="@{controller.historyVersionsRenderer}">
         <listhead>
             <listheader label="${i18n:_('Name')}" />
+            <listheader label="${i18n:_('Parent')}" />
             <listheader label="${i18n:_('Valid from')}" />
             <listheader label="${i18n:_('Expiring Date')}" />
             <listheader label="${i18n:_('Summary')}" />

@@ -13,8 +13,7 @@ import org.junit.Test;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ExceptionDay;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
-import org.navalplanner.business.calendars.entities.BaseCalendar.Days;
-import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 
 /**
  * Tests for {@link BaseCalendar}.
@@ -82,16 +81,6 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createBasicCalendar();
         addChristmasAsExceptionDay(calendar);
         return calendar;
-    }
-
-    @Test
-    public void testValidCalendar() {
-        BaseCalendar calendar = createBasicCalendar();
-        try {
-            calendar.checkValid();
-        } catch (ValidationException e) {
-            fail("It should not throw an exception");
-        }
     }
 
     @Test
@@ -199,121 +188,76 @@ public class BaseCalendarTest {
     @Test
     public void testCreateNewVersion() {
         BaseCalendar calendar = createBasicCalendar();
-        BaseCalendar nextCalendar = calendar.newVersion((new LocalDate())
-                .plusDays(1));
+        calendar.newVersion((new LocalDate()).plusDays(1));
 
-        assertThat(calendar, equalTo(nextCalendar.getPreviousCalendar()));
-        assertThat(nextCalendar, equalTo(calendar.getNextCalendar()));
+        assertThat(calendar.getCalendarDataVersions().size(), equalTo(2));
     }
 
     @Test
     public void testCreateNewVersionPreservesName() {
         BaseCalendar calendar = createBasicCalendar();
-        BaseCalendar nextCalendar = calendar.newVersion((new LocalDate())
-                .plusDays(1));
+        String name = calendar.getName();
+        calendar.newVersion((new LocalDate()).plusDays(1));
 
-        assertThat(nextCalendar.getName(), equalTo(calendar.getName()));
+        assertThat(calendar.getName(), equalTo(name));
     }
 
     @Test
     public void testChangeNameForAllVersions() {
         BaseCalendar calendar = createBasicCalendar();
         calendar.setName("Test");
-        BaseCalendar nextCalendar = calendar.newVersion((new LocalDate())
-                .plusDays(1));
-
-        String name = "Name";
-        nextCalendar.setName(name);
-
-        assertThat(calendar.getName(), equalTo(name));
-        assertThat(nextCalendar.getName(), equalTo(name));
-    }
-
-    @Test
-    public void testChangeNameForAllVersionsWithThreeVersions() {
-        BaseCalendar calendar = createBasicCalendar();
-        calendar.setName("Test");
-        BaseCalendar nextCalendar = calendar.newVersion((new LocalDate())
-                .plusDays(1));
-        BaseCalendar nextCalendar2 = calendar.newVersion((new LocalDate())
-                .plusDays(2));
+        calendar.newVersion((new LocalDate()).plusDays(1));
 
         String name = "Name";
         calendar.setName(name);
 
         assertThat(calendar.getName(), equalTo(name));
-        assertThat(nextCalendar.getName(), equalTo(name));
-        assertThat(nextCalendar2.getName(), equalTo(name));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateInvalidNewVersion() {
-        BaseCalendar nextCalendar = createBasicCalendar().newVersion(
-                FRIDAY_LOCAL_DATE);
-
-        nextCalendar.newVersion(MONDAY_LOCAL_DATE);
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.newVersion(FRIDAY_LOCAL_DATE);
+        calendar.newVersion(MONDAY_LOCAL_DATE);
     }
 
     @Test
     public void testGettWorkableHoursNewVersion() {
-        BaseCalendar origCalendar = createBasicCalendar();
-        BaseCalendar newCalendar = origCalendar.newVersion(MONDAY_LOCAL_DATE);
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.newVersion(MONDAY_LOCAL_DATE);
 
-        newCalendar.setHours(Days.WEDNESDAY, 4);
-        newCalendar.setHours(Days.SUNDAY, 4);
+        calendar.setHours(Days.WEDNESDAY, 4);
+        calendar.setHours(Days.SUNDAY, 4);
 
-        int wednesdayHours = newCalendar.getWorkableHours(WEDNESDAY_LOCAL_DATE);
-        assertThat(wednesdayHours, equalTo(4));
-        assertThat(wednesdayHours, equalTo(origCalendar
-                .getWorkableHours(WEDNESDAY_LOCAL_DATE)));
+        assertThat(calendar.getWorkableHours(WEDNESDAY_LOCAL_DATE), equalTo(4));
 
-        int wednesdayHoursPastWeek = newCalendar
-                .getWorkableHours(WEDNESDAY_LOCAL_DATE.minusWeeks(1));
-        assertThat(wednesdayHoursPastWeek, equalTo(8));
-        assertThat(wednesdayHoursPastWeek, equalTo(origCalendar
-                .getWorkableHours(WEDNESDAY_LOCAL_DATE.minusWeeks(1))));
+        assertThat(calendar
+                .getWorkableHours(WEDNESDAY_LOCAL_DATE.minusWeeks(1)),
+                equalTo(8));
 
-        int sundayHours = newCalendar.getWorkableHours(SUNDAY_LOCAL_DATE);
-        assertThat(sundayHours, equalTo(4));
-        assertThat(sundayHours, equalTo(origCalendar
-                .getWorkableHours(SUNDAY_LOCAL_DATE)));
+        assertThat(calendar.getWorkableHours(SUNDAY_LOCAL_DATE), equalTo(4));
 
-        int sundayHoursPastWeek = newCalendar
-                .getWorkableHours(SUNDAY_LOCAL_DATE.minusWeeks(1));
-        assertThat(sundayHoursPastWeek, equalTo(0));
-        assertThat(sundayHoursPastWeek, equalTo(origCalendar
-                .getWorkableHours(SUNDAY_LOCAL_DATE.minusWeeks(1))));
+        assertThat(calendar.getWorkableHours(SUNDAY_LOCAL_DATE.minusWeeks(1)),
+                equalTo(0));
     }
 
     @Test
     public void testGettWorkableHoursNewVersionCheckingLimits() {
-        BaseCalendar origCalendar = createBasicCalendar();
-        BaseCalendar newCalendar = origCalendar.newVersion(MONDAY_LOCAL_DATE);
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.newVersion(MONDAY_LOCAL_DATE);
 
-        newCalendar.setHours(Days.MONDAY, 1);
-        newCalendar.setHours(Days.SUNDAY, 2);
+        calendar.setHours(Days.MONDAY, 1);
+        calendar.setHours(Days.SUNDAY, 2);
 
-        int mondayHours = newCalendar.getWorkableHours(MONDAY_LOCAL_DATE);
-        assertThat(mondayHours, equalTo(1));
-        assertThat(mondayHours, equalTo(origCalendar
-                .getWorkableHours(MONDAY_LOCAL_DATE)));
+        assertThat(calendar.getWorkableHours(MONDAY_LOCAL_DATE), equalTo(1));
 
-        int sundayHours = newCalendar.getWorkableHours(SUNDAY_LOCAL_DATE);
-        assertThat(sundayHours, equalTo(2));
-        assertThat(sundayHours, equalTo(origCalendar
-                .getWorkableHours(SUNDAY_LOCAL_DATE)));
+        assertThat(calendar.getWorkableHours(SUNDAY_LOCAL_DATE), equalTo(2));
 
-        int mondayHoursPastWeek = newCalendar
-                .getWorkableHours(MONDAY_LOCAL_DATE.minusWeeks(1));
-        assertThat(mondayHoursPastWeek, equalTo(8));
-        assertThat(mondayHoursPastWeek, equalTo(origCalendar
-                .getWorkableHours(MONDAY_LOCAL_DATE.minusWeeks(1))));
+        assertThat(calendar
+                .getWorkableHours(MONDAY_LOCAL_DATE.minusWeeks(1)), equalTo(8));
 
-        int pastSundayHours = newCalendar.getWorkableHours(MONDAY_LOCAL_DATE
-                .minusDays(1));
-        assertThat(pastSundayHours, equalTo(0));
-        assertThat(pastSundayHours, equalTo(origCalendar
-                .getWorkableHours(MONDAY_LOCAL_DATE.minusDays(1))));
+        assertThat(calendar.getWorkableHours(MONDAY_LOCAL_DATE
+                .minusDays(1)), equalTo(0));
     }
 
     @Test
@@ -334,35 +278,31 @@ public class BaseCalendarTest {
 
     @Test
     public void testRemoveExceptionDayNewVersionCalendar() {
-        BaseCalendar origCalendar = createChristmasCalendar();
-        BaseCalendar newCalendar = origCalendar.newVersion(MONDAY_LOCAL_DATE);
+        BaseCalendar calendar = createChristmasCalendar();
+        calendar.newVersion(MONDAY_LOCAL_DATE);
 
-        newCalendar.removeExceptionDay(CHRISTMAS_DAY_LOCAL_DATE);
+        calendar.removeExceptionDay(CHRISTMAS_DAY_LOCAL_DATE);
 
-        assertThat(origCalendar.getExceptions().size(), equalTo(1));
-        assertThat(newCalendar.getExceptions().size(), equalTo(0));
+        assertThat(calendar.getExceptions().size(), equalTo(0));
     }
 
     @Test
     public void testGettWorkableHoursNewVersionFromChristmasCalendar() {
-        BaseCalendar origCalendar = createChristmasCalendar();
+        BaseCalendar calendar = createChristmasCalendar();
         ExceptionDay day = ExceptionDay.create(CHRISTMAS_DAY_LOCAL_DATE
                 .plusYears(1), 0);
-        origCalendar.addExceptionDay(day);
+        calendar.addExceptionDay(day);
 
-        BaseCalendar newCalendar = origCalendar
-                .newVersion(CHRISTMAS_DAY_LOCAL_DATE.plusDays(1));
+        calendar.newVersion(CHRISTMAS_DAY_LOCAL_DATE.plusDays(1));
 
-        newCalendar
+        calendar
                 .updateExceptionDay(CHRISTMAS_DAY_LOCAL_DATE.plusYears(1), 8);
 
-        int christmasHours = newCalendar
-                .getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE.plusYears(1));
-        assertThat(christmasHours, equalTo(8));
+        assertThat(calendar
+                .getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE.plusYears(1)), equalTo(8));
 
-        int christmasHoursPastYear = newCalendar
-                .getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE);
-        assertThat(christmasHoursPastYear, equalTo(0));
+        assertThat(calendar
+                .getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE), equalTo(0));
     }
 
     public static void setHoursForAllDays(BaseCalendar calendar, Integer hours) {
@@ -380,32 +320,17 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createBasicCalendar();
         setHoursForAllDays(calendar, 8);
 
-        BaseCalendar calendar2 = calendar.newVersion(TUESDAY_LOCAL_DATE);
-        setHoursForAllDays(calendar2, 4);
+        calendar.newVersion(TUESDAY_LOCAL_DATE);
+        setHoursForAllDays(calendar, 4);
 
-        BaseCalendar calendar3 = calendar2.newVersion(FRIDAY_LOCAL_DATE);
-        setHoursForAllDays(calendar3, 2);
+        calendar.newVersion(FRIDAY_LOCAL_DATE);
+        setHoursForAllDays(calendar, 2);
 
-        int hoursMonday = calendar.getWorkableHours(MONDAY_LOCAL_DATE);
-        assertThat(hoursMonday, equalTo(8));
-        assertThat(calendar2.getWorkableHours(MONDAY_LOCAL_DATE),
-                equalTo(hoursMonday));
-        assertThat(calendar3.getWorkableHours(MONDAY_LOCAL_DATE),
-                equalTo(hoursMonday));
+        assertThat(calendar.getWorkableHours(MONDAY_LOCAL_DATE), equalTo(8));
 
-        int hoursWednesday = calendar.getWorkableHours(WEDNESDAY_LOCAL_DATE);
-        assertThat(hoursWednesday, equalTo(4));
-        assertThat(calendar2.getWorkableHours(WEDNESDAY_LOCAL_DATE),
-                equalTo(hoursWednesday));
-        assertThat(calendar3.getWorkableHours(WEDNESDAY_LOCAL_DATE),
-                equalTo(hoursWednesday));
+        assertThat(calendar.getWorkableHours(WEDNESDAY_LOCAL_DATE), equalTo(4));
 
-        int hoursFriday = calendar.getWorkableHours(FRIDAY_LOCAL_DATE);
-        assertThat(hoursFriday, equalTo(2));
-        assertThat(calendar2.getWorkableHours(FRIDAY_LOCAL_DATE),
-                equalTo(hoursFriday));
-        assertThat(calendar3.getWorkableHours(FRIDAY_LOCAL_DATE),
-                equalTo(hoursFriday));
+        assertThat(calendar.getWorkableHours(FRIDAY_LOCAL_DATE), equalTo(2));
 
     }
 
@@ -416,43 +341,31 @@ public class BaseCalendarTest {
         BaseCalendar calendar = baseCalendar.newDerivedCalendar();
         setHoursForAllDays(calendar, 4);
 
-        BaseCalendar newCalendar = calendar.newVersion(WEDNESDAY_LOCAL_DATE);
-        setHoursForAllDays(newCalendar, 2);
+        calendar.newVersion(WEDNESDAY_LOCAL_DATE);
+        setHoursForAllDays(calendar, 2);
 
-        int hoursMonday = baseCalendar.getWorkableHours(MONDAY_LOCAL_DATE);
-        assertThat(hoursMonday, equalTo(8));
+        assertThat(baseCalendar.getWorkableHours(MONDAY_LOCAL_DATE), equalTo(8));
 
-        hoursMonday = calendar.getWorkableHours(MONDAY_LOCAL_DATE);
-        assertThat(hoursMonday, equalTo(4));
-        assertThat(hoursMonday, equalTo(newCalendar
-                .getWorkableHours(MONDAY_LOCAL_DATE)));
+        assertThat(calendar.getWorkableHours(MONDAY_LOCAL_DATE), equalTo(4));
 
-        int hoursFriday = baseCalendar.getWorkableHours(FRIDAY_LOCAL_DATE);
-        assertThat(hoursFriday, equalTo(8));
+        assertThat(baseCalendar.getWorkableHours(FRIDAY_LOCAL_DATE), equalTo(8));
 
-        hoursFriday = calendar.getWorkableHours(FRIDAY_LOCAL_DATE);
-        assertThat(hoursFriday, equalTo(2));
-        assertThat(hoursFriday, equalTo(newCalendar
-                .getWorkableHours(FRIDAY_LOCAL_DATE)));
+        assertThat(calendar.getWorkableHours(FRIDAY_LOCAL_DATE), equalTo(2));
 
-        int christmasHours = newCalendar
-                .getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE);
-        assertThat(christmasHours, equalTo(0));
-        assertThat(christmasHours, equalTo(calendar
-                .getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE)));
+        assertThat(calendar.getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE),
+                equalTo(0));
     }
 
     @Test
     public void testAddExceptionToNewVersionCalendar() {
         BaseCalendar calendar = createBasicCalendar();
-        BaseCalendar newVersion = calendar.newVersion(CHRISTMAS_DAY_LOCAL_DATE
+        calendar.newVersion(CHRISTMAS_DAY_LOCAL_DATE
                 .plusDays(1));
 
         ExceptionDay day = ExceptionDay.create(CHRISTMAS_DAY_LOCAL_DATE, 0);
-        newVersion.addExceptionDay(day);
+        calendar.addExceptionDay(day);
 
         assertThat(calendar.getExceptions().size(), equalTo(1));
-        assertThat(newVersion.getExceptions().size(), equalTo(0));
         assertThat(calendar.getExceptions().iterator().next().getDate(),
                 equalTo(CHRISTMAS_DAY_LOCAL_DATE));
     }
@@ -576,8 +489,7 @@ public class BaseCalendarTest {
 
         assertThat(copy.getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE), equalTo(0));
         assertThat(copy.getParent(), equalTo(calendar));
-        assertThat(copy.getNextCalendar(), nullValue());
-        assertThat(copy.getPreviousCalendar(), nullValue());
+        assertThat(copy.getCalendarDataVersions().size(), equalTo(1));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -596,58 +508,35 @@ public class BaseCalendarTest {
 
         BaseCalendar calendar = parent1.newDerivedCalendar();
 
-        BaseCalendar newVersion = calendar.newVersion(WEDNESDAY_LOCAL_DATE);
-        newVersion.setParent(parent2);
+        calendar.newVersion(WEDNESDAY_LOCAL_DATE);
+        calendar.setParent(parent2);
 
-        assertThat(newVersion.getParent(), equalTo(parent2));
-        assertThat(newVersion.getPreviousCalendar().getParent(),
+        assertThat(calendar.getParent(), equalTo(parent2));
+        assertThat(calendar.getParent(MONDAY_LOCAL_DATE),
                 equalTo(parent1));
 
-        int mondayHours = newVersion.getWorkableHours(MONDAY_LOCAL_DATE);
-        assertThat(mondayHours, equalTo(8));
         assertThat(calendar.getWorkableHours(MONDAY_LOCAL_DATE),
-                equalTo(mondayHours));
+                equalTo(8));
 
-        int fridayHours = newVersion.getWorkableHours(FRIDAY_LOCAL_DATE);
-        assertThat(fridayHours, equalTo(4));
         assertThat(calendar.getWorkableHours(FRIDAY_LOCAL_DATE),
-                equalTo(fridayHours));
+                equalTo(4));
     }
 
     @Test
     public void testExceptionsInDifferentVersions() {
         BaseCalendar calendar = createBasicCalendar();
-        BaseCalendar newVersion = calendar.newVersion(WEDNESDAY_LOCAL_DATE);
+        calendar.newVersion(WEDNESDAY_LOCAL_DATE);
 
-        newVersion.addExceptionDay(ExceptionDay.create(MONDAY_LOCAL_DATE, 0));
-        newVersion.addExceptionDay(ExceptionDay.create(FRIDAY_LOCAL_DATE, 0));
+        calendar.addExceptionDay(ExceptionDay.create(MONDAY_LOCAL_DATE, 0));
+        calendar.addExceptionDay(ExceptionDay.create(FRIDAY_LOCAL_DATE, 0));
 
-        Integer mondayHours = newVersion.getWorkableHours(MONDAY_LOCAL_DATE);
-        assertThat(mondayHours, equalTo(0));
         assertThat(calendar.getWorkableHours(MONDAY_LOCAL_DATE),
-                equalTo(mondayHours));
+                equalTo(0));
 
-        Integer fridayHours = newVersion.getWorkableHours(FRIDAY_LOCAL_DATE);
-        assertThat(fridayHours, equalTo(0));
         assertThat(calendar.getWorkableHours(FRIDAY_LOCAL_DATE),
-                equalTo(fridayHours));
+                equalTo(0));
 
-        assertThat(calendar.getOwnExceptions().size(), equalTo(1));
-        assertThat(newVersion.getOwnExceptions().size(), equalTo(1));
-    }
-
-    @Test
-    public void testGetVersion() {
-        BaseCalendar calendar = createBasicCalendar();
-        BaseCalendar newVersion = calendar.newVersion(WEDNESDAY_LOCAL_DATE);
-        BaseCalendar lastVersion = newVersion.newVersion(SATURDAY_LOCAL_DATE);
-
-        assertThat(lastVersion.getCalendarVersion(MONDAY_LOCAL_DATE),
-                equalTo(calendar));
-        assertThat(lastVersion.getCalendarVersion(THURSDAY_LOCAL_DATE),
-                equalTo(newVersion));
-        assertThat(lastVersion.getCalendarVersion(SUNDAY_LOCAL_DATE),
-                equalTo(lastVersion));
+        assertThat(calendar.getOwnExceptions().size(), equalTo(2));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -691,10 +580,10 @@ public class BaseCalendarTest {
         calendar.newVersion(new LocalDate());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testNotAllowSetExpiringDateIfNotNextCalendar() {
         BaseCalendar calendar = createBasicCalendar();
-        assertThat(calendar.getNextCalendar(), nullValue());
+        assertThat(calendar.getCalendarDataVersions().size(), equalTo(1));
 
         calendar.setExpiringDate(WEDNESDAY_LOCAL_DATE);
     }

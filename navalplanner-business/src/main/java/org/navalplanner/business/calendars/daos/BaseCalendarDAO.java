@@ -32,16 +32,21 @@ public class BaseCalendarDAO extends GenericDAOHibernate<BaseCalendar, Long>
             return new ArrayList<BaseCalendar>();
         }
 
-        Criteria c = getSession().createCriteria(BaseCalendar.class);
-        c.add(Restrictions.eq("parent", baseCalendar));
+        Criteria c = getSession().createCriteria(BaseCalendar.class)
+                .createCriteria("calendarDataVersions", "v");
+        c.add(Restrictions.eq("v.parent", baseCalendar));
 
         return (List<BaseCalendar>) c.list();
     }
 
     @Override
-    public List<BaseCalendar> findLastVersions() {
+    public List<BaseCalendar> findByName(BaseCalendar baseCalendar) {
+        if (baseCalendar == null) {
+            return new ArrayList<BaseCalendar>();
+        }
+
         Criteria c = getSession().createCriteria(BaseCalendar.class);
-        c.add(Restrictions.isNull("nextCalendar"));
+        c.add(Restrictions.eq("name", baseCalendar.getName()));
 
         return (List<BaseCalendar>) c.list();
     }

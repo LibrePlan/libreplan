@@ -12,8 +12,9 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
-import org.navalplanner.business.calendars.entities.BaseCalendar.Days;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -352,7 +353,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        reloadDayInformation();
+                        reloadCurrentWindow();
                     }
 
                 });
@@ -475,6 +476,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             throw new WrongValueException(component, e.getMessage());
         }
         Clients.closeErrorBox(component);
+        baseCalendarModel.setSelectedDay(date);
+        Util.reloadBindings(editWindow);
     }
 
     public Date getExpiringDate() {
@@ -493,6 +496,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             throw new WrongValueException(component, e.getMessage());
         }
         Clients.closeErrorBox(component);
+        baseCalendarModel.setSelectedDay(date);
+        Util.reloadBindings(editWindow);
     }
 
     public void goToCreateCopyForm(BaseCalendar baseCalendar) {
@@ -589,7 +594,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     }
 
-    public List<BaseCalendar> getHistoryVersions() {
+    public List<CalendarData> getHistoryVersions() {
         return baseCalendarModel.getHistoryVersions();
     }
 
@@ -651,17 +656,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         return getDaysCurrentMonthByType().get(DayType.ZERO_HOURS);
     }
 
-    public void goToCalendarVersion(BaseCalendar calendar) {
-        if (calendar.getPreviousCalendar() != null) {
-            setSelectedDay(calendar.getPreviousCalendar().getExpiringDate()
-                    .toDateTimeAtStartOfDay().toDate());
-        } else if (calendar.getExpiringDate() != null) {
-            setSelectedDay(calendar.getExpiringDate().minusDays(1)
-                    .toDateTimeAtStartOfDay()
-                    .toDate());
-        } else {
-            setSelectedDay(new Date());
-        }
+    public void goToDate(Date date) {
+        setSelectedDay(date);
 
         ((Tab) editWindow.getFellow("dataTab")).setSelected(true);
         Util.reloadBindings(editWindow);
@@ -707,24 +703,34 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
         @Override
         public void render(Listitem item, Object data) throws Exception {
-            final BaseCalendar calendar = (BaseCalendar) data;
+            CalendarData calendarData = (CalendarData) data;
 
             Listcell nameListcell = new Listcell();
-            nameListcell.appendChild(new Label(calendar.getName()));
+            nameListcell.appendChild(new Label(baseCalendarModel.getName()));
             item.appendChild(nameListcell);
+
+            Listcell parentListcell = new Listcell();
+            Label parentLabel = new Label();
+            BaseCalendar parent = calendarData.getParent();
+            if (parent != null) {
+                parentLabel.setValue(parent.getName());
+            }
+            parentListcell.appendChild(parentLabel);
+            item.appendChild(parentListcell);
 
             Listcell validFromListcell = new Listcell();
             Label validFromLabel = new Label();
-            if (calendar.getPreviousCalendar() != null) {
-                LocalDate validFrom = calendar.getPreviousCalendar()
-                        .getExpiringDate();
-                validFromLabel.setValue(validFrom.toString());
+            final LocalDate dateValidFrom = baseCalendarModel
+                    .getValidFrom(
+                    calendarData);
+            if (dateValidFrom != null) {
+                validFromLabel.setValue(dateValidFrom.toString());
             }
             validFromListcell.appendChild(validFromLabel);
             item.appendChild(validFromListcell);
 
             Listcell expiringDateListcell = new Listcell();
-            LocalDate expiringDate = calendar.getExpiringDate();
+            final LocalDate expiringDate = calendarData.getExpiringDate();
             Label expiringDateLabel = new Label();
             if (expiringDate != null) {
                 LocalDate date = new LocalDate(expiringDate).minusDays(1);
@@ -736,7 +742,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             Listcell summaryListcell = new Listcell();
             List<String> summary = new ArrayList<String>();
             for (Days day : Days.values()) {
-                Integer hours = calendar.getHours(day);
+                Integer hours = calendarData.getHours(day);
                 if (hours == null) {
                     summary.add("D");
                 } else {
@@ -753,7 +759,15 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    goToCalendarVersion(calendar);
+                    if (dateValidFrom != null) {
+                        goToDate(dateValidFrom.toDateTimeAtStartOfDay()
+                                .toDate());
+                    } else if (expiringDate != null) {
+                        goToDate(expiringDate.minusDays(1)
+                                .toDateTimeAtStartOfDay().toDate());
+                    } else {
+                        goToDate(new Date());
+                    }
                 }
             });
             buttonListcell.appendChild(button);

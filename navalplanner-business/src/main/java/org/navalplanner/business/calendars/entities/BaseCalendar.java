@@ -1,17 +1,17 @@
 package org.navalplanner.business.calendars.entities;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
+import org.hibernate.validator.NotEmpty;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.common.IValidable;
-import org.navalplanner.business.common.exceptions.ValidationException;
 
 /**
  * Represents a calendar with some exception days. A calendar is valid till the
@@ -23,33 +23,23 @@ import org.navalplanner.business.common.exceptions.ValidationException;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class BaseCalendar extends BaseEntity implements IValidable {
+public class BaseCalendar extends BaseEntity {
 
     private static final Integer DEFAULT_VALUE = 0;
 
     public static BaseCalendar create() {
         BaseCalendar baseCalendar = new BaseCalendar();
         baseCalendar.setNewObject(true);
+        baseCalendar.calendarDataVersions.add(CalendarData.create());
         return baseCalendar;
     }
 
+    @NotEmpty
     private String name;
-
-    private Map<Integer, Integer> hoursPerDay;
-
-    private BaseCalendar parent;
-
-    private BaseCalendar previousCalendar;
-
-    private BaseCalendar nextCalendar;
-
-    private LocalDate expiringDate;
 
     private Set<ExceptionDay> exceptions = new HashSet<ExceptionDay>();
 
-    public enum Days {
-        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
-    }
+    private List<CalendarData> calendarDataVersions = new ArrayList<CalendarData>();
 
     public enum DayType {
         NORMAL, ZERO_HOURS, OWN_EXCEPTION, ANCESTOR_EXCEPTION
@@ -59,120 +49,50 @@ public class BaseCalendar extends BaseEntity implements IValidable {
      * Constructor for hibernate. Do not use!
      */
     public BaseCalendar() {
-        hoursPerDay = new HashMap<Integer, Integer>();
-        setHoursForDay(Days.MONDAY, null);
-        setHoursForDay(Days.TUESDAY, null);
-        setHoursForDay(Days.WEDNESDAY, null);
-        setHoursForDay(Days.THURSDAY, null);
-        setHoursForDay(Days.FRIDAY, null);
-        setHoursForDay(Days.SATURDAY, null);
-        setHoursForDay(Days.SUNDAY, null);
     }
 
     public void setName(String name) {
-        if (nextCalendar != null) {
-            nextCalendar.setName(name);
-        } else {
-            this.name = name;
-        }
+        this.name = name;
     }
 
     public String getName() {
-        if (nextCalendar != null) {
-            return nextCalendar.getName();
-        }
-
         return name;
     }
 
-    public Map<Integer, Integer> getHoursPerDay() {
-        return hoursPerDay;
-    }
-
-    public Integer getHours(Days day) {
-        if ((getHoursForDay(day) == null) && (parent != null)) {
-            return parent.getHours(day);
-        } else {
-            return valueIfNotNullElseDefaultValue(getHoursForDay(day));
-        }
-    }
-
-    private Integer valueIfNotNullElseDefaultValue(Integer hours) {
-        if (hours == null) {
-            return DEFAULT_VALUE;
-        }
-        return hours;
-    }
-
-    public void setHours(Days day, Integer hours)
-            throws IllegalArgumentException {
-        setHoursForDay(day, hours);
-    }
-
-    private void setHoursForDay(Days day, Integer hours)
-            throws IllegalArgumentException {
-        if ((hours != null) && (hours < 0)) {
-            throw new IllegalArgumentException(
-                    "The number of hours for a day can not be negative");
-        }
-        hoursPerDay.put(day.ordinal(), hours);
-    }
-
-    private Integer getHoursForDay(Days day) {
-        return hoursPerDay.get(day.ordinal());
-    }
-
-    public boolean isDefault(Days day) {
-        return (getHoursForDay(day) == null);
-    }
-
-    public void setDefault(Days day) {
-        setHoursForDay(day, null);
-    }
-
     public BaseCalendar getParent() {
-        return parent;
+        return getLastCalendarData().getParent();
+    }
+
+    public BaseCalendar getParent(Date date) {
+        return getParent(new LocalDate(date));
+    }
+
+    public BaseCalendar getParent(LocalDate date) {
+        return getCalendarData(date).getParent();
+    }
+
+    public void setParent(BaseCalendar parent) {
+        getLastCalendarData().setParent(parent);
+    }
+
+    public void setParent(BaseCalendar parent, Date date) {
+        setParent(parent, new LocalDate(date));
+    }
+
+    public void setParent(BaseCalendar parent, LocalDate date) {
+        getCalendarData(date).setParent(parent);
     }
 
     public boolean isDerived() {
-        return (parent != null);
+        return (getParent() != null);
     }
 
-    public BaseCalendar getPreviousCalendar() {
-        return previousCalendar;
+    public boolean isDerived(Date date) {
+        return isDerived(new LocalDate(date));
     }
 
-    public BaseCalendar getNextCalendar() {
-        return nextCalendar;
-    }
-
-    public LocalDate getExpiringDate() {
-        return expiringDate;
-    }
-
-    public void setExpiringDate(Date expiringDate)
-            throws UnsupportedOperationException, IllegalArgumentException {
-        setExpiringDate(new LocalDate(expiringDate));
-    }
-
-    public void setExpiringDate(LocalDate expiringDate)
-            throws UnsupportedOperationException, IllegalArgumentException {
-        if (nextCalendar == null) {
-            throw new UnsupportedOperationException(
-                    "Can not set the expiring date "
-                            + "because of it does not have a next calendar");
-        }
-        if (expiringDate.compareTo(new LocalDate()) <= 0) {
-            throw new IllegalArgumentException(
-                    "Expering date must be greater than current date");
-        }
-        if (previousCalendar != null) {
-            if (expiringDate.compareTo(previousCalendar.getExpiringDate()) <= 0) {
-                throw new IllegalArgumentException(
-                        "Expering date must be greater than expiring date of previous calendars");
-            }
-        }
-        this.expiringDate = expiringDate;
+    public boolean isDerived(LocalDate date) {
+        return (getParent(date) != null);
     }
 
     public Set<ExceptionDay> getOwnExceptions() {
@@ -183,8 +103,27 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         Set<ExceptionDay> exceptionDays = new HashSet<ExceptionDay>();
         exceptionDays.addAll(exceptions);
 
-        if (parent != null) {
-            for (ExceptionDay exceptionDay : parent.getExceptions()) {
+        if (getParent() != null) {
+            for (ExceptionDay exceptionDay : getParent().getExceptions()) {
+                if (!isExceptionDayAlreadyInExceptions(exceptionDay)) {
+                    exceptionDays.add(exceptionDay);
+                }
+            }
+        }
+
+        return Collections.unmodifiableSet(exceptionDays);
+    }
+
+    public Set<ExceptionDay> getExceptions(Date date) {
+        return getExceptions(date);
+    }
+
+    public Set<ExceptionDay> getExceptions(LocalDate date) {
+        Set<ExceptionDay> exceptionDays = new HashSet<ExceptionDay>();
+        exceptionDays.addAll(exceptions);
+
+        if (getParent(date) != null) {
+            for (ExceptionDay exceptionDay : getParent(date).getExceptions()) {
                 if (!isExceptionDayAlreadyInExceptions(exceptionDay)) {
                     exceptionDays.add(exceptionDay);
                 }
@@ -211,18 +150,12 @@ public class BaseCalendar extends BaseEntity implements IValidable {
                     "You can not modify the past adding a new exception day");
         }
 
-        if (shouldUsePreviousCalendar(day.getDate())) {
-            previousCalendar.addExceptionDay(day);
-        } else if (shouldUseNextCalendar(day.getDate())) {
-            nextCalendar.addExceptionDay(day);
-        } else {
-            if (isExceptionDayAlreadyInExceptions(day)) {
-                throw new IllegalArgumentException(
-                        "This day is already in the exception days");
-            }
-
-            exceptions.add(day);
+        if (isExceptionDayAlreadyInExceptions(day)) {
+            throw new IllegalArgumentException(
+                    "This day is already in the exception days");
         }
+
+        exceptions.add(day);
     }
 
     public void removeExceptionDay(Date date) throws IllegalArgumentException {
@@ -236,19 +169,13 @@ public class BaseCalendar extends BaseEntity implements IValidable {
                     "You can not modify the past removing an exception day");
         }
 
-        if (shouldUsePreviousCalendar(date)) {
-            previousCalendar.removeExceptionDay(date);
-        } else if (shouldUseNextCalendar(date)) {
-            nextCalendar.removeExceptionDay(date);
-        } else {
-            ExceptionDay day = getOwnExceptionDay(date);
-            if (day == null) {
-                throw new IllegalArgumentException(
-                        "There is not an exception day on that date");
-            }
-
-            exceptions.remove(day);
+        ExceptionDay day = getOwnExceptionDay(date);
+        if (day == null) {
+            throw new IllegalArgumentException(
+                    "There is not an exception day on that date");
         }
+
+        exceptions.remove(day);
     }
 
     public void updateExceptionDay(Date date, Integer hours)
@@ -268,12 +195,6 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     public ExceptionDay getOwnExceptionDay(LocalDate date) {
-        if (shouldUsePreviousCalendar(date)) {
-            return previousCalendar.getOwnExceptionDay(date);
-        } else if (shouldUseNextCalendar(date)) {
-            return nextCalendar.getOwnExceptionDay(date);
-        }
-
         for (ExceptionDay exceptionDay : exceptions) {
             if (exceptionDay.getDate().equals(date)) {
                 return exceptionDay;
@@ -288,38 +209,13 @@ public class BaseCalendar extends BaseEntity implements IValidable {
     }
 
     public ExceptionDay getExceptionDay(LocalDate date) {
-        if (shouldUsePreviousCalendar(date)) {
-            return previousCalendar.getExceptionDay(date);
-        } else if (shouldUseNextCalendar(date)) {
-            return nextCalendar.getExceptionDay(date);
-        }
-
-        for (ExceptionDay exceptionDay : getExceptions()) {
+        for (ExceptionDay exceptionDay : getExceptions(date)) {
             if (exceptionDay.getDate().equals(date)) {
                 return exceptionDay;
             }
         }
 
         return null;
-    }
-
-    private boolean shouldUsePreviousCalendar(LocalDate date) {
-        return ((previousCalendar != null) && (date.compareTo(previousCalendar
-                .getExpiringDate()) < 0));
-    }
-
-    private boolean shouldUseNextCalendar(LocalDate date) {
-        if ((getExpiringDate() != null)
-                && (getExpiringDate().compareTo(date) <= 0)) {
-            if (nextCalendar == null) {
-                throw new RuntimeException("A next calendar should exist "
-                        + "if current calendar has a expiring date fixed");
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -335,43 +231,59 @@ public class BaseCalendar extends BaseEntity implements IValidable {
      * calendar restrictions.
      */
     public Integer getWorkableHours(LocalDate date) {
-        if (shouldUsePreviousCalendar(date)) {
-            return previousCalendar.getWorkableHours(date);
-        } else if (shouldUseNextCalendar(date)) {
-            return nextCalendar.getWorkableHours(date);
-        }
-
-        for (ExceptionDay exceptionDay : getExceptions()) {
-            if (exceptionDay.getDate().equals(date)) {
-                return exceptionDay.getHours();
-            }
+        ExceptionDay exceptionDay = getExceptionDay(date);
+        if (exceptionDay != null) {
+            return exceptionDay.getHours();
         }
 
         switch (date.getDayOfWeek()) {
         case DateTimeConstants.MONDAY:
-            return getHours(Days.MONDAY);
+            return getHours(date, Days.MONDAY);
 
         case DateTimeConstants.TUESDAY:
-            return getHours(Days.TUESDAY);
+            return getHours(date, Days.TUESDAY);
 
         case DateTimeConstants.WEDNESDAY:
-            return getHours(Days.WEDNESDAY);
+            return getHours(date, Days.WEDNESDAY);
 
         case DateTimeConstants.THURSDAY:
-            return getHours(Days.THURSDAY);
+            return getHours(date, Days.THURSDAY);
 
         case DateTimeConstants.FRIDAY:
-            return getHours(Days.FRIDAY);
+            return getHours(date, Days.FRIDAY);
 
         case DateTimeConstants.SATURDAY:
-            return getHours(Days.SATURDAY);
+            return getHours(date, Days.SATURDAY);
 
         case DateTimeConstants.SUNDAY:
-            return getHours(Days.SUNDAY);
+            return getHours(date, Days.SUNDAY);
 
         default:
             throw new RuntimeException("Day of week out of range!");
         }
+    }
+
+    public Integer getHours(Date date, Days day) {
+        return getHours(new LocalDate(date), day);
+    }
+
+    public Integer getHours(LocalDate date, Days day) {
+        CalendarData calendarData = getCalendarData(date);
+
+        Integer hours = calendarData.getHours(day);
+        BaseCalendar parent = getParent(date);
+        if ((hours == null) && (parent != null)) {
+            return parent.getHours(date, day);
+        }
+
+        return valueIfNotNullElseDefaultValue(hours);
+    }
+
+    private Integer valueIfNotNullElseDefaultValue(Integer hours) {
+        if (hours == null) {
+            return DEFAULT_VALUE;
+        }
+        return hours;
     }
 
     /**
@@ -416,18 +328,6 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         return getWorkableHours(init, end);
     }
 
-    @Override
-    public void checkValid() throws ValidationException {
-        if ((nextCalendar == null) && (expiringDate != null)) {
-            throw new ValidationException("A next calendar should exist "
-                    + "if current calendar has a expiring date fixed");
-        }
-        if ((nextCalendar != null) && (expiringDate == null)) {
-            throw new ValidationException("A expiring date should be fixed"
-                    + "if current calendar has a next calendar");
-        }
-    }
-
     /**
      * Creates a new {@link BaseCalendar} derived from the current calendar. The
      * new calendar will be the child of the current calendar.
@@ -436,7 +336,7 @@ public class BaseCalendar extends BaseEntity implements IValidable {
      */
     public BaseCalendar newDerivedCalendar() {
         BaseCalendar derivedCalendar = create();
-        derivedCalendar.parent = this;
+        derivedCalendar.setParent(this);
         return derivedCalendar;
     }
 
@@ -445,8 +345,8 @@ public class BaseCalendar extends BaseEntity implements IValidable {
      * It makes that the current calendar expires in the specific date. And the
      * new calendar will be used from that date onwards.
      */
-    public BaseCalendar newVersion(Date date) throws IllegalArgumentException {
-        return newVersion(new LocalDate(date));
+    public void newVersion(Date date) throws IllegalArgumentException {
+        newVersion(new LocalDate(date));
     }
 
     /**
@@ -454,48 +354,37 @@ public class BaseCalendar extends BaseEntity implements IValidable {
      * It makes that the current calendar expires in the specific date. And the
      * new calendar will be used from that date onwards.
      */
-    public BaseCalendar newVersion(LocalDate date)
+    public void newVersion(LocalDate date)
             throws IllegalArgumentException {
         if (date.compareTo(new LocalDate()) <= 0) {
             throw new IllegalArgumentException(
                     "Date for new version must be greater than current date");
         }
 
-        if (nextCalendar != null) {
-            return nextCalendar.newVersion(date);
+        CalendarData calendarData = getCalendarDataBeforeTheLastIfAny();
+        if ((calendarData.getExpiringDate() != null)
+                && (date.compareTo(calendarData.getExpiringDate()) <= 0)) {
+            throw new IllegalArgumentException(
+                    "Version date must be greater than expiring date of "
+                            + "all versions of this calendar");
         }
 
-        if (previousCalendar != null) {
-            if (date.compareTo(previousCalendar.getExpiringDate()) <= 0) {
-                throw new IllegalArgumentException(
-                        "Version date must be greater than expiring date of " +
-                        "all versions of this calendar");
-            }
-        }
+        getLastCalendarData().setExpiringDate(date);
 
-        BaseCalendar nextCalendar = newCopy();
-
-        this.expiringDate = date;
-
-        this.nextCalendar = nextCalendar;
-        nextCalendar.previousCalendar = this;
-
-        nextCalendar.name = this.name;
-
-        return nextCalendar;
+        CalendarData newCalendarData = CalendarData.create();
+        newCalendarData.setParent(getLastCalendarData().getParent());
+        calendarDataVersions.add(newCalendarData);
     }
 
     public BaseCalendar newCopy() {
-        if (nextCalendar != null) {
-            return nextCalendar.newCopy();
-        }
-
         BaseCalendar copy = create();
 
         copy.name = this.name;
-        copy.hoursPerDay = new HashMap<Integer, Integer>(this.hoursPerDay);
+        copy.calendarDataVersions = new ArrayList<CalendarData>();
+        for (CalendarData calendarData : this.calendarDataVersions) {
+            copy.calendarDataVersions.add(calendarData.copy());
+        }
         copy.exceptions = new HashSet<ExceptionDay>(this.exceptions);
-        copy.parent = this.parent;
 
         return copy;
     }
@@ -520,23 +409,178 @@ public class BaseCalendar extends BaseEntity implements IValidable {
         return DayType.NORMAL;
     }
 
-    public void setParent(BaseCalendar parent)
-            throws IllegalArgumentException {
-        this.parent = parent;
+    public List<CalendarData> getCalendarDataVersions() {
+        return Collections.unmodifiableList(calendarDataVersions);
     }
 
-    public BaseCalendar getCalendarVersion(Date date) {
-        return getCalendarVersion(new LocalDate(date));
-    }
-
-    public BaseCalendar getCalendarVersion(LocalDate date) {
-        if (shouldUsePreviousCalendar(date)) {
-            return previousCalendar.getCalendarVersion(date);
-        } else if (shouldUseNextCalendar(date)) {
-            return nextCalendar.getCalendarVersion(date);
-        } else {
-            return this;
+    private CalendarData getCalendarData(LocalDate date) {
+        for (CalendarData calendarData : calendarDataVersions) {
+            if (calendarData.getExpiringDate() == null) {
+                return calendarData;
+            } else {
+                if (date.compareTo(calendarData.getExpiringDate()) < 0) {
+                    return calendarData;
+                }
+            }
         }
+
+        throw new RuntimeException("Some version should not be expired");
+    }
+
+    private CalendarData getLastCalendarData() {
+        if (calendarDataVersions.isEmpty()) {
+            return null;
+        }
+        return calendarDataVersions.get(calendarDataVersions.size() - 1);
+    }
+
+    public void setHours(Days day, Integer hours) {
+        CalendarData calendarData = getLastCalendarData();
+        calendarData.setHours(day, hours);
+    }
+
+    public void setHours(Days day, Integer hours, Date date) {
+        setHours(day, hours, new LocalDate(date));
+    }
+
+    public void setHours(Days day, Integer hours, LocalDate date) {
+        CalendarData calendarData = getCalendarData(date);
+        calendarData.setHours(day, hours);
+    }
+
+    private CalendarData getCalendarDataBeforeTheLastIfAny() {
+        if (calendarDataVersions.size() <= 1) {
+            return getLastCalendarData();
+        }
+        return calendarDataVersions.get(calendarDataVersions.size() - 2);
+    }
+
+    public boolean isDefault(Days day) {
+        CalendarData calendarData = getLastCalendarData();
+        return calendarData.isDefault(day);
+    }
+
+    public boolean isDefault(Days day, Date date) {
+        return isDefault(day, new LocalDate(date));
+    }
+
+    public boolean isDefault(Days day, LocalDate date) {
+        CalendarData calendarData = getCalendarData(date);
+        return calendarData.isDefault(day);
+    }
+
+    public void setDefault(Days day) {
+        CalendarData calendarData = getLastCalendarData();
+        calendarData.setDefault(day);
+    }
+
+    public void setDefault(Days day, Date date) {
+        setDefault(day, new LocalDate(date));
+    }
+
+    public void setDefault(Days day, LocalDate date) {
+        CalendarData calendarData = getCalendarData(date);
+        calendarData.setDefault(day);
+    }
+
+    public LocalDate getExpiringDate() {
+        return getLastCalendarData().getExpiringDate();
+    }
+
+    public LocalDate getExpiringDate(Date date) {
+        return getExpiringDate(new LocalDate(date));
+    }
+
+    public LocalDate getExpiringDate(LocalDate date) {
+        return getCalendarData(date).getExpiringDate();
+    }
+
+    public void setExpiringDate(Date expiringDate) {
+        setExpiringDate(new LocalDate(expiringDate));
+    }
+
+    public void setExpiringDate(LocalDate expiringDate) {
+        setExpiringDate(expiringDate, new LocalDate());
+    }
+
+    public void setExpiringDate(Date expiringDate, Date date)
+            throws IllegalArgumentException {
+        setExpiringDate(new LocalDate(expiringDate), new LocalDate(date));
+    }
+
+    public void setExpiringDate(LocalDate expiringDate, LocalDate date)
+            throws IllegalArgumentException {
+        CalendarData calendarData = getCalendarData(date);
+        setExpiringDate(calendarData, expiringDate);
+    }
+
+    private void setExpiringDate(CalendarData calendarData,
+            LocalDate expiringDate) throws IllegalArgumentException {
+        if (calendarData.getExpiringDate() == null) {
+            throw new IllegalArgumentException("Can not set the expiring date "
+                    + "because of this is the last version");
+        }
+
+        if (expiringDate.compareTo(new LocalDate()) <= 0) {
+            throw new IllegalArgumentException(
+                    "This date must be greater than current date");
+        }
+
+        Integer index = calendarDataVersions.indexOf(calendarData);
+        if (index > 0) {
+            CalendarData preivousCalendarData = calendarDataVersions.get(index - 1);
+            if (expiringDate.compareTo(preivousCalendarData.getExpiringDate()) <= 0) {
+                throw new IllegalArgumentException(
+                        "This date must be greater than expiring date of previous calendars");
+            }
+        }
+
+        calendarData.setExpiringDate(expiringDate);
+    }
+
+    private CalendarData getPreviousCalendarData(LocalDate date) {
+        CalendarData calendarData = getCalendarData(date);
+        Integer index = calendarDataVersions.indexOf(calendarData) - 1;
+        if (index < 0) {
+            return null;
+        }
+        return calendarDataVersions.get(index);
+    }
+
+    public LocalDate getValidFrom(Date date) {
+        return getValidFrom(new LocalDate(date));
+    }
+
+    public LocalDate getValidFrom(LocalDate date) {
+        CalendarData calendarData = getPreviousCalendarData(date);
+        if (calendarData == null) {
+            return null;
+        }
+        return calendarData.getExpiringDate();
+    }
+
+    public void setValidFrom(Date validFromDate, Date date) {
+        setValidFrom(new LocalDate(validFromDate), new LocalDate(date));
+    }
+
+    public void setValidFrom(LocalDate validFromDate, LocalDate date)
+            throws IllegalArgumentException {
+        CalendarData calendarData = getPreviousCalendarData(date);
+        if (calendarData == null) {
+            throw new IllegalArgumentException(
+                    "You can not set this date for the first version");
+        }
+        setExpiringDate(calendarData, validFromDate);
+    }
+
+    public boolean isLastVersion(Date date) {
+        return isLastVersion(new LocalDate(date));
+    }
+
+    public boolean isLastVersion(LocalDate date) {
+        CalendarData calendarData = getCalendarData(date);
+        Integer index = calendarDataVersions.indexOf(calendarData);
+        return (index == (calendarDataVersions.size() - 1));
     }
 
 }

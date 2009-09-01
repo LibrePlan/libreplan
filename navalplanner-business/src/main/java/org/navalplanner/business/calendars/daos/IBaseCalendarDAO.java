@@ -11,6 +11,6 @@ public interface IBaseCalendarDAO extends IGenericDAO<BaseCalendar, Long> {
 
     List<BaseCalendar> findByParent(BaseCalendar baseCalendar);
 
-    List<BaseCalendar> findLastVersions();
+    List<BaseCalendar> findByName(BaseCalendar baseCalendar);
 
 }

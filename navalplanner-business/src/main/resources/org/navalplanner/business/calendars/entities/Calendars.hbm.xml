@@ -12,29 +12,18 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="name" access="field"/>
-
-        <map name="hoursPerDay">
-            <key column="BASE_CALENDAR_ID"/>
-            <index column="DAY_ID" type="integer" />
-            <element column="HOURS" type="integer" />
-        </map>
-
-        <many-to-one name="parent" class="BaseCalendar" access="field"/>
-
-        <many-to-one name="previousCalendar" class="BaseCalendar" unique="true"
-            cascade="all" />
-
-        <many-to-one name="nextCalendar" class="BaseCalendar" unique="true"
-            cascade="all" />
-
-        <property name="expiringDate" access="field"
-            type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+        <property name="name" access="field" unique="true" />
 
         <set name="exceptions" access="field" cascade="all-delete-orphan">
             <key column="BASE_CALENDAR_ID" />
             <one-to-many class="ExceptionDay" />
         </set>
+
+        <list name="calendarDataVersions" access="field" cascade="all-delete-orphan">
+            <key column="BASE_CALENDAR_ID" />
+            <index column="POSITION_IN_CALENDAR" />
+            <one-to-many class="CalendarData" />
+        </list>
 
         <joined-subclass name="ResourceCalendar">
             <key column="BASE_CALENDAR_ID" />
@@ -54,6 +43,27 @@
             type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
         <property name="hours" access="field"/>
 
+    </class>
+
+    <!-- CalendarData -->
+    <class name="CalendarData">
+        <id name="id" access="property" type="long">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <map name="hoursPerDay">
+            <key column="BASE_CALENDAR_ID"/>
+            <index column="DAY_ID" type="integer" />
+            <element column="HOURS" type="integer" />
+        </map>
+
+        <many-to-one name="parent" class="BaseCalendar" access="field"/>
+
+        <property name="expiringDate" access="field"
+            type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
     </class>
 
 </hibernate-mapping>

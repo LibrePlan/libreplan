@@ -7,13 +7,14 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 
+import java.util.Date;
 import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.Days;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,6 +40,7 @@ public class BaseCalendarModelTest {
         assertThat(baseCalendarModel.getBaseCalendars().size(), equalTo(0));
         baseCalendarModel.initCreate();
         BaseCalendar baseCalendar = baseCalendarModel.getBaseCalendar();
+        baseCalendar.setName("Test");
         setHours(baseCalendar, 8);
         try {
             baseCalendarModel.confirmSave();
@@ -47,7 +49,7 @@ public class BaseCalendarModelTest {
             assertThat(baseCalendarModel.getBaseCalendars().get(0).getId(),
                     equalTo(baseCalendar.getId()));
             assertThat(baseCalendarModel.getBaseCalendars().get(0).getHours(
-                    Days.MONDAY), equalTo(8));
+                    new Date(), Days.MONDAY), equalTo(8));
         } catch (ValidationException e) {
             fail("It should not throw an exception");
         }
@@ -64,24 +66,21 @@ public class BaseCalendarModelTest {
     }
 
     @Test
-    public void testEditAndSave() {
+    public void testEditAndSave() throws ValidationException {
         assertThat(baseCalendarModel.getBaseCalendars().size(), equalTo(0));
         saveOneCalendar();
 
         BaseCalendar baseCalendar = baseCalendarModel.getBaseCalendars().get(0);
         baseCalendarModel.initEdit(baseCalendar);
         setHours(baseCalendarModel.getBaseCalendar(), 4);
-        try {
-            baseCalendarModel.confirmSave();
 
-            assertThat(baseCalendarModel.getBaseCalendars().size(), equalTo(1));
-            assertThat(baseCalendarModel.getBaseCalendars().get(0).getId(),
-                    equalTo(baseCalendar.getId()));
-            assertThat(baseCalendarModel.getBaseCalendars().get(0).getHours(
-                    Days.MONDAY), equalTo(4));
-        } catch (ValidationException e) {
-            fail("It should not throw an exception");
-        }
+        baseCalendarModel.confirmSave();
+
+        assertThat(baseCalendarModel.getBaseCalendars().size(), equalTo(1));
+        assertThat(baseCalendarModel.getBaseCalendars().get(0).getId(),
+                equalTo(baseCalendar.getId()));
+        assertThat(baseCalendarModel.getBaseCalendars().get(0).getHours(
+                new Date(), Days.MONDAY), equalTo(4));
     }
 
     @Test
@@ -91,18 +90,18 @@ public class BaseCalendarModelTest {
 
         BaseCalendar baseCalendar = baseCalendarModel.getBaseCalendars().get(0);
         baseCalendarModel.initEdit(baseCalendar);
-        baseCalendarModel.createNewVersion((new LocalDate()).plusWeeks(1)
-                .toDateTimeAtStartOfDay().toDate());
+        Date date = (new LocalDate()).plusWeeks(1)
+                .toDateTimeAtStartOfDay().toDate();
+        baseCalendarModel.createNewVersion(date);
         setHours(baseCalendarModel.getBaseCalendar(), 4);
         try {
             baseCalendarModel.confirmSave();
 
             assertThat(baseCalendarModel.getBaseCalendars().size(), equalTo(1));
-            assertThat(baseCalendarModel.getBaseCalendars().get(0)
-                    .getPreviousCalendar().getId(), equalTo(baseCalendar
-                    .getId()));
             assertThat(baseCalendarModel.getBaseCalendars().get(0).getHours(
-                    Days.MONDAY), equalTo(4));
+                    date, Days.MONDAY), equalTo(4));
+            assertThat(baseCalendarModel.getBaseCalendars().get(0)
+                    .getCalendarDataVersions().size(), equalTo(2));
         } catch (ValidationException e) {
             fail("It should not throw an exception");
         }
@@ -110,6 +109,7 @@ public class BaseCalendarModelTest {
 
     private void saveOneCalendar() {
         baseCalendarModel.initCreate();
+        baseCalendarModel.getBaseCalendar().setName("Test");
         setHours(baseCalendarModel.getBaseCalendar(), 8);
         try {
             baseCalendarModel.confirmSave();
@@ -132,6 +132,7 @@ public class BaseCalendarModelTest {
     @Test
     public void testPossibleParentCalendars() throws ValidationException {
         baseCalendarModel.initCreate();
+        baseCalendarModel.getBaseCalendar().setName("Test");
         setHours(baseCalendarModel.getBaseCalendar(), 8);
         BaseCalendar parent = baseCalendarModel.getBaseCalendar();
         baseCalendarModel.createNewVersion((new LocalDate()).plusMonths(1)
@@ -141,6 +142,7 @@ public class BaseCalendarModelTest {
 
         baseCalendarModel.initCreateDerived(parent);
         BaseCalendar child = baseCalendarModel.getBaseCalendar();
+        baseCalendarModel.getBaseCalendar().setName("Derived");
         baseCalendarModel.confirmSave();
 
         baseCalendarModel.initEdit(child);
@@ -151,8 +153,8 @@ public class BaseCalendarModelTest {
         assertThat(possibleParentCalendars.get(0).getId(),
                 equalTo(parentNewVersion.getId()));
         assertThat(
-                possibleParentCalendars.get(0).getPreviousCalendar().getId(),
-                equalTo(parent.getId()));
+                possibleParentCalendars.get(0).getCalendarDataVersions()
+                .size(), equalTo(2));
     }
 
 }

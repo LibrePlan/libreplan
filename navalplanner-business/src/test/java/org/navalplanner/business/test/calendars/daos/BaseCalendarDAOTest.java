@@ -1,8 +1,6 @@
 package org.navalplanner.business.test.calendars.daos;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -13,6 +11,7 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 import java.util.List;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.validator.InvalidStateException;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,29 +94,18 @@ public class BaseCalendarDAOTest {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
 
-        BaseCalendar nextCalendar = calendar.newVersion((new LocalDate())
-                .plusDays(1));
-        baseCalendarDAO.save(nextCalendar);
+        calendar.newVersion((new LocalDate()).plusDays(1));
+        baseCalendarDAO.save(calendar);
 
         try {
 
             BaseCalendar savedCalendar = baseCalendarDAO.find(calendar.getId());
-            assertThat(savedCalendar.getPreviousCalendar(), nullValue());
-            assertThat(savedCalendar.getNextCalendar(), notNullValue());
-            assertThat(savedCalendar.getNextCalendar(), equalTo(nextCalendar));
-
-            BaseCalendar savedNextCalendar = baseCalendarDAO
-                    .find(nextCalendar
-                    .getId());
-            assertThat(savedNextCalendar.getPreviousCalendar(), notNullValue());
-            assertThat(savedNextCalendar.getNextCalendar(), nullValue());
-            assertThat(savedNextCalendar.getPreviousCalendar(),
-                    equalTo(calendar));
+            assertThat(savedCalendar.getCalendarDataVersions().size(),
+                    equalTo(2));
 
         } catch (InstanceNotFoundException e) {
             fail("It should not throw an exception");
         }
-
     }
 
     @Test(expected = DataIntegrityViolationException.class)
@@ -141,19 +129,16 @@ public class BaseCalendarDAOTest {
     public void removeVersions() throws InstanceNotFoundException {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
-        BaseCalendar newCalendar = calendar.newVersion((new LocalDate())
-                .plusDays(1));
-        System.out.println(newCalendar.getName());
-        baseCalendarDAO.save(newCalendar);
+        calendar.newVersion((new LocalDate()).plusDays(1));
+        baseCalendarDAO.save(calendar);
 
         baseCalendarDAO.flush();
         session.getCurrentSession().evict(calendar);
-        session.getCurrentSession().evict(newCalendar);
 
         baseCalendarDAO.remove(calendar.getId());
         baseCalendarDAO.flush();
 
-        baseCalendarDAO.find(newCalendar.getId());
+        baseCalendarDAO.find(calendar.getId());
     }
 
     @Test
@@ -188,22 +173,6 @@ public class BaseCalendarDAOTest {
         assertThat(children.size(), equalTo(0));
     }
 
-    @Test
-    public void findLastVersions() {
-        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
-        baseCalendarDAO.save(calendar);
-        baseCalendarDAO.flush();
-
-        assertThat(baseCalendarDAO.findLastVersions().size(), equalTo(1));
-
-        BaseCalendar newCalendar = calendar.newVersion((new LocalDate())
-                .plusDays(1));
-        baseCalendarDAO.save(newCalendar);
-        baseCalendarDAO.flush();
-
-        assertThat(baseCalendarDAO.findLastVersions().size(), equalTo(1));
-    }
-
     @Test(expected = DataIntegrityViolationException.class)
     public void notAllowRemoveCalendarWithChildrenInOtherVersions()
             throws InstanceNotFoundException {
@@ -221,21 +190,89 @@ public class BaseCalendarDAOTest {
         assertThat(baseCalendarDAO.findByParent(parent1).get(0).getId(),
                 equalTo(calendar.getId()));
 
-        BaseCalendar newVersion = calendar.newVersion((new LocalDate())
+        calendar.newVersion((new LocalDate())
                 .plusDays(1));
-        newVersion.setParent(parent2);
+        calendar.setParent(parent2);
 
-        baseCalendarDAO.save(newVersion);
+        baseCalendarDAO.save(calendar);
         baseCalendarDAO.flush();
 
         assertThat(baseCalendarDAO.findByParent(parent2).get(0).getId(),
-                equalTo(newVersion.getId()));
+                equalTo(calendar.getId()));
 
         assertThat(baseCalendarDAO.findByParent(parent1).get(0).getId(),
                 equalTo(calendar.getId()));
 
         baseCalendarDAO.remove(parent1.getId());
         baseCalendarDAO.flush();
+    }
+
+    @Test(expected = InvalidStateException.class)
+    public void notAllowTwoCalendarsWithNullName() {
+        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
+        calendar.setName(null);
+
+        baseCalendarDAO.save(calendar);
+        baseCalendarDAO.flush();
+    }
+
+    @Test(expected = InvalidStateException.class)
+    public void notAllowTwoCalendarsWithEmptyName() {
+        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
+        calendar.setName("");
+
+        baseCalendarDAO.save(calendar);
+        baseCalendarDAO.flush();
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void notAllowTwoCalendarsWithTheSameName() {
+        BaseCalendar calendar1 = BaseCalendarTest.createBasicCalendar();
+        calendar1.setName("Test");
+        BaseCalendar calendar2 = BaseCalendarTest.createBasicCalendar();
+        calendar2.setName("Test");
+
+        assertThat(calendar2.getName(), equalTo(calendar1.getName()));
+        baseCalendarDAO.save(calendar1);
+        baseCalendarDAO.save(calendar2);
+        baseCalendarDAO.flush();
+    }
+
+    @Test
+    public void notAllowTwoCalendarsWithTheSameNameChangingCalendarName()
+            throws InstanceNotFoundException {
+        BaseCalendar calendar1 = BaseCalendarTest.createBasicCalendar();
+        calendar1.setName("Test");
+        BaseCalendar calendar2 = BaseCalendarTest.createBasicCalendar();
+        calendar2.setName("Test2");
+
+        baseCalendarDAO.save(calendar1);
+        baseCalendarDAO.save(calendar2);
+        baseCalendarDAO.flush();
+
+        calendar2 = baseCalendarDAO.find(calendar2.getId());
+        calendar2.setName("Test");
+
+        assertThat(calendar2.getName(), equalTo(calendar1.getName()));
+
+        try {
+            baseCalendarDAO.save(calendar2);
+            baseCalendarDAO.flush();
+            fail("It should throw an exception");
+        } catch (DataIntegrityViolationException e) {
+
+        }
+    }
+
+    @Test
+    public void findByName() {
+        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
+        baseCalendarDAO.save(calendar);
+        baseCalendarDAO.flush();
+
+        List<BaseCalendar> list = baseCalendarDAO.findByName(calendar);
+        assertThat(list.size(), equalTo(1));
+        assertThat(list.get(0).getId(), equalTo(calendar.getId()));
     }
 
 }

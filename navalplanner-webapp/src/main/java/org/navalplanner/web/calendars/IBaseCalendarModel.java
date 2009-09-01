@@ -5,8 +5,9 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
-import org.navalplanner.business.calendars.entities.BaseCalendar.Days;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.exceptions.ValidationException;
 
 /**
@@ -112,11 +113,15 @@ public interface IBaseCalendarModel {
 
     void setDateValidFrom(Date date);
 
-    List<BaseCalendar> getHistoryVersions();
+    List<CalendarData> getHistoryVersions();
 
     void createNewVersion(Date date);
 
     boolean isLastVersion();
+
+    String getName();
+
+    LocalDate getValidFrom(CalendarData calendarData);
 
     /*
      * Final conversation steps
