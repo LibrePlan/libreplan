@@ -1,0 +1,8 @@
+<zk>
+<zscript><![CDATA[
+top = self;
+]]>
+</zscript>
+<vbox id="leftVBox" sclass="resourceloadleftpane">
+</vbox>
+</zk>

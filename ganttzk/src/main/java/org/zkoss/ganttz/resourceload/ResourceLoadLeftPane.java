@@ -5,20 +5,37 @@ import java.util.List;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.impl.XulElement;
+import org.zkoss.zul.api.Box;
 
-public class ResourceLoadLeftPane extends XulElement {
+public class ResourceLoadLeftPane extends HtmlMacroComponent {
+
+    private final List<LoadTimelinesGroup> groups;
 
     public ResourceLoadLeftPane(List<LoadTimelinesGroup> groups) {
-        for (LoadTimelinesGroup loadTimelinesGroup : groups) {
+        this.groups = groups;
+    }
+
+    private void addGroups(Box container) {
+        for (LoadTimelinesGroup loadTimelinesGroup : this.groups) {
             LoadTimeLine principal = loadTimelinesGroup.getPrincipal();
-            appendChild(createFirstLevel(principal));
+            container.appendChild(createFirstLevel(principal));
             for (LoadTimeLine loadTimeLine : loadTimelinesGroup.getChildren()) {
-                appendChild(createSecondLevel(loadTimeLine));
+                container.appendChild(createSecondLevel(loadTimeLine));
             }
         }
+    }
+
+    @Override
+    public void afterCompose() {
+        super.afterCompose();
+        addGroups(getContainer());
+    }
+
+    private Box getContainer() {
+        return (Box) getFellow("leftVBox");
     }
 
     private Component createFirstLevel(LoadTimeLine principal) {

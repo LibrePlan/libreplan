@@ -47,6 +47,7 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
     @Override
     public void afterCompose() {
         timeTrackerComponent.afterCompose();
+        leftPane.afterCompose();
     }
 
     public TimeTrackerComponent getTimeTrackerComponent() {
