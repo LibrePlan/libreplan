@@ -2,6 +2,7 @@ package org.navalplanner.web.resources;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
@@ -56,6 +57,9 @@ public class CriterionModelTest {
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     private Criterion criterion;
 
@@ -176,8 +180,8 @@ public class CriterionModelTest {
     }
 
     private int getCriterionsNumber(final ICriterionType<?> type) {
-        return adHocTransactionService
-                .runOnTransaction(new IOnTransaction<Integer>() {
+        return adHocTransactionService.runOnTransaction(
+                new IOnTransaction<Integer>() {
 
                     @Override
                     public Integer execute() {
@@ -193,16 +197,40 @@ public class CriterionModelTest {
         criterionModel.save(criterion);
     }
 
-    @Test(expected = ValidationException.class)
+    @NotTransactional
     public void twoDifferentCriterionsWithSameNameAndTypeAreDetectedIfPossible()
             throws ValidationException {
-        String unique = UUID.randomUUID().toString();
-        Criterion criterion = givenValidCriterionFor(
-                PredefinedCriterionTypes.WORK_RELATIONSHIP, unique);
-        criterionModel.save(criterion);
-        Criterion criterion2 = givenValidCriterionFor(
-                PredefinedCriterionTypes.WORK_RELATIONSHIP, unique);
-        criterionModel.save(criterion2);
+        final String unique = UUID.randomUUID().toString();
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                Criterion criterion = givenValidCriterionFor(
+                        PredefinedCriterionTypes.WORK_RELATIONSHIP, unique);
+                try {
+                    criterionModel.save(criterion);
+                } catch (ValidationException e) {
+                    throw new RuntimeException(e);
+                }
+                return null;
+            }
+        });
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                try {
+                    Criterion criterion2 = givenValidCriterionFor(
+                            PredefinedCriterionTypes.WORK_RELATIONSHIP, unique);
+                    criterionModel.save(criterion2);
+                    fail("must send "
+                            + ValidationException.class.getSimpleName());
+                } catch (ValidationException e) {
+                    // ok
+                }
+                return null;
+            }
+        });
     }
 
 }
