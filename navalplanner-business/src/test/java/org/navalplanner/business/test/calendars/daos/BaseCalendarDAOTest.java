@@ -1,6 +1,7 @@
 package org.navalplanner.business.test.calendars.daos;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -18,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.daos.BaseCalendarDAO;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.test.calendars.entities.BaseCalendarTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -273,6 +275,28 @@ public class BaseCalendarDAOTest {
         List<BaseCalendar> list = baseCalendarDAO.findByName(calendar);
         assertThat(list.size(), equalTo(1));
         assertThat(list.get(0).getId(), equalTo(calendar.getId()));
+    }
+
+    @Test
+    public void getBaseCalendarsAndNotResourceCalendars() {
+        BaseCalendar calendar1 = BaseCalendarTest.createBasicCalendar();
+        calendar1.setName("Test1");
+        BaseCalendar calendar2 = BaseCalendarTest.createBasicCalendar();
+        calendar1.setName("Test2");
+
+        ResourceCalendar resourceCalendar = ResourceCalendar.create();
+        resourceCalendar.setName("testResourceCalendar");
+        BaseCalendarTest.setHoursForAllDays(resourceCalendar, 8);
+
+        baseCalendarDAO.save(calendar1);
+        baseCalendarDAO.save(calendar2);
+        baseCalendarDAO.save(resourceCalendar);
+        baseCalendarDAO.flush();
+
+        List<BaseCalendar> baseCalendars = baseCalendarDAO.getBaseCalendars();
+        assertThat(baseCalendars.size(), equalTo(2));
+        assertThat(baseCalendars.get(0).getId(), not(resourceCalendar.getId()));
+        assertThat(baseCalendars.get(1).getId(), not(resourceCalendar.getId()));
     }
 
 }

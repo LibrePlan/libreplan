@@ -1,11 +1,13 @@
 package org.navalplanner.business.calendars.daos;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -23,7 +25,19 @@ public class BaseCalendarDAO extends GenericDAOHibernate<BaseCalendar, Long>
 
     @Override
     public List<BaseCalendar> getBaseCalendars() {
-        return list(BaseCalendar.class);
+        List<BaseCalendar> list = list(BaseCalendar.class);
+        removeResourceCalendarInstances(list);
+        return list;
+    }
+
+    private void removeResourceCalendarInstances(List<BaseCalendar> list) {
+        for (Iterator<BaseCalendar> iterator = list.iterator(); iterator
+                .hasNext();) {
+            BaseCalendar baseCalendar = iterator.next();
+            if (baseCalendar instanceof ResourceCalendar) {
+                iterator.remove();
+            }
+        }
     }
 
     @Override
@@ -36,7 +50,9 @@ public class BaseCalendarDAO extends GenericDAOHibernate<BaseCalendar, Long>
                 .createCriteria("calendarDataVersions", "v");
         c.add(Restrictions.eq("v.parent", baseCalendar));
 
-        return (List<BaseCalendar>) c.list();
+        List<BaseCalendar> list = (List<BaseCalendar>) c.list();
+        removeResourceCalendarInstances(list);
+        return list;
     }
 
     @Override
@@ -48,7 +64,9 @@ public class BaseCalendarDAO extends GenericDAOHibernate<BaseCalendar, Long>
         Criteria c = getSession().createCriteria(BaseCalendar.class);
         c.add(Restrictions.eq("name", baseCalendar.getName()));
 
-        return (List<BaseCalendar>) c.list();
+        List<BaseCalendar> list = (List<BaseCalendar>) c.list();
+        removeResourceCalendarInstances(list);
+        return list;
     }
 
 }

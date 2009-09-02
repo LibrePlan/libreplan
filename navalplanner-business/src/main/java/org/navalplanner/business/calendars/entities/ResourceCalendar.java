@@ -9,4 +9,21 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public class ResourceCalendar extends BaseCalendar {
 
+    public static ResourceCalendar create() {
+        ResourceCalendar resourceCalendar = new ResourceCalendar(CalendarData
+                .create());
+        resourceCalendar.setNewObject(true);
+        return resourceCalendar;
+    }
+
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    public ResourceCalendar() {
+    }
+
+    private ResourceCalendar(CalendarData calendarData) {
+        super(calendarData);
+    }
+
 }

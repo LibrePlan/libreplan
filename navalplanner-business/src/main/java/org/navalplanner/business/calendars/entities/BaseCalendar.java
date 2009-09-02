@@ -28,9 +28,8 @@ public class BaseCalendar extends BaseEntity {
     private static final Integer DEFAULT_VALUE = 0;
 
     public static BaseCalendar create() {
-        BaseCalendar baseCalendar = new BaseCalendar();
+        BaseCalendar baseCalendar = new BaseCalendar(CalendarData.create());
         baseCalendar.setNewObject(true);
-        baseCalendar.calendarDataVersions.add(CalendarData.create());
         return baseCalendar;
     }
 
@@ -49,6 +48,10 @@ public class BaseCalendar extends BaseEntity {
      * Constructor for hibernate. Do not use!
      */
     public BaseCalendar() {
+    }
+
+    protected BaseCalendar(CalendarData calendarData) {
+        calendarDataVersions.add(calendarData);
     }
 
     public void setName(String name) {
