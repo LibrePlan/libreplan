@@ -573,6 +573,26 @@ public class BaseCalendarTest {
         }
     }
 
+    @Test
+    public void testSetExpiringDate() {
+        BaseCalendar calendar = createBasicCalendar();
+
+        LocalDate currentDate = new LocalDate();
+        calendar.newVersion(currentDate.plusWeeks(4));
+
+        assertThat(calendar.getExpiringDate(currentDate), equalTo(currentDate
+                .plusWeeks(4)));
+        assertThat(calendar.getExpiringDate(currentDate.plusWeeks(4)),
+                nullValue());
+
+        calendar.setExpiringDate(currentDate.plusWeeks(2), currentDate);
+
+        assertThat(calendar.getExpiringDate(currentDate), equalTo(currentDate
+                .plusWeeks(2)));
+        assertThat(calendar.getExpiringDate(currentDate.plusWeeks(4)),
+                nullValue());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testNotAllowNewVersionOnCurrentDate() {
         BaseCalendar calendar = createBasicCalendar();
@@ -586,6 +606,46 @@ public class BaseCalendarTest {
         assertThat(calendar.getCalendarDataVersions().size(), equalTo(1));
 
         calendar.setExpiringDate(WEDNESDAY_LOCAL_DATE);
+    }
+
+    @Test
+    public void testSetValidFrom() {
+        BaseCalendar calendar = createBasicCalendar();
+
+        LocalDate currentDate = new LocalDate();
+        calendar.newVersion(currentDate.plusWeeks(4));
+
+        assertThat(calendar.getValidFrom(currentDate), nullValue());
+        assertThat(calendar.getValidFrom(currentDate.plusWeeks(4)),
+                equalTo(currentDate.plusWeeks(4)));
+
+        calendar.setValidFrom(currentDate.plusWeeks(2), currentDate
+                .plusWeeks(4));
+
+        assertThat(calendar.getValidFrom(currentDate), nullValue());
+        assertThat(calendar.getValidFrom(currentDate.plusWeeks(4)),
+                equalTo(currentDate.plusWeeks(2)));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNotAllowSetValidFromInThePast() {
+        BaseCalendar calendar = createBasicCalendar();
+
+        LocalDate currentDate = new LocalDate();
+        calendar.newVersion(currentDate.plusDays(1));
+
+        LocalDate pastWeek = currentDate.minusWeeks(1);
+
+        calendar.setValidFrom(pastWeek, currentDate.plusDays(1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNotAllowSetValidFromIfNotPreviousCalendar() {
+        BaseCalendar calendar = createBasicCalendar();
+        assertThat(calendar.getCalendarDataVersions().size(), equalTo(1));
+
+        LocalDate currentDate = new LocalDate();
+        calendar.setValidFrom(currentDate, currentDate);
     }
 
 }
