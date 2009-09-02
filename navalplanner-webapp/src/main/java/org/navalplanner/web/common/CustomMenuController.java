@@ -151,6 +151,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         Hbox insertionPoint = getRegisteredItemsInsertionPoint();
         Button button = new Button();
         button.setLabel(_(name));
+        button.setSclass(true ? "sub_menu" : "sub_menu");
         button.addEventListener(Events.ON_CLICK, eventListener);
         insertionPoint.appendChild(button);
         insertionPoint.appendChild(separator());
@@ -158,8 +159,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     private Component separator() {
         Div div = new Div();
-        div.setStyle("width: 14px; background: /" + getContextPath()
-                + "common/img/sub_separacion.gif");
+        div.setSclass("vertical_separator");
         return div;
     }
 

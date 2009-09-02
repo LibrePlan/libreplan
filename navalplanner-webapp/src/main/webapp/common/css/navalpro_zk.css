@@ -50,6 +50,24 @@ table {
     background-image: none !important;
 }
 
+.sub_menu .z-button-cm {
+    background-color: transparent !important;
+    border: 0px;
+    color: #EDF2F7;
+}
+
+.sub_menu .z-button-cm:hover {
+    text-decoration:underline;
+}
+
+.vertical_separator {
+	width: 14px;
+	height: 20px;
+	margin-top:4px;
+	background-image: url("../img/sub_separacion.gif");
+}
+
+
 .footer {
     clear: both;
     margin: 20px;
