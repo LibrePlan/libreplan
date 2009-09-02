@@ -29,7 +29,7 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
         this.groups = groups;
         treeModel = createModelForTree();
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
-        resourceLoadList = new ResourceLoadList(timeTracker, groups);
+        resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
         leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
         appendChild(timeTrackerComponent);
         appendChild(leftPane);

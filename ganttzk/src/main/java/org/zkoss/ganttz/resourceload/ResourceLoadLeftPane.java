@@ -39,6 +39,7 @@ public class ResourceLoadLeftPane extends HtmlMacroComponent {
             @Override
             public void render(Treeitem item, Object data) throws Exception {
                 LoadTimeLine line = (LoadTimeLine) data;
+                item.setOpen(true);
                 Treerow row = new Treerow();
                 Treecell cell = new Treecell();
                 Component component = createComponent(line);
@@ -76,12 +77,11 @@ public class ResourceLoadLeftPane extends HtmlMacroComponent {
     }
 
     private void collapse(LoadTimeLine line) {
-        // TODO do collapse
+        resourceLoadList.collapse(line);
     }
 
     private void expand(LoadTimeLine line) {
-        // TODO do expand
-
+        resourceLoadList.expand(line);
     }
 
 
