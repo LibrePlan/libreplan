@@ -11,10 +11,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -26,6 +26,7 @@ import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,9 @@ public class CriterionDAOTest {
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     private Criterion criterion;
 
@@ -112,6 +116,10 @@ public class CriterionDAOTest {
         return this.criterion;
     }
 
+    private Criterion givenUniquelyNamedCriterion() {
+        return givenACriterionWithAnExistentType();
+    }
+
     @Test
     public void listReturnsTheNewlyCreatedCriterions() {
         int previous = criterionDAO.list(Criterion.class).size();
@@ -141,14 +149,63 @@ public class CriterionDAOTest {
     }
 
     @Test
-    public void findByTypeOnlyReturnsTheCriterionsMatchedByType(){
+    public void findByTypeOnlyReturnsTheCriterionsMatchedByType() {
         givenASavedCriterionWithAnExistentType();
-        //saving another
+        // saving another
         givenASavedCriterionWithAnExistentType();
         ICriterionType<Criterion> type = createTypeThatMatches(criterion);
         Collection<Criterion> criterions = criterionDAO.findByType(type);
         assertEquals(1, criterions.size());
         assertTrue(criterions.contains(criterion));
+    }
+
+    @Test
+    @NotTransactional
+    public void thereIsOtherWithSameNameAndTypeWorksIsolatedFromCurrentTransaction() {
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                Criterion saved = givenASavedCriterionWithAnExistentType();
+                assertFalse(criterionDAO.thereIsOtherWithSameNameAndType(saved));
+                return null;
+            }
+        });
+    }
+
+    @Test
+    @NotTransactional
+    public void thereIsNoOtherIfItsTheSame() {
+        Criterion c = transactionService
+                .runOnTransaction(new IOnTransaction<Criterion>() {
+
+            @Override
+            public Criterion execute() {
+                return givenASavedCriterionWithAnExistentType();
+            }
+        });
+        assertFalse(criterionDAO.thereIsOtherWithSameNameAndType(c));
+    }
+
+    @Test
+    @NotTransactional
+    public void ifItsDifferentThereIsOther() {
+        Criterion c = transactionService
+                .runOnTransaction(new IOnTransaction<Criterion>() {
+
+                    @Override
+                    public Criterion execute() {
+                        return givenASavedCriterionWithAnExistentType();
+                    }
+                });
+        Criterion copy = Criterion.create(c.getName(), c.getType());
+        assertTrue(criterionDAO.thereIsOtherWithSameNameAndType(copy));
+    }
+
+    @Test
+    public void noOtherIfTheCriterionDoesntExist() {
+        Criterion criterion = givenUniquelyNamedCriterion();
+        assertFalse(criterionDAO.thereIsOtherWithSameNameAndType(criterion));
     }
 
     private static ICriterionType<Criterion> createTypeThatMatches(

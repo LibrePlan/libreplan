@@ -1,5 +1,7 @@
 package org.navalplanner.web.resources.criterion;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,8 +27,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Model for criterions. <br />
@@ -114,7 +114,7 @@ public class CriterionsModel implements ICriterionsModel {
     @Override
     @Transactional
     public void save(Criterion entity) throws ValidationException {
-        if (thereIsOtherWithSameNameAndType(entity)) {
+        if (criterionDAO.thereIsOtherWithSameNameAndType(entity)) {
             InvalidValue[] invalidValues = {
                 new InvalidValue(
                     _("{0} already exists", entity.getName()),
@@ -125,20 +125,6 @@ public class CriterionsModel implements ICriterionsModel {
                         _("Could not save new criterion"));
         }
         criterionDAO.save(entity);
-    }
-
-    private boolean thereIsOtherWithSameNameAndType(Criterion toSave) {
-        List<Criterion> withSameNameAndType = criterionDAO
-                .findByNameAndType(toSave);
-        if (withSameNameAndType.isEmpty())
-            return false;
-        if (withSameNameAndType.size() > 1)
-            return true;
-        return !areSameInDB(withSameNameAndType.get(0), toSave);
-    }
-
-    private boolean areSameInDB(Criterion existentCriterion, Criterion other) {
-        return existentCriterion.getId().equals(other.getId());
     }
 
     @Override

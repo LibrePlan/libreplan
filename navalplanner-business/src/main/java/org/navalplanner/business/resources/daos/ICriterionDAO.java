@@ -29,4 +29,6 @@ public interface ICriterionDAO extends IGenericDAO<Criterion, Long> {
 
     List<Criterion> getAll();
 
+    boolean thereIsOtherWithSameNameAndType(Criterion criterion);
+
 }

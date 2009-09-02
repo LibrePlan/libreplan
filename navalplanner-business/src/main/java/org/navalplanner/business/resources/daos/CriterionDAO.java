@@ -14,6 +14,8 @@ import org.navalplanner.business.resources.entities.ICriterionType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO implementation for Criterion. <br />
@@ -28,6 +30,21 @@ public class CriterionDAO extends GenericDAOHibernate<Criterion, Long>
         implements ICriterionDAO {
 
     private static final Log log = LogFactory.getLog(CriterionDAO.class);
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public boolean thereIsOtherWithSameNameAndType(Criterion criterion) {
+        List<Criterion> withSameNameAndType = findByNameAndType(criterion);
+        if (withSameNameAndType.isEmpty())
+            return false;
+        if (withSameNameAndType.size() > 1)
+            return true;
+        return areDifferentInDB(withSameNameAndType.get(0), criterion);
+    }
+
+    private boolean areDifferentInDB(Criterion existentCriterion,
+            Criterion other) {
+        return !existentCriterion.getId().equals(other.getId());
+    }
 
     @Override
     public List<Criterion> findByNameAndType(Criterion criterion) {
