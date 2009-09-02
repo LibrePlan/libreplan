@@ -386,21 +386,7 @@ tr.z-vbox-sep {
 	padding-right: 15px;
     overflow-y: hidden;
 }
-.resourceloadleftpane .firstlevel {
-	height:10px;
-	border: 1px;
-	margin-bottom:10px;
-	margin-top:10px;
-	border-bottom: 1px dotted #CCCCCC;
-}
 
-.resourceloadleftpane .secondlevel {
-    height:10px;
-    margin-bottom:10px;
-    margin-top:10px;
-    margin-left: 8px;
-    border-bottom: 1px dotted #CCCCCC;
-}
 .resourceloadlist {
 	margin-top: 70px;
 	width: 80%;

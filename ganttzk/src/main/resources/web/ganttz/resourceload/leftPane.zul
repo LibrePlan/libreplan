@@ -3,6 +3,9 @@
 top = self;
 ]]>
 </zscript>
-<vbox id="leftVBox" sclass="resourceloadleftpane">
-</vbox>
+<tree id="loadsTree" sclass="resourceloadleftpane">
+    <treecols sizable="false">
+        <treecol label="Name"/>
+    </treecols>
+</tree>
 </zk>
