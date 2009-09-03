@@ -3,6 +3,7 @@ package org.navalplanner.web.common;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.zkoss.ganttz.util.IMenuItemsRegister;
@@ -28,6 +29,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         private final String encodedURL;
         private final String unencodedURL;
         private final List<CustomMenuItem> children;
+        private boolean activeParent;
 
         public String getName() {
             return name;
@@ -57,13 +59,31 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             this.children.add(newChildren);
         }
 
-        public boolean getActiveParent() {
-            String requestPath = Executions.getCurrent().getDesktop()
-                    .getRequestPath();
-            if (requestPath.contains(url) || url.contains(requestPath)) {
-                return true;
+        public boolean isActiveParent() {
+            return activeParent;
+        }
+
+        public boolean contains(String requestPath) {
+            for (CustomMenuItem item : thisAndChildren()) {
+                if (requestContains(requestPath, item.unencodedURL))
+                    return true;
             }
             return false;
+        }
+
+        private List<CustomMenuItem> thisAndChildren() {
+            List<CustomMenuItem> items = new ArrayList<CustomMenuItem>();
+            items.add(this);
+            items.addAll(children);
+            return items;
+        }
+
+        private static boolean requestContains(String requestPath, String url) {
+            return requestPath.startsWith(url);
+        }
+
+        public void setActive(boolean activeParent) {
+            this.activeParent = activeParent;
         }
 
     }
@@ -71,7 +91,19 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     public CustomMenuController() {
         this.firstLevel = new ArrayList<CustomMenuItem>();
         initializeMenu();
+        activateCurrentOne();
         getLocator().store(this);
+    }
+
+    private void activateCurrentOne() {
+        String requestPath = Executions.getCurrent().getDesktop()
+                .getRequestPath();
+        for (CustomMenuItem ci : this.firstLevel) {
+            if (ci.contains(requestPath)) {
+                ci.setActive(true);
+                break;
+            }
+        }
     }
 
     private OnZKDesktopRegistry<IMenuItemsRegister> getLocator() {
@@ -97,12 +129,12 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 _("Planification"),
                 "/planner/main.zul");
 
-        topItem(
-                _("Resources"),
-                "/resources/worker/worker.zul",
-                subItem(_("Workers List"),
+        topItem(_("Resources"), "/resources/worker/worker.zul",
+                subItem(
+                        _("Workers List"),
                         "/resources/worker/worker.zul#list"),
-                subItem(_("Manage criterions"),
+                subItem(
+                        _("Manage criterions"),
                         "/resources/criterions/criterions.zul"));
 
         topItem(_("Orders"),
@@ -114,10 +146,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Models"),
                         "/orders/orders.zul"));
 
-        topItem( _("Work reports"),
-                "/workreports/workReportTypes.zul",
-                subItem(_("Work report types"),
-                        "/workreports/workReportTypes.zul"),
+        topItem(_("Work reports"), "/workreports/workReportTypes.zul", subItem(
+                _("Work report types"), "/workreports/workReportTypes.zul"),
                 subItem(_("Work report list"),
                         "/workreports/workReport.zul#list"));
 
@@ -141,14 +171,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     public List<CustomMenuItem> getCustomMenuSecondaryItems() {
-        String requestPath = Executions.getCurrent().getDesktop()
-                .getRequestPath();
         for (CustomMenuItem ci : this.firstLevel) {
-            if (requestPath.contains(ci.url) || ci.url.contains(requestPath)) {
+            if (ci.isActiveParent())
                 return ci.getChildren();
-            }
         }
-        return this.firstLevel.get(0).getChildren();
+        return Collections.<CustomMenuItem> emptyList();
     }
 
     @Override
