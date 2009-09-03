@@ -148,7 +148,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
         if (getBaseCalendar() != null) {
             for (BaseCalendar calendar : baseCalendars) {
-                if (areSameInDB(calendar, getBaseCalendar())) {
+                if (calendar.getId().equals(getBaseCalendar().getId())) {
                     baseCalendars.remove(calendar);
                     break;
                 }
@@ -409,23 +409,15 @@ public class BaseCalendarModel implements IBaseCalendarModel {
             throw new ValidationException(invalidValues);
         }
 
-        List<BaseCalendar> list = baseCalendarDAO.findByName(getBaseCalendar());
-        if (!list.isEmpty()) {
-            if ((list.size() > 1)
-                    || !areSameInDB(entity, list.get(0))) {
-                InvalidValue[] invalidValues2 = { new InvalidValue(_(
-                        "{0} already exists", entity.getName()),
-                        BaseCalendar.class, "name", entity.getName(), entity) };
-                throw new ValidationException(invalidValues2,
-                        _("Could not save new calendar"));
-            }
+        if (baseCalendarDAO.thereIsOtherWithSameName(getBaseCalendar())) {
+            InvalidValue[] invalidValues2 = { new InvalidValue(_(
+                    "{0} already exists", entity.getName()),
+                    BaseCalendar.class, "name", entity.getName(), entity) };
+            throw new ValidationException(invalidValues2,
+                    _("Could not save new calendar"));
         }
 
         baseCalendarDAO.save(getBaseCalendar());
-    }
-
-    private boolean areSameInDB(BaseCalendar one, BaseCalendar another) {
-        return one.getId().equals(another.getId());
     }
 
     @Override

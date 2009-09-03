@@ -12,6 +12,8 @@ import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO for {@link BaseCalendar}
@@ -67,6 +69,24 @@ public class BaseCalendarDAO extends GenericDAOHibernate<BaseCalendar, Long>
         List<BaseCalendar> list = (List<BaseCalendar>) c.list();
         removeResourceCalendarInstances(list);
         return list;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    @Override
+    public boolean thereIsOtherWithSameName(BaseCalendar baseCalendar) {
+        List<BaseCalendar> withSameName = findByName(baseCalendar);
+        if (withSameName.isEmpty())
+            return false;
+        if (withSameName.size() > 1)
+            return true;
+        return areDifferentInDB(withSameName.get(0), baseCalendar);
+    }
+
+    private boolean areDifferentInDB(BaseCalendar one, BaseCalendar other) {
+        if ((one.getId() == null) || (other.getId() == null)) {
+            return true;
+        }
+        return !one.getId().equals(other.getId());
     }
 
 }
