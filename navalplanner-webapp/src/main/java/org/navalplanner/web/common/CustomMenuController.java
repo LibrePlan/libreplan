@@ -25,7 +25,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     public static class CustomMenuItem {
 
         private final String name;
-        private final String url;
+        private final String encodedURL;
+        private final String unencodedURL;
         private final List<CustomMenuItem> children;
 
         public String getName() {
@@ -33,7 +34,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
 
         public String getUrl() {
-            return url;
+            return encodedURL;
         }
 
         public List<CustomMenuItem> getChildren() {
@@ -41,15 +42,14 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
 
         public CustomMenuItem(String name, String url) {
-            this.name = name;
-            this.url = url;
-            this.children = new ArrayList<CustomMenuItem>();
+            this(name, url, new ArrayList<CustomMenuItem>());
         }
 
         public CustomMenuItem(String name, String url,
                 List<CustomMenuItem> children) {
             this.name = name;
-            this.url = url;
+            this.encodedURL = Executions.getCurrent().encodeURL(url);
+            this.unencodedURL = url;
             this.children = children;
         }
 
@@ -95,40 +95,41 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     public void initializeMenu() {
         topItem(
                 _("Planification"),
-                "/navalplanner-webapp/planner/main.zul");
+                "/planner/main.zul");
+
         topItem(
                 _("Resources"),
-                "/navalplanner-webapp/resources/worker/worker.zul",
+                "/resources/worker/worker.zul",
                 subItem(_("Workers List"),
-                        "/navalplanner-webapp/resources/worker/worker.zul#list"),
+                        "/resources/worker/worker.zul#list"),
                 subItem(_("Manage criterions"),
-                        "/navalplanner-webapp/resources/criterions/criterions.zul"));
+                        "/resources/criterions/criterions.zul"));
 
         topItem(_("Orders"),
-                "/navalplanner-webapp/orders/orders.zul",
+                "/orders/orders.zul",
                 subItem(_("Orders list"),
-                        "/navalplanner-webapp/orders/orders.zul"),
+                        "/orders/orders.zul"),
                 subItem(_("Work activities types"),
-                        "/navalplanner-webapp/orders/orders.zul"),
+                        "/orders/orders.zul"),
                 subItem(_("Models"),
-                        "/navalplanner-webapp/orders/orders.zul"));
+                        "/orders/orders.zul"));
 
         topItem( _("Work reports"),
-                "/navalplanner-webapp/workreports/workReportTypes.zul",
+                "/workreports/workReportTypes.zul",
                 subItem(_("Work report types"),
-                        "/navalplanner-webapp/workreports/workReportTypes.zul"),
+                        "/workreports/workReportTypes.zul"),
                 subItem(_("Work report list"),
-                        "/navalplanner-webapp/workreports/workReport.zul#list"));
+                        "/workreports/workReport.zul#list"));
 
         topItem(_("Administration"),
-                "/navalplanner-webapp/advance/advanceTypes.zul",
+                "/advance/advanceTypes.zul",
                 subItem(_("Manage advances types"),
-                        "/navalplanner-webapp/advance/advanceTypes.zul"),
+                        "/advance/advanceTypes.zul"),
                 subItem(_("Calendars"),
-                        "/navalplanner-webapp/calendars/calendars.zul"));
+                        "/calendars/calendars.zul"));
 
         topItem(_("Quality management"),
-                "/navalplanner-webapp/");
+                "/");
     }
 
     private Hbox getRegisteredItemsInsertionPoint() {
