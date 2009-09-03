@@ -10,6 +10,8 @@ import org.zkoss.ganttz.util.IMenuItemsRegister;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
@@ -178,16 +180,48 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         return Collections.<CustomMenuItem> emptyList();
     }
 
+    private Button currentOne = null;
+
     @Override
     public void addMenuItem(String name,
             org.zkoss.zk.ui.event.EventListener eventListener) {
         Hbox insertionPoint = getRegisteredItemsInsertionPoint();
         Button button = new Button();
         button.setLabel(_(name));
-        button.setSclass(true ? "sub_menu" : "sub_menu");
-        button.addEventListener(Events.ON_CLICK, eventListener);
+        setDeselectedClass(button);
+        button.addEventListener(Events.ON_CLICK, doNotCallTwice(button,
+                eventListener));
         insertionPoint.appendChild(button);
         insertionPoint.appendChild(separator());
+
+    }
+
+    private void setSelectClass(final Button button) {
+        button.setSclass("sub_menu_active");
+    }
+
+    private void setDeselectedClass(Button button) {
+        button.setSclass("sub_menu");
+    }
+
+    private EventListener doNotCallTwice(final Button button,
+            final org.zkoss.zk.ui.event.EventListener originalListener) {
+        return new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (currentOne == button) {
+                    return;
+                }
+                if (currentOne != null) {
+                    currentOne.setSclass("sub_menu");
+                    setDeselectedClass(currentOne);
+                }
+                setSelectClass(button);
+                currentOne = button;
+                originalListener.onEvent(event);
+            }
+        };
     }
 
     private Component separator() {
