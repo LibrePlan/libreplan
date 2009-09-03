@@ -22,7 +22,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     private List<CustomMenuItem> firstLevel;
 
-    public class CustomMenuItem {
+    public static class CustomMenuItem {
 
         private final String name;
         private final String url;
@@ -69,6 +69,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     public CustomMenuController() {
+        this.firstLevel = new ArrayList<CustomMenuItem>();
         initializeMenu();
         getLocator().store(this);
     }
@@ -77,53 +78,57 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         return OnZKDesktopRegistry.getLocatorFor(IMenuItemsRegister.class);
     }
 
+    private CustomMenuController topItem(String name, String url,
+            CustomMenuItem... items) {
+        CustomMenuItem parent = new CustomMenuItem(name, url);
+        this.firstLevel.add(parent);
+        for (CustomMenuItem child : items) {
+            parent.appendChildren(child);
+        }
+        return this;
+    }
+
+    private CustomMenuItem subItem(String name, String url) {
+        return new CustomMenuItem(name, url);
+    }
+
     public void initializeMenu() {
-        List<CustomMenuItem> l = new ArrayList<CustomMenuItem>();
-        CustomMenuItem ci;
-
-        ci = new CustomMenuItem(_("Planification"),
+        topItem(
+                _("Planification"),
                 "/navalplanner-webapp/planner/main.zul");
-        l.add(ci);
+        topItem(
+                _("Resources"),
+                "/navalplanner-webapp/resources/worker/worker.zul",
+                subItem(_("Workers List"),
+                        "/navalplanner-webapp/resources/worker/worker.zul#list"),
+                subItem(_("Manage criterions"),
+                        "/navalplanner-webapp/resources/criterions/criterions.zul"));
 
-        ci = new CustomMenuItem(_("Resources"),
-                "/navalplanner-webapp/resources/worker/worker.zul");
-        ci.appendChildren(new CustomMenuItem(_("Workers list"),
-                "/navalplanner-webapp/resources/worker/worker.zul#list"));
-        ci.appendChildren(new CustomMenuItem(_("Manage criterions"),
-                "/navalplanner-webapp/resources/criterions/criterions.zul"));
-        l.add(ci);
+        topItem(_("Orders"),
+                "/navalplanner-webapp/orders/orders.zul",
+                subItem(_("Orders list"),
+                        "/navalplanner-webapp/orders/orders.zul"),
+                subItem(_("Work activities types"),
+                        "/navalplanner-webapp/orders/orders.zul"),
+                subItem(_("Models"),
+                        "/navalplanner-webapp/orders/orders.zul"));
 
-        ci = new CustomMenuItem(_("Orders"),
-                "/navalplanner-webapp/orders/orders.zul");
-        ci.appendChildren(new CustomMenuItem(_("Orders list"),
-                "/navalplanner-webapp/orders/orders.zul"));
-        ci.appendChildren(new CustomMenuItem(_("Work activities types"),
-                "/navalplanner-webapp/orders/orders.zul"));
-        ci.appendChildren(new CustomMenuItem(_("Models"),
-                "/navalplanner-webapp/orders/orders.zul"));
-        l.add(ci);
+        topItem( _("Work reports"),
+                "/navalplanner-webapp/workreports/workReportTypes.zul",
+                subItem(_("Work report types"),
+                        "/navalplanner-webapp/workreports/workReportTypes.zul"),
+                subItem(_("Work report list"),
+                        "/navalplanner-webapp/workreports/workReport.zul#list"));
 
-        ci = new CustomMenuItem(_("Work reports"),
-                "/navalplanner-webapp/workreports/workReportTypes.zul");
-        ci.appendChildren(new CustomMenuItem(_("Work report types"),
-                "/navalplanner-webapp/workreports/workReportTypes.zul"));
-        ci.appendChildren(new CustomMenuItem(_("Work report list"),
-                "/navalplanner-webapp/workreports/workReport.zul#list"));
-        l.add(ci);
+        topItem(_("Administration"),
+                "/navalplanner-webapp/advance/advanceTypes.zul",
+                subItem(_("Manage advances types"),
+                        "/navalplanner-webapp/advance/advanceTypes.zul"),
+                subItem(_("Calendars"),
+                        "/navalplanner-webapp/calendars/calendars.zul"));
 
-        ci = new CustomMenuItem(_("Quality management"),
+        topItem(_("Quality management"),
                 "/navalplanner-webapp/");
-        l.add(ci);
-
-        ci = new CustomMenuItem(_("Administration"),
-                "/navalplanner-webapp/advance/advanceTypes.zul");
-        ci.appendChildren(new CustomMenuItem(_("Manage advances types"),
-                "/navalplanner-webapp/advance/advanceTypes.zul"));
-        ci.appendChildren(new CustomMenuItem(_("Calendars"),
-                "/navalplanner-webapp/calendars/calendars.zul"));
-        l.add(ci);
-
-        this.firstLevel = l;
     }
 
     private Hbox getRegisteredItemsInsertionPoint() {
