@@ -1,0 +1,17 @@
+<window visible="@{calendarController.editionController.creatingNewVersion}"
+    id="createNewVersion" title="${i18n:_('Create new version')}" >
+    <vbox>
+        <label value="${i18n:_('Select the date from which the new version will be valid')}" />
+        <hbox>
+            <label value="${i18n:_('Valid from')}" />
+            <datebox id="dateValidFromNewVersion"
+                value="@{calendarController.editionController.dateValidFromNewVersion}"/>
+        </hbox>
+        <hbox>
+            <button label="${i18n:_('Create')}"
+                onClick="calendarController.editionController.acceptCreateNewVersion();" />
+            <button label="${i18n:_('Cancel')}"
+                onClick="calendarController.editionController.cancelNewVersion();" />
+        </hbox>
+    </vbox>
+</window>

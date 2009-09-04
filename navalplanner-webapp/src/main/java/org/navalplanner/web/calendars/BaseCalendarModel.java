@@ -18,6 +18,7 @@ import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -31,16 +32,17 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@Qualifier("main")
 public class BaseCalendarModel implements IBaseCalendarModel {
 
     /**
      * Conversation state
      */
-    private BaseCalendar baseCalendar;
+    protected BaseCalendar baseCalendar;
 
     private Date selectedDate;
 
-    private boolean editing = false;
+    protected boolean editing = false;
 
     private ClassValidator<BaseCalendar> baseCalendarValidator = new ClassValidator<BaseCalendar>(
             BaseCalendar.class);
@@ -401,10 +403,15 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Override
     @Transactional(rollbackFor = ValidationException.class)
     public void confirmSave() throws ValidationException {
-        BaseCalendar entity = getBaseCalendar();
+        checkInvalidValuesCalendar(getBaseCalendar());
+        baseCalendarDAO.save(getBaseCalendar());
+    }
 
+    @Override
+    public void checkInvalidValuesCalendar(BaseCalendar entity)
+            throws ValidationException {
         InvalidValue[] invalidValues = baseCalendarValidator
-                .getInvalidValues(entity);
+        .getInvalidValues(entity);
         if (invalidValues.length > 0) {
             throw new ValidationException(invalidValues);
         }
@@ -416,8 +423,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
             throw new ValidationException(invalidValues2,
                     _("Could not save new calendar"));
         }
-
-        baseCalendarDAO.save(getBaseCalendar());
     }
 
     @Override

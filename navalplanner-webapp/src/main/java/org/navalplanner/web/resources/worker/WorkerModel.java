@@ -1,5 +1,7 @@
 package org.navalplanner.web.resources.worker;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,6 +15,10 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -26,13 +32,13 @@ import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Model for worker <br />
@@ -46,6 +52,9 @@ public class WorkerModel implements IWorkerModel {
     @Autowired
     private IResourceDAO resourceDAO;
 
+    @Autowired
+    private IBaseCalendarDAO baseCalendarDAO;
+
     private final ICriterionType<?>[] laboralRelatedTypes = {
             PredefinedCriterionTypes.LEAVE,
             PredefinedCriterionTypes.WORK_RELATIONSHIP };
@@ -55,6 +64,13 @@ public class WorkerModel implements IWorkerModel {
     private final ICriterionDAO criterionDAO;
 
     private IMultipleCriterionActiveAssigner localizationsAssigner;
+
+    private ClassValidator<BaseCalendar> baseCalendarValidator = new ClassValidator<BaseCalendar>(
+            BaseCalendar.class);
+
+    @Autowired
+    @Qualifier("subclass")
+    private IBaseCalendarModel baseCalendarModel;
 
     @Autowired
     public WorkerModel(IResourceDAO resourceDAO,
@@ -69,6 +85,9 @@ public class WorkerModel implements IWorkerModel {
     @Override
     @Transactional
     public void save() throws ValidationException {
+        if (worker.getCalendar() != null) {
+            baseCalendarModel.checkInvalidValuesCalendar(worker.getCalendar());
+        }
         InvalidValue[] invalidValues = workerValidator
                 .getInvalidValues(getWorker());
         if (invalidValues.length > 0) {
@@ -108,6 +127,7 @@ public class WorkerModel implements IWorkerModel {
         try {
             this.worker = (Worker) resourceDAO.find(worker.getId());
             forceLoadSatisfactions(this.worker);
+            forceLoadCalendar(this.worker);
             localizationsAssigner = new MultipleCriterionActiveAssigner(
                     criterionDAO, this.worker,
                     PredefinedCriterionTypes.LOCATION_GROUP);
@@ -122,6 +142,22 @@ public class WorkerModel implements IWorkerModel {
             criterionSatisfaction.getCriterion().getName();
             criterionSatisfaction.getCriterion().getType().getName();
         }
+    }
+
+    private void forceLoadCalendar(Worker worker) {
+        if (worker.getCalendar() != null) {
+            forceLoadCalendar(worker.getCalendar());
+        }
+    }
+
+    private void forceLoadCalendar(BaseCalendar baseCalendar) {
+        for (CalendarData calendarData : baseCalendar.getCalendarDataVersions()) {
+            calendarData.getHoursPerDay().size();
+            if (calendarData.getParent() != null) {
+                forceLoadCalendar(calendarData.getParent());
+            }
+        }
+        baseCalendar.getExceptions().size();
     }
 
     @Override
@@ -409,4 +445,26 @@ public class WorkerModel implements IWorkerModel {
         }
         return result;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BaseCalendar> getBaseCalendars() {
+        return baseCalendarDAO.getBaseCalendars();
+    }
+
+    @Override
+    public void setCalendar(ResourceCalendar resourceCalendar) {
+        if (worker != null) {
+            worker.setCalendar(resourceCalendar);
+        }
+    }
+
+    @Override
+    public ResourceCalendar getCalendar() {
+        if (worker != null) {
+            return worker.getCalendar();
+        }
+        return null;
+    }
+
 }

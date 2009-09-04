@@ -9,6 +9,7 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?component name="list" inline="true" macroURI="_list.zul"?>
 <?component name="edition" inline="true" macroURI="_edition.zul"?>
+<?component name="createNewVersion" inline="true" macroURI="_createNewVersion.zul"?>
 <zk>
 
     <window self="@{define(content)}"
@@ -21,39 +22,23 @@
         <edition top_id="editWindow" title="${i18n:_('Edit Calendar')}"
             save_button_label="${i18n:_('Save')}"
             cancel_button_label="${i18n:_('Cancel')}" />
-        <window visible="@{controller.confirmingRemove}"
+        <window visible="@{calendarController.confirmingRemove}"
             id="confirmRemove" title="${i18n:_('Confirmation')}" sizable="true"
             position="center">
             <vbox align = "center">
                 <hbox align = "center">
                     <i18n value="Do you want to delete &quot;{0}&quot;?"
-                        arg0="@{controller.baseCalendar.name}"/>
+                        arg0="@{calendarController.baseCalendar.name}"/>
                 </hbox>
                 <hbox align = "center">
                     <button label="${i18n:_('Yes')}"
-                        onClick="controller.remove();" />
+                        onClick="calendarController.remove();" />
                     <button label="${i18n:_('No')}"
-                        onClick="controller.cancelRemove();" />
+                        onClick="calendarController.cancelRemove();" />
                 </hbox>
             </vbox>
         </window>
-        <window visible="@{controller.editionController.creatingNewVersion}"
-            id="createNewVersion" title="${i18n:_('Create new version')}" >
-            <vbox>
-                <label value="${i18n:_('Select the date from which the new version will be valid')}" />
-                <hbox>
-                    <label value="${i18n:_('Valid from')}" />
-                    <datebox id="dateValidFromNewVersion"
-                        value="@{controller.editionController.dateValidFromNewVersion}"/>
-                </hbox>
-                <hbox>
-                    <button label="${i18n:_('Create')}"
-                        onClick="controller.editionController.acceptCreateNewVersion();" />
-                    <button label="${i18n:_('Cancel')}"
-                        onClick="controller.editionController.cancelNewVersion();" />
-                </hbox>
-            </vbox>
-        </window>
+        <createNewVersion />
     </window>
 
 </zk>

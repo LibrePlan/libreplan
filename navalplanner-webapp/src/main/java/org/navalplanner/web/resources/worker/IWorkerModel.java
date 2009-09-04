@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -94,4 +96,10 @@ public interface IWorkerModel {
     void setWorker(Worker worker);
 
     Set<Resource> getSetOfResourcesSatisfying(ICriterion criterion);
+
+    List<BaseCalendar> getBaseCalendars();
+
+    void setCalendar(ResourceCalendar resourceCalendar);
+
+    ResourceCalendar getCalendar();
 }

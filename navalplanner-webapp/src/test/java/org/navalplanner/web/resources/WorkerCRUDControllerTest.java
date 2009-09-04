@@ -34,6 +34,7 @@ public class WorkerCRUDControllerTest {
     private Window workRelationshipsWindow;
     private Window addWorkRelationshipWindow;
     private Window editWorkRelationshipWindow;
+    private Window editCalendarWindow;
 
     private WorkerCRUDController createControllerForModel(
             IWorkerModel workerModel) {
@@ -48,10 +49,12 @@ public class WorkerCRUDControllerTest {
         workRelationshipsWindow = createNiceMock(Window.class);
         addWorkRelationshipWindow = createNiceMock(Window.class);
         editWorkRelationshipWindow = createNiceMock(Window.class);
+        editCalendarWindow = createNiceMock(Window.class);
         WorkerCRUDController workerCRUDController = new WorkerCRUDController(
                 createWindow, listWindow, editWindow, workRelationshipsWindow,
                 addWorkRelationshipWindow, editWorkRelationshipWindow,
-                workerModel, messages, createNiceMock(IWorkerCRUDControllerEntryPoints.class));
+                editCalendarWindow, workerModel, messages,
+                createNiceMock(IWorkerCRUDControllerEntryPoints.class));
         return workerCRUDController;
 
     }

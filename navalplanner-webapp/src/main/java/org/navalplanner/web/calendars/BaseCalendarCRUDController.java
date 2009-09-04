@@ -67,7 +67,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("controller", this, true);
+        comp.setVariable("calendarController", this, true);
         getVisibility().showOnly(listWindow);
     }
 
@@ -180,8 +180,18 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                 baseCalendarModel, editWindow, createNewVersion) {
 
             @Override
-            protected void goToList() {
+            public void goToList() {
                 BaseCalendarCRUDController.this.goToList();
+            }
+
+            @Override
+            public void cancel() {
+                BaseCalendarCRUDController.this.cancel();
+            }
+
+            @Override
+            public void save() {
+                BaseCalendarCRUDController.this.save();
             }
 
         };
@@ -198,8 +208,17 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                 createWindow, createNewVersion) {
 
             @Override
-            protected void goToList() {
+            public void goToList() {
                 BaseCalendarCRUDController.this.goToList();
+            }
+            @Override
+            public void cancel() {
+                BaseCalendarCRUDController.this.cancel();
+            }
+
+            @Override
+            public void save() {
+                BaseCalendarCRUDController.this.save();
             }
 
         };

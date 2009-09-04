@@ -15,9 +15,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
-import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.IMessagesForUser;
-import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.CalendarHighlightedDays;
@@ -74,7 +72,11 @@ public abstract class BaseCalendarEditionController extends
         this.createNewVersionWindow = createNewVersionWindow;
     }
 
-    protected abstract void goToList();
+    public abstract void goToList();
+
+    public abstract void save();
+
+    public abstract void cancel();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -528,23 +530,6 @@ public abstract class BaseCalendarEditionController extends
             item.appendChild(buttonListcell);
         }
 
-    }
-
-    public void save() {
-        try {
-            baseCalendarModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO, _(
-                    "Base calendar \"{0}\" saved", baseCalendarModel
-                            .getBaseCalendar().getName()));
-            goToList();
-        } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
-        }
-    }
-
-    public void cancel() {
-        baseCalendarModel.cancel();
-        goToList();
     }
 
     public boolean isLastVersion() {

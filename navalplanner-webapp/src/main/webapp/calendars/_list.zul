@@ -1,12 +1,12 @@
 <window id="${arg.top_id}" title="${i18n:_('Calendars List')}">
-    <tree id="tree" model="@{controller.baseCalendarsTreeModel}"
-        treeitemRenderer="@{controller.baseCalendarsTreeitemRenderer}">
+    <tree id="tree" model="@{calendarController.baseCalendarsTreeModel}"
+        treeitemRenderer="@{calendarController.baseCalendarsTreeitemRenderer}">
         <treecols sizable="true">
             <treecol label="${i18n:_('Name')}" />
             <treecol label="${i18n:_('Operations')}" />
         </treecols>
     </tree>
-    <button id="show_create_form" onClick="controller.goToCreateForm();"
+    <button id="show_create_form" onClick="calendarController.goToCreateForm();"
         label="${i18n:_('Create')}">
     </button>
 </window>

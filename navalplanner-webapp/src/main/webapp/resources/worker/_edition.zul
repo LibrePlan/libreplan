@@ -1,11 +1,13 @@
 <?component name="localizations" inline="true" macroURI="_localizations.zul"?>
 <?component name="workRelationships" inline="true" macroURI="_workRelationships.zul"?>
+<?component name="resourceCalendar" inline="true" macroURI="_calendar.zul"?>
 <window id="${arg.top_id}" title="${arg.title}">
     <tabbox>
         <tabs>
             <tab label="${i18n:_('Edit')}"></tab>
             <tab label="${i18n:_('Places')}"></tab>
             <tab label="${i18n:_('Work record')}"></tab>
+            <tab label="${i18n:_('Calendar')}"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -44,6 +46,9 @@
                 <workRelationships top_id="workRelationshipsWindow"
                     title="${i18n:_('Work relationships')}" save_button_label="${i18n:_('Save')}"
                     cancel_button_label="${i18n:_('Cancel')}" />
+            </tabpanel>
+            <tabpanel>
+                <resourceCalendar />
             </tabpanel>
         </tabpanels>
     </tabbox>

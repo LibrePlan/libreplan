@@ -3,12 +3,17 @@ package org.navalplanner.web.resources.worker;
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.common.ConcurrentModificationDetector.addAutomaticHandlingOfConcurrentModification;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.calendars.BaseCalendarEditionController;
+import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -18,6 +23,8 @@ import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -59,13 +66,22 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private IWorkerCRUDControllerEntryPoints workerCRUD;
 
+    private Window editCalendarWindow;
+
+    private BaseCalendarEditionController baseCalendarEditionController;
+
+    private IBaseCalendarModel resourceCalendarModel;
+
+    private Window createNewVersionWindow;
+
     public WorkerCRUDController() {
     }
 
     public WorkerCRUDController(Window createWindow, Window listWindow,
             Window editWindow, Window workRelationshipsWindow,
             Window addWorkRelationshipWindow,
-            Window editWorkRelationshipWindow, IWorkerModel workerModel,
+            Window editWorkRelationshipWindow, Window editCalendarWindow,
+            IWorkerModel workerModel,
             IMessagesForUser messages,
             IWorkerCRUDControllerEntryPoints workerCRUD) {
         this.createWindow = createWindow;
@@ -77,6 +93,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         this.workerModel = workerModel;
         this.messages = messages;
         this.workerCRUD = workerCRUD;
+        this.editCalendarWindow = editCalendarWindow;
     }
 
     public Worker getWorker() {
@@ -95,6 +112,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void save() {
         try {
+            baseCalendarEditionController.save();
             workerModel.save();
             goToList();
             Util.reloadBindings(listWindow);
@@ -118,11 +136,17 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     public void goToEditForm(Worker worker) {
         getBookmarker().goToEditForm(worker);
         workerModel.prepareEditFor(worker);
+        if (isCalendarNotNull()) {
+            editCalendar();
+        }
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
     }
 
     public void goToEditForm() {
+        if (isCalendarNotNull()) {
+            editCalendar();
+        }
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
     }
@@ -181,6 +205,45 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
         handler.registerListener(this, page);
         getVisibility().showOnly(listWindow);
+
+        editCalendarWindow = (Window) getCurrentWindow()
+                .getFellow("editCalendarWindow");
+        createNewVersionWindow = (Window) getCurrentWindow()
+                .getFellow("createNewVersion");
+        baseCalendarEditionController = new BaseCalendarEditionController(
+                resourceCalendarModel, editCalendarWindow,
+                createNewVersionWindow) {
+
+            @Override
+            public void goToList() {
+                workerModel
+                        .setCalendar((ResourceCalendar) resourceCalendarModel
+                                .getBaseCalendar());
+                reloadCurrentWindow();
+            }
+
+            @Override
+            public void cancel() {
+                resourceCalendarModel.cancel();
+                workerModel.setCalendar(null);
+                reloadCurrentWindow();
+            }
+
+            @Override
+            public void save() {
+                workerModel
+                        .setCalendar((ResourceCalendar) resourceCalendarModel
+                                .getBaseCalendar());
+                reloadCurrentWindow();
+            }
+
+        };
+        editCalendarWindow.setVariable("calendarController", this, true);
+        createNewVersionWindow.setVariable("calendarController", this, true);
+    }
+
+    public BaseCalendarEditionController getEditionController() {
+        return baseCalendarEditionController;
     }
 
     private void setupWorkRelationshipController(
@@ -216,6 +279,87 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private IWorkerCRUDControllerEntryPoints getBookmarker() {
         return workerCRUD;
+    }
+
+    public List<BaseCalendar> getBaseCalendars() {
+        return workerModel.getBaseCalendars();
+    }
+
+    public void calendarChecked(Radio radio) {
+        Combobox comboboxDerived = (Combobox) radio
+                .getFellow("createDerivedCalendar");
+        Combobox comboboxCopy = (Combobox) radio
+                .getFellow("createCopyCalendar");
+
+        String selectedId = radio.getId();
+        if (selectedId.equals("createFromScratch")) {
+            comboboxDerived.setDisabled(true);
+            comboboxCopy.setDisabled(true);
+        } else if (selectedId.equals("createDerived")) {
+            comboboxDerived.setDisabled(false);
+            comboboxCopy.setDisabled(true);
+        } else if (selectedId.equals("createCopy")) {
+            comboboxDerived.setDisabled(true);
+            comboboxCopy.setDisabled(false);
+        }
+    }
+
+    public boolean isCalendarNull() {
+        if (workerModel.getCalendar() != null) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isCalendarNotNull() {
+        return !isCalendarNull();
+    }
+
+    public void createCalendar() {
+        // FIXME create different kind of calendars depending on user selection
+
+        resourceCalendarModel.initCreate();
+        workerModel.setCalendar((ResourceCalendar) resourceCalendarModel
+                .getBaseCalendar());
+        try {
+            baseCalendarEditionController.doAfterCompose(editCalendarWindow);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        baseCalendarEditionController.setSelectedDay(new Date());
+        Util.reloadBindings(editCalendarWindow);
+        Util.reloadBindings(createNewVersionWindow);
+        reloadCurrentWindow();
+    }
+
+    public void editCalendar() {
+        resourceCalendarModel.initEdit(workerModel.getCalendar());
+        try {
+            baseCalendarEditionController.doAfterCompose(editCalendarWindow);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        baseCalendarEditionController.setSelectedDay(new Date());
+        Util.reloadBindings(editCalendarWindow);
+        Util.reloadBindings(createNewVersionWindow);
+    }
+
+    public BaseCalendarEditionController getBaseCalendarEditionController() {
+        return baseCalendarEditionController;
+    }
+
+    private void reloadCurrentWindow() {
+        Util.reloadBindings(getCurrentWindow());
+    }
+
+    private Window getCurrentWindow() {
+        if (workerModel.isCreating()) {
+            return createWindow;
+        } else {
+            return editWindow;
+        }
     }
 
 }
