@@ -37,20 +37,20 @@
                 </hbox>
             </vbox>
         </window>
-        <window visible="@{controller.creatingNewVersion}"
+        <window visible="@{controller.editionController.creatingNewVersion}"
             id="createNewVersion" title="${i18n:_('Create new version')}" >
             <vbox>
                 <label value="${i18n:_('Select the date from which the new version will be valid')}" />
                 <hbox>
                     <label value="${i18n:_('Valid from')}" />
                     <datebox id="dateValidFromNewVersion"
-                        value="@{controller.dateValidFromNewVersion}"/>
+                        value="@{controller.editionController.dateValidFromNewVersion}"/>
                 </hbox>
                 <hbox>
                     <button label="${i18n:_('Create')}"
-                        onClick="controller.acceptCreateNewVersion();" />
+                        onClick="controller.editionController.acceptCreateNewVersion();" />
                     <button label="${i18n:_('Cancel')}"
-                        onClick="controller.cancelNewVersion();" />
+                        onClick="controller.editionController.cancelNewVersion();" />
                 </hbox>
             </vbox>
         </window>

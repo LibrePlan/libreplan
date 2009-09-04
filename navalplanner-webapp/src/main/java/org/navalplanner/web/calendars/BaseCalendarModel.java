@@ -399,7 +399,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
      */
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = ValidationException.class)
     public void confirmSave() throws ValidationException {
         BaseCalendar entity = getBaseCalendar();
 

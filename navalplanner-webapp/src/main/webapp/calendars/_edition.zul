@@ -5,7 +5,7 @@
     <tabs>
         <tab label="${i18n:_('Data')}" id="dataTab" />
         <tab label="${i18n:_('History')}"
-            visible="@{controller.isEditing}" id="historyTab" />
+            visible="@{controller.editionController.isEditing}" id="historyTab" />
     </tabs>
 <tabpanels>
 
@@ -19,16 +19,16 @@
 
     <hbox>
         <label value="${i18n:_('Name')}" />
-        <textbox value="@{controller.baseCalendar.name}" />
+        <textbox value="@{controller.editionController.baseCalendar.name}" />
     </hbox>
 
     <hbox>
         <label value="${i18n:_('Type')}" />
         <vbox>
-            <label value="@{controller.calendarType}" />
+            <label value="@{controller.editionController.calendarType}" />
             <combobox id="parentCalendars"
-                visible="@{controller.isDerived}"
-                disabled="@{controller.isDateValidFromPast}" >
+                visible="@{controller.editionController.isDerived}"
+                disabled="@{controller.editionController.isDateValidFromPast}">
                 <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
                     label="@{baseCalnedar.name}" />
             </combobox>
@@ -36,8 +36,8 @@
     </hbox>
 
     <listbox id="hoursPerDay"
-        model="@{controller.getHoursPerDay}"
-        itemRenderer="@{controller.hoursPerDayRenderer}">
+        model="@{controller.editionController.getHoursPerDay}"
+        itemRenderer="@{controller.editionController.hoursPerDayRenderer}">
         <listhead>
             <listheader label="${i18n:_('Day of week')}" />
             <listheader label="${i18n:_('Hours')}" />
@@ -50,28 +50,28 @@
     <vbox id="dayInformation">
 
         <calendarhighlighteddays id="calendarWidget"
-            value="@{controller.selectedDay,access='both'}"
-            ancestorExceptionDays="@{controller.ancestorExceptionDays,access='both'}"
-            ownExceptionDays="@{controller.ownExceptionDays,access='both'}"
-            zeroHoursDays="@{controller.zeroHoursDays,access='both'}" />
+            value="@{controller.editionController.selectedDay,access='both'}"
+            ancestorExceptionDays="@{controller.editionController.ancestorExceptionDays,access='both'}"
+            ownExceptionDays="@{controller.editionController.ownExceptionDays,access='both'}"
+            zeroHoursDays="@{controller.editionController.zeroHoursDays,access='both'}" />
 
         <hbox>
             <label value="${i18n:_('Type of day')}" />
-            <label value="@{controller.typeOfDay}" />
+            <label value="@{controller.editionController.typeOfDay}" />
         </hbox>
 
         <hbox>
             <label value="${i18n:_('Hours of day')}" />
-            <label value="@{controller.hoursOfDay}" />
+            <label value="@{controller.editionController.hoursOfDay}" />
         </hbox>
 
-        <hbox visible="@{controller.isNotSelectedDateFromPast}">
+        <hbox visible="@{controller.editionController.isNotSelectedDateFromPast}">
             <vbox>
                 <button label="${i18n:_('Create exception')}"
-                    onClick="controller.createException();" />
-                <button disabled="@{controller.isNotExceptional}"
+                    onClick="controller.editionController.createException();" />
+                <button disabled="@{controller.editionController.isNotExceptional}"
                     label="${i18n:_('Remove exception')}"
-                    onClick="controller.removeException();" />
+                    onClick="controller.editionController.removeException();" />
             </vbox>
             <intbox id="exceptionHours" value="0" />
         </hbox>
@@ -79,23 +79,23 @@
 
     </hbox>
 
-    <hbox visible="@{controller.isEditing}">
+    <hbox visible="@{controller.editionController.isEditing}">
         <label value="${i18n:_('Valid from')}" />
-        <datebox id="dateValidFrom" value="@{controller.dateValidFrom}"
-            disabled="@{controller.isDateValidFromPast}" />
+        <datebox id="dateValidFrom" value="@{controller.editionController.dateValidFrom}"
+            disabled="@{controller.editionController.isDateValidFromPast}" />
         <label value="${i18n:_('to')}" />
-        <datebox id="expiringDate" value="@{controller.expiringDate}"
-            disabled="@{controller.isLastVersion}" />
+        <datebox id="expiringDate" value="@{controller.editionController.expiringDate}"
+            disabled="@{controller.editionController.isLastVersion}" />
     </hbox>
 
     <hbox>
-        <button onClick="controller.save();"
+        <button onClick="controller.editionController.save();"
             label="${arg.save_button_label}" />
-        <button onClick="controller.cancel();"
+        <button onClick="controller.editionController.cancel();"
             label="${arg.cancel_button_label}" />
-        <button onClick="controller.createNewVersion();"
+        <button onClick="controller.editionController.createNewVersion();"
             label="${i18n:_('Create new version')}"
-            visible="@{controller.isEditing}" />
+            visible="@{controller.editionController.isEditing}" />
     </hbox>
 
 </vbox>
@@ -104,8 +104,8 @@
 
 <tabpanel>
 
-    <listbox model="@{controller.historyVersions}"
-        itemRenderer="@{controller.historyVersionsRenderer}">
+    <listbox model="@{controller.editionController.historyVersions}"
+        itemRenderer="@{controller.editionController.historyVersionsRenderer}">
         <listhead>
             <listheader label="${i18n:_('Name')}" />
             <listheader label="${i18n:_('Parent')}" />
