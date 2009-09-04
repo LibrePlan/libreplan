@@ -409,7 +409,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
             throw new ValidationException(invalidValues);
         }
 
-        if (baseCalendarDAO.thereIsOtherWithSameName(getBaseCalendar())) {
+        if (baseCalendarDAO.thereIsOtherWithSameName(entity)) {
             InvalidValue[] invalidValues2 = { new InvalidValue(_(
                     "{0} already exists", entity.getName()),
                     BaseCalendar.class, "name", entity.getName(), entity) };
