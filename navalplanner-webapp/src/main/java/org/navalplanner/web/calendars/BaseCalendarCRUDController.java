@@ -3,7 +3,6 @@ package org.navalplanner.web.calendars;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
-import java.util.List;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -19,8 +18,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Treecell;
@@ -85,11 +82,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public void goToEditForm(BaseCalendar baseCalendar) {
-        assignEditionController();
         baseCalendarModel.initEdit(baseCalendar);
-        if (baseCalendarModel.isDerived()) {
-            prepareParentCombo();
-        }
+        assignEditionController();
         setSelectedDay(new Date());
         highlightDaysOnCalendar();
         getVisibility().showOnly(editWindow);
@@ -167,8 +161,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public void goToCreateForm() {
-        assignCreateController();
         baseCalendarModel.initCreate();
+        assignCreateController();
         setSelectedDay(new Date());
         highlightDaysOnCalendar();
         getVisibility().showOnly(createWindow);
@@ -244,63 +238,12 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public void goToCreateDerivedForm(BaseCalendar baseCalendar) {
-        assignCreateController();
         baseCalendarModel.initCreateDerived(baseCalendar);
-        if (baseCalendarModel.isDerived()) {
-            prepareParentCombo();
-        }
+        assignCreateController();
         setSelectedDay(new Date());
         highlightDaysOnCalendar();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
-    }
-
-    private void prepareParentCombo() {
-        Combobox parentCalendars;
-        if (baseCalendarModel.isEditing()) {
-            parentCalendars = (Combobox) editWindow
-                    .getFellow("parentCalendars");
-        } else {
-            parentCalendars = (Combobox) createWindow
-                    .getFellow("parentCalendars");
-        }
-
-        fillParentComboAndMarkSelectedItem(parentCalendars);
-        addListenerParentCombo(parentCalendars);
-    }
-
-    private void fillParentComboAndMarkSelectedItem(Combobox parentCalendars) {
-        parentCalendars.getChildren().clear();
-        BaseCalendar parent = baseCalendarModel.getParent();
-
-        List<BaseCalendar> possibleParentCalendars = getParentCalendars();
-        for (BaseCalendar baseCalendar : possibleParentCalendars) {
-            Comboitem item = new Comboitem(baseCalendar.getName());
-            item.setValue(baseCalendar);
-            parentCalendars.appendChild(item);
-            if (baseCalendar.getId().equals(parent.getId())) {
-                parentCalendars.setSelectedItem(item);
-            }
-        }
-    }
-
-    private void addListenerParentCombo(final Combobox parentCalendars) {
-        parentCalendars.addEventListener(Events.ON_SELECT, new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                BaseCalendar selected = (BaseCalendar) parentCalendars
-                        .getSelectedItem()
-                        .getValue();
-                baseCalendarModel.setParent(selected);
-                reloadCurrentWindow();
-            }
-
-        });
-    }
-
-    public List<BaseCalendar> getParentCalendars() {
-        return baseCalendarModel.getPossibleParentCalendars();
     }
 
     public boolean isEditing() {
@@ -308,11 +251,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public void goToCreateCopyForm(BaseCalendar baseCalendar) {
-        assignCreateController();
         baseCalendarModel.initCreateCopy(baseCalendar);
-        if (baseCalendarModel.isDerived()) {
-            prepareParentCombo();
-        }
+        assignCreateController();
         setSelectedDay(new Date());
         highlightDaysOnCalendar();
         getVisibility().showOnly(createWindow);

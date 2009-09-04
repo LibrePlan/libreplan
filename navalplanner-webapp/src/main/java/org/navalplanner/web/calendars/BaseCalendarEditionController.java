@@ -30,6 +30,8 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
@@ -78,6 +80,46 @@ public abstract class BaseCalendarEditionController extends
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
+        if (baseCalendarModel.isDerived()) {
+            prepareParentCombo();
+        }
+    }
+
+    private void prepareParentCombo() {
+        Combobox parentCalendars = (Combobox) window
+                    .getFellow("parentCalendars");
+
+        fillParentComboAndMarkSelectedItem(parentCalendars);
+        addListenerParentCombo(parentCalendars);
+    }
+
+    private void fillParentComboAndMarkSelectedItem(Combobox parentCalendars) {
+        parentCalendars.getChildren().clear();
+        BaseCalendar parent = baseCalendarModel.getParent();
+
+        List<BaseCalendar> possibleParentCalendars = getParentCalendars();
+        for (BaseCalendar baseCalendar : possibleParentCalendars) {
+            Comboitem item = new Comboitem(baseCalendar.getName());
+            item.setValue(baseCalendar);
+            parentCalendars.appendChild(item);
+            if (baseCalendar.getId().equals(parent.getId())) {
+                parentCalendars.setSelectedItem(item);
+            }
+        }
+    }
+
+    private void addListenerParentCombo(final Combobox parentCalendars) {
+        parentCalendars.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                BaseCalendar selected = (BaseCalendar) parentCalendars
+                        .getSelectedItem().getValue();
+                baseCalendarModel.setParent(selected);
+                reloadCurrentWindow();
+            }
+
+        });
     }
 
     public boolean isEditing() {
@@ -559,6 +601,10 @@ public abstract class BaseCalendarEditionController extends
 
     public void setDateValidFromNewVersion(Date date) {
         // Just for ZK binding not needed
+    }
+
+    public List<BaseCalendar> getParentCalendars() {
+        return baseCalendarModel.getPossibleParentCalendars();
     }
 
 }
