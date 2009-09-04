@@ -46,6 +46,9 @@ public class OrderPlanningController implements
 
     private Planner planner;
 
+    @Autowired
+    private CalendarAllocationController calendarAllocationController;
+
     public OrderPlanningController() {
     }
 
@@ -53,6 +56,7 @@ public class OrderPlanningController implements
     public void showSchedule(Order order) {
         model.createConfiguration(order, resourceAllocationController,
                 editTaskController, splittingController,
+                calendarAllocationController,
                 new IConfigurationOnTransaction() {
 
             @Override
@@ -71,6 +75,10 @@ public class OrderPlanningController implements
 
     public SplittingController getSplittingController() {
         return splittingController;
+    }
+
+    public CalendarAllocationController getCalendarAllocationController() {
+        return calendarAllocationController;
     }
 
 }

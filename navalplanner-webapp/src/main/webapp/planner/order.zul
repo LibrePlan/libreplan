@@ -17,6 +17,7 @@
         planningController = orderPlanningController;
         allocationController = planningController.resourceAllocationController;
         splittingTaskController = planningController.splittingController;
+        calendarController = planningController.calendarAllocationController;
     ]]>
     </zscript>
 
@@ -136,6 +137,31 @@
                 <button label="${i18n:_('Cancel')}" id="splitCancel" />
             </hbox>
         </vbox>
+    </window>
+
+    <window id="calendarAllocationWindow" self="@{define(content)}"
+        apply="${calendarController}"
+        title="${i18n:_('Calendar allocation')}" width="600px"
+        closable="true" visible="false">
+
+        <vbox>
+
+            <label value="${i18n:_('Select the calendar')}" />
+
+            <combobox id="calendarCombo">
+                <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
+                    label="@{baseCalnedar.name}" />
+            </combobox>
+
+            <hbox>
+                <button label="${i18n:_('Assign')}"
+                    onClick="calendarController.assign(calendarCombo.selectedItem);" />
+                <button label="${i18n:_('Cancel')}"
+                    onClick="calendarController.cancel();" />
+            </hbox>
+
+        </vbox>
+
     </window>
 
     <zscript><![CDATA[

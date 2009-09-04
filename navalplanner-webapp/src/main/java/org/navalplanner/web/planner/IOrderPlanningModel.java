@@ -17,6 +17,7 @@ public interface IOrderPlanningModel {
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
             SplittingController splittingController,
+            CalendarAllocationController calendarAllocationController,
             IConfigurationOnTransaction onTransaction);
 
 }

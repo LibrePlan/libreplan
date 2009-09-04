@@ -1,5 +1,7 @@
 package org.navalplanner.web.planner;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,8 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -51,6 +51,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
             SplittingController splittingController,
+            CalendarAllocationController calendarAllocationController,
             IConfigurationOnTransaction onTransaction) {
         Order orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled())
@@ -78,6 +79,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         IEditTaskCommand editTaskCommand = getEditTaskCommand();
         editTaskCommand.setEditTaskController(editTaskController);
         configuration.setEditTaskCommand(editTaskCommand);
+
+        ICalendarAllocationCommand calendarAllocationCommand = getCalendarAllocationCommand();
+        calendarAllocationCommand
+                .setCalendarAllocationController(calendarAllocationController);
+        configuration.addCommandOnTask(calendarAllocationCommand);
 
         onTransaction.use(configuration);
     }
@@ -158,6 +164,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract IMergeTaskCommand getMergeTaskCommand();
 
     protected abstract IEditTaskCommand getEditTaskCommand();
+
+    protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
 
     private Order reload(Order order) {
         try {

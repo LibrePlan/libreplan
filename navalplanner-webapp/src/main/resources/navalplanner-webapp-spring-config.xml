@@ -22,6 +22,7 @@
       <lookup-method name="getSplitCommand" bean="splitTaskCommand"/>
       <lookup-method name="getMergeTaskCommand" bean="mergeTaskCommand"/>
       <lookup-method name="getEditTaskCommand" bean="editTaskCommand"/>
+      <lookup-method name="getCalendarAllocationCommand" bean="calendarAllocationCommand"/>
     </bean>
 
     <context:component-scan base-package="org.navalplanner.web"/>
