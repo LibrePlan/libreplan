@@ -343,6 +343,12 @@ public class BaseCalendar extends BaseEntity {
         return derivedCalendar;
     }
 
+    public BaseCalendar newDerivedResourceCalendar() {
+        BaseCalendar derivedCalendar = ResourceCalendar.create();
+        derivedCalendar.setParent(this);
+        return derivedCalendar;
+    }
+
     /**
      * Creates a new version this {@link BaseCalendar} from the specific date.
      * It makes that the current calendar expires in the specific date. And the
@@ -381,14 +387,22 @@ public class BaseCalendar extends BaseEntity {
 
     public BaseCalendar newCopy() {
         BaseCalendar copy = create();
+        copyFields(copy);
+        return copy;
+    }
 
+    private void copyFields(BaseCalendar copy) {
         copy.name = this.name;
         copy.calendarDataVersions = new ArrayList<CalendarData>();
         for (CalendarData calendarData : this.calendarDataVersions) {
             copy.calendarDataVersions.add(calendarData.copy());
         }
         copy.exceptions = new HashSet<ExceptionDay>(this.exceptions);
+    }
 
+    public BaseCalendar newCopyResourceCalendar() {
+        BaseCalendar copy = ResourceCalendar.create();
+        copyFields(copy);
         return copy;
     }
 

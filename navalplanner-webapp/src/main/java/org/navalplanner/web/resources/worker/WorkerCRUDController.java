@@ -22,8 +22,10 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.api.Window;
 
@@ -315,10 +317,37 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         return !isCalendarNull();
     }
 
-    public void createCalendar() {
-        // FIXME create different kind of calendars depending on user selection
+    public void createCalendar(String optionId) {
+        if (optionId.equals("createFromScratch")) {
+            resourceCalendarModel.initCreate();
+        } else if (optionId.equals("createDerived")) {
+            Combobox combobox = (Combobox) getCurrentWindow().getFellow(
+                    "createDerivedCalendar");
+            Comboitem selectedItem = combobox.getSelectedItem();
+            if (selectedItem == null) {
+                throw new WrongValueException(combobox,
+                        "You should select one calendar");
+            }
+            BaseCalendar parentCalendar = (BaseCalendar) combobox
+                    .getSelectedItem().getValue();
+            resourceCalendarModel.initCreateDerived(parentCalendar);
+        } else if (optionId.equals("createCopy")) {
+            Combobox combobox = (Combobox) getCurrentWindow().getFellow(
+                    "createCopyCalendar");
+            Comboitem selectedItem = combobox.getSelectedItem();
+            if (selectedItem == null) {
+                throw new WrongValueException(combobox,
+                        "You should select one calendar");
+            }
+            BaseCalendar origCalendar = (BaseCalendar) combobox
+                    .getSelectedItem().getValue();
+            resourceCalendarModel.initCreateCopy(origCalendar);
+        } else {
+            throw new RuntimeException(
+                    "Unknow option '" + optionId
+                    + "' to create a resource calendar");
+        }
 
-        resourceCalendarModel.initCreate();
         workerModel.setCalendar((ResourceCalendar) resourceCalendarModel
                 .getBaseCalendar());
         try {

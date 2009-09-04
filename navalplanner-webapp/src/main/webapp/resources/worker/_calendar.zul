@@ -4,7 +4,8 @@
 
 <div visible="@{controller.isCalendarNull}">
 
-<radiogroup onCheck="controller.calendarChecked(self.selectedItem)">
+<radiogroup id="createCalendarOptions"
+    onCheck="controller.calendarChecked(self.selectedItem)">
 	<hbox>
 	    <radio id="createFromScratch"
 	        label="${i18n:_('Create calendar from scratch')}"
@@ -29,7 +30,7 @@
 </radiogroup>
 
 <button label="${i18n:_('Create')}"
-    onClick="controller.createCalendar();" />
+    onClick="controller.createCalendar(createCalendarOptions.selectedItem.id);" />
 
 </div>
 

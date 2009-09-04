@@ -110,7 +110,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         this.baseCalendar = baseCalendar;
     }
 
-    private void forceLoad(BaseCalendar baseCalendar) {
+    protected void forceLoad(BaseCalendar baseCalendar) {
         for (CalendarData calendarData : baseCalendar.getCalendarDataVersions()) {
             calendarData.getHoursPerDay().size();
             if (calendarData.getParent() != null) {
@@ -130,7 +130,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         }
     }
 
-    private BaseCalendar getFromDB(BaseCalendar baseCalendar) {
+    protected BaseCalendar getFromDB(BaseCalendar baseCalendar) {
         return getFromDB(baseCalendar.getId());
     }
 
