@@ -63,8 +63,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        messagesForUser = new MessagesForUser(messagesContainer);
         this.window = (Window) comp;
+        messagesForUser = new MessagesForUser(messagesContainer);
     }
 
     /**
@@ -214,6 +214,16 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     public ResourceAllocationRenderer getResourceAllocationRenderer() {
         return resourceAllocationRenderer;
+    }
+
+    public void cancel() {
+        clear();
+        self.setVisible(false);
+        resourceAllocationModel.cancel();
+    }
+
+    private void clear() {
+        genericResourceAllocationPercentage.setValue(null);
     }
 
     /**

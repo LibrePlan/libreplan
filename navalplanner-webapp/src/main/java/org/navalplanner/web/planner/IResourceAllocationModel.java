@@ -137,4 +137,9 @@ public interface IResourceAllocationModel {
      */
     void updateGenericPercentages(BigDecimal totalPercentage);
 
+    /**
+     * Cancel operation
+     */
+    void cancel();
+
 }

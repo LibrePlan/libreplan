@@ -301,4 +301,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         ganttTask.setEndDate(task.getEndDate());
     }
 
+    @Override
+    public void cancel() {
+        task.clearResourceAllocations();
+    }
+
 }
