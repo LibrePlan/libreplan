@@ -106,7 +106,7 @@
         </listbox>
 
         <hbox>
-            <button label="${i18n:_('Save')}" />
+            <button label="${i18n:_('Save')}" onClick="allocationController.save()" />
             <button label="${i18n:_('Cancel')}" onClick="allocationController.cancel()" />
             <button label="${i18n:_('Search resources...')}"
                 onClick="allocationController.showSearchResources()" />

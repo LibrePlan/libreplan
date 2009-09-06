@@ -142,4 +142,9 @@ public interface IResourceAllocationModel {
      */
     void cancel();
 
+    /**
+     * Save task
+     */
+    void save();
+
 }

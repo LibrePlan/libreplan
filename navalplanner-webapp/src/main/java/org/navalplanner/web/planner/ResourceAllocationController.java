@@ -77,9 +77,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
         resourceAllocationModel.setTask(task);
         resourceAllocationModel.setGanttTask(ganttTask);
 
-        // Add generic resources to resources list
+        updateGenericResourceAllocationPercentage();
+        // Add new generic resources to resources list
         addGenericResources();
-
         Util.reloadBindings(window);
         try {
             window.doModal();
@@ -88,6 +88,17 @@ public class ResourceAllocationController extends GenericForwardComposer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * GenericResourceAllocationPercentage initial value is the sum of all
+     * {@link ResourceAllocation} percentages
+     */
+    private void updateGenericResourceAllocationPercentage() {
+        BigDecimal genericPercentage = resourceAllocationModel
+                .getSumPercentageResourceAllocations();
+        genericResourceAllocationPercentage.setValue(genericPercentage
+                .scaleByPowerOfTen(2).setScale(2, BigDecimal.ROUND_HALF_EVEN));
     }
 
     /**
@@ -217,13 +228,23 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public void cancel() {
-        clear();
-        self.setVisible(false);
+        close();
         resourceAllocationModel.cancel();
+    }
+
+    private void close() {
+        self.setVisible(false);
+        clear();
     }
 
     private void clear() {
         genericResourceAllocationPercentage.setValue(null);
+        resourcesList.getItems().clear();
+    }
+
+    public void save() {
+        resourceAllocationModel.save();
+        close();
     }
 
     /**

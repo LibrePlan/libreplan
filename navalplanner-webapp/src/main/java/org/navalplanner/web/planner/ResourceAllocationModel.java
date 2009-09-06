@@ -306,4 +306,10 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         task.clearResourceAllocations();
     }
 
+    @Override
+    @Transactional
+    public void save() {
+        taskElementDAO.save(task);
+    }
+
 }
