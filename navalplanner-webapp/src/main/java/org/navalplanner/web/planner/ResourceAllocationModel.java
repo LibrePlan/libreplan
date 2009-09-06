@@ -213,7 +213,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         if (genericResourceAllocations.size() > 0) {
             percentagePerResource = percentagePerResource.setScale(8).divide(
                     new BigDecimal(genericResourceAllocations.size()),
-                    BigDecimal.ROUND_DOWN);
+                    BigDecimal.ROUND_HALF_EVEN);
 
             // Percentage cannot be negative
             if (percentagePerResource.compareTo(new BigDecimal(0)) < 0) {

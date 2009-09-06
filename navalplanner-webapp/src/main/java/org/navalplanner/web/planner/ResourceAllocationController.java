@@ -310,7 +310,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 percentage = (percentage != null) ? percentage
                         : new BigDecimal(0);
                 percentage = percentage.scaleByPowerOfTen(2).setScale(2,
-                        BigDecimal.ROUND_CEILING);
+                        BigDecimal.ROUND_HALF_EVEN);
             }
             appendLabel(item, percentage.toString());
             // No buttons
@@ -390,7 +390,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 public void set(BigDecimal value) {
                     if (value != null) {
                         value = value.setScale(2).divide(new BigDecimal(100),
-                                BigDecimal.ROUND_DOWN);
+                                BigDecimal.ROUND_HALF_EVEN);
                         updateGenericPercentages();
                         decimalbox.setValue(value);
                     }
