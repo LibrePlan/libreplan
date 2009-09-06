@@ -46,7 +46,7 @@
         </set>
 
         <!-- Inverse navigation from OrderElement to OrderLineGroup -->
-        <many-to-one name="parent" access="field" cascade="lock"/>
+        <many-to-one name="parent" access="field" cascade="all"/>
 
         <joined-subclass name="OrderLineGroup">
             <key column="ORDERELEMENTID"></key>

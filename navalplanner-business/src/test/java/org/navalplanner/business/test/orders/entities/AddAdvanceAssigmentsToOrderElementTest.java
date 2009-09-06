@@ -10,6 +10,7 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 
 import java.math.BigDecimal;
 
+import java.util.Date;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
@@ -17,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.advance.daos.IAdvanceAssigmentDAO;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.advance.entities.AdvanceAssigment;
+import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
@@ -90,10 +92,17 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         return advanceType;
     }
 
+    private AdvanceMeasurement createValidAdvanceMeasurement() {
+        AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create(
+                new Date(), new BigDecimal(0));
+        return advanceMeasurement;
+    }
+
     private AdvanceAssigment createValidAdvanceAssigment(
             boolean reportGlobalAdvance) {
         AdvanceAssigment advanceAssigment = AdvanceAssigment.create(
-                reportGlobalAdvance);
+                reportGlobalAdvance,new BigDecimal(0));
+        advanceAssigment.setType(AdvanceAssigment.Type.DIRECT);
         return advanceAssigment;
     }
 
@@ -203,13 +212,17 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         OrderLine son = createValidLeaf("bla", "132");
         container.add(son);
 
+        AdvanceMeasurement advanceMeasurement = createValidAdvanceMeasurement();
+
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
         AdvanceType advanceTypeB = createAndSaveType("tipoB");
 
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
+        advanceAssigmentA.getAdvanceMeasurements().add(advanceMeasurement);
         AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
         advanceAssigmentB.setAdvanceType(advanceTypeB);
+        advanceAssigmentB.getAdvanceMeasurements().add(advanceMeasurement);
 
 
         container.addAvanceAssigment(advanceAssigmentA);
@@ -270,12 +283,15 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         OrderLine grandSon = createValidLeaf("GranSon", "75757");
         son.add(grandSon);
 
+        AdvanceMeasurement advanceMeasurement = createValidAdvanceMeasurement();
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
 
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
+        advanceAssigmentA.getAdvanceMeasurements().add(advanceMeasurement);
         AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
         advanceAssigmentB.setAdvanceType(advanceTypeA);
+        advanceAssigmentB.getAdvanceMeasurements().add(advanceMeasurement);
 
         grandSon.addAvanceAssigment(advanceAssigmentA);
 

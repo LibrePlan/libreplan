@@ -8,10 +8,9 @@ import org.navalplanner.business.common.BaseEntity;
 
 public class AdvanceMeasurement extends BaseEntity {
 
-    public static AdvanceMeasurement create(Date date, BigDecimal value,
-            BigDecimal maxValue) {
+    public static AdvanceMeasurement create(Date date, BigDecimal value) {
         AdvanceMeasurement advanceMeasurement = new AdvanceMeasurement(date,
-                value, maxValue);
+                value);
         advanceMeasurement.setNewObject(true);
         return advanceMeasurement;
     }
@@ -29,20 +28,19 @@ public class AdvanceMeasurement extends BaseEntity {
     private BigDecimal value;
 
     @NotNull
-    private BigDecimal maxValue;
-
-    @NotNull
     private AdvanceAssigment advanceAssigment;
 
+    private int numIndirectSons;
+
     public AdvanceMeasurement() {
+        this.numIndirectSons = 0;
     }
 
-    private AdvanceMeasurement(Date date, BigDecimal value, BigDecimal maxValue) {
+    private AdvanceMeasurement(Date date, BigDecimal value) {
         this.date = date;
         this.value = value;
         this.value.setScale(2,BigDecimal.ROUND_HALF_UP);
-        this.maxValue = maxValue;
-        this.maxValue.setScale(2,BigDecimal.ROUND_HALF_UP);
+        this.numIndirectSons = 0;
     }
 
     public void setDate(Date date) {
@@ -62,20 +60,27 @@ public class AdvanceMeasurement extends BaseEntity {
         return this.value;
     }
 
-    public BigDecimal getMaxValue() {
-        return this.maxValue;
-    }
-
-    public void setMaxValue(BigDecimal maxValue) {
-        this.maxValue = maxValue;
-        this.maxValue.setScale(2);
-    }
-
     public void setAdvanceAssigment(AdvanceAssigment advanceAssigment) {
         this.advanceAssigment = advanceAssigment;
     }
 
     public AdvanceAssigment getAdvanceAssigment() {
         return this.advanceAssigment;
+    }
+
+    public int getNumIndirectSons() {
+        return numIndirectSons;
+    }
+
+    public void setNumIndirectSons(int numIndirectSons) {
+        this.numIndirectSons = numIndirectSons;
+    }
+
+    public void incrementNumIndirectSons() {
+        this.numIndirectSons = this.numIndirectSons + 1;
+    }
+
+    public void decrementNumIndirectSons() {
+        this.numIndirectSons = this.numIndirectSons - 1;
     }
 }

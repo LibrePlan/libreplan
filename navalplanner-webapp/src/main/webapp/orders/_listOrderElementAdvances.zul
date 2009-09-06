@@ -1,29 +1,74 @@
 <vbox id="listOrderElementAdvances">
-    <vbox>
+    <label value="${i18n:_('Direct Advances')}"/>
+    <separator bar="true" spacing="2px" orient="horizontal"/>
+    <vbox align="left">
         <hbox>
-            <button label="${i18n:_('Add')}" onClick="manageOrderElementAdvancesController.goToCreateLine();">
+            <button label="${i18n:_('Add new advance assigment')}"
+                onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceAssigment();">
             </button>
-            <button label="${i18n:_('Remove')}" onClick="manageOrderElementAdvancesController.goToRemoveLine();">
+            <button label="${i18n:_('Remove')}"
+                onClick="manageOrderElementAdvancesController.goToRemoveLineAdvanceAssigment();">
             </button>
         </hbox>
     </vbox>
     <vbox>
-     <listbox id="editAdvances"
-             model="@{manageOrderElementAdvancesController.advanceMeasurementDTOs}"
+    <listbox id="editAdvances"
+             model="@{manageOrderElementAdvancesController.advanceAssigmentDTOs}"
              itemRenderer="@{manageOrderElementAdvancesController.advancesRenderer}" mold="paging"
+             onSelect="manageOrderElementAdvancesController.prepareEditAdvanceMeasurements(self.selectedItem.value);"
              pageSize="10">
-
-             <listhead sizable="true">
+            <listhead sizable="true">
                  <listheader label="${i18n:_('Advance Type')}" />
                  <listheader label="${i18n:_('Max value')}"/>
                  <listheader label="${i18n:_('Current value')}"/>
                  <listheader label="${i18n:_('Percentage')}"/>
                  <listheader label="${i18n:_('Date')}"/>
                  <listheader label="${i18n:_('Spread')}"/>
+                 <listheader label="${i18n:_('Calculated')}"/>
              </listhead>
     </listbox>
     </vbox>
-    <separator bar="true" spacing="12px" orient="horizontal"/>
+    <separator bar="false" spacing="20px" orient="vertical"/>
+    <label value="${i18n:_('Advances Measurement')}"/>
+    <separator bar="true" spacing="3px" orient="horizontal"/>
+    <vbox>
+        <hbox>
+            <button label="${i18n:_('Add new advance measurement')}"
+                onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceMeasurement();"
+                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurementDTOs}">
+            </button>
+            <button label="${i18n:_('Remove')}"
+                onClick="manageOrderElementAdvancesController.goToRemoveLineAdvanceMeasurement();"
+                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurementDTOs}">
+            </button>
+        </hbox>
+        <listbox id="editAdvancesMeasurement"
+                 model="@{manageOrderElementAdvancesController.advanceMeasurementDTOs}"
+                 mold="paging" pageSize="10">
+                <listhead sizable="true">
+                    <listheader label="${i18n:_('Current value')}"/>
+                    <listheader label="${i18n:_('Percentage')}"/>
+                    <listheader label="${i18n:_('Date')}"/>
+                </listhead>
+                <listitem self="@{each='advanceMeasurementDTO'}" value="@{advanceMeasurementDTO}">
+                    <listcell>
+                            <decimalbox value="@{advanceMeasurementDTO.value, save-when='self.onChange'}"
+                                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurementDTOs}"
+                                scale="2"
+                                onChange = "manageOrderElementAdvancesController.updatesValue(self);"
+                                constraint = "@{manageOrderElementAdvancesController.checkValidValue}"/>
+			</listcell>
+                        <listcell label="@{advanceMeasurementDTO.percentage}" />
+			<listcell>
+				<datebox value="@{advanceMeasurementDTO.date, save-when='self.onChange'}"
+                                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurementDTOs}"
+                                constraint = "@{manageOrderElementAdvancesController.checkValidDate}"
+                                onChange = "manageOrderElementAdvancesController.setCurrentDate(self.parent.parent);"/>
+			</listcell>
+                </listitem>
+        </listbox>
+    </vbox>
+    <separator bar="false" spacing="40px" orient="vertical"/>
     <hbox>
        <button id="aceptAdvance" onClick="manageOrderElementAdvancesController.accept();" label="${i18n:_('Accept')}"/>
        <button id="cancelAdvance" onClick="manageOrderElementAdvancesController.cancel();" label="${i18n:_('Cancel')}"/>

@@ -18,6 +18,6 @@ public class AdvanceMeasurementComparator implements Comparator<AdvanceMeasureme
 
     @Override
     public int compare(AdvanceMeasurement arg0, AdvanceMeasurement arg1) {
-        return arg0.getDate().compareTo(arg1.getDate());
+        return arg1.getDate().compareTo(arg0.getDate());
     }
 }

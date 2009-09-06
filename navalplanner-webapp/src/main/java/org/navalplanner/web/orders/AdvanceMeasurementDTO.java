@@ -3,25 +3,17 @@ package org.navalplanner.web.orders;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
-import org.navalplanner.business.advance.entities.AdvanceAssigment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
-import org.navalplanner.business.advance.entities.AdvanceType;
 
 public class AdvanceMeasurementDTO{
 
-    private AdvanceType advanceType;
-
     private AdvanceMeasurement advanceMeasurement;
 
-    private AdvanceAssigment advanceAssigment;
+    private AdvanceAssigmentDTO advanceAssigmentDTO;
 
     private Date date;
 
-    private BigDecimal maxValue;
-
     private BigDecimal value;
-
-    private boolean reportGlobalAdvance;
 
     private boolean isNewObject = true;
 
@@ -32,36 +24,28 @@ public class AdvanceMeasurementDTO{
     private String percentage;
 
     public AdvanceMeasurementDTO() {
-        this.reportGlobalAdvance = false;
         this.date = new Date();
-        this.percentage = new String("");
+        this.percentage = new String("0 %");
         this.isNewDTO = true;
         this.isNewObject = false;
     }
 
-    public AdvanceMeasurementDTO(AdvanceType advanceType,
-            AdvanceAssigment advanceAssigment,
-            AdvanceMeasurement advanceMeasurement) {
-        this.advanceType = advanceType;
+    public AdvanceMeasurementDTO(AdvanceMeasurement advanceMeasurement){
 
         this.advanceMeasurement = advanceMeasurement;
         this.date = advanceMeasurement.getDate();
-        this.maxValue = advanceMeasurement.getMaxValue();
         this.value = advanceMeasurement.getValue();
 
-        this.advanceAssigment = advanceAssigment;
-        this.reportGlobalAdvance = advanceAssigment.getReportGlobalAdvance();
-
-        this.percentage = new String("");
+        this.percentage = new String("0 %");
         this.isNewDTO = false;
-        if(advanceAssigment.getVersion()==null){
+        if(advanceMeasurement.getVersion()==null){
             this.isNewObject = true;
         }else{
             this.isNewObject = false;
         }
     }
 
-    public boolean getIsNewObject() {
+    public boolean getIsNewObject(){
         return this.isNewObject;
     }
 
@@ -69,20 +53,20 @@ public class AdvanceMeasurementDTO{
         return this.isNewDTO;
     }
 
-    public void setAdvanceType(AdvanceType advanceType){
-        this.advanceType = advanceType;
+    public AdvanceAssigmentDTO getAdvanceAssigmentDTO() {
+        return this.advanceAssigmentDTO;
     }
 
-    public AdvanceType getAdvanceType() {
-        return this.advanceType;
-    }
-
-    public AdvanceAssigment getAdvanceAssigment() {
-        return this.advanceAssigment;
+    public void setAdvanceAssigmentDTO(AdvanceAssigmentDTO advanceAssigmentDTO) {
+        this.advanceAssigmentDTO = advanceAssigmentDTO;
     }
 
     public AdvanceMeasurement getAdvanceMeasurement() {
         return this.advanceMeasurement;
+    }
+
+    public void setAdvanceMeasurement(AdvanceMeasurement advanceMeasurement) {
+        this.advanceMeasurement = advanceMeasurement;
     }
 
     public void setPercentage(String percentage) {
@@ -90,24 +74,19 @@ public class AdvanceMeasurementDTO{
     }
 
     public String getPercentage() {
-        if((value != null)&&(maxValue != null)){
+        if(advanceAssigmentDTO == null) return "0 %";
+        if(value == null) return "0 %";
+        if(advanceAssigmentDTO.getMaxValue() != null){
+            BigDecimal maxValue = advanceAssigmentDTO.getMaxValue();
             BigDecimal percentage = new BigDecimal(0);
             BigDecimal division = (value.divide(maxValue,4,RoundingMode.HALF_UP));
             division.setScale(2, RoundingMode.HALF_UP);
             percentage = division.multiply(new BigDecimal(100));
             percentage = percentage.setScale(2, RoundingMode.HALF_UP);
-            this.percentage = percentage.toString();
+            this.percentage = percentage.toString()+" %";
             return this.percentage;
         }
-        return "";
-    }
-
-    public void setReportGlobalAdvance(boolean reportGlobalAdvance) {
-        this.reportGlobalAdvance = reportGlobalAdvance;
-    }
-
-    public boolean getReportGlobalAdvance() {
-        return this.reportGlobalAdvance;
+        return "0 %";
     }
 
     public void setDate(Date date) {
@@ -124,14 +103,6 @@ public class AdvanceMeasurementDTO{
 
     public BigDecimal getValue() {
         return this.value;
-    }
-
-    public BigDecimal getMaxValue() {
-        return this.maxValue;
-    }
-
-    public void setMaxValue(BigDecimal maxValue) {
-        this.maxValue = maxValue;
     }
 
     public boolean isSelectedForRemove(){

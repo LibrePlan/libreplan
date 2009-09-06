@@ -14,21 +14,40 @@ import org.navalplanner.business.orders.entities.OrderElement;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface IManageOrderElementAdvancesModel {
-    public List<AdvanceMeasurementDTO> getAdvanceMeasurements();
+
+    public void prepareEditAdvanceMeasurements(AdvanceAssigmentDTO advanceAssigmentDTO);
+
+    public List<AdvanceMeasurementDTO> getAdvanceMeasurementDTOs();
+
+    public List<AdvanceAssigmentDTO> getAdvanceAssigmentDTOs();
 
     public void init(OrderElement orderElement);
 
-    public void addNewLine();
+    public void addNewLineAdvaceAssigment();
 
-    public void removeLine(AdvanceMeasurementDTO advanceDTO);
+    public void addNewLineAdvaceMeasurement();
+
+    public void removeLineAdvanceAssigment(AdvanceAssigmentDTO advanceDTO);
+
+    public void removeLineAdvanceMeasurement(AdvanceMeasurementDTO advanceDTO);
 
     public List<AdvanceType> getActivesAdvanceTypes();
 
-    public boolean isPrecisionValid(AdvanceMeasurementDTO advanceDTO, BigDecimal value);
+    public boolean isReadOnlyAdvanceMeasurementDTOs();
 
-    public boolean greatThanMaxValue(AdvanceMeasurementDTO advanceDTO, BigDecimal value);
+    public void cleanAdvance();
 
-    public boolean isGreatValidDate(AdvanceMeasurementDTO advanceDTO, Date value);
+    public boolean isPrecisionValid(BigDecimal value);
+
+    public boolean greatThanMaxValue(BigDecimal value);
+
+    public boolean isGreatValidDate(Date value);
+
+    public BigDecimal getUnitPrecision();
+
+    public AdvanceMeasurementDTO getFirstAdvanceMeasurement(AdvanceAssigmentDTO advanceAssigmentDTO);
+
+    public void modifyListAdvanceMeasurement(AdvanceMeasurementDTO advanceMeasurementDTO);
 
     public void accept()throws InstanceNotFoundException,
             DuplicateAdvanceAssigmentForOrderElementException,

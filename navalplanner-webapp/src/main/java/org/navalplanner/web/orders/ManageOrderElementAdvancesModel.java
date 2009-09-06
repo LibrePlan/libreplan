@@ -4,15 +4,19 @@ package org.navalplanner.web.orders;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.apache.commons.lang.Validate;
+import org.hibernate.HibernateException;
 import org.navalplanner.business.advance.daos.IAdvanceAssigmentDAO;
 import org.navalplanner.business.advance.daos.IAdvanceMeasurementDAO;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.advance.entities.AdvanceAssigment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
+import org.navalplanner.business.advance.entities.AdvanceMeasurementComparator;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -40,11 +44,15 @@ public class ManageOrderElementAdvancesModel implements
 
     private OrderElement orderElement;
 
-    private List<AdvanceMeasurementDTO> advanceMeasurementDTOs;
+    private AdvanceAssigmentDTO advanceAssigmentDTO;
+
+    private List<AdvanceAssigmentDTO> advanceAssigmentDTOs;
+
+    private List<AdvanceAssigment> listAdvanceAssigments;
+
+    private SortedSet<AdvanceMeasurement> listAdvanceMeasurements;
 
     private List<AdvanceType> listAdvanceTypes;
-
-    private List<AdvanceMeasurement> listAdvanceMeasurement;
 
     @Autowired
     public ManageOrderElementAdvancesModel(
@@ -59,52 +67,92 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public List<AdvanceMeasurementDTO> getAdvanceMeasurements() {
-        if (this.orderElement == null) {
+    public List<AdvanceMeasurementDTO> getAdvanceMeasurementDTOs() {
+        if((this.advanceAssigmentDTO == null) ||
+                (this.orderElement == null)) {
             return new ArrayList<AdvanceMeasurementDTO>();
         }
-        return this.advanceMeasurementDTOs;
+        return this.advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AdvanceAssigmentDTO> getAdvanceAssigmentDTOs(){
+        if(this.orderElement == null){
+            return new ArrayList<AdvanceAssigmentDTO>();
+        }
+        return this.advanceAssigmentDTOs;
+    }
+
+    @Override
+    public void prepareEditAdvanceMeasurements(AdvanceAssigmentDTO advanceAssigmentDTO){
+        this.advanceAssigmentDTO = advanceAssigmentDTO;
     }
 
     @Override
     @Transactional(readOnly = true)
     public void init(OrderElement orderElement) {
         this.orderElement = orderElement;
+        this.advanceAssigmentDTO = null;
         if (orderElement != null){
             loadAdvanceTypes();
-            reattchmentOrderElement();
-            createAdvanceMeasurementDTOs();
+            reattachmentOrderElement();
+            createAdvanceDTOs();
         }
     }
 
-    public void reattchmentOrderElement() {
+    public void reattachmentOrderElement() {
         orderElementDAO.save(orderElement);
     }
 
-    public void createAdvanceMeasurementDTOs() {
-        this.listAdvanceMeasurement = new ArrayList<AdvanceMeasurement>();
-        this.advanceMeasurementDTOs = new ArrayList<AdvanceMeasurementDTO>();
+    public void createAdvanceDTOs() {
+        this.advanceAssigmentDTOs  =  new ArrayList<AdvanceAssigmentDTO>();
+        this.listAdvanceAssigments = new ArrayList<AdvanceAssigment>();
+        this.listAdvanceMeasurements = new TreeSet<AdvanceMeasurement>(new AdvanceMeasurementComparator());
         for (AdvanceAssigment advanceAssigment : this.orderElement
-                .getAdvanceAssigments()) {
-            AdvanceMeasurement advanceMeasurement = ((SortedSet<AdvanceMeasurement>) advanceAssigment
-                    .getAdvanceMeasurements()).last();
-            AdvanceMeasurementDTO advanceDTO = new AdvanceMeasurementDTO(
-                    advanceAssigment.getAdvanceType(), advanceAssigment,
+                    .getAdvanceAssigments()) {
+            AdvanceAssigmentDTO advanceAssigmentDTO = new AdvanceAssigmentDTO(
+                advanceAssigment.getAdvanceType(), advanceAssigment,
+                advanceAssigment.getAdvanceMeasurements());
+
+            for (AdvanceMeasurement advanceMeasurement : advanceAssigment.
+                    getAdvanceMeasurements()) {
+                AdvanceMeasurementDTO advanceMeasurementDTO = new AdvanceMeasurementDTO(
                     advanceMeasurement);
-            this.listAdvanceMeasurement.add(advanceMeasurement);
-            this.advanceMeasurementDTOs.add(advanceDTO);
+
+                advanceAssigmentDTO.getAdvanceMeasurementDTOs().add(advanceMeasurementDTO);
+                advanceMeasurementDTO.setAdvanceAssigmentDTO(advanceAssigmentDTO);
+                this.listAdvanceMeasurements.add(advanceMeasurement);
+            }
+            this.advanceAssigmentDTOs.add(advanceAssigmentDTO);
+            this.listAdvanceAssigments.add(advanceAssigment);
         }
     }
 
     @Override
-    public void addNewLine() {
-        AdvanceMeasurementDTO newAdvance = new AdvanceMeasurementDTO();
-        this.advanceMeasurementDTOs.add(newAdvance);
+    public void addNewLineAdvaceAssigment() {
+        AdvanceAssigmentDTO newAdvance = new AdvanceAssigmentDTO();
+        this.advanceAssigmentDTOs.add(newAdvance);
     }
 
     @Override
-    public void removeLine(AdvanceMeasurementDTO advanceDTO) {
-        this.advanceMeasurementDTOs.remove(advanceDTO);
+    public void addNewLineAdvaceMeasurement() {
+        if(this.advanceAssigmentDTO != null){
+            AdvanceMeasurementDTO newAdvance = new AdvanceMeasurementDTO();
+            newAdvance.setAdvanceAssigmentDTO(advanceAssigmentDTO);
+            this.advanceAssigmentDTO.getAdvanceMeasurementDTOs().add(newAdvance);
+        }
+    }
+
+    @Override
+    public void removeLineAdvanceAssigment(AdvanceAssigmentDTO advanceDTO) {
+        this.advanceAssigmentDTOs.remove(advanceDTO);
+        this.advanceAssigmentDTO = null;
+    }
+
+    @Override
+    public void removeLineAdvanceMeasurement(AdvanceMeasurementDTO advanceDTO) {
+        this.advanceAssigmentDTO.getAdvanceMeasurementDTOs().remove(advanceDTO);
     }
 
     @Override
@@ -121,113 +169,570 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
+    public boolean isReadOnlyAdvanceMeasurementDTOs(){
+        if(this.advanceAssigmentDTO == null) return true;
+        return this.advanceAssigmentDTO.getType().equals(AdvanceAssigment.Type.CALCULATED);
+    }
+
+    @Override
+    public void cleanAdvance(){
+        if(this.advanceAssigmentDTO != null){
+            this.advanceAssigmentDTO.setReportGlobalAdvance(false);
+            List<AdvanceMeasurementDTO> listAdvanceMeasurementDTOs =
+                    this.advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView();
+            for(AdvanceMeasurementDTO advanceMeasurementDTO : listAdvanceMeasurementDTOs){
+                advanceMeasurementDTO.setValue(BigDecimal.ZERO);
+                advanceMeasurementDTO.setDate(null);
+            }
+        }
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public void accept()throws InstanceNotFoundException,
             DuplicateAdvanceAssigmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
             orderElementDAO.checkVersion(orderElement);
+            reattachmentOrderElement();
             validateBasicData();
     }
 
     private void validateBasicData()  throws InstanceNotFoundException,
-            DuplicateAdvanceAssigmentForOrderElementException,
-            DuplicateValueTrueReportGlobalAdvanceException{
-        updateRemoveAdvanceMeasurement();
-        for(AdvanceMeasurementDTO advanceDTO : this.advanceMeasurementDTOs){
-            validateBasicData(advanceDTO);
+        DuplicateAdvanceAssigmentForOrderElementException,
+        DuplicateValueTrueReportGlobalAdvanceException{
+        updateRemoveAdvances();
+        for(AdvanceAssigmentDTO advanceAssigmentDTO : this.advanceAssigmentDTOs){
+            validateBasicData(advanceAssigmentDTO);
         }
     }
 
-    private void updateRemoveAdvanceMeasurement(){
-        for(AdvanceMeasurement advanceMeasurement : this.listAdvanceMeasurement){
-            if(!yetExistAdvanceMeasurement(advanceMeasurement)){
-                removeAdvanceMeasurement(advanceMeasurement);
+    private void updateRemoveAdvances(){
+        for(AdvanceAssigment advanceAssigment : this.listAdvanceAssigments){
+            AdvanceAssigmentDTO advanceAssigmentDTO = yetExistAdvanceAssigment(advanceAssigment);
+            if(advanceAssigmentDTO == null){
+                updateRemoveCalculatedAdvanceAssigment(orderElement,advanceAssigment);
+                removeAdvanceAssigment(advanceAssigment);
+            }else{
+                 for(AdvanceMeasurement advanceMeasurement : this.listAdvanceMeasurements){
+                    if(!yetExistAdvanceMeasurement(advanceAssigmentDTO,advanceMeasurement)){
+                        updateRemoveCalculatedAdvanceMeasurement(orderElement,
+                            advanceAssigment,advanceMeasurement);
+                        removeAdvanceMeasurement(advanceMeasurement);
+                    }
+                }
             }
         }
     }
 
-    private void validateBasicData(AdvanceMeasurementDTO advanceDTO)
-        throws InstanceNotFoundException,DuplicateAdvanceAssigmentForOrderElementException,
+    private void validateBasicData(AdvanceAssigmentDTO advanceAssigmentDTO)
+            throws InstanceNotFoundException,DuplicateAdvanceAssigmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
-        if(advanceDTO.getIsNewDTO()){
-            AdvanceAssigment newAdvanceAssigment = createNewAdvance(advanceDTO);
+        if(advanceAssigmentDTO.getIsNewDTO()){
+            AdvanceAssigment newAdvanceAssigment = createNewAdvance(advanceAssigmentDTO);
+            addCalculatedAdvanceAssigmentToAncestors(this.orderElement,
+                    advanceAssigmentDTO,newAdvanceAssigment);
             addAdvanceAssigment(newAdvanceAssigment);
         }else{
-            if((advanceDTO.getIsNewObject())||
-                    (advanceDTO.getAdvanceMeasurement().getDate().compareTo(advanceDTO.getDate()) == 0)){
-                updateAdvanceMeasurement(advanceDTO);
+            AdvanceAssigment newAdvanceAssigment = advanceAssigmentDTO.getAdvanceAssigment();
+            addCalculatedAdvanceAssigmentToAncestors(this.orderElement,
+                    advanceAssigmentDTO,newAdvanceAssigment);
+            updateAdvanceAssigment(advanceAssigmentDTO);
+        }
+    }
+
+    private void updateAdvanceAssigment(AdvanceAssigmentDTO advanceAssigmentDTO){
+        //Removed the advance and add a new advanceAssigment
+        AdvanceAssigment advanceAssigment = advanceAssigmentDTO.getAdvanceAssigment();
+        for(AdvanceMeasurementDTO advanceMeasurementDTO :
+            advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView()){
+            if(advanceMeasurementDTO.getIsNewDTO()){
+                AdvanceMeasurement newAdvanceMeasurement =
+                        createAdvanceMeasurement(advanceMeasurementDTO);
+                advanceAssigment.getAdvanceMeasurements().add(newAdvanceMeasurement);
             }else{
-                addAdvanceMeasurement(advanceDTO);
+                AdvanceMeasurement newAdvanceMeasurement =
+                        createAdvanceMeasurement(advanceMeasurementDTO);
+                removeAdvanceMeasurement(advanceMeasurementDTO.getAdvanceMeasurement());
+                advanceAssigment.getAdvanceMeasurements().add(newAdvanceMeasurement);
+                //updateAdvanceMeasurement(advanceMeasurementDTO);
             }
         }
+        //Update changes in AdvanceAssigment
+        advanceAssigment.setReportGlobalAdvance(advanceAssigmentDTO.getReportGlobalAdvance());
+        advanceAssigment.setMaxValue(advanceAssigmentDTO.getMaxValue());
+        advanceAssigment.setAdvanceType(advanceAssigmentDTO.getAdvanceType());
     }
 
-    private void updateAdvanceMeasurement(AdvanceMeasurementDTO advanceDTO){
-        AdvanceAssigment advanceAssigment = advanceDTO.getAdvanceAssigment();
-        advanceAssigment.setReportGlobalAdvance(advanceDTO.getReportGlobalAdvance());
-        AdvanceMeasurement advanceMeasurement = advanceDTO.getAdvanceMeasurement();
-        advanceMeasurement.setValue(advanceDTO.getValue());
-        advanceMeasurement.setMaxValue(advanceDTO.getMaxValue());
-        if(advanceDTO.getIsNewObject()){
-            advanceMeasurement.setDate(advanceDTO.getDate());
-            advanceAssigment.setAdvanceType(advanceDTO.getAdvanceType());
-        }
-    }
-
-    private void addAdvanceMeasurement(AdvanceMeasurementDTO advanceDTO){
-        AdvanceMeasurement newAdvanceMeasurement = AdvanceMeasurement.create(advanceDTO.getDate(),
-        advanceDTO.getValue(),advanceDTO.getMaxValue());
-        AdvanceAssigment advanceAssigment = advanceDTO.getAdvanceAssigment();
+     private AdvanceMeasurement createAdvanceMeasurement(AdvanceMeasurementDTO advanceMeasurementDTO){
+        AdvanceMeasurement newAdvanceMeasurement = AdvanceMeasurement.create(
+                advanceMeasurementDTO.getDate(),advanceMeasurementDTO.getValue());
+        AdvanceAssigment advanceAssigment = advanceMeasurementDTO.getAdvanceAssigmentDTO().
+                getAdvanceAssigment();
         newAdvanceMeasurement.setAdvanceAssigment(advanceAssigment);
-        advanceAssigment.getAdvanceMeasurements().add(newAdvanceMeasurement);
+        return newAdvanceMeasurement;
     }
 
-    private boolean yetExistAdvanceMeasurement(AdvanceMeasurement advanceMeasurement){
-        for(AdvanceMeasurementDTO advanceDTO : this.advanceMeasurementDTOs){
+    private void updateAdvanceMeasurement(AdvanceMeasurementDTO advanceMeasurementDTO){
+        AdvanceMeasurement advanceMeasurement = advanceMeasurementDTO.getAdvanceMeasurement();
+        advanceMeasurement.setValue(advanceMeasurementDTO.getValue());
+        advanceMeasurement.setDate(advanceMeasurementDTO.getDate());
+    }
+
+    private AdvanceAssigmentDTO yetExistAdvanceAssigment(AdvanceAssigment advanceAssigment){
+        for(AdvanceAssigmentDTO advanceDTO : this.advanceAssigmentDTOs){
             if((!advanceDTO.getIsNewDTO()) &&
-                (advanceDTO.getAdvanceMeasurement().equals(advanceMeasurement)))
+                (advanceDTO.getAdvanceAssigment().getId() == advanceAssigment.getId()))
+                    return advanceDTO;
+        }
+        return null;
+    }
+
+    private boolean yetExistAdvanceMeasurement(AdvanceAssigmentDTO advanceAssigmentDTO,
+            AdvanceMeasurement advanceMeasurement){
+        for(AdvanceMeasurementDTO advanceDTO :
+            advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView()){
+            if((!advanceDTO.getIsNewDTO()) &&
+                (advanceDTO.getAdvanceMeasurement().getId() == advanceMeasurement.getId()))
                     return true;
         }
         return false;
     }
 
     @Transactional(readOnly = true)
-    private AdvanceAssigment createNewAdvance(AdvanceMeasurementDTO advanceDTO)
-            throws InstanceNotFoundException{
-            //create AdvanceMeasurement
-            AdvanceMeasurement newAdvanceMeasurement = AdvanceMeasurement.create(advanceDTO.getDate(),
-                    advanceDTO.getValue(),advanceDTO.getMaxValue());
+    private AdvanceAssigment createNewAdvance(AdvanceAssigmentDTO advanceAssigmentDTO)
+        throws InstanceNotFoundException{
+        //create AdvanceAssigment
+        AdvanceAssigment newAdvanceAssigment = AdvanceAssigment.create(
+            advanceAssigmentDTO.getReportGlobalAdvance(),
+            advanceAssigmentDTO.getMaxValue());
+        newAdvanceAssigment.setAdvanceType(advanceAssigmentDTO.getAdvanceType());
+        newAdvanceAssigment.setOrderElement(this.orderElement);
+        newAdvanceAssigment.setType(AdvanceAssigment.Type.DIRECT);
 
-            //create AdvanceAssigment
-            AdvanceAssigment newAdvanceAssigment = AdvanceAssigment.create(
-                    advanceDTO.getReportGlobalAdvance());
-            newAdvanceAssigment.setAdvanceType(advanceDTO.getAdvanceType());
-            newAdvanceAssigment.setOrderElement(this.orderElement);
+        //create AdvanceMeasurement
+        for(AdvanceMeasurementDTO advanceMeasurementDTO
+                 :advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView()){
+            AdvanceMeasurement newAdvanceMeasurement = AdvanceMeasurement.create(
+                    advanceMeasurementDTO.getDate(),advanceMeasurementDTO.getValue());
 
             //link AdvanceMeasurement to AdvanceAssigment
             newAdvanceMeasurement.setAdvanceAssigment(newAdvanceAssigment);
             newAdvanceAssigment.getAdvanceMeasurements().add(newAdvanceMeasurement);
-
-            return newAdvanceAssigment;
+        }
+        advanceAssigmentDTO.setAdvanceAssigment(newAdvanceAssigment);
+        return newAdvanceAssigment;
     }
 
     @Transactional(readOnly = true)
     private void addAdvanceAssigment(AdvanceAssigment newAdvanceAssigment)
             throws DuplicateAdvanceAssigmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
-                this.orderElementDAO.save(this.orderElement);
                 this.orderElement.addAvanceAssigment(newAdvanceAssigment);
      }
 
-    private void removeAdvanceMeasurement(AdvanceMeasurement advanceMeasurement){
-        AdvanceAssigment advanceAssigment = advanceMeasurement.getAdvanceAssigment();
+    private void removeAdvanceAssigment(AdvanceAssigment advanceAssigment){
         orderElement.getAdvanceAssigments().remove(advanceAssigment);
     }
 
+    private void removeAdvanceMeasurement(AdvanceMeasurement advanceMeasurement){
+        AdvanceAssigment advanceAssigment = advanceMeasurement.getAdvanceAssigment();
+        advanceAssigment.getAdvanceMeasurements().remove(advanceMeasurement);
+    }
+
+    private void updateRemoveCalculatedAdvanceAssigment(OrderElement orderElement,
+            AdvanceAssigment advanceAssigment){
+        OrderElement parent = orderElement.getParent();
+        if(parent != null){
+            removeCalculatedAdvanceAssigment(parent,advanceAssigment);
+            updateRemoveCalculatedAdvanceAssigment(parent,advanceAssigment);
+        }
+    }
+
+    private void updateRemoveCalculatedAdvanceMeasurement(OrderElement orderElement,
+            AdvanceAssigment advanceAssigment,AdvanceMeasurement advanceMeasurement){
+        OrderElement parent = orderElement.getParent();
+        if(parent != null){
+            AdvanceAssigment indirectAdvanceAssigment =
+                findCalculatedAdvanceInParent(parent,advanceAssigment.getAdvanceType().getId());
+            if(indirectAdvanceAssigment != null){
+                removeCalculatedAdvanceMeasurement(advanceMeasurement,indirectAdvanceAssigment);
+                updateRemoveCalculatedAdvanceMeasurement(parent,advanceAssigment,advanceMeasurement);
+            }
+        }
+    }
+
+    public void addCalculatedAdvanceAssigmentToAncestors(OrderElement orderElement,
+            AdvanceAssigmentDTO newAdvanceAssigmentDTO,AdvanceAssigment newAdvanceAssigment)
+        throws DuplicateAdvanceAssigmentForOrderElementException,
+            DuplicateValueTrueReportGlobalAdvanceException{
+
+        if (orderElement.getParent() != null) {
+            OrderElement parent = orderElement.getParent();
+            if(checkChangeTheAdvanceType(newAdvanceAssigmentDTO)){
+                removeCalculatedAdvanceAssigment(parent,newAdvanceAssigment);
+            }
+
+            AdvanceAssigment indirectAdvanceAssigment =
+                findCalculatedAdvanceInParent(parent,newAdvanceAssigmentDTO.getAdvanceType().getId());
+            if(indirectAdvanceAssigment == null){
+                indirectAdvanceAssigment = initNewCalculatedAdvanceAssigment(parent,newAdvanceAssigmentDTO);
+                parent.addAvanceAssigment(indirectAdvanceAssigment);
+            }
+            addIncrementMaxValueToAdvanceAssigment(newAdvanceAssigmentDTO,indirectAdvanceAssigment);
+            addCalculatedAdvanceMeasurements(newAdvanceAssigmentDTO,indirectAdvanceAssigment);
+            addCalculatedAdvanceAssigmentToAncestors(parent,newAdvanceAssigmentDTO,newAdvanceAssigment);
+        }
+    }
+
+    private void addIncrementMaxValueToAdvanceAssigment(
+            AdvanceAssigmentDTO newAdvanceAssigmentDTO,
+            AdvanceAssigment indirectAdvanceAssigment){
+        BigDecimal incrementMaxValue = getIncrementMaxValue(newAdvanceAssigmentDTO);
+        BigDecimal currentMaxValue = indirectAdvanceAssigment.getMaxValue().add(incrementMaxValue);
+        indirectAdvanceAssigment.setMaxValue(currentMaxValue);
+    }
+
+    private void addCalculatedAdvanceMeasurements(
+            AdvanceAssigmentDTO advanceAssigmentDTO, AdvanceAssigment indirectAdvanceAssigment){
+            for(AdvanceMeasurementDTO advanceMeasurementDTO
+                 :advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView()){
+                 if((advanceMeasurementDTO.getIsNewDTO())
+                         || (checkChangeTheAdvanceType(advanceAssigmentDTO))){
+                     addNewCalculatedAdvanceMeasurement(advanceMeasurementDTO,indirectAdvanceAssigment);
+                 }else{
+                     _removeCalculatedAdvanceMeasurement(advanceMeasurementDTO,indirectAdvanceAssigment);
+                     addNewCalculatedAdvanceMeasurement(advanceMeasurementDTO,indirectAdvanceAssigment);
+                 }
+            }
+    }
+
+    private void addNewCalculatedAdvanceMeasurement(
+        AdvanceMeasurementDTO advanceMeasurementDTO,
+        AdvanceAssigment indirectAdvanceAssigment){
+
+        AdvanceMeasurementDTO greatNeighbor = this.getGreatNeighborDTO(advanceMeasurementDTO);
+        AdvanceMeasurement lessNeighbor = this.getLessNeighbor(advanceMeasurementDTO);
+        incrementLaterCalculatedAdvances(lessNeighbor,greatNeighbor,
+                advanceMeasurementDTO,indirectAdvanceAssigment);
+
+        AdvanceMeasurement previousAdvanceMeasurement =
+            findPreviousIndirectAdvanceMeasurement(
+        advanceMeasurementDTO.getDate(),indirectAdvanceAssigment);
+        if(previousAdvanceMeasurement == null){
+            //create and add a new indirect AdvanceMeasurement
+            AdvanceMeasurement newIndirectAdvanceMeasurement = AdvanceMeasurement.create(
+            advanceMeasurementDTO.getDate(),advanceMeasurementDTO.getValue());
+            newIndirectAdvanceMeasurement.setAdvanceAssigment(indirectAdvanceAssigment);
+            newIndirectAdvanceMeasurement.incrementNumIndirectSons();
+            indirectAdvanceAssigment.getAdvanceMeasurements().add(newIndirectAdvanceMeasurement);
+        }else{
+            if(previousAdvanceMeasurement.getDate().compareTo(advanceMeasurementDTO.getDate()) < 0){
+                //create and add a new indirect AdvanceMeasurement
+                BigDecimal incrementValue = calculateIncrementValue(lessNeighbor,advanceMeasurementDTO);
+                BigDecimal currentValue = previousAdvanceMeasurement.getValue().add(incrementValue);
+                AdvanceMeasurement newIndirectAdvanceMeasurement = AdvanceMeasurement.create(
+                advanceMeasurementDTO.getDate(),currentValue);
+                newIndirectAdvanceMeasurement.setAdvanceAssigment(indirectAdvanceAssigment);
+                newIndirectAdvanceMeasurement.incrementNumIndirectSons();
+                indirectAdvanceAssigment.getAdvanceMeasurements().add(newIndirectAdvanceMeasurement);
+            }
+            if(previousAdvanceMeasurement.getDate().compareTo(advanceMeasurementDTO.getDate()) == 0){
+                previousAdvanceMeasurement.incrementNumIndirectSons();
+            }
+        }
+    }
+
+    private void removeCalculatedAdvanceMeasurement(AdvanceMeasurement advanceMeasurement,
+            AdvanceAssigment indirectAdvanceAssigment){
+        //find the indirect advanceMeasurement
+        AdvanceMeasurement previousAdvanceMeasurement =
+            findPreviousIndirectAdvanceMeasurement(
+            advanceMeasurement.getDate(),indirectAdvanceAssigment);
+        //check if the indirect advanceMeasurement is the adding of several sons.
+        previousAdvanceMeasurement.decrementNumIndirectSons();
+        if(previousAdvanceMeasurement.getNumIndirectSons() == 0){
+            indirectAdvanceAssigment.getAdvanceMeasurements().remove(previousAdvanceMeasurement);
+        }
+        //update post indirect advanceMeasurement (substract the increment)
+        AdvanceMeasurement[] neighbors = getOldNeighborsAdvanceMeasurement(advanceMeasurement);
+        decrementLaterCalculatedAdvances(neighbors,advanceMeasurement,indirectAdvanceAssigment);
+    }
+
+    private void _removeCalculatedAdvanceMeasurement(AdvanceMeasurementDTO advanceMeasurementDTO,
+            AdvanceAssigment indirectAdvanceAssigment){
+        //find the indirect advanceMeasurement
+        AdvanceMeasurement advanceMeasurement = advanceMeasurementDTO.getAdvanceMeasurement();
+        AdvanceMeasurement previousAdvanceMeasurement =
+            findPreviousIndirectAdvanceMeasurement(
+            advanceMeasurement.getDate(),indirectAdvanceAssigment);
+        //check if the indirect advanceMeasurement is the adding of several sons.
+        previousAdvanceMeasurement.decrementNumIndirectSons();
+        if(previousAdvanceMeasurement.getNumIndirectSons() == 0){
+            indirectAdvanceAssigment.getAdvanceMeasurements().remove(previousAdvanceMeasurement);
+        }
+        //update post indirect advanceMeasurement (substract the increment)
+        AdvanceMeasurement  lessNeighbor = getLessNeighbor(advanceMeasurementDTO);
+        AdvanceMeasurementDTO  greatNeighbor = getGreatNeighborDTO(advanceMeasurementDTO);
+        _decrementLaterCalculatedAdvances(lessNeighbor,greatNeighbor,advanceMeasurement,indirectAdvanceAssigment);
+    }
+
+    private void removeCalculatedAdvanceAssigment(OrderElement parent,
+        AdvanceAssigment newAdvanceAssigment){
+        AdvanceAssigment indirectAdvanceAssigment =
+                findCalculatedAdvanceInParent(parent,newAdvanceAssigment.getAdvanceType().getId());
+        if(indirectAdvanceAssigment != null){
+            if(decrementMaxValue(newAdvanceAssigment,indirectAdvanceAssigment)){
+                parent.getAdvanceAssigments().remove(indirectAdvanceAssigment);
+            }else{
+                for(AdvanceMeasurement advanceMeasurement :
+                    newAdvanceAssigment.getAdvanceMeasurements()){
+                        removeCalculatedAdvanceMeasurement(advanceMeasurement,indirectAdvanceAssigment);
+                    }
+            }
+        }
+    }
+
+    private boolean decrementMaxValue(AdvanceAssigment newAdvanceAssigment,
+            AdvanceAssigment indirectAdvanceAssigment){
+        BigDecimal maxValue = newAdvanceAssigment.getMaxValue();
+        BigDecimal currentMaxValue = indirectAdvanceAssigment.getMaxValue().subtract(maxValue);
+        indirectAdvanceAssigment.setMaxValue(currentMaxValue);
+        if(currentMaxValue.compareTo(new BigDecimal(0)) == 0){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isAddingOfSeveralSons(AdvanceMeasurement previousAdvanceMeasurement){
+        previousAdvanceMeasurement.decrementNumIndirectSons();
+        if(previousAdvanceMeasurement.getNumIndirectSons() == 0)
+            return false;
+        else return true;
+    }
+
+    private AdvanceMeasurementDTO getGreatNeighborDTO(
+            AdvanceMeasurementDTO advanceMeasurementDTO){
+        AdvanceMeasurementDTO  neighbor = null;
+        AdvanceAssigmentDTO advanceAssigmentDTO =
+                advanceMeasurementDTO.getAdvanceAssigmentDTO();
+        List<AdvanceMeasurementDTO> advanceMeasurementDTOs =
+                advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView();
+
+        for(int i=0; i < advanceMeasurementDTOs.size() ; i++){
+            AdvanceMeasurementDTO advance =
+                    (AdvanceMeasurementDTO) advanceMeasurementDTOs.get(i);
+            if(advance.equals(advanceMeasurementDTO)){
+                if(i > 0){
+                    neighbor =((AdvanceMeasurementDTO)
+                            advanceMeasurementDTOs.get(i-1));
+                }
+                return neighbor;
+            }
+        }
+        return neighbor;
+    }
+
+    private AdvanceMeasurement getLessNeighbor(
+            AdvanceMeasurementDTO advanceMeasurementDTO){
+        AdvanceMeasurement  neighbor = null;
+
+        AdvanceAssigmentDTO advanceAssigmentDTO = advanceMeasurementDTO.getAdvanceAssigmentDTO();
+        AdvanceAssigment advanceAssigment = advanceAssigmentDTO.getAdvanceAssigment();
+        if(advanceAssigment == null) return neighbor;
+
+        Object[] advanceMeasurements = advanceAssigment.getAdvanceMeasurements().toArray();
+        for(int i=0; i < advanceMeasurements.length;i++){
+            AdvanceMeasurement advance = (AdvanceMeasurement) advanceMeasurements[i];
+            if(advance.getDate().compareTo(advanceMeasurementDTO.getDate()) < 0){
+                neighbor=advance;
+                return neighbor;
+            }
+        }
+        return neighbor;
+    }
+
+    private AdvanceMeasurement[] getOldNeighborsAdvanceMeasurement(
+            AdvanceMeasurement advanceMeasurement){
+        AdvanceMeasurement  neighbors[] = {null,null};
+        AdvanceAssigment advanceAssigment = advanceMeasurement.getAdvanceAssigment();
+        Object[] advanceMeasurements = advanceAssigment.getAdvanceMeasurements().toArray();
+
+        for(int i=0; i < advanceMeasurements.length;i++){
+            AdvanceMeasurement advance = (AdvanceMeasurement) advanceMeasurements[i];
+            if(advance.equals(advanceMeasurement)){
+                if(i > 0){
+                    neighbors[1]=((AdvanceMeasurement) advanceMeasurements[i-1]);
+                }
+                if(i < advanceMeasurements.length-1){
+                    neighbors[0]=((AdvanceMeasurement) advanceMeasurements[i+1]);
+                }
+                return neighbors;
+            }
+        }
+        return neighbors;
+    }
+
+    private void incrementLaterCalculatedAdvances(AdvanceMeasurement lessNeighbor,
+        AdvanceMeasurementDTO greatNeighbor,
+        AdvanceMeasurementDTO advanceMeasurementDTO,
+        AdvanceAssigment indirectAdvanceAssigment){
+
+        BigDecimal incrementValue = calculateIncrementValue(lessNeighbor,advanceMeasurementDTO);
+
+        Date dateIni = advanceMeasurementDTO.getDate();
+        Date dateFin = advanceMeasurementDTO.getDate();
+
+        for(AdvanceMeasurement indirectAdvanceMeasurement :
+            indirectAdvanceAssigment.getAdvanceMeasurements()){
+            if((indirectAdvanceMeasurement.getDate().compareTo(dateIni) >= 0)
+                && (isIntoIntervalDateFin(greatNeighbor,dateFin,indirectAdvanceMeasurement))){
+                    indirectAdvanceMeasurement.setValue(indirectAdvanceMeasurement.
+                    getValue().add(incrementValue));
+            }
+        }
+    }
+
+    private void _decrementLaterCalculatedAdvances(AdvanceMeasurement lessNeighbor,
+            AdvanceMeasurementDTO greatNeighbor,
+            AdvanceMeasurement advanceMeasurement,
+            AdvanceAssigment indirectAdvanceAssigment){
+
+            BigDecimal decrementValue = calculateDecrementValue(lessNeighbor,advanceMeasurement);
+
+            Date dateFin = advanceMeasurement.getDate();
+            Date dateIni = advanceMeasurement.getDate();
+
+            for(AdvanceMeasurement indirectAdvanceMeasurement :
+            indirectAdvanceAssigment.getAdvanceMeasurements()){
+                if((indirectAdvanceMeasurement.getDate().compareTo(dateIni) >= 0)
+                && (isIntoIntervalDateFin(greatNeighbor,dateFin,indirectAdvanceMeasurement))){
+                   indirectAdvanceMeasurement.setValue(
+                            indirectAdvanceMeasurement.getValue().subtract(decrementValue));
+                }
+            }
+    }
+
+    private void decrementLaterCalculatedAdvances(AdvanceMeasurement[] neighbors
+            ,AdvanceMeasurement advanceMeasurement,
+            AdvanceAssigment indirectAdvanceAssigment){
+
+            BigDecimal decrementValue = calculateDecrementValue(neighbors[0],advanceMeasurement);
+
+            Date dateFin = advanceMeasurement.getDate();
+            Date dateIni = advanceMeasurement.getDate();
+
+            for(AdvanceMeasurement indirectAdvanceMeasurement :
+            indirectAdvanceAssigment.getAdvanceMeasurements()){
+                if((indirectAdvanceMeasurement.getDate().compareTo(dateIni) >= 0)
+                && (isIntoIntervalDateFin(neighbors[1],dateFin,indirectAdvanceMeasurement))){
+                   indirectAdvanceMeasurement.setValue(
+                            indirectAdvanceMeasurement.getValue().subtract(decrementValue));
+                }
+            }
+    }
+
+    private boolean isIntoIntervalDateFin(AdvanceMeasurementDTO neighbor,
+            Date dateFin,AdvanceMeasurement advanceMeasurement){
+        if(neighbor != null){
+            dateFin = neighbor.getDate();
+            if(advanceMeasurement.getDate().compareTo(dateFin) < 0) return true;
+            else return false;
+        }
+        return true;
+    }
+
+    private boolean isIntoIntervalDateFin(AdvanceMeasurement neighbor,
+            Date dateFin,AdvanceMeasurement advanceMeasurement){
+        if(neighbor != null){
+            dateFin = neighbor.getDate();
+            if(advanceMeasurement.getDate().compareTo(dateFin) < 0) return true;
+            else return false;
+        }
+        return true;
+    }
+
+    private BigDecimal calculateIncrementValue(AdvanceMeasurement neighbor
+            ,AdvanceMeasurementDTO advanceMeasurementDTO){
+            //Calculate the increment value
+            BigDecimal incrementValue = advanceMeasurementDTO.getValue();
+            if(neighbor != null){
+                BigDecimal previousValue = neighbor.getValue();
+                incrementValue = incrementValue.subtract(previousValue);
+            }
+            return incrementValue;
+    }
+
+    private BigDecimal calculateDecrementValue(AdvanceMeasurement neighbor
+            ,AdvanceMeasurement advanceMeasurement){
+            //Calculate the decrement value
+            BigDecimal decrementValue = advanceMeasurement.getValue();
+            if(neighbor != null){
+                BigDecimal previousValue = neighbor.getValue();
+                decrementValue = decrementValue.subtract(previousValue);
+            }
+            return decrementValue;
+
+    }
+
+    private BigDecimal getIncrementMaxValue(AdvanceAssigmentDTO advanceAssigmentDTO){
+        BigDecimal incrementMaxValue= new BigDecimal(0);
+        if((advanceAssigmentDTO.getIsNewDTO())
+                || (checkChangeTheAdvanceType(advanceAssigmentDTO))){
+            incrementMaxValue = advanceAssigmentDTO.getMaxValue();
+        }else{
+            AdvanceAssigment advanceAssigment = advanceAssigmentDTO.getAdvanceAssigment();
+            incrementMaxValue = advanceAssigmentDTO.getMaxValue().subtract(advanceAssigment.getMaxValue());
+        }
+        return incrementMaxValue;
+    }
+
+    private AdvanceAssigment initNewCalculatedAdvanceAssigment(
+        OrderElement orderElement,AdvanceAssigmentDTO advanceAssigmentDTO){
+         //create AdvanceAssigment
+        AdvanceAssigment newAdvanceAssigment = AdvanceAssigment.create(
+            advanceAssigmentDTO.getReportGlobalAdvance(),new BigDecimal(0));
+        newAdvanceAssigment.setAdvanceType(advanceAssigmentDTO.getAdvanceType());
+        newAdvanceAssigment.setOrderElement(orderElement);
+        newAdvanceAssigment.setType(AdvanceAssigment.Type.CALCULATED);
+
+        return newAdvanceAssigment;
+    }
+
+    private AdvanceMeasurement findPreviousIndirectAdvanceMeasurement(
+        Date date,AdvanceAssigment indirectAdvanceAssigment){
+        Object[] arrayAdvanceMeasurements = indirectAdvanceAssigment.getAdvanceMeasurements().toArray();
+        for(int i=0; i < arrayAdvanceMeasurements.length; i++){
+            AdvanceMeasurement advanceMeasurement = (AdvanceMeasurement)arrayAdvanceMeasurements[i];
+            if(advanceMeasurement.getDate().compareTo(date) <= 0){
+                return advanceMeasurement;
+            }
+        }
+        return null;
+    }
+
+    private AdvanceAssigment findCalculatedAdvanceInParent(
+            OrderElement orderElement, Long id){
+        for(AdvanceAssigment oldAdvanceAssigment : orderElement.getAdvanceAssigments()){
+            if(oldAdvanceAssigment.getAdvanceType().getId().equals(id))
+                return oldAdvanceAssigment;
+        }
+        return null;
+    }
+
+    private boolean checkChangeTheAdvanceType(AdvanceAssigmentDTO newAdvanceAssigmentDTO){
+        AdvanceAssigment advanceAssigment = newAdvanceAssigmentDTO.getAdvanceAssigment();
+        AdvanceType advanceType = advanceAssigment.getAdvanceType();
+        AdvanceType advanceTypeDTO = newAdvanceAssigmentDTO.getAdvanceType();
+        if((newAdvanceAssigmentDTO.getIsNewObject())
+            && (!advanceType.equals(advanceTypeDTO))) return true;
+        return false;
+    }
+
     @Override
-    public boolean isPrecisionValid(AdvanceMeasurementDTO advanceDTO, BigDecimal value){
-        if(advanceDTO.getAdvanceType() != null){
-            BigDecimal precision = advanceDTO.getAdvanceType().getUnitPrecision();
+    public boolean isPrecisionValid(BigDecimal value){
+        if((this.advanceAssigmentDTO != null)
+                && (this.advanceAssigmentDTO.getAdvanceType() != null)){
+            BigDecimal precision = this.advanceAssigmentDTO.getAdvanceType().getUnitPrecision();
             BigDecimal result[] = value.divideAndRemainder(precision);
             if(result[1].compareTo(BigDecimal.ZERO) == 0) return true;
             return false;
@@ -236,28 +741,63 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public boolean greatThanMaxValue(AdvanceMeasurementDTO advanceDTO, BigDecimal value){
-        if(advanceDTO.getMaxValue() == null)
+    public boolean greatThanMaxValue(BigDecimal value){
+        if((this.advanceAssigmentDTO == null)
+            ||(this.advanceAssigmentDTO.getMaxValue() == null))
             return false;
-        if(value.compareTo(advanceDTO.getMaxValue())>0)
+        if(value.compareTo(this.advanceAssigmentDTO.getMaxValue())>0)
              return true;
         return false;
     }
 
     @Override
-    public boolean isGreatValidDate(AdvanceMeasurementDTO advanceDTO, Date value){
-        if((advanceDTO.getIsNewDTO())||(advanceDTO.getIsNewObject()))
+    public boolean isGreatValidDate(Date value){
+        if(this.advanceAssigmentDTO == null) return true;
+        if((this.advanceAssigmentDTO.getIsNewDTO())||(this.advanceAssigmentDTO.getIsNewObject()))
             return true;
 
-        AdvanceAssigment advanceAssigment = advanceDTO.getAdvanceAssigment();
-        if(((SortedSet<AdvanceMeasurement>) advanceAssigment
-                    .getAdvanceMeasurements()).size() > 0){
-            AdvanceMeasurement advanceMeasurement = ((SortedSet<AdvanceMeasurement>) advanceAssigment
-                    .getAdvanceMeasurements()).last();
-            if(value.compareTo(advanceMeasurement.getDate()) < 0)
-                return false;
+        AdvanceAssigment advanceAssigment = this.advanceAssigmentDTO.getAdvanceAssigment();
+        Iterator<AdvanceMeasurement> iterator = advanceAssigment.getAdvanceMeasurements().iterator();
+        while(iterator.hasNext()){
+            AdvanceMeasurement advanceMeasurement = iterator.next();
+            if(advanceMeasurement.getVersion() != null){
+                if(value.compareTo(advanceMeasurement.getDate()) < 0)return false;
+                else return true;
+            }
         }
         return true;
     }
 
+    @Override
+    public BigDecimal getUnitPrecision(){
+        if(this.advanceAssigmentDTO == null){
+            return new BigDecimal(0);
+        }
+        return this.advanceAssigmentDTO.getAdvanceType().getUnitPrecision();
+    }
+
+    @Override
+    public AdvanceMeasurementDTO getFirstAdvanceMeasurement(AdvanceAssigmentDTO advanceAssigmentDTO){
+        if((advanceAssigmentDTO != null) &&
+            (advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView().size()>0)){
+            final AdvanceMeasurementDTO advanceMeasurementDTO =
+                (AdvanceMeasurementDTO) advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView().get(0);
+            return advanceMeasurementDTO;
+        }
+        return null;
+    }
+
+    public AdvanceMeasurement getFirstAdvanceMeasurement(AdvanceAssigment advanceAssigment){
+        if((advanceAssigment != null) &&
+            (advanceAssigmentDTO.getAdvanceMeasurements().size()>0)){
+            SortedSet<AdvanceMeasurement> listAM = (SortedSet<AdvanceMeasurement>) advanceAssigment.getAdvanceMeasurements();
+            final AdvanceMeasurement advanceMeasurement = (AdvanceMeasurement) listAM.first();
+            return advanceMeasurement;
+        }
+        return null;
+    }
+
+    public void modifyListAdvanceMeasurement(AdvanceMeasurementDTO advanceMeasurementDTO){
+        this.advanceAssigmentDTO.getAdvanceMeasurementDTOs().modified(advanceMeasurementDTO);
+    }
 }

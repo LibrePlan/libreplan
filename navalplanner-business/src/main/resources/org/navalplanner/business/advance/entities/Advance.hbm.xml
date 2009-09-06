@@ -28,6 +28,7 @@
     <version name="version" access="property" type="long" />
 
     <property name="reportGlobalAdvance" access="field"/>
+    <property name="maxValue" access="field" scale="2"/>
     <property name="type" access="field">
         <type name="org.hibernate.type.EnumType">
             <param name="enumClass">org.navalplanner.business.advance.entities.AdvanceAssigment$Type</param>
@@ -58,7 +59,7 @@
 
     <property name="date"/>
     <property name="value" scale="2"/>
-    <property name="maxValue" scale="2"/>
+    <property name="numIndirectSons"/>
     <many-to-one name="advanceAssigment" class="AdvanceAssigment" column="ADVANCE_ASSIGMENT_ID" />
 </class>
 </hibernate-mapping>

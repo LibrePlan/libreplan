@@ -1,5 +1,6 @@
 package org.navalplanner.business.orders.entities;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -8,6 +9,7 @@ import java.util.Set;
 
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.advance.entities.AdvanceAssigment;
+import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
@@ -161,11 +163,13 @@ public abstract class OrderElement extends BaseEntity {
     public void addAvanceAssigment(AdvanceAssigment newAdvanceAssigment)
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssigmentForOrderElementException {
-        checkNoOtherGlobalAdvanceAssignment(newAdvanceAssigment);
-        checkAncestorsNoOtherAssignmentWithSameAdvanceType(this,
-                newAdvanceAssigment);
-        checkChildrenNoOtherAssignmentWithSameAdvanceType(this,
-                newAdvanceAssigment);
+        if(newAdvanceAssigment.getType().equals(AdvanceAssigment.Type.DIRECT)){
+            checkNoOtherGlobalAdvanceAssignment(newAdvanceAssigment);
+            checkAncestorsNoOtherAssignmentWithSameAdvanceType(this,
+                    newAdvanceAssigment);
+            checkChildrenNoOtherAssignmentWithSameAdvanceType(this,
+                    newAdvanceAssigment);
+        }
         this.advanceAssigments.add(newAdvanceAssigment);
     }
 
@@ -176,7 +180,8 @@ public abstract class OrderElement extends BaseEntity {
             return;
         }
         for (AdvanceAssigment advanceAssigment : getAdvanceAssigments()) {
-            if (advanceAssigment.getReportGlobalAdvance())
+            if((advanceAssigment.getType().equals(AdvanceAssigment.Type.DIRECT))
+                    && (advanceAssigment.getReportGlobalAdvance()))
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
                         "Duplicate Value True ReportGlobalAdvance For Order Element",
                         this, OrderElement.class);
@@ -195,8 +200,9 @@ public abstract class OrderElement extends BaseEntity {
             throws DuplicateAdvanceAssigmentForOrderElementException {
         for (AdvanceAssigment advanceAssigment : orderElement
                 .getAdvanceAssigments()) {
-            if (AdvanceType.equivalentInDB(advanceAssigment.getAdvanceType(),
-                    newAdvanceAssigment.getAdvanceType())) {
+            if ((AdvanceType.equivalentInDB(advanceAssigment.getAdvanceType(),
+                    newAdvanceAssigment.getAdvanceType())) &&
+                    (advanceAssigment.getType().equals(AdvanceAssigment.Type.DIRECT))) {
                 throw new DuplicateAdvanceAssigmentForOrderElementException(
                         "Duplicate Advance Assigment For Order Element", this,
                         OrderElement.class);
@@ -220,8 +226,9 @@ public abstract class OrderElement extends BaseEntity {
             throws DuplicateAdvanceAssigmentForOrderElementException {
         for (AdvanceAssigment advanceAssigment : orderElement
                 .getAdvanceAssigments()) {
-            if (AdvanceType.equivalentInDB(advanceAssigment.getAdvanceType(),
-                    newAdvanceAssigment.getAdvanceType())) {
+            if ((AdvanceType.equivalentInDB(advanceAssigment.getAdvanceType(),
+                    newAdvanceAssigment.getAdvanceType())) &&
+                    (advanceAssigment.getType().equals(AdvanceAssigment.Type.DIRECT))) {
                 throw new DuplicateAdvanceAssigmentForOrderElementException(
                         "Duplicate Advance Assigment For Order Element", this,
                         OrderElement.class);
