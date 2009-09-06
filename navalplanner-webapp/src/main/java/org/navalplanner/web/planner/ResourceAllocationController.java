@@ -227,6 +227,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return resourceAllocationRenderer;
     }
 
+    // Triggered when closable button is clicked
+    public void onClose(Event event) {
+        window.setVisible(false);
+        event.stopPropagation();
+    }
+
     public void cancel() {
         close();
         resourceAllocationModel.cancel();
