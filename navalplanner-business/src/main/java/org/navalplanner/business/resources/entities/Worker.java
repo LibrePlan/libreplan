@@ -1,5 +1,8 @@
 package org.navalplanner.business.resources.entities;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 import org.hibernate.validator.Min;
 import org.hibernate.validator.NotEmpty;
 
@@ -92,6 +95,12 @@ public class Worker extends Resource {
 
     public int getDailyCapacity() {
         return dailyHours;
+    }
+
+    public boolean satisfiesCriterions(Set<Criterion> criterions) {
+        ICriterion compositedCriterion = CriterionCompounder.buildAnd(
+                new ArrayList<ICriterion>(criterions)).getResult();
+        return compositedCriterion.isSatisfiedBy(this);
     }
 
 }

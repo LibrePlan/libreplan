@@ -34,6 +34,10 @@ public abstract class Resource extends BaseEntity{
 
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
 
+    public Set<CriterionSatisfaction> getCriterionSatisfactions() {
+        return criterionSatisfactions;
+    }
+
     public abstract String getDescription();
 
     private interface IPredicate {

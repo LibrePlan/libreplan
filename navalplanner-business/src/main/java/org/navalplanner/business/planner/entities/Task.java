@@ -79,6 +79,10 @@ public class Task extends TaskElement {
         resourceAllocations.remove(resourceAllocation);
     }
 
+    public Boolean getFixedDuration() {
+        return fixedDuration;
+    }
+
     public void setFixedDuration(Boolean fixed_duration) {
         this.fixedDuration = fixed_duration;
     }
@@ -205,6 +209,43 @@ public class Task extends TaskElement {
         for (int share : shares) {
             result += share;
         }
+        return result;
+    }
+
+    public Set<GenericResourceAllocation> getGenericResourceAllocations() {
+        Set<GenericResourceAllocation> result = new HashSet<GenericResourceAllocation>();
+
+        Set<ResourceAllocation> resourceAllocations = getResourceAllocations();
+        for (ResourceAllocation resourceAllocation : resourceAllocations) {
+            if (resourceAllocation instanceof GenericResourceAllocation) {
+                result.add((GenericResourceAllocation) resourceAllocation);
+            }
+        }
+
+        return result;
+    }
+
+    public Set<SpecificResourceAllocation> getSpecificResourceAllocations() {
+        Set<SpecificResourceAllocation> result = new HashSet<SpecificResourceAllocation>();
+
+        Set<ResourceAllocation> resourceAllocations = getResourceAllocations();
+        for (ResourceAllocation resourceAllocation : resourceAllocations) {
+            if (resourceAllocation instanceof SpecificResourceAllocation) {
+                result.add((SpecificResourceAllocation) resourceAllocation);
+            }
+        }
+
+        return result;
+    }
+
+    public BigDecimal getSumPercentage(
+            List<ResourceAllocation> resourceAllocations) {
+        BigDecimal result = new BigDecimal(0);
+
+        for (ResourceAllocation resourceAllocation : resourceAllocations) {
+            result = result.add(resourceAllocation.getPercentage());
+        }
+
         return result;
     }
 }

@@ -1,25 +1,28 @@
 package org.navalplanner.web.planner;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
-import org.hibernate.LockMode;
-import org.hibernate.SessionFactory;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
-import org.navalplanner.business.resources.entities.ICriterion;
+import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -31,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Model for UI operations related to {@link Task}
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -43,10 +47,10 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private IWorkerDAO workerDAO;
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private IHoursGroupDAO hoursGroupDAO;
 
     @Autowired
-    private IHoursGroupDAO hoursGroupDAO;
+    private IResourceDAO resourceDAO;
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
@@ -55,30 +59,110 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     private org.zkoss.ganttz.data.Task ganttTask;
 
-    private ResourceAllocation resourceAllocation;
-
-    @Override
-    @Transactional(readOnly = true)
-    public void setTask(Task task) {
-        taskElementDAO.save(task);
-        task.getResourceAllocations().size();
-
-        HoursGroup hoursGroup = task.getHoursGroup();
-        hoursGroupDAO.save(hoursGroup);
-        hoursGroup.getCriterions().size();
-
-        this.task = task;
-    }
-
     @Override
     public Task getTask() {
         return task;
     }
 
     @Override
-    public void addResourceAllocation() {
-        ResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
+    @Transactional(readOnly = true)
+    public void setTask(Task task) {
+        try {
+            task = (Task) taskElementDAO.find(task.getId());
+            reattachResourceAllocations(task.getResourceAllocations());
+            hoursGroupDAO.save(task.getHoursGroup());
+            reattachHoursGroup(task.getHoursGroup());
+            reattachCriterions(task.getHoursGroup().getCriterions());
+
+            this.task = task;
+        } catch (InstanceNotFoundException e) {
+
+        }
+    }
+
+    private void reattachResourceAllocations(
+            Set<ResourceAllocation> resourceAllocations) {
+        resourceAllocations.size();
+        for (ResourceAllocation resourceAllocation : resourceAllocations) {
+            resourceAllocation.getPercentage();
+            if (resourceAllocation instanceof SpecificResourceAllocation) {
+                reattachSpecificResourceAllocation((SpecificResourceAllocation) resourceAllocation);
+            }
+            resourceAllocationDAO.save(resourceAllocation);
+        }
+    }
+
+    private void reattachSpecificResourceAllocation(
+            SpecificResourceAllocation resourceAllocation) {
+        resourceAllocation.getWorker().getName();
+        reattachCriterionSatisfactions(resourceAllocation.getWorker()
+                .getCriterionSatisfactions());
+    }
+
+    private void reattachHoursGroup(HoursGroup hoursGroup) {
+        hoursGroup.getPercentage();
+    }
+
+    private void reattachCriterions(Set<Criterion> criterions) {
+        for (Criterion criterion : criterions) {
+            reattachCriterion(criterion);
+        }
+    }
+
+    private void reattachCriterion(Criterion criterion) {
+        criterion.getName();
+        reattachCriterionType(criterion.getType());
+    }
+
+    private void reattachCriterionType(CriterionType criterionType) {
+        criterionType.getName();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void addGenericResourceAllocation() {
+        GenericResourceAllocation resourceAllocation = GenericResourceAllocation
+                .create(task);
+        resourceAllocation.setPercentage(new BigDecimal(0));
         task.addResourceAllocation(resourceAllocation);
+        taskElementDAO.save(task);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void addSpecificResourceAllocation(Worker worker) throws Exception {
+
+        // ResourceAllocation already exists
+        if (findSpecificResourceAllocationByWorker(worker) != null) {
+            throw new IllegalArgumentException(_(
+                    "{0} already assigned to resource allocation list", worker
+                            .getName()));
+        }
+
+        // Prepare resourceAllocation
+        SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation
+                .create(task);
+        resourceAllocation.setWorker(worker);
+        resourceAllocation.setPercentage((new BigDecimal(1)));
+
+        reattachWorker(worker);
+        // Check if worker was itself a generic resource
+        if (worker.satisfiesCriterions(getCriterions())) {
+            Set<GenericResourceAllocation> genericResourceAllocations = getGenericResourceAllocations();
+            // Generic resources always match criterions, so we need to remove
+            // one generic resource to leave room for a specific resource
+            if (genericResourceAllocations.size() > 0) {
+                removeResourceAllocation(genericResourceAllocations.iterator()
+                        .next());
+            }
+        }
+        task.addResourceAllocation(resourceAllocation);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<GenericResourceAllocation> getGenericResourceAllocations() {
+        return task.getGenericResourceAllocations();
     }
 
     @Override
@@ -87,91 +171,121 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Worker findWorkerByNif(String nif) {
-        try {
-            return workerDAO.findUniqueByNif(nif);
-        } catch (InstanceNotFoundException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public void setWorker(SpecificResourceAllocation resourceAllocation,
-            Worker worker) {
-        resourceAllocation.setWorker(worker);
-    }
-
-    @Override
     public Set<Criterion> getCriterions() {
-        if (task == null) {
-            return new HashSet<Criterion>();
-        }
-        return task.getHoursGroup().getCriterions();
+        return (task != null) ? task.getHoursGroup().getCriterions()
+                : new HashSet<Criterion>();
     }
 
     @Override
     public Set<ResourceAllocation> getResourceAllocations() {
-        if (task == null) {
-            return new HashSet<ResourceAllocation>();
-        }
-        return task.getResourceAllocations();
+        return (task != null) ? task.getResourceAllocations()
+                : new HashSet<ResourceAllocation>();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void setResourceAllocation(ResourceAllocation resourceAllocation) {
-        resourceAllocationDAO.save(resourceAllocation);
+    public void removeSpecificResourceAllocation(
+            SpecificResourceAllocation resourceAllocation) {
+        boolean addGenericResourceAllocation = false;
 
-        Worker worker = ((SpecificResourceAllocation) resourceAllocation)
-                .getWorker();
-        if (worker != null) {
-            workerDAO.save(worker);
-            Set<CriterionSatisfaction> criterionSatisfactions = worker
-                    .getAllSatisfactions();
-            for (CriterionSatisfaction criterionSatisfaction : criterionSatisfactions) {
-                criterionSatisfaction.getCriterion().getName();
-                criterionSatisfaction.getCriterion().getType().getName();
+        // On removing this resourceAllocation, it may be room for a new generic
+        // resource allocation
+        Worker worker = resourceAllocation.getWorker();
+        if (worker.satisfiesCriterions(getCriterions())) {
+            addGenericResourceAllocation = true;
+        }
+        resourceAllocationDAO.save(resourceAllocation);
+        task.removeResourceAllocation(resourceAllocation);
+        // Add new generic resource
+        if (addGenericResourceAllocation) {
+            addGenericResourceAllocation();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void updateGenericPercentages(BigDecimal totalPercentage) {
+        Set<GenericResourceAllocation> genericResourceAllocations = getGenericResourceAllocations();
+        BigDecimal percentagePerResource = totalPercentage;
+
+        percentagePerResource = percentagePerResource
+                .subtract(getSumPercentageSpecificResourceAllocations());
+        if (genericResourceAllocations.size() > 0) {
+            percentagePerResource = percentagePerResource.setScale(8).divide(
+                    new BigDecimal(genericResourceAllocations.size()),
+                    BigDecimal.ROUND_DOWN);
+
+            // Percentage cannot be negative
+            if (percentagePerResource.compareTo(new BigDecimal(0)) < 0) {
+                percentagePerResource = new BigDecimal(0);
+            }
+
+            for (ResourceAllocation resourceAllocation : genericResourceAllocations) {
+                resourceAllocation.setPercentage(percentagePerResource);
             }
         }
-
-        this.resourceAllocation = resourceAllocation;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Worker getWorker() {
-        if (resourceAllocation == null) {
-            return null;
+    public BigDecimal getSumPercentageSpecificResourceAllocations() {
+        return getSumPercentage(task.getSpecificResourceAllocations());
+    }
+
+    @SuppressWarnings("unchecked")
+    private BigDecimal getSumPercentage(Set resourceAllocations) {
+        BigDecimal result = new BigDecimal(0);
+
+        for (Iterator i = resourceAllocations.iterator(); i.hasNext();) {
+            ResourceAllocation resourceAllocation = (ResourceAllocation) i
+                    .next();
+            result = result.add(resourceAllocation.getPercentage());
         }
-        Worker worker = ((SpecificResourceAllocation) resourceAllocation)
-                .getWorker();
-        if (worker == null) {
-            return null;
+
+        return result;
+    }
+
+    private SpecificResourceAllocation findSpecificResourceAllocationByWorker(Worker worker) {
+        for (SpecificResourceAllocation resourceAllocation : task
+                .getSpecificResourceAllocations()) {
+            if (resourceAllocation.getWorker().getId().equals(worker.getId())) {
+                return resourceAllocation;
+            }
         }
-        try {
-            return workerDAO.find(worker.getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
+        return null;
+    }
+
+    @Transactional(readOnly = true)
+    private void reattachWorker(Worker worker) {
+        workerDAO.save(worker);
+        reattachCriterionSatisfactions(worker.getCriterionSatisfactions());
+    }
+
+    private void reattachCriterionSatisfactions(
+            Set<CriterionSatisfaction> criterionSatisfactions) {
+        for (CriterionSatisfaction criterionSatisfaction : criterionSatisfactions) {
+            criterionSatisfaction.getStartDate();
+            reattachCriterion(criterionSatisfaction.getCriterion());
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean workerSatisfiesCriterions() {
+    public BigDecimal getSumPercentageResourceAllocations() {
+        return getSumPercentage(task.getResourceAllocations());
+    }
 
-        for (Criterion criterion : getCriterions()) {
-            sessionFactory.getCurrentSession().lock(criterion, LockMode.NONE);
-        }
+    @Override
+    @Transactional(readOnly = true)
+    public int getNumberUnassignedResources() {
+        List<Resource> resources = resourceDAO
+                .getAllByCriterions(getCriterions());
+        Set<ResourceAllocation> resourceAllocations = task
+                .getResourceAllocations();
 
-        Worker worker = getWorker();
-
-        if (worker == null) {
-            return true;
-        }
-        ICriterion compositedCriterion = CriterionCompounder.buildAnd(
-                new ArrayList<ICriterion>(getCriterions())).getResult();
-        return compositedCriterion.isSatisfiedBy(worker);
+        return (resources.size() - resourceAllocations.size() > 0) ? resources
+                .size()
+                - resourceAllocations.size() : 0;
     }
 
     @Override
@@ -185,15 +299,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         taskElementDAO.save(task);
         task.getDuration();
         ganttTask.setEndDate(task.getEndDate());
-    }
-
-    @Override
-    public void addSpecificResourceAllocation(Worker worker) {
-        SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation
-                .create(task);
-        resourceAllocation.setWorker(worker);
-        resourceAllocation.setPercentage(new BigDecimal(1));
-        task.addResourceAllocation(resourceAllocation);
     }
 
 }

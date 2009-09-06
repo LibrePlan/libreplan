@@ -64,34 +64,52 @@
         apply="${allocationController}"
         title="${i18n:_('Resource allocation')}" width="600px"
         closable="true" visible="false">
-        <tabbox>
-            <tabs>
-                <tab
-                    label="${i18n:_('Specific resource allocation')}">
-                </tab>
-            </tabs>
 
-            <tabpanels>
-                <tabpanel>
-                    <listbox id="resourcesList"
-                        model="@{allocationController.resourceAllocations}"
-                        itemRenderer="@{allocationController.resourceAllocationRenderer}">
-                        <listhead>
-                            <listheader label="${i18n:_('Name')}" />
-                            <listheader label="${i18n:_('NIF')}" />
-                            <listheader label="${i18n:_('Percentage')}" />
-                            <listheader label="" />
-                        </listhead>
-                    </listbox>
-                </tabpanel>
-            </tabpanels>
-        </tabbox>
+        <panel title="Generic resource allocation" border="normal" style="margin-bottom: 5px">
+            <panelchildren>
+                <hbox>
+                    <label value="${i18n:_('Task type')}:"
+                        style="font-weight:bold" />
+                    <label value="@{allocationController.taskType}" />
+                </hbox>
+                <hbox>
+                    <label value="${i18n:_('Criterions')}:"
+                        style="font-weight:bold" />
+                    <label
+                        value="@{allocationController.taskCriterions}" />
+                </hbox>
+                <hbox>
+                    <label value="${i18n:_('Hours')}:"
+                        style="font-weight:bold" />
+                    <label value="@{allocationController.taskHours}" />
+                </hbox>
+                <hbox>
+                    <label value="${i18n:_('Generic allocation')}:"
+                        style="font-weight:bold" />
+                    <decimalbox id="genericResourceAllocationPercentage" width="48px"
+                        onChange="allocationController.updateGenericPercentages(event)" />
+                </hbox>
+            </panelchildren>
+        </panel>
+
+        <vbox id="messagesContainer"></vbox>
+
+        <listbox id="resourcesList"
+            model="@{allocationController.resourceAllocations}"
+            itemRenderer="@{allocationController.resourceAllocationRenderer}"
+            style="margin-bottom: 5px">
+            <listhead>
+                <listheader label="${i18n:_('Name')}" />
+                <listheader label="${i18n:_('Percentage')}" />
+                <listheader label="" />
+            </listhead>
+        </listbox>
 
         <hbox>
             <button label="${i18n:_('Save')}" />
             <button label="${i18n:_('Cancel')}" />
             <button label="${i18n:_('Search resources...')}"
-                onClick="allocationController.showSearchResources(event)" />
+                onClick="allocationController.showSearchResources()" />
             <button label="${i18n:_('Advance allocation')}" />
         </hbox>
     </window>
