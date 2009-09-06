@@ -22,7 +22,7 @@
 		<vbox>
 			<!--Matchings -->
 			<listbox id="listBoxWorkers" width="200px" mold="paging"
-				pageSize="10" rows="10"
+				pageSize="10" rows="10" multiple="true"
 				itemRenderer="@{controller.listitemRenderer}">
 				<listhead>
 					<listheader label="${i18n:_('Found workers')}"
