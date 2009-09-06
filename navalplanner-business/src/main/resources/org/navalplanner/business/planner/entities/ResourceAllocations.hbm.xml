@@ -12,7 +12,7 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="percentage" />
+        <property name="percentage" type="java.math.BigDecimal" scale="8"/>
 
         <many-to-one class="Task" name="task" column="TASK" />
 

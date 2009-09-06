@@ -237,9 +237,11 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         BigDecimal result = new BigDecimal(0);
 
         for (Iterator i = resourceAllocations.iterator(); i.hasNext();) {
-            ResourceAllocation resourceAllocation = (ResourceAllocation) i
-                    .next();
-            result = result.add(resourceAllocation.getPercentage());
+            ResourceAllocation resourceAllocation = (ResourceAllocation) i.next();
+            BigDecimal percentage = (resourceAllocation.getPercentage() != null) ? resourceAllocation
+                    .getPercentage()
+                    : new BigDecimal(0);
+            result = result.add(percentage);
         }
 
         return result;

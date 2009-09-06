@@ -307,6 +307,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
             // Set percentage
             BigDecimal percentage = resourceAllocation.getPercentage();
             if (!new BigDecimal(0).equals(resourceAllocation.getPercentage())) {
+                percentage = (percentage != null) ? percentage
+                        : new BigDecimal(0);
                 percentage = percentage.scaleByPowerOfTen(2).setScale(2,
                         BigDecimal.ROUND_CEILING);
             }
