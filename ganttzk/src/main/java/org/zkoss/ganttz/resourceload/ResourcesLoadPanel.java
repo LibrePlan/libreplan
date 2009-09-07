@@ -10,6 +10,10 @@ import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zkex.zul.Borderlayout;
+import org.zkoss.zkex.zul.Center;
+import org.zkoss.zkex.zul.West;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.impl.XulElement;
 
 public class ResourcesLoadPanel extends XulElement implements AfterCompose {
@@ -31,9 +35,31 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
         resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
         leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
-        appendChild(timeTrackerComponent);
-        appendChild(leftPane);
-        appendChild(resourceLoadList);
+
+        Borderlayout bl = new Borderlayout();
+        bl.setHeight("300px");
+        bl.setWidth("1600px");
+
+        West w = new West();
+        w.setSize("200px");
+        w.setFlex(true);
+        w.setSplittable(true);
+        w.setCollapsible(true);
+        w.setStyle("overflow: scroll");
+
+        Center c = new Center();
+        c.setFlex(true);
+        c.setStyle("overflow: scroll");
+        Div d = new Div();
+        d.appendChild(timeTrackerComponent);
+        d.appendChild(resourceLoadList);
+        w.appendChild(leftPane);
+        c.appendChild(d);
+
+        bl.appendChild(w);
+        bl.appendChild(c);
+        appendChild(bl);
+
     }
 
     private MutableTreeModel<LoadTimeLine> createModelForTree() {

@@ -381,18 +381,13 @@ tr.z-vbox-sep {
 .resourceloadleftpane {
 	border: 1px;
 	margin-top: 70px;
-	float: left;
-	width: 285px;
+	width: 325px;
 	padding-right: 15px;
-    overflow-y: hidden;
 }
 
 .resourceloadlist {
 	margin-top: 70px;
 	width: 80%;
-	overflow: auto;
-	position: absolute;
-	left: 285px;
 }
 /* Advanced resources assignment */
 
