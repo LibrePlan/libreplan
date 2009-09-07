@@ -49,6 +49,8 @@ public interface IManageOrderElementAdvancesModel {
 
     public void modifyListAdvanceMeasurement(AdvanceMeasurementDTO advanceMeasurementDTO);
 
+    public String getInfoAdvanceAssigment();
+
     public void accept()throws InstanceNotFoundException,
             DuplicateAdvanceAssigmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException;

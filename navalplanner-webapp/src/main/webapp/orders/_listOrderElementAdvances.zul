@@ -30,7 +30,8 @@
     </listbox>
     </vbox>
     <separator bar="false" spacing="20px" orient="vertical"/>
-    <label value="${i18n:_('Advances Measurement')}"/>
+    <label value="${i18n:_('Advances Measurements:')}"/>
+    <label id="infoAdvance" value="@{manageOrderElementAdvancesController.getInfoAdvance}"/>
     <separator bar="true" spacing="3px" orient="horizontal"/>
     <vbox>
         <hbox>

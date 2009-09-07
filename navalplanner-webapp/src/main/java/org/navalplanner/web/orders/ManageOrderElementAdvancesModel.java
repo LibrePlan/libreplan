@@ -26,9 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
-import org.navalplanner.business.util.ListSorter;
-import org.zkoss.zul.SimpleXYModel;
-import org.zkoss.zul.XYModel;
+import static org.navalplanner.web.I18nHelper._;
 /**
  * Service to manage the advance of a selected order element
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -65,6 +63,20 @@ public class ManageOrderElementAdvancesModel implements
         Validate.notNull(advanceMeasurementDAO);
         this.advanceTypeDAO = advanceTypeDAO;
         this.orderElementDAO = orderElementDAO;
+    }
+
+    @Override
+    public String getInfoAdvanceAssigment(){
+        if((this.advanceAssigmentDTO == null) ||
+                (this.orderElement == null)) {
+            return "";
+        }
+        if((this.advanceAssigmentDTO.getUnitName() == null) ||
+                this.advanceAssigmentDTO.getMaxValue() == null){
+            return "";
+        }
+        return "    "+this.advanceAssigmentDTO.getUnitName()+_(". Max value: ")+
+                this.advanceAssigmentDTO.getMaxValue();
     }
 
     @Override

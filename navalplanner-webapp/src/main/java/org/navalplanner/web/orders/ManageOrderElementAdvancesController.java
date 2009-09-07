@@ -34,7 +34,6 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Window;
-import org.zkoss.zul.XYModel;
 
 /**
  * Controller for show the advances of the selected order element<br />
@@ -150,6 +149,10 @@ public class ManageOrderElementAdvancesController extends
         }
     }
 
+    public String getInfoAdvance() {
+        return manageOrderElementAdvancesModel.getInfoAdvanceAssigment();
+    }
+
     public List<AdvanceType> getActivesAdvanceType() {
         return manageOrderElementAdvancesModel.getActivesAdvanceTypes();
     }
@@ -230,6 +233,7 @@ public class ManageOrderElementAdvancesController extends
                                     (comboItem.getValue() instanceof AdvanceType)){
                                 AdvanceType advanceType = (AdvanceType)comboItem.getValue();
                                 advanceDTO.setAdvanceType(advanceType);
+                                advanceDTO.setUnitName(advanceType.getUnitName());
                                 advanceDTO.setMaxValue(advanceType.getDefaultMaxValue());
                             }
                         }
@@ -273,6 +277,7 @@ public class ManageOrderElementAdvancesController extends
                     @Override
                     public void onEvent(Event event) throws Exception {
                         setPercentage();
+                        Util.reloadBindings(window.getFellow("infoAdvance"));
                     }
                 });
 
