@@ -1,8 +1,10 @@
 package org.navalplanner.business.resources.daos;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Query;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -29,6 +31,10 @@ public class ResourceDAO extends GenericDAOHibernate<Resource, Long> implements
 
     @Override
     public List<Resource> getAllByCriterions(Set<Criterion> criterions) {
+        Validate.notNull(criterions);
+        if (criterions.isEmpty()) {
+            return list(Resource.class);
+        }
         String strQuery = "SELECT resource "
                 + "FROM Resource resource "
                 + "LEFT OUTER JOIN resource.criterionSatisfactions criterionSatisfactions "
