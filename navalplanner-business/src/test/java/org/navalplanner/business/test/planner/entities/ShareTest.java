@@ -40,28 +40,28 @@ public class ShareTest {
     @Test
     public void canAddHours() {
         givenHours(10);
-        Share newShare = share.add(5);
+        Share newShare = share.plus(5);
         assertThat(newShare.getHours(), equalTo(15));
     }
 
     @Test
     public void isImmutable(){
         givenHours(4);
-        share.add(3);
+        share.plus(3);
         assertThat(share.getHours(), equalTo(4));
     }
 
     @Test
     public void canSubstract() {
         givenHours(5);
-        Share newShare = share.add(-2);
+        Share newShare = share.plus(-2);
         assertThat(newShare.getHours(), equalTo(3));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void cannotSubstractABiggerNumber() {
         givenHours(5);
-        share.add(-6);
+        share.plus(-6);
     }
 
     @Test

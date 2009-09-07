@@ -49,7 +49,7 @@ public class ShareDivision {
         }
 
         void add(int hours) {
-            this.share = share.add(hours);
+            this.share = share.plus(hours);
         }
 
         public static void sortByOriginalPosition(List<ShareWrapper> bucket) {
@@ -76,7 +76,7 @@ public class ShareDivision {
         return Collections.unmodifiableList(shares);
     }
 
-    public ShareDivision add(int increment) {
+    public ShareDivision plus(int increment) {
         List<ShareWrapper> wrapped = ShareWrapper.wrap(shares);
         Collections.sort(wrapped);
         int i = 0;

@@ -57,14 +57,14 @@ public class ShareDivisionTest {
     @Test
     public void remainderIsGivenToFirstShares() {
         givenDivisionShare(new Share(10), new Share(10), new Share(10));
-        ShareDivision s = shareDivision.add(8);
+        ShareDivision s = shareDivision.plus(8);
         assertThat(s, haveValues(13, 13, 12));
     }
 
     @Test
     public void theSharesWithLessAreGivenMore() {
         givenDivisionShare(new Share(10), new Share(5), new Share(10));
-        ShareDivision s = shareDivision.add(4);
+        ShareDivision s = shareDivision.plus(4);
         assertThat(s, haveValues(10, 9, 10));
     }
 
@@ -72,7 +72,7 @@ public class ShareDivisionTest {
     public void theIncrementIsEquallyDistributedToTheSharesWithLess() {
         givenDivisionShare(new Share(10), new Share(5), new Share(5),
                 new Share(10));
-        ShareDivision s = shareDivision.add(4);
+        ShareDivision s = shareDivision.plus(4);
         assertThat(s, haveValues(10, 7, 7, 10));
     }
 
@@ -80,29 +80,29 @@ public class ShareDivisionTest {
     public void theIncrementIsEquallyDistributedToTheSharesWithLessUntilEqualTheOthers() {
         givenDivisionShare(new Share(10), new Share(5), new Share(5),
                 new Share(10));
-        assertThat(shareDivision.add(2), haveValues(10, 6, 6, 10));
-        assertThat(shareDivision.add(10), haveValues(10, 10, 10, 10));
-        assertThat(shareDivision.add(11), haveValues(11, 10, 10, 10));
-        assertThat(shareDivision.add(12), haveValues(11, 11, 10, 10));
-        assertThat(shareDivision.add(14), haveValues(11, 11, 11, 11));
+        assertThat(shareDivision.plus(2), haveValues(10, 6, 6, 10));
+        assertThat(shareDivision.plus(10), haveValues(10, 10, 10, 10));
+        assertThat(shareDivision.plus(11), haveValues(11, 10, 10, 10));
+        assertThat(shareDivision.plus(12), haveValues(11, 11, 10, 10));
+        assertThat(shareDivision.plus(14), haveValues(11, 11, 11, 11));
     }
 
     @Test
     public void areProgressivelyFilled() {
         givenDivisionShare(new Share(2), new Share(5), new Share(10));
-        assertThat(shareDivision.add(1), haveValues(3, 5, 10));
-        assertThat(shareDivision.add(3), haveValues(5, 5, 10));
-        assertThat(shareDivision.add(4), haveValues(6, 5, 10));
-        assertThat(shareDivision.add(5), haveValues(6, 6, 10));
-        assertThat(shareDivision.add(6), haveValues(7, 6, 10));
-        assertThat(shareDivision.add(13), haveValues(10, 10, 10));
+        assertThat(shareDivision.plus(1), haveValues(3, 5, 10));
+        assertThat(shareDivision.plus(3), haveValues(5, 5, 10));
+        assertThat(shareDivision.plus(4), haveValues(6, 5, 10));
+        assertThat(shareDivision.plus(5), haveValues(6, 6, 10));
+        assertThat(shareDivision.plus(6), haveValues(7, 6, 10));
+        assertThat(shareDivision.plus(13), haveValues(10, 10, 10));
     }
 
     @Test
     @Ignore("TODO handling substractions")
     public void canDistributeSubstraction() {
         givenDivisionShare(new Share(2), new Share(5), new Share(10));
-        assertThat(shareDivision.add(-1), haveValues(2, 5, 9));
+        assertThat(shareDivision.plus(-1), haveValues(2, 5, 9));
     }
 
     private Matcher<ShareDivision> haveValues(final int... shares) {

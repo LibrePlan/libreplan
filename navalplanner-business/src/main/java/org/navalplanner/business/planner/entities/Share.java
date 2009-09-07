@@ -17,7 +17,7 @@ public class Share {
         return hours;
     }
 
-    public Share add(int increment) {
+    public Share plus(int increment) {
         Validate.isTrue(hours + increment >= 0);
         return new Share(hours + increment);
     }
