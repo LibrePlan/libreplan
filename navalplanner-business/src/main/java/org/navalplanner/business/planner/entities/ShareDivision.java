@@ -76,20 +76,24 @@ public class ShareDivision {
         return Collections.unmodifiableList(shares);
     }
 
-    public ShareDivision plus(int increment) {
+    public ShareDivision plus(final int increase) {
+        int remainderIncrease = increase;
         List<ShareWrapper> wrapped = ShareWrapper.wrap(shares);
         Collections.sort(wrapped);
         int i = 0;
         while (i < wrapped.size()) {
-            FillingBucket bucket = findNextFillingBucket(wrapped, i, increment);
-            bucket.doTheDistribution();
-            increment = increment - bucket.getIncreaseDone();
-            assert increment >= 0;
-            if (increment == 0)
+            if (remainderIncrease == 0) {
                 break;
-            i++;
+            }
+            int nextBigger = findNextBigger(wrapped, i);
+            FillingBucket bucket = fillingBuckectFor(wrapped, nextBigger,
+                    remainderIncrease);
+            bucket.doTheDistribution();
+            i = nextBigger;
+            remainderIncrease = remainderIncrease - bucket.getIncreaseDone();
+            assert remainderIncrease >= 0;
         }
-        assert increment == 0 : "all is assigned";
+        assert remainderIncrease == 0 : "all is assigned";
         return ShareDivision.create(fromWrappers(wrapped));
     }
 
@@ -134,17 +138,22 @@ public class ShareDivision {
         }
     }
 
-    private static FillingBucket findNextFillingBucket(
-            List<ShareWrapper> wrappers, int start, int remaining) {
+    private static int findNextBigger(List<ShareWrapper> wrappers, int start) {
         ShareWrapper startWrapper = wrappers.get(start);
         for (int i = start + 1; i < wrappers.size(); i++) {
             ShareWrapper current = wrappers.get(i);
             if (!startWrapper.haveSameHours(current)) {
-                return new FillingBucket(wrappers.subList(0, i), Math.min(
-                        hoursNeededToBeEqual(wrappers, 0, i), remaining));
+                return i;
             }
         }
-        return new FillingBucket(wrappers, remaining);
+        return wrappers.size();
+    }
+
+    private static FillingBucket fillingBuckectFor(List<ShareWrapper> wrappers,
+            int end, int remaining) {
+        int hoursToDistribute = end == wrappers.size() ? remaining : Math.min(
+                        hoursNeededToBeEqual(wrappers, 0, end), remaining);
+        return new FillingBucket(wrappers.subList(0, end), hoursToDistribute);
     }
 
     private static int hoursNeededToBeEqual(List<ShareWrapper> wrappers,
