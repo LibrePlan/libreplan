@@ -207,41 +207,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
         handler.registerListener(this, page);
         getVisibility().showOnly(listWindow);
-
-        editCalendarWindow = (Window) getCurrentWindow()
-                .getFellow("editCalendarWindow");
-        createNewVersionWindow = (Window) getCurrentWindow()
-                .getFellow("createNewVersion");
-        baseCalendarEditionController = new BaseCalendarEditionController(
-                resourceCalendarModel, editCalendarWindow,
-                createNewVersionWindow) {
-
-            @Override
-            public void goToList() {
-                workerModel
-                        .setCalendar((ResourceCalendar) resourceCalendarModel
-                                .getBaseCalendar());
-                reloadCurrentWindow();
-            }
-
-            @Override
-            public void cancel() {
-                resourceCalendarModel.cancel();
-                workerModel.setCalendar(null);
-                reloadCurrentWindow();
-            }
-
-            @Override
-            public void save() {
-                workerModel
-                        .setCalendar((ResourceCalendar) resourceCalendarModel
-                                .getBaseCalendar());
-                reloadCurrentWindow();
-            }
-
-        };
-        editCalendarWindow.setVariable("calendarController", this, true);
-        createNewVersionWindow.setVariable("calendarController", this, true);
     }
 
     public BaseCalendarEditionController getEditionController() {
@@ -348,6 +313,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                     + "' to create a resource calendar");
         }
 
+        updateCalendarController();
         workerModel.setCalendar((ResourceCalendar) resourceCalendarModel
                 .getBaseCalendar());
         try {
@@ -363,6 +329,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void editCalendar() {
+        updateCalendarController();
         resourceCalendarModel.initEdit(workerModel.getCalendar());
         try {
             baseCalendarEditionController.doAfterCompose(editCalendarWindow);
@@ -389,6 +356,45 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         } else {
             return editWindow;
         }
+    }
+
+    private void updateCalendarController() {
+        editCalendarWindow = (Window) getCurrentWindow().getFellow(
+                "editCalendarWindow");
+        createNewVersionWindow = (Window) getCurrentWindow().getFellow(
+                "createNewVersion");
+
+        baseCalendarEditionController = new BaseCalendarEditionController(
+                resourceCalendarModel, editCalendarWindow,
+                createNewVersionWindow) {
+
+            @Override
+            public void goToList() {
+                workerModel
+                        .setCalendar((ResourceCalendar) resourceCalendarModel
+                                .getBaseCalendar());
+                reloadCurrentWindow();
+            }
+
+            @Override
+            public void cancel() {
+                resourceCalendarModel.cancel();
+                workerModel.setCalendar(null);
+                reloadCurrentWindow();
+            }
+
+            @Override
+            public void save() {
+                workerModel
+                        .setCalendar((ResourceCalendar) resourceCalendarModel
+                                .getBaseCalendar());
+                reloadCurrentWindow();
+            }
+
+        };
+
+        editCalendarWindow.setVariable("calendarController", this, true);
+        createNewVersionWindow.setVariable("calendarController", this, true);
     }
 
 }
