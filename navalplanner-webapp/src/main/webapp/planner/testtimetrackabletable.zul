@@ -13,7 +13,7 @@
 ]]>
 </zscript>
 
-    <div id="insertionPoint" apply="${fakeController}">
+    <div id="insertionPoint" apply="${fakeController}" self="@{define(content)}">
     </div>
 
 </zk>
