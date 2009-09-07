@@ -10,6 +10,7 @@ import java.util.List;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 import org.navalplanner.business.planner.entities.Share;
@@ -95,6 +96,13 @@ public class ShareDivisionTest {
         assertThat(shareDivision.add(5), haveValues(6, 6, 10));
         assertThat(shareDivision.add(6), haveValues(7, 6, 10));
         assertThat(shareDivision.add(13), haveValues(10, 10, 10));
+    }
+
+    @Test
+    @Ignore("TODO handling substractions")
+    public void canDistributeSubstraction() {
+        givenDivisionShare(new Share(2), new Share(5), new Share(10));
+        assertThat(shareDivision.add(-1), haveValues(2, 5, 9));
     }
 
     private Matcher<ShareDivision> haveValues(final int... shares) {
