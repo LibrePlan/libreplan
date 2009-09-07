@@ -1,16 +1,16 @@
 package org.navalplanner.web.orders;
 
 
-import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.SortedSet;
+
 import org.navalplanner.business.advance.entities.AdvanceAssigment;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -33,8 +33,8 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Radio;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.XYModel;
 
 /**
  * Controller for show the advances of the selected order element<br />
@@ -117,6 +117,8 @@ public class ManageOrderElementAdvancesController extends
 
     public void goToCreateLineAdvanceAssigment() {
         manageOrderElementAdvancesModel.addNewLineAdvaceAssigment();
+        manageOrderElementAdvancesModel.prepareEditAdvanceMeasurements(null);
+        this.indexSelectedItem = -1;
         Util.reloadBindings(window);
     }
 
@@ -239,7 +241,7 @@ public class ManageOrderElementAdvancesController extends
 
     private void appendLabelAdvanceType(final Listitem listItem){
         final AdvanceAssigmentDTO advanceDTO = (AdvanceAssigmentDTO)listItem.getValue();
-        Label unitName = new Label(advanceDTO.getAdvanceType().getUnitName());
+        Label unitName = new Label(advanceDTO.getUnitName());
         Listcell listCell = new Listcell();
         listCell.appendChild(unitName);
         listItem.appendChild(listCell);
@@ -313,7 +315,7 @@ public class ManageOrderElementAdvancesController extends
         final AdvanceMeasurementDTO advanceMeasurementDTO =
                 this.manageOrderElementAdvancesModel.getFirstAdvanceMeasurement(advanceAssigmentDTO);
         if(advanceMeasurementDTO != null){
-                percentage.setValue(advanceMeasurementDTO.getPercentage());
+                percentage.setValue(advanceMeasurementDTO.getPercentage_());
         }
 
         Listcell listCell = new Listcell();
@@ -395,8 +397,9 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void setPercentage(){
-        if(this.indexSelectedItem >= 0){
-            Listbox listAdvances = ((Listbox) window.getFellow("editAdvances"));
+        Listbox listAdvances = ((Listbox) window.getFellow("editAdvances"));
+        if ((this.indexSelectedItem < listAdvances.getItemCount())
+                && (this.indexSelectedItem >= 0)) {
             Listitem selectedItem = listAdvances.getItemAtIndex(indexSelectedItem);
             AdvanceAssigmentDTO advanceAssigmentDTO =
                 (AdvanceAssigmentDTO) selectedItem.getValue();
@@ -404,8 +407,9 @@ public class ManageOrderElementAdvancesController extends
             final AdvanceMeasurementDTO greatAdvanceMeasurementDTO =
                 this.manageOrderElementAdvancesModel.getFirstAdvanceMeasurement(advanceAssigmentDTO);
             if(greatAdvanceMeasurementDTO != null){
-                Listcell percentage = (Listcell)selectedItem.getChildren().get(3);
-                ((Label)percentage.getFirstChild()).setValue(greatAdvanceMeasurementDTO.getPercentage());
+                Listcell percentage = (Listcell) selectedItem.getChildren()
+                        .get(3);
+                ((Label)percentage.getFirstChild()).setValue(greatAdvanceMeasurementDTO.getPercentage_());
             }
         }
     }
@@ -431,7 +435,7 @@ public class ManageOrderElementAdvancesController extends
                 (AdvanceMeasurementDTO)item.getValue());
         Util.reloadBindings(window.getFellow("editAdvancesMeasurement"));
 
-        setCurrentDate();
+        this.setCurrentDate();
         this.setPercentage();
         this.setCurrentValue();
     }
@@ -511,10 +515,12 @@ public class ManageOrderElementAdvancesController extends
             public void validate(Component comp, Object value)
                     throws WrongValueException {
                 if (((Date) value) != null) {
-                    if(!manageOrderElementAdvancesModel.isGreatValidDate((Date)value)){
+                    Listitem listitem = (Listitem)comp.getParent().getParent();
+                    AdvanceMeasurementDTO advanceMeasurementDTO =(AdvanceMeasurementDTO) listitem.getValue();
+                    if(!manageOrderElementAdvancesModel.isDistinctValidDate((Date)value,advanceMeasurementDTO)){
                         throw new WrongValueException(
                                 comp,
-                                _("The date is not valid, the date must be great than the current date of the other advances measurement"));
+                                _("The date is not valid, the date must be unique for this  advance assigment"));
                     }
                 }
             }

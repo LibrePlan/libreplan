@@ -7,7 +7,8 @@
                 onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceAssigment();">
             </button>
             <button label="${i18n:_('Remove')}"
-                onClick="manageOrderElementAdvancesController.goToRemoveLineAdvanceAssigment();">
+                onClick="manageOrderElementAdvancesController.goToRemoveLineAdvanceAssigment();"
+                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurementDTOs}">
             </button>
         </hbox>
     </vbox>
@@ -42,6 +43,7 @@
                 disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurementDTOs}">
             </button>
         </hbox>
+        <hbox>
         <listbox id="editAdvancesMeasurement"
                  model="@{manageOrderElementAdvancesController.advanceMeasurementDTOs}"
                  mold="paging" pageSize="10">
@@ -62,11 +64,12 @@
 			<listcell>
 				<datebox value="@{advanceMeasurementDTO.date, save-when='self.onChange'}"
                                 disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurementDTOs}"
-                                constraint = "@{manageOrderElementAdvancesController.checkValidDate}"
-                                onChange = "manageOrderElementAdvancesController.setCurrentDate(self.parent.parent);"/>
+                                onChange = "manageOrderElementAdvancesController.setCurrentDate(self.parent.parent);"
+                                constraint = "@{manageOrderElementAdvancesController.checkValidDate}"/>
 			</listcell>
                 </listitem>
         </listbox>
+        </hbox>
     </vbox>
     <separator bar="false" spacing="40px" orient="vertical"/>
     <hbox>

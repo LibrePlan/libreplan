@@ -22,6 +22,8 @@ public class AdvanceAssigmentDTO {
 
     private AdvanceType advanceType;
 
+    private String unitName;
+
     private SortedSet<AdvanceMeasurement> advanceMeasurements =
             new TreeSet<AdvanceMeasurement>(new AdvanceMeasurementComparator());
 
@@ -53,6 +55,7 @@ public class AdvanceAssigmentDTO {
             AdvanceAssigment advanceAssigment,
             SortedSet<AdvanceMeasurement> advanceMeasurements) {
         this.advanceType = advanceType;
+        this.unitName = advanceType.getUnitName();
         this.advanceMeasurements = advanceMeasurements;
         this.advanceAssigment = advanceAssigment;
 
@@ -138,5 +141,13 @@ public class AdvanceAssigmentDTO {
 
     public void setSelectedForRemove(boolean selectedRemove){
         this.selectedRemove = selectedRemove;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
+    }
+
+    public String getUnitName() {
+        return unitName;
     }
 }

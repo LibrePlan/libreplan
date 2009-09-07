@@ -94,7 +94,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
 
     private AdvanceMeasurement createValidAdvanceMeasurement() {
         AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create(
-                new Date(), new BigDecimal(0));
+                new Date(), new BigDecimal(0),0);
         return advanceMeasurement;
     }
 

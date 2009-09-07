@@ -10,7 +10,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.apache.commons.lang.Validate;
-import org.hibernate.HibernateException;
 import org.navalplanner.business.advance.daos.IAdvanceAssigmentDAO;
 import org.navalplanner.business.advance.daos.IAdvanceMeasurementDAO;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
@@ -27,6 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.util.ListSorter;
+import org.zkoss.zul.SimpleXYModel;
+import org.zkoss.zul.XYModel;
 /**
  * Service to manage the advance of a selected order element
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -202,7 +204,8 @@ public class ManageOrderElementAdvancesModel implements
         DuplicateValueTrueReportGlobalAdvanceException{
         updateRemoveAdvances();
         for(AdvanceAssigmentDTO advanceAssigmentDTO : this.advanceAssigmentDTOs){
-            validateBasicData(advanceAssigmentDTO);
+            if(advanceAssigmentDTO.getType().equals(AdvanceAssigment.Type.DIRECT))
+                validateBasicData(advanceAssigmentDTO);
         }
     }
 
@@ -213,7 +216,7 @@ public class ManageOrderElementAdvancesModel implements
                 updateRemoveCalculatedAdvanceAssigment(orderElement,advanceAssigment);
                 removeAdvanceAssigment(advanceAssigment);
             }else{
-                 for(AdvanceMeasurement advanceMeasurement : this.listAdvanceMeasurements){
+                for(AdvanceMeasurement advanceMeasurement : this.listAdvanceMeasurements){
                     if(!yetExistAdvanceMeasurement(advanceAssigmentDTO,advanceMeasurement)){
                         updateRemoveCalculatedAdvanceMeasurement(orderElement,
                             advanceAssigment,advanceMeasurement);
@@ -254,7 +257,6 @@ public class ManageOrderElementAdvancesModel implements
                         createAdvanceMeasurement(advanceMeasurementDTO);
                 removeAdvanceMeasurement(advanceMeasurementDTO.getAdvanceMeasurement());
                 advanceAssigment.getAdvanceMeasurements().add(newAdvanceMeasurement);
-                //updateAdvanceMeasurement(advanceMeasurementDTO);
             }
         }
         //Update changes in AdvanceAssigment
@@ -265,17 +267,11 @@ public class ManageOrderElementAdvancesModel implements
 
      private AdvanceMeasurement createAdvanceMeasurement(AdvanceMeasurementDTO advanceMeasurementDTO){
         AdvanceMeasurement newAdvanceMeasurement = AdvanceMeasurement.create(
-                advanceMeasurementDTO.getDate(),advanceMeasurementDTO.getValue());
+                advanceMeasurementDTO.getDate(),advanceMeasurementDTO.getValue(),0);
         AdvanceAssigment advanceAssigment = advanceMeasurementDTO.getAdvanceAssigmentDTO().
                 getAdvanceAssigment();
         newAdvanceMeasurement.setAdvanceAssigment(advanceAssigment);
         return newAdvanceMeasurement;
-    }
-
-    private void updateAdvanceMeasurement(AdvanceMeasurementDTO advanceMeasurementDTO){
-        AdvanceMeasurement advanceMeasurement = advanceMeasurementDTO.getAdvanceMeasurement();
-        advanceMeasurement.setValue(advanceMeasurementDTO.getValue());
-        advanceMeasurement.setDate(advanceMeasurementDTO.getDate());
     }
 
     private AdvanceAssigmentDTO yetExistAdvanceAssigment(AdvanceAssigment advanceAssigment){
@@ -289,11 +285,26 @@ public class ManageOrderElementAdvancesModel implements
 
     private boolean yetExistAdvanceMeasurement(AdvanceAssigmentDTO advanceAssigmentDTO,
             AdvanceMeasurement advanceMeasurement){
-        for(AdvanceMeasurementDTO advanceDTO :
-            advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView()){
-            if((!advanceDTO.getIsNewDTO()) &&
-                (advanceDTO.getAdvanceMeasurement().getId() == advanceMeasurement.getId()))
-                    return true;
+            if(belongsToAdvanceAssigment(advanceAssigmentDTO,advanceMeasurement)){
+                 for(AdvanceMeasurementDTO advanceDTO :
+                    advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView()){
+                    if((!advanceDTO.getIsNewDTO()) &&
+                        (advanceDTO.getAdvanceMeasurement().getId() == advanceMeasurement.getId())){
+                            return true;
+                    }
+                }
+                return false;
+            }
+            return true;
+    }
+
+    private boolean belongsToAdvanceAssigment(AdvanceAssigmentDTO advanceAssigmentDTO,
+            AdvanceMeasurement advanceMeasurement){
+        AdvanceAssigment advanceAssigment = advanceAssigmentDTO.getAdvanceAssigment();
+        if(advanceAssigment != null){
+            if(advanceAssigment.getId() == advanceMeasurement.getAdvanceAssigment().getId())
+                return true;
+            else return false;
         }
         return false;
     }
@@ -313,7 +324,7 @@ public class ManageOrderElementAdvancesModel implements
         for(AdvanceMeasurementDTO advanceMeasurementDTO
                  :advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView()){
             AdvanceMeasurement newAdvanceMeasurement = AdvanceMeasurement.create(
-                    advanceMeasurementDTO.getDate(),advanceMeasurementDTO.getValue());
+                    advanceMeasurementDTO.getDate(),advanceMeasurementDTO.getValue(),0);
 
             //link AdvanceMeasurement to AdvanceAssigment
             newAdvanceMeasurement.setAdvanceAssigment(newAdvanceAssigment);
@@ -412,6 +423,7 @@ public class ManageOrderElementAdvancesModel implements
 
         AdvanceMeasurementDTO greatNeighbor = this.getGreatNeighborDTO(advanceMeasurementDTO);
         AdvanceMeasurement lessNeighbor = this.getLessNeighbor(advanceMeasurementDTO);
+
         incrementLaterCalculatedAdvances(lessNeighbor,greatNeighbor,
                 advanceMeasurementDTO,indirectAdvanceAssigment);
 
@@ -421,7 +433,7 @@ public class ManageOrderElementAdvancesModel implements
         if(previousAdvanceMeasurement == null){
             //create and add a new indirect AdvanceMeasurement
             AdvanceMeasurement newIndirectAdvanceMeasurement = AdvanceMeasurement.create(
-            advanceMeasurementDTO.getDate(),advanceMeasurementDTO.getValue());
+            advanceMeasurementDTO.getDate(),advanceMeasurementDTO.getValue(),0);
             newIndirectAdvanceMeasurement.setAdvanceAssigment(indirectAdvanceAssigment);
             newIndirectAdvanceMeasurement.incrementNumIndirectSons();
             indirectAdvanceAssigment.getAdvanceMeasurements().add(newIndirectAdvanceMeasurement);
@@ -431,7 +443,7 @@ public class ManageOrderElementAdvancesModel implements
                 BigDecimal incrementValue = calculateIncrementValue(lessNeighbor,advanceMeasurementDTO);
                 BigDecimal currentValue = previousAdvanceMeasurement.getValue().add(incrementValue);
                 AdvanceMeasurement newIndirectAdvanceMeasurement = AdvanceMeasurement.create(
-                advanceMeasurementDTO.getDate(),currentValue);
+                advanceMeasurementDTO.getDate(),currentValue,0);
                 newIndirectAdvanceMeasurement.setAdvanceAssigment(indirectAdvanceAssigment);
                 newIndirectAdvanceMeasurement.incrementNumIndirectSons();
                 indirectAdvanceAssigment.getAdvanceMeasurements().add(newIndirectAdvanceMeasurement);
@@ -445,13 +457,12 @@ public class ManageOrderElementAdvancesModel implements
     private void removeCalculatedAdvanceMeasurement(AdvanceMeasurement advanceMeasurement,
             AdvanceAssigment indirectAdvanceAssigment){
         //find the indirect advanceMeasurement
-        AdvanceMeasurement previousAdvanceMeasurement =
-            findPreviousIndirectAdvanceMeasurement(
-            advanceMeasurement.getDate(),indirectAdvanceAssigment);
+        AdvanceMeasurement indirectAdvanceMeasurement =
+            findIndirectAdvanceMeasurement(advanceMeasurement.getDate(),indirectAdvanceAssigment);
         //check if the indirect advanceMeasurement is the adding of several sons.
-        previousAdvanceMeasurement.decrementNumIndirectSons();
-        if(previousAdvanceMeasurement.getNumIndirectSons() == 0){
-            indirectAdvanceAssigment.getAdvanceMeasurements().remove(previousAdvanceMeasurement);
+        indirectAdvanceMeasurement.decrementNumIndirectSons();
+        if(indirectAdvanceMeasurement.getNumIndirectSons() == 0){
+            indirectAdvanceAssigment.getAdvanceMeasurements().remove(indirectAdvanceMeasurement);
         }
         //update post indirect advanceMeasurement (substract the increment)
         AdvanceMeasurement[] neighbors = getOldNeighborsAdvanceMeasurement(advanceMeasurement);
@@ -462,13 +473,12 @@ public class ManageOrderElementAdvancesModel implements
             AdvanceAssigment indirectAdvanceAssigment){
         //find the indirect advanceMeasurement
         AdvanceMeasurement advanceMeasurement = advanceMeasurementDTO.getAdvanceMeasurement();
-        AdvanceMeasurement previousAdvanceMeasurement =
-            findPreviousIndirectAdvanceMeasurement(
-            advanceMeasurement.getDate(),indirectAdvanceAssigment);
+        AdvanceMeasurement indirectAdvanceMeasurement =
+            findIndirectAdvanceMeasurement(advanceMeasurement.getDate(),indirectAdvanceAssigment);
         //check if the indirect advanceMeasurement is the adding of several sons.
-        previousAdvanceMeasurement.decrementNumIndirectSons();
-        if(previousAdvanceMeasurement.getNumIndirectSons() == 0){
-            indirectAdvanceAssigment.getAdvanceMeasurements().remove(previousAdvanceMeasurement);
+        indirectAdvanceMeasurement.decrementNumIndirectSons();
+        if(indirectAdvanceMeasurement.getNumIndirectSons() == 0){
+            indirectAdvanceAssigment.getAdvanceMeasurements().remove(indirectAdvanceMeasurement);
         }
         //update post indirect advanceMeasurement (substract the increment)
         AdvanceMeasurement  lessNeighbor = getLessNeighbor(advanceMeasurementDTO);
@@ -538,7 +548,7 @@ public class ManageOrderElementAdvancesModel implements
 
         AdvanceAssigmentDTO advanceAssigmentDTO = advanceMeasurementDTO.getAdvanceAssigmentDTO();
         AdvanceAssigment advanceAssigment = advanceAssigmentDTO.getAdvanceAssigment();
-        if(advanceAssigment == null) return neighbor;
+        if((advanceAssigment == null) || (advanceAssigmentDTO.getIsNewDTO())) return neighbor;
 
         Object[] advanceMeasurements = advanceAssigment.getAdvanceMeasurements().toArray();
         for(int i=0; i < advanceMeasurements.length;i++){
@@ -625,8 +635,7 @@ public class ManageOrderElementAdvancesModel implements
             indirectAdvanceAssigment.getAdvanceMeasurements()){
                 if((indirectAdvanceMeasurement.getDate().compareTo(dateIni) >= 0)
                 && (isIntoIntervalDateFin(neighbors[1],dateFin,indirectAdvanceMeasurement))){
-                   indirectAdvanceMeasurement.setValue(
-                            indirectAdvanceMeasurement.getValue().subtract(decrementValue));
+                   indirectAdvanceMeasurement.setValue(indirectAdvanceMeasurement.getValue().subtract(decrementValue));
                 }
             }
     }
@@ -710,6 +719,18 @@ public class ManageOrderElementAdvancesModel implements
         return null;
     }
 
+    private AdvanceMeasurement findIndirectAdvanceMeasurement(
+        Date date,AdvanceAssigment indirectAdvanceAssigment){
+        Object[] arrayAdvanceMeasurements = indirectAdvanceAssigment.getAdvanceMeasurements().toArray();
+        for(int i=0; i < arrayAdvanceMeasurements.length; i++){
+            AdvanceMeasurement advanceMeasurement = (AdvanceMeasurement)arrayAdvanceMeasurements[i];
+            if(advanceMeasurement.getDate().compareTo(date) == 0){
+                return advanceMeasurement;
+            }
+        }
+        return null;
+    }
+
     private AdvanceAssigment findCalculatedAdvanceInParent(
             OrderElement orderElement, Long id){
         for(AdvanceAssigment oldAdvanceAssigment : orderElement.getAdvanceAssigments()){
@@ -751,19 +772,15 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public boolean isGreatValidDate(Date value){
+    public boolean isDistinctValidDate(Date value,AdvanceMeasurementDTO newAdvanceMeasurementDTO){
         if(this.advanceAssigmentDTO == null) return true;
-        if((this.advanceAssigmentDTO.getIsNewDTO())||(this.advanceAssigmentDTO.getIsNewObject()))
-            return true;
-
-        AdvanceAssigment advanceAssigment = this.advanceAssigmentDTO.getAdvanceAssigment();
-        Iterator<AdvanceMeasurement> iterator = advanceAssigment.getAdvanceMeasurements().iterator();
-        while(iterator.hasNext()){
-            AdvanceMeasurement advanceMeasurement = iterator.next();
-            if(advanceMeasurement.getVersion() != null){
-                if(value.compareTo(advanceMeasurement.getDate()) < 0)return false;
-                else return true;
-            }
+        int equalsDates = 0;
+        for(AdvanceMeasurementDTO advanceMeasurementDTO
+                : advanceAssigmentDTO.getAdvanceMeasurementDTOs().toListView()){
+                Date oldDate = advanceMeasurementDTO.getDate();
+                if((oldDate != null) && (!newAdvanceMeasurementDTO.equals(advanceMeasurementDTO))
+                        && (oldDate.compareTo(value) == 0))
+                        return false;
         }
         return true;
     }
@@ -797,6 +814,7 @@ public class ManageOrderElementAdvancesModel implements
         return null;
     }
 
+    @Override
     public void modifyListAdvanceMeasurement(AdvanceMeasurementDTO advanceMeasurementDTO){
         this.advanceAssigmentDTO.getAdvanceMeasurementDTOs().modified(advanceMeasurementDTO);
     }

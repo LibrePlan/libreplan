@@ -21,11 +21,11 @@ public class AdvanceMeasurementDTO{
 
     private boolean selectedRemove = false;
 
-    private String percentage;
+    private BigDecimal percentage;
 
     public AdvanceMeasurementDTO() {
         this.date = new Date();
-        this.percentage = new String("0 %");
+        this.percentage = new BigDecimal(0);
         this.isNewDTO = true;
         this.isNewObject = false;
     }
@@ -36,7 +36,7 @@ public class AdvanceMeasurementDTO{
         this.date = advanceMeasurement.getDate();
         this.value = advanceMeasurement.getValue();
 
-        this.percentage = new String("0 %");
+        this.percentage = new BigDecimal(0);
         this.isNewDTO = false;
         if(advanceMeasurement.getVersion()==null){
             this.isNewObject = true;
@@ -69,24 +69,28 @@ public class AdvanceMeasurementDTO{
         this.advanceMeasurement = advanceMeasurement;
     }
 
-    public void setPercentage(String percentage) {
+    public void setPercentage(BigDecimal percentage) {
         this.percentage = percentage;
     }
 
-    public String getPercentage() {
-        if(advanceAssigmentDTO == null) return "0 %";
-        if(value == null) return "0 %";
+    public BigDecimal getPercentage() {
+        if(advanceAssigmentDTO == null) return new BigDecimal(0);
+        if(value == null) return new BigDecimal(0);
         if(advanceAssigmentDTO.getMaxValue() != null){
             BigDecimal maxValue = advanceAssigmentDTO.getMaxValue();
-            BigDecimal percentage = new BigDecimal(0);
+            BigDecimal _percentage = new BigDecimal(0);
             BigDecimal division = (value.divide(maxValue,4,RoundingMode.HALF_UP));
             division.setScale(2, RoundingMode.HALF_UP);
-            percentage = division.multiply(new BigDecimal(100));
-            percentage = percentage.setScale(2, RoundingMode.HALF_UP);
-            this.percentage = percentage.toString()+" %";
+            _percentage = division.multiply(new BigDecimal(100));
+            this.percentage = _percentage.setScale(2, RoundingMode.HALF_UP);
             return this.percentage;
         }
-        return "0 %";
+        return new BigDecimal(0);
+    }
+
+    public String getPercentage_() {
+        getPercentage();
+        return (this.percentage.toString() + " %");
     }
 
     public void setDate(Date date) {

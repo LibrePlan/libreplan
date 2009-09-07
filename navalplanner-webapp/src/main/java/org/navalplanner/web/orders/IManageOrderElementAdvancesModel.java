@@ -41,7 +41,7 @@ public interface IManageOrderElementAdvancesModel {
 
     public boolean greatThanMaxValue(BigDecimal value);
 
-    public boolean isGreatValidDate(Date value);
+    public boolean isDistinctValidDate(Date value,AdvanceMeasurementDTO newAdvanceMeasurementDTO);
 
     public BigDecimal getUnitPrecision();
 
