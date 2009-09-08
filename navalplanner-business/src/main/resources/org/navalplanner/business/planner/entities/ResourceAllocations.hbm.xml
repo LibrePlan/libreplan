@@ -55,12 +55,13 @@
 
         <version name="version" access="property" type="long" />
 
-		<property name="hours"/>
+		<property name="hours" not-null="true"/>
 
-        <set name="workers" inverse="false">
-            <key column="DAY_ASSIGMENT_ID"/>
-            <one-to-many class="org.navalplanner.business.resources.entities.Worker"/>
-        </set>
+		<property name="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate" not-null="true"/>
+
+		<many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource"
+		  column="RESOURCE_ID" not-null="true">
+		</many-to-one>
 
         <!-- SpecificDayAssigment -->
         <subclass name="SpecificDayAssigment" discriminator-value="SPECIFIC_DAY">

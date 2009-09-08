@@ -8,6 +8,7 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -16,6 +17,8 @@ import org.navalplanner.business.planner.entities.DayAssigment;
 import org.navalplanner.business.planner.entities.GenericDayAssigment;
 import org.navalplanner.business.planner.entities.SpecificDayAssigment;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-/*
+/**
  * @author Diego Pino García <dpino@igalia.com>
  */
 @Transactional
@@ -34,20 +37,27 @@ public class DayAssigmentDAOTest {
     private IDayAssigmentDAO dayAssigmentDAO;
 
     @Autowired
-    IResourceDAO resourceDAO;
+    private IResourceDAO resourceDAO;
 
     private SpecificDayAssigment createValidSpecificDayAssigment() {
-        return SpecificDayAssigment.create();
+        return SpecificDayAssigment.create(new LocalDate(2009, 1, 2), 8,
+                createValidResource());
+    }
+
+    private Resource createValidResource() {
+        Worker worker = Worker.create("first", "surname", "1221332132A", 5);
+        resourceDAO.save(worker);
+        return worker;
     }
 
     private GenericDayAssigment createValidGenericDayAssigment() {
-        return GenericDayAssigment.create();
+        return GenericDayAssigment.create(new LocalDate(2009, 1, 2), 8,
+                createValidResource());
     }
 
     @Test
     public void testInSpringContainer() {
         assertTrue(dayAssigmentDAO != null);
-        assertTrue(resourceDAO != null);
     }
 
     @Test

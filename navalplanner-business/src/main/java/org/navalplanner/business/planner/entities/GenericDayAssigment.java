@@ -3,7 +3,9 @@ package org.navalplanner.business.planner.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  *
@@ -16,11 +18,20 @@ public class GenericDayAssigment extends DayAssigment {
 
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
-    public static GenericDayAssigment create() {
-        return (GenericDayAssigment) create(new GenericDayAssigment());
+    public static GenericDayAssigment create(LocalDate day, int hours,
+            Resource resource) {
+        return (GenericDayAssigment) create(new GenericDayAssigment(day, hours,
+                resource));
     }
 
-    protected GenericDayAssigment() {
+    private GenericDayAssigment(LocalDate day, int hours, Resource resource) {
+        super(day, hours, resource);
+    }
+
+    /**
+     * Constructor for hibernate. DO NOT USE!
+     */
+    public GenericDayAssigment() {
 
     }
 

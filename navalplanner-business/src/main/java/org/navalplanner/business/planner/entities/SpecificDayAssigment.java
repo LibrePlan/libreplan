@@ -1,5 +1,8 @@
 package org.navalplanner.business.planner.entities;
 
+import org.joda.time.LocalDate;
+import org.navalplanner.business.resources.entities.Resource;
+
 
 /**
  *
@@ -10,11 +13,20 @@ public class SpecificDayAssigment extends DayAssigment {
 
     private SpecificResourceAllocation specificResourceAllocation;
 
-    public static SpecificDayAssigment create() {
-        return (SpecificDayAssigment) create(new SpecificDayAssigment());
+    public static SpecificDayAssigment create(LocalDate day, int hours,
+            Resource resource) {
+        return (SpecificDayAssigment) create(new SpecificDayAssigment(day,
+                hours, resource));
     }
 
-    protected SpecificDayAssigment() {
+    public SpecificDayAssigment(LocalDate day, int hours, Resource resource) {
+        super(day, hours, resource);
+    }
+
+    /**
+     * Constructor for hibernate. DO NOT USE!
+     */
+    public SpecificDayAssigment() {
 
     }
 
