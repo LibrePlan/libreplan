@@ -364,6 +364,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         createNewVersionWindow = (Window) getCurrentWindow().getFellow(
                 "createNewVersion");
 
+        createNewVersionWindow.setVisible(true);
+        createNewVersionWindow.setVisible(false);
+
         baseCalendarEditionController = new BaseCalendarEditionController(
                 resourceCalendarModel, editCalendarWindow,
                 createNewVersionWindow) {
