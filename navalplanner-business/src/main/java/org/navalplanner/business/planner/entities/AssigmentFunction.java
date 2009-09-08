@@ -9,21 +9,11 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class AssigmentFunction extends BaseEntity {
 
-    private ResourceAllocation resourceAllocation;
-
     public static AssigmentFunction create() {
         return (AssigmentFunction) create(new AssigmentFunction());
     }
 
-    protected AssigmentFunction() {
+    public AssigmentFunction() {
 
-    }
-
-    public ResourceAllocation getResourceAllocation() {
-        return resourceAllocation;
-    }
-
-    public void setResourceAllocation(ResourceAllocation resourceAllocation) {
-        this.resourceAllocation = resourceAllocation;
     }
 }

@@ -4,9 +4,8 @@
 package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 
@@ -20,7 +19,7 @@ public abstract class ResourceAllocation extends BaseEntity {
     @NotNull
     private Task task;
 
-    private Set<AssigmentFunction> assigmentFunction = new HashSet<AssigmentFunction>();
+    private AssigmentFunction assigmentFunction;
 
     /**
      * Allocation percentage of the resource.
@@ -37,7 +36,13 @@ public abstract class ResourceAllocation extends BaseEntity {
     }
 
     public ResourceAllocation(Task task) {
+        this(task, null);
+    }
+
+    public ResourceAllocation(Task task, AssigmentFunction assignmentFunction) {
+        Validate.notNull(task);
         this.task = task;
+        assigmentFunction = assignmentFunction;
     }
 
     public Task getTask() {
@@ -56,11 +61,8 @@ public abstract class ResourceAllocation extends BaseEntity {
         this.percentage = proportion;
     }
 
-    public Set<AssigmentFunction> getAssigmentFunction() {
+    public AssigmentFunction getAssigmentFunction() {
         return assigmentFunction;
     }
 
-    public void setAssigmentFunction(Set<AssigmentFunction> assigmentFunction) {
-        this.assigmentFunction = assigmentFunction;
-    }
 }

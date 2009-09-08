@@ -16,10 +16,7 @@
 
         <many-to-one class="Task" name="task" column="TASK" />
 
-        <set name="assigmentFunction" inverse="false">
-            <key column="RESOURCE_ALLOCATION_ID"/>
-            <one-to-many class="AssigmentFunction"/>
-        </set>
+        <many-to-one class="AssigmentFunction" name="assigmentFunction" column="ASSIGMENT_FUNCTION" not-null="false"/>
 
         <joined-subclass name="SpecificResourceAllocation" table="SPECIFIC_RESOURCE_ALLOCATION">
             <key column="RESOURCE_ALLOCATION_ID" />
@@ -89,8 +86,6 @@
         </generator>
         </id>
         <version name="version" access="property" type="long" />
-
-        <many-to-one name="resourceAllocation" class="ResourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
     </class>
 
 </hibernate-mapping>
