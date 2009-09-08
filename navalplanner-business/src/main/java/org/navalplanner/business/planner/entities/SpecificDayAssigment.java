@@ -36,6 +36,9 @@ public class SpecificDayAssigment extends DayAssigment {
 
     public void setSpecificResourceAllocation(
             SpecificResourceAllocation specificResourceAllocation) {
+        if (this.specificResourceAllocation != null)
+            throw new IllegalStateException(
+                    "the allocation cannot be changed once it has been set");
         this.specificResourceAllocation = specificResourceAllocation;
     }
 }
