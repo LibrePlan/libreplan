@@ -32,6 +32,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
 
     private GenericResourceAllocation(Task task) {
         super(task);
+        this.criterions = task.getCriterions();
     }
 
     public Set<GenericDayAssigment> getGenericDayAssigments() {
