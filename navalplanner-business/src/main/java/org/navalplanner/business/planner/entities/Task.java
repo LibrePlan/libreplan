@@ -12,6 +12,7 @@ import org.hibernate.validator.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Worker;
 
 /**
@@ -51,6 +52,10 @@ public class Task extends TaskElement {
 
     public HoursGroup getHoursGroup() {
         return this.hoursGroup;
+    }
+
+    public Set<Criterion> getCriterions() {
+        return Collections.unmodifiableSet(this.hoursGroup.getCriterions());
     }
 
     public Integer getHours() {
@@ -126,11 +131,8 @@ public class Task extends TaskElement {
 
     /**
      * Calculates the number of days needed to complete the Task taking into
-     * account the Resources assigned and their dedication.
-     *
-     * If the Task has not yet Resources assigned then a typical 8 hours day
-     * will be considered.
-     *
+     * account the Resources assigned and their dedication. If the Task has not
+     * yet Resources assigned then a typical 8 hours day will be considered.
      * @return The days of duration
      */
     private Integer calculateDaysDuration() {
@@ -160,7 +162,6 @@ public class Task extends TaskElement {
     /**
      * Checks if there isn't any {@link Worker} repeated in the {@link Set} of
      * {@link ResourceAllocation} of this {@link Task}.
-     *
      * @return <code>true</code> if the {@link Task} is valid, that means there
      *         isn't any {@link Worker} repeated.
      */
