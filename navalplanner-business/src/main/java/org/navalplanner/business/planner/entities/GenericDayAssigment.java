@@ -1,10 +1,6 @@
 package org.navalplanner.business.planner.entities;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.joda.time.LocalDate;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -15,8 +11,6 @@ import org.navalplanner.business.resources.entities.Resource;
 public class GenericDayAssigment extends DayAssigment {
 
     private GenericResourceAllocation genericResourceAllocation;
-
-    private Set<Criterion> criterions = new HashSet<Criterion>();
 
     public static GenericDayAssigment create(LocalDate day, int hours,
             Resource resource) {
@@ -33,14 +27,6 @@ public class GenericDayAssigment extends DayAssigment {
      */
     public GenericDayAssigment() {
 
-    }
-
-    public Set<Criterion> getCriterions() {
-        return criterions;
-    }
-
-    public void setCriterions(Set<Criterion> criterions) {
-        this.criterions = criterions;
     }
 
     public GenericResourceAllocation getGenericResourceAllocation() {
