@@ -1,5 +1,6 @@
 package org.navalplanner.business.planner.entities;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +22,7 @@ public class SpecificResourceAllocation extends ResourceAllocation {
     @NotNull
     private Worker worker;
 
-    Set<SpecificDayAssigment> specificDaysAssigment = new HashSet<SpecificDayAssigment>();
+    private Set<SpecificDayAssigment> specificDaysAssigment = new HashSet<SpecificDayAssigment>();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -43,11 +44,6 @@ public class SpecificResourceAllocation extends ResourceAllocation {
     }
 
     public Set<SpecificDayAssigment> getSpecificDaysAssigment() {
-        return specificDaysAssigment;
-    }
-
-    public void setSpecificDaysAssigment(
-            Set<SpecificDayAssigment> specificDaysAssigment) {
-        this.specificDaysAssigment = specificDaysAssigment;
+        return Collections.unmodifiableSet(specificDaysAssigment);
     }
 }
