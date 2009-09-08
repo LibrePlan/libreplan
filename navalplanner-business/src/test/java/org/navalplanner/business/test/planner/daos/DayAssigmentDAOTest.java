@@ -20,6 +20,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,6 +73,14 @@ public class DayAssigmentDAOTest {
         GenericDayAssigment dayAssigment = createValidGenericDayAssigment();
         dayAssigmentDAO.save(dayAssigment);
         assertTrue(dayAssigmentDAO.exists(dayAssigment.getId()));
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void theRelatedResourceMustExistInOrderToSave() {
+        Worker transientWorker = Worker.create("first", "surname", "1221332132A", 5);
+        SpecificDayAssigment dayAssigment = SpecificDayAssigment.create(
+                new LocalDate(2009, 1, 2), 8, transientWorker);
+        dayAssigmentDAO.save(dayAssigment);
     }
 
     @Test
