@@ -1,7 +1,12 @@
 package org.navalplanner.business.planner.entities;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.navalplanner.business.resources.entities.Criterion;
@@ -39,6 +44,23 @@ public class GenericResourceAllocation extends ResourceAllocation {
 
     public Set<GenericDayAssigment> getGenericDayAssigments() {
         return Collections.unmodifiableSet(genericDayAssigments);
+    }
+
+    public List<GenericDayAssigment> getOrderedAssigmentsFor(Resource resource) {
+        return Collections.unmodifiableList(getOrderedAssignmentsFor().get(
+                resource));
+    }
+
+    private Map<Resource, List<GenericDayAssigment>> getOrderedAssignmentsFor() {
+        if (orderedDayAssignmentsByResource == null) {
+            orderedDayAssignmentsByResource = DayAssigment
+                    .byResourceAndOrdered(genericDayAssigments);
+        }
+        return orderedDayAssignmentsByResource;
+    }
+
+    private void clearFieldsCalculatedFromAssignments() {
+        this.orderedDayAssignmentsByResource = null;
     }
 
     public Set<Criterion> getCriterions() {
