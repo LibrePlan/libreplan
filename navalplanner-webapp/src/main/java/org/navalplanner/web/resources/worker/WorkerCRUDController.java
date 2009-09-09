@@ -114,7 +114,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void save() {
         try {
-            baseCalendarEditionController.save();
+            if (baseCalendarEditionController != null) {
+                baseCalendarEditionController.save();
+            }
             workerModel.save();
             goToList();
             Util.reloadBindings(listWindow);
