@@ -15,8 +15,8 @@ public class ShareTest {
         share = new Share(hours);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void mustNotHaveNegativeHours() {
+    @Test
+    public void canHaveNegativeHours() {
         new Share(-1);
     }
 
@@ -58,10 +58,10 @@ public class ShareTest {
         assertThat(newShare.getHours(), equalTo(3));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void cannotSubstractABiggerNumber() {
-        givenHours(5);
-        share.plus(-6);
+    @Test
+    public void canAddToANegativeNuber() {
+        givenHours(-2);
+        share.plus(1);
     }
 
     @Test

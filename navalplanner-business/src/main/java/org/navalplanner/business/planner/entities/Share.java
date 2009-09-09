@@ -1,6 +1,5 @@
 package org.navalplanner.business.planner.entities;
 
-import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -9,7 +8,6 @@ public class Share {
     private final int hours;
 
     public Share(int hours) {
-        Validate.isTrue(hours >= 0);
         this.hours = hours;
     }
 
@@ -18,7 +16,6 @@ public class Share {
     }
 
     public Share plus(int increment) {
-        Validate.isTrue(hours + increment >= 0);
         return new Share(hours + increment);
     }
 

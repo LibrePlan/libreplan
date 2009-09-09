@@ -99,6 +99,16 @@ public class ShareDivisionTest {
     }
 
     @Test
+    public void canDistributeWhenSomeAreNegative() {
+        givenDivisionShare(new Share(2), new Share(-5), new Share(-3));
+        assertThat(shareDivision.plus(2), haveValues(2, -3, -3));
+        assertThat(shareDivision.plus(3), haveValues(2, -2, -3));
+        assertThat(shareDivision.plus(8), haveValues(2, 0, 0));
+        assertThat(shareDivision.plus(11), haveValues(2, 2, 1));
+        assertThat(shareDivision.plus(12), haveValues(2, 2, 2));
+    }
+
+    @Test
     @Ignore("TODO handling substractions")
     public void canDistributeSubstraction() {
         givenDivisionShare(new Share(2), new Share(5), new Share(10));
