@@ -13,13 +13,15 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zul.impl.XulElement;
+import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.ext.AfterCompose;
 
 /**
  * Component to include a list of ResourceLoads inside the ResourcesLoadPanel.
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class ResourceLoadList extends XulElement {
+public class ResourceLoadList extends HtmlMacroComponent implements
+        AfterCompose {
 
     private final IZoomLevelChangedListener zoomListener;
 
@@ -107,5 +109,10 @@ public class ResourceLoadList extends XulElement {
         List<LoadTimeLine> childrenOf = getChildrenOf(line);
         Collections.reverse(childrenOf);
         return childrenOf;
+    }
+
+    @Override
+    public void afterCompose() {
+        super.afterCompose();
     }
 }

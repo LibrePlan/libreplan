@@ -278,14 +278,35 @@ table {
     left:285px; /* Ganntz.ListdetailsWidth + borders = 280 + 5 */
     height:500px; /* zkTasklist.SCROLL_CONTAINER_INITIAL_HEIGHT (dynamic) */
     width:600px; /* zkTasklist.SCROLL_CONTAINER_INITIAL_WIDTH (dynamic) */
-    position:absolute;
     overflow-x:hidden;
     float:left;
+}
+
+.resourcesload #timetracker {
+    position:absolute;
+    left:0px;
+    top: 0px;
+    height:500px;
+    width:600px;
+	overflow-x: visible;
 }
 
 #zoom_buttons {
 	position:relative;
 }
+
+#zoom_buttons .z-button-cm {
+	border: 0px;
+}
+
+#zoom_buttons .z-button-cm {
+	border: 0px;
+}
+
+#zoom_buttons td.z-hbox-sep {
+	width: 0px;
+}
+
 
 tr.z-vbox-sep {
     height: 0px;
@@ -383,6 +404,10 @@ tr.z-vbox-sep {
 	margin-top: 70px;
 	width: 325px;
 	padding-right: 15px;
+}
+
+.resourceloadleftpane .secondlevel {
+	display:inline;
 }
 
 .resourceloadlist {

@@ -39,6 +39,7 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
         Borderlayout bl = new Borderlayout();
         bl.setHeight("300px");
         bl.setWidth("1600px");
+        bl.setSclass("resourcesload");
 
         West w = new West();
         w.setSize("200px");
@@ -46,14 +47,14 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
         w.setSplittable(true);
         w.setCollapsible(true);
         w.setStyle("overflow: scroll");
+        w.appendChild(leftPane);
 
         Center c = new Center();
         c.setFlex(true);
         c.setStyle("overflow: scroll");
         Div d = new Div();
-        d.appendChild(timeTrackerComponent);
-        d.appendChild(resourceLoadList);
-        w.appendChild(leftPane);
+        d.appendChild(getTimeTrackerComponent());
+        d.appendChild(getResourceLoadList());
         c.appendChild(d);
 
         bl.appendChild(w);
@@ -93,7 +94,12 @@ public class ResourcesLoadPanel extends XulElement implements AfterCompose {
     }
 
     public TimeTrackerComponent getTimeTrackerComponent() {
+        // timeTrackerComponent.setWidth("100%");
         return timeTrackerComponent;
+    }
+
+    public ResourceLoadList getResourceLoadList() {
+        return resourceLoadList;
     }
 
     public Planner getPlanner() {
