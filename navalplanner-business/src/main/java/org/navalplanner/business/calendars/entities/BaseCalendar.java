@@ -23,7 +23,7 @@ import org.navalplanner.business.common.BaseEntity;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class BaseCalendar extends BaseEntity {
+public class BaseCalendar extends BaseEntity implements IWorkHours {
 
     private static final Integer DEFAULT_VALUE = 0;
 
