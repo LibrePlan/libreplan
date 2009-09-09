@@ -12,6 +12,7 @@ import java.util.ListIterator;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.BaseEntity;
 
@@ -452,6 +453,11 @@ public abstract class Resource extends BaseEntity{
 
     public ResourceCalendar getCalendar() {
         return calendar;
+    }
+
+    public int getAssignedHours(LocalDate localDate) {
+        // TODO calculate the assigned hours from assignments
+        return 0;
     }
 
 }
