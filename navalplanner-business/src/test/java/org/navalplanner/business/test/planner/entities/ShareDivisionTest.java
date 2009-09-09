@@ -108,6 +108,21 @@ public class ShareDivisionTest {
         assertThat(shareDivision.plus(12), haveValues(2, 2, 2));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void cantKnowTheDifferenceBetweenTwoDivisionsOfDifferentNumberOfShares(){
+        givenDivisionShare(new Share(2), new Share(-5), new Share(-3));
+        shareDivision.to(ShareDivision.create(Arrays.asList(new Share(2),
+                new Share(1))));
+    }
+
+    @Test
+    public void canKnowTheDifferenceBetweenTwoDivisions() {
+        givenDivisionShare(new Share(2), new Share(-5), new Share(-3));
+        int[] difference = shareDivision.to(ShareDivision.create(Arrays.asList(
+                new Share(1), new Share(1), new Share(-2))));
+        assertTrue(Arrays.equals(difference, new int[] { -1, 6, 1 }));
+    }
+
     @Test
     @Ignore("TODO handling substractions")
     public void canDistributeSubstraction() {

@@ -170,4 +170,14 @@ public class ShareDivision {
         return shares.toString();
     }
 
+    public int[] to(ShareDivision newDivison) {
+        Validate.isTrue(shares.size() == newDivison.shares.size());
+        int[] result = new int[shares.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = newDivison.shares.get(i).getHours()
+                    - shares.get(i).getHours();
+        }
+        return result;
+    }
+
 }
