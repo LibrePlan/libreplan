@@ -90,7 +90,8 @@
 
     <hbox>
         <button onClick="calendarController.editionController.save();"
-            label="${arg.save_button_label}" />
+            label="${arg.save_button_label}"
+            visible="${arg.save_button_visible}" />
         <button onClick="calendarController.editionController.cancel();"
             label="${arg.cancel_button_label}" />
         <button onClick="calendarController.editionController.createNewVersion();"
