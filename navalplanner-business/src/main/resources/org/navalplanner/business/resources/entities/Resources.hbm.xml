@@ -17,6 +17,11 @@
       <one-to-many class="CriterionSatisfaction"/>
     </set>
 
+    <set access="field" inverse="true" name="dayAssigments">
+      <key column="RESOURCE_ID" not-null="true"/>
+      <one-to-many class="org.navalplanner.business.planner.entities.DayAssigment"/>
+    </set>
+
     <many-to-one name="calendar" access="field" cascade="all"
         class="org.navalplanner.business.calendars.entities.ResourceCalendar"
         unique="true" />

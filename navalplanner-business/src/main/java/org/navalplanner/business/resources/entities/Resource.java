@@ -15,6 +15,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.entities.DayAssigment;
 
 // FIXME: Alternatively, Resource can be modeled with the style:
 // Resource.getParent() & Resource.getChilds(). This way, Resource does not
@@ -34,6 +35,8 @@ public abstract class Resource extends BaseEntity{
     private ResourceCalendar calendar;
 
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
+
+    private Set<DayAssigment> dayAssigments = new HashSet<DayAssigment>();
 
     public Set<CriterionSatisfaction> getCriterionSatisfactions() {
         return criterionSatisfactions;
