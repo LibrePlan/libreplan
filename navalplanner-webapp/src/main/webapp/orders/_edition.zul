@@ -1,6 +1,6 @@
 <?component name="orderElementTree" inline="true" macroURI="_orderElementTree.zul"?>
 <window id="${arg.top_id}" title="${arg.title}">
-    <tabbox>
+    <tabbox mold="accordion">
         <tabs>
             <tab label="${i18n:_('Edit')}"></tab>
             <tab label="${i18n:_('Order elements')}"></tab>
