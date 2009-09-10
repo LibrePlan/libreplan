@@ -1,7 +1,7 @@
 <window id="${arg.top_id}" title="${arg.title}" border="normal">
 
 
-<tabbox>
+<tabbox mold="accordion">
     <tabs>
         <tab label="${i18n:_('Data')}" id="dataTab" />
         <tab label="${i18n:_('History')}"
