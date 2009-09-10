@@ -1,12 +1,24 @@
 package org.navalplanner.business.test.resources.entities;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.year;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.junit.Test;
+import org.navalplanner.business.planner.entities.DayAssigment;
+import org.navalplanner.business.planner.entities.SpecificDayAssigment;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionTypeBase;
@@ -18,14 +30,6 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.year;
 
 /**
  * Tests for {@link Resource}. <br />
@@ -391,6 +395,65 @@ public class ResourceTest {
         assertFalse(worker.canAddSatisfaction(criterionWithItsType, Interval
                 .from(new Date())));
         worker.addSatisfaction(criterionWithItsType);
+    }
+
+    private Worker worker;
+    private List<DayAssigment> assigments;
+
+    @Test(expected = IllegalArgumentException.class)
+    public void addNewAssigmentsMustReceiveNotNullArgument() {
+        givenWorker();
+        worker.addNewAssigments(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void mustHaveNoNullElements() {
+        givenWorker();
+        List<DayAssigment> list = new ArrayList<DayAssigment>();
+        list.add(null);
+        worker.addNewAssigments(list);
+    }
+
+    @Test
+    public void newAssigmentsImportsTheAssigments() {
+        givenWorker();
+        LocalDate today = new LocalDate();
+        LocalDate tomorrow = today.plus(Days.days(1));
+        SpecificDayAssigment specificDayAssigment = new SpecificDayAssigment(
+                today, 10, worker);
+        SpecificDayAssigment another = new SpecificDayAssigment(tomorrow, 10,
+                worker);
+        givenWorkerWithAssigments(specificDayAssigment, another);
+
+
+        assertTrue(worker.getAssigments().containsAll(assigments));
+        assertTrue(worker.getAssigments().size() == assigments.size());
+    }
+
+    @Test
+    public void addingAdditionalAssigmentsKeepOld() {
+        givenWorker();
+        LocalDate today = new LocalDate();
+        LocalDate tomorrow = today.plus(Days.days(1));
+        SpecificDayAssigment specificDayAssigment = new SpecificDayAssigment(
+                today, 10, worker);
+        SpecificDayAssigment another = new SpecificDayAssigment(tomorrow, 10,
+                worker);
+        givenWorkerWithAssigments(specificDayAssigment, another);
+
+        DayAssigment other = new SpecificDayAssigment(today, 3, worker);
+        worker.addNewAssigments(Arrays.asList(other));
+        assertTrue(worker.getAssigments().size() == assigments.size() + 1);
+    }
+
+
+    private void givenWorkerWithAssigments(DayAssigment... assigments) {
+        this.assigments = Arrays.asList(assigments);
+        worker.addNewAssigments(this.assigments);
+    }
+
+    private void givenWorker() {
+        worker = Worker.create("firstName", "surName", "2333232", 10);
     }
 
 }

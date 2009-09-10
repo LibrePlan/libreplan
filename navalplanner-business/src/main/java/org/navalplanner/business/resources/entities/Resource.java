@@ -463,4 +463,14 @@ public abstract class Resource extends BaseEntity{
         return 0;
     }
 
+    public void addNewAssigments(Collection<? extends DayAssigment> assigments) {
+        Validate.notNull(assigments);
+        Validate.noNullElements(assigments);
+        this.dayAssigments.addAll(assigments);
+    }
+
+    public List<DayAssigment> getAssigments() {
+        return new ArrayList<DayAssigment>(dayAssigments);
+    }
+
 }
