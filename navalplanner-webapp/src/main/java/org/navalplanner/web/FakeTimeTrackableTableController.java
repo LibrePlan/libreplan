@@ -15,14 +15,17 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.api.Column;
 
-public class FakeTimeTrackableTableController extends GenericForwardComposer {
+public class FakeTimeTrackableTableController extends GenericForwardComposer
+        implements AfterCompose {
 
-    private Div insertionPoint;
+    private Div insertionPointLeftPanel;
+    private Div insertionPointRightPanel;
     private TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData> timeTrackedTableWithLeftPane;
 
     @Override
@@ -31,7 +34,13 @@ public class FakeTimeTrackableTableController extends GenericForwardComposer {
         this.timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData>(
                 getDataSource(), getColumnsForLeft(), getLeftRenderer(),
                 getRightRenderer(), new TimeTracker(createExampleInterval()));
-        insertionPoint.appendChild(timeTrackedTableWithLeftPane);
+
+        insertionPointRightPanel.appendChild(timeTrackedTableWithLeftPane
+                .getRightPane());
+        insertionPointLeftPanel.appendChild(timeTrackedTableWithLeftPane
+                .getLeftPane());
+        // Forces innter Timetracked component aftercompose()
+        timeTrackedTableWithLeftPane.getTimeTrackedTable();
     }
 
     private ICellForDetailItemRenderer<FakeColumn, FakeDataLeft> getLeftRenderer() {
@@ -93,6 +102,11 @@ public class FakeTimeTrackableTableController extends GenericForwardComposer {
 
     private Date asDate(LocalDate start) {
         return start.toDateMidnight().toDate();
+    }
+
+    @Override
+    public void afterCompose() {
+        timeTrackedTableWithLeftPane.getTimeTrackedTable().afterCompose();
     }
 
 }

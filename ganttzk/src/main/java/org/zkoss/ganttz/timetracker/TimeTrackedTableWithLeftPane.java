@@ -101,10 +101,15 @@ public class TimeTrackedTableWithLeftPane<A, B> extends Div {
     private boolean afterComposeCalled = false;
 
     public TimeTrackedTable<B> getTimeTrackedTable() {
+
         if (!afterComposeCalled) {
             timeTrackedTable.afterCompose();
             afterComposeCalled = true;
         }
+        return timeTrackedTable;
+    }
+
+    public TimeTrackedTable getRightPane() {
         return timeTrackedTable;
     }
 

@@ -13,7 +13,16 @@
 ]]>
 </zscript>
 
-    <div id="insertionPoint" apply="${fakeController}" self="@{define(content)}">
-    </div>
+    <borderlayout height="300px" width="1600px" apply="${fakeController}" self="@{define(content)}" class="advancedassignment">
+
+        <west size="200px" flex="true" collapsible="true" splittable="true" autoscroll="true" sclass="advancedassignmentdetails" style="padding-top:45px;">
+            <div id="insertionPointLeftPanel"></div>
+        </west>
+
+        <center autoscroll="true">
+            <div id="insertionPointRightPanel"></div>
+        </center>
+
+    </borderlayout>
 
 </zk>

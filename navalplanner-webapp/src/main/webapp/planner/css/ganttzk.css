@@ -429,3 +429,9 @@ tr.z-vbox-sep {
 	width: 600px;
 	overflow: auto;
 }
+
+.advancedassignment #timetrackedtable {
+    float: none;
+    width: auto;
+    overflow: visible;
+}
