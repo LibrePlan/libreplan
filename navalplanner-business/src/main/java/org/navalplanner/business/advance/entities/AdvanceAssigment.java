@@ -3,6 +3,7 @@ package org.navalplanner.business.advance.entities;
 import java.math.BigDecimal;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -78,10 +79,6 @@ public class AdvanceAssigment extends BaseEntity {
 
     public AdvanceType getAdvanceType() {
         return this.advanceType;
-    }
-
-    public void setAdvanceMeasurements(SortedSet<AdvanceMeasurement> advanceMeasurements) {
-        this.advanceMeasurements = advanceMeasurements;
     }
 
     public SortedSet<AdvanceMeasurement> getAdvanceMeasurements() {
