@@ -23,10 +23,7 @@
 	<component>
 		<component-name>resourcesLoadPanel</component-name>
 		<component-class>org.zkoss.ganttz.resourceload.ResourcesLoadPanel</component-class>
-		<mold>
-			<mold-name>default</mold-name>
-			<mold-uri>~./ganttz/resourceload/resourcesLoadPanel.dsp</mold-uri>
-		</mold>
+	        <macro-uri>~./ganttz/zul/resourcesLoadLayout.zul</macro-uri>
 	</component>
 
     <component>

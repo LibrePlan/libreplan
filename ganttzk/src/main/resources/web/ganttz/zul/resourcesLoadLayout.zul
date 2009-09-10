@@ -1,0 +1,14 @@
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+
+    <borderlayout height="300px" width="1600px" sclass="resourcesload">
+        <west size="200px" flex="true" collapsible="true" splittable="true" autoscroll="true">
+            <div id="insertionPointLeftPanel"></div>
+        </west>
+
+        <center autoscroll="true">
+            <div id="insertionPointRightPanel"></div>
+        </center>
+
+    </borderlayout>
+
+</zk>
