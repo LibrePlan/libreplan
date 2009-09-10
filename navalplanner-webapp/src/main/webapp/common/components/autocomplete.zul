@@ -1,0 +1,10 @@
+<zk>
+	<zscript><![CDATA[
+		top = self;
+	]]>
+	</zscript>
+
+	<combobox id="combo"
+		autodrop="${arg.autodrop}" autocomplete="${arg.autocomplete}"
+		buttonVisible="${arg.buttonVisible}" image="${image}" />
+</zk>
