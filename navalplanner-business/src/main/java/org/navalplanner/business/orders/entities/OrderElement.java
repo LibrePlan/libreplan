@@ -158,7 +158,7 @@ public abstract class OrderElement extends BaseEntity {
      * @throws DuplicateValueTrueReportGlobalAdvanceException
      * @throws DuplicateAdvanceAssigmentForOrderElementException
      */
-    public void addAvanceAssigment(AdvanceAssigment newAdvanceAssigment)
+    public void addAdvanceAssigment(AdvanceAssigment newAdvanceAssigment)
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssigmentForOrderElementException {
         if(newAdvanceAssigment.getType().equals(AdvanceAssigment.Type.DIRECT)){

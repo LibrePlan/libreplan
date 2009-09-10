@@ -120,7 +120,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         order.add(orderLine);
         orderDao.save(order);
 
-        orderLine.addAvanceAssigment(advanceAssigment);
+        orderLine.addAdvanceAssigment(advanceAssigment);
 
         order.add(orderLine);
         orderDao.save(order);
@@ -151,11 +151,11 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         order.add(orderLine);
         orderDao.save(order);
 
-        orderLine.addAvanceAssigment(advanceAssigmentA);
+        orderLine.addAdvanceAssigment(advanceAssigmentA);
 
         AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
         advanceAssigmentB.setAdvanceType(advanceTypeB);
-        orderLine.addAvanceAssigment(advanceAssigmentB);
+        orderLine.addAdvanceAssigment(advanceAssigmentB);
     }
 
     @Test
@@ -168,13 +168,13 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
 
-        orderLine.addAvanceAssigment(advanceAssigmentA);
+        orderLine.addAdvanceAssigment(advanceAssigmentA);
 
         AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
         advanceAssigmentB.setAdvanceType(advanceTypeA);
 
         try {
-            orderLine.addAvanceAssigment(advanceAssigmentB);
+            orderLine.addAdvanceAssigment(advanceAssigmentB);
             fail("It should throw an exception");
         } catch (DuplicateAdvanceAssigmentForOrderElementException e) {
             // Ok
@@ -192,12 +192,12 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         advanceAssigmentA.setAdvanceType(advanceTypeA);
 
 
-        orderLine.addAvanceAssigment(advanceAssigmentA);
+        orderLine.addAdvanceAssigment(advanceAssigmentA);
 
         AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(true);
         advanceAssigmentB.setAdvanceType(advanceTypeB);
         try {
-            orderLine.addAvanceAssigment(advanceAssigmentB);
+            orderLine.addAdvanceAssigment(advanceAssigmentB);
             fail("It should throw an exception  ");
         } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
             // Ok
@@ -225,8 +225,8 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         advanceAssigmentB.getAdvanceMeasurements().add(advanceMeasurement);
 
 
-        container.addAvanceAssigment(advanceAssigmentA);
-        son.addAvanceAssigment(advanceAssigmentB);
+        container.addAdvanceAssigment(advanceAssigmentA);
+        son.addAdvanceAssigment(advanceAssigmentB);
     }
 
     @Test
@@ -241,7 +241,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
         advanceAssigmentA.setAdvanceType(advanceTypeA);
 
-        container.addAvanceAssigment(advanceAssigmentA);
+        container.addAdvanceAssigment(advanceAssigmentA);
 
         assertThat(container.getAdvanceAssigments().size(), equalTo(1));
     }
@@ -260,11 +260,11 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         AdvanceAssigment anotherAssigmentWithSameType = createValidAdvanceAssigment(false);
         anotherAssigmentWithSameType.setAdvanceType(advanceTypeA);
 
-        father.addAvanceAssigment(advanceAssigmentA);
+        father.addAdvanceAssigment(advanceAssigmentA);
 
         try {
             OrderElement child = (OrderElement) father.getChildren().get(0);
-            child.addAvanceAssigment(anotherAssigmentWithSameType);
+            child.addAdvanceAssigment(anotherAssigmentWithSameType);
             fail("It should throw an exception  ");
         } catch (DuplicateAdvanceAssigmentForOrderElementException e) {
             // Ok
@@ -293,10 +293,10 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         advanceAssigmentB.setAdvanceType(advanceTypeA);
         advanceAssigmentB.getAdvanceMeasurements().add(advanceMeasurement);
 
-        grandSon.addAvanceAssigment(advanceAssigmentA);
+        grandSon.addAdvanceAssigment(advanceAssigmentA);
 
         try {
-            parent.addAvanceAssigment(advanceAssigmentB);
+            parent.addAdvanceAssigment(advanceAssigmentB);
             fail("It should throw an exception  ");
         } catch (DuplicateAdvanceAssigmentForOrderElementException e) {
             // Ok
@@ -322,8 +322,8 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         AdvanceAssigment assigmentWithSameType = createValidAdvanceAssigment(false);
         assigmentWithSameType.setAdvanceType(typeReloaded);
 
-        line.addAvanceAssigment(assigment);
-        line.addAvanceAssigment(assigmentWithSameType);
+        line.addAdvanceAssigment(assigment);
+        line.addAdvanceAssigment(assigmentWithSameType);
     }
 
     private AdvanceType reloadType(AdvanceType type) {

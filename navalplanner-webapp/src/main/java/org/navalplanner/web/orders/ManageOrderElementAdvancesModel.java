@@ -351,7 +351,7 @@ public class ManageOrderElementAdvancesModel implements
     private void addAdvanceAssigment(AdvanceAssigment newAdvanceAssigment)
             throws DuplicateAdvanceAssigmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
-                this.orderElement.addAvanceAssigment(newAdvanceAssigment);
+                this.orderElement.addAdvanceAssigment(newAdvanceAssigment);
      }
 
     private void removeAdvanceAssigment(AdvanceAssigment advanceAssigment){
@@ -400,7 +400,7 @@ public class ManageOrderElementAdvancesModel implements
                 findCalculatedAdvanceInParent(parent,newAdvanceAssigmentDTO.getAdvanceType().getId());
             if(indirectAdvanceAssigment == null){
                 indirectAdvanceAssigment = initNewCalculatedAdvanceAssigment(parent,newAdvanceAssigmentDTO);
-                parent.addAvanceAssigment(indirectAdvanceAssigment);
+                parent.addAdvanceAssigment(indirectAdvanceAssigment);
             }
             addIncrementMaxValueToAdvanceAssigment(newAdvanceAssigmentDTO,indirectAdvanceAssigment);
             addCalculatedAdvanceMeasurements(newAdvanceAssigmentDTO,indirectAdvanceAssigment);
