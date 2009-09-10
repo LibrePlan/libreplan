@@ -40,7 +40,7 @@ public abstract class Finder implements IFinder {
      */
     @Override
     public boolean entryMatchesText(String entry, String text) {
-        return entry.startsWith(text);
+        return entry.toLowerCase().startsWith(text.toLowerCase());
     }
 
     /**
