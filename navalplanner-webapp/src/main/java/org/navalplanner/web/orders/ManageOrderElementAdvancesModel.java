@@ -1,14 +1,15 @@
 
 package org.navalplanner.web.orders;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.advance.daos.IAdvanceAssigmentDAO;
 import org.navalplanner.business.advance.daos.IAdvanceMeasurementDAO;
@@ -17,6 +18,9 @@ import org.navalplanner.business.advance.entities.AdvanceAssigment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceMeasurementComparator;
 import org.navalplanner.business.advance.entities.AdvanceType;
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +28,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
-import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
-import static org.navalplanner.web.I18nHelper._;
 /**
  * Service to manage the advance of a selected order element
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -354,7 +355,7 @@ public class ManageOrderElementAdvancesModel implements
      }
 
     private void removeAdvanceAssigment(AdvanceAssigment advanceAssigment){
-        orderElement.getAdvanceAssigments().remove(advanceAssigment);
+        orderElement.removeAdvanceAssigment(advanceAssigment);
     }
 
     private void removeAdvanceMeasurement(AdvanceMeasurement advanceMeasurement){
@@ -504,7 +505,7 @@ public class ManageOrderElementAdvancesModel implements
                 findCalculatedAdvanceInParent(parent,newAdvanceAssigment.getAdvanceType().getId());
         if(indirectAdvanceAssigment != null){
             if(decrementMaxValue(newAdvanceAssigment,indirectAdvanceAssigment)){
-                parent.getAdvanceAssigments().remove(indirectAdvanceAssigment);
+                parent.removeAdvanceAssigment(indirectAdvanceAssigment);
             }else{
                 for(AdvanceMeasurement advanceMeasurement :
                     newAdvanceAssigment.getAdvanceMeasurements()){

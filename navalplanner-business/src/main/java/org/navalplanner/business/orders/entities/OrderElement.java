@@ -1,6 +1,5 @@
 package org.navalplanner.business.orders.entities;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -9,7 +8,6 @@ import java.util.Set;
 
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.advance.entities.AdvanceAssigment;
-import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
@@ -144,12 +142,12 @@ public abstract class OrderElement extends BaseEntity {
         return code;
     }
 
-    public void setAdvanceAssigments(Set<AdvanceAssigment> advanceAssigments) {
-        this.advanceAssigments = advanceAssigments;
+    public Set<AdvanceAssigment> getAdvanceAssigments() {
+        return Collections.unmodifiableSet(this.advanceAssigments);
     }
 
-    public Set<AdvanceAssigment> getAdvanceAssigments() {
-        return this.advanceAssigments;
+    public void removeAdvanceAssigment(AdvanceAssigment advanceAssigment) {
+        advanceAssigments.remove(advanceAssigment);
     }
 
     /**
