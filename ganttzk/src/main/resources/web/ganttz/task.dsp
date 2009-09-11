@@ -9,5 +9,6 @@
     <div id="${self.uuid}" z.type="ganttz.task.Task" idTask="${self.id}"
         z.autoz="true"${self.outerAttrs}">
         <div id="completion${self.uuid}" class="completion"></div>
+        <div id="completion2${self.uuid}" class="completion2"></div>
     </div>
 </div>

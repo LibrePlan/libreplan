@@ -6,7 +6,7 @@ The next constants are used within the planner styling:
 
 Ganntz.ListdetailsWidth = 280
 
-
+zkTasklist.HEIGHT_PER_TASK = 10
 zkTasklist.HEIGHT_PER_ROW = 15
 zkTasklist.HEIGHT_TIME_TRACKER = 120
 
@@ -146,14 +146,27 @@ zkTasklist.GANTT_PANEL_LEFT = 300
 }
 
 .completion {
-    display: none;
     width: 30%;
     margin-top:0px;
-    height: 10px;
+    height: 5px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
     background-color: #FFCC99;
     z-index:5;
     border:0px;
 }
+
+.completion2 {
+    width: 50%;
+    height: 5px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
+    background-color: #75d9b0;
+    z-index:5;
+    border:0px;
+}
+
+.taskgroup_start, .taskgroup_end {
+	position:relative;
+	top:-10px; /* zkTasklist.HEIGHT_PER_TASK */
+}
+
 
 .row span {
     display:none;

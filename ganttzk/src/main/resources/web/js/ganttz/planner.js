@@ -128,7 +128,10 @@ zkPlanner.drawArrowStartStart = function(arrow, orig, dest){
     var xorig = orig[0] - zkTask.HALF_DEPENDENCY_PADDING;
     var yorig = orig[1] - zkTask.CORNER_WIDTH/2 + zkTask.HALF_DEPENDENCY_PADDING;
     var xend = dest[0] + zkTask.HALF_DEPENDENCY_PADDING;
-    var yend = dest[1] - zkTask.DEPENDENCY_PADDING;
+    var yend = dest[1] - zkTask.HALF_DEPENDENCY_PADDING;
+    if (yend < yorig) {
+      yorig = orig[1] + zkTask.DEPENDENCY_PADDING;
+    }
 
     width1 = zkTask.CORNER_WIDTH;
     width2 = Math.abs(xend - xorig) + zkTask.CORNER_WIDTH;
@@ -160,11 +163,11 @@ zkPlanner.drawArrowStartStart = function(arrow, orig, dest){
 	var depend = this.findImageElement(arrow, 'end');
 	depend.style.left = depstart.style.left;
 	depend.style.top = yend + "px";
-	depend.style.width = width2 + "px";
+	depend.style.width = width2 - zkTask.HALF_HEIGHT + "px";
 
     var deparrow = this.findImageElement(arrow, 'arrow');
     deparrow.src = this.getImagesDir()+"arrow.png";
-    deparrow.style.top = yend - 5 + "px";
+    deparrow.style.top = yend - zkTask.HALF_HEIGHT + "px";
     deparrow.style.left = xend - 15 + "px";
     }
 
@@ -187,7 +190,11 @@ zkPlanner.drawArrowEndEnd = function(arrow, orig, dest){
 	// First segment
 	var depstart = this.findImageElement(arrow, 'start');
 	depstart.style.left = xorig + "px";
-	depstart.style.top = yorig + "px";
+	if (yend > yorig) {
+		depstart.style.top = yorig + "px";
+	} else {
+		depstart.style.top = yorig + zkTask.HEIGHT + "px";
+	}
 	depstart.style.width = width1 + "px";
 	depstart.style.display = "inline";
 
@@ -198,6 +205,7 @@ zkPlanner.drawArrowEndEnd = function(arrow, orig, dest){
 	  depmid.style.top = yorig + "px";
 	} else {
 	  depmid.style.top = yend + "px";
+	  height = height + 10;
 	}
 	depmid.style.height = height + "px";
 
@@ -210,7 +218,7 @@ zkPlanner.drawArrowEndEnd = function(arrow, orig, dest){
     var deparrow = this.findImageElement(arrow, 'arrow');
     deparrow.src = this.getImagesDir()+"arrow3.png";
     deparrow.style.top = yend - 5 + "px";
-    deparrow.style.left = xend - 5 + "px";
+    deparrow.style.left = xend - 8 + "px";
     }
 
 

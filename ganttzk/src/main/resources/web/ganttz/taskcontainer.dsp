@@ -8,6 +8,10 @@
 <div id="row${self.uuid}" class="row" z.valor="boxid="${self.uuid}">
     <div id="${self.uuid}" z.type="ganttz.taskcontainer.TaskContainer" idTask="${self.id}"
        z.autoz="true"${self.outerAttrs}" class="taskgroup">
+	<div class="taskcontainer_completion">
+	        <div id="completion${self.uuid}" class="completion"></div>
+	        <div id="completion2${self.uuid}" class="completion2"></div>
+	</div>
         <div class="taskgroup_start"></div>
         <div class="taskgroup_end"></div>
     </div>
