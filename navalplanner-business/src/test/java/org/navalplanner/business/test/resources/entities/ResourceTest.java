@@ -446,6 +446,28 @@ public class ResourceTest {
         assertTrue(worker.getAssigments().size() == assigments.size() + 1);
     }
 
+    @Test
+    public void workerWithoutAssigmentsGivesNoAssignedHours() {
+        givenWorker();
+        LocalDate today = new LocalDate();
+        assertThat(worker.getAssignedHours(today), equalTo(0));
+    }
+
+    @Test
+    public void workerWithAssigmentsGivesTheSumOfAssignedHoursForThatDay() {
+        givenWorker();
+        LocalDate today = new LocalDate();
+        SpecificDayAssigment specificDayAssigment = new SpecificDayAssigment(
+                today, 10, worker);
+        SpecificDayAssigment another = new SpecificDayAssigment(today, 3,
+                worker);
+        SpecificDayAssigment atAnotherDay = new SpecificDayAssigment(today
+                .plusDays(1), 1,
+                worker);
+        givenWorkerWithAssigments(specificDayAssigment, another, atAnotherDay);
+
+        assertThat(worker.getAssignedHours(today), equalTo(13));
+    }
 
     private void givenWorkerWithAssigments(DayAssigment... assigments) {
         this.assigments = Arrays.asList(assigments);

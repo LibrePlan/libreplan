@@ -459,8 +459,13 @@ public abstract class Resource extends BaseEntity{
     }
 
     public int getAssignedHours(LocalDate localDate) {
-        // TODO calculate the assigned hours from assignments
-        return 0;
+        int sum = 0;
+        for (DayAssigment dayAssigment : dayAssigments) {
+            if (dayAssigment.getDay().equals(localDate)) {
+                sum += dayAssigment.getHours();
+            }
+        }
+        return sum;
     }
 
     public void addNewAssigments(Collection<? extends DayAssigment> assigments) {
