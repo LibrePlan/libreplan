@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -38,6 +39,22 @@ public abstract class Resource extends BaseEntity{
 
     private Set<DayAssigment> dayAssigments = new HashSet<DayAssigment>();
 
+    private Map<LocalDate, List<DayAssigment>> assigmentsByDayCached = null;
+
+    private void clearCachedData() {
+        assigmentsByDayCached = null;
+    }
+
+    private List<DayAssigment> getAssigmentsForDay(LocalDate date) {
+        if (assigmentsByDayCached == null) {
+            assigmentsByDayCached = DayAssigment.byDay(dayAssigments);
+        }
+        List<DayAssigment> list = assigmentsByDayCached.get(date);
+        if (list == null){
+            return Collections.emptyList();
+        }
+        return list;
+    }
     public Set<CriterionSatisfaction> getCriterionSatisfactions() {
         return criterionSatisfactions;
     }
@@ -460,10 +477,8 @@ public abstract class Resource extends BaseEntity{
 
     public int getAssignedHours(LocalDate localDate) {
         int sum = 0;
-        for (DayAssigment dayAssigment : dayAssigments) {
-            if (dayAssigment.getDay().equals(localDate)) {
-                sum += dayAssigment.getHours();
-            }
+        for (DayAssigment dayAssigment : getAssigmentsForDay(localDate)) {
+            sum += dayAssigment.getHours();
         }
         return sum;
     }
@@ -471,6 +486,7 @@ public abstract class Resource extends BaseEntity{
     public void addNewAssigments(Collection<? extends DayAssigment> assigments) {
         Validate.notNull(assigments);
         Validate.noNullElements(assigments);
+        clearCachedData();
         this.dayAssigments.addAll(assigments);
     }
 

@@ -35,6 +35,19 @@ public abstract class DayAssigment extends BaseEntity {
         return result;
     }
 
+    public static <T extends DayAssigment> Map<LocalDate, List<T>> byDay(
+            Collection<T> assignments) {
+        Map<LocalDate, List<T>> result = new HashMap<LocalDate, List<T>>();
+        for (T t : assignments) {
+            LocalDate day = t.getDay();
+            if (!result.containsKey(day)){
+                result.put(day, new ArrayList<T>());
+            }
+            result.get(day).add(t);
+        }
+        return result;
+    }
+
     @Min(0)
     private int hours;
 

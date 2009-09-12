@@ -469,6 +469,21 @@ public class ResourceTest {
         assertThat(worker.getAssignedHours(today), equalTo(13));
     }
 
+    @Test
+    public void afterAddingAnotherDontReturnTheOldResult() {
+        givenWorker();
+        LocalDate today = new LocalDate();
+        SpecificDayAssigment specificDayAssigment = new SpecificDayAssigment(
+                today, 10, worker);
+        givenWorkerWithAssigments(specificDayAssigment);
+        worker.getAssignedHours(today);
+        SpecificDayAssigment another = new SpecificDayAssigment(today, 3,
+                worker);
+        worker.addNewAssigments(Arrays.asList(another));
+
+        assertThat(worker.getAssignedHours(today), equalTo(13));
+    }
+
     private void givenWorkerWithAssigments(DayAssigment... assigments) {
         this.assigments = Arrays.asList(assigments);
         worker.addNewAssigments(this.assigments);
