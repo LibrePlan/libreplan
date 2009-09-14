@@ -32,4 +32,20 @@ public class ResourcesPerDay {
                 .setScale(0, RoundingMode.HALF_UP).intValue();
     }
 
+    @Override
+    public int hashCode() {
+        return amount.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (obj instanceof ResourcesPerDay) {
+            ResourcesPerDay other = (ResourcesPerDay) obj;
+            return amount.equals(other.getAmount());
+        }
+        return false;
+    }
+
 }

@@ -1,6 +1,7 @@
 package org.navalplanner.business.test.planner.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.math.BigDecimal;
@@ -84,6 +85,14 @@ public class ResourcesPerDayTest {
         assertThat(units.asHoursGivenResourceWorkingDayOf(8), equalTo(19));
         assertThat(units.asHoursGivenResourceWorkingDayOf(10), equalTo(24));
         assertThat(units.asHoursGivenResourceWorkingDayOf(2), equalTo(5));
+    }
+
+    @Test
+    public void twoResourcesPerDayAreEqualsIfNormalizeToTheSameAmount() {
+        ResourcesPerDay a = ResourcesPerDay.amount(new BigDecimal(2.001));
+        ResourcesPerDay b = ResourcesPerDay.amount(2);
+        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a, b);
     }
 
 }
