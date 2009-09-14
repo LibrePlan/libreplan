@@ -34,7 +34,7 @@ public interface ILabelTypeModel {
     /**
      *
      */
-    void prepareForCreate();
+    void initCreate();
 
     /**
      *

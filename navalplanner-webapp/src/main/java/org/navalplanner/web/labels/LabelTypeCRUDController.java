@@ -92,7 +92,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     }
 
     public void goToCreateForm() {
-        labelTypeModel.prepareForCreate();
+        labelTypeModel.initCreate();
         editWindow.setTitle(_("Create label type"));
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);

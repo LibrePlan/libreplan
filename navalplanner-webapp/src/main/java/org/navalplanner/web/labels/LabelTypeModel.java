@@ -52,7 +52,7 @@ public class LabelTypeModel implements ILabelTypeModel {
     }
 
     @Override
-    public void prepareForCreate() {
+    public void initCreate() {
         labelType = LabelType.create("");
     }
 
