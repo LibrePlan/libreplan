@@ -5,7 +5,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -22,7 +21,6 @@ import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -206,36 +204,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public void updateGenericPercentages(BigDecimal totalPercentage) {
-        Set<GenericResourceAllocation> genericResourceAllocations = getGenericResourceAllocations();
-        BigDecimal percentagePerResource = totalPercentage;
-
-        percentagePerResource = percentagePerResource
-                .subtract(getSumPercentageSpecificResourceAllocations());
-        if (genericResourceAllocations.size() > 0) {
-            percentagePerResource = percentagePerResource.setScale(8).divide(
-                    new BigDecimal(genericResourceAllocations.size()),
-                    BigDecimal.ROUND_HALF_EVEN);
-
-            // Percentage cannot be negative
-            if (percentagePerResource.compareTo(new BigDecimal(0)) < 0) {
-                percentagePerResource = new BigDecimal(0);
-            }
-
-            for (ResourceAllocation resourceAllocation : genericResourceAllocations) {
-                resourceAllocation.setPercentage(percentagePerResource);
-            }
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public BigDecimal getSumPercentageSpecificResourceAllocations() {
-        return getSumPercentage(task.getSpecificResourceAllocations());
-    }
-
     @SuppressWarnings("unchecked")
     private BigDecimal getSumPercentage(Set resourceAllocations) {
         BigDecimal result = new BigDecimal(0);
@@ -273,25 +241,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             criterionSatisfaction.getStartDate();
             reattachCriterion(criterionSatisfaction.getCriterion());
         }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public BigDecimal getSumPercentageResourceAllocations() {
-        return getSumPercentage(task.getResourceAllocations());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public int getNumberUnassignedResources() {
-        List<Resource> resources = resourceDAO
-                .getAllByCriterions(getCriterions());
-        Set<ResourceAllocation> resourceAllocations = task
-                .getResourceAllocations();
-
-        return (resources.size() - resourceAllocations.size() > 0) ? resources
-                .size()
-                - resourceAllocations.size() : 0;
     }
 
     @Override

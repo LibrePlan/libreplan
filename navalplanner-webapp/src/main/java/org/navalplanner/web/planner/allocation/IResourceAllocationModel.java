@@ -1,6 +1,5 @@
 package org.navalplanner.web.planner.allocation;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -50,36 +49,12 @@ public interface IResourceAllocationModel {
     Set<GenericResourceAllocation> getGenericResourceAllocations();
 
     /**
-     * Returns number of {@link ResourceAllocation} which are candidate to add
-     * as {@link GenericResourceAllocation}
-     *
-     * @return
-     */
-    int getNumberUnassignedResources();
-
-    /**
      * Returns the {@link Set} of {@link ResourceAllocation} of the current
      * {@link Task}.
      *
      * @return A {@link Set} of {@link ResourceAllocation}
      */
     Set<ResourceAllocation> getResourceAllocations();
-
-    /**
-     * Return sum of percentages for current {@link Task}
-     * {@link ResourceAllocation}
-     *
-     * @return
-     */
-    BigDecimal getSumPercentageResourceAllocations();
-
-    /**
-     * Return sum of percentages for current {@link Task}
-     * {@link SpecificResourceAllocation}
-     *
-     * @return
-     */
-    BigDecimal getSumPercentageSpecificResourceAllocations();
 
     /**
      * Gets the current {@link Task} object.
@@ -129,14 +104,6 @@ public interface IResourceAllocationModel {
      * @param ganttTask
      */
     void updateGanttTaskDuration();
-
-    /**
-     * Updates {@link GenericResourceAllocation} percentages of current
-     * {@link Task}
-     *
-     * @param totalPercentage
-     */
-    void updateGenericPercentages(BigDecimal totalPercentage);
 
     /**
      * Cancel operation

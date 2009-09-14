@@ -25,7 +25,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Decimalbox;
@@ -56,8 +55,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Listbox resourcesList;
 
-    private Decimalbox genericResourceAllocationPercentage;
-
     private Window window;
 
     @Override
@@ -77,7 +74,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
         resourceAllocationModel.setTask(task);
         resourceAllocationModel.setGanttTask(ganttTask);
 
-        updateGenericResourceAllocationPercentage();
         resourceAllocationModel
                 .addGenericResourceAllocationIfNoAllocationExists();
         Util.reloadBindings(window);
@@ -88,17 +84,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * GenericResourceAllocationPercentage initial value is the sum of all
-     * {@link ResourceAllocation} percentages
-     */
-    private void updateGenericResourceAllocationPercentage() {
-        BigDecimal genericPercentage = resourceAllocationModel
-                .getSumPercentageResourceAllocations();
-        genericResourceAllocationPercentage.setValue(genericPercentage
-                .scaleByPowerOfTen(2).setScale(2, BigDecimal.ROUND_HALF_EVEN));
     }
 
     /**
@@ -137,29 +122,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
         for (Worker worker : workers) {
             addSpecificResourceAllocation(worker);
         }
-        updateGenericPercentages();
-    }
-
-    /**
-     * Update percentages of {@link GenericResourceAllocation} items when
-     * genericResourceAllocationPercentage box is changed
-     *
-     * @param e
-     */
-    public void updateGenericPercentages(InputEvent e) {
-        updateGenericPercentages(new BigDecimal((String) e.getValue()));
-    }
-
-    public void updateGenericPercentages() {
-        updateGenericPercentages(genericResourceAllocationPercentage.getValue());
-    }
-
-    private void updateGenericPercentages(BigDecimal genericPercentage) {
-        if (genericPercentage != null) {
-            resourceAllocationModel.updateGenericPercentages(genericPercentage
-                    .divide(new BigDecimal(100)));
-        }
-        Util.reloadBindings(resourcesList);
     }
 
     private void addSpecificResourceAllocation(Worker worker) {
@@ -233,7 +195,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     private void clear() {
-        genericResourceAllocationPercentage.setValue(null);
         resourcesList.getItems().clear();
     }
 
@@ -288,7 +249,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 SpecificResourceAllocation resourceAllocation) {
             resourceAllocationModel
                     .removeSpecificResourceAllocation(resourceAllocation);
-            updateGenericPercentages();
             Util.reloadBindings(resourcesList);
         }
 
@@ -386,7 +346,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     if (value != null) {
                         value = value.setScale(2).divide(new BigDecimal(100),
                                 BigDecimal.ROUND_HALF_EVEN);
-                        updateGenericPercentages();
                         decimalbox.setValue(value);
                     }
                 }

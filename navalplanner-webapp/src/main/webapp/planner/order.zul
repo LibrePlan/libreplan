@@ -84,12 +84,6 @@
                         style="font-weight:bold" />
                     <label value="@{allocationController.taskHours}" />
                 </hbox>
-                <hbox>
-                    <label value="${i18n:_('Generic allocation')}:"
-                        style="font-weight:bold" />
-                    <decimalbox id="genericResourceAllocationPercentage" width="48px"
-                        onChange="allocationController.updateGenericPercentages(event)" />
-                </hbox>
             </panelchildren>
         </panel>
 
