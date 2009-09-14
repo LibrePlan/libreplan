@@ -12,4 +12,6 @@ public interface ILabelTypeDAO extends IGenericDAO<LabelType, Long> {
 
     List<LabelType> getAll();
 
+    boolean existsByName(LabelType labelType);
+
 }

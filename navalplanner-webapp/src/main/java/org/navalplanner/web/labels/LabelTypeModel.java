@@ -1,5 +1,7 @@
 package org.navalplanner.web.labels;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -70,6 +72,12 @@ public class LabelTypeModel implements ILabelTypeModel {
             throw new ValidationException(invalidValues);
         }
 
+        if (labelTypeDAO.existsByName(labelType)) {
+            InvalidValue[] _invalidValues = { new InvalidValue(_(
+                    "{0} already exists", labelType.getName()),
+                    LabelType.class, "name", labelType.getName(), labelType) };
+            throw new ValidationException(_invalidValues);
+        }
         labelTypeDAO.save(labelType);
     }
 

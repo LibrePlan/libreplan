@@ -30,7 +30,7 @@
     </id>
     <version name="version" access="property" type="long" />
 
-    <property name="name"/>
+    <property name="name" unique="true"/>
 
     <set name="labels" inverse="false">
         <key column="LABEL_TYPE_ID"/>
