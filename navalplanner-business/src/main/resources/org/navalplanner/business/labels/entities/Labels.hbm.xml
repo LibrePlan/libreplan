@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.labels.entities" default-access="field">
+
+<!-- Label -->
+<class name="Label" table="LABEL">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="name"/>
+
+    <many-to-one name="type" class="LabelType" column="LABEL_TYPE_ID"/>
+
+    <set name="orderElements" inverse="false">
+        <key column="LABEL_ID"/>
+        <one-to-many class="org.navalplanner.business.orders.entities.OrderElement"/>
+    </set>
+</class>
+
+<!-- LabelType -->
+<class name="LabelType" table="LABEL_TYPE">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="name"/>
+
+    <set name="labels" inverse="false">
+        <key column="LABEL_TYPE_ID"/>
+        <one-to-many class="Label"/>
+    </set>
+</class>
+
+</hibernate-mapping>
