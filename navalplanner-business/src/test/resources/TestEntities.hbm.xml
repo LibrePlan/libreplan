@@ -36,4 +36,12 @@
     <version name="version" type="long"/>
     <property name="timeQuantity" type="org.navalplanner.business.common.partialtime.hibernate.TimeQuantityType"></property>
   </class>
+  <class name="org.navalplanner.business.test.planner.entities.hibernate.EntityContainingResourcePerDay">
+  <id name="id">
+      <generator class="hilo">
+        <param name="max_lo">100</param>
+      </generator>
+    </id>
+    <property name="resourcesPerDay" type="org.navalplanner.business.planner.entities.hibernate.ResourcesPerDayType"></property>
+  </class>
 </hibernate-mapping>
