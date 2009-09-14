@@ -2,6 +2,7 @@ package org.navalplanner.web.labels;
 
 import java.util.List;
 
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +30,15 @@ public class LabelTypeModel implements ILabelTypeModel {
     @Transactional(readOnly=true)
     public List<LabelType> getLabelTypes() {
         return labelTypeDAO.getAll();
+    }
+
+    @Override
+    @Transactional
+    public void confirmDelete(LabelType labelType) {
+        try {
+            labelTypeDAO.remove(labelType.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException();
+        }
     }
 }
