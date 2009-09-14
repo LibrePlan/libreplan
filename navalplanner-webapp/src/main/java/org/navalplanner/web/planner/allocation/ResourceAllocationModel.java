@@ -221,13 +221,12 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void initAllocationsFor(Task task,
             org.zkoss.ganttz.data.Task ganttTask) {
         this.ganttTask = ganttTask;
-        if (!taskElementDAO.exists(task.getId())) {
-            this.task = task;
-            return;
-        }
+        assert taskElementDAO.exists(task.getId());
+
         this.task = findFromDB(task);
         reattachResourceAllocations(this.task.getResourceAllocations());
         hoursGroupDAO.save(this.task.getHoursGroup());
