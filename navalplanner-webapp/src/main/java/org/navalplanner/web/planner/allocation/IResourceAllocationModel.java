@@ -1,4 +1,4 @@
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.allocation;
 
 import java.math.BigDecimal;
 import java.util.Set;

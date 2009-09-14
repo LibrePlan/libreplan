@@ -2,6 +2,7 @@ package org.navalplanner.web.planner;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 
 /**

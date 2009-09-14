@@ -1,7 +1,8 @@
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.allocation;
 
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.IResourceAllocationCommand;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

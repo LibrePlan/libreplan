@@ -1,4 +1,4 @@
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.allocation;
 
 import static org.navalplanner.web.I18nHelper._;
 

@@ -5,6 +5,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.navalplanner.web.planner.IOrderPlanningModel.IConfigurationOnTransaction;
+import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;

@@ -1,6 +1,8 @@
 package org.navalplanner.web.planner;
 
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.allocation.ResourceAllocationCommand;
+import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
