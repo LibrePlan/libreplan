@@ -1,9 +1,6 @@
-/**
- *
- */
 package org.navalplanner.business.planner.entities;
 
-import java.math.BigDecimal;
+
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -22,18 +19,19 @@ public abstract class ResourceAllocation extends BaseEntity {
 
     private AssigmentFunction assigmentFunction;
 
-    /**
-     * Allocation percentage of the resource.
-     *
-     * It's one based, instead of one hundred based.
-     */
-    private BigDecimal percentage = new BigDecimal(0).setScale(2);
+    @NotNull
+    private ResourcesPerDay resourcesPerDay;
 
     /**
      * Constructor for hibernate. Do not use!
      */
     public ResourceAllocation() {
 
+    }
+
+    protected void setResourcesPerDay(ResourcesPerDay resourcesPerDay) {
+        Validate.notNull(resourcesPerDay);
+        this.resourcesPerDay = resourcesPerDay;
     }
 
     public ResourceAllocation(Task task) {
@@ -46,20 +44,14 @@ public abstract class ResourceAllocation extends BaseEntity {
         assigmentFunction = assignmentFunction;
     }
 
+    protected ResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {
+        this(task);
+        Validate.notNull(resourcesPerDay);
+        this.resourcesPerDay = resourcesPerDay;
+    }
+
     public Task getTask() {
         return task;
-    }
-
-    public BigDecimal getPercentage() {
-        return percentage;
-    }
-
-    /**
-     * @param proportion
-     *            It's one based, instead of one hundred based.
-     */
-    public void setPercentage(BigDecimal proportion) {
-        this.percentage = proportion;
     }
 
     public AssigmentFunction getAssigmentFunction() {
@@ -75,5 +67,10 @@ public abstract class ResourceAllocation extends BaseEntity {
     }
 
     protected abstract List<? extends DayAssigment> getAssignments();
+
+
+    public ResourcesPerDay getResourcesPerDay() {
+        return resourcesPerDay;
+    }
 
 }

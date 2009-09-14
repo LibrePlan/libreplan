@@ -33,6 +33,16 @@ public class GenericResourceAllocation extends ResourceAllocation {
         return (GenericResourceAllocation) create(new GenericResourceAllocation());
     }
 
+    public static GenericResourceAllocation createForTesting(
+            ResourcesPerDay resourcesPerDay, Task task) {
+        return (GenericResourceAllocation) create(new GenericResourceAllocation(
+                resourcesPerDay, task));
+    }
+
+    private GenericResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {
+        super(resourcesPerDay, task);
+    }
+
     public GenericResourceAllocation() {
 
     }
@@ -120,6 +130,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
                         resourcesPerDay);
                 assigmentsCreated.addAll(distributeForDay(day, totalForDay));
             }
+            setResourcesPerDay(resourcesPerDay);
             setAssigments(assigmentsCreated);
         }
 

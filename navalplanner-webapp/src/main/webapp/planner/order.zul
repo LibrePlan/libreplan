@@ -95,7 +95,7 @@
             style="margin-bottom: 5px">
             <listhead>
                 <listheader label="${i18n:_('Name')}" />
-                <listheader label="${i18n:_('Percentage')}" />
+                <listheader label="${i18n:_('Resources Per Day')}" />
                 <listheader label="" />
             </listhead>
         </listbox>

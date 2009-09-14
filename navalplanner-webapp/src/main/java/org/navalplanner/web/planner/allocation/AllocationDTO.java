@@ -1,11 +1,11 @@
 package org.navalplanner.web.planner.allocation;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
 
 /**
  * The information that must be introduced to create a
@@ -27,7 +27,7 @@ public abstract class AllocationDTO {
 
     private String name;
 
-    private BigDecimal percentage;
+    private ResourcesPerDay resourcesPerDay;
 
     public String getName() {
         return name;
@@ -37,12 +37,12 @@ public abstract class AllocationDTO {
         this.name = name;
     }
 
-    public BigDecimal getPercentage() {
-        return percentage;
+    public ResourcesPerDay getResourcesPerDay() {
+        return this.resourcesPerDay;
     }
 
-    public void setPercentage(BigDecimal percentage) {
-        this.percentage = percentage;
+    public void setResourcesPerDay(ResourcesPerDay resourcesPerDay) {
+        this.resourcesPerDay = resourcesPerDay;
     }
 
     public abstract boolean isGeneric();

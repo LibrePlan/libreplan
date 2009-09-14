@@ -153,7 +153,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             Set<ResourceAllocation> resourceAllocations) {
         resourceAllocations.size();
         for (ResourceAllocation resourceAllocation : resourceAllocations) {
-            resourceAllocation.getPercentage();
+            resourceAllocation.getResourcesPerDay();
             if (resourceAllocation instanceof SpecificResourceAllocation) {
                 reattachSpecificResourceAllocation((SpecificResourceAllocation) resourceAllocation);
             }

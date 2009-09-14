@@ -21,6 +21,7 @@ import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -95,7 +96,7 @@ public class ResourceAllocationDAOTest {
 
         if (ResourceAllocationType.SPECIFIC_RESOURCE_ALLOCATION.equals(type)) {
             SpecificResourceAllocation specificResourceAllocation = SpecificResourceAllocation
-                    .create(task);
+                    .createForTesting(ResourcesPerDay.amount(1), task);
             Worker worker = (Worker) createValidWorker();
             resourceDAO.save(worker);
             specificResourceAllocation.setWorker(worker);
@@ -104,7 +105,7 @@ public class ResourceAllocationDAOTest {
         }
         if (ResourceAllocationType.GENERIC_RESOURCE_ALLOCATION.equals(type)) {
             GenericResourceAllocation specificResourceAllocation = GenericResourceAllocation
-                    .create(task);
+                    .createForTesting(ResourcesPerDay.amount(1), task);
 
             return specificResourceAllocation;
         }

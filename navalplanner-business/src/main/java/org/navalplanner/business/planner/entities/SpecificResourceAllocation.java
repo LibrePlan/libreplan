@@ -25,11 +25,22 @@ public class SpecificResourceAllocation extends ResourceAllocation {
 
     private Set<SpecificDayAssigment> specificDaysAssigment = new HashSet<SpecificDayAssigment>();
 
+    public static SpecificResourceAllocation createForTesting(
+            ResourcesPerDay resourcesPerDay, Task task) {
+        return (SpecificResourceAllocation) create(new SpecificResourceAllocation(
+                resourcesPerDay, task));
+    }
+
     /**
      * Constructor for hibernate. Do not use!
      */
     public SpecificResourceAllocation() {
 
+    }
+
+    private SpecificResourceAllocation(ResourcesPerDay resourcesPerDay,
+            Task task) {
+        super(resourcesPerDay, task);
     }
 
     private SpecificResourceAllocation(Task task) {

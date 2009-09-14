@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -33,6 +34,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -215,9 +217,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             // Label fields are fixed, can only be viewed
             appendLabel(item, getName(data.getResource()));
-            // appendLabel(item, resourceAllocation.getWorker().getNif());
-            // Percentage field is editable
-            bindPercentage(appendDecimalbox(item), data);
+
+            bindResourcesPerDay(appendDecimalbox(item), data);
             // On click delete button
             appendButton(item, _("Delete")).addEventListener("onClick",
                     new EventListener() {
@@ -245,18 +246,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
         private void renderGenericResourceAllocation(Listitem item,
                 final GenericAllocationDTO data) throws Exception {
             item.setValue(data);
-
             // Set name
             appendLabel(item, _("Generic"));
-            // Set percentage
-            BigDecimal percentage = data.getPercentage();
-            if (!new BigDecimal(0).equals(data.getPercentage())) {
-                percentage = (percentage != null) ? percentage
-                        : new BigDecimal(0);
-                percentage = percentage.scaleByPowerOfTen(2).setScale(2,
-                        BigDecimal.ROUND_HALF_EVEN);
-            }
-            appendLabel(item, percentage.toString());
+            bindResourcesPerDay(appendDecimalbox(item), data);
             // No buttons
             appendLabel(item, "");
         }
@@ -307,26 +299,22 @@ public class ResourceAllocationController extends GenericForwardComposer {
             return decimalbox;
         }
 
-        private void bindPercentage(final Decimalbox decimalbox,
-                final SpecificAllocationDTO data) {
+        private void bindResourcesPerDay(final Decimalbox decimalbox,
+                final AllocationDTO data) {
+            decimalbox.setConstraint(new SimpleConstraint(
+                    SimpleConstraint.NO_NEGATIVE));
             Util.bind(decimalbox, new Util.Getter<BigDecimal>() {
 
                 @Override
                 public BigDecimal get() {
-                    return (data.getPercentage() != null) ? data
-                            .getPercentage().scaleByPowerOfTen(2)
-                            : new BigDecimal(0);
+                    return data.getResourcesPerDay().getAmount();
                 }
 
             }, new Util.Setter<BigDecimal>() {
 
                 @Override
                 public void set(BigDecimal value) {
-                    if (value != null) {
-                        value = value.setScale(2).divide(new BigDecimal(100),
-                                BigDecimal.ROUND_HALF_EVEN);
-                        data.setPercentage(value);
-                    }
+                    data.setResourcesPerDay(ResourcesPerDay.amount(value));
                 }
             });
         }

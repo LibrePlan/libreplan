@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -46,7 +47,7 @@ public class SpecificAllocationDTO extends AllocationDTO {
 
     public static SpecificAllocationDTO from(SpecificResourceAllocation specific) {
         SpecificAllocationDTO result = forResource(specific.getWorker());
-        result.setPercentage(specific.getPercentage());
+        result.setResourcesPerDay(specific.getResourcesPerDay());
         return result;
     }
 
@@ -54,6 +55,7 @@ public class SpecificAllocationDTO extends AllocationDTO {
         SpecificAllocationDTO result = new SpecificAllocationDTO();
         result.setName(worker.getName());
         result.setResource(worker);
+        result.setResourcesPerDay(ResourcesPerDay.amount(1));
         return result;
     }
 

@@ -178,6 +178,19 @@ public class GenericResourceAllocationTest {
     }
 
     @Test
+    public void theResourcesPerDayAreChangedWhenTheAllocationIsDone() {
+        givenTaskWithStartAndEnd(toInterval(new LocalDate(2006, 10, 5), Period
+                .days(2)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithoutLoadAndWithoutCalendar();
+        ResourcesPerDay assignedResourcesPerDay = ResourcesPerDay.amount(5);
+        genericResourceAllocation.forResources(workers).allocate(
+                assignedResourcesPerDay);
+        assertThat(genericResourceAllocation.getResourcesPerDay(),
+                equalTo(assignedResourcesPerDay));
+    }
+
+    @Test
     public void allocatingSeveralResourcesPerDayHavingJustOneResourceProducesOvertime() {
         LocalDate start = new LocalDate(2006, 10, 5);
         final Integer standardHoursPerDay = SameWorkHoursEveryDay

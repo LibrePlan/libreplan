@@ -12,7 +12,7 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="percentage" type="java.math.BigDecimal" scale="8"/>
+        <property name="resourcesPerDay" type="org.navalplanner.business.planner.entities.hibernate.ResourcesPerDayType" />
 
         <many-to-one class="Task" name="task" column="TASK" />
 
