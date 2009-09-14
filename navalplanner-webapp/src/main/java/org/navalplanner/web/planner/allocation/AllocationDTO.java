@@ -1,6 +1,9 @@
 package org.navalplanner.web.planner.allocation;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 
@@ -10,6 +13,17 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public abstract class AllocationDTO {
+
+    public static List<GenericAllocationDTO> getGeneric(
+            Collection<? extends AllocationDTO> all) {
+        List<GenericAllocationDTO> result = new ArrayList<GenericAllocationDTO>();
+        for (AllocationDTO dto : all) {
+            if (dto.isGeneric()) {
+                result.add((GenericAllocationDTO) dto);
+            }
+        }
+        return result;
+    }
 
     private String name;
 
