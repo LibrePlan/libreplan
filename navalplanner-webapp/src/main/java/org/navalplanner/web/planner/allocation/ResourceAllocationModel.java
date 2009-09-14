@@ -60,16 +60,22 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public void setTask(Task task) {
-        try {
-            task = (Task) taskElementDAO.find(task.getId());
-            reattachResourceAllocations(task.getResourceAllocations());
-            hoursGroupDAO.save(task.getHoursGroup());
-            reattachHoursGroup(task.getHoursGroup());
-            reattachCriterions(task.getHoursGroup().getCriterions());
-
+        if (!taskElementDAO.exists(task.getId())) {
             this.task = task;
-        } catch (InstanceNotFoundException e) {
+            return;
+        }
+        this.task = findFromDB(task);
+        reattachResourceAllocations(this.task.getResourceAllocations());
+        hoursGroupDAO.save(this.task.getHoursGroup());
+        reattachHoursGroup(this.task.getHoursGroup());
+        reattachCriterions(this.task.getHoursGroup().getCriterions());
+    }
 
+    private Task findFromDB(Task task) {
+        try {
+            return (Task) taskElementDAO.find(task.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
