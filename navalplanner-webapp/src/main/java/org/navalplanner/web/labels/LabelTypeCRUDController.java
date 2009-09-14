@@ -13,7 +13,6 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -53,20 +52,96 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         getVisibility().showOnly(listWindow);
     }
 
-    public OnlyOneVisible getVisibility() {
+    private OnlyOneVisible getVisibility() {
         if (visibility == null) {
             visibility = new OnlyOneVisible(listWindow, editWindow);
         }
         return visibility;
     }
 
-    @Transactional
+    /**
+     * Return all {@link LabelType}
+     *
+     * @return
+     */
     public List<LabelType> getLabelTypes() {
         return labelTypeModel.getLabelTypes();
     }
 
+    /**
+     * Return current {@link LabelType}
+     *
+     * @return
+     */
     public LabelType getLabelType() {
         return labelTypeModel.getLabelType();
+    }
+
+    /**
+     * Prepare form for Create
+     */
+    public void goToCreateForm() {
+        labelTypeModel.initCreate();
+        editWindow.setTitle(_("Create label type"));
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
+    }
+
+    /**
+     * Prepare form for Edit
+     *
+     * @param labelType
+     */
+    public void goToEditForm(LabelType labelType) {
+        labelTypeModel.initEdit(labelType);
+        editWindow.setTitle(_("Edit label type"));
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
+    }
+
+    /**
+     * Save current {@link LabelType} and return
+     */
+    public void save() {
+        try {
+            labelTypeModel.confirmSave();
+            goToList();
+            messagesForUser.showMessage(Level.INFO, _("Label type saved"));
+        } catch (ValidationException e) {
+            showInvalidValues(e);
+        }
+    }
+
+    /**
+     * Show all {@link LabelType}
+     */
+    private void goToList() {
+        getVisibility().showOnly(listWindow);
+        Util.reloadBindings(listWindow);
+    }
+
+    private void showInvalidValues(ValidationException e) {
+        for (InvalidValue invalidValue : e.getInvalidValues()) {
+            Object value = invalidValue.getBean();
+            if (value instanceof LabelType) {
+                validateLabelType(invalidValue);
+            }
+        }
+    }
+
+    private void validateLabelType(InvalidValue invalidValue) {
+        Component component = editWindow.getFellowIfAny(invalidValue
+                .getPropertyName());
+        if (component != null) {
+            throw new WrongValueException(component, invalidValue.getMessage());
+        }
+    }
+
+    /**
+     * Cancel edition
+     */
+    public void cancel() {
+        goToList();
     }
 
     /**
@@ -89,56 +164,6 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    public void goToCreateForm() {
-        labelTypeModel.initCreate();
-        editWindow.setTitle(_("Create label type"));
-        getVisibility().showOnly(editWindow);
-        Util.reloadBindings(editWindow);
-    }
-
-    public void save() {
-        try {
-            labelTypeModel.confirmSave();
-            goToList();
-            messagesForUser.showMessage(Level.INFO, _("Label type saved"));
-        } catch (ValidationException e) {
-            showInvalidValues(e);
-        }
-    }
-
-    private void showInvalidValues(ValidationException e) {
-        for (InvalidValue invalidValue : e.getInvalidValues()) {
-            Object value = invalidValue.getBean();
-            if (value instanceof LabelType) {
-                validateLabelType(invalidValue);
-            }
-        }
-    }
-
-    private void validateLabelType(InvalidValue invalidValue) {
-        Component component = editWindow.getFellowIfAny(invalidValue
-                .getPropertyName());
-        if (component != null) {
-            throw new WrongValueException(component, invalidValue.getMessage());
-        }
-    }
-
-    private void goToList() {
-        getVisibility().showOnly(listWindow);
-        Util.reloadBindings(listWindow);
-    }
-
-    public void goToEditForm(LabelType labelType) {
-        labelTypeModel.initEdit(labelType);
-        editWindow.setTitle(_("Edit label type"));
-        getVisibility().showOnly(editWindow);
-        Util.reloadBindings(editWindow);
-    }
-
-    public void cancel() {
-        goToList();
     }
 
 }

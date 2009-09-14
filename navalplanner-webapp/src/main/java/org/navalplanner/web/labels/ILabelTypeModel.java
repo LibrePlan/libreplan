@@ -6,6 +6,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.LabelType;
 
 /**
+ * Interface for {@link LabelTypeModel}
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
@@ -19,6 +20,12 @@ public interface ILabelTypeModel {
     void confirmDelete(LabelType labelType);
 
     /**
+     * Ends conversation saving current {@link LabelType}
+     */
+    void confirmSave() throws ValidationException;
+
+    /**
+     * Returns {@link LabelType}
      *
      * @return
      */
@@ -32,17 +39,12 @@ public interface ILabelTypeModel {
     List<LabelType> getLabelTypes();
 
     /**
-     *
+     * Starts conversation creating new {@link LabelType}
      */
     void initCreate();
 
     /**
-     *
-     */
-    void confirmSave() throws ValidationException;
-
-    /**
-     *
+     * Starts conversation editing {@link LabelType}
      */
     void initEdit(LabelType labelType);
 
