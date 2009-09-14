@@ -41,4 +41,9 @@ public interface ILabelTypeModel {
      */
     void confirmSave() throws ValidationException;
 
+    /**
+     *
+     */
+    void initEdit(LabelType labelType);
+
 }

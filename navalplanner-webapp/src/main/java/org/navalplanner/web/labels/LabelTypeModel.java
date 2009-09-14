@@ -2,6 +2,7 @@ package org.navalplanner.web.labels;
 
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -71,4 +72,24 @@ public class LabelTypeModel implements ILabelTypeModel {
 
         labelTypeDAO.save(labelType);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void initEdit(LabelType labelType) {
+        Validate.notNull(labelType);
+        this.labelType = getFromDB(labelType);
+    }
+
+    private LabelType getFromDB(LabelType labelType) {
+        return getFromDB(labelType.getId());
+    }
+
+    private LabelType getFromDB(Long id) {
+        try {
+            return labelType = labelTypeDAO.find(id);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

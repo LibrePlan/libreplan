@@ -9,7 +9,8 @@
             <row self="@{each='labelType'}" value="@{labelType}">
                 <label value="@{labelType.name}" />
                 <hbox>
-                    <button label="${i18n:_('Edit')}"/>
+                    <button label="${i18n:_('Edit')}"
+                        onClick="controller.goToEditForm(self.parent.parent.value)"/>
                     <button label="${i18n:_('Delete')}"
                         onClick="controller.confirmDelete(self.parent.parent.value)"/>
                 </hbox>

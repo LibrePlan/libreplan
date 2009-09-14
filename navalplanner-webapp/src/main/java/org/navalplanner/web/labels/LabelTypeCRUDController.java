@@ -130,4 +130,11 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         Util.reloadBindings(listWindow);
     }
 
+    public void goToEditForm(LabelType labelType) {
+        labelTypeModel.initEdit(labelType);
+        editWindow.setTitle(_("Edit label type"));
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
+    }
+
 }
