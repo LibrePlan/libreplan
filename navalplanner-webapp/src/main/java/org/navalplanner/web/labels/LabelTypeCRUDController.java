@@ -85,4 +85,14 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         Util.reloadBindings(editWindow);
     }
 
+    public void save() {
+        labelTypeModel.confirmSave();
+        goToList();
+    }
+
+    private void goToList() {
+        getVisibility().showOnly(listWindow);
+        Util.reloadBindings(listWindow);
+    }
+
 }

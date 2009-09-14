@@ -35,4 +35,9 @@ public interface ILabelTypeModel {
      */
     void prepareForCreate();
 
+    /**
+     *
+     */
+    void confirmSave();
+
 }

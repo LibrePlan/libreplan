@@ -53,4 +53,10 @@ public class LabelTypeModel implements ILabelTypeModel {
     public LabelType getLabelType() {
         return labelType;
     }
+
+    @Override
+    @Transactional
+    public void confirmSave() {
+        labelTypeDAO.save(labelType);
+    }
 }
