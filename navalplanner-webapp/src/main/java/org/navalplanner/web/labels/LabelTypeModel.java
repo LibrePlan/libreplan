@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class LabelTypeModel implements ILabelTypeModel {
 
     @Autowired
-    ILabelTypeDAO labelTypeDAO;
+    private ILabelTypeDAO labelTypeDAO;
+
+    private LabelType labelType;
 
     public LabelTypeModel() {
 
@@ -40,5 +42,15 @@ public class LabelTypeModel implements ILabelTypeModel {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public void prepareForCreate() {
+        labelType = LabelType.create("");
+    }
+
+    @Override
+    public LabelType getLabelType() {
+        return labelType;
     }
 }

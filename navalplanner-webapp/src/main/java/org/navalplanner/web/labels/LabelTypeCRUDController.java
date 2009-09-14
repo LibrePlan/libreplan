@@ -5,6 +5,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.List;
 
 import org.navalplanner.business.labels.entities.LabelType;
+import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +22,16 @@ import org.zkoss.zul.Window;
  */
 public class LabelTypeCRUDController extends GenericForwardComposer {
 
-    Window listWindow;
-
-    Grid labelTypes;
-
     @Autowired
     ILabelTypeModel labelTypeModel;
+
+    private Window listWindow;
+
+    private Window editWindow;
+
+    private Grid labelTypes;
+
+    private OnlyOneVisible visibility;
 
     public LabelTypeCRUDController() {
 
@@ -36,11 +41,23 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
+        getVisibility().showOnly(listWindow);
+    }
+
+    public OnlyOneVisible getVisibility() {
+        if (visibility == null) {
+            visibility = new OnlyOneVisible(listWindow, editWindow);
+        }
+        return visibility;
     }
 
     @Transactional
     public List<LabelType> getLabelTypes() {
         return labelTypeModel.getLabelTypes();
+    }
+
+    public LabelType getLabelType() {
+        return labelTypeModel.getLabelType();
     }
 
     /**
@@ -60,4 +77,12 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
             e.printStackTrace();
         }
     }
+
+    public void goToCreateForm() {
+        labelTypeModel.prepareForCreate();
+        editWindow.setTitle(_("Create label type"));
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
+    }
+
 }

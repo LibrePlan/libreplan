@@ -1,0 +1,12 @@
+<window id="${arg.id}" title="${arg.title}" border="normal">
+    <vbox>
+        <hbox>
+            <label value="${i18n:_('Name')}"/>
+            <textbox value="@{controller.labelType.name}"/>
+        </hbox>
+        <hbox>
+            <button label="${i18n:_('Save')}"/>
+            <button label="${i18n:_('Cancel')}"/>
+        </hbox>
+    </vbox>
+</window>

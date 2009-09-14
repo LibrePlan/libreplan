@@ -8,10 +8,12 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 
 <?component name="list" inline="true" macroURI="_listLabelTypes.zul"?>
+<?component name="edit" inline="true" macroURI="_editLabelType.zul"?>
 
 <zk>
     <window self="@{define(content)}"
         apply="org.navalplanner.web.labels.LabelTypeCRUDController">
         <list id="listWindow"/>
+        <edit id="editWindow"/>
     </window>
 </zk>

@@ -11,6 +11,19 @@ import org.navalplanner.business.labels.entities.LabelType;
 public interface ILabelTypeModel {
 
     /**
+     * Removes {@link LabelType}
+     *
+     * @param labelType
+     */
+    void confirmDelete(LabelType labelType);
+
+    /**
+     *
+     * @return
+     */
+    LabelType getLabelType();
+
+    /**
      * Returns all {@link LabelType}
      *
      * @return
@@ -18,10 +31,8 @@ public interface ILabelTypeModel {
     List<LabelType> getLabelTypes();
 
     /**
-     * Removes {@link LabelType}
      *
-     * @param labelType
      */
-    void confirmDelete(LabelType labelType);
+    void prepareForCreate();
 
 }
