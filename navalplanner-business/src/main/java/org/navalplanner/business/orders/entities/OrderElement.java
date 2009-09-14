@@ -6,12 +6,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.advance.entities.AdvanceAssigment;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.planner.entities.TaskElement;
 
 public abstract class OrderElement extends BaseEntity {
@@ -30,6 +32,8 @@ public abstract class OrderElement extends BaseEntity {
     private String description;
 
     private Set<AdvanceAssigment> advanceAssigments = new HashSet<AdvanceAssigment>();
+
+    private Set<Label> labels = new HashSet<Label>();
 
     @NotEmpty
     private String code;
@@ -148,6 +152,19 @@ public abstract class OrderElement extends BaseEntity {
 
     public void removeAdvanceAssigment(AdvanceAssigment advanceAssigment) {
         advanceAssigments.remove(advanceAssigment);
+    }
+
+    public Set<Label> getLabels() {
+        return Collections.unmodifiableSet(labels);
+    }
+
+    public void addLabel(Label label) {
+        Validate.notNull(label);
+        labels.add(label);
+    }
+
+    public void removeLabel(Label label) {
+        labels.remove(label);
     }
 
     /**
