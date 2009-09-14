@@ -13,6 +13,7 @@
 <zk>
     <window self="@{define(content)}"
         apply="org.navalplanner.web.labels.LabelTypeCRUDController">
+        <vbox id="messagesContainer"/>
         <list id="listWindow"/>
         <edit id="editWindow"/>
     </window>

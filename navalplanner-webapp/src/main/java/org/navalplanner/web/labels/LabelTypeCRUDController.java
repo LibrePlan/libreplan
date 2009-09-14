@@ -4,12 +4,18 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
+import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.LabelType;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Messagebox;
@@ -33,6 +39,10 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
 
     private OnlyOneVisible visibility;
 
+    private IMessagesForUser messagesForUser;
+
+    private Component messagesContainer;
+
     public LabelTypeCRUDController() {
 
     }
@@ -41,6 +51,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
+        messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
     }
 
@@ -86,8 +97,30 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     }
 
     public void save() {
-        labelTypeModel.confirmSave();
-        goToList();
+        try {
+            labelTypeModel.confirmSave();
+            goToList();
+            messagesForUser.showMessage(Level.INFO, _("Label type saved"));
+        } catch (ValidationException e) {
+            showInvalidValues(e);
+        }
+    }
+
+    private void showInvalidValues(ValidationException e) {
+        for (InvalidValue invalidValue : e.getInvalidValues()) {
+            Object value = invalidValue.getBean();
+            if (value instanceof LabelType) {
+                validateLabelType(invalidValue);
+            }
+        }
+    }
+
+    private void validateLabelType(InvalidValue invalidValue) {
+        Component component = editWindow.getFellowIfAny(invalidValue
+                .getPropertyName());
+        if (component != null) {
+            throw new WrongValueException(component, invalidValue.getMessage());
+        }
     }
 
     private void goToList() {

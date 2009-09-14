@@ -2,6 +2,7 @@ package org.navalplanner.web.labels;
 
 import java.util.List;
 
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.LabelType;
 
 /**
@@ -38,6 +39,6 @@ public interface ILabelTypeModel {
     /**
      *
      */
-    void confirmSave();
+    void confirmSave() throws ValidationException;
 
 }

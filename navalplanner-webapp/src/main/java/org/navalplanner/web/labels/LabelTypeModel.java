@@ -2,7 +2,10 @@ package org.navalplanner.web.labels;
 
 import java.util.List;
 
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,9 @@ public class LabelTypeModel implements ILabelTypeModel {
     private ILabelTypeDAO labelTypeDAO;
 
     private LabelType labelType;
+
+    private ClassValidator<LabelType> validator = new ClassValidator<LabelType>(
+            LabelType.class);
 
     public LabelTypeModel() {
 
@@ -56,7 +62,13 @@ public class LabelTypeModel implements ILabelTypeModel {
 
     @Override
     @Transactional
-    public void confirmSave() {
+    public void confirmSave() throws ValidationException {
+        InvalidValue[] invalidValues = validator.getInvalidValues(labelType);
+
+        if (invalidValues.length > 0) {
+            throw new ValidationException(invalidValues);
+        }
+
         labelTypeDAO.save(labelType);
     }
 }
