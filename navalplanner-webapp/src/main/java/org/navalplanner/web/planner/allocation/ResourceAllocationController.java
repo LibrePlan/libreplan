@@ -78,8 +78,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
         resourceAllocationModel.setGanttTask(ganttTask);
 
         updateGenericResourceAllocationPercentage();
-        // Add new generic resources to resources list
-        addGenericResources();
+        resourceAllocationModel
+                .addGenericResourceAllocationIfNoAllocationExists();
         Util.reloadBindings(window);
         try {
             window.doModal();
@@ -99,17 +99,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 .getSumPercentageResourceAllocations();
         genericResourceAllocationPercentage.setValue(genericPercentage
                 .scaleByPowerOfTen(2).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-    }
-
-    /**
-     * Check how many {@link ResourceAllocation} object can be assigned to this
-     * {@link Task} and add them to {@link ResourceAllocation} list
-     */
-    private void addGenericResources() {
-        int n = resourceAllocationModel.getNumberUnassignedResources();
-        for (int i = 0; i < n; i++) {
-            resourceAllocationModel.addGenericResourceAllocation();
-        }
     }
 
     /**

@@ -19,9 +19,10 @@ import org.navalplanner.business.resources.entities.Worker;
 public interface IResourceAllocationModel {
 
     /**
-     * Adds a new {@link GenericResourceAllocation} to the current {@link Task}.
+     * Adds a new {@link GenericResourceAllocation} to the current {@link Task}
+     * if no {@link ResourceAllocation} exist.
      */
-    void addGenericResourceAllocation();
+    void addGenericResourceAllocationIfNoAllocationExists();
 
     /**
      * Adds {@link SpecificResourceAllocation} to {@link Task}

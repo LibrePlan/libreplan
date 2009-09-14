@@ -120,12 +120,16 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void addGenericResourceAllocation() {
+    public void addGenericResourceAllocationIfNoAllocationExists() {
+        taskElementDAO.save(task);
+        Set<ResourceAllocation> resourceAllocations = task
+                .getResourceAllocations();
+        if (!resourceAllocations.isEmpty())
+            return;
         GenericResourceAllocation resourceAllocation = GenericResourceAllocation
                 .create(task);
         resourceAllocation.setPercentage(new BigDecimal(0));
         task.addResourceAllocation(resourceAllocation);
-        taskElementDAO.save(task);
     }
 
     @Override
@@ -198,7 +202,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         task.removeResourceAllocation(resourceAllocation);
         // Add new generic resource
         if (addGenericResourceAllocation) {
-            addGenericResourceAllocation();
+            addGenericResourceAllocationIfNoAllocationExists();
         }
     }
 
