@@ -158,7 +158,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Manage advances types"),
                         "/advance/advanceTypes.zul"),
                 subItem(_("Calendars"),
-                        "/calendars/calendars.zul"));
+                        "/calendars/calendars.zul"),
+                subItem(_("Label types"),
+                        "/labels/labelTypes.zul"));
 
         topItem(_("Quality management"),
                 "/");
