@@ -76,7 +76,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
     }
 
     public interface IAllocation {
-        public void allocate(ResourcePerDayUnit resourcesPerDay);
+        public void allocate(ResourcesPerDay resourcesPerDay);
     }
 
     private class Allocation implements IAllocation {
@@ -110,7 +110,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
         }
 
         @Override
-        public void allocate(ResourcePerDayUnit resourcesPerDay) {
+        public void allocate(ResourcesPerDay resourcesPerDay) {
             Task task = getTask();
             LocalDate startInclusive = new LocalDate(task.getStartDate());
             List<GenericDayAssigment> assigmentsCreated = new ArrayList<GenericDayAssigment>();
@@ -124,7 +124,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
         }
 
         private int calculateTotalToDistribute(LocalDate day,
-                ResourcePerDayUnit resourcesPerDay) {
+                ResourcesPerDay resourcesPerDay) {
             Integer workableHours = getWorkableHoursAt(day);
             return resourcesPerDay.asHoursGivenResourceWorkingDayOf(workableHours);
         }

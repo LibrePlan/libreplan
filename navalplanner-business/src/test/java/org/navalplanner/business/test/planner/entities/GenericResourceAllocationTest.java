@@ -27,7 +27,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.planner.entities.GenericDayAssigment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourcePerDayUnit;
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -166,7 +166,7 @@ public class GenericResourceAllocationTest {
         givenWorkersWithoutLoadAndWithoutCalendar();
 
         genericResourceAllocation.forResources(Arrays.asList(worker1))
-                .allocate(ResourcePerDayUnit.amount(1));
+                .allocate(ResourcesPerDay.amount(1));
 
         List<GenericDayAssigment> orderedAssigmentsFor = genericResourceAllocation
                 .getOrderedAssigmentsFor(worker1);
@@ -190,7 +190,7 @@ public class GenericResourceAllocationTest {
         givenWorkersWithoutLoadAndWithoutCalendar();
 
         genericResourceAllocation.forResources(Arrays.asList(worker1))
-                .allocate(ResourcePerDayUnit.amount(2));
+                .allocate(ResourcesPerDay.amount(2));
 
         List<GenericDayAssigment> orderedAssigmentsFor = genericResourceAllocation
                 .getOrderedAssigmentsFor(worker1);
@@ -210,7 +210,7 @@ public class GenericResourceAllocationTest {
         givenWorkersWithoutLoadAndWithoutCalendar();
 
         genericResourceAllocation.forResources(Arrays.asList(worker1))
-                .allocate(ResourcePerDayUnit.amount(1));
+                .allocate(ResourcesPerDay.amount(1));
 
         List<GenericDayAssigment> assigmments = genericResourceAllocation
                 .getOrderedAssigmentsFor(worker1);
@@ -231,7 +231,7 @@ public class GenericResourceAllocationTest {
         givenWorkersWithoutLoadAndWithoutCalendar();
 
         genericResourceAllocation.forResources(Arrays.asList(worker1))
-                .allocate(ResourcePerDayUnit.amount(1));
+                .allocate(ResourcesPerDay.amount(1));
 
         List<GenericDayAssigment> assigmments = genericResourceAllocation
                 .getOrderedAssigmentsFor(worker1);
@@ -249,7 +249,7 @@ public class GenericResourceAllocationTest {
         givenWorkersWithLoads(3, 12, 1);
 
         genericResourceAllocation.forResources(workers).allocate(
-                ResourcePerDayUnit.amount(1));
+                ResourcesPerDay.amount(1));
 
         List<GenericDayAssigment> assigmentsWorker1 = genericResourceAllocation
                 .getOrderedAssigmentsFor(worker1);

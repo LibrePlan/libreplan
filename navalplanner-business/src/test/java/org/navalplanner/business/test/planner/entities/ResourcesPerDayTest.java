@@ -4,24 +4,24 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
-import org.navalplanner.business.planner.entities.ResourcePerDayUnit;
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
 
-public class ResourcePerDayUnitTest {
+public class ResourcesPerDayTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void cannotHaveANegativeNumberOfUnits() {
-        ResourcePerDayUnit.amount(-1);
+        ResourcesPerDay.amount(-1);
     }
 
     @Test
     public void theUnitsAmoutCanBeRetrieved() {
-        ResourcePerDayUnit units = ResourcePerDayUnit.amount(2);
+        ResourcesPerDay units = ResourcesPerDay.amount(2);
         assertThat(units.getAmount(), equalTo(2));
     }
 
     @Test
     public void canBeConvertedToHoursGivenTheWorkingDayHours() {
-        ResourcePerDayUnit units = ResourcePerDayUnit.amount(2);
+        ResourcesPerDay units = ResourcesPerDay.amount(2);
         assertThat(units.asHoursGivenResourceWorkingDayOf(8), equalTo(16));
     }
 

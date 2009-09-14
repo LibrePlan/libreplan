@@ -2,15 +2,15 @@ package org.navalplanner.business.planner.entities;
 
 import org.apache.commons.lang.Validate;
 
-public class ResourcePerDayUnit {
+public class ResourcesPerDay {
 
     private final int amount;
 
-    public static ResourcePerDayUnit amount(int amount) {
-        return new ResourcePerDayUnit(amount);
+    public static ResourcesPerDay amount(int amount) {
+        return new ResourcesPerDay(amount);
     }
 
-    private ResourcePerDayUnit(int amount) {
+    private ResourcesPerDay(int amount) {
         Validate.isTrue(amount >= 0);
         this.amount = amount;
     }
