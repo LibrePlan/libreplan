@@ -103,7 +103,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
             }
             if (!calendars.isEmpty()) {
                 return CombinedWorkHours.minOf(calendars
-                        .toArray(new CombinedWorkHours[0]));
+                        .toArray(new IWorkHours[0]));
             } else {
                 return SameWorkHoursEveryDay.getDefaultWorkingDay();
             }
@@ -125,17 +125,17 @@ public class GenericResourceAllocation extends ResourceAllocation {
 
         private int calculateTotalToDistribute(LocalDate day,
                 ResourcePerDayUnit resourcesPerDay) {
-            if (isTaskFreeDay(day)) {
-                return 0;
-            }
-            Integer workableHours = SameWorkHoursEveryDay
-                    .getDefaultWorkingDay().getWorkableHours(day);
+            Integer workableHours = getWorkableHoursAt(day);
             return resourcesPerDay.asHoursGivenResourceWorkingDayOf(workableHours);
         }
 
-        private boolean isTaskFreeDay(LocalDate day) {
-            return getTaskCalendar() != null
-                    && getTaskCalendar().getWorkableHours(day) == 0;
+        private Integer getWorkableHoursAt(LocalDate day) {
+            if (getTaskCalendar() == null) {
+                return SameWorkHoursEveryDay.getDefaultWorkingDay()
+                        .getWorkableHours(day);
+            } else {
+                return getTaskCalendar().getWorkableHours(day);
+            }
         }
 
         private BaseCalendar getTaskCalendar() {

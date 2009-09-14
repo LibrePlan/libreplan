@@ -24,7 +24,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.planner.entities.GenericDayAssigment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -60,20 +59,16 @@ public class GenericResourceAllocationTest {
                 .anyTimes();
         expect(task.getEndDate()).andReturn(interval.getEnd().toDate())
                 .anyTimes();
+        expect(task.getCalendar()).andReturn(baseCalendar).anyTimes();
         replay(task);
-        if (baseCalendar != null) {
-            task.setCalendar(baseCalendar);
-        }
         return this.task = task;
     }
 
     private Task givenTaskWithCriterions() {
         Task task = createNiceMock(Task.class);
         setupCriterions(task);
+        expect(task.getCalendar()).andReturn(baseCalendar).anyTimes();
         replay(task);
-        if (baseCalendar != null) {
-            task.setCalendar(baseCalendar);
-        }
         return this.task = task;
     }
 
@@ -135,14 +130,10 @@ public class GenericResourceAllocationTest {
 
     private void givenBaseCalendarWithoutExceptions(int hoursPerDay) {
         BaseCalendar baseCalendar = createNiceMock(BaseCalendar.class);
-        expect(
-                baseCalendar.getHours(isA(Date.class),
-                        isA(CalendarData.Days.class))).andReturn(hoursPerDay)
-                .anyTimes();
-        expect(
-                baseCalendar.getHours(isA(LocalDate.class),
-                        isA(CalendarData.Days.class))).andReturn(hoursPerDay)
-                .anyTimes();
+        expect(baseCalendar.getWorkableHours(isA(Date.class))).andReturn(
+                hoursPerDay).anyTimes();
+        expect(baseCalendar.getWorkableHours(isA(LocalDate.class))).andReturn(
+                hoursPerDay).anyTimes();
         replay(baseCalendar);
         this.baseCalendar = baseCalendar;
     }
@@ -188,9 +179,11 @@ public class GenericResourceAllocationTest {
 
     @Test
     public void allocatingSeveralResourcesPerDayHavingJustOneResourceProducesOvertime() {
-        final int TASK_DURATION_DAYS = 4;
-        givenBaseCalendarWithoutExceptions(8);
         LocalDate start = new LocalDate(2006, 10, 5);
+        final Integer standardHoursPerDay = SameWorkHoursEveryDay
+                .getDefaultWorkingDay().getWorkableHours(start);
+        final int TASK_DURATION_DAYS = 4;
+        givenBaseCalendarWithoutExceptions(standardHoursPerDay);
         givenTaskWithStartAndEnd(toInterval(start, Period
                 .days(TASK_DURATION_DAYS)));
         givenGenericResourceAllocationForTask(task);
@@ -201,10 +194,48 @@ public class GenericResourceAllocationTest {
 
         List<GenericDayAssigment> orderedAssigmentsFor = genericResourceAllocation
                 .getOrderedAssigmentsFor(worker1);
-        Integer standardHoursPerDay = SameWorkHoursEveryDay
-                .getDefaultWorkingDay().getWorkableHours(start);
         assertThat(orderedAssigmentsFor.get(0).getHours(),
                 equalTo(standardHoursPerDay * 2));
+    }
+
+    @Test
+    public void theHoursAreGivenBasedOnTheWorkingHoursSpecifiedByTheCalendar() {
+        LocalDate start = new LocalDate(2006, 10, 5);
+        final int TASK_DURATION_DAYS = 1;
+        final int halfWorkingDay = 4;
+        givenBaseCalendarWithoutExceptions(halfWorkingDay);
+        givenTaskWithStartAndEnd(toInterval(start, Period
+                .days(TASK_DURATION_DAYS)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithoutLoadAndWithoutCalendar();
+
+        genericResourceAllocation.forResources(Arrays.asList(worker1))
+                .allocate(ResourcePerDayUnit.amount(1));
+
+        List<GenericDayAssigment> assigmments = genericResourceAllocation
+                .getOrderedAssigmentsFor(worker1);
+        assertThat(assigmments.get(0).getHours(), equalTo(halfWorkingDay));
+    }
+
+    @Test
+    public void ifThereisNoTaskCalendarTheWorkingHoursAreSpecifiedbyTheDefaultWorkingDay() {
+        LocalDate start = new LocalDate(2006, 10, 5);
+        final int TASK_DURATION_DAYS = 1;
+        final Integer defaultWorkableHours = SameWorkHoursEveryDay
+                .getDefaultWorkingDay()
+                .getWorkableHours(start);
+        givenBaseCalendarWithoutExceptions(defaultWorkableHours);
+        givenTaskWithStartAndEnd(toInterval(start, Period
+                .days(TASK_DURATION_DAYS)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithoutLoadAndWithoutCalendar();
+
+        genericResourceAllocation.forResources(Arrays.asList(worker1))
+                .allocate(ResourcePerDayUnit.amount(1));
+
+        List<GenericDayAssigment> assigmments = genericResourceAllocation
+                .getOrderedAssigmentsFor(worker1);
+        assertThat(assigmments.get(0).getHours(), equalTo(defaultWorkableHours));
     }
 
     @Test
