@@ -7,26 +7,11 @@
 
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 
+<?component name="list" inline="true" macroURI="_listLabelTypes.zul"?>
+
 <zk>
     <window self="@{define(content)}"
         apply="org.navalplanner.web.labels.LabelTypeCRUDController">
-        <grid id="labelTypes" model="@{controller.labelTypes}"
-            mold="paging" pageSize="10">
-            <columns>
-                <column label="${i18n:_('Name')}" sort="auto(name)" />
-                <column label="${i18n:_('Operations')}" />
-            </columns>
-            <rows>
-                <row self="@{each='labelType'}" value="@{labelType}">
-                    <label value="@{labelType.name}" />
-                    <hbox>
-                        <button label="${i18n:_('Edit')}"/>
-                        <button label="${i18n:_('Delete')}"
-                            onClick="controller.confirmRemove(self.parent.parent.value)"/>
-                    </hbox>
-                </row>
-            </rows>
-        </grid>
-        <button id="btnCreateListType" label="${i18n:_('Create')}"/>
+        <list id="listWindow"/>
     </window>
 </zk>

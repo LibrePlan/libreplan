@@ -1,0 +1,20 @@
+<window id="${arg.id}" title="${i18n:_('List label types')}">
+    <grid id="labelTypes" model="@{controller.labelTypes}"
+        mold="paging" pageSize="10">
+        <columns>
+            <column label="${i18n:_('Name')}" sort="auto(name)" />
+            <column label="${i18n:_('Operations')}" />
+        </columns>
+        <rows>
+            <row self="@{each='labelType'}" value="@{labelType}">
+                <label value="@{labelType.name}" />
+                <hbox>
+                    <button label="${i18n:_('Edit')}"/>
+                    <button label="${i18n:_('Delete')}"
+                        onClick="controller.confirmDelete(self.parent.parent.value)"/>
+                </hbox>
+            </row>
+        </rows>
+    </grid>
+    <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()"/>
+</window>
