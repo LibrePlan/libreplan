@@ -8,7 +8,6 @@ public class ResourcePerDayUnit {
 
     public static ResourcePerDayUnit amount(int amount) {
         return new ResourcePerDayUnit(amount);
-
     }
 
     private ResourcePerDayUnit(int amount) {
@@ -18,5 +17,10 @@ public class ResourcePerDayUnit {
 
     public int getAmount() {
         return amount;
+    }
+
+    public int asHoursGivenResourceWorkingDayOf(
+            Integer resourceWorkingDayHours) {
+        return getAmount() * resourceWorkingDayHours;
     }
 }

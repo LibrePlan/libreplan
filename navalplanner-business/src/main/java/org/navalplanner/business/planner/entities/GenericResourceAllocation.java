@@ -130,7 +130,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
             }
             Integer workableHours = SameWorkHoursEveryDay
                     .getDefaultWorkingDay().getWorkableHours(day);
-            return resourcesPerDay.getAmount() * workableHours;
+            return resourcesPerDay.asHoursGivenResourceWorkingDayOf(workableHours);
         }
 
         private boolean isTaskFreeDay(LocalDate day) {

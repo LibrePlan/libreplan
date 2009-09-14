@@ -19,4 +19,10 @@ public class ResourcePerDayUnitTest {
         assertThat(units.getAmount(), equalTo(2));
     }
 
+    @Test
+    public void canBeConvertedToHoursGivenTheWorkingDayHours() {
+        ResourcePerDayUnit units = ResourcePerDayUnit.amount(2);
+        assertThat(units.asHoursGivenResourceWorkingDayOf(8), equalTo(16));
+    }
+
 }
