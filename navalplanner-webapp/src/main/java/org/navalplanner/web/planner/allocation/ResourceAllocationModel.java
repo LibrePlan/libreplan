@@ -57,20 +57,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         return task;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public void setTask(Task task) {
-        if (!taskElementDAO.exists(task.getId())) {
-            this.task = task;
-            return;
-        }
-        this.task = findFromDB(task);
-        reattachResourceAllocations(this.task.getResourceAllocations());
-        hoursGroupDAO.save(this.task.getHoursGroup());
-        reattachHoursGroup(this.task.getHoursGroup());
-        reattachCriterions(this.task.getHoursGroup().getCriterions());
-    }
-
     private Task findFromDB(Task task) {
         try {
             return (Task) taskElementDAO.find(task.getId());
@@ -224,11 +210,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
-    public void setGanttTask(org.zkoss.ganttz.data.Task ganttTask) {
-        this.ganttTask = ganttTask;
-    }
-
-    @Override
     public void cancel() {
         task.clearResourceAllocations();
     }
@@ -237,6 +218,21 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional
     public void save() {
         taskElementDAO.save(task);
+    }
+
+    @Override
+    public void initAllocationsFor(Task task,
+            org.zkoss.ganttz.data.Task ganttTask) {
+        this.ganttTask = ganttTask;
+        if (!taskElementDAO.exists(task.getId())) {
+            this.task = task;
+            return;
+        }
+        this.task = findFromDB(task);
+        reattachResourceAllocations(this.task.getResourceAllocations());
+        hoursGroupDAO.save(this.task.getHoursGroup());
+        reattachHoursGroup(this.task.getHoursGroup());
+        reattachCriterions(this.task.getHoursGroup().getCriterions());
     }
 
 }

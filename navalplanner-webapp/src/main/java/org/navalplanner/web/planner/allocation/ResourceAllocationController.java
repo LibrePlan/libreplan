@@ -71,9 +71,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
      * @param ganttTask
      */
     public void showWindow(Task task, org.zkoss.ganttz.data.Task ganttTask) {
-        resourceAllocationModel.setTask(task);
-        resourceAllocationModel.setGanttTask(ganttTask);
-
+        resourceAllocationModel.initAllocationsFor(task, ganttTask);
         resourceAllocationModel
                 .addGenericResourceAllocationIfNoAllocationExists();
         Util.reloadBindings(window);

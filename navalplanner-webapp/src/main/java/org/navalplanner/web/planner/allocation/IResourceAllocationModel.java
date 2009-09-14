@@ -74,22 +74,6 @@ public interface IResourceAllocationModel {
             SpecificResourceAllocation resourceAllocation);
 
     /**
-     * Sets the current Gantt {@link org.zkoss.ganttz.data.Task ganttTask},
-     * where the user is allocating resources.
-     *
-     * @param ganttTask
-     */
-    void setGanttTask(org.zkoss.ganttz.data.Task ganttTask);
-
-    /**
-     * Sets the current {@link Task}, where the user is allocating resources.
-     *
-     * @param task
-     *            A {@link Task}
-     */
-    void setTask(Task task);
-
-    /**
      * Cancel operation
      */
     void cancel();
@@ -98,5 +82,12 @@ public interface IResourceAllocationModel {
      * Save task
      */
     void save();
+
+    /**
+     * Starts the use case
+     * @param task
+     * @param ganttTask
+     */
+    void initAllocationsFor(Task task, org.zkoss.ganttz.data.Task ganttTask);
 
 }
