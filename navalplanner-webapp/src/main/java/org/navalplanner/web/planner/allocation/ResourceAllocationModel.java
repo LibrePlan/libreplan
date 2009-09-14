@@ -4,7 +4,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -16,7 +15,6 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -46,9 +44,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Autowired
     private IHoursGroupDAO hoursGroupDAO;
-
-    @Autowired
-    private IResourceDAO resourceDAO;
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
@@ -150,7 +145,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         reattachWorker(worker);
         // Check if worker was itself a generic resource
         if (worker.satisfiesCriterions(getCriterions())) {
-            Set<GenericResourceAllocation> genericResourceAllocations = getGenericResourceAllocations();
+            Set<GenericResourceAllocation> genericResourceAllocations = task.getGenericResourceAllocations();
             // Generic resources always match criterions, so we need to remove
             // one generic resource to leave room for a specific resource
             if (genericResourceAllocations.size() > 0) {
@@ -159,12 +154,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             }
         }
         task.addResourceAllocation(resourceAllocation);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Set<GenericResourceAllocation> getGenericResourceAllocations() {
-        return task.getGenericResourceAllocations();
     }
 
     @Override
@@ -204,21 +193,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private BigDecimal getSumPercentage(Set resourceAllocations) {
-        BigDecimal result = new BigDecimal(0);
-
-        for (Iterator i = resourceAllocations.iterator(); i.hasNext();) {
-            ResourceAllocation resourceAllocation = (ResourceAllocation) i.next();
-            BigDecimal percentage = (resourceAllocation.getPercentage() != null) ? resourceAllocation
-                    .getPercentage()
-                    : new BigDecimal(0);
-            result = result.add(percentage);
-        }
-
-        return result;
-    }
-
     private SpecificResourceAllocation findSpecificResourceAllocationByWorker(Worker worker) {
         for (SpecificResourceAllocation resourceAllocation : task
                 .getSpecificResourceAllocations()) {
@@ -246,14 +220,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     public void setGanttTask(org.zkoss.ganttz.data.Task ganttTask) {
         this.ganttTask = ganttTask;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public void updateGanttTaskDuration() {
-        taskElementDAO.save(task);
-        task.getDuration();
-        ganttTask.setEndDate(task.getEndDate());
     }
 
     @Override

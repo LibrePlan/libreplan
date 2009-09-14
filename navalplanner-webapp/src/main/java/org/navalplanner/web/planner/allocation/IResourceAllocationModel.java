@@ -42,13 +42,6 @@ public interface IResourceAllocationModel {
     Set<Criterion> getCriterions();
 
     /**
-     * Returns {@link Set} of {@link GenericResourceAllocation} of current
-     *
-     * @return
-     */
-    Set<GenericResourceAllocation> getGenericResourceAllocations();
-
-    /**
      * Returns the {@link Set} of {@link ResourceAllocation} of the current
      * {@link Task}.
      *
@@ -95,15 +88,6 @@ public interface IResourceAllocationModel {
      *            A {@link Task}
      */
     void setTask(Task task);
-
-    /**
-     * Update the duration of the current Gantt
-     * {@link org.zkoss.ganttz.data.Task ganttTask}, depending on the resources
-     * assigned and the dedication.
-     *
-     * @param ganttTask
-     */
-    void updateGanttTaskDuration();
 
     /**
      * Cancel operation
