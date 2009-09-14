@@ -35,8 +35,6 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
 
     private Window editWindow;
 
-    private Grid labelTypes;
-
     private OnlyOneVisible visibility;
 
     private IMessagesForUser messagesForUser;
@@ -81,7 +79,11 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
             if (Messagebox.show(_("Delete item. Are you sure?"), _("Confirm"),
                     Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
                 labelTypeModel.confirmDelete(labelType);
-                Util.reloadBindings(labelTypes);
+                Grid labelTypes = (Grid) listWindow
+                        .getFellowIfAny("labelTypes");
+                if (labelTypes != null) {
+                    Util.reloadBindings(labelTypes);
+                }
             }
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
