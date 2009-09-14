@@ -137,4 +137,8 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         Util.reloadBindings(editWindow);
     }
 
+    public void cancel() {
+        goToList();
+    }
+
 }
