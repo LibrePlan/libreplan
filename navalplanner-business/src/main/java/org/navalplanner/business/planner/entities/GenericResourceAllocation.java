@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
@@ -85,13 +84,14 @@ public class GenericResourceAllocation extends ResourceAllocation {
         return Collections.unmodifiableSet(criterions);
     }
 
-    private class Allocation implements IAllocatable {
+    private class GenericAllocation extends
+            AssignmentsAllocation<GenericDayAssigment> {
 
         private final List<Resource> resources;
 
         private final List<IWorkHours> workHours;
 
-        public Allocation(List<Resource> resources) {
+        public GenericAllocation(List<Resource> resources) {
             this.resources = resources;
             this.workHours = new ArrayList<IWorkHours>();
             for (Resource resource : resources) {
@@ -99,7 +99,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
             }
         }
 
-        private IWorkHours generateWorkHoursFor(Resource resource) {
+        private final IWorkHours generateWorkHoursFor(Resource resource) {
             List<BaseCalendar> calendars = new ArrayList<BaseCalendar>();
             if (resource.getCalendar() != null) {
                 calendars.add(resource.getCalendar());
@@ -116,47 +116,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
         }
 
         @Override
-        public void allocate(ResourcesPerDay resourcesPerDay) {
-            Task task = getTask();
-            LocalDate startInclusive = new LocalDate(task.getStartDate());
-            List<GenericDayAssigment> assigmentsCreated = new ArrayList<GenericDayAssigment>();
-            for (int i = 0; i < getDaysElapsedAt(task); i++) {
-                LocalDate day = startInclusive.plusDays(i);
-                int totalForDay = calculateTotalToDistribute(day,
-                        resourcesPerDay);
-                assigmentsCreated.addAll(distributeForDay(day, totalForDay));
-            }
-            setResourcesPerDay(resourcesPerDay);
-            setAssigments(assigmentsCreated);
-        }
-
-        private int calculateTotalToDistribute(LocalDate day,
-                ResourcesPerDay resourcesPerDay) {
-            Integer workableHours = getWorkableHoursAt(day);
-            return resourcesPerDay.asHoursGivenResourceWorkingDayOf(workableHours);
-        }
-
-        private Integer getWorkableHoursAt(LocalDate day) {
-            if (getTaskCalendar() == null) {
-                return SameWorkHoursEveryDay.getDefaultWorkingDay()
-                        .getWorkableHours(day);
-            } else {
-                return getTaskCalendar().getWorkableHours(day);
-            }
-        }
-
-        private BaseCalendar getTaskCalendar() {
-            return getTask().getCalendar();
-        }
-
-        private int getDaysElapsedAt(Task task) {
-            LocalDate endExclusive = new LocalDate(task.getEndDate());
-            Days daysBetween = Days.daysBetween(new LocalDate(task
-                    .getStartDate()), endExclusive);
-            return daysBetween.getDays();
-        }
-
-        private List<GenericDayAssigment> distributeForDay(LocalDate day,
+        protected List<GenericDayAssigment> distributeForDay(LocalDate day,
                 int totalHours) {
             List<GenericDayAssigment> result = new ArrayList<GenericDayAssigment>();
             List<Share> shares = currentSharesFor(day);
@@ -188,10 +148,15 @@ public class GenericResourceAllocation extends ResourceAllocation {
             return shares;
         }
 
+        @Override
+        protected void resetAssignmentsTo(List<GenericDayAssigment> assignments) {
+            setAssigments(assignments);
+        }
+
     }
 
     public IAllocatable forResources(Collection<? extends Resource> resources) {
-        return new Allocation(new ArrayList<Resource>(resources));
+        return new GenericAllocation(new ArrayList<Resource>(resources));
     }
 
     private void setAssigments(List<GenericDayAssigment> assignmentsCreated) {
