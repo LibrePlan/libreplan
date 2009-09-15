@@ -8,6 +8,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.test.planner.entities.DayAssigmentMatchers.from;
+import static org.navalplanner.business.test.planner.entities.DayAssigmentMatchers.haveHours;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,9 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
@@ -170,11 +169,8 @@ public class GenericResourceAllocationTest {
 
         List<GenericDayAssigment> orderedAssigmentsFor = genericResourceAllocation
                 .getOrderedAssigmentsFor(worker1);
-        assertThat(orderedAssigmentsFor.size(), equalTo(TASK_DURATION_DAYS));
-        for (int i = 0; i < TASK_DURATION_DAYS; i++) {
-            assertThat(orderedAssigmentsFor.get(i).getDay(), equalTo(start
-                    .plusDays(i)));
-        }
+        assertThat(orderedAssigmentsFor, from(start).consecutiveDays(
+                TASK_DURATION_DAYS));
     }
 
     @Test
@@ -227,7 +223,7 @@ public class GenericResourceAllocationTest {
 
         List<GenericDayAssigment> assigmments = genericResourceAllocation
                 .getOrderedAssigmentsFor(worker1);
-        assertThat(assigmments.get(0).getHours(), equalTo(halfWorkingDay));
+        assertThat(assigmments, haveHours(halfWorkingDay));
     }
 
     @Test
@@ -273,31 +269,6 @@ public class GenericResourceAllocationTest {
         List<GenericDayAssigment> assigmentsWorker3 = genericResourceAllocation
                 .getOrderedAssigmentsFor(worker3);
         assertThat(assigmentsWorker3, haveHours(5, 5, 5, 5));
-    }
-
-    private Matcher<List<GenericDayAssigment>> haveHours(final int... hours) {
-        return new BaseMatcher<List<GenericDayAssigment>>() {
-
-            @Override
-            public boolean matches(Object value) {
-                if (value instanceof List) {
-                    List<GenericDayAssigment> assigments = (List<GenericDayAssigment>) value;
-                    for (int i = 0; i < hours.length; i++) {
-                        if (hours[i] != assigments.get(i).getHours()) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("must have hours: "
-                        + Arrays.toString(hours));
-            }
-        };
     }
 
     private static Interval toInterval(LocalDate start, Period period) {
