@@ -43,7 +43,7 @@ public class ResourceTest {
         Criterion other = CriterionDAOTest.createValidCriterion();
         CriterionTypeBase type = createTypeThatMatches(false, criterion);
         CriterionTypeBase otherType = createTypeThatMatches(false, other);
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         assertThat(worker.getSatisfactionsFor(criterion).size(), equalTo(0));
         worker.addSatisfaction(new CriterionWithItsType(type, criterion));
         assertTrue(criterion.isSatisfiedBy(worker));
@@ -56,14 +56,14 @@ public class ResourceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void getSatisfactionsForWrongIntervalThrowsException() {
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         worker.query().from(CriterionDAOTest.createValidCriterion())
                 .enforcedInAll(Interval.range(year(2000), year(1999))).result();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getSatisfactionsForWrongIntervalForCriterionTypeThrowsException() {
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         worker.query().from(createTypeThatMatches()).enforcedInAll(
                 Interval.range(year(2000), year(1999))).current().result();
     }
@@ -77,7 +77,7 @@ public class ResourceTest {
                 criterionType, criterion);
         CriterionWithItsType otherCriterionWithItsType = new CriterionWithItsType(
                 createTypeThatMatches(otherCriterion), otherCriterion);
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         worker.addSatisfaction(criterionWithItsType, Interval
                 .from(CriterionSatisfactionDAOTest.year(2000)));
         worker.addSatisfaction(otherCriterionWithItsType, Interval
@@ -98,7 +98,7 @@ public class ResourceTest {
                 type, criterion);
         CriterionWithItsType otherCriterionWithItsType = new CriterionWithItsType(
                 type, otherCriterion);
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         assertThat(worker.getCurrentCriterionsFor(type).size(), equalTo(0));
         worker.addSatisfaction(criterionWithItsType, Interval
                 .from(CriterionSatisfactionDAOTest.year(2000)));
@@ -158,7 +158,7 @@ public class ResourceTest {
         CriterionWithItsType otherCriterionWithItsType = new CriterionWithItsType(
                 createTypeThatMatches(otherCriterion), otherCriterion);
 
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         worker.addSatisfaction(criterionWithItsType, Interval
                 .from(CriterionSatisfactionDAOTest.year(2000)));
         worker.addSatisfaction(criterionWithItsType, Interval
@@ -190,7 +190,7 @@ public class ResourceTest {
     public void testAddAndRemoveSatisfactions() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         ICriterionType<Criterion> criterionType = createTypeThatMatches(false,
                 criterion, otherCriterion);
         assertThat(worker.getCurrentSatisfactionsFor(criterion).size(),
@@ -228,7 +228,7 @@ public class ResourceTest {
     public void testAddAtDate() throws Exception {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         ICriterionType<Criterion> criterionType = createTypeThatMatches(false,
                 criterion, otherCriterion);
         worker.addSatisfaction(new CriterionWithItsType(criterionType,
@@ -268,7 +268,7 @@ public class ResourceTest {
     public void addOnlyUntilNextCriterionIsActive() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         ICriterionType<Criterion> criterionType = createTypeThatMatches(false,
                 criterion, otherCriterion);
         worker.addSatisfaction(new CriterionWithItsType(criterionType,
@@ -287,7 +287,7 @@ public class ResourceTest {
     public void testCantAddOverlappingTotally() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         ICriterionType<Criterion> criterionType = createTypeThatMatches(false,
                 criterion, otherCriterion);
         worker.addSatisfaction(new CriterionWithItsType(criterionType,
@@ -303,7 +303,7 @@ public class ResourceTest {
     public void testCantAddIfOverlapsPartially() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         ICriterionType<Criterion> criterionType = createTypeThatMatches(false,
                 criterion, otherCriterion);
         worker.addSatisfaction(new CriterionWithItsType(criterionType,
@@ -319,8 +319,8 @@ public class ResourceTest {
     public void testCantAddWrongCriterionSatisfaction() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
-        Worker other = Worker.create("other", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
+        Worker other = Worker.create("other", "surName", "2333232");
         ICriterionType<Criterion> criterionType = createTypeThatMatches(false,
                 criterion);
         List<CriterionSatisfaction> wrongSatisfactions = new ArrayList<CriterionSatisfaction>();
@@ -345,7 +345,7 @@ public class ResourceTest {
 
     public void testAddCriterionSatisfaction() throws Exception {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         ICriterionType<Criterion> criterionType = createTypeThatMatches(false,
                 criterion);
         CriterionSatisfaction satisfaction = createValid(criterion, worker);
@@ -365,7 +365,7 @@ public class ResourceTest {
     @Test(expected = IllegalStateException.class)
     public void shouldntAdd() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
-        Worker worker = Worker.create("firstName", "surName", "2333232", 10);
+        Worker worker = Worker.create("firstName", "surName", "2333232");
         ICriterionType<?> type = new CriterionTypeBase("prueba", false, false,
                 false, false) {
 
@@ -490,7 +490,7 @@ public class ResourceTest {
     }
 
     private void givenWorker() {
-        worker = Worker.create("firstName", "surName", "2333232", 10);
+        worker = Worker.create("firstName", "surName", "2333232");
     }
 
 }

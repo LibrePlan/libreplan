@@ -5,7 +5,6 @@
             <column label="${i18n:_('First name')}" sort="auto(firstName)" />
             <column label="${i18n:_('Surname')}" sort="auto(surname)" />
             <column label="${i18n:_('NIF')}" sort="auto(nif)" />
-            <column label="${i18n:_('Daily hours')}" sort="auto(dailyHours)" />
             <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>
@@ -13,7 +12,6 @@
                 <label value="@{worker.firstName}" />
                 <label value="@{worker.surname}" />
                 <label value="@{worker.nif}" />
-                <label value="@{worker.dailyHours}" />
                 <hbox>
                     <button label="${i18n:_('Edit')}"
                         onClick="controller.goToEditForm(self.getParent().getParent().value);">

@@ -66,7 +66,6 @@ public class ResourceDAOTest {
         worker.setFirstName("First name");
         worker.setSurname("Surname");
         worker.setNif("NIF");
-        worker.setDailyHours(8);
         return worker;
     }
 

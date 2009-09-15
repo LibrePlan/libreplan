@@ -31,7 +31,6 @@
       <property name="firstName"/>
       <property name="surname"/>
       <property name="nif"/>
-      <property name="dailyHours"/>
     </joined-subclass>
   </class>
 

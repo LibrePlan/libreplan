@@ -77,7 +77,6 @@ public class ResourceAllocationDAOTest {
         worker.setFirstName(UUID.randomUUID().toString());
         worker.setSurname(UUID.randomUUID().toString());
         worker.setNif(UUID.randomUUID().toString());
-        worker.setDailyHours(10);
         resourceDAO.save(worker);
         return worker;
     }

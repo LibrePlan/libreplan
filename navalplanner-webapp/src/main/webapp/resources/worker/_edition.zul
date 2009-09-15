@@ -31,11 +31,6 @@
                             <label value="${i18n:_('NIF')}" />
                             <textbox value="@{controller.worker.nif}" />
                         </row>
-                        <row>
-                            <label value="${i18n:_('Daily hours')}" />
-                            <textbox
-                                value="@{controller.worker.dailyHours}" />
-                        </row>
                     </rows>
                 </grid>
             </tabpanel>

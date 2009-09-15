@@ -46,7 +46,7 @@ public class DayAssigmentDAOTest {
     }
 
     private Resource createValidResource() {
-        Worker worker = Worker.create("first", "surname", "1221332132A", 5);
+        Worker worker = Worker.create("first", "surname", "1221332132A");
         resourceDAO.save(worker);
         return worker;
     }
@@ -77,7 +77,8 @@ public class DayAssigmentDAOTest {
 
     @Test(expected = DataIntegrityViolationException.class)
     public void theRelatedResourceMustExistInOrderToSave() {
-        Worker transientWorker = Worker.create("first", "surname", "1221332132A", 5);
+        Worker transientWorker = Worker.create("first", "surname",
+                "1221332132A");
         SpecificDayAssigment dayAssigment = SpecificDayAssigment.create(
                 new LocalDate(2009, 1, 2), 8, transientWorker);
         dayAssigmentDAO.save(dayAssigment);

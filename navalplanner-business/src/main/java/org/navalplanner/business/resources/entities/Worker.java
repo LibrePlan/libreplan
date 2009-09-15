@@ -3,7 +3,6 @@ package org.navalplanner.business.resources.entities;
 import java.util.ArrayList;
 import java.util.Set;
 
-import org.hibernate.validator.Min;
 import org.hibernate.validator.NotEmpty;
 
 /**
@@ -19,9 +18,8 @@ public class Worker extends Resource {
         return worker;
     }
 
-    public static Worker create(String firstName, String surname, String nif,
-            int dailyHours) {
-        Worker worker = new Worker(firstName, surname, nif, dailyHours);
+    public static Worker create(String firstName, String surname, String nif) {
+        Worker worker = new Worker(firstName, surname, nif);
         worker.setNewObject(true);
         return worker;
     }
@@ -35,9 +33,6 @@ public class Worker extends Resource {
     @NotEmpty
     private String nif;
 
-    @Min(0)
-    private int dailyHours;
-
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -45,11 +40,10 @@ public class Worker extends Resource {
 
     }
 
-    private Worker(String firstName, String surname, String nif, int dailyHours) {
+    private Worker(String firstName, String surname, String nif) {
         this.firstName = firstName;
         this.surname = surname;
         this.nif = nif;
-        this.dailyHours = dailyHours;
     }
 
     @Override
@@ -83,18 +77,6 @@ public class Worker extends Resource {
 
     public void setNif(String nif) {
         this.nif = nif;
-    }
-
-    public int getDailyHours() {
-        return dailyHours;
-    }
-
-    public void setDailyHours(int dailyHours) {
-        this.dailyHours = dailyHours;
-    }
-
-    public int getDailyCapacity() {
-        return dailyHours;
     }
 
     public boolean satisfiesCriterions(Set<Criterion> criterions) {

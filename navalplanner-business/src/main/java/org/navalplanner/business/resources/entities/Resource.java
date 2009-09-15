@@ -194,8 +194,6 @@ public abstract class Resource extends BaseEntity{
         return new Query();
     }
 
-    public abstract int getDailyCapacity();
-
     public Set<CriterionSatisfaction> getAllSatisfactions() {
         return new HashSet<CriterionSatisfaction>(criterionSatisfactions);
     }

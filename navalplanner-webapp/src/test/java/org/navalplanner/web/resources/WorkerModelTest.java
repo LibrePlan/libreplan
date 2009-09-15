@@ -29,7 +29,6 @@ public class WorkerModelTest {
         IResourceDAO resourceDAOMock = createMock(IResourceDAO.class);
         ICriterionDAO criterionServiceMock = createMock(ICriterionDAO.class);
         Worker workerToReturn = Worker.create();
-        workerToReturn.setDailyHours(2);
         workerToReturn.setFirstName("firstName");
         workerToReturn.setSurname("surname");
         workerToReturn.setNif("232344243");
