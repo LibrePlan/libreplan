@@ -21,8 +21,6 @@ import org.zkoss.zul.Intbox;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class EditTaskController extends GenericForwardComposer {
 
-    private IEditTaskModel editTaskModel;
-
     private TaskElement currentTaskElement;
 
     private Intbox hours;
@@ -59,7 +57,7 @@ public class EditTaskController extends GenericForwardComposer {
             // Sets the value of fields
             fixedDuration.setChecked(task.isFixedDuration() == null ? false
                     : task.isFixedDuration());
-            duration.setValue(editTaskModel.getDuration(task));
+            duration.setValue(task.getDaysDuration());
 
             // Disable some fields depending on fixedDuration value
             duration.setDisabled(task.isFixedDuration() == null ? true : !task
