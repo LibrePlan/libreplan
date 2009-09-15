@@ -85,11 +85,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
         return Collections.unmodifiableSet(criterions);
     }
 
-    public interface IAllocation {
-        public void allocate(ResourcesPerDay resourcesPerDay);
-    }
-
-    private class Allocation implements IAllocation {
+    private class Allocation implements IAllocatable {
 
         private final List<Resource> resources;
 
@@ -194,7 +190,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
 
     }
 
-    public IAllocation forResources(Collection<? extends Resource> resources) {
+    public IAllocatable forResources(Collection<? extends Resource> resources) {
         return new Allocation(new ArrayList<Resource>(resources));
     }
 
