@@ -1,19 +1,21 @@
 package org.navalplanner.business.planner.entities;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * Represents the relation between {@link Task} and a specific {@link Worker}.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class SpecificResourceAllocation extends ResourceAllocation {
+public class SpecificResourceAllocation extends ResourceAllocation implements
+        IAllocatable {
 
     public static SpecificResourceAllocation create(Task task) {
         return (SpecificResourceAllocation) create(new SpecificResourceAllocation(
@@ -55,12 +57,36 @@ public class SpecificResourceAllocation extends ResourceAllocation {
         this.worker = worker;
     }
 
-    public Set<SpecificDayAssigment> getSpecificDaysAssigment() {
-        return Collections.unmodifiableSet(specificDaysAssigment);
+    @Override
+    public List<SpecificDayAssigment> getAssignments() {
+        return DayAssigment.orderedByDay(specificDaysAssigment);
+    }
+
+    private void setAssignments(List<SpecificDayAssigment> assignments) {
+        this.specificDaysAssigment = new HashSet<SpecificDayAssigment>(
+                assignments);
     }
 
     @Override
-    protected List<? extends DayAssigment> getAssignments() {
-        return DayAssigment.orderedByDay(specificDaysAssigment);
+    public void allocate(ResourcesPerDay resourcesPerDay) {
+        Validate.notNull(resourcesPerDay);
+        Validate.notNull(worker);
+        AssignmentsAllocation<SpecificDayAssigment> assignmentsAllocation = new AssignmentsAllocation<SpecificDayAssigment>() {
+
+            @Override
+            protected List<SpecificDayAssigment> distributeForDay(
+                    LocalDate day, int totalHours) {
+                return Arrays.asList(SpecificDayAssigment.create(day,
+                        totalHours, worker));
+            }
+
+            @Override
+            protected void resetAssignmentsTo(
+                    List<SpecificDayAssigment> assignments) {
+                setAssignments(assignments);
+            }
+        };
+
+        assignmentsAllocation.allocate(resourcesPerDay);
     }
 }
