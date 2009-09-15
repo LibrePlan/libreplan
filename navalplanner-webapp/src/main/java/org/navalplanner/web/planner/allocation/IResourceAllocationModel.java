@@ -1,5 +1,6 @@
 package org.navalplanner.web.planner.allocation;
 
+import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -16,12 +17,6 @@ import org.navalplanner.business.resources.entities.Worker;
  * @author Diego Pino García <dpino@igalia.com>
  */
 public interface IResourceAllocationModel {
-
-    /**
-     * Adds a new {@link GenericResourceAllocation} to the current {@link Task}
-     * if no {@link ResourceAllocation} exist.
-     */
-    void addGenericResourceAllocationIfNoAllocationExists();
 
     /**
      * Adds {@link SpecificResourceAllocation} to {@link Task}
@@ -42,12 +37,11 @@ public interface IResourceAllocationModel {
     Set<Criterion> getCriterions();
 
     /**
-     * Returns the {@link Set} of {@link ResourceAllocation} of the current
-     * {@link Task}.
-     *
-     * @return A {@link Set} of {@link ResourceAllocation}
+     * Returns the {@link List} of {@link AllocationDTO} in the current state of
+     * the conversation.
+     * @return a {@link List} of {@link AllocationDTO}
      */
-    Set<ResourceAllocation> getResourceAllocations();
+    List<AllocationDTO> getAllocations();
 
     /**
      * Gets the current {@link Task} object.
@@ -65,13 +59,10 @@ public interface IResourceAllocationModel {
     void removeResourceAllocation(ResourceAllocation resourceAllocation);
 
     /**
-     * Removes {@link SpecificResourceAllocation} from current {@link Task}
-     * {@link ResourceAllocation} list
-     *
-     * @param resourceAllocation
+     * Removes {@link SpecificResourceAllocation} from current allocations list
+     * @param data
      */
-    void removeSpecificResourceAllocation(
-            SpecificResourceAllocation resourceAllocation);
+    void removeSpecificResourceAllocation(SpecificAllocationDTO data);
 
     /**
      * Cancel operation

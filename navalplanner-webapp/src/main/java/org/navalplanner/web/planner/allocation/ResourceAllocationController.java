@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -37,7 +37,6 @@ import org.zkoss.zul.api.Window;
 
 /**
  * Controller for {@link ResourceAllocation} view.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
@@ -66,14 +65,11 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     /**
      * Shows Resource Allocation window
-     *
      * @param task
      * @param ganttTask
      */
     public void showWindow(Task task, org.zkoss.ganttz.data.Task ganttTask) {
         resourceAllocationModel.initAllocationsFor(task, ganttTask);
-        resourceAllocationModel
-                .addGenericResourceAllocationIfNoAllocationExists();
         Util.reloadBindings(window);
         try {
             window.doModal();
@@ -87,7 +83,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     /**
      * Shows WorkerSearch window, add picked workers as
      * {@link SpecificResourceAllocation} to {@link ResourceAllocation} list
-     *
      * @return
      */
     public void showSearchResources() {
@@ -113,7 +108,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     /**
      * Adds a list of {@link Worker} to {@link ResourceAllocation} list
-     *
      * @param workers
      */
     private void addSpecificResourceAllocations(List<Worker> workers) {
@@ -132,7 +126,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     /**
      * Returns list of {@link Criterion} separated by comma
-     *
      * @return
      */
     public String getTaskCriterions() {
@@ -148,7 +141,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     /**
      * Returns hours of {@link Task}
-     *
      * @return
      */
     public String getTaskHours() {
@@ -159,7 +151,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     /**
      * Returns type of {@link Task} based on value of fixedDuration attribute
-     *
      * @return
      */
     public String getTaskType() {
@@ -168,8 +159,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 : _("Variable duration");
     }
 
-    public Set<ResourceAllocation> getResourceAllocations() {
-        return resourceAllocationModel.getResourceAllocations();
+    public List<AllocationDTO> getResourceAllocations() {
+        return resourceAllocationModel.getAllocations();
     }
 
     public ResourceAllocationRenderer getResourceAllocationRenderer() {
@@ -202,64 +193,64 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     /**
-     *
      * Renders a {@link SpecificResourceAllocation} item
-     *
      * @author Diego Pino Garcia <dpino@igalia.com>
-     *
      */
     private class ResourceAllocationRenderer implements ListitemRenderer {
 
         @Override
         public void render(Listitem item, Object data) throws Exception {
-            if (data instanceof SpecificResourceAllocation) {
+            if (data instanceof SpecificAllocationDTO) {
                 renderSpecificResourceAllocation(item,
-                        (SpecificResourceAllocation) data);
-            }
-            if (data instanceof GenericResourceAllocation) {
+                        (SpecificAllocationDTO) data);
+            } else if (data instanceof GenericAllocationDTO) {
                 renderGenericResourceAllocation(item,
-                        (GenericResourceAllocation) data);
+                        (GenericAllocationDTO) data);
             }
         }
 
         private void renderSpecificResourceAllocation(Listitem item,
-                final SpecificResourceAllocation resourceAllocation)
-                throws Exception {
-            item.setValue(resourceAllocation);
+                final SpecificAllocationDTO data) throws Exception {
+            item.setValue(data);
 
             // Label fields are fixed, can only be viewed
-            appendLabel(item, resourceAllocation.getWorker().getName());
+            appendLabel(item, getName(data.getResource()));
             // appendLabel(item, resourceAllocation.getWorker().getNif());
             // Percentage field is editable
-            bindPercentage(appendDecimalbox(item), resourceAllocation);
+            bindPercentage(appendDecimalbox(item), data);
             // On click delete button
             appendButton(item, _("Delete")).addEventListener("onClick",
                     new EventListener() {
 
                         @Override
                         public void onEvent(Event event) throws Exception {
-                            removeSpecificResourceAllocation(resourceAllocation);
+                            removeSpecificResourceAllocation(data);
                         }
                     });
         }
 
-        private void removeSpecificResourceAllocation(
-                SpecificResourceAllocation resourceAllocation) {
-            resourceAllocationModel
-                    .removeSpecificResourceAllocation(resourceAllocation);
+        private String getName(Resource resource) {
+            if (resource instanceof Worker) {
+                Worker worker = (Worker) resource;
+                return worker.getName();
+            }
+            return resource.getDescription();
+        }
+
+        private void removeSpecificResourceAllocation(SpecificAllocationDTO data) {
+            resourceAllocationModel.removeSpecificResourceAllocation(data);
             Util.reloadBindings(resourcesList);
         }
 
         private void renderGenericResourceAllocation(Listitem item,
-                final GenericResourceAllocation resourceAllocation)
-                throws Exception {
-            item.setValue(resourceAllocation);
+                final GenericAllocationDTO data) throws Exception {
+            item.setValue(data);
 
             // Set name
             appendLabel(item, _("Generic"));
             // Set percentage
-            BigDecimal percentage = resourceAllocation.getPercentage();
-            if (!new BigDecimal(0).equals(resourceAllocation.getPercentage())) {
+            BigDecimal percentage = data.getPercentage();
+            if (!new BigDecimal(0).equals(data.getPercentage())) {
                 percentage = (percentage != null) ? percentage
                         : new BigDecimal(0);
                 percentage = percentage.scaleByPowerOfTen(2).setScale(2,
@@ -272,7 +263,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         /**
          * Appends {@link Label} to {@link Listitem}
-         *
          * @param listitem
          * @param name
          *            value for {@link Label}
@@ -287,7 +277,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         /**
          * Appends {@link Button} to {@link Listitem}
-         *
          * @param listitem
          * @param label
          *            value for {@link Button}
@@ -305,7 +294,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         /**
          * Append a Textbox @{link Percentage} to listItem
-         *
          * @param listItem
          */
         private Decimalbox appendDecimalbox(Listitem item) {
@@ -319,20 +307,13 @@ public class ResourceAllocationController extends GenericForwardComposer {
             return decimalbox;
         }
 
-        /**
-         * Binds Textbox @{link Percentage} to a {@link ResourceAllocation}
-         * {@link Percentage}
-         *
-         * @param txtPercentage
-         * @param resourceAllocation
-         */
         private void bindPercentage(final Decimalbox decimalbox,
-                final ResourceAllocation resourceAllocation) {
+                final SpecificAllocationDTO data) {
             Util.bind(decimalbox, new Util.Getter<BigDecimal>() {
 
                 @Override
                 public BigDecimal get() {
-                    return (resourceAllocation.getPercentage() != null) ? resourceAllocation
+                    return (data.getPercentage() != null) ? data
                             .getPercentage().scaleByPowerOfTen(2)
                             : new BigDecimal(0);
                 }
@@ -344,7 +325,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     if (value != null) {
                         value = value.setScale(2).divide(new BigDecimal(100),
                                 BigDecimal.ROUND_HALF_EVEN);
-                        decimalbox.setValue(value);
+                        data.setPercentage(value);
                     }
                 }
             });
