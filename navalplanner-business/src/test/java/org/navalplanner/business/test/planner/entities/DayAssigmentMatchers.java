@@ -1,5 +1,6 @@
 package org.navalplanner.business.test.planner.entities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.joda.time.LocalDate;
+import org.junit.matchers.CombinableMatcher;
 import org.junit.matchers.JUnitMatchers;
 import org.navalplanner.business.planner.entities.DayAssigment;
 import org.navalplanner.business.planner.entities.GenericDayAssigment;
@@ -17,22 +19,28 @@ import org.navalplanner.business.planner.entities.GenericDayAssigment;
  */
 public class DayAssigmentMatchers {
 
-    public static final class FromMatcher extends
+    public static abstract class ListDayAssigmentsMatcher extends
             BaseMatcher<List<? extends DayAssigment>> {
+
+        @Override
+        final public boolean matches(Object value) {
+            if (value instanceof List) {
+                List<DayAssigment> dayAssigments = new ArrayList<DayAssigment>(
+                        (List<DayAssigment>) value);
+                return matches(dayAssigments);
+            }
+            return false;
+        }
+
+        protected abstract boolean matches(List<DayAssigment> assignments);
+
+    }
+
+    public static final class FromMatcher extends ListDayAssigmentsMatcher {
         private final LocalDate start;
 
         private FromMatcher(LocalDate start) {
             this.start = start;
-        }
-
-        @Override
-        public boolean matches(Object value) {
-            if (value instanceof List) {
-                List<? extends DayAssigment> assigments = (List<? extends GenericDayAssigment>) value;
-                return !assigments.isEmpty()
-                        && assigments.get(0).getDay().equals(start);
-            }
-            return false;
         }
 
         @Override
@@ -41,9 +49,16 @@ public class DayAssigmentMatchers {
                     + start);
         }
 
-        public Matcher<List<? extends DayAssigment>> consecutiveDays(int days) {
+        public CombinableMatcher<List<? extends DayAssigment>> consecutiveDays(
+                int days) {
             return JUnitMatchers.both(this).and(
                     DayAssigmentMatchers.consecutiveDays(days));
+        }
+
+        @Override
+        protected boolean matches(List<DayAssigment> assignments) {
+            return !assignments.isEmpty()
+                    && assignments.get(0).getDay().equals(start);
         }
     }
 
@@ -75,30 +90,25 @@ public class DayAssigmentMatchers {
         };
     }
 
-    public static Matcher<? extends List<? extends DayAssigment>> consecutiveDays(
-            final int days) {
-        return new BaseMatcher<List<? extends DayAssigment>>() {
+    public static ListDayAssigmentsMatcher consecutiveDays(final int days) {
+        return new ListDayAssigmentsMatcher() {
 
             @Override
-            public boolean matches(Object value) {
-                if (value instanceof List) {
-                    List<? extends DayAssigment> assignments = (List) value;
-                    if (assignments.size() != days) {
-                        return false;
-                    }
-                    if (days == 0) {
-                        return true;
-                    }
-                    LocalDate current = assignments.get(0).getDay();
-                    for (DayAssigment d : assignments) {
-                        if (!d.getDay().equals(current)) {
-                            return false;
-                        }
-                        current = current.plusDays(1);
-                    }
+            public boolean matches(List<DayAssigment> assignments) {
+                if (assignments.size() != days) {
+                    return false;
+                }
+                if (days == 0) {
                     return true;
                 }
-                return false;
+                LocalDate current = assignments.get(0).getDay();
+                for (DayAssigment d : assignments) {
+                    if (!d.getDay().equals(current)) {
+                        return false;
+                    }
+                    current = current.plusDays(1);
+                }
+                return true;
             }
 
             @Override
@@ -109,8 +119,7 @@ public class DayAssigmentMatchers {
         };
     }
 
-    public static final FromMatcher from(
-            final LocalDate start) {
+    public static final FromMatcher from(final LocalDate start) {
         return new FromMatcher(start);
     }
 
