@@ -117,10 +117,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
-    @Transactional
     public void save() {
         mergeDTOsToTask();
-        taskElementDAO.save(task);
     }
 
     private void mergeDTOsToTask() {
