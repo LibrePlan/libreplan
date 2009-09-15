@@ -55,16 +55,13 @@ public class EditTaskController extends GenericForwardComposer {
             Task task = (Task) currentTaskElement;
 
             // Sets the value of fields
-            fixedDuration.setChecked(task.isFixedDuration() == null ? false
-                    : task.isFixedDuration());
+            fixedDuration.setChecked(task.isFixedDuration());
             duration.setValue(task.getDaysDuration());
 
             // Disable some fields depending on fixedDuration value
-            duration.setDisabled(task.isFixedDuration() == null ? true : !task
+            duration.setDisabled(!task.isFixedDuration());
+            ((Datebox) hours.getFellow("endDateBox")).setDisabled(!task
                     .isFixedDuration());
-            ((Datebox) hours.getFellow("endDateBox"))
-                    .setDisabled(task.isFixedDuration() == null ? true : !task
-                            .isFixedDuration());
         } else {
             // If it's a TaskGroup
             // Hide fields

@@ -86,12 +86,12 @@ public class Task extends TaskElement {
         return fixedDuration;
     }
 
-    public void setFixedDuration(Boolean fixed_duration) {
-        this.fixedDuration = fixed_duration;
+    public void setFixedDuration(boolean fixedDuration) {
+        this.fixedDuration = fixedDuration;
     }
 
-    public Boolean isFixedDuration() {
-        return fixedDuration;
+    public boolean isFixedDuration() {
+        return fixedDuration != null && fixedDuration;
     }
 
     public void setDaysDuration(Integer duration) {
