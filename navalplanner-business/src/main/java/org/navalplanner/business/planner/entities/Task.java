@@ -1,6 +1,5 @@
 package org.navalplanner.business.planner.entities;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -30,11 +29,6 @@ public class Task extends TaskElement {
     private HoursGroup hoursGroup;
 
     private Boolean fixedDuration = false;
-
-    /**
-     * Duration in days of the Task
-     */
-    private Integer duration;
 
     private Set<ResourceAllocation> resourceAllocations = new HashSet<ResourceAllocation>();
 
@@ -100,63 +94,21 @@ public class Task extends TaskElement {
         return fixedDuration;
     }
 
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-
-        DateTime endDate = (new DateTime(getStartDate())).plusDays(duration);
+    public void setDaysDuration(Integer duration) {
+        Validate.notNull(duration);
+        Validate.isTrue(duration >= 0);
+        DateTime endDate = toDateTime(getStartDate()).plusDays(duration);
         setEndDate(endDate.toDate());
     }
 
-    @Override
-    public void setEndDate(Date endDate) {
-        super.setEndDate(endDate);
-
-        DateTime startDateTime = new DateTime(getStartDate());
-        DateTime endDateTime = new DateTime(endDate);
-        Days days = Days.daysBetween(startDateTime, endDateTime);
-
-        this.duration = days.getDays();
+    public Integer getDaysDuration() {
+        Days daysBetween = Days.daysBetween(toDateTime(getStartDate()),
+                toDateTime(getEndDate()));
+        return daysBetween.getDays();
     }
 
-    public Integer getDuration() {
-        if ((isFixedDuration() == null) || !isFixedDuration()) {
-            // If it is not fixed, the duration is calculated
-            Integer duration = calculateDaysDuration();
-            setDuration(duration);
-            return duration;
-        }
-
-        return duration;
-    }
-
-    /**
-     * Calculates the number of days needed to complete the Task taking into
-     * account the Resources assigned and their dedication. If the Task has not
-     * yet Resources assigned then a typical 8 hours day will be considered.
-     * @return The days of duration
-     */
-    private Integer calculateDaysDuration() {
-        BigDecimal hoursPerDay = new BigDecimal(0).setScale(2);
-
-        for (ResourceAllocation resourceAllocation : resourceAllocations) {
-            if (resourceAllocation instanceof SpecificResourceAllocation) {
-                BigDecimal percentage = resourceAllocation.getPercentage();
-                Integer hours = ((SpecificResourceAllocation) resourceAllocation)
-                        .getWorker().getDailyCapacity();
-
-                hoursPerDay = hoursPerDay.add(percentage
-                        .multiply(new BigDecimal(hours).setScale(2)));
-            }
-        }
-
-        BigDecimal taskHours = new BigDecimal(getWorkHours()).setScale(2);
-
-        if (hoursPerDay.compareTo(new BigDecimal(0).setScale(2)) == 0) {
-            // FIXME Review, by default 8 hours per day
-            hoursPerDay = new BigDecimal(8).setScale(2);
-        }
-
-        return taskHours.divide(hoursPerDay, BigDecimal.ROUND_DOWN).intValue();
+    private DateTime toDateTime(Date startDate) {
+        return new DateTime(startDate.getTime());
     }
 
     /**
@@ -243,14 +195,4 @@ public class Task extends TaskElement {
         return result;
     }
 
-    public BigDecimal getSumPercentage(
-            List<ResourceAllocation> resourceAllocations) {
-        BigDecimal result = new BigDecimal(0);
-
-        for (ResourceAllocation resourceAllocation : resourceAllocations) {
-            result = result.add(resourceAllocation.getPercentage());
-        }
-
-        return result;
-    }
 }

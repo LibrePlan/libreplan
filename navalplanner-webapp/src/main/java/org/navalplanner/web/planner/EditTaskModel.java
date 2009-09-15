@@ -25,7 +25,7 @@ public class EditTaskModel implements IEditTaskModel {
     public Integer getDuration(Task task) {
         taskElementDAO.save(task);
 
-        return task.getDuration();
+        return task.getDaysDuration();
     }
 
 }

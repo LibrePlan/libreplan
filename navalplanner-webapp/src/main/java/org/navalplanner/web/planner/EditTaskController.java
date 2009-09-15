@@ -103,12 +103,17 @@ public class EditTaskController extends GenericForwardComposer {
     }
 
     public void onChange$duration(Event event) {
-        if (currentTaskElement instanceof Task) {
+        if ((currentTaskElement instanceof Task)
+                && isValidDuration(duration.getValue())) {
             Task task = (Task) currentTaskElement;
-            task.setDuration(duration.getValue());
+            task.setDaysDuration(duration.getValue());
         }
 
         updateComponentValuesForTask();
+    }
+
+    private boolean isValidDuration(Integer duration) {
+        return duration != null && duration > 0;
     }
 
     public void onChange$endDateBox(Event event) {
