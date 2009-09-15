@@ -97,4 +97,11 @@ public abstract class DayAssigment extends BaseEntity {
         };
     }
 
+    public static <T extends DayAssigment> List<T> orderedByDay(
+            Collection<T> dayAssignments) {
+        List<T> result = new ArrayList<T>(dayAssignments);
+        Collections.sort(result, byDayComparator());
+        return result;
+    }
+
 }

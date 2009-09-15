@@ -4,6 +4,7 @@
 package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
@@ -64,5 +65,15 @@ public abstract class ResourceAllocation extends BaseEntity {
     public AssigmentFunction getAssigmentFunction() {
         return assigmentFunction;
     }
+
+    public int getAssignedHours() {
+        int total = 0;
+        for (DayAssigment dayAssigment : getAssignments()) {
+            total += dayAssigment.getHours();
+        }
+        return total;
+    }
+
+    protected abstract List<? extends DayAssigment> getAssignments();
 
 }

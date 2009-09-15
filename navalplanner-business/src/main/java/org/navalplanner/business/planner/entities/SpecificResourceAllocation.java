@@ -2,6 +2,7 @@ package org.navalplanner.business.planner.entities;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.validator.NotNull;
@@ -45,5 +46,10 @@ public class SpecificResourceAllocation extends ResourceAllocation {
 
     public Set<SpecificDayAssigment> getSpecificDaysAssigment() {
         return Collections.unmodifiableSet(specificDaysAssigment);
+    }
+
+    @Override
+    protected List<? extends DayAssigment> getAssignments() {
+        return DayAssigment.orderedByDay(specificDaysAssigment);
     }
 }

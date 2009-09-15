@@ -193,4 +193,9 @@ public class GenericResourceAllocation extends ResourceAllocation {
         clearFieldsCalculatedFromAssignments();
     }
 
+    @Override
+    protected List<? extends DayAssigment> getAssignments() {
+        return DayAssigment.orderedByDay(genericDayAssigments);
+    }
+
 }
