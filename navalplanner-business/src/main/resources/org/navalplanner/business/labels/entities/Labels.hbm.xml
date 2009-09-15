@@ -15,9 +15,9 @@
 
     <many-to-one name="type" class="LabelType" column="LABEL_TYPE_ID"/>
 
-    <set name="orderElements" inverse="false">
-        <key column="LABEL_ID"/>
-        <one-to-many class="org.navalplanner.business.orders.entities.OrderElement"/>
+    <set name="orderElements" table="ORDER_ELEMENT_LABEL">
+        <key column="LABEL_ID" not-null="false"/>
+        <many-to-many column="ORDER_ELEMENT_ID" class="org.navalplanner.business.orders.entities.OrderElement"/>
     </set>
 </class>
 

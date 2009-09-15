@@ -45,9 +45,9 @@
             <one-to-many class="org.navalplanner.business.advance.entities.AdvanceAssigment"></one-to-many>
         </set>
 
-		<set name="labels" access="field" cascade="delete-orphan">
-			<key column="ORDER_ELEMENT_ID" />
-			<one-to-many class="org.navalplanner.business.labels.entities.Label" />
+		<set name="labels" table="ORDER_ELEMENT_LABEL" access="field">
+			<key column="ORDER_ELEMENT_ID" not-null="true"/>
+			<many-to-many column="LABEL_ID" class="org.navalplanner.business.labels.entities.Label" />
 		</set>
 
         <!-- Inverse navigation from OrderElement to OrderLineGroup -->
