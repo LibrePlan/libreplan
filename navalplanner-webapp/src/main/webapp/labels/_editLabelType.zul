@@ -13,22 +13,20 @@
         style="margin: 10px 0px">
         <panelchildren>
             <button label="${i18n:_('New label')}" onClick="controller.createLabel()" />
-            <listbox id="lbLabels" rows="10"
+            <grid id="gridLabels" mold="paging" pageSize="10"
                 model="@{controller.labels}">
-                <listhead>
-                    <listheader label="${i18n:_('Name')}" />
-                    <listheader label="${i18n:_('Operations')}" />
-                </listhead>
-                <listitem self="@{each='label'}" value="@{label}">
-                    <listcell>
+                 <columns sizable="true">
+                     <column label="${i18n:_('Name')}" />
+                     <column label="${i18n:_('Operations')}" />
+                 </columns>
+                 <rows>
+                    <row self="@{each='label'}" value="@{label}">
                         <textbox value="@{label.name}" onChange="controller.onChangeLabelName(event)"/>
-                    </listcell>
-                    <listcell>
                         <button label="${i18n:_('Delete')}"
-                            onClick="controller.confirmDeleteLabel(self.parent.parent.value)"/>
-                    </listcell>
-                </listitem>
-            </listbox>
+                            onClick="controller.confirmDeleteLabel(self.parent.value)"/>
+                    </row>
+                   </rows>
+            </grid>
         </panelchildren>
     </panel>
 

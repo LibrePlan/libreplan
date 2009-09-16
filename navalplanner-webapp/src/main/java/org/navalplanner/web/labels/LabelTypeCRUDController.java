@@ -22,9 +22,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 /**
@@ -47,7 +48,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
 
     private Component messagesContainer;
 
-    private Listbox lbLabels;
+    private Grid gridLabels;
 
     public LabelTypeCRUDController() {
 
@@ -59,7 +60,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
-        lbLabels = (Listbox) editWindow.getFellowIfAny("lbLabels");
+        gridLabels = (Grid) editWindow.getFellowIfAny("gridLabels");
         gridLabelTypes = (Grid) listWindow.getFellowIfAny("gridLabelTypes");
         editWindow.addEventListener("onClose", new EventListener() {
             @Override
@@ -183,17 +184,18 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
 
     @SuppressWarnings("unchecked")
     private void validateLabel(InvalidValue invalidValue) {
-        Listitem listitem = findLabel(lbLabels.getItems(), (Label) invalidValue
+        Row listitem = findLabel(gridLabels.getRows(), (Label) invalidValue
                 .getBean());
         if (listitem != null) {
             throw new WrongValueException(listitem, invalidValue.getMessage());
         }
     }
 
-    private Listitem findLabel(List<Listitem> listItems, Label label) {
-        for (Listitem listitem: listItems) {
-            if (label.equals(listitem.getValue())) {
-                return listitem;
+    private Row findLabel(Rows rows, Label label) {
+        for (Object row : rows.getChildren()) {
+            Textbox textbox = (Textbox) ((Row) row).getFirstChild();
+            if (label.equals(textbox.getValue())) {
+                return (Row) row;
             }
         }
         return null;
@@ -208,7 +210,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
 
     public void createLabel() {
         labelTypeModel.addLabel();
-        Util.reloadBindings(lbLabels);
+        Util.reloadBindings(gridLabels);
     }
 
     public void onChangeLabelName(Event e) {
@@ -226,7 +228,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
      */
     public void confirmDeleteLabel(Label label) {
         labelTypeModel.confirmDeleteLabel(label);
-        Util.reloadBindings(lbLabels);
+        Util.reloadBindings(gridLabels);
     }
 
     /**
