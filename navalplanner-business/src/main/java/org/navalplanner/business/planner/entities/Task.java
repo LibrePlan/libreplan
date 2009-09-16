@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 
 /**
@@ -122,13 +123,13 @@ public class Task extends TaskElement {
 
         for (ResourceAllocation resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof SpecificResourceAllocation) {
-                Worker worker = ((SpecificResourceAllocation) resourceAllocation)
-                        .getWorker();
-                if (worker != null) {
-                    if (workers.contains(worker.getId())) {
+                Resource resource = ((SpecificResourceAllocation) resourceAllocation)
+                        .getResource();
+                if (resource != null) {
+                    if (workers.contains(resource.getId())) {
                         return false;
                     } else {
-                        workers.add(worker.getId());
+                        workers.add(resource.getId());
                     }
                 }
             }

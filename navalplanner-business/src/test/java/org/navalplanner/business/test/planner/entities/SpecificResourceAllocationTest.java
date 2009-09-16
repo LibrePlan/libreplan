@@ -56,7 +56,7 @@ public class SpecificResourceAllocationTest {
         givenWorker();
         givenTask(start, end);
         specificResourceAllocation = SpecificResourceAllocation.create(task);
-        specificResourceAllocation.setWorker(worker);
+        specificResourceAllocation.setResource(worker);
     }
 
     private void givenSpecificResourceAllocation(LocalDate start, int days) {

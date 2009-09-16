@@ -98,7 +98,7 @@ public class ResourceAllocationDAOTest {
                     .createForTesting(ResourcesPerDay.amount(1), task);
             Worker worker = (Worker) createValidWorker();
             resourceDAO.save(worker);
-            specificResourceAllocation.setWorker(worker);
+            specificResourceAllocation.setResource(worker);
 
             return specificResourceAllocation;
         }

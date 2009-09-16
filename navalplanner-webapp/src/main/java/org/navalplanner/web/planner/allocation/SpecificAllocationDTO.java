@@ -46,15 +46,15 @@ public class SpecificAllocationDTO extends AllocationDTO {
     }
 
     public static SpecificAllocationDTO from(SpecificResourceAllocation specific) {
-        SpecificAllocationDTO result = forResource(specific.getWorker());
+        SpecificAllocationDTO result = forResource(specific.getResource());
         result.setResourcesPerDay(specific.getResourcesPerDay());
         return result;
     }
 
-    public static SpecificAllocationDTO forResource(Worker worker) {
+    public static SpecificAllocationDTO forResource(Resource resource) {
         SpecificAllocationDTO result = new SpecificAllocationDTO();
-        result.setName(worker.getName());
-        result.setResource(worker);
+        result.setName(resource.getDescription());
+        result.setResource(resource);
         result.setResourcesPerDay(ResourcesPerDay.amount(1));
         return result;
     }

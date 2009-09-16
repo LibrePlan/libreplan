@@ -163,8 +163,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     private void reattachSpecificResourceAllocation(
             SpecificResourceAllocation resourceAllocation) {
-        resourceAllocation.getWorker().getName();
-        reattachCriterionSatisfactions(resourceAllocation.getWorker()
+        resourceAllocation.getResource().getDescription();
+        reattachCriterionSatisfactions(resourceAllocation.getResource()
                 .getCriterionSatisfactions());
     }
 

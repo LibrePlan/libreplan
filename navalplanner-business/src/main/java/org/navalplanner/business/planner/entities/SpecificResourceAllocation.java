@@ -8,6 +8,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 
 /**
@@ -23,7 +24,7 @@ public class SpecificResourceAllocation extends ResourceAllocation implements
     }
 
     @NotNull
-    private Worker worker;
+    private Resource resource;
 
     private Set<SpecificDayAssigment> specificDaysAssigment = new HashSet<SpecificDayAssigment>();
 
@@ -49,12 +50,12 @@ public class SpecificResourceAllocation extends ResourceAllocation implements
         super(task);
     }
 
-    public Worker getWorker() {
-        return worker;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setWorker(Worker worker) {
-        this.worker = worker;
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 
     @Override
@@ -70,14 +71,14 @@ public class SpecificResourceAllocation extends ResourceAllocation implements
     @Override
     public void allocate(ResourcesPerDay resourcesPerDay) {
         Validate.notNull(resourcesPerDay);
-        Validate.notNull(worker);
+        Validate.notNull(resource);
         AssignmentsAllocation<SpecificDayAssigment> assignmentsAllocation = new AssignmentsAllocation<SpecificDayAssigment>() {
 
             @Override
             protected List<SpecificDayAssigment> distributeForDay(
                     LocalDate day, int totalHours) {
                 return Arrays.asList(SpecificDayAssigment.create(day,
-                        totalHours, worker));
+                        totalHours, resource));
             }
 
             @Override

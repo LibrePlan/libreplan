@@ -21,8 +21,8 @@
         <joined-subclass name="SpecificResourceAllocation" table="SPECIFIC_RESOURCE_ALLOCATION">
             <key column="RESOURCE_ALLOCATION_ID" />
 
-            <many-to-one name="worker"
-                class="org.navalplanner.business.resources.entities.Worker" />
+            <many-to-one name="resource"
+                class="org.navalplanner.business.resources.entities.Resource" />
         </joined-subclass>
 
         <joined-subclass name="GenericResourceAllocation" table="GENERIC_RESOURCE_ALLOCATION">
