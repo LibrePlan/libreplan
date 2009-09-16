@@ -9,19 +9,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -43,6 +45,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Autowired
     private IWorkerDAO workerDAO;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
 
     @Autowired
     private IHoursGroupDAO hoursGroupDAO;
@@ -112,17 +117,81 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     public void cancel() {
-        task.clearResourceAllocations();
         currentAllocations = null;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void save() {
         mergeDTOsToTask();
     }
 
     private void mergeDTOsToTask() {
-        // TODO apply dtos to task
+        if (task.isFixedDuration()) {
+            allocationForFixedTask();
+        } else {
+            throw new RuntimeException(
+                    "TODO: allocation for tasks of variable duration. Now only works with fixed duration tasks");
+        }
+    }
+
+    private void allocationForFixedTask() {
+        for (AllocationDTO allocation : currentAllocations) {
+            ResourceAllocation resourceAllocation = createOrModify(allocation);
+            doAllocation(resourceAllocation, allocation.getResourcesPerDay());
+        }
+    }
+
+    private List<Resource> getResourcesMatchingCriterions() {
+        return resourceDAO.getAllByCriterions(getCriterions());
+    }
+
+    private ResourceAllocation createOrModify(AllocationDTO allocation) {
+        if (allocation.isModifying()) {
+            return allocation.getOrigin();
+        } else {
+            ResourceAllocation result = createAllocation(allocation);
+            task.addResourceAllocation(result);
+            return result;
+        }
+    }
+
+    private ResourceAllocation createAllocation(AllocationDTO allocation) {
+        if (allocation instanceof SpecificAllocationDTO) {
+            SpecificAllocationDTO specific = (SpecificAllocationDTO) allocation;
+            return createSpecific(specific.getResource());
+        } else {
+            return GenericResourceAllocation.create(task);
+        }
+    }
+
+    private void doAllocation(ResourceAllocation allocation,
+            ResourcesPerDay resourcesPerDay) {
+        if (allocation instanceof GenericResourceAllocation) {
+            doAllocation((GenericResourceAllocation) allocation,
+                    resourcesPerDay);
+        } else {
+            SpecificResourceAllocation specific = (SpecificResourceAllocation) allocation;
+            doAllocation(specific, resourcesPerDay);
+        }
+    }
+
+    private void doAllocation(SpecificResourceAllocation specific,
+            ResourcesPerDay resourcesPerDay) {
+        specific.allocate(resourcesPerDay);
+    }
+
+    private void doAllocation(GenericResourceAllocation generic,
+            ResourcesPerDay resourcesPerDay) {
+        generic.forResources(getResourcesMatchingCriterions()).allocate(
+                resourcesPerDay);
+    }
+
+    private ResourceAllocation createSpecific(Resource resource) {
+        SpecificResourceAllocation result = SpecificResourceAllocation
+                .create(task);
+        result.setResource(resource);
+        return result;
     }
 
     @Override
@@ -130,23 +199,14 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     public void initAllocationsFor(Task task,
             org.zkoss.ganttz.data.Task ganttTask) {
         this.ganttTask = ganttTask;
-        assert taskElementDAO.exists(task.getId());
-
-        this.task = findFromDB(task);
+        this.task = task;
+        taskElementDAO.save(this.task);
         reattachResourceAllocations(this.task.getResourceAllocations());
         hoursGroupDAO.save(this.task.getHoursGroup());
         reattachHoursGroup(this.task.getHoursGroup());
         reattachCriterions(this.task.getHoursGroup().getCriterions());
         currentAllocations = addDefaultGenericIfNeeded(asDTOs(this.task
                 .getResourceAllocations()));
-    }
-
-    private Task findFromDB(Task task) {
-        try {
-            return (Task) taskElementDAO.find(task.getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void reattachResourceAllocations(

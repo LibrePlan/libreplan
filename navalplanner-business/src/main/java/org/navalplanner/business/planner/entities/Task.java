@@ -72,6 +72,10 @@ public class Task extends TaskElement {
     }
 
     public void addResourceAllocation(ResourceAllocation resourceAllocation) {
+        if (!resourceAllocation.getTask().equals(this)) {
+            throw new IllegalArgumentException(
+                    "the resourceAllocation's task must be this task");
+        }
         resourceAllocations.add(resourceAllocation);
     }
 
