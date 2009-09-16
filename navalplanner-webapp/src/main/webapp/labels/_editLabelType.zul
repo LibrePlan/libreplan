@@ -1,4 +1,5 @@
-<window id="${arg.id}" title="${arg.title}" border="normal">
+<window id="${arg.id}" title="${arg.title}" width="600px"
+     border="normal" closable="true" visible="false">
     <!--  Name labeltype -->
     <vbox>
         <hbox>
