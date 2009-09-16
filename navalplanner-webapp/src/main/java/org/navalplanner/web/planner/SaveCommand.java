@@ -59,7 +59,8 @@ public class SaveCommand implements ISaveCommand {
                 }
             }
         }
-
+        // FIXME Messagebox#show blocks the thread so the transaction is not
+        // executed until ok is pressed
         try {
             Messagebox.show(_("Scheduling saved"), _("Information"), Messagebox.OK,
                     Messagebox.INFORMATION);
