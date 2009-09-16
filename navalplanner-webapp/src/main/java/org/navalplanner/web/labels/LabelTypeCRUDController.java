@@ -223,8 +223,8 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     public void onChangeLabelName(Event e) {
         InputEvent ie = (InputEvent) e;
         if (!labelTypeModel.labelNameIsUnique(ie.getValue())) {
-            throw new WrongValueException(e.getTarget(),
-                    _("Name must be unique"));
+            throw new WrongValueException(e.getTarget(), _(
+                    "{0} already exists", ie.getValue()));
         }
     }
 
