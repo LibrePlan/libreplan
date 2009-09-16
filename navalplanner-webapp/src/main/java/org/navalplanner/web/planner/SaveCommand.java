@@ -1,7 +1,12 @@
 package org.navalplanner.web.planner;
 
+import static org.navalplanner.web.I18nHelper._;
+
+import java.util.List;
+
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.DayAssigment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -12,8 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.zul.Messagebox;
-
-import static org.navalplanner.web.I18nHelper._;
 
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -46,6 +49,10 @@ public class SaveCommand implements ISaveCommand {
                 for (ResourceAllocation resourceAllocation : ((Task) taskElement)
                         .getResourceAllocations()) {
                     resourceAllocation.dontPoseAsTransientObjectAnymore();
+                    for (DayAssigment dayAssigment : (List<? extends DayAssigment>) resourceAllocation
+                            .getAssignments()) {
+                        dayAssigment.dontPoseAsTransientObjectAnymore();
+                    }
                 }
             }
         }
