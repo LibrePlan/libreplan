@@ -79,10 +79,6 @@ public class Task extends TaskElement {
         resourceAllocations.remove(resourceAllocation);
     }
 
-    public void clearResourceAllocations() {
-        resourceAllocations.clear();
-    }
-
     public Boolean getFixedDuration() {
         return fixedDuration;
     }

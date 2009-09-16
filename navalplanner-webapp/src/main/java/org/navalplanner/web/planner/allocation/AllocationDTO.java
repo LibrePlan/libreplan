@@ -25,9 +25,27 @@ public abstract class AllocationDTO {
         return result;
     }
 
+    private ResourceAllocation origin;
+
     private String name;
 
     private ResourcesPerDay resourcesPerDay;
+
+    public boolean isCreating() {
+        return origin == null;
+    }
+
+    public boolean isModifying() {
+        return origin != null;
+    }
+
+    public ResourceAllocation getOrigin() {
+        return origin;
+    }
+
+    protected void setOrigin(ResourceAllocation allocation) {
+        this.origin = allocation;
+    }
 
     public String getName() {
         return name;

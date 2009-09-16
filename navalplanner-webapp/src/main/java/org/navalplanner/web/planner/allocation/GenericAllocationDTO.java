@@ -22,6 +22,7 @@ public class GenericAllocationDTO extends AllocationDTO {
             GenericResourceAllocation resourceAllocation) {
         GenericAllocationDTO result = createDefault();
         result.setResourcesPerDay(resourceAllocation.getResourcesPerDay());
+        result.setOrigin(resourceAllocation);
         return result;
     }
 
