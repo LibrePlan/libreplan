@@ -31,9 +31,10 @@ public class LabelTypeDAO extends GenericDAOHibernate<LabelType, Long> implement
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public boolean isUnique(LabelType labelType) {
         try {
-            return findUniqueByName(labelType).getId()
-                    .equals(labelType.getId());
+            LabelType result = findUniqueByName(labelType);
+            return (result == null || result.getId().equals(labelType.getId()));
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -50,11 +51,11 @@ public class LabelTypeDAO extends GenericDAOHibernate<LabelType, Long> implement
     private LabelType findUniqueByName(LabelType labelType)
             throws InstanceNotFoundException {
         List<LabelType> list = findByName(labelType);
-        if (list != null && list.size() != 1) {
+        if (list != null && list.size() > 1) {
             throw new InstanceNotFoundException(labelType, LabelType.class
                     .getName());
         }
-        return list.get(0);
+        return (list != null && list.size() > 0) ? list.get(0) : null;
     }
 
     @SuppressWarnings("unchecked")
