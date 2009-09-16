@@ -143,6 +143,17 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     }
 
     /**
+     * Save current {@link LabelType} and continue
+     */
+    public void saveAndContinue() {
+        try {
+            labelTypeModel.confirmSave();
+        } catch (ValidationException e) {
+            showInvalidValues(e);
+        }
+    }
+
+    /**
      * Show all {@link LabelType}
      */
     private void goToList() {
