@@ -1,5 +1,8 @@
 <window id="${arg.id}" title="${arg.title}" width="600px"
      border="normal" closable="true" visible="false">
+    <!--  Messages for user -->
+    <vbox id="messagesContainer"/>
+
     <!--  Name labeltype -->
     <vbox>
         <hbox>

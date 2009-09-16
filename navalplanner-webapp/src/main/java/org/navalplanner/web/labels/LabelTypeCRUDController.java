@@ -46,7 +46,11 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
 
     private IMessagesForUser messagesForUser;
 
+    private IMessagesForUser messagesEditWindow;
+
     private Component messagesContainer;
+
+    private Grid gridLabelTypes;
 
     private Grid gridLabels;
 
@@ -59,6 +63,8 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
+        messagesEditWindow = new MessagesForUser(editWindow
+                .getFellowIfAny("messagesContainer"));
         getVisibility().showOnly(listWindow);
         gridLabels = (Grid) editWindow.getFellowIfAny("gridLabels");
         gridLabelTypes = (Grid) listWindow.getFellowIfAny("gridLabelTypes");
@@ -149,6 +155,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     public void saveAndContinue() {
         try {
             labelTypeModel.confirmSave();
+            messagesEditWindow.showMessage(Level.INFO, _("Label saved"));
         } catch (ValidationException e) {
             showInvalidValues(e);
         }
