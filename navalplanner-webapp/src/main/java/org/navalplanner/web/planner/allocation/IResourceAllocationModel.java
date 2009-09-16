@@ -51,14 +51,6 @@ public interface IResourceAllocationModel {
     Task getTask();
 
     /**
-     * Removes the {@link ResourceAllocation} from the current {@link Task}.
-     *
-     * @param resourceAllocation
-     *            The object to be removed
-     */
-    void removeResourceAllocation(ResourceAllocation resourceAllocation);
-
-    /**
      * Removes {@link SpecificResourceAllocation} from current allocations list
      * @param data
      */

@@ -91,11 +91,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
-    public void removeResourceAllocation(ResourceAllocation resourceAllocation) {
-        task.removeResourceAllocation(resourceAllocation);
-    }
-
-    @Override
     public Set<Criterion> getCriterions() {
         return (task != null) ? task.getHoursGroup().getCriterions()
                 : new HashSet<Criterion>();
@@ -113,6 +108,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     public void removeSpecificResourceAllocation(
             SpecificAllocationDTO allocation) {
         currentAllocations.remove(allocation);
+        if (allocation.isModifying()) {
+            task.removeResourceAllocation(allocation.getOrigin());
+        }
     }
 
     @Override
