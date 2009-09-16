@@ -2,16 +2,22 @@
     <grid id="listing" model="@{controller.orders}" mold="paging"
         pageSize="5">
         <columns>
-            <column label="${i18n:_('Operations')}" />
             <column label="${i18n:_('Name')}" sort="auto(name)" />
             <column label="${i18n:_('Starting date')}" sort="auto(initDate)" />
             <column label="${i18n:_('Ending date')}" sort="auto(endDate)" />
             <column label="${i18n:_('Responsible')}" sort="auto(responsible)" />
             <column label="${i18n:_('Customer')}" sort="auto(customer)" />
             <column label="${i18n:_('Description')}" sort="auto(description)" />
+            <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>
             <row self="@{each='order'}" value="@{order}">
+                <label value="@{order.name}" />
+                <label value="@{order.initDate}" />
+                <label value="@{order.endDate}" />
+                <label value="@{order.responsible}" />
+                <label value="@{order.customer}" />
+                <label value="@{order.description}" />
                 <hbox>
                     <button label="${i18n:_('Edit')}"
                         onClick="controller.goToEditForm(self.parent.parent.value);">
@@ -24,12 +30,6 @@
                         onClick="controller.confirmSchedule(self.parent.parent.value);">
                     </button>
                 </hbox>
-                <label value="@{order.name}" />
-                <label value="@{order.initDate}" />
-                <label value="@{order.endDate}" />
-                <label value="@{order.responsible}" />
-                <label value="@{order.customer}" />
-                <label value="@{order.description}" />
             </row>
         </rows>
     </grid>
