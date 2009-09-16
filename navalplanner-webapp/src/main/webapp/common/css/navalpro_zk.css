@@ -176,3 +176,11 @@ table {
 .z-window-embedded {
    margin:10px;
 }
+
+/* Hide inner second level embed window titles */
+.z-window-embedded
+.z-window-embedded
+.z-window-embedded
+.z-window-embedded-hl {
+    display:none;
+}
