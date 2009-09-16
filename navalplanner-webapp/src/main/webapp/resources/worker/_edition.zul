@@ -4,8 +4,8 @@
 <window id="${arg.top_id}" title="${arg.title}">
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('Edit')}"></tab>
-            <tab label="${i18n:_('Places')}"></tab>
+            <tab label="${i18n:_('Personal data')}"></tab>
+            <tab label="${i18n:_('Locations')}"></tab>
             <tab label="${i18n:_('Work record')}"></tab>
             <tab label="${i18n:_('Calendar')}"></tab>
         </tabs>
@@ -13,8 +13,8 @@
             <tabpanel>
                 <grid fixedLayout="false">
                     <columns>
-                        <column label="${i18n:_('Type')}" />
-                        <column label="${i18n:_('Content')}" />
+                        <column width="200px" />
+                        <column  />
                     </columns>
                     <rows>
                         <row>

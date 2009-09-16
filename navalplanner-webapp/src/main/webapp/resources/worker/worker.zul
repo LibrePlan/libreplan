@@ -19,7 +19,7 @@
         <list top_id="listWindow" />
         <edition top_id="createWindow" title="${i18n:_('Create')}"
             save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
-        <edition top_id="editWindow" title="${i18n:_('Edit personal data')}"
+        <edition top_id="editWindow" title="${i18n:_('Edit worker')}"
             save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
         <workRelationships top_id="workRelationshipsWindow" title="${i18n:_('Work relationships')}"
             save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />

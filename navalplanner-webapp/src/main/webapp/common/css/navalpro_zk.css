@@ -184,3 +184,8 @@ table {
 .z-window-embedded-hl {
     display:none;
 }
+
+.subtitulo {
+    color:#007bbe;
+    font-weight:bold;
+}
