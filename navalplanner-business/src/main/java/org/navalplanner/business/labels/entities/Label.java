@@ -26,7 +26,7 @@ public class Label extends BaseEntity {
     private Set<OrderElement> orderElements;
 
     // Default constructor, needed by Hibernate
-    private Label() {
+    protected Label() {
 
     }
 
