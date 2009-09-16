@@ -1,6 +1,7 @@
 package org.navalplanner.business.labels.entities;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -18,7 +19,7 @@ public class LabelType extends BaseEntity {
     @NotEmpty
     private String name;
 
-    private Set<Label> labels;
+    private Set<Label> labels = new HashSet<Label>();
 
     // Default constructor, needed by Hibernate
     protected LabelType() {
