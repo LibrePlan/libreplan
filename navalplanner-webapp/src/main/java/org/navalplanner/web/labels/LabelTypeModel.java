@@ -129,4 +129,9 @@ public class LabelTypeModel implements ILabelTypeModel {
         labelType.addLabel(label);
     }
 
+    @Override
+    public void confirmDeleteLabel(Label label) {
+        labelType.removeLabel(label);
+    }
+
 }

@@ -62,4 +62,10 @@ public interface ILabelTypeModel {
      */
     void addLabel();
 
+    /**
+     *
+     * @param label
+     */
+    void confirmDeleteLabel(Label label);
+
 }

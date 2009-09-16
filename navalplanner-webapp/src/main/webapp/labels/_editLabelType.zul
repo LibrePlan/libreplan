@@ -12,7 +12,7 @@
         style="margin: 10px 0px">
         <panelchildren>
             <button label="${i18n:_('New label')}" onClick="controller.createLabel()" />
-            <listbox id="listLabels" rows="10"
+            <listbox id="lbLabels" rows="10"
                 model="@{controller.labels}">
                 <listhead>
                     <listheader label="${i18n:_('Name')}" />
@@ -23,7 +23,8 @@
                         <textbox value="@{label.name}" />
                     </listcell>
                     <listcell>
-                        <button label="${i18n:_('Delete')}"/>
+                        <button label="${i18n:_('Delete')}"
+                            onClick="controller.confirmDeleteLabel(self.parent.parent.value)"/>
                     </listcell>
                 </listitem>
             </listbox>

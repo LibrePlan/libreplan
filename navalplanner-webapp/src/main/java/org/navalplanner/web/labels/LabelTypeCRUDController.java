@@ -19,6 +19,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -42,6 +43,8 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
 
     private Component messagesContainer;
 
+    private Listbox lbLabels;
+
     public LabelTypeCRUDController() {
 
     }
@@ -52,6 +55,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
+        lbLabels = (Listbox) editWindow.getFellowIfAny("lbLabels");
     }
 
     private OnlyOneVisible getVisibility() {
@@ -152,7 +156,17 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
 
     public void createLabel() {
         labelTypeModel.addLabel();
-        Util.reloadBindings(editWindow.getFellow("listLabels"));
+        Util.reloadBindings(lbLabels);
+    }
+
+    /**
+     * Pop up confirm remove dialog
+     *
+     * @param labelType
+     */
+    public void confirmDeleteLabel(Label label) {
+        labelTypeModel.confirmDeleteLabel(label);
+        Util.reloadBindings(lbLabels);
     }
 
     /**
