@@ -154,3 +154,21 @@ table {
 	font-weight:bold;
 	font-size:1.2em;
 }
+
+.message_ERROR {
+    color:#ee0000;
+    padding:15px;
+    border:solid 1px #ee0000;
+    background-color: #eecccc;
+    margin:10px;
+    width:300px;
+}
+
+.message_INFO {
+    color:#006600;
+    padding:15px;
+    border:solid 1px #006600;
+    background-color: #cceecc;
+    margin:10px;
+    width:300px;
+}

@@ -14,6 +14,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.EventInterceptor;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 
 /**
@@ -112,7 +113,10 @@ public class MessagesForUser extends GenericForwardComposer implements
     @Override
     public void showMessage(Level level, String message) {
         final Label label = new Label(message);
-        addMessage(label);
+        Div div = new Div();
+        div.setSclass("message_" + level.toString());
+        div.appendChild(label);
+        addMessage(div);
     }
 
     private void addMessage(final Component label) {
