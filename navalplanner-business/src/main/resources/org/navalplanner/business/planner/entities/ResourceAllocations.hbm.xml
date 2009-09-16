@@ -33,9 +33,9 @@
         <joined-subclass name="GenericResourceAllocation" table="GENERIC_RESOURCE_ALLOCATION">
             <key column="RESOURCE_ALLOCATION_ID" />
 
-            <set name="criterions" inverse="false">
+            <set name="criterions" table="all_criterions">
                 <key column="GENERIC_RESOURCE_ALLOCATION_ID"/>
-                <one-to-many class="org.navalplanner.business.resources.entities.Criterion"/>
+                <many-to-many class="org.navalplanner.business.resources.entities.Criterion" column="criterion_id"/>
             </set>
 
             <set name="genericDayAssigments" cascade="all">
