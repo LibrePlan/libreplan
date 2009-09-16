@@ -38,7 +38,7 @@
                 <one-to-many class="org.navalplanner.business.resources.entities.Criterion"/>
             </set>
 
-            <set name="genericDayAssigments" inverse="false">
+            <set name="genericDayAssigments" cascade="all">
                 <key column="GENERIC_RESOURCE_ALLOCATION_ID"/>
                 <one-to-many class="GenericDayAssigment"/>
             </set>
