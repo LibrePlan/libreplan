@@ -29,6 +29,7 @@ public class SaveCommand implements ISaveCommand {
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
+
     private PlanningState state;
 
     @Override
@@ -66,6 +67,7 @@ public class SaveCommand implements ISaveCommand {
                 }
             }
         }
+        taskElementDAO.removeOrphanedDayAssignments();
         // FIXME Messagebox#show blocks the thread so the transaction is not
         // executed until ok is pressed
         try {
