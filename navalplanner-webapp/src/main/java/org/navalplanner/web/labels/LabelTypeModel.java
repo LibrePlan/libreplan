@@ -9,7 +9,9 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -27,6 +29,9 @@ public class LabelTypeModel implements ILabelTypeModel {
 
     @Autowired
     private ILabelTypeDAO labelTypeDAO;
+
+    @Autowired
+    private ILabelDAO labelDAO;
 
     private LabelType labelType;
 
@@ -94,10 +99,24 @@ public class LabelTypeModel implements ILabelTypeModel {
 
     private LabelType getFromDB(Long id) {
         try {
-            return labelType = labelTypeDAO.find(id);
+            LabelType labelType = labelTypeDAO.find(id);
+            reattachLabels(labelType);
+            return labelType;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void reattachLabels(LabelType labelType) {
+        for (Label label : labelType.getLabels()) {
+            label.getName();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Label> getLabels() {
+        return labelDAO.getAll();
     }
 
 }

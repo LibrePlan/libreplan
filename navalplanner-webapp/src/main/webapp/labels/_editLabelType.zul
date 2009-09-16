@@ -4,9 +4,27 @@
             <label value="${i18n:_('Name')}"/>
             <textbox id="name" value="@{controller.labelType.name}"/>
         </hbox>
-        <hbox>
-            <button label="${i18n:_('Save')}" onClick="controller.save()"/>
-            <button label="${i18n:_('Cancel')}" onClick="controller.cancel()"/>
-        </hbox>
     </vbox>
+    <panel title="${i18n:_('Label list')}" border="normal"
+        style="margin: 10px 0px">
+        <panelchildren>
+            <button label="${i18n:_('New label')}" />
+            <listbox rows="10"
+                model="@{controller.labels}">
+                <listhead>
+                    <listheader label="${i18n:_('Name')}" />
+                </listhead>
+                <listitem self="@{each='label'}" value="@{label}">
+                    <listcell>
+                        <textbox value="@{label.name}" />
+                    </listcell>
+                </listitem>
+            </listbox>
+        </panelchildren>
+    </panel>
+    <hbox>
+        <button label="${i18n:_('Save')}" onClick="controller.save()" />
+        <button label="${i18n:_('Cancel')}"
+            onClick="controller.cancel()" />
+    </hbox>
 </window>

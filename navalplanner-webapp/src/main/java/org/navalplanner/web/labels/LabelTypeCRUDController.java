@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -75,6 +76,10 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
      */
     public LabelType getLabelType() {
         return labelTypeModel.getLabelType();
+    }
+
+    public List<Label> getLabels() {
+        return labelTypeModel.getLabels();
     }
 
     /**

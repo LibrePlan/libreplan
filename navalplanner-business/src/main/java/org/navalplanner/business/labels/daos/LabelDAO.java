@@ -1,5 +1,7 @@
 package org.navalplanner.business.labels.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.labels.entities.Label;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -15,5 +17,10 @@ import org.springframework.stereotype.Repository;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class LabelDAO extends GenericDAOHibernate<Label, Long> implements
         ILabelDAO {
+
+    @Override
+    public List<Label> getAll() {
+        return list(Label.class);
+    }
 
 }

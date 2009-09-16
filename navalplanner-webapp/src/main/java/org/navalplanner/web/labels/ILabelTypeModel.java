@@ -3,6 +3,7 @@ package org.navalplanner.web.labels;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 
 /**
@@ -47,5 +48,11 @@ public interface ILabelTypeModel {
      * Starts conversation editing {@link LabelType}
      */
     void initEdit(LabelType labelType);
+
+    /**
+     *
+     * @return
+     */
+    List<Label> getLabels();
 
 }
