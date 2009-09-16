@@ -1,6 +1,7 @@
 package org.navalplanner.business.planner.entities;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,6 +67,14 @@ public class SpecificResourceAllocation extends ResourceAllocation implements
     private void setAssignments(List<SpecificDayAssigment> assignments) {
         this.specificDaysAssigment = new HashSet<SpecificDayAssigment>(
                 assignments);
+        setParentFor(specificDaysAssigment);
+    }
+
+    private void setParentFor(
+            Collection<? extends SpecificDayAssigment> assignments) {
+        for (SpecificDayAssigment specificDayAssigment : assignments) {
+            specificDayAssigment.setSpecificResourceAllocation(this);
+        }
     }
 
     @Override

@@ -33,7 +33,7 @@ public class GenericDayAssigment extends DayAssigment {
         return genericResourceAllocation;
     }
 
-    public void setGenericResourceAllocation(
+    protected void setGenericResourceAllocation(
             GenericResourceAllocation genericResourceAllocation) {
         if (this.genericResourceAllocation != null)
             throw new IllegalStateException(

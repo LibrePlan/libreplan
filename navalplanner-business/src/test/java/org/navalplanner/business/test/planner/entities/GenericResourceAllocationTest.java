@@ -10,6 +10,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.test.planner.entities.DayAssigmentMatchers.from;
 import static org.navalplanner.business.test.planner.entities.DayAssigmentMatchers.haveHours;
+import static org.navalplanner.business.test.planner.entities.DayAssigmentMatchers.haveResourceAllocation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -155,6 +156,22 @@ public class GenericResourceAllocationTest {
     }
 
     @Test
+    public void theGeneratedDayAssignmentsAreRelatedWithTheAllocation() {
+        LocalDate start = new LocalDate(2006, 10, 5);
+        givenTaskWithStartAndEnd(toInterval(start, Period.days(2)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithoutLoadAndWithoutCalendar();
+
+        genericResourceAllocation.forResources(Arrays.asList(worker1))
+                .allocate(ResourcesPerDay.amount(1));
+
+        List<GenericDayAssigment> assignments = (List<GenericDayAssigment>) genericResourceAllocation
+                .getAssignments();
+        assertThat(assignments,
+                haveResourceAllocation(genericResourceAllocation));
+    }
+
+    @Test
     public void allocatingGeneratesDayAssignmentsForEachDay() {
         final int TASK_DURATION_DAYS = 4;
         givenBaseCalendarWithoutExceptions(8);
@@ -231,8 +248,7 @@ public class GenericResourceAllocationTest {
         LocalDate start = new LocalDate(2006, 10, 5);
         final int TASK_DURATION_DAYS = 1;
         final Integer defaultWorkableHours = SameWorkHoursEveryDay
-                .getDefaultWorkingDay()
-                .getWorkableHours(start);
+                .getDefaultWorkingDay().getWorkableHours(start);
         givenBaseCalendarWithoutExceptions(defaultWorkableHours);
         givenTaskWithStartAndEnd(toInterval(start, Period
                 .days(TASK_DURATION_DAYS)));

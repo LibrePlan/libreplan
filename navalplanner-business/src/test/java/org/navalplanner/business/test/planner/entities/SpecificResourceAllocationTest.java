@@ -72,6 +72,15 @@ public class SpecificResourceAllocationTest {
     }
 
     @Test
+    public void theAllocationsDoneHaveAsParentTheAllocation() {
+        givenSpecificResourceAllocation(new LocalDate(2000, 2, 4), 2);
+        specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
+        assertThat(specificResourceAllocation.getAssignments(),
+                DayAssigmentMatchers
+                        .haveResourceAllocation(specificResourceAllocation));
+    }
+
+    @Test
     public void theAllocationStartsAtTheStartDate() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 2);

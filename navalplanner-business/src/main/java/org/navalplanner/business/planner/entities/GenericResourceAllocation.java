@@ -162,11 +162,18 @@ public class GenericResourceAllocation extends ResourceAllocation {
     private void setAssigments(List<GenericDayAssigment> assignmentsCreated) {
         this.genericDayAssigments = new HashSet<GenericDayAssigment>(
                 assignmentsCreated);
+        setParentFor(assignmentsCreated);
         clearFieldsCalculatedFromAssignments();
     }
 
+    private void setParentFor(List<GenericDayAssigment> assignmentsCreated) {
+        for (GenericDayAssigment genericDayAssigment : assignmentsCreated) {
+            genericDayAssigment.setGenericResourceAllocation(this);
+        }
+    }
+
     @Override
-    protected List<? extends DayAssigment> getAssignments() {
+    public List<? extends DayAssigment> getAssignments() {
         return DayAssigment.orderedByDay(genericDayAssigments);
     }
 

@@ -12,6 +12,8 @@ import org.junit.matchers.CombinableMatcher;
 import org.junit.matchers.JUnitMatchers;
 import org.navalplanner.business.planner.entities.DayAssigment;
 import org.navalplanner.business.planner.entities.GenericDayAssigment;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificDayAssigment;
 
 /**
  * Some {@link Matcher} that work against dayAssigments
@@ -121,6 +123,38 @@ public class DayAssigmentMatchers {
 
     public static final FromMatcher from(final LocalDate start) {
         return new FromMatcher(start);
+    }
+
+    public static ListDayAssigmentsMatcher haveResourceAllocation(
+            final ResourceAllocation allocation) {
+        return new ListDayAssigmentsMatcher() {
+
+            @Override
+            protected boolean matches(List<DayAssigment> assignments) {
+                for (DayAssigment dayAssigment : assignments) {
+                    if (dayAssigment instanceof GenericDayAssigment) {
+                        GenericDayAssigment generic = (GenericDayAssigment) dayAssigment;
+                        if (!allocation.equals(generic
+                                .getGenericResourceAllocation())) {
+                            return false;
+                        }
+                    } else if (dayAssigment instanceof SpecificDayAssigment) {
+                        SpecificDayAssigment specific = (SpecificDayAssigment) dayAssigment;
+                        if (!allocation.equals(specific
+                                .getSpecificResourceAllocation())) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("all must belong to allocation "
+                        + allocation);
+            }
+        };
     }
 
 }

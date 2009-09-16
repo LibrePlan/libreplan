@@ -123,11 +123,10 @@ public abstract class ResourceAllocation extends BaseEntity {
         return total;
     }
 
-    protected abstract List<? extends DayAssigment> getAssignments();
+    public abstract List<? extends DayAssigment> getAssignments();
 
 
     public ResourcesPerDay getResourcesPerDay() {
         return resourcesPerDay;
     }
-
 }
