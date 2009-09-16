@@ -16,10 +16,14 @@
                 model="@{controller.labels}">
                 <listhead>
                     <listheader label="${i18n:_('Name')}" />
+                    <listheader label="${i18n:_('Operations')}" />
                 </listhead>
                 <listitem self="@{each='label'}" value="@{label}">
                     <listcell>
                         <textbox value="@{label.name}" />
+                    </listcell>
+                    <listcell>
+                        <button label="${i18n:_('Delete')}"/>
                     </listcell>
                 </listitem>
             </listbox>
