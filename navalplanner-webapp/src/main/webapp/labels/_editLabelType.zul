@@ -20,7 +20,7 @@
                 </listhead>
                 <listitem self="@{each='label'}" value="@{label}">
                     <listcell>
-                        <textbox value="@{label.name}" />
+                        <textbox value="@{label.name}" onChange="controller.onChangeLabelName(event)"/>
                     </listcell>
                     <listcell>
                         <button label="${i18n:_('Delete')}"

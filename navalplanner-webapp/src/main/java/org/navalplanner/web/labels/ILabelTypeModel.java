@@ -68,4 +68,11 @@ public interface ILabelTypeModel {
      */
     void confirmDeleteLabel(Label label);
 
+    /**
+     * Check is {@link Label} name is unique
+     *
+     * @param value
+     */
+    boolean labelNameIsUnique(String value);
+
 }

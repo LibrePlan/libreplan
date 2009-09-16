@@ -17,6 +17,8 @@ import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Listbox;
@@ -179,6 +181,14 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     public void createLabel() {
         labelTypeModel.addLabel();
         Util.reloadBindings(lbLabels);
+    }
+
+    public void onChangeLabelName(Event e) {
+        InputEvent ie = (InputEvent) e;
+        if (!labelTypeModel.labelNameIsUnique(ie.getValue())) {
+            throw new WrongValueException(e.getTarget(),
+                    _("Name must be unique"));
+        }
     }
 
     /**

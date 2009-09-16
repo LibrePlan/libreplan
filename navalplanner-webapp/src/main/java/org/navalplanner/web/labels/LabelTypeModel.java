@@ -216,4 +216,16 @@ public class LabelTypeModel implements ILabelTypeModel {
         labelType.removeLabel(label);
     }
 
+    @Override
+    public boolean labelNameIsUnique(String name) {
+        int count = 0;
+
+        for (Label label : labelType.getLabels()) {
+            if (name.equals(label.getName())) {
+                count++;
+            }
+        }
+        return (count == 1);
+    }
+
 }
