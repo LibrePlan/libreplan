@@ -19,7 +19,6 @@ import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.daos.IResourceDAO;
-import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -42,9 +41,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
-
-    @Autowired
-    private IWorkerDAO workerDAO;
 
     @Autowired
     private IResourceDAO resourceDAO;
@@ -221,9 +217,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     private void reattachSpecificResourceAllocation(
             SpecificResourceAllocation resourceAllocation) {
-        resourceAllocation.getResource().getDescription();
-        reattachCriterionSatisfactions(resourceAllocation.getResource()
-                .getCriterionSatisfactions());
+        Resource resource = resourceAllocation.getResource();
+        reattachResource(resource);
     }
 
     private void reattachHoursGroup(HoursGroup hoursGroup) {
@@ -245,9 +240,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         criterionType.getName();
     }
 
-    private void reattachWorker(Worker worker) {
-        workerDAO.save(worker);
-        reattachCriterionSatisfactions(worker.getCriterionSatisfactions());
+    private void reattachResource(Resource resource) {
+        resourceDAO.save(resource);
+        reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
     }
 
     private void reattachCriterionSatisfactions(
