@@ -1,4 +1,4 @@
-<window id="${arg.top_id}" title="${i18n:_('List')}">
+<window id="${arg.top_id}" title="${i18n:_('Workers list')}">
     <grid id="listing" model="@{controller.workers}" mold="paging"
         pageSize="5">
         <columns>

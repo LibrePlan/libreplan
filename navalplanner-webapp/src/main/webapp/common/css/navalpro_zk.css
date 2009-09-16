@@ -138,3 +138,19 @@ table {
 .orderTree .depth_6 .tasknumber {
     width: 85px; /* prev + 12 px */
 }
+
+/* Cleaning window borders */
+.z-window-embedded-tr, .z-window-embedded-tl {
+	display:none;
+}
+.z-window-embedded-hl, .z-window-embedded-hm {
+	background-image:none;
+}
+.z-window-embedded-hr {
+	background:none;
+}
+.z-window-embedded-header {
+	color: #009900;
+	font-weight:bold;
+	font-size:1.2em;
+}
