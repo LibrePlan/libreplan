@@ -1,15 +1,18 @@
 <window id="${arg.id}" title="${arg.title}" border="normal">
+    <!--  Name labeltype -->
     <vbox>
         <hbox>
             <label value="${i18n:_('Name')}"/>
             <textbox id="name" value="@{controller.labelType.name}"/>
         </hbox>
     </vbox>
+
+    <!-- Label list -->
     <panel title="${i18n:_('Label list')}" border="normal"
         style="margin: 10px 0px">
         <panelchildren>
-            <button label="${i18n:_('New label')}" />
-            <listbox rows="10"
+            <button label="${i18n:_('New label')}" onClick="controller.createLabel()" />
+            <listbox id="listLabels" rows="10"
                 model="@{controller.labels}">
                 <listhead>
                     <listheader label="${i18n:_('Name')}" />
@@ -22,6 +25,8 @@
             </listbox>
         </panelchildren>
     </panel>
+
+    <!-- Control buttons -->
     <hbox>
         <button label="${i18n:_('Save')}" onClick="controller.save()" />
         <button label="${i18n:_('Cancel')}"

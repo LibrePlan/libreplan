@@ -1,6 +1,7 @@
 package org.navalplanner.web.labels;
 
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
@@ -50,9 +51,15 @@ public interface ILabelTypeModel {
     void initEdit(LabelType labelType);
 
     /**
+     * Returns all {@link Label} for current {@link LabelType}
      *
      * @return
      */
-    List<Label> getLabels();
+    Set<Label> getLabels();
+
+    /**
+     * Add {@link Label} to {@link LabelType}
+     */
+    void addLabel();
 
 }

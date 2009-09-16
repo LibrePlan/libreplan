@@ -2,7 +2,9 @@ package org.navalplanner.web.labels;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
@@ -115,8 +117,16 @@ public class LabelTypeModel implements ILabelTypeModel {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Label> getLabels() {
-        return labelDAO.getAll();
+    public Set<Label> getLabels() {
+        return (labelType != null) ? labelType.getLabels()
+                : new HashSet<Label>();
+    }
+
+    @Override
+    public void addLabel() {
+        Label label = Label.create("");
+        label.setType(labelType);
+        labelType.addLabel(label);
     }
 
 }

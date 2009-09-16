@@ -32,7 +32,7 @@
 
     <property name="name" unique="true"/>
 
-    <set name="labels" inverse="false">
+    <set name="labels" inverse="false" cascade="all">
         <key column="LABEL_TYPE_ID"/>
         <one-to-many class="Label"/>
     </set>
