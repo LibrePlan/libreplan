@@ -23,6 +23,11 @@
 
             <many-to-one name="resource"
                 class="org.navalplanner.business.resources.entities.Resource" />
+
+            <set name="specificDaysAssigment" cascade="all">
+                <key column="SPECIFIC_RESOURCE_ALLOCATION_ID"/>
+                <one-to-many class="SpecificDayAssigment"/>
+            </set>
         </joined-subclass>
 
         <joined-subclass name="GenericResourceAllocation" table="GENERIC_RESOURCE_ALLOCATION">
