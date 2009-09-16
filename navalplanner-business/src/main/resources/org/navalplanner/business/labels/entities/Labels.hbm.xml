@@ -11,9 +11,10 @@
     </id>
     <version name="version" access="property" type="long" />
 
-    <property name="name"/>
-
-    <many-to-one name="type" class="LabelType" column="LABEL_TYPE_ID"/>
+	<properties name="nameAndType" unique="true">
+		<property name="name" />
+		<many-to-one name="type" class="LabelType" column="LABEL_TYPE_ID" />
+	</properties>
 
     <set name="orderElements" table="ORDER_ELEMENT_LABEL">
         <key column="LABEL_ID" not-null="false"/>

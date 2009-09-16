@@ -20,6 +20,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -136,6 +137,9 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
             if (value instanceof LabelType) {
                 validateLabelType(invalidValue);
             }
+            if (value instanceof Label) {
+                validateLabel(invalidValue);
+            }
         }
     }
 
@@ -145,6 +149,24 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         if (component != null) {
             throw new WrongValueException(component, invalidValue.getMessage());
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void validateLabel(InvalidValue invalidValue) {
+        Listitem listitem = findLabel(lbLabels.getItems(), (Label) invalidValue
+                .getBean());
+        if (listitem != null) {
+            throw new WrongValueException(listitem, invalidValue.getMessage());
+        }
+    }
+
+    private Listitem findLabel(List<Listitem> listItems, Label label) {
+        for (Listitem listitem: listItems) {
+            if (label.equals(listitem.getValue())) {
+                return listitem;
+            }
+        }
+        return null;
     }
 
     /**

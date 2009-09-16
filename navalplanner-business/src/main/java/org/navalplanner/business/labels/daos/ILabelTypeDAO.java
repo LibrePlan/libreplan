@@ -14,4 +14,6 @@ public interface ILabelTypeDAO extends IGenericDAO<LabelType, Long> {
 
     boolean existsByName(LabelType labelType);
 
+    boolean isUnique(LabelType labelType);
+
 }

@@ -2,6 +2,8 @@ package org.navalplanner.web.labels;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,8 +39,11 @@ public class LabelTypeModel implements ILabelTypeModel {
 
     private LabelType labelType;
 
-    private ClassValidator<LabelType> validator = new ClassValidator<LabelType>(
+    private ClassValidator<LabelType> validatorLabelType = new ClassValidator<LabelType>(
             LabelType.class);
+
+    private ClassValidator<Label> validatorLabel = new ClassValidator<Label>(
+            Label.class);
 
     public LabelTypeModel() {
 
@@ -73,19 +78,96 @@ public class LabelTypeModel implements ILabelTypeModel {
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
-        InvalidValue[] invalidValues = validator.getInvalidValues(labelType);
+        ArrayList<InvalidValue> invalidValues = new ArrayList<InvalidValue>();
 
-        if (invalidValues.length > 0) {
-            throw new ValidationException(invalidValues);
+        // Check properties
+        invalidValues.addAll(checkLabelTypeProperties());
+        invalidValues.addAll(checkLabelsProperties());
+        if (invalidValues.size() > 0) {
+            throw new ValidationException(invalidValues
+                    .toArray(new InvalidValue[0]));
         }
 
-        if (labelTypeDAO.existsByName(labelType)) {
-            InvalidValue[] _invalidValues = { new InvalidValue(_(
-                    "{0} already exists", labelType.getName()),
-                    LabelType.class, "name", labelType.getName(), labelType) };
-            throw new ValidationException(_invalidValues);
+        // Check elements are unique
+        invalidValues.addAll(checkLabelTypeUnique());
+        invalidValues.addAll(checkLabelsUnique());
+        if (invalidValues.size() > 0) {
+            throw new ValidationException(invalidValues
+                    .toArray(new InvalidValue[0]));
         }
+
         labelTypeDAO.save(labelType);
+    }
+
+    /**
+     * Check errors in {@link LabelType}
+     *
+     * @return
+     */
+    private List<InvalidValue> checkLabelTypeProperties() {
+        List<InvalidValue> result = new ArrayList<InvalidValue>();
+        result.addAll(Arrays.asList(validatorLabelType
+                .getInvalidValues(labelType)));
+        return result;
+    }
+
+    /**
+     * Check errors in {@link Label}
+     *
+     * @return
+     */
+    private List<InvalidValue> checkLabelsProperties() {
+        List<InvalidValue> result = new ArrayList<InvalidValue>();
+        for (Label label : labelType.getLabels()) {
+            result.addAll(Arrays.asList(validatorLabel
+                            .getInvalidValues(label)));
+        }
+        return result;
+    }
+
+    /**
+     * Check {@link LabelType} name is unique
+     *
+     * @return
+     */
+    private List<InvalidValue> checkLabelTypeUnique() {
+        List<InvalidValue> result = new ArrayList<InvalidValue>();
+        if (!labelTypeDAO.isUnique(labelType)) {
+            result.add(createInvalidValue(labelType));
+        }
+        return result;
+    }
+
+    private InvalidValue createInvalidValue(LabelType labelType) {
+        return new InvalidValue(_(
+                "{0} already exists", labelType.getName()),
+                LabelType.class, "name", labelType.getName(), labelType);
+    }
+
+    /**
+     * Check {@link Label} name is unique
+     *
+     * @return
+     * @throws ValidationException
+     */
+    private List<InvalidValue> checkLabelsUnique() throws ValidationException {
+        List<InvalidValue> result = new ArrayList<InvalidValue>();
+
+        List<Label> labels = new ArrayList<Label>(labelType.getLabels());
+        for (int i = 0; i < labels.size(); i++) {
+            for (int j = i + 1; j < labels.size(); j++) {
+                if (labels.get(j).getName().equals(labels.get(i).getName())) {
+                    result.add(createInvalidValue(labels.get(j)));
+                }
+            }
+        }
+        return result;
+    }
+
+    private InvalidValue createInvalidValue(Label label) {
+        return new InvalidValue(_(
+                "{0} already exists", label.getName()),
+                LabelType.class, "name", label.getName(), label);
     }
 
     @Override

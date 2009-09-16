@@ -9,6 +9,8 @@ import org.navalplanner.business.labels.entities.LabelType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO for {@link LabelType}
@@ -25,6 +27,18 @@ public class LabelTypeDAO extends GenericDAOHibernate<LabelType, Long> implement
         return list(LabelType.class);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public boolean isUnique(LabelType labelType) {
+        try {
+            return findUniqueByName(labelType).getId()
+                    .equals(labelType.getId());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
     public boolean existsByName(LabelType labelType) {
         try {
             return findUniqueByName(labelType) != null;
