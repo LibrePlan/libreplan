@@ -2,6 +2,7 @@ package org.navalplanner.web.resources.worker;
 
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.common.ConcurrentModificationDetector.addAutomaticHandlingOfConcurrentModification;
+import static org.navalplanner.web.common.InvalidInputsChecker.thereAreInvalidInputsOn;
 
 import java.util.Date;
 import java.util.List;
@@ -113,6 +114,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void save() {
+        if (thereAreInvalidInputsOn(getCurrentWindow())) {
+            return;
+        }
         try {
             if (baseCalendarEditionController != null) {
                 baseCalendarEditionController.save();
