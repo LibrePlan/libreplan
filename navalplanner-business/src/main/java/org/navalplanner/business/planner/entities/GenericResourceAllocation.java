@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -100,16 +98,8 @@ public class GenericResourceAllocation extends ResourceAllocation {
         }
 
         private final IWorkHours generateWorkHoursFor(Resource resource) {
-            List<BaseCalendar> calendars = new ArrayList<BaseCalendar>();
             if (resource.getCalendar() != null) {
-                calendars.add(resource.getCalendar());
-            }
-            if (getTaskCalendar() != null) {
-                calendars.add(getTaskCalendar());
-            }
-            if (!calendars.isEmpty()) {
-                return CombinedWorkHours.minOf(calendars
-                        .toArray(new IWorkHours[0]));
+                return resource.getCalendar();
             } else {
                 return SameWorkHoursEveryDay.getDefaultWorkingDay();
             }
