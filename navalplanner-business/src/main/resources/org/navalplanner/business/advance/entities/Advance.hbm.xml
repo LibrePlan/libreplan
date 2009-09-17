@@ -59,7 +59,6 @@
     <version name="version" access="property" type="long" />
     <property name="date"/>
     <property name="value" scale="2"/>
-    <property name="numIndirectSons"/>
     <many-to-one name="advanceAssigment" class="AdvanceAssigment" column="ADVANCE_ASSIGMENT_ID" />
 </class>
 </hibernate-mapping>

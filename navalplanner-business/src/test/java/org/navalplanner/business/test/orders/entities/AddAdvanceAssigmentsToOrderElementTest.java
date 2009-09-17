@@ -9,8 +9,8 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.math.BigDecimal;
-
 import java.util.Date;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
@@ -94,7 +94,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
 
     private AdvanceMeasurement createValidAdvanceMeasurement() {
         AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create(
-                new Date(), new BigDecimal(0),0);
+                new Date(), new BigDecimal(0));
         return advanceMeasurement;
     }
 

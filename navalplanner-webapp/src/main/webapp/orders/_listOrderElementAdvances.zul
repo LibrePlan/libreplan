@@ -8,13 +8,13 @@
             </button>
             <button label="${i18n:_('Remove')}"
                 onClick="manageOrderElementAdvancesController.goToRemoveLineAdvanceAssigment();"
-                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurementDTOs}">
+                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurements}">
             </button>
         </hbox>
     </vbox>
     <vbox>
     <listbox id="editAdvances"
-             model="@{manageOrderElementAdvancesController.advanceAssigmentDTOs}"
+             model="@{manageOrderElementAdvancesController.advanceAssigments}"
              itemRenderer="@{manageOrderElementAdvancesController.advancesRenderer}" mold="paging"
              onSelect="manageOrderElementAdvancesController.prepareEditAdvanceMeasurements(self.selectedItem.value);"
              pageSize="10">
@@ -37,38 +37,23 @@
         <hbox>
             <button label="${i18n:_('Add new advance measurement')}"
                 onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceMeasurement();"
-                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurementDTOs}">
+                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurements}">
             </button>
             <button label="${i18n:_('Remove')}"
                 onClick="manageOrderElementAdvancesController.goToRemoveLineAdvanceMeasurement();"
-                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurementDTOs}">
+                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurements}">
             </button>
         </hbox>
         <hbox>
         <listbox id="editAdvancesMeasurement"
-                 model="@{manageOrderElementAdvancesController.advanceMeasurementDTOs}"
+                 model="@{manageOrderElementAdvancesController.advanceMeasurements}"
+                 itemRenderer="@{manageOrderElementAdvancesController.advanceMeasurementRenderer}"
                  mold="paging" pageSize="10">
                 <listhead sizable="true">
                     <listheader label="${i18n:_('Current value')}"/>
                     <listheader label="${i18n:_('Percentage')}"/>
                     <listheader label="${i18n:_('Date')}"/>
                 </listhead>
-                <listitem self="@{each='advanceMeasurementDTO'}" value="@{advanceMeasurementDTO}">
-                    <listcell>
-                            <decimalbox value="@{advanceMeasurementDTO.value, save-when='self.onChange'}"
-                                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurementDTOs}"
-                                scale="2"
-                                onChange = "manageOrderElementAdvancesController.updatesValue(self);"
-                                constraint = "@{manageOrderElementAdvancesController.checkValidValue}"/>
-			</listcell>
-                        <listcell label="@{advanceMeasurementDTO.percentage}" />
-			<listcell>
-				<datebox value="@{advanceMeasurementDTO.date, save-when='self.onChange'}"
-                                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurementDTOs}"
-                                onChange = "manageOrderElementAdvancesController.setCurrentDate(self.parent.parent);"
-                                constraint = "@{manageOrderElementAdvancesController.checkValidDate}"/>
-			</listcell>
-                </listitem>
         </listbox>
         </hbox>
     </vbox>

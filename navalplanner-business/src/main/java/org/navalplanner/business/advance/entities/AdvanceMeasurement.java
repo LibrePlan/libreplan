@@ -8,9 +8,9 @@ import org.navalplanner.business.common.BaseEntity;
 
 public class AdvanceMeasurement extends BaseEntity {
 
-    public static AdvanceMeasurement create(Date date, BigDecimal value, int numIndirectSons) {
+    public static AdvanceMeasurement create(Date date, BigDecimal value) {
         AdvanceMeasurement advanceMeasurement = new AdvanceMeasurement(date,
-                value, numIndirectSons);
+                value);
         advanceMeasurement.setNewObject(true);
         return advanceMeasurement;
     }
@@ -30,17 +30,13 @@ public class AdvanceMeasurement extends BaseEntity {
     @NotNull
     private AdvanceAssigment advanceAssigment;
 
-    private int numIndirectSons;
-
     public AdvanceMeasurement() {
-        this.numIndirectSons = 0;
     }
 
-    private AdvanceMeasurement(Date date, BigDecimal value , int numIndirectSons) {
+    private AdvanceMeasurement(Date date, BigDecimal value) {
         this.date = date;
         this.value = value;
         this.value.setScale(2,BigDecimal.ROUND_HALF_UP);
-        this.numIndirectSons = numIndirectSons;
     }
 
     public void setDate(Date date) {
@@ -68,19 +64,4 @@ public class AdvanceMeasurement extends BaseEntity {
         return this.advanceAssigment;
     }
 
-    public int getNumIndirectSons() {
-        return numIndirectSons;
-    }
-
-    public void setNumIndirectSons(int numIndirectSons) {
-        this.numIndirectSons = numIndirectSons;
-    }
-
-    public void incrementNumIndirectSons() {
-        this.numIndirectSons = this.numIndirectSons + 1;
-    }
-
-    public void decrementNumIndirectSons() {
-        this.numIndirectSons = this.numIndirectSons - 1;
-    }
 }
