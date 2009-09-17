@@ -32,7 +32,7 @@ public abstract class OrderElement extends BaseEntity {
 
     private String description;
 
-    private Set<AdvanceAssigment> advanceAssigments = new HashSet<AdvanceAssigment>();
+    protected Set<AdvanceAssigment> advanceAssigments = new HashSet<AdvanceAssigment>();
 
     private Set<Label> labels = new HashSet<Label>();
 
@@ -147,7 +147,9 @@ public abstract class OrderElement extends BaseEntity {
         return code;
     }
 
-    public Set<AdvanceAssigment> getAdvanceAssigments() {
+    public abstract Set<AdvanceAssigment> getAdvanceAssigments();
+
+    protected Set<AdvanceAssigment> getAdvanceAssigmentsWithoutMerge() {
         return Collections.unmodifiableSet(this.advanceAssigments);
     }
 
@@ -195,7 +197,7 @@ public abstract class OrderElement extends BaseEntity {
         if (!newAdvanceAssigment.getReportGlobalAdvance()) {
             return;
         }
-        for (AdvanceAssigment advanceAssigment : getAdvanceAssigments()) {
+        for (AdvanceAssigment advanceAssigment : advanceAssigments) {
             if((advanceAssigment.getType().equals(AdvanceAssigment.Type.DIRECT))
                     && (advanceAssigment.getReportGlobalAdvance()))
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
@@ -214,8 +216,7 @@ public abstract class OrderElement extends BaseEntity {
     private void checkAncestorsNoOtherAssignmentWithSameAdvanceType(
             OrderElement orderElement, AdvanceAssigment newAdvanceAssigment)
             throws DuplicateAdvanceAssigmentForOrderElementException {
-        for (AdvanceAssigment advanceAssigment : orderElement
-                .getAdvanceAssigments()) {
+        for (AdvanceAssigment advanceAssigment : orderElement.advanceAssigments) {
             if ((AdvanceType.equivalentInDB(advanceAssigment.getAdvanceType(),
                     newAdvanceAssigment.getAdvanceType())) &&
                     (advanceAssigment.getType().equals(AdvanceAssigment.Type.DIRECT))) {
@@ -240,8 +241,7 @@ public abstract class OrderElement extends BaseEntity {
     private void checkChildrenNoOtherAssignmentWithSameAdvanceType(
             OrderElement orderElement, AdvanceAssigment newAdvanceAssigment)
             throws DuplicateAdvanceAssigmentForOrderElementException {
-        for (AdvanceAssigment advanceAssigment : orderElement
-                .getAdvanceAssigments()) {
+        for (AdvanceAssigment advanceAssigment : orderElement.advanceAssigments) {
             if ((AdvanceType.equivalentInDB(advanceAssigment.getAdvanceType(),
                     newAdvanceAssigment.getAdvanceType())) &&
                     (advanceAssigment.getType().equals(AdvanceAssigment.Type.DIRECT))) {

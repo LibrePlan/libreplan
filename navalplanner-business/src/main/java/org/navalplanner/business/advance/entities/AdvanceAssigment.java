@@ -86,6 +86,11 @@ public class AdvanceAssigment extends BaseEntity {
         return this.advanceMeasurements;
     }
 
+    public void setAdvanceMeasurements(
+            SortedSet<AdvanceMeasurement> advanceMeasurements) {
+        this.advanceMeasurements = advanceMeasurements;
+    }
+
     public void setType(Type type) {
         this.type = type;
     }

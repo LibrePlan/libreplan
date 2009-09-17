@@ -362,4 +362,9 @@ public class OrderLine extends OrderElement {
         return temp.setScale(2);
     }
 
+    @Override
+    public Set<AdvanceAssigment> getAdvanceAssigments() {
+        return getAdvanceAssigmentsWithoutMerge();
+    }
+
 }
