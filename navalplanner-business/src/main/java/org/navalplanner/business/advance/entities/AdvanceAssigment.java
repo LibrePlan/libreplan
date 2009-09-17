@@ -1,6 +1,7 @@
 package org.navalplanner.business.advance.entities;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -92,4 +93,34 @@ public class AdvanceAssigment extends BaseEntity {
     public Type getType() {
         return this.type;
     }
+
+    public AdvanceMeasurement getLastAdvanceMeasurement() {
+        if (advanceMeasurements.isEmpty()) {
+            return null;
+        }
+
+        AdvanceMeasurement last = advanceMeasurements.first();
+        for (AdvanceMeasurement advanceMeasurement : advanceMeasurements) {
+            Date date = advanceMeasurement.getDate();
+            if (last.getDate().compareTo(date) < 0) {
+                last = advanceMeasurement;
+            }
+        }
+
+        return last;
+    }
+
+    public BigDecimal getLastPercentage() {
+        BigDecimal zero = new BigDecimal(0);
+        if (maxValue.compareTo(zero) == 0) {
+            return zero;
+        }
+
+        AdvanceMeasurement advanceMeasurement = getLastAdvanceMeasurement();
+        if (advanceMeasurement == null) {
+            return zero;
+        }
+        return advanceMeasurement.getValue().divide(maxValue);
+    }
+
 }

@@ -1,5 +1,6 @@
 package org.navalplanner.business.orders.entities;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -256,4 +257,7 @@ public abstract class OrderElement extends BaseEntity {
             }
         }
     }
+
+    public abstract BigDecimal getAdvancePercentage();
+
 }

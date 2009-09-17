@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.navalplanner.business.advance.entities.AdvanceAssigment;
+
 public class OrderLine extends OrderElement {
 
     public static OrderLine create() {
@@ -340,6 +342,24 @@ public class OrderLine extends OrderElement {
                 }
             }
         }
+    }
+
+    @Override
+    public BigDecimal getAdvancePercentage() {
+        Set<AdvanceAssigment> advanceAssigments = getAdvanceAssigments();
+
+        BigDecimal temp = new BigDecimal(0);
+        for (AdvanceAssigment advanceAssigment : advanceAssigments) {
+            BigDecimal percentage = advanceAssigment.getLastPercentage();
+            temp = temp.add(percentage);
+        }
+
+        Integer number = advanceAssigments.size();
+        if (number > 0) {
+            temp = temp.divide(new BigDecimal(number));
+        }
+
+        return temp.setScale(2);
     }
 
 }

@@ -1,9 +1,12 @@
 package org.navalplanner.business.orders.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.validator.Valid;
+import org.navalplanner.business.advance.entities.AdvanceAssigment;
 
 public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
 
@@ -102,6 +105,37 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
             hoursGroups.addAll(orderElement.getHoursGroups());
         }
         return hoursGroups;
+    }
+
+    @Override
+    public BigDecimal getAdvancePercentage() {
+        Integer hours = getWorkHours();
+        BigDecimal temp = new BigDecimal(0);
+
+        if (hours > 0) {
+            for (OrderElement orderElement : children) {
+                BigDecimal childPercentage = orderElement
+                        .getAdvancePercentage();
+                Integer childHours = orderElement.getWorkHours();
+                temp = temp.add(childPercentage.multiply(new BigDecimal(
+                        childHours)));
+            }
+
+            temp = temp.divide(new BigDecimal(hours));
+        }
+
+        Set<AdvanceAssigment> advanceAssigments = getAdvanceAssigments();
+        if (!advanceAssigments.isEmpty()) {
+            for (AdvanceAssigment advanceAssigment : advanceAssigments) {
+                BigDecimal percentage = advanceAssigment.getLastPercentage();
+                temp = temp.add(percentage);
+            }
+
+            Integer number = advanceAssigments.size() + 1;
+            temp = temp.divide(new BigDecimal(number));
+        }
+
+        return temp.setScale(2);
     }
 
 }
