@@ -57,8 +57,9 @@
         </generator>
     </id>
     <version name="version" access="property" type="long" />
-    <property name="date"/>
-    <property name="value" scale="2"/>
-    <many-to-one name="advanceAssigment" class="AdvanceAssigment" column="ADVANCE_ASSIGMENT_ID" />
+
+    <property name="date" access="field" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+    <property name="value" scale="2" access="field" />
+    <many-to-one name="advanceAssigment" class="AdvanceAssigment" column="ADVANCE_ASSIGMENT_ID" access="field" />
 </class>
 </hibernate-mapping>

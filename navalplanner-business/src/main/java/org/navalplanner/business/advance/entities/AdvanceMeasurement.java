@@ -1,14 +1,14 @@
 package org.navalplanner.business.advance.entities;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import org.hibernate.validator.NotNull;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 
 public class AdvanceMeasurement extends BaseEntity {
 
-    public static AdvanceMeasurement create(Date date, BigDecimal value) {
+    public static AdvanceMeasurement create(LocalDate date, BigDecimal value) {
         AdvanceMeasurement advanceMeasurement = new AdvanceMeasurement(date,
                 value);
         advanceMeasurement.setNewObject(true);
@@ -22,7 +22,7 @@ public class AdvanceMeasurement extends BaseEntity {
     }
 
     @NotNull
-    private Date date;
+    private LocalDate date;
 
     @NotNull
     private BigDecimal value;
@@ -33,17 +33,17 @@ public class AdvanceMeasurement extends BaseEntity {
     public AdvanceMeasurement() {
     }
 
-    private AdvanceMeasurement(Date date, BigDecimal value) {
+    private AdvanceMeasurement(LocalDate date, BigDecimal value) {
         this.date = date;
         this.value = value;
         this.value.setScale(2,BigDecimal.ROUND_HALF_UP);
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return this.date;
     }
 

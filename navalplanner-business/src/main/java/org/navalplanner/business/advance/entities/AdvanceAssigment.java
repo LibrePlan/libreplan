@@ -1,11 +1,11 @@
 package org.navalplanner.business.advance.entities;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.hibernate.validator.NotNull;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 
@@ -106,7 +106,7 @@ public class AdvanceAssigment extends BaseEntity {
 
         AdvanceMeasurement last = advanceMeasurements.first();
         for (AdvanceMeasurement advanceMeasurement : advanceMeasurements) {
-            Date date = advanceMeasurement.getDate();
+            LocalDate date = advanceMeasurement.getDate();
             if (last.getDate().compareTo(date) < 0) {
                 last = advanceMeasurement;
             }

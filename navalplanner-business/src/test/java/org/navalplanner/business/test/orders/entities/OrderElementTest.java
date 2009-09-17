@@ -8,7 +8,6 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -102,7 +101,7 @@ public class OrderElementTest {
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssigmentForOrderElementException {
         AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
-        advanceMeasurement.setDate(new Date());
+        advanceMeasurement.setDate(new LocalDate());
         advanceMeasurement.setValue(currentValue);
 
         AdvanceAssigment advanceAssigment = givenAdvanceAssigement(maxValue,
@@ -228,13 +227,11 @@ public class OrderElementTest {
 
         List<OrderElement> children = orderElement.getChildren();
 
-        Date one = new LocalDate(2009, 9, 1).toDateTimeAtStartOfDay()
-                .toDate();
-        Date two = new LocalDate(2009, 9, 2).toDateTimeAtStartOfDay().toDate();
-        Date three = new LocalDate(2009, 9, 3).toDateTimeAtStartOfDay()
-                .toDate();
-        Date four = new LocalDate(2009, 9, 4).toDateTimeAtStartOfDay().toDate();
-        Date five = new LocalDate(2009, 9, 5).toDateTimeAtStartOfDay().toDate();
+        LocalDate one = new LocalDate(2009, 9, 1);
+        LocalDate two = new LocalDate(2009, 9, 2);
+        LocalDate three = new LocalDate(2009, 9, 3);
+        LocalDate four = new LocalDate(2009, 9, 4);
+        LocalDate five = new LocalDate(2009, 9, 5);
 
         AdvanceType advanceType = PredefinedAdvancedTypes.UNITS.getType();
 
@@ -287,9 +284,10 @@ public class OrderElementTest {
     }
 
     private void addAvanceAssigmentWithMeasurements(OrderElement orderElement,
-            AdvanceType advanceType, BigDecimal maxValue, Date date1,
-            BigDecimal value1, Date date2, BigDecimal value2, Date date3,
-            BigDecimal value3)
+            AdvanceType advanceType, BigDecimal maxValue, LocalDate date1,
+            BigDecimal value1, LocalDate date2, BigDecimal value2,
+            LocalDate five,
+            BigDecimal date3)
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssigmentForOrderElementException {
         AdvanceAssigment advanceAssigment = givenAdvanceAssigement(maxValue,
@@ -306,8 +304,8 @@ public class OrderElementTest {
         advanceAssigment.getAdvanceMeasurements().add(advanceMeasurement2);
 
         AdvanceMeasurement advanceMeasurement3 = AdvanceMeasurement.create();
-        advanceMeasurement3.setDate(date3);
-        advanceMeasurement3.setValue(value3);
+        advanceMeasurement3.setDate(five);
+        advanceMeasurement3.setValue(date3);
         advanceAssigment.getAdvanceMeasurements().add(advanceMeasurement3);
 
         orderElement.addAdvanceAssigment(advanceAssigment);

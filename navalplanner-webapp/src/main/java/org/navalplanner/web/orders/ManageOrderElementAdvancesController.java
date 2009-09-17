@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceAssigment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceType;
@@ -355,13 +356,14 @@ public class ManageOrderElementAdvancesController extends
             Util.bind(date, new Util.Getter<Date>() {
                 @Override
                 public Date get() {
-                    return advanceMeasurement.getDate();
+                    return advanceMeasurement.getDate()
+                            .toDateTimeAtStartOfDay().toDate();
                 }
             }, new Util.Setter<Date>() {
 
                 @Override
                 public void set(Date value) {
-                    advanceMeasurement.setDate(value);
+                    advanceMeasurement.setDate(new LocalDate(value));
                 }
             });
         }
@@ -478,8 +480,13 @@ public class ManageOrderElementAdvancesController extends
                     .getFirstAdvanceMeasurement(advanceAssigment);
              if(greatAdvanceMeasurement != null){
                  Listcell date = (Listcell) selectedItem.getChildren().get(4);
-                ((Datebox) date.getFirstChild())
-                        .setValue(greatAdvanceMeasurement.getDate());
+                 LocalDate newDate = greatAdvanceMeasurement.getDate();
+                 if (newDate != null) {
+                     ((Datebox) date.getFirstChild()).setValue(newDate
+                            .toDateTimeAtStartOfDay().toDate());
+                 } else {
+                    ((Datebox) date.getFirstChild()).setValue(null);
+                }
              }
         }
     }
@@ -663,13 +670,14 @@ public class ManageOrderElementAdvancesController extends
 
                 @Override
                 public Date get() {
-                    return advanceMeasurement.getDate();
+                    return advanceMeasurement.getDate()
+                            .toDateTimeAtStartOfDay().toDate();
                 }
             }, new Util.Setter<Date>() {
 
                 @Override
                 public void set(Date value) {
-                    advanceMeasurement.setDate(value);
+                    advanceMeasurement.setDate(new LocalDate(value));
                 }
             });
         }

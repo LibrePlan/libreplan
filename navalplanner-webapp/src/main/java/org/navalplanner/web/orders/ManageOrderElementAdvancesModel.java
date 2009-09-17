@@ -12,6 +12,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.daos.IAdvanceAssigmentDAO;
 import org.navalplanner.business.advance.daos.IAdvanceMeasurementDAO;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
@@ -155,7 +156,7 @@ public class ManageOrderElementAdvancesModel implements
     public void addNewLineAdvaceMeasurement() {
         if (this.advanceAssigment != null) {
             AdvanceMeasurement newMeasurement = AdvanceMeasurement.create();
-            newMeasurement.setDate(new Date());
+            newMeasurement.setDate(new LocalDate());
             newMeasurement.setAdvanceAssigment(this.advanceAssigment);
             this.advanceAssigment.getAdvanceMeasurements().add(newMeasurement);
         }
@@ -316,10 +317,10 @@ public class ManageOrderElementAdvancesModel implements
             return true;
         for (AdvanceMeasurement advanceMeasurement : advanceAssigment
                 .getAdvanceMeasurements()) {
-            Date oldDate = advanceMeasurement.getDate();
+            LocalDate oldDate = advanceMeasurement.getDate();
             if ((oldDate != null)
                     && (!newAdvanceMeasurement.equals(advanceMeasurement))
-                    && (oldDate.compareTo(value) == 0))
+                    && (oldDate.compareTo(new LocalDate(value)) == 0))
                 return false;
         }
         return true;

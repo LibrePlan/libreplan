@@ -3,7 +3,6 @@ package org.navalplanner.business.orders.entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,6 +13,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.hibernate.validator.Valid;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceAssigment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceMeasurementComparator;
@@ -243,7 +243,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
         BigDecimal previous2 = new BigDecimal(0);
         BigDecimal previousResult = new BigDecimal(0);
 
-        Date date;
+        LocalDate date;
         BigDecimal add;
 
         while ((next1 != null) && (next2 != null)) {
