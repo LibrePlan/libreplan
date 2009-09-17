@@ -27,7 +27,7 @@ public class SpecificResourceAllocation extends ResourceAllocation implements
     @NotNull
     private Resource resource;
 
-    private Set<SpecificDayAssigment> specificDaysAssigment = new HashSet<SpecificDayAssigment>();
+    private Set<SpecificDayAssignment> specificDaysAssignment = new HashSet<SpecificDayAssignment>();
 
     public static SpecificResourceAllocation createForTesting(
             ResourcesPerDay resourcesPerDay, Task task) {
@@ -60,20 +60,20 @@ public class SpecificResourceAllocation extends ResourceAllocation implements
     }
 
     @Override
-    public List<SpecificDayAssigment> getAssignments() {
-        return DayAssigment.orderedByDay(specificDaysAssigment);
+    public List<SpecificDayAssignment> getAssignments() {
+        return DayAssignment.orderedByDay(specificDaysAssignment);
     }
 
-    private void setAssignments(List<SpecificDayAssigment> assignments) {
-        this.specificDaysAssigment = new HashSet<SpecificDayAssigment>(
+    private void setAssignments(List<SpecificDayAssignment> assignments) {
+        this.specificDaysAssignment = new HashSet<SpecificDayAssignment>(
                 assignments);
-        setParentFor(specificDaysAssigment);
+        setParentFor(specificDaysAssignment);
     }
 
     private void setParentFor(
-            Collection<? extends SpecificDayAssigment> assignments) {
-        for (SpecificDayAssigment specificDayAssigment : assignments) {
-            specificDayAssigment.setSpecificResourceAllocation(this);
+            Collection<? extends SpecificDayAssignment> assignments) {
+        for (SpecificDayAssignment specificDayAssignment : assignments) {
+            specificDayAssignment.setSpecificResourceAllocation(this);
         }
     }
 
@@ -81,18 +81,18 @@ public class SpecificResourceAllocation extends ResourceAllocation implements
     public void allocate(ResourcesPerDay resourcesPerDay) {
         Validate.notNull(resourcesPerDay);
         Validate.notNull(resource);
-        AssignmentsAllocation<SpecificDayAssigment> assignmentsAllocation = new AssignmentsAllocation<SpecificDayAssigment>() {
+        AssignmentsAllocation<SpecificDayAssignment> assignmentsAllocation = new AssignmentsAllocation<SpecificDayAssignment>() {
 
             @Override
-            protected List<SpecificDayAssigment> distributeForDay(
+            protected List<SpecificDayAssignment> distributeForDay(
                     LocalDate day, int totalHours) {
-                return Arrays.asList(SpecificDayAssigment.create(day,
+                return Arrays.asList(SpecificDayAssignment.create(day,
                         totalHours, resource));
             }
 
             @Override
             protected void resetAssignmentsTo(
-                    List<SpecificDayAssigment> assignments) {
+                    List<SpecificDayAssignment> assignments) {
                 setAssignments(assignments);
             }
         };

@@ -10,35 +10,35 @@ import org.hamcrest.Matcher;
 import org.joda.time.LocalDate;
 import org.junit.matchers.CombinableMatcher;
 import org.junit.matchers.JUnitMatchers;
-import org.navalplanner.business.planner.entities.DayAssigment;
-import org.navalplanner.business.planner.entities.GenericDayAssigment;
+import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.SpecificDayAssigment;
+import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 
 /**
- * Some {@link Matcher} that work against dayAssigments
+ * Some {@link Matcher} that work against dayAssignments
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class DayAssigmentMatchers {
+public class DayAssignmentMatchers {
 
-    public static abstract class ListDayAssigmentsMatcher extends
-            BaseMatcher<List<? extends DayAssigment>> {
+    public static abstract class ListDayAssignmentsMatcher extends
+            BaseMatcher<List<? extends DayAssignment>> {
 
         @Override
         final public boolean matches(Object value) {
             if (value instanceof List) {
-                List<DayAssigment> dayAssigments = new ArrayList<DayAssigment>(
-                        (List<DayAssigment>) value);
-                return matches(dayAssigments);
+                List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>(
+                        (List<DayAssignment>) value);
+                return matches(dayAssignments);
             }
             return false;
         }
 
-        protected abstract boolean matches(List<DayAssigment> assignments);
+        protected abstract boolean matches(List<DayAssignment> assignments);
 
     }
 
-    public static final class FromMatcher extends ListDayAssigmentsMatcher {
+    public static final class FromMatcher extends ListDayAssignmentsMatcher {
         private final LocalDate start;
 
         private FromMatcher(LocalDate start) {
@@ -51,31 +51,31 @@ public class DayAssigmentMatchers {
                     + start);
         }
 
-        public CombinableMatcher<List<? extends DayAssigment>> consecutiveDays(
+        public CombinableMatcher<List<? extends DayAssignment>> consecutiveDays(
                 int days) {
             return JUnitMatchers.both(this).and(
-                    DayAssigmentMatchers.consecutiveDays(days));
+                    DayAssignmentMatchers.consecutiveDays(days));
         }
 
         @Override
-        protected boolean matches(List<DayAssigment> assignments) {
+        protected boolean matches(List<DayAssignment> assignments) {
             return !assignments.isEmpty()
                     && assignments.get(0).getDay().equals(start);
         }
     }
 
-    public static final Matcher<List<? extends DayAssigment>> haveHours(
+    public static final Matcher<List<? extends DayAssignment>> haveHours(
             final int... hours) {
-        return new BaseMatcher<List<? extends DayAssigment>>() {
+        return new BaseMatcher<List<? extends DayAssignment>>() {
 
             @Override
             public boolean matches(Object value) {
                 if (value instanceof List) {
-                    List<? extends DayAssigment> assigments = (List<? extends GenericDayAssigment>) value;
-                    if (assigments.size() != hours.length)
+                    List<? extends DayAssignment> assignments = (List<? extends GenericDayAssignment>) value;
+                    if (assignments.size() != hours.length)
                         return false;
                     for (int i = 0; i < hours.length; i++) {
-                        if (hours[i] != assigments.get(i).getHours()) {
+                        if (hours[i] != assignments.get(i).getHours()) {
                             return false;
                         }
                     }
@@ -92,11 +92,11 @@ public class DayAssigmentMatchers {
         };
     }
 
-    public static ListDayAssigmentsMatcher consecutiveDays(final int days) {
-        return new ListDayAssigmentsMatcher() {
+    public static ListDayAssignmentsMatcher consecutiveDays(final int days) {
+        return new ListDayAssignmentsMatcher() {
 
             @Override
-            public boolean matches(List<DayAssigment> assignments) {
+            public boolean matches(List<DayAssignment> assignments) {
                 if (assignments.size() != days) {
                     return false;
                 }
@@ -104,7 +104,7 @@ public class DayAssigmentMatchers {
                     return true;
                 }
                 LocalDate current = assignments.get(0).getDay();
-                for (DayAssigment d : assignments) {
+                for (DayAssignment d : assignments) {
                     if (!d.getDay().equals(current)) {
                         return false;
                     }
@@ -125,21 +125,21 @@ public class DayAssigmentMatchers {
         return new FromMatcher(start);
     }
 
-    public static ListDayAssigmentsMatcher haveResourceAllocation(
+    public static ListDayAssignmentsMatcher haveResourceAllocation(
             final ResourceAllocation allocation) {
-        return new ListDayAssigmentsMatcher() {
+        return new ListDayAssignmentsMatcher() {
 
             @Override
-            protected boolean matches(List<DayAssigment> assignments) {
-                for (DayAssigment dayAssigment : assignments) {
-                    if (dayAssigment instanceof GenericDayAssigment) {
-                        GenericDayAssigment generic = (GenericDayAssigment) dayAssigment;
+            protected boolean matches(List<DayAssignment> assignments) {
+                for (DayAssignment dayAssignment : assignments) {
+                    if (dayAssignment instanceof GenericDayAssignment) {
+                        GenericDayAssignment generic = (GenericDayAssignment) dayAssignment;
                         if (!allocation.equals(generic
                                 .getGenericResourceAllocation())) {
                             return false;
                         }
-                    } else if (dayAssigment instanceof SpecificDayAssigment) {
-                        SpecificDayAssigment specific = (SpecificDayAssigment) dayAssigment;
+                    } else if (dayAssignment instanceof SpecificDayAssignment) {
+                        SpecificDayAssignment specific = (SpecificDayAssignment) dayAssignment;
                         if (!allocation.equals(specific
                                 .getSpecificResourceAllocation())) {
                             return false;

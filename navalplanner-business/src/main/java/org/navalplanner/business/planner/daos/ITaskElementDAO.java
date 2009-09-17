@@ -1,7 +1,7 @@
 package org.navalplanner.business.planner.daos;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
-import org.navalplanner.business.planner.entities.DayAssigment;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 
 /**
@@ -10,7 +10,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 public interface ITaskElementDAO extends IGenericDAO<TaskElement, Long> {
 
     /**
-     * Removes {@link DayAssigment} that have no parent
+     * Removes {@link DayAssignment} that have no parent
      */
     void removeOrphanedDayAssignments();
 

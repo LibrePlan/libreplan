@@ -28,7 +28,7 @@ public class AdvanceMeasurement extends BaseEntity {
     private BigDecimal value;
 
     @NotNull
-    private AdvanceAssigment advanceAssigment;
+    private AdvanceAssignment advanceAssignment;
 
     public AdvanceMeasurement() {
     }
@@ -56,12 +56,12 @@ public class AdvanceMeasurement extends BaseEntity {
         return this.value;
     }
 
-    public void setAdvanceAssigment(AdvanceAssigment advanceAssigment) {
-        this.advanceAssigment = advanceAssigment;
+    public void setAdvanceAssignment(AdvanceAssignment advanceAssignment) {
+        this.advanceAssignment = advanceAssignment;
     }
 
-    public AdvanceAssigment getAdvanceAssigment() {
-        return this.advanceAssigment;
+    public AdvanceAssignment getAdvanceAssignment() {
+        return this.advanceAssignment;
     }
 
 }

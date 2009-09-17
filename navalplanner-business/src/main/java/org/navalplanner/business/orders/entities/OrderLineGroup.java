@@ -14,10 +14,10 @@ import java.util.TreeSet;
 
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.advance.entities.AdvanceAssigment;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceMeasurementComparator;
-import org.navalplanner.business.advance.entities.AdvanceAssigment.Type;
+import org.navalplanner.business.advance.entities.AdvanceAssignment.Type;
 
 public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
 
@@ -135,14 +135,14 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
             temp = temp.divide(new BigDecimal(hours));
         }
 
-        Set<AdvanceAssigment> advanceAssigments = this.advanceAssigments;
-        if (!advanceAssigments.isEmpty()) {
-            for (AdvanceAssigment advanceAssigment : advanceAssigments) {
-                BigDecimal percentage = advanceAssigment.getLastPercentage();
+        Set<AdvanceAssignment> advanceAssignments = this.advanceAssignments;
+        if (!advanceAssignments.isEmpty()) {
+            for (AdvanceAssignment advanceAssignment : advanceAssignments) {
+                BigDecimal percentage = advanceAssignment.getLastPercentage();
                 temp = temp.add(percentage);
             }
 
-            Integer number = advanceAssigments.size() + 1;
+            Integer number = advanceAssignments.size() + 1;
             temp = temp.divide(new BigDecimal(number));
         }
 
@@ -150,76 +150,76 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     }
 
     @Override
-    public Set<AdvanceAssigment> getAdvanceAssigments() {
-        Set<AdvanceAssigment> assigments = new HashSet<AdvanceAssigment>();
+    public Set<AdvanceAssignment> getAdvanceAssignments() {
+        Set<AdvanceAssignment> assignments = new HashSet<AdvanceAssignment>();
 
         for (OrderElement child : children) {
-            assigments.addAll(child.getAdvanceAssigmentsWithoutMerge());
+            assignments.addAll(child.getAdvanceAssignmentsWithoutMerge());
         }
 
-        Map<String, List<AdvanceAssigment>> map = classifyByAdvanceType(assigments);
+        Map<String, List<AdvanceAssignment>> map = classifyByAdvanceType(assignments);
 
-        Set<AdvanceAssigment> result = new HashSet<AdvanceAssigment>();
-        result.addAll(this.advanceAssigments);
+        Set<AdvanceAssignment> result = new HashSet<AdvanceAssignment>();
+        result.addAll(this.advanceAssignments);
 
         for (String advanceType : map.keySet()) {
-            result.add(mergeAdvanceAssigments(map.get(advanceType)));
+            result.add(mergeAdvanceAssignments(map.get(advanceType)));
         }
 
         return result;
     }
 
-    private AdvanceAssigment mergeAdvanceAssigments(List<AdvanceAssigment> list) {
+    private AdvanceAssignment mergeAdvanceAssignments(List<AdvanceAssignment> list) {
         if (list.isEmpty()) {
             return null;
         }
 
-        Iterator<AdvanceAssigment> iterator = list.iterator();
-        AdvanceAssigment origAdvanceAssigment = iterator.next();
-        AdvanceAssigment advanceAssigment = AdvanceAssigment.create();
-        advanceAssigment.setMaxValue(origAdvanceAssigment.getMaxValue());
-        advanceAssigment.setAdvanceType(origAdvanceAssigment.getAdvanceType());
-        advanceAssigment
-                .setOrderElement(origAdvanceAssigment.getOrderElement());
-        advanceAssigment.setAdvanceMeasurements(origAdvanceAssigment
+        Iterator<AdvanceAssignment> iterator = list.iterator();
+        AdvanceAssignment origAdvanceAssignment = iterator.next();
+        AdvanceAssignment advanceAssignment = AdvanceAssignment.create();
+        advanceAssignment.setMaxValue(origAdvanceAssignment.getMaxValue());
+        advanceAssignment.setAdvanceType(origAdvanceAssignment.getAdvanceType());
+        advanceAssignment
+                .setOrderElement(origAdvanceAssignment.getOrderElement());
+        advanceAssignment.setAdvanceMeasurements(origAdvanceAssignment
                 .getAdvanceMeasurements());
 
-        advanceAssigment.setType(Type.CALCULATED);
+        advanceAssignment.setType(Type.CALCULATED);
 
         while (iterator.hasNext()) {
-            AdvanceAssigment tempAssigment = iterator.next();
-            BigDecimal maxValue = tempAssigment.getMaxValue();
-            maxValue = maxValue.add(advanceAssigment.getMaxValue());
-            advanceAssigment.setMaxValue(maxValue);
+            AdvanceAssignment tempAssignment = iterator.next();
+            BigDecimal maxValue = tempAssignment.getMaxValue();
+            maxValue = maxValue.add(advanceAssignment.getMaxValue());
+            advanceAssignment.setMaxValue(maxValue);
 
             SortedSet<AdvanceMeasurement> advanceMeasurements = new TreeSet<AdvanceMeasurement>(
                     new AdvanceMeasurementComparator());
             advanceMeasurements.addAll(mergeAdvanceMeasurements(
-                    advanceAssigment,
-                    new ArrayList<AdvanceMeasurement>(advanceAssigment
+                    advanceAssignment,
+                    new ArrayList<AdvanceMeasurement>(advanceAssignment
                             .getAdvanceMeasurements()),
-                    new ArrayList<AdvanceMeasurement>(tempAssigment
+                    new ArrayList<AdvanceMeasurement>(tempAssignment
                             .getAdvanceMeasurements())));
-            advanceAssigment.setAdvanceMeasurements(advanceMeasurements);
+            advanceAssignment.setAdvanceMeasurements(advanceMeasurements);
         }
 
-        return advanceAssigment;
+        return advanceAssignment;
     }
 
     private List<AdvanceMeasurement> mergeAdvanceMeasurements(
-            AdvanceAssigment advanceAssigment, List<AdvanceMeasurement> one,
+            AdvanceAssignment advanceAssignment, List<AdvanceMeasurement> one,
             List<AdvanceMeasurement> other) {
         Collections.reverse(one);
         Collections.reverse(other);
 
         ArrayList<AdvanceMeasurement> list = new ArrayList<AdvanceMeasurement>();
-        mergeAdvanceMeasurements(advanceAssigment, one, other, list);
+        mergeAdvanceMeasurements(advanceAssignment, one, other, list);
 
         return list;
     }
 
     private void mergeAdvanceMeasurements(
-            AdvanceAssigment advanceAssigment,
+            AdvanceAssignment advanceAssignment,
             List<AdvanceMeasurement> list1, List<AdvanceMeasurement> list2,
             List<AdvanceMeasurement> result) {
 
@@ -287,7 +287,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
             }
 
             AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
-            advanceMeasurement.setAdvanceAssigment(advanceAssigment);
+            advanceMeasurement.setAdvanceAssignment(advanceAssignment);
             advanceMeasurement.setDate(date);
             advanceMeasurement.setValue(previousResult.add(add));
             previousResult = advanceMeasurement.getValue();
@@ -306,7 +306,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
             }
 
             AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
-            advanceMeasurement.setAdvanceAssigment(advanceAssigment);
+            advanceMeasurement.setAdvanceAssignment(advanceAssignment);
             advanceMeasurement.setDate(date);
             advanceMeasurement.setValue(previousResult.add(add));
             previousResult = advanceMeasurement.getValue();
@@ -325,7 +325,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
             }
 
             AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
-            advanceMeasurement.setAdvanceAssigment(advanceAssigment);
+            advanceMeasurement.setAdvanceAssignment(advanceAssignment);
             advanceMeasurement.setDate(date);
             advanceMeasurement.setValue(previousResult.add(add));
             previousResult = advanceMeasurement.getValue();
@@ -334,19 +334,19 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
 
     }
 
-    private Map<String, List<AdvanceAssigment>> classifyByAdvanceType(
-            Set<AdvanceAssigment> advanceAssigments) {
-        Map<String, List<AdvanceAssigment>> map = new HashMap<String, List<AdvanceAssigment>>();
+    private Map<String, List<AdvanceAssignment>> classifyByAdvanceType(
+            Set<AdvanceAssignment> advanceAssignments) {
+        Map<String, List<AdvanceAssignment>> map = new HashMap<String, List<AdvanceAssignment>>();
 
-        for (AdvanceAssigment advanceAssigment : advanceAssigments) {
-            List<AdvanceAssigment> list = map.get(advanceAssigment
+        for (AdvanceAssignment advanceAssignment : advanceAssignments) {
+            List<AdvanceAssignment> list = map.get(advanceAssignment
                     .getAdvanceType().getUnitName());
             if (list == null) {
-                list = new ArrayList<AdvanceAssigment>();
+                list = new ArrayList<AdvanceAssignment>();
             }
-            list.add(advanceAssigment);
+            list.add(advanceAssignment);
 
-            map.put(advanceAssigment.getAdvanceType().getUnitName(), list);
+            map.put(advanceAssignment.getAdvanceType().getUnitName(), list);
         }
 
         return map;

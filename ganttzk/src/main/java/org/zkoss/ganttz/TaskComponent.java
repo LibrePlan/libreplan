@@ -137,7 +137,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
     public TaskComponent(Task task) {
         setHeight(HEIGHT_PER_TASK + "px");
-        setContext("idContextMenuTaskAssigment");
+        setContext("idContextMenuTaskAssignment");
         this.task = task;
         setColor(STANDARD_TASK_COLOR);
         setId(UUID.randomUUID().toString());

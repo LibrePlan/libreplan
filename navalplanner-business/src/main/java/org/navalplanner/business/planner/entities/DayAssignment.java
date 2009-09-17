@@ -17,17 +17,17 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.Resource;
 
-public abstract class DayAssigment extends BaseEntity {
+public abstract class DayAssignment extends BaseEntity {
 
-    public static <T extends DayAssigment> Map<Resource, List<T>> byResourceAndOrdered(
-            Collection<T> assigments) {
+    public static <T extends DayAssignment> Map<Resource, List<T>> byResourceAndOrdered(
+            Collection<T> assignments) {
         Map<Resource, List<T>> result = new HashMap<Resource, List<T>>();
-        for (T assigment : assigments) {
-            Resource resource = assigment.getResource();
+        for (T assignment : assignments) {
+            Resource resource = assignment.getResource();
             if (!result.containsKey(resource)) {
                 result.put(resource, new ArrayList<T>());
             }
-            result.get(resource).add(assigment);
+            result.get(resource).add(assignment);
         }
         for (Entry<Resource, List<T>> entry : result.entrySet()) {
             Collections.sort(entry.getValue(), byDayComparator());
@@ -35,7 +35,7 @@ public abstract class DayAssigment extends BaseEntity {
         return result;
     }
 
-    public static <T extends DayAssigment> Map<LocalDate, List<T>> byDay(
+    public static <T extends DayAssignment> Map<LocalDate, List<T>> byDay(
             Collection<T> assignments) {
         Map<LocalDate, List<T>> result = new HashMap<LocalDate, List<T>>();
         for (T t : assignments) {
@@ -57,11 +57,11 @@ public abstract class DayAssigment extends BaseEntity {
     @NotNull
     private Resource resource;
 
-    protected DayAssigment() {
+    protected DayAssignment() {
 
     }
 
-    protected DayAssigment(LocalDate day, int hours, Resource resource) {
+    protected DayAssignment(LocalDate day, int hours, Resource resource) {
         Validate.notNull(day);
         Validate.isTrue(hours >= 0);
         Validate.notNull(resource);
@@ -87,17 +87,17 @@ public abstract class DayAssigment extends BaseEntity {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    public static Comparator<DayAssigment> byDayComparator() {
-        return new Comparator<DayAssigment>() {
+    public static Comparator<DayAssignment> byDayComparator() {
+        return new Comparator<DayAssignment>() {
 
             @Override
-            public int compare(DayAssigment assigment1, DayAssigment assigment2) {
-                return assigment1.getDay().compareTo(assigment2.getDay());
+            public int compare(DayAssignment assignment1, DayAssignment assignment2) {
+                return assignment1.getDay().compareTo(assignment2.getDay());
             }
         };
     }
 
-    public static <T extends DayAssigment> List<T> orderedByDay(
+    public static <T extends DayAssignment> List<T> orderedByDay(
             Collection<T> dayAssignments) {
         List<T> result = new ArrayList<T>(dayAssignments);
         Collections.sort(result, byDayComparator());

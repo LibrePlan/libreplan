@@ -16,7 +16,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.planner.entities.DayAssigment;
+import org.navalplanner.business.planner.entities.DayAssignment;
 
 // FIXME: Alternatively, Resource can be modeled with the style:
 // Resource.getParent() & Resource.getChilds(). This way, Resource does not
@@ -37,19 +37,19 @@ public abstract class Resource extends BaseEntity{
 
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
 
-    private Set<DayAssigment> dayAssigments = new HashSet<DayAssigment>();
+    private Set<DayAssignment> dayAssignments = new HashSet<DayAssignment>();
 
-    private Map<LocalDate, List<DayAssigment>> assigmentsByDayCached = null;
+    private Map<LocalDate, List<DayAssignment>> assignmentsByDayCached = null;
 
     private void clearCachedData() {
-        assigmentsByDayCached = null;
+        assignmentsByDayCached = null;
     }
 
-    private List<DayAssigment> getAssigmentsForDay(LocalDate date) {
-        if (assigmentsByDayCached == null) {
-            assigmentsByDayCached = DayAssigment.byDay(dayAssigments);
+    private List<DayAssignment> getAssignmentsForDay(LocalDate date) {
+        if (assignmentsByDayCached == null) {
+            assignmentsByDayCached = DayAssignment.byDay(dayAssignments);
         }
-        List<DayAssigment> list = assigmentsByDayCached.get(date);
+        List<DayAssignment> list = assignmentsByDayCached.get(date);
         if (list == null){
             return Collections.emptyList();
         }
@@ -475,21 +475,21 @@ public abstract class Resource extends BaseEntity{
 
     public int getAssignedHours(LocalDate localDate) {
         int sum = 0;
-        for (DayAssigment dayAssigment : getAssigmentsForDay(localDate)) {
-            sum += dayAssigment.getHours();
+        for (DayAssignment dayAssignment : getAssignmentsForDay(localDate)) {
+            sum += dayAssignment.getHours();
         }
         return sum;
     }
 
-    public void addNewAssigments(Collection<? extends DayAssigment> assigments) {
-        Validate.notNull(assigments);
-        Validate.noNullElements(assigments);
+    public void addNewAssignments(Collection<? extends DayAssignment> assignments) {
+        Validate.notNull(assignments);
+        Validate.noNullElements(assignments);
         clearCachedData();
-        this.dayAssigments.addAll(assigments);
+        this.dayAssignments.addAll(assignments);
     }
 
-    public List<DayAssigment> getAssigments() {
-        return new ArrayList<DayAssigment>(dayAssigments);
+    public List<DayAssignment> getAssignments() {
+        return new ArrayList<DayAssignment>(dayAssignments);
     }
 
 }

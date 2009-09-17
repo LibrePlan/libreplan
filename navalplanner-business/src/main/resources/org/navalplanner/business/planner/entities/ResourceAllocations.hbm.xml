@@ -16,7 +16,7 @@
 
         <many-to-one class="Task" name="task" column="TASK" />
 
-        <many-to-one class="AssigmentFunction" name="assigmentFunction" column="ASSIGMENT_FUNCTION" not-null="false"/>
+        <many-to-one class="AssignmentFunction" name="assignmentFunction" column="ASSIGNMENT_FUNCTION" not-null="false"/>
 
         <joined-subclass name="SpecificResourceAllocation" table="SPECIFIC_RESOURCE_ALLOCATION">
             <key column="RESOURCE_ALLOCATION_ID" />
@@ -24,9 +24,9 @@
             <many-to-one name="resource"
                 class="org.navalplanner.business.resources.entities.Resource" />
 
-            <set name="specificDaysAssigment" cascade="all">
+            <set name="specificDaysAssignment" cascade="all">
                 <key column="SPECIFIC_RESOURCE_ALLOCATION_ID"/>
-                <one-to-many class="SpecificDayAssigment"/>
+                <one-to-many class="SpecificDayAssignment"/>
             </set>
         </joined-subclass>
 
@@ -38,22 +38,22 @@
                 <many-to-many class="org.navalplanner.business.resources.entities.Criterion" column="criterion_id"/>
             </set>
 
-            <set name="genericDayAssigments" cascade="all">
+            <set name="genericDayAssignments" cascade="all">
                 <key column="GENERIC_RESOURCE_ALLOCATION_ID"/>
-                <one-to-many class="GenericDayAssigment"/>
+                <one-to-many class="GenericDayAssignment"/>
             </set>
         </joined-subclass>
 
     </class>
 
-    <!-- DayAssigment -->
-    <class name="DayAssigment" table="DAY_ASSIGMENT">
+    <!-- DayAssignment -->
+    <class name="DayAssignment" table="DAY_ASSIGNMENT">
         <id name="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
             </generator>
         </id>
-		<discriminator column="DAY_ASSIGMENT_TYPE" type="string"/>
+		<discriminator column="DAY_ASSIGNMENT_TYPE" type="string"/>
 
         <version name="version" access="property" type="long" />
 
@@ -65,21 +65,21 @@
 		  column="RESOURCE_ID" not-null="true">
 		</many-to-one>
 
-        <!-- SpecificDayAssigment -->
-        <subclass name="SpecificDayAssigment" discriminator-value="SPECIFIC_DAY">
+        <!-- SpecificDayAssignment -->
+        <subclass name="SpecificDayAssignment" discriminator-value="SPECIFIC_DAY">
             <many-to-one name="specificResourceAllocation"
                 class="SpecificResourceAllocation" column="SPECIFIC_RESOURCE_ALLOCATION_ID"/>
         </subclass>
 
-        <!-- GenericDayAssigment -->
-        <subclass name="GenericDayAssigment" discriminator-value="GENERIC_DAY">
+        <!-- GenericDayAssignment -->
+        <subclass name="GenericDayAssignment" discriminator-value="GENERIC_DAY">
             <many-to-one name="genericResourceAllocation"
                 class="GenericResourceAllocation" column="GENERIC_RESOURCE_ALLOCATION_ID" />
         </subclass>
     </class>
 
-    <!-- AssigmentFunction -->
-    <class name="AssigmentFunction" table="ASSIGMENT_FUNCTION">
+    <!-- AssignmentFunction -->
+    <class name="AssignmentFunction" table="ASSIGNMENT_FUNCTION">
         <id name="id" type="long" access="property">
         <generator class="hilo">
             <param name="max_lo">100</param>

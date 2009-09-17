@@ -21,12 +21,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
-import org.navalplanner.business.advance.entities.AdvanceAssigment;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceMeasurementComparator;
 import org.navalplanner.business.advance.entities.AdvanceType;
-import org.navalplanner.business.advance.entities.AdvanceAssigment.Type;
-import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
+import org.navalplanner.business.advance.entities.AdvanceAssignment.Type;
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
@@ -84,31 +84,31 @@ public class OrderElementTest {
         return orderLineGroup;
     }
 
-    private AdvanceAssigment givenAdvanceAssigement(BigDecimal maxValue,
+    private AdvanceAssignment givenAdvanceAssigement(BigDecimal maxValue,
             AdvanceType advanceType) {
-        AdvanceAssigment advanceAssigment = AdvanceAssigment.create();
-        advanceAssigment.setMaxValue(maxValue);
-        advanceAssigment.setAdvanceType(advanceType);
-        advanceAssigment.setReportGlobalAdvance(false);
-        advanceAssigment.setType(Type.DIRECT);
+        AdvanceAssignment advanceAssignment = AdvanceAssignment.create();
+        advanceAssignment.setMaxValue(maxValue);
+        advanceAssignment.setAdvanceType(advanceType);
+        advanceAssignment.setReportGlobalAdvance(false);
+        advanceAssignment.setType(Type.DIRECT);
 
-        return advanceAssigment;
+        return advanceAssignment;
     }
 
-    private void addAvanceAssigmentWithMeasurement(OrderElement orderElement,
+    private void addAvanceAssignmentWithMeasurement(OrderElement orderElement,
             AdvanceType advanceType, BigDecimal maxValue,
             BigDecimal currentValue)
             throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssigmentForOrderElementException {
+            DuplicateAdvanceAssignmentForOrderElementException {
         AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
         advanceMeasurement.setDate(new LocalDate());
         advanceMeasurement.setValue(currentValue);
 
-        AdvanceAssigment advanceAssigment = givenAdvanceAssigement(maxValue,
+        AdvanceAssignment advanceAssignment = givenAdvanceAssigement(maxValue,
                 advanceType);
-        advanceAssigment.getAdvanceMeasurements().add(advanceMeasurement);
+        advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement);
 
-        orderElement.addAdvanceAssigment(advanceAssigment);
+        orderElement.addAdvanceAssignment(advanceAssignment);
     }
 
     private AdvanceType givenAdvanceType(String name) {
@@ -127,30 +127,30 @@ public class OrderElementTest {
     }
 
     @Test
-    public void checkAdvancePercentageOrderLineWithAdvanceAssigmentWithoutMesaurement()
+    public void checkAdvancePercentageOrderLineWithAdvanceAssignmentWithoutMesaurement()
             throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssigmentForOrderElementException {
+            DuplicateAdvanceAssignmentForOrderElementException {
         OrderLine orderLine = givenOrderLine("name", "code", 1000);
 
-        AdvanceAssigment advanceAssigment = givenAdvanceAssigement(
+        AdvanceAssignment advanceAssignment = givenAdvanceAssigement(
                 new BigDecimal(5000), PredefinedAdvancedTypes.UNITS.getType());
 
-        orderLine.addAdvanceAssigment(advanceAssigment);
+        orderLine.addAdvanceAssignment(advanceAssignment);
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(0)
                 .setScale(2)));
     }
 
     @Test
-    public void checkAdvancePercentageOrderLineWithTwoAssigments()
+    public void checkAdvancePercentageOrderLineWithTwoAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssigmentForOrderElementException {
+            DuplicateAdvanceAssignmentForOrderElementException {
         OrderLine orderLine = givenOrderLine("name", "code", 1000);
 
-        addAvanceAssigmentWithMeasurement(orderLine, givenAdvanceType("test1"),
+        addAvanceAssignmentWithMeasurement(orderLine, givenAdvanceType("test1"),
                 new BigDecimal(2000), new BigDecimal(200));
 
-        addAvanceAssigmentWithMeasurement(orderLine, givenAdvanceType("test2"),
+        addAvanceAssignmentWithMeasurement(orderLine, givenAdvanceType("test2"),
                 new BigDecimal(1000), new BigDecimal(600));
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(35)
@@ -158,18 +158,18 @@ public class OrderElementTest {
     }
 
     @Test
-    public void checkAdvancePercentageOrderLineWithThreeAssigments()
+    public void checkAdvancePercentageOrderLineWithThreeAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssigmentForOrderElementException {
+            DuplicateAdvanceAssignmentForOrderElementException {
         OrderLine orderLine = givenOrderLine("name", "code", 1000);
 
-        addAvanceAssigmentWithMeasurement(orderLine, givenAdvanceType("test1"),
+        addAvanceAssignmentWithMeasurement(orderLine, givenAdvanceType("test1"),
                 new BigDecimal(2000), new BigDecimal(200));
 
-        addAvanceAssigmentWithMeasurement(orderLine, givenAdvanceType("test2"),
+        addAvanceAssignmentWithMeasurement(orderLine, givenAdvanceType("test2"),
                 new BigDecimal(1000), new BigDecimal(600));
 
-        addAvanceAssigmentWithMeasurement(orderLine, givenAdvanceType("test3"),
+        addAvanceAssignmentWithMeasurement(orderLine, givenAdvanceType("test3"),
                 new BigDecimal(4000), new BigDecimal(800));
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(30)
@@ -179,15 +179,15 @@ public class OrderElementTest {
     @Test
     public void checkAdvancePercentageOrderGroupLine()
             throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssigmentForOrderElementException {
+            DuplicateAdvanceAssignmentForOrderElementException {
         OrderElement orderElement = givenOrderLineGroupWithTwoOrderLines(1000,
                 2000);
 
         List<OrderElement> children = orderElement.getChildren();
-        addAvanceAssigmentWithMeasurement(children.get(0),
+        addAvanceAssignmentWithMeasurement(children.get(0),
                 PredefinedAdvancedTypes.UNITS.getType(), new BigDecimal(1000),
                 new BigDecimal(400));
-        addAvanceAssigmentWithMeasurement(children.get(1),
+        addAvanceAssignmentWithMeasurement(children.get(1),
                 PredefinedAdvancedTypes.UNITS.getType(), new BigDecimal(2000),
                 new BigDecimal(200));
 
@@ -196,21 +196,21 @@ public class OrderElementTest {
     }
 
     @Test
-    public void checkAdvancePercentageOrderGroupLineWithAssigments()
+    public void checkAdvancePercentageOrderGroupLineWithAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssigmentForOrderElementException {
+            DuplicateAdvanceAssignmentForOrderElementException {
         OrderElement orderElement = givenOrderLineGroupWithTwoOrderLines(1000,
                 2000);
 
         List<OrderElement> children = orderElement.getChildren();
-        addAvanceAssigmentWithMeasurement(children.get(0),
+        addAvanceAssignmentWithMeasurement(children.get(0),
                 PredefinedAdvancedTypes.UNITS.getType(), new BigDecimal(1000),
                 new BigDecimal(400));
-        addAvanceAssigmentWithMeasurement(children.get(1),
+        addAvanceAssignmentWithMeasurement(children.get(1),
                 PredefinedAdvancedTypes.UNITS.getType(), new BigDecimal(2000),
                 new BigDecimal(200));
 
-        addAvanceAssigmentWithMeasurement(orderElement,
+        addAvanceAssignmentWithMeasurement(orderElement,
                 PredefinedAdvancedTypes.PERCENTAGE.getType(), new BigDecimal(
                         100), new BigDecimal(10));
 
@@ -221,7 +221,7 @@ public class OrderElementTest {
     @Test
     public void checkAdvanceMeasurementMerge()
             throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssigmentForOrderElementException {
+            DuplicateAdvanceAssignmentForOrderElementException {
         OrderElement orderElement = givenOrderLineGroupWithTwoOrderLines(1000,
                 2000);
 
@@ -235,23 +235,23 @@ public class OrderElementTest {
 
         AdvanceType advanceType = PredefinedAdvancedTypes.UNITS.getType();
 
-        addAvanceAssigmentWithMeasurements(children.get(0),
+        addAvanceAssignmentWithMeasurements(children.get(0),
                 advanceType,
                 new BigDecimal(1000), one, new BigDecimal(200), three,
                 new BigDecimal(400), five, new BigDecimal(500));
 
-        addAvanceAssigmentWithMeasurements(children.get(1),
+        addAvanceAssignmentWithMeasurements(children.get(1),
                 advanceType,
                 new BigDecimal(1000), two, new BigDecimal(100), three,
                 new BigDecimal(350), four, new BigDecimal(400));
 
-        Set<AdvanceAssigment> advanceAssigments = orderElement.getAdvanceAssigments();
-        assertThat(advanceAssigments.size(), equalTo(1));
-        AdvanceAssigment advanceAssigment = advanceAssigments.iterator().next();
-        assertThat(advanceAssigment.getMaxValue(),
+        Set<AdvanceAssignment> advanceAssignments = orderElement.getAdvanceAssignments();
+        assertThat(advanceAssignments.size(), equalTo(1));
+        AdvanceAssignment advanceAssignment = advanceAssignments.iterator().next();
+        assertThat(advanceAssignment.getMaxValue(),
                 equalTo(new BigDecimal(2000)));
 
-        SortedSet<AdvanceMeasurement> advanceMeasurements = advanceAssigment
+        SortedSet<AdvanceMeasurement> advanceMeasurements = advanceAssignment
                 .getAdvanceMeasurements();
         assertThat(advanceMeasurements.size(), equalTo(5));
 
@@ -283,38 +283,38 @@ public class OrderElementTest {
 
     }
 
-    private void addAvanceAssigmentWithMeasurements(OrderElement orderElement,
+    private void addAvanceAssignmentWithMeasurements(OrderElement orderElement,
             AdvanceType advanceType, BigDecimal maxValue, LocalDate date1,
             BigDecimal value1, LocalDate date2, BigDecimal value2,
             LocalDate five,
             BigDecimal date3)
             throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssigmentForOrderElementException {
-        AdvanceAssigment advanceAssigment = givenAdvanceAssigement(maxValue,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        AdvanceAssignment advanceAssignment = givenAdvanceAssigement(maxValue,
                 advanceType);
 
         AdvanceMeasurement advanceMeasurement1 = AdvanceMeasurement.create();
         advanceMeasurement1.setDate(date1);
         advanceMeasurement1.setValue(value1);
-        advanceAssigment.getAdvanceMeasurements().add(advanceMeasurement1);
+        advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement1);
 
         AdvanceMeasurement advanceMeasurement2 = AdvanceMeasurement.create();
         advanceMeasurement2.setDate(date2);
         advanceMeasurement2.setValue(value2);
-        advanceAssigment.getAdvanceMeasurements().add(advanceMeasurement2);
+        advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement2);
 
         AdvanceMeasurement advanceMeasurement3 = AdvanceMeasurement.create();
         advanceMeasurement3.setDate(five);
         advanceMeasurement3.setValue(date3);
-        advanceAssigment.getAdvanceMeasurements().add(advanceMeasurement3);
+        advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement3);
 
-        orderElement.addAdvanceAssigment(advanceAssigment);
+        orderElement.addAdvanceAssignment(advanceAssignment);
     }
 
     @Test
-    public void checkGetAdvanceAssigmentsIdempotenet()
+    public void checkGetAdvanceAssignmentsIdempotenet()
             throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssigmentForOrderElementException {
+            DuplicateAdvanceAssignmentForOrderElementException {
         OrderElement orderElement = givenOrderLineGroupWithTwoOrderLines(1000,
                 2000);
 
@@ -322,32 +322,32 @@ public class OrderElementTest {
 
         AdvanceType advanceType = PredefinedAdvancedTypes.UNITS.getType();
 
-        addAvanceAssigmentWithMeasurement(children.get(0), advanceType,
+        addAvanceAssignmentWithMeasurement(children.get(0), advanceType,
                 new BigDecimal(1000), new BigDecimal(200));
 
-        addAvanceAssigmentWithMeasurement(children.get(1), advanceType,
+        addAvanceAssignmentWithMeasurement(children.get(1), advanceType,
                 new BigDecimal(2000), new BigDecimal(400));
 
-        Set<AdvanceAssigment> advanceAssigments = orderElement
-                .getAdvanceAssigments();
-        assertThat(advanceAssigments.size(), equalTo(1));
-        AdvanceAssigment advanceAssigment = advanceAssigments.iterator().next();
-        assertThat(advanceAssigment.getMaxValue(),
+        Set<AdvanceAssignment> advanceAssignments = orderElement
+                .getAdvanceAssignments();
+        assertThat(advanceAssignments.size(), equalTo(1));
+        AdvanceAssignment advanceAssignment = advanceAssignments.iterator().next();
+        assertThat(advanceAssignment.getMaxValue(),
                 equalTo(new BigDecimal(3000)));
 
-        assertThat(advanceAssigment.getAdvanceMeasurements().size(), equalTo(1));
-        assertThat(advanceAssigment.getAdvanceMeasurements().iterator().next()
+        assertThat(advanceAssignment.getAdvanceMeasurements().size(), equalTo(1));
+        assertThat(advanceAssignment.getAdvanceMeasurements().iterator().next()
                 .getValue(), equalTo(new BigDecimal(600)));
 
 
-        advanceAssigments = orderElement.getAdvanceAssigments();
-        assertThat(advanceAssigments.size(), equalTo(1));
-        advanceAssigment = advanceAssigments.iterator().next();
-        assertThat(advanceAssigment.getMaxValue(),
+        advanceAssignments = orderElement.getAdvanceAssignments();
+        assertThat(advanceAssignments.size(), equalTo(1));
+        advanceAssignment = advanceAssignments.iterator().next();
+        assertThat(advanceAssignment.getMaxValue(),
                 equalTo(new BigDecimal(3000)));
 
-        assertThat(advanceAssigment.getAdvanceMeasurements().size(), equalTo(1));
-        assertThat(advanceAssigment.getAdvanceMeasurements().iterator().next()
+        assertThat(advanceAssignment.getAdvanceMeasurements().size(), equalTo(1));
+        assertThat(advanceAssignment.getAdvanceMeasurements().iterator().next()
                 .getValue(), equalTo(new BigDecimal(600)));
     }
 

@@ -9,20 +9,20 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 
-public class AdvanceAssigment extends BaseEntity {
+public class AdvanceAssignment extends BaseEntity {
 
     public enum Type { DIRECT, 	CALCULATED };
 
-    public static AdvanceAssigment create() {
-        AdvanceAssigment advanceAssigment = new AdvanceAssigment();
-        advanceAssigment.setNewObject(true);
-        return advanceAssigment;
+    public static AdvanceAssignment create() {
+        AdvanceAssignment advanceAssignment = new AdvanceAssignment();
+        advanceAssignment.setNewObject(true);
+        return advanceAssignment;
     }
 
-    public static AdvanceAssigment create(boolean reportGlobalAdvance, BigDecimal maxValue) {
-        AdvanceAssigment advanceAssigment = new AdvanceAssigment(reportGlobalAdvance, maxValue);
-        advanceAssigment.setNewObject(true);
-        return advanceAssigment;
+    public static AdvanceAssignment create(boolean reportGlobalAdvance, BigDecimal maxValue) {
+        AdvanceAssignment advanceAssignment = new AdvanceAssignment(reportGlobalAdvance, maxValue);
+        advanceAssignment.setNewObject(true);
+        return advanceAssignment;
     }
 
     private boolean reportGlobalAdvance;
@@ -39,11 +39,11 @@ public class AdvanceAssigment extends BaseEntity {
     private SortedSet<AdvanceMeasurement> advanceMeasurements =
             new TreeSet<AdvanceMeasurement>(new AdvanceMeasurementComparator());
 
-    public AdvanceAssigment() {
+    public AdvanceAssignment() {
         this.reportGlobalAdvance = false;
     }
 
-    private AdvanceAssigment(boolean reportGlobalAdvance,BigDecimal maxValue) {
+    private AdvanceAssignment(boolean reportGlobalAdvance,BigDecimal maxValue) {
         this.reportGlobalAdvance = reportGlobalAdvance;
         this.maxValue = maxValue;
         this.maxValue.setScale(2,BigDecimal.ROUND_HALF_UP);

@@ -3,18 +3,18 @@
     <separator bar="true" spacing="2px" orient="horizontal"/>
     <vbox align="left">
         <hbox>
-            <button label="${i18n:_('Add new advance assigment')}"
-                onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceAssigment();">
+            <button label="${i18n:_('Add new advance assignment')}"
+                onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceAssignment();">
             </button>
             <button label="${i18n:_('Remove')}"
-                onClick="manageOrderElementAdvancesController.goToRemoveLineAdvanceAssigment();"
+                onClick="manageOrderElementAdvancesController.goToRemoveLineAdvanceAssignment();"
                 disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurements}">
             </button>
         </hbox>
     </vbox>
     <vbox>
     <listbox id="editAdvances"
-             model="@{manageOrderElementAdvancesController.advanceAssigments}"
+             model="@{manageOrderElementAdvancesController.advanceAssignments}"
              itemRenderer="@{manageOrderElementAdvancesController.advancesRenderer}" mold="paging"
              onSelect="manageOrderElementAdvancesController.prepareEditAdvanceMeasurements(self.selectedItem.value);"
              pageSize="10">

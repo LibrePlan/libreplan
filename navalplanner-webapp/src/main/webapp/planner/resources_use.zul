@@ -8,7 +8,7 @@
 <zk>
 
     <resourcesLoadPanel id="planner" self="@{define(content)}">
-        <div id="idContextMenuTaskAssigment"></div>
+        <div id="idContextMenuTaskAssignment"></div>
     </resourcesLoadPanel>
 
 </zk>

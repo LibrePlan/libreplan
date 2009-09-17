@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.entities.DayAssigment;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -50,9 +50,9 @@ public class SaveCommand implements ISaveCommand {
                 for (ResourceAllocation resourceAllocation : ((Task) taskElement)
                         .getResourceAllocations()) {
                     resourceAllocation.dontPoseAsTransientObjectAnymore();
-                    for (DayAssigment dayAssigment : (List<? extends DayAssigment>) resourceAllocation
+                    for (DayAssignment dayAssignment : (List<? extends DayAssignment>) resourceAllocation
                             .getAssignments()) {
-                        dayAssigment.dontPoseAsTransientObjectAnymore();
+                        dayAssignment.dontPoseAsTransientObjectAnymore();
                     }
                 }
             }

@@ -9,24 +9,24 @@ import org.navalplanner.business.resources.entities.Resource;
  * @author Diego Pino García <dpino@igalia.com>
  *
  */
-public class SpecificDayAssigment extends DayAssigment {
+public class SpecificDayAssignment extends DayAssignment {
 
     private SpecificResourceAllocation specificResourceAllocation;
 
-    public static SpecificDayAssigment create(LocalDate day, int hours,
+    public static SpecificDayAssignment create(LocalDate day, int hours,
             Resource resource) {
-        return (SpecificDayAssigment) create(new SpecificDayAssigment(day,
+        return (SpecificDayAssignment) create(new SpecificDayAssignment(day,
                 hours, resource));
     }
 
-    public SpecificDayAssigment(LocalDate day, int hours, Resource resource) {
+    public SpecificDayAssignment(LocalDate day, int hours, Resource resource) {
         super(day, hours, resource);
     }
 
     /**
      * Constructor for hibernate. DO NOT USE!
      */
-    public SpecificDayAssigment() {
+    public SpecificDayAssignment() {
 
     }
 

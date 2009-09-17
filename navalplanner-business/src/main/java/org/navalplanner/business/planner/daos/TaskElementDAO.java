@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
-import org.navalplanner.business.planner.entities.DayAssigment;
-import org.navalplanner.business.planner.entities.GenericDayAssigment;
-import org.navalplanner.business.planner.entities.SpecificDayAssigment;
+import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.GenericDayAssignment;
+import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -25,31 +25,31 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
     @Override
     @Transactional
     public void removeOrphanedDayAssignments() {
-        deleteAll(getOrphanedDayAssigments());
+        deleteAll(getOrphanedDayAssignments());
     }
 
-    private void deleteAll(List<DayAssigment> orphaned) {
-        for (DayAssigment dayAssigment : orphaned) {
-            getSession().delete(dayAssigment);
+    private void deleteAll(List<DayAssignment> orphaned) {
+        for (DayAssignment dayAssignment : orphaned) {
+            getSession().delete(dayAssignment);
         }
     }
 
-    private List<DayAssigment> getOrphanedDayAssigments() {
-        List<DayAssigment> orphaned = new ArrayList<DayAssigment>();
+    private List<DayAssignment> getOrphanedDayAssignments() {
+        List<DayAssignment> orphaned = new ArrayList<DayAssignment>();
         orphaned.addAll(findOrphanedGenericDayAssignments());
         orphaned.addAll(findOrphanedSpecificDayAssignments());
         return orphaned;
     }
 
     @SuppressWarnings("unchecked")
-    private List<GenericDayAssigment> findOrphanedGenericDayAssignments() {
-        return getSession().createCriteria(GenericDayAssigment.class).add(
+    private List<GenericDayAssignment> findOrphanedGenericDayAssignments() {
+        return getSession().createCriteria(GenericDayAssignment.class).add(
                 Restrictions.isNull("genericResourceAllocation")).list();
     }
 
     @SuppressWarnings("unchecked")
-    private List<SpecificDayAssigment> findOrphanedSpecificDayAssignments() {
-        return getSession().createCriteria(SpecificDayAssigment.class).add(
+    private List<SpecificDayAssignment> findOrphanedSpecificDayAssignments() {
+        return getSession().createCriteria(SpecificDayAssignment.class).add(
                 Restrictions.isNull("specificResourceAllocation")).list();
     }
 }

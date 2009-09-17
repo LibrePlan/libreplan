@@ -15,12 +15,12 @@ import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.navalplanner.business.advance.daos.IAdvanceAssigmentDAO;
+import org.navalplanner.business.advance.daos.IAdvanceAssignmentDAO;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
-import org.navalplanner.business.advance.entities.AdvanceAssigment;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceType;
-import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -37,14 +37,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Tests for {@link AdvanceAssigment of OrderElement}. <br />
+ * Tests for {@link AdvanceAssignment of OrderElement}. <br />
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
 @Transactional
-public class AddAdvanceAssigmentsToOrderElementTest {
+public class AddAdvanceAssignmentsToOrderElementTest {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -56,7 +56,7 @@ public class AddAdvanceAssigmentsToOrderElementTest {
     private IOrderDAO orderDao;
 
     @Autowired
-    private IAdvanceAssigmentDAO advanceAssigmentDao;
+    private IAdvanceAssignmentDAO advanceAssignmentDao;
 
     @Autowired
     private IAdvanceTypeDAO advanceTypeDao;
@@ -98,36 +98,36 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         return advanceMeasurement;
     }
 
-    private AdvanceAssigment createValidAdvanceAssigment(
+    private AdvanceAssignment createValidAdvanceAssignment(
             boolean reportGlobalAdvance) {
-        AdvanceAssigment advanceAssigment = AdvanceAssigment.create(
+        AdvanceAssignment advanceAssignment = AdvanceAssignment.create(
                 reportGlobalAdvance,new BigDecimal(0));
-        advanceAssigment.setType(AdvanceAssigment.Type.DIRECT);
-        return advanceAssigment;
+        advanceAssignment.setType(AdvanceAssignment.Type.DIRECT);
+        return advanceAssignment;
     }
 
     @Test
-    public void savingTheOrderSavesAlsoTheAddedAssigments() throws Exception {
+    public void savingTheOrderSavesAlsoTheAddedAssignments() throws Exception {
         Order order = createValidOrder();
         OrderElement orderLine = createValidLeaf("OrderLineA", "1k1k1k1k");
 
         AdvanceType advanceType = createAndSaveType("tipoA");
 
-        AdvanceAssigment advanceAssigment = createValidAdvanceAssigment(true);
-        assertTrue(orderLine.getAdvanceAssigments().isEmpty());
-        advanceAssigment.setAdvanceType(advanceType);
+        AdvanceAssignment advanceAssignment = createValidAdvanceAssignment(true);
+        assertTrue(orderLine.getAdvanceAssignments().isEmpty());
+        advanceAssignment.setAdvanceType(advanceType);
 
         order.add(orderLine);
         orderDao.save(order);
 
-        orderLine.addAdvanceAssigment(advanceAssigment);
+        orderLine.addAdvanceAssignment(advanceAssignment);
 
         order.add(orderLine);
         orderDao.save(order);
         this.sessionFactory.getCurrentSession().flush();
 
-        assertFalse(orderLine.getAdvanceAssigments().isEmpty());
-        assertTrue(advanceAssigmentDao.exists(advanceAssigment.getId()));
+        assertFalse(orderLine.getAdvanceAssignments().isEmpty());
+        assertTrue(advanceAssignmentDao.exists(advanceAssignment.getId()));
 
     }
 
@@ -145,17 +145,17 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
         AdvanceType advanceTypeB = createAndSaveType("tipoB");
 
-        AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
-        advanceAssigmentA.setAdvanceType(advanceTypeA);
+        AdvanceAssignment advanceAssignmentA = createValidAdvanceAssignment(true);
+        advanceAssignmentA.setAdvanceType(advanceTypeA);
 
         order.add(orderLine);
         orderDao.save(order);
 
-        orderLine.addAdvanceAssigment(advanceAssigmentA);
+        orderLine.addAdvanceAssignment(advanceAssignmentA);
 
-        AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
-        advanceAssigmentB.setAdvanceType(advanceTypeB);
-        orderLine.addAdvanceAssigment(advanceAssigmentB);
+        AdvanceAssignment advanceAssignmentB = createValidAdvanceAssignment(false);
+        advanceAssignmentB.setAdvanceType(advanceTypeB);
+        orderLine.addAdvanceAssignment(advanceAssignmentB);
     }
 
     @Test
@@ -165,18 +165,18 @@ public class AddAdvanceAssigmentsToOrderElementTest {
 
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
 
-        AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
-        advanceAssigmentA.setAdvanceType(advanceTypeA);
+        AdvanceAssignment advanceAssignmentA = createValidAdvanceAssignment(true);
+        advanceAssignmentA.setAdvanceType(advanceTypeA);
 
-        orderLine.addAdvanceAssigment(advanceAssigmentA);
+        orderLine.addAdvanceAssignment(advanceAssignmentA);
 
-        AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
-        advanceAssigmentB.setAdvanceType(advanceTypeA);
+        AdvanceAssignment advanceAssignmentB = createValidAdvanceAssignment(false);
+        advanceAssignmentB.setAdvanceType(advanceTypeA);
 
         try {
-            orderLine.addAdvanceAssigment(advanceAssigmentB);
+            orderLine.addAdvanceAssignment(advanceAssignmentB);
             fail("It should throw an exception");
-        } catch (DuplicateAdvanceAssigmentForOrderElementException e) {
+        } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
             // Ok
         }
     }
@@ -188,16 +188,16 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
         AdvanceType advanceTypeB = createAndSaveType("tipoB");
 
-        AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
-        advanceAssigmentA.setAdvanceType(advanceTypeA);
+        AdvanceAssignment advanceAssignmentA = createValidAdvanceAssignment(true);
+        advanceAssignmentA.setAdvanceType(advanceTypeA);
 
 
-        orderLine.addAdvanceAssigment(advanceAssigmentA);
+        orderLine.addAdvanceAssignment(advanceAssignmentA);
 
-        AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(true);
-        advanceAssigmentB.setAdvanceType(advanceTypeB);
+        AdvanceAssignment advanceAssignmentB = createValidAdvanceAssignment(true);
+        advanceAssignmentB.setAdvanceType(advanceTypeB);
         try {
-            orderLine.addAdvanceAssigment(advanceAssigmentB);
+            orderLine.addAdvanceAssignment(advanceAssignmentB);
             fail("It should throw an exception  ");
         } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
             // Ok
@@ -217,16 +217,16 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
         AdvanceType advanceTypeB = createAndSaveType("tipoB");
 
-        AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
-        advanceAssigmentA.setAdvanceType(advanceTypeA);
-        advanceAssigmentA.getAdvanceMeasurements().add(advanceMeasurement);
-        AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
-        advanceAssigmentB.setAdvanceType(advanceTypeB);
-        advanceAssigmentB.getAdvanceMeasurements().add(advanceMeasurement);
+        AdvanceAssignment advanceAssignmentA = createValidAdvanceAssignment(true);
+        advanceAssignmentA.setAdvanceType(advanceTypeA);
+        advanceAssignmentA.getAdvanceMeasurements().add(advanceMeasurement);
+        AdvanceAssignment advanceAssignmentB = createValidAdvanceAssignment(false);
+        advanceAssignmentB.setAdvanceType(advanceTypeB);
+        advanceAssignmentB.getAdvanceMeasurements().add(advanceMeasurement);
 
 
-        container.addAdvanceAssigment(advanceAssigmentA);
-        son.addAdvanceAssigment(advanceAssigmentB);
+        container.addAdvanceAssignment(advanceAssignmentA);
+        son.addAdvanceAssignment(advanceAssignmentB);
     }
 
     @Test
@@ -238,16 +238,16 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         container.add(createValidLeaf("bla", "979"));
 
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
-        AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
-        advanceAssigmentA.setAdvanceType(advanceTypeA);
+        AdvanceAssignment advanceAssignmentA = createValidAdvanceAssignment(true);
+        advanceAssignmentA.setAdvanceType(advanceTypeA);
 
-        container.addAdvanceAssigment(advanceAssigmentA);
+        container.addAdvanceAssignment(advanceAssignmentA);
 
-        assertThat(container.getAdvanceAssigments().size(), equalTo(1));
+        assertThat(container.getAdvanceAssignments().size(), equalTo(1));
     }
 
     @Test
-    public void cannotAddDuplicatedAssigmentToSon() throws Exception {
+    public void cannotAddDuplicatedAssignmentToSon() throws Exception {
         final OrderLineGroup father = OrderLineGroup.create();
         father.setName("bla");
         father.setCode("000000000");
@@ -255,18 +255,18 @@ public class AddAdvanceAssigmentsToOrderElementTest {
 
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
 
-        AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
-        advanceAssigmentA.setAdvanceType(advanceTypeA);
-        AdvanceAssigment anotherAssigmentWithSameType = createValidAdvanceAssigment(false);
-        anotherAssigmentWithSameType.setAdvanceType(advanceTypeA);
+        AdvanceAssignment advanceAssignmentA = createValidAdvanceAssignment(true);
+        advanceAssignmentA.setAdvanceType(advanceTypeA);
+        AdvanceAssignment anotherAssignmentWithSameType = createValidAdvanceAssignment(false);
+        anotherAssignmentWithSameType.setAdvanceType(advanceTypeA);
 
-        father.addAdvanceAssigment(advanceAssigmentA);
+        father.addAdvanceAssignment(advanceAssignmentA);
 
         try {
             OrderElement child = (OrderElement) father.getChildren().get(0);
-            child.addAdvanceAssigment(anotherAssigmentWithSameType);
+            child.addAdvanceAssignment(anotherAssignmentWithSameType);
             fail("It should throw an exception  ");
-        } catch (DuplicateAdvanceAssigmentForOrderElementException e) {
+        } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
             // Ok
         }
     }
@@ -286,25 +286,25 @@ public class AddAdvanceAssigmentsToOrderElementTest {
         AdvanceMeasurement advanceMeasurement = createValidAdvanceMeasurement();
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
 
-        AdvanceAssigment advanceAssigmentA = createValidAdvanceAssigment(true);
-        advanceAssigmentA.setAdvanceType(advanceTypeA);
-        advanceAssigmentA.getAdvanceMeasurements().add(advanceMeasurement);
-        AdvanceAssigment advanceAssigmentB = createValidAdvanceAssigment(false);
-        advanceAssigmentB.setAdvanceType(advanceTypeA);
-        advanceAssigmentB.getAdvanceMeasurements().add(advanceMeasurement);
+        AdvanceAssignment advanceAssignmentA = createValidAdvanceAssignment(true);
+        advanceAssignmentA.setAdvanceType(advanceTypeA);
+        advanceAssignmentA.getAdvanceMeasurements().add(advanceMeasurement);
+        AdvanceAssignment advanceAssignmentB = createValidAdvanceAssignment(false);
+        advanceAssignmentB.setAdvanceType(advanceTypeA);
+        advanceAssignmentB.getAdvanceMeasurements().add(advanceMeasurement);
 
-        grandSon.addAdvanceAssigment(advanceAssigmentA);
+        grandSon.addAdvanceAssignment(advanceAssignmentA);
 
         try {
-            parent.addAdvanceAssigment(advanceAssigmentB);
+            parent.addAdvanceAssignment(advanceAssignmentB);
             fail("It should throw an exception  ");
-        } catch (DuplicateAdvanceAssigmentForOrderElementException e) {
+        } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
             // Ok
         }
     }
 
-    @Test(expected = DuplicateAdvanceAssigmentForOrderElementException.class)
-    public void addingAnotherAdvanceAssigmentWithAnEquivalentTypeButDifferentInstance()
+    @Test(expected = DuplicateAdvanceAssignmentForOrderElementException.class)
+    public void addingAnotherAdvanceAssignmentWithAnEquivalentTypeButDifferentInstance()
             throws Exception {
         final Order order = createValidOrder();
         OrderLine line = createValidLeaf("GranSon", "75757");
@@ -317,13 +317,13 @@ public class AddAdvanceAssigmentsToOrderElementTest {
 
         AdvanceType typeReloaded = reloadType(type);
 
-        AdvanceAssigment assigment = createValidAdvanceAssigment(false);
-        assigment.setAdvanceType(type);
-        AdvanceAssigment assigmentWithSameType = createValidAdvanceAssigment(false);
-        assigmentWithSameType.setAdvanceType(typeReloaded);
+        AdvanceAssignment assignment = createValidAdvanceAssignment(false);
+        assignment.setAdvanceType(type);
+        AdvanceAssignment assignmentWithSameType = createValidAdvanceAssignment(false);
+        assignmentWithSameType.setAdvanceType(typeReloaded);
 
-        line.addAdvanceAssigment(assigment);
-        line.addAdvanceAssigment(assigmentWithSameType);
+        line.addAdvanceAssignment(assignment);
+        line.addAdvanceAssignment(assignmentWithSameType);
     }
 
     private AdvanceType reloadType(AdvanceType type) {

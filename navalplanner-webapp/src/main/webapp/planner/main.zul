@@ -17,7 +17,7 @@
      -->
     <planner id="planner" self="@{define(content)}"
         configuration="${plannerData.lightLoad}">
-        <div id="idContextMenuTaskAssigment"></div>
+        <div id="idContextMenuTaskAssignment"></div>
     </planner>
 
     <popup width="300px" apply="${plannerData.taskEditForm}">

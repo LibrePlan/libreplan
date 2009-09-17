@@ -22,7 +22,7 @@ public abstract class ResourceAllocation extends BaseEntity {
     @NotNull
     private Task task;
 
-    private AssigmentFunction assigmentFunction;
+    private AssignmentFunction assignmentFunction;
 
     @NotNull
     private ResourcesPerDay resourcesPerDay;
@@ -43,10 +43,10 @@ public abstract class ResourceAllocation extends BaseEntity {
         this(task, null);
     }
 
-    public ResourceAllocation(Task task, AssigmentFunction assignmentFunction) {
+    public ResourceAllocation(Task task, AssignmentFunction assignmentFunction) {
         Validate.notNull(task);
         this.task = task;
-        assigmentFunction = assignmentFunction;
+        assignmentFunction = assignmentFunction;
     }
 
     protected ResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {
@@ -59,22 +59,22 @@ public abstract class ResourceAllocation extends BaseEntity {
         return task;
     }
 
-    protected abstract class AssignmentsAllocation<T extends DayAssigment>
+    protected abstract class AssignmentsAllocation<T extends DayAssignment>
             implements IAllocatable {
 
         @Override
         public final void allocate(ResourcesPerDay resourcesPerDay) {
             Task task = getTask();
             LocalDate startInclusive = new LocalDate(task.getStartDate());
-            List<T> assigmentsCreated = new ArrayList<T>();
+            List<T> assignmentsCreated = new ArrayList<T>();
             for (int i = 0; i < getDaysElapsedAt(task); i++) {
                 LocalDate day = startInclusive.plusDays(i);
                 int totalForDay = calculateTotalToDistribute(day,
                         resourcesPerDay);
-                assigmentsCreated.addAll(distributeForDay(day, totalForDay));
+                assignmentsCreated.addAll(distributeForDay(day, totalForDay));
             }
             setResourcesPerDay(resourcesPerDay);
-            resetAssignmentsTo(assigmentsCreated);
+            resetAssignmentsTo(assignmentsCreated);
         }
 
         protected abstract void resetAssignmentsTo(List<T> assignments);
@@ -111,19 +111,19 @@ public abstract class ResourceAllocation extends BaseEntity {
 
     }
 
-    public AssigmentFunction getAssigmentFunction() {
-        return assigmentFunction;
+    public AssignmentFunction getAssignmentFunction() {
+        return assignmentFunction;
     }
 
     public int getAssignedHours() {
         int total = 0;
-        for (DayAssigment dayAssigment : getAssignments()) {
-            total += dayAssigment.getHours();
+        for (DayAssignment dayAssignment : getAssignments()) {
+            total += dayAssignment.getHours();
         }
         return total;
     }
 
-    public abstract List<? extends DayAssigment> getAssignments();
+    public abstract List<? extends DayAssignment> getAssignments();
 
 
     public ResourcesPerDay getResourcesPerDay() {

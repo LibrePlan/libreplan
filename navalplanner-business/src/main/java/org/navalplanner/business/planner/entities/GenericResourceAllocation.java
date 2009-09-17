@@ -22,9 +22,9 @@ public class GenericResourceAllocation extends ResourceAllocation {
 
     private Set<Criterion> criterions;
 
-    private Set<GenericDayAssigment> genericDayAssigments = new HashSet<GenericDayAssigment>();
+    private Set<GenericDayAssignment> genericDayAssignments = new HashSet<GenericDayAssignment>();
 
-    private Map<Resource, List<GenericDayAssigment>> orderedDayAssignmentsByResource = null;
+    private Map<Resource, List<GenericDayAssignment>> orderedDayAssignmentsByResource = null;
 
     public static GenericResourceAllocation create() {
         return (GenericResourceAllocation) create(new GenericResourceAllocation());
@@ -54,22 +54,22 @@ public class GenericResourceAllocation extends ResourceAllocation {
         this.criterions = task.getCriterions();
     }
 
-    public Set<GenericDayAssigment> getGenericDayAssigments() {
-        return Collections.unmodifiableSet(genericDayAssigments);
+    public Set<GenericDayAssignment> getGenericDayAssignments() {
+        return Collections.unmodifiableSet(genericDayAssignments);
     }
 
-    public List<GenericDayAssigment> getOrderedAssigmentsFor(Resource resource) {
-        List<GenericDayAssigment> list = getOrderedAssignmentsFor().get(
+    public List<GenericDayAssignment> getOrderedAssignmentsFor(Resource resource) {
+        List<GenericDayAssignment> list = getOrderedAssignmentsFor().get(
                 resource);
         if (list == null)
             return Collections.emptyList();
         return Collections.unmodifiableList(list);
     }
 
-    private Map<Resource, List<GenericDayAssigment>> getOrderedAssignmentsFor() {
+    private Map<Resource, List<GenericDayAssignment>> getOrderedAssignmentsFor() {
         if (orderedDayAssignmentsByResource == null) {
-            orderedDayAssignmentsByResource = DayAssigment
-                    .byResourceAndOrdered(genericDayAssigments);
+            orderedDayAssignmentsByResource = DayAssignment
+                    .byResourceAndOrdered(genericDayAssignments);
         }
         return orderedDayAssignmentsByResource;
     }
@@ -83,7 +83,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
     }
 
     private class GenericAllocation extends
-            AssignmentsAllocation<GenericDayAssigment> {
+            AssignmentsAllocation<GenericDayAssignment> {
 
         private final List<Resource> resources;
 
@@ -106,19 +106,19 @@ public class GenericResourceAllocation extends ResourceAllocation {
         }
 
         @Override
-        protected List<GenericDayAssigment> distributeForDay(LocalDate day,
+        protected List<GenericDayAssignment> distributeForDay(LocalDate day,
                 int totalHours) {
-            List<GenericDayAssigment> result = new ArrayList<GenericDayAssigment>();
+            List<GenericDayAssignment> result = new ArrayList<GenericDayAssignment>();
             List<Share> shares = currentSharesFor(day);
             ShareDivision currentDivision = ShareDivision.create(shares);
             ShareDivision newDivison = currentDivision.plus(totalHours);
             int[] differences = currentDivision.to(newDivison);
             for (int i = 0; i < differences.length; i++) {
                 assert differences[i] >= 0;
-                GenericDayAssigment dayAssigment = GenericDayAssigment.create(
+                GenericDayAssignment dayAssignment = GenericDayAssignment.create(
                         day, differences[i], resources
                         .get(i));
-                result.add(dayAssigment);
+                result.add(dayAssignment);
             }
             return result;
         }
@@ -139,8 +139,8 @@ public class GenericResourceAllocation extends ResourceAllocation {
         }
 
         @Override
-        protected void resetAssignmentsTo(List<GenericDayAssigment> assignments) {
-            setAssigments(assignments);
+        protected void resetAssignmentsTo(List<GenericDayAssignment> assignments) {
+            setAssignments(assignments);
         }
 
     }
@@ -149,22 +149,22 @@ public class GenericResourceAllocation extends ResourceAllocation {
         return new GenericAllocation(new ArrayList<Resource>(resources));
     }
 
-    private void setAssigments(List<GenericDayAssigment> assignmentsCreated) {
-        this.genericDayAssigments = new HashSet<GenericDayAssigment>(
+    private void setAssignments(List<GenericDayAssignment> assignmentsCreated) {
+        this.genericDayAssignments = new HashSet<GenericDayAssignment>(
                 assignmentsCreated);
         setParentFor(assignmentsCreated);
         clearFieldsCalculatedFromAssignments();
     }
 
-    private void setParentFor(List<GenericDayAssigment> assignmentsCreated) {
-        for (GenericDayAssigment genericDayAssigment : assignmentsCreated) {
-            genericDayAssigment.setGenericResourceAllocation(this);
+    private void setParentFor(List<GenericDayAssignment> assignmentsCreated) {
+        for (GenericDayAssignment genericDayAssignment : assignmentsCreated) {
+            genericDayAssignment.setGenericResourceAllocation(this);
         }
     }
 
     @Override
-    public List<? extends DayAssigment> getAssignments() {
-        return DayAssigment.orderedByDay(genericDayAssigments);
+    public List<? extends DayAssignment> getAssignments() {
+        return DayAssignment.orderedByDay(genericDayAssignments);
     }
 
 }

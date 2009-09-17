@@ -4,9 +4,9 @@ import static junit.framework.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class AdvanceAssigmentTest {
+public class AdvanceAssignmentTest {
     @Test
-    public void testAdvanceAssigmentTest() {
+    public void testAdvanceAssignmentTest() {
         assertTrue(true);
     }
 

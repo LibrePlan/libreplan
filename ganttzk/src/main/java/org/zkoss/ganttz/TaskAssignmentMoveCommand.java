@@ -8,9 +8,9 @@ import org.zkoss.zk.au.Command;
  * @author Francisco Javier Moran Rúa
  *
  */
-public class TaskAssigmentMoveCommand extends Command {
+public class TaskAssignmentMoveCommand extends Command {
 
-    public TaskAssigmentMoveCommand(String event,int flags) {
+    public TaskAssignmentMoveCommand(String event,int flags) {
         super(event,flags);
     }
 

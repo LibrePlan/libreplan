@@ -18,8 +18,8 @@
     <property name="active" access="field"/>
 </class>
 
-<!-- AdvanceAssigment -->
-<class name="AdvanceAssigment">
+<!-- AdvanceAssignment -->
+<class name="AdvanceAssignment">
     <id name="id" type="long" access="property">
         <generator class="hilo">
             <param name="max_lo">100</param>
@@ -31,7 +31,7 @@
     <property name="maxValue" access="field" scale="2"/>
     <property name="type" access="field">
         <type name="org.hibernate.type.EnumType">
-            <param name="enumClass">org.navalplanner.business.advance.entities.AdvanceAssigment$Type</param>
+            <param name="enumClass">org.navalplanner.business.advance.entities.AdvanceAssignment$Type</param>
         </type>
     </property>
 
@@ -44,7 +44,7 @@
          inverse="true"
          access="field"
          sort="org.navalplanner.business.advance.entities.AdvanceMeasurementComparator">
-            <key column="ADVANCE_ASSIGMENT_ID" />
+            <key column="ADVANCE_ASSIGNMENT_ID" />
             <one-to-many class="org.navalplanner.business.advance.entities.AdvanceMeasurement"></one-to-many>
     </set>
 </class>
@@ -60,6 +60,6 @@
 
     <property name="date" access="field" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
     <property name="value" scale="2" access="field" />
-    <many-to-one name="advanceAssigment" class="AdvanceAssigment" column="ADVANCE_ASSIGMENT_ID" access="field" />
+    <many-to-one name="advanceAssignment" class="AdvanceAssignment" column="ADVANCE_ASSIGNMENT_ID" access="field" />
 </class>
 </hibernate-mapping>

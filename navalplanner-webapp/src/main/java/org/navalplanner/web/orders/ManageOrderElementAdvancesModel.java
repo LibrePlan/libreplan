@@ -13,14 +13,14 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.advance.daos.IAdvanceAssigmentDAO;
+import org.navalplanner.business.advance.daos.IAdvanceAssignmentDAO;
 import org.navalplanner.business.advance.daos.IAdvanceMeasurementDAO;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
-import org.navalplanner.business.advance.entities.AdvanceAssigment;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceMeasurementComparator;
 import org.navalplanner.business.advance.entities.AdvanceType;
-import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
@@ -47,9 +47,9 @@ public class ManageOrderElementAdvancesModel implements
 
     private OrderElement orderElement;
 
-    private AdvanceAssigment advanceAssigment;
+    private AdvanceAssignment advanceAssignment;
 
-    private List<AdvanceAssigment> listAdvanceAssigments;
+    private List<AdvanceAssignment> listAdvanceAssignments;
 
     private SortedSet<AdvanceMeasurement> listAdvanceMeasurements;
 
@@ -60,68 +60,68 @@ public class ManageOrderElementAdvancesModel implements
             IAdvanceMeasurementDAO advanceMeasurementDAO,
             IAdvanceTypeDAO advanceTypeDAO,
             IOrderElementDAO orderElementDAO,
-            IAdvanceAssigmentDAO advanceAssigmentDAO) {
+            IAdvanceAssignmentDAO advanceAssignmentDAO) {
         Validate.notNull(advanceMeasurementDAO);
         this.advanceTypeDAO = advanceTypeDAO;
         this.orderElementDAO = orderElementDAO;
     }
 
     @Override
-    public String getInfoAdvanceAssigment(){
-        if ((this.advanceAssigment == null) ||
+    public String getInfoAdvanceAssignment(){
+        if ((this.advanceAssignment == null) ||
                 (this.orderElement == null)) {
             return "";
         }
-        if ((this.advanceAssigment.getAdvanceType() == null)
-                || this.advanceAssigment.getMaxValue() == null) {
+        if ((this.advanceAssignment.getAdvanceType() == null)
+                || this.advanceAssignment.getMaxValue() == null) {
             return "";
         }
-        return "    " + this.advanceAssigment.getAdvanceType().getUnitName()
-                + _(". Max value: ") + this.advanceAssigment.getMaxValue();
+        return "    " + this.advanceAssignment.getAdvanceType().getUnitName()
+                + _(". Max value: ") + this.advanceAssignment.getMaxValue();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<AdvanceMeasurement> getAdvanceMeasurements() {
-        if ((this.advanceAssigment == null) ||
+        if ((this.advanceAssignment == null) ||
                 (this.orderElement == null)) {
             return new ArrayList<AdvanceMeasurement>();
         }
-        return new ArrayList<AdvanceMeasurement>(this.advanceAssigment
+        return new ArrayList<AdvanceMeasurement>(this.advanceAssignment
                 .getAdvanceMeasurements());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<AdvanceAssigment> getAdvanceAssigments() {
+    public List<AdvanceAssignment> getAdvanceAssignments() {
         if (orderElement == null) {
-            return new ArrayList<AdvanceAssigment>();
+            return new ArrayList<AdvanceAssignment>();
         }
-        return listAdvanceAssigments;
+        return listAdvanceAssignments;
     }
 
     @Override
-    public void prepareEditAdvanceMeasurements(AdvanceAssigment advanceAssigment) {
-        this.advanceAssigment = advanceAssigment;
+    public void prepareEditAdvanceMeasurements(AdvanceAssignment advanceAssignment) {
+        this.advanceAssignment = advanceAssignment;
     }
 
     @Override
     @Transactional(readOnly = true)
     public void init(OrderElement orderElement) {
         this.orderElement = orderElement;
-        this.advanceAssigment = null;
+        this.advanceAssignment = null;
         if (orderElement != null){
             loadAdvanceTypes();
             reattachmentOrderElement();
-            forceLoadAdvanceAssigmentsAndMeasurements();
+            forceLoadAdvanceAssignmentsAndMeasurements();
             fillVariables();
         }
     }
 
-    private void forceLoadAdvanceAssigmentsAndMeasurements() {
-        for (AdvanceAssigment advanceAssigment : orderElement
-                .getAdvanceAssigments()) {
-            advanceAssigment.getAdvanceMeasurements().size();
+    private void forceLoadAdvanceAssignmentsAndMeasurements() {
+        for (AdvanceAssignment advanceAssignment : orderElement
+                .getAdvanceAssignments()) {
+            advanceAssignment.getAdvanceMeasurements().size();
         }
     }
 
@@ -130,13 +130,13 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     private void fillVariables() {
-        this.listAdvanceAssigments = new ArrayList<AdvanceAssigment>();
+        this.listAdvanceAssignments = new ArrayList<AdvanceAssignment>();
         this.listAdvanceMeasurements = new TreeSet<AdvanceMeasurement>(
                 new AdvanceMeasurementComparator());
-        for (AdvanceAssigment advanceAssigment : this.orderElement
-                .getAdvanceAssigments()) {
-            this.listAdvanceAssigments.add(advanceAssigment);
-            for (AdvanceMeasurement advanceMeasurement : advanceAssigment
+        for (AdvanceAssignment advanceAssignment : this.orderElement
+                .getAdvanceAssignments()) {
+            this.listAdvanceAssignments.add(advanceAssignment);
+            for (AdvanceMeasurement advanceMeasurement : advanceAssignment
                     .getAdvanceMeasurements()) {
                 this.listAdvanceMeasurements.add(advanceMeasurement);
             }
@@ -144,33 +144,33 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public void addNewLineAdvaceAssigment() {
-        AdvanceAssigment newAdvance = AdvanceAssigment.create();
-        newAdvance.setType(AdvanceAssigment.Type.DIRECT);
+    public void addNewLineAdvaceAssignment() {
+        AdvanceAssignment newAdvance = AdvanceAssignment.create();
+        newAdvance.setType(AdvanceAssignment.Type.DIRECT);
         newAdvance.setOrderElement(this.orderElement);
 
-        listAdvanceAssigments.add(newAdvance);
+        listAdvanceAssignments.add(newAdvance);
     }
 
     @Override
     public void addNewLineAdvaceMeasurement() {
-        if (this.advanceAssigment != null) {
+        if (this.advanceAssignment != null) {
             AdvanceMeasurement newMeasurement = AdvanceMeasurement.create();
             newMeasurement.setDate(new LocalDate());
-            newMeasurement.setAdvanceAssigment(this.advanceAssigment);
-            this.advanceAssigment.getAdvanceMeasurements().add(newMeasurement);
+            newMeasurement.setAdvanceAssignment(this.advanceAssignment);
+            this.advanceAssignment.getAdvanceMeasurements().add(newMeasurement);
         }
     }
 
     @Override
-    public void removeLineAdvanceAssigment(AdvanceAssigment advance) {
-        this.listAdvanceAssigments.remove(advance);
-        this.advanceAssigment = null;
+    public void removeLineAdvanceAssignment(AdvanceAssignment advance) {
+        this.listAdvanceAssignments.remove(advance);
+        this.advanceAssignment = null;
     }
 
     @Override
     public void removeLineAdvanceMeasurement(AdvanceMeasurement advance) {
-        this.advanceAssigment.getAdvanceMeasurements().remove(advance);
+        this.advanceAssignment.getAdvanceMeasurements().remove(advance);
     }
 
     @Override
@@ -188,18 +188,18 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public boolean isReadOnlyAdvanceMeasurements(){
-        if (this.advanceAssigment == null)
+        if (this.advanceAssignment == null)
             return true;
-        return this.advanceAssigment.getType().equals(
-                AdvanceAssigment.Type.CALCULATED);
+        return this.advanceAssignment.getType().equals(
+                AdvanceAssignment.Type.CALCULATED);
     }
 
     @Override
     public void cleanAdvance(){
-        if (this.advanceAssigment != null) {
-            this.advanceAssigment.setReportGlobalAdvance(false);
+        if (this.advanceAssignment != null) {
+            this.advanceAssignment.setReportGlobalAdvance(false);
             List<AdvanceMeasurement> listAdvanceMeasurements = new ArrayList<AdvanceMeasurement>(
-                    this.advanceAssigment.getAdvanceMeasurements());
+                    this.advanceAssignment.getAdvanceMeasurements());
             for (AdvanceMeasurement advanceMeasurement : listAdvanceMeasurements) {
                 advanceMeasurement.setValue(BigDecimal.ZERO);
                 advanceMeasurement.setDate(null);
@@ -210,7 +210,7 @@ public class ManageOrderElementAdvancesModel implements
     @Override
     @Transactional(readOnly = true)
     public void accept()throws InstanceNotFoundException,
-            DuplicateAdvanceAssigmentForOrderElementException,
+            DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
             orderElementDAO.checkVersion(orderElement);
             reattachmentOrderElement();
@@ -218,20 +218,20 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     private void validateBasicData()  throws InstanceNotFoundException,
-        DuplicateAdvanceAssigmentForOrderElementException,
+        DuplicateAdvanceAssignmentForOrderElementException,
         DuplicateValueTrueReportGlobalAdvanceException{
         updateRemoveAdvances();
-        for (AdvanceAssigment advanceAssigment : this.listAdvanceAssigments) {
-            if(advanceAssigment.getType().equals(AdvanceAssigment.Type.DIRECT))
-                validateBasicData(advanceAssigment);
+        for (AdvanceAssignment advanceAssignment : this.listAdvanceAssignments) {
+            if(advanceAssignment.getType().equals(AdvanceAssignment.Type.DIRECT))
+                validateBasicData(advanceAssignment);
         }
     }
 
     private void updateRemoveAdvances(){
-        for(AdvanceAssigment advanceAssigment : this.listAdvanceAssigments){
-            AdvanceAssigment advance = yetExistAdvanceAssigment(advanceAssigment);
+        for(AdvanceAssignment advanceAssignment : this.listAdvanceAssignments){
+            AdvanceAssignment advance = yetExistAdvanceAssignment(advanceAssignment);
             if (advance == null) {
-                removeAdvanceAssigment(advance);
+                removeAdvanceAssignment(advance);
             }else{
                 for(AdvanceMeasurement advanceMeasurement : this.listAdvanceMeasurements){
                     if (!yetExistAdvanceMeasurement(advance, advanceMeasurement)) {
@@ -242,27 +242,27 @@ public class ManageOrderElementAdvancesModel implements
         }
     }
 
-    private void validateBasicData(AdvanceAssigment advanceAssigment)
-            throws InstanceNotFoundException,DuplicateAdvanceAssigmentForOrderElementException,
+    private void validateBasicData(AdvanceAssignment advanceAssignment)
+            throws InstanceNotFoundException,DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
-        if (advanceAssigment.getVersion() == null) {
-            addAdvanceAssigment(advanceAssigment);
+        if (advanceAssignment.getVersion() == null) {
+            addAdvanceAssignment(advanceAssignment);
         }
     }
 
-    private AdvanceAssigment yetExistAdvanceAssigment(
-            AdvanceAssigment advanceAssigment) {
-        for (AdvanceAssigment advance : this.orderElement
-                .getAdvanceAssigments()) {
-            if ((advance.getId() == advanceAssigment.getId()))
+    private AdvanceAssignment yetExistAdvanceAssignment(
+            AdvanceAssignment advanceAssignment) {
+        for (AdvanceAssignment advance : this.orderElement
+                .getAdvanceAssignments()) {
+            if ((advance.getId() == advanceAssignment.getId()))
                 return advance;
         }
         return null;
     }
 
-    private boolean yetExistAdvanceMeasurement(AdvanceAssigment advanceAssigment,
+    private boolean yetExistAdvanceMeasurement(AdvanceAssignment advanceAssignment,
             AdvanceMeasurement advanceMeasurement){
-        for (AdvanceMeasurement advance : advanceAssigment
+        for (AdvanceMeasurement advance : advanceAssignment
                 .getAdvanceMeasurements()) {
             if (advance.getId() == advanceMeasurement.getId()) {
                 return true;
@@ -272,26 +272,26 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Transactional(readOnly = true)
-    private void addAdvanceAssigment(AdvanceAssigment newAdvanceAssigment)
-            throws DuplicateAdvanceAssigmentForOrderElementException,
+    private void addAdvanceAssignment(AdvanceAssignment newAdvanceAssignment)
+            throws DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
-        this.orderElement.addAdvanceAssigment(newAdvanceAssigment);
+        this.orderElement.addAdvanceAssignment(newAdvanceAssignment);
      }
 
-    private void removeAdvanceAssigment(AdvanceAssigment advanceAssigment){
-        orderElement.removeAdvanceAssigment(advanceAssigment);
+    private void removeAdvanceAssignment(AdvanceAssignment advanceAssignment){
+        orderElement.removeAdvanceAssignment(advanceAssignment);
     }
 
     private void removeAdvanceMeasurement(AdvanceMeasurement advanceMeasurement){
-        AdvanceAssigment advanceAssigment = advanceMeasurement.getAdvanceAssigment();
-        advanceAssigment.getAdvanceMeasurements().remove(advanceMeasurement);
+        AdvanceAssignment advanceAssignment = advanceMeasurement.getAdvanceAssignment();
+        advanceAssignment.getAdvanceMeasurements().remove(advanceMeasurement);
     }
 
     @Override
     public boolean isPrecisionValid(BigDecimal value){
-        if ((this.advanceAssigment != null)
-                && (this.advanceAssigment.getAdvanceType() != null)) {
-            BigDecimal precision = this.advanceAssigment.getAdvanceType()
+        if ((this.advanceAssignment != null)
+                && (this.advanceAssignment.getAdvanceType() != null)) {
+            BigDecimal precision = this.advanceAssignment.getAdvanceType()
                     .getUnitPrecision();
             BigDecimal result[] = value.divideAndRemainder(precision);
             if(result[1].compareTo(BigDecimal.ZERO) == 0) return true;
@@ -302,10 +302,10 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public boolean greatThanMaxValue(BigDecimal value){
-        if ((this.advanceAssigment == null)
-                || (this.advanceAssigment.getMaxValue() == null))
+        if ((this.advanceAssignment == null)
+                || (this.advanceAssignment.getMaxValue() == null))
             return false;
-        if (value.compareTo(this.advanceAssigment.getMaxValue()) > 0)
+        if (value.compareTo(this.advanceAssignment.getMaxValue()) > 0)
              return true;
         return false;
     }
@@ -313,9 +313,9 @@ public class ManageOrderElementAdvancesModel implements
     @Override
     public boolean isDistinctValidDate(Date value,
             AdvanceMeasurement newAdvanceMeasurement) {
-        if (this.advanceAssigment == null)
+        if (this.advanceAssignment == null)
             return true;
-        for (AdvanceMeasurement advanceMeasurement : advanceAssigment
+        for (AdvanceMeasurement advanceMeasurement : advanceAssignment
                 .getAdvanceMeasurements()) {
             LocalDate oldDate = advanceMeasurement.getDate();
             if ((oldDate != null)
@@ -328,17 +328,17 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public BigDecimal getUnitPrecision(){
-        if (this.advanceAssigment == null) {
+        if (this.advanceAssignment == null) {
             return new BigDecimal(0);
         }
-        return this.advanceAssigment.getAdvanceType().getUnitPrecision();
+        return this.advanceAssignment.getAdvanceType().getUnitPrecision();
     }
 
     @Override
-    public AdvanceMeasurement getFirstAdvanceMeasurement(AdvanceAssigment advanceAssigment){
-        if((advanceAssigment != null) &&
-            (advanceAssigment.getAdvanceMeasurements().size() > 0)) {
-            SortedSet<AdvanceMeasurement> listAM = (SortedSet<AdvanceMeasurement>) advanceAssigment.getAdvanceMeasurements();
+    public AdvanceMeasurement getFirstAdvanceMeasurement(AdvanceAssignment advanceAssignment){
+        if((advanceAssignment != null) &&
+            (advanceAssignment.getAdvanceMeasurements().size() > 0)) {
+            SortedSet<AdvanceMeasurement> listAM = (SortedSet<AdvanceMeasurement>) advanceAssignment.getAdvanceMeasurements();
             final AdvanceMeasurement advanceMeasurement = (AdvanceMeasurement) listAM.first();
             return advanceMeasurement;
         }
@@ -348,24 +348,24 @@ public class ManageOrderElementAdvancesModel implements
     @Override
     public void sortListAdvanceMeasurement() {
         ArrayList<AdvanceMeasurement> advanceMeasurements = new ArrayList<AdvanceMeasurement>(
-                this.advanceAssigment.getAdvanceMeasurements());
+                this.advanceAssignment.getAdvanceMeasurements());
         Collections.sort(advanceMeasurements,
                 new AdvanceMeasurementComparator());
         TreeSet<AdvanceMeasurement> measurements = new TreeSet<AdvanceMeasurement>(
                 new AdvanceMeasurementComparator());
         measurements.addAll(advanceMeasurements);
-        this.advanceAssigment
+        this.advanceAssignment
                 .setAdvanceMeasurements(measurements);
     }
 
     @Override
     public BigDecimal getPercentageAdvanceMeasurement(
             AdvanceMeasurement advanceMeasurement) {
-        if (advanceMeasurement.getAdvanceAssigment() == null) {
+        if (advanceMeasurement.getAdvanceAssignment() == null) {
             return BigDecimal.ZERO;
         }
 
-        BigDecimal maxValue = advanceMeasurement.getAdvanceAssigment()
+        BigDecimal maxValue = advanceMeasurement.getAdvanceAssignment()
                 .getMaxValue();
         if (maxValue.compareTo(BigDecimal.ZERO) <= 0) {
             return BigDecimal.ZERO;

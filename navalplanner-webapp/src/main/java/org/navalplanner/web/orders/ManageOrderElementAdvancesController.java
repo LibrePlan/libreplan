@@ -8,10 +8,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.advance.entities.AdvanceAssigment;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceType;
-import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssigmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -69,8 +69,8 @@ public class ManageOrderElementAdvancesController extends
         return manageOrderElementAdvancesModel.getAdvanceMeasurements();
     }
 
-    public List<AdvanceAssigment> getAdvanceAssigments() {
-        return manageOrderElementAdvancesModel.getAdvanceAssigments();
+    public List<AdvanceAssignment> getAdvanceAssignments() {
+        return manageOrderElementAdvancesModel.getAdvanceAssignments();
     }
 
     public void cancel() {
@@ -93,7 +93,7 @@ public class ManageOrderElementAdvancesController extends
             this.manageOrderElementAdvancesModel.accept();
             window.setVisible(false);
             Util.reloadBindings(window.getParent());
-        }catch(DuplicateAdvanceAssigmentForOrderElementException e){
+        }catch(DuplicateAdvanceAssignmentForOrderElementException e){
             messagesForUser.showMessage( Level.INFO, _("It not must be include Advance with the same advance type."));
             return;
         }catch(DuplicateValueTrueReportGlobalAdvanceException e){
@@ -111,16 +111,16 @@ public class ManageOrderElementAdvancesController extends
         Util.reloadBindings(window);
     }
 
-    public void prepareEditAdvanceMeasurements(AdvanceAssigment advanceAssigment) {
+    public void prepareEditAdvanceMeasurements(AdvanceAssignment advanceAssignment) {
         manageOrderElementAdvancesModel
-                .prepareEditAdvanceMeasurements(advanceAssigment);
+                .prepareEditAdvanceMeasurements(advanceAssignment);
         Listbox listAdvances = ((Listbox) window.getFellow("editAdvances"));
         this.indexSelectedItem = listAdvances.getIndexOfItem(listAdvances.getSelectedItem());
         Util.reloadBindings(window);
     }
 
-    public void goToCreateLineAdvanceAssigment() {
-        manageOrderElementAdvancesModel.addNewLineAdvaceAssigment();
+    public void goToCreateLineAdvanceAssignment() {
+        manageOrderElementAdvancesModel.addNewLineAdvaceAssignment();
         manageOrderElementAdvancesModel.prepareEditAdvanceMeasurements(null);
         this.indexSelectedItem = -1;
         Util.reloadBindings(window);
@@ -131,15 +131,15 @@ public class ManageOrderElementAdvancesController extends
         Util.reloadBindings(window);
     }
 
-    public void goToRemoveLineAdvanceAssigment(){
+    public void goToRemoveLineAdvanceAssignment(){
         Listbox listAdvances = (Listbox) window.getFellow("editAdvances");
         Listitem listItem = listAdvances.getItemAtIndex(indexSelectedItem);
         if(listItem != null){
 
-            AdvanceAssigment advanceAssigment = (AdvanceAssigment) listItem
+            AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                     .getValue();
             manageOrderElementAdvancesModel
-                    .removeLineAdvanceAssigment(advanceAssigment);
+                    .removeLineAdvanceAssignment(advanceAssignment);
             Util.reloadBindings(window);
         }
     }
@@ -159,7 +159,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     public String getInfoAdvance() {
-        return manageOrderElementAdvancesModel.getInfoAdvanceAssigment();
+        return manageOrderElementAdvancesModel.getInfoAdvanceAssignment();
     }
 
     public List<AdvanceType> getActivesAdvanceType() {
@@ -184,12 +184,12 @@ public class ManageOrderElementAdvancesController extends
     public class AdvanceTypeListRenderer implements ListitemRenderer {
          @Override
          public void render(Listitem listItem, Object data) throws Exception {
-            final AdvanceAssigment advance = (AdvanceAssigment) data;
+            final AdvanceAssignment advance = (AdvanceAssignment) data;
             listItem.setValue(advance);
             listItem.setDraggable("true");
             listItem.setDroppable("true");
 
-            if (advance.getType().equals(AdvanceAssigment.Type.DIRECT)) {
+            if (advance.getType().equals(AdvanceAssignment.Type.DIRECT)) {
                  appendComboboxAdvancType(listItem);
             } else {
                 appendLabelAdvanceType(listItem);
@@ -204,7 +204,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendComboboxAdvancType(final Listitem listItem){
-        final AdvanceAssigment advance = (AdvanceAssigment) listItem.getValue();
+        final AdvanceAssignment advance = (AdvanceAssignment) listItem.getValue();
         final Combobox comboAdvanceTypes = new Combobox();
         final List<AdvanceType> listAdvanceType = manageOrderElementAdvancesModel
                 .getActivesAdvanceTypes();
@@ -252,7 +252,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendLabelAdvanceType(final Listitem listItem){
-        final AdvanceAssigment advance = (AdvanceAssigment) listItem.getValue();
+        final AdvanceAssignment advance = (AdvanceAssignment) listItem.getValue();
         Label unitName = new Label(advance.getAdvanceType().getUnitName());
         Listcell listCell = new Listcell();
         listCell.appendChild(unitName);
@@ -260,25 +260,25 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendDecimalBoxMaxValue(final Listitem listItem){
-        final AdvanceAssigment advanceAssigment = (AdvanceAssigment) listItem
+        final AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                 .getValue();
         Decimalbox maxValue = new Decimalbox();
         maxValue.setScale(2);
 
-        if(advanceAssigment.getType().equals(AdvanceAssigment.Type.CALCULATED))
+        if(advanceAssignment.getType().equals(AdvanceAssignment.Type.CALCULATED))
             maxValue.setDisabled(true);
 
         Util.bind(maxValue,
                     new Util.Getter<BigDecimal>() {
                         @Override
                         public BigDecimal get() {
-                            return advanceAssigment.getMaxValue();
+                            return advanceAssignment.getMaxValue();
                         }
                     }, new Util.Setter<BigDecimal>() {
 
                 @Override
             public void set(BigDecimal value) {
-                            advanceAssigment.setMaxValue(value);
+                            advanceAssignment.setMaxValue(value);
                         }
         });
         maxValue.addEventListener(Events.ON_CHANGE,
@@ -296,14 +296,14 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendDecimalBoxValue(final Listitem listItem){
-        final AdvanceAssigment advanceAssigment = (AdvanceAssigment) listItem
+        final AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                 .getValue();
         Decimalbox value = new Decimalbox();
         value.setScale(2);
         value.setDisabled(true);
 
          final AdvanceMeasurement advanceMeasurement = this.manageOrderElementAdvancesModel
-                .getFirstAdvanceMeasurement(advanceAssigment);
+                .getFirstAdvanceMeasurement(advanceAssignment);
         if (advanceMeasurement != null) {
             Util.bind(value, new Util.Getter<BigDecimal>() {
                 @Override
@@ -324,12 +324,12 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendLabelPercentage(final Listitem listItem){
-        final AdvanceAssigment advanceAssigment = (AdvanceAssigment) listItem
+        final AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                 .getValue();
         Label percentage = new Label();
 
         final AdvanceMeasurement advanceMeasurement = this.manageOrderElementAdvancesModel
-                .getFirstAdvanceMeasurement(advanceAssigment);
+                .getFirstAdvanceMeasurement(advanceAssignment);
         if (advanceMeasurement != null) {
             percentage
                     .setValue(this.manageOrderElementAdvancesModel
@@ -344,13 +344,13 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendDateBoxDate(final Listitem listItem){
-        final AdvanceAssigment advanceAssigment = (AdvanceAssigment) listItem
+        final AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                 .getValue();
         Datebox date = new Datebox();
         date.setDisabled(true);
 
         final AdvanceMeasurement advanceMeasurement = this.manageOrderElementAdvancesModel
-                .getFirstAdvanceMeasurement(advanceAssigment);
+                .getFirstAdvanceMeasurement(advanceAssignment);
         if (advanceMeasurement != null) {
 
             Util.bind(date, new Util.Getter<Date>() {
@@ -373,13 +373,13 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendRadioSpread(final Listitem listItem){
-        final AdvanceAssigment advanceAssigment = (AdvanceAssigment) listItem
+        final AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                 .getValue();
         Radio reportGlobalAdvance = new Radio();
-        reportGlobalAdvance.setChecked(advanceAssigment
+        reportGlobalAdvance.setChecked(advanceAssignment
                 .getReportGlobalAdvance());
 
-        if (advanceAssigment.getType().equals(AdvanceAssigment.Type.CALCULATED))
+        if (advanceAssignment.getType().equals(AdvanceAssignment.Type.CALCULATED))
             reportGlobalAdvance.setDisabled(true);
 
         reportGlobalAdvance.addEventListener(Events.ON_CHECK,
@@ -395,10 +395,10 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendCalculatedCheckbox(final Listitem listItem){
-        final AdvanceAssigment advance = (AdvanceAssigment) listItem.getValue();
+        final AdvanceAssignment advance = (AdvanceAssignment) listItem.getValue();
         Checkbox calculated = new Checkbox();
         boolean isCalculated = advance.getType().equals(
-                AdvanceAssigment.Type.CALCULATED);
+                AdvanceAssignment.Type.CALCULATED);
         calculated.setChecked(isCalculated);
         calculated.setDisabled(true);
 
@@ -414,7 +414,7 @@ public class ManageOrderElementAdvancesController extends
         if(selectedItem != null){
             AdvanceType advanceType = ((AdvanceType) selectedItem.getValue());
             if(advanceType != null){
-                AdvanceAssigment advance = (AdvanceAssigment) item.getValue();
+                AdvanceAssignment advance = (AdvanceAssignment) item.getValue();
                 advance.setMaxValue(advanceType.getDefaultMaxValue());
                 miBox.setValue(advanceType.getDefaultMaxValue());
             }
@@ -426,11 +426,11 @@ public class ManageOrderElementAdvancesController extends
         if ((this.indexSelectedItem < listAdvances.getItemCount())
                 && (this.indexSelectedItem >= 0)) {
             Listitem selectedItem = listAdvances.getItemAtIndex(indexSelectedItem);
-            AdvanceAssigment advanceAssigment = (AdvanceAssigment) selectedItem
+            AdvanceAssignment advanceAssignment = (AdvanceAssignment) selectedItem
                     .getValue();
 
             final AdvanceMeasurement greatAdvanceMeasurement = this.manageOrderElementAdvancesModel
-                    .getFirstAdvanceMeasurement(advanceAssigment);
+                    .getFirstAdvanceMeasurement(advanceAssignment);
             if (greatAdvanceMeasurement != null) {
                 Listcell percentage = (Listcell) selectedItem.getChildren()
                         .get(3);
@@ -447,10 +447,10 @@ public class ManageOrderElementAdvancesController extends
       if(this.indexSelectedItem >= 0){
             Listbox listAdvances = ((Listbox) window.getFellow("editAdvances"));
             Listitem selectedItem = listAdvances.getItemAtIndex(indexSelectedItem);
-            AdvanceAssigment advanceAssigment = (AdvanceAssigment) selectedItem
+            AdvanceAssignment advanceAssignment = (AdvanceAssignment) selectedItem
                     .getValue();
             final AdvanceMeasurement greatAdvanceMeasurement = this.manageOrderElementAdvancesModel
-                    .getFirstAdvanceMeasurement(advanceAssigment);
+                    .getFirstAdvanceMeasurement(advanceAssignment);
             if (greatAdvanceMeasurement != null) {
                 Listcell value = (Listcell)selectedItem.getChildren().get(2);
                 ((Decimalbox) value.getFirstChild())
@@ -473,11 +473,11 @@ public class ManageOrderElementAdvancesController extends
          if(this.indexSelectedItem >= 0){
             Listbox listAdvances = ((Listbox) window.getFellow("editAdvances"));
             Listitem selectedItem = listAdvances.getItemAtIndex(indexSelectedItem);
-            AdvanceAssigment advanceAssigment = (AdvanceAssigment) selectedItem
+            AdvanceAssignment advanceAssignment = (AdvanceAssignment) selectedItem
                     .getValue();
              final AdvanceMeasurement greatAdvanceMeasurement =
                  this.manageOrderElementAdvancesModel
-                    .getFirstAdvanceMeasurement(advanceAssigment);
+                    .getFirstAdvanceMeasurement(advanceAssignment);
              if(greatAdvanceMeasurement != null){
                  Listcell date = (Listcell) selectedItem.getChildren().get(4);
                  LocalDate newDate = greatAdvanceMeasurement.getDate();
@@ -513,28 +513,28 @@ public class ManageOrderElementAdvancesController extends
                 Radio radioSpread = ((Radio)celdaSpread.getFirstChild());
                 if(!radioSpread.isDisabled()){
                     radioSpread.setChecked(false);
-                    ((AdvanceAssigment) listItem.getValue())
+                    ((AdvanceAssignment) listItem.getValue())
                             .setReportGlobalAdvance(false);
                 }
             }
         }
         Listcell celdaSpread = (Listcell) item.getChildren().get(5);
         ((Radio)celdaSpread.getFirstChild()).setChecked(true);
-        ((AdvanceAssigment) item.getValue()).setReportGlobalAdvance(true);
+        ((AdvanceAssignment) item.getValue()).setReportGlobalAdvance(true);
     }
 
 
     private boolean validateDataForm(){
-        return ((validateListAdvanceAssigment())
+        return ((validateListAdvanceAssignment())
                 &&(validateListAdvanceMeasurement()));
     }
 
-    private boolean validateListAdvanceAssigment(){
+    private boolean validateListAdvanceAssignment(){
         Listbox listAdvances = (Listbox) window.getFellow("editAdvances");
         for(int i=0; i< listAdvances.getChildren().size(); i++){
             if(listAdvances.getChildren().get(i) instanceof Listitem){
                 Listitem listItem = (Listitem) listAdvances.getChildren().get(i);
-                AdvanceAssigment advance = (AdvanceAssigment) listItem
+                AdvanceAssignment advance = (AdvanceAssignment) listItem
                         .getValue();
                 if (advance.getAdvanceType() == null)
                     return false;
@@ -567,12 +567,12 @@ public class ManageOrderElementAdvancesController extends
         for(int i=0; i< listAdvances.getChildren().size(); i++){
             if(listAdvances.getChildren().get(i) instanceof Listitem){
                 Listitem listItem = (Listitem) listAdvances.getChildren().get(i);
-                AdvanceAssigment advanceAssigment = (AdvanceAssigment) listItem
+                AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                         .getValue();
-                if (advanceAssigment.getType().equals(
-                        AdvanceAssigment.Type.DIRECT)) {
+                if (advanceAssignment.getType().equals(
+                        AdvanceAssignment.Type.DIRECT)) {
                     existItems = true;
-                    if (advanceAssigment.getReportGlobalAdvance()) {
+                    if (advanceAssignment.getReportGlobalAdvance()) {
                         return true;
                     }
                 }
@@ -723,7 +723,7 @@ public class ManageOrderElementAdvancesController extends
                                         advanceMeasurement)) {
                             throw new WrongValueException(
                                     comp,
-                                    _("The date is not valid, the date must be unique for this  advance assigment"));
+                                    _("The date is not valid, the date must be unique for this  advance assignment"));
                         }
                     }
                 }

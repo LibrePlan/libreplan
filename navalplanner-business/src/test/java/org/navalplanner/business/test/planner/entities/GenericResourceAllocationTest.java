@@ -8,9 +8,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.navalplanner.business.test.planner.entities.DayAssigmentMatchers.from;
-import static org.navalplanner.business.test.planner.entities.DayAssigmentMatchers.haveHours;
-import static org.navalplanner.business.test.planner.entities.DayAssigmentMatchers.haveResourceAllocation;
+import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.from;
+import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveHours;
+import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveResourceAllocation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ import org.joda.time.Period;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
-import org.navalplanner.business.planner.entities.GenericDayAssigment;
+import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
@@ -149,10 +149,10 @@ public class GenericResourceAllocationTest {
     public void getOrderedAssignmentsReturnsEmptyListIfNotExistsWorker() {
         givenWorkersWithoutLoadAndWithoutCalendar();
         givenGenericResourceAllocation();
-        List<GenericDayAssigment> assigments = genericResourceAllocation
-                .getOrderedAssigmentsFor(worker1);
-        assertNotNull(assigments);
-        assertTrue(assigments.isEmpty());
+        List<GenericDayAssignment> assignments = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker1);
+        assertNotNull(assignments);
+        assertTrue(assignments.isEmpty());
     }
 
     @Test
@@ -165,7 +165,7 @@ public class GenericResourceAllocationTest {
         genericResourceAllocation.forResources(Arrays.asList(worker1))
                 .allocate(ResourcesPerDay.amount(1));
 
-        List<GenericDayAssigment> assignments = (List<GenericDayAssigment>) genericResourceAllocation
+        List<GenericDayAssignment> assignments = (List<GenericDayAssignment>) genericResourceAllocation
                 .getAssignments();
         assertThat(assignments,
                 haveResourceAllocation(genericResourceAllocation));
@@ -184,9 +184,9 @@ public class GenericResourceAllocationTest {
         genericResourceAllocation.forResources(Arrays.asList(worker1))
                 .allocate(ResourcesPerDay.amount(1));
 
-        List<GenericDayAssigment> orderedAssigmentsFor = genericResourceAllocation
-                .getOrderedAssigmentsFor(worker1);
-        assertThat(orderedAssigmentsFor, from(start).consecutiveDays(
+        List<GenericDayAssignment> orderedAssignmentsFor = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker1);
+        assertThat(orderedAssignmentsFor, from(start).consecutiveDays(
                 TASK_DURATION_DAYS));
     }
 
@@ -218,9 +218,9 @@ public class GenericResourceAllocationTest {
         genericResourceAllocation.forResources(Arrays.asList(worker1))
                 .allocate(ResourcesPerDay.amount(2));
 
-        List<GenericDayAssigment> orderedAssigmentsFor = genericResourceAllocation
-                .getOrderedAssigmentsFor(worker1);
-        assertThat(orderedAssigmentsFor.get(0).getHours(),
+        List<GenericDayAssignment> orderedAssignmentsFor = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker1);
+        assertThat(orderedAssignmentsFor.get(0).getHours(),
                 equalTo(standardHoursPerDay * 2));
     }
 
@@ -238,8 +238,8 @@ public class GenericResourceAllocationTest {
         genericResourceAllocation.forResources(Arrays.asList(worker1))
                 .allocate(ResourcesPerDay.amount(1));
 
-        List<GenericDayAssigment> assigmments = genericResourceAllocation
-                .getOrderedAssigmentsFor(worker1);
+        List<GenericDayAssignment> assigmments = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker1);
         assertThat(assigmments, haveHours(halfWorkingDay));
     }
 
@@ -258,8 +258,8 @@ public class GenericResourceAllocationTest {
         genericResourceAllocation.forResources(Arrays.asList(worker1))
                 .allocate(ResourcesPerDay.amount(1));
 
-        List<GenericDayAssigment> assigmments = genericResourceAllocation
-                .getOrderedAssigmentsFor(worker1);
+        List<GenericDayAssignment> assigmments = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker1);
         assertThat(assigmments.get(0).getHours(), equalTo(defaultWorkableHours));
     }
 
@@ -276,15 +276,15 @@ public class GenericResourceAllocationTest {
         genericResourceAllocation.forResources(workers).allocate(
                 ResourcesPerDay.amount(1));
 
-        List<GenericDayAssigment> assigmentsWorker1 = genericResourceAllocation
-                .getOrderedAssigmentsFor(worker1);
-        assertThat(assigmentsWorker1, haveHours(3, 3, 3, 3));
-        List<GenericDayAssigment> assigmentsWorker2 = genericResourceAllocation
-                .getOrderedAssigmentsFor(worker2);
-        assertThat(assigmentsWorker2, haveHours(0, 0, 0, 0));
-        List<GenericDayAssigment> assigmentsWorker3 = genericResourceAllocation
-                .getOrderedAssigmentsFor(worker3);
-        assertThat(assigmentsWorker3, haveHours(5, 5, 5, 5));
+        List<GenericDayAssignment> assignmentsWorker1 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker1);
+        assertThat(assignmentsWorker1, haveHours(3, 3, 3, 3));
+        List<GenericDayAssignment> assignmentsWorker2 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker2);
+        assertThat(assignmentsWorker2, haveHours(0, 0, 0, 0));
+        List<GenericDayAssignment> assignmentsWorker3 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker3);
+        assertThat(assignmentsWorker3, haveHours(5, 5, 5, 5));
     }
 
     private static Interval toInterval(LocalDate start, Period period) {

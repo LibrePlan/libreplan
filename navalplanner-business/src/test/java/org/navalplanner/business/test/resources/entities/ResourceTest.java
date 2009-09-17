@@ -17,8 +17,8 @@ import java.util.List;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.junit.Test;
-import org.navalplanner.business.planner.entities.DayAssigment;
-import org.navalplanner.business.planner.entities.SpecificDayAssigment;
+import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionTypeBase;
@@ -398,73 +398,73 @@ public class ResourceTest {
     }
 
     private Worker worker;
-    private List<DayAssigment> assigments;
+    private List<DayAssignment> assignments;
 
     @Test(expected = IllegalArgumentException.class)
-    public void addNewAssigmentsMustReceiveNotNullArgument() {
+    public void addNewAssignmentsMustReceiveNotNullArgument() {
         givenWorker();
-        worker.addNewAssigments(null);
+        worker.addNewAssignments(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void mustHaveNoNullElements() {
         givenWorker();
-        List<DayAssigment> list = new ArrayList<DayAssigment>();
+        List<DayAssignment> list = new ArrayList<DayAssignment>();
         list.add(null);
-        worker.addNewAssigments(list);
+        worker.addNewAssignments(list);
     }
 
     @Test
-    public void newAssigmentsImportsTheAssigments() {
+    public void newAssignmentsImportsTheAssignments() {
         givenWorker();
         LocalDate today = new LocalDate();
         LocalDate tomorrow = today.plus(Days.days(1));
-        SpecificDayAssigment specificDayAssigment = new SpecificDayAssigment(
+        SpecificDayAssignment specificDayAssignment = new SpecificDayAssignment(
                 today, 10, worker);
-        SpecificDayAssigment another = new SpecificDayAssigment(tomorrow, 10,
+        SpecificDayAssignment another = new SpecificDayAssignment(tomorrow, 10,
                 worker);
-        givenWorkerWithAssigments(specificDayAssigment, another);
+        givenWorkerWithAssignments(specificDayAssignment, another);
 
 
-        assertTrue(worker.getAssigments().containsAll(assigments));
-        assertTrue(worker.getAssigments().size() == assigments.size());
+        assertTrue(worker.getAssignments().containsAll(assignments));
+        assertTrue(worker.getAssignments().size() == assignments.size());
     }
 
     @Test
-    public void addingAdditionalAssigmentsKeepOld() {
+    public void addingAdditionalAssignmentsKeepOld() {
         givenWorker();
         LocalDate today = new LocalDate();
         LocalDate tomorrow = today.plus(Days.days(1));
-        SpecificDayAssigment specificDayAssigment = new SpecificDayAssigment(
+        SpecificDayAssignment specificDayAssignment = new SpecificDayAssignment(
                 today, 10, worker);
-        SpecificDayAssigment another = new SpecificDayAssigment(tomorrow, 10,
+        SpecificDayAssignment another = new SpecificDayAssignment(tomorrow, 10,
                 worker);
-        givenWorkerWithAssigments(specificDayAssigment, another);
+        givenWorkerWithAssignments(specificDayAssignment, another);
 
-        DayAssigment other = new SpecificDayAssigment(today, 3, worker);
-        worker.addNewAssigments(Arrays.asList(other));
-        assertTrue(worker.getAssigments().size() == assigments.size() + 1);
+        DayAssignment other = new SpecificDayAssignment(today, 3, worker);
+        worker.addNewAssignments(Arrays.asList(other));
+        assertTrue(worker.getAssignments().size() == assignments.size() + 1);
     }
 
     @Test
-    public void workerWithoutAssigmentsGivesNoAssignedHours() {
+    public void workerWithoutAssignmentsGivesNoAssignedHours() {
         givenWorker();
         LocalDate today = new LocalDate();
         assertThat(worker.getAssignedHours(today), equalTo(0));
     }
 
     @Test
-    public void workerWithAssigmentsGivesTheSumOfAssignedHoursForThatDay() {
+    public void workerWithAssignmentsGivesTheSumOfAssignedHoursForThatDay() {
         givenWorker();
         LocalDate today = new LocalDate();
-        SpecificDayAssigment specificDayAssigment = new SpecificDayAssigment(
+        SpecificDayAssignment specificDayAssignment = new SpecificDayAssignment(
                 today, 10, worker);
-        SpecificDayAssigment another = new SpecificDayAssigment(today, 3,
+        SpecificDayAssignment another = new SpecificDayAssignment(today, 3,
                 worker);
-        SpecificDayAssigment atAnotherDay = new SpecificDayAssigment(today
+        SpecificDayAssignment atAnotherDay = new SpecificDayAssignment(today
                 .plusDays(1), 1,
                 worker);
-        givenWorkerWithAssigments(specificDayAssigment, another, atAnotherDay);
+        givenWorkerWithAssignments(specificDayAssignment, another, atAnotherDay);
 
         assertThat(worker.getAssignedHours(today), equalTo(13));
     }
@@ -473,20 +473,20 @@ public class ResourceTest {
     public void afterAddingAnotherDontReturnTheOldResult() {
         givenWorker();
         LocalDate today = new LocalDate();
-        SpecificDayAssigment specificDayAssigment = new SpecificDayAssigment(
+        SpecificDayAssignment specificDayAssignment = new SpecificDayAssignment(
                 today, 10, worker);
-        givenWorkerWithAssigments(specificDayAssigment);
+        givenWorkerWithAssignments(specificDayAssignment);
         worker.getAssignedHours(today);
-        SpecificDayAssigment another = new SpecificDayAssigment(today, 3,
+        SpecificDayAssignment another = new SpecificDayAssignment(today, 3,
                 worker);
-        worker.addNewAssigments(Arrays.asList(another));
+        worker.addNewAssignments(Arrays.asList(another));
 
         assertThat(worker.getAssignedHours(today), equalTo(13));
     }
 
-    private void givenWorkerWithAssigments(DayAssigment... assigments) {
-        this.assigments = Arrays.asList(assigments);
-        worker.addNewAssigments(this.assigments);
+    private void givenWorkerWithAssignments(DayAssignment... assignments) {
+        this.assignments = Arrays.asList(assignments);
+        worker.addNewAssignments(this.assignments);
     }
 
     private void givenWorker() {
