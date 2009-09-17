@@ -2,6 +2,7 @@ package org.navalplanner.web.common.components;
 
 import org.navalplanner.web.I18nHelper;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zul.Label;
 
 /**
  * ZK macro component for translating texts created dinamically, that means,
@@ -81,5 +82,10 @@ public class I18n extends HtmlMacroComponent {
         }
 
         return I18nHelper._(value);
+    }
+
+    public void forceLoad() {
+        Label label = (Label) getFellow("i18nlabel");
+        label.setValue(getI18n());
     }
 }

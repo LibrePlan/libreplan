@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.web.common.components.I18n;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -19,7 +20,8 @@ public class PageForErrorOnEvent extends GenericForwardComposer {
         super.doAfterCompose(comp);
         logError();
         modalWindow = comp;
-
+        I18n fellow = (I18n) modalWindow.getFellow("message");
+        fellow.forceLoad();
     }
 
     private void logError() {
