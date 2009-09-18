@@ -15,6 +15,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.EventInterceptor;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 
 /**
@@ -114,7 +115,10 @@ public class MessagesForUser extends GenericForwardComposer implements
     public void showMessage(Level level, String message) {
         final Label label = new Label(message);
         Div div = new Div();
+        Image tick = new Image("/common/img/ico_ok.png");
+        tick.setSclass("tick");
         div.setSclass("message_" + level.toString());
+        div.appendChild(tick);
         div.appendChild(label);
         addMessage(div);
     }

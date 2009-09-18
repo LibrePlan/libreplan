@@ -173,6 +173,13 @@ table {
     width:300px;
 }
 
+
+.message_INFO span {
+    position:relative;
+    top:-10px;
+    left:10px;
+}
+
 .z-window-embedded {
    margin:10px;
 }
