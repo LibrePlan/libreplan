@@ -18,7 +18,8 @@ import org.navalplanner.business.resources.entities.Resource;
  * Represents the relation between {@link Task} and a generic {@link Resource}.
  * @author Diego Pino García <dpino@igalia.com>
  */
-public class GenericResourceAllocation extends ResourceAllocation {
+public class GenericResourceAllocation extends
+        ResourceAllocation<GenericDayAssignment> {
 
     private Set<Criterion> criterions;
 
@@ -82,8 +83,7 @@ public class GenericResourceAllocation extends ResourceAllocation {
         return Collections.unmodifiableSet(criterions);
     }
 
-    private class GenericAllocation extends
-            AssignmentsAllocation<GenericDayAssignment> {
+    private class GenericAllocation extends AssignmentsAllocation {
 
         private final List<Resource> resources;
 
@@ -115,9 +115,8 @@ public class GenericResourceAllocation extends ResourceAllocation {
             int[] differences = currentDivision.to(newDivison);
             for (int i = 0; i < differences.length; i++) {
                 assert differences[i] >= 0;
-                GenericDayAssignment dayAssignment = GenericDayAssignment.create(
-                        day, differences[i], resources
-                        .get(i));
+                GenericDayAssignment dayAssignment = GenericDayAssignment
+                        .create(day, differences[i], resources.get(i));
                 result.add(dayAssignment);
             }
             return result;
@@ -138,18 +137,15 @@ public class GenericResourceAllocation extends ResourceAllocation {
             return shares;
         }
 
-        @Override
-        protected void resetAssignmentsTo(List<GenericDayAssignment> assignments) {
-            setAssignments(assignments);
-        }
-
     }
 
     public IAllocatable forResources(Collection<? extends Resource> resources) {
         return new GenericAllocation(new ArrayList<Resource>(resources));
     }
 
-    private void setAssignments(List<GenericDayAssignment> assignmentsCreated) {
+    @Override
+    protected void resetAssignmentsTo(
+            List<GenericDayAssignment> assignmentsCreated) {
         this.genericDayAssignments = new HashSet<GenericDayAssignment>(
                 assignmentsCreated);
         setParentFor(assignmentsCreated);

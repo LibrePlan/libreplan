@@ -18,7 +18,8 @@ import org.navalplanner.business.resources.entities.Resource;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public abstract class ResourceAllocation extends BaseEntity {
+public abstract class ResourceAllocation<T extends DayAssignment> extends
+        BaseEntity {
 
     public static class ResourceAllocationWithDesiredResourcesPerDay {
 
@@ -156,8 +157,7 @@ public abstract class ResourceAllocation extends BaseEntity {
         return new ResourceAllocationWithDesiredResourcesPerDay(this, resourcesPerDay);
     }
 
-    protected abstract class AssignmentsAllocation<T extends DayAssignment>
-            implements IAllocatable {
+    protected abstract class AssignmentsAllocation implements IAllocatable {
 
         @Override
         public final void allocate(ResourcesPerDay resourcesPerDay) {
@@ -173,8 +173,6 @@ public abstract class ResourceAllocation extends BaseEntity {
             setResourcesPerDay(resourcesPerDay);
             resetAssignmentsTo(assignmentsCreated);
         }
-
-        protected abstract void resetAssignmentsTo(List<T> assignments);
 
         private int calculateTotalToDistribute(LocalDate day,
                 ResourcesPerDay resourcesPerDay) {
@@ -207,6 +205,8 @@ public abstract class ResourceAllocation extends BaseEntity {
                 int totalHours);
 
     }
+
+    protected abstract void resetAssignmentsTo(List<T> assignments);
 
     public AssignmentFunction getAssignmentFunction() {
         return assignmentFunction;

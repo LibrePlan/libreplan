@@ -16,7 +16,8 @@ import org.navalplanner.business.resources.entities.Worker;
  * Represents the relation between {@link Task} and a specific {@link Worker}.
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class SpecificResourceAllocation extends ResourceAllocation implements
+public class SpecificResourceAllocation extends
+        ResourceAllocation<SpecificDayAssignment> implements
         IAllocatable {
 
     public static SpecificResourceAllocation create(Task task) {
@@ -64,7 +65,8 @@ public class SpecificResourceAllocation extends ResourceAllocation implements
         return DayAssignment.orderedByDay(specificDaysAssignment);
     }
 
-    private void setAssignments(List<SpecificDayAssignment> assignments) {
+    @Override
+    protected void resetAssignmentsTo(List<SpecificDayAssignment> assignments) {
         this.specificDaysAssignment = new HashSet<SpecificDayAssignment>(
                 assignments);
         setParentFor(specificDaysAssignment);
@@ -81,19 +83,13 @@ public class SpecificResourceAllocation extends ResourceAllocation implements
     public void allocate(ResourcesPerDay resourcesPerDay) {
         Validate.notNull(resourcesPerDay);
         Validate.notNull(resource);
-        AssignmentsAllocation<SpecificDayAssignment> assignmentsAllocation = new AssignmentsAllocation<SpecificDayAssignment>() {
+        AssignmentsAllocation assignmentsAllocation = new AssignmentsAllocation() {
 
             @Override
             protected List<SpecificDayAssignment> distributeForDay(
                     LocalDate day, int totalHours) {
                 return Arrays.asList(SpecificDayAssignment.create(day,
                         totalHours, resource));
-            }
-
-            @Override
-            protected void resetAssignmentsTo(
-                    List<SpecificDayAssignment> assignments) {
-                setAssignments(assignments);
             }
         };
 
