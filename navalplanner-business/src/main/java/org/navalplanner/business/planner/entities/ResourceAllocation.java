@@ -19,6 +19,28 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public abstract class ResourceAllocation extends BaseEntity {
 
+    public static class ResourceAllocationWithDesiredResourcesPerDay {
+
+        private final ResourceAllocation resourceAllocation;
+
+        private final ResourcesPerDay resourcesPerDay;
+
+        private ResourceAllocationWithDesiredResourcesPerDay(ResourceAllocation resourceAllocation,
+                ResourcesPerDay resourcesPerDay) {
+            this.resourceAllocation = resourceAllocation;
+            this.resourcesPerDay = resourcesPerDay;
+        }
+
+        public ResourceAllocation getResourceAllocation() {
+            return resourceAllocation;
+        }
+
+        public ResourcesPerDay getResourcesPerDay() {
+            return resourcesPerDay;
+        }
+
+    }
+
     @NotNull
     private Task task;
 
@@ -57,6 +79,11 @@ public abstract class ResourceAllocation extends BaseEntity {
 
     public Task getTask() {
         return task;
+    }
+
+    public ResourceAllocationWithDesiredResourcesPerDay withDesiredResourcesPerDay(
+            ResourcesPerDay resourcesPerDay) {
+        return new ResourceAllocationWithDesiredResourcesPerDay(this, resourcesPerDay);
     }
 
     protected abstract class AssignmentsAllocation<T extends DayAssignment>

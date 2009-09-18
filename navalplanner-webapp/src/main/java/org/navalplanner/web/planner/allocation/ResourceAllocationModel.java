@@ -18,6 +18,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.ResourceAllocation.ResourceAllocationWithDesiredResourcesPerDay;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -129,10 +130,20 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
-    private void allocationForFixedTask() {
+    private List<ResourceAllocationWithDesiredResourcesPerDay> toResourceAllocations() {
+        List<ResourceAllocationWithDesiredResourcesPerDay> result = new ArrayList<ResourceAllocationWithDesiredResourcesPerDay>();
         for (AllocationDTO allocation : currentAllocations) {
-            ResourceAllocation resourceAllocation = createOrModify(allocation);
-            doAllocation(resourceAllocation, allocation.getResourcesPerDay());
+            result.add(createOrModify(allocation).withDesiredResourcesPerDay(
+                    allocation.getResourcesPerDay()));
+        }
+        return result;
+    }
+
+    private void allocationForFixedTask() {
+        List<ResourceAllocationWithDesiredResourcesPerDay> allocations = toResourceAllocations();
+        for (ResourceAllocationWithDesiredResourcesPerDay allocation : allocations) {
+            doAllocationForFixedTask(allocation.getResourceAllocation(),
+                    allocation.getResourcesPerDay());
         }
     }
 
@@ -159,7 +170,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
-    private void doAllocation(ResourceAllocation allocation,
+    private void doAllocationForFixedTask(ResourceAllocation allocation,
             ResourcesPerDay resourcesPerDay) {
         if (allocation instanceof GenericResourceAllocation) {
             doAllocation((GenericResourceAllocation) allocation,
