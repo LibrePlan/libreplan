@@ -20,12 +20,12 @@
                         <row>
                             <label value="${i18n:_('First name')}" />
                             <textbox
-                                value="@{controller.worker.firstName}" constraint="no empty"/>
+                                value="@{controller.worker.firstName}" constraint="no empty" width="500px"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Last name')}" />
                             <textbox
-                                value="@{controller.worker.surname}" constraint="no empty" />
+                                value="@{controller.worker.surname}" constraint="no empty" width="500px"/>
                         </row>
                         <row>
                             <label value="${i18n:_('NIF')}" />

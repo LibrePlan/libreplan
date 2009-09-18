@@ -2,16 +2,20 @@
 <window id="${arg.top_id}" title="${arg.title}">
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('Edit')}"></tab>
+            <tab label="${i18n:_('General data')}"></tab>
             <tab label="${i18n:_('Order elements')}"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>
-                <grid fixedLayout="false">
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column  />
+                    </columns>
                     <rows>
                         <row>
                             <label value="${i18n:_('Name')}" />
-                            <textbox value="@{controller.order.name}" />
+                            <textbox value="@{controller.order.name}" width="500px"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Starting date')}" />
@@ -26,18 +30,18 @@
                         <row>
                             <label value="${i18n:_('Responsible')}" />
                             <textbox
-                                value="@{controller.order.responsible}" />
+                                value="@{controller.order.responsible}" width="500px"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Customer')}" />
                             <textbox
-                                value="@{controller.order.customer}" />
+                                value="@{controller.order.customer}" width="500px"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Description')}" />
                             <textbox
                                 value="@{controller.order.description}"
-                                rows="4" />
+                                rows="6" width="500px" />
                         </row>
                     </rows>
                 </grid>

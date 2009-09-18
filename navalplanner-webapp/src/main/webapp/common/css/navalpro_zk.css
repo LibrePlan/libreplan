@@ -190,9 +190,179 @@ table {
     font-weight:bold;
 }
 
-.icono .zk .z-button-cm, .icono .z-button-cm {
+.zk .z-window-embedded .icono .z-button-cm {
     color: #007bbe;
     background-color: transparent;
     background-image: none;
     border: 0px solid #007bbe;
+    padding: 0px;
+}
+
+
+/* ------ Overridden norrmoz.css.dsp styles ------ */
+
+.z-label, .z-radio-cnt, .z-checkbox-cnt, .z-slider-pp, input.button, input.file, .z-loading, .z-errbox {
+        font-family:Tahoma,Arial,Helvetica,sans-serif;
+        font-size:11px;
+        font-weight:normal;
+}
+
+.z-word-wrap {
+        word-wrap:normal;
+}
+
+.z-word-wrap .z-auxheader-cnt {
+        word-wrap:normal;
+}
+
+.z-window-embedded-tl, .z-window-modal-tl, .z-window-highlighted-tl, .z-window-overlapped-tl, .z-window-popup-tl {
+        background:none;
+        /*font-size:0;
+        height:5px;
+        line-height:0;
+        margin-right:5px; */
+}
+
+.z-window-embedded-tl {
+        background-image:none;
+}
+
+.z-window-popup-tl {
+        background-image:none;
+}
+
+.z-window-embedded-tr, .z-window-modal-tr, .z-window-highlighted-tr, .z-window-overlapped-tr, .z-window-popup-tr {
+        background:none;
+        /*font-size:0;
+        height:5px;
+        line-height:0;
+        margin-right:-5px;
+        position:relative; */
+}
+
+.z-window-embedded-tr {
+        background-image:none;
+}
+
+.z-window-popup-tr {
+        background-image:none;
+}
+
+.z-window-embedded-hl, .z-window-modal-hl, .z-window-highlighted-hl, .z-window-overlapped-hl, .z-window-popup-hl {
+        background:none;
+        /*padding-left:6px; */
+}
+
+.z-window-embedded-hl {
+        background-image:none;
+}
+
+.z-window-popup-hl {
+        background-image:none;
+}
+
+.z-window-embedded-hr, .z-window-modal-hr, .z-window-highlighted-hr, .z-window-overlapped-hr, .z-window-popup-hr {
+        background:none;
+        /*padding-right:6px; */
+}
+
+.z-window-embedded-hr, .z-window-embedded-hr-noborder {
+        background-image:none;
+}
+
+.z-window-modal-header, .z-window-popup-header, .z-window-highlighted-header, .z-window-overlapped-header, .z-window-embedded-header {
+        background-color:#FFFFFF;
+        color:#48AB48;
+        font-family:Tahoma,Arial,Helvetica,sans-serif;
+        font-size:20px;
+        padding-bottom:20px;
+        font-weight: normal;
+}
+
+.z-button {
+        font-family:Tahoma,Arial,Helvetica,sans-serif;
+        font-size:11px;
+        font-weight: bold;
+
+}
+
+.zk .z-window-embedded .z-button-cm, .z-button-cm {
+
+    background-color:#58A758;
+    background-image:none;
+    border:1px solid #006700;
+    color:#FFFFFF;
+    padding:2px 18px;
+}
+
+table.z-button {
+        table-layout:auto;
+}
+
+button.z-button {
+        position:relative;
+        top:-5px;
+}
+
+
+.z-tabs-scroll .z-tabs-cnt {
+        background:#FAFDFE none repeat scroll 0 0;
+        border-bottom:1px solid #7EAAC6;
+        padding-bottom:0;
+}
+
+.z-textbox, .z-decimalbox, .z-intbox, .z-longbox, .z-doublebox {
+        font-family:Tahoma,Arial,Helvetica,sans-serif;
+        font-size:11px;
+}
+
+div.z-footer-cnt, div.z-row-cnt, div.z-group-cnt, div.z-group-foot-cnt, div.z-column-cnt {
+        font-family:Tahoma,Arial,Helvetica,sans-serif;
+        font-size:11px;
+        font-weight:bold;
+}
+
+.z-word-wrap div.z-tree-cell-cnt, .z-word-wrap div.z-tree-footer-cnt, .z-word-wrap div.z-tree-col-cnt {
+        word-wrap:normal;
+}
+
+.z-tabs .z-tabs-cnt {
+        background:none;
+        border-bottom:0px;
+        border-bottom:1px solid #7EAAC6;
+}
+
+.z-tabs-scroll {
+        padding-bottom:0px;
+        background:#F2FBFF none repeat scroll 0 0;
+        border:0px solid #000000;
+}
+
+.z-tab .z-tab-text {
+        font-family:Tahoma,Arial,Helvetica,sans-serif;
+}
+
+.z-tab-seld .z-tab-text {
+        /* color:#0F3B82; */
+        font-family:Tahoma,Arial,Helvetica,sans-serif;
+}
+
+.z-tabpanel, .z-tabbox-ver .z-tabpanels-ver {
+        padding:5px;
+        border-bottom:1px solid #7EAAC6;
+}
+
+.message_INFO {
+        background-color:#CCEECC;
+        border:1px solid #006600;
+        color:#006600;
+        margin:10px;
+        padding:15px 15px 15px 50px;
+        width:300px;
+}
+
+div.z-grid {
+        background:#DAE7F6 none repeat scroll 0 0;
+        border:1px solid #ABC6DE;
+        overflow:hidden;
 }
