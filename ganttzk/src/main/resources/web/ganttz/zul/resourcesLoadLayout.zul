@@ -1,14 +1,54 @@
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
-    <borderlayout height="300px" width="1600px" sclass="resourcesload">
-        <west size="200px" flex="true" collapsible="true" splittable="true" autoscroll="true">
-            <div id="insertionPointLeftPanel"></div>
-        </west>
+    <borderlayout height="600px" width="auto">
+        <north height="50%" collapsible="true" splittable="true">
+            <borderlayout sclass="resourcesload">
+                <west size="200px" flex="true" collapsible="true"
+                    splittable="true" autoscroll="true">
+                    <div id="insertionPointLeftPanel"></div>
+                </west>
 
-        <center autoscroll="true">
-            <div id="insertionPointRightPanel"></div>
+                <center autoscroll="true">
+                    <div id="insertionPointRightPanel"></div>
+                </center>
+            </borderlayout>
+        </north>
+        <center>
+            <borderlayout>
+                <west size="200px" flex="true" collapsible="true"
+                    splittable="true" autoscroll="true">
+
+                    <label value="ResourcesLoadGraph details"
+                        width="150px" tooltip="any" />
+                </west>
+
+                <center autoscroll="true">
+
+                    <vbox>
+                        <zscript>
+                            PieModel piemodel = new SimplePieModel();
+                            piemodel.setValue("Resources assigned over 100%", new Double(12.5));
+                            piemodel.setValue("Resources assigned under 50%", new Double(50.2));
+                            piemodel.setValue("Resources assigned at 100%", new Double(20.5));
+                            piemodel.setValue("Resources assigned between 50% and 100%", new Double(15.5));
+                        </zscript>
+                        <chart id="piechart" title="Pie Chart"
+                            width="500" height="250" type="pie" threeD="false"
+                            fgAlpha="128" onClick="drilldown()" />
+                        <zscript>
+                            piechart.setModel(piemodel);
+                    </zscript>
+                    </vbox>
+
+                </center>
+            </borderlayout>
         </center>
-
     </borderlayout>
+    <popup id="any" width="300px">
+        <vbox>
+            This is the resources load assignment page. To set this
+            element ...
+        </vbox>
+    </popup>
 
 </zk>

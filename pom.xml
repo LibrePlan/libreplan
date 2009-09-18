@@ -166,6 +166,10 @@
             <id>gettext-commons-site</id>
             <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
         </repository>
+	<repository>
+		 <id>thirdparty</id>
+		 <url>http://nexus.naval.igalia.com/content/repositories/thirdparty</url>
+	 </repository>
     </repositories>
 
      <pluginRepositories>
@@ -179,6 +183,7 @@
             <name>Codehaus Plugin Repository</name>
             <url>http://repository.codehaus.org</url>
         </pluginRepository>
+
         -->
      </pluginRepositories>
 
@@ -321,6 +326,17 @@
                 <groupId>org.jgrapht</groupId>
                 <artifactId>jgrapht-jdk1.5</artifactId>
                 <version>0.7.3</version>
+            </dependency>
+            <!-- Jfreechart  -->
+            <dependency>
+                <groupId>jfree</groupId>
+                <artifactId>jfreechart</artifactId>
+                <version>1.0.13</version>
+            </dependency>
+            <dependency>
+                <groupId>jfree</groupId>
+                <artifactId>jcommon</artifactId>
+                <version>1.0.16</version>
             </dependency>
             <!-- Joda Time -->
             <dependency>
