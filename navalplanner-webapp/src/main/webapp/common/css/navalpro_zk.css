@@ -222,12 +222,9 @@ table {
         word-wrap:normal;
 }
 
-.z-window-embedded-tl, .z-window-modal-tl, .z-window-highlighted-tl, .z-window-overlapped-tl, .z-window-popup-tl {
+.z-window-embedded-tl, .z-window-highlighted-tl,
+.z-window-overlapped-tl, .z-window-popup-tl {
         background:none;
-        /*font-size:0;
-        height:5px;
-        line-height:0;
-        margin-right:5px; */
 }
 
 .z-window-embedded-tl {
@@ -238,13 +235,9 @@ table {
         background-image:none;
 }
 
-.z-window-embedded-tr, .z-window-modal-tr, .z-window-highlighted-tr, .z-window-overlapped-tr, .z-window-popup-tr {
+.z-window-embedded-tr, .z-window-highlighted-tr,
+.z-window-overlapped-tr, .z-window-popup-tr {
         background:none;
-        /*font-size:0;
-        height:5px;
-        line-height:0;
-        margin-right:-5px;
-        position:relative; */
 }
 
 .z-window-embedded-tr {
@@ -255,9 +248,9 @@ table {
         background-image:none;
 }
 
-.z-window-embedded-hl, .z-window-modal-hl, .z-window-highlighted-hl, .z-window-overlapped-hl, .z-window-popup-hl {
+.z-window-embedded-hl, .z-window-highlighted-hl,
+.z-window-overlapped-hl, .z-window-popup-hl {
         background:none;
-        /*padding-left:6px; */
 }
 
 .z-window-embedded-hl {
@@ -268,7 +261,7 @@ table {
         background-image:none;
 }
 
-.z-window-embedded-hr, .z-window-modal-hr, .z-window-highlighted-hr, .z-window-overlapped-hr, .z-window-popup-hr {
+.z-window-embedded-hr, .z-window-highlighted-hr, .z-window-overlapped-hr, .z-window-popup-hr {
         background:none;
         /*padding-right:6px; */
 }
@@ -277,7 +270,8 @@ table {
         background-image:none;
 }
 
-.z-window-modal-header, .z-window-popup-header, .z-window-highlighted-header, .z-window-overlapped-header, .z-window-embedded-header {
+/*.z-window-modal-header, */
+.z-window-popup-header, .z-window-highlighted-header, .z-window-overlapped-header, .z-window-embedded-header {
         background-color:#FFFFFF;
         color:#48AB48;
         font-family:Tahoma,Arial,Helvetica,sans-serif;
@@ -293,7 +287,7 @@ table {
 
 }
 
-.zk .z-window-embedded .z-button-cm, .z-button-cm {
+.zk .z-window-embedded .z-button-cm, .z-window-embedded .z-button-cm {
 
     background-color:#58A758;
     background-image:none;
