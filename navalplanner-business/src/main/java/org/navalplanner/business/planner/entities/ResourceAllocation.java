@@ -26,7 +26,8 @@ public abstract class ResourceAllocation extends BaseEntity {
 
         private final ResourcesPerDay resourcesPerDay;
 
-        private ResourceAllocationWithDesiredResourcesPerDay(ResourceAllocation resourceAllocation,
+        public ResourceAllocationWithDesiredResourcesPerDay(
+                ResourceAllocation resourceAllocation,
                 ResourcesPerDay resourcesPerDay) {
             this.resourceAllocation = resourceAllocation;
             this.resourcesPerDay = resourcesPerDay;
@@ -52,7 +53,37 @@ public abstract class ResourceAllocation extends BaseEntity {
 
         public AllocationsCurried(
                 List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations) {
+            Validate.notNull(resourceAllocations);
+            Validate.notEmpty(resourceAllocations);
+            Validate.noNullElements(resourceAllocations);
+            checkNoOneHasNullTask(resourceAllocations);
+            checkAllHaveSameTask(resourceAllocations);
             this.resourceAllocations = resourceAllocations;
+        }
+
+        private static void checkNoOneHasNullTask(
+                List<ResourceAllocationWithDesiredResourcesPerDay> allocations) {
+            for (ResourceAllocationWithDesiredResourcesPerDay resourceAllocationWithDesiredResourcesPerDay : allocations) {
+                if (resourceAllocationWithDesiredResourcesPerDay
+                        .getResourceAllocation().getTask() == null)
+                    throw new IllegalArgumentException(
+                            "all allocations must have task");
+            }
+        }
+
+        private static void checkAllHaveSameTask(
+                List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations) {
+            Task task = null;
+            for (ResourceAllocationWithDesiredResourcesPerDay r : resourceAllocations) {
+                if (task == null) {
+                    task = r.getResourceAllocation().getTask();
+                }
+                if (!task.equals(r.getResourceAllocation().getTask())) {
+                    throw new IllegalArgumentException(
+                            "all allocations must belong to the same task");
+                }
+
+            }
         }
 
         public AllocationsAndResourcesCurried withResources(
