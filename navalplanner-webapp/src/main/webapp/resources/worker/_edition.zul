@@ -11,7 +11,7 @@
         </tabs>
         <tabpanels>
             <tabpanel>
-                <grid fixedLayout="false">
+                <grid fixedLayout="true">
                     <columns>
                         <column width="200px" />
                         <column  />

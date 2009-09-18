@@ -189,3 +189,10 @@ table {
     color:#007bbe;
     font-weight:bold;
 }
+
+.icono .zk .z-button-cm, .icono .z-button-cm {
+    color: #007bbe;
+    background-color: transparent;
+    background-image: none;
+    border: 0px solid #007bbe;
+}

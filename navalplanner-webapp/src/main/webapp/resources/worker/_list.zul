@@ -1,6 +1,6 @@
 <window id="${arg.top_id}" title="${i18n:_('Workers list')}">
     <grid id="listing" model="@{controller.workers}" mold="paging"
-        pageSize="5">
+        pageSize="5" fixedLayout="true">
         <columns>
             <column label="${i18n:_('First name')}" sort="auto(firstName)" />
             <column label="${i18n:_('Surname')}" sort="auto(surname)" />
@@ -13,7 +13,8 @@
                 <label value="@{worker.surname}" />
                 <label value="@{worker.nif}" />
                 <hbox>
-                    <button label="${i18n:_('Edit')}"
+                    <button sclass="icono" image="/common/img/ico_editar1.png"
+                        hoverImage="/common/img/ico_editar.png"
                         onClick="controller.goToEditForm(self.getParent().getParent().value);">
                     </button>
                 </hbox>
