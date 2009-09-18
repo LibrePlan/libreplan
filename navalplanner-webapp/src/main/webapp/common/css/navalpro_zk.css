@@ -270,8 +270,8 @@ table {
         background-image:none;
 }
 
-/*.z-window-modal-header, */
-.z-window-popup-header, .z-window-highlighted-header, .z-window-overlapped-header, .z-window-embedded-header {
+.z-window-popup-header, .z-window-highlighted-header,
+.z-window-overlapped-header, .z-window-embedded-header {
         background-color:#FFFFFF;
         color:#48AB48;
         font-family:Tahoma,Arial,Helvetica,sans-serif;
@@ -287,8 +287,7 @@ table {
 
 }
 
-.zk .z-window-embedded .z-button-cm, .z-window-embedded .z-button-cm {
-
+.zk .z-window-embedded .z-button-cm, .z-window-modal .z-button-cm {
     background-color:#58A758;
     background-image:none;
     border:1px solid #006700;
@@ -304,7 +303,6 @@ button.z-button {
         position:relative;
         top:-5px;
 }
-
 
 .z-tabs-scroll .z-tabs-cnt {
         background:#FAFDFE none repeat scroll 0 0;

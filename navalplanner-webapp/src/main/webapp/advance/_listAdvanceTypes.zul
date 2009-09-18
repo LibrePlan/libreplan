@@ -1,21 +1,33 @@
-<window id="${arg.top_id}" title="${i18n:_('Progress types')}">
+<window id="${arg.top_id}" title="${i18n:_('Advance type list')}">
     <grid id="listing" model="@{controller.advanceTypes}" mold="paging"
-        pageSize="5">
+        pageSize="5" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('Operations')}"/>
             <column label="${i18n:_('Name')}" sort="auto(name)"/>
             <column label="${i18n:_('Enabled')}"/>
+            <column label="${i18n:_('Operations')}"/>
+
         </columns>
         <rows>
             <row self="@{each='advanceType'}" value="@{advanceType}">
-                <hbox>
-                    <button label="${i18n:_('Edit')}" disabled="@{advanceType.immutable}" onClick="controller.goToEditForm(self.parent.parent.value);">
-                    </button>
-                    <button label="${i18n:_('Delete')}" disabled="@{advanceType.immutable}" onClick="controller.confirmRemove(self.parent.parent.value);">
-                    </button>
-                </hbox>
                 <label value="@{advanceType.unitName}"/>
                 <checkbox checked="@{advanceType.active}"/>
+                <hbox>
+                    <button visible="@{advanceType.updatable}" sclass="icono" image="/common/img/ico_editar1.png"
+                        hoverImage="/common/img/ico_editar.png"
+                        tooltiptext="${i18n:_('Edit')}" disabled="@{advanceType.immutable}" onClick="controller.goToEditForm(self.parent.parent.value);">
+                    </button>
+                    <button visible="@{advanceType.immutable}" sclass="icono" image="/common/img/ico_editar_out.png"
+                        tooltiptext="${i18n:_('Not editable')}" disabled="@{advanceType.immutable}" onClick="controller.goToEditForm(self.parent.parent.value);">
+                    </button>
+                    <button visible="@{advanceType.updatable}" sclass="icono" image="/common/img/ico_borrar1.png"
+                        hoverImage="/common/img/ico_borrar.png"
+                        tooltiptext="${i18n:_('Delete')}" disabled="@{advanceType.immutable}" onClick="controller.confirmRemove(self.parent.parent.value);">
+                    </button>
+                    <button visible="@{advanceType.immutable}" sclass="icono" image="/common/img/ico_borrar_out.png"
+                        tooltiptext="${i18n:_('Not deletable')}" disabled="@{advanceType.immutable}" onClick="controller.confirmRemove(self.parent.parent.value);">
+                    </button>
+                </hbox>
+
             </row>
         </rows>
     </grid>

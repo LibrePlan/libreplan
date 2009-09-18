@@ -5,11 +5,16 @@
         </tabs>
         <tabpanels>
             <tabpanel>
-                <grid fixedLayout="false">
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column  />
+                    </columns>
+
                     <rows>
                         <row>
                             <label value="${i18n:_('Unit name')}" />
-                            <textbox value="@{controller.advanceType.unitName}" constraint="@{controller.distinctNames}"/>
+                            <textbox value="@{controller.advanceType.unitName}" constraint="@{controller.distinctNames}" width="300px"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Active')}" />
