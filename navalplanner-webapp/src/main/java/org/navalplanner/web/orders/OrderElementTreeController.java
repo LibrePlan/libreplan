@@ -1,6 +1,8 @@
 
 package org.navalplanner.web.orders;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +22,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
@@ -31,8 +34,6 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 import org.zkoss.zul.api.Tree;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Controller for {@link OrderElement} tree view of {@link Order} entities <br />
@@ -380,6 +381,39 @@ public class OrderElementTreeController extends GenericForwardComposer {
             tcDateStart.setParent(tr);
             tcDateEnd.setParent(tr);
             cellForHours.setParent(tr);
+
+            Treecell tcOperations = new Treecell();
+
+            Button editbutton = new Button("", "/common/img/ico_editar1.png");
+            editbutton.setParent(tcOperations);
+            editbutton.setSclass("icono");
+            editbutton.setHoverImage("/common/img/ico_editar.png");
+            editbutton.setTooltiptext("Editar");
+            /* editbutton.setAction("controller.cancel();"); */
+
+
+            Button removebutton = new Button("", "/common/img/ico_borrar1.png");
+            removebutton.setParent(tcOperations);
+            removebutton.setSclass("icono");
+
+            Button upbutton = new Button("", "/common/img/ico_bajar1.png");
+            upbutton.setParent(tcOperations);
+            upbutton.setSclass("icono");
+
+            Button downbutton = new Button("", "/common/img/ico_subir1.png");
+            downbutton.setParent(tcOperations);
+            downbutton.setSclass("icono");
+
+            Button indentbutton = new Button("", "/common/img/ico_derecha1.png");
+            indentbutton.setParent(tcOperations);
+            indentbutton.setSclass("icono");
+
+            Button unindentbutton = new Button("", "/common/img/ico_izq1.png");
+            unindentbutton.setParent(tcOperations);
+            unindentbutton.setSclass("icono");
+
+            tcOperations.setParent(tr);
+
             // item.setOpen(false);
 
             tr.addEventListener("onDrop", new EventListener() {
