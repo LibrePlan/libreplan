@@ -174,25 +174,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             resetAssignmentsTo(assignmentsCreated);
         }
 
-        private int calculateTotalToDistribute(LocalDate day,
-                ResourcesPerDay resourcesPerDay) {
-            Integer workableHours = getWorkableHoursAt(day);
-            return resourcesPerDay
-                    .asHoursGivenResourceWorkingDayOf(workableHours);
-        }
-
-        private Integer getWorkableHoursAt(LocalDate day) {
-            if (getTaskCalendar() == null) {
-                return SameWorkHoursEveryDay.getDefaultWorkingDay()
-                        .getWorkableHours(day);
-            } else {
-                return getTaskCalendar().getWorkableHours(day);
-            }
-        }
-
-        protected final BaseCalendar getTaskCalendar() {
-            return getTask().getCalendar();
-        }
 
         private int getDaysElapsedAt(Task task) {
             LocalDate endExclusive = new LocalDate(task.getEndDate());
@@ -207,6 +188,39 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     protected abstract void resetAssignmentsTo(List<T> assignments);
+
+    final int calculateTotalToDistribute(LocalDate day,
+            ResourcesPerDay resourcesPerDay) {
+        Integer workableHours = getWorkableHoursAt(day);
+        return resourcesPerDay.asHoursGivenResourceWorkingDayOf(workableHours);
+    }
+
+    final Integer getWorkableHoursAt(LocalDate day) {
+        if (getTaskCalendar() == null) {
+            return SameWorkHoursEveryDay.getDefaultWorkingDay()
+                    .getWorkableHours(day);
+        } else {
+            return getTaskCalendar().getWorkableHours(day);
+        }
+    }
+
+    protected final BaseCalendar getTaskCalendar() {
+        return getTask().getCalendar();
+    }
+
+    private void resetGenericAssignmentsTo(List<DayAssignment> assignments) {
+        resetAssignmentsTo(cast(assignments));
+    }
+
+    private List<T> cast(List<DayAssignment> value) {
+        List<T> result = new ArrayList<T>();
+        for (DayAssignment dayAssignment : value) {
+            result.add(getDayAssignmentType().cast(dayAssignment));
+        }
+        return result;
+    }
+
+    protected abstract Class<T> getDayAssignmentType();
 
     public AssignmentFunction getAssignmentFunction() {
         return assignmentFunction;
