@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
@@ -125,8 +126,11 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         if (task.isFixedDuration()) {
             allocationForFixedTask();
         } else {
-            throw new RuntimeException(
-                    "TODO: allocation for tasks of variable duration. Now only works with fixed duration tasks");
+            List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations = toResourceAllocations();
+            LocalDate end = ResourceAllocation.allocating(resourceAllocations)
+                    .withResources(getResourcesMatchingCriterions())
+                    .untilAllocating(task.getHours());
+            ganttTask.setEndDate(end.toDateTimeAtStartOfDay().toDate());
         }
     }
 

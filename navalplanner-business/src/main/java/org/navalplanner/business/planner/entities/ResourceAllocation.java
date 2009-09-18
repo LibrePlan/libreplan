@@ -11,6 +11,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * Resources are allocated to planner tasks.
@@ -37,6 +38,44 @@ public abstract class ResourceAllocation extends BaseEntity {
 
         public ResourcesPerDay getResourcesPerDay() {
             return resourcesPerDay;
+        }
+    }
+
+    public static AllocationsCurried allocating(
+            List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations) {
+        return new AllocationsCurried(resourceAllocations);
+    }
+
+    public static class AllocationsCurried {
+
+        private final List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations;
+
+        public AllocationsCurried(
+                List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations) {
+            this.resourceAllocations = resourceAllocations;
+        }
+
+        public AllocationsAndResourcesCurried withResources(
+                List<Resource> resources) {
+            return new AllocationsAndResourcesCurried(resources,
+                    resourceAllocations);
+        }
+    }
+
+    public static class AllocationsAndResourcesCurried {
+        private List<Resource> resources;
+
+        private List<ResourceAllocationWithDesiredResourcesPerDay> allocations;
+
+        public AllocationsAndResourcesCurried(List<Resource> resources,
+                List<ResourceAllocationWithDesiredResourcesPerDay> allocations) {
+            this.resources = resources;
+            this.allocations = allocations;
+        }
+
+        public LocalDate untilAllocating(int hoursToAllocate) {
+            throw new RuntimeException(
+                    "TODO: implement allocation for variable length tasks");
         }
 
     }
@@ -156,4 +195,5 @@ public abstract class ResourceAllocation extends BaseEntity {
     public ResourcesPerDay getResourcesPerDay() {
         return resourcesPerDay;
     }
+
 }
