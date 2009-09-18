@@ -68,7 +68,7 @@ public abstract class ResourceAllocation extends BaseEntity {
     public ResourceAllocation(Task task, AssignmentFunction assignmentFunction) {
         Validate.notNull(task);
         this.task = task;
-        assignmentFunction = assignmentFunction;
+        this.assignmentFunction = assignmentFunction;
     }
 
     protected ResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {
