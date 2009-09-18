@@ -19,6 +19,14 @@ import org.navalplanner.business.resources.entities.Resource;
 
 public abstract class DayAssignment extends BaseEntity {
 
+    public static int sum(Collection<? extends DayAssignment> assigments) {
+        int result = 0;
+        for (DayAssignment dayAssignment : assigments) {
+            result += dayAssignment.getHours();
+        }
+        return result;
+    }
+
     public static <T extends DayAssignment> Map<Resource, List<T>> byResourceAndOrdered(
             Collection<T> assignments) {
         Map<Resource, List<T>> result = new HashMap<Resource, List<T>>();
