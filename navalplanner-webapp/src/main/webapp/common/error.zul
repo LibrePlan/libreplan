@@ -9,7 +9,8 @@
         </caption-->
         <vbox apply="org.navalplanner.web.error.PageForErrorOnEvent"
             sclass="errorbox">
-            <i18n value="Run-time error: {0} . Error was registered and it&#039;ll be fixed as soon as possible." arg0="${requestScope['javax.servlet.error.message']}" />
+            <i18n id="message"
+            value="Run-time error: {0} . Error was registered and it&#039;ll be fixed as soon as possible." arg0="${requestScope['javax.servlet.error.message']}" />
             <hbox style="margin-left:auto; margin-right:auto">
                 <button id="reload" label="${i18n:_('Reload')}" />
                 <button id="quitSession" label="${i18n:_('Exit session')}"></button>

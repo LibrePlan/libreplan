@@ -20,8 +20,10 @@ public class PageForErrorOnEvent extends GenericForwardComposer {
         super.doAfterCompose(comp);
         logError();
         modalWindow = comp;
-        I18n fellow = (I18n) modalWindow.getFellow("message");
-        fellow.forceLoad();
+        I18n i18NMessge = (I18n) modalWindow.getFellowIfAny("message");
+        if (i18NMessge != null) {
+            i18NMessge.forceLoad();
+        }
     }
 
     private void logError() {
