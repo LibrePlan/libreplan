@@ -31,7 +31,7 @@ public class Task extends TaskElement {
 
     private Boolean fixedDuration = false;
 
-    private Set<ResourceAllocation> resourceAllocations = new HashSet<ResourceAllocation>();
+    private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -67,11 +67,11 @@ public class Task extends TaskElement {
         throw new UnsupportedOperationException();
     }
 
-    public Set<ResourceAllocation> getResourceAllocations() {
+    public Set<ResourceAllocation<?>> getResourceAllocations() {
         return Collections.unmodifiableSet(resourceAllocations);
     }
 
-    public void addResourceAllocation(ResourceAllocation resourceAllocation) {
+    public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
         if (!resourceAllocation.getTask().equals(this)) {
             throw new IllegalArgumentException(
                     "the resourceAllocation's task must be this task");
@@ -79,7 +79,8 @@ public class Task extends TaskElement {
         resourceAllocations.add(resourceAllocation);
     }
 
-    public void removeResourceAllocation(ResourceAllocation resourceAllocation) {
+    public void removeResourceAllocation(
+            ResourceAllocation<?> resourceAllocation) {
         resourceAllocations.remove(resourceAllocation);
     }
 
@@ -121,7 +122,7 @@ public class Task extends TaskElement {
     public boolean isValidResourceAllocationWorkers() {
         Set<Long> workers = new HashSet<Long>();
 
-        for (ResourceAllocation resourceAllocation : resourceAllocations) {
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof SpecificResourceAllocation) {
                 Resource resource = ((SpecificResourceAllocation) resourceAllocation)
                         .getResource();
@@ -173,8 +174,8 @@ public class Task extends TaskElement {
     public Set<GenericResourceAllocation> getGenericResourceAllocations() {
         Set<GenericResourceAllocation> result = new HashSet<GenericResourceAllocation>();
 
-        Set<ResourceAllocation> resourceAllocations = getResourceAllocations();
-        for (ResourceAllocation resourceAllocation : resourceAllocations) {
+        Set<ResourceAllocation<?>> resourceAllocations = getResourceAllocations();
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof GenericResourceAllocation) {
                 result.add((GenericResourceAllocation) resourceAllocation);
             }
@@ -186,8 +187,8 @@ public class Task extends TaskElement {
     public Set<SpecificResourceAllocation> getSpecificResourceAllocations() {
         Set<SpecificResourceAllocation> result = new HashSet<SpecificResourceAllocation>();
 
-        Set<ResourceAllocation> resourceAllocations = getResourceAllocations();
-        for (ResourceAllocation resourceAllocation : resourceAllocations) {
+        Set<ResourceAllocation<?>> resourceAllocations = getResourceAllocations();
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof SpecificResourceAllocation) {
                 result.add((SpecificResourceAllocation) resourceAllocation);
             }

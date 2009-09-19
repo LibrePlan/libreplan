@@ -81,7 +81,7 @@ public class ResourceAllocationDAOTest {
         return worker;
     }
 
-    private ResourceAllocation createValidResourceAllocation(
+    private ResourceAllocation<?> createValidResourceAllocation(
             ResourceAllocationType type) {
         OrderLine orderLine = createValidOrderLine();
         orderElementDAO.save(orderLine);
@@ -168,7 +168,7 @@ public class ResourceAllocationDAOTest {
 
         SpecificResourceAllocation resourceAllocation1 = createValidSpecificResourceAllocation();
         resourceAllocationDAO.save(resourceAllocation1);
-        ResourceAllocation resourceAllocation2 = createValidSpecificResourceAllocation();
+        ResourceAllocation<?> resourceAllocation2 = createValidSpecificResourceAllocation();
         resourceAllocationDAO.save(resourceAllocation1);
         resourceAllocationDAO.save(resourceAllocation2);
 
@@ -184,7 +184,7 @@ public class ResourceAllocationDAOTest {
 
         GenericResourceAllocation resourceAllocation1 = createValidGenericResourceAllocation();
         resourceAllocationDAO.save(resourceAllocation1);
-        ResourceAllocation resourceAllocation2 = createValidGenericResourceAllocation();
+        ResourceAllocation<?> resourceAllocation2 = createValidGenericResourceAllocation();
         resourceAllocationDAO.save(resourceAllocation1);
         resourceAllocationDAO.save(resourceAllocation2);
 

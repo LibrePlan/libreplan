@@ -25,7 +25,7 @@ public abstract class AllocationDTO {
         return result;
     }
 
-    private ResourceAllocation origin;
+    private ResourceAllocation<?> origin;
 
     private String name;
 
@@ -39,11 +39,11 @@ public abstract class AllocationDTO {
         return origin != null;
     }
 
-    public ResourceAllocation getOrigin() {
+    public ResourceAllocation<?> getOrigin() {
         return origin;
     }
 
-    protected void setOrigin(ResourceAllocation allocation) {
+    protected void setOrigin(ResourceAllocation<?> allocation) {
         this.origin = allocation;
     }
 

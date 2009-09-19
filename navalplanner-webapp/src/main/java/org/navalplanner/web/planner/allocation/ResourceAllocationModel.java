@@ -155,17 +155,17 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         return resourceDAO.getAllByCriterions(getCriterions());
     }
 
-    private ResourceAllocation createOrModify(AllocationDTO allocation) {
+    private ResourceAllocation<?> createOrModify(AllocationDTO allocation) {
         if (allocation.isModifying()) {
             return allocation.getOrigin();
         } else {
-            ResourceAllocation result = createAllocation(allocation);
+            ResourceAllocation<?> result = createAllocation(allocation);
             task.addResourceAllocation(result);
             return result;
         }
     }
 
-    private ResourceAllocation createAllocation(AllocationDTO allocation) {
+    private ResourceAllocation<?> createAllocation(AllocationDTO allocation) {
         if (allocation instanceof SpecificAllocationDTO) {
             SpecificAllocationDTO specific = (SpecificAllocationDTO) allocation;
             return createSpecific(specific.getResource());
@@ -174,7 +174,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
-    private void doAllocationForFixedTask(ResourceAllocation allocation,
+    private void doAllocationForFixedTask(ResourceAllocation<?> allocation,
             ResourcesPerDay resourcesPerDay) {
         if (allocation instanceof GenericResourceAllocation) {
             doAllocation((GenericResourceAllocation) allocation,
@@ -196,7 +196,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 resourcesPerDay);
     }
 
-    private ResourceAllocation createSpecific(Resource resource) {
+    private ResourceAllocation<?> createSpecific(Resource resource) {
         SpecificResourceAllocation result = SpecificResourceAllocation
                 .create(task);
         result.setResource(resource);
@@ -219,9 +219,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void reattachResourceAllocations(
-            Set<ResourceAllocation> resourceAllocations) {
+            Set<ResourceAllocation<?>> resourceAllocations) {
         resourceAllocations.size();
-        for (ResourceAllocation resourceAllocation : resourceAllocations) {
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             resourceAllocation.getResourcesPerDay();
             if (resourceAllocation instanceof SpecificResourceAllocation) {
                 reattachSpecificResourceAllocation((SpecificResourceAllocation) resourceAllocation);
@@ -282,7 +282,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private List<AllocationDTO> asDTOs(
-            Collection<? extends ResourceAllocation> resourceAllocations) {
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
         List<AllocationDTO> result = new ArrayList<AllocationDTO>();
         result.addAll(toGenericAllocations(resourceAllocations));
         result.addAll(toSpecificAllocations(resourceAllocations));
@@ -290,9 +290,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private List<SpecificAllocationDTO> toSpecificAllocations(
-            Collection<? extends ResourceAllocation> resourceAllocations) {
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
         List<SpecificAllocationDTO> result = new ArrayList<SpecificAllocationDTO>();
-        for (ResourceAllocation resourceAllocation : resourceAllocations) {
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof SpecificResourceAllocation) {
                 SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
                 result.add(SpecificAllocationDTO.from(specific));
@@ -302,9 +302,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private Collection<GenericAllocationDTO> toGenericAllocations(
-            Collection<? extends ResourceAllocation> resourceAllocations) {
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
         ArrayList<GenericAllocationDTO> result = new ArrayList<GenericAllocationDTO>();
-        for (ResourceAllocation resourceAllocation : resourceAllocations) {
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof GenericResourceAllocation) {
                 result.add(GenericAllocationDTO
                         .from((GenericResourceAllocation) resourceAllocation));

@@ -126,7 +126,7 @@ public class DayAssignmentMatchers {
     }
 
     public static ListDayAssignmentsMatcher haveResourceAllocation(
-            final ResourceAllocation allocation) {
+            final ResourceAllocation<?> allocation) {
         return new ListDayAssignmentsMatcher() {
 
             @Override

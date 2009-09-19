@@ -47,7 +47,7 @@ public class SaveCommand implements ISaveCommand {
                     throw new RuntimeException(_("The task '{0}' has some repeated Worker assigned",
                                 taskElement.getName()));
                 }
-                for (ResourceAllocation resourceAllocation : ((Task) taskElement)
+                for (ResourceAllocation<?> resourceAllocation : ((Task) taskElement)
                         .getResourceAllocations()) {
                     resourceAllocation.dontPoseAsTransientObjectAnymore();
                     for (DayAssignment dayAssignment : (List<? extends DayAssignment>) resourceAllocation
