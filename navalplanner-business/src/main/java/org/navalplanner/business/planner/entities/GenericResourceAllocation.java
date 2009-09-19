@@ -163,4 +163,20 @@ public class GenericResourceAllocation extends
         return DayAssignment.orderedByDay(genericDayAssignments);
     }
 
+    @Override
+    protected Class<GenericDayAssignment> getDayAssignmentType() {
+        return GenericDayAssignment.class;
+    }
+
+    @Override
+    protected List<DayAssignment> createAssignmentsAtDay(
+            List<Resource> resources, LocalDate day,
+            ResourcesPerDay resourcesPerDay, final int maxLimit) {
+        final int hours = Math.min(calculateTotalToDistribute(day,
+                resourcesPerDay), maxLimit);
+        GenericAllocation genericAllocation = new GenericAllocation(resources);
+        return new ArrayList<DayAssignment>(genericAllocation.distributeForDay(
+                day, hours));
+    }
+
 }

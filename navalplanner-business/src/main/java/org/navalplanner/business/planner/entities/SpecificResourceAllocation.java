@@ -1,5 +1,6 @@
 package org.navalplanner.business.planner.entities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,8 +18,7 @@ import org.navalplanner.business.resources.entities.Worker;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class SpecificResourceAllocation extends
-        ResourceAllocation<SpecificDayAssignment> implements
-        IAllocatable {
+        ResourceAllocation<SpecificDayAssignment> implements IAllocatable {
 
     public static SpecificResourceAllocation create(Task task) {
         return (SpecificResourceAllocation) create(new SpecificResourceAllocation(
@@ -94,5 +94,22 @@ public class SpecificResourceAllocation extends
         };
 
         assignmentsAllocation.allocate(resourcesPerDay);
+    }
+
+    @Override
+    protected Class<SpecificDayAssignment> getDayAssignmentType() {
+        return SpecificDayAssignment.class;
+    }
+
+    @Override
+    protected List<DayAssignment> createAssignmentsAtDay(List<Resource> resources,
+            LocalDate day,
+            ResourcesPerDay resourcesPerDay, int limit) {
+        int hours = calculateTotalToDistribute(day, resourcesPerDay);
+        SpecificDayAssignment specific = SpecificDayAssignment.create(day, Math
+                .min(limit, hours), resource);
+        List<DayAssignment> result = new ArrayList<DayAssignment>();
+        result.add(specific);
+        return result;
     }
 }
