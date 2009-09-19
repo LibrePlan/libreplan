@@ -71,7 +71,7 @@ public class DayAssignmentMatchers {
             @Override
             public boolean matches(Object value) {
                 if (value instanceof List) {
-                    List<? extends DayAssignment> assignments = (List<? extends GenericDayAssignment>) value;
+                    List<? extends DayAssignment> assignments = (List<? extends DayAssignment>) value;
                     if (assignments.size() != hours.length)
                         return false;
                     for (int i = 0; i < hours.length; i++) {
