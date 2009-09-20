@@ -3,7 +3,6 @@ package org.navalplanner.business.common.daos;
 import java.io.Serializable;
 import java.util.List;
 
-import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 
 /**
@@ -110,5 +109,7 @@ public interface IGenericDAO <E, PK extends Serializable>{
     public <T extends E> List<T> list(Class<T> klass);
 
     public void flush();
+
+    void associateToSession(E entity);
 
 }

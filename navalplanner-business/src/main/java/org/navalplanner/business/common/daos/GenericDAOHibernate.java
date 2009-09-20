@@ -119,6 +119,10 @@ public class GenericDAOHibernate<E, PK extends Serializable> implements
 
     }
 
+    public void associateToSession(E entity) {
+        getSession().lock(entity, LockMode.NONE);
+    }
+
     @SuppressWarnings("unchecked")
     public E find(PK id) throws InstanceNotFoundException {
 
