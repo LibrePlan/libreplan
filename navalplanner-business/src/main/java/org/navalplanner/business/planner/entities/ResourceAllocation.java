@@ -66,9 +66,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             checkNoOneHasNullTask(resourceAllocations);
             checkAllHaveSameTask(resourceAllocations);
             this.resourceAllocations = resourceAllocations;
-            this.task = resourceAllocations.isEmpty() ? null
-                    : resourceAllocations.get(0).getResourceAllocation()
-                            .getTask();
+            this.task = resourceAllocations.get(0).getResourceAllocation()
+                    .getTask();
         }
 
         private static void checkNoOneHasNullTask(
@@ -175,10 +174,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             BigDecimal[] limits = new BigDecimal[allocations.size()];
             BigDecimal sumAll = sumAll();
             for (int i = 0; i < limits.length; i++) {
-                BigDecimal amount = allocations
-                        .get(i).getResourcesPerDay().getAmount();
-                limits[i] = amount.divide(sumAll, RoundingMode.DOWN)
-                        .multiply(new BigDecimal(toBeAssigned));
+                BigDecimal amount = allocations.get(i).getResourcesPerDay()
+                        .getAmount();
+                limits[i] = amount.divide(sumAll, RoundingMode.DOWN).multiply(
+                        new BigDecimal(toBeAssigned));
             }
             final int remainder = toBeAssigned - sumIntegerParts(limits);
             return distributeRemainder(limits, remainder);
