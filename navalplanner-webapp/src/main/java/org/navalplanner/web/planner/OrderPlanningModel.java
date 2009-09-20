@@ -12,6 +12,8 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -32,6 +34,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private IOrderDAO orderDAO;
 
     private PlanningState planningState;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
 
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
@@ -94,7 +99,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setOrder(orderReloaded);
         planningState = new PlanningState(retainOnlyTopLevel(orderReloaded
-                .getAssociatedTasks()));
+                .getAssociatedTasks()), resourceDAO.list(Resource.class));
         forceLoadOfDependenciesCollections(planningState.getInitial());
         forceLoadOfWorkingHours(planningState.getInitial());
         return new PlannerConfiguration<TaskElement>(taskElementAdapter,

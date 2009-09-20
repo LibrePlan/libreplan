@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Resource;
 
 public class PlanningState {
     private final ArrayList<TaskElement> initial;
@@ -16,10 +18,14 @@ public class PlanningState {
 
     private final Set<TaskElement> toRemove;
 
-    public PlanningState(Collection<? extends TaskElement> initialState) {
+    private Set<Resource> resources = new HashSet<Resource>();
+
+    public PlanningState(Collection<? extends TaskElement> initialState,
+            Collection<? extends Resource> initialResources) {
         this.initial = new ArrayList<TaskElement>(initialState);
         this.toSave = new HashSet<TaskElement>(initialState);
         this.toRemove = new HashSet<TaskElement>();
+        this.resources = new HashSet<Resource>(initialResources);
     }
 
     public Collection<? extends TaskElement> getTasksToSave() {
@@ -28,6 +34,17 @@ public class PlanningState {
 
     public List<TaskElement> getInitial() {
         return new ArrayList<TaskElement>(initial);
+    }
+
+    public void reassociateResourcesWithSession(IResourceDAO resourceDAO) {
+        for (Resource resource : resources) {
+            resourceDAO.associateToSession(resource);
+        }
+        addingNewlyCreated(resourceDAO);
+    }
+
+    private void addingNewlyCreated(IResourceDAO resourceDAO) {
+        resources.addAll(resourceDAO.list(Resource.class));
     }
 
     public Collection<? extends TaskElement> getToRemove() {
