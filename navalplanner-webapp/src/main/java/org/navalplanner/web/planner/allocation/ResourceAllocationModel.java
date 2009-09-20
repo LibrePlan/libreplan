@@ -26,6 +26,7 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.planner.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -58,6 +59,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private org.zkoss.ganttz.data.Task ganttTask;
 
     private List<AllocationDTO> currentAllocations;
+
+    private PlanningState planningState;
 
     @Override
     public Task getTask() {
@@ -119,6 +122,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public void save() {
+        planningState.reassociateResourcesWithSession(resourceDAO);
         mergeDTOsToTask();
     }
 
@@ -206,9 +210,11 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public void initAllocationsFor(Task task,
-            org.zkoss.ganttz.data.Task ganttTask) {
+            org.zkoss.ganttz.data.Task ganttTask, PlanningState planningState) {
         this.ganttTask = ganttTask;
         this.task = task;
+        this.planningState = planningState;
+        planningState.reassociateResourcesWithSession(resourceDAO);
         taskElementDAO.save(this.task);
         reattachResourceAllocations(this.task.getResourceAllocations());
         hoursGroupDAO.save(this.task.getHoursGroup());

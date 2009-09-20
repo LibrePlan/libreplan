@@ -9,6 +9,7 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.planner.PlanningState;
 
 /**
  * Contract for {@link Task}.
@@ -70,7 +71,9 @@ public interface IResourceAllocationModel {
      * Starts the use case
      * @param task
      * @param ganttTask
+     * @param planningState
      */
-    void initAllocationsFor(Task task, org.zkoss.ganttz.data.Task ganttTask);
+    void initAllocationsFor(Task task, org.zkoss.ganttz.data.Task ganttTask,
+            PlanningState planningState);
 
 }

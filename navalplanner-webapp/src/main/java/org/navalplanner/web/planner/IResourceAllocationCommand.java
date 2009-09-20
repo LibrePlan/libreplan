@@ -12,7 +12,7 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
  */
 public interface IResourceAllocationCommand extends ICommandOnTask<TaskElement> {
 
-    void setResourceAllocationController(
-            ResourceAllocationController resourceAllocationController);
+    void initialize(ResourceAllocationController resourceAllocationController,
+            PlanningState state);
 
 }

@@ -20,6 +20,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.WorkerSearch;
+import org.navalplanner.web.planner.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
@@ -69,9 +70,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
      * Shows Resource Allocation window
      * @param task
      * @param ganttTask
+     * @param planningState
      */
-    public void showWindow(Task task, org.zkoss.ganttz.data.Task ganttTask) {
-        resourceAllocationModel.initAllocationsFor(task, ganttTask);
+    public void showWindow(Task task, org.zkoss.ganttz.data.Task ganttTask,
+            PlanningState planningState) {
+        resourceAllocationModel.initAllocationsFor(task, ganttTask,
+                planningState);
         Util.reloadBindings(window);
         try {
             window.doModal();

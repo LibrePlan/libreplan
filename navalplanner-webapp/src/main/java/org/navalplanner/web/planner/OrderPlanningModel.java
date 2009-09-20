@@ -61,7 +61,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             IConfigurationOnTransaction onTransaction) {
         Order orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled())
-            throw new IllegalArgumentException(_("The order {0} must be scheduled", order));
+            throw new IllegalArgumentException(_(
+                    "The order {0} must be scheduled", order));
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
 
         ISaveCommand saveCommand = getSaveCommand();
@@ -69,8 +70,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration.addGlobalCommand(saveCommand);
 
         IResourceAllocationCommand resourceAllocationCommand = getResourceAllocationCommand();
-        resourceAllocationCommand
-                .setResourceAllocationController(resourceAllocationController);
+        resourceAllocationCommand.initialize(resourceAllocationController,
+                planningState);
         configuration.addCommandOnTask(resourceAllocationCommand);
 
         ISplitTaskCommand splitCommand = getSplitCommand();
@@ -121,8 +122,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return result;
     }
 
-    private void descandants(
-            Set<TaskElement> accumulated,
+    private void descandants(Set<TaskElement> accumulated,
             TaskElement taskElement) {
         if (taskElement.isLeaf()) {
             return;
@@ -161,7 +161,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract ITaskElementAdapter getTaskElementAdapter();
 
     protected abstract ISaveCommand getSaveCommand();
-
 
     protected abstract IResourceAllocationCommand getResourceAllocationCommand();
 

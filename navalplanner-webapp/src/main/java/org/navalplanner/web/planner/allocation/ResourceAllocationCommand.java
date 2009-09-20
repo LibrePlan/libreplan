@@ -1,14 +1,15 @@
 package org.navalplanner.web.planner.allocation;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.IResourceAllocationCommand;
+import org.navalplanner.web.planner.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * A command that opens a window to make the resource allocation of a task.
@@ -20,6 +21,7 @@ import static org.navalplanner.web.I18nHelper._;
 public class ResourceAllocationCommand implements IResourceAllocationCommand {
 
     private ResourceAllocationController resourceAllocationController;
+    private PlanningState planningState;
 
     public ResourceAllocationCommand() {
     }
@@ -29,7 +31,7 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
             TaskElement task) {
         if (task instanceof Task) {
             this.resourceAllocationController.showWindow((Task) task, context
-                    .getTask());
+                    .getTask(), planningState);
         }
     }
 
@@ -39,9 +41,11 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
     }
 
     @Override
-    public void setResourceAllocationController(
-            ResourceAllocationController resourceAllocationController) {
+    public void initialize(
+            ResourceAllocationController resourceAllocationController,
+            PlanningState planningState) {
         this.resourceAllocationController = resourceAllocationController;
+        this.planningState = planningState;
     }
 
 
