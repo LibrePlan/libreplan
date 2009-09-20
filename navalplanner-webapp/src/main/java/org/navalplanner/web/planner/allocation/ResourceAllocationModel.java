@@ -161,12 +161,21 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     private ResourceAllocation<?> createOrModify(AllocationDTO allocation) {
         if (allocation.isModifying()) {
-            return allocation.getOrigin();
+            return reloadResourceIfNeeded(allocation.getOrigin());
         } else {
             ResourceAllocation<?> result = createAllocation(allocation);
             task.addResourceAllocation(result);
             return result;
         }
+    }
+
+    private ResourceAllocation<?> reloadResourceIfNeeded(
+            ResourceAllocation<?> origin) {
+        if (origin instanceof SpecificResourceAllocation) {
+            SpecificResourceAllocation specific = (SpecificResourceAllocation) origin;
+            specific.setResource(getFromDB(specific.getResource()));
+        }
+        return origin;
     }
 
     private ResourceAllocation<?> createAllocation(AllocationDTO allocation) {
@@ -201,10 +210,15 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private ResourceAllocation<?> createSpecific(Resource resource) {
+        resource = getFromDB(resource);
         SpecificResourceAllocation result = SpecificResourceAllocation
                 .create(task);
         result.setResource(resource);
         return result;
+    }
+
+    private Resource getFromDB(Resource resource) {
+        return resourceDAO.findExistingEntity(resource.getId());
     }
 
     @Override
