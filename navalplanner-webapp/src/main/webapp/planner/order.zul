@@ -90,9 +90,9 @@
                         value="@{allocationController.taskCriterions}" />
                 </hbox>
                 <hbox>
-                    <label value="${i18n:_('Hours')}:"
+                    <label value="${i18n:_('Order Hours')}:"
                         style="font-weight:bold" />
-                    <label value="@{allocationController.taskHours}" />
+                    <label value="@{allocationController.orderHours}" />
                 </hbox>
             </panelchildren>
         </panel>

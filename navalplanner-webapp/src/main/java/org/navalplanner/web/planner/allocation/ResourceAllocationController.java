@@ -201,13 +201,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return StringUtils.join(criterionNames, ",");
     }
 
-    /**
-     * Returns hours of {@link Task}
-     * @return
-     */
-    public String getTaskHours() {
+    public String getOrderHours() {
         Task task = resourceAllocationModel.getTask();
-        return (task != null && task.getHours() != null) ? task.getHours()
+        return (task != null && task.getHoursSpecifiedAtOrder() != null) ? task.getHoursSpecifiedAtOrder()
                 .toString() : "";
     }
 

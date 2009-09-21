@@ -53,7 +53,7 @@ public class Task extends TaskElement {
         return Collections.unmodifiableSet(this.hoursGroup.getCriterions());
     }
 
-    public Integer getHours() {
+    public Integer getHoursSpecifiedAtOrder() {
         return hoursGroup.getWorkingHours();
     }
 

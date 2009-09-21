@@ -31,8 +31,8 @@ public class TaskTest {
     }
 
     @Test
-    public void taskHasNumberOfHours() {
-        assertThat(task.getHours(), equalTo(hoursGroup.getWorkingHours()));
+    public void taskHasHoursSpecifiedAtOrderComingFromItsHoursGroup() {
+        assertThat(task.getHoursSpecifiedAtOrder(), equalTo(hoursGroup.getWorkingHours()));
     }
 
     @Test

@@ -133,7 +133,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         } else {
             LocalDate end = ResourceAllocation.allocating(resourceAllocations)
                     .withResources(getResourcesMatchingCriterions())
-                    .untilAllocating(task.getHours());
+                    .untilAllocating(task.getHoursSpecifiedAtOrder());
             ganttTask.setEndDate(end.toDateTimeAtStartOfDay().toDate());
         }
     }
