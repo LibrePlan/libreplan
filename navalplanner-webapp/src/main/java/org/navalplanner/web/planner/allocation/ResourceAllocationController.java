@@ -3,11 +3,13 @@ package org.navalplanner.web.planner.allocation;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -128,6 +130,50 @@ public class ResourceAllocationController extends GenericForwardComposer {
         } catch (Exception e1) {
             messagesForUser.showMessage(Level.ERROR, e1.getMessage());
         }
+    }
+
+    public enum CalculationTypeRadio {
+
+        NUMBER_OF_HOURS(CalculatedValue.NUMBER_OF_HOURS) {
+            @Override
+            public String getName() {
+                return _("Calculate Number of Hours");
+            }
+        },
+        END_DATE(CalculatedValue.END_DATE) {
+            @Override
+            public String getName() {
+                return _("Calculate End Date");
+            }
+        },
+        RESOURCES_PER_DAY(CalculatedValue.RESOURCES_PER_DAY) {
+            @Override
+            public String getName() {
+                return _("Calculate Resources per Day");
+            }
+        };
+        private final CalculatedValue calculatedValue;
+
+        private CalculationTypeRadio(CalculatedValue calculatedValue) {
+            this.calculatedValue = calculatedValue;
+
+        }
+
+        public abstract String getName();
+
+        public CalculatedValue getCalculatedValue() {
+            return calculatedValue;
+        }
+    }
+
+    public List<CalculationTypeRadio> getCalculationTypes() {
+        return Arrays.asList(CalculationTypeRadio.values());
+    }
+
+    public void setCalculationTypeSelected(String enumName) {
+        CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
+                .valueOf(enumName);
+        CalculatedValue c = calculationTypeRadio.getCalculatedValue();
     }
 
     /**

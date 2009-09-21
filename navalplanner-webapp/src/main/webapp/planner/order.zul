@@ -66,6 +66,21 @@
         title="${i18n:_('Resource allocation')}" width="600px"
         closable="true" visible="false">
 
+        <panel title="${i18n:_('Calculation type')}" >
+            <panelchildren>
+                <radiogroup id="calculationTypeSelector"
+                   onCheck="allocationController.calculationTypeSelected = self.selectedItem.value;">
+                    <grid>
+                        <rows>
+                            <row forEach="${allocationController.calculationTypes}">
+                                <radio label="${each.name}" value="${each}"/>
+                            </row>
+                        </rows>
+                    </grid>
+                </radiogroup>
+            </panelchildren>
+        </panel>
+
         <panel title="Generic resource allocation" border="normal" style="margin-bottom: 5px">
             <panelchildren>
                 <hbox>
