@@ -65,6 +65,25 @@ public class SaveCommand implements ISaveCommand {
     }
 
     private void doTheSaving() {
+        saveTasksToSave();
+        removeTasksToRemove();
+        taskElementDAO.removeOrphanedDayAssignments();
+    }
+
+    private void removeTasksToRemove() {
+        for (TaskElement taskElement : state.getToRemove()) {
+            if (taskElementDAO.exists(taskElement.getId())) {
+                // it might have already been saved in a previous save action
+                try {
+                    taskElementDAO.remove(taskElement.getId());
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    private void saveTasksToSave() {
         for (TaskElement taskElement : state.getTasksToSave()) {
             taskElementDAO.save(taskElement);
             if (taskElement instanceof Task) {
@@ -82,17 +101,6 @@ public class SaveCommand implements ISaveCommand {
                 }
             }
         }
-        for (TaskElement taskElement : state.getToRemove()) {
-            if (taskElementDAO.exists(taskElement.getId())) {
-                // it might have already been saved in a previous save action
-                try {
-                    taskElementDAO.remove(taskElement.getId());
-                } catch (InstanceNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        taskElementDAO.removeOrphanedDayAssignments();
     }
 
     @Override
