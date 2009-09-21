@@ -61,6 +61,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Window window;
 
+    private ResourceAllocationFormBinder formBinder;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -78,6 +80,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
             PlanningState planningState) {
         resourceAllocationModel.initAllocationsFor(task, ganttTask,
                 planningState);
+        formBinder = new ResourceAllocationFormBinder(
+                getCurrentCalculatedValue(task), resourceAllocationModel);
+
         Util.reloadBindings(window);
         try {
             window.doModal();
@@ -86,6 +91,11 @@ public class ResourceAllocationController extends GenericForwardComposer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private CalculatedValue getCurrentCalculatedValue(Task task) {
+        // TODO retrieve the calculated value from task
+        return CalculatedValue.NUMBER_OF_HOURS;
     }
 
     /**
