@@ -6,7 +6,6 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourceAllocation.ResourceAllocationWithDesiredResourcesPerDay;
 import org.navalplanner.business.resources.entities.Resource;
 
 public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {

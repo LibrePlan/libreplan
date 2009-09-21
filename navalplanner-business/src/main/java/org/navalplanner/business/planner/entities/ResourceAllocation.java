@@ -17,6 +17,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceAllocationWithDesiredResourcesPerDay;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -25,28 +26,6 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public abstract class ResourceAllocation<T extends DayAssignment> extends
         BaseEntity {
-
-    public static class ResourceAllocationWithDesiredResourcesPerDay {
-
-        private final ResourceAllocation<?> resourceAllocation;
-
-        private final ResourcesPerDay resourcesPerDay;
-
-        public ResourceAllocationWithDesiredResourcesPerDay(
-                ResourceAllocation<?> resourceAllocation,
-                ResourcesPerDay resourcesPerDay) {
-            this.resourceAllocation = resourceAllocation;
-            this.resourcesPerDay = resourcesPerDay;
-        }
-
-        public ResourceAllocation<?> getResourceAllocation() {
-            return resourceAllocation;
-        }
-
-        public ResourcesPerDay getResourcesPerDay() {
-            return resourcesPerDay;
-        }
-    }
 
     public static AllocationsCurried allocating(
             List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations) {
