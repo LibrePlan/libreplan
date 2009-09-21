@@ -16,6 +16,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -232,32 +233,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         public void allocateOnTaskLength() {
-            for (ResourceAllocationWithDesiredResourcesPerDay allocation : allocations) {
-                doAllocationForFixedTask(allocation.getResourceAllocation(),
-                        allocation.getResourcesPerDay());
-            }
-        }
-
-        private void doAllocationForFixedTask(ResourceAllocation<?> allocation,
-                ResourcesPerDay resourcesPerDay) {
-            if (allocation instanceof GenericResourceAllocation) {
-                doAllocation((GenericResourceAllocation) allocation,
-                        resourcesPerDay);
-            } else {
-                SpecificResourceAllocation specific = (SpecificResourceAllocation) allocation;
-                doAllocation(specific, resourcesPerDay);
-            }
-        }
-
-        private void doAllocation(SpecificResourceAllocation specific,
-                ResourcesPerDay resourcesPerDay) {
-            specific.allocate(resourcesPerDay);
-        }
-
-        private void doAllocation(GenericResourceAllocation generic,
-                ResourcesPerDay resourcesPerDay) {
-            generic.forResources(resources).allocate(
-                    resourcesPerDay);
+            AllocatorForTaskDurationAndSpecifiedResourcesPerDay allocator = new AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
+                    allocations, resources);
+            allocator.allocateOnTaskLength();
         }
     }
 
