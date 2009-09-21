@@ -16,7 +16,6 @@ import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.ResourceAllocation.ResourceAllocationWithDesiredResourcesPerDay;
@@ -127,10 +126,11 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void mergeDTOsToTask() {
+        List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations = toResourceAllocations();
         if (task.isFixedDuration()) {
-            allocationForFixedTask();
+            ResourceAllocation.allocating(resourceAllocations).withResources(
+                    getResourcesMatchingCriterions()).allocateOnTaskLength();
         } else {
-            List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations = toResourceAllocations();
             LocalDate end = ResourceAllocation.allocating(resourceAllocations)
                     .withResources(getResourcesMatchingCriterions())
                     .untilAllocating(task.getHours());
@@ -145,14 +145,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                     allocation.getResourcesPerDay()));
         }
         return result;
-    }
-
-    private void allocationForFixedTask() {
-        List<ResourceAllocationWithDesiredResourcesPerDay> allocations = toResourceAllocations();
-        for (ResourceAllocationWithDesiredResourcesPerDay allocation : allocations) {
-            doAllocationForFixedTask(allocation.getResourceAllocation(),
-                    allocation.getResourcesPerDay());
-        }
     }
 
     private List<Resource> getResourcesMatchingCriterions() {
@@ -185,28 +177,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         } else {
             return GenericResourceAllocation.create(task);
         }
-    }
-
-    private void doAllocationForFixedTask(ResourceAllocation<?> allocation,
-            ResourcesPerDay resourcesPerDay) {
-        if (allocation instanceof GenericResourceAllocation) {
-            doAllocation((GenericResourceAllocation) allocation,
-                    resourcesPerDay);
-        } else {
-            SpecificResourceAllocation specific = (SpecificResourceAllocation) allocation;
-            doAllocation(specific, resourcesPerDay);
-        }
-    }
-
-    private void doAllocation(SpecificResourceAllocation specific,
-            ResourcesPerDay resourcesPerDay) {
-        specific.allocate(resourcesPerDay);
-    }
-
-    private void doAllocation(GenericResourceAllocation generic,
-            ResourcesPerDay resourcesPerDay) {
-        generic.forResources(getResourcesMatchingCriterions()).allocate(
-                resourcesPerDay);
     }
 
     private ResourceAllocation<?> createSpecific(Resource resource) {

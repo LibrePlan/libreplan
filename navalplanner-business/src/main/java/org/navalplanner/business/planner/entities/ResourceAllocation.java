@@ -231,6 +231,34 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return result;
         }
 
+        public void allocateOnTaskLength() {
+            for (ResourceAllocationWithDesiredResourcesPerDay allocation : allocations) {
+                doAllocationForFixedTask(allocation.getResourceAllocation(),
+                        allocation.getResourcesPerDay());
+            }
+        }
+
+        private void doAllocationForFixedTask(ResourceAllocation<?> allocation,
+                ResourcesPerDay resourcesPerDay) {
+            if (allocation instanceof GenericResourceAllocation) {
+                doAllocation((GenericResourceAllocation) allocation,
+                        resourcesPerDay);
+            } else {
+                SpecificResourceAllocation specific = (SpecificResourceAllocation) allocation;
+                doAllocation(specific, resourcesPerDay);
+            }
+        }
+
+        private void doAllocation(SpecificResourceAllocation specific,
+                ResourcesPerDay resourcesPerDay) {
+            specific.allocate(resourcesPerDay);
+        }
+
+        private void doAllocation(GenericResourceAllocation generic,
+                ResourcesPerDay resourcesPerDay) {
+            generic.forResources(resources).allocate(
+                    resourcesPerDay);
+        }
     }
 
     @NotNull
