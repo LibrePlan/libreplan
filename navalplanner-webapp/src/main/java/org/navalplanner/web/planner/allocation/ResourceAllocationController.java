@@ -201,16 +201,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 .toString() : "";
     }
 
-    /**
-     * Returns type of {@link Task} based on value of fixedDuration attribute
-     * @return
-     */
-    public String getTaskType() {
-        Task task = resourceAllocationModel.getTask();
-        return (task != null && task.getFixedDuration()) ? _("Fixed duration")
-                : _("Variable duration");
-    }
-
     public List<AllocationDTO> getResourceAllocations() {
         return resourceAllocationModel.getAllocations();
     }
