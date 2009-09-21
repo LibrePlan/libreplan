@@ -57,6 +57,14 @@ public class Task extends TaskElement {
         return hoursGroup.getWorkingHours();
     }
 
+    public int getAssignedHours() {
+        int result = 0;
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+            result += resourceAllocation.getAssignedHours();
+        }
+        return result;
+    }
+
     @Override
     public boolean isLeaf() {
         return true;

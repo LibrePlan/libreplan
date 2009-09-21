@@ -1,5 +1,8 @@
 package org.navalplanner.business.test.planner.entities;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.createNiceMock;
+import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -7,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -71,6 +75,28 @@ public class TaskTest {
 
         task.removeResourceAllocation(resourceAllocation);
         assertThat(task.getResourceAllocations().size(), equalTo(0));
+    }
+
+    @Test
+    public void aTaskWithoutAllocationsHasZeroAssignedHours() {
+        assertThat(task.getAssignedHours(), equalTo(0));
+    }
+
+    @Test
+    public void aTaskWithAllocationsReturnsTheSumOfItsAllocations() {
+        task.addResourceAllocation(stubResourceAllocationWithAssignedHours(5));
+        task.addResourceAllocation(stubResourceAllocationWithAssignedHours(3));
+        assertThat(task.getAssignedHours(), equalTo(8));
+    }
+
+    private ResourceAllocation<?> stubResourceAllocationWithAssignedHours(
+            int hours) {
+        ResourceAllocation<?> resourceAllocation = createNiceMock(ResourceAllocation.class);
+        expect(resourceAllocation.getAssignedHours()).andReturn(hours)
+                .anyTimes();
+        expect(resourceAllocation.getTask()).andReturn(task).anyTimes();
+        replay(resourceAllocation);
+        return resourceAllocation;
     }
 
 }
