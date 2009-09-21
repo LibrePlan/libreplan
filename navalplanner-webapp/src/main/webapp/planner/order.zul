@@ -81,7 +81,7 @@
             </panelchildren>
         </panel>
 
-        <panel title="Generic resource allocation" border="normal" style="margin-bottom: 5px">
+        <panel title="${i18n:_('Allocation')}" border="normal" style="margin-bottom: 5px">
             <panelchildren>
                 <hbox>
                     <label value="${i18n:_('Criterions')}:"
