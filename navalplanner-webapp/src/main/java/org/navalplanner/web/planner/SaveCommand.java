@@ -4,6 +4,8 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -32,6 +34,9 @@ public class SaveCommand implements ISaveCommand {
 
     private PlanningState state;
 
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     @Override
     public void setState(PlanningState state) {
         this.state = state;
@@ -40,6 +45,26 @@ public class SaveCommand implements ISaveCommand {
     @Override
     @Transactional
     public void doAction(IContext<TaskElement> context) {
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                doTheSaving();
+                return null;
+            }
+        });
+        notifyUserThatSavingIsDone();
+    }
+
+    private void notifyUserThatSavingIsDone() {
+        try {
+            Messagebox.show(_("Scheduling saved"), _("Information"), Messagebox.OK,
+                    Messagebox.INFORMATION);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void doTheSaving() {
         for (TaskElement taskElement : state.getTasksToSave()) {
             taskElementDAO.save(taskElement);
             if (taskElement instanceof Task) {
@@ -68,15 +93,6 @@ public class SaveCommand implements ISaveCommand {
             }
         }
         taskElementDAO.removeOrphanedDayAssignments();
-        // FIXME Messagebox#show blocks the thread so the transaction is not
-        // executed until ok is pressed
-        try {
-            Messagebox.show(_("Scheduling saved"), _("Information"), Messagebox.OK,
-                    Messagebox.INFORMATION);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 
     @Override
