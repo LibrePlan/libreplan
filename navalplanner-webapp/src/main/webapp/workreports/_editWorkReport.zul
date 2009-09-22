@@ -1,48 +1,57 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
-<window id="${arg.top_id}" title="${arg.title}" border="normal">
+<window id="${arg.top_id}" title="${arg.title}">
 
-    <vbox>
+    <tabbox>
+        <tabs>
+            <tab label="${i18n:_('Report data')}"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
 
-        <hbox>
-            <grid fixedLayout="false">
-                <rows>
-                    <row>
-                        <label value="${i18n:_('Responsible:')}"
-                            style="font-weight:bold;" />
-                        <textbox id="responsible"
-                            value="@{controller.workReport.responsible}" />
-                    </row>
-                    <row>
-                        <label value="${i18n:_('Place:')}" style="font-weight:bold;" />
-                        <textbox value="@{controller.workReport.place}" />
-                    </row>
-                    <row>
-                        <label value="${i18n:_('Date:')}" style="font-weight:bold;" />
-                        <datebox id="date" value="@{controller.workReport.date}" />
-                    </row>
-                </rows>
-            </grid>
-        </hbox>
+                <vbox>
+                    <grid fixedLayout="false">
+                        <columns>
+                            <column width="200px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Responsible:')}" />
+                                <textbox id="responsible"
+                                    value="@{controller.workReport.responsible}"
+                                    width="300px" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Place:')}" />
+                                <textbox
+                                    value="@{controller.workReport.place}"
+                                    width="300px" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Date:')}" />
+                                <datebox id="date"
+                                    value="@{controller.workReport.date}" />
+                            </row>
+                        </rows>
+                    </grid>
 
-        <hbox>
-            <button label="${i18n:_('Add')}"
-                onClick="controller.addWorkReportLine(workReportLines);"
-                style="margin-top: -30px; margin-left: 300px" />
-            <button label="${i18n:_('Delete')}"
-                onClick="controller.deleteWorkReportLine(workReportLines);"
-                style="margin-top: -30px; margin-left: 2px" />
-        </hbox>
+                    <hbox>
+                        <button label="${i18n:_('Add new row')}"
+                            onClick="controller.addWorkReportLine(workReportLines);" />
+                        <button label="${i18n:_('Delete')}"
+                            onClick="controller.deleteWorkReportLine(workReportLines);" />
+                    </hbox>
 
-       <listbox id="workReportLines"/>
+                    <listbox id="workReportLines" />
 
-        <hbox>
-            <button onClick="controller.save();"
-                label="${arg.save_button_label}" />
-            <button onClick="controller.cancel();"
-                label="${arg.cancel_button_label}" />
-        </hbox>
+                </vbox>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
 
-    </vbox>
+
+    <button onClick="controller.save();" label="${arg.save_button_label}" />
+    <button onClick="controller.cancel();" label="${arg.cancel_button_label}" />
 
 </window>

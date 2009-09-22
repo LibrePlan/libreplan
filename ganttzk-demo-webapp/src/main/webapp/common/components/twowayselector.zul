@@ -13,13 +13,13 @@
             <listbox id="assignedObjects"
                 model="@{top.assignedObjects}"
                 itemRenderer="@{top.renderer}"
-                multiple="true" checkmark="true">
+                multiple="true" checkmark="true" height="200px">
                 <listhead>
                     <listheader label="@{top.assignedTitle}" />
                 </listhead>
             </listbox>
 
-            <vbox>
+            <vbox style="margin-top:80px">
                 <button id="assignButton" label="&lt;&lt;"
                     onClick="top.assign(unassignedObjects);" />
                 <button id="unassignButton" label="&gt;&gt;"
@@ -29,7 +29,7 @@
             <listbox id="unassignedObjects"
                 model="@{top.unassignedObjects}"
                 itemRenderer="@{top.renderer}"
-                multiple="true" checkmark="true">
+                multiple="true" checkmark="true" height="200px">
                 <listhead>
                     <listheader label="@{top.unassignedTitle}" />
                 </listhead>

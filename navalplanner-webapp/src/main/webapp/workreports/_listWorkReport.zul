@@ -15,8 +15,18 @@
                 <label value="@{workReport.place}" />
                 <label value="@{workReport.workReportType.name}" />
                 <hbox>
-                    <button label="${i18n:_('Edit')}" onClick="controller.goToEditForm(self.parent.parent.value);" />
-                    <button label="${i18n:_('Delete')}"  onClick="controller.showConfirmDelete(self.parent.parent.value)" />
+                    <button sclass="icono" image="/common/img/ico_editar1.png"
+                        hoverImage="/common/img/ico_editar.png"
+                        tooltiptext="${i18n:_('Edit')}"
+                        onClick="controller.goToEditForm(self.parent.parent.value);">
+                    </button>
+
+                    <button sclass="icono" image="/common/img/ico_borrar1.png"
+                        hoverImage="/common/img/ico_borrar.png"
+                        tooltiptext="${i18n:_('Delete')}"
+                        onClick="controller.showConfirmDelete(self.parent.parent.value);">
+                    </button>
+
                 </hbox>
             </row>
         </rows>

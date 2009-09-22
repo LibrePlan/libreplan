@@ -1,4 +1,4 @@
-<window id="${arg.top_id}" title="${i18n:_('List')}">
+<window id="${arg.top_id}" title="${i18n:_('Work Report types')}">
     <grid id="listing" model="@{controller.workReportTypes}" mold="paging"
         pageSize="5">
         <columns>
@@ -9,10 +9,16 @@
             <row self="@{each='workReportType'}" value="@{workReportType}">
                 <label value="@{workReportType.name}" />
                 <hbox>
-                    <button label="${i18n:_('Edit')}"
+
+                    <button sclass="icono" image="/common/img/ico_editar1.png"
+                        hoverImage="/common/img/ico_editar.png"
+                        tooltiptext="${i18n:_('Edit')}"
                         onClick="controller.goToEditForm(self.parent.parent.value);">
                     </button>
-                    <button label="${i18n:_('Delete')}"
+
+                    <button sclass="icono" image="/common/img/ico_borrar1.png"
+                        hoverImage="/common/img/ico_borrar.png"
+                        tooltiptext="${i18n:_('Delete')}"
                         onClick="controller.confirmRemove(self.parent.parent.value);">
                     </button>
 

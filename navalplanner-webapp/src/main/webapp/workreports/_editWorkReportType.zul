@@ -1,12 +1,24 @@
-<window id="${arg.top_id}" title="${arg.title}" border="normal">
+<window id="${arg.top_id}" title="${arg.title}" >
 
-    <vbox>
+    <tabbox>
+        <tabs>
+            <tab label="${i18n:_('Report structure')}"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
 
-        <hbox>
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column  />
+                    </columns>
+                    <rows>
+                        <row>
             <label value="${i18n:_('Name')}" />
             <textbox
-                value="@{controller.workReportType.name}" />
-        </hbox>
+                value="@{controller.workReportType.name}" width="300px"/>
+</row>
+<row>
 
         <label value="${i18n:_('Criterion types')}" />
 
@@ -19,13 +31,16 @@
             columns="name"
         />
 
-        <hbox>
+</row>
+                    </rows>
+                </grid>
+
+                </tabpanel>
+        </tabpanels>
+    </tabbox>
             <button onClick="controller.save();"
                 label="${arg.save_button_label}" />
             <button onClick="controller.cancel();"
                 label="${arg.cancel_button_label}" />
-        </hbox>
-
-    </vbox>
 
 </window>
