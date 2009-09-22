@@ -1,10 +1,13 @@
 package org.navalplanner.web.workreports;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -27,7 +30,9 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.ListModel;
@@ -41,8 +46,6 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Controller for CRUD actions over a {@link WorkReport}
@@ -333,6 +336,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         // Add dynamic headers
         appendCriterionTypesToListHead(getCriterionTypes(), listHead);
 
+        Listheader listHeadOperations = new Listheader(_("Operations"));
+        listHead.appendChild(listHeadOperations);
+
         listHead.setParent(listBox);
     }
 
@@ -351,7 +357,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     private void appendCriterionTypeToListHead(CriterionType criterionType,
             Listhead listHead) {
-        Listheader listHeader = new Listheader(criterionType.getName());
+        Listheader listHeader = new Listheader(StringUtils
+                .capitalize(criterionType.getName().toLowerCase()));
         listHeader.setParent(listHead);
     }
 
@@ -417,6 +424,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         for (CriterionType criterionType : getCriterionTypes()) {
             appendListboxCriterionType(criterionType, listItem);
         }
+
+        appendDeleteButton(listItem);
 
         return listItem;
     }
@@ -543,8 +552,32 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
+     * Append a Intbox numHours to listItem
+     * @param listItem
+     */
+    private void appendDeleteButton(Listitem listItem) {
+        final Listitem li = listItem;
+        Button delete = new Button("", "/common/img/ico_borrar1.png");
+        delete.setHoverImage("/common/img/ico_delete.png");
+        delete.setSclass("icono");
+        delete.setTooltiptext(_("Delete"));
+        delete.addEventListener(Events.ON_CLICK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                WorkReportLine workReportLine = (WorkReportLine) li
+                        .getValue();
+                getWorkReportLines().remove(workReportLine);
+                /* Pending to update component */
+            }
+        });
+
+        Listcell listCell = new Listcell();
+        listCell.appendChild(delete);
+        listItem.appendChild(listCell);
+    }
+
+    /**
      * Binds Intbox numHours to a {@link WorkReportLine} numHours
-     *
      * @param intNumHours
      * @param workReportLine
      */
@@ -706,6 +739,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             for (CriterionType criterionType : getCriterionTypes()) {
                 appendListboxCriterionType(criterionType, listItem);
             }
+
+            appendDeleteButton(listItem);
+
         }
     }
 }
