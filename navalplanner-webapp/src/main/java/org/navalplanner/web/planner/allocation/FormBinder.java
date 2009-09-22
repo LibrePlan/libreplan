@@ -25,9 +25,13 @@ class FormBinder {
 
     public void setAssignedHoursComponent(Intbox assignedHoursComponent) {
         this.assignedHoursComponent = assignedHoursComponent;
+        assignedHoursComponentDisabilityRule();
+        this.assignedHoursComponent.setValue(aggregate.getTotalHours());
+    }
+
+    private void assignedHoursComponentDisabilityRule() {
         this.assignedHoursComponent.setDisabled(resourceAllocationsBeingEdited
                 .getCalculatedValue() == CalculatedValue.NUMBER_OF_HOURS);
-        this.assignedHoursComponent.setValue(aggregate.getTotalHours());
     }
 
     public void setCalculatedValue(CalculatedValue calculatedValue) {
@@ -40,6 +44,12 @@ class FormBinder {
             return;
         }
         resourceAllocationsBeingEdited.setCalculatedValue(calculatedValue);
+        applyDisabledRules();
+    }
+
+    private void applyDisabledRules() {
+        assignedHoursComponentDisabilityRule();
+        taskElapsedDaysDisabilityRule();
     }
 
     public CalculatedValue getCalculatedValue() {
@@ -55,9 +65,13 @@ class FormBinder {
 
     public void setTaskElapsedDays(Intbox taskElapsedDays) {
         this.taskElapsedDays = taskElapsedDays;
-        this.taskElapsedDays.setDisabled(true);
+        taskElapsedDaysDisabilityRule();
         this.taskElapsedDays.setValue(resourceAllocationsBeingEdited.getTask()
                 .getDaysDuration());
+    }
+
+    private void taskElapsedDaysDisabilityRule() {
+        this.taskElapsedDays.setDisabled(true);
     }
 
 }
