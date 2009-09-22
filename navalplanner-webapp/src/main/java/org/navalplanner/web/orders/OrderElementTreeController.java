@@ -411,20 +411,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
                         }
                     });
 
-            Button removebutton = new Button("", "/common/img/ico_borrar1.png");
-            removebutton.setHoverImage("/common/img/ico_borrar.png");
-            removebutton.setParent(tcOperations);
-            removebutton.setSclass("icono");
-            removebutton.setTooltiptext(_("Delete"));
-            removebutton.addEventListener(Events.ON_CLICK,
-                    new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    getOrderElementTreeModel().removeNode(t);
-                    Util.reloadBindings(tree);
-                }
-            });
-
             Button upbutton = new Button("", "/common/img/ico_bajar1.png");
             upbutton.setHoverImage("/common/img/ico_bajar.png");
             upbutton.setParent(tcOperations);
@@ -432,7 +418,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getOrderElementTreeModel().down(t);
+                    getOrderElementTreeModel().up(t);
                     Util.reloadBindings(tree);
                 }
             });
@@ -444,7 +430,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getOrderElementTreeModel().up(t);
+                    getOrderElementTreeModel().down(t);
                     Util.reloadBindings(tree);
                 }
             });
@@ -456,7 +442,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             indentbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getOrderElementTreeModel().unindent(t);
+                    getOrderElementTreeModel().indent(t);
                     Util.reloadBindings(tree);
                 }
             });
@@ -469,10 +455,24 @@ public class OrderElementTreeController extends GenericForwardComposer {
                     new EventListener() {
                         @Override
                         public void onEvent(Event event) throws Exception {
-                            getOrderElementTreeModel().indent(t);
+                            getOrderElementTreeModel().unindent(t);
                             Util.reloadBindings(tree);
                         }
                     });
+
+            Button removebutton = new Button("", "/common/img/ico_borrar1.png");
+            removebutton.setHoverImage("/common/img/ico_borrar.png");
+            removebutton.setParent(tcOperations);
+            removebutton.setSclass("icono");
+            removebutton.setTooltiptext(_("Delete"));
+            removebutton.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    getOrderElementTreeModel().removeNode(t);
+                    Util.reloadBindings(tree);
+                }
+            });
+
             tcOperations.setParent(tr);
 
             // item.setOpen(false);
