@@ -7,6 +7,7 @@ import org.zkoss.zul.Intbox;
 public class ResourceAllocationFormBinder {
 
     private Intbox assignedHoursComponent;
+
     private final ResourceAllocationsBeingEdited resourceAllocationsBeingEdited;
     private AggregateOfResourceAllocations aggregate;
 
@@ -22,6 +23,18 @@ public class ResourceAllocationFormBinder {
         this.assignedHoursComponent.setDisabled(resourceAllocationsBeingEdited
                 .getCalculatedValue() == CalculatedValue.NUMBER_OF_HOURS);
         this.assignedHoursComponent.setValue(aggregate.getTotalHours());
+    }
+
+    public void setCalculatedValue(CalculatedValue calculatedValue) {
+        if (calculatedValue == resourceAllocationsBeingEdited
+                .getCalculatedValue()) {
+            return;
+        }
+        resourceAllocationsBeingEdited.setCalculatedValue(calculatedValue);
+    }
+
+    public CalculatedValue getCalculatedValue() {
+        return resourceAllocationsBeingEdited.getCalculatedValue();
     }
 
 }

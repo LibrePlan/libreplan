@@ -38,6 +38,8 @@ public class ResourceAllocationsBeingEdited {
 
     private ResourceAllocationFormBinder formBinder = null;
 
+    private CalculatedValue calculatedValue;
+
     private ResourceAllocationsBeingEdited(Task task,
             List<AllocationDTO> initialAllocations, IResourceDAO resourceDAO,
             boolean modifyTask) {
@@ -46,6 +48,12 @@ public class ResourceAllocationsBeingEdited {
         this.modifyTask = modifyTask;
         this.currentAllocations = new ArrayList<AllocationDTO>(
                 initialAllocations);
+        this.calculatedValue = getCurrentCalculatedValue(task);
+    }
+
+    private CalculatedValue getCurrentCalculatedValue(Task task) {
+        return task.isFixedDuration() ? CalculatedValue.NUMBER_OF_HOURS
+                : CalculatedValue.END_DATE;
     }
 
     public void addSpecificResorceAllocationFor(Worker worker) {
@@ -157,17 +165,17 @@ public class ResourceAllocationsBeingEdited {
         return formBinder;
     }
 
-    private CalculatedValue getCurrentCalculatedValue(Task task) {
-        // TODO retrieve the calculated value from task
-        return CalculatedValue.NUMBER_OF_HOURS;
+    public CalculatedValue getCalculatedValue() {
+        return this.calculatedValue;
     }
 
-    public CalculatedValue getCalculatedValue() {
-        return getCurrentCalculatedValue(task);
+    public void setCalculatedValue(CalculatedValue calculatedValue) {
+        this.calculatedValue = calculatedValue;
     }
 
     public AggregateOfResourceAllocations getInitialAggregate() {
         return new AggregateOfResourceAllocations(task.getResourceAllocations());
     }
+
 
 }

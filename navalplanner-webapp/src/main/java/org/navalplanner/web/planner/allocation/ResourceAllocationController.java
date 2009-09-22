@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
@@ -39,6 +40,8 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.api.Window;
 
@@ -69,6 +72,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Intbox assignedHoursComponent;
 
+    private Radiogroup calculationTypeSelector;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -90,6 +94,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 planningState);
         formBinder = allocationsBeingEdited.createFormBinder();
         formBinder.setAssignedHoursComponent(assignedHoursComponent);
+        CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
+                .from(formBinder.getCalculatedValue());
+        calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
         Util.reloadBindings(window);
         try {
             window.doModal();
@@ -164,6 +171,29 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 return _("Calculate Resources per Day");
             }
         };
+
+        public static CalculationTypeRadio from(CalculatedValue calculatedValue) {
+            Validate.notNull(calculatedValue);
+            for (CalculationTypeRadio calculationTypeRadio : CalculationTypeRadio.values()) {
+                if (calculationTypeRadio.getCalculatedValue() == calculatedValue) {
+                    return calculationTypeRadio;
+                }
+            }
+            throw new RuntimeException("not found "
+                    + CalculationTypeRadio.class.getSimpleName() + " for "
+                    + calculatedValue);
+        }
+
+        public void doTheSelectionOn(Radiogroup radiogroup) {
+            for (int i = 0; i < radiogroup.getItemCount(); i++) {
+                Radio radio = radiogroup.getItemAtIndex(i);
+                if (name().equals(radio.getValue())) {
+                    radiogroup.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+
         private final CalculatedValue calculatedValue;
 
         private CalculationTypeRadio(CalculatedValue calculatedValue) {
@@ -185,7 +215,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     public void setCalculationTypeSelected(String enumName) {
         CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                 .valueOf(enumName);
-        CalculatedValue c = calculationTypeRadio.getCalculatedValue();
+        formBinder.setCalculatedValue(calculationTypeRadio.getCalculatedValue());
     }
 
     /**
