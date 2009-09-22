@@ -4,6 +4,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,6 +64,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private ResourceAllocationFormBinder formBinder;
 
+    private ResourceAllocationsBeingEdited allocationsBeingEdited;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -78,7 +81,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
      */
     public void showWindow(Task task, org.zkoss.ganttz.data.Task ganttTask,
             PlanningState planningState) {
-        resourceAllocationModel.initAllocationsFor(task, ganttTask,
+        allocationsBeingEdited = resourceAllocationModel.initAllocationsFor(
+                task, ganttTask,
                 planningState);
         formBinder = new ResourceAllocationFormBinder(
                 getCurrentCalculatedValue(task), resourceAllocationModel);
@@ -208,7 +212,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public List<AllocationDTO> getResourceAllocations() {
-        return resourceAllocationModel.getAllocations();
+        return allocationsBeingEdited != null ? allocationsBeingEdited
+                .getCurrentAllocations() : Collections.<AllocationDTO>emptyList();
     }
 
     public ResourceAllocationRenderer getResourceAllocationRenderer() {
@@ -285,7 +290,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
 
         private void removeSpecificResourceAllocation(SpecificAllocationDTO data) {
-            resourceAllocationModel.removeSpecificResourceAllocation(data);
+            allocationsBeingEdited.remove(data);
             Util.reloadBindings(resourcesList);
         }
 

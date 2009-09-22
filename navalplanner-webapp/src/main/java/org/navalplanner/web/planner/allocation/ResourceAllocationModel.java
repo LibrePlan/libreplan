@@ -1,7 +1,6 @@
 package org.navalplanner.web.planner.allocation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,20 +74,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
-    public List<AllocationDTO> getAllocations() {
-        if (resourceAllocationsBeingEdited == null) {
-            return Collections.emptyList();
-        }
-        return resourceAllocationsBeingEdited.getCurrentAllocations();
-    }
-
-    @Override
-    public void removeSpecificResourceAllocation(
-            SpecificAllocationDTO allocation) {
-        resourceAllocationsBeingEdited.remove(allocation);
-    }
-
-    @Override
     public void cancel() {
         resourceAllocationsBeingEdited = null;
     }
@@ -129,7 +114,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void initAllocationsFor(Task task,
+    public ResourceAllocationsBeingEdited initAllocationsFor(Task task,
             org.zkoss.ganttz.data.Task ganttTask, PlanningState planningState) {
         this.ganttTask = ganttTask;
         this.task = task;
@@ -144,6 +129,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 .getResourceAllocations()));
         resourceAllocationsBeingEdited = new ResourceAllocationsBeingEdited(
                 currentAllocations, resourceDAO);
+        return resourceAllocationsBeingEdited;
     }
 
     private void reattachResourceAllocations(

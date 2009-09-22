@@ -1,6 +1,5 @@
 package org.navalplanner.web.planner.allocation;
 
-import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -38,24 +37,11 @@ public interface IResourceAllocationModel {
     Set<Criterion> getCriterions();
 
     /**
-     * Returns the {@link List} of {@link AllocationDTO} in the current state of
-     * the conversation.
-     * @return a {@link List} of {@link AllocationDTO}
-     */
-    List<AllocationDTO> getAllocations();
-
-    /**
      * Gets the current {@link Task} object.
      *
      * @return A {@link Task}
      */
     Task getTask();
-
-    /**
-     * Removes {@link SpecificResourceAllocation} from current allocations list
-     * @param data
-     */
-    void removeSpecificResourceAllocation(SpecificAllocationDTO data);
 
     /**
      * Cancel operation
@@ -73,7 +59,8 @@ public interface IResourceAllocationModel {
      * @param ganttTask
      * @param planningState
      */
-    void initAllocationsFor(Task task, org.zkoss.ganttz.data.Task ganttTask,
+    ResourceAllocationsBeingEdited initAllocationsFor(Task task,
+            org.zkoss.ganttz.data.Task ganttTask,
             PlanningState planningState);
 
 }
