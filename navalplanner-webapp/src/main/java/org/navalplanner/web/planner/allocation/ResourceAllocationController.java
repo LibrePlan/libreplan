@@ -33,6 +33,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -66,6 +67,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private ResourceAllocationsBeingEdited allocationsBeingEdited;
 
+    private Intbox assignedHoursComponent;
+
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -86,7 +90,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 planningState);
         formBinder = new ResourceAllocationFormBinder(
                 getCurrentCalculatedValue(task), resourceAllocationModel);
-
+        formBinder.setAssignedHoursComponent(assignedHoursComponent);
         Util.reloadBindings(window);
         try {
             window.doModal();

@@ -94,6 +94,11 @@
                         style="font-weight:bold" />
                     <label value="@{allocationController.orderHours}" />
                 </hbox>
+                <hbox>
+                    <label value="${i18n:_('Assigned Hours')}:"
+                        style="font-weight:bold" />
+                    <intbox id="assignedHoursComponent" />
+                </hbox>
             </panelchildren>
         </panel>
 
