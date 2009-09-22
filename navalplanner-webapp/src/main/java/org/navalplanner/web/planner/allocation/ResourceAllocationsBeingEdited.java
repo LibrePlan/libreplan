@@ -7,7 +7,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceAllocationWithDesiredResourcesPerDay;
+import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 
 public class ResourceAllocationsBeingEdited {
@@ -16,7 +22,11 @@ public class ResourceAllocationsBeingEdited {
 
     private final Set<ResourceAllocation<?>> requestedToRemove = new HashSet<ResourceAllocation<?>>();
 
-    public ResourceAllocationsBeingEdited(List<AllocationDTO> initialAllocations) {
+    private IResourceDAO resourceDAO;
+
+    public ResourceAllocationsBeingEdited(
+            List<AllocationDTO> initialAllocations, IResourceDAO resourceDAO) {
+        this.resourceDAO = resourceDAO;
         this.currentAllocations = new ArrayList<AllocationDTO>(
                 initialAllocations);
     }
@@ -55,6 +65,60 @@ public class ResourceAllocationsBeingEdited {
 
     public Set<ResourceAllocation<?>> getAllocationsRequestedToRemove() {
         return requestedToRemove;
+    }
+
+    public List<ResourceAllocationWithDesiredResourcesPerDay> asResourceAllocationsFor(
+            Task task) {
+        List<ResourceAllocationWithDesiredResourcesPerDay> result = new ArrayList<ResourceAllocationWithDesiredResourcesPerDay>();
+        for (AllocationDTO allocation : currentAllocations) {
+            result
+                    .add(createOrModify(allocation, task)
+                            .withDesiredResourcesPerDay(
+                    allocation.getResourcesPerDay()));
+        }
+        return result;
+    }
+
+    private ResourceAllocation<?> createOrModify(AllocationDTO allocation,
+            Task task) {
+        if (allocation.isModifying()) {
+            return reloadResourceIfNeeded(allocation.getOrigin());
+        } else {
+            ResourceAllocation<?> result = createAllocation(allocation, task);
+            task.addResourceAllocation(result);
+            return result;
+        }
+    }
+
+    private ResourceAllocation<?> reloadResourceIfNeeded(
+            ResourceAllocation<?> origin) {
+        if (origin instanceof SpecificResourceAllocation) {
+            SpecificResourceAllocation specific = (SpecificResourceAllocation) origin;
+            specific.setResource(getFromDB(specific.getResource()));
+        }
+        return origin;
+    }
+
+    private Resource getFromDB(Resource resource) {
+        return resourceDAO.findExistingEntity(resource.getId());
+    }
+
+    private ResourceAllocation<?> createAllocation(AllocationDTO allocation,
+            Task task) {
+        if (allocation instanceof SpecificAllocationDTO) {
+            SpecificAllocationDTO specific = (SpecificAllocationDTO) allocation;
+            return createSpecific(specific.getResource(), task);
+        } else {
+            return GenericResourceAllocation.create(task);
+        }
+    }
+
+    private ResourceAllocation<?> createSpecific(Resource resource, Task task) {
+        resource = getFromDB(resource);
+        SpecificResourceAllocation result = SpecificResourceAllocation
+                .create(task);
+        result.setResource(resource);
+        return result;
     }
 
 }

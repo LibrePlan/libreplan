@@ -99,16 +99,21 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional(readOnly = true)
     public void save() {
         planningState.reassociateResourcesWithSession(resourceDAO);
+        removeDeletedAllocations();
+        mergeDTOsToTask();
+    }
+
+    private void removeDeletedAllocations() {
         Set<ResourceAllocation<?>> allocationsRequestedToRemove = resourceAllocationsBeingEdited
                 .getAllocationsRequestedToRemove();
         for (ResourceAllocation<?> resourceAllocation : allocationsRequestedToRemove) {
             task.removeResourceAllocation(resourceAllocation);
         }
-        mergeDTOsToTask();
     }
 
     private void mergeDTOsToTask() {
-        List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations = toResourceAllocations();
+        List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations = resourceAllocationsBeingEdited
+                .asResourceAllocationsFor(task);
         if (task.isFixedDuration()) {
             ResourceAllocation.allocating(resourceAllocations).withResources(
                     getResourcesMatchingCriterions()).allocateOnTaskLength();
@@ -120,58 +125,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
-    private List<ResourceAllocationWithDesiredResourcesPerDay> toResourceAllocations() {
-        List<ResourceAllocationWithDesiredResourcesPerDay> result = new ArrayList<ResourceAllocationWithDesiredResourcesPerDay>();
-        for (AllocationDTO allocation : resourceAllocationsBeingEdited
-                .getCurrentAllocations()) {
-            result.add(createOrModify(allocation).withDesiredResourcesPerDay(
-                    allocation.getResourcesPerDay()));
-        }
-        return result;
-    }
-
     private List<Resource> getResourcesMatchingCriterions() {
         return resourceDAO.getAllByCriterions(getCriterions());
-    }
-
-    private ResourceAllocation<?> createOrModify(AllocationDTO allocation) {
-        if (allocation.isModifying()) {
-            return reloadResourceIfNeeded(allocation.getOrigin());
-        } else {
-            ResourceAllocation<?> result = createAllocation(allocation);
-            task.addResourceAllocation(result);
-            return result;
-        }
-    }
-
-    private ResourceAllocation<?> reloadResourceIfNeeded(
-            ResourceAllocation<?> origin) {
-        if (origin instanceof SpecificResourceAllocation) {
-            SpecificResourceAllocation specific = (SpecificResourceAllocation) origin;
-            specific.setResource(getFromDB(specific.getResource()));
-        }
-        return origin;
-    }
-
-    private ResourceAllocation<?> createAllocation(AllocationDTO allocation) {
-        if (allocation instanceof SpecificAllocationDTO) {
-            SpecificAllocationDTO specific = (SpecificAllocationDTO) allocation;
-            return createSpecific(specific.getResource());
-        } else {
-            return GenericResourceAllocation.create(task);
-        }
-    }
-
-    private ResourceAllocation<?> createSpecific(Resource resource) {
-        resource = getFromDB(resource);
-        SpecificResourceAllocation result = SpecificResourceAllocation
-                .create(task);
-        result.setResource(resource);
-        return result;
-    }
-
-    private Resource getFromDB(Resource resource) {
-        return resourceDAO.findExistingEntity(resource.getId());
     }
 
     @Override
@@ -190,7 +145,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         List<AllocationDTO> currentAllocations = addDefaultGenericIfNeeded(asDTOs(this.task
                 .getResourceAllocations()));
         resourceAllocationsBeingEdited = new ResourceAllocationsBeingEdited(
-                currentAllocations);
+                currentAllocations, resourceDAO);
     }
 
     private void reattachResourceAllocations(
