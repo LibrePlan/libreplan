@@ -95,8 +95,10 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void mergeDTOsToTask() {
-        List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations = resourceAllocationsBeingEdited
-                .asResourceAllocationsFor(task);
+        ResourceAllocationsBeingEdited taskModifying = resourceAllocationsBeingEdited
+                .taskModifying();
+        List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations = taskModifying
+                .asResourceAllocations();
         if (task.isFixedDuration()) {
             ResourceAllocation.allocating(resourceAllocations).withResources(
                     getResourcesMatchingCriterions()).allocateOnTaskLength();
@@ -127,8 +129,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         reattachCriterions(this.task.getHoursGroup().getCriterions());
         List<AllocationDTO> currentAllocations = addDefaultGenericIfNeeded(AllocationDTO.toDTOs(this.task
                 .getResourceAllocations()));
-        resourceAllocationsBeingEdited = new ResourceAllocationsBeingEdited(
-                currentAllocations, resourceDAO);
+        resourceAllocationsBeingEdited = ResourceAllocationsBeingEdited
+                .noTaskModifying(
+                task, currentAllocations, resourceDAO);
         return resourceAllocationsBeingEdited;
     }
 
@@ -136,7 +139,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             Set<ResourceAllocation<?>> resourceAllocations) {
         resourceAllocations.size();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            resourceAllocation.getResourcesPerDay();
+            resourceAllocation.getAssignments();
             if (resourceAllocation instanceof SpecificResourceAllocation) {
                 reattachSpecificResourceAllocation((SpecificResourceAllocation) resourceAllocation);
             }

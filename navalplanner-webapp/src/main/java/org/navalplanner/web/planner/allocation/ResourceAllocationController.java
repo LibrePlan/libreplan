@@ -88,8 +88,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         allocationsBeingEdited = resourceAllocationModel.initAllocationsFor(
                 task, ganttTask,
                 planningState);
-        formBinder = new ResourceAllocationFormBinder(
-                getCurrentCalculatedValue(task), resourceAllocationModel);
+        formBinder = allocationsBeingEdited.createFormBinder();
         formBinder.setAssignedHoursComponent(assignedHoursComponent);
         Util.reloadBindings(window);
         try {
@@ -99,11 +98,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private CalculatedValue getCurrentCalculatedValue(Task task) {
-        // TODO retrieve the calculated value from task
-        return CalculatedValue.NUMBER_OF_HOURS;
     }
 
     /**
