@@ -130,8 +130,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         List<AllocationDTO> currentAllocations = addDefaultGenericIfNeeded(AllocationDTO.toDTOs(this.task
                 .getResourceAllocations()));
         resourceAllocationsBeingEdited = ResourceAllocationsBeingEdited
-                .noTaskModifying(
-                task, currentAllocations, resourceDAO);
+                .noTaskModifying(task, currentAllocations, resourceDAO,
+                        reattachResources(getResourcesMatchingCriterions()));
         return resourceAllocationsBeingEdited;
     }
 
@@ -172,9 +172,18 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         criterionType.getName();
     }
 
+    private List<Resource> reattachResources(
+            List<Resource> resourcesMatchingCriterions) {
+        for (Resource resource : resourcesMatchingCriterions) {
+            reattachResource(resource);
+        }
+        return resourcesMatchingCriterions;
+    }
+
     private void reattachResource(Resource resource) {
         resourceDAO.save(resource);
         reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
+        resource.getAssignments();
     }
 
     private void reattachCriterionSatisfactions(

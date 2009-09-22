@@ -55,8 +55,12 @@ class FormBinder {
     public void setAssignedHoursComponent(Intbox assignedHoursComponent) {
         this.assignedHoursComponent = assignedHoursComponent;
         assignedHoursComponentDisabilityRule();
-        this.assignedHoursComponent.setValue(aggregate.getTotalHours());
+        loadValueForAssignedHoursComponent();
         onChangeEnableApply(assignedHoursComponent);
+    }
+
+    private void loadValueForAssignedHoursComponent() {
+        this.assignedHoursComponent.setValue(aggregate.getTotalHours());
     }
 
     private void assignedHoursComponentDisabilityRule() {
@@ -90,9 +94,13 @@ class FormBinder {
     public void setTaskStartDateBox(Datebox taskStartDateBox) {
         this.taskStartDateBox = taskStartDateBox;
         this.taskStartDateBox.setDisabled(true);
+        loadValueForTaskStartDateBox();
+        onChangeEnableApply(taskStartDateBox);
+    }
+
+    private void loadValueForTaskStartDateBox() {
         this.taskStartDateBox.setValue(resourceAllocationsBeingEdited.getTask()
                 .getStartDate());
-        onChangeEnableApply(taskStartDateBox);
     }
 
     private void onChangeEnableApply(InputElement inputElement) {
@@ -102,9 +110,13 @@ class FormBinder {
     public void setTaskElapsedDays(Intbox taskElapsedDays) {
         this.taskElapsedDays = taskElapsedDays;
         taskElapsedDaysDisabilityRule();
-        this.taskElapsedDays.setValue(resourceAllocationsBeingEdited.getTask()
-                .getDaysDuration());
+        loadValuesForElapsedDays();
         onChangeEnableApply(taskElapsedDays);
+    }
+
+    private void loadValuesForElapsedDays() {
+        this.taskElapsedDays.setValue(resourceAllocationsBeingEdited
+                .getDaysDuration());
     }
 
     private void taskElapsedDaysDisabilityRule() {
@@ -112,7 +124,14 @@ class FormBinder {
     }
 
     private void doApply() {
-        // TODO implement
+        aggregate = resourceAllocationsBeingEdited.doAllocation();
+        reloadValues();
+    }
+
+    private void reloadValues() {
+        loadValueForAssignedHoursComponent();
+        loadValueForTaskStartDateBox();
+        loadValuesForElapsedDays();
     }
 
     public void setApplyButton(Button applyButton) {
@@ -132,6 +151,10 @@ class FormBinder {
             Decimalbox decimalbox) {
         resourcesPerDayInputsByAllocationDTO.put(data, decimalbox);
         onChangeEnableApply(decimalbox);
+    }
+
+    public int getAssignedHours() {
+        return assignedHoursComponent.getValue();
     }
 
 }

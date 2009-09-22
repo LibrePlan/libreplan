@@ -3,10 +3,13 @@ package org.navalplanner.web.planner.allocation;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -21,9 +24,10 @@ import org.navalplanner.business.resources.entities.Worker;
 public class ResourceAllocationsBeingEdited {
 
     public static ResourceAllocationsBeingEdited noTaskModifying(Task task,
-            List<AllocationDTO> initialAllocations, IResourceDAO resourceDAO) {
+            List<AllocationDTO> initialAllocations, IResourceDAO resourceDAO,
+            List<Resource> resourcesBeingEdited) {
         return new ResourceAllocationsBeingEdited(task, initialAllocations,
-                resourceDAO, false);
+                resourceDAO, resourcesBeingEdited, false);
     }
 
     private final List<AllocationDTO> currentAllocations;
@@ -40,15 +44,22 @@ public class ResourceAllocationsBeingEdited {
 
     private CalculatedValue calculatedValue;
 
+    private Integer daysDuration;
+
+    private final List<Resource> resourcesMatchingCriterions;
+
     private ResourceAllocationsBeingEdited(Task task,
             List<AllocationDTO> initialAllocations, IResourceDAO resourceDAO,
+            List<Resource> resourcesMatchingCriterions,
             boolean modifyTask) {
         this.task = task;
         this.resourceDAO = resourceDAO;
+        this.resourcesMatchingCriterions = resourcesMatchingCriterions;
         this.modifyTask = modifyTask;
         this.currentAllocations = new ArrayList<AllocationDTO>(
                 initialAllocations);
         this.calculatedValue = getCurrentCalculatedValue(task);
+        this.daysDuration = task.getDaysDuration();
     }
 
     private CalculatedValue getCurrentCalculatedValue(Task task) {
@@ -99,6 +110,30 @@ public class ResourceAllocationsBeingEdited {
                     allocation.getResourcesPerDay()));
         }
         return result;
+    }
+
+    public AggregateOfResourceAllocations doAllocation() {
+        List<ResourceAllocationWithDesiredResourcesPerDay> allocations = asResourceAllocations();
+        switch (calculatedValue) {
+        case NUMBER_OF_HOURS:
+            ResourceAllocation.allocating(allocations).withResources(
+                    resourcesMatchingCriterions).allocateOnTaskLength();
+            break;
+        case END_DATE:
+            LocalDate end = ResourceAllocation.allocating(allocations)
+                    .withResources(resourcesMatchingCriterions)
+                    .untilAllocating(formBinder.getAssignedHours());
+            daysDuration = from(task.getStartDate(), end);
+            break;
+        default:
+            throw new RuntimeException("cant handle: " + calculatedValue);
+        }
+        return new AggregateOfResourceAllocations(stripResourcesPerDay(allocations));
+    }
+
+    private Integer from(Date startDate, LocalDate end) {
+        LocalDate start = new LocalDate(startDate.getTime());
+        return Days.daysBetween(start, end).getDays();
     }
 
     private List<ResourceAllocation<?>> stripResourcesPerDay(
@@ -154,7 +189,7 @@ public class ResourceAllocationsBeingEdited {
 
     public ResourceAllocationsBeingEdited taskModifying() {
         return new ResourceAllocationsBeingEdited(task, currentAllocations,
-                resourceDAO, true);
+                resourceDAO, resourcesMatchingCriterions, true);
     }
 
     public FormBinder createFormBinder() {
@@ -179,6 +214,10 @@ public class ResourceAllocationsBeingEdited {
 
     public Task getTask() {
         return task;
+    }
+
+    public Integer getDaysDuration() {
+        return daysDuration;
     }
 
 }
