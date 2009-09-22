@@ -1,5 +1,8 @@
 package org.navalplanner.web.planner.allocation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.zkoss.zk.ui.Component;
@@ -8,6 +11,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.impl.api.InputElement;
 
@@ -23,6 +27,8 @@ class FormBinder {
     private Intbox taskElapsedDays;
 
     private Button applyButton;
+
+    private Map<AllocationDTO, Decimalbox> resourcesPerDayInputsByAllocationDTO = new HashMap<AllocationDTO, Decimalbox>();
 
     private EventListener onChangeEnableApply = new EventListener() {
 
@@ -109,7 +115,6 @@ class FormBinder {
         // TODO implement
     }
 
-
     public void setApplyButton(Button applyButton) {
         this.applyButton = applyButton;
         this.applyButton.setDisabled(true);
@@ -123,5 +128,10 @@ class FormBinder {
         });
     }
 
+    public void setResourcesPerDayBoxFor(AllocationDTO data,
+            Decimalbox decimalbox) {
+        resourcesPerDayInputsByAllocationDTO.put(data, decimalbox);
+        onChangeEnableApply(decimalbox);
+    }
 
 }

@@ -386,6 +386,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 final AllocationDTO data) {
             decimalbox.setConstraint(new SimpleConstraint(
                     SimpleConstraint.NO_NEGATIVE));
+            formBinder.setResourcesPerDayBoxFor(data, decimalbox);
             Util.bind(decimalbox, new Util.Getter<BigDecimal>() {
 
                 @Override
