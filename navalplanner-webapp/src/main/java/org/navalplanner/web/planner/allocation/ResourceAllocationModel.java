@@ -1,7 +1,5 @@
 package org.navalplanner.web.planner.allocation;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,9 +55,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     private org.zkoss.ganttz.data.Task ganttTask;
 
-    private List<AllocationDTO> currentAllocations;
-
     private PlanningState planningState;
+
+    private ResourceAllocationsBeingEdited resourceAllocationsBeingEdited;
 
     @Override
     public Task getTask() {
@@ -69,25 +67,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public void addSpecificResourceAllocation(Worker worker) throws Exception {
-
-        if (alreadyExistsAllocationFor(worker)) {
-            throw new IllegalArgumentException(_(
-                    "{0} already assigned to resource allocation list", worker
-                            .getName()));
-        }
-        SpecificAllocationDTO allocation = SpecificAllocationDTO
-                .forResource(worker);
-        currentAllocations.add(allocation);
-    }
-
-    private boolean alreadyExistsAllocationFor(Worker worker) {
-        return !getAllocationsFor(worker).isEmpty();
-    }
-
-    private List<SpecificAllocationDTO> getAllocationsFor(Worker worker) {
-        List<SpecificAllocationDTO> found = SpecificAllocationDTO.withResource(
-                SpecificAllocationDTO.getSpecific(currentAllocations), worker);
-        return found;
+        resourceAllocationsBeingEdited.addSpecificResorceAllocationFor(worker);
     }
 
     @Override
@@ -98,30 +78,32 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     public List<AllocationDTO> getAllocations() {
-        if (currentAllocations == null) {
+        if (resourceAllocationsBeingEdited == null) {
             return Collections.emptyList();
         }
-        return currentAllocations;
+        return resourceAllocationsBeingEdited.getCurrentAllocations();
     }
 
     @Override
     public void removeSpecificResourceAllocation(
             SpecificAllocationDTO allocation) {
-        currentAllocations.remove(allocation);
-        if (allocation.isModifying()) {
-            task.removeResourceAllocation(allocation.getOrigin());
-        }
+        resourceAllocationsBeingEdited.remove(allocation);
     }
 
     @Override
     public void cancel() {
-        currentAllocations = null;
+        resourceAllocationsBeingEdited = null;
     }
 
     @Override
     @Transactional(readOnly = true)
     public void save() {
         planningState.reassociateResourcesWithSession(resourceDAO);
+        Set<ResourceAllocation<?>> allocationsRequestedToRemove = resourceAllocationsBeingEdited
+                .getAllocationsRequestedToRemove();
+        for (ResourceAllocation<?> resourceAllocation : allocationsRequestedToRemove) {
+            task.removeResourceAllocation(resourceAllocation);
+        }
         mergeDTOsToTask();
     }
 
@@ -140,7 +122,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     private List<ResourceAllocationWithDesiredResourcesPerDay> toResourceAllocations() {
         List<ResourceAllocationWithDesiredResourcesPerDay> result = new ArrayList<ResourceAllocationWithDesiredResourcesPerDay>();
-        for (AllocationDTO allocation : currentAllocations) {
+        for (AllocationDTO allocation : resourceAllocationsBeingEdited
+                .getCurrentAllocations()) {
             result.add(createOrModify(allocation).withDesiredResourcesPerDay(
                     allocation.getResourcesPerDay()));
         }
@@ -204,8 +187,10 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         hoursGroupDAO.save(this.task.getHoursGroup());
         reattachHoursGroup(this.task.getHoursGroup());
         reattachCriterions(this.task.getHoursGroup().getCriterions());
-        currentAllocations = addDefaultGenericIfNeeded(asDTOs(this.task
+        List<AllocationDTO> currentAllocations = addDefaultGenericIfNeeded(asDTOs(this.task
                 .getResourceAllocations()));
+        resourceAllocationsBeingEdited = new ResourceAllocationsBeingEdited(
+                currentAllocations);
     }
 
     private void reattachResourceAllocations(
