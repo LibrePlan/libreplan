@@ -1,7 +1,9 @@
 package org.navalplanner.business.planner.entities;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -28,6 +30,14 @@ public class AggregateOfResourceAllocations {
             sum += resourceAllocation.getAssignedHours();
         }
         return sum;
+    }
+
+    public Map<ResourceAllocation<?>, ResourcesPerDay> getResourcesPerDay() {
+        HashMap<ResourceAllocation<?>, ResourcesPerDay> result = new HashMap<ResourceAllocation<?>, ResourcesPerDay>();
+        for (ResourceAllocation<?> r : resourceAllocations) {
+            result.put(r, r.getResourcesPerDay());
+        }
+        return result;
     }
 
 }
