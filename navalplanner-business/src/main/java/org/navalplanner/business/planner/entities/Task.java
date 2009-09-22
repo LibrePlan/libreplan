@@ -58,11 +58,8 @@ public class Task extends TaskElement {
     }
 
     public int getAssignedHours() {
-        int result = 0;
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            result += resourceAllocation.getAssignedHours();
-        }
-        return result;
+        return new AggregateOfResourceAllocations(resourceAllocations)
+                .getTotalHours();
     }
 
     @Override
