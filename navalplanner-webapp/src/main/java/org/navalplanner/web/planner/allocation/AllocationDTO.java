@@ -65,4 +65,12 @@ public abstract class AllocationDTO {
 
     public abstract boolean isGeneric();
 
+    public static List<AllocationDTO> toDTOs(
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
+        List<AllocationDTO> result = new ArrayList<AllocationDTO>();
+        result.addAll(GenericAllocationDTO.toGenericAllocations(resourceAllocations));
+        result.addAll(SpecificAllocationDTO.toSpecificAllocations(resourceAllocations));
+        return result;
+    }
+
 }

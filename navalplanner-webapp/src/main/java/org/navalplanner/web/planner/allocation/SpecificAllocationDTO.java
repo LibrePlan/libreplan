@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Resource;
@@ -73,6 +74,18 @@ public class SpecificAllocationDTO extends AllocationDTO {
     @Override
     public boolean isGeneric() {
         return false;
+    }
+
+    public static List<SpecificAllocationDTO> toSpecificAllocations(
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
+        List<SpecificAllocationDTO> result = new ArrayList<SpecificAllocationDTO>();
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+            if (resourceAllocation instanceof SpecificResourceAllocation) {
+                SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
+                result.add(from(specific));
+            }
+        }
+        return result;
     }
 
 }

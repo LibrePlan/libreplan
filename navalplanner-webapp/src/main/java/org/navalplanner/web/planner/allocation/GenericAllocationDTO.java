@@ -2,7 +2,11 @@ package org.navalplanner.web.planner.allocation;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 
 /**
@@ -29,5 +33,16 @@ public class GenericAllocationDTO extends AllocationDTO {
     @Override
     public boolean isGeneric() {
         return true;
+    }
+
+    public static Collection<GenericAllocationDTO> toGenericAllocations(
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
+        ArrayList<GenericAllocationDTO> result = new ArrayList<GenericAllocationDTO>();
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+            if (resourceAllocation instanceof GenericResourceAllocation) {
+                result.add(from((GenericResourceAllocation) resourceAllocation));
+            }
+        }
+        return result;
     }
 }

@@ -1,7 +1,6 @@
 package org.navalplanner.web.planner.allocation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -142,7 +140,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         hoursGroupDAO.save(this.task.getHoursGroup());
         reattachHoursGroup(this.task.getHoursGroup());
         reattachCriterions(this.task.getHoursGroup().getCriterions());
-        List<AllocationDTO> currentAllocations = addDefaultGenericIfNeeded(asDTOs(this.task
+        List<AllocationDTO> currentAllocations = addDefaultGenericIfNeeded(AllocationDTO.toDTOs(this.task
                 .getResourceAllocations()));
         resourceAllocationsBeingEdited = new ResourceAllocationsBeingEdited(
                 currentAllocations, resourceDAO);
@@ -209,38 +207,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             return result;
         }
         return dtos;
-    }
-
-    private List<AllocationDTO> asDTOs(
-            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
-        List<AllocationDTO> result = new ArrayList<AllocationDTO>();
-        result.addAll(toGenericAllocations(resourceAllocations));
-        result.addAll(toSpecificAllocations(resourceAllocations));
-        return result;
-    }
-
-    private List<SpecificAllocationDTO> toSpecificAllocations(
-            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
-        List<SpecificAllocationDTO> result = new ArrayList<SpecificAllocationDTO>();
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            if (resourceAllocation instanceof SpecificResourceAllocation) {
-                SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
-                result.add(SpecificAllocationDTO.from(specific));
-            }
-        }
-        return result;
-    }
-
-    private Collection<GenericAllocationDTO> toGenericAllocations(
-            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
-        ArrayList<GenericAllocationDTO> result = new ArrayList<GenericAllocationDTO>();
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            if (resourceAllocation instanceof GenericResourceAllocation) {
-                result.add(GenericAllocationDTO
-                        .from((GenericResourceAllocation) resourceAllocation));
-            }
-        }
-        return result;
     }
 
 }
