@@ -154,6 +154,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private void addSpecificResourceAllocation(Worker worker) {
         try {
             resourceAllocationModel.addSpecificResourceAllocation(worker);
+            formBinder.newSpecificAllocation();
         } catch (Exception e1) {
             messagesForUser.showMessage(Level.ERROR, e1.getMessage());
         }

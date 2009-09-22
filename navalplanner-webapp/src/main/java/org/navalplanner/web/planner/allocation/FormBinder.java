@@ -172,4 +172,8 @@ class FormBinder {
         });
     }
 
+    public void newSpecificAllocation() {
+        applyButton.setDisabled(false);
+    }
+
 }
