@@ -1,6 +1,5 @@
 package org.navalplanner.business.resources.daos;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -13,6 +12,7 @@ import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate DAO for the <code>Resource</code> entity.
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
+@Transactional
 public class ResourceDAO extends GenericDAOHibernate<Resource, Long> implements
         IResourceDAO {
     @Override
