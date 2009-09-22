@@ -51,7 +51,7 @@ public interface IResourceAllocationModel {
     /**
      * Save task
      */
-    void save();
+    void accept();
 
     /**
      * Starts the use case

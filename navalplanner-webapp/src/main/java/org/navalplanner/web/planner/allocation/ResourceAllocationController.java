@@ -272,8 +272,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
         resourcesList.getItems().clear();
     }
 
-    public void save() {
-        resourceAllocationModel.save();
+    public void accept() {
+        resourceAllocationModel.accept();
         close();
     }
 

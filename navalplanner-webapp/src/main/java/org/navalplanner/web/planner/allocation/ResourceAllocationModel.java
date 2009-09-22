@@ -78,7 +78,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void save() {
+    public void accept() {
         planningState.reassociateResourcesWithSession(resourceDAO);
         removeDeletedAllocations();
         doTheAllocation();
