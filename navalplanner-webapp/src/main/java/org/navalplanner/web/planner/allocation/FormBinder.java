@@ -14,6 +14,8 @@ class FormBinder {
 
     private Datebox taskStartDateBox;
 
+    private Intbox taskElapsedDays;
+
     public FormBinder(
             ResourceAllocationsBeingEdited resourceAllocationsBeingEdited) {
         this.resourceAllocationsBeingEdited = resourceAllocationsBeingEdited;
@@ -49,6 +51,13 @@ class FormBinder {
         this.taskStartDateBox.setDisabled(true);
         this.taskStartDateBox.setValue(resourceAllocationsBeingEdited.getTask()
                 .getStartDate());
+    }
+
+    public void setTaskElapsedDays(Intbox taskElapsedDays) {
+        this.taskElapsedDays = taskElapsedDays;
+        this.taskElapsedDays.setDisabled(true);
+        this.taskElapsedDays.setValue(resourceAllocationsBeingEdited.getTask()
+                .getDaysDuration());
     }
 
 }
