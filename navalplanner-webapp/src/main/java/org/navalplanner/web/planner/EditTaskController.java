@@ -1,5 +1,6 @@
 package org.navalplanner.web.planner;
 
+import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -54,9 +55,10 @@ public class EditTaskController extends GenericForwardComposer {
             duration.setValue(task.getDaysDuration());
 
             // Disable some fields depending on fixedDuration value
-            duration.setDisabled(!task.isFixedDuration());
-            ((Datebox) hours.getFellow("endDateBox")).setDisabled(!task
-                    .isFixedDuration());
+            duration
+                    .setDisabled(task.getCalculatedValue() == CalculatedValue.END_DATE);
+            ((Datebox) hours.getFellow("endDateBox")).setDisabled(task
+                    .getCalculatedValue() == CalculatedValue.END_DATE);
         } else {
             // If it's a TaskGroup
             // Hide fields

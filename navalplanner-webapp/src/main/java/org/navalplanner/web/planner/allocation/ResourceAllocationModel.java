@@ -101,6 +101,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             task.setDaysDuration(newDaysDuration);
             ganttTask.setEndDate(task.getEndDate());
         }
+        task.setCalculatedValue(allocator.getCalculatedValue());
     }
 
     private List<Resource> getResourcesMatchingCriterions() {

@@ -29,7 +29,7 @@ public class Task extends TaskElement {
     @NotNull
     private HoursGroup hoursGroup;
 
-    private Boolean fixedDuration = false;
+    private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
 
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
@@ -89,16 +89,16 @@ public class Task extends TaskElement {
         resourceAllocations.remove(resourceAllocation);
     }
 
-    public Boolean getFixedDuration() {
-        return fixedDuration;
+    public CalculatedValue getCalculatedValue() {
+        if (calculatedValue == null) {
+            return CalculatedValue.END_DATE;
+        }
+        return calculatedValue;
     }
 
-    public void setFixedDuration(boolean fixedDuration) {
-        this.fixedDuration = fixedDuration;
-    }
-
-    public boolean isFixedDuration() {
-        return fixedDuration != null && fixedDuration;
+    public void setCalculatedValue(CalculatedValue calculatedValue) {
+        Validate.notNull(calculatedValue);
+        this.calculatedValue = calculatedValue;
     }
 
     public void setDaysDuration(Integer duration) {
