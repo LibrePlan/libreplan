@@ -303,7 +303,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             bindResourcesPerDay(appendDecimalbox(item), data);
             // On click delete button
-            appendButton(item, _("Delete")).addEventListener("onClick",
+            Button deleteButton = appendButton(item, _("Delete"));
+            formBinder.setDeleteButtonFor(data, deleteButton);
+            deleteButton.addEventListener("onClick",
                     new EventListener() {
 
                         @Override

@@ -157,4 +157,15 @@ class FormBinder {
         return assignedHoursComponent.getValue();
     }
 
+    public void setDeleteButtonFor(SpecificAllocationDTO data,
+            Button deleteButton) {
+        deleteButton.addEventListener(Events.ON_CLICK, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                applyButton.setDisabled(false);
+            }
+        });
+    }
+
 }
