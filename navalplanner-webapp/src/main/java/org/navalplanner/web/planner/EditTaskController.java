@@ -8,7 +8,6 @@ import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 
@@ -24,8 +23,6 @@ public class EditTaskController extends GenericForwardComposer {
     private TaskElement currentTaskElement;
 
     private Intbox hours;
-
-    private Checkbox fixedDuration;
 
     private Intbox duration;
 
@@ -49,13 +46,11 @@ public class EditTaskController extends GenericForwardComposer {
         if (currentTaskElement instanceof Task) {
             // If it's a Task
             // Show fields
-            hours.getFellow("fixedDurationRow").setVisible(true);
             hours.getFellow("durationRow").setVisible(true);
 
             Task task = (Task) currentTaskElement;
 
             // Sets the value of fields
-            fixedDuration.setChecked(task.isFixedDuration());
             duration.setValue(task.getDaysDuration());
 
             // Disable some fields depending on fixedDuration value
@@ -65,7 +60,6 @@ public class EditTaskController extends GenericForwardComposer {
         } else {
             // If it's a TaskGroup
             // Hide fields
-            hours.getFellow("fixedDurationRow").setVisible(false);
             hours.getFellow("durationRow").setVisible(false);
         }
 
@@ -81,20 +75,6 @@ public class EditTaskController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         taskEditFormComposer.doAfterCompose(comp);
-    }
-
-    public void onCheck$fixedDuration(Event event) {
-        if (currentTaskElement instanceof Task) {
-            Task task = (Task) currentTaskElement;
-            task.setFixedDuration(fixedDuration.isChecked());
-
-            // Disable some fields depending on fixedDuration value
-            duration.setDisabled(!fixedDuration.isChecked());
-            ((Datebox) duration.getFellow("endDateBox"))
-                    .setDisabled(!fixedDuration.isChecked());
-        }
-
-        updateComponentValuesForTask();
     }
 
     public void onChange$duration(Event event) {
