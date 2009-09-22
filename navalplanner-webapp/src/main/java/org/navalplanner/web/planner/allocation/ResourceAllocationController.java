@@ -66,7 +66,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Window window;
 
-    private ResourceAllocationFormBinder formBinder;
+    private FormBinder formBinder;
 
     private ResourceAllocationsBeingEdited allocationsBeingEdited;
 

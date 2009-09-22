@@ -4,14 +4,14 @@ import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.zkoss.zul.Intbox;
 
-public class ResourceAllocationFormBinder {
+class FormBinder {
 
     private Intbox assignedHoursComponent;
 
     private final ResourceAllocationsBeingEdited resourceAllocationsBeingEdited;
     private AggregateOfResourceAllocations aggregate;
 
-    public ResourceAllocationFormBinder(
+    public FormBinder(
             ResourceAllocationsBeingEdited resourceAllocationsBeingEdited) {
         this.resourceAllocationsBeingEdited = resourceAllocationsBeingEdited;
         this.aggregate = this.resourceAllocationsBeingEdited

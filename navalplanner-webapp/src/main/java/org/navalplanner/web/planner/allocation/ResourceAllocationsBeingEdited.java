@@ -36,7 +36,7 @@ public class ResourceAllocationsBeingEdited {
 
     private final boolean modifyTask;
 
-    private ResourceAllocationFormBinder formBinder = null;
+    private FormBinder formBinder = null;
 
     private CalculatedValue calculatedValue;
 
@@ -157,11 +157,11 @@ public class ResourceAllocationsBeingEdited {
                 resourceDAO, true);
     }
 
-    public ResourceAllocationFormBinder createFormBinder() {
+    public FormBinder createFormBinder() {
         if (formBinder != null)
             throw new IllegalStateException(
                     "there is already a binder associated with this object");
-        formBinder = new ResourceAllocationFormBinder(this);
+        formBinder = new FormBinder(this);
         return formBinder;
     }
 
