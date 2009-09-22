@@ -131,11 +131,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
         try {
             window.doModal();
         } catch (SuspendNotAllowedException e1) {
-            e1.printStackTrace();
-            return;
+            throw new RuntimeException(e1);
         } catch (InterruptedException e1) {
-            e1.printStackTrace();
-            return;
+            throw new RuntimeException(e1);
         }
 
         addSpecificResourceAllocations(workerSearch.getWorkers());
