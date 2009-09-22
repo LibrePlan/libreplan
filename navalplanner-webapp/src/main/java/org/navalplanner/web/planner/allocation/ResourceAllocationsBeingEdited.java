@@ -177,5 +177,8 @@ public class ResourceAllocationsBeingEdited {
         return new AggregateOfResourceAllocations(task.getResourceAllocations());
     }
 
+    public Task getTask() {
+        return task;
+    }
 
 }

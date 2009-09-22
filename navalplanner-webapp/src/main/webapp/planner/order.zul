@@ -80,7 +80,15 @@
                 </radiogroup>
             </panelchildren>
         </panel>
-
+        <panel title="${i18n:_('Duration')}" >
+            <panelchildren>
+                <hbox>
+                    <label value="${i18n:_('Start')}:"
+                        style="font-weight:bold" />
+                    <datebox id="taskStartDateBox" />
+                </hbox>
+            </panelchildren>
+        </panel>
         <panel title="${i18n:_('Allocation')}" border="normal" style="margin-bottom: 5px">
             <panelchildren>
                 <hbox>

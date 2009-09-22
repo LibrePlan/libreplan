@@ -33,6 +33,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
@@ -72,6 +73,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Intbox assignedHoursComponent;
 
+    private Datebox taskStartDateBox;
+
     private Radiogroup calculationTypeSelector;
 
     @Override
@@ -94,6 +97,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 planningState);
         formBinder = allocationsBeingEdited.createFormBinder();
         formBinder.setAssignedHoursComponent(assignedHoursComponent);
+        formBinder.setTaskStartDateBox(taskStartDateBox);
         CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                 .from(formBinder.getCalculatedValue());
         calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);

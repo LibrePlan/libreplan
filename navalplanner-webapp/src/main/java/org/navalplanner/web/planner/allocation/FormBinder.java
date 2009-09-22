@@ -2,6 +2,7 @@ package org.navalplanner.web.planner.allocation;
 
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 
 class FormBinder {
@@ -10,6 +11,8 @@ class FormBinder {
 
     private final ResourceAllocationsBeingEdited resourceAllocationsBeingEdited;
     private AggregateOfResourceAllocations aggregate;
+
+    private Datebox taskStartDateBox;
 
     public FormBinder(
             ResourceAllocationsBeingEdited resourceAllocationsBeingEdited) {
@@ -39,6 +42,13 @@ class FormBinder {
 
     public CalculatedValue getCalculatedValue() {
         return resourceAllocationsBeingEdited.getCalculatedValue();
+    }
+
+    public void setTaskStartDateBox(Datebox taskStartDateBox) {
+        this.taskStartDateBox = taskStartDateBox;
+        this.taskStartDateBox.setDisabled(true);
+        this.taskStartDateBox.setValue(resourceAllocationsBeingEdited.getTask()
+                .getStartDate());
     }
 
 }
