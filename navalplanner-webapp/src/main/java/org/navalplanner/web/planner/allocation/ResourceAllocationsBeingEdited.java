@@ -118,6 +118,7 @@ public class ResourceAllocationsBeingEdited {
         case NUMBER_OF_HOURS:
             ResourceAllocation.allocating(allocations).withResources(
                     resourcesMatchingCriterions).allocateOnTaskLength();
+            daysDuration = task.getDaysDuration();
             break;
         case END_DATE:
             LocalDate end = ResourceAllocation.allocating(allocations)
@@ -188,8 +189,11 @@ public class ResourceAllocationsBeingEdited {
     }
 
     public ResourceAllocationsBeingEdited taskModifying() {
-        return new ResourceAllocationsBeingEdited(task, currentAllocations,
+        ResourceAllocationsBeingEdited result = new ResourceAllocationsBeingEdited(
+                task, currentAllocations,
                 resourceDAO, resourcesMatchingCriterions, true);
+        result.formBinder = this.formBinder;
+        return result;
     }
 
     public FormBinder createFormBinder() {

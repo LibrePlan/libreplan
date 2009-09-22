@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
@@ -13,7 +12,6 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceAllocationWithDesiredResourcesPerDay;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -83,7 +81,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     public void save() {
         planningState.reassociateResourcesWithSession(resourceDAO);
         removeDeletedAllocations();
-        mergeDTOsToTask();
+        doTheAllocation();
     }
 
     private void removeDeletedAllocations() {
@@ -94,19 +92,14 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
-    private void mergeDTOsToTask() {
-        ResourceAllocationsBeingEdited taskModifying = resourceAllocationsBeingEdited
+    private void doTheAllocation() {
+        ResourceAllocationsBeingEdited allocator = resourceAllocationsBeingEdited
                 .taskModifying();
-        List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations = taskModifying
-                .asResourceAllocations();
-        if (task.isFixedDuration()) {
-            ResourceAllocation.allocating(resourceAllocations).withResources(
-                    getResourcesMatchingCriterions()).allocateOnTaskLength();
-        } else {
-            LocalDate end = ResourceAllocation.allocating(resourceAllocations)
-                    .withResources(getResourcesMatchingCriterions())
-                    .untilAllocating(task.getHoursSpecifiedAtOrder());
-            ganttTask.setEndDate(end.toDateTimeAtStartOfDay().toDate());
+        allocator.doAllocation();
+        Integer newDaysDuration = allocator.getDaysDuration();
+        if (task.getDaysDuration() != newDaysDuration) {
+            task.setDaysDuration(newDaysDuration);
+            ganttTask.setEndDate(task.getEndDate());
         }
     }
 

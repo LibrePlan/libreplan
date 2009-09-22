@@ -154,7 +154,11 @@ class FormBinder {
     }
 
     public int getAssignedHours() {
-        return assignedHoursComponent.getValue();
+        Integer result = assignedHoursComponent.getValue();
+        if (result == null) {
+            throw new RuntimeException("assignedHoursComponent returns null");
+        }
+        return result;
     }
 
     public void setDeleteButtonFor(SpecificAllocationDTO data,
