@@ -128,6 +128,7 @@
 
         <hbox>
             <button label="${i18n:_('Accept')}" onClick="allocationController.save()" />
+            <button label="${i18n:_('Apply')}" id="applyButton"/>
             <button label="${i18n:_('Cancel')}" onClick="allocationController.cancel()" />
             <button label="${i18n:_('Search resources...')}"
                 onClick="allocationController.showSearchResources()" />

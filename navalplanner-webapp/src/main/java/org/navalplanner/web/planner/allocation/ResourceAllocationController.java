@@ -79,6 +79,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Intbox taskElapsedDays;
 
+    private Button applyButton;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -101,6 +103,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         formBinder.setAssignedHoursComponent(assignedHoursComponent);
         formBinder.setTaskStartDateBox(taskStartDateBox);
         formBinder.setTaskElapsedDays(taskElapsedDays);
+        formBinder.setApplyButton(applyButton);
         CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                 .from(formBinder.getCalculatedValue());
         calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
