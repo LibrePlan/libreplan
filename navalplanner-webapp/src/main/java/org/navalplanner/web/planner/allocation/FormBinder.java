@@ -26,6 +26,10 @@ class FormBinder {
     }
 
     public void setCalculatedValue(CalculatedValue calculatedValue) {
+        if (calculatedValue == CalculatedValue.RESOURCES_PER_DAY) {
+            throw new RuntimeException(CalculatedValue.RESOURCES_PER_DAY
+                    + " not implemented yet");
+        }
         if (calculatedValue == resourceAllocationsBeingEdited
                 .getCalculatedValue()) {
             return;

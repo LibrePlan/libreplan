@@ -164,12 +164,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
             public String getName() {
                 return _("Calculate End Date");
             }
-        },
-        RESOURCES_PER_DAY(CalculatedValue.RESOURCES_PER_DAY) {
-            @Override
-            public String getName() {
-                return _("Calculate Resources per Day");
-            }
         };
 
         public static CalculationTypeRadio from(CalculatedValue calculatedValue) {
