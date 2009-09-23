@@ -8,6 +8,7 @@ import org.hibernate.validator.NotNull;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForSpecifiedResourcesPerDayAndHours;
@@ -206,17 +207,22 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     final int calculateTotalToDistribute(LocalDate day,
             ResourcesPerDay resourcesPerDay) {
-        Integer workableHours = getWorkableHoursAt(day);
+        Integer workableHours = getWorkHours().getWorkableHours(day);
         return resourcesPerDay.asHoursGivenResourceWorkingDayOf(workableHours);
     }
 
-    final Integer getWorkableHoursAt(LocalDate day) {
-        if (getTaskCalendar() == null) {
-            return SameWorkHoursEveryDay.getDefaultWorkingDay()
-                    .getWorkableHours(day);
-        } else {
-            return getTaskCalendar().getWorkableHours(day);
-        }
+    private IWorkHours getWorkHours() {
+        return new IWorkHours() {
+            @Override
+            public Integer getWorkableHours(LocalDate day) {
+                if (getTaskCalendar() == null) {
+                    return SameWorkHoursEveryDay.getDefaultWorkingDay()
+                            .getWorkableHours(day);
+                } else {
+                    return getTaskCalendar().getWorkableHours(day);
+                }
+            }
+        };
     }
 
     protected final BaseCalendar getTaskCalendar() {
