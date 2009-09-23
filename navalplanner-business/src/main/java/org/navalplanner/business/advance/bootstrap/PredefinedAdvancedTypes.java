@@ -6,7 +6,9 @@ import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.common.Registry;
 
 public enum PredefinedAdvancedTypes {
-    PERCENTAGE("percentage", new BigDecimal(100), new BigDecimal(0.01)), UNITS(
+    CHILDREN("children", new BigDecimal(Integer.MAX_VALUE),
+            new BigDecimal(0.01)), PERCENTAGE("percentage",
+            new BigDecimal(100), new BigDecimal(0.01)), UNITS(
             "units", new BigDecimal(Integer.MAX_VALUE), new BigDecimal(1));
 
     private PredefinedAdvancedTypes(String name, BigDecimal defaultMaxValue,
