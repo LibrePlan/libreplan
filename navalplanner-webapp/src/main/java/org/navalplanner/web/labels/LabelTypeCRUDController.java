@@ -19,7 +19,9 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Column;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
@@ -209,6 +211,29 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     public void createLabel() {
         labelTypeModel.addLabel();
         Util.reloadBindings(gridLabels);
+        // After adding a new row, model might be disordered, so we force it to
+        // sort again respecting previous settings
+        forceSortGridLabels();
+    }
+
+    /**
+     * Sorts {@link Grid} model by first column, respecting sort order
+     * 
+     * FIXME: This is a temporary solution, there should be a better/smarter way
+     * of preserving order in the Grid every time a new element is added to its
+     * model
+     */
+    private void forceSortGridLabels() {
+        Column column = (Column) gridLabels.getColumns().getFirstChild();
+        ListModelExt model = (ListModelExt) gridLabels.getModel();
+        if ("ascending".equals(column.getSortDirection())) {
+            model.sort(column.getSortAscending(), true);
+            return;
+        }
+        if ("descending".equals(column.getSortDirection())) {
+            model.sort(column.getSortDescending(), false);
+            return;
+        }
     }
 
     public void onChangeLabelName(Event e) {
