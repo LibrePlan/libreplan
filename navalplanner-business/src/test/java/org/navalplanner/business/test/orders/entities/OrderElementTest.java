@@ -446,7 +446,7 @@ public class OrderElementTest {
         for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
             if (indirectAdvanceAssignment.getAdvanceType().equals(advanceType)) {
                 advanceAssignment = ((OrderLineGroup) orderElement)
-                        .calculateFakeDirectAdvanceAssigment(indirectAdvanceAssignment);
+                        .calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
                 break;
             }
         }
@@ -548,7 +548,7 @@ public class OrderElementTest {
         for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
             if (indirectAdvanceAssignment.getAdvanceType().equals(advanceType)) {
                 advanceAssignment = ((OrderLineGroup) orderElement)
-                        .calculateFakeDirectAdvanceAssigment(indirectAdvanceAssignment);
+                        .calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
                 break;
             }
         }
@@ -606,7 +606,7 @@ public class OrderElementTest {
             if (indirectAdvanceAssignment.getAdvanceType().getUnitName()
                     .equals(PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
                 advanceAssignment = ((OrderLineGroup) orderElement)
-                        .calculateFakeDirectAdvanceAssigment(indirectAdvanceAssignment);
+                        .calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
                 break;
             }
         }
@@ -792,7 +792,7 @@ public class OrderElementTest {
         for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
             if (indirectAdvanceAssignment.getAdvanceType().equals(advanceType)) {
                 advanceAssignment = ((OrderLineGroup) orderElement)
-                        .calculateFakeDirectAdvanceAssigment(indirectAdvanceAssignment);
+                        .calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
                 break;
             }
         }

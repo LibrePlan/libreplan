@@ -64,7 +64,7 @@ public interface IManageOrderElementAdvancesModel {
     public BigDecimal getPercentageAdvanceMeasurement(
             AdvanceMeasurement advanceMeasurement);
 
-    public DirectAdvanceAssignment calculateFakeDirectAdvanceAssigment(
+    public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
             IndirectAdvanceAssignment indirectAdvanceAssignment);
 
     public BigDecimal getAdvancePercentageChildren();

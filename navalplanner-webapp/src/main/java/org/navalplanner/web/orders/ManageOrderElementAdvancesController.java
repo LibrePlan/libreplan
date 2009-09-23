@@ -272,7 +272,7 @@ public class ManageOrderElementAdvancesController extends
         if (advanceAssignment instanceof IndirectAdvanceAssignment) {
             maxValue.setDisabled(true);
             directAdvanceAssignment = manageOrderElementAdvancesModel
-                    .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+                    .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advanceAssignment);
         } else {
             directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
         }
@@ -313,7 +313,7 @@ public class ManageOrderElementAdvancesController extends
         DirectAdvanceAssignment directAdvanceAssignment;
         if (advanceAssignment instanceof IndirectAdvanceAssignment) {
             directAdvanceAssignment = manageOrderElementAdvancesModel
-                    .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+                    .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advanceAssignment);
         } else {
             directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
         }
@@ -341,7 +341,7 @@ public class ManageOrderElementAdvancesController extends
         DirectAdvanceAssignment directAdvanceAssignment;
         if (advanceAssignment instanceof IndirectAdvanceAssignment) {
             directAdvanceAssignment = manageOrderElementAdvancesModel
-                    .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+                    .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advanceAssignment);
         } else {
             directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
         }
@@ -369,7 +369,7 @@ public class ManageOrderElementAdvancesController extends
         DirectAdvanceAssignment directAdvanceAssignment;
         if (advanceAssignment instanceof IndirectAdvanceAssignment) {
             directAdvanceAssignment = manageOrderElementAdvancesModel
-                    .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+                    .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advanceAssignment);
         } else {
             directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
         }
@@ -456,7 +456,7 @@ public class ManageOrderElementAdvancesController extends
             DirectAdvanceAssignment directAdvanceAssignment;
             if (advanceAssignment instanceof IndirectAdvanceAssignment) {
                 directAdvanceAssignment = manageOrderElementAdvancesModel
-                        .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+                        .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advanceAssignment);
             } else {
                 directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
             }
@@ -484,7 +484,7 @@ public class ManageOrderElementAdvancesController extends
             DirectAdvanceAssignment directAdvanceAssignment;
             if (advanceAssignment instanceof IndirectAdvanceAssignment) {
                 directAdvanceAssignment = manageOrderElementAdvancesModel
-                        .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+                        .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advanceAssignment);
             } else {
                 directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
             }
@@ -518,7 +518,7 @@ public class ManageOrderElementAdvancesController extends
             DirectAdvanceAssignment directAdvanceAssignment;
             if (advanceAssignment instanceof IndirectAdvanceAssignment) {
                 directAdvanceAssignment = manageOrderElementAdvancesModel
-                        .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+                        .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advanceAssignment);
             } else {
                 directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
             }
@@ -589,7 +589,7 @@ public class ManageOrderElementAdvancesController extends
                 DirectAdvanceAssignment directAdvanceAssignment;
                 if (advance instanceof IndirectAdvanceAssignment) {
                     directAdvanceAssignment = manageOrderElementAdvancesModel
-                            .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advance);
+                            .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advance);
                 } else {
                     directAdvanceAssignment = (DirectAdvanceAssignment) advance;
                 }

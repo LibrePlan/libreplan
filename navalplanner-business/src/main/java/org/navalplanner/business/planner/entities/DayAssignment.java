@@ -19,9 +19,9 @@ import org.navalplanner.business.resources.entities.Resource;
 
 public abstract class DayAssignment extends BaseEntity {
 
-    public static int sum(Collection<? extends DayAssignment> assigments) {
+    public static int sum(Collection<? extends DayAssignment> assignments) {
         int result = 0;
-        for (DayAssignment dayAssignment : assigments) {
+        for (DayAssignment dayAssignment : assignments) {
             result += dayAssignment.getHours();
         }
         return result;

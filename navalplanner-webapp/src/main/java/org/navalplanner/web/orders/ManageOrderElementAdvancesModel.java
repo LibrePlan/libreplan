@@ -110,7 +110,7 @@ public class ManageOrderElementAdvancesModel implements
     public void prepareEditAdvanceMeasurements(AdvanceAssignment advanceAssignment) {
         if (advanceAssignment instanceof IndirectAdvanceAssignment) {
             this.advanceAssignment = ((OrderLineGroup) this.orderElement)
-                    .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+                    .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advanceAssignment);
             this.isIndirectAdvanceAssignment = true;
         } else {
             this.advanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
@@ -402,7 +402,7 @@ public class ManageOrderElementAdvancesModel implements
         BigDecimal maxValue;
         if (advanceAssignment instanceof IndirectAdvanceAssignment) {
             maxValue = ((OrderLineGroup) this.orderElement)
-                    .calculateFakeDirectAdvanceAssigment(
+                    .calculateFakeDirectAdvanceAssignment(
                             (IndirectAdvanceAssignment) advanceAssignment)
                     .getMaxValue();
         } else {
@@ -425,7 +425,7 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public DirectAdvanceAssignment calculateFakeDirectAdvanceAssigment(
+    public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
         if (orderElement == null) {
             return null;
@@ -438,7 +438,7 @@ public class ManageOrderElementAdvancesModel implements
         reattachmentOrderElement();
 
         return ((OrderLineGroup) orderElement)
-                .calculateFakeDirectAdvanceAssigment(indirectAdvanceAssignment);
+                .calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
     }
 
     @Override

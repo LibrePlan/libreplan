@@ -64,25 +64,25 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     @Override
     public void remove(OrderElement child) {
         getManipulator().remove(child);
-        removeIndirectAdvanceAssigments(child);
+        removeIndirectAdvanceAssignments(child);
     }
 
     @Override
     public void replace(OrderElement oldOrderElement, OrderElement orderElement) {
         getManipulator().replace(oldOrderElement, orderElement);
 
-        addIndirectAdvanceAssigments(orderElement);
-        removeIndirectAdvanceAssigments(oldOrderElement);
+        addIndirectAdvanceAssignments(orderElement);
+        removeIndirectAdvanceAssignments(oldOrderElement);
     }
 
     @Override
     public void add(OrderElement orderElement) {
         getManipulator().add(orderElement);
 
-        addIndirectAdvanceAssigments(orderElement);
+        addIndirectAdvanceAssignments(orderElement);
     }
 
-    private void addIndirectAdvanceAssigments(OrderElement orderElement) {
+    private void addIndirectAdvanceAssignments(OrderElement orderElement) {
         for (DirectAdvanceAssignment directAdvanceAssignment : orderElement.directAdvanceAssignments) {
             IndirectAdvanceAssignment indirectAdvanceAssignment = IndirectAdvanceAssignment
                     .create();
@@ -100,7 +100,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
         }
     }
 
-    private void removeIndirectAdvanceAssigments(OrderElement orderElement) {
+    private void removeIndirectAdvanceAssignments(OrderElement orderElement) {
         for (DirectAdvanceAssignment directAdvanceAssignment : orderElement.directAdvanceAssignments) {
             this.removeIndirectAdvanceAssignment(directAdvanceAssignment
                     .getAdvanceType());
@@ -153,7 +153,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     public void add(int position, OrderElement orderElement) {
         children.add(position, orderElement);
 
-        addIndirectAdvanceAssigments(orderElement);
+        addIndirectAdvanceAssignments(orderElement);
     }
 
     @Override
@@ -189,7 +189,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
                         .equals(PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
                     return getAdvancePercentageChildren(date);
                 } else {
-                    DirectAdvanceAssignment directAdvanceAssignment = calculateFakeDirectAdvanceAssigment(indirectAdvanceAssignment);
+                    DirectAdvanceAssignment directAdvanceAssignment = calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
                     return directAdvanceAssignment.getAdvancePercentage(date);
                 }
             }
@@ -222,11 +222,11 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
         return result;
     }
 
-    public DirectAdvanceAssignment calculateFakeDirectAdvanceAssigment(
+    public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
         if (indirectAdvanceAssignment.getAdvanceType().getUnitName().equals(
                 PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
-            return calculateFakeDirectAdvanceAssigmentChildren(indirectAdvanceAssignment);
+            return calculateFakeDirectAdvanceAssignmentChildren(indirectAdvanceAssignment);
         } else {
             Set<DirectAdvanceAssignment> directAdvanceAssignments = getAllDirectAdvanceAssignments(indirectAdvanceAssignment
                     .getAdvanceType());
@@ -235,7 +235,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
         }
     }
 
-    private DirectAdvanceAssignment calculateFakeDirectAdvanceAssigmentChildren(
+    private DirectAdvanceAssignment calculateFakeDirectAdvanceAssignmentChildren(
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
         DirectAdvanceAssignment newDirectAdvanceAssignment = DirectAdvanceAssignment
                 .create();
