@@ -40,9 +40,9 @@
             <key column="ORDER_ELEMENT_ID" />
             <one-to-many class="org.navalplanner.business.planner.entities.TaskElement"></one-to-many>
         </set>
-        <set name="advanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
-            <key column="ORDER_ELEMENT_ID" />
-            <one-to-many class="org.navalplanner.business.advance.entities.AdvanceAssignment"></one-to-many>
+        <set name="directAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
+            <key column="DIRECT_ORDER_ELEMENT_ID" />
+            <one-to-many class="org.navalplanner.business.advance.entities.DirectAdvanceAssignment" />
         </set>
 
 		<set name="labels" table="ORDER_ELEMENT_LABEL" access="field">
@@ -60,6 +60,10 @@
                 <index column="positionInContainer"></index>
                 <one-to-many class="OrderElement" />
             </list>
+            <set name="indirectAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
+                <key column="INDIRECT_ORDER_ELEMENT_ID" />
+                <one-to-many class="org.navalplanner.business.advance.entities.IndirectAdvanceAssignment" />
+            </set>
         </joined-subclass>
 
         <joined-subclass name="OrderLine">

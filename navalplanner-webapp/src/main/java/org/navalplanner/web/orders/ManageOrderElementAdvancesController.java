@@ -11,6 +11,8 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceType;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -189,7 +191,7 @@ public class ManageOrderElementAdvancesController extends
             listItem.setDraggable("true");
             listItem.setDroppable("true");
 
-            if (advance.getType().equals(AdvanceAssignment.Type.DIRECT)) {
+            if (advance instanceof DirectAdvanceAssignment) {
                  appendComboboxAdvancType(listItem);
             } else {
                 appendLabelAdvanceType(listItem);
@@ -204,7 +206,8 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendComboboxAdvancType(final Listitem listItem){
-        final AdvanceAssignment advance = (AdvanceAssignment) listItem.getValue();
+        final DirectAdvanceAssignment advance = (DirectAdvanceAssignment) listItem
+                .getValue();
         final Combobox comboAdvanceTypes = new Combobox();
         final List<AdvanceType> listAdvanceType = manageOrderElementAdvancesModel
                 .getActivesAdvanceTypes();
@@ -260,26 +263,31 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendDecimalBoxMaxValue(final Listitem listItem){
-        final AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
+        AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                 .getValue();
         Decimalbox maxValue = new Decimalbox();
         maxValue.setScale(2);
 
-        if(advanceAssignment.getType().equals(AdvanceAssignment.Type.CALCULATED))
+        final DirectAdvanceAssignment directAdvanceAssignment;
+        if (advanceAssignment instanceof IndirectAdvanceAssignment) {
             maxValue.setDisabled(true);
+            directAdvanceAssignment = manageOrderElementAdvancesModel
+                    .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+        } else {
+            directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
+        }
 
-        Util.bind(maxValue,
-                    new Util.Getter<BigDecimal>() {
-                        @Override
-                        public BigDecimal get() {
-                            return advanceAssignment.getMaxValue();
-                        }
-                    }, new Util.Setter<BigDecimal>() {
+        Util.bind(maxValue, new Util.Getter<BigDecimal>() {
+            @Override
+            public BigDecimal get() {
+                return directAdvanceAssignment.getMaxValue();
+            }
+        }, new Util.Setter<BigDecimal>() {
 
-                @Override
+            @Override
             public void set(BigDecimal value) {
-                            advanceAssignment.setMaxValue(value);
-                        }
+                directAdvanceAssignment.setMaxValue(value);
+            }
         });
         maxValue.addEventListener(Events.ON_CHANGE,
                 new EventListener() {
@@ -302,19 +310,21 @@ public class ManageOrderElementAdvancesController extends
         value.setScale(2);
         value.setDisabled(true);
 
-         final AdvanceMeasurement advanceMeasurement = this.manageOrderElementAdvancesModel
-                .getFirstAdvanceMeasurement(advanceAssignment);
+        DirectAdvanceAssignment directAdvanceAssignment;
+        if (advanceAssignment instanceof IndirectAdvanceAssignment) {
+            directAdvanceAssignment = manageOrderElementAdvancesModel
+                    .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+        } else {
+            directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
+        }
+
+        final AdvanceMeasurement advanceMeasurement = this.manageOrderElementAdvancesModel
+                .getLastAdvanceMeasurement(directAdvanceAssignment);
         if (advanceMeasurement != null) {
             Util.bind(value, new Util.Getter<BigDecimal>() {
                 @Override
                 public BigDecimal get() {
                     return advanceMeasurement.getValue();
-                }
-            }, new Util.Setter<BigDecimal>() {
-
-                @Override
-                public void set(BigDecimal value) {
-                    advanceMeasurement.setValue(value);
                 }
             });
         }
@@ -328,8 +338,15 @@ public class ManageOrderElementAdvancesController extends
                 .getValue();
         Label percentage = new Label();
 
+        DirectAdvanceAssignment directAdvanceAssignment;
+        if (advanceAssignment instanceof IndirectAdvanceAssignment) {
+            directAdvanceAssignment = manageOrderElementAdvancesModel
+                    .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+        } else {
+            directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
+        }
         final AdvanceMeasurement advanceMeasurement = this.manageOrderElementAdvancesModel
-                .getFirstAdvanceMeasurement(advanceAssignment);
+                .getLastAdvanceMeasurement(directAdvanceAssignment);
         if (advanceMeasurement != null) {
             percentage
                     .setValue(this.manageOrderElementAdvancesModel
@@ -349,8 +366,15 @@ public class ManageOrderElementAdvancesController extends
         Datebox date = new Datebox();
         date.setDisabled(true);
 
+        DirectAdvanceAssignment directAdvanceAssignment;
+        if (advanceAssignment instanceof IndirectAdvanceAssignment) {
+            directAdvanceAssignment = manageOrderElementAdvancesModel
+                    .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+        } else {
+            directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
+        }
         final AdvanceMeasurement advanceMeasurement = this.manageOrderElementAdvancesModel
-                .getFirstAdvanceMeasurement(advanceAssignment);
+                .getLastAdvanceMeasurement(directAdvanceAssignment);
         if (advanceMeasurement != null) {
 
             Util.bind(date, new Util.Getter<Date>() {
@@ -379,7 +403,7 @@ public class ManageOrderElementAdvancesController extends
         reportGlobalAdvance.setChecked(advanceAssignment
                 .getReportGlobalAdvance());
 
-        if (advanceAssignment.getType().equals(AdvanceAssignment.Type.CALCULATED))
+        if (advanceAssignment instanceof IndirectAdvanceAssignment)
             reportGlobalAdvance.setDisabled(true);
 
         reportGlobalAdvance.addEventListener(Events.ON_CHECK,
@@ -397,8 +421,7 @@ public class ManageOrderElementAdvancesController extends
     private void appendCalculatedCheckbox(final Listitem listItem){
         final AdvanceAssignment advance = (AdvanceAssignment) listItem.getValue();
         Checkbox calculated = new Checkbox();
-        boolean isCalculated = advance.getType().equals(
-                AdvanceAssignment.Type.CALCULATED);
+        boolean isCalculated = advance instanceof IndirectAdvanceAssignment;
         calculated.setChecked(isCalculated);
         calculated.setDisabled(true);
 
@@ -414,7 +437,8 @@ public class ManageOrderElementAdvancesController extends
         if(selectedItem != null){
             AdvanceType advanceType = ((AdvanceType) selectedItem.getValue());
             if(advanceType != null){
-                AdvanceAssignment advance = (AdvanceAssignment) item.getValue();
+                DirectAdvanceAssignment advance = (DirectAdvanceAssignment) item
+                        .getValue();
                 advance.setMaxValue(advanceType.getDefaultMaxValue());
                 miBox.setValue(advanceType.getDefaultMaxValue());
             }
@@ -429,8 +453,15 @@ public class ManageOrderElementAdvancesController extends
             AdvanceAssignment advanceAssignment = (AdvanceAssignment) selectedItem
                     .getValue();
 
+            DirectAdvanceAssignment directAdvanceAssignment;
+            if (advanceAssignment instanceof IndirectAdvanceAssignment) {
+                directAdvanceAssignment = manageOrderElementAdvancesModel
+                        .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+            } else {
+                directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
+            }
             final AdvanceMeasurement greatAdvanceMeasurement = this.manageOrderElementAdvancesModel
-                    .getFirstAdvanceMeasurement(advanceAssignment);
+                    .getLastAdvanceMeasurement(directAdvanceAssignment);
             if (greatAdvanceMeasurement != null) {
                 Listcell percentage = (Listcell) selectedItem.getChildren()
                         .get(3);
@@ -449,8 +480,16 @@ public class ManageOrderElementAdvancesController extends
             Listitem selectedItem = listAdvances.getItemAtIndex(indexSelectedItem);
             AdvanceAssignment advanceAssignment = (AdvanceAssignment) selectedItem
                     .getValue();
+
+            DirectAdvanceAssignment directAdvanceAssignment;
+            if (advanceAssignment instanceof IndirectAdvanceAssignment) {
+                directAdvanceAssignment = manageOrderElementAdvancesModel
+                        .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+            } else {
+                directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
+            }
             final AdvanceMeasurement greatAdvanceMeasurement = this.manageOrderElementAdvancesModel
-                    .getFirstAdvanceMeasurement(advanceAssignment);
+                    .getLastAdvanceMeasurement(directAdvanceAssignment);
             if (greatAdvanceMeasurement != null) {
                 Listcell value = (Listcell)selectedItem.getChildren().get(2);
                 ((Decimalbox) value.getFirstChild())
@@ -475,9 +514,17 @@ public class ManageOrderElementAdvancesController extends
             Listitem selectedItem = listAdvances.getItemAtIndex(indexSelectedItem);
             AdvanceAssignment advanceAssignment = (AdvanceAssignment) selectedItem
                     .getValue();
+
+            DirectAdvanceAssignment directAdvanceAssignment;
+            if (advanceAssignment instanceof IndirectAdvanceAssignment) {
+                directAdvanceAssignment = manageOrderElementAdvancesModel
+                        .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advanceAssignment);
+            } else {
+                directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
+            }
              final AdvanceMeasurement greatAdvanceMeasurement =
                  this.manageOrderElementAdvancesModel
-                    .getFirstAdvanceMeasurement(advanceAssignment);
+                    .getLastAdvanceMeasurement(directAdvanceAssignment);
              if(greatAdvanceMeasurement != null){
                  Listcell date = (Listcell) selectedItem.getChildren().get(4);
                  LocalDate newDate = greatAdvanceMeasurement.getDate();
@@ -538,7 +585,15 @@ public class ManageOrderElementAdvancesController extends
                         .getValue();
                 if (advance.getAdvanceType() == null)
                     return false;
-                if (advance.getMaxValue() == null)
+
+                DirectAdvanceAssignment directAdvanceAssignment;
+                if (advance instanceof IndirectAdvanceAssignment) {
+                    directAdvanceAssignment = manageOrderElementAdvancesModel
+                            .calculateFakeDirectAdvanceAssigment((IndirectAdvanceAssignment) advance);
+                } else {
+                    directAdvanceAssignment = (DirectAdvanceAssignment) advance;
+                }
+                if (directAdvanceAssignment.getMaxValue() == null)
                     return false;
             }
         }
@@ -569,8 +624,7 @@ public class ManageOrderElementAdvancesController extends
                 Listitem listItem = (Listitem) listAdvances.getChildren().get(i);
                 AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                         .getValue();
-                if (advanceAssignment.getType().equals(
-                        AdvanceAssignment.Type.DIRECT)) {
+                if (advanceAssignment instanceof DirectAdvanceAssignment) {
                     existItems = true;
                     if (advanceAssignment.getReportGlobalAdvance()) {
                         return true;

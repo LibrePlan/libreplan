@@ -11,6 +11,8 @@ import java.util.Map;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -94,6 +96,23 @@ public class OrderModel implements IOrderModel {
         loadCriterions();
         this.order = getFromDB(order);
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
+        forceLoadAdvanceAssignments(this.order);
+    }
+
+    private void forceLoadAdvanceAssignments(Order order) {
+        for (OrderElement orderElement : order.getOrderElements()) {
+            for (DirectAdvanceAssignment directAdvanceAssignment : orderElement
+                    .getDirectAdvanceAssignments()) {
+                directAdvanceAssignment.getAdvanceType().getUnitName();
+            }
+
+            if (orderElement instanceof OrderLineGroup) {
+                for (IndirectAdvanceAssignment indirectAdvanceAssignment : ((OrderLineGroup) orderElement)
+                        .getIndirectAdvanceAssignments()) {
+                    indirectAdvanceAssignment.getAdvanceType().getUnitName();
+                }
+            }
+        }
     }
 
     private Order getFromDB(Order order) {

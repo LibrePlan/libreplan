@@ -1,21 +1,39 @@
 package org.navalplanner.business.test.orders.daos;
 
 import static junit.framework.Assert.assertNotNull;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.UUID;
 
+import javax.annotation.Resource;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
+import org.navalplanner.business.advance.entities.AdvanceMeasurement;
+import org.navalplanner.business.advance.entities.AdvanceType;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.test.orders.entities.OrderElementTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -29,6 +47,14 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public class OrderElementDAOTest {
+
+    @Resource
+    private IDataBootstrap defaultAdvanceTypesBootstrapListener;
+
+    @Before
+    public void loadRequiredaData() {
+        defaultAdvanceTypesBootstrapListener.loadRequiredData();
+    }
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
@@ -146,4 +172,146 @@ public class OrderElementDAOTest {
 
         }
     }
+
+    @Test
+    public void testSaveOrderLineWithAdvanceAssignments()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException,
+            InstanceNotFoundException {
+        OrderLine orderLine = createValidOrderLine();
+
+        OrderElementTest.addAvanceAssignmentWithMeasurement(orderLine,
+                PredefinedAdvancedTypes.UNITS.getType(), new BigDecimal(1000),
+                new BigDecimal(400), true);
+
+        orderElementDAO.save(orderLine);
+        orderElementDAO.flush();
+
+        assertTrue(orderElementDAO.exists(orderLine.getId()));
+
+        OrderLine found = (OrderLine) orderElementDAO.find(orderLine.getId());
+        Set<DirectAdvanceAssignment> directAdvanceAssignments = found.getDirectAdvanceAssignments();
+        assertThat(directAdvanceAssignments.size(), equalTo(1));
+
+        SortedSet<AdvanceMeasurement> advanceMeasurements = directAdvanceAssignments
+                .iterator().next().getAdvanceMeasurements();
+        assertThat(advanceMeasurements.size(), equalTo(1));
+
+        assertThat(advanceMeasurements.iterator().next().getValue(),
+                equalTo(new BigDecimal(400)));
+    }
+
+    @Test
+    public void testSaveOrderLineGroupWithAdvanceAssignments()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException,
+            InstanceNotFoundException {
+        OrderElement orderElement = OrderElementTest
+                .givenOrderLineGroupWithTwoOrderLines(2000,
+                3000);
+
+        List<OrderElement> children = orderElement.getChildren();
+
+        AdvanceType advanceType = PredefinedAdvancedTypes.UNITS.getType();
+
+        OrderElementTest.addAvanceAssignmentWithMeasurement(children.get(0),
+                advanceType,
+                new BigDecimal(1000), new BigDecimal(100), true);
+
+        OrderElementTest.addAvanceAssignmentWithMeasurement(children.get(1),
+                advanceType,
+                new BigDecimal(1000), new BigDecimal(300), true);
+
+        orderElementDAO.save(orderElement);
+        orderElementDAO.flush();
+
+        assertTrue(orderElementDAO.exists(orderElement.getId()));
+
+        OrderLineGroup found = (OrderLineGroup) orderElementDAO
+                .find(orderElement.getId());
+        assertThat(found.getDirectAdvanceAssignments().size(), equalTo(0));
+
+        assertThat(found.getIndirectAdvanceAssignments().size(), equalTo(2));
+
+        Set<DirectAdvanceAssignment> directAdvanceAssignments = found.getChildren().get(0).getDirectAdvanceAssignments();
+        assertThat(directAdvanceAssignments.size(), equalTo(1));
+
+        DirectAdvanceAssignment directAdvanceAssignment = directAdvanceAssignments
+                .iterator().next();
+        assertThat(directAdvanceAssignment.getMaxValue(),
+                equalTo(new BigDecimal(1000)));
+
+        SortedSet<AdvanceMeasurement> advanceMeasurements = directAdvanceAssignment.getAdvanceMeasurements();
+        assertThat(advanceMeasurements.size(), equalTo(1));
+        assertThat(advanceMeasurements.iterator().next().getValue(),
+                equalTo(new BigDecimal(100)));
+    }
+
+    @Test
+    public void testRemoveOrderLineWithAdvanceAssignments()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException,
+            InstanceNotFoundException {
+        OrderLine orderLine = createValidOrderLine();
+
+        OrderElementTest.addAvanceAssignmentWithMeasurement(orderLine,
+                PredefinedAdvancedTypes.UNITS.getType(), new BigDecimal(1000),
+                new BigDecimal(400), true);
+
+        orderElementDAO.save(orderLine);
+        orderElementDAO.flush();
+
+        Long id = orderLine.getId();
+        OrderLine found = (OrderLine) orderElementDAO.find(id);
+        assertNotNull(found);
+
+        orderElementDAO.remove(id);
+        orderElementDAO.flush();
+
+        try {
+            found = (OrderLine) orderElementDAO.find(id);
+            fail("It should throw an exception");
+        } catch (InstanceNotFoundException e) {
+            found = null;
+        }
+        assertNull(found);
+    }
+
+    @Test
+    public void testRemoveOrderLineGroupWithAdvanceAssignments()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException,
+            InstanceNotFoundException {
+        OrderElement orderElement = OrderElementTest
+                .givenOrderLineGroupWithTwoOrderLines(2000, 3000);
+
+        List<OrderElement> children = orderElement.getChildren();
+
+        AdvanceType advanceType = PredefinedAdvancedTypes.UNITS.getType();
+
+        OrderElementTest.addAvanceAssignmentWithMeasurement(children.get(0),
+                advanceType, new BigDecimal(1000), new BigDecimal(100), true);
+
+        OrderElementTest.addAvanceAssignmentWithMeasurement(children.get(1),
+                advanceType, new BigDecimal(1000), new BigDecimal(300), true);
+
+        orderElementDAO.save(orderElement);
+        orderElementDAO.flush();
+
+        Long id = orderElement.getId();
+        OrderLineGroup found = (OrderLineGroup) orderElementDAO.find(id);
+        assertNotNull(found);
+
+        orderElementDAO.remove(id);
+        orderElementDAO.flush();
+
+        try {
+            found = (OrderLineGroup) orderElementDAO.find(id);
+            fail("It should throw an exception");
+        } catch (InstanceNotFoundException e) {
+            found = null;
+        }
+        assertNull(found);
+    }
+
 }

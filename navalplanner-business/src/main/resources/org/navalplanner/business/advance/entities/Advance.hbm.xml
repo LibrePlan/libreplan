@@ -25,28 +25,36 @@
             <param name="max_lo">100</param>
         </generator>
     </id>
+
     <version name="version" access="property" type="long" />
 
     <property name="reportGlobalAdvance" access="field"/>
-    <property name="maxValue" access="field" scale="2"/>
-    <property name="type" access="field">
-        <type name="org.hibernate.type.EnumType">
-            <param name="enumClass">org.navalplanner.business.advance.entities.AdvanceAssignment$Type</param>
-        </type>
-    </property>
 
     <many-to-one name="advanceType" class="AdvanceType" column="ADVANCE_TYPE_ID"/>
 
-    <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID"/>
+    <joined-subclass name="DirectAdvanceAssignment">
+        <key column="ADVANCE_ASSIGNMENT_ID"></key>
 
-    <set name="advanceMeasurements"
-         cascade="all,delete-orphan"
-         inverse="true"
-         access="field"
-         sort="org.navalplanner.business.advance.entities.AdvanceMeasurementComparator">
-            <key column="ADVANCE_ASSIGNMENT_ID" />
-            <one-to-many class="org.navalplanner.business.advance.entities.AdvanceMeasurement"></one-to-many>
-    </set>
+        <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="DIRECT_ORDER_ELEMENT_ID"/>
+
+        <property name="maxValue" access="field" scale="2"/>
+
+        <set name="advanceMeasurements"
+             cascade="all,delete-orphan"
+             inverse="true"
+             access="field"
+             sort="org.navalplanner.business.advance.entities.AdvanceMeasurementComparator">
+                <key column="ADVANCE_ASSIGNMENT_ID" />
+                <one-to-many class="org.navalplanner.business.advance.entities.AdvanceMeasurement"></one-to-many>
+        </set>
+    </joined-subclass>
+
+    <joined-subclass name="IndirectAdvanceAssignment">
+        <key column="ADVANCE_ASSIGNMENT_ID"></key>
+
+        <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="INDIRECT_ORDER_ELEMENT_ID"/>
+    </joined-subclass>
+
 </class>
 
 <!-- AdvanceMeasurement -->

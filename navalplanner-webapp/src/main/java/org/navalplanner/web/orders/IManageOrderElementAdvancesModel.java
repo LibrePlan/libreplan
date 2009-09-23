@@ -7,6 +7,8 @@ import java.util.List;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceType;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -48,8 +50,8 @@ public interface IManageOrderElementAdvancesModel {
 
     public BigDecimal getUnitPrecision();
 
-    public AdvanceMeasurement getFirstAdvanceMeasurement(
-            AdvanceAssignment advanceAssignment);
+    public AdvanceMeasurement getLastAdvanceMeasurement(
+            DirectAdvanceAssignment advanceAssignment);
 
     public void sortListAdvanceMeasurement();
 
@@ -61,5 +63,10 @@ public interface IManageOrderElementAdvancesModel {
 
     public BigDecimal getPercentageAdvanceMeasurement(
             AdvanceMeasurement advanceMeasurement);
+
+    public DirectAdvanceAssignment calculateFakeDirectAdvanceAssigment(
+            IndirectAdvanceAssignment indirectAdvanceAssignment);
+
+    public BigDecimal getAdvancePercentageChildren();
 
 }

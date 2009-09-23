@@ -6,7 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.navalplanner.business.advance.entities.AdvanceAssignment;
+import org.joda.time.LocalDate;
+import org.navalplanner.business.advance.entities.AdvanceType;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 
 public class OrderLine extends OrderElement {
 
@@ -62,8 +64,11 @@ public class OrderLine extends OrderElement {
         result.setCode(getCode());
         result.setInitDate(getInitDate());
         result.setEndDate(getEndDate());
-        this.setCode("");
+
+        this.setName(getName() + " (copy)");
+        this.setCode(getCode() + " (copy)");
         result.add(this);
+
         return result;
     }
 
@@ -345,26 +350,48 @@ public class OrderLine extends OrderElement {
     }
 
     @Override
-    public BigDecimal getAdvancePercentage() {
-        Set<AdvanceAssignment> advanceAssignments = getAdvanceAssignments();
-
-        BigDecimal temp = new BigDecimal(0);
-        for (AdvanceAssignment advanceAssignment : advanceAssignments) {
-            BigDecimal percentage = advanceAssignment.getLastPercentage();
-            temp = temp.add(percentage);
+    protected BigDecimal getAdvancePercentage(LocalDate date) {
+        for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
+            if (directAdvanceAssignment.getReportGlobalAdvance()) {
+                return directAdvanceAssignment.getAdvancePercentage(date);
+            }
         }
 
-        Integer number = advanceAssignments.size();
-        if (number > 0) {
-            temp = temp.divide(new BigDecimal(number));
+        return BigDecimal.ZERO;
+    }
+
+    protected Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignments(
+            AdvanceType advanceType) {
+        Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
+
+        for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
+            if (directAdvanceAssignment.getAdvanceType().getUnitName().equals(
+                    advanceType.getUnitName())) {
+                result.add(directAdvanceAssignment);
+                return result;
+            }
         }
 
-        return temp.setScale(2);
+        return result;
     }
 
     @Override
-    public Set<AdvanceAssignment> getAdvanceAssignments() {
-        return getAdvanceAssignmentsWithoutMerge();
+    protected Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignments() {
+        return getDirectAdvanceAssignments();
+    }
+
+    @Override
+    protected Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignmentsReportGlobal() {
+        Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
+
+        for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
+            if (directAdvanceAssignment.getReportGlobalAdvance()) {
+                result.add(directAdvanceAssignment);
+                return result;
+            }
+        }
+
+        return result;
     }
 
 }

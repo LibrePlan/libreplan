@@ -9,6 +9,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Dao for {@link AdvanceType}
@@ -24,6 +25,7 @@ public class AdvanceTypeDAO extends GenericDAOHibernate<AdvanceType, Long>
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AdvanceType findByName(String name) {
         return (AdvanceType) getSession().createCriteria(AdvanceType.class)
                 .add(Restrictions.eq("unitName", name)).uniqueResult();

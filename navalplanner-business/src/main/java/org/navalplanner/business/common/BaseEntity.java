@@ -1,5 +1,6 @@
 package org.navalplanner.business.common;
 
+
 /**
  * Base class for all the application entities.
  *

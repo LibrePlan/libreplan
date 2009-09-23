@@ -9,8 +9,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotEmpty;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceType;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.BaseEntity;
@@ -32,7 +35,7 @@ public abstract class OrderElement extends BaseEntity {
 
     private String description;
 
-    protected Set<AdvanceAssignment> advanceAssignments = new HashSet<AdvanceAssignment>();
+    protected Set<DirectAdvanceAssignment> directAdvanceAssignments = new HashSet<DirectAdvanceAssignment>();
 
     private Set<Label> labels = new HashSet<Label>();
 
@@ -41,7 +44,7 @@ public abstract class OrderElement extends BaseEntity {
 
     private Set<TaskElement> taskElements = new HashSet<TaskElement>();
 
-    private OrderLineGroup parent;
+    protected OrderLineGroup parent;
 
     public OrderLineGroup getParent() {
         return parent;
@@ -147,14 +150,24 @@ public abstract class OrderElement extends BaseEntity {
         return code;
     }
 
-    public abstract Set<AdvanceAssignment> getAdvanceAssignments();
-
-    protected Set<AdvanceAssignment> getAdvanceAssignmentsWithoutMerge() {
-        return Collections.unmodifiableSet(this.advanceAssignments);
+    public Set<DirectAdvanceAssignment> getDirectAdvanceAssignments() {
+        return Collections.unmodifiableSet(directAdvanceAssignments);
     }
 
+    protected abstract Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignments();
+
+    protected abstract Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignments(
+            AdvanceType advanceType);
+
+    protected abstract Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignmentsReportGlobal();
+
     public void removeAdvanceAssignment(AdvanceAssignment advanceAssignment) {
-        advanceAssignments.remove(advanceAssignment);
+        directAdvanceAssignments.remove(advanceAssignment);
+        OrderLineGroup parent = this.getParent();
+        if (parent != null) {
+            parent.removeIndirectAdvanceAssignment(advanceAssignment
+                    .getAdvanceType());
+        }
     }
 
     public Set<Label> getLabels() {
@@ -178,48 +191,59 @@ public abstract class OrderElement extends BaseEntity {
      * @throws DuplicateValueTrueReportGlobalAdvanceException
      * @throws DuplicateAdvanceAssignmentForOrderElementException
      */
-    public void addAdvanceAssignment(AdvanceAssignment newAdvanceAssignment)
+    public void addAdvanceAssignment(
+            DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
-        if(newAdvanceAssignment.getType().equals(AdvanceAssignment.Type.DIRECT)){
-            checkNoOtherGlobalAdvanceAssignment(newAdvanceAssignment);
-            checkAncestorsNoOtherAssignmentWithSameAdvanceType(this,
-                    newAdvanceAssignment);
-            checkChildrenNoOtherAssignmentWithSameAdvanceType(this,
-                    newAdvanceAssignment);
+        checkNoOtherGlobalAdvanceAssignment(newAdvanceAssignment);
+        checkAncestorsNoOtherAssignmentWithSameAdvanceType(this,
+                newAdvanceAssignment);
+        checkChildrenNoOtherAssignmentWithSameAdvanceType(this,
+                newAdvanceAssignment);
+        this.directAdvanceAssignments.add(newAdvanceAssignment);
+
+        OrderLineGroup parent = this.getParent();
+        if (parent != null) {
+            IndirectAdvanceAssignment indirectAdvanceAssignment = IndirectAdvanceAssignment
+                    .create();
+            indirectAdvanceAssignment.setAdvanceType(newAdvanceAssignment
+                    .getAdvanceType());
+            indirectAdvanceAssignment.setOrderElement(parent);
+
+            parent.addIndirectAdvanceAssignment(indirectAdvanceAssignment);
         }
-        this.advanceAssignments.add(newAdvanceAssignment);
     }
 
     private void checkNoOtherGlobalAdvanceAssignment(
-            AdvanceAssignment newAdvanceAssignment)
+            DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateValueTrueReportGlobalAdvanceException {
         if (!newAdvanceAssignment.getReportGlobalAdvance()) {
             return;
         }
-        for (AdvanceAssignment advanceAssignment : advanceAssignments) {
-            if((advanceAssignment.getType().equals(AdvanceAssignment.Type.DIRECT))
-                    && (advanceAssignment.getReportGlobalAdvance()))
+        for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
+            if (directAdvanceAssignment.getReportGlobalAdvance()) {
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
                         "Duplicate Value True ReportGlobalAdvance For Order Element",
                         this, OrderElement.class);
+            }
         }
     }
 
     /**
-     * It checks there are no {@link AdvanceAssignment} with the same type in
-     * orderElement and ancestors
+     * It checks there are no {@link DirectAdvanceAssignment} with the same type
+     * in {@link OrderElement} and ancestors
+     *
      * @param orderElement
      * @param newAdvanceAssignment
      * @throws DuplicateAdvanceAssignmentForOrderElementException
      */
     private void checkAncestorsNoOtherAssignmentWithSameAdvanceType(
-            OrderElement orderElement, AdvanceAssignment newAdvanceAssignment)
+            OrderElement orderElement,
+            DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException {
-        for (AdvanceAssignment advanceAssignment : orderElement.advanceAssignments) {
-            if ((AdvanceType.equivalentInDB(advanceAssignment.getAdvanceType(),
-                    newAdvanceAssignment.getAdvanceType())) &&
-                    (advanceAssignment.getType().equals(AdvanceAssignment.Type.DIRECT))) {
+        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement.directAdvanceAssignments) {
+            if (AdvanceType.equivalentInDB(directAdvanceAssignment
+                    .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
                         "Duplicate Advance Assignment For Order Element", this,
                         OrderElement.class);
@@ -238,13 +262,13 @@ public abstract class OrderElement extends BaseEntity {
      * @param newAdvanceAssignment
      * @throws DuplicateAdvanceAssignmentForOrderElementException
      */
-    private void checkChildrenNoOtherAssignmentWithSameAdvanceType(
-            OrderElement orderElement, AdvanceAssignment newAdvanceAssignment)
+    protected void checkChildrenNoOtherAssignmentWithSameAdvanceType(
+            OrderElement orderElement,
+            DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException {
-        for (AdvanceAssignment advanceAssignment : orderElement.advanceAssignments) {
-            if ((AdvanceType.equivalentInDB(advanceAssignment.getAdvanceType(),
-                    newAdvanceAssignment.getAdvanceType())) &&
-                    (advanceAssignment.getType().equals(AdvanceAssignment.Type.DIRECT))) {
+        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement.directAdvanceAssignments) {
+            if (AdvanceType.equivalentInDB(directAdvanceAssignment
+                    .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
                         "Duplicate Advance Assignment For Order Element", this,
                         OrderElement.class);
@@ -258,6 +282,10 @@ public abstract class OrderElement extends BaseEntity {
         }
     }
 
-    public abstract BigDecimal getAdvancePercentage();
+    public BigDecimal getAdvancePercentage() {
+        return getAdvancePercentage(new LocalDate());
+    }
+
+    protected abstract BigDecimal getAdvancePercentage(LocalDate date);
 
 }

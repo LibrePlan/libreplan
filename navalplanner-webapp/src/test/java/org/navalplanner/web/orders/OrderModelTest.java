@@ -17,11 +17,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.Resource;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -55,6 +59,14 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE })
 @Transactional
 public class OrderModelTest {
+
+    @Resource
+    private IDataBootstrap defaultAdvanceTypesBootstrapListener;
+
+    @Before
+    public void loadRequiredaData() {
+        defaultAdvanceTypesBootstrapListener.loadRequiredData();
+    }
 
     public static Date year(int year) {
         Calendar calendar = Calendar.getInstance();
@@ -178,7 +190,13 @@ public class OrderModelTest {
         final Order order = createValidOrder();
         final OrderElement[] containers = new OrderLineGroup[10];
         for (int i = 0; i < containers.length; i++) {
-            containers[i] = OrderLineGroup.create();
+            containers[i] = adHocTransaction
+                    .runOnTransaction(new IOnTransaction<OrderLineGroup>() {
+                @Override
+                public OrderLineGroup execute() {
+                            return OrderLineGroup.create();
+                }
+            });
             containers[i].setName("bla");
             containers[i].setCode("000000000");
             order.add(containers[i]);
@@ -207,6 +225,11 @@ public class OrderModelTest {
                 try {
                     Order reloaded = orderDAO.find(order.getId());
                     List<OrderElement> elements = reloaded.getOrderElements();
+                    for (OrderElement orderElement : elements) {
+                        assertThat(((OrderLineGroup) orderElement)
+                                .getIndirectAdvanceAssignments().size(),
+                                equalTo(1));
+                    }
                     for (int i = 0; i < containers.length; i++) {
                         assertThat(elements.get(i).getId(),
                                 equalTo(containers[i].getId()));
@@ -230,6 +253,7 @@ public class OrderModelTest {
             }
 
         });
+
         orderModel.remove(order);
     }
 
@@ -249,7 +273,13 @@ public class OrderModelTest {
     @NotTransactional
     public void testAddingOrderElement() throws Exception {
         final Order order = createValidOrder();
-        OrderLineGroup container = OrderLineGroup.create();
+        OrderLineGroup container = adHocTransaction
+                .runOnTransaction(new IOnTransaction<OrderLineGroup>() {
+                    @Override
+                    public OrderLineGroup execute() {
+                        return OrderLineGroup.create();
+                    }
+                });
         container.setName("bla");
         container.setCode("000000000");
         OrderLine leaf = OrderLine.create();
@@ -350,7 +380,6 @@ public class OrderModelTest {
 
                     @Override
                     public Criterion execute() {
-                        // TODO Auto-generated method stub
                         CriterionType criterionType = CriterionType.create("test"
                                 + UUID.randomUUID());
                         criterionTypeDAO.save(criterionType);
