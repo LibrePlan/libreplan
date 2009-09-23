@@ -302,16 +302,17 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
                 .setMaxValue(origAdvanceAssignment.getMaxValue());
         directAdvanceAssignment
                 .setAdvanceType(origAdvanceAssignment.getAdvanceType());
-        directAdvanceAssignment.setOrderElement(origAdvanceAssignment
-                .getOrderElement());
+        directAdvanceAssignment.setOrderElement(this);
         directAdvanceAssignment.setAdvanceMeasurements(origAdvanceAssignment
                 .getAdvanceMeasurements());
 
         while (iterator.hasNext()) {
             DirectAdvanceAssignment tempAssignment = iterator.next();
-            BigDecimal maxValue = tempAssignment.getMaxValue();
-            maxValue = maxValue.add(directAdvanceAssignment.getMaxValue());
-            directAdvanceAssignment.setMaxValue(maxValue);
+            if (!directAdvanceAssignment.getAdvanceType().getPercentage()) {
+                BigDecimal maxValue = tempAssignment.getMaxValue();
+                maxValue = maxValue.add(directAdvanceAssignment.getMaxValue());
+                directAdvanceAssignment.setMaxValue(maxValue);
+            }
 
             SortedSet<AdvanceMeasurement> advanceMeasurements = new TreeSet<AdvanceMeasurement>(
                     new AdvanceMeasurementComparator());
@@ -365,11 +366,25 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
         LocalDate date;
         BigDecimal add;
 
+        BigDecimal totalHours = null;
+        if (advanceAssignment.getAdvanceType().getPercentage()) {
+            totalHours = new BigDecimal(advanceAssignment.getOrderElement()
+                    .getWorkHours());
+        }
+
         while ((next1 != null) && (next2 != null)) {
             if (next1.getDate().compareTo(next2.getDate()) < 0) {
                 date = next1.getDate();
                 add = next1.getValue().subtract(previous1);
                 previous1 = next1.getValue();
+
+                if (advanceAssignment.getAdvanceType().getPercentage()) {
+                    BigDecimal orderElementHours = new BigDecimal(next1
+                            .getAdvanceAssignment().getOrderElement()
+                            .getWorkHours());
+                    add = add.multiply(orderElementHours).divide(totalHours,
+                            RoundingMode.DOWN);
+                }
 
                 if (iterator1.hasNext()) {
                     next1 = iterator1.next();
@@ -381,6 +396,14 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
                 add = next2.getValue().subtract(previous2);
                 previous2 = next2.getValue();
 
+                if (advanceAssignment.getAdvanceType().getPercentage()) {
+                    BigDecimal orderElementHours = new BigDecimal(next2
+                            .getAdvanceAssignment().getOrderElement()
+                            .getWorkHours());
+                    add = add.multiply(orderElementHours).divide(totalHours,
+                            RoundingMode.DOWN);
+                }
+
                 if (iterator2.hasNext()) {
                     next2 = iterator2.next();
                 } else {
@@ -388,10 +411,27 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
                 }
             } else {
                 date = next1.getDate();
-                add = next1.getValue().subtract(previous1).add(
-                        next2.getValue().subtract(previous2));
+                BigDecimal add1 = next1.getValue().subtract(previous1);
+                BigDecimal add2 = next2.getValue().subtract(previous2);
+                add = add1.add(add2);
                 previous1 = next1.getValue();
                 previous2 = next2.getValue();
+
+                if (advanceAssignment.getAdvanceType().getPercentage()) {
+                    BigDecimal orderElementHours1 = new BigDecimal(next1
+                            .getAdvanceAssignment().getOrderElement()
+                            .getWorkHours());
+                    add1 = add1.multiply(orderElementHours1).divide(totalHours,
+                            RoundingMode.DOWN);
+
+                    BigDecimal orderElementHours2 = new BigDecimal(next2
+                            .getAdvanceAssignment().getOrderElement()
+                            .getWorkHours());
+                    add2 = add2.multiply(orderElementHours2).divide(totalHours,
+                            RoundingMode.DOWN);
+
+                    add = add1.add(add2);
+                }
 
                 if (iterator1.hasNext()) {
                     next1 = iterator1.next();
@@ -408,8 +448,8 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
             AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
             advanceMeasurement.setAdvanceAssignment(advanceAssignment);
             advanceMeasurement.setDate(date);
-            advanceMeasurement.setValue(previousResult.add(add));
-            previousResult = advanceMeasurement.getValue();
+            previousResult = previousResult.add(add);
+            advanceMeasurement.setValue(previousResult);
             result.add(advanceMeasurement);
         }
 
@@ -417,6 +457,14 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
             date = next1.getDate();
             add = next1.getValue().subtract(previous1);
             previous1 = next1.getValue();
+
+            if (advanceAssignment.getAdvanceType().getPercentage()) {
+                BigDecimal orderElementHours = new BigDecimal(next1
+                        .getAdvanceAssignment().getOrderElement()
+                        .getWorkHours());
+                add = add.multiply(orderElementHours).divide(totalHours,
+                        RoundingMode.DOWN);
+            }
 
             if (iterator2.hasNext()) {
                 next1 = iterator1.next();
@@ -436,6 +484,14 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
             date = next2.getDate();
             add = next2.getValue().subtract(previous2);
             previous2 = next2.getValue();
+
+            if (advanceAssignment.getAdvanceType().getPercentage()) {
+                BigDecimal orderElementHours = new BigDecimal(next2
+                        .getAdvanceAssignment().getOrderElement()
+                        .getWorkHours());
+                add = add.multiply(orderElementHours).divide(totalHours,
+                        RoundingMode.DOWN);
+            }
 
             if (iterator2.hasNext()) {
                 next2 = iterator2.next();

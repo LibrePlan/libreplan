@@ -718,4 +718,122 @@ public class OrderElementTest {
                         new BigDecimal(100))));
     }
 
+    @Test
+    public void checkAdvancePercentageOrderGroupLineWithPercentageAdvanceType()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        OrderElement orderElement = givenOrderLineGroupWithTwoOrderLines(1000,
+                2000);
+
+        List<OrderElement> children = orderElement.getChildren();
+
+        AdvanceType advanceType = PredefinedAdvancedTypes.PERCENTAGE.getType();
+        addAvanceAssignmentWithMeasurement(children.get(0), advanceType,
+                new BigDecimal(100), new BigDecimal(40), true);
+
+        addAvanceAssignmentWithMeasurement(children.get(1), advanceType,
+                new BigDecimal(100), new BigDecimal(20), true);
+
+        assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
+                26).divide(new BigDecimal(100))));
+
+        Set<IndirectAdvanceAssignment> indirectAdvanceAssignments = ((OrderLineGroup) orderElement)
+                .getIndirectAdvanceAssignments();
+        for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
+            if (indirectAdvanceAssignment.getAdvanceType().getUnitName()
+                    .equals(PredefinedAdvancedTypes.PERCENTAGE.getTypeName())) {
+                indirectAdvanceAssignment.setReportGlobalAdvance(true);
+            } else {
+                indirectAdvanceAssignment.setReportGlobalAdvance(false);
+            }
+        }
+
+        assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
+                26).divide(new BigDecimal(100))));
+    }
+
+    @Test
+    public void checkAdvanceMeasurementMergePercentageAdvanceType()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        OrderElement orderElement = givenOrderLineGroupWithTwoOrderLines(1000,
+                2000);
+
+        List<OrderElement> children = orderElement.getChildren();
+
+        LocalDate one = new LocalDate(2009, 9, 1);
+        LocalDate two = new LocalDate(2009, 9, 2);
+        LocalDate three = new LocalDate(2009, 9, 3);
+        LocalDate four = new LocalDate(2009, 9, 4);
+        LocalDate five = new LocalDate(2009, 9, 5);
+
+        AdvanceType advanceType = PredefinedAdvancedTypes.PERCENTAGE.getType();
+
+        addAvanceAssignmentWithMeasurements(children.get(0), advanceType, true,
+                new BigDecimal(100), two, new BigDecimal(10), three,
+                new BigDecimal(20), four, new BigDecimal(40));
+
+        addAvanceAssignmentWithMeasurements(children.get(1), advanceType, true,
+                new BigDecimal(100), one, new BigDecimal(10), four,
+                new BigDecimal(20), five, new BigDecimal(50));
+
+        assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
+                46).divide(new BigDecimal(100)).setScale(2)));
+
+        Set<DirectAdvanceAssignment> directAdvanceAssignments = orderElement
+                .getDirectAdvanceAssignments();
+        assertThat(directAdvanceAssignments.size(), equalTo(0));
+
+        Set<IndirectAdvanceAssignment> indirectAdvanceAssignments = ((OrderLineGroup) orderElement)
+                .getIndirectAdvanceAssignments();
+        assertThat(indirectAdvanceAssignments.size(), equalTo(2));
+
+        DirectAdvanceAssignment advanceAssignment = null;
+        for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
+            if (indirectAdvanceAssignment.getAdvanceType().equals(advanceType)) {
+                advanceAssignment = ((OrderLineGroup) orderElement)
+                        .calculateFakeDirectAdvanceAssigment(indirectAdvanceAssignment);
+                break;
+            }
+        }
+        assertThat(advanceAssignment.getMaxValue(),
+                equalTo(new BigDecimal(100)));
+
+        SortedSet<AdvanceMeasurement> advanceMeasurements = advanceAssignment
+                .getAdvanceMeasurements();
+        assertThat(advanceMeasurements.size(), equalTo(5));
+
+        ArrayList<AdvanceMeasurement> list = new ArrayList<AdvanceMeasurement>(
+                advanceMeasurements);
+        Collections.sort(list, new AdvanceMeasurementComparator());
+        Collections.reverse(list);
+        Iterator<AdvanceMeasurement> iterator = list.iterator();
+
+        AdvanceMeasurement next = iterator.next();
+        assertThat(next.getDate(), equalTo(one));
+        assertThat(next.getValue(), equalTo(new BigDecimal(6)));
+        // FIXME real value should be: 6.66
+
+        next = iterator.next();
+        assertThat(next.getDate(), equalTo(two));
+        assertThat(next.getValue(), equalTo(new BigDecimal(9)));
+        // FIXME real value should be: 10
+
+        next = iterator.next();
+        assertThat(next.getDate(), equalTo(three));
+        assertThat(next.getValue(), equalTo(new BigDecimal(12)));
+        // FIXME real value should be: 13.33
+
+        next = iterator.next();
+        assertThat(next.getDate(), equalTo(four));
+        assertThat(next.getValue(), equalTo(new BigDecimal(24)));
+        // FIXME real value should be: 26.66
+
+        next = iterator.next();
+        assertThat(next.getDate(), equalTo(five));
+        assertThat(next.getValue(), equalTo(new BigDecimal(44)));
+        // FIXME real value should be: 46.66
+
+    }
+
 }

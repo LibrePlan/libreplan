@@ -200,6 +200,8 @@ public abstract class OrderElement extends BaseEntity {
                 newAdvanceAssignment);
         checkChildrenNoOtherAssignmentWithSameAdvanceType(this,
                 newAdvanceAssignment);
+
+        newAdvanceAssignment.setOrderElement(this);
         this.directAdvanceAssignments.add(newAdvanceAssignment);
 
         OrderLineGroup parent = this.getParent();
