@@ -4,9 +4,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
@@ -199,9 +197,13 @@ public class LabelTypeModel implements ILabelTypeModel {
 
     @Override
     @Transactional(readOnly = true)
-    public Set<Label> getLabels() {
-        return (labelType != null) ? labelType.getLabels()
-                : new HashSet<Label>();
+    public List<Label> getLabels() {
+        // Safe copy
+        List<Label> labels = new ArrayList<Label>();
+        if (labelType != null) {
+            labels.addAll(labelType.getLabels());
+        }
+        return labels;
     }
 
     @Override

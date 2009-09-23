@@ -3,7 +3,6 @@ package org.navalplanner.web.labels;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -98,7 +97,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         return labelTypeModel.getLabelType();
     }
 
-    public Set<Label> getLabels() {
+    public List<Label> getLabels() {
         return labelTypeModel.getLabels();
     }
 
