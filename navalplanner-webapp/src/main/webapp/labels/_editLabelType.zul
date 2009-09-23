@@ -3,16 +3,24 @@
     <vbox id="messagesContainer"/>
 
     <!--  Name labeltype -->
-    <vbox>
-        <hbox>
-            <label value="${i18n:_('Name')}"/>
-            <textbox id="name" value="@{controller.labelType.name}"/>
-        </hbox>
+    <vbox style="margin-bottom: 5px">
+        <grid>
+            <columns>
+                <column label=""></column>
+                <column label=""></column>
+            </columns>
+            <rows>
+                <row>
+                    <label value="${i18n:_('Name')}"></label>
+                    <textbox id="name"
+                        value="@{controller.labelType.name}" />
+                </row>
+            </rows>
+        </grid>
     </vbox>
 
     <!-- Label list -->
-    <panel title="${i18n:_('Label list')}" border="normal"
-        style="margin: 10px 0px">
+    <panel title="${i18n:_('Label list')}" border="normal">
         <panelchildren>
             <button label="${i18n:_('New label')}" onClick="controller.createLabel()" />
             <grid id="gridLabels" mold="paging" pageSize="10"
