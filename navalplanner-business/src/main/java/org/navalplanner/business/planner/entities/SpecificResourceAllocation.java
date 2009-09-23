@@ -10,6 +10,8 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.CombinedWorkHours;
+import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 
@@ -97,13 +99,22 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
+    protected IWorkHours getWorkHoursGivenTaskHours(IWorkHours taskWorkHours) {
+        if (getResource().getCalendar() == null) {
+            return taskWorkHours;
+        }
+        return CombinedWorkHours.minOf(taskWorkHours, getResource()
+                .getCalendar());
+    }
+
+    @Override
     protected Class<SpecificDayAssignment> getDayAssignmentType() {
         return SpecificDayAssignment.class;
     }
 
     @Override
-    protected List<DayAssignment> createAssignmentsAtDay(List<Resource> resources,
-            LocalDate day,
+    protected List<DayAssignment> createAssignmentsAtDay(
+            List<Resource> resources, LocalDate day,
             ResourcesPerDay resourcesPerDay, int limit) {
         int hours = calculateTotalToDistribute(day, resourcesPerDay);
         SpecificDayAssignment specific = SpecificDayAssignment.create(day, Math

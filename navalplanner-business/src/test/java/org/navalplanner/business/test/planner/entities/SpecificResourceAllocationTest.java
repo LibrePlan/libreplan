@@ -8,6 +8,8 @@ import static org.junit.Assert.assertThat;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.consecutiveDays;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.from;
 
+import java.util.Date;
+
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -33,6 +35,15 @@ public class SpecificResourceAllocationTest {
 
     private void givenAssignedHours(int assignedHours){
         this.assignedHours = assignedHours;
+    }
+
+    private void givenResourceCalendarAlwaysReturning(int hours) {
+        this.calendar = createNiceMock(ResourceCalendar.class);
+        expect(this.calendar.getWorkableHours(isA(LocalDate.class))).andReturn(
+                hours).anyTimes();
+        expect(this.calendar.getWorkableHours(isA(Date.class)))
+                .andReturn(hours).anyTimes();
+        replay(this.calendar);
     }
 
     private void givenWorker(){
@@ -96,6 +107,16 @@ public class SpecificResourceAllocationTest {
         specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
         assertThat(specificResourceAllocation.getAssignments(),
                 DayAssignmentMatchers.haveHours(8, 8));
+    }
+
+    @Test
+    public void theResourcesPerDayAreConvertedTakingIntoAccountTheWorkerCalendar() {
+        givenResourceCalendarAlwaysReturning(4);
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 2);
+        specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
+        assertThat(specificResourceAllocation.getAssignments(),
+                DayAssignmentMatchers.haveHours(4, 4));
     }
 
 }

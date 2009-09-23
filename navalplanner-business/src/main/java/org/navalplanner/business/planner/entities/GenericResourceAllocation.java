@@ -136,7 +136,11 @@ public class GenericResourceAllocation extends
             }
             return shares;
         }
+    }
 
+    @Override
+    protected IWorkHours getWorkHoursGivenTaskHours(IWorkHours taskWorkHours) {
+        return taskWorkHours;
     }
 
     public IAllocatable forResources(Collection<? extends Resource> resources) {

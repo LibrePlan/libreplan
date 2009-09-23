@@ -207,11 +207,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     final int calculateTotalToDistribute(LocalDate day,
             ResourcesPerDay resourcesPerDay) {
-        Integer workableHours = getWorkHours().getWorkableHours(day);
+        Integer workableHours = getWorkHoursPerDay().getWorkableHours(day);
         return resourcesPerDay.asHoursGivenResourceWorkingDayOf(workableHours);
     }
 
-    private IWorkHours getWorkHours() {
+    private IWorkHours getWorkHoursPerDay() {
+        return getWorkHoursGivenTaskHours(getTaskWorkHoursLimit());
+    }
+
+    private IWorkHours getTaskWorkHoursLimit() {
         return new IWorkHours() {
             @Override
             public Integer getWorkableHours(LocalDate day) {
@@ -224,6 +228,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
         };
     }
+
+    protected abstract IWorkHours getWorkHoursGivenTaskHours(
+            IWorkHours taskWorkHours);
 
     protected final BaseCalendar getTaskCalendar() {
         return getTask().getCalendar();
