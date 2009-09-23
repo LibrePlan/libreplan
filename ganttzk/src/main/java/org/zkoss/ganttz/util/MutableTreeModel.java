@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -36,6 +37,37 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
             } else {
                 children.addAll(position, nodes);
             }
+        }
+
+        public int[] down(Node<T> node) {
+            ListIterator<Node<T>> listIterator = children.listIterator();
+            while (listIterator.hasNext()) {
+                Node<T> current = listIterator.next();
+                if (current == node && listIterator.hasNext()) {
+                    int nextIndex = listIterator.nextIndex();
+                    listIterator.remove();
+                    listIterator.next();
+                    listIterator.add(node);
+                    return new int[] { nextIndex - 1, nextIndex };
+                }
+            }
+            return new int[] {};
+        }
+
+        public int[] up(Node<T> node) {
+            ListIterator<Node<T>> listIterator = children.listIterator(children
+                    .size());
+            while (listIterator.hasPrevious()) {
+                Node<T> current = listIterator.previous();
+                if (current == node && listIterator.hasPrevious()) {
+                    listIterator.remove();
+                    int previousIndex = listIterator.previousIndex();
+                    listIterator.previous();
+                    listIterator.add(current);
+                    return new int[] { previousIndex, previousIndex + 1 };
+                }
+            }
+            return new int[] {};
         }
 
         private void until(LinkedList<Integer> result, Node<T> parent) {
@@ -241,6 +273,26 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         List<T> toAdd = new ArrayList<T>();
         toAdd.add(nodeToAdd);
         add(parent, insertionPosition, toAdd);
+    }
+
+    public void down(T node) {
+        T parent = getParent(node);
+        Node<T> parentNode = find(parent);
+        int[] changed = parentNode.down(find(node));
+        if (changed.length != 0) {
+            fireEvent(parent, changed[0], changed[1],
+                    TreeDataEvent.CONTENTS_CHANGED);
+        }
+    }
+
+    public void up(T node) {
+        T parent = getParent(node);
+        Node<T> parentNode = find(parent);
+        int[] changed = parentNode.up(find(node));
+        if (changed.length != 0) {
+            fireEvent(parent, changed[0], changed[1],
+                    TreeDataEvent.CONTENTS_CHANGED);
+        }
     }
 
 }

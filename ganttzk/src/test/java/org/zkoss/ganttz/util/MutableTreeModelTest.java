@@ -334,6 +334,92 @@ public class MutableTreeModelTest {
         assertThat(model.getChild(model.getRoot(), 0), equalTo(substitution));
     }
 
+    @Test
+    public void aNodeCanBeMovedDown() {
+        final MutableTreeModel<Prueba> model = MutableTreeModel
+                .create(Prueba.class);
+        Prueba prueba1 = new Prueba();
+        model.addToRoot(prueba1);
+        Prueba prueba2 = new Prueba();
+        model.addToRoot(prueba2);
+        Prueba prueba3 = new Prueba();
+        model.addToRoot(prueba3);
+        model.down(prueba1);
+        assertThat(model.getChild(model.getRoot(), 0), equalTo(prueba2));
+        assertThat(model.getChild(model.getRoot(), 1), equalTo(prueba1));
+        assertThat(model.getChild(model.getRoot(), 2), equalTo(prueba3));
+    }
+
+    @Test
+    public void aNodeCanBeMovedUp() {
+        final MutableTreeModel<Prueba> model = MutableTreeModel
+                .create(Prueba.class);
+        Prueba prueba1 = new Prueba();
+        model.addToRoot(prueba1);
+        Prueba prueba2 = new Prueba();
+        model.addToRoot(prueba2);
+        Prueba prueba3 = new Prueba();
+        model.addToRoot(prueba3);
+        model.up(prueba2);
+        assertThat(model.getChild(model.getRoot(), 0), equalTo(prueba2));
+        assertThat(model.getChild(model.getRoot(), 1), equalTo(prueba1));
+        assertThat(model.getChild(model.getRoot(), 2), equalTo(prueba3));
+    }
+
+    @Test
+    public void IfItIsAtTheTopUpDoesNothing() {
+        final MutableTreeModel<Prueba> model = MutableTreeModel
+                .create(Prueba.class);
+        Prueba prueba1 = new Prueba();
+        model.addToRoot(prueba1);
+        Prueba prueba2 = new Prueba();
+        model.addToRoot(prueba2);
+        Prueba prueba3 = new Prueba();
+        model.addToRoot(prueba3);
+        model.up(prueba1);
+        assertThat(model.getChild(model.getRoot(), 0), equalTo(prueba1));
+        assertThat(model.getChild(model.getRoot(), 1), equalTo(prueba2));
+        assertThat(model.getChild(model.getRoot(), 2), equalTo(prueba3));
+    }
+
+    @Test
+    public void movingUpAndDownSendsEvents() {
+        final MutableTreeModel<Prueba> model = MutableTreeModel
+                .create(Prueba.class);
+        Prueba prueba1 = new Prueba();
+        model.addToRoot(prueba1);
+        Prueba prueba2 = new Prueba();
+        model.addToRoot(prueba2);
+        Prueba prueba3 = new Prueba();
+        model.addToRoot(prueba3);
+        final ArrayList<TreeDataEvent> eventsFired = new ArrayList<TreeDataEvent>();
+        model.addTreeDataListener(new TreeDataListener() {
+
+            @Override
+            public void onChange(TreeDataEvent event) {
+                eventsFired.add(event);
+            }
+        });
+        model.up(prueba2);
+        checkIsValid(getLast(eventsFired), TreeDataEvent.CONTENTS_CHANGED,
+                model.getRoot(), 0, 1);
+        model.down(prueba1);
+        checkIsValid(getLast(eventsFired), TreeDataEvent.CONTENTS_CHANGED,
+                model.getRoot(), 1, 2);
+    }
+
+    @Test
+    public void ifItIsAtTheBottomDownDoesNothing() {
+        final MutableTreeModel<Prueba> model = MutableTreeModel
+                .create(Prueba.class);
+        Prueba prueba1 = new Prueba();
+        model.addToRoot(prueba1);
+        Prueba prueba2 = new Prueba();
+        model.addToRoot(prueba2);
+        model.down(prueba2);
+        assertThat(model.getChild(model.getRoot(), 1), equalTo(prueba2));
+    }
+
     private void checkIsValid(TreeDataEvent event, int type,
             Prueba expectedParent, int expectedPosition) {
         checkIsValid(event, type, expectedParent, expectedPosition,
@@ -350,6 +436,9 @@ public class MutableTreeModelTest {
     }
 
     private TreeDataEvent getLast(List<TreeDataEvent> list) {
+        if (list.isEmpty()) {
+            throw new RuntimeException("no events");
+        }
         return list.get(list.size() - 1);
     }
 }
