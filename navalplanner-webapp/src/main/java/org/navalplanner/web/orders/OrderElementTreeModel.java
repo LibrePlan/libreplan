@@ -3,6 +3,7 @@ package org.navalplanner.web.orders;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
@@ -10,48 +11,53 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
-import org.zkoss.zul.SimpleTreeModel;
-import org.zkoss.zul.SimpleTreeNode;
+import org.zkoss.ganttz.util.MutableTreeModel;
+import org.zkoss.zul.TreeModel;
 
 /**
  * Model for a the {@link OrderElement} tree for a {@link Order} <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  */
-public class OrderElementTreeModel extends SimpleTreeModel {
+public class OrderElementTreeModel {
 
-    private static List<SimpleTreeNode> asNodes(List<OrderElement> orderElements) {
-        ArrayList<SimpleTreeNode> result = new ArrayList<SimpleTreeNode>();
+    private static MutableTreeModel<OrderElement> createTreeFrom(Order order) {
+        List<OrderElement> orderElements = order.getOrderElements();
+        MutableTreeModel<OrderElement> treeModel = MutableTreeModel
+                .create(OrderElement.class);
+        OrderElement parent = treeModel.getRoot();
+        treeModel.add(parent, orderElements);
+        addChildren(treeModel, orderElements);
+        return treeModel;
+    }
+
+    private static void addChildren(MutableTreeModel<OrderElement> treeModel,
+            List<OrderElement> orderElements) {
         for (OrderElement orderElement : orderElements) {
-            result.add(asNode(orderElement));
+            treeModel.add(orderElement, orderElement.getChildren());
+            addChildren(treeModel, orderElement.getChildren());
+            reattach(orderElement);
         }
-        return result;
     }
 
-    private static SimpleTreeNode asNode(OrderElement orderElement) {
+    private static void reattach(OrderElement orderElement) {
         orderElement.getHoursGroups().size();
-        return new SimpleTreeNode(orderElement, asNodes(orderElement
-                .getChildren()));
     }
 
-    private static SimpleTreeNode createRootNodeAndDescendants(Order order) {
-        return new SimpleTreeNode(order, asNodes(order.getOrderElements()));
-    }
+    private MutableTreeModel<OrderElement> tree;
+    private final Order order;
 
     public OrderElementTreeModel(Order order) {
-        super(createRootNodeAndDescendants(order));
+        this.order = order;
+        tree = createTreeFrom(order);
     }
 
-    public void reloadFromOrder() {
-        Order root = getRootAsOrder();
-        SimpleTreeNode rootAsNode = getRootAsNode();
-        rootAsNode.getChildren().clear();
-        rootAsNode.getChildren().addAll(asNodes(root.getOrderElements()));
+    public TreeModel asTree() {
+        return tree;
     }
 
     public void addOrderElement() {
-        addOrderElementAtImpl(getRootAsNode());
-        reloadFromOrder();
+        addOrderElementAtImpl(tree.getRoot());
     }
 
     private OrderElement createNewOrderElement() {
@@ -61,158 +67,160 @@ public class OrderElementTreeModel extends SimpleTreeModel {
         return newOrderElement;
     }
 
-    public void addOrderElementAt(SimpleTreeNode node) {
+    public void addOrderElementAt(OrderElement node) {
         addOrderElementAtImpl(node);
-        reloadFromOrder();
     }
 
-    private void addOrderElementAtImpl(SimpleTreeNode node) {
-        addOrderElementAtImpl(node, createNewOrderElement());
+    private void addOrderElementAtImpl(OrderElement parent) {
+        addOrderElementAtImpl(parent, createNewOrderElement());
+
     }
 
-    private void addOrderElementAtImpl(SimpleTreeNode node, OrderElement orderElement) {
-        IOrderLineGroup container = turnIntoContainerIfNeeded(node);
+    private void addToTree(OrderElement parentNode, OrderElement elementToAdd) {
+        tree.add(parentNode, elementToAdd);
+        addChildren(tree, Arrays.asList(elementToAdd));
+    }
+
+    private void addToTree(OrderElement parentNode, int position,
+            OrderElement elementToAdd) {
+        tree.add(parentNode, position, Arrays.asList(elementToAdd));
+        addChildren(tree, Arrays.asList(elementToAdd));
+    }
+
+    private void addOrderElementAtImpl(OrderElement parent,
+            OrderElement orderElement) {
+        IOrderLineGroup container = turnIntoContainerIfNeeded(parent);
         container.add(orderElement);
+        addToTree(toNode(container), orderElement);
     }
 
-    private void addOrderElementAtImpl(SimpleTreeNode destinationNode, OrderElement orderElement,
-            int position) {
+    private void addOrderElementAtImpl(OrderElement destinationNode,
+            OrderElement elementToAdd, int position) {
         IOrderLineGroup container = turnIntoContainerIfNeeded(destinationNode);
-        container.add(position, orderElement);
+        container.add(position, elementToAdd);
+        addToTree(toNode(container), position, elementToAdd);
+    }
+
+    private OrderElement toNode(IOrderLineGroup container) {
+        if (container == order) {
+            return tree.getRoot();
+        }
+        return (OrderElement) container;
     }
 
     private IOrderLineGroup turnIntoContainerIfNeeded(
-            SimpleTreeNode selectedForTurningIntoContainer) {
+            OrderElement selectedForTurningIntoContainer) {
+        if (tree.isRoot(selectedForTurningIntoContainer)) {
+            return order;
+        }
+        if (selectedForTurningIntoContainer instanceof IOrderLineGroup) {
+            return (IOrderLineGroup) selectedForTurningIntoContainer;
+        }
         IOrderLineGroup parentContainer = asOrderLineGroup(getParent(selectedForTurningIntoContainer));
-        if (selectedForTurningIntoContainer.getData() instanceof IOrderLineGroup)
-            return (IOrderLineGroup) selectedForTurningIntoContainer.getData();
-        OrderElement toBeTurned = asOrderLine(selectedForTurningIntoContainer);
-        OrderLineGroup asContainer = toBeTurned.toContainer();
-        parentContainer.replace(toBeTurned, asContainer);
+        OrderLineGroup asContainer = selectedForTurningIntoContainer
+                .toContainer();
+        parentContainer.replace(selectedForTurningIntoContainer, asContainer);
+        tree.replace(selectedForTurningIntoContainer, asContainer);
+        addChildren(tree, Arrays.asList((OrderElement) asContainer));
         return asContainer;
     }
 
-    private SimpleTreeNode getParent(SimpleTreeNode node) {
-        int[] position = getPath(node);
-        SimpleTreeNode current = getRootAsNode();
-        SimpleTreeNode[] path = new SimpleTreeNode[position.length];
-        for (int i = 0; i < position.length; i++) {
-            path[i] = (SimpleTreeNode) current.getChildAt(position[i]);
-            current = path[i];
-        }
-        int parentOfLast = path.length - 2;
-        if (parentOfLast >= 0)
-            return path[parentOfLast];
-        else
-            return getRootAsNode();
+    private OrderElement getParent(OrderElement node) {
+        return tree.getParent(node);
     }
 
-    public List<SimpleTreeNode> getParents(SimpleTreeNode node) {
-        List<SimpleTreeNode> parents = new ArrayList<SimpleTreeNode>();
-        SimpleTreeNode current = node;
-
-        while (!current.equals(getRootAsNode())) {
-            current = getParent(current);
-            parents.add(current);
-        }
-
-        return parents;
+    public List<OrderElement> getParents(OrderElement node) {
+        return tree.getParents(node);
     }
 
-    public void indent(SimpleTreeNode nodeToIndent) {
-        SimpleTreeNode parentOfSelected = getParent(nodeToIndent);
-        int position = parentOfSelected.getChildren().indexOf(nodeToIndent);
+    public void indent(OrderElement nodeToIndent) {
+        OrderElement parentOfSelected = tree.getParent(nodeToIndent);
+        int position = getChildren(parentOfSelected).indexOf(nodeToIndent);
         if (position == 0) {
             return;
         }
-        SimpleTreeNode destination = (SimpleTreeNode) parentOfSelected
-                .getChildren().get(position - 1);
-        moveImpl(nodeToIndent, destination, destination.getChildCount());
-        reloadFromOrder();
+        OrderElement destination = (OrderElement) getChildren(parentOfSelected)
+                .get(position - 1);
+        moveImpl(nodeToIndent, destination, getChildren(destination).size());
     }
 
-    public void unindent(SimpleTreeNode nodeToUnindent) {
-        SimpleTreeNode parent = getParent(nodeToUnindent);
-        if (getRootAsNode() == parent) {
+    private List<OrderElement> getChildren(OrderElement node) {
+        List<OrderElement> result = new ArrayList<OrderElement>();
+        final int childCount = tree.getChildCount(node);
+        for (int i = 0; i < childCount; i++) {
+            result.add(tree.getChild(node, i));
+        }
+        return result;
+    }
+
+    public void unindent(OrderElement nodeToUnindent) {
+        OrderElement parent = tree.getParent(nodeToUnindent);
+        if (tree.isRoot(parent)) {
             return;
         }
-        SimpleTreeNode destination = getParent(parent);
-        moveImpl(nodeToUnindent, destination, destination.getChildren()
-                .indexOf(parent) + 1);
-        reloadFromOrder();
+        OrderElement destination = tree.getParent(parent);
+        moveImpl(nodeToUnindent, destination, getChildren(destination).indexOf(
+                parent) + 1);
     }
 
-    public void move(SimpleTreeNode toBeMoved, SimpleTreeNode destination) {
-        moveImpl(toBeMoved, destination, destination.getChildCount());
-        reloadFromOrder();
+    public void move(OrderElement toBeMoved, OrderElement destination) {
+        moveImpl(toBeMoved, destination, getChildren(destination).size());
     }
 
-    public void moveToRoot(SimpleTreeNode toBeMoved) {
-        moveImpl(toBeMoved, getRootAsNode(), 0);
-        reloadFromOrder();
+    public void moveToRoot(OrderElement toBeMoved) {
+        moveImpl(toBeMoved, tree.getRoot(), 0);
     }
 
-    private void moveImpl(SimpleTreeNode toBeMoved, SimpleTreeNode destination,
+    private void moveImpl(OrderElement toBeMoved, OrderElement destination,
             int position) {
-        if (destination.getChildren().contains(toBeMoved)) {
+        if (getChildren(destination).contains(toBeMoved)) {
             return;// it's already moved
         }
         removeNodeImpl(toBeMoved);
-        addOrderElementAtImpl(destination, asOrderLine(toBeMoved), position);
+        addOrderElementAtImpl(destination, toBeMoved, position);
     }
 
-    public int[] getPath(SimpleTreeNode destination) {
-        int[] path = getPath(getRootAsNode(), destination);
-        return path;
+    public void up(OrderElement node) {
+        IOrderLineGroup orderLineGroup = asOrderLineGroup(tree.getParent(node));
+        orderLineGroup.up(node);
+        tree.up(node);
     }
 
-    public void up(SimpleTreeNode node) {
-        IOrderLineGroup orderLineGroup = asOrderLineGroup(getParent(node));
-        orderLineGroup.up(asOrderLine(node));
-        reloadFromOrder();
+    public void down(OrderElement node) {
+        IOrderLineGroup orderLineGroup = asOrderLineGroup(tree.getParent(node));
+        orderLineGroup.down(node);
+        tree.down(node);
     }
 
-    public void down(SimpleTreeNode node) {
-        IOrderLineGroup orderLineGroup = asOrderLineGroup(getParent(node));
-        orderLineGroup.down(asOrderLine(node));
-        reloadFromOrder();
-    }
-
-    private Order getRootAsOrder() {
-        return (Order) getRootAsNode().getData();
-    }
-
-    private static OrderElement asOrderLine(SimpleTreeNode node) {
-        return (OrderElement) node.getData();
-    }
-
-    private static IOrderLineGroup asOrderLineGroup(SimpleTreeNode node) {
-        return (IOrderLineGroup) node.getData();
-    }
-
-    private SimpleTreeNode getRootAsNode() {
-        return (SimpleTreeNode) getRoot();
-    }
-
-    public void removeNode(SimpleTreeNode value) {
-        removeNodeImpl(value);
-        reloadFromOrder();
-    }
-
-    private void removeNodeImpl(SimpleTreeNode value) {
-        if (value == getRootAsNode())
-            return;
-        SimpleTreeNode parent = getParent(value);
-        IOrderLineGroup orderLineGroup = asOrderLineGroup(parent);
-        orderLineGroup.remove(asOrderLine(value));
-
-        // If removed node was the last one and its parent is not the root node
-        if (!getRootAsNode().equals(parent)
-                && parent.getChildCount() == 1) {
-            // Convert parent node (container) to an orderline (leaf)
-            IOrderLineGroup parentContainer = asOrderLineGroup(getParent(parent));
-            OrderElement asOrderLine = ((OrderElement) orderLineGroup).toLeaf();
-            parentContainer.replace((OrderElement)orderLineGroup, asOrderLine);
+    private IOrderLineGroup asOrderLineGroup(OrderElement node) {
+        if (tree.isRoot(node)) {
+            return order;
         }
+        return (IOrderLineGroup) node;
+    }
+
+    public void removeNode(OrderElement node) {
+        removeNodeImpl(node);
+    }
+
+    private void removeNodeImpl(OrderElement orderElement) {
+        if (orderElement == tree.getRoot()) {
+            return;
+        }
+        IOrderLineGroup parent = asOrderLineGroup(tree.getParent(orderElement));
+        parent.remove(orderElement);
+        tree.remove(orderElement);
+        // If removed node was the last one and its parent is not the root node
+        if (parent != order && tree.getChildCount(parent) == 0) {
+            OrderElement asLeaf = ((OrderElement) parent).toLeaf();
+            OrderElement parentContainer = getParent(toNode(parent));
+            asOrderLineGroup(parentContainer).replace((OrderElement) parent,
+                    asLeaf);
+            tree.replace((OrderElement) parent, asLeaf);
+        }
+    }
+
+    public int[] getPath(OrderElement orderElement) {
+        return tree.getPath(tree.getRoot(), orderElement);
     }
 }

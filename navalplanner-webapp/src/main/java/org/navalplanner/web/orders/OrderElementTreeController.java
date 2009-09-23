@@ -1,4 +1,3 @@
-
 package org.navalplanner.web.orders;
 
 import static org.navalplanner.web.I18nHelper._;
@@ -27,8 +26,8 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -37,7 +36,6 @@ import org.zkoss.zul.api.Tree;
 
 /**
  * Controller for {@link OrderElement} tree view of {@link Order} entities <br />
- *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
@@ -53,7 +51,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
     private final OrderElementController orderElementController;
 
-
     public OrderElementTreeitemRenderer getRenderer() {
         return renderer;
     }
@@ -67,19 +64,26 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public void indent() {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         if (tree.getSelectedCount() == 1) {
-            getOrderElementTreeModel().indent(getSelectedNode());
+            getModel().indent(getSelectedNode());
             Util.reloadBindings(tree);
         }
     }
 
-    public OrderElementTreeModel getOrderElementTreeModel() {
+    public TreeModel getOrderElementTreeModel() {
+        if (getModel() == null) {
+            return null;
+        }
+        return getModel().asTree();
+    }
+
+    private OrderElementTreeModel getModel() {
         return orderModel.getOrderElementTreeModel();
     }
 
     public void unindent() {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         if (tree.getSelectedCount() == 1) {
-            getOrderElementTreeModel().unindent(getSelectedNode());
+            getModel().unindent(getSelectedNode());
             Util.reloadBindings(tree);
         }
     }
@@ -87,7 +91,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public void up() {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         if (tree.getSelectedCount() == 1) {
-            getOrderElementTreeModel().up(getSelectedNode());
+            getModel().up(getSelectedNode());
             Util.reloadBindings(tree);
         }
     }
@@ -95,32 +99,30 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public void down() {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         if (tree.getSelectedCount() == 1) {
-            getOrderElementTreeModel().down(getSelectedNode());
+            getModel().down(getSelectedNode());
             Util.reloadBindings(tree);
         }
     }
 
-    private SimpleTreeNode getSelectedNode() {
-        return (SimpleTreeNode) tree.getSelectedItemApi().getValue();
+    private OrderElement getSelectedNode() {
+        return (OrderElement) tree.getSelectedItemApi().getValue();
     }
 
     public void move(Component dropedIn, Component dragged) {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
-        SimpleTreeNode fromNode, toNode;
 
         Treerow from = (Treerow) dragged;
-        fromNode = (SimpleTreeNode) ((Treeitem) from.getParent())
+        OrderElement fromNode = (OrderElement) ((Treeitem) from.getParent())
                 .getValue();
-
         if (dropedIn instanceof Tree) {
-            getOrderElementTreeModel().moveToRoot(fromNode);
+            getModel().moveToRoot(fromNode);
         }
         if (dropedIn instanceof Treerow) {
             Treerow to = (Treerow) dropedIn;
-            toNode = (SimpleTreeNode) ((Treeitem) to.getParent())
-                .getValue();
+            OrderElement toNode = (OrderElement) ((Treeitem) to.getParent())
+                    .getValue();
 
-            getOrderElementTreeModel().move(fromNode, toNode);
+            getModel().move(fromNode, toNode);
         }
         Util.reloadBindings(tree);
     }
@@ -128,9 +130,9 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public void addOrderElement() {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         if (tree.getSelectedCount() == 1) {
-            getOrderElementTreeModel().addOrderElementAt(getSelectedNode());
-        }else {
-            getOrderElementTreeModel().addOrderElement();
+            getModel().addOrderElementAt(getSelectedNode());
+        } else {
+            getModel().addOrderElement();
         }
         Util.reloadBindings(tree);
     }
@@ -161,8 +163,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
         }
 
         private static Object getAssociatedValue(Treeitem treeitem) {
-            SimpleTreeNode node = (SimpleTreeNode) treeitem.getValue();
-            return node.getData();
+            return treeitem.getValue();
         }
 
         public void openIfRequired(Treeitem item) {
@@ -182,8 +183,8 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public void removeOrderElement() {
         Set<Treeitem> selectedItems = tree.getSelectedItems();
         for (Treeitem treeItem : selectedItems) {
-            SimpleTreeNode value = (SimpleTreeNode) treeItem.getValue();
-            getOrderElementTreeModel().removeNode(value);
+            getModel().removeNode(
+                    (OrderElement) treeItem.getValue());
         }
         Util.reloadBindings(tree);
     }
@@ -200,23 +201,23 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
     public class OrderElementTreeitemRenderer implements TreeitemRenderer {
 
-        private Map<SimpleTreeNode, Intbox> map = new HashMap<SimpleTreeNode, Intbox>();
-        private Map<SimpleTreeNode, Textbox> mapC = new HashMap<SimpleTreeNode, Textbox>();
+        private Map<OrderElement, Intbox> map = new HashMap<OrderElement, Intbox>();
+        private Map<OrderElement, Textbox> mapC = new HashMap<OrderElement, Textbox>();
 
         public OrderElementTreeitemRenderer() {
         }
 
         @Override
         public void render(Treeitem item, Object data) throws Exception {
-            final SimpleTreeNode t = (SimpleTreeNode) data;
+            final OrderElement orderElementForThisRow = (OrderElement) data;
             item.setValue(data);
-            final OrderElement orderElement = (OrderElement) t.getData();
             if (snapshotOfOpenedNodes != null) {
                 snapshotOfOpenedNodes.openIfRequired(item);
             }
             // Construct treecells
-            int[] path = getOrderElementTreeModel().getPath(t);
-            String cssClass = "depth_"+path.length;
+            int[] path = getModel().getPath(
+                    orderElementForThisRow);
+            String cssClass = "depth_" + path.length;
 
             Treecell cellForName = new Treecell();
             Label tasknumber = new Label(pathAsString(path));
@@ -227,7 +228,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
                         @Override
                         public void onEvent(Event event) throws Exception {
                             IOrderElementModel model = orderModel
-                                    .getOrderElementModel(orderElement);
+                                    .getOrderElementModel(orderElementForThisRow);
                             orderElementController.openWindow(model);
                         }
 
@@ -240,76 +241,78 @@ public class OrderElementTreeController extends GenericForwardComposer {
             cellForName.appendChild(Util.bind(new Textbox(),
                     new Util.Getter<String>() {
 
-                @Override
-                public String get() {
-                    return orderElement.getName();
-                }
-            }, new Util.Setter<String>() {
+                        @Override
+                        public String get() {
+                            return orderElementForThisRow.getName();
+                        }
+                    }, new Util.Setter<String>() {
 
-                @Override
-                public void set(String value) {
-                    orderElement.setName(value);
-                }
-            }));
+                        @Override
+                        public void set(String value) {
+                            orderElementForThisRow.setName(value);
+                        }
+                    }));
 
             Textbox textBoxCode = new Textbox();
-            mapC.put(t, textBoxCode);
+            mapC.put(orderElementForThisRow, textBoxCode);
             Treecell cellForCode = new Treecell();
             cellForCode.appendChild(Util.bind(textBoxCode,
                     new Util.Getter<String>() {
 
-                @Override
-                public String get() {
-                    return orderElement.getCode();
-                }
-            }, new Util.Setter<String>() {
+                        @Override
+                        public String get() {
+                            return orderElementForThisRow.getCode();
+                        }
+                    }, new Util.Setter<String>() {
 
-                @Override
-                public void set(String value) {
-                    orderElement.setCode(value);
-                }
-            }));
+                        @Override
+                        public void set(String value) {
+                            orderElementForThisRow.setCode(value);
+                        }
+                    }));
 
             textBoxCode.setConstraint(new Constraint() {
 
                 @Override
-                public void validate(Component comp, Object value) throws WrongValueException{
-                    if (!orderElement.isFormatCodeValid((String)value)) {
-                            throw new WrongValueException(comp, _("Value is not valid.\n Code cannot contain chars like '_' \n and should not be empty"));
-                        }
+                public void validate(Component comp, Object value)
+                        throws WrongValueException {
+                    if (!orderElementForThisRow
+                            .isFormatCodeValid((String) value)) {
+                        throw new WrongValueException(
+                                comp,
+                                _("Value is not valid.\n Code cannot contain chars like '_' \n and should not be empty"));
                     }
-                });
+                }
+            });
 
             Treecell cellForHours = new Treecell();
             Intbox intboxHours = new Intbox();
-            map.put(t, intboxHours);
-            if (orderElement instanceof OrderLine) {
+            map.put(orderElementForThisRow, intboxHours);
+            if (orderElementForThisRow instanceof OrderLine) {
                 // If it's a leaf hours cell is editable
                 Intbox intbox = Util.bind(intboxHours,
                         new Util.Getter<Integer>() {
 
                             @Override
                             public Integer get() {
-                                return orderElement.getWorkHours();
+                                return orderElementForThisRow.getWorkHours();
                             }
                         }, new Util.Setter<Integer>() {
 
                             @Override
                             public void set(Integer value) {
-                                ((OrderLine) orderElement).setWorkHours(value);
+                                ((OrderLine) orderElementForThisRow)
+                                        .setWorkHours(value);
 
-                                List<SimpleTreeNode> parentNodes = getOrderElementTreeModel()
-                                        .getParents(t);
+                                List<OrderElement> parentNodes = getModel()
+                                        .getParents(orderElementForThisRow);
                                 // Remove the last element becuase it's an
                                 // Order node, not an OrderElement
                                 parentNodes.remove(parentNodes.size() - 1);
 
-                                for (SimpleTreeNode node : parentNodes) {
+                                for (OrderElement node : parentNodes) {
                                     Intbox intbox = map.get(node);
-                                    OrderElement parentOrderElement = (OrderElement) node
-                                            .getData();
-                                    intbox.setValue(parentOrderElement
-                                            .getWorkHours());
+                                    intbox.setValue(node.getWorkHours());
                                 }
                             }
                         });
@@ -319,9 +322,10 @@ public class OrderElementTreeController extends GenericForwardComposer {
                     @Override
                     public void validate(Component comp, Object value)
                             throws WrongValueException {
-                        if (!((OrderLine) orderElement)
+                        if (!((OrderLine) orderElementForThisRow)
                                 .isTotalHoursValid((Integer) value)) {
-                            throw new WrongValueException(comp,
+                            throw new WrongValueException(
+                                    comp,
                                     _("Value is not valid, taking into account the current list of HoursGroup"));
                         }
                     }
@@ -335,7 +339,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
                             @Override
                             public Integer get() {
-                                return orderElement.getWorkHours();
+                                return orderElementForThisRow.getWorkHours();
                             }
                         }));
             }
@@ -344,32 +348,32 @@ public class OrderElementTreeController extends GenericForwardComposer {
             tcDateStart.appendChild(Util.bind(new Datebox(),
                     new Util.Getter<Date>() {
 
-                @Override
-                public Date get() {
-                    return orderElement.getInitDate();
-                }
-            }, new Util.Setter<Date>() {
+                        @Override
+                        public Date get() {
+                            return orderElementForThisRow.getInitDate();
+                        }
+                    }, new Util.Setter<Date>() {
 
-                @Override
-                public void set(Date value) {
-                    orderElement.setInitDate(value);
-                }
-            }));
+                        @Override
+                        public void set(Date value) {
+                            orderElementForThisRow.setInitDate(value);
+                        }
+                    }));
             Treecell tcDateEnd = new Treecell();
             tcDateEnd.appendChild(Util.bind(new Datebox(),
                     new Util.Getter<Date>() {
 
-                @Override
-                public Date get() {
-                    return orderElement.getEndDate();
-                }
-            }, new Util.Setter<Date>() {
+                        @Override
+                        public Date get() {
+                            return orderElementForThisRow.getEndDate();
+                        }
+                    }, new Util.Setter<Date>() {
 
-                @Override
-                public void set(Date value) {
-                    orderElement.setEndDate(value);
-                }
-            }));
+                        @Override
+                        public void set(Date value) {
+                            orderElementForThisRow.setEndDate(value);
+                        }
+                    }));
 
             Treerow tr = null;
             /*
@@ -401,15 +405,14 @@ public class OrderElementTreeController extends GenericForwardComposer {
             editbutton.setParent(tcOperations);
             editbutton.setSclass("icono");
             editbutton.setTooltiptext(_("Edit"));
-            editbutton.addEventListener(Events.ON_CLICK,
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            IOrderElementModel model = orderModel
-                                    .getOrderElementModel(orderElement);
-                            orderElementController.openWindow(model);
-                        }
-                    });
+            editbutton.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    IOrderElementModel model = orderModel
+                            .getOrderElementModel(orderElementForThisRow);
+                    orderElementController.openWindow(model);
+                }
+            });
 
             Button upbutton = new Button("", "/common/img/ico_bajar1.png");
             upbutton.setHoverImage("/common/img/ico_bajar.png");
@@ -418,7 +421,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getOrderElementTreeModel().up(t);
+                    getModel().up(orderElementForThisRow);
                     Util.reloadBindings(tree);
                 }
             });
@@ -430,7 +433,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getOrderElementTreeModel().down(t);
+                    getModel().down(orderElementForThisRow);
                     Util.reloadBindings(tree);
                 }
             });
@@ -442,7 +445,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             indentbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getOrderElementTreeModel().indent(t);
+                    getModel().indent(orderElementForThisRow);
                     Util.reloadBindings(tree);
                 }
             });
@@ -455,7 +458,8 @@ public class OrderElementTreeController extends GenericForwardComposer {
                     new EventListener() {
                         @Override
                         public void onEvent(Event event) throws Exception {
-                            getOrderElementTreeModel().unindent(t);
+                            getModel().unindent(
+                                    orderElementForThisRow);
                             Util.reloadBindings(tree);
                         }
                     });
@@ -468,7 +472,8 @@ public class OrderElementTreeController extends GenericForwardComposer {
             removebutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getOrderElementTreeModel().removeNode(t);
+                    getModel().removeNode(
+                            orderElementForThisRow);
                     Util.reloadBindings(tree);
                 }
             });
