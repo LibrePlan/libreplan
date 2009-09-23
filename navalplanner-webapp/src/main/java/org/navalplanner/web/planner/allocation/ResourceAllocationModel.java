@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
@@ -178,6 +179,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         resourceDAO.save(resource);
         reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
         resource.getAssignments();
+        if (resource.getCalendar() != null) {
+            resource.getCalendar().getWorkableHours(new LocalDate());
+        }
     }
 
     private void reattachCriterionSatisfactions(
