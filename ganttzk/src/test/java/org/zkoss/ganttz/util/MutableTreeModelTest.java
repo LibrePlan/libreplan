@@ -317,6 +317,23 @@ public class MutableTreeModelTest {
                 TreeDataEvent.INTERVAL_REMOVED, model.getRoot(), 0);
     }
 
+    @Test
+    public void aNodeCanBeReplacedByOther() {
+        final MutableTreeModel<Prueba> model = MutableTreeModel
+                .create(Prueba.class);
+        Prueba toRemove = new Prueba();
+        Prueba prueba2 = new Prueba();
+        Prueba grandChild = new Prueba();
+        model.add(model.getRoot(), toRemove);
+        model.add(model.getRoot(), prueba2);
+        model.add(toRemove, grandChild);
+        Prueba substitution = new Prueba();
+        model.replace(toRemove, substitution);
+
+        assertThat(model.getChildCount(substitution), equalTo(0));
+        assertThat(model.getChild(model.getRoot(), 0), equalTo(substitution));
+    }
+
     private void checkIsValid(TreeDataEvent event, int type,
             Prueba expectedParent, int expectedPosition) {
         checkIsValid(event, type, expectedParent, expectedPosition,

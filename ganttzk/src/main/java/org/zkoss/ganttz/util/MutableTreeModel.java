@@ -233,4 +233,14 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         return associatedNode.isRoot();
     }
 
+    public void replace(T nodeToRemove, T nodeToAdd) {
+        T parent = getParent(nodeToRemove);
+        Node<T> parentNode = find(parent);
+        final int insertionPosition = parentNode.getIndexOf(find(nodeToRemove));
+        remove(nodeToRemove);
+        List<T> toAdd = new ArrayList<T>();
+        toAdd.add(nodeToAdd);
+        add(parent, insertionPosition, toAdd);
+    }
+
 }
