@@ -124,7 +124,7 @@ public class OrderElementTest {
         BigDecimal value = new BigDecimal(5000).setScale(2);
         BigDecimal precision = new BigDecimal(10).setScale(2);
         AdvanceType advanceType = AdvanceType.create(name, value, true,
-                precision, true);
+                precision, true, false);
         return advanceType;
     }
 
@@ -216,12 +216,12 @@ public class OrderElementTest {
         List<OrderElement> children = orderElement.getChildren();
 
         AdvanceType advanceType1 = AdvanceType.create("test1", new BigDecimal(
-                10000), true, new BigDecimal(1), true);
+                10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurement(children.get(0), advanceType1,
                 new BigDecimal(1000), new BigDecimal(400), true);
 
         AdvanceType advanceType2 = AdvanceType.create("test2", new BigDecimal(
-                10000), true, new BigDecimal(1), true);
+                10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurement(children.get(1), advanceType2,
                 new BigDecimal(2000), new BigDecimal(200), true);
 
@@ -250,12 +250,12 @@ public class OrderElementTest {
         List<OrderElement> children = orderElement.getChildren();
 
         AdvanceType advanceType1 = AdvanceType.create("test1", new BigDecimal(
-                10000), true, new BigDecimal(1), true);
+                10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurement(children.get(0), advanceType1,
                 new BigDecimal(1000), new BigDecimal(400), true);
 
         AdvanceType advanceType2 = AdvanceType.create("test2", new BigDecimal(
-                10000), true, new BigDecimal(1), true);
+                10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurement(children.get(1), advanceType2,
                 new BigDecimal(2000), new BigDecimal(200), true);
 
@@ -284,12 +284,12 @@ public class OrderElementTest {
         List<OrderElement> children = orderElement.getChildren();
 
         AdvanceType advanceType1 = AdvanceType.create("test1", new BigDecimal(
-                10000), true, new BigDecimal(1), true);
+                10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurement(children.get(0), advanceType1,
                 new BigDecimal(1000), new BigDecimal(400), true);
 
         AdvanceType advanceType2 = AdvanceType.create("test2", new BigDecimal(
-                10000), true, new BigDecimal(1), true);
+                10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurement(children.get(1), advanceType2,
                 new BigDecimal(2000), new BigDecimal(200), true);
 
@@ -577,14 +577,14 @@ public class OrderElementTest {
         LocalDate five = new LocalDate(2009, 9, 5);
 
         AdvanceType advanceType1 = AdvanceType.create("test1", new BigDecimal(
-                10000), true, new BigDecimal(1), true);
+                10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurements(children.get(0), advanceType1,
                 true,
                 new BigDecimal(1000), one, new BigDecimal(200), three,
                 new BigDecimal(400), five, new BigDecimal(500));
 
         AdvanceType advanceType2 = AdvanceType.create("test2", new BigDecimal(
-                10000), true, new BigDecimal(1), true);
+                10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurements(children.get(1), advanceType2,
                 true,
                 new BigDecimal(1000), two, new BigDecimal(100), three,
@@ -663,12 +663,12 @@ public class OrderElementTest {
         orderLineGroup_1.add(orderLineGroup_1_1);
 
         AdvanceType advanceType1 = AdvanceType.create("test1", new BigDecimal(
-                10000), true, new BigDecimal(1), true);
+                10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurement(orderLine_1_1_1, advanceType1,
                 new BigDecimal(10), new BigDecimal(2), true);
 
         AdvanceType advanceType2 = AdvanceType.create("test2", new BigDecimal(
-                10000), true, new BigDecimal(1), true);
+                10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurement(orderLineGroup_1_1, advanceType2,
                 new BigDecimal(100), new BigDecimal(50), true);
 
@@ -700,12 +700,12 @@ public class OrderElementTest {
         orderLineGroup_1.add(orderLineGroup_1_1);
 
         AdvanceType advanceType1 = AdvanceType.create("test1", new BigDecimal(
-                10000), true, new BigDecimal(1), true);
+                10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurement(orderLine_1_1_1, advanceType1,
                 new BigDecimal(10), new BigDecimal(2), true);
 
         AdvanceType advanceType2 = AdvanceType.create("test2", new BigDecimal(
-                10000), true, new BigDecimal(1), true);
+                10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurement(orderLineGroup_1_1, advanceType2,
                 new BigDecimal(100), new BigDecimal(50), false);
 

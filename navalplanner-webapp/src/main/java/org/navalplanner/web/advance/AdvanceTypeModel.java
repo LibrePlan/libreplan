@@ -1,5 +1,7 @@
 package org.navalplanner.web.advance;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -15,8 +17,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Model for UI operations related to {@link AdvanceType}.
@@ -134,6 +134,38 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
             }
         }
         return true;
+    }
+
+    @Override
+    public BigDecimal getDefaultMaxValue() {
+        if (advanceType == null) {
+            return null;
+        }
+
+        return advanceType.getDefaultMaxValue();
+    }
+
+    @Override
+    public void setDefaultMaxValue(BigDecimal defaultMaxValue) {
+        if (advanceType != null) {
+            advanceType.setDefaultMaxValue(defaultMaxValue);
+        }
+    }
+
+    @Override
+    public Boolean getPercentage() {
+        if (advanceType == null) {
+            return null;
+        }
+
+        return advanceType.getPercentage();
+    }
+
+    @Override
+    public void setPercentage(Boolean percentage) {
+        if (advanceType != null) {
+            advanceType.setPercentage(percentage);
+        }
     }
 
 }

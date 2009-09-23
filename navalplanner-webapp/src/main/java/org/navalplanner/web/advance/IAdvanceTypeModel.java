@@ -95,4 +95,12 @@ public interface IAdvanceTypeModel {
      * @return true if default max value is greater than precision value
      */
     public boolean isDefaultMaxValueValid(BigDecimal defaultMaxValue);
+
+    void setDefaultMaxValue(BigDecimal defaultMaxValue);
+
+    BigDecimal getDefaultMaxValue();
+
+    void setPercentage(Boolean percentage);
+
+    Boolean getPercentage();
 }

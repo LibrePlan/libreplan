@@ -1,5 +1,7 @@
 package org.navalplanner.web.advance;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -16,8 +18,6 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.api.Window;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Controller for CRUD actions over a {@link AdvanceType}
@@ -45,6 +45,8 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
     private IAdvanceTypeModel advanceTypeModel;
 
     private OnlyOneVisible visibility;
+
+    private boolean isEditing = false;
 
     public List<AdvanceType> getAdvanceTypes() {
         return advanceTypeModel.getAdvanceTypes();
@@ -75,6 +77,7 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
         advanceTypeModel.prepareForEdit(advanceType);
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
+        isEditing = true;
     }
 
     public Constraint lessThanDefaultMaxValue() {
@@ -184,6 +187,7 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
         advanceTypeModel.prepareForCreate();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
+        isEditing = false;
     }
 
     private OnlyOneVisible getVisibility() {
@@ -192,6 +196,41 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
                     editWindow);
         }
         return visibility;
+    }
+
+    public void setDefaultMaxValue(BigDecimal defaultMaxValue) {
+        try {
+            advanceTypeModel.setDefaultMaxValue(defaultMaxValue);
+        } catch (IllegalArgumentException e) {
+            Component component = getCurrentWindow().getFellow(
+                    "defaultMaxValue");
+            throw new WrongValueException(component, e.getMessage());
+        }
+    }
+
+    public BigDecimal getDefaultMaxValue() {
+        return advanceTypeModel.getDefaultMaxValue();
+    }
+
+    private Component getCurrentWindow() {
+        if (!isEditing) {
+            return createWindow;
+        }
+        return editWindow;
+    }
+
+    public void setPercentage(Boolean percentage) {
+        try {
+            advanceTypeModel.setPercentage(percentage);
+        } catch (IllegalArgumentException e) {
+            Component component = getCurrentWindow().getFellow("percentage");
+            throw new WrongValueException(component
+                    .getFellow("defaultMaxValue"), e.getMessage());
+        }
+    }
+
+    public Boolean getPercentage() {
+        return advanceTypeModel.getPercentage();
     }
 
 }

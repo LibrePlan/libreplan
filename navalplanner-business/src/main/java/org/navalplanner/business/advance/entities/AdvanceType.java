@@ -21,9 +21,9 @@ public class AdvanceType extends BaseEntity {
 
     public static AdvanceType create(String unitName,
             BigDecimal defaultMaxValue, boolean updatable,
-            BigDecimal unitPrecision, boolean active) {
+            BigDecimal unitPrecision, boolean active, boolean percentage) {
         AdvanceType advanceType = new AdvanceType(unitName, defaultMaxValue, updatable,
-                        unitPrecision, active);
+                        unitPrecision, active, percentage);
         advanceType.setNewObject(true);
         return advanceType;
     }
@@ -43,6 +43,9 @@ public class AdvanceType extends BaseEntity {
     @NotNull
     private boolean active = true;
 
+    @NotNull
+    private boolean percentage = false;
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -51,9 +54,11 @@ public class AdvanceType extends BaseEntity {
     }
 
     private AdvanceType(String unitName, BigDecimal defaultMaxValue,
-            boolean updatable, BigDecimal unitPrecision, boolean active) {
+            boolean updatable, BigDecimal unitPrecision, boolean active,
+            boolean percentage) {
         this.unitName = unitName;
-        this.defaultMaxValue = defaultMaxValue;
+        this.percentage = percentage;
+        setDefaultMaxValue(defaultMaxValue);
         this.defaultMaxValue.setScale(2, BigDecimal.ROUND_HALF_UP);
         this.updatable = updatable;
         this.unitPrecision = unitPrecision;
@@ -70,6 +75,16 @@ public class AdvanceType extends BaseEntity {
     }
 
     public void setDefaultMaxValue(BigDecimal defaultMaxValue) {
+        if (defaultMaxValue.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException(
+                    "The maximum value must be greater than 0");
+        }
+        if (percentage) {
+            if (defaultMaxValue.compareTo(new BigDecimal(100)) > 0) {
+                throw new IllegalArgumentException(
+                        "The maximum value for percentage is 100");
+            }
+        }
         this.defaultMaxValue = defaultMaxValue;
         this.defaultMaxValue.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
@@ -133,6 +148,20 @@ public class AdvanceType extends BaseEntity {
         if (type.getId() == null || otherType.getId() == null)
             return false;
         return type.getId().equals(otherType.getId());
+    }
+
+    public void setPercentage(boolean percentage) {
+        if (percentage) {
+            if (defaultMaxValue.compareTo(new BigDecimal(100)) > 0) {
+                throw new IllegalArgumentException(
+                        "The maximum value for percentage is 100");
+            }
+        }
+        this.percentage = percentage;
+    }
+
+    public boolean getPercentage() {
+        return percentage;
     }
 
 }

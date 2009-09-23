@@ -16,6 +16,7 @@
     <property name="updatable" access="field"/>
     <property name="unitPrecision" access="field" scale="4"/>
     <property name="active" access="field"/>
+    <property name="percentage" access="field"/>
 </class>
 
 <!-- AdvanceAssignment -->

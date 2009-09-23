@@ -23,7 +23,7 @@
                         <row>
                             <label value="${i18n:_('Default max value')}" />
                             <decimalbox id="defaultMaxValue" scale="2"
-                                value="@{controller.advanceType.defaultMaxValue}" constraint="@{controller.greaterThanPrecision}"/>
+                                value="@{controller.defaultMaxValue}" constraint="@{controller.greaterThanPrecision}"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Precision')}" />
@@ -33,6 +33,10 @@
                         <row>
                             <label value="${i18n:_('Type')}" />
                             <label value="@{controller.advanceType.type}" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Percentage')}" />
+                            <checkbox id="percentage" checked="@{controller.percentage}" />
                         </row>
                     </rows>
                 </grid>
