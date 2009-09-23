@@ -11,8 +11,8 @@
                 onClick="orderElementTreeController.indent();">
             </button>
             <button label="${i18n:_('Unindent')}" onClick="orderElementTreeController.unindent();" />
-            <button label="${i18n:_('Down')}" onClick="orderElementTreeController.up();"></button>
-            <button label="${i18n:_('Up')}" onClick="orderElementTreeController.down();"></button>
+            <button label="${i18n:_('Up')}" onClick="orderElementTreeController.up();"></button>
+            <button label="${i18n:_('Down')}" onClick="orderElementTreeController.down();"></button>
         </hbox>
     </vbox>
     <vbox>

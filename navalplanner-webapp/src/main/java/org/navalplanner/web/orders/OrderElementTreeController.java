@@ -414,7 +414,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getModel().up(orderElementForThisRow);
+                    getModel().down(orderElementForThisRow);
                 }
             });
 
@@ -425,7 +425,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getModel().down(orderElementForThisRow);
+                    getModel().up(orderElementForThisRow);
                 }
             });
 
