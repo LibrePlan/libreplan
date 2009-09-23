@@ -23,7 +23,7 @@
     <panel title="${i18n:_('Label list')}" border="normal">
         <panelchildren>
             <button label="${i18n:_('New label')}" onClick="controller.createLabel()" />
-            <grid id="gridLabels" mold="paging" pageSize="10"
+            <grid id="gridLabels" height="320px"
                 model="@{controller.labels}">
                  <columns sizable="true">
                      <column label="${i18n:_('Name')}" />
@@ -35,7 +35,7 @@
                         <button label="${i18n:_('Delete')}"
                             onClick="controller.confirmDeleteLabel(self.parent.value)"/>
                     </row>
-                   </rows>
+                </rows>
             </grid>
         </panelchildren>
     </panel>
