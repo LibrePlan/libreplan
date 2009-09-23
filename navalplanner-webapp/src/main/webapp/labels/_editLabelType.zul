@@ -1,5 +1,4 @@
-<window id="${arg.id}" title="${arg.title}" width="600px"
-     border="normal" closable="true" visible="false">
+<window id="${arg.id}" title="${arg.title}" visible="false">
     <!--  Messages for user -->
     <vbox id="messagesContainer"/>
 

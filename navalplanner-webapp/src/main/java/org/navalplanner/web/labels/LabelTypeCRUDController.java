@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Grid;
@@ -65,16 +64,13 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
         messagesEditWindow = new MessagesForUser(editWindow
                 .getFellowIfAny("messagesContainer"));
-        getVisibility().showOnly(listWindow);
         gridLabels = (Grid) editWindow.getFellowIfAny("gridLabels");
         gridLabelTypes = (Grid) listWindow.getFellowIfAny("gridLabelTypes");
-        editWindow.addEventListener("onClose", new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                event.getTarget().setVisible(false);
-                event.stopPropagation();
-            }
-        });
+        showListWindow();
+    }
+
+    private void showListWindow() {
+        getVisibility().showOnly(listWindow);
     }
 
     private OnlyOneVisible getVisibility() {
@@ -112,12 +108,12 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     public void goToCreateForm() {
         labelTypeModel.initCreate();
         editWindow.setTitle(_("Create label type"));
-        try {
-            editWindow.setMode("modal");
-            Util.reloadBindings(editWindow);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        showEditWindow();
+        Util.reloadBindings(editWindow);
+    }
+
+    private void showEditWindow() {
+        getVisibility().showOnly(editWindow);
     }
 
     /**
@@ -128,12 +124,8 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     public void goToEditForm(LabelType labelType) {
         labelTypeModel.initEdit(labelType);
         editWindow.setTitle(_("Edit label type"));
-        try {
-            editWindow.setMode("modal");
-            Util.reloadBindings(editWindow);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        showEditWindow();
+        Util.reloadBindings(editWindow);
     }
 
     /**
