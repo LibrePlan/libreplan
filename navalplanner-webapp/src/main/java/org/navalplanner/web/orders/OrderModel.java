@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -101,16 +102,29 @@ public class OrderModel implements IOrderModel {
 
     private void forceLoadAdvanceAssignments(Order order) {
         for (OrderElement orderElement : order.getOrderElements()) {
-            for (DirectAdvanceAssignment directAdvanceAssignment : orderElement
-                    .getDirectAdvanceAssignments()) {
-                directAdvanceAssignment.getAdvanceType().getUnitName();
+            forceLoadAdvanceAssignmentsAndMeasurements(orderElement);
+        }
+    }
+
+    private void forceLoadAdvanceAssignmentsAndMeasurements(
+            OrderElement orderElement) {
+        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement
+                .getDirectAdvanceAssignments()) {
+            directAdvanceAssignment.getAdvanceType().getUnitName();
+            for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment
+                    .getAdvanceMeasurements()) {
+                advanceMeasurement.getValue();
+            }
+        }
+
+        if (orderElement instanceof OrderLineGroup) {
+            for (IndirectAdvanceAssignment indirectAdvanceAssignment : ((OrderLineGroup) orderElement)
+                    .getIndirectAdvanceAssignments()) {
+                indirectAdvanceAssignment.getAdvanceType().getUnitName();
             }
 
-            if (orderElement instanceof OrderLineGroup) {
-                for (IndirectAdvanceAssignment indirectAdvanceAssignment : ((OrderLineGroup) orderElement)
-                        .getIndirectAdvanceAssignments()) {
-                    indirectAdvanceAssignment.getAdvanceType().getUnitName();
-                }
+            for (OrderElement child : orderElement.getChildren()) {
+                forceLoadAdvanceAssignmentsAndMeasurements(child);
             }
         }
     }
