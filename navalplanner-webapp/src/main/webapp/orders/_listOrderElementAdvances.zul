@@ -55,6 +55,11 @@
                     <listheader label="${i18n:_('Date')}"/>
                 </listhead>
         </listbox>
+        <chart id="chart" title="${i18n:_('Advance Progress')}"
+            type="time_series" threeD="false"
+            model="@{manageOrderElementAdvancesController.chartData}"
+            xAxis="${i18n:_('Date')}" yAxis= "${i18n:_('Value')}"
+            paneColor="#FFFFFF" />
         </hbox>
     </vbox>
     <separator bar="false" spacing="40px" orient="vertical"/>

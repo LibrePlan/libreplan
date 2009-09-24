@@ -38,6 +38,7 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.XYModel;
 
 /**
  * Controller for show the advances of the selected order element<br />
@@ -506,6 +507,7 @@ public class ManageOrderElementAdvancesController extends
         this.setCurrentDate();
         this.setPercentage();
         this.setCurrentValue();
+        Util.reloadBindings(window.getFellow("chart"));
     }
 
     private void setCurrentDate(){
@@ -785,6 +787,10 @@ public class ManageOrderElementAdvancesController extends
             return newConstraint;
         }
 
+    }
+
+    public XYModel getChartData() {
+        return this.manageOrderElementAdvancesModel.getChartData();
     }
 
 }

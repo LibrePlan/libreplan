@@ -13,6 +13,7 @@ import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentFo
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.zkoss.zul.XYModel;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -68,5 +69,7 @@ public interface IManageOrderElementAdvancesModel {
             IndirectAdvanceAssignment indirectAdvanceAssignment);
 
     public BigDecimal getAdvancePercentageChildren();
+
+    public XYModel getChartData();
 
 }

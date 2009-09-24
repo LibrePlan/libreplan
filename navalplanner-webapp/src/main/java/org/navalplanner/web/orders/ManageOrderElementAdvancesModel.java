@@ -34,6 +34,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.zul.SimpleXYModel;
+import org.zkoss.zul.XYModel;
 /**
  * Service to manage the advance of a selected order element
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -82,8 +84,9 @@ public class ManageOrderElementAdvancesModel implements
                 || this.advanceAssignment.getMaxValue() == null) {
             return "";
         }
-        return "    " + this.advanceAssignment.getAdvanceType().getUnitName()
-                + _(". Max value: ") + this.advanceAssignment.getMaxValue();
+        return _("Advance assignment: {0} (max: {1})", this.advanceAssignment
+                .getAdvanceType().getUnitName(), this.advanceAssignment
+                .getMaxValue());
     }
 
     @Override
@@ -455,6 +458,28 @@ public class ManageOrderElementAdvancesModel implements
         reattachmentOrderElement();
 
         return ((OrderLineGroup) orderElement).getAdvancePercentageChildren();
+    }
+
+    @Override
+    public XYModel getChartData() {
+        XYModel xymodel = new SimpleXYModel();
+        if (this.advanceAssignment != null) {
+            String title = getInfoAdvanceAssignment();
+            SortedSet<AdvanceMeasurement> listAdvanceMeasurements = this.advanceAssignment
+                    .getAdvanceMeasurements();
+            if (listAdvanceMeasurements.size() > 1) {
+                for (AdvanceMeasurement advanceMeasurement : listAdvanceMeasurements) {
+                    BigDecimal value = advanceMeasurement.getValue();
+                    LocalDate date = advanceMeasurement.getDate();
+                    if ((value != null) && (date != null)) {
+                        xymodel.addValue(title, new Long(date
+                                .toDateTimeAtStartOfDay().getMillis()),
+                                value);
+                    }
+                }
+            }
+        }
+        return xymodel;
     }
 
 }
