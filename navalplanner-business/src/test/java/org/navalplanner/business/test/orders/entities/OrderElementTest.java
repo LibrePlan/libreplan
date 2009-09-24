@@ -372,10 +372,11 @@ public class OrderElementTest {
     public void checkAdvancePercentageOrderGroupLineWithAssignments1()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
-        OrderElement orderElement = givenOrderLineGroupWithTwoOrderLines(1000,
+        OrderLineGroup orderLineGroup = givenOrderLineGroupWithTwoOrderLines(
+                1000,
                 2000);
 
-        List<OrderElement> children = orderElement.getChildren();
+        List<OrderElement> children = orderLineGroup.getChildren();
         addAvanceAssignmentWithMeasurement(children.get(0),
                 PredefinedAdvancedTypes.UNITS.getType(), new BigDecimal(1000),
                 new BigDecimal(400), true);
@@ -383,11 +384,12 @@ public class OrderElementTest {
                 PredefinedAdvancedTypes.UNITS.getType(), new BigDecimal(2000),
                 new BigDecimal(200), true);
 
-        addAvanceAssignmentWithMeasurement(orderElement,
+        removeReportGlobalAdvanceFromChildrenAdvance(orderLineGroup);
+        addAvanceAssignmentWithMeasurement(orderLineGroup,
                 PredefinedAdvancedTypes.PERCENTAGE.getType(), new BigDecimal(
                         100), new BigDecimal(90), true);
 
-        assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
+        assertThat(orderLineGroup.getAdvancePercentage(), equalTo(new BigDecimal(
                 90).divide(new BigDecimal(100))));
     }
 
@@ -673,6 +675,7 @@ public class OrderElementTest {
 
         AdvanceType advanceType2 = AdvanceType.create("test2", new BigDecimal(
                 10000), true, new BigDecimal(1), true, false);
+        removeReportGlobalAdvanceFromChildrenAdvance(orderLineGroup_1_1);
         addAvanceAssignmentWithMeasurement(orderLineGroup_1_1, advanceType2,
                 new BigDecimal(100), new BigDecimal(50), true);
 
@@ -880,6 +883,18 @@ public class OrderElementTest {
         assertThat(advanceAssignment.getLastPercentage(),
                 equalTo(new BigDecimal(45).divide(new BigDecimal(100))
                         .setScale(2)));
+    }
+
+    public static void removeReportGlobalAdvanceFromChildrenAdvance(
+            OrderLineGroup orderLineGroup) {
+        for (IndirectAdvanceAssignment indirectAdvanceAssignment : orderLineGroup
+                .getIndirectAdvanceAssignments()) {
+            if (indirectAdvanceAssignment.getAdvanceType().getUnitName()
+                    .equals(PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
+                indirectAdvanceAssignment.setReportGlobalAdvance(false);
+                break;
+            }
+        }
     }
 
 }

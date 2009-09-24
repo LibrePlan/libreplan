@@ -216,7 +216,7 @@ public abstract class OrderElement extends BaseEntity {
         }
     }
 
-    private void checkNoOtherGlobalAdvanceAssignment(
+    protected void checkNoOtherGlobalAdvanceAssignment(
             DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateValueTrueReportGlobalAdvanceException {
         if (!newAdvanceAssignment.getReportGlobalAdvance()) {

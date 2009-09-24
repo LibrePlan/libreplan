@@ -237,7 +237,8 @@ public class AddAdvanceAssignmentsToOrderElementTest {
         advanceAssignmentB.setAdvanceType(advanceTypeB);
         advanceAssignmentB.getAdvanceMeasurements().add(advanceMeasurement);
 
-
+        OrderElementTest
+                .removeReportGlobalAdvanceFromChildrenAdvance(container);
         container.addAdvanceAssignment(advanceAssignmentA);
         son.addAdvanceAssignment(advanceAssignmentB);
     }
@@ -254,6 +255,8 @@ public class AddAdvanceAssignmentsToOrderElementTest {
         DirectAdvanceAssignment advanceAssignmentA = createValidAdvanceAssignment(true);
         advanceAssignmentA.setAdvanceType(advanceTypeA);
 
+        OrderElementTest
+                .removeReportGlobalAdvanceFromChildrenAdvance(container);
         container.addAdvanceAssignment(advanceAssignmentA);
 
         assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
@@ -273,6 +276,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
         DirectAdvanceAssignment anotherAssignmentWithSameType = createValidAdvanceAssignment(false);
         anotherAssignmentWithSameType.setAdvanceType(advanceTypeA);
 
+        OrderElementTest.removeReportGlobalAdvanceFromChildrenAdvance(father);
         father.addAdvanceAssignment(advanceAssignmentA);
 
         try {
@@ -348,6 +352,21 @@ public class AddAdvanceAssignmentsToOrderElementTest {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test(expected = DuplicateValueTrueReportGlobalAdvanceException.class)
+    public void cannotAddTwoAssignmetsDirectAndIndirectWithGlobalReportValue()
+            throws Exception {
+        OrderLineGroup orderLineGroup = OrderLineGroup.create();
+        orderLineGroup.setName("test");
+        orderLineGroup.setCode("1");
+
+        AdvanceType advanceType = createAndSaveType("test");
+
+        DirectAdvanceAssignment advanceAssignment = createValidAdvanceAssignment(true);
+        advanceAssignment.setAdvanceType(advanceType);
+
+        orderLineGroup.addAdvanceAssignment(advanceAssignment);
     }
 
 }

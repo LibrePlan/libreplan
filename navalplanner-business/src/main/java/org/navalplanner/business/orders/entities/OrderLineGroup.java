@@ -21,6 +21,7 @@ import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 
 public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
 
@@ -619,4 +620,22 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
         return false;
     }
 
+    @Override
+    protected void checkNoOtherGlobalAdvanceAssignment(
+            DirectAdvanceAssignment newAdvanceAssignment)
+            throws DuplicateValueTrueReportGlobalAdvanceException {
+        if (!newAdvanceAssignment.getReportGlobalAdvance()) {
+            return;
+        }
+        Set<AdvanceAssignment> advanceAssignments = new HashSet<AdvanceAssignment>();
+        advanceAssignments.addAll(directAdvanceAssignments);
+        advanceAssignments.addAll(indirectAdvanceAssignments);
+        for (AdvanceAssignment advanceAssignment : advanceAssignments) {
+            if (advanceAssignment.getReportGlobalAdvance()) {
+                throw new DuplicateValueTrueReportGlobalAdvanceException(
+                        "Duplicate Value True ReportGlobalAdvance For Order Element",
+                        this, OrderElement.class);
+            }
+        }
+    }
 }
