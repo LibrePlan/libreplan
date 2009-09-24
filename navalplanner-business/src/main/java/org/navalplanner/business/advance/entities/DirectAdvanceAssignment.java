@@ -1,6 +1,7 @@
 package org.navalplanner.business.advance.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -82,7 +83,8 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         if (advanceMeasurement == null) {
             return BigDecimal.ZERO;
         }
-        return advanceMeasurement.getValue().divide(maxValue);
+        return advanceMeasurement.getValue().setScale(2).divide(maxValue,
+                RoundingMode.DOWN);
     }
 
     public AdvanceMeasurement getAdvanceMeasurement(LocalDate date) {

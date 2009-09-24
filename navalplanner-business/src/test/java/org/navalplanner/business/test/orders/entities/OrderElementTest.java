@@ -77,8 +77,7 @@ public class OrderElementTest {
     }
 
     public static OrderLineGroup givenOrderLineGroupWithTwoOrderLines(
-            Integer hours1,
-            Integer hours2) {
+            Integer hours1, Integer hours2) {
         OrderLineGroup orderLineGroup = givenOrderLineGroupWithOneOrderLine(hours1);
 
         OrderLine orderLine = givenOrderLine("OrderLine2", "1.2", hours2);
@@ -88,8 +87,7 @@ public class OrderElementTest {
     }
 
     private static DirectAdvanceAssignment givenAdvanceAssigement(
-            BigDecimal maxValue,
-            AdvanceType advanceType) {
+            BigDecimal maxValue, AdvanceType advanceType) {
         DirectAdvanceAssignment advanceAssignment = DirectAdvanceAssignment
                 .create();
         advanceAssignment.setMaxValue(maxValue);
@@ -99,10 +97,21 @@ public class OrderElementTest {
         return advanceAssignment;
     }
 
+    public static void addAvanceAssignmentWithoutMeasurement(
+            OrderElement orderElement, AdvanceType advanceType,
+            BigDecimal maxValue, boolean reportGlobalAdvance)
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        DirectAdvanceAssignment advanceAssignment = givenAdvanceAssigement(
+                maxValue, advanceType);
+        advanceAssignment.setReportGlobalAdvance(reportGlobalAdvance);
+        orderElement.addAdvanceAssignment(advanceAssignment);
+    }
+
     public static void addAvanceAssignmentWithMeasurement(
-            OrderElement orderElement,
-            AdvanceType advanceType, BigDecimal maxValue,
-            BigDecimal currentValue, boolean reportGlobalAdvance)
+            OrderElement orderElement, AdvanceType advanceType,
+            BigDecimal maxValue, BigDecimal currentValue,
+            boolean reportGlobalAdvance)
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
         AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
@@ -110,8 +119,7 @@ public class OrderElementTest {
         advanceMeasurement.setValue(currentValue);
 
         DirectAdvanceAssignment advanceAssignment = givenAdvanceAssigement(
-                maxValue,
-                advanceType);
+                maxValue, advanceType);
         advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement);
         advanceAssignment.setReportGlobalAdvance(reportGlobalAdvance);
 
@@ -172,12 +180,12 @@ public class OrderElementTest {
             DuplicateAdvanceAssignmentForOrderElementException {
         OrderLine orderLine = givenOrderLine("name", "code", 1000);
 
-        addAvanceAssignmentWithMeasurement(orderLine, givenAdvanceType("test1"),
-                new BigDecimal(2000),
+        addAvanceAssignmentWithMeasurement(orderLine,
+                givenAdvanceType("test1"), new BigDecimal(2000),
                 new BigDecimal(200), false);
 
-        addAvanceAssignmentWithMeasurement(orderLine, givenAdvanceType("test2"),
-                new BigDecimal(1000),
+        addAvanceAssignmentWithMeasurement(orderLine,
+                givenAdvanceType("test2"), new BigDecimal(1000),
                 new BigDecimal(600), true);
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(60)
@@ -190,16 +198,16 @@ public class OrderElementTest {
             DuplicateAdvanceAssignmentForOrderElementException {
         OrderLine orderLine = givenOrderLine("name", "code", 1000);
 
-        addAvanceAssignmentWithMeasurement(orderLine, givenAdvanceType("test1"),
-                new BigDecimal(2000),
+        addAvanceAssignmentWithMeasurement(orderLine,
+                givenAdvanceType("test1"), new BigDecimal(2000),
                 new BigDecimal(200), false);
 
         addAvanceAssignmentWithMeasurement(orderLine,
                 givenAdvanceType("test3"), new BigDecimal(4000),
                 new BigDecimal(800), true);
 
-        addAvanceAssignmentWithMeasurement(orderLine, givenAdvanceType("test2"),
-                new BigDecimal(1000),
+        addAvanceAssignmentWithMeasurement(orderLine,
+                givenAdvanceType("test2"), new BigDecimal(1000),
                 new BigDecimal(600), false);
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(20)
@@ -486,16 +494,14 @@ public class OrderElementTest {
     }
 
     private static void addAvanceAssignmentWithMeasurements(
-            OrderElement orderElement,
-            AdvanceType advanceType, boolean reportGlobalAdvance,
-            BigDecimal maxValue, LocalDate date1,
+            OrderElement orderElement, AdvanceType advanceType,
+            boolean reportGlobalAdvance, BigDecimal maxValue, LocalDate date1,
             BigDecimal value1, LocalDate date2, BigDecimal value2,
             LocalDate five, BigDecimal date3)
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
         DirectAdvanceAssignment advanceAssignment = givenAdvanceAssigement(
-                maxValue,
-                advanceType);
+                maxValue, advanceType);
         advanceAssignment.setReportGlobalAdvance(reportGlobalAdvance);
 
         AdvanceMeasurement advanceMeasurement1 = AdvanceMeasurement.create();
@@ -579,15 +585,13 @@ public class OrderElementTest {
         AdvanceType advanceType1 = AdvanceType.create("test1", new BigDecimal(
                 10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurements(children.get(0), advanceType1,
-                true,
-                new BigDecimal(1000), one, new BigDecimal(200), three,
+                true, new BigDecimal(1000), one, new BigDecimal(200), three,
                 new BigDecimal(400), five, new BigDecimal(500));
 
         AdvanceType advanceType2 = AdvanceType.create("test2", new BigDecimal(
                 10000), true, new BigDecimal(1), true, false);
         addAvanceAssignmentWithMeasurements(children.get(1), advanceType2,
-                true,
-                new BigDecimal(1000), two, new BigDecimal(100), three,
+                true, new BigDecimal(1000), two, new BigDecimal(100), three,
                 new BigDecimal(350), four, new BigDecimal(400));
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
@@ -834,6 +838,48 @@ public class OrderElementTest {
         assertThat(next.getValue(), equalTo(new BigDecimal(44)));
         // FIXME real value should be: 46.66
 
+    }
+
+    @Test
+    public void checkCalculateFakeOrderLineGroup()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        OrderElement orderElement = givenOrderLineGroupWithTwoOrderLines(5000,
+                1000);
+
+        List<OrderElement> children = orderElement.getChildren();
+        AdvanceType advanceType = PredefinedAdvancedTypes.UNITS.getType();
+        addAvanceAssignmentWithoutMeasurement(children.get(0), advanceType,
+                new BigDecimal(1000), true);
+
+        LocalDate one = new LocalDate(2009, 9, 1);
+        LocalDate two = new LocalDate(2009, 9, 2);
+        LocalDate three = new LocalDate(2009, 9, 3);
+
+        addAvanceAssignmentWithMeasurements(children.get(1), advanceType, true,
+                new BigDecimal(10000), one, new BigDecimal(100), two,
+                new BigDecimal(1000), three, new BigDecimal(5000));
+
+        assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
+                8).divide(new BigDecimal(100)).setScale(2)));
+
+        Set<IndirectAdvanceAssignment> indirectAdvanceAssignments = ((OrderLineGroup) orderElement)
+                .getIndirectAdvanceAssignments();
+        assertThat(indirectAdvanceAssignments.size(), equalTo(2));
+
+        DirectAdvanceAssignment advanceAssignment = null;
+        for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
+            if (indirectAdvanceAssignment.getAdvanceType().equals(advanceType)) {
+                advanceAssignment = ((OrderLineGroup) orderElement)
+                        .calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
+                break;
+            }
+        }
+        assertThat(advanceAssignment.getMaxValue(), equalTo(new BigDecimal(
+                11000)));
+        assertThat(advanceAssignment.getLastPercentage(),
+                equalTo(new BigDecimal(45).divide(new BigDecimal(100))
+                        .setScale(2)));
     }
 
 }
