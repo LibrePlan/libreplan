@@ -2,49 +2,67 @@
     <!--  Messages for user -->
     <vbox id="messagesContainer"/>
 
-    <!--  Name labeltype -->
-    <vbox style="margin-bottom: 5px">
-        <grid>
-            <columns>
-                <column width="200px" />
-                <column />
-            </columns>
-            <rows>
-                <row>
-                    <label value="${i18n:_('Name')}"/>
-                    <textbox id="label_type_name" width="500px"
-                        value="@{controller.labelType.name}" constraint="no empty:${i18n:_('cannot be null or empty')}" />
-                </row>
-            </rows>
-        </grid>
-    </vbox>
+    <tabbox>
+        <tabs>
+           <tab label="${i18n:_('Label type')}"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <!--  Name labeltype -->
+                <vbox style="margin-bottom: 5px">
+                    <grid>
+                        <columns>
+                            <column width="200px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Name')}" />
+                                <textbox id="label_type_name"
+                                    width="500px" value="@{controller.labelType.name}"
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                            </row>
+                        </rows>
+                    </grid>
+                </vbox>
 
-    <!-- Label list -->
-    <panel title="${i18n:_('Label list')}" border="normal">
-        <panelchildren>
-            <button label="${i18n:_('New label')}" onClick="controller.createLabel()" />
-            <grid id="gridLabels" height="320px"
-                model="@{controller.labels}">
-                 <columns sizable="true">
-                     <column label="${i18n:_('Name')}" sort="auto(name)" sortDirection="ascending" />
-                     <column label="${i18n:_('Operations')}" />
-                 </columns>
-                 <rows>
-                    <row self="@{each='label'}" value="@{label}">
-                        <textbox value="@{label.name}" onChange="controller.onChangeLabelName(event)" constraint="no empty:${i18n:_('cannot be null or empty')}"/>
-                        <button label="${i18n:_('Delete')}"
-                            onClick="controller.confirmDeleteLabel(self.parent.value)"/>
-                    </row>
-                </rows>
-            </grid>
-        </panelchildren>
-    </panel>
+                <!-- Label list -->
+                <panel title="${i18n:_('Label list')}"
+                    border="normal">
+                    <panelchildren>
+                        <button label="${i18n:_('New label')}"
+                            onClick="controller.createLabel()" />
+                        <grid id="gridLabels" height="320px"
+                            model="@{controller.labels}">
+                            <columns sizable="true">
+                                <column label="${i18n:_('Name')}"
+                                    sort="auto(name)" sortDirection="ascending" />
+                                <column label="${i18n:_('Operations')}" />
+                            </columns>
+                            <rows>
+                                <row self="@{each='label'}"
+                                    value="@{label}">
+                                    <textbox value="@{label.name}"
+                                        onChange="controller.onChangeLabelName(event)"
+                                        constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                                    <button label="${i18n:_('Delete')}"
+                                        onClick="controller.confirmDeleteLabel(self.parent.value)" />
+                                </row>
+                            </rows>
+                        </grid>
+                    </panelchildren>
+                </panel>
 
-    <!-- Control buttons -->
-    <hbox>
-        <button label="${i18n:_('Save')}" onClick="controller.save()" />
-        <button label="${i18n:_('Save &amp; Continue')}" onClick="controller.saveAndContinue()" />
-        <button label="${i18n:_('Close')}"
-            onClick="controller.close()" />
-    </hbox>
+                <!-- Control buttons -->
+                <hbox>
+                    <button label="${i18n:_('Save')}"
+                        onClick="controller.save()" />
+                    <button label="${i18n:_('Save &amp; Continue')}"
+                        onClick="controller.saveAndContinue()" />
+                    <button label="${i18n:_('Close')}"
+                        onClick="controller.close()" />
+                </hbox>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
 </window>
