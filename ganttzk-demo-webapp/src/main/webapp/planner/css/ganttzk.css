@@ -214,6 +214,11 @@ zkTasklist.GANTT_PANEL_LEFT = 300
 }
 
 /* -------------- Timetracker -------------- */
+
+#timetracker {
+    z-index:-1;
+}
+
 .timetracker_fake_row {
     height: 80px;
 }

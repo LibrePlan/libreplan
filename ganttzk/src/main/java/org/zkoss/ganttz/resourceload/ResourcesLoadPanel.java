@@ -62,8 +62,15 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         super.afterCompose();
         getFellow("insertionPointLeftPanel").appendChild(leftPane);
         leftPane.afterCompose();
+
         getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
         getFellow("insertionPointRightPanel").appendChild(resourceLoadList);
+
+        TimeTrackerComponent timetrackerheader = (TimeTrackerComponent) timeTrackerComponent
+                .clone();
+        getFellow("insertionPointTimetracker").appendChild(timetrackerheader);
+
+        timetrackerheader.afterCompose();
         timeTrackerComponent.afterCompose();
     }
 

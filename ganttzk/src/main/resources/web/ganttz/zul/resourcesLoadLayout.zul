@@ -1,54 +1,98 @@
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
     <borderlayout height="600px" width="auto">
-        <north height="50%" collapsible="true" splittable="true">
+        <north height="70%" collapsible="true" splittable="true">
             <borderlayout sclass="resourcesload">
                 <west size="200px" flex="true" collapsible="true"
                     splittable="true" autoscroll="true">
-                    <div id="insertionPointLeftPanel"></div>
+
+                    <borderlayout>
+                        <north border="0" height="58px" flex="true" collapsible="true">
+                            <vbox pack="center" align="center"><label value="Icons" width="150px" height="29px"/>
+                            <tree fixedLayout="true">
+                                <treecols>
+                                    <treecol label="Name" height="29px"/>
+                                </treecols>
+                            </tree>
+
+                            </vbox>
+                        </north>
+                        <center border="0">
+                            <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
+                        </center>
+                    </borderlayout>
                 </west>
 
-                <center autoscroll="true">
-                    <div id="insertionPointRightPanel"></div>
+                <center sclass="taskspanel">
+                    <borderlayout>
+                        <north border="0"><div sclass="timetrackergap" height="53px" id="insertionPointTimetracker"></div></north>
+                        <center autoscroll="true" border="0" sclass="rightpanellayout">
+                            <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
+                        </center>
+                    </borderlayout>
+
                 </center>
             </borderlayout>
         </north>
         <center>
             <borderlayout>
                 <west size="200px" flex="true" collapsible="true"
-                    splittable="true" autoscroll="true">
-
+                    splittable="true">
+                    <vbox pack="center" align="center">
                     <label value="ResourcesLoadGraph details"
-                        width="150px" tooltip="any" />
+                        width="150px"/>
+                    </vbox>
                 </west>
 
                 <center autoscroll="true">
 
-                    <vbox>
-                        <zscript>
-                            PieModel piemodel = new SimplePieModel();
-                            piemodel.setValue("Resources assigned over 100%", new Double(12.5));
-                            piemodel.setValue("Resources assigned under 50%", new Double(50.2));
-                            piemodel.setValue("Resources assigned at 100%", new Double(20.5));
-                            piemodel.setValue("Resources assigned between 50% and 100%", new Double(15.5));
-                        </zscript>
-                        <chart id="piechart" title="Pie Chart"
-                            width="500" height="250" type="pie" threeD="false"
-                            fgAlpha="128" onClick="drilldown()" />
-                        <zscript>
-                            piechart.setModel(piemodel);
-                    </zscript>
-                    </vbox>
+<vbox>
+<zscript>
+CategoryModel catmodel = new SimpleCategoryModel();
+catmodel.setValue("2008", "Q1 2008", new Integer(20));
+catmodel.setValue("2008", "Q2 2008", new Integer(35));
+catmodel.setValue("2008", "Q3 2008", new Integer(40));
+catmodel.setValue("2008", "Q4 2008", new Integer(55));
+catmodel.setValue("2009", "Q1 2008", new Integer(40));
+catmodel.setValue("2009", "Q2 2008", new Integer(60));
+catmodel.setValue("2009", "Q3 2008", new Integer(70));
+catmodel.setValue("2009", "Q4 2008", new Integer(90));
+catmodel.setValue("2010", "Q1 2008", new Integer(20));
+catmodel.setValue("2010", "Q2 2008", new Integer(35));
+catmodel.setValue("2010", "Q3 2008", new Integer(40));
+catmodel.setValue("2010", "Q4 2008", new Integer(55));
+catmodel.setValue("2011", "Q1 2008", new Integer(40));
+catmodel.setValue("2011", "Q2 2008", new Integer(60));
+catmodel.setValue("2011", "Q3 2008", new Integer(70));
+catmodel.setValue("2011", "Q4 2008", new Integer(90));
+
+catmodel.setValue("2008", "Q1 2009", new Integer(20));
+catmodel.setValue("2008", "Q2 2009", new Integer(35));
+catmodel.setValue("2008", "Q3 2009", new Integer(40));
+catmodel.setValue("2008", "Q4 2009", new Integer(55));
+catmodel.setValue("2009", "Q1 2009", new Integer(40));
+catmodel.setValue("2009", "Q2 2009", new Integer(60));
+catmodel.setValue("2009", "Q3 2009", new Integer(70));
+catmodel.setValue("2009", "Q4 2009", new Integer(90));
+catmodel.setValue("2010", "Q1 2009", new Integer(20));
+catmodel.setValue("2010", "Q2 2009", new Integer(35));
+catmodel.setValue("2010", "Q3 2009", new Integer(40));
+catmodel.setValue("2010", "Q4 2009", new Integer(55));
+catmodel.setValue("2011", "Q1 2009", new Integer(40));
+catmodel.setValue("2011", "Q2 2009", new Integer(60));
+catmodel.setValue("2011", "Q3 2009", new Integer(70));
+catmodel.setValue("2011", "Q4 2009", new Integer(90));
+
+</zscript>
+	<chart id="barchart" title="Resources load Sample" width="1600" height="250"
+		type="stacked_area" fgAlpha="128" />
+	<zscript>
+  barchart.setModel(catmodel);
+</zscript>
+</vbox>
 
                 </center>
             </borderlayout>
         </center>
     </borderlayout>
-    <popup id="any" width="300px">
-        <vbox>
-            This is the resources load assignment page. To set this
-            element ...
-        </vbox>
-    </popup>
-
 </zk>

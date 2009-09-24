@@ -119,9 +119,32 @@ public class DataForPlanner {
                 "resource1",
                 createFakePeriodsStartingAt(new LocalDate(2009, 10, 1),
                         Duration.standardDays(20), Duration.standardDays(90), 2));
+
+        LoadTimeLine resource3 = new LoadTimeLine("resource3",
+                createFakePeriodsStartingAt(new LocalDate(2009, 2, 3), Duration
+                        .standardDays(20), Duration.standardDays(90), 3));
+        LoadTimeLine task4 = new LoadTimeLine("task4",
+                createFakePeriodsStartingAt(new LocalDate(2009, 5, 4), Duration
+                        .standardDays(20), Duration.standardDays(70), 3));
+        LoadTimeLine task5 = new LoadTimeLine("task5",
+                createFakePeriodsStartingAt(new LocalDate(2009, 4, 1), Duration
+                        .standardDays(20), Duration.standardDays(90), 3));
+        LoadTimeLine task6 = new LoadTimeLine("task6",
+                createFakePeriodsStartingAt(new LocalDate(2009, 6, 1), Duration
+                        .standardDays(20), Duration.standardDays(40), 4));
+        LoadTimeLine resource4 = new LoadTimeLine(
+                "resource4",
+                createFakePeriodsStartingAt(new LocalDate(2009, 10, 1),
+                        Duration.standardDays(20), Duration.standardDays(90), 2));
+
         result.add(new LoadTimelinesGroup(resource1, Arrays
                 .asList(task1, task2)));
         result.add(new LoadTimelinesGroup(resource2, Arrays.asList(task3)));
+
+        result.add(new LoadTimelinesGroup(resource3, Arrays
+                .asList(task4, task5)));
+        result.add(new LoadTimelinesGroup(resource4, Arrays.asList(task6)));
+
         return result;
     }
 
