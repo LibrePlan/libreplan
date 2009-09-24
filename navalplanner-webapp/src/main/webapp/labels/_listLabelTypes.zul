@@ -2,7 +2,7 @@
     <grid id="labelTypes" model="@{controller.labelTypes}"
         mold="paging" pageSize="10">
         <columns>
-            <column label="${i18n:_('Name')}" sort="auto(name)" />
+            <column label="${i18n:_('Name')}" sort="auto(name)" sortDirection="ascending" />
             <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>
