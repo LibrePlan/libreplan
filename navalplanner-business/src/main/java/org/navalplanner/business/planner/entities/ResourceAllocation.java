@@ -1,5 +1,6 @@
 package org.navalplanner.business.planner.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +42,24 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             Validate.noNullElements(resourceAllocations);
             checkNoOneHasNullTask(resourceAllocations);
             checkAllHaveSameTask(resourceAllocations);
+            checkNoAllocationWithZeroResourcesPerDay(resourceAllocations);
             this.resourceAllocations = resourceAllocations;
             this.task = resourceAllocations.get(0).getResourceAllocation()
                     .getTask();
+        }
+
+        private static void checkNoAllocationWithZeroResourcesPerDay(
+                List<ResourceAllocationWithDesiredResourcesPerDay> allocations) {
+            for (ResourceAllocationWithDesiredResourcesPerDay r : allocations) {
+                if (isZero(r.getResourcesPerDay().getAmount())) {
+                    throw new IllegalArgumentException(
+                            "all resources per day must be no zero");
+                }
+            }
+        }
+
+        private static boolean isZero(BigDecimal amount) {
+            return amount.movePointRight(amount.scale()).intValue() == 0;
         }
 
         private static void checkNoOneHasNullTask(
@@ -72,6 +88,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         public AllocationsAndResourcesCurried withResources(
                 List<Resource> resources) {
+            Validate.noNullElements(resources);
             return new AllocationsAndResourcesCurried(task, resources,
                     resourceAllocations);
         }
@@ -93,6 +110,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         public LocalDate untilAllocating(int hoursToAllocate) {
+            if (thereIsGenericAllocation()) {
+                Validate.notEmpty(resources, "there must exist workers");
+            }
             AllocatorForSpecifiedResourcesPerDayAndHours allocator = new AllocatorForSpecifiedResourcesPerDayAndHours(
                     task, resources, allocations) {
 
@@ -115,6 +135,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 }
             };
             return allocator.untilAllocating(hoursToAllocate);
+        }
+
+        private boolean thereIsGenericAllocation() {
+            for (ResourceAllocationWithDesiredResourcesPerDay r : allocations) {
+                if (r.getResourceAllocation() instanceof GenericResourceAllocation) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void allocateOnTaskLength() {

@@ -129,6 +129,32 @@ public class AllocationUntilFillingHoursTest {
         assertThat(secondSpecific.getAssignments(), haveHours(8, 8));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void withGenericAllocationWithNoResourcesPerDay() {
+        givenWorkers(1);
+        givenGenericAllocation(ResourcesPerDay.amount(0));
+        ResourceAllocation.allocating(allocations).withResources(resources)
+                .untilAllocating(100);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotDoAGenericAllocationWithoutWorkers() {
+        givenWorkers(0);
+        givenGenericAllocation(ResourcesPerDay.amount(2));
+        ResourceAllocation.allocating(allocations)
+                .withResources(resources)
+                .untilAllocating(100);
+
+    }
+
+    @Test
+    public void withoutWorkersYouCanDoSpecificAllocation() {
+        givenWorkers(0);
+        givenSpecificAllocations(ResourcesPerDay.amount(2));
+        ResourceAllocation.allocating(allocations).withResources(resources)
+                .untilAllocating(100);
+    }
+
     private void givenGenericAllocation(ResourcesPerDay resourcesPerDay) {
         createTaskIfNotCreatedYet();
         allocations.add(new ResourceAllocationWithDesiredResourcesPerDay(
