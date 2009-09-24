@@ -467,7 +467,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
                         RoundingMode.DOWN);
             }
 
-            if (iterator2.hasNext()) {
+            if (iterator1.hasNext()) {
                 next1 = iterator1.next();
             } else {
                 next1 = null;
