@@ -72,7 +72,7 @@ public class OrderElementTreeModel {
     }
 
     private void addOrderElementAtImpl(OrderElement parent) {
-        addOrderElementAtImpl(parent, createNewOrderElement());
+        addOrderElementAt(parent, createNewOrderElement());
 
     }
 
@@ -87,14 +87,14 @@ public class OrderElementTreeModel {
         addChildren(tree, Arrays.asList(elementToAdd));
     }
 
-    private void addOrderElementAtImpl(OrderElement parent,
+    private void addOrderElementAt(OrderElement parent,
             OrderElement orderElement) {
         IOrderLineGroup container = turnIntoContainerIfNeeded(parent);
         container.add(orderElement);
         addToTree(toNode(container), orderElement);
     }
 
-    private void addOrderElementAtImpl(OrderElement destinationNode,
+    private void addOrderElementAt(OrderElement destinationNode,
             OrderElement elementToAdd, int position) {
         IOrderLineGroup container = turnIntoContainerIfNeeded(destinationNode);
         container.add(position, elementToAdd);
@@ -141,7 +141,7 @@ public class OrderElementTreeModel {
         }
         OrderElement destination = (OrderElement) getChildren(parentOfSelected)
                 .get(position - 1);
-        moveImpl(nodeToIndent, destination, getChildren(destination).size());
+        move(nodeToIndent, destination, getChildren(destination).size());
     }
 
     private List<OrderElement> getChildren(OrderElement node) {
@@ -159,25 +159,25 @@ public class OrderElementTreeModel {
             return;
         }
         OrderElement destination = tree.getParent(parent);
-        moveImpl(nodeToUnindent, destination, getChildren(destination).indexOf(
+        move(nodeToUnindent, destination, getChildren(destination).indexOf(
                 parent) + 1);
     }
 
     public void move(OrderElement toBeMoved, OrderElement destination) {
-        moveImpl(toBeMoved, destination, getChildren(destination).size());
+        move(toBeMoved, destination, getChildren(destination).size());
     }
 
     public void moveToRoot(OrderElement toBeMoved) {
-        moveImpl(toBeMoved, tree.getRoot(), 0);
+        move(toBeMoved, tree.getRoot(), 0);
     }
 
-    private void moveImpl(OrderElement toBeMoved, OrderElement destination,
+    private void move(OrderElement toBeMoved, OrderElement destination,
             int position) {
         if (getChildren(destination).contains(toBeMoved)) {
             return;// it's already moved
         }
-        removeNodeImpl(toBeMoved);
-        addOrderElementAtImpl(destination, toBeMoved, position);
+        removeNode(toBeMoved);
+        addOrderElementAt(destination, toBeMoved, position);
     }
 
     public void up(OrderElement node) {
@@ -199,11 +199,7 @@ public class OrderElementTreeModel {
         return (IOrderLineGroup) node;
     }
 
-    public void removeNode(OrderElement node) {
-        removeNodeImpl(node);
-    }
-
-    private void removeNodeImpl(OrderElement orderElement) {
+    public void removeNode(OrderElement orderElement) {
         if (orderElement == tree.getRoot()) {
             return;
         }
