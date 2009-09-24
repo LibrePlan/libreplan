@@ -1,6 +1,6 @@
 <window id="${arg.id}" title="${i18n:_('List label types')}">
     <grid id="labelTypes" model="@{controller.labelTypes}"
-        mold="paging" pageSize="10">
+        mold="paging" pageSize="10" fixedLayout="true">
         <columns>
             <column label="${i18n:_('Name')}" sort="auto(name)" sortDirection="ascending" />
             <column label="${i18n:_('Operations')}" />
@@ -9,10 +9,15 @@
             <row self="@{each='labelType'}" value="@{labelType}">
                 <label value="@{labelType.name}" />
                 <hbox>
-                    <button label="${i18n:_('Edit')}"
-                        onClick="controller.goToEditForm(self.parent.parent.value)"/>
-                    <button label="${i18n:_('Delete')}"
-                        onClick="controller.confirmDelete(self.parent.parent.value)"/>
+                    <button sclass="icono" image="/common/img/ico_editar1.png"
+                        hoverImage="/common/img/ico_editar.png"
+                        tooltiptext="${i18n:_('Edit')}"
+                        onClick="controller.goToEditForm(self.parent.parent.value);"/>
+
+                    <button sclass="icono" image="/common/img/ico_borrar1.png"
+                        hoverImage="/common/img/ico_borrar.png"
+                        tooltiptext="${i18n:_('Delete')}"
+                        onClick="controller.confirmDelete(self.parent.parent.value);"/>
                 </hbox>
             </row>
         </rows>
