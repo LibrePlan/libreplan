@@ -243,7 +243,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     /**
      * Cancel edition
      */
-    public void cancel() {
+    public void close() {
         goToList();
     }
 
