@@ -12,8 +12,8 @@
             <rows>
                 <row>
                     <label value="${i18n:_('Name')}"></label>
-                    <textbox id="name"
-                        value="@{controller.labelType.name}" />
+                    <textbox id="label_type_name"
+                        value="@{controller.labelType.name}" constraint="no empty:${i18n:_('cannot be null or empty')}" />
                 </row>
             </rows>
         </grid>
@@ -31,7 +31,7 @@
                  </columns>
                  <rows>
                     <row self="@{each='label'}" value="@{label}">
-                        <textbox value="@{label.name}" onChange="controller.onChangeLabelName(event)"/>
+                        <textbox value="@{label.name}" onChange="controller.onChangeLabelName(event)" constraint="no empty:${i18n:_('cannot be null or empty')}"/>
                         <button label="${i18n:_('Delete')}"
                             onClick="controller.confirmDeleteLabel(self.parent.value)"/>
                     </row>

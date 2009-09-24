@@ -2,6 +2,7 @@ package org.navalplanner.web.labels;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.validator.InvalidValue;
@@ -20,11 +21,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Column;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
-import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -133,22 +134,11 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
      * Save current {@link LabelType} and return
      */
     public void save() {
+        validate();
         try {
             labelTypeModel.confirmSave();
             goToList();
             messagesForUser.showMessage(Level.INFO, _("Label type saved"));
-        } catch (ValidationException e) {
-            showInvalidValues(e);
-        }
-    }
-
-    /**
-     * Save current {@link LabelType} and continue
-     */
-    public void saveAndContinue() {
-        try {
-            labelTypeModel.confirmSave();
-            messagesEditWindow.showMessage(Level.INFO, _("Label saved"));
         } catch (ValidationException e) {
             showInvalidValues(e);
         }
@@ -160,6 +150,56 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     private void goToList() {
         getVisibility().showOnly(listWindow);
         Util.reloadBindings(listWindow);
+    }
+
+    /**
+     * Validates all {@link Textbox} in the form
+     */
+    private void validate() {
+        validate((Textbox) editWindow.getFellowIfAny("label_type_name"));
+        for (Row row : getRows()) {
+            validate(row);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void validate(Row row) {
+        for (Iterator i = row.getChildren().iterator(); i.hasNext();) {
+            final Component comp = (Component) i.next();
+            if (comp instanceof Textbox) {
+                validate((Textbox) comp);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Row> getRows() {
+        return gridLabels.getRows().getChildren();
+    }
+
+    /**
+     * Validates {@link Textbox} checking {@link Constraint}
+     *
+     * @param comp
+     */
+    private void validate(Textbox comp) {
+        if (comp != null && comp.getConstraint() != null) {
+            final Constraint constraint = comp.getConstraint();
+            constraint.validate(comp, comp.getValue());
+        }
+    }
+
+    /**
+     * Save current {@link LabelType} and continue
+     */
+    public void saveAndContinue() {
+        validate();
+        try {
+            labelTypeModel.confirmSave();
+            messagesEditWindow.showMessage(Level.INFO, _("Label saved"));
+        } catch (ValidationException e) {
+            showInvalidValues(e);
+        }
     }
 
     private void showInvalidValues(ValidationException e) {
@@ -175,8 +215,8 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     }
 
     private void validateLabelType(InvalidValue invalidValue) {
-        Component component = editWindow.getFellowIfAny(invalidValue
-                .getPropertyName());
+        Component component = editWindow.getFellowIfAny("label_type_"
+                + invalidValue.getPropertyName());
         if (component != null) {
             throw new WrongValueException(component, invalidValue.getMessage());
         }
@@ -184,18 +224,17 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
 
     @SuppressWarnings("unchecked")
     private void validateLabel(InvalidValue invalidValue) {
-        Row listitem = findLabel(gridLabels.getRows(), (Label) invalidValue
-                .getBean());
+        Row listitem = findLabel(gridLabels.getRows().getChildren(),
+                (Label) invalidValue.getBean());
         if (listitem != null) {
             throw new WrongValueException(listitem, invalidValue.getMessage());
         }
     }
 
-    private Row findLabel(Rows rows, Label label) {
-        for (Object row : rows.getChildren()) {
-            Textbox textbox = (Textbox) ((Row) row).getFirstChild();
-            if (label.equals(textbox.getValue())) {
-                return (Row) row;
+    private Row findLabel(List<Row> rows, Label label) {
+        for (Row row : rows) {
+            if (label.equals(row.getValue())) {
+                return row;
             }
         }
         return null;
@@ -218,7 +257,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
 
     /**
      * Sorts {@link Grid} model by first column, respecting sort order
-     * 
+     *
      * FIXME: This is a temporary solution, there should be a better/smarter way
      * of preserving order in the Grid every time a new element is added to its
      * model
