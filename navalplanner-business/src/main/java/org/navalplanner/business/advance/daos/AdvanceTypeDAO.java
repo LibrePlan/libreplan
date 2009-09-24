@@ -5,7 +5,6 @@ import java.util.List;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -32,7 +31,7 @@ public class AdvanceTypeDAO extends GenericDAOHibernate<AdvanceType, Long>
     }
 
     @Override
-    public List<AdvanceType> findActivesAdvanceTypes(OrderElement orderElement) {
+    public List<AdvanceType> findActivesAdvanceTypes() {
         return getSession().createCriteria(AdvanceType.class).add(
                 Restrictions.eq("active", Boolean.TRUE)).list();
     }

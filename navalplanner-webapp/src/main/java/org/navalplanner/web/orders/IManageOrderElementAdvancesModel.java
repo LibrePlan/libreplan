@@ -36,7 +36,8 @@ public interface IManageOrderElementAdvancesModel {
 
     public void removeLineAdvanceMeasurement(AdvanceMeasurement advance);
 
-    public List<AdvanceType> getActivesAdvanceTypes();
+    public List<AdvanceType> getPossibleAdvanceTypes(
+            DirectAdvanceAssignment directAdvanceAssignment);
 
     public boolean isReadOnlyAdvanceMeasurements();
 

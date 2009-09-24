@@ -14,6 +14,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.daos.IAdvanceAssignmentDAO;
 import org.navalplanner.business.advance.daos.IAdvanceMeasurementDAO;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
@@ -200,16 +201,47 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public List<AdvanceType> getActivesAdvanceTypes() {
+    public List<AdvanceType> getPossibleAdvanceTypes(
+            DirectAdvanceAssignment directAdvanceAssignment) {
         if(orderElement == null){
              return new ArrayList<AdvanceType>();
         }
-        return this.listAdvanceTypes;
+        List<AdvanceType> advanceTypes = new ArrayList<AdvanceType>();
+        for (AdvanceType advanceType : this.listAdvanceTypes) {
+            if (advanceType.getUnitName().equals(
+                    PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
+                continue;
+            }
+            if (existsAdvanceTypeAlreadyInThisOrderElement(advanceType)) {
+                if ((directAdvanceAssignment.getAdvanceType() == null)
+                        || (!directAdvanceAssignment.getAdvanceType()
+                                .getUnitName()
+                                .equals(advanceType.getUnitName()))) {
+                    continue;
+                }
+            }
+            advanceTypes.add(advanceType);
+        }
+        return advanceTypes;
+    }
+
+    private boolean existsAdvanceTypeAlreadyInThisOrderElement(
+            AdvanceType advanceType) {
+        if (listAdvanceAssignments != null) {
+            for (AdvanceAssignment advanceAssignment : listAdvanceAssignments) {
+                if ((advanceAssignment.getAdvanceType() != null)
+                        && (advanceAssignment.getAdvanceType().getUnitName()
+                                .equals(advanceType.getUnitName()))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Transactional(readOnly = true)
     private void loadAdvanceTypes() {
-        this.listAdvanceTypes = this.advanceTypeDAO.findActivesAdvanceTypes(orderElement);
+        this.listAdvanceTypes = this.advanceTypeDAO.findActivesAdvanceTypes();
     }
 
     @Override

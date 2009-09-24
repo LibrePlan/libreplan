@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceType;
@@ -165,10 +166,6 @@ public class ManageOrderElementAdvancesController extends
         return manageOrderElementAdvancesModel.getInfoAdvanceAssignment();
     }
 
-    public List<AdvanceType> getActivesAdvanceType() {
-        return manageOrderElementAdvancesModel.getActivesAdvanceTypes();
-    }
-
     public boolean isReadOnlyAdvanceMeasurements() {
        return manageOrderElementAdvancesModel.isReadOnlyAdvanceMeasurements();
     }
@@ -211,8 +208,10 @@ public class ManageOrderElementAdvancesController extends
                 .getValue();
         final Combobox comboAdvanceTypes = new Combobox();
         final List<AdvanceType> listAdvanceType = manageOrderElementAdvancesModel
-                .getActivesAdvanceTypes();
+                .getPossibleAdvanceTypes(advance);
         for(AdvanceType advanceType : listAdvanceType){
+            if (!advanceType.getUnitName().equals(
+                    PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
                 Comboitem comboItem = new Comboitem();
                 comboItem.setValue(advanceType);
                 comboItem.setLabel(advanceType.getUnitName());
@@ -222,6 +221,7 @@ public class ManageOrderElementAdvancesController extends
                     && (advance.getAdvanceType().getId().equals(advanceType
                             .getId())))
                     comboAdvanceTypes.setSelectedItem(comboItem);
+            }
         }
         comboAdvanceTypes.addEventListener(Events.ON_SELECT,
                 new EventListener() {
