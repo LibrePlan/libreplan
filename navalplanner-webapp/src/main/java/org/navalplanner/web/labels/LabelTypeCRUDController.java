@@ -248,6 +248,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     }
 
     public void createLabel() {
+        validate();
         labelTypeModel.addLabel();
         Util.reloadBindings(gridLabels);
         // After adding a new row, model might be disordered, so we force it to
@@ -267,11 +268,9 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         ListModelExt model = (ListModelExt) gridLabels.getModel();
         if ("ascending".equals(column.getSortDirection())) {
             model.sort(column.getSortAscending(), true);
-            return;
         }
         if ("descending".equals(column.getSortDirection())) {
             model.sort(column.getSortDescending(), false);
-            return;
         }
     }
 

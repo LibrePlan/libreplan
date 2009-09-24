@@ -33,7 +33,7 @@
                         <button label="${i18n:_('New label')}"
                             onClick="controller.createLabel()" />
                         <grid id="gridLabels" height="320px"
-                            model="@{controller.labels}">
+                            model="@{controller.labels}" fixedLayout="true">
                             <columns sizable="true">
                                 <column label="${i18n:_('Name')}"
                                     sort="auto(name)" sortDirection="ascending" />
@@ -42,11 +42,15 @@
                             <rows>
                                 <row self="@{each='label'}"
                                     value="@{label}">
-                                    <textbox value="@{label.name}"
+                                    <textbox value="@{label.name}" width="500px"
                                         onChange="controller.onChangeLabelName(event)"
                                         constraint="no empty:${i18n:_('cannot be null or empty')}" />
-                                    <button label="${i18n:_('Delete')}"
-                                        onClick="controller.confirmDeleteLabel(self.parent.value)" />
+
+                                    <button sclass="icono" image="/common/img/ico_borrar1.png"
+                                        hoverImage="/common/img/ico_borrar.png"
+                                        tooltiptext="${i18n:_('Delete')}"
+                                        onClick="controller.confirmDeleteLabel(self.parent.value);">
+                                    </button>
                                 </row>
                             </rows>
                         </grid>
