@@ -32,6 +32,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         private final String unencodedURL;
         private final List<CustomMenuItem> children;
         private boolean activeParent;
+        private boolean disabled;
 
         public String getName() {
             return name;
@@ -49,12 +50,18 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             this(name, url, new ArrayList<CustomMenuItem>());
         }
 
+        public CustomMenuItem(String name, String url, boolean disabled) {
+            this(name, url, new ArrayList<CustomMenuItem>());
+            this.disabled = disabled;
+        }
+
         public CustomMenuItem(String name, String url,
                 List<CustomMenuItem> children) {
             this.name = name;
             this.encodedURL = Executions.getCurrent().encodeURL(url);
             this.unencodedURL = url;
             this.children = children;
+            this.disabled = false;
         }
 
         public void appendChildren(CustomMenuItem newChildren) {
@@ -63,6 +70,10 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
         public boolean isActiveParent() {
             return activeParent;
+        }
+
+        public boolean isDisabled() {
+            return disabled;
         }
 
         public boolean contains(String requestPath) {
@@ -114,7 +125,12 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     private CustomMenuController topItem(String name, String url,
             CustomMenuItem... items) {
-        CustomMenuItem parent = new CustomMenuItem(name, url);
+        return topItem(name, url, false, items);
+    }
+
+    private CustomMenuController topItem(String name, String url,
+            boolean disabled, CustomMenuItem... items) {
+        CustomMenuItem parent = new CustomMenuItem(name, url, disabled);
         this.firstLevel.add(parent);
         for (CustomMenuItem child : items) {
             parent.appendChildren(child);
@@ -122,31 +138,25 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         return this;
     }
 
+    private CustomMenuItem subItem(String name, String url, boolean disabled) {
+        return new CustomMenuItem(name, url, disabled);
+    }
+
     private CustomMenuItem subItem(String name, String url) {
         return new CustomMenuItem(name, url);
     }
 
     public void initializeMenu() {
-        topItem(
-                _("Planification"),
-                "/planner/main.zul");
+        topItem(_("Planification"),"/planner/main.zul");
 
         topItem(_("Resources"), "/resources/worker/worker.zul",
-                subItem(
-                        _("Workers List"),
-                        "/resources/worker/worker.zul#list"),
-                subItem(
-                        _("Manage criterions"),
-                        "/resources/criterions/criterions.zul"));
+                subItem(_("Workers List"),"/resources/worker/worker.zul#list"),
+                subItem(_("Manage criterions"),"/resources/criterions/criterions.zul"));
 
-        topItem(_("Orders"),
-                "/orders/orders.zul",
-                subItem(_("Orders list"),
-                        "/orders/orders.zul"),
-                subItem(_("Work activities types"),
-                        "/orders/orders.zul"),
-                subItem(_("Models"),
-                        "/orders/orders.zul"));
+        topItem(_("Orders"), "/orders/orders.zul",
+                subItem(_("Orders list"),"/orders/orders.zul"),
+                subItem(_("Work activities types"),"/orders/orders.zul", true),
+                subItem(_("Models"),"/orders/orders.zul", true));
 
         topItem(_("Work reports"), "/workreports/workReportTypes.zul", subItem(
                 _("Work report types"), "/workreports/workReportTypes.zul"),
@@ -157,13 +167,10 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 "/advance/advanceTypes.zul",
                 subItem(_("Manage advances types"),
                         "/advance/advanceTypes.zul"),
-                subItem(_("Calendars"),
-                        "/calendars/calendars.zul"),
-                subItem(_("Label types"),
-                        "/labels/labelTypes.zul"));
+                subItem(_("Calendars"), "/calendars/calendars.zul"),
+                subItem(_("Label types"), "/labels/labelTypes.zul"));
 
-        topItem(_("Quality management"),
-                "/");
+        topItem(_("Quality management"), "/", true);
     }
 
     private Hbox getRegisteredItemsInsertionPoint() {

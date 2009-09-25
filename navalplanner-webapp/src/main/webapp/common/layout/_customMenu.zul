@@ -3,8 +3,11 @@
     <n:table border="0" cellspacing="0" cellpadding="0">
         <n:tr>
             <n:td forEach="${menuContainer.customMenuItems}">
-                <n:a href="${each.url}" class=
-                    "menuup${(each.activeParent?'_activa':'')}">${i18n:_(each.name)}</n:a>
+
+                <n:a if="${!(each.disabled)}" href="${each.url}"
+                    class="menuup${(each.activeParent?'_activa':'')}">${i18n:_(each.name)}</n:a>
+                <n:span if="${(each.disabled)}" class="menuup_desactivado">${i18n:_(each.name)}
+                </n:span>
             </n:td>
         </n:tr>
     </n:table>
@@ -15,8 +18,12 @@
                 <n:table border="0" cellspacing="0" cellpadding="0">
                     <n:tr>
                         <n:td width="10" />
-                        <n:td forEach="${menuContainer.customMenuSecondaryItems}">
-                            <n:a href="${each.url}" class="sub_menu">${i18n:_(each.name)}</n:a>
+                        <n:td
+                            forEach="${menuContainer.customMenuSecondaryItems}">
+                            <n:a if="${!(each.disabled)}" href="${each.url}"
+                                class="sub_menu">${i18n:_(each.name)}</n:a>
+                            <n:span if="${(each.disabled)}"
+                                class="sub_menu_desactivado">${i18n:_(each.name)}</n:span>
                             <n:td width="14"
                                 background="${menuContainer.contextPath}/common/img/sub_separacion.gif" />
                         </n:td>

@@ -23,6 +23,21 @@ a.menuup:hover {
     background-image: url(../img/pestana_sobre.gif);
 }
 
+.menuup_desactivado {
+        font-family: Tahoma, Arial, Helvetica, sans-serif;
+        text-decoration: none;
+        font-size: 11px;
+        color: #77B6D0;
+        display: block;
+        padding-top: 10px;
+        padding-left: 6px;
+        width: 125px;
+        background-repeat: no-repeat;
+        background-position: -4px 4px;
+        padding-bottom: 5px;
+        background-image: url(../img/pestana_desactivada.gif);
+}
+
 .sub_menu {
     font-family: Tahoma, Arial, Helvetica, sans-serif, Tahoma;
     font-size: 11px;
@@ -37,6 +52,35 @@ a.sub_menu:hover {
     color: #FFFFFF;
     text-decoration: underline;
 }
+
+.sub_menu_activo {
+        font-family: Tahoma, Arial, Helvetica, sans-serif, Tahoma;
+        font-size: 11px;
+        color: #2A83B4;
+        background-color: #CBDBEB;
+        text-decoration: none;
+        display: block;
+        line-height: 16px;
+        padding-right: 3px;
+        padding-left: 3px;
+        text-decoration: none;
+        background-image: url(../img/pest_sub1.gif);
+        background-repeat:  no-repeat;
+        background-position: right top;
+}
+
+.sub_menu_desactivado {
+        font-family: Tahoma, Arial, Helvetica, sans-serif, Tahoma;
+        font-size: 11px;
+        color: #ABB8CD;
+        text-decoration: none;
+        display: block;
+        line-height: 22px;
+        padding-right: 3px;
+        padding-left: 3px;
+        font-style: italic;
+}
+
 .menuup_activa {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     text-decoration: none;
