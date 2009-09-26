@@ -291,10 +291,21 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return total;
     }
 
+    /**
+     * @return a list of {@link DayAssignment} ordered by date
+     */
     public abstract List<? extends DayAssignment> getAssignments();
 
     public ResourcesPerDay getResourcesPerDay() {
         return resourcesPerDay;
+    }
+
+    public LocalDate getStartDate() {
+        List<? extends DayAssignment> assignments = getAssignments();
+        if (assignments.isEmpty()) {
+            return null;
+        }
+        return assignments.get(0).getDay();
     }
 
 }
