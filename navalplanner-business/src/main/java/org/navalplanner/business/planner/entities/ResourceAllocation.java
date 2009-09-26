@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
@@ -33,6 +35,27 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 allocations);
         Collections.sort(result, byStartDateComparator());
         return result;
+    }
+
+    public static Map<Task, List<ResourceAllocation<?>>> byTask(
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        Map<Task, List<ResourceAllocation<?>>> result = new HashMap<Task, List<ResourceAllocation<?>>>();
+        for (ResourceAllocation<?> resourceAllocation : allocations) {
+            if (resourceAllocation.getTask() != null) {
+                Task task = resourceAllocation.getTask();
+                initializeIfNeeded(result, task);
+                result.get(task).add(resourceAllocation);
+            }
+        }
+        return result;
+    }
+
+    private static void initializeIfNeeded(
+            Map<Task, List<ResourceAllocation<?>>> result, Task task) {
+        if (!result.containsKey(task)) {
+            result.put(task,
+                    new ArrayList<ResourceAllocation<?>>());
+        }
     }
 
     private static Comparator<ResourceAllocation<?>> byStartDateComparator() {
@@ -141,10 +164,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 @Override
                 protected List<DayAssignment> createAssignmentsAtDay(
                         ResourceAllocation<?> resourceAllocation,
-                        List<Resource> resources, LocalDate day, ResourcesPerDay resourcesPerDay ,Integer limit) {
+                        List<Resource> resources, LocalDate day,
+                        ResourcesPerDay resourcesPerDay, Integer limit) {
                     return resourceAllocation.createAssignmentsAtDay(resources,
-                            day,
-                            resourcesPerDay, limit);
+                            day, resourcesPerDay, limit);
                 }
 
                 @Override
