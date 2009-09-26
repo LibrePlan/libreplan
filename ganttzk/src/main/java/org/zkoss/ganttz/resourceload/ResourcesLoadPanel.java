@@ -8,6 +8,8 @@ import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.util.MutableTreeModel;
+import org.zkoss.ganttz.util.OnZKDesktopRegistry;
+import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
@@ -30,7 +32,16 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
         resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
         leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
+        registerNeededScripts();
+    }
 
+    private void registerNeededScripts() {
+        getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
+    }
+
+    private IScriptsRegister getScriptsRegister() {
+        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
+                .retrieve();
     }
 
     private MutableTreeModel<LoadTimeLine> createModelForTree() {
