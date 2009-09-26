@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.joda.time.LocalDate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,9 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ResourceLoadController extends GenericForwardComposer {
+
+    @Autowired
+    private IResourceLoadModel resourceLoadModel;
 
     public ResourceLoadController() {
     }
