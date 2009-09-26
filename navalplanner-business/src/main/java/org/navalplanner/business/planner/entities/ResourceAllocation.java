@@ -353,4 +353,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return assignments.get(0).getDay();
     }
 
+    public LocalDate getEndDate() {
+        List<? extends DayAssignment> assignments = getAssignments();
+        if (assignments.isEmpty()) {
+            return null;
+        }
+        return assignments.get(assignments.size() - 1).getDay();
+    }
+
 }
