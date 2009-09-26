@@ -361,4 +361,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return assignments.get(assignments.size() - 1).getDay();
     }
 
+    public boolean isAlreadyFinishedBy(LocalDate date) {
+        if (getEndDate() == null) {
+            return false;
+        }
+        return getEndDate().compareTo(date) < 0;
+    }
+
 }
