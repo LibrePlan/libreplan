@@ -2,7 +2,7 @@ package org.zkoss.ganttz;
 
 import org.zkoss.ganttz.util.script.ScriptsRequiredDeclaration;
 
-@ScriptsRequiredDeclaration(dependsOn = YUIMin.class)
+@ScriptsRequiredDeclaration(dependsOn = { YUIMin.class, ScrollSyncScript.class })
 public class ScriptsRequiredByPlanner {
 
     public static final String SELECTOR = "/zkau/web/js/yui/2.7.0/selector/selector-min.js";
