@@ -13,8 +13,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.DayAssignment;
 
@@ -490,6 +493,27 @@ public abstract class Resource extends BaseEntity{
 
     public List<DayAssignment> getAssignments() {
         return new ArrayList<DayAssignment>(dayAssignments);
+    }
+
+    public int getTotalWorkHours(LocalDate start, LocalDate end) {
+        IWorkHours calendar = getCalendar() != null ? getCalendar()
+                : SameWorkHoursEveryDay
+                        .getDefaultWorkingDay();
+        return getTotalWorkHoursFor(calendar, start, end);
+    }
+
+    private int getTotalWorkHoursFor(IWorkHours calendar, LocalDate start,
+            LocalDate end) {
+        int sum = 0;
+        final int days = Days.daysBetween(start, end).getDays();
+        for (int i = 0; i < days; i++) {
+            LocalDate current = start.plusDays(i);
+            Integer workableHours = calendar.getWorkableHours(current);
+            if (workableHours != null) {
+                sum += workableHours;
+            }
+        }
+        return sum;
     }
 
 }
