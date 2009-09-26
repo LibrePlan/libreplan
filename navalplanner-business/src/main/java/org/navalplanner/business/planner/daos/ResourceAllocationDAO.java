@@ -1,6 +1,7 @@
 package org.navalplanner.business.planner.daos;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -47,6 +48,12 @@ public class ResourceAllocationDAO extends
         return (List<SpecificResourceAllocation>) getSession().createCriteria(
                 SpecificResourceAllocation.class).add(
                 Restrictions.in("resource", resources)).list();
+    }
+
+    @Override
+    public List<ResourceAllocation<?>> findAllocationsRelatedTo(
+            Resource resource) {
+        return findAllocationsRelatedToAnyOf(Arrays.asList(resource));
     }
 
 }

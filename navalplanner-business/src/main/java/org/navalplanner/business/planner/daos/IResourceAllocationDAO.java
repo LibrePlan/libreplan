@@ -17,4 +17,6 @@ public interface IResourceAllocationDAO extends
     List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
             List<Resource> resources);
 
+    List<ResourceAllocation<?>> findAllocationsRelatedTo(Resource resource);
+
 }
