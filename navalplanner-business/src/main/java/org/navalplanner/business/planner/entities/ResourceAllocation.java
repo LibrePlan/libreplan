@@ -368,4 +368,17 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return getEndDate().compareTo(date) < 0;
     }
 
+    public int getAssignedHours(LocalDate start, LocalDate end) {
+        int sum =0;
+        for (DayAssignment dayAssignment : getAssignments()) {
+            if (dayAssignment.getDay().compareTo(end) >= 0) {
+                break;
+            }
+            if (dayAssignment.getDay().compareTo(start) >= 0) {
+                sum += dayAssignment.getHours();
+            }
+        }
+        return sum;
+    }
+
 }
