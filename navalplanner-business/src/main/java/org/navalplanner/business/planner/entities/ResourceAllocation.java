@@ -2,6 +2,9 @@ package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -23,6 +26,25 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public abstract class ResourceAllocation<T extends DayAssignment> extends
         BaseEntity {
+
+    public static List<ResourceAllocation<?>> sortedByStartDate(
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>(
+                allocations);
+        Collections.sort(result, byStartDateComparator());
+        return result;
+    }
+
+    private static Comparator<ResourceAllocation<?>> byStartDateComparator() {
+        return new Comparator<ResourceAllocation<?>>() {
+
+            @Override
+            public int compare(ResourceAllocation<?> o1,
+                    ResourceAllocation<?> o2) {
+                return o1.getStartDate().compareTo(o2.getStartDate());
+            }
+        };
+    }
 
     public static AllocationsCurried allocating(
             List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations) {
