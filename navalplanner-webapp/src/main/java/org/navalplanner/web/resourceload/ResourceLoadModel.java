@@ -17,7 +17,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Override
     public void initGlobalView() {
-
     }
 
     @Override
