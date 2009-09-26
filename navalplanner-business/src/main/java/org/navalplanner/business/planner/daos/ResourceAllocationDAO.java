@@ -1,9 +1,9 @@
 package org.navalplanner.business.planner.daos;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 
 /**
  * DAO for {@ResourceAllocation}
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @Repository
@@ -36,8 +35,11 @@ public class ResourceAllocationDAO extends
 
     private List<GenericResourceAllocation> findGenericAllocationsFor(
             List<Resource> resources) {
-        // TODO do query for generic allocations
-        return Collections.emptyList();
+        return (List<GenericResourceAllocation>) getSession().createCriteria(
+                GenericResourceAllocation.class).setResultTransformer(
+                Criteria.DISTINCT_ROOT_ENTITY)
+                .createCriteria("genericDayAssignments").add(
+                Restrictions.in("resource", resources)).list();
     }
 
     private List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
