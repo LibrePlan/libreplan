@@ -13,4 +13,6 @@
         controller = resourceLoadController;
     ]]>
     </zscript>
+    <div apply="${controller}" self="@{define(content)}">
+    </div>
 </zk>
