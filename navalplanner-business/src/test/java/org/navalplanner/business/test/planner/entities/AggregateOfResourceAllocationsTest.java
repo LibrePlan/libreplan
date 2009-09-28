@@ -5,6 +5,7 @@ import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
 import java.util.ArrayList;
@@ -37,6 +38,12 @@ public class AggregateOfResourceAllocationsTest {
     public void aggregateWithNoResourceAllocationsHasZeroTotalHours() {
         givenAggregateOfResourceAllocationsWithAssignedHours();
         assertThat(aggregate.getTotalHours(), equalTo(0));
+    }
+
+    @Test
+    public void ifNoAllocationsIsEmpty() {
+        givenAggregateOfResourceAllocationsWithAssignedHours();
+        assertTrue(aggregate.isEmpty());
     }
 
     @Test

@@ -40,4 +40,8 @@ public class AggregateOfResourceAllocations {
         return result;
     }
 
+    public boolean isEmpty() {
+        return resourceAllocations.isEmpty();
+    }
+
 }

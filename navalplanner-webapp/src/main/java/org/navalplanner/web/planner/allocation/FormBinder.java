@@ -60,7 +60,9 @@ class FormBinder {
     }
 
     private void loadValueForAssignedHoursComponent() {
-        this.assignedHoursComponent.setValue(aggregate.getTotalHours());
+        this.assignedHoursComponent
+                .setValue(aggregate.isEmpty() ? resourceAllocationsBeingEdited
+                        .getTask().getWorkHours() : aggregate.getTotalHours());
     }
 
     private void assignedHoursComponentDisabilityRule() {
