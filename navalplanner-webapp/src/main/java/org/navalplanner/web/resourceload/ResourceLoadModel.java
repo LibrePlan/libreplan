@@ -212,17 +212,20 @@ class PeriodsBuilder {
         while (iterator.hasNext()) {
             LoadPeriodGenerator current = iterator.next();
             if (iterator.hasNext()) {
-                final int positionToComeBack = iterator.nextIndex();
+                int positionToComeBack = iterator.nextIndex();
                 iterator.remove();
                 LoadPeriodGenerator next = iterator.next();
                 iterator.remove();
-                List<LoadPeriodGenerator> joined = current.join(next);
+                List<LoadPeriodGenerator> generated = current.join(next);
+                if (generated.size() == 1) {
+                    positionToComeBack--;
+                }
                 List<LoadPeriodGenerator> sortedByStartDate = mergeListsKeepingByStartSortOrder(
-                        joined, loadPeriodsGenerators
+                        generated, loadPeriodsGenerators
                         .subList(iterator.nextIndex(), loadPeriodsGenerators
                                 .size()));
                 final int takenFromRemaining = sortedByStartDate.size()
-                        - joined.size();
+                        - generated.size();
                 for (int i = 0; i < takenFromRemaining; i++) {
                     iterator.next();
                     iterator.remove();
