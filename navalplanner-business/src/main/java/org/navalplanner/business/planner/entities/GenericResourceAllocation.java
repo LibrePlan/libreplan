@@ -22,12 +22,6 @@ import org.navalplanner.business.resources.entities.Resource;
 public class GenericResourceAllocation extends
         ResourceAllocation<GenericDayAssignment> {
 
-    private Set<Criterion> criterions;
-
-    private Set<GenericDayAssignment> genericDayAssignments = new HashSet<GenericDayAssignment>();
-
-    private Map<Resource, List<GenericDayAssignment>> orderedDayAssignmentsByResource = null;
-
     public static GenericResourceAllocation create() {
         return (GenericResourceAllocation) create(new GenericResourceAllocation());
     }
@@ -50,6 +44,12 @@ public class GenericResourceAllocation extends
         }
         return result;
     }
+
+    private Set<Criterion> criterions;
+
+    private Set<GenericDayAssignment> genericDayAssignments = new HashSet<GenericDayAssignment>();
+
+    private Map<Resource, List<GenericDayAssignment>> orderedDayAssignmentsByResource = null;
 
     private GenericResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {
         super(resourcesPerDay, task);
