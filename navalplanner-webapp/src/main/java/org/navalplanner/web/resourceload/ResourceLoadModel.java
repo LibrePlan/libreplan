@@ -212,31 +212,45 @@ class PeriodsBuilder {
         while (iterator.hasNext()) {
             LoadPeriodGenerator current = iterator.next();
             if (iterator.hasNext()) {
-                int positionToComeBack = iterator.nextIndex();
                 iterator.remove();
                 LoadPeriodGenerator next = iterator.next();
                 iterator.remove();
                 List<LoadPeriodGenerator> generated = current.join(next);
-                if (generated.size() == 1) {
-                    positionToComeBack--;
-                }
+                final LoadPeriodGenerator nextOne = generated.size() > 1 ? generated
+                        .get(1) : generated.get(0);
                 List<LoadPeriodGenerator> sortedByStartDate = mergeListsKeepingByStartSortOrder(
                         generated, loadPeriodsGenerators
                         .subList(iterator.nextIndex(), loadPeriodsGenerators
                                 .size()));
                 final int takenFromRemaining = sortedByStartDate.size()
                         - generated.size();
-                for (int i = 0; i < takenFromRemaining; i++) {
-                    iterator.next();
-                    iterator.remove();
-                }
-                for (LoadPeriodGenerator l : sortedByStartDate) {
-                    iterator.add(l);
-                }
-                while (positionToComeBack < iterator.nextIndex()) {
-                    iterator.previous();
-                }
+                removeNextElements(iterator, takenFromRemaining);
+                addAtCurrentPosition(iterator, sortedByStartDate);
+                rewind(iterator, nextOne);
             }
+        }
+    }
+
+    private void addAtCurrentPosition(
+            ListIterator<LoadPeriodGenerator> iterator,
+            List<LoadPeriodGenerator> sortedByStartDate) {
+        for (LoadPeriodGenerator l : sortedByStartDate) {
+            iterator.add(l);
+        }
+    }
+
+    private void removeNextElements(ListIterator<LoadPeriodGenerator> iterator,
+            final int elementsNumber) {
+        for (int i = 0; i < elementsNumber; i++) {
+            iterator.next();
+            iterator.remove();
+        }
+    }
+
+    private void rewind(ListIterator<LoadPeriodGenerator> iterator,
+            LoadPeriodGenerator nextOne) {
+        while (peekNext(iterator) != nextOne) {
+            iterator.previous();
         }
     }
 
