@@ -48,4 +48,9 @@ public class ResourcesPerDay {
         return false;
     }
 
+    public boolean isZero() {
+        BigDecimal withoutDecimalpart = amount.movePointRight(2);
+        return withoutDecimalpart.intValue() == 0;
+    }
+
 }

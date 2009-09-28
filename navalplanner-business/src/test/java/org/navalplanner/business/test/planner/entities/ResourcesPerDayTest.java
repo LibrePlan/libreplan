@@ -2,7 +2,9 @@ package org.navalplanner.business.test.planner.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 
@@ -93,6 +95,24 @@ public class ResourcesPerDayTest {
         ResourcesPerDay b = ResourcesPerDay.amount(2);
         assertEquals(a.hashCode(), b.hashCode());
         assertEquals(a, b);
+    }
+
+    @Test
+    public void isZeroIfHaveZeroValue() {
+        BigDecimal[] examples = { new BigDecimal(0.0001), new BigDecimal(0),
+                new BigDecimal(00), new BigDecimal(0.00) };
+        for (BigDecimal example : examples) {
+            assertTrue(ResourcesPerDay.amount(example).isZero());
+        }
+    }
+
+    @Test
+    public void notZeroIfNoZeroValue() {
+        BigDecimal[] examples = { new BigDecimal(0.01), new BigDecimal(0.009),
+                new BigDecimal(1), new BigDecimal(0.10) };
+        for (BigDecimal example : examples) {
+            assertFalse(ResourcesPerDay.amount(example).isZero());
+        }
     }
 
 }
