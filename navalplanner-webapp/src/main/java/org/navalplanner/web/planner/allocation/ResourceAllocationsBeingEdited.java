@@ -119,7 +119,22 @@ public class ResourceAllocationsBeingEdited {
         return result;
     }
 
+    public void checkInvalidValues() {
+        if (thereIsJustOneEmptyGenericResourceAllocation()) {
+            formBinder
+                    .markGenericAllocationMustBeNoZeroOrMoreAllocations(currentAllocations
+                            .get(0));
+        }
+    }
+
+    private boolean thereIsJustOneEmptyGenericResourceAllocation() {
+        return currentAllocations.size() == 1
+                && currentAllocations.get(0).isGeneric()
+                && currentAllocations.get(0).isEmptyResourcesPerDay();
+    }
+
     public AggregateOfResourceAllocations doAllocation() {
+        checkInvalidValues();
         List<ResourceAllocationWithDesiredResourcesPerDay> allocations = asResourceAllocations();
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:

@@ -1,11 +1,14 @@
 package org.navalplanner.web.planner.allocation;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -176,6 +179,14 @@ class FormBinder {
 
     public void newSpecificAllocation() {
         applyButton.setDisabled(false);
+    }
+
+    public void markGenericAllocationMustBeNoZeroOrMoreAllocations(
+            AllocationDTO allocation) {
+        Decimalbox decimalbox = resourcesPerDayInputsByAllocationDTO
+                .get(allocation);
+        throw new WrongValueException(decimalbox,
+                _("it must be no zero or must add more allocations"));
     }
 
 }
