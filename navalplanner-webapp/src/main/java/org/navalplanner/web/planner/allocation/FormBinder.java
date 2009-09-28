@@ -12,10 +12,12 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.impl.api.InputElement;
 
 class FormBinder {
@@ -44,9 +46,12 @@ class FormBinder {
                     return;
                 }
             }
+            Clients.closeErrorBox(allocationsList);
             applyButton.setDisabled(false);
         }
     };
+
+    private Listbox allocationsList;
 
     public FormBinder(
             ResourceAllocationsBeingEdited resourceAllocationsBeingEdited) {
@@ -192,6 +197,15 @@ class FormBinder {
     public void markAssignedHoursMustBePositive() {
         throw new WrongValueException(assignedHoursComponent,
                 _("it must be greater than zero"));
+    }
+
+    public void markThereMustBeAtLeastOneNoEmptyAllocation() {
+        throw new WrongValueException(allocationsList,
+                _("at least one no empty allocation is needed"));
+    }
+
+    public void setAllocationsList(Listbox allocationsList) {
+        this.allocationsList = allocationsList;
     }
 
 }

@@ -129,6 +129,18 @@ public class ResourceAllocationsBeingEdited {
                 && formBinder.getAssignedHours() == 0) {
             formBinder.markAssignedHoursMustBePositive();
         }
+        if (!thereIsLeastOneNoEmptyAllocation()) {
+            formBinder.markThereMustBeAtLeastOneNoEmptyAllocation();
+        }
+    }
+
+    private boolean thereIsLeastOneNoEmptyAllocation() {
+        for (AllocationDTO allocationDTO : currentAllocations) {
+            if (!allocationDTO.isEmptyResourcesPerDay()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean thereIsJustOneEmptyGenericResourceAllocation() {

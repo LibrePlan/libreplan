@@ -63,7 +63,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private IMessagesForUser messagesForUser;
 
-    private Listbox resourcesList;
+    private Listbox allocationsList;
 
     private Window window;
 
@@ -104,6 +104,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         formBinder.setTaskStartDateBox(taskStartDateBox);
         formBinder.setTaskElapsedDays(taskElapsedDays);
         formBinder.setApplyButton(applyButton);
+        formBinder.setAllocationsList(allocationsList);
         CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                 .from(formBinder.getCalculatedValue());
         calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
@@ -138,7 +139,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         addSpecificResourceAllocations(workerSearch.getWorkers());
 
-        Util.reloadBindings(resourcesList);
+        Util.reloadBindings(allocationsList);
     }
 
     /**
@@ -268,7 +269,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     private void clear() {
-        resourcesList.getItems().clear();
+        allocationsList.getItems().clear();
     }
 
     public void accept() {
@@ -324,7 +325,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         private void removeSpecificResourceAllocation(SpecificAllocationDTO data) {
             allocationsBeingEdited.remove(data);
-            Util.reloadBindings(resourcesList);
+            Util.reloadBindings(allocationsList);
         }
 
         private void renderGenericResourceAllocation(Listitem item,

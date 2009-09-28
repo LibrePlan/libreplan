@@ -111,7 +111,7 @@
 
         <vbox id="messagesContainer"></vbox>
 
-        <listbox id="resourcesList"
+        <listbox id="allocationsList"
             model="@{allocationController.resourceAllocations}"
             itemRenderer="@{allocationController.resourceAllocationRenderer}"
             style="margin-bottom: 5px">
