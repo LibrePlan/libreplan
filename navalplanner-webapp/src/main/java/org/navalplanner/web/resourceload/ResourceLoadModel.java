@@ -329,7 +329,7 @@ class LoadPeriodGenerator {
     private int sumAssigned() {
         int sum = 0;
         for (ResourceAllocation<?> resourceAllocation : allocationsOnInterval) {
-            sum += resourceAllocation.getAssignedHours(start, end);
+            sum += resourceAllocation.getAssignedHours(resource, start, end);
         }
         return sum;
     }

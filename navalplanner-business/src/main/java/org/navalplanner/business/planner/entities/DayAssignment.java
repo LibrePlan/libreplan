@@ -112,4 +112,13 @@ public abstract class DayAssignment extends BaseEntity {
         return result;
     }
 
+    public boolean isAssignedTo(Resource resource) {
+        return this.resource.equals(resource);
+    }
+
+    public boolean includedIn(LocalDate startInclusive, LocalDate endExclusive) {
+        return day.compareTo(startInclusive) >= 0
+                && day.compareTo(endExclusive) < 0;
+    }
+
 }
