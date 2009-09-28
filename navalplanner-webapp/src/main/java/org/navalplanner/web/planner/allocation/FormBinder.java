@@ -189,4 +189,9 @@ class FormBinder {
                 _("it must be no zero or must add more allocations"));
     }
 
+    public void markAssignedHoursMustBePositive() {
+        throw new WrongValueException(assignedHoursComponent,
+                _("it must be greater than zero"));
+    }
+
 }

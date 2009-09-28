@@ -125,6 +125,10 @@ public class ResourceAllocationsBeingEdited {
                     .markGenericAllocationMustBeNoZeroOrMoreAllocations(currentAllocations
                             .get(0));
         }
+        if (formBinder.getCalculatedValue() != CalculatedValue.NUMBER_OF_HOURS
+                && formBinder.getAssignedHours() == 0) {
+            formBinder.markAssignedHoursMustBePositive();
+        }
     }
 
     private boolean thereIsJustOneEmptyGenericResourceAllocation() {
