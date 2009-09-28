@@ -1,20 +1,26 @@
 package org.navalplanner.web.resourceload;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -62,9 +68,29 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 .sortedByStartDate(resourceAllocationDAO
                         .findAllocationsRelatedTo(resource));
         return new LoadTimelinesGroup(buildTimeLine(resource, resource
-                .getDescription(), sortedByStartDate),
-                buildTimeLinesForEachTask(resource,
-                        onlySpecific(sortedByStartDate)));
+                .getDescription(), sortedByStartDate), buildSecondLevel(
+                resource, sortedByStartDate));
+    }
+
+    private List<LoadTimeLine> buildSecondLevel(Resource resource,
+            List<ResourceAllocation<?>> sortedByStartDate) {
+        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        result.addAll(buildTimeLinesForEachTask(resource,
+                onlySpecific(sortedByStartDate)));
+        result.addAll(buildTimeLinesForEachCriterion(resource,
+                onlyGeneric(sortedByStartDate)));
+        return result;
+    }
+
+    private List<GenericResourceAllocation> onlyGeneric(
+            List<ResourceAllocation<?>> sortedByStartDate) {
+        List<GenericResourceAllocation> result = new ArrayList<GenericResourceAllocation>();
+        for (ResourceAllocation<?> r : sortedByStartDate) {
+            if (r instanceof GenericResourceAllocation) {
+                result.add((GenericResourceAllocation) r);
+            }
+        }
+        return result;
     }
 
     private List<SpecificResourceAllocation> onlySpecific(
@@ -78,6 +104,20 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return result;
     }
 
+    private List<LoadTimeLine> buildTimeLinesForEachCriterion(
+            Resource resource, List<GenericResourceAllocation> sortdByStartDate) {
+        Map<Set<Criterion>, List<GenericResourceAllocation>> byCriterions = GenericResourceAllocation
+                .byCriterions(sortdByStartDate);
+        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        for (Entry<Set<Criterion>, List<GenericResourceAllocation>> entry : byCriterions
+                .entrySet()) {
+            result.add(buildTimeLine(new ArrayList<Criterion>(entry.getKey()),
+                    resource, entry.getValue()));
+        }
+        return result;
+    }
+
+
     private List<LoadTimeLine> buildTimeLinesForEachTask(Resource resource,
             List<SpecificResourceAllocation> sortedByStartDate) {
         Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
@@ -88,6 +128,24 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     entry.getValue()));
         }
         return secondLevel;
+    }
+
+    private LoadTimeLine buildTimeLine(List<Criterion> criterions,
+            Resource resource,
+            List<GenericResourceAllocation> allocationsSortedByStartDate) {
+        return new LoadTimeLine(getName(criterions), PeriodsBuilder.build(
+                resource, allocationsSortedByStartDate));
+    }
+
+    private String getName(List<Criterion> criterions) {
+        if (criterions.isEmpty()) {
+            return _("generic all workers");
+        }
+        String[] names = new String[criterions.size()];
+        for (int i = 0; i < names.length; i++) {
+            names[i] = criterions.get(i).getName();
+        }
+        return Arrays.toString(names);
     }
 
     private LoadTimeLine buildTimeLine(Resource resource, String name,
@@ -114,20 +172,20 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
 class PeriodsBuilder {
 
-    private final List<ResourceAllocation<?>> sortedByStartDate;
+    private final List<? extends ResourceAllocation<?>> sortedByStartDate;
 
     private final List<LoadPeriodGenerator> loadPeriodsGenerators = new LinkedList<LoadPeriodGenerator>();
 
     private final Resource resource;
 
     private PeriodsBuilder(Resource resource,
-            List<ResourceAllocation<?>> sortedByStartDate) {
+            List<? extends ResourceAllocation<?>> sortedByStartDate) {
         this.resource = resource;
         this.sortedByStartDate = sortedByStartDate;
     }
 
     public static List<LoadPeriod> build(Resource resource,
-            List<ResourceAllocation<?>> sortedByStartDate) {
+            List<? extends ResourceAllocation<?>> sortedByStartDate) {
         return new PeriodsBuilder(resource, sortedByStartDate).buildPeriods();
     }
 
