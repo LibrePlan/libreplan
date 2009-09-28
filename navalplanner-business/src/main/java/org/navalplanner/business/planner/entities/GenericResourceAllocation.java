@@ -3,6 +3,7 @@ package org.navalplanner.business.planner.entities;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,19 @@ public class GenericResourceAllocation extends
             ResourcesPerDay resourcesPerDay, Task task) {
         return (GenericResourceAllocation) create(new GenericResourceAllocation(
                 resourcesPerDay, task));
+    }
+
+    public static Map<Set<Criterion>, List<GenericResourceAllocation>> byCriterions(
+            Collection<? extends GenericResourceAllocation> genericAllocations) {
+        Map<Set<Criterion>, List<GenericResourceAllocation>> result = new HashMap<Set<Criterion>, List<GenericResourceAllocation>>();
+        for (GenericResourceAllocation genericResourceAllocation : genericAllocations) {
+            Set<Criterion> criterions = genericResourceAllocation.getCriterions();
+            if(! result.containsKey(criterions)){
+                result.put(criterions, new ArrayList<GenericResourceAllocation>());
+            }
+            result.get(criterions).add(genericResourceAllocation);
+        }
+        return result;
     }
 
     private GenericResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {
