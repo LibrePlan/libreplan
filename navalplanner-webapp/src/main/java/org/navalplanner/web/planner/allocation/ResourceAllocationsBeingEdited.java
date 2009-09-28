@@ -100,9 +100,21 @@ public class ResourceAllocationsBeingEdited {
 
     public List<ResourceAllocationWithDesiredResourcesPerDay> asResourceAllocations() {
         List<ResourceAllocationWithDesiredResourcesPerDay> result = new ArrayList<ResourceAllocationWithDesiredResourcesPerDay>();
-        for (AllocationDTO allocation : currentAllocations) {
+        for (AllocationDTO allocation : withoutZeroResourcesPerDayAllocations(currentAllocations)) {
             result.add(createOrModify(allocation).withDesiredResourcesPerDay(
                     allocation.getResourcesPerDay()));
+        }
+        return result;
+    }
+
+
+    private List<AllocationDTO> withoutZeroResourcesPerDayAllocations(
+            List<AllocationDTO> allocations) {
+        List<AllocationDTO> result = new ArrayList<AllocationDTO>();
+        for (AllocationDTO allocationDTO : allocations) {
+            if (!allocationDTO.isEmptyResourcesPerDay()) {
+                result.add(allocationDTO);
+            }
         }
         return result;
     }

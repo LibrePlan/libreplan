@@ -65,6 +65,10 @@ public abstract class AllocationDTO {
 
     public abstract boolean isGeneric();
 
+    public boolean isEmptyResourcesPerDay() {
+        return getResourcesPerDay().isZero();
+    }
+
     public static List<AllocationDTO> toDTOs(
             Collection<? extends ResourceAllocation<?>> resourceAllocations) {
         List<AllocationDTO> result = new ArrayList<AllocationDTO>();
