@@ -96,6 +96,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
      */
     public void showWindow(Task task, org.zkoss.ganttz.data.Task ganttTask,
             PlanningState planningState) {
+        if (formBinder != null) {
+            formBinder.detach();
+        }
         allocationsBeingEdited = resourceAllocationModel.initAllocationsFor(
                 task, ganttTask,
                 planningState);

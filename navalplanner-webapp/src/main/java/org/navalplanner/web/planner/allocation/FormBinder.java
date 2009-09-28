@@ -2,7 +2,9 @@ package org.navalplanner.web.planner.allocation;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
@@ -52,6 +54,10 @@ class FormBinder {
     };
 
     private Listbox allocationsList;
+
+    private EventListener applyButtonListener;
+
+    private List<InputElement> inputsAssociatedWithOnChangeEnableApply = new ArrayList<InputElement>();
 
     public FormBinder(
             ResourceAllocationsBeingEdited resourceAllocationsBeingEdited) {
@@ -115,6 +121,7 @@ class FormBinder {
 
     private void onChangeEnableApply(InputElement inputElement) {
         inputElement.addEventListener(Events.ON_CHANGE, onChangeEnableApply);
+
     }
 
     public void setTaskElapsedDays(Intbox taskElapsedDays) {
@@ -147,14 +154,15 @@ class FormBinder {
     public void setApplyButton(Button applyButton) {
         this.applyButton = applyButton;
         this.applyButton.setDisabled(true);
-        this.applyButton.addEventListener(Events.ON_CLICK, new EventListener() {
+        applyButtonListener = new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
                 doApply();
                 FormBinder.this.applyButton.setDisabled(true);
             }
-        });
+        };
+        this.applyButton.addEventListener(Events.ON_CLICK, applyButtonListener);
     }
 
     public void setResourcesPerDayBoxFor(AllocationDTO data,
@@ -206,6 +214,15 @@ class FormBinder {
 
     public void setAllocationsList(Listbox allocationsList) {
         this.allocationsList = allocationsList;
+    }
+
+    public void detach() {
+        this.applyButton.removeEventListener(Events.ON_CLICK,
+                applyButtonListener);
+        for (InputElement inputElement : inputsAssociatedWithOnChangeEnableApply) {
+            inputElement.removeEventListener(Events.ON_CHANGE,
+                    onChangeEnableApply);
+        }
     }
 
 }
