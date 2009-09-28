@@ -400,7 +400,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
                 @Override
                 public void set(BigDecimal value) {
-                    data.setResourcesPerDay(ResourcesPerDay.amount(value));
+                    BigDecimal amount = value == null ? new BigDecimal(0)
+                            : value;
+                    data.setResourcesPerDay(ResourcesPerDay.amount(amount));
                 }
             });
         }
