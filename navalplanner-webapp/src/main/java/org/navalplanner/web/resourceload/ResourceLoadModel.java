@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
@@ -62,11 +63,23 @@ public class ResourceLoadModel implements IResourceLoadModel {
                         .findAllocationsRelatedTo(resource));
         return new LoadTimelinesGroup(buildTimeLine(resource, resource
                 .getDescription(), sortedByStartDate),
-                buildTimeLinesForEachTask(resource, sortedByStartDate));
+                buildTimeLinesForEachTask(resource,
+                        withoutGeneric(sortedByStartDate)));
+    }
+
+    private List<SpecificResourceAllocation> withoutGeneric(
+            List<ResourceAllocation<?>> sortedByStartDate) {
+        List<SpecificResourceAllocation> result = new ArrayList<SpecificResourceAllocation>();
+        for (ResourceAllocation<?> r : sortedByStartDate) {
+            if (r instanceof SpecificResourceAllocation) {
+                result.add((SpecificResourceAllocation) r);
+            }
+        }
+        return result;
     }
 
     private List<LoadTimeLine> buildTimeLinesForEachTask(Resource resource,
-            List<ResourceAllocation<?>> sortedByStartDate) {
+            List<SpecificResourceAllocation> sortedByStartDate) {
         Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
                 .byTask(sortedByStartDate);
         List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
