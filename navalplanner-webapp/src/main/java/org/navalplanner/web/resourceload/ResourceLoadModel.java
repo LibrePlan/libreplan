@@ -64,10 +64,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return new LoadTimelinesGroup(buildTimeLine(resource, resource
                 .getDescription(), sortedByStartDate),
                 buildTimeLinesForEachTask(resource,
-                        withoutGeneric(sortedByStartDate)));
+                        onlySpecific(sortedByStartDate)));
     }
 
-    private List<SpecificResourceAllocation> withoutGeneric(
+    private List<SpecificResourceAllocation> onlySpecific(
             List<ResourceAllocation<?>> sortedByStartDate) {
         List<SpecificResourceAllocation> result = new ArrayList<SpecificResourceAllocation>();
         for (ResourceAllocation<?> r : sortedByStartDate) {
