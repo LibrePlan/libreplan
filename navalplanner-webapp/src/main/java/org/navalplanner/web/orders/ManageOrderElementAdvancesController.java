@@ -381,6 +381,9 @@ public class ManageOrderElementAdvancesController extends
             Util.bind(date, new Util.Getter<Date>() {
                 @Override
                 public Date get() {
+                    if (advanceMeasurement.getDate() == null) {
+                        return null;
+                    }
                     return advanceMeasurement.getDate()
                             .toDateTimeAtStartOfDay().toDate();
                 }
@@ -721,6 +724,9 @@ public class ManageOrderElementAdvancesController extends
 
                 @Override
                 public Date get() {
+                    if (advanceMeasurement.getDate() == null) {
+                        return null;
+                    }
                     return advanceMeasurement.getDate()
                             .toDateTimeAtStartOfDay().toDate();
                 }

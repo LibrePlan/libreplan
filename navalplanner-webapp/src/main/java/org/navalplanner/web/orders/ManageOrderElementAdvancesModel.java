@@ -288,13 +288,15 @@ public class ManageOrderElementAdvancesModel implements
         for(AdvanceAssignment advanceAssignment : this.listAdvanceAssignments){
             AdvanceAssignment advance = yetExistAdvanceAssignment(advanceAssignment);
             if (advance == null) {
-                removeAdvanceAssignment(advance);
+                removeAdvanceAssignment(advanceAssignment);
             }else{
-                for (AdvanceMeasurement advanceMeasurement : this.listAdvanceMeasurements) {
-                    if (advance instanceof DirectAdvanceAssignment) {
-                        if (!yetExistAdvanceMeasurement(
-                                (DirectAdvanceAssignment) advance,
-                                advanceMeasurement)) {
+                if (advance instanceof DirectAdvanceAssignment) {
+                    for (AdvanceMeasurement advanceMeasurement : this.listAdvanceMeasurements) {
+                        if (advanceMeasurement.getAdvanceAssignment().equals(
+                                advance)
+                                && !yetExistAdvanceMeasurement(
+                                        (DirectAdvanceAssignment) advance,
+                                        advanceMeasurement)) {
                             removeAdvanceMeasurement(advanceMeasurement);
                         }
                     }
@@ -342,7 +344,9 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     private void removeAdvanceAssignment(AdvanceAssignment advanceAssignment){
-        orderElement.removeAdvanceAssignment(advanceAssignment);
+        if (advanceAssignment != null) {
+            orderElement.removeAdvanceAssignment(advanceAssignment);
+        }
     }
 
     private void removeAdvanceMeasurement(AdvanceMeasurement advanceMeasurement){
