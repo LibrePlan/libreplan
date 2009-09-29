@@ -197,7 +197,12 @@ public class ManageOrderElementAdvancesModel implements
             AdvanceMeasurement newMeasurement = AdvanceMeasurement.create();
             newMeasurement.setDate(new LocalDate());
             newMeasurement.setAdvanceAssignment(this.advanceAssignment);
-            this.advanceAssignment.getAdvanceMeasurements().add(newMeasurement);
+            if (!this.advanceAssignment.getAdvanceMeasurements().add(
+                    newMeasurement)) {
+                newMeasurement.setDate(null);
+                this.advanceAssignment.getAdvanceMeasurements().add(
+                        newMeasurement);
+            }
         }
     }
 
