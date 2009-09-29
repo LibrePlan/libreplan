@@ -47,10 +47,40 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView() {
-        List<Resource> allResources = resourcesDAO.list(Resource.class);
-        loadTimeLines = groupsFor(allResources);
+        loadTimeLines = calculateLoadTimelinesGroups();
         viewInterval = new Interval(toDate(new LocalDate(2008, 6, 10)),
                 toDate(new LocalDate(2011, 6, 10)));
+    }
+
+    private List<LoadTimelinesGroup> calculateLoadTimelinesGroups() {
+        List<LoadTimelinesGroup> result = new ArrayList<LoadTimelinesGroup>();
+        List<Resource> allResources = resourcesDAO.list(Resource.class);
+        result.addAll(groupsFor(allResources));
+        result.addAll(groupsFor(resourceAllocationDAO.findGenericAllocationsByCriterion()));
+        return result;
+    }
+
+    private List<LoadTimelinesGroup> groupsFor(
+            Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
+        List<LoadTimelinesGroup> result = new ArrayList<LoadTimelinesGroup>();
+        for (Entry<Criterion, List<GenericResourceAllocation>> entry : genericAllocationsByCriterion
+                .entrySet()) {
+            result.add(new LoadTimelinesGroup(createPrincipal(entry.getKey(),
+                    entry.getValue()), new ArrayList<LoadTimeLine>()));
+        }
+        return result;
+    }
+
+    private LoadTimeLine createPrincipal(Criterion criterion,
+            List<GenericResourceAllocation> value) {
+        return new LoadTimeLine(criterion.getName(), createPeriods(criterion,
+                value));
+    }
+
+    private List<LoadPeriod> createPeriods(Criterion criterion,
+            List<GenericResourceAllocation> value) {
+        return PeriodsBuilder.build(LoadPeriodGenerator.onCriterion(criterion),
+                value);
     }
 
     private List<LoadTimelinesGroup> groupsFor(List<Resource> allResources) {
@@ -131,7 +161,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
             Resource resource,
             List<GenericResourceAllocation> allocationsSortedByStartDate) {
         return new LoadTimeLine(getName(criterions), PeriodsBuilder.build(
-                new OnResourceFactory(resource), allocationsSortedByStartDate));
+                LoadPeriodGenerator.onResource(resource),
+                allocationsSortedByStartDate));
     }
 
     private String getName(List<Criterion> criterions) {
@@ -147,8 +178,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private LoadTimeLine buildTimeLine(Resource resource, String name,
             List<ResourceAllocation<?>> sortedByStartDate) {
-        return new LoadTimeLine(name, PeriodsBuilder.build(
-                new OnResourceFactory(resource), sortedByStartDate));
+        return new LoadTimeLine(name, PeriodsBuilder.build(LoadPeriodGenerator
+                .onResource(resource), sortedByStartDate));
     }
 
     @Override
