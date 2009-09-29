@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -117,7 +118,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return result;
     }
 
-
     private List<LoadTimeLine> buildTimeLinesForEachTask(Resource resource,
             List<SpecificResourceAllocation> sortedByStartDate) {
         Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
@@ -134,7 +134,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
             Resource resource,
             List<GenericResourceAllocation> allocationsSortedByStartDate) {
         return new LoadTimeLine(getName(criterions), PeriodsBuilder.build(
-                resource, allocationsSortedByStartDate));
+                new OnResourceFactory(resource), allocationsSortedByStartDate));
     }
 
     private String getName(List<Criterion> criterions) {
@@ -150,8 +150,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private LoadTimeLine buildTimeLine(Resource resource, String name,
             List<ResourceAllocation<?>> sortedByStartDate) {
-        return new LoadTimeLine(name, PeriodsBuilder.build(resource,
-                sortedByStartDate));
+        return new LoadTimeLine(name, PeriodsBuilder.build(
+                new OnResourceFactory(resource), sortedByStartDate));
     }
 
     @Override
@@ -170,29 +170,48 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
 }
 
+interface LoadPeriodGeneratorFactory {
+    LoadPeriodGenerator create(ResourceAllocation<?> allocation);
+}
+
+class OnResourceFactory implements LoadPeriodGeneratorFactory {
+
+    private final Resource resource;
+
+    public OnResourceFactory(Resource resource) {
+        Validate.notNull(resource);
+        this.resource = resource;
+    }
+
+    @Override
+    public LoadPeriodGenerator create(ResourceAllocation<?> allocation) {
+        return new LoadPeriodGenerator(resource, allocation);
+    }
+
+}
+
 class PeriodsBuilder {
 
     private final List<? extends ResourceAllocation<?>> sortedByStartDate;
 
     private final List<LoadPeriodGenerator> loadPeriodsGenerators = new LinkedList<LoadPeriodGenerator>();
 
-    private final Resource resource;
+    private final LoadPeriodGeneratorFactory factory;
 
-    private PeriodsBuilder(Resource resource,
+    private PeriodsBuilder(LoadPeriodGeneratorFactory factory,
             List<? extends ResourceAllocation<?>> sortedByStartDate) {
-        this.resource = resource;
+        this.factory = factory;
         this.sortedByStartDate = sortedByStartDate;
     }
 
-    public static List<LoadPeriod> build(Resource resource,
+    public static List<LoadPeriod> build(LoadPeriodGeneratorFactory factory,
             List<? extends ResourceAllocation<?>> sortedByStartDate) {
-        return new PeriodsBuilder(resource, sortedByStartDate).buildPeriods();
+        return new PeriodsBuilder(factory, sortedByStartDate).buildPeriods();
     }
 
     private List<LoadPeriod> buildPeriods() {
         for (ResourceAllocation<?> resourceAllocation : sortedByStartDate) {
-            loadPeriodsGenerators.add(new LoadPeriodGenerator(resource,
-                    resourceAllocation));
+            loadPeriodsGenerators.add(factory.create(resourceAllocation));
         }
         joinPeriodGenerators();
         return toGenerators(loadPeriodsGenerators);
@@ -217,11 +236,11 @@ class PeriodsBuilder {
                 iterator.remove();
                 List<LoadPeriodGenerator> generated = current.join(next);
                 final LoadPeriodGenerator nextOne = generated.size() > 1 ? generated
-                        .get(1) : generated.get(0);
+                        .get(1)
+                        : generated.get(0);
                 List<LoadPeriodGenerator> sortedByStartDate = mergeListsKeepingByStartSortOrder(
-                        generated, loadPeriodsGenerators
-                        .subList(iterator.nextIndex(), loadPeriodsGenerators
-                                .size()));
+                        generated, loadPeriodsGenerators.subList(iterator
+                                .nextIndex(), loadPeriodsGenerators.size()));
                 final int takenFromRemaining = sortedByStartDate.size()
                         - generated.size();
                 removeNextElements(iterator, takenFromRemaining);
