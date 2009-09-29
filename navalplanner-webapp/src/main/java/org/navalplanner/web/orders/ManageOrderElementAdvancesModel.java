@@ -523,7 +523,7 @@ public class ManageOrderElementAdvancesModel implements
             if (listAdvanceMeasurements.size() > 1) {
                 for (AdvanceMeasurement advanceMeasurement : listAdvanceMeasurements) {
                     BigDecimal value = advanceMeasurement.getValue();
-                    if (selectedAdvances.size() > 1) {
+                    if ((selectedAdvances.size() > 1) && (value != null)) {
                         BigDecimal maxValue = directAdvanceAssignment
                                 .getMaxValue();
                         value = value.divide(maxValue, RoundingMode.DOWN);
