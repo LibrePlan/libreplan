@@ -7,10 +7,6 @@
             <button label="${i18n:_('Add new advance assignment')}"
                 onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceAssignment();">
             </button>
-            <button label="${i18n:_('Remove')}"
-                onClick="manageOrderElementAdvancesController.goToRemoveLineAdvanceAssignment();"
-                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurements}">
-            </button>
         </hbox>
     </vbox>
     <vbox>
@@ -28,6 +24,7 @@
                  <listheader label="${i18n:_('Spread')}"/>
                  <listheader label="${i18n:_('Calculated')}"/>
                  <listheader label="${i18n:_('Chart')}"/>
+                 <listheader label="${i18n:_('Operations')}"/>
              </listhead>
     </listbox>
     </vbox>
@@ -44,10 +41,6 @@
                 onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceMeasurement();"
                 disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurements}">
             </button>
-            <button label="${i18n:_('Remove')}"
-                onClick="manageOrderElementAdvancesController.goToRemoveLineAdvanceMeasurement();"
-                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurements}">
-            </button>
         </hbox>
         <hbox>
         <listbox id="editAdvancesMeasurement"
@@ -58,6 +51,7 @@
                     <listheader label="${i18n:_('Current value')}"/>
                     <listheader label="${i18n:_('Percentage')}"/>
                     <listheader label="${i18n:_('Date')}"/>
+                    <listheader label="${i18n:_('Operations')}"/>
                 </listhead>
         </listbox>
         <chart id="chart" title="${i18n:_('Advance Progress')}"

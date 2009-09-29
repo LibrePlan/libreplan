@@ -28,6 +28,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -205,6 +206,7 @@ public class ManageOrderElementAdvancesController extends
             appendRadioSpread(listItem);
             appendCalculatedCheckbox(listItem);
             appendChartCheckbox(listItem);
+            appendRemoveButton(listItem);
         }
     }
 
@@ -458,6 +460,25 @@ public class ManageOrderElementAdvancesController extends
         listItem.appendChild(listCell);
     }
 
+    private void appendRemoveButton(final Listitem listItem) {
+        final AdvanceAssignment advance = (AdvanceAssignment) listItem
+                .getValue();
+        final Button removeButton = createRemoveButton();
+
+        removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                manageOrderElementAdvancesModel
+                        .removeLineAdvanceAssignment(advance);
+                Util.reloadBindings(window);
+            }
+        });
+
+        Listcell listCell = new Listcell();
+        listCell.appendChild(removeButton);
+        listItem.appendChild(listCell);
+    }
+
     private void setMaxValue(final Listitem item,Combobox comboAdvanceTypes) {
         Listcell listCell = (Listcell)item.getChildren().get(1);
         Decimalbox miBox = ((Decimalbox) listCell.getFirstChild());
@@ -670,6 +691,7 @@ public class ManageOrderElementAdvancesController extends
             appendDecimalBoxValue(item);
             appendLabelPercentage(item);
             appendDateboxDate(item);
+            appendRemoveButton(item);
         }
 
         private void appendDecimalBoxValue(final Listitem listitem) {
@@ -807,10 +829,39 @@ public class ManageOrderElementAdvancesController extends
             return newConstraint;
         }
 
+        private void appendRemoveButton(final Listitem listItem) {
+            final AdvanceMeasurement advance = (AdvanceMeasurement) listItem
+                    .getValue();
+            final Button removeButton = createRemoveButton();
+
+            removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    manageOrderElementAdvancesModel
+                            .removeLineAdvanceMeasurement(advance);
+                    Util.reloadBindings(window);
+                }
+            });
+
+            Listcell listCell = new Listcell();
+            listCell.appendChild(removeButton);
+            listItem.appendChild(listCell);
+        }
+
     }
 
     public XYModel getChartData() {
         return this.manageOrderElementAdvancesModel.getChartData(selectedAdvances);
+    }
+
+    private Button createRemoveButton() {
+        Button removeButton = new Button();
+        removeButton.setSclass("icono");
+        removeButton.setImage("/common/img/ico_borrar1.png");
+        removeButton.setHoverImage("/common/img/ico_borrar.png");
+        removeButton.setTooltiptext(_("Delete"));
+
+        return removeButton;
     }
 
 }
