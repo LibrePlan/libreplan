@@ -194,8 +194,10 @@ public class ManageOrderElementAdvancesController extends
             listItem.setDraggable("true");
             listItem.setDroppable("true");
 
-            if (advance instanceof DirectAdvanceAssignment) {
-                 appendComboboxAdvancType(listItem);
+            if ((advance instanceof DirectAdvanceAssignment)
+                    && ((DirectAdvanceAssignment) advance)
+                            .getAdvanceMeasurements().isEmpty()) {
+                appendComboboxAdvancType(listItem);
             } else {
                 appendLabelAdvanceType(listItem);
             }
