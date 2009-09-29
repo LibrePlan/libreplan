@@ -116,6 +116,7 @@ public class ManageOrderElementAdvancesController extends
         this.manageOrderElementAdvancesModel.init(orderElementModel
                 .getOrderElement());
         this.indexSelectedItem = -1;
+        selectedAdvances.clear();
         Util.reloadBindings(window);
     }
 
