@@ -2,15 +2,18 @@ package org.navalplanner.business.planner.daos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -97,6 +100,14 @@ public class ResourceAllocationDAO extends
     private Criterion getCriterion(Object row) {
         Object[] elements = (Object[]) row;
         return (Criterion) elements[1];
+    }
+
+    @Override
+    public List<SpecificDayAssignment> getSpecificAssignmentsBetween(
+            Collection<Resource> relatedToOne, LocalDate start, LocalDate end) {
+        return getSession().createCriteria(SpecificDayAssignment.class).add(
+                Restrictions.and(Restrictions.in("resource", relatedToOne),
+                        Restrictions.between("day", start, end))).list();
     }
 
 }

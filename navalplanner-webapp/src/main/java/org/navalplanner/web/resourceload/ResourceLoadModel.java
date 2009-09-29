@@ -79,7 +79,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private List<LoadPeriod> createPeriods(Criterion criterion,
             List<GenericResourceAllocation> value) {
-        return PeriodsBuilder.build(LoadPeriodGenerator.onCriterion(criterion),
+        return PeriodsBuilder.build(LoadPeriodGenerator.onCriterion(
+                resourceAllocationDAO, criterion),
                 value);
     }
 

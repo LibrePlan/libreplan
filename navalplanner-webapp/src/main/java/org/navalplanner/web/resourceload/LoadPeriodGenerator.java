@@ -9,9 +9,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.zkoss.ganttz.data.resourceload.LoadLevel;
@@ -46,12 +48,14 @@ abstract class LoadPeriodGenerator {
     }
 
     public static LoadPeriodGeneratorFactory onCriterion(
+            final IResourceAllocationDAO resourceAllocationDAO,
             final Criterion criterion) {
         return new LoadPeriodGeneratorFactory() {
 
             @Override
             public LoadPeriodGenerator create(ResourceAllocation<?> allocation) {
-                return new LoadPeriodGeneratorOnCriterion(criterion, allocation);
+                return new LoadPeriodGeneratorOnCriterion(
+                        resourceAllocationDAO, criterion, allocation);
             }
         };
     }
@@ -153,7 +157,7 @@ abstract class LoadPeriodGenerator {
 
     private int calculateLoadPercentage() {
         final int totalResourceWorkHours = getTotalWorkHours();
-        int assigned = sumAssigned();
+        int assigned = getHoursAssigned();
         double proportion = assigned / (double) totalResourceWorkHours;
         try {
             return new BigDecimal(proportion).scaleByPowerOfTen(2).intValue();
@@ -162,7 +166,9 @@ abstract class LoadPeriodGenerator {
         }
     }
 
-    private int sumAssigned() {
+    protected abstract int getHoursAssigned();
+
+    protected final int sumAllocations() {
         int sum = 0;
         for (ResourceAllocation<?> resourceAllocation : allocationsOnInterval) {
             sum += getAssignedHoursFor(resourceAllocation);
@@ -215,30 +221,42 @@ class LoadPeriodGeneratorOnResource extends LoadPeriodGenerator {
         return resourceAllocation.getAssignedHours(resource, start, end);
     }
 
+    @Override
+    protected int getHoursAssigned() {
+        return sumAllocations();
+    }
+
 }
 
 class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
 
     private final Criterion criterion;
 
-    public LoadPeriodGeneratorOnCriterion(Criterion criterion,
+    private IResourceAllocationDAO resourceAllocationDAO;
+
+    public LoadPeriodGeneratorOnCriterion(
+            IResourceAllocationDAO resourceAllocationDAO, Criterion criterion,
             ResourceAllocation<?> allocation) {
-        this(criterion, allocation.getStartDate(), allocation.getEndDate(),
+        this(resourceAllocationDAO, criterion, allocation.getStartDate(),
+                allocation.getEndDate(),
                 Arrays
                 .<ResourceAllocation<?>> asList(allocation));
     }
 
-    public LoadPeriodGeneratorOnCriterion(Criterion criterion,
+    public LoadPeriodGeneratorOnCriterion(
+            IResourceAllocationDAO resourceAllocationDAO, Criterion criterion,
             LocalDate startDate, LocalDate endDate,
             List<ResourceAllocation<?>> allocations) {
         super(startDate, endDate, allocations);
+        this.resourceAllocationDAO = resourceAllocationDAO;
         this.criterion = criterion;
     }
 
     @Override
     protected LoadPeriodGenerator create(LocalDate start, LocalDate end,
             List<ResourceAllocation<?>> allocationsOnInterval) {
-        return new LoadPeriodGeneratorOnCriterion(criterion, start, end,
+        return new LoadPeriodGeneratorOnCriterion(resourceAllocationDAO,
+                criterion, start, end,
                 allocationsOnInterval);
     }
 
@@ -269,6 +287,26 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
             sum += resource.getTotalWorkHours(start, end);
         }
         return sum;
+    }
+
+    @Override
+    protected int getHoursAssigned() {
+        return sumAllocations() + calculateSumOfSpecific();
+    }
+
+    private int calculateSumOfSpecific() {
+        List<SpecificDayAssignment> specific = resourceAllocationDAO
+                .getSpecificAssignmentsBetween(
+                getResourcesMatchedByCriterionFromAllocations(), start, end);
+        return sum(specific);
+    }
+
+    private int sum(List<SpecificDayAssignment> specific) {
+        int result = 0;
+        for (SpecificDayAssignment s : specific) {
+            result += s.getHours();
+        }
+        return result;
     }
 
 }

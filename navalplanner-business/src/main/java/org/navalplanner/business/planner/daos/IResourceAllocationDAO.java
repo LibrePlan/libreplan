@@ -1,11 +1,14 @@
 package org.navalplanner.business.planner.daos;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -23,5 +26,9 @@ public interface IResourceAllocationDAO extends
     List<ResourceAllocation<?>> findAllocationsRelatedTo(Resource resource);
 
     Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion();
+
+    List<SpecificDayAssignment> getSpecificAssignmentsBetween(
+            Collection<Resource> relatedToOne,
+            LocalDate start, LocalDate end);
 
 }
