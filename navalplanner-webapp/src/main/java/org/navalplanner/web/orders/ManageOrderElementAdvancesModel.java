@@ -185,6 +185,9 @@ public class ManageOrderElementAdvancesModel implements
         DirectAdvanceAssignment newAdvance = DirectAdvanceAssignment.create();
         newAdvance.setOrderElement(this.orderElement);
 
+        if (listAdvanceAssignments.isEmpty()) {
+            newAdvance.setReportGlobalAdvance(true);
+        }
         listAdvanceAssignments.add(newAdvance);
     }
 
