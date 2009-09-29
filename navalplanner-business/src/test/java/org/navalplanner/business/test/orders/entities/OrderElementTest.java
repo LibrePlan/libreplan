@@ -171,7 +171,7 @@ public class OrderElementTest {
                 new BigDecimal(600), false);
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(10)
-                .divide(new BigDecimal(100))));
+                .setScale(2).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -189,7 +189,7 @@ public class OrderElementTest {
                 new BigDecimal(600), true);
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(60)
-                .divide(new BigDecimal(100))));
+                .setScale(2).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -211,7 +211,7 @@ public class OrderElementTest {
                 new BigDecimal(600), false);
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(20)
-                .divide(new BigDecimal(100))));
+                .setScale(2).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -245,7 +245,7 @@ public class OrderElementTest {
         }
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                40).divide(new BigDecimal(100))));
+                40).setScale(2).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -279,7 +279,7 @@ public class OrderElementTest {
         }
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                10).divide(new BigDecimal(100))));
+                10).setScale(2).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -333,7 +333,7 @@ public class OrderElementTest {
         }
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                20).divide(new BigDecimal(100))));
+                20).setScale(2).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -389,8 +389,9 @@ public class OrderElementTest {
                 PredefinedAdvancedTypes.PERCENTAGE.getType(), new BigDecimal(
                         100), new BigDecimal(90), true);
 
-        assertThat(orderLineGroup.getAdvancePercentage(), equalTo(new BigDecimal(
-                90).divide(new BigDecimal(100))));
+        assertThat(orderLineGroup.getAdvancePercentage(),
+                equalTo(new BigDecimal(90).setScale(2).divide(
+                        new BigDecimal(100))));
     }
 
     @Test

@@ -110,7 +110,8 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         if (advanceMeasurement == null) {
             return BigDecimal.ZERO;
         }
-        return advanceMeasurement.getValue().divide(maxValue);
+        return advanceMeasurement.getValue().setScale(2).divide(maxValue,
+                RoundingMode.DOWN);
     }
 
 }
