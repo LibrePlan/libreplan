@@ -1,67 +1,63 @@
 <vbox id="listOrderElementAdvances">
-    <vbox id="messagesContainerAdvances" />
-    <label value="${i18n:_('Direct Advances')}"/>
-    <separator bar="true" spacing="2px" orient="horizontal"/>
-    <vbox align="left">
-        <hbox>
-            <button label="${i18n:_('Add new advance assignment')}"
-                onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceAssignment();">
-            </button>
-        </hbox>
-    </vbox>
-    <vbox>
-    <listbox id="editAdvances"
-             model="@{manageOrderElementAdvancesController.advanceAssignments}"
-             itemRenderer="@{manageOrderElementAdvancesController.advancesRenderer}" mold="paging"
-             onSelect="manageOrderElementAdvancesController.prepareEditAdvanceMeasurements(self.selectedItem.value);"
-             pageSize="10">
-            <listhead sizable="true">
-                 <listheader label="${i18n:_('Advance Type')}" />
-                 <listheader label="${i18n:_('Max value')}"/>
-                 <listheader label="${i18n:_('Current value')}"/>
-                 <listheader label="${i18n:_('Percentage')}"/>
-                 <listheader label="${i18n:_('Date')}"/>
-                 <listheader label="${i18n:_('Spread')}"/>
-                 <listheader label="${i18n:_('Calculated')}"/>
-                 <listheader label="${i18n:_('Chart')}"/>
-                 <listheader label="${i18n:_('Operations')}"/>
-             </listhead>
-    </listbox>
-    </vbox>
-    <separator bar="false" spacing="20px" orient="vertical"/>
-    <label value="${i18n:_('Advances Measurements:')}"/>
-    <hbox>
-        <label value="${i18n:_('Advances assignment:')}" />
-        <label id="infoAdvance" value="@{manageOrderElementAdvancesController.getInfoAdvance}"/>
-    </hbox>
-    <separator bar="true" spacing="3px" orient="horizontal"/>
-    <vbox>
-        <hbox>
-            <button label="${i18n:_('Add new advance measurement')}"
-                onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceMeasurement();"
-                disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurements}">
-            </button>
-        </hbox>
-        <hbox>
-        <listbox id="editAdvancesMeasurement"
-                 model="@{manageOrderElementAdvancesController.advanceMeasurements}"
-                 itemRenderer="@{manageOrderElementAdvancesController.advanceMeasurementRenderer}"
-                 mold="paging" pageSize="10">
-                <listhead sizable="true">
-                    <listheader label="${i18n:_('Current value')}"/>
-                    <listheader label="${i18n:_('Percentage')}"/>
-                    <listheader label="${i18n:_('Date')}"/>
-                    <listheader label="${i18n:_('Operations')}"/>
-                </listhead>
-        </listbox>
-        <chart id="chart" title="${i18n:_('Advance Progress')}"
-            type="time_series" threeD="false"
-            model="@{manageOrderElementAdvancesController.chartData}"
-            xAxis="${i18n:_('Date')}" yAxis= "${i18n:_('Value')}"
-            paneColor="#FFFFFF" />
-        </hbox>
-    </vbox>
-    <separator bar="false" spacing="40px" orient="vertical"/>
+    <panel title="${i18n:_('Advance assignments')}" border="normal">
+        <panelchildren>
+            <vbox id="messagesContainerAdvances" />
+            <vbox align="left">
+                <hbox>
+                    <button label="${i18n:_('Add new advance assignment')}"
+                        onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceAssignment();">
+                    </button>
+                </hbox>
+            </vbox>
+            <vbox>
+            <listbox id="editAdvances" height="200px"
+                     model="@{manageOrderElementAdvancesController.advanceAssignments}"
+                     itemRenderer="@{manageOrderElementAdvancesController.advancesRenderer}" mold="paging"
+                     onSelect="manageOrderElementAdvancesController.prepareEditAdvanceMeasurements(self.selectedItem.value);"
+                     pageSize="10">
+                    <listhead sizable="true">
+                         <listheader label="${i18n:_('Type')}" />
+                         <listheader label="${i18n:_('Max value')}"/>
+                         <listheader label="${i18n:_('Current value')}"/>
+                         <listheader label="${i18n:_('Percentage')}"/>
+                         <listheader label="${i18n:_('Date')}"/>
+                         <listheader label="${i18n:_('Spread')}"/>
+                         <listheader label="${i18n:_('Calculated')}"/>
+                         <listheader label="${i18n:_('Show')}"/>
+                         <listheader label="${i18n:_('Operations')}"/>
+                     </listhead>
+            </listbox>
+            </vbox>
+        </panelchildren>
+    </panel>
+    <panel title="@{manageOrderElementAdvancesController.getInfoAdvance}" border="normal">
+        <panelchildren>
+            <hbox>
+                <vbox>
+                    <button label="${i18n:_('Add new advance measurement')}"
+                        onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceMeasurement();"
+                        disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurements}">
+                    </button>
+                    <listbox id="editAdvancesMeasurement" height="200px"
+                             model="@{manageOrderElementAdvancesController.advanceMeasurements}"
+                             itemRenderer="@{manageOrderElementAdvancesController.advanceMeasurementRenderer}"
+                             mold="paging" pageSize="10">
+                            <listhead sizable="true">
+                                <listheader label="${i18n:_('Value')}" />
+                                <listheader label="${i18n:_('Percentage')}" />
+                                <listheader label="${i18n:_('Date')}" />
+                                <listheader label="${i18n:_('Operations')}" />
+                            </listhead>
+                    </listbox>
+                </vbox>
+                <chart id="chart" title="${i18n:_('Advance Progress')}"
+                    type="time_series" threeD="false"
+                    model="@{manageOrderElementAdvancesController.chartData}"
+                    xAxis="${i18n:_('Date')}" yAxis= "${i18n:_('Value')}"
+                    paneColor="#FFFFFF" />
+            </hbox>
+        </panelchildren>
+    </panel>
     <hbox>
        <button id="aceptAdvance" onClick="manageOrderElementAdvancesController.accept();" label="${i18n:_('Accept')}"/>
        <button id="cancelAdvance" onClick="manageOrderElementAdvancesController.cancel();" label="${i18n:_('Cancel')}"/>

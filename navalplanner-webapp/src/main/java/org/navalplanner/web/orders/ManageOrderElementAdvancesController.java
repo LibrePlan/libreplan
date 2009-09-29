@@ -170,7 +170,13 @@ public class ManageOrderElementAdvancesController extends
     }
 
     public String getInfoAdvance() {
-        return manageOrderElementAdvancesModel.getInfoAdvanceAssignment();
+        String infoAdvanceAssignment = manageOrderElementAdvancesModel
+                .getInfoAdvanceAssignment();
+        if (infoAdvanceAssignment.isEmpty()) {
+            return _("Advance measurements");
+        }
+
+        return _("Advance measurements: ") + infoAdvanceAssignment;
     }
 
     public boolean isReadOnlyAdvanceMeasurements() {

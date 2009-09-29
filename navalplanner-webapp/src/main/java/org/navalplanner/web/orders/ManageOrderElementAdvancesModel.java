@@ -94,9 +94,8 @@ public class ManageOrderElementAdvancesModel implements
                 || advanceAssignment.getMaxValue() == null) {
             return "";
         }
-        return _("{0} (max: {1})", advanceAssignment
-                .getAdvanceType().getUnitName(), advanceAssignment
-                .getMaxValue());
+        return _("{0} (max: {1})", advanceAssignment.getAdvanceType()
+                .getUnitName(), advanceAssignment.getMaxValue());
     }
 
     @Override
