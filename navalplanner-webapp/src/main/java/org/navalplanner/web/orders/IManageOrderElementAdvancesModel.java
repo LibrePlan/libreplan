@@ -3,6 +3,7 @@ package org.navalplanner.web.orders;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
@@ -71,6 +72,6 @@ public interface IManageOrderElementAdvancesModel {
 
     public BigDecimal getAdvancePercentageChildren();
 
-    public XYModel getChartData();
+    public XYModel getChartData(Set<AdvanceAssignment> selectedAdvances);
 
 }

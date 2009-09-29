@@ -5,7 +5,9 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
@@ -60,6 +62,8 @@ public class ManageOrderElementAdvancesController extends
     private AdvanceTypeListRenderer advanceTypeListRenderer = new AdvanceTypeListRenderer();
 
     private AdvanceMeasurementRenderer advanceMeasurementRenderer = new AdvanceMeasurementRenderer();
+
+    private Set<AdvanceAssignment> selectedAdvances = new HashSet<AdvanceAssignment>();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -200,6 +204,7 @@ public class ManageOrderElementAdvancesController extends
             appendDateBoxDate(listItem);
             appendRadioSpread(listItem);
             appendCalculatedCheckbox(listItem);
+            appendChartCheckbox(listItem);
         }
     }
 
@@ -428,6 +433,28 @@ public class ManageOrderElementAdvancesController extends
 
         Listcell listCell = new Listcell();
         listCell.appendChild(calculated);
+        listItem.appendChild(listCell);
+    }
+
+    private void appendChartCheckbox(final Listitem listItem) {
+        final AdvanceAssignment advance = (AdvanceAssignment) listItem
+                .getValue();
+        final Checkbox chartCheckbox = new Checkbox();
+        chartCheckbox.setChecked(selectedAdvances.contains(advance));
+        chartCheckbox.addEventListener(Events.ON_CHECK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (chartCheckbox.isChecked()) {
+                    selectedAdvances.add(advance);
+                } else {
+                    selectedAdvances.remove(advance);
+                }
+                Util.reloadBindings(window);
+            }
+        });
+
+        Listcell listCell = new Listcell();
+        listCell.appendChild(chartCheckbox);
         listItem.appendChild(listCell);
     }
 
@@ -791,7 +818,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     public XYModel getChartData() {
-        return this.manageOrderElementAdvancesModel.getChartData();
+        return this.manageOrderElementAdvancesModel.getChartData(selectedAdvances);
     }
 
 }

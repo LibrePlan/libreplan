@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -81,12 +82,20 @@ public class ManageOrderElementAdvancesModel implements
                 (this.orderElement == null)) {
             return "";
         }
-        if ((this.advanceAssignment.getAdvanceType() == null)
-                || this.advanceAssignment.getMaxValue() == null) {
+        return getInfoAdvanceAssignment(this.advanceAssignment);
+    }
+
+    private String getInfoAdvanceAssignment(
+            DirectAdvanceAssignment advanceAssignment) {
+        if (advanceAssignment == null) {
             return "";
         }
-        return _("Advance assignment: {0} (max: {1})", this.advanceAssignment
-                .getAdvanceType().getUnitName(), this.advanceAssignment
+        if ((advanceAssignment.getAdvanceType() == null)
+                || advanceAssignment.getMaxValue() == null) {
+            return "";
+        }
+        return _("{0} (max: {1})", advanceAssignment
+                .getAdvanceType().getUnitName(), advanceAssignment
                 .getMaxValue());
     }
 
@@ -497,24 +506,37 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public XYModel getChartData() {
+    @Transactional(readOnly = true)
+    public XYModel getChartData(Set<AdvanceAssignment> selectedAdvances) {
         XYModel xymodel = new SimpleXYModel();
-        if (this.advanceAssignment != null) {
-            String title = getInfoAdvanceAssignment();
-            SortedSet<AdvanceMeasurement> listAdvanceMeasurements = this.advanceAssignment
+
+        for (AdvanceAssignment advanceAssignment : selectedAdvances) {
+            DirectAdvanceAssignment directAdvanceAssignment;
+            if (advanceAssignment instanceof DirectAdvanceAssignment) {
+                directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
+            } else {
+                directAdvanceAssignment = calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advanceAssignment);
+            }
+            String title = getInfoAdvanceAssignment(directAdvanceAssignment);
+            SortedSet<AdvanceMeasurement> listAdvanceMeasurements = directAdvanceAssignment
                     .getAdvanceMeasurements();
             if (listAdvanceMeasurements.size() > 1) {
                 for (AdvanceMeasurement advanceMeasurement : listAdvanceMeasurements) {
                     BigDecimal value = advanceMeasurement.getValue();
+                    if (selectedAdvances.size() > 1) {
+                        BigDecimal maxValue = directAdvanceAssignment
+                                .getMaxValue();
+                        value = value.divide(maxValue, RoundingMode.DOWN);
+                    }
                     LocalDate date = advanceMeasurement.getDate();
                     if ((value != null) && (date != null)) {
                         xymodel.addValue(title, new Long(date
-                                .toDateTimeAtStartOfDay().getMillis()),
-                                value);
+                                .toDateTimeAtStartOfDay().getMillis()), value);
                     }
                 }
             }
         }
+
         return xymodel;
     }
 

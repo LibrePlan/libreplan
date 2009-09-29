@@ -26,12 +26,16 @@
                  <listheader label="${i18n:_('Date')}"/>
                  <listheader label="${i18n:_('Spread')}"/>
                  <listheader label="${i18n:_('Calculated')}"/>
+                 <listheader label="${i18n:_('Chart')}"/>
              </listhead>
     </listbox>
     </vbox>
     <separator bar="false" spacing="20px" orient="vertical"/>
     <label value="${i18n:_('Advances Measurements:')}"/>
-    <label id="infoAdvance" value="@{manageOrderElementAdvancesController.getInfoAdvance}"/>
+    <hbox>
+        <label value="${i18n:_('Advances assignment:')}" />
+        <label id="infoAdvance" value="@{manageOrderElementAdvancesController.getInfoAdvance}"/>
+    </hbox>
     <separator bar="true" spacing="3px" orient="horizontal"/>
     <vbox>
         <hbox>
