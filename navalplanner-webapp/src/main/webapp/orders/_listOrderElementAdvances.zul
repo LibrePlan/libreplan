@@ -1,4 +1,5 @@
 <vbox id="listOrderElementAdvances">
+    <vbox id="messagesContainerAdvances" />
     <label value="${i18n:_('Direct Advances')}"/>
     <separator bar="true" spacing="2px" orient="horizontal"/>
     <vbox align="left">

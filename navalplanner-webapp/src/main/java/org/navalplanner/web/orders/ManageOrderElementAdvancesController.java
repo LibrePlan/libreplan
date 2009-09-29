@@ -70,7 +70,8 @@ public class ManageOrderElementAdvancesController extends
         super.doAfterCompose(comp.getFellow("listOrderElementAdvances"));
         comp.setVariable("manageOrderElementAdvancesController", this, true);
         window = (Window) comp;
-        messagesForUser = new MessagesForUser(window.getFellow("listOrderElementAdvances"));
+        messagesForUser = new MessagesForUser(window
+                .getFellow("messagesContainerAdvances"));
     }
 
     public List<AdvanceMeasurement> getAdvanceMeasurements() {
