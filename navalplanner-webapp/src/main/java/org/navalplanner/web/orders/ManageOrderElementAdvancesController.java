@@ -404,9 +404,6 @@ public class ManageOrderElementAdvancesController extends
         reportGlobalAdvance.setChecked(advanceAssignment
                 .getReportGlobalAdvance());
 
-        if (advanceAssignment instanceof IndirectAdvanceAssignment)
-            reportGlobalAdvance.setDisabled(true);
-
         reportGlobalAdvance.addEventListener(Events.ON_CHECK,
             new EventListener() {
             @Override
@@ -626,11 +623,9 @@ public class ManageOrderElementAdvancesController extends
                 Listitem listItem = (Listitem) listAdvances.getChildren().get(i);
                 AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                         .getValue();
-                if (advanceAssignment instanceof DirectAdvanceAssignment) {
-                    existItems = true;
-                    if (advanceAssignment.getReportGlobalAdvance()) {
-                        return true;
-                    }
+                existItems = true;
+                if (advanceAssignment.getReportGlobalAdvance()) {
+                    return true;
                 }
             }
         }
