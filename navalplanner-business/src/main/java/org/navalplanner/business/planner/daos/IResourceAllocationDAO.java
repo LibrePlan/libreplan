@@ -1,9 +1,12 @@
 package org.navalplanner.business.planner.daos;
 
 import java.util.List;
+import java.util.Map;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -18,5 +21,7 @@ public interface IResourceAllocationDAO extends
             List<Resource> resources);
 
     List<ResourceAllocation<?>> findAllocationsRelatedTo(Resource resource);
+
+    Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion();
 
 }

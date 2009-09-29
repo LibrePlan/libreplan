@@ -2,7 +2,9 @@ package org.navalplanner.business.planner.daos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -10,6 +12,7 @@ import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -38,8 +41,8 @@ public class ResourceAllocationDAO extends
             List<Resource> resources) {
         return (List<GenericResourceAllocation>) getSession().createCriteria(
                 GenericResourceAllocation.class).setResultTransformer(
-                Criteria.DISTINCT_ROOT_ENTITY)
-                .createCriteria("genericDayAssignments").add(
+                Criteria.DISTINCT_ROOT_ENTITY).createCriteria(
+                "genericDayAssignments").add(
                 Restrictions.in("resource", resources)).list();
     }
 
@@ -54,6 +57,43 @@ public class ResourceAllocationDAO extends
     public List<ResourceAllocation<?>> findAllocationsRelatedTo(
             Resource resource) {
         return findAllocationsRelatedToAnyOf(Arrays.asList(resource));
+    }
+
+    @Override
+    public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion() {
+        List<Object> results = getSession()
+                .createQuery(
+                "select generic, criterion "
+                        + "from GenericResourceAllocation as generic "
+                        + "join generic.criterions as criterion")
+                .list();
+        return byCriterion(results);
+    }
+
+    private Map<Criterion, List<GenericResourceAllocation>> byCriterion(
+            List<Object> results) {
+
+        Map<Criterion, List<GenericResourceAllocation>> result = new HashMap<Criterion, List<GenericResourceAllocation>>();
+        for (Object row : results) {
+            GenericResourceAllocation allocation = getAllocation(row);
+            Criterion criterion = getCriterion(row);
+            if (!result.containsKey(criterion)) {
+                result.put(criterion,
+                        new ArrayList<GenericResourceAllocation>());
+            }
+            result.get(criterion).add(allocation);
+        }
+        return result;
+    }
+
+    private GenericResourceAllocation getAllocation(Object row) {
+        Object[] elements = (Object[]) row;
+        return (GenericResourceAllocation) elements[0];
+    }
+
+    private Criterion getCriterion(Object row) {
+        Object[] elements = (Object[]) row;
+        return (Criterion) elements[1];
     }
 
 }
