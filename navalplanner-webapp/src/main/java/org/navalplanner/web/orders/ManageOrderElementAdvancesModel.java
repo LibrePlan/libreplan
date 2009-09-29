@@ -329,7 +329,8 @@ public class ManageOrderElementAdvancesModel implements
             AdvanceAssignment advanceAssignment) {
         for (AdvanceAssignment advance : this.orderElement
                 .getDirectAdvanceAssignments()) {
-            if ((advance.getId() == advanceAssignment.getId()))
+            if ((advance.getVersion() != null)
+                    && (advance.getId() == advanceAssignment.getId()))
                 return advance;
         }
         return null;
@@ -340,7 +341,8 @@ public class ManageOrderElementAdvancesModel implements
             AdvanceMeasurement advanceMeasurement){
         for (AdvanceMeasurement advance : advanceAssignment
                 .getAdvanceMeasurements()) {
-            if (advance.getId() == advanceMeasurement.getId()) {
+            if ((advance.getVersion() != null)
+                    && (advance.getId() == advanceMeasurement.getId())) {
                 return true;
             }
         }

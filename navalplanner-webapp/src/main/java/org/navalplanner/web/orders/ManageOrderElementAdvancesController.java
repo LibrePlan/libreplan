@@ -182,8 +182,6 @@ public class ManageOrderElementAdvancesController extends
     public void updatesValue(final Decimalbox item){
         this.setPercentage();
         this.setCurrentValue();
-        this.cleanDate((Listitem)item.getParent().getParent());
-        this.setCurrentDate();
     }
 
     public class AdvanceTypeListRenderer implements ListitemRenderer {
@@ -566,14 +564,6 @@ public class ManageOrderElementAdvancesController extends
                 }
              }
         }
-    }
-
-    private void cleanDate(final Listitem item){
-        final AdvanceMeasurement advanceMeasurement = (AdvanceMeasurement) item
-                .getValue();
-        advanceMeasurement.setDate(null);
-        Listcell celdaDate = (Listcell)item.getChildren().get(2);
-        ((Datebox)celdaDate.getFirstChild()).setValue(null);
     }
 
     private void cleanFields(){
