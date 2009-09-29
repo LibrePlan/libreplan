@@ -237,15 +237,14 @@ class PeriodsBuilder {
         ListIterator<LoadPeriodGenerator> iterator = loadPeriodsGenerators
                 .listIterator();
         while (iterator.hasNext()) {
-            LoadPeriodGenerator current = iterator.next();
-            if (iterator.hasNext()) {
+            final LoadPeriodGenerator current = findNextOneOverlapping(iterator);
+            if (current != null) {
+                rewind(iterator, current);
                 iterator.remove();
                 LoadPeriodGenerator next = iterator.next();
                 iterator.remove();
                 List<LoadPeriodGenerator> generated = current.join(next);
-                final LoadPeriodGenerator nextOne = generated.size() > 1 ? generated
-                        .get(1)
-                        : generated.get(0);
+                final LoadPeriodGenerator positionToComeBack = generated.get(0);
                 List<LoadPeriodGenerator> sortedByStartDate = mergeListsKeepingByStartSortOrder(
                         generated, loadPeriodsGenerators.subList(iterator
                                 .nextIndex(), loadPeriodsGenerators.size()));
@@ -253,9 +252,24 @@ class PeriodsBuilder {
                         - generated.size();
                 removeNextElements(iterator, takenFromRemaining);
                 addAtCurrentPosition(iterator, sortedByStartDate);
-                rewind(iterator, nextOne);
+                rewind(iterator, positionToComeBack);
             }
         }
+    }
+
+    private LoadPeriodGenerator findNextOneOverlapping(
+            ListIterator<LoadPeriodGenerator> iterator) {
+        while (iterator.hasNext()) {
+            LoadPeriodGenerator current = iterator.next();
+            if (!iterator.hasNext()) {
+                return null;
+            }
+            LoadPeriodGenerator next = peekNext(iterator);
+            if (current.overlaps(next)) {
+                return current;
+            }
+        }
+        return null;
     }
 
     private void addAtCurrentPosition(

@@ -134,7 +134,7 @@ abstract class LoadPeriodGenerator {
                 allocationsOnInterval);
     }
 
-    private boolean overlaps(LoadPeriodGenerator other) {
+    boolean overlaps(LoadPeriodGenerator other) {
         return (start.compareTo(other.end) < 0 && other.start
                 .compareTo(this.end) < 0);
     }
