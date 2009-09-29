@@ -37,6 +37,7 @@ public class ResourceAllocationDAO extends
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     private List<GenericResourceAllocation> findGenericAllocationsFor(
             List<Resource> resources) {
         return (List<GenericResourceAllocation>) getSession().createCriteria(
@@ -46,6 +47,7 @@ public class ResourceAllocationDAO extends
                 Restrictions.in("resource", resources)).list();
     }
 
+    @SuppressWarnings("unchecked")
     private List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
             List<Resource> resources) {
         return (List<SpecificResourceAllocation>) getSession().createCriteria(
@@ -59,6 +61,7 @@ public class ResourceAllocationDAO extends
         return findAllocationsRelatedToAnyOf(Arrays.asList(resource));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion() {
         List<Object> results = getSession()
