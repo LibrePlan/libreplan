@@ -2,7 +2,6 @@ package org.zkoss.ganttz.resourceload;
 
 import java.util.List;
 
-import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -83,10 +82,6 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
         timetrackerheader.afterCompose();
         timeTrackerComponent.afterCompose();
-    }
-
-    public Planner getPlanner() {
-        return (Planner) getParent();
     }
 
 }
