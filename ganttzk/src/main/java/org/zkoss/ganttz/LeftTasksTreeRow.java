@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -247,7 +248,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private void findComponents(Treerow row) {
         List<Object> rowChildren = row.getChildren();
-        List<Treecell> treeCells = Planner.findComponentsOfType(Treecell.class,
+        List<Treecell> treeCells = ComponentsFinder.findComponentsOfType(Treecell.class,
                 rowChildren);
         assert treeCells.size() == 3;
         findComponentsForNameCell(treeCells.get(0));
@@ -257,12 +258,12 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private static Datebox findDateBoxOfCell(Treecell treecell) {
         List<Object> children = treecell.getChildren();
-        return Planner.findComponentsOfType(Datebox.class, children).get(0);
+        return ComponentsFinder.findComponentsOfType(Datebox.class, children).get(0);
     }
 
     private static Textbox findTextBoxOfCell(Treecell treecell) {
         List<Object> children = treecell.getChildren();
-        return Planner.findComponentsOfType(Textbox.class, children).get(0);
+        return ComponentsFinder.findComponentsOfType(Textbox.class, children).get(0);
     }
 
     private void findComponentsForNameCell(Treecell treecell) {

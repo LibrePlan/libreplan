@@ -13,6 +13,7 @@ import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Executions;
@@ -49,18 +50,7 @@ public class Planner extends XulElement {
         if (ganttPanel == null)
             return null;
         List<Object> children = ganttPanel.getChildren();
-        return Planner.findComponentsOfType(TaskList.class, children).get(0);
-    }
-
-    public static <T> List<T> findComponentsOfType(Class<T> type,
-            List<? extends Object> children) {
-        ArrayList<T> result = new ArrayList<T>();
-        for (Object child : children) {
-            if (type.isInstance(child)) {
-                result.add(type.cast(child));
-            }
-        }
-        return result;
+        return ComponentsFinder.findComponentsOfType(TaskList.class, children).get(0);
     }
 
     public String getContextPath() {
@@ -71,7 +61,7 @@ public class Planner extends XulElement {
         if (ganttPanel == null)
             return null;
         List<Object> children = ganttPanel.getChildren();
-        List<DependencyList> found = findComponentsOfType(DependencyList.class,
+        List<DependencyList> found = ComponentsFinder.findComponentsOfType(DependencyList.class,
                 children);
         if (found.isEmpty())
             return null;

@@ -17,6 +17,7 @@ import org.zkoss.ganttz.LeftTasksTreeRow.ILeftTasksTreeNavigator;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -48,7 +49,7 @@ public class LeftTasksTree extends HtmlMacroComponent {
                     "~./ganttz/zul/leftTasksTreeRow.zul", item, null);
             leftTasksTreeRow.doAfterCompose(row);
             List<Object> rowChildren = row.getChildren();
-            List<Treecell> treeCells = Planner.findComponentsOfType(
+            List<Treecell> treeCells = ComponentsFinder.findComponentsOfType(
                     Treecell.class, rowChildren);
             for (Treecell cell : treeCells) {
                 cell.setSclass(cssClass);

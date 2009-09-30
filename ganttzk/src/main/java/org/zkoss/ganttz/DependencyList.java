@@ -14,6 +14,7 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.ui.event.Event;
@@ -93,7 +94,7 @@ public class DependencyList extends XulElement implements AfterCompose {
 
     private List<DependencyComponent> getDependencyComponents() {
         List<Object> children = getChildren();
-        return Planner
+        return ComponentsFinder
                 .findComponentsOfType(DependencyComponent.class, children);
     }
 

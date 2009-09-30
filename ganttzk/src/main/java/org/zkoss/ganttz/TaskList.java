@@ -15,6 +15,7 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.au.out.AuInvoke;
@@ -69,7 +70,7 @@ public class TaskList extends XulElement implements AfterCompose {
     public List<DependencyComponent> asDependencyComponents(
             Collection<? extends Dependency> dependencies) {
         List<? extends Object> children = getChildren();
-        List<TaskComponent> taskComponents = Planner.findComponentsOfType(
+        List<TaskComponent> taskComponents = ComponentsFinder.findComponentsOfType(
                 TaskComponent.class, children);
         Map<Task, TaskComponent> taskComponentByTask = new HashMap<Task, TaskComponent>();
         for (TaskComponent taskComponent : taskComponents) {
