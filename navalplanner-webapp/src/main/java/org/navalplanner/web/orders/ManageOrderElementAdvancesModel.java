@@ -61,8 +61,6 @@ public class ManageOrderElementAdvancesModel implements
 
     private List<AdvanceAssignment> listAdvanceAssignments;
 
-    private SortedSet<AdvanceMeasurement> listAdvanceMeasurements;
-
     private List<AdvanceType> listAdvanceTypes;
 
     @Autowired
@@ -159,16 +157,10 @@ public class ManageOrderElementAdvancesModel implements
 
     private void fillVariables() {
         this.listAdvanceAssignments = new ArrayList<AdvanceAssignment>();
-        this.listAdvanceMeasurements = new TreeSet<AdvanceMeasurement>(
-                new AdvanceMeasurementComparator());
 
         for (DirectAdvanceAssignment advanceAssignment : this.orderElement
                 .getDirectAdvanceAssignments()) {
             this.listAdvanceAssignments.add(advanceAssignment);
-            for (AdvanceMeasurement advanceMeasurement : advanceAssignment
-                    .getAdvanceMeasurements()) {
-                this.listAdvanceMeasurements.add(advanceMeasurement);
-            }
         }
 
         if (this.orderElement instanceof OrderLineGroup) {
@@ -305,18 +297,6 @@ public class ManageOrderElementAdvancesModel implements
             AdvanceAssignment advance = yetExistAdvanceAssignment(advanceAssignment);
             if (advance == null) {
                 removeAdvanceAssignment(advanceAssignment);
-            }else{
-                if (advance instanceof DirectAdvanceAssignment) {
-                    for (AdvanceMeasurement advanceMeasurement : this.listAdvanceMeasurements) {
-                        if (advanceMeasurement.getAdvanceAssignment().equals(
-                                advance)
-                                && !yetExistAdvanceMeasurement(
-                                        (DirectAdvanceAssignment) advance,
-                                        advanceMeasurement)) {
-                            removeAdvanceMeasurement(advanceMeasurement);
-                        }
-                    }
-                }
             }
         }
     }
