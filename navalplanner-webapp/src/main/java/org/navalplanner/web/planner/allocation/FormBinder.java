@@ -212,6 +212,14 @@ class FormBinder {
                 _("at least one no empty allocation is needed"));
     }
 
+    public void markNoWorkersMatchedByCriterion(GenericAllocationDTO generic) {
+        Decimalbox decimalbox = resourcesPerDayInputsByAllocationDTO
+                .get(generic);
+        throw new WrongValueException(
+                decimalbox,
+                _("there are no workers for required criterions. So the generic allocation can't be done"));
+    }
+
     public void setAllocationsList(Listbox allocationsList) {
         this.allocationsList = allocationsList;
     }

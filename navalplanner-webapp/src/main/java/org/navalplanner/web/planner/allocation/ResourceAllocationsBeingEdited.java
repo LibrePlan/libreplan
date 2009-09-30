@@ -120,10 +120,13 @@ public class ResourceAllocationsBeingEdited {
     }
 
     public void checkInvalidValues() {
+        if (thereIsNoEmptyGenericResourceAllocation()
+                && noWorkersForCriterion()) {
+            formBinder.markNoWorkersMatchedByCriterion(getGenericAllocation());
+        }
         if (thereIsJustOneEmptyGenericResourceAllocation()) {
             formBinder
-                    .markGenericAllocationMustBeNoZeroOrMoreAllocations(currentAllocations
-                            .get(0));
+                    .markGenericAllocationMustBeNoZeroOrMoreAllocations(getGenericAllocation());
         }
         if (formBinder.getCalculatedValue() != CalculatedValue.NUMBER_OF_HOURS
                 && formBinder.getAssignedHours() == 0) {
@@ -132,6 +135,19 @@ public class ResourceAllocationsBeingEdited {
         if (!thereIsLeastOneNoEmptyAllocation()) {
             formBinder.markThereMustBeAtLeastOneNoEmptyAllocation();
         }
+    }
+
+    private boolean noWorkersForCriterion() {
+        return resourcesMatchingCriterions.isEmpty();
+    }
+
+    private boolean thereIsNoEmptyGenericResourceAllocation() {
+        return !getGenericAllocation().isEmptyResourcesPerDay();
+    }
+
+    private GenericAllocationDTO getGenericAllocation() {
+        return (GenericAllocationDTO) currentAllocations
+                .get(0);
     }
 
     private boolean thereIsLeastOneNoEmptyAllocation() {
@@ -145,8 +161,8 @@ public class ResourceAllocationsBeingEdited {
 
     private boolean thereIsJustOneEmptyGenericResourceAllocation() {
         return currentAllocations.size() == 1
-                && currentAllocations.get(0).isGeneric()
-                && currentAllocations.get(0).isEmptyResourcesPerDay();
+                && getGenericAllocation().isGeneric()
+                && getGenericAllocation().isEmptyResourcesPerDay();
     }
 
     public AggregateOfResourceAllocations doAllocation() {
