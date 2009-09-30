@@ -31,7 +31,6 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.extensions.ITab;
-import org.zkoss.ganttz.extensions.ITabFactory;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
 import org.zkoss.zk.ui.Component;
 
@@ -54,51 +53,7 @@ public class DataForPlanner {
     private PlannerConfiguration<ITaskFundamentalProperties> setup(
             PlannerConfiguration<ITaskFundamentalProperties> configuration) {
         addCommands(configuration);
-        addTabs(configuration);
         return configuration;
-    }
-
-    private void addTabs(
-            PlannerConfiguration<ITaskFundamentalProperties> configuration) {
-        configuration.addTab(new ITabFactory<ITaskFundamentalProperties>() {
-
-            @Override
-            public ITab create(
-                    final IContext<ITaskFundamentalProperties> context) {
-                return new ITab() {
-
-                    private Component parent;
-
-                    private ResourcesLoadPanel loadPanel;
-
-                    @Override
-                    public void show() {
-                        loadPanel = new ResourcesLoadPanel(
-                                createFakeDataForResourcesLoad(), context
-                                        .getTimeTracker());
-                        parent.appendChild(loadPanel);
-                        loadPanel.afterCompose();
-                    }
-
-                    @Override
-                    public void hide() {
-                        if (loadPanel != null) {
-                            loadPanel.detach();
-                        }
-                    }
-
-                    @Override
-                    public String getName() {
-                        return _("Resource Load");
-                    }
-
-                    @Override
-                    public void addToParent(Component parent) {
-                        this.parent = parent;
-                    }
-                };
-            }
-        });
     }
 
     private List<LoadTimelinesGroup> createFakeDataForResourcesLoad() {

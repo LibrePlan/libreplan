@@ -122,39 +122,7 @@ public class Planner extends XulElement {
         this.context = context;
         clear();
         context.add(configuration.getData());
-        visualizeTabs(context, configuration.getTabFactories());
-    }
-
-    private <T> TabsRegistry createTabs(IContext<T> context,
-            List<ITabFactory<T>> factories) {
-        List<ITab> tabs = new ArrayList<ITab>();
-        tabs.add(createTasksPlanningTab());
-        for (ITabFactory<T> factory : factories) {
-            tabs.add(factory.create(context));
-        }
-        TabsRegistry tabsRegistry = new TabsRegistry(this);
-        for (ITab t : tabs) {
-            tabsRegistry.add(t);
-        }
-        return tabsRegistry;
-    }
-
-    private <T> void visualizeTabs(
-            FunctionalityExposedForExtensions<T> context,
-            List<ITabFactory<T>> tabFactories) {
-        TabsRegistry tabs = createTabs(context, tabFactories);
-        registryTabs(tabs);
-        tabs.showFirst();
-    }
-
-    private void registryTabs(TabsRegistry tabs) {
-        if (!getMenuItemsRegisterLocator().isRegistered())
-            return;
-        tabs.registerAtMenu(getMenuItemsRegisterLocator().retrieve());
-    }
-
-    private OnZKDesktopRegistry<IMenuItemsRegister> getMenuItemsRegisterLocator() {
-        return OnZKDesktopRegistry.getLocatorFor(IMenuItemsRegister.class);
+        setupComponents();
     }
 
     private void clear() {
@@ -200,17 +168,17 @@ public class Planner extends XulElement {
         return diagramGraph;
     }
 
-    private TasksPlanningTab createTasksPlanningTab() {
+    private void setupComponents() {
         this.leftPane = new LeftPane(contextualizedGlobalCommands,
                 this.diagramGraph.getTopLevelTasks());
         this.ganttPanel = new GanttPanel(this.context,
                 commandsOnTasksContextualized, editTaskCommand);
-        TasksPlanningTab result = new TasksPlanningTab(this, leftPane,
-                ganttPanel);
-        result.afterCompose();
+        leftPane.setParent(this);
+        ganttPanel.setParent(this);
+        leftPane.afterCompose();
+        ganttPanel.afterCompose();
         this.leftPane
                 .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
-        return result;
     }
 
     void removeTask(Task task) {
