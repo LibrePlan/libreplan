@@ -181,6 +181,7 @@ public class Planner extends XulElement {
     void removeTask(Task task) {
         TaskList taskList = getTaskList();
         taskList.remove(task);
+        getDependencyList().taskRemoved(task);
         leftPane.taskRemoved(task);
         setHeight(getHeight());// forcing smart update
         taskList.adjustZoomColumnsHeight();

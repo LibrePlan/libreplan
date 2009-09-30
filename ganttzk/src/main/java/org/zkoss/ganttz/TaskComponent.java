@@ -315,7 +315,6 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     protected void remove() {
-        getDependencyList().taskRemoved(this.getTask());
         this.detach();
     }
 
