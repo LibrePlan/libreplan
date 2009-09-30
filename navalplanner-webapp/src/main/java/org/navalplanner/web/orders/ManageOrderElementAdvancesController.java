@@ -310,7 +310,7 @@ public class ManageOrderElementAdvancesController extends
                     @Override
                     public void onEvent(Event event) throws Exception {
                         setPercentage();
-                        Util.reloadBindings(window.getFellow("infoAdvance"));
+                        Util.reloadBindings(window);
                     }
                 });
 
