@@ -4,7 +4,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -12,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -48,8 +46,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Transactional(readOnly = true)
     public void initGlobalView() {
         loadTimeLines = calculateLoadTimelinesGroups();
-        viewInterval = new Interval(toDate(new LocalDate(2008, 6, 10)),
-                toDate(new LocalDate(2011, 6, 10)));
+        viewInterval = LoadTimelinesGroup.getIntervalFrom(loadTimeLines);
     }
 
     private List<LoadTimelinesGroup> calculateLoadTimelinesGroups() {
@@ -192,11 +189,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
     public Interval getViewInterval() {
         return viewInterval;
     }
-
-    private Date toDate(LocalDate localDate) {
-        return localDate.toDateTimeAtStartOfDay().toDate();
-    }
-
 }
 
 class PeriodsBuilder {
