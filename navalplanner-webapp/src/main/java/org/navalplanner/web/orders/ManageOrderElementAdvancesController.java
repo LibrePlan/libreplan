@@ -261,13 +261,21 @@ public class ManageOrderElementAdvancesController extends
                                     (comboItem.getValue() instanceof AdvanceType)){
                                 AdvanceType advanceType = (AdvanceType)comboItem.getValue();
                                 advance.setAdvanceType(advanceType);
-                    advance.setMaxValue(advanceType.getDefaultMaxValue());
+                    advance.setMaxValue(getMaxValue(advanceType));
                             }
                         }
+
                     });
         Listcell listCell = new Listcell();
         listCell.appendChild(comboAdvanceTypes);
         listItem.appendChild(listCell);
+    }
+
+    private BigDecimal getMaxValue(AdvanceType advanceType) {
+        if (advanceType.getPercentage()) {
+            return advanceType.getDefaultMaxValue();
+        }
+        return BigDecimal.ZERO;
     }
 
     private void appendLabelAdvanceType(final Listitem listItem){
@@ -496,8 +504,8 @@ public class ManageOrderElementAdvancesController extends
             if(advanceType != null){
                 DirectAdvanceAssignment advance = (DirectAdvanceAssignment) item
                         .getValue();
-                advance.setMaxValue(advanceType.getDefaultMaxValue());
-                miBox.setValue(advanceType.getDefaultMaxValue());
+                advance.setMaxValue(getMaxValue(advanceType));
+                miBox.setValue(getMaxValue(advanceType));
             }
         }
     }
