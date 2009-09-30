@@ -15,11 +15,10 @@
 </zscript>
     <!-- choose lightLoad, mediumLoad or highLoad.
      -->
-    <planner id="planner" self="@{define(content)}"
-        configuration="${plannerData.lightLoad}">
-        <div id="idContextMenuTaskAssignment"></div>
-    </planner>
+    <tabSwitcher self="@{define(content)}" configuration="@{plannerData.lightLoad}">
+    </tabSwitcher>
 
+    <div id="idContextMenuTaskAssignment"></div>
     <popup width="300px" apply="${plannerData.taskEditForm}">
         <grid>
             <rows>

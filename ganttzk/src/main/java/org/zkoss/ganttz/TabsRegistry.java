@@ -39,7 +39,9 @@ public class TabsRegistry {
     }
 
     public void showFirst() {
-        show(tabs.get(0));
+        if (!tabs.isEmpty()) {
+            show(tabs.get(0));
+        }
     }
 
     public void registerAtMenu(IMenuItemsRegister menu) {

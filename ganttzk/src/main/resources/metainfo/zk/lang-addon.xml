@@ -21,6 +21,12 @@
 	</component>
 
 	<component>
+	   <component-name>tabSwitcher</component-name>
+	   <component-class>org.zkoss.ganttz.TabSwitcher</component-class>
+	   <macro-uri>~./ganttz/zul/tabSwitcher.zul</macro-uri>
+	</component>
+
+	<component>
 		<component-name>resourcesLoadPanel</component-name>
 		<component-class>org.zkoss.ganttz.resourceload.ResourcesLoadPanel</component-class>
 	        <macro-uri>~./ganttz/zul/resourcesLoadLayout.zul</macro-uri>

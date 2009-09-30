@@ -11,11 +11,13 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
+import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.adapters.AutoAdapter;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.adapters.TabsConfiguration;
 import org.zkoss.ganttz.data.DefaultFundamentalProperties;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
@@ -32,6 +34,7 @@ import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
+import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -181,16 +184,108 @@ public class DataForPlanner {
                 });
     }
 
-    public PlannerConfiguration<ITaskFundamentalProperties> getLightLoad() {
-        return setup(getModelWith(20));
+    public TabsConfiguration getLightLoad() {
+        return addTabs(setup(getModelWith(20)));
     }
 
-    public PlannerConfiguration<ITaskFundamentalProperties> getMediumLoad() {
-        return setup(getModelWith(300));
+    private TabsConfiguration addTabs(
+            PlannerConfiguration<ITaskFundamentalProperties> plannerConfiguration) {
+        return TabsConfiguration.create().add(
+                createPlannerTab(plannerConfiguration)).add(createLoadTab());
     }
 
-    public PlannerConfiguration<ITaskFundamentalProperties> getHighLoad() {
-        return setup(getModelWith(500));
+    private ITab createLoadTab() {
+        return new ITab() {
+
+            private Component parent;
+
+            private ResourcesLoadPanel loadPanel;
+
+            @Override
+            public void show() {
+                loadPanel.setParent(parent);
+                loadPanel.afterCompose();
+            }
+
+            private TimeTracker timeTracker(
+                    List<LoadTimelinesGroup> dataForLoadPanel) {
+                return new TimeTracker(LoadTimelinesGroup
+                        .getIntervalFrom(dataForLoadPanel));
+            }
+
+            @Override
+            public void hide() {
+                if (loadPanel != null) {
+                    loadPanel.detach();
+                }
+            }
+
+            @Override
+            public String getName() {
+                return _("Resource Load");
+            }
+
+            @Override
+            public void addToParent(Component parent) {
+                this.parent = parent;
+                List<LoadTimelinesGroup> dataForLoadPanel = createFakeDataForResourcesLoad();
+                loadPanel = new ResourcesLoadPanel(dataForLoadPanel,
+                        timeTracker(dataForLoadPanel));
+            }
+        };
+    }
+
+    private ITab createPlannerTab(
+            final PlannerConfiguration<ITaskFundamentalProperties> plannerConfiguration) {
+        return new ITab() {
+
+            private Planner planner;
+            private Component parent;
+            @Override
+            public void show() {
+                if (isFirstTime()) {
+                    getPlanner(plannerConfiguration);
+                } else {
+                    planner.setParent(parent);
+                }
+            }
+
+            private boolean isFirstTime() {
+                return planner == null;
+            }
+
+            private void getPlanner(
+                    final PlannerConfiguration<ITaskFundamentalProperties> plannerConfiguration) {
+                planner = new Planner();
+                planner.setParent(parent);
+                planner.setConfiguration(plannerConfiguration);
+            }
+
+            @Override
+            public void hide() {
+                if (planner != null) {
+                    planner.detach();
+                }
+            }
+
+            @Override
+            public String getName() {
+                return _("Planner");
+            }
+
+            @Override
+            public void addToParent(Component parent) {
+                this.parent = parent;
+            }
+        };
+    }
+
+    public TabsConfiguration getMediumLoad() {
+        return addTabs(setup(getModelWith(300)));
+    }
+
+    public TabsConfiguration getHighLoad() {
+        return addTabs(setup(getModelWith(500)));
     }
 
     private PlannerConfiguration<ITaskFundamentalProperties> getModelWith(
