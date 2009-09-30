@@ -741,6 +741,8 @@ public class ManageOrderElementAdvancesController extends
                 @Override
                 public void set(BigDecimal value) {
                     advanceMeasurement.setValue(value);
+                    Util.reloadBindings(window.getFellow("chart"));
+                    Util.reloadBindings(window.getFellow("editAdvances"));
                 }
             });
         }
@@ -792,6 +794,8 @@ public class ManageOrderElementAdvancesController extends
                 @Override
                 public void set(Date value) {
                     advanceMeasurement.setDate(new LocalDate(value));
+                    Util.reloadBindings(window.getFellow("chart"));
+                    Util.reloadBindings(window.getFellow("editAdvances"));
                 }
             });
         }
