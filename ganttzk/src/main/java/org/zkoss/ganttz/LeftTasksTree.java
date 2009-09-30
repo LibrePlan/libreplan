@@ -3,9 +3,7 @@ package org.zkoss.ganttz;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -304,10 +302,6 @@ public class LeftTasksTree extends HtmlMacroComponent {
             // ready
             this.tasksTreeModel.add(parent, insertionPosition, children);
         }
-    }
-
-    Planner getPlanner() {
-        return (Planner) getParent();
     }
 
     public void taskRemoved(Task taskRemoved) {
