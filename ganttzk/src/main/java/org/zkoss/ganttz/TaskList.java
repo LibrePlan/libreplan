@@ -271,11 +271,7 @@ public class TaskList extends XulElement implements AfterCompose {
         return contextMenu;
     }
 
-    public Planner getPlanner() {
-        return getGanttPanel().getPlanner();
-    }
-
-    private GanttPanel getGanttPanel() {
+    GanttPanel getGanttPanel() {
         return (GanttPanel) getParent();
     }
 

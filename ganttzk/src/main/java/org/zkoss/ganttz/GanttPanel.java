@@ -27,9 +27,9 @@ public class GanttPanel extends XulElement implements AfterCompose {
         timeTrackerComponent = timeTrackerForGanttPanel(context
                 .getTimeTracker());
         appendChild(timeTrackerComponent);
+        dependencyList = new DependencyList(context);
         tasksLists = TaskList.createFor(context, editTaskCommand,
                 commandsOnTasksContextualized);
-        dependencyList = new DependencyList(context);
         appendChild(tasksLists);
         appendChild(dependencyList);
     }
@@ -64,10 +64,6 @@ public class GanttPanel extends XulElement implements AfterCompose {
 
     public DependencyList getDependencyList() {
         return dependencyList;
-    }
-
-    public Planner getPlanner() {
-        return (Planner) getParent();
     }
 
     public void comingFromAnotherTab() {

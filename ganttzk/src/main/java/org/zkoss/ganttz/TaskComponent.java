@@ -267,10 +267,6 @@ public class TaskComponent extends Div implements AfterCompose {
         return (TaskList) getParent();
     }
 
-    public Planner getPlanner() {
-        return getTaskList().getPlanner();
-    }
-
     @Override
     public void setParent(Component parent) {
         if (parent != null && !(parent instanceof TaskList))
@@ -298,11 +294,15 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private DependencyList getDependencyList() {
-        return getPlanner().getDependencyList();
+        return getGanntPanel().getDependencyList();
+    }
+
+    private GanttPanel getGanntPanel() {
+        return getTaskList().getGanttPanel();
     }
 
     private boolean isInPage() {
-        return getParent() != null && getPlanner() != null;
+        return getPage() != null;
     }
 
     void publishTaskComponents(Map<Task, TaskComponent> resultAccumulated) {
