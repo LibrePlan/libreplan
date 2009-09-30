@@ -49,7 +49,9 @@ public class AdvanceMeasurement extends BaseEntity {
 
     public void setValue(BigDecimal value) {
         this.value = value;
-        this.value.setScale(2);
+        if (value != null) {
+            this.value.setScale(2);
+        }
     }
 
     public BigDecimal getValue() {
