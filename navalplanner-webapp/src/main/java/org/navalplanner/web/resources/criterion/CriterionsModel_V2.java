@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,14 +33,14 @@ import org.springframework.transaction.annotation.Transactional;
  * Model for criterions. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-@Component("criterionsModel")
+@Component("criterionsModel_V2")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class CriterionsModel implements ICriterionsModel {
+public class CriterionsModel_V2 implements ICriterionsModel_V2 {
 
     private static final Log log = LogFactory.getLog(CriterionsModel.class);
 
-    private ClassValidator<Criterion> criterionValidator = new ClassValidator<Criterion>(
-            Criterion.class);
+    private ClassValidator<CriterionType> criterionTypeValidator = new ClassValidator<CriterionType>(
+            CriterionType.class);
 
     @Autowired
     private ICriterionDAO criterionDAO;
@@ -50,14 +51,21 @@ public class CriterionsModel implements ICriterionsModel {
     @Autowired
     private IResourceDAO resourceDAO;
 
-    private ICriterionType<?> criterionType;
+    private CriterionType criterionType;
 
     private Criterion criterion;
+
+    private ICriterionTreeModel criterionTreeModel;
 
     @Override
     @Transactional(readOnly = true)
     public List<CriterionType> getTypes() {
         return criterionTypeDAO.getCriterionTypes();
+    }
+
+    @Override
+    public ICriterionType<?> getCriterionType() {
+        return criterionType;
     }
 
     @Override
@@ -72,18 +80,53 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
-    public void prepareForCreate(ICriterionType<?> criterionType) {
+    public ICriterionTreeModel getCriterionTreeModel() {
+        return criterionTreeModel;
+    }
+
+    @Override
+    public void prepareForCreate() {
+        this.criterionType = CriterionType.create();
+        this.criterionTreeModel = new CriterionTreeModel(criterionType);
+    }
+
+    @Override
+    public void prepareForCreate(CriterionType criterionType) {
         this.criterionType = criterionType;
         this.criterion = (Criterion) criterionType
                 .createCriterionWithoutNameYet();
     }
 
     @Override
+    public void prepareForRemove(CriterionType criterionType) {
+        this.criterionType = criterionType;
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    public void workOn(Criterion criterion) {
-        Validate.notNull(criterion);
-        this.criterion = criterion;
-        this.criterionType = getTypeFor(criterion);
+    public void prepareForEdit(CriterionType criterionType) {
+        Validate.notNull(criterionType);
+        this.criterionType = getFromDB(criterionType);
+        this.criterionTreeModel = new CriterionTreeModel(this.criterionType);
+    }
+
+    @Override
+    @Transactional
+    public void remove(CriterionType criterionType) {
+        try {
+            criterionTypeDAO.remove(criterionType.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+            }
+    }
+
+    @Transactional(readOnly = true)
+    private CriterionType getFromDB(CriterionType criterionType) {
+        try {
+            return criterionTypeDAO.find(criterionType.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -98,33 +141,14 @@ public class CriterionsModel implements ICriterionsModel {
 
     @Override
     @Transactional
-    public void saveCriterion() throws ValidationException {
-        InvalidValue[] invalidValues = criterionValidator
-                .getInvalidValues(criterion);
+    public void saveCriterionType() throws ValidationException {
+        InvalidValue[] invalidValues = criterionTypeValidator
+                .getInvalidValues(criterionType);
         if (invalidValues.length > 0)
             throw new ValidationException(invalidValues);
-        try {
-            save(criterion);
-        } finally {
-            criterion = null;
-            criterionType = null;
-        }
-    }
+        criterionTreeModel.saveCriterions(criterionType);
+        criterionTypeDAO.save(criterionType);
 
-    @Override
-    @Transactional
-    public void save(Criterion entity) throws ValidationException {
-        if (criterionDAO.thereIsOtherWithSameNameAndType(entity)) {
-            InvalidValue[] invalidValues = {
-                new InvalidValue(
-                    _("{0} already exists", entity.getName()),
-                    Criterion.class, "name",
-                    entity.getName(), entity
-                )};
-            throw new ValidationException(invalidValues,
-                        _("Could not save new criterion"));
-        }
-        criterionDAO.save(entity);
     }
 
     @Override
@@ -168,43 +192,17 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
-    public boolean isChangeAssignmentsDisabled() {
-        return criterionType == null
-                || !criterionType.isAllowSimultaneousCriterionsPerResource();
+    public boolean getAllowHierarchy(){
+        return this.criterionType.allowHierarchy();
     }
 
     @Override
-    @Transactional
-    public void activateAll(Collection<? extends Resource> resources) {
-        for (Resource resource : resources) {
-            Resource reloaded = find(resource.getId());
-            reloaded
-                    .addSatisfaction(new CriterionWithItsType(criterionType, criterion));
-            resourceDAO.save(reloaded);
-            reloaded.checkNotOverlaps();
-        }
+    public void disableHierarchy(){
+        this.criterionTreeModel.flattenTree();
     }
 
     @Override
-    @Transactional
-    public void deactivateAll(Collection<? extends Resource> resources) {
-        for (Resource resource : resources) {
-            Resource reloaded = find(resource.getId());
-            reloaded.finish(new CriterionWithItsType(criterionType,
-                    criterion));
-            resourceDAO.save(reloaded);
-            reloaded.checkNotOverlaps();
-        }
+    public void updateEnabledCriterions(boolean isChecked){
+        criterionTreeModel.updateEnabledCriterions(isChecked);
     }
-
-    private Resource find(Long id) {
-        Resource reloaded;
-        try {
-            reloaded = resourceDAO.find(id);
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        return reloaded;
-    }
-
 }

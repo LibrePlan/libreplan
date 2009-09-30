@@ -295,7 +295,7 @@ public abstract class Resource extends BaseEntity{
 
     private Date getFinishDate(ICriterionType<?> type,
             CriterionSatisfaction newSatisfaction, Interval interval) {
-        if (!type.allowSimultaneousCriterionsPerResource()) {
+        if (!type.isAllowSimultaneousCriterionsPerResource()) {
             CriterionSatisfaction posterior = getNext(type, newSatisfaction);
             if (posterior != null && posterior.overlapsWith(interval)) {
                 assert !posterior.overlapsWith(Interval.range(interval
@@ -351,7 +351,7 @@ public abstract class Resource extends BaseEntity{
         if (!type.criterionCanBeRelatedTo(getClass())) {
             return false;
         }
-        if (type.allowSimultaneousCriterionsPerResource()) {
+        if (type.isAllowSimultaneousCriterionsPerResource()) {
             return true;
         }
         CriterionSatisfaction newSatisfaction = createNewSatisfaction(interval,
@@ -408,7 +408,7 @@ public abstract class Resource extends BaseEntity{
 
     private void checkNotOverlaps(List<CriterionType> types) {
         for (CriterionType criterionType : types) {
-            if (!criterionType.allowSimultaneousCriterionsPerResource()) {
+            if (!criterionType.isAllowSimultaneousCriterionsPerResource()) {
                 List<CriterionSatisfaction> satisfactions = query().from(
                         criterionType).result();
                 ListIterator<CriterionSatisfaction> listIterator = satisfactions

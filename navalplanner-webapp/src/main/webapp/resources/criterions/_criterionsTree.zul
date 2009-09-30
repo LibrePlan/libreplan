@@ -1,0 +1,27 @@
+<panel title="${i18n:_('Asociated Criterions')}" border="normal">
+<panelchildren>
+<vbox id="criterionsTree">
+    <vbox>
+        <hbox align="center">
+            <textbox value="" id="criterionName" width="200px"/>
+            <button id="add_new_criterion" label="${i18n:_('New criterion')}"
+                onClick="criterionTreeController.addCriterion();"/>
+        </hbox>
+    </vbox>
+    <vbox>
+        <tree id="tree" rows="10" multiple="true" droppable="true"
+            onDrop="criterionTreeController.move(self, event.dragged)"
+            model="@{criterionTreeController.criterionTreeModel}"
+            treeitemRenderer="@{criterionTreeController.renderer}" pageSize="10"
+            sclass="orderTree" fixedLayout="true">
+            <treecols sizable="true">
+                <treecol label="${i18n:_('Name')}" />
+                <treecol width="60px" align="center" label="${i18n:_('Active')}" />
+                <treecol width="150px" align="center" label="${i18n:_('Operations')}" />
+            </treecols>
+        </tree>
+    </vbox>
+</vbox>
+<separator bar="false" spacing="40px" orient="vertical"/>
+</panelchildren>
+</panel>

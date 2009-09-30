@@ -58,10 +58,10 @@ public class CriterionDAOTest {
     }
 
     public static Criterion createValidCriterion() {
-        return createValidCriterion(UUID.randomUUID().toString());
+        return createValidCriterion(UUID.randomUUID().toString(),"");
     }
 
-    public static Criterion createValidCriterion(String name) {
+    public static Criterion createValidCriterion(String name,String description) {
         CriterionType criterionType = CriterionTypeDAOTest
                 .createValidCriterionType();
         return Criterion.withNameAndType(name, criterionType);
@@ -219,7 +219,7 @@ public class CriterionDAOTest {
         return new ICriterionType<Criterion>() {
 
             @Override
-            public boolean allowSimultaneousCriterionsPerResource() {
+            public boolean isAllowSimultaneousCriterionsPerResource() {
                 return allowSimultaneousCriterionsPerResource;
             }
 
@@ -244,16 +244,6 @@ public class CriterionDAOTest {
             }
 
             @Override
-            public boolean allowAdding() {
-                return false;
-            }
-
-            @Override
-            public boolean allowEditing() {
-                return false;
-            }
-
-            @Override
             public boolean criterionCanBeRelatedTo(
                     Class<? extends Resource> klass) {
                 return true;
@@ -262,6 +252,21 @@ public class CriterionDAOTest {
             @Override
             public Criterion createCriterionWithoutNameYet() {
                 return null;
+            }
+
+            @Override
+            public String getDescription() {
+                return null;
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return true;
+            }
+
+            @Override
+            public boolean isImmutable() {
+                return false;
             }
         };
     }

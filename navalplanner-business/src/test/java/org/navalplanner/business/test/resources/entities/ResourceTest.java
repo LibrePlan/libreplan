@@ -121,8 +121,8 @@ public class ResourceTest {
             final Criterion... criterions) {
         final HashSet<Criterion> criterionsSet = new HashSet<Criterion>(Arrays
                 .asList(criterions));
-        return new CriterionTypeBase("base", true,
-                allowMultipleCriterionsPerResource, false, false) {
+        return new CriterionTypeBase("base","", true,
+                allowMultipleCriterionsPerResource,true) {
 
             @Override
             public boolean contains(ICriterion c) {
@@ -366,8 +366,8 @@ public class ResourceTest {
     public void shouldntAdd() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Worker worker = Worker.create("firstName", "surName", "2333232");
-        ICriterionType<?> type = new CriterionTypeBase("prueba", false, false,
-                false, false) {
+        ICriterionType<?> type = new CriterionTypeBase("prueba","", false, false,
+                true) {
 
             @Override
             public boolean contains(ICriterion c) {

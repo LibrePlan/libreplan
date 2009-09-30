@@ -72,8 +72,7 @@ public class CriterionAdminController extends GenericForwardComposer {
                 operations.setParent(row);
                 Button editButton = new Button(_("Edit"));
                 editButton.setParent(operations);
-                editButton.setDisabled(!criterionsModel.getTypeFor(criterion)
-                        .allowEditing());
+                editButton.setDisabled(!criterionsModel.getTypeFor(criterion).isEnabled());
                 editButton.addEventListener("onClick", new EventListener() {
 
                     @Override
@@ -102,7 +101,7 @@ public class CriterionAdminController extends GenericForwardComposer {
                 final ICriterionType<?> type = (ICriterionType<?>) data;
                 Div div = new Div();
                 Button createButton = new Button(_("Add"));
-                createButton.setDisabled(!type.allowAdding());
+                createButton.setDisabled(!type.isEnabled());
                 createButton.addEventListener("onClick", new EventListener() {
 
                     @Override

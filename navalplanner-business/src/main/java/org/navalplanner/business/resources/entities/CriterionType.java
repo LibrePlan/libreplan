@@ -1,5 +1,9 @@
 package org.navalplanner.business.resources.entities;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -22,18 +26,17 @@ public class CriterionType extends BaseEntity implements
         return criterionType;
     }
 
-    public static CriterionType create(String name) {
-        CriterionType criterionType = new CriterionType(name);
+    public static CriterionType create(String name,String description) {
+        CriterionType criterionType = new CriterionType(name,description);
         criterionType.setNewObject(true);
         return criterionType;
     }
 
-    public static CriterionType create(String name, boolean allowHierarchy,
-            boolean allowSimultaneousCriterionsPerResource,
-            boolean allowAdding, boolean allowEditing, ResourceEnum resource) {
-        CriterionType criterionType = new CriterionType(name, allowHierarchy,
-                allowSimultaneousCriterionsPerResource, allowAdding,
-                allowEditing, resource);
+    public static CriterionType create(String name,String description,
+            boolean allowHierarchy,boolean allowSimultaneousCriterionsPerResource,
+            boolean enabled,ResourceEnum resource) {
+        CriterionType criterionType = new CriterionType(name,description, allowHierarchy,
+                allowSimultaneousCriterionsPerResource,enabled,resource);
         criterionType.setNewObject(true);
         return criterionType;
     }
@@ -41,17 +44,19 @@ public class CriterionType extends BaseEntity implements
     @NotEmpty
     private String name;
 
-    private boolean allowHierarchy = true;
+    private String description;
 
-    private boolean allowSimultaneousCriterionsPerResource = true;
+    private Boolean allowHierarchy = true;
 
-    private boolean allowAdding = true;
+    private Boolean allowSimultaneousCriterionsPerResource = true;
 
-    private boolean allowEditing = true;
+    private Boolean enabled = true;
 
     private ResourceEnum resource = ResourceEnum.getDefault();
 
-    private Set<Criterion> criterions;
+    private Set<Criterion> criterions = new HashSet<Criterion>();
+
+    private int numCriterions;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -60,27 +65,28 @@ public class CriterionType extends BaseEntity implements
 
     }
 
-    private CriterionType(String name) {
+    private CriterionType(String name,String description) {
         this.name = name;
+        this.description = description;
     }
 
-    private CriterionType(String name, boolean allowHierarchy,
-            boolean allowSimultaneousCriterionsPerResource,
-            boolean allowAdding, boolean allowEditing, ResourceEnum resource) {
+    private CriterionType(String name,String description, boolean allowHierarchy,
+            boolean allowSimultaneousCriterionsPerResource, boolean enabled,
+            ResourceEnum resource) {
 
         this.allowHierarchy = allowHierarchy;
         this.allowSimultaneousCriterionsPerResource = allowSimultaneousCriterionsPerResource;
+        this.enabled = enabled;
         this.name = name;
-        this.allowAdding = allowAdding;
-        this.allowEditing = allowEditing;
+        this.description = description;
         this.resource = resource;
     }
 
     public static CriterionType asCriterionType(ICriterionType criterionType) {
-        return create(criterionType.getName(), criterionType
-                .allowHierarchy(), criterionType
-        .allowSimultaneousCriterionsPerResource(),
-                criterionType.allowAdding(), criterionType.allowEditing(),
+        return create(criterionType.getName(),criterionType.getDescription(),
+                criterionType.allowHierarchy(), criterionType
+        .isAllowSimultaneousCriterionsPerResource(),
+                criterionType.isEnabled(),
                 CriterionType.getResource(criterionType));
     }
 
@@ -99,6 +105,10 @@ public class CriterionType extends BaseEntity implements
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Set<Criterion> getCriterions() {
         return criterions;
     }
@@ -109,22 +119,20 @@ public class CriterionType extends BaseEntity implements
 
     @Override
     public boolean allowHierarchy() {
-        return allowHierarchy;
+        return allowHierarchy == null ? false : allowHierarchy;
+    }
+
+    public void setAllowHierarchy(boolean allowHierarchy) {
+        this.allowHierarchy = allowHierarchy;
     }
 
     @Override
-    public boolean allowSimultaneousCriterionsPerResource() {
-        return allowSimultaneousCriterionsPerResource;
+    public boolean isAllowSimultaneousCriterionsPerResource() {
+        return allowSimultaneousCriterionsPerResource == null ? false : allowSimultaneousCriterionsPerResource;
     }
 
-    @Override
-    public boolean allowAdding() {
-        return allowAdding;
-    }
-
-    @Override
-    public boolean allowEditing() {
-        return allowEditing;
+    public void setAllowSimultaneousCriterionsPerResource(boolean allowSimultaneousCriterionsPerResource) {
+        this.allowSimultaneousCriterionsPerResource = allowSimultaneousCriterionsPerResource;
     }
 
     public ResourceEnum resource() {
@@ -195,5 +203,33 @@ public class CriterionType extends BaseEntity implements
         int hash = 7;
         hash = 59 * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled == null ? false : enabled;
+    }
+
+    @Override
+    public boolean isImmutable(){
+        return !isEnabled();
+    }
+
+
+    public int getNumCriterions(){
+        return criterions.size();
     }
 }

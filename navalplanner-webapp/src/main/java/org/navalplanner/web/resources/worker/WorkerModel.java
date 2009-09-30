@@ -290,7 +290,7 @@ public class WorkerModel implements IWorkerModel {
                 ICriterionType<?> type) {
             Validate
                     .isTrue(
-                            type.allowSimultaneousCriterionsPerResource(),
+                            type.isAllowSimultaneousCriterionsPerResource(),
                             _("Must allow multiple active criterions for this type to use this assignment strategy"));
             this.criterionDAO = criterionDAO;
             this.resource = resource;

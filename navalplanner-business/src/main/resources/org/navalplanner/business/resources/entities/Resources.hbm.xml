@@ -46,12 +46,18 @@
     <property access="field" name="active"/>
     <many-to-one access="field" name="type" column="id_criterion_type" not-null="true" />
 
+    <many-to-one name="parent" column="parent" access="field" not-null="false"/>
+
+    <set name="children" access="field" lazy="true" cascade="save-update">
+        <key column="parent" not-null="false"></key>
+        <one-to-many class="Criterion"/>
+    </set>
+
     <properties name="nameAndType" unique="true">
         <property access="field" name="name" insert="false" update="false"/>
         <property access="field" name="typeId" insert="false" update="false"
             column="id_criterion_type"/>
     </properties>
-
   </class>
 
   <!-- CriterionSatisfaction -->
@@ -75,16 +81,16 @@
     </id>
     <version name="version" access="property" type="long" />
     <property name="name" unique="true"/>
+    <property name="description"/>
     <property name="allowSimultaneousCriterionsPerResource"/>
     <property name="allowHierarchy"/>
-    <property name="allowAdding"/>
-    <property name="allowEditing"/>
+    <property name="enabled"/>
     <property name="resource">
       <type name="org.hibernate.type.EnumType">
         <param name="enumClass">org.navalplanner.business.resources.entities.ResourceEnum</param>
       </type>
     </property>
-    <set name="criterions">
+    <set name="criterions" cascade="all,delete-orphan" inverse="true">
         <key column="id_criterion_type" />
         <one-to-many class="Criterion" />
     </set>

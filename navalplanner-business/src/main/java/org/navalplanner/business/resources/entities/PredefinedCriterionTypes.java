@@ -1,5 +1,4 @@
 package org.navalplanner.business.resources.entities;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,61 +9,61 @@ import java.util.List;
  */
 public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
-   WORK_RELATIONSHIP(false, false, false, false, ResourceEnum.WORKER) {
+   WORK_RELATIONSHIP("Relationship of the resource with the enterprise ",false, false,true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return WorkingRelationship.getCriterionNames();
         }
     },
-    LOCATION_GROUP(false, true, true, true, ResourceEnum.RESOURCE) {
+    LOCATION_GROUP("Location where the resource work",false, true, true, ResourceEnum.RESOURCE) {
         @Override
         public List<String> getPredefined() {
             return Arrays.asList();
         }
     },
-    LEAVE(false, false, false, false, ResourceEnum.WORKER) {
+    LEAVE("Leave",false, false, true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return LeaveCriterions.getCriterionNames();
         }
     },
-    TRAINING(true, true, true, true, ResourceEnum.WORKER) {
+    TRAINING("Training courses and labor training",true, true, true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return Arrays.asList();
         }
     },
-    JOB(true, true, true, true, ResourceEnum.WORKER) {
+    JOB("Job",true, true, true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return Arrays.asList();
         }
     },
-    CATEGORY(true, true, true, true, ResourceEnum.WORKER) {
+    CATEGORY("Professional category",true, true, true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return Arrays.asList();
         }
     };
 
+    private final String description;
+
     private final boolean allowHierarchy;
 
     private final boolean allowSimultaneousCriterionsPerResource;
 
-    private final boolean allowAdding;
-
-    private final boolean allowEditing;
+    private final boolean enabled;
 
     private final ResourceEnum resource;
 
-    private PredefinedCriterionTypes(boolean allowHierarchy,
+    private PredefinedCriterionTypes(String description, boolean allowHierarchy,
             boolean allowSimultaneousCriterionsPerResource,
-            boolean allowAdding, boolean allowEditing,
+            boolean enabled,
             ResourceEnum resource) {
         this.allowHierarchy = allowHierarchy;
         this.allowSimultaneousCriterionsPerResource = allowSimultaneousCriterionsPerResource;
-        this.allowAdding = allowAdding;
-        this.allowEditing = allowEditing;
+        this.description = description;
+        this.enabled = enabled;
         this.resource = resource;
     }
 
@@ -79,18 +78,23 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
     }
 
     @Override
-    public boolean allowSimultaneousCriterionsPerResource() {
+    public boolean isAllowSimultaneousCriterionsPerResource() {
         return allowSimultaneousCriterionsPerResource;
     }
 
     @Override
-    public boolean allowAdding() {
-        return allowAdding;
+    public String getDescription() {
+        return description;
     }
 
     @Override
-    public boolean allowEditing() {
-        return allowEditing;
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    @Override
+    public boolean isImmutable() {
+        return !this.enabled;
     }
 
     @Override

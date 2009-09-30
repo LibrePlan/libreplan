@@ -1,0 +1,53 @@
+<?component name="criterionsTree" inline="true" macroURI="_criterionsTree.zul"?>
+<window id="${arg.top_id}" title="${arg.title}">
+    <tabbox>
+        <tabs>
+            <tab label="${i18n:_('Edit')}"  width="850"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <grid fixedLayout="true" width="800px">
+                    <columns>
+                        <column width="300px"/>
+                        <column width="400px"/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Name')}" />
+                            <textbox value="@{controller.criterionType.name}"/>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Multiple values per resource')}"/>
+                            <checkbox checked="@{controller.criterionType.allowSimultaneousCriterionsPerResource}"/>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Hierarchy')}" />
+                            <checkbox checked="@{controller.criterionType.allowHierarchy}"
+                                onCheck="controller.confirmDisabledHierarchy(self);" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Enabled')}" />
+                            <checkbox checked="@{controller.criterionType.enabled}"
+                                onCheck="controller.changeEnabled(self);"/>
+                        </row>
+
+                        <row>
+                            <label value="${i18n:_('Description')}" />
+                            <textbox value="@{controller.criterionType.description}" rows="3" width="300px"/>
+                        </row>
+                    </rows>
+                </grid>
+                <separator bar="false" spacing="40px" orient="vertical"/>
+                <criterionsTree/>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+     <hbox>
+        <button id="save" onClick="controller.saveAndClose();"
+            label="${i18n:_('Save')}"/>
+        <button id="save_and_continue" onClick="controller.saveAndContinue();"
+            label="${i18n:_('Save &amp; Continue')}"/>
+        <button id="close" onClick="controller.close();"
+            label="${i18n:_('Close')}"/>
+    </hbox>
+</window>

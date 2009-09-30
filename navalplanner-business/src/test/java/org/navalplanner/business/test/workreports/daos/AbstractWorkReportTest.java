@@ -38,7 +38,7 @@ public abstract class AbstractWorkReportTest {
         Set<CriterionType> criterionTypes = new HashSet<CriterionType>();
 
         CriterionType criterionType = CriterionType.create(UUID.randomUUID()
-                .toString());
+                .toString(),"");
         criterionTypeDAO.save(criterionType);
         criterionTypes.add(criterionType);
 

@@ -12,21 +12,20 @@ public abstract class CriterionTypeBase implements ICriterionType<Criterion> {
 
     private final boolean allowSimultaneousCriterionsPerResource;
 
+    private final boolean enabled;
+
     private final String name;
 
-    private final boolean allowAdding;
+    private final String description;
 
-    private final boolean allowEditing;
-
-    protected CriterionTypeBase(String name, boolean allowHierarchy,
-            boolean allowSimultaneousCriterionsPerResource,
-            boolean allowAdding, boolean allowEditing) {
+    protected CriterionTypeBase(String name, String description, boolean allowHierarchy,
+            boolean allowSimultaneousCriterionsPerResource,boolean enabled) {
         Validate.notNull(name, "name is not null");
         this.allowHierarchy = allowHierarchy;
         this.allowSimultaneousCriterionsPerResource = allowSimultaneousCriterionsPerResource;
         this.name = name;
-        this.allowAdding = allowAdding;
-        this.allowEditing = allowEditing;
+        this.description = description;
+        this.enabled = enabled;
     }
 
     @Override
@@ -35,21 +34,27 @@ public abstract class CriterionTypeBase implements ICriterionType<Criterion> {
     }
 
     @Override
-    public boolean allowSimultaneousCriterionsPerResource() {
+    public boolean isAllowSimultaneousCriterionsPerResource() {
         return allowSimultaneousCriterionsPerResource;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
     @Override
-    public boolean allowAdding() {
-        return allowAdding;
+    public String getDescription() {
+        return description;
     }
 
     @Override
-    public boolean allowEditing() {
-        return allowEditing;
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public boolean isImmutable() {
+        return !enabled;
     }
 }

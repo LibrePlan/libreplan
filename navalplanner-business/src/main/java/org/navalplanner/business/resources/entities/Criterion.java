@@ -1,10 +1,12 @@
 package org.navalplanner.business.resources.entities;
 
+
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
@@ -32,6 +34,10 @@ public class Criterion extends BaseEntity implements ICriterion {
 
     @NotNull
     private CriterionType type;
+
+    private Criterion parent = null;
+
+    private Set<Criterion> children =  new HashSet<Criterion>();
 
     private boolean active = true;
 
@@ -104,6 +110,22 @@ public class Criterion extends BaseEntity implements ICriterion {
         this.active = active;
     }
 
+    public Criterion getParent() {
+        return parent;
+    }
+
+    public void setParent(Criterion parent) {
+        this.parent = parent;
+    }
+
+    public Set<Criterion> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<Criterion> children) {
+        this.children = children;
+    }
+
     public boolean isEquivalent(ICriterion criterion) {
         if (criterion instanceof Criterion) {
             Criterion other = (Criterion) criterion;
@@ -113,8 +135,4 @@ public class Criterion extends BaseEntity implements ICriterion {
         return false;
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
 }

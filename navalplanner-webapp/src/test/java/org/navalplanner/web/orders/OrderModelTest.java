@@ -381,7 +381,7 @@ public class OrderModelTest {
                     @Override
                     public Criterion execute() {
                         CriterionType criterionType = CriterionType.create("test"
-                                + UUID.randomUUID());
+                                + UUID.randomUUID(),"");
                         criterionTypeDAO.save(criterionType);
                         Criterion criterion = Criterion.create("Test"
                                 + UUID.randomUUID(), criterionType);

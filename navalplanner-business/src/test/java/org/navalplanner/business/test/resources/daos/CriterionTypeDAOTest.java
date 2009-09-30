@@ -43,13 +43,14 @@ public class CriterionTypeDAOTest {
 
     public static final String DEFAULT_CRITERION_TYPE = "TEST_DEFAULT";
 
-    public static CriterionType createValidCriterionType(String name) {
-        return CriterionType.create(name);
+    public static CriterionType createValidCriterionType(String name,String description) {
+        return CriterionType.create(name,description);
     }
 
     public static CriterionType createValidCriterionType() {
         String unique = UUID.randomUUID().toString();
-        return createValidCriterionType(unique);
+        String description = "";
+        return createValidCriterionType(unique,description);
     }
 
     @Test
@@ -72,9 +73,9 @@ public class CriterionTypeDAOTest {
     public void testCannotSaveTwoDifferentCriterionTypesWithTheSameName()
             throws ValidationException {
          try {
-            CriterionType criterionType = createValidCriterionType("bla");
+            CriterionType criterionType = createValidCriterionType("bla","");
             criterionTypeDAO.save(criterionType);
-            criterionType = createValidCriterionType("bla");
+            criterionType = createValidCriterionType("bla","");
             criterionTypeDAO.save(criterionType);
             criterionTypeDAO.flush();
             fail("must send exception since thereis a duplicated criterion type");
