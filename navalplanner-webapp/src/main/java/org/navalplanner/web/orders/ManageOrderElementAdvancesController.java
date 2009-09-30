@@ -410,12 +410,6 @@ public class ManageOrderElementAdvancesController extends
                     return advanceMeasurement.getDate()
                             .toDateTimeAtStartOfDay().toDate();
                 }
-            }, new Util.Setter<Date>() {
-
-                @Override
-                public void set(Date value) {
-                    advanceMeasurement.setDate(new LocalDate(value));
-                }
             });
         }
         Listcell listCell = new Listcell();
@@ -794,8 +788,9 @@ public class ManageOrderElementAdvancesController extends
                 @Override
                 public void set(Date value) {
                     advanceMeasurement.setDate(new LocalDate(value));
-                    Util.reloadBindings(window.getFellow("chart"));
-                    Util.reloadBindings(window.getFellow("editAdvances"));
+                    manageOrderElementAdvancesModel
+                            .sortListAdvanceMeasurement();
+                    Util.reloadBindings(window);
                 }
             });
         }
