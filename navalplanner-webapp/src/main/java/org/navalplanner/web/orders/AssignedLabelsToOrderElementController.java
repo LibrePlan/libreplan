@@ -55,10 +55,15 @@ public class AssignedLabelsToOrderElementController extends
             throw new WrongValueException(cbLabelType, _("cannot be null"));
         }
 
+        // Check Label is not null or empty
         final String labelName = txtLabelName.getValue();
-        final LabelType labelType = (LabelType) comboitem.getValue();
+        if (labelName == null || labelName.isEmpty()) {
+            throw new WrongValueException(txtLabelName,
+                    _("cannot be null or empty"));
+        }
 
         // Label does not exist, create
+        final LabelType labelType = (LabelType) comboitem.getValue();
         Label label = assignedLabelsToOrderElementModel
                 .findLabelByNameAndType(labelName, labelType);
         if (label == null) {
@@ -82,6 +87,7 @@ public class AssignedLabelsToOrderElementController extends
     private void assignLabel(Label label) {
         assignedLabelsToOrderElementModel.assignLabel(label);
         Util.reloadBindings(directLabels);
+        txtLabelName.setValue("");
     }
 
     private Label createLabel(String labelName, LabelType labelType) {
