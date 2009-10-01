@@ -100,6 +100,8 @@ public class CriterionSatisfaction extends BaseEntity {
 
     private Resource resource;
 
+    private Boolean isDeleted = false;
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
@@ -175,6 +177,14 @@ public class CriterionSatisfaction extends BaseEntity {
 
     public void setStartDate(Date date) {
         startDate = date;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public boolean isIsDeleted() {
+        return isDeleted == null ? false : isDeleted;
     }
 
     public boolean overlapsWith(Interval interval) {

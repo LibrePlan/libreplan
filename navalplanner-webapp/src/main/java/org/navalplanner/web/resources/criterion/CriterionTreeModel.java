@@ -220,7 +220,6 @@ public class CriterionTreeModel implements ICriterionTreeModel{
     @Override
     public void move(CriterionDTO toBeMoved, CriterionDTO destination,int position) {
         if(isGreatInHierarchy(toBeMoved,destination)){
-            System.out.println("*******************************  RETURN  ********************************");
             return;
         }
         if(criterionType.allowHierarchy()){
