@@ -28,13 +28,13 @@
             <tabpanel>
                 <grid fixedLayout="true" width="800px">
                     <columns>
-                        <column width="300px"/>
+                        <column width="400px"/>
                         <column width="400px"/>
                     </columns>
                     <rows>
                         <row>
                             <label value="${i18n:_('Name')}" />
-                            <textbox value="@{controller.criterionType.name}"/>
+                            <textbox width="390px" value="@{controller.criterionType.name}"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Multiple values per resource')}"/>
@@ -53,7 +53,7 @@
 
                         <row>
                             <label value="${i18n:_('Description')}" />
-                            <textbox value="@{controller.criterionType.description}" rows="3" width="300px"/>
+                            <textbox value="@{controller.criterionType.description}" rows="3" width="390px"/>
                         </row>
                     </rows>
                 </grid>

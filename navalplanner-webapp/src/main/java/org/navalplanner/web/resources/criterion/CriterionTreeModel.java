@@ -85,6 +85,10 @@ public class CriterionTreeModel implements ICriterionTreeModel{
         }
     }
 
+    public CriterionType getCriterionType(){
+        return criterionType;
+    }
+
     public CriterionTreeModel(CriterionType criterionType) {
         this.criterionType = criterionType ;
         criterionRootDTO = new CriterionDTO();
@@ -215,7 +219,13 @@ public class CriterionTreeModel implements ICriterionTreeModel{
 
     @Override
     public void move(CriterionDTO toBeMoved, CriterionDTO destination,int position) {
-        moveImpl(toBeMoved, destination,position);
+        if(isGreatInHierarchy(toBeMoved,destination)){
+            System.out.println("*******************************  RETURN  ********************************");
+            return;
+        }
+        if(criterionType.allowHierarchy()){
+           moveImpl(toBeMoved, destination,position);
+        }
     }
 
     @Override
@@ -414,4 +424,16 @@ public class CriterionTreeModel implements ICriterionTreeModel{
         criterion.setActive(criterionDTO.isActive());
     }
 
+    private boolean isGreatInHierarchy(CriterionDTO parent,CriterionDTO child){
+        return find(child,getChildren(parent));
+    }
+
+    private boolean find(CriterionDTO child,List<CriterionDTO> children){
+        if(children.indexOf(child) >= 0)
+            return true;
+        for(CriterionDTO criterionDTO : children){
+            return find(child,getChildren(criterionDTO));
+        }
+        return false;
+    }
 }

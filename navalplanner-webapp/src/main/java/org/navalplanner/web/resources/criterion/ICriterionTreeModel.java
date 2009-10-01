@@ -37,7 +37,9 @@ import org.zkoss.zul.TreeModel;
  */
 public interface ICriterionTreeModel {
 
-    public TreeModel asTree();
+    TreeModel asTree();
+
+    CriterionType getCriterionType();
 
     void addCriterion(String name);
 

@@ -24,8 +24,10 @@ import java.util.Iterator;
 import java.util.Set;
 import static org.navalplanner.web.I18nHelper._;
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
@@ -104,7 +106,9 @@ public class CriterionTreeController extends GenericForwardComposer {
             }
 
             Treecell cellForName = new Treecell();
-            cellForName.appendChild(Util.bind(new Textbox(),
+            Textbox textboxName= new Textbox();
+            textboxName.setWidth("400px");
+            cellForName.appendChild(Util.bind(textboxName,
                     new Util.Getter<String>() {
 
                         @Override
@@ -191,23 +195,22 @@ public class CriterionTreeController extends GenericForwardComposer {
                 }
             });
 
-            Button indentbutton = new Button("", "/common/img/ico_derecha1.png");
-            indentbutton.setHoverImage("/common/img/ico_derecha.png");
+            Button indentbutton = createButtonIndent();
             indentbutton.setParent(tcOperations);
-            indentbutton.setSclass("icono");
-            indentbutton.addEventListener(Events.ON_CLICK, new EventListener() {
+            if(getModel().getCriterionType().allowHierarchy()){
+                    indentbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     getModel().indent(criterionForThisRow);
                     reloadTree();
                 }
-            });
+                });
+            }
 
-            Button unindentbutton = new Button("", "/common/img/ico_izq1.png");
-            unindentbutton.setHoverImage("/common/img/ico_izq.png");
+            Button unindentbutton = createButtonUnindent();
             unindentbutton.setParent(tcOperations);
-            unindentbutton.setSclass("icono");
-            unindentbutton.addEventListener(Events.ON_CLICK,
+            if(getModel().getCriterionType().allowHierarchy()){
+                unindentbutton.addEventListener(Events.ON_CLICK,
                     new EventListener() {
                         @Override
                         public void onEvent(Event event) throws Exception {
@@ -215,6 +218,7 @@ public class CriterionTreeController extends GenericForwardComposer {
                             reloadTree();
                         }
                     });
+            }
 
             Button removebutton = createButtonRemove(criterionForThisRow);
             removebutton.setParent(tcOperations);
@@ -242,23 +246,45 @@ public class CriterionTreeController extends GenericForwardComposer {
         }
     }
 
-    private Button createButtonRemove(CriterionDTO criterion){
-        String urlIcono;
-        String urlHoverImage;
-        String toolTipText;
-        if(criterion.isNewObject()){
-            urlIcono = "/common/img/ico_borrar1.png";
-            urlHoverImage = "/common/img/ico_borrar.png";
-            toolTipText = "Delete";
+    private Button createButtonUnindent(){
+        Button unindentbutton;
+        if( this.criterionsModel.getCriterionType().allowHierarchy()){
+            unindentbutton = new Button("", "/common/img/ico_izq1.png");
+            unindentbutton.setHoverImage("/common/img/ico_izq.png");
+            unindentbutton.setTooltiptext(_("Unindent"));
         }else{
-            urlIcono = "/common/img/ico_borrar_out.png";
-            urlHoverImage = "/common/img/ico_borrar.png";
-            toolTipText = "Not deletable";
+            unindentbutton = new Button("", "/common/img/ico_derecha_out.png");
+            unindentbutton.setTooltiptext(_("Not Unindent"));
         }
-        Button removebutton = new Button("", urlIcono);
-        removebutton.setHoverImage(urlHoverImage);
+        unindentbutton.setSclass("icono");
+        return unindentbutton;
+    }
+
+    private Button createButtonIndent(){
+        Button indentbutton;
+        if( this.criterionsModel.getCriterionType().allowHierarchy()){
+            indentbutton = new Button("", "/common/img/ico_derecha1.png");
+            indentbutton.setHoverImage("/common/img/ico_derecha.png");
+            indentbutton.setTooltiptext(_("Indent"));
+        }else{
+            indentbutton = new Button("", "/common/img/ico_derecha_out.png");
+            indentbutton.setTooltiptext(_("Not indent"));
+        }
+        indentbutton.setSclass("icono");
+        return indentbutton;
+    }
+
+    private Button createButtonRemove(CriterionDTO criterion){
+        Button removebutton;
+        if(criterion.isNewObject()){
+            removebutton = new Button("", "/common/img/ico_borrar1.png");
+            removebutton.setHoverImage("/common/img/ico_borrar.png");
+            removebutton.setTooltiptext(_("Delete"));
+        }else{
+            removebutton = new Button("", "/common/img/ico_borrar_out.png");
+            removebutton.setTooltiptext(_("Not deletable"));
+        }
         removebutton.setSclass("icono");
-        removebutton.setTooltiptext(_(toolTipText));
         return removebutton;
     }
 
@@ -288,7 +314,6 @@ public class CriterionTreeController extends GenericForwardComposer {
             Treerow to = (Treerow) dropedIn;
             CriterionDTO toNode = (CriterionDTO) ((Treeitem) to.getParent())
                     .getValue();
-
             getModel().move(fromNode, toNode,0);
         }
         reloadTree();
@@ -305,7 +330,9 @@ public class CriterionTreeController extends GenericForwardComposer {
             }
             reloadTree();
         } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
+            for (InvalidValue invalidValue : e.getInvalidValues()) {
+                messagesForUser.showMessage(Level.INFO,invalidValue.getMessage());
+            }
         }
     }
 

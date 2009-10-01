@@ -57,7 +57,7 @@
             id="confirmDisabledHierarchy" title="${i18n:_('Warning')}" sizable="true"
             position="center">
             <vbox align = "center">
-                <label value = "Disenable the Hierarchy property flatten the tree."/>
+                <label value = "Disable the Hierarchy to order flatten the tree."/>
                 <label value = "Continue?"/>
                 <hbox align = "center">
                     <button label="${i18n:_('Ok')}"

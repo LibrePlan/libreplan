@@ -23,6 +23,7 @@ package org.navalplanner.web.resources.criterion;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -193,12 +194,16 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
     }
 
     public void saveAndClose(){
-        save();
-        close();
+        try{
+            save();
+            close();
+        } catch (ValidationException e) {}
     }
 
     public void saveAndContinue(){
-        save();
+        try{
+            save();
+        } catch (ValidationException e) {}
     }
 
     public void close(){
@@ -206,12 +211,16 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
         Util.reloadBindings(listing);
     }
 
-    private void save() {
+    private void save() throws ValidationException{
         try {
             criterionsModel_V2.saveCriterionType();
             messagesForUser.showMessage(Level.INFO, _("CriterionType and it`s criterions saved"));
         } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
+            for (InvalidValue invalidValue : e.getInvalidValues()) {
+                String message = invalidValue.getPropertyName()+" : "+invalidValue.getMessage();
+                messagesForUser.showMessage(Level.INFO,message);
+            }
+            throw e;
         }
     }
 
