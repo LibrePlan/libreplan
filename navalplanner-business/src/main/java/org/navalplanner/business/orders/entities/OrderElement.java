@@ -199,6 +199,10 @@ public abstract class OrderElement extends BaseEntity {
         labels.add(label);
     }
 
+    public void setLabels(Set<Label> labels) {
+        this.labels = labels;
+    }
+
     public void removeLabel(Label label) {
         labels.remove(label);
     }

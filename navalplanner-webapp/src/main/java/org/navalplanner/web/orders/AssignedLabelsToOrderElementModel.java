@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
@@ -142,5 +143,18 @@ public class AssignedLabelsToOrderElementModel implements
         final List<Label> labels = labelDAO.getAll();
         reattachLabels(labels);
         return labels;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void cancel() {
+        try {
+            OrderElement orderElement = orderDAO
+                    .find(this.orderElement.getId());
+            reattachOrderElement(orderElement);
+            this.orderElement.setLabels(orderElement.getLabels());
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

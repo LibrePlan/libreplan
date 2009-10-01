@@ -19,6 +19,11 @@ public interface IAssignedLabelsToOrderElementModel {
     void assignLabel(Label label);
 
     /**
+     * Undo changes
+     */
+    void cancel();
+
+    /**
      * Creates new {@link Label}
      *
      * @param labelName

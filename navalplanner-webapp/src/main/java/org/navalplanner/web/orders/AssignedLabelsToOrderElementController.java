@@ -24,6 +24,7 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 /**
  * Controller for showing OrderElement assigned labels
@@ -35,6 +36,8 @@ public class AssignedLabelsToOrderElementController extends
         GenericForwardComposer {
 
     private IAssignedLabelsToOrderElementModel assignedLabelsToOrderElementModel;
+
+    private Window window;
 
     private Autocomplete cbLabelType;
 
@@ -66,6 +69,7 @@ public class AssignedLabelsToOrderElementController extends
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp.getFellow("listOrderElementLabels"));
         comp.setVariable("assignedLabelsController", this, true);
+        window = (Window) comp;
 
         // Configure bandbox with all labels
         final List<Label> allLabels = getAllLabels();
@@ -218,6 +222,25 @@ public class AssignedLabelsToOrderElementController extends
 
     public List<Label> getAllLabels() {
         return assignedLabelsToOrderElementModel.getAllLabels();
+    }
+
+    /**
+     * Undo changes and close window
+     *
+     * @param event
+     */
+    public void onClose(Event event) {
+        cancel();
+        close();
+        event.stopPropagation();
+    }
+
+    private void cancel() {
+        assignedLabelsToOrderElementModel.cancel();
+    }
+
+    private void close() {
+        window.setVisible(false);
     }
 
     public ListitemRenderer getLabelRenderer() {

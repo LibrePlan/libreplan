@@ -68,4 +68,10 @@
         <button style="margin-top: -4px" label="${i18n:_('Create &amp; Assign')}"
             onClick="assignedLabelsController.onCreateAndAssign()"/>
     </hbox>
+
+    <hbox>
+        <button label="${i18n:_('Cancel')}"
+                onClick="assignedLabelsController.onClose(event);" />
+    </hbox>
+
 </vbox>
