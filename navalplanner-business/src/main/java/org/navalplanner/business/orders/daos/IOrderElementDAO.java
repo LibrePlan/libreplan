@@ -1,4 +1,6 @@
 package org.navalplanner.business.orders.daos;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
@@ -52,5 +54,14 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
      * @return The number of hours
      */
     int getAddAssignedHours(OrderElement orderElement);
+
+    /**
+     * Returns the advance percentage in hours for an {@link OrderElement}
+     *
+     * @param orderElement
+     *            must be attached
+     * @return The advance percentage (a {@link BigDecimal} between 0-1)
+     */
+    BigDecimal getHoursAdvancePercentage(OrderElement orderElement);
 
 }

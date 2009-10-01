@@ -1,5 +1,7 @@
 package org.navalplanner.business.orders.daos;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.List;
 
@@ -113,6 +115,20 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
                     + iterator.next().getNumHours();
         }
         return asignedDirectHours;
+    }
+
+    @Override
+    public BigDecimal getHoursAdvancePercentage(OrderElement orderElement) {
+        BigDecimal assignedHours = new BigDecimal(
+                getAddAssignedHours(orderElement)).setScale(2);
+        BigDecimal estimatedHours = new BigDecimal(orderElement.getWorkHours())
+                .setScale(2);
+
+        if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
+            return BigDecimal.ZERO;
+        }
+
+        return assignedHours.divide(estimatedHours, RoundingMode.DOWN);
     }
 
 }

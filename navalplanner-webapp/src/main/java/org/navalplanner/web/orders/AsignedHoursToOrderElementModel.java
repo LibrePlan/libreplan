@@ -1,5 +1,6 @@
 package org.navalplanner.web.orders;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -114,10 +115,8 @@ public class AsignedHoursToOrderElementModel implements
         if (orderElement == null) {
             return 0;
         }
-        double addAsignedHours = getTotalAsignedHours();
-        double estimatedHours = getEstimatedHours();
-        if (estimatedHours < 1)
-            return 0;
-        return (int) (((double) (addAsignedHours / estimatedHours)) * 100);
+        return orderElementDAO.getHoursAdvancePercentage(orderElement)
+                .multiply(new BigDecimal(100)).intValue();
     }
+
 }
