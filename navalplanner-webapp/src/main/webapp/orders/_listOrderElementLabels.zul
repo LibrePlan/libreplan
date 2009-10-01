@@ -70,8 +70,10 @@
     </hbox>
 
     <hbox>
+        <button label="${i18n:_('Accept')}"
+                onClick="assignedLabelsController.onAccept();" />
         <button label="${i18n:_('Cancel')}"
-                onClick="assignedLabelsController.onClose(event);" />
+                onClick="assignedLabelsController.onCancel();" />
     </hbox>
 
 </vbox>

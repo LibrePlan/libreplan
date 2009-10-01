@@ -92,4 +92,10 @@ public interface IAssignedLabelsToOrderElementModel {
      */
     void setOrderElement(OrderElement orderElement);
 
+    /**
+     * Save {@link OrderElement}
+     *
+     */
+    void confirm();
+
 }

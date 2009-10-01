@@ -194,17 +194,19 @@ public abstract class OrderElement extends BaseEntity {
         return Collections.unmodifiableSet(labels);
     }
 
-    public void addLabel(Label label) {
-        Validate.notNull(label);
-        labels.add(label);
-    }
-
     public void setLabels(Set<Label> labels) {
         this.labels = labels;
     }
 
+    public void addLabel(Label label) {
+        Validate.notNull(label);
+        labels.add(label);
+        label.addOrderElement(this);
+    }
+
     public void removeLabel(Label label) {
         labels.remove(label);
+        label.removeOrderElement(this);
     }
 
     /**

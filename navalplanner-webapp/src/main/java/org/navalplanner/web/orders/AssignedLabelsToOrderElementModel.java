@@ -2,6 +2,7 @@ package org.navalplanner.web.orders;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -111,6 +112,7 @@ public class AssignedLabelsToOrderElementModel implements
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void deleteLabel(Label label) {
         orderElement.removeLabel(label);
     }
@@ -152,9 +154,18 @@ public class AssignedLabelsToOrderElementModel implements
             OrderElement orderElement = orderDAO
                     .find(this.orderElement.getId());
             reattachOrderElement(orderElement);
-            this.orderElement.setLabels(orderElement.getLabels());
+
+            Set<Label> labels = new HashSet<Label>();
+            labels.addAll(orderElement.getLabels());
+            this.orderElement.setLabels(labels);
         } catch (InstanceNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void confirm() {
+        orderDAO.save(orderElement);
     }
 }

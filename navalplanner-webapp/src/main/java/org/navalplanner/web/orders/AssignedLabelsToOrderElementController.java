@@ -60,16 +60,11 @@ public class AssignedLabelsToOrderElementController extends
     }
 
     public void openWindow(IOrderElementModel orderElementModel) {
-        assignedLabelsToOrderElementModel.init(orderElementModel
-                .getOrderElement());
-        Util.reloadBindings(self);
+        openWindow(orderElementModel.getOrderElement());
     }
 
-    @Override
-    public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp.getFellow("listOrderElementLabels"));
-        comp.setVariable("assignedLabelsController", this, true);
-        window = (Window) comp;
+    public void openWindow(OrderElement orderElement) {
+        assignedLabelsToOrderElementModel.init(orderElement);
 
         // Configure bandbox with all labels
         final List<Label> allLabels = getAllLabels();
@@ -81,6 +76,16 @@ public class AssignedLabelsToOrderElementController extends
 
         // Set autodrop
         bdLabels.setAutodrop(true);
+
+        Util.reloadBindings(window);
+        Util.reloadBindings(directLabels);
+    }
+
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp.getFellow("listOrderElementLabels"));
+        comp.setVariable("assignedLabelsController", this, true);
+        window = (Window) comp;
     }
 
     /**
@@ -134,7 +139,7 @@ public class AssignedLabelsToOrderElementController extends
     public void onAssignLabel() {
         Label label = (Label) bdLabels.getVariable("selectedLabel", true);
         if (label == null) {
-            throw new WrongValueException(bdLabels, _("cannot be null"));
+            throw new WrongValueException(bdLabels, _("please, select a label"));
         }
         if (isAssigned(label)) {
             throw new WrongValueException(bdLabels, _("already assigned"));
@@ -229,18 +234,24 @@ public class AssignedLabelsToOrderElementController extends
      *
      * @param event
      */
-    public void onClose(Event event) {
+    public void onCancel() {
         cancel();
         close();
-        event.stopPropagation();
     }
 
     private void cancel() {
         assignedLabelsToOrderElementModel.cancel();
+        window.setVariable("status", new Integer(0), true);
     }
 
     private void close() {
         window.setVisible(false);
+    }
+
+    public void onAccept() {
+        assignedLabelsToOrderElementModel.confirm();
+        window.setVariable("status", new Integer(1), true);
+        close();
     }
 
     public ListitemRenderer getLabelRenderer() {
