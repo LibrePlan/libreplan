@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.orders;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,8 +60,6 @@ import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Listhead;
 
-import static org.navalplanner.web.I18nHelper._;
-
 /**
  * Controller for {@link OrderElement} view of {@link Order} entities <br />
  *
@@ -96,6 +96,8 @@ public class OrderElementController extends GenericForwardComposer {
     private AsignedHoursToOrderElementController asignedHoursController;
 
     private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
+
+    private AssignedLabelsToOrderElementController assignedLabelsController;
 
     public OrderElement getOrderElement() {
         if (model == null) {
@@ -184,12 +186,19 @@ public class OrderElementController extends GenericForwardComposer {
         window = (Window) comp;
         setupAsignedHoursToOrderElementController(comp);
         setupManageOrderElementAdvancesController(comp);
+        setupAssignedLabelsToOrderElementController(comp);
     }
 
 
     private void setupAsignedHoursToOrderElementController(Component comp)throws Exception{
         asignedHoursController = new AsignedHoursToOrderElementController();
         asignedHoursController.doAfterCompose(comp);
+    }
+
+    private void setupAssignedLabelsToOrderElementController(Component comp)
+            throws Exception {
+        assignedLabelsController = new AssignedLabelsToOrderElementController();
+        assignedLabelsController.doAfterCompose(comp);
     }
 
     private void setupManageOrderElementAdvancesController(Component comp)
