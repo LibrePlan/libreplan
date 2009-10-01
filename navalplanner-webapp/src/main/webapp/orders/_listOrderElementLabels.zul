@@ -48,9 +48,7 @@
         <label value="${i18n:_('Create and assign label')}" />
     </vbox>
     <hbox>
-        <combobox>
-            <comboitem label="Test" />
-        </combobox>
+        <autocomplete finder="LabelTypeFinder" buttonVisible="true" />
         <textbox />
         <button style="margin-top: -4px" label="${i18n:_('Create &amp; Assign')}" />
     </hbox>

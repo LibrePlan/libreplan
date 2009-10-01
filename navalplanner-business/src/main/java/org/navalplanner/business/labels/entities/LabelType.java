@@ -42,6 +42,7 @@ public class LabelType extends BaseEntity {
     private Set<Label> labels = new HashSet<Label>();
 
     // Default constructor, needed by Hibernate
+    // At least package visibility, https://www.hibernate.org/116.html#A6
     protected LabelType() {
 
     }
