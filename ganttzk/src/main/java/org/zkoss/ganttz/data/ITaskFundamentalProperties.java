@@ -24,6 +24,8 @@ public interface ITaskFundamentalProperties {
 
     public void setNotes(String notes);
 
+    public BigDecimal getHoursAdvancePercentage();
+
     public BigDecimal getAdvancePercentage();
 
 }

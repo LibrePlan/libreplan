@@ -296,10 +296,14 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private void updateCompletion() {
+        BigDecimal hoursAdvancePercentage = task.getHoursAdvancePercentage()
+                .multiply(new BigDecimal(100));
+        response(null, new AuInvoke(this, "resizeCompletionAdvance",
+                hoursAdvancePercentage.intValue() + "%"));
+
         BigDecimal advancePercentage = task.getAdvancePercentage().multiply(
                 new BigDecimal(100));
-
-         response(null, new AuInvoke(this, "resizeCompletionAdvance",
+        response(null, new AuInvoke(this, "resizeCompletion2Advance",
                 advancePercentage.intValue() + "%"));
     }
 

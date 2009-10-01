@@ -140,6 +140,11 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
+    public BigDecimal getHoursAdvancePercentage() {
+        return fundamentalProperties.getHoursAdvancePercentage();
+    }
+
+    @Override
     public BigDecimal getAdvancePercentage() {
         return fundamentalProperties.getAdvancePercentage();
     }

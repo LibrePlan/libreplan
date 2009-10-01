@@ -351,7 +351,8 @@ public class DataForPlanner {
     private DefaultFundamentalProperties createTask(String name, Date now,
             Date end) {
         return new DefaultFundamentalProperties(name, end, end.getTime()
-                - now.getTime(), _("bla"), new BigDecimal(0.5));
+                - now.getTime(), _("bla"), new BigDecimal(0.25),
+                new BigDecimal(0.5));
     }
 
     private void addNewTask(IContext<ITaskFundamentalProperties> context) {

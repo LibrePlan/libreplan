@@ -8,10 +8,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.Dependency.Type;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -31,6 +34,9 @@ import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 public class TaskElementAdapter implements ITaskElementAdapter {
 
     private Order order;
+
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
 
     @Override
     public void setOrder(Order order) {
@@ -96,6 +102,12 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         private void updateEndDate() {
             taskElement.setEndDate(new Date(getBeginDate().getTime()
                     + this.lengthMilliseconds));
+        }
+
+        @Override
+        public BigDecimal getHoursAdvancePercentage() {
+            OrderElement orderElement = taskElement.getOrderElement();
+            return orderElementDAO.getHoursAdvancePercentage(orderElement);
         }
 
         @Override

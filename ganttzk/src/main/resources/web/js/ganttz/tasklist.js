@@ -406,6 +406,11 @@ zkTask.getElementsByAttribute = function(oElm, strTagName, strAttributeName,
 }
 
 zkTask.resizeCompletionAdvance = function(cmp, width) {
+	var completionDiv = YAHOO.util.Selector.query('.completion', cmp, true);
+	completionDiv["style"].width = width;
+}
+
+zkTask.resizeCompletion2Advance = function(cmp, width) {
 	var completionDiv = YAHOO.util.Selector.query('.completion2', cmp, true);
 	completionDiv["style"].width = width;
 }
@@ -538,6 +543,7 @@ zkTaskContainer.setClass = function(cmp, newclass) {
 };
 
 zkTaskContainer.resizeCompletionAdvance = zkTask.resizeCompletionAdvance;
+zkTaskContainer.resizeCompletion2Advance = zkTask.resizeCompletion2Advance;
 
 /* We will not allow taskcontainer move or resize untill its behaviour its
 * clearly specified

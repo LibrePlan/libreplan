@@ -16,17 +16,21 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     private String notes;
 
+    private BigDecimal hoursAdvancePercentage;
+
     private BigDecimal advancePercentage;
 
     public DefaultFundamentalProperties() {
     }
 
     public DefaultFundamentalProperties(String name, Date beginDate,
-            long lengthMilliseconds, String notes, BigDecimal advancePercentage) {
+            long lengthMilliseconds, String notes,
+            BigDecimal hoursAdvancePercentage, BigDecimal advancePercentage) {
         this.name = name;
         this.beginDate = beginDate;
         this.lengthMilliseconds = lengthMilliseconds;
         this.notes = notes;
+        this.hoursAdvancePercentage = hoursAdvancePercentage;
         this.advancePercentage = advancePercentage;
     }
 
@@ -64,6 +68,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    @Override
+    public BigDecimal getHoursAdvancePercentage() {
+        return hoursAdvancePercentage;
     }
 
     @Override
