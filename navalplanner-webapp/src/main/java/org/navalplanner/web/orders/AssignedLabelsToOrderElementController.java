@@ -11,10 +11,15 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.api.Listbox;
 
 /**
  * Controller for showing OrderElement assigned labels
@@ -33,6 +38,10 @@ public class AssignedLabelsToOrderElementController extends
 
     private Textbox txtLabelName;
 
+    private Bandbox bdLabels;
+
+    private Listbox lbLabels;
+
     public OrderElement getOrderElement() {
         return assignedLabelsToOrderElementModel.getOrderElement();
     }
@@ -45,6 +54,17 @@ public class AssignedLabelsToOrderElementController extends
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp.getFellow("listOrderElementLabels"));
         comp.setVariable("assignedLabelsController", this, true);
+        lbLabels.addEventListener("onSelect", new EventListener() {
+            
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Listitem listitem = (Listitem) lbLabels.getSelectedItems().iterator().next();
+                Label label = (Label) listitem.getValue();
+                bdLabels.setValue(label.getName());
+                bdLabels.setVariable("selectedLabel", label, true);
+                bdLabels.close();
+            }
+        });
     }
 
     public void createAndAssign() {
@@ -106,12 +126,18 @@ public class AssignedLabelsToOrderElementController extends
     public void deleteLabel(Label label) {
         assignedLabelsToOrderElementModel.deleteLabel(label);
         Util.reloadBindings(directLabels);
+        // Listbox lb;
+        // lb.getSelectedItem().get
     }
 
     public void openWindow(IOrderElementModel orderElementModel) {
         assignedLabelsToOrderElementModel.init(orderElementModel
                 .getOrderElement());
         Util.reloadBindings(self);
+    }
+
+    public List<Label> getAllLabels() {
+        return assignedLabelsToOrderElementModel.getAllLabels();
     }
 
 }

@@ -80,4 +80,9 @@ public interface IAssignedLabelsToOrderElementModel {
      */
     void setOrderElement(OrderElement orderElement);
 
+    /**
+     * @return
+     */
+    List<Label> getAllLabels();
+
 }

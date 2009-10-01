@@ -36,14 +36,30 @@
     </vbox>
     <!-- Assign label -->
     <vbox>
-        <label value="${i18n:_('Assign label')}" />
+        <label value="${i18n:_('Assign Label')}" />
         <hbox>
-            <combobox>
-                <comboitem label="Test" />
-            </combobox>
-            <button style="margin-top: -4px" label="${i18n:_('Assign')}"/>
+        	<bandbox id="bdLabels">
+        		<bandpopup>
+        			<vbox height="50px">        			 
+        				<listbox id="lbLabels" width="200px" height="100px" vflex="true"
+        					model="@{assignedLabelsController.allLabels}">
+        					<listhead>
+                                <listheader label="Type" />
+        						<listheader label="Label" />
+        					</listhead>                            
+        					<listitem self="@{each='label'}" value="@{label}">
+                                <listcell label="@{label.type.name}" />
+        						<listcell label="@{label.name}" />
+        					</listitem>
+        				</listbox>
+        			</vbox>
+        		</bandpopup>
+        	</bandbox>
+        	<button style="margin-top: -4px"
+        		label="${i18n:_('Assign')}" />
         </hbox>
     </vbox>
+    
     <!-- Create and assign label -->
     <vbox>
         <label value="${i18n:_('Create and assign label')}" />

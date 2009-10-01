@@ -1,6 +1,7 @@
 package org.navalplanner.web.orders;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -62,7 +63,7 @@ public class AssignedLabelsToOrderElementModel implements
         reattachLabels(orderElement.getLabels());
     }
 
-    private void reattachLabels(Set<Label> labels) {
+    private void reattachLabels(Collection<Label> labels) {
         for (Label label : labels) {
             reattachLabel(label);
         }
@@ -133,5 +134,13 @@ public class AssignedLabelsToOrderElementModel implements
             }
         }
         return false;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Label> getAllLabels() {
+        final List<Label> labels = labelDAO.getAll();
+        reattachLabels(labels);
+        return labels;
     }
 }
