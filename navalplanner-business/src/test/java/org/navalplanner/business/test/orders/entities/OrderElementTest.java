@@ -910,7 +910,7 @@ public class OrderElementTest {
                 equalTo(3));
         assertThat(advanceAssignment.getLastAdvanceMeasurement().getValue(),
                 equalTo(new BigDecimal(5000)));
-        assertThat(advanceAssignment.getLastPercentage(),
+        assertThat(advanceAssignment.getAdvancePercentage(),
                 equalTo(new BigDecimal(45).divide(new BigDecimal(100))
                         .setScale(2)));
     }
@@ -957,7 +957,7 @@ public class OrderElementTest {
                 equalTo(3));
         assertThat(advanceAssignment.getLastAdvanceMeasurement().getValue(),
                 equalTo(new BigDecimal(5000)));
-        assertThat(advanceAssignment.getLastPercentage(),
+        assertThat(advanceAssignment.getAdvancePercentage(),
                 equalTo(new BigDecimal(45).divide(new BigDecimal(100))
                         .setScale(2)));
     }

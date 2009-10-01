@@ -74,7 +74,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return advanceMeasurements.first();
     }
 
-    public BigDecimal getLastPercentage() {
+    public BigDecimal getAdvancePercentage() {
         if (maxValue.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }

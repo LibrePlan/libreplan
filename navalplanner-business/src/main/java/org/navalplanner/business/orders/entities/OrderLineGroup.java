@@ -181,7 +181,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if (directAdvanceAssignment.getReportGlobalAdvance()) {
                 if (date == null) {
-                    return directAdvanceAssignment.getLastPercentage();
+                    return directAdvanceAssignment.getAdvancePercentage();
                 }
                 return directAdvanceAssignment.getAdvancePercentage(date);
             }
@@ -198,7 +198,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
                 } else {
                     DirectAdvanceAssignment directAdvanceAssignment = calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
                     if (date == null) {
-                        return directAdvanceAssignment.getLastPercentage();
+                        return directAdvanceAssignment.getAdvancePercentage();
                     }
                     return directAdvanceAssignment.getAdvancePercentage(date);
                 }

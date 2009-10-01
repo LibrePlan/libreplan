@@ -354,7 +354,7 @@ public class OrderLine extends OrderElement {
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if (directAdvanceAssignment.getReportGlobalAdvance()) {
                 if (date == null) {
-                    return directAdvanceAssignment.getLastPercentage();
+                    return directAdvanceAssignment.getAdvancePercentage();
                 }
                 return directAdvanceAssignment.getAdvancePercentage(date);
             }
