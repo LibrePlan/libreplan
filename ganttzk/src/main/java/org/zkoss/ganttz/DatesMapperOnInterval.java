@@ -41,4 +41,5 @@ public class DatesMapperOnInterval implements IDatesMapper {
     public long toMilliseconds(int pixels) {
         return millisecondsPerPixel * pixels;
     }
+
 }

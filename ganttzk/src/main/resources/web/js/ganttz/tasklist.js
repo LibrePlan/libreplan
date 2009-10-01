@@ -405,6 +405,11 @@ zkTask.getElementsByAttribute = function(oElm, strTagName, strAttributeName,
     return arrReturnElements;
 }
 
+zkTask.resizeCompletionAdvance = function(cmp, width) {
+	var completionDiv = YAHOO.util.Selector.query('.completion2', cmp, true);
+	completionDiv["style"].width = width;
+}
+
 YAHOO.example.DDRegion = function(id, sGroup, config) {
     this.cont = config.cont;
     YAHOO.example.DDRegion.superclass.constructor.apply(this, arguments);
@@ -531,6 +536,8 @@ zkTaskContainer.getElementsByAttribute = function(oElm, strTagName, strAttribute
 zkTaskContainer.setClass = function(cmp, newclass) {
    cmp.className = newclass;
 };
+
+zkTaskContainer.resizeCompletionAdvance = zkTask.resizeCompletionAdvance;
 
 /* We will not allow taskcontainer move or resize untill its behaviour its
 * clearly specified

@@ -1,5 +1,6 @@
 package org.zkoss.ganttz.data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -15,15 +16,18 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     private String notes;
 
+    private BigDecimal advancePercentage;
+
     public DefaultFundamentalProperties() {
     }
 
     public DefaultFundamentalProperties(String name, Date beginDate,
-            long lengthMilliseconds, String notes) {
+            long lengthMilliseconds, String notes, BigDecimal advancePercentage) {
         this.name = name;
         this.beginDate = beginDate;
         this.lengthMilliseconds = lengthMilliseconds;
         this.notes = notes;
+        this.advancePercentage = advancePercentage;
     }
 
     public String getName() {
@@ -61,4 +65,10 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     public void setNotes(String notes) {
         this.notes = notes;
     }
+
+    @Override
+    public BigDecimal getAdvancePercentage() {
+        return advancePercentage;
+    }
+
 }

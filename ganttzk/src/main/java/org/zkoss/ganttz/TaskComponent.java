@@ -2,6 +2,7 @@ package org.zkoss.ganttz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -152,7 +153,7 @@ public class TaskComponent extends Div implements AfterCompose {
                 new Object[] { calculateClass() }));
     }
 
-    public void afterCompose() {
+    public final void afterCompose() {
         updateProperties();
         if (propertiesListener == null) {
             propertiesListener = new PropertyChangeListener() {
@@ -274,7 +275,7 @@ public class TaskComponent extends Div implements AfterCompose {
         super.setParent(parent);
     }
 
-    public void zoomChanged() {
+    public final void zoomChanged() {
         updateProperties();
     }
 
@@ -291,6 +292,15 @@ public class TaskComponent extends Div implements AfterCompose {
         if (dependencyList != null) {
             dependencyList.redrawDependenciesConnectedTo(this);
         }
+        updateCompletion();
+    }
+
+    private void updateCompletion() {
+        BigDecimal advancePercentage = task.getAdvancePercentage().multiply(
+                new BigDecimal(100));
+
+         response(null, new AuInvoke(this, "resizeCompletionAdvance",
+                advancePercentage.intValue() + "%"));
     }
 
     private DependencyList getDependencyList() {

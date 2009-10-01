@@ -152,7 +152,6 @@ zkTasklist.GANTT_PANEL_LEFT = 300
 }
 
 .completion2 {
-    width: 50%;
     height: 5px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
     background-color: #75d9b0;
     z-index: 5;

@@ -1,5 +1,6 @@
 package org.zkoss.ganttz.data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -22,5 +23,7 @@ public interface ITaskFundamentalProperties {
     public String getNotes();
 
     public void setNotes(String notes);
+
+    public BigDecimal getAdvancePercentage();
 
 }

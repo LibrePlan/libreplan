@@ -1,5 +1,8 @@
 package org.navalplanner.web.planner;
 
+import static org.navalplanner.web.I18nHelper._;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -15,8 +18,6 @@ import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Responsible of adaptating a {@link TaskElement} into a
@@ -95,6 +96,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         private void updateEndDate() {
             taskElement.setEndDate(new Date(getBeginDate().getTime()
                     + this.lengthMilliseconds));
+        }
+
+        @Override
+        public BigDecimal getAdvancePercentage() {
+            return taskElement.getOrderElement().getAdvancePercentage();
         }
 
     }

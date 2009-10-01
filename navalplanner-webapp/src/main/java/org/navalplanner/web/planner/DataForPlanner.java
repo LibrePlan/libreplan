@@ -2,6 +2,7 @@ package org.navalplanner.web.planner;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -350,7 +351,7 @@ public class DataForPlanner {
     private DefaultFundamentalProperties createTask(String name, Date now,
             Date end) {
         return new DefaultFundamentalProperties(name, end, end.getTime()
-                - now.getTime(), _("bla"));
+                - now.getTime(), _("bla"), new BigDecimal(0.5));
     }
 
     private void addNewTask(IContext<ITaskFundamentalProperties> context) {
