@@ -53,7 +53,7 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
      *            must be attached
      * @return The number of hours
      */
-    int getAddAssignedHours(OrderElement orderElement);
+    int getAssignedHours(OrderElement orderElement);
 
     /**
      * Returns the advance percentage in hours for an {@link OrderElement}

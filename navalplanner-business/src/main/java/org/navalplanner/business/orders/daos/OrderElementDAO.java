@@ -91,7 +91,7 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     }
 
     @Override
-    public int getAddAssignedHours(OrderElement orderElement) {
+    public int getAssignedHours(OrderElement orderElement) {
         int addAsignedHoursChildren = 0;
         if (!orderElement.getChildren().isEmpty()) {
             List<OrderElement> children = orderElement.getChildren();
@@ -99,15 +99,15 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
             while (iterador.hasNext()) {
                 OrderElement w = iterador.next();
                 addAsignedHoursChildren = addAsignedHoursChildren
-                        + getAddAssignedHours(w);
+                        + getAssignedHours(w);
             }
         }
         List<WorkReportLine> listWRL = this.workReportLineDAO
                 .findByOrderElement(orderElement);
-        return (getAsignedDirectHours_(listWRL) + addAsignedHoursChildren);
+        return (getAssignedDirectHours(listWRL) + addAsignedHoursChildren);
     }
 
-    private int getAsignedDirectHours_(List<WorkReportLine> listWRL) {
+    private int getAssignedDirectHours(List<WorkReportLine> listWRL) {
         int asignedDirectHours = 0;
         Iterator<WorkReportLine> iterator = listWRL.iterator();
         while (iterator.hasNext()) {
@@ -120,7 +120,7 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     @Override
     public BigDecimal getHoursAdvancePercentage(OrderElement orderElement) {
         BigDecimal assignedHours = new BigDecimal(
-                getAddAssignedHours(orderElement)).setScale(2);
+                getAssignedHours(orderElement)).setScale(2);
         BigDecimal estimatedHours = new BigDecimal(orderElement.getWorkHours())
                 .setScale(2);
 

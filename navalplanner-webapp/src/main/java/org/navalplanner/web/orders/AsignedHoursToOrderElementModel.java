@@ -78,7 +78,7 @@ public class AsignedHoursToOrderElementModel implements
         if (orderElement == null) {
             return 0;
         }
-        return orderElementDAO.getAddAssignedHours(this.orderElement);
+        return orderElementDAO.getAssignedHours(this.orderElement);
     }
 
     @Override
