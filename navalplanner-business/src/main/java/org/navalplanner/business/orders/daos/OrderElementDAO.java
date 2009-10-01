@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Dao for {@link OrderElement}
@@ -91,6 +92,7 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     }
 
     @Override
+    @Transactional(readOnly = true)
     public int getAssignedHours(OrderElement orderElement) {
         int addAsignedHoursChildren = 0;
         if (!orderElement.getChildren().isEmpty()) {
@@ -118,6 +120,7 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal getHoursAdvancePercentage(OrderElement orderElement) {
         BigDecimal assignedHours = new BigDecimal(
                 getAssignedHours(orderElement)).setScale(2);
