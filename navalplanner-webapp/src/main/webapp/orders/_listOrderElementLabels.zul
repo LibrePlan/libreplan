@@ -2,15 +2,15 @@
     <!-- Indirect labels -->
     <vbox>
         <label value="${i18n:_('Indirect labels')}" />
-        <grid>
+        <grid id="inheritedLabels" model="@{assignedLabelsController.inheritedLabels}">
             <columns>
                 <column label="${i18n:_('Label type')}" />
                 <column label="${i18n:_('Value')}" />
             </columns>
             <rows>
-                <row>
-                    <label value=""/>
-                    <label value=""/>
+                <row  self="@{each='label'}" value="@{label}">
+                    <label value="@{label.type.name}" />
+                    <label value="@{label.name}"/>
                 </row>
             </rows>
         </grid>

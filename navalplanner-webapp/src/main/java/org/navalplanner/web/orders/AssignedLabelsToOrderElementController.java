@@ -72,9 +72,19 @@ public class AssignedLabelsToOrderElementController extends
         return assignedLabelsToOrderElementModel.getLabels();
     }
 
+    public List<Label> getInheritedLabels() {
+        return assignedLabelsToOrderElementModel.getInheritedLabels();
+    }
+
     public void deleteLabel(Label label) {
         assignedLabelsToOrderElementModel.deleteLabel(label);
         Util.reloadBindings(directLabels);
+    }
+
+    public void openWindow(IOrderElementModel orderElementModel) {
+        assignedLabelsToOrderElementModel.init(orderElementModel
+                .getOrderElement());
+        Util.reloadBindings(self);
     }
 
 }

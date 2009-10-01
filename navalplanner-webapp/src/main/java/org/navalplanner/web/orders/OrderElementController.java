@@ -199,7 +199,6 @@ public class OrderElementController extends GenericForwardComposer {
             throws Exception {
         assignedLabelsController = new AssignedLabelsToOrderElementController();
         assignedLabelsController.doAfterCompose(comp);
-        assignedLabelsController.setOrderElement(getOrderElement());
     }
 
     private void setupManageOrderElementAdvancesController(Component comp)
@@ -222,6 +221,7 @@ public class OrderElementController extends GenericForwardComposer {
 
         asignedHoursController.openWindow(model);
         manageOrderElementAdvancesController.openWindow(model);
+        assignedLabelsController.openWindow(model);
 
         // If is a container
         if (orderElement instanceof OrderLineGroup) {

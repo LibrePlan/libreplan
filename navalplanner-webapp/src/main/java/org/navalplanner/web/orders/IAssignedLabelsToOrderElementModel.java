@@ -52,4 +52,12 @@ public interface IAssignedLabelsToOrderElementModel {
      */
     void deleteLabel(Label label);
 
+    /**
+     *
+     * @return
+     */
+    List<Label> getInheritedLabels();
+
+    void init(OrderElement orderElement);
+
 }

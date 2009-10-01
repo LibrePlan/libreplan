@@ -2,6 +2,7 @@ package org.navalplanner.web.orders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
@@ -9,6 +10,7 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -26,31 +28,42 @@ public class AssignedLabelsToOrderElementModel implements
     @Autowired
     IOrderElementDAO orderDAO;
 
-    OrderElement orderElement;
-
     @Autowired
     ILabelTypeDAO labelTypeDAO;
 
     @Autowired
     ILabelDAO labelDAO;
 
-    @Override
-    public OrderElement getOrderElement() {
-        return orderElement;
-    }
+    OrderElement orderElement;
 
     @Override
-    public void setOrderElement(OrderElement orderElement) {
+    @Transactional(readOnly = true)
+    public void init(OrderElement orderElement) {
+        // orderDAO.save(orderElement);
         this.orderElement = orderElement;
+        reattachOrderElement(this.orderElement);
     }
 
-    private void reattachLabels() {
-
+    private void reattachOrderElement(OrderElement orderElement) {
+        orderDAO.save(orderElement);
+        orderElement.getName();
+        if (orderElement.getParent() != null) {
+            orderElement.getParent().getName();
+        }
+        reattachLabels(orderElement.getLabels());
     }
 
+    private void reattachLabels(Set<Label> labels) {
+        for (Label label : labels) {
+            label.getName();
+            label.getType().getName();
+        }
+    }
+
+    @Transactional(readOnly = true)
     public List<Label> getLabels() {
         List<Label> result = new ArrayList<Label>();
-        if (orderElement.getLabels() != null) {
+        if (orderElement != null && orderElement.getLabels() != null) {
             result.addAll(orderElement.getLabels());
         }
         return result;
@@ -72,4 +85,34 @@ public class AssignedLabelsToOrderElementModel implements
     public void deleteLabel(Label label) {
         orderElement.removeLabel(label);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Label> getInheritedLabels() {
+        System.out.println("### getInheritedLabels");
+
+        List<Label> result = new ArrayList<Label>();
+
+        if (orderElement != null) {
+            OrderLineGroup parent = orderElement.getParent();
+            while (parent != null) {
+                reattachOrderElement(parent);
+                // System.out.println("### labels: " + parent.getLabels());
+                result.addAll(parent.getLabels());
+                parent = parent.getParent();
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public OrderElement getOrderElement() {
+        return orderElement;
+    }
+
+    @Override
+    public void setOrderElement(OrderElement orderElement) {
+        this.orderElement = orderElement;
+    }
+
 }
