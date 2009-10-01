@@ -496,3 +496,7 @@ tr.z-vbox-sep {
 .resourceloadlist {
     margin-top: 15px;
 }
+
+.timetrackergap #zoom_buttons {
+    display:none;
+}

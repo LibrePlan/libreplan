@@ -1,14 +1,42 @@
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
     <borderlayout height="600px" width="auto">
-        <north height="70%" collapsible="true" splittable="true">
+       <north height="30px" border="0">
+       <hbox align="center">
+        <button label="Save" />
+        <button label="Back" />
+        <button label="Company view" />
+        <separator/>
+        <button label="+" />
+        <button label="-" />
+        From: <datebox /> to: <datebox />
+        <separator/>
+        Filter:
+        <combobox>
+            <comboitem label="Orders"
+                description="Show full orders and company view" />
+            <comboitem label="Tasks"
+                description="Tasks inside orders or filtered" />
+        </combobox>
+        <combobox>
+            <comboitem label="Filter by Label" />
+            <comboitem label="Filter by criterion" />
+            <comboitem label="Filter by resources" />
+            <comboitem label="Critical way" />
+        </combobox>
+        <textbox/>
+
+       </hbox>
+       </north>
+
+        <center border="0">
             <borderlayout sclass="resourcesload">
                 <west size="200px" flex="true" collapsible="true"
                     splittable="true" autoscroll="true">
 
-                    <borderlayout>
-                        <north border="0" height="58px" flex="true" collapsible="true">
-                            <vbox pack="center" align="center"><label value="Icons" width="150px" height="29px"/>
+                    <borderlayout >
+                        <north border="0" height="38px" flex="true" collapsible="true">
+                            <vbox pack="center" align="center">
                             <tree fixedLayout="true">
                                 <treecols>
                                     <treecol label="Name" height="29px"/>
@@ -25,7 +53,7 @@
 
                 <center sclass="taskspanel">
                     <borderlayout>
-                        <north border="0"><div sclass="timetrackergap" height="53px" id="insertionPointTimetracker"></div></north>
+                        <north border="0"><div sclass="timetrackergap" height="33px" id="insertionPointTimetracker"></div></north>
                         <center autoscroll="true" border="0" sclass="rightpanellayout">
                             <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
                         </center>
@@ -33,8 +61,8 @@
 
                 </center>
             </borderlayout>
-        </north>
-        <center>
+        </center>
+        <south height="20%" collapsible="true" splittable="true">
             <borderlayout>
                 <west size="200px" flex="true" collapsible="true"
                     splittable="true">
@@ -93,6 +121,6 @@ catmodel.setValue("2011", "Q4 2009", new Integer(90));
 
                 </center>
             </borderlayout>
-        </center>
+        </south>
     </borderlayout>
 </zk>
