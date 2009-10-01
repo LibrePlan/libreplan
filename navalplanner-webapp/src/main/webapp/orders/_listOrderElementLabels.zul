@@ -49,7 +49,7 @@
     </vbox>
     <hbox>
         <autocomplete id="cbLabelType" finder="LabelTypeFinder" buttonVisible="true" />
-        <textbox id="txtLabelName" constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+        <textbox id="txtLabelName" constraint="no empty:${i18n:_('cannot be null or empty')}" />
         <button style="margin-top: -4px" label="${i18n:_('Create &amp; Assign')}"
             onClick="assignedLabelsController.createAndAssign()"/>
     </hbox>
