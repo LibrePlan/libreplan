@@ -1,5 +1,6 @@
 package org.navalplanner.business.orders.daos;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -7,6 +8,9 @@ import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
+import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -22,6 +26,9 @@ import org.springframework.stereotype.Repository;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
         implements IOrderElementDAO {
+
+    @Autowired
+    private IWorkReportLineDAO workReportLineDAO;
 
     public List<OrderElement> findByCode(String code) {
         Criteria c = getSession().createCriteria(OrderElement.class);
@@ -80,4 +87,32 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
         }
         return code;
     }
+
+    @Override
+    public int getAddAssignedHours(OrderElement orderElement) {
+        int addAsignedHoursChildren = 0;
+        if (!orderElement.getChildren().isEmpty()) {
+            List<OrderElement> children = orderElement.getChildren();
+            Iterator<OrderElement> iterador = children.iterator();
+            while (iterador.hasNext()) {
+                OrderElement w = iterador.next();
+                addAsignedHoursChildren = addAsignedHoursChildren
+                        + getAddAssignedHours(w);
+            }
+        }
+        List<WorkReportLine> listWRL = this.workReportLineDAO
+                .findByOrderElement(orderElement);
+        return (getAsignedDirectHours_(listWRL) + addAsignedHoursChildren);
+    }
+
+    private int getAsignedDirectHours_(List<WorkReportLine> listWRL) {
+        int asignedDirectHours = 0;
+        Iterator<WorkReportLine> iterator = listWRL.iterator();
+        while (iterator.hasNext()) {
+            asignedDirectHours = asignedDirectHours
+                    + iterator.next().getNumHours();
+        }
+        return asignedDirectHours;
+    }
+
 }

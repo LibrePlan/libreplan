@@ -43,4 +43,14 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
      */
     public String getDistinguishedCode(OrderElement orderElement)
             throws InstanceNotFoundException;
+
+    /**
+     * Returns the number of assigned hours for an {@link OrderElement}
+     *
+     * @param orderElement
+     *            must be attached
+     * @return The number of hours
+     */
+    int getAddAssignedHours(OrderElement orderElement);
+
 }

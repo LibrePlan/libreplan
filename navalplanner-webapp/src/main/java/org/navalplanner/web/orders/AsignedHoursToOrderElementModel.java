@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
@@ -26,6 +27,9 @@ public class AsignedHoursToOrderElementModel implements
 
     @Autowired
     private final IWorkReportLineDAO workReportLineDAO;
+
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
 
     private int asignedDirectHours;
 
@@ -73,35 +77,7 @@ public class AsignedHoursToOrderElementModel implements
         if (orderElement == null) {
             return 0;
         }
-        return getAddAsignedHours(this.orderElement);
-    }
-
-    @Transactional(readOnly = true)
-    private int getAddAsignedHours(OrderElement orderElement) {
-        int addAsignedHoursChildren = 0;
-        if (!orderElement.getChildren().isEmpty()) {
-            List<OrderElement> children = orderElement.getChildren();
-            Iterator<OrderElement> iterador = children.iterator();
-            while (iterador.hasNext()) {
-                OrderElement w = iterador.next();
-                addAsignedHoursChildren = addAsignedHoursChildren
-                        + getAddAsignedHours(w);
-            }
-        }
-        List<WorkReportLine> listWRL = this.workReportLineDAO
-                .findByOrderElement(orderElement);
-        return (getAsignedDirectHours_(listWRL) + addAsignedHoursChildren);
-    }
-
-    @Transactional(readOnly = true)
-    private int getAsignedDirectHours_(List<WorkReportLine> listWRL) {
-        int asignedDirectHours = 0;
-        Iterator<WorkReportLine> iterator = listWRL.iterator();
-        while (iterator.hasNext()) {
-            asignedDirectHours = asignedDirectHours
-                    + iterator.next().getNumHours();
-        }
-        return asignedDirectHours;
+        return orderElementDAO.getAddAssignedHours(this.orderElement);
     }
 
     @Override
