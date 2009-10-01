@@ -199,6 +199,7 @@ public class OrderElementController extends GenericForwardComposer {
             throws Exception {
         assignedLabelsController = new AssignedLabelsToOrderElementController();
         assignedLabelsController.doAfterCompose(comp);
+        assignedLabelsController.setOrderElement(getOrderElement());
     }
 
     private void setupManageOrderElementAdvancesController(Component comp)

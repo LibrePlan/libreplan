@@ -1,5 +1,5 @@
 <vbox id="listOrderElementLabels">
-<!-- Indirect labels -->
+    <!-- Indirect labels -->
     <vbox>
         <label value="${i18n:_('Indirect labels')}" />
         <grid>
@@ -18,16 +18,16 @@
     <!-- Direct labels -->
     <vbox>
         <label value="${i18n:_('Direct labels')}" />
-        <grid>
+        <grid id="directLabels" model="@{assignedLabelsController.labels}">
             <columns>
                 <column label="${i18n:_('Label type')}" />
                 <column label="${i18n:_('Value')}" />
                 <column label="${i18n:_('Operations')}" />
             </columns>
             <rows>
-                <row>
-                    <label value=""/>
-                    <label value=""/>
+                <row self="@{each='label'}">
+                    <label value="@{label.type.name}"/>
+                    <label value="@{label.name}"/>
                     <button label="${i18n:_('Delete')}" />
                 </row>
             </rows>
@@ -48,8 +48,9 @@
         <label value="${i18n:_('Create and assign label')}" />
     </vbox>
     <hbox>
-        <autocomplete finder="LabelTypeFinder" buttonVisible="true" />
-        <textbox />
-        <button style="margin-top: -4px" label="${i18n:_('Create &amp; Assign')}" />
+        <autocomplete id="cbLabelType" finder="LabelTypeFinder" buttonVisible="true" />
+        <textbox id="txtLabelName" constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+        <button style="margin-top: -4px" label="${i18n:_('Create &amp; Assign')}"
+            onClick="assignedLabelsController.createAndAssign()"/>
     </hbox>
 </vbox>

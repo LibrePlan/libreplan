@@ -30,6 +30,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 
 /**
  * Autocomplete component
@@ -65,6 +66,10 @@ public class Autocomplete extends HtmlMacroComponent {
 
     public void setFinder(String classname) {
         finder = (IFinder) getBean(StringUtils.uncapitalize(classname));
+    }
+
+    public Comboitem getSelectedItem() {
+        return combo.getSelectedItem();
     }
 
     private Object getBean(String classname) {

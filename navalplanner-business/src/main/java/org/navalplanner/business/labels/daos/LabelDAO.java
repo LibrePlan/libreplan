@@ -22,8 +22,10 @@ package org.navalplanner.business.labels.daos;
 
 import java.util.List;
 
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.labels.entities.LabelType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -43,4 +45,10 @@ public class LabelDAO extends GenericDAOHibernate<Label, Long> implements
         return list(Label.class);
     }
 
+    @Override
+    public Label findByNameAndType(String labelName, LabelType labelType) {
+        return (Label) getSession().createCriteria(Label.class).add(
+                Restrictions.eq("name", labelName)).add(
+                Restrictions.eq("type", labelType)).uniqueResult();
+    }
 }
