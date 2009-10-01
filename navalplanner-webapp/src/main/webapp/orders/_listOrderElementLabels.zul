@@ -38,25 +38,26 @@
     <vbox>
         <label value="${i18n:_('Assign Label')}" />
         <hbox>
-        	<bandbox id="bdLabels" onChanging="assignedLabelsController.onSearchLabels(event)">
-        		<bandpopup>
-        			<vbox height="50px">        			 
-        				<listbox id="lbLabels" width="200px" height="100px" vflex="true"
-        				    itemRenderer="@{assignedLabelsController.labelRenderer}"
-        				    onSelect="assignedLabelsController.onSelectLabel(event)">
-        					<listhead>
+            <bandbox id="bdLabels" onChanging="assignedLabelsController.onSearchLabels(event)">
+                <bandpopup>
+                    <vbox height="50px">
+                        <listbox id="lbLabels" width="200px" height="100px" vflex="true"
+                            itemRenderer="@{assignedLabelsController.labelRenderer}"
+                            onSelect="assignedLabelsController.onSelectLabel(event)">
+                            <listhead>
                                 <listheader label="Type" />
-        						<listheader label="Label" />
-        					</listhead>        					
-        				</listbox>
-        			</vbox>
-        		</bandpopup>
-        	</bandbox>
-        	<button style="margin-top: -4px"
-        		label="${i18n:_('Assign')}" />
+                                <listheader label="Label" />
+                            </listhead>
+                        </listbox>
+                    </vbox>
+                </bandpopup>
+            </bandbox>
+            <button label="${i18n:_('Assign')}"
+                   onClick="assignedLabelsController.onAssignLabel()"
+                   style="margin-top: -4px" />
         </hbox>
     </vbox>
-    
+
     <!-- Create and assign label -->
     <vbox>
         <label value="${i18n:_('Create and assign label')}" />
@@ -65,6 +66,6 @@
         <autocomplete id="cbLabelType" finder="LabelTypeFinder" buttonVisible="true" />
         <textbox id="txtLabelName" />
         <button style="margin-top: -4px" label="${i18n:_('Create &amp; Assign')}"
-            onClick="assignedLabelsController.createAndAssign()"/>
+            onClick="assignedLabelsController.onCreateAndAssign()"/>
     </hbox>
 </vbox>

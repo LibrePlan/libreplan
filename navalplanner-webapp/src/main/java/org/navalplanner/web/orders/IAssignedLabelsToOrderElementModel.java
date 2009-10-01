@@ -44,6 +44,13 @@ public interface IAssignedLabelsToOrderElementModel {
     Label findLabelByNameAndType(String labelName, LabelType labelType);
 
     /**
+     * Gets all {@link Label} from any {@link LabelType}
+     *
+     * @return
+     */
+    List<Label> getAllLabels();
+
+    /**
      * Returns all {@link Label} from {@link OrderElement} ancestors
      *
      * @return
@@ -79,10 +86,5 @@ public interface IAssignedLabelsToOrderElementModel {
      * @param orderElement
      */
     void setOrderElement(OrderElement orderElement);
-
-    /**
-     * @return
-     */
-    List<Label> getAllLabels();
 
 }
