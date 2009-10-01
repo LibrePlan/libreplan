@@ -24,6 +24,8 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -66,7 +68,18 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Transactional(readOnly = true)
     public void initGlobalView() {
         loadTimeLines = calculateLoadTimelinesGroups();
-        viewInterval = LoadTimelinesGroup.getIntervalFrom(loadTimeLines);
+        if (!loadTimeLines.isEmpty()) {
+            viewInterval = LoadTimelinesGroup.getIntervalFrom(loadTimeLines);
+        } else {
+            viewInterval = new Interval(new Date(), plusFiveYears(new Date()));
+        }
+    }
+
+    private Date plusFiveYears(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.YEAR, 5);
+        return calendar.getTime();
     }
 
     private List<LoadTimelinesGroup> calculateLoadTimelinesGroups() {

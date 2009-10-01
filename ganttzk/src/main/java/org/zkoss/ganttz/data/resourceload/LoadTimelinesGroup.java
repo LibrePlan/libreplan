@@ -32,6 +32,7 @@ import org.zkoss.ganttz.util.Interval;
 public class LoadTimelinesGroup {
 
     public static Interval getIntervalFrom(List<LoadTimelinesGroup> timeLines) {
+        Validate.notEmpty(timeLines);
         LocalDate start = null;
         LocalDate end = null;
         for (LoadTimelinesGroup loadTimelinesGroup : timeLines) {
