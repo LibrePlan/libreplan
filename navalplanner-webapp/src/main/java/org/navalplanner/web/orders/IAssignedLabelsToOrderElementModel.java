@@ -60,4 +60,18 @@ public interface IAssignedLabelsToOrderElementModel {
 
     void init(OrderElement orderElement);
 
+    /**
+     *
+     * @param labelName
+     * @param labelType
+     * @return
+     */
+    Label createLabel(String labelName, LabelType labelType);
+
+    /**
+     *
+     * @param label
+     */
+    void assignLabel(Label label);
+
 }

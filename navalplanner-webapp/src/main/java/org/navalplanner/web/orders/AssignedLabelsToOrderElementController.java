@@ -59,8 +59,19 @@ public class AssignedLabelsToOrderElementController extends
         final LabelType labelType = (LabelType) comboitem.getValue();
         if (!assignedLabelsToOrderElementModel.existsLabelByNameAndType(
                 labelName, labelType)) {
-            addLabel(labelName, labelType);
+            final Label label = createLabel(labelName, labelType);
+            assignLabel(label);
         }
+    }
+
+    private void assignLabel(Label label) {
+        assignedLabelsToOrderElementModel.assignLabel(label);
+        Util.reloadBindings(directLabels);
+    }
+
+    private Label createLabel(String labelName, LabelType labelType) {
+        return assignedLabelsToOrderElementModel.createLabel(labelName,
+                labelType);
     }
 
     private void addLabel(String labelName, LabelType labelType) {

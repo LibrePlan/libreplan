@@ -81,6 +81,10 @@ public class AssignedLabelsToOrderElementModel implements
         orderElement.addLabel(label);
     }
 
+    public void assignLabel(Label label) {
+        orderElement.addLabel(label);
+    }
+
     @Override
     public void deleteLabel(Label label) {
         orderElement.removeLabel(label);
@@ -113,6 +117,18 @@ public class AssignedLabelsToOrderElementModel implements
     @Override
     public void setOrderElement(OrderElement orderElement) {
         this.orderElement = orderElement;
+    }
+
+    /**
+     *
+     * @param labelName
+     * @param labelType
+     * @return
+     */
+    public Label createLabel(String labelName, LabelType labelType) {
+        Label label = Label.create(labelName);
+        label.setType(labelType);
+        return label;
     }
 
 }
