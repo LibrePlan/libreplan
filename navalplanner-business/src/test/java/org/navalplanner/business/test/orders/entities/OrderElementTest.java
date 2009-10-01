@@ -114,8 +114,18 @@ public class OrderElementTest {
             boolean reportGlobalAdvance)
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
+        addAvanceAssignmentWithMeasurement(orderElement, advanceType, maxValue,
+                currentValue, reportGlobalAdvance, new LocalDate());
+    }
+
+    public static void addAvanceAssignmentWithMeasurement(
+            OrderElement orderElement, AdvanceType advanceType,
+            BigDecimal maxValue, BigDecimal currentValue,
+            boolean reportGlobalAdvance, LocalDate date)
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
         AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
-        advanceMeasurement.setDate(new LocalDate());
+        advanceMeasurement.setDate(date);
         advanceMeasurement.setValue(currentValue);
 
         DirectAdvanceAssignment advanceAssignment = givenAdvanceAssigement(
@@ -175,18 +185,33 @@ public class OrderElementTest {
     }
 
     @Test
-    public void checkAdvancePercentageOrderLineWithTwoAssignments2()
+    public void checkAdvancePercentageOrderLineWithFutureAdvanceMeasurement()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        OrderLine orderLine = givenOrderLine("name", "code", 1000);
+
+        LocalDate future = new LocalDate().plusWeeks(1);
+        addAvanceAssignmentWithMeasurement(orderLine,
+                givenAdvanceType("test1"), new BigDecimal(2000),
+                new BigDecimal(200), true, future);
+
+        assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(10)
+                .setScale(2).divide(new BigDecimal(100))));
+    }
+
+    @Test
+    public void checkAdvancePercentageOrderLineWithTwoAssignments3()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
         OrderLine orderLine = givenOrderLine("name", "code", 1000);
 
         addAvanceAssignmentWithMeasurement(orderLine,
-                givenAdvanceType("test1"), new BigDecimal(2000),
+                PredefinedAdvancedTypes.UNITS.getType(), new BigDecimal(2000),
                 new BigDecimal(200), false);
 
         addAvanceAssignmentWithMeasurement(orderLine,
-                givenAdvanceType("test2"), new BigDecimal(1000),
-                new BigDecimal(600), true);
+                PredefinedAdvancedTypes.PERCENTAGE.getType(), new BigDecimal(
+                        1000), new BigDecimal(600), true);
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(60)
                 .setScale(2).divide(new BigDecimal(100))));

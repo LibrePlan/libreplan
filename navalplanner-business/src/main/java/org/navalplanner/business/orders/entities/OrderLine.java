@@ -350,9 +350,12 @@ public class OrderLine extends OrderElement {
     }
 
     @Override
-    protected BigDecimal getAdvancePercentage(LocalDate date) {
+    public BigDecimal getAdvancePercentage(LocalDate date) {
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if (directAdvanceAssignment.getReportGlobalAdvance()) {
+                if (date == null) {
+                    return directAdvanceAssignment.getLastPercentage();
+                }
                 return directAdvanceAssignment.getAdvancePercentage(date);
             }
         }

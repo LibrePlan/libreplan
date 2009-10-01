@@ -285,9 +285,9 @@ public abstract class OrderElement extends BaseEntity {
     }
 
     public BigDecimal getAdvancePercentage() {
-        return getAdvancePercentage(new LocalDate());
+        return getAdvancePercentage(null);
     }
 
-    protected abstract BigDecimal getAdvancePercentage(LocalDate date);
+    public abstract BigDecimal getAdvancePercentage(LocalDate date);
 
 }

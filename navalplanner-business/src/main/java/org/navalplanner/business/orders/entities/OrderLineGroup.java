@@ -177,9 +177,12 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     }
 
     @Override
-    protected BigDecimal getAdvancePercentage(LocalDate date) {
+    public BigDecimal getAdvancePercentage(LocalDate date) {
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if (directAdvanceAssignment.getReportGlobalAdvance()) {
+                if (date == null) {
+                    return directAdvanceAssignment.getLastPercentage();
+                }
                 return directAdvanceAssignment.getAdvancePercentage(date);
             }
         }
@@ -188,9 +191,15 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
             if (indirectAdvanceAssignment.getReportGlobalAdvance()) {
                 if (indirectAdvanceAssignment.getAdvanceType().getUnitName()
                         .equals(PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
+                    if (date == null) {
+                        return getAdvancePercentageChildren();
+                    }
                     return getAdvancePercentageChildren(date);
                 } else {
                     DirectAdvanceAssignment directAdvanceAssignment = calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
+                    if (date == null) {
+                        return directAdvanceAssignment.getLastPercentage();
+                    }
                     return directAdvanceAssignment.getAdvancePercentage(date);
                 }
             }
@@ -200,17 +209,21 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     }
 
     public BigDecimal getAdvancePercentageChildren() {
-        return getAdvancePercentageChildren(new LocalDate());
+        return getAdvancePercentageChildren(null);
     }
 
-    protected BigDecimal getAdvancePercentageChildren(LocalDate date) {
+    public BigDecimal getAdvancePercentageChildren(LocalDate date) {
         Integer hours = getWorkHours();
         BigDecimal result = new BigDecimal(0);
 
         if (hours > 0) {
             for (OrderElement orderElement : children) {
-                BigDecimal childPercentage = orderElement
-                        .getAdvancePercentage(date);
+                BigDecimal childPercentage;
+                if (date == null) {
+                    childPercentage = orderElement.getAdvancePercentage();
+                } else {
+                    childPercentage = orderElement.getAdvancePercentage(date);
+                }
                 Integer childHours = orderElement.getWorkHours();
                 result = result.add(childPercentage.multiply(new BigDecimal(
                         childHours)));
