@@ -12,32 +12,43 @@ import org.navalplanner.business.orders.entities.OrderElement;
 public interface IAssignedLabelsToOrderElementModel {
 
     /**
+     * Assigns {@link Label} to {@link OrderElement}
+     *
+     * @param label
+     */
+    void assignLabel(Label label);
+
+    /**
+     * Creates new {@link Label}
      *
      * @param labelName
      * @param labelType
      * @return
      */
-    boolean existsLabelByNameAndType(String labelName, LabelType labelType);
+    Label createLabel(String labelName, LabelType labelType);
 
     /**
+     * Delete {@link Label}
+     *
+     * @param label
+     */
+    void deleteLabel(Label label);
+
+    /**
+     * Returns {@link Label} by name and type
      *
      * @param labelName
      * @param labelType
+     * @return
      */
-    void addLabel(String labelName, LabelType labelType);
+    Label findLabelByNameAndType(String labelName, LabelType labelType);
 
     /**
+     * Returns all {@link Label} from {@link OrderElement} ancestors
      *
      * @return
      */
-    OrderElement getOrderElement();
-
-    /**
-     * Set {@link OrderElement}
-     *
-     * @param orderElement
-     */
-    void setOrderElement(OrderElement orderElement);
+    List<Label> getInheritedLabels();
 
     /**
      * Returns {@link OrderElement}
@@ -48,30 +59,25 @@ public interface IAssignedLabelsToOrderElementModel {
 
     /**
      *
-     * @param label
-     */
-    void deleteLabel(Label label);
-
-    /**
-     *
      * @return
      */
-    List<Label> getInheritedLabels();
+    OrderElement getOrderElement();
 
     void init(OrderElement orderElement);
 
     /**
-     *
-     * @param labelName
-     * @param labelType
-     * @return
-     */
-    Label createLabel(String labelName, LabelType labelType);
-
-    /**
+     * Check whether {@link Label} has been already assigned to
+     * {@link OrderElement} or not
      *
      * @param label
      */
-    void assignLabel(Label label);
+    boolean isAssigned(Label label);
+
+    /**
+     * Set {@link OrderElement}
+     *
+     * @param orderElement
+     */
+    void setOrderElement(OrderElement orderElement);
 
 }

@@ -37,9 +37,18 @@ public class AssignedLabelsToOrderElementModel implements
     OrderElement orderElement;
 
     @Override
+    public OrderElement getOrderElement() {
+        return orderElement;
+    }
+
+    @Override
+    public void setOrderElement(OrderElement orderElement) {
+        this.orderElement = orderElement;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public void init(OrderElement orderElement) {
-        // orderDAO.save(orderElement);
         this.orderElement = orderElement;
         reattachOrderElement(this.orderElement);
     }
@@ -55,9 +64,13 @@ public class AssignedLabelsToOrderElementModel implements
 
     private void reattachLabels(Set<Label> labels) {
         for (Label label : labels) {
-            label.getName();
-            label.getType().getName();
+            reattachLabel(label);
         }
+    }
+
+    public void reattachLabel(Label label) {
+        label.getName();
+        label.getType().getName();
     }
 
     @Transactional(readOnly = true)
@@ -69,16 +82,26 @@ public class AssignedLabelsToOrderElementModel implements
         return result;
     }
 
+    @Override
     @Transactional(readOnly = true)
-    public boolean existsLabelByNameAndType(String labelName,
-            LabelType labelType) {
-        return (labelDAO.findByNameAndType(labelName, labelType) != null);
+    public List<Label> getInheritedLabels() {
+        List<Label> result = new ArrayList<Label>();
+
+        if (orderElement != null) {
+            OrderLineGroup parent = orderElement.getParent();
+            while (parent != null) {
+                reattachOrderElement(parent);
+                result.addAll(parent.getLabels());
+                parent = parent.getParent();
+            }
+        }
+        return result;
     }
 
-    public void addLabel(String labelName, LabelType labelType) {
+    public Label createLabel(String labelName, LabelType labelType) {
         Label label = Label.create(labelName);
         label.setType(labelType);
-        orderElement.addLabel(label);
+        return label;
     }
 
     public void assignLabel(Label label) {
@@ -92,43 +115,23 @@ public class AssignedLabelsToOrderElementModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public List<Label> getInheritedLabels() {
-        System.out.println("### getInheritedLabels");
-
-        List<Label> result = new ArrayList<Label>();
-
-        if (orderElement != null) {
-            OrderLineGroup parent = orderElement.getParent();
-            while (parent != null) {
-                reattachOrderElement(parent);
-                // System.out.println("### labels: " + parent.getLabels());
-                result.addAll(parent.getLabels());
-                parent = parent.getParent();
-            }
+    public Label findLabelByNameAndType(String labelName, LabelType labelType) {
+        final Label label = labelDAO.findByNameAndType(labelName, labelType);
+        if (label != null) {
+            reattachLabel(label);
         }
-        return result;
-    }
-
-    @Override
-    public OrderElement getOrderElement() {
-        return orderElement;
-    }
-
-    @Override
-    public void setOrderElement(OrderElement orderElement) {
-        this.orderElement = orderElement;
-    }
-
-    /**
-     *
-     * @param labelName
-     * @param labelType
-     * @return
-     */
-    public Label createLabel(String labelName, LabelType labelType) {
-        Label label = Label.create(labelName);
-        label.setType(labelType);
         return label;
     }
 
+    @Override
+    public boolean isAssigned(Label label) {
+        final Set<Label> labels = orderElement.getLabels();
+
+        for (Label element : labels) {
+            if (element.getId().equals(label.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

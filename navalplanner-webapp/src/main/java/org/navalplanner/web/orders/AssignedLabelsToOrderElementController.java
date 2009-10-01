@@ -57,11 +57,26 @@ public class AssignedLabelsToOrderElementController extends
 
         final String labelName = txtLabelName.getValue();
         final LabelType labelType = (LabelType) comboitem.getValue();
-        if (!assignedLabelsToOrderElementModel.existsLabelByNameAndType(
-                labelName, labelType)) {
-            final Label label = createLabel(labelName, labelType);
-            assignLabel(label);
+
+        // Label does not exist, create
+        Label label = assignedLabelsToOrderElementModel
+                .findLabelByNameAndType(labelName, labelType);
+        if (label == null) {
+            label = createLabel(labelName, labelType);
+        } else {
+            // Label is already assigned?
+            if (isAssigned(label)) {
+                throw new WrongValueException(txtLabelName,
+                        _("already assigned"));
+            }
         }
+
+        // Assign label
+        assignLabel(label);
+    }
+
+    private boolean isAssigned(Label label) {
+        return assignedLabelsToOrderElementModel.isAssigned(label);
     }
 
     private void assignLabel(Label label) {
@@ -72,11 +87,6 @@ public class AssignedLabelsToOrderElementController extends
     private Label createLabel(String labelName, LabelType labelType) {
         return assignedLabelsToOrderElementModel.createLabel(labelName,
                 labelType);
-    }
-
-    private void addLabel(String labelName, LabelType labelType) {
-        assignedLabelsToOrderElementModel.addLabel(labelName, labelType);
-        Util.reloadBindings(directLabels);
     }
 
     public List<Label> getLabels() {
