@@ -1,0 +1,57 @@
+<vbox id="listOrderElementLabels">
+<!-- Indirect labels -->
+    <vbox>
+        <label value="${i18n:_('Indirect labels')}" />
+        <grid>
+            <columns>
+                <column label="${i18n:_('Label type')}" />
+                <column label="${i18n:_('Value')}" />
+            </columns>
+            <rows>
+                <row>
+                    <label value=""/>
+                    <label value=""/>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
+    <!-- Direct labels -->
+    <vbox>
+        <label value="${i18n:_('Direct labels')}" />
+        <grid>
+            <columns>
+                <column label="${i18n:_('Label type')}" />
+                <column label="${i18n:_('Value')}" />
+                <column label="${i18n:_('Operations')}" />
+            </columns>
+            <rows>
+                <row>
+                    <label value=""/>
+                    <label value=""/>
+                    <button label="${i18n:_('Delete')}" />
+                </row>
+            </rows>
+        </grid>
+    </vbox>
+    <!-- Assign label -->
+    <vbox>
+        <label value="${i18n:_('Assign label')}" />
+        <hbox>
+            <combobox>
+                <comboitem label="Test" />
+            </combobox>
+            <button style="margin-top: -4px" label="${i18n:_('Assign')}"/>
+        </hbox>
+    </vbox>
+    <!-- Create and assign label -->
+    <vbox>
+        <label value="${i18n:_('Create and assign label')}" />
+    </vbox>
+    <hbox>
+        <combobox>
+            <comboitem label="Test" />
+        </combobox>
+        <textbox />
+        <button style="margin-top: -4px" label="${i18n:_('Create &amp; Assign')}" />
+    </hbox>
+</vbox>
