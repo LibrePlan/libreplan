@@ -196,6 +196,17 @@ zkTasklist.GANTT_PANEL_LEFT = 300
     background-color: transparent !important;
 }
 
+.milestone_end {
+    background-image:
+        url("/navalplanner-webapp/zkau/web/ganttz/img/milestone2.png");
+    height: 15px;
+    width: 15px;
+    float: right;
+    position:relative;
+    left: 8px;
+    top: -3px;
+}
+
 .row .closed {
     border-top: solid black 2px;
 }

@@ -83,6 +83,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         mergeCommand.setState(planningState);
         configuration.addCommandOnTask(mergeCommand);
 
+        IAddMilestoneCommand addMilestoneCommand = getAddMilestoneCommand();
+        addMilestoneCommand.setState(planningState);
+        configuration.addCommandOnTask(addMilestoneCommand);
+
         IEditTaskCommand editTaskCommand = getEditTaskCommand();
         editTaskCommand.setEditTaskController(editTaskController);
         configuration.setEditTaskCommand(editTaskCommand);
@@ -167,6 +171,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract ISplitTaskCommand getSplitCommand();
 
     protected abstract IMergeTaskCommand getMergeTaskCommand();
+
+    protected abstract IAddMilestoneCommand getAddMilestoneCommand();
 
     protected abstract IEditTaskCommand getEditTaskCommand();
 
