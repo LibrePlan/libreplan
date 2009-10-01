@@ -2,6 +2,7 @@ package org.navalplanner.web.orders;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.navalplanner.business.labels.entities.Label;
@@ -12,14 +13,17 @@ import org.navalplanner.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Listbox;
 
 /**
  * Controller for showing OrderElement assigned labels
@@ -42,6 +46,8 @@ public class AssignedLabelsToOrderElementController extends
 
     private Listbox lbLabels;
 
+    private LabelRenderer labelRenderer = new LabelRenderer();
+
     public OrderElement getOrderElement() {
         return assignedLabelsToOrderElementModel.getOrderElement();
     }
@@ -54,17 +60,55 @@ public class AssignedLabelsToOrderElementController extends
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp.getFellow("listOrderElementLabels"));
         comp.setVariable("assignedLabelsController", this, true);
-        lbLabels.addEventListener("onSelect", new EventListener() {
-            
-            @Override
-            public void onEvent(Event event) throws Exception {
-                Listitem listitem = (Listitem) lbLabels.getSelectedItems().iterator().next();
-                Label label = (Label) listitem.getValue();
-                bdLabels.setValue(label.getName());
-                bdLabels.setVariable("selectedLabel", label, true);
-                bdLabels.close();
+
+        // Configure bandbox with all labels
+        final List<Label> allLabels = getAllLabels();
+        bdLabels.setVariable("allLabels", allLabels, true);
+        lbLabels.setModel(new SimpleListModel(allLabels));
+
+        // Set autodrop
+        bdLabels.setAutodrop(true);
+    }
+
+    /**
+     * On selecting one {@link Label} from bandbox listbox
+     * 
+     * Selected {@link Label} is stored in an internal {@link Bandbox} variable:
+     * selectedLabel,
+     * 
+     * @param event
+     */
+    public void onSelectLabel(Event event) {
+        Listitem listitem = (Listitem) lbLabels.getSelectedItems().iterator()
+                .next();
+        Label label = (Label) listitem.getValue();
+        bdLabels.setValue(label.getName());
+        bdLabels.setVariable("selectedLabel", label, true);
+        bdLabels.close();
+    }
+
+    /**
+     * Search {@link Label} starting with input text
+     * 
+     * @param event
+     */
+    public void onSearchLabels(InputEvent event) {
+        List<Label> filteredLabels = labelsStartWith(event.getValue());
+        lbLabels.setModel(new SimpleListModel(filteredLabels));
+        lbLabels.invalidate();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Label> labelsStartWith(String prefix) {
+        List<Label> result = new ArrayList<Label>();
+        List<Label> labels = (List<Label>) bdLabels.getVariable("allLabels",
+                true);
+        for (Label label : labels) {
+            if (label.getName().startsWith(prefix)) {
+                result.add(label);
             }
-        });
+        }
+        return result;
     }
 
     public void createAndAssign() {
@@ -126,8 +170,6 @@ public class AssignedLabelsToOrderElementController extends
     public void deleteLabel(Label label) {
         assignedLabelsToOrderElementModel.deleteLabel(label);
         Util.reloadBindings(directLabels);
-        // Listbox lb;
-        // lb.getSelectedItem().get
     }
 
     public void openWindow(IOrderElementModel orderElementModel) {
@@ -138,6 +180,28 @@ public class AssignedLabelsToOrderElementController extends
 
     public List<Label> getAllLabels() {
         return assignedLabelsToOrderElementModel.getAllLabels();
+    }
+
+    public ListitemRenderer getLabelRenderer() {
+        return labelRenderer;
+    }
+
+    private class LabelRenderer implements ListitemRenderer {
+
+        @Override
+        public void render(Listitem item, Object data) throws Exception {
+            Label label = (Label) data;
+
+            item.setValue(data);
+
+            final Listcell labelType = new Listcell();
+            labelType.setLabel(label.getType().getName());
+            labelType.setParent(item);
+
+            final Listcell labelName = new Listcell();
+            labelName.setLabel(label.getName());
+            labelName.setParent(item);
+        }
     }
 
 }

@@ -38,19 +38,16 @@
     <vbox>
         <label value="${i18n:_('Assign Label')}" />
         <hbox>
-        	<bandbox id="bdLabels">
+        	<bandbox id="bdLabels" onChanging="assignedLabelsController.onSearchLabels(event)">
         		<bandpopup>
         			<vbox height="50px">        			 
         				<listbox id="lbLabels" width="200px" height="100px" vflex="true"
-        					model="@{assignedLabelsController.allLabels}">
+        				    itemRenderer="@{assignedLabelsController.labelRenderer}"
+        				    onSelect="assignedLabelsController.onSelectLabel(event)">
         					<listhead>
                                 <listheader label="Type" />
         						<listheader label="Label" />
-        					</listhead>                            
-        					<listitem self="@{each='label'}" value="@{label}">
-                                <listcell label="@{label.type.name}" />
-        						<listcell label="@{label.name}" />
-        					</listitem>
+        					</listhead>        					
         				</listbox>
         			</vbox>
         		</bandpopup>
