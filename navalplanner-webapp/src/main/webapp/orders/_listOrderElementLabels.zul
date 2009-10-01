@@ -25,10 +25,11 @@
                 <column label="${i18n:_('Operations')}" />
             </columns>
             <rows>
-                <row self="@{each='label'}">
+                <row self="@{each='label'}" value="@{label}">
                     <label value="@{label.type.name}"/>
                     <label value="@{label.name}"/>
-                    <button label="${i18n:_('Delete')}" />
+                    <button label="${i18n:_('Delete')}"
+                        onClick="assignedLabelsController.deleteLabel(self.parent.value)"/>
                 </row>
             </rows>
         </grid>

@@ -72,4 +72,9 @@ public class AssignedLabelsToOrderElementController extends
         return assignedLabelsToOrderElementModel.getLabels();
     }
 
+    public void deleteLabel(Label label) {
+        assignedLabelsToOrderElementModel.deleteLabel(label);
+        Util.reloadBindings(directLabels);
+    }
+
 }

@@ -67,4 +67,9 @@ public class AssignedLabelsToOrderElementModel implements
         label.setType(labelType);
         orderElement.addLabel(label);
     }
+
+    @Override
+    public void deleteLabel(Label label) {
+        orderElement.removeLabel(label);
+    }
 }

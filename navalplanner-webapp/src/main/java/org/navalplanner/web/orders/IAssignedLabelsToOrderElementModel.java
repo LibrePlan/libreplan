@@ -46,4 +46,10 @@ public interface IAssignedLabelsToOrderElementModel {
      */
     public List<Label> getLabels();
 
+    /**
+     *
+     * @param label
+     */
+    void deleteLabel(Label label);
+
 }
