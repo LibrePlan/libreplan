@@ -86,7 +86,7 @@
 
                 <center sclass="taskspanel">
                     <borderlayout>
-                        <north border="0"><div sclass="timetrackergap" height="33px" id="insertionPointTimetracker">Horizontally auto-scrolled timetracker gap</div></north>
+                        <north border="0"><div sclass="timetrackergap" height="33px" id="insertionPointTimetracker"></div></north>
                         <center autoscroll="true" border="0" sclass="rightpanellayout">
                             <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
                         </center>

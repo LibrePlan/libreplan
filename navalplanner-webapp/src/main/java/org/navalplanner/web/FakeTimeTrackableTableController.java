@@ -30,8 +30,10 @@ import org.joda.time.LocalDate;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
 import org.zkoss.ganttz.timetracker.PairOfLists;
+import org.zkoss.ganttz.timetracker.TimeTrackedTable;
 import org.zkoss.ganttz.timetracker.TimeTrackedTableWithLeftPane;
 import org.zkoss.ganttz.timetracker.TimeTracker;
+import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
@@ -46,21 +48,27 @@ public class FakeTimeTrackableTableController extends GenericForwardComposer
 
     private Div insertionPointLeftPanel;
     private Div insertionPointRightPanel;
+    private Div insertionPointTimetracker;
     private TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData> timeTrackedTableWithLeftPane;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        TimeTracker timeTracker = new TimeTracker(createExampleInterval());
         this.timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData>(
                 getDataSource(), getColumnsForLeft(), getLeftRenderer(),
-                getRightRenderer(), new TimeTracker(createExampleInterval()));
+                getRightRenderer(), timeTracker);
 
-        insertionPointRightPanel.appendChild(timeTrackedTableWithLeftPane
-                .getRightPane());
+        TimeTrackedTable<FakeData> rightPane = timeTrackedTableWithLeftPane
+                .getRightPane();
+        insertionPointRightPanel.appendChild(rightPane);
+        rightPane.afterCompose();
         insertionPointLeftPanel.appendChild(timeTrackedTableWithLeftPane
                 .getLeftPane());
-        // Forces innter Timetracked component aftercompose()
-        timeTrackedTableWithLeftPane.getTimeTrackedTable();
+        TimeTrackerComponentWithoutColumns timetracker = new TimeTrackerComponentWithoutColumns(
+                timeTracker, "timeTracker");
+        insertionPointTimetracker.appendChild(timetracker);
+        timetracker.afterCompose();
     }
 
     private ICellForDetailItemRenderer<FakeColumn, FakeDataLeft> getLeftRenderer() {
