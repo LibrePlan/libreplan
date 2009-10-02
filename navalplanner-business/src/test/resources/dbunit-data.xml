@@ -8,7 +8,7 @@
     <!-- these values to be present in the database.                          -->
     <!-- ==================================================================== -->
 
-    <table name="${databasetable.prefix}advancetype">
+    <table name="${databasetable.prefix}AdvanceType">
 
         <column>id</column>
         <column>version</column>
