@@ -33,16 +33,68 @@
 ]]>
 </zscript>
 
-    <borderlayout height="300px" width="1600px" apply="${fakeController}" self="@{define(content)}" class="advancedassignment">
+    <borderlayout height="600px" width="auto" apply="${fakeController}" self="@{define(content)}" class="advancedassignment">
+       <north height="30px" border="0">
+       <hbox align="center">
+        <button label="Save" />
+        <button label="Back" />
+        <button label="Company view" />
+        <separator/>
+        <button label="+" />
+        <button label="-" />
+        From: <datebox /> to: <datebox />
+        <separator/>
+        Filter:
+        <combobox>
+            <comboitem label="Orders"
+                description="Show full orders and company view" />
+            <comboitem label="Tasks"
+                description="Tasks inside orders or filtered" />
+        </combobox>
+        <combobox>
+            <comboitem label="Filter by Label" />
+            <comboitem label="Filter by criterion" />
+            <comboitem label="Filter by resources" />
+            <comboitem label="Critical way" />
+        </combobox>
+        <textbox/>
 
-        <west size="200px" flex="true" collapsible="true" splittable="true" autoscroll="true" sclass="advancedassignmentdetails" style="padding-top:45px;">
-            <div id="insertionPointLeftPanel"></div>
-        </west>
+       </hbox>
+       </north>
 
-        <center autoscroll="true">
-            <div id="insertionPointRightPanel"></div>
+        <center border="0">
+            <borderlayout sclass="resourcesload">
+                <west size="200px" flex="true" collapsible="true"
+                    splittable="true" autoscroll="true">
+
+                    <borderlayout >
+                        <north border="0" height="38px" flex="true" collapsible="true" sclass="advancedassignmentdetails">
+                            <vbox pack="center" align="center">
+                            <tree fixedLayout="true">
+                                <treecols>
+                                    <treecol label="Listdetails headers" height="29px"/>
+                                </treecols>
+                            </tree>
+
+                            </vbox>
+                        </north>
+                        <center border="0">
+                            <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
+                        </center>
+                    </borderlayout>
+                </west>
+
+                <center sclass="taskspanel">
+                    <borderlayout>
+                        <north border="0"><div sclass="timetrackergap" height="33px" id="insertionPointTimetracker">Horizontally auto-scrolled timetracker gap</div></north>
+                        <center autoscroll="true" border="0" sclass="rightpanellayout">
+                            <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
+                        </center>
+                    </borderlayout>
+
+                </center>
+            </borderlayout>
         </center>
-
     </borderlayout>
 
 </zk>
