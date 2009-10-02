@@ -269,6 +269,7 @@ public class DataForPlanner {
                 } else {
                     planner.setParent(parent);
                 }
+                planner.afterCompose();
             }
 
             private boolean isFirstTime() {

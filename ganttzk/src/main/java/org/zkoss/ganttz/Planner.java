@@ -37,9 +37,10 @@ import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zul.impl.XulElement;
+import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zul.Label;
 
-public class Planner extends XulElement {
+public class Planner extends HtmlMacroComponent  {
 
     private GanttDiagramGraph diagramGraph = new GanttDiagramGraph();
 
@@ -133,9 +134,9 @@ public class Planner extends XulElement {
     }
 
     private void clear() {
-        this.leftPane = null;
-        this.ganttPanel = null;
-        getChildren().clear();
+        // this.leftPane = null;
+        // this.ganttPanel = null;
+        // getChildren().clear();
     }
 
     private <T> List<CommandOnTaskContextualized<T>> contextualize(
@@ -180,12 +181,8 @@ public class Planner extends XulElement {
                 this.diagramGraph.getTopLevelTasks());
         this.ganttPanel = new GanttPanel(this.context,
                 commandsOnTasksContextualized, editTaskCommand);
-        leftPane.setParent(this);
-        ganttPanel.setParent(this);
-        leftPane.afterCompose();
-        ganttPanel.afterCompose();
-        this.leftPane
-                .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
+        // leftPane.setParent(this);
+        // ganttPanel.setParent(this);
     }
 
     void removeTask(Task task) {
@@ -202,4 +199,33 @@ public class Planner extends XulElement {
         return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
                 .retrieve();
     }
+
+    @Override
+    public void afterCompose() {
+        super.afterCompose();
+        getFellow("insertionPointLeftPanel")
+                .appendChild(new Label("Left Pane"));
+        // leftPane);
+
+        // leftPane.afterCompose();
+        // ganttPanel.afterCompose();
+
+        // this.leftPane
+        // .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
+
+        // leftPane.afterCompose();
+
+        getFellow("insertionPointRightPanel").appendChild(
+                new Label("Timetracker"));
+        // timeTrackerComponent);
+        // getFellow("insertionPointRightPanel").appendChild(resourceLoadList);
+        // TimeTrackerComponent timetrackerheader = (TimeTrackerComponent)
+        // timeTrackerComponent .clone();
+        // getFellow("insertionPointTimetracker").
+        // appendChild(timetrackerheader);
+        // timetrackerheader.afterCompose();
+        // timeTrackerComponent.afterCompose();
+
+    }
+
 }

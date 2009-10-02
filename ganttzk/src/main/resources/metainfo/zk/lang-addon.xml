@@ -14,10 +14,11 @@
 	<component>
 		<component-name>planner</component-name>
 		<component-class>org.zkoss.ganttz.Planner</component-class>
-		<mold>
+        <macro-uri>~./ganttz/zul/plannerLayout.zul</macro-uri>
+		<!-- mold>
 			<mold-name>default</mold-name>
 			<mold-uri>~./ganttz/planner.dsp</mold-uri>
-		</mold>
+		</mold -->
 	</component>
 
 	<component>
