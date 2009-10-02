@@ -44,7 +44,8 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
     private String timeTrackerElementId;
 
     public TimeTrackerComponent(TimeTracker timeTracker) {
-        this(timeTracker, "~./ganttz/zul/timetrackersecondlevel.zul",
+        this(timeTracker,
+                "~./ganttz/zul/timetracker/timetrackersecondlevel.zul",
                 "timetracker");
     }
 
