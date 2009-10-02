@@ -129,7 +129,7 @@ public class TimeTrackedTableWithLeftPane<A, B> extends Div {
         return timeTrackedTable;
     }
 
-    public TimeTrackedTable getRightPane() {
+    public TimeTrackedTable<B> getRightPane() {
         return timeTrackedTable;
     }
 
