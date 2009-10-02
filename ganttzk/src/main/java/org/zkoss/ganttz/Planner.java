@@ -38,7 +38,6 @@ import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
-import org.zkoss.zul.Label;
 
 public class Planner extends HtmlMacroComponent  {
 
@@ -128,15 +127,21 @@ public class Planner extends HtmlMacroComponent  {
         editTaskCommand = contextualize(context, configuration
                 .getEditTaskCommand());
         this.context = context;
-        clear();
+        // clear();
         context.add(configuration.getData());
         setupComponents();
+
+        getFellow("insertionPointLeftPanel").appendChild(leftPane);
+        leftPane.afterCompose();
+        getFellow("insertionPointRightPanel").appendChild(ganttPanel);
+        ganttPanel.afterCompose();
     }
 
     private void clear() {
         // this.leftPane = null;
         // this.ganttPanel = null;
         // getChildren().clear();
+        // Delete insertion point children
     }
 
     private <T> List<CommandOnTaskContextualized<T>> contextualize(
@@ -181,8 +186,6 @@ public class Planner extends HtmlMacroComponent  {
                 this.diagramGraph.getTopLevelTasks());
         this.ganttPanel = new GanttPanel(this.context,
                 commandsOnTasksContextualized, editTaskCommand);
-        // leftPane.setParent(this);
-        // ganttPanel.setParent(this);
     }
 
     void removeTask(Task task) {
@@ -203,8 +206,6 @@ public class Planner extends HtmlMacroComponent  {
     @Override
     public void afterCompose() {
         super.afterCompose();
-        getFellow("insertionPointLeftPanel")
-                .appendChild(new Label("Left Pane"));
         // leftPane);
 
         // leftPane.afterCompose();
@@ -215,8 +216,6 @@ public class Planner extends HtmlMacroComponent  {
 
         // leftPane.afterCompose();
 
-        getFellow("insertionPointRightPanel").appendChild(
-                new Label("Timetracker"));
         // timeTrackerComponent);
         // getFellow("insertionPointRightPanel").appendChild(resourceLoadList);
         // TimeTrackerComponent timetrackerheader = (TimeTrackerComponent)

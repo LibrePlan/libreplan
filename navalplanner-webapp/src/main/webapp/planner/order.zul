@@ -42,8 +42,9 @@
     </zscript>
 
     <planner id="planner" self="@{define(content)}">
-        <div id="idContextMenuTaskAssignment"></div>
     </planner>
+
+    <div id="idContextMenuTaskAssignment"></div>
 
     <popup width="300px" apply="${planningController.editTaskController}">
         <grid>

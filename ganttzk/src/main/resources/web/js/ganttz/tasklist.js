@@ -109,7 +109,9 @@ function adjustScrollableDimensions() {
 
     // Timetracker is recalculated when the window is resized and when zoom
     // level is changed as the component is recreated
-    timetracker = document.getElementById('timetracker');
+    // timetracker = document.getElementById('timetracker');
+    timetracker = YAHOO.util.Selector.query('#timetracker')[0];
+
     watermark = document.getElementById('watermark');
     scroll_container = document.getElementById('scroll_container');
 

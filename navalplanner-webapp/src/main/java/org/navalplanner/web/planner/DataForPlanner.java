@@ -269,7 +269,6 @@ public class DataForPlanner {
                 } else {
                     planner.setParent(parent);
                 }
-                planner.afterCompose();
             }
 
             private boolean isFirstTime() {
@@ -280,6 +279,7 @@ public class DataForPlanner {
                     final PlannerConfiguration<ITaskFundamentalProperties> plannerConfiguration) {
                 planner = new Planner();
                 planner.setParent(parent);
+                planner.afterCompose();
                 planner.setConfiguration(plannerConfiguration);
             }
 

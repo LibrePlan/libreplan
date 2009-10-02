@@ -455,11 +455,11 @@ tr.z-vbox-sep {
     margin: 0px;
 }
 
-.taskspanelgap #timetracker table {
+.resourcesload .taskspanelgap #timetracker table {
     margin-top: -10px;
 }
 
-.taskspanelgap #timetracker th {
+.resourcesload .taskspanelgap #timetracker th {
     display: none;
     border: 0px;
     margin: 0px;
