@@ -1,0 +1,126 @@
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+    <borderlayout height="600px" width="auto">
+       <north height="30px" border="0">
+       <hbox align="center">
+        <button label="Save" />
+        <button label="Back" />
+        <button label="Company view" />
+        <separator/>
+        <button label="+" />
+        <button label="-" />
+        From: <datebox /> to: <datebox />
+        <separator/>
+        Filter:
+        <combobox>
+            <comboitem label="Orders"
+                description="Show full orders and company view" />
+            <comboitem label="Tasks"
+                description="Tasks inside orders or filtered" />
+        </combobox>
+        <combobox>
+            <comboitem label="Filter by Label" />
+            <comboitem label="Filter by criterion" />
+            <comboitem label="Filter by resources" />
+            <comboitem label="Critical way" />
+        </combobox>
+        <textbox/>
+
+       </hbox>
+       </north>
+
+        <center border="0">
+            <borderlayout sclass="plannerlayout">
+                <west size="300px" flex="true" collapsible="true"
+                    splittable="true" autoscroll="true">
+
+                    <borderlayout >
+                        <north border="0" height="38px" flex="true" collapsible="true">
+                            <vbox pack="center" align="center">
+                                Task details column headers
+                            <!-- tree fixedLayout="true">
+                                <treecols>
+                                    <treecol label="Name" height="29px"/>
+                                </treecols>
+                            </tree-->
+
+                            </vbox>
+                        </north>
+                        <center border="0">
+                            <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
+                        </center>
+                    </borderlayout>
+                </west>
+
+                <center sclass="taskspanel">
+                    <borderlayout>
+                        <north border="0"><div sclass="timetrackergap" height="33px" id="insertionPointTimetracker"></div></north>
+                        <center autoscroll="true" border="0" sclass="rightpanellayout">
+                            <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
+                        </center>
+                    </borderlayout>
+
+                </center>
+            </borderlayout>
+        </center>
+        <south height="20%" collapsible="true" splittable="true">
+            <borderlayout>
+                <west size="200px" flex="true" collapsible="true"
+                    splittable="true">
+                    <vbox pack="center" align="center">
+                    <label value="ResourcesLoadGraph details"
+                        width="150px"/>
+                    </vbox>
+                </west>
+
+                <center autoscroll="true">
+
+<vbox>
+<zscript>
+CategoryModel catmodel = new SimpleCategoryModel();
+catmodel.setValue("2008", "Q1 2008", new Integer(20));
+catmodel.setValue("2008", "Q2 2008", new Integer(35));
+catmodel.setValue("2008", "Q3 2008", new Integer(40));
+catmodel.setValue("2008", "Q4 2008", new Integer(55));
+catmodel.setValue("2009", "Q1 2008", new Integer(40));
+catmodel.setValue("2009", "Q2 2008", new Integer(60));
+catmodel.setValue("2009", "Q3 2008", new Integer(70));
+catmodel.setValue("2009", "Q4 2008", new Integer(90));
+catmodel.setValue("2010", "Q1 2008", new Integer(20));
+catmodel.setValue("2010", "Q2 2008", new Integer(35));
+catmodel.setValue("2010", "Q3 2008", new Integer(40));
+catmodel.setValue("2010", "Q4 2008", new Integer(55));
+catmodel.setValue("2011", "Q1 2008", new Integer(40));
+catmodel.setValue("2011", "Q2 2008", new Integer(60));
+catmodel.setValue("2011", "Q3 2008", new Integer(70));
+catmodel.setValue("2011", "Q4 2008", new Integer(90));
+
+catmodel.setValue("2008", "Q1 2009", new Integer(20));
+catmodel.setValue("2008", "Q2 2009", new Integer(35));
+catmodel.setValue("2008", "Q3 2009", new Integer(40));
+catmodel.setValue("2008", "Q4 2009", new Integer(55));
+catmodel.setValue("2009", "Q1 2009", new Integer(40));
+catmodel.setValue("2009", "Q2 2009", new Integer(60));
+catmodel.setValue("2009", "Q3 2009", new Integer(70));
+catmodel.setValue("2009", "Q4 2009", new Integer(90));
+catmodel.setValue("2010", "Q1 2009", new Integer(20));
+catmodel.setValue("2010", "Q2 2009", new Integer(35));
+catmodel.setValue("2010", "Q3 2009", new Integer(40));
+catmodel.setValue("2010", "Q4 2009", new Integer(55));
+catmodel.setValue("2011", "Q1 2009", new Integer(40));
+catmodel.setValue("2011", "Q2 2009", new Integer(60));
+catmodel.setValue("2011", "Q3 2009", new Integer(70));
+catmodel.setValue("2011", "Q4 2009", new Integer(90));
+
+</zscript>
+	<chart id="barchart" width="1600" height="250"
+		type="stacked_area" fgAlpha="128" />
+	<zscript>
+  barchart.setModel(catmodel);
+</zscript>
+</vbox>
+
+                </center>
+            </borderlayout>
+        </south>
+    </borderlayout>
+</zk>
