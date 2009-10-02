@@ -34,6 +34,7 @@
         <dataSource.jndiName>jdbc/navalplanner-ds</dataSource.jndiName>
         <testDataSource.user>${dataSource.user}</testDataSource.user>
         <testDataSource.password>${dataSource.password}</testDataSource.password>
+        <databasetable.prefix>public.</databasetable.prefix>
     </properties>
 
     <!--
@@ -115,6 +116,7 @@
                 <testDataSource.url>${dataSource.url}test</testDataSource.url>
                 <!-- Hibernate properties -->
                 <hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</hibernate.dialect>
+                <databasetable.prefix>public.</databasetable.prefix>
             </properties>
         </profile>
 
@@ -132,6 +134,7 @@
                 <testDataSource.url>${dataSource.url}test</testDataSource.url>
                 <!-- Hibernate properties -->
                 <hibernate.dialect>org.hibernate.dialect.MySQLInnoDBDialect</hibernate.dialect>
+                <databasetable.prefix></databasetable.prefix>
             </properties>
         </profile>
 
@@ -151,6 +154,7 @@
                 <testDataSource.url>jdbc:hsqldb:target/hsqldb/naval${navalplanner.mode}test;shutdown=true</testDataSource.url>
                 <!-- Hibernate properties -->
                 <hibernate.dialect>org.hibernate.dialect.HSQLDialect</hibernate.dialect>
+                <databasetable.prefix></databasetable.prefix>
             </properties>
         </profile>
 
@@ -436,6 +440,7 @@
                 <includes>
                     <include>*spring-config-test.xml</include>
                     <include>*hibernate-test.cfg.xml</include>
+                    <include>**/dbunit*.xml</include>
                 </includes>
             </testResource>
 
