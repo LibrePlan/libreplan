@@ -19,10 +19,14 @@
 -->
 
 <zk>
+<zscript><![CDATA[
+top = self;
+]]>
+</zscript>
 <grid width="${top.horizontalSize+2}" model="${top.tableModel}"
     rowRenderer="${top.rowRenderer}" fixedLayout="${true}">
-    <columns>
-        <column label="${each.name}" width="${each.size}"
+    <columns visible="${false}">
+        <column label="${each.name}" width="${each.size}px"
                     forEach="${top.detailsSecondLevel}"></column>
     </columns>
 </grid>

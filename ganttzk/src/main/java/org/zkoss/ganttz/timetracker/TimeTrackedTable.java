@@ -20,31 +20,28 @@
 
 package org.zkoss.ganttz.timetracker;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
+import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.RowRenderer;
 
-public class TimeTrackedTable<T> extends TimeTrackerComponent {
+public class TimeTrackedTable<T> extends HtmlMacroComponent {
 
     private final Callable<List<T>> data;
     private final ICellForDetailItemRenderer<DetailItem, T> cellRenderer;
+    private final TimeTracker timeTracker;
 
     public TimeTrackedTable(Callable<List<T>> dataSource,
             ICellForDetailItemRenderer<DetailItem, T> cellRenderer,
-            TimeTracker timeTracker,
-            String idTimeTrackerElement) {
-        super(timeTracker, "~./ganttz/zul/timetracker/secondlevelgrid.zul",
-                idTimeTrackerElement);
+            TimeTracker timeTracker) {
         this.data = dataSource;
         this.cellRenderer = cellRenderer;
-    }
-
-    @Override
-    protected void scrollHorizontalPercentage(int pixelsDisplacement) {
+        this.timeTracker = timeTracker;
     }
 
     public ListModel getTableModel() {
@@ -60,8 +57,16 @@ public class TimeTrackedTable<T> extends TimeTrackerComponent {
     }
 
     public RowRenderer getRowRenderer() {
-        return OnColumnsRowRenderer.create(cellRenderer,
-                getDetailsSecondLevel());
+        return OnColumnsRowRenderer.create(cellRenderer, timeTracker
+                .getDetailsSecondLevel());
+    }
+
+    public Collection<DetailItem> getDetailsSecondLevel() {
+        return timeTracker.getDetailsSecondLevel();
+    }
+
+    public int getHorizontalSize() {
+        return timeTracker.getHorizontalSize();
     }
 
 }

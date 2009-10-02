@@ -133,6 +133,12 @@
 	</component>
 
 	<component>
+	   <component-name>timeTrackedTable</component-name>
+	   <component-class>org.zkoss.ganttz.timetracker.TimeTrackedTable</component-class>
+	   <macro-uri>~./ganttz/zul/timetracker/timetrackedtable.zul</macro-uri>
+	</component>
+
+	<component>
 	   <component-name>timetrackedTableWithLeftPane</component-name>
 	   <component-class>org.zkoss.ganttz.timetracker.TimeTrackedTableWithLeftPane</component-class>
 	   <mold>

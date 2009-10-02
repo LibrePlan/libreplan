@@ -51,7 +51,7 @@ public class TimeTrackedTableWithLeftPane<A, B> extends Div {
         this.dataSource = dataSource;
         timeTrackedTable = new TimeTrackedTable<B>(
                 dataForTimeTracker(dataSource), cellRendererForTimeTracker,
-                timeTracker, "timetrackedtable");
+                timeTracker);
         leftPane = new Grid();
         zoomLevelListener = new IZoomLevelChangedListener() {
             @Override
