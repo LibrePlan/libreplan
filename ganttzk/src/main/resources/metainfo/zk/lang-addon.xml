@@ -139,15 +139,6 @@
 	</component>
 
 	<component>
-	   <component-name>timetrackedTableWithLeftPane</component-name>
-	   <component-class>org.zkoss.ganttz.timetracker.TimeTrackedTableWithLeftPane</component-class>
-	   <mold>
-            <mold-name>default</mold-name>
-            <mold-uri>~./ganttz/timetrackedTableWithLeftPane.dsp</mold-uri>
-        </mold>
-	</component>
-
-	<component>
         <component-name>scripts</component-name>
         <component-class>org.zkoss.ganttz.util.script.ScriptsComponent</component-class>
         <macro-uri>~./ganttz/zul/scripts.zul</macro-uri>

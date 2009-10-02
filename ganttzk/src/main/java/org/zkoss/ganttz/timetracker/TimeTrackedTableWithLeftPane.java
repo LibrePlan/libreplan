@@ -29,13 +29,12 @@ import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zul.Columns;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.api.Column;
 
-public class TimeTrackedTableWithLeftPane<A, B> extends Div {
+public class TimeTrackedTableWithLeftPane<A, B> {
 
     private final TimeTrackedTable<B> timeTrackedTable;
     private Grid leftPane;
@@ -63,8 +62,6 @@ public class TimeTrackedTableWithLeftPane<A, B> extends Div {
         leftPane.appendChild(createColumns(leftPaneColumns));
         leftPane.setRowRenderer(OnColumnsRowRenderer.create(
                 leftPaneCellRenderer, leftPaneColumns));
-        appendChild(leftPane);
-        appendChild(timeTrackedTable);
         loadModelForLeftPane();
     }
 
@@ -121,7 +118,6 @@ public class TimeTrackedTableWithLeftPane<A, B> extends Div {
     private boolean afterComposeCalled = false;
 
     public TimeTrackedTable<B> getTimeTrackedTable() {
-
         if (!afterComposeCalled) {
             timeTrackedTable.afterCompose();
             afterComposeCalled = true;
