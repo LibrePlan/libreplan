@@ -375,10 +375,6 @@ div.z-grid {
     border-collapse: collapse;
 }
 
-input {
-vertical-align: middle;
-}
-
 /*
 .z-window-embedded .icono .z-button-cm,.z-window-modal .icono .z-button-cm {
     display:none;

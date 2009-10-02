@@ -20,22 +20,14 @@ zkTasklist.GANTT_PANEL_LEFT = 300
 */ /* -------------- Listdetails -------------- */
     /* External listdetails box */
 .listdetails {
-    width: 280px; /* Ganntz.ListdetailsWidth */
-    float: left;
     margin-top: 0px;
-    /*    border-bottom: 1px solid #86A4BE; */
     font-size: 10px !important;
     margin-top: 0px;
 }
 
 #listdetails_container {
-    float: left;
-    height: 500px; /* zkTasklist.SCROLL_CONTAINER_INITIAL_HEIGHT */
     position: relative;
-    top: 27px;
-    overflow-y: hidden;
     border-bottom: 1px solid #86A4BE;
-    border-right: 1px solid #86A4BE;
 }
 
 .listdetails img {
@@ -60,8 +52,8 @@ zkTasklist.GANTT_PANEL_LEFT = 300
     height: 17px;
 }
 
-#listdetails_container .z-datebox-inp,#listdetails_container div.z-tree-col-cnt
-    {
+#listdetails_container .z-datebox-inp,
+#listdetails_container div.z-tree-col-cnt {
     font-family: "Verdana,Tahoma,Arial,Helvetica,sans-serif";
     font-size: 10px !important;
     border-bottom: 0px;
@@ -91,7 +83,7 @@ zkTasklist.GANTT_PANEL_LEFT = 300
 
 #listtasks {
     position: relative;
-    width: 600px;
+    width: 100%;
     top: 0px;
 }
 
@@ -107,12 +99,11 @@ zkTasklist.GANTT_PANEL_LEFT = 300
 
 /* Task lane properties */
 .row {
-    height: 9px; /* 19 */
+    height: 12px;
     border-bottom: dotted 1px #CCCCCC;
     margin-bottom: 10px;
     margin-top: 10px;
-    width: 10000px;
-    /* Defined to be larger than the maximum scroll_inner_x */
+    width: 100%;
 }
 
 /* -------------- Dependencies -------------- */
@@ -217,14 +208,14 @@ zkTasklist.GANTT_PANEL_LEFT = 300
 
 #ganttpanel {
     height: 400px; /* 800 */
-    width: 900px;
+    width: 100%
 }
 
 #ganttpanel table {
     float: left;
     padding: 0;
     margin: 0;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 #ganttpanel table td {
@@ -280,24 +271,13 @@ table {
 }
 
 #scroll_container {
-    margin-top: 70px;
-    height: 300px; /* Recalculated based on window */
-    width: 500px; /* Recalculated based on window */
-    overflow: hidden;
+    margin-top: 49px;
     float: left;
     position: absolute;
-    left: 285px; /* Ganntz.ListdetailsWidth + borders = 280 + 5 */
-    /*    border:solid green 1px; */
 }
 
 #timetracker { /* border: solid 1px red; */
     position: absolute;
-    left: 285px; /* Ganntz.ListdetailsWidth + borders = 280 + 5 */
-    height: 500px;
-    /* zkTasklist.SCROLL_CONTAINER_INITIAL_HEIGHT (dynamic) */
-    width: 600px;
-    /* zkTasklist.SCROLL_CONTAINER_INITIAL_WIDTH (dynamic) */
-    overflow-x: hidden;
     float: left;
     z-index: -1;
 }
@@ -319,10 +299,6 @@ table {
     border: 0px;
 }
 
-#zoom_buttons .z-button-cm {
-    border: 0px;
-}
-
 #zoom_buttons td.z-hbox-sep {
     width: 0px;
 }
@@ -337,6 +313,7 @@ tr.z-vbox-sep {
     position: absolute;
     float: left;
     overflow: auto;
+    display:none;
 }
 
 #ganttpanel_scroller_x {
@@ -347,7 +324,6 @@ tr.z-vbox-sep {
 }
 
 #ganttpanel_inner_scroller_x {
-    /* must be resized on ganttpanel javascript adjust size */
     width: 9000px; /* Real canvas dimensions */
     height: 15px; /* Scroll constant */
 }
@@ -378,8 +354,6 @@ tr.z-vbox-sep {
     display: none;
 }
 
-/* -------------- ResourceLoad -------------- */
-}
 /*  ----------- Advanced resources assignment ------------ */
 .timetrackedTableWithLeftPane {
     width: 1000px;
@@ -394,7 +368,7 @@ tr.z-vbox-sep {
 #timetrackedtable {
     float: right;
     width: 600px;
-    overflow: auto;
+    /* overflow: auto; */
 }
 
 .advancedassignment #timetrackedtable {
@@ -510,4 +484,21 @@ tr.z-vbox-sep {
 
 .timetrackergap #zoom_buttons {
     display:none;
+}
+
+.taskdetails_name {
+    min-width: 150px;
+}
+
+.listdetails div.z-tree-cell-cnt {
+    padding: 0px;
+}
+
+.listdetails .z-tree .z-textbox,
+.listdetails .z-tree .z-decimalbox,
+.listdetails .z-tree .z-intbox,
+.listdetails .z-tree .z-longbox,
+.listdetails .z-tree .z-doublebox {
+    width: 100%;
+    height: 18px;
 }
