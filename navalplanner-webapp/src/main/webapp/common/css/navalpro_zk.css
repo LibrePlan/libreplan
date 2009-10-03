@@ -1,3 +1,11 @@
+/*
+ * navalpro_zk.css ###PROJECT_NAME###
+ *
+ * This stylesheet contains declarations for ZK overriden components
+ * according to the ZK Style Guides [http://www.zkoss.org/doc/styleguide]
+ * to integrate the custom appearance of the web application.
+ */
+
 .logo {
     background-image: url("../img/v3/blue_ga.jpg");
     height: 50px;
@@ -8,7 +16,7 @@
     position: absolute;
 }
 
-.headings { /* height:90px; */
+.headings {
     height: 90px;
 }
 
@@ -310,7 +318,7 @@ button.z-button {
     padding-bottom: 0;
 }
 
-.z-textbox,.z-decimalbox,.z-intbox,.z-longbox,.z-doublebox {
+.z-textbox,.z-decimalbox,.z-intbox,.z-longbox,.z-doublebox, .z-datebox {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
 }
@@ -382,6 +390,5 @@ div.z-grid {
 
 .z-tree .z-textbox,.z-tree .z-decimalbox,.z-tree .z-intbox,.z-tree .z-longbox,.z-tree .z-doublebox
 {
-    width: 100%;
-    height: 22px;
+    height: 17px;
 }
