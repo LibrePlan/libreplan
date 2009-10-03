@@ -83,7 +83,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public void addSpecificResourceAllocation(Worker worker) throws Exception {
-        resourceAllocationsBeingEdited.addSpecificResorceAllocationFor(worker);
+        resourceAllocationsBeingEdited.addSpecificResourceAllocationFor(worker);
     }
 
     @Override

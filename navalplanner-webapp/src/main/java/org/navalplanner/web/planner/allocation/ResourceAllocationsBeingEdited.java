@@ -82,7 +82,7 @@ public class ResourceAllocationsBeingEdited {
         this.daysDuration = task.getDaysDuration();
     }
 
-    public void addSpecificResorceAllocationFor(Worker worker) {
+    public void addSpecificResourceAllocationFor(Worker worker) {
         if (alreadyExistsAllocationFor(worker)) {
             throw new IllegalArgumentException(_(
                     "{0} already assigned to resource allocation list", worker
