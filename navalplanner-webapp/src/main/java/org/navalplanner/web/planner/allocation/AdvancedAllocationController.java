@@ -50,11 +50,12 @@ public class AdvancedAllocationController extends GenericForwardComposer
     private Div insertionPointRightPanel;
     private Div insertionPointTimetracker;
     private TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData> timeTrackedTableWithLeftPane;
+    private TimeTracker timeTracker;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        TimeTracker timeTracker = new TimeTracker(createExampleInterval());
+        timeTracker = new TimeTracker(createExampleInterval());
         this.timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData>(
                 getDataSource(), getColumnsForLeft(), getLeftRenderer(),
                 getRightRenderer(), timeTracker);
@@ -69,6 +70,14 @@ public class AdvancedAllocationController extends GenericForwardComposer
                 timeTracker, "timeTracker");
         insertionPointTimetracker.appendChild(timetracker);
         timetracker.afterCompose();
+    }
+
+    public void onClick$zoomIncrease() {
+        timeTracker.goToNextDetailLevel();
+    }
+
+    public void onClick$zoomDecrease() {
+        timeTracker.goToPreviousDetailLvel();
     }
 
     private ICellForDetailItemRenderer<FakeColumn, FakeDataLeft> getLeftRenderer() {

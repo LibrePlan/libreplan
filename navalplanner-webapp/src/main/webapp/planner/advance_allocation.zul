@@ -34,8 +34,8 @@
         <button label="Back" />
         <button label="Company view" />
         <separator/>
-        <button label="+" />
-        <button label="-" />
+        <button label="+" id="zoomIncrease"/>
+        <button label="-" id="zoomDecrease"/>
         From: <datebox /> to: <datebox />
         <separator/>
         Filter:
