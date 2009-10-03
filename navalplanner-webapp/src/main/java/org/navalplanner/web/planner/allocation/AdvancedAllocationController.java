@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web;
+package org.navalplanner.web.planner.allocation;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,7 +43,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.api.Column;
 
-public class FakeTimeTrackableTableController extends GenericForwardComposer
+public class AdvancedAllocationController extends GenericForwardComposer
         implements AfterCompose {
 
     private Div insertionPointLeftPanel;

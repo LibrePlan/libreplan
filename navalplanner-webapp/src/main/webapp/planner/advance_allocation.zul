@@ -29,11 +29,11 @@
 <zk>
 
 <zscript><![CDATA[
-    fakeController = new org.navalplanner.web.FakeTimeTrackableTableController();
+    advanceAllocationController = new org.navalplanner.web.planner.allocation.AdvancedAllocationController();
 ]]>
 </zscript>
 
-    <borderlayout height="600px" width="auto" apply="${fakeController}" self="@{define(content)}" class="advancedassignment">
+    <borderlayout height="600px" width="auto" apply="${advanceAllocationController}" self="@{define(content)}" class="advancedassignment">
        <north height="30px" border="0">
        <hbox align="center">
         <button label="Save" />
