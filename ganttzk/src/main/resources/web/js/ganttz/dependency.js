@@ -26,7 +26,7 @@
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 
-webapp_context_path = "/navalplanner-webapp/"
+webapp_context_path = "/navalplanner-webapp"
 
 zkPlanner = {};
 zkPlanner.constants = {

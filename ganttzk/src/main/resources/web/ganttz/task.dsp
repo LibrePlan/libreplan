@@ -27,7 +27,7 @@
 
 <div id="row${self.uuid}" class="row" z.valor="boxid="${self.uuid}">
     <div id="${self.uuid}" z.type="ganttz.task.Task" idTask="${self.id}"
-        z.autoz="true"${self.outerAttrs}">
+        z.autoz="true"${self.outerAttrs}" class="box">
         <div class="completion"></div>
         <div class="completion2"></div>
     </div>
