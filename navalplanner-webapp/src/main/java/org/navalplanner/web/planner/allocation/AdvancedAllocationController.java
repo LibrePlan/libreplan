@@ -37,39 +37,50 @@ import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.api.Column;
 
-public class AdvancedAllocationController extends GenericForwardComposer
-        implements AfterCompose {
+public class AdvancedAllocationController extends GenericForwardComposer {
 
+    private Div insertionPointTimetracker;
     private Div insertionPointLeftPanel;
     private Div insertionPointRightPanel;
-    private Div insertionPointTimetracker;
-    private TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData> timeTrackedTableWithLeftPane;
+
     private TimeTracker timeTracker;
+
+    private TimeTrackerComponentWithoutColumns timeTrackerComponent;
+    private Grid leftPane;
+    private TimeTrackedTable<FakeData> table;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        createComponents();
+        insertComponentsInLayout();
+        timeTrackerComponent.afterCompose();
+        table.afterCompose();
+    }
+
+    private void createComponents() {
         timeTracker = new TimeTracker(createExampleInterval());
-        this.timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData>(
+        timeTrackerComponent = new TimeTrackerComponentWithoutColumns(
+                timeTracker, "timeTracker");
+        TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData> timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData>(
                 getDataSource(), getColumnsForLeft(), getLeftRenderer(),
                 getRightRenderer(), timeTracker);
 
-        TimeTrackedTable<FakeData> rightPane = timeTrackedTableWithLeftPane
-                .getRightPane();
-        insertionPointRightPanel.appendChild(rightPane);
-        rightPane.afterCompose();
-        insertionPointLeftPanel.appendChild(timeTrackedTableWithLeftPane
-                .getLeftPane());
-        TimeTrackerComponentWithoutColumns timetracker = new TimeTrackerComponentWithoutColumns(
-                timeTracker, "timeTracker");
-        insertionPointTimetracker.appendChild(timetracker);
-        timetracker.afterCompose();
+        table = timeTrackedTableWithLeftPane.getRightPane();
+        leftPane = timeTrackedTableWithLeftPane
+                .getLeftPane();
+    }
+
+    private void insertComponentsInLayout() {
+        insertionPointRightPanel.appendChild(table);
+        insertionPointLeftPanel.appendChild(leftPane);
+        insertionPointTimetracker.appendChild(timeTrackerComponent);
     }
 
     public void onClick$zoomIncrease() {
@@ -139,11 +150,6 @@ public class AdvancedAllocationController extends GenericForwardComposer
 
     private Date asDate(LocalDate start) {
         return start.toDateMidnight().toDate();
-    }
-
-    @Override
-    public void afterCompose() {
-        timeTrackedTableWithLeftPane.getTimeTrackedTable().afterCompose();
     }
 
 }
