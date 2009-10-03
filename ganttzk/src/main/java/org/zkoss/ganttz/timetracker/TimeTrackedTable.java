@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
+import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
@@ -35,6 +37,7 @@ public class TimeTrackedTable<T> extends HtmlMacroComponent {
     private final Callable<List<T>> data;
     private final ICellForDetailItemRenderer<DetailItem, T> cellRenderer;
     private final TimeTracker timeTracker;
+    private IZoomLevelChangedListener zoomListener;
 
     public TimeTrackedTable(Callable<List<T>> dataSource,
             ICellForDetailItemRenderer<DetailItem, T> cellRenderer,
@@ -42,6 +45,14 @@ public class TimeTrackedTable<T> extends HtmlMacroComponent {
         this.data = dataSource;
         this.cellRenderer = cellRenderer;
         this.timeTracker = timeTracker;
+        zoomListener = new IZoomLevelChangedListener() {
+
+            @Override
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                recreate();
+            }
+        };
+        this.timeTracker.addZoomListener(zoomListener);
     }
 
     public ListModel getTableModel() {
