@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.common.ComponentsReplacer;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -120,8 +122,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             formBinder.detach();
         }
         allocationsBeingEdited = resourceAllocationModel.initAllocationsFor(
-                task, ganttTask,
-                planningState);
+                task, ganttTask, planningState);
         formBinder = allocationsBeingEdited.createFormBinder();
         formBinder.setAssignedHoursComponent(assignedHoursComponent);
         formBinder.setTaskStartDateBox(taskStartDateBox);
@@ -201,7 +202,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         public static CalculationTypeRadio from(CalculatedValue calculatedValue) {
             Validate.notNull(calculatedValue);
-            for (CalculationTypeRadio calculationTypeRadio : CalculationTypeRadio.values()) {
+            for (CalculationTypeRadio calculationTypeRadio : CalculationTypeRadio
+                    .values()) {
                 if (calculationTypeRadio.getCalculatedValue() == calculatedValue) {
                     return calculationTypeRadio;
                 }
@@ -242,7 +244,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
     public void setCalculationTypeSelected(String enumName) {
         CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                 .valueOf(enumName);
-        formBinder.setCalculatedValue(calculationTypeRadio.getCalculatedValue());
+        formBinder
+                .setCalculatedValue(calculationTypeRadio.getCalculatedValue());
     }
 
     /**
@@ -262,13 +265,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     public String getOrderHours() {
         Task task = resourceAllocationModel.getTask();
-        return (task != null && task.getHoursSpecifiedAtOrder() != null) ? task.getHoursSpecifiedAtOrder()
-                .toString() : "";
+        return (task != null && task.getHoursSpecifiedAtOrder() != null) ? task
+                .getHoursSpecifiedAtOrder().toString() : "";
     }
 
     public List<AllocationDTO> getResourceAllocations() {
         return allocationsBeingEdited != null ? allocationsBeingEdited
-                .getCurrentAllocations() : Collections.<AllocationDTO>emptyList();
+                .getCurrentAllocations() : Collections
+                .<AllocationDTO> emptyList();
     }
 
     public ResourceAllocationRenderer getResourceAllocationRenderer() {
@@ -300,6 +304,17 @@ public class ResourceAllocationController extends GenericForwardComposer {
         close();
     }
 
+    public void advanceAllocation() {
+        ComponentsReplacer.replaceAllChildren(window, "advance_allocation.zul",
+                new HashMap<String, Object>() {
+                    {
+                        put("advancedAllocationController",
+                                new AdvancedAllocationController());
+                    }
+                });
+        window.setWidth("1200px");
+    }
+
     /**
      * Renders a {@link SpecificResourceAllocation} item
      * @author Diego Pino Garcia <dpino@igalia.com>
@@ -328,14 +343,13 @@ public class ResourceAllocationController extends GenericForwardComposer {
             // On click delete button
             Button deleteButton = appendButton(item, _("Delete"));
             formBinder.setDeleteButtonFor(data, deleteButton);
-            deleteButton.addEventListener("onClick",
-                    new EventListener() {
+            deleteButton.addEventListener("onClick", new EventListener() {
 
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            removeSpecificResourceAllocation(data);
-                        }
-                    });
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    removeSpecificResourceAllocation(data);
+                }
+            });
         }
 
         private String getName(Resource resource) {

@@ -149,7 +149,7 @@
             <button label="${i18n:_('Cancel')}" onClick="allocationController.cancel()" />
             <button label="${i18n:_('Search resources...')}"
                 onClick="allocationController.showSearchResources()" />
-            <button label="${i18n:_('Advance allocation')}" />
+            <button label="${i18n:_('Advance allocation')}" onClick="allocationController.advanceAllocation();"/>
         </hbox>
     </window>
 
