@@ -28,10 +28,6 @@ import java.util.List;
  */
 public class TaskLeaf extends Task {
 
-    public TaskLeaf() {
-        super();
-    }
-
     public TaskLeaf(ITaskFundamentalProperties fundamentalProperties) {
         super(fundamentalProperties);
     }

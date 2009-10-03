@@ -37,7 +37,6 @@ import org.zkoss.ganttz.data.DefaultFundamentalProperties;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
-import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
@@ -190,14 +189,6 @@ public class DataForPlanner {
                         return result;
                     }
                 }, navigator, list);
-    }
-
-    private TaskContainer createContainer(String name, Date start, Date end) {
-        TaskContainer container = new TaskContainer();
-        container.setBeginDate(start);
-        container.setEndDate(end);
-        container.setName(name);
-        return container;
     }
 
     private DefaultFundamentalProperties createTask(String name, Date now,

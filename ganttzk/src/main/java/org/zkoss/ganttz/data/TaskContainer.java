@@ -36,10 +36,6 @@ import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
  */
 public class TaskContainer extends Task {
 
-    public TaskContainer() {
-        super();
-    }
-
     public TaskContainer(ITaskFundamentalProperties fundamentalProperties) {
         super(fundamentalProperties);
     }
