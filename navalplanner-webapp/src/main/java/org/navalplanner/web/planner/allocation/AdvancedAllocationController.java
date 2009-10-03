@@ -73,11 +73,11 @@ public class AdvancedAllocationController extends GenericForwardComposer
     }
 
     public void onClick$zoomIncrease() {
-        timeTracker.goToNextDetailLevel();
+        timeTracker.zoomIncrease();
     }
 
     public void onClick$zoomDecrease() {
-        timeTracker.goToPreviousDetailLvel();
+        timeTracker.zoomDecrease();
     }
 
     private ICellForDetailItemRenderer<FakeColumn, FakeDataLeft> getLeftRenderer() {

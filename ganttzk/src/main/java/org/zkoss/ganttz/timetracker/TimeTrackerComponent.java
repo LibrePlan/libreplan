@@ -131,13 +131,13 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
     public void onIncrease(int offset) {
         double daysOffset = getDaysFor(offset);
-        getTimeTracker().goToNextDetailLevel();
+        getTimeTracker().zoomIncrease();
         changeDetailLevel(daysOffset);
     }
 
     public void onDecrease(int offset) {
         double daysOffset = getDaysFor(offset);
-        getTimeTracker().goToPreviousDetailLvel();
+        getTimeTracker().zoomDecrease();
         changeDetailLevel(daysOffset);
     }
 

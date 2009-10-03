@@ -129,7 +129,7 @@ public class TimeTracker {
         return datesMapper;
     }
 
-    public void goToNextDetailLevel() {
+    public void zoomIncrease() {
         detailLevel = detailLevel.next();
         invalidatingChangeHappened();
     }
@@ -139,7 +139,7 @@ public class TimeTracker {
         fireZoomChanged();
     }
 
-    public void goToPreviousDetailLvel() {
+    public void zoomDecrease() {
         detailLevel = detailLevel.previous();
         invalidatingChangeHappened();
     }
