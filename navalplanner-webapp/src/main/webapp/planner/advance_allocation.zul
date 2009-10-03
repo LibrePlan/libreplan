@@ -30,12 +30,12 @@
     <borderlayout height="600px" width="auto" apply="${advancedAllocationController}" class="advancedassignment">
        <north height="30px" border="0">
        <hbox align="center">
-        <button label="Accept" id="acceptButton" />
-        <button label="Cancel" id="cancelButton" />
+        <button label="${i18n:_('Accept')}" id="acceptButton" />
+        <button label="${i18n:_('Cancel')}" id="cancelButton" />
         <separator/>
-        <button label="+" id="zoomIncrease"/>
-        <button label="-" id="zoomDecrease"/>
-        From: <datebox /> to: <datebox />
+        <button label="${i18n:_('+')}" id="zoomIncrease"/>
+        <button label="${i18n:_('-')}" id="zoomDecrease"/>
+        ${i18n:_('From')}: <datebox /> ${i18n:_('To')}: <datebox />
        </hbox>
        </north>
 
