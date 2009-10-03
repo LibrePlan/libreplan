@@ -30,9 +30,7 @@
     <borderlayout height="600px" width="auto" apply="${advancedAllocationController}" class="advancedassignment">
        <north height="30px" border="0">
        <hbox align="center">
-        <button label="Save" />
-        <button label="Back" />
-        <button label="Company view" />
+        <button label="Accept" id="acceptButton" />
         <separator/>
         <button label="+" id="zoomIncrease"/>
         <button label="-" id="zoomDecrease"/>
