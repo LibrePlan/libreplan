@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.planner;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,9 +37,7 @@ import org.zkoss.ganttz.data.DefaultFundamentalProperties;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
-import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
-import org.zkoss.ganttz.data.TaskLeaf;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
@@ -208,11 +208,8 @@ public class DataForPlanner {
     }
 
     private void addNewTask(IContext<ITaskFundamentalProperties> context) {
-        Task newTask = new TaskLeaf();
-        newTask.setName("Nova Tarefa");
-        newTask.setBeginDate(new Date());
-        newTask.setEndDate(twoMonthsLater(newTask.getBeginDate()));
-        context.add(newTask);
+        context.add(createTask(_("New task"), new Date(),
+                twoMonthsLater(new Date())));
     }
 
     private static Date twoMonthsLater(Date now) {

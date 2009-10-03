@@ -43,8 +43,6 @@ import org.zkoss.ganttz.data.DefaultFundamentalProperties;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
-import org.zkoss.ganttz.data.Task;
-import org.zkoss.ganttz.data.TaskLeaf;
 import org.zkoss.ganttz.data.resourceload.LoadLevel;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
@@ -377,12 +375,10 @@ public class DataForPlanner {
     }
 
     private void addNewTask(IContext<ITaskFundamentalProperties> context) {
-        Task newTask = new TaskLeaf();
-        newTask.setName(_("New task"));
-        newTask.setBeginDate(new Date());
-        newTask.setEndDate(twoMonthsLater(newTask.getBeginDate()));
-        context.add(newTask);
+        context.add(createTask(_("New task"), new Date(),
+                twoMonthsLater(new Date())));
     }
+
 
     private static Date twoMonthsLater(Date now) {
         Calendar calendar = Calendar.getInstance();
