@@ -89,6 +89,14 @@ zkTasklist.GANTT_PANEL_LEFT = 300
     width: 64px;
 }
 
+.listdetails {
+min-width:200px;
+}
+
+.listdetails div.z-tree-header th.z-tree-col {
+    overflow:visible;
+}
+
 .taskdetail_grid table {
     height: 30px;
     width: 285px; /* Ganntz.ListdetailsWidth */
@@ -473,17 +481,14 @@ tr.z-vbox-sep {
 
 .resourceloadleftpane .z-tree-body {
     z-index: -10;
-    overflow: hidden;
 }
 
 .leftpanelgap .z-tree-body {
     z-index: 2;
-    overflow: hidden;
 }
 
 .leftpanelgap .z-tree-header {
     z-index: 16;
-    overflow: hidden;
 }
 
 .leftpanelgap .resourceloadleftpane {
@@ -507,6 +512,14 @@ tr.z-vbox-sep {
     padding: 0px;
 }
 
+div.z-tree {
+    overflow:visible;
+}
+
 .listdetails td {
     border-bottom: 1px dotted #86A4BE !important;
+}
+
+.plannerlayout, .resourcesloadlayout {
+    height:500px;
 }

@@ -20,7 +20,7 @@
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
-    <borderlayout height="600px" width="auto">
+    <borderlayout sclass="resourcesloadlayout" width="auto">
        <north height="30px" border="0">
        <hbox align="center">
         <button label="Save" />
@@ -65,7 +65,7 @@
 
                             </vbox>
                         </north>
-                        <center border="0">
+                        <center border="0" style="overflow-x:scroll">
                             <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
                         </center>
                     </borderlayout>
@@ -132,7 +132,7 @@ catmodel.setValue("2011", "Q3 2009", new Integer(70));
 catmodel.setValue("2011", "Q4 2009", new Integer(90));
 
 </zscript>
-	<chart id="barchart" title="Resources load Sample" width="1600" height="250"
+	<chart id="barchart" width="1600px" height="175px"
 		type="stacked_area" fgAlpha="128" />
 	<zscript>
   barchart.setModel(catmodel);

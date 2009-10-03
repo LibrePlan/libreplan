@@ -59,10 +59,7 @@ function addResourcesLoadListMethods(object) {
 	};
 
 	function listenToScroll() {
-		var onHorizontalScroll = function() {
-			alert('horizontalscroll');
-		};
-		var onVerticalScroll = function() {
+		var onScroll = function() {
 			var scrolledpannel = YAHOO.util.Selector
 					.query('.rightpanellayout div')[0];
 			elem = YAHOO.util.Selector.query('.timetrackergap')[0];
@@ -74,7 +71,7 @@ function addResourcesLoadListMethods(object) {
 			leftpanel.style["top"] = "-" + scrolledpannel.scrollTop + "px";
 		};
 
-		YAHOO.util.Selector.query('.rightpanellayout div')[0].onscroll = onVerticalScroll;
+		YAHOO.util.Selector.query('.rightpanellayout div')[0].onscroll = onScroll;
 
 	}
 

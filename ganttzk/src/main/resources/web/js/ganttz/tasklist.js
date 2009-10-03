@@ -45,9 +45,8 @@ SCROLLBAR_WIDTH = 15; // Scrollbars default width
 
 zkTasklist.init = function(cmp) {
 	zkTasklist.adjust_height();
-	// make_visible();
 	// relocateScrolls();
-	// listenToScroll();
+	listenToScroll();
 }
 
 /* Resizes ganttpanel heigh to fit window size */
@@ -57,26 +56,27 @@ zkTasklist.adjust_height = function(cmp) {
 	adjustScrollableDimensions();
 }
 
-/* Listener for javascript scrolling to implement optimal synchronization */
+/* Scrolls taskdetails compoent when scrolling ganttpanel component */
 function listenToScroll() {
-	var onHorizontalScroll = function() {
-		var scroller = document.getElementById('ganttpanel_scroller_x');
-		document.getElementById('timetracker').scrollLeft = scroller.scrollLeft;
-		document.getElementById('scroll_container').scrollLeft = scroller.scrollLeft;
-		document.getElementById('zoom_buttons').style["left"] = scroller.scrollLeft
-				+ "px";
+	var onScroll = function() {
+		var scrolledpannel = YAHOO.util.Selector
+				.query('.rightpanellayout div')[0];
+		elem = YAHOO.util.Selector.query('.timetrackergap')[0];
+		elem.style["position"] = "relative";
+		elem.style["left"] = "-" + scrolledpannel.scrollLeft + "px";
+
+		var leftpanel = YAHOO.util.Selector.query('.leftpanelgap')[0];
+		leftpanel.style["position"] = "relative";
+		leftpanel.style["top"] = "-" + scrolledpannel.scrollTop + "px";
 	};
-	var onVerticalScroll = function() {
-		var offset = document.getElementById('ganttpanel_scroller_y').scrollTop;
-		document.getElementById('listdetails_container').scrollTop = offset;
-		document.getElementById('scroll_container').scrollTop = offset;
-	};
-	document.getElementById('ganttpanel_scroller_x').onscroll = onHorizontalScroll;
-	document.getElementById('ganttpanel_scroller_y').onscroll = onVerticalScroll;
-	// TODO listen to container onwheel scroll move
+
+	YAHOO.util.Selector.query('.rightpanellayout div')[0].onscroll = onScroll;
+
 }
 
-YAHOO.util.Event.addListener(window, 'resize', relocateScrolls);
+// Improve adjusting plannerlayout_center height based on window size */
+// YAHOO.util.Event.addListener(window, 'resize', relocateScrolls);
+
 /*
  * Move scrollbars to locate them on left and bottom window borders
  */
@@ -148,14 +148,6 @@ function adjustScrollableDimensions() {
 			+ "px";
 }
 
-/*
- * Makes javascript-handled scrollbars visible after the page is loaded to avoid
- * relocation effect when the task list composition is finished
- */
-function make_visible() {
-	document.getElementById('ganttpanel_scroller_x').style["display"] = "inline";
-	document.getElementById('ganttpanel_scroller_y').style["display"] = "inline";
-}
 
 /**
  *
