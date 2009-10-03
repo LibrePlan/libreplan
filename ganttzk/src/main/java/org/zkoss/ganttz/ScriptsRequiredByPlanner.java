@@ -32,4 +32,8 @@ public class ScriptsRequiredByPlanner {
     public static final String ELEMENT_MIN = "/zkau/web/js/yui/2.7.0/element/element-min.js";
     public static final String RESIZE_MIN = "/zkau/web/js/yui/2.7.0/resize/resize-min.js";
     public static final String LOGGER_MIN = "/zkau/web/js/yui/2.7.0/logger/logger-min.js";
+    // adding manually js associated to components since they can be used by
+    // other files with no dependencies being present
+    public static final String DEPENDENCY_LIST = "/zkau/web/js/ganttz/dependencylist.js";
+    public static final String DEPENDENCY = "/zkau/web/js/ganttz/dependency.js";
 }
