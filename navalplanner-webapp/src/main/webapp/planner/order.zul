@@ -80,8 +80,7 @@
 
     <window id="resourceAllocationWindow" self="@{define(content)}"
         apply="${allocationController}"
-        title="${i18n:_('Resource allocation')}" width="600px"
-        closable="true" visible="false">
+        title="${i18n:_('Resource allocation')}" width="600px" visible="false">
 
         <panel title="${i18n:_('Calculation type')}" >
             <panelchildren>
