@@ -88,6 +88,10 @@ public abstract class AdvancedAllocationController extends
         backToPreviousButton();
     }
 
+    public void onClick$cancelButton() {
+        backToPreviousButton();
+    }
+
     protected abstract void backToPreviousButton();
 
     public void onClick$zoomIncrease() {

@@ -31,6 +31,7 @@
        <north height="30px" border="0">
        <hbox align="center">
         <button label="Accept" id="acceptButton" />
+        <button label="Cancel" id="cancelButton" />
         <separator/>
         <button label="+" id="zoomIncrease"/>
         <button label="-" id="zoomDecrease"/>
