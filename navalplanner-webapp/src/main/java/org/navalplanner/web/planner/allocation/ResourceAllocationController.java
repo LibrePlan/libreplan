@@ -41,6 +41,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.ComponentsReplacer;
+import org.navalplanner.web.common.IChildrenSnapshot;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -102,6 +103,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Intbox taskElapsedDays;
 
     private Button applyButton;
+
+    private IChildrenSnapshot previousSnapshot;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -290,6 +293,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         resourceAllocationModel.cancel();
     }
 
+
     private void close() {
         self.setVisible(false);
         clear();
@@ -305,14 +309,35 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public void advanceAllocation() {
-        ComponentsReplacer.replaceAllChildren(window, "advance_allocation.zul",
+        IChildrenSnapshot snapshot = ComponentsReplacer
+                .replaceAllChildren(window, "advance_allocation.zul",
                 new HashMap<String, Object>() {
                     {
                         put("advancedAllocationController",
-                                new AdvancedAllocationController());
+                                new AdvancedAllocationController() {
+
+                                    @Override
+                                    protected void backToPreviousButton() {
+                                        previousSnapshot.restore();
+                                    }
+                                });
                     }
                 });
+        previousSnapshot = withWidth(snapshot, window.getWidth());
         window.setWidth("1200px");
+    }
+
+    private IChildrenSnapshot withWidth(final IChildrenSnapshot snapshot,
+            final String currentWidth) {
+        return new IChildrenSnapshot() {
+
+            @Override
+            public IChildrenSnapshot restore() {
+                IChildrenSnapshot result = snapshot.restore();
+                window.setWidth(currentWidth);
+                return result;
+            }
+        };
     }
 
     /**

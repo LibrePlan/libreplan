@@ -35,22 +35,6 @@
         <button label="+" id="zoomIncrease"/>
         <button label="-" id="zoomDecrease"/>
         From: <datebox /> to: <datebox />
-        <separator/>
-        Filter:
-        <combobox>
-            <comboitem label="Orders"
-                description="Show full orders and company view" />
-            <comboitem label="Tasks"
-                description="Tasks inside orders or filtered" />
-        </combobox>
-        <combobox>
-            <comboitem label="Filter by Label" />
-            <comboitem label="Filter by criterion" />
-            <comboitem label="Filter by resources" />
-            <comboitem label="Critical way" />
-        </combobox>
-        <textbox/>
-
        </hbox>
        </north>
 

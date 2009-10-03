@@ -43,7 +43,8 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.api.Column;
 
-public class AdvancedAllocationController extends GenericForwardComposer {
+public abstract class AdvancedAllocationController extends
+        GenericForwardComposer {
 
     private Div insertionPointTimetracker;
     private Div insertionPointLeftPanel;
@@ -82,6 +83,12 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         insertionPointLeftPanel.appendChild(leftPane);
         insertionPointTimetracker.appendChild(timeTrackerComponent);
     }
+
+    public void onClick$acceptButton() {
+        backToPreviousButton();
+    }
+
+    protected abstract void backToPreviousButton();
 
     public void onClick$zoomIncrease() {
         timeTracker.zoomIncrease();
