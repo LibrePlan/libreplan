@@ -36,7 +36,9 @@ public class LoadTimelinesGroup {
         LocalDate start = null;
         LocalDate end = null;
         for (LoadTimelinesGroup loadTimelinesGroup : timeLines) {
+            Validate.notNull(loadTimelinesGroup.getStart());
             start = min(start, loadTimelinesGroup.getStart());
+            Validate.notNull(loadTimelinesGroup.getEnd());
             end = max(end, loadTimelinesGroup.getEnd());
         }
         return new Interval(toDate(start), toDate(end));
@@ -74,9 +76,19 @@ public class LoadTimelinesGroup {
             List<? extends LoadTimeLine> children) {
         Validate.notNull(principal);
         Validate.notNull(children);
+        allChildrenAreNotEmpty(children);
         this.principal = principal;
         this.children = Collections
                 .unmodifiableList(new ArrayList<LoadTimeLine>(children));
+    }
+
+    private static void allChildrenAreNotEmpty(
+            List<? extends LoadTimeLine> lines) {
+        for (LoadTimeLine l : lines) {
+            if (l.isEmpty()) {
+                throw new IllegalArgumentException(l + " is empty");
+            }
+        }
     }
 
     public LoadTimeLine getPrincipal() {
@@ -112,6 +124,10 @@ public class LoadTimelinesGroup {
                     : result;
         }
         return result;
+    }
+
+    public boolean isEmpty() {
+        return principal.isEmpty();
     }
 
 }
