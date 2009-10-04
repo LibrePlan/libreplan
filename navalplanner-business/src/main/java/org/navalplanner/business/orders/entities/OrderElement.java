@@ -201,12 +201,10 @@ public abstract class OrderElement extends BaseEntity {
     public void addLabel(Label label) {
         Validate.notNull(label);
         labels.add(label);
-        label.addOrderElement(this);
     }
 
     public void removeLabel(Label label) {
         labels.remove(label);
-        label.removeOrderElement(this);
     }
 
     /**
