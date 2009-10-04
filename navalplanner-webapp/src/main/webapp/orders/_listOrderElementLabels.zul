@@ -71,7 +71,7 @@
                 <vbox>
                     <label value="${i18n:_('Assign Label')}" />
                     <hbox>
-                        <bandbox id="bdLabels"
+                        <bandbox id="bdLabels" autodrop="true"
                             onChanging="assignedLabelsController.onSearchLabels(event)">
                             <bandpopup>
                                 <vbox height="50px">

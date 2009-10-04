@@ -45,7 +45,7 @@
             <one-to-many class="org.navalplanner.business.advance.entities.DirectAdvanceAssignment" />
         </set>
 
-		<set name="labels" table="ORDER_ELEMENT_LABEL" access="field" cascade="all-delete-orphan">
+		<set name="labels" table="ORDER_ELEMENT_LABEL" access="field" cascade="all">
 			<key column="ORDER_ELEMENT_ID" not-null="true"/>
 			<many-to-many column="LABEL_ID" class="org.navalplanner.business.labels.entities.Label" />
 		</set>

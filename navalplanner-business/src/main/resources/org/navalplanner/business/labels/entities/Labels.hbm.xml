@@ -16,7 +16,7 @@
 		<many-to-one name="type" class="LabelType" column="LABEL_TYPE_ID" />
 	</properties>
 
-    <set name="orderElements" table="ORDER_ELEMENT_LABEL" cascade="all-delete-orphan" inverse="true">
+    <set name="orderElements" table="ORDER_ELEMENT_LABEL" cascade="all" inverse="true">
         <key column="LABEL_ID" not-null="false"/>
         <many-to-many column="ORDER_ELEMENT_ID" class="org.navalplanner.business.orders.entities.OrderElement"/>
     </set>

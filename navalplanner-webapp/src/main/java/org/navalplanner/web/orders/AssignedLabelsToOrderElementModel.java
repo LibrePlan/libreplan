@@ -59,6 +59,8 @@ public class AssignedLabelsToOrderElementModel implements
 
     OrderElement orderElement;
 
+    Set<Label> cacheLabels;
+
     @Override
     public OrderElement getOrderElement() {
         return orderElement;
@@ -72,26 +74,38 @@ public class AssignedLabelsToOrderElementModel implements
     @Override
     @Transactional(readOnly = true)
     public void init(OrderElement orderElement) {
+        initializeCacheLabels();
         this.orderElement = orderElement;
-        reattachOrderElement(this.orderElement);
+        initializeOrderElement(this.orderElement);
     }
 
-    private void reattachOrderElement(OrderElement orderElement) {
+    private void initializeCacheLabels() {
+        if (cacheLabels == null) {
+            System.out.println("### initializeCache");
+            cacheLabels = new HashSet<Label>();
+            final List<Label> labels = labelDAO.getAll();
+            initializeLabels(labels);
+            cacheLabels.addAll(labels);
+        }
+    }
+
+    private void initializeOrderElement(OrderElement orderElement) {
+        reattachLabels();
         orderDAO.save(orderElement);
         orderElement.getName();
         if (orderElement.getParent() != null) {
             orderElement.getParent().getName();
         }
-        reattachLabels(orderElement.getLabels());
+        initializeLabels(orderElement.getLabels());
     }
 
-    private void reattachLabels(Collection<Label> labels) {
+    private void initializeLabels(Collection<Label> labels) {
         for (Label label : labels) {
-            reattachLabel(label);
+            initializeLabel(label);
         }
     }
 
-    public void reattachLabel(Label label) {
+    public void initializeLabel(Label label) {
         label.getName();
         label.getType().getName();
     }
@@ -100,20 +114,27 @@ public class AssignedLabelsToOrderElementModel implements
     public List<Label> getLabels() {
         List<Label> result = new ArrayList<Label>();
         if (orderElement != null && orderElement.getLabels() != null) {
+            reattachLabels();
             result.addAll(orderElement.getLabels());
         }
         return result;
+    }
+
+    private void reattachLabels() {
+        for (Label label : cacheLabels) {
+            labelDAO.save(label);
+        }
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Label> getInheritedLabels() {
         List<Label> result = new ArrayList<Label>();
-
         if (orderElement != null) {
+            reattachLabels();
             OrderLineGroup parent = orderElement.getParent();
             while (parent != null) {
-                reattachOrderElement(parent);
+                initializeOrderElement(parent);
                 result.addAll(parent.getLabels());
                 parent = parent.getParent();
             }
@@ -127,22 +148,28 @@ public class AssignedLabelsToOrderElementModel implements
         return label;
     }
 
+    @Transactional(readOnly = true)
     public void assignLabel(Label label) {
+        reattachLabels();
         orderElement.addLabel(label);
+        cacheLabels.add(label);
     }
 
     @Override
     @Transactional(readOnly = true)
     public void deleteLabel(Label label) {
+        reattachLabels();
         orderElement.removeLabel(label);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Label findLabelByNameAndType(String labelName, LabelType labelType) {
-        final Label label = labelDAO.findByNameAndType(labelName, labelType);
+        reattachLabels();
+        Label label = labelDAO.findByNameAndType(labelName, labelType);
         if (label != null) {
-            reattachLabel(label);
+            initializeLabel(label);
+            cacheLabels.add(label);
         }
         return label;
     }
@@ -162,8 +189,10 @@ public class AssignedLabelsToOrderElementModel implements
     @Override
     @Transactional(readOnly = true)
     public List<Label> getAllLabels() {
-        final List<Label> labels = labelDAO.getAll();
-        reattachLabels(labels);
+        reattachLabels();
+        final List<Label> labels = new ArrayList<Label>();
+        labels.addAll(cacheLabels);
+        initializeLabels(labels);
         return labels;
     }
 
@@ -171,9 +200,10 @@ public class AssignedLabelsToOrderElementModel implements
     @Transactional(readOnly = true)
     public void cancel() {
         try {
+            reattachLabels();
             OrderElement orderElement = orderDAO
                     .find(this.orderElement.getId());
-            reattachOrderElement(orderElement);
+            initializeOrderElement(orderElement);
 
             Set<Label> labels = new HashSet<Label>();
             labels.addAll(orderElement.getLabels());
@@ -186,6 +216,7 @@ public class AssignedLabelsToOrderElementModel implements
     @Override
     @Transactional(readOnly = true)
     public void confirm() {
+        reattachLabels();
         orderDAO.save(orderElement);
     }
 }
