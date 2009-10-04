@@ -21,79 +21,93 @@
 <vbox id="listOrderElementLabels">
     <!-- Indirect labels -->
     <vbox>
-        <label value="${i18n:_('Indirect labels')}" />
-        <grid id="inheritedLabels" model="@{assignedLabelsController.inheritedLabels}">
-            <columns>
-                <column label="${i18n:_('Label type')}" />
-                <column label="${i18n:_('Value')}" />
-            </columns>
-            <rows>
-                <row  self="@{each='label'}" value="@{label}">
-                    <label value="@{label.type.name}" />
-                    <label value="@{label.name}"/>
-                </row>
-            </rows>
-        </grid>
+        <panel title="${i18n:_('Indirect labels')}" border="normal">
+            <panelchildren>
+                <grid id="inheritedLabels" height="150px" fixedLayout="true"
+                    model="@{assignedLabelsController.inheritedLabels}">
+                    <columns>
+                        <column label="${i18n:_('Label type')}" />
+                        <column label="${i18n:_('Value')}" />
+                    </columns>
+                    <rows>
+                        <row self="@{each='label'}" value="@{label}">
+                            <label value="@{label.type.name}" />
+                            <label value="@{label.name}" />
+                        </row>
+                    </rows>
+                </grid>
+            </panelchildren>
+        </panel>
     </vbox>
+
     <!-- Direct labels -->
     <vbox>
-        <label value="${i18n:_('Direct labels')}" />
-        <grid id="directLabels" model="@{assignedLabelsController.labels}">
-            <columns>
-                <column label="${i18n:_('Label type')}" />
-                <column label="${i18n:_('Value')}" />
-                <column label="${i18n:_('Operations')}" />
-            </columns>
-            <rows>
-                <row self="@{each='label'}" value="@{label}">
-                    <label value="@{label.type.name}"/>
-                    <label value="@{label.name}"/>
+        <panel title="${i18n:_('Direct labels')}" border="normal">
+            <panelchildren>
+                <grid id="directLabels" height="200px" fixedLayout="true"
+                    model="@{assignedLabelsController.labels}">
+                    <columns>
+                        <column label="${i18n:_('Label type')}" />
+                        <column label="${i18n:_('Value')}" />
+                        <column label="${i18n:_('Operations')}" />
+                    </columns>
+                    <rows>
+                        <row self="@{each='label'}" value="@{label}">
+                            <label value="@{label.type.name}" />
+                            <label value="@{label.name}" />
 
-                    <button sclass="icono"
-                        image="/common/img/ico_borrar1.png"
-                        hoverImage="/common/img/ico_borrar.png"
-                        tooltiptext="${i18n:_('Delete')}"
-                        onClick="assignedLabelsController.deleteLabel(self.parent.value)">
-                    </button>
+                            <button sclass="icono"
+                                image="/common/img/ico_borrar1.png"
+                                hoverImage="/common/img/ico_borrar.png"
+                                tooltiptext="${i18n:_('Delete')}"
+                                onClick="assignedLabelsController.deleteLabel(self.parent.value)">
+                            </button>
 
-                </row>
-            </rows>
-        </grid>
-    </vbox>
-    <!-- Assign label -->
-    <vbox>
-        <label value="${i18n:_('Assign Label')}" />
-        <hbox>
-            <bandbox id="bdLabels" onChanging="assignedLabelsController.onSearchLabels(event)">
-                <bandpopup>
-                    <vbox height="50px">
-                        <listbox id="lbLabels" width="200px" height="100px" vflex="true"
-                            itemRenderer="@{assignedLabelsController.labelRenderer}"
-                            onSelect="assignedLabelsController.onSelectLabel(event)">
-                            <listhead>
-                                <listheader label="Type" />
-                                <listheader label="Label" />
-                            </listhead>
-                        </listbox>
-                    </vbox>
-                </bandpopup>
-            </bandbox>
-            <button label="${i18n:_('Assign')}"
-                   onClick="assignedLabelsController.onAssignLabel()"
-                   style="margin-top: -4px" />
-        </hbox>
-    </vbox>
+                        </row>
+                    </rows>
+                </grid>
 
-    <!-- Create and assign label -->
-    <vbox>
-        <label value="${i18n:_('Create and assign label')}" />
+                <!-- Assign label -->
+                <vbox>
+                    <label value="${i18n:_('Assign Label')}" />
+                    <hbox>
+                        <bandbox id="bdLabels"
+                            onChanging="assignedLabelsController.onSearchLabels(event)">
+                            <bandpopup>
+                                <vbox height="50px">
+                                    <listbox id="lbLabels" width="200px"
+                                        height="100px" vflex="true"
+                                        itemRenderer="@{assignedLabelsController.labelRenderer}"
+                                        onSelect="assignedLabelsController.onSelectLabel(event)">
+                                        <listhead>
+                                            <listheader label="Type" />
+                                            <listheader label="Label" />
+                                        </listhead>
+                                    </listbox>
+                                </vbox>
+                            </bandpopup>
+                        </bandbox>
+                        <button label="${i18n:_('Assign')}"
+                            onClick="assignedLabelsController.onAssignLabel()"
+                            style="margin-top: -4px" />
+                    </hbox>
+                </vbox>
+
+                <!-- Create and assign label -->
+                <vbox>
+                    <label value="${i18n:_('Create and assign label')}" />
+                </vbox>
+                <hbox>
+                    <autocomplete id="cbLabelType"
+                        finder="LabelTypeFinder" buttonVisible="true" />
+                    <textbox id="txtLabelName" />
+                    <button style="margin-top: -4px"
+                        label="${i18n:_('Create &amp; Assign')}"
+                        onClick="assignedLabelsController.onCreateAndAssign()" />
+                </hbox>
+            </panelchildren>
+        </panel>
     </vbox>
-    <hbox>
-        <autocomplete id="cbLabelType" finder="LabelTypeFinder" buttonVisible="true" />
-        <textbox id="txtLabelName" />
-        <button style="margin-top: -4px" label="${i18n:_('Create &amp; Assign')}"
-            onClick="assignedLabelsController.onCreateAndAssign()"/>
-    </hbox>
 
     <hbox>
         <button label="${i18n:_('Accept')}"
