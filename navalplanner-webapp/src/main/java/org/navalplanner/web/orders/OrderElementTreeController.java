@@ -431,6 +431,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             upbutton.setHoverImage("/common/img/ico_bajar.png");
             upbutton.setParent(tcOperations);
             upbutton.setSclass("icono");
+            upbutton.setTooltiptext(_("Move down"));
             upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
@@ -442,6 +443,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             downbutton.setHoverImage("/common/img/ico_subir.png");
             downbutton.setParent(tcOperations);
             downbutton.setSclass("icono");
+            downbutton.setTooltiptext(_("Move up"));
             downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
@@ -453,6 +455,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             indentbutton.setHoverImage("/common/img/ico_derecha.png");
             indentbutton.setParent(tcOperations);
             indentbutton.setSclass("icono");
+            indentbutton.setTooltiptext(_("Indent"));
             indentbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
@@ -465,6 +468,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             unindentbutton.setHoverImage("/common/img/ico_izq.png");
             unindentbutton.setParent(tcOperations);
             unindentbutton.setSclass("icono");
+            unindentbutton.setTooltiptext(_("Unindent"));
             unindentbutton.addEventListener(Events.ON_CLICK,
                     new EventListener() {
                         @Override

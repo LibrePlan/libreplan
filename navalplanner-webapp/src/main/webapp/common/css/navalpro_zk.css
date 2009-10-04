@@ -85,7 +85,7 @@ table {
     height: 18px;
     border-bottom: 0px;
     border-top: 0px;
-    font-size: 12px;
+    font-size: 12px; /* 11px */
     border-left: 1px dotted #7EAAC6;
     padding-left: 2px;
     padding-top: 2px;
@@ -329,13 +329,12 @@ button.z-button {
 }
 
 .z-textbox,.z-decimalbox,.z-intbox,.z-longbox,
-.z-doublebox, .z-datebox,  .z-datebox-input {
+.z-doublebox, .z-datebox,  .z-datebox-inp {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
 }
 
-div.z-footer-cnt,div.z-row-cnt,div.z-group-cnt,div.z-group-foot-cnt,div.z-column-cnt
-    {
+div.z-footer-cnt,div.z-row-cnt,div.z-group-cnt,div.z-group-foot-cnt,div.z-column-cnt {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
     font-weight: bold;

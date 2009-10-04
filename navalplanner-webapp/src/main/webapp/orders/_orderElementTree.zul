@@ -46,8 +46,10 @@
                 <treecol label="${i18n:_('Code')}" class="code"/>
                 <treecol label="${i18n:_('Estimated init')}" class="estimated_init"/>
                 <treecol label="${i18n:_('Estimated end')}" class="estimated_end"/>
-                <treecol label="${i18n:_('Hours')}" class="hours"/>
-                <treecol label="${i18n:_('Operations')}" class="operations"/>
+                <treecol label="${i18n:_('Hours')}" class="hours"
+                    tooltiptext="${i18n:_('Total order element hours')}" />
+                <treecol label="${i18n:_('Operations')}" class="operations"
+                    tooltiptext="${i18n:_('Click on the icons to execute operation in the order element')}"/>
             </treecols>
         </tree>
     </vbox>
