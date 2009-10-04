@@ -94,8 +94,9 @@ public class AssignedLabelsToOrderElementController extends
         // Initialize selectedLabel
         bdLabels.setVariable("selectedLabel", null, true);
 
-        // Set autodrop
-        bdLabels.setAutodrop(true);
+        // Clear components
+        bdLabels.setValue("");
+        txtLabelName.setValue("");
 
         Util.reloadBindings(window);
         Util.reloadBindings(directLabels);
