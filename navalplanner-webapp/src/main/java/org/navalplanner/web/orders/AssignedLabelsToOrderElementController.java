@@ -174,11 +174,21 @@ public class AssignedLabelsToOrderElementController extends
         clear(bdLabels);
     }
 
+    /**
+     * Clears {@link Bandbox}
+     *
+     * Fills bandbox list with all labels, clear bandbox textbox, and set
+     * selected label to null
+     *
+     * @param bandbox
+     */
     @SuppressWarnings("unchecked")
     private void clear(Bandbox bandbox) {
         final List<Label> labels = (List<Label>) bandbox.getVariable(
                 "allLabels", true);
         lbLabels.setModel(new SimpleListModel(labels));
+        bdLabels.setValue("");
+        bdLabels.setVariable("selectedLabel", null, true);
     }
 
     /**
