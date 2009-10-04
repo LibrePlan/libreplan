@@ -95,8 +95,12 @@ public class ResourceLoadModel implements IResourceLoadModel {
         List<LoadTimelinesGroup> result = new ArrayList<LoadTimelinesGroup>();
         for (Entry<Criterion, List<GenericResourceAllocation>> entry : genericAllocationsByCriterion
                 .entrySet()) {
-            result.add(new LoadTimelinesGroup(createPrincipal(entry.getKey(),
-                    entry.getValue()), new ArrayList<LoadTimeLine>()));
+            LoadTimelinesGroup group = new LoadTimelinesGroup(createPrincipal(
+                    entry.getKey(),
+                            entry.getValue()), new ArrayList<LoadTimeLine>());
+            if (!group.isEmpty()) {
+                result.add(group);
+            }
         }
         return result;
     }
@@ -117,7 +121,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<LoadTimelinesGroup> groupsFor(List<Resource> allResources) {
         List<LoadTimelinesGroup> result = new ArrayList<LoadTimelinesGroup>();
         for (Resource resource : allResources) {
-            result.add(buildGroup(resource));
+            LoadTimelinesGroup group = buildGroup(resource);
+            if (!group.isEmpty()) {
+                result.add(group);
+            }
         }
         return result;
     }
@@ -170,8 +177,12 @@ public class ResourceLoadModel implements IResourceLoadModel {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         for (Entry<Set<Criterion>, List<GenericResourceAllocation>> entry : byCriterions
                 .entrySet()) {
-            result.add(buildTimeLine(new ArrayList<Criterion>(entry.getKey()),
-                    resource, entry.getValue()));
+            LoadTimeLine timeLine = buildTimeLine(new ArrayList<Criterion>(
+                    entry.getKey()),
+                            resource, entry.getValue());
+            if (!timeLine.isEmpty()) {
+                result.add(timeLine);
+            }
         }
         return result;
     }
@@ -182,8 +193,12 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 .byTask(sortedByStartDate);
         List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
         for (Entry<Task, List<ResourceAllocation<?>>> entry : byTask.entrySet()) {
-            secondLevel.add(buildTimeLine(resource, entry.getKey().getName(),
-                    entry.getValue()));
+            LoadTimeLine timeLine = buildTimeLine(resource, entry.getKey()
+                    .getName(),
+                    entry.getValue());
+            if (!timeLine.isEmpty()) {
+                secondLevel.add(timeLine);
+            }
         }
         return secondLevel;
     }
