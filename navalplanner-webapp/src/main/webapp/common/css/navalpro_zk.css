@@ -84,7 +84,11 @@ table {
 .orderTree input {
     height: 18px;
     border-bottom: 0px;
+    border-top: 0px;
     font-size: 12px;
+    border-left: 1px dotted #7EAAC6;
+    padding-left: 2px;
+    padding-top: 2px;
 }
 
 /* Allows tasknumber span to have fixed width */
@@ -99,26 +103,32 @@ table {
 /* These constants may be reviewed when testing with 3 digit tasknumbers */
 .orderTree .depth_1 input {
     width: 460px !important;
+    border-right: 0px;
 }
 
 .orderTree .depth_2 input {
     width: 430px !important; /* prev - 30 px */
+    border-right: 0px;
 }
 
 .orderTree .depth_3 input {
     width: 400px !important; /* prev - 30 px */
+    border-right: 0px;
 }
 
 .orderTree .depth_4 input {
     width: 370px !important; /* prev - 30 px */
+    border-right: 0px;
 }
 
 .orderTree .depth_5 input {
     width: 340px !important; /* prev - 30 px */
+    border-right: 0px;
 }
 
 .orderTree .depth_6 input {
     width: 310px !important; /* prev - 30 px */
+    border-right: 0px;
 }
 
 .orderTree .depth_1 .tasknumber {
@@ -318,7 +328,8 @@ button.z-button {
     padding-bottom: 0;
 }
 
-.z-textbox,.z-decimalbox,.z-intbox,.z-longbox,.z-doublebox, .z-datebox {
+.z-textbox,.z-decimalbox,.z-intbox,.z-longbox,
+.z-doublebox, .z-datebox,  .z-datebox-input {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
 }
@@ -383,12 +394,39 @@ div.z-grid {
     border-collapse: collapse;
 }
 
-/*
-.z-window-embedded .icono .z-button-cm,.z-window-modal .icono .z-button-cm {
-    display:none;
-} */
+.orderTree .z-textbox,.orderTree .z-decimalbox,
+.orderTree .z-intbox,.orderTree .z-longbox,
+.orderTree .z-doublebox {
+    height: 25px;
+    width: 100%;
+}
 
-.z-tree .z-textbox,.z-tree .z-decimalbox,.z-tree .z-intbox,.z-tree .z-longbox,.z-tree .z-doublebox
-{
+.listdetails .z-textbox, .listdetails .z-decimalbox,
+.listdetails .z-intbox, .listdetails .z-longbox,
+.listdetails .z-doublebox {
     height: 17px;
+}
+
+.z-tree .z-datebox-inp {
+    height:25px;
+}
+
+.orderTree .operations {
+    min-width:130px;
+}
+
+.orderTree .name {
+    min-width:505px;
+}
+
+.orderTree div.z-tree-cell-cnt {
+    padding:0px;
+}
+
+.orderTree td {
+    border-bottom: 1px dotted #7EAAC6;
+}
+
+.orderTree .icono td {
+    border:none;
 }
