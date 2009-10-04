@@ -132,18 +132,24 @@ public class AssignedLabelsToOrderElementController extends
      */
     public void onSearchLabels(InputEvent event) {
         bdLabels.setVariable("selectedLabel", null, true);
-        List<Label> filteredLabels = labelsStartWith(event.getValue());
+        List<Label> filteredLabels = matchesString(event.getValue());
         lbLabels.setModel(new SimpleListModel(filteredLabels));
         lbLabels.invalidate();
     }
 
+    /**
+     * Find {@link Label} which name or type start with prefix
+     *
+     * @param prefix
+     */
     @SuppressWarnings("unchecked")
-    private List<Label> labelsStartWith(String prefix) {
+    private List<Label> matchesString(String prefix) {
         List<Label> result = new ArrayList<Label>();
         List<Label> labels = (List<Label>) bdLabels.getVariable("allLabels",
                 true);
         for (Label label : labels) {
-            if (label.getName().startsWith(prefix)) {
+            if (label.getName().contains(prefix)
+                    || label.getType().getName().contains(prefix)) {
                 result.add(label);
             }
         }
