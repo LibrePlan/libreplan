@@ -120,7 +120,7 @@ public class AssignedLabelsToOrderElementController extends
         Listitem listitem = (Listitem) lbLabels.getSelectedItems().iterator()
                 .next();
         Label label = (Label) listitem.getValue();
-        bdLabels.setValue(label.getName());
+        bdLabels.setValue(label.getType().getName() + " " + label.getName());
         bdLabels.setVariable("selectedLabel", label, true);
         bdLabels.close();
     }
