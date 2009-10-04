@@ -23,6 +23,7 @@ package org.zkoss.ganttz.data.resourceload;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -65,8 +66,10 @@ public class LoadTimelineTest {
     }
 
     @Test
-    public void aLoadTimelineCanHaveZeroLoadPeriods() {
-        new LoadTimeLine("bla", Collections.<LoadPeriod> emptyList());
+    public void aLoadTimelineWithZeroLoadPeriodsIsEmpty() {
+        LoadTimeLine timeline = new LoadTimeLine("bla", Collections
+                .<LoadPeriod> emptyList());
+        assertTrue(timeline.isEmpty());
     }
 
     @Test

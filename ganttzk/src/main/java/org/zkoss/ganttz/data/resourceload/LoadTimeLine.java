@@ -54,14 +54,18 @@ public class LoadTimeLine {
     }
 
     public LocalDate getStart() {
-        if (loadPeriods.isEmpty()) {
+        if (isEmpty()) {
             return null;
         }
         return getFirst().getStart();
     }
 
+    public boolean isEmpty() {
+        return loadPeriods.isEmpty();
+    }
+
     public LocalDate getEnd() {
-        if (loadPeriods.isEmpty()) {
+        if (isEmpty()) {
             return null;
         }
         return getLast().getEnd();
