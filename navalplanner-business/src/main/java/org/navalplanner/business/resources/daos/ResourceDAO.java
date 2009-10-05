@@ -20,12 +20,14 @@
 
 package org.navalplanner.business.resources.daos;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.Query;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -36,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate DAO for the <code>Resource</code> entity.
- *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Diego Pino Garcia <dpino@udc.es>
  */
@@ -64,6 +65,37 @@ public class ResourceDAO extends GenericDAOHibernate<Resource, Long> implements
         Query query = getSession().createQuery(strQuery);
         query.setParameterList("criterions", criterions);
         return (List<Resource>) query.list();
+    }
+
+    @Override
+    public List<Resource> findResourcesRelatedTo(List<Task> taskElements) {
+        List<Resource> result = new ArrayList<Resource>();
+        result.addAll(findRelatedToSpecific(taskElements));
+        result.addAll(findRelatedToGeneric(taskElements));
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Resource> findRelatedToGeneric(List<Task> taskElements) {
+        String query = "SELECT DISTINCT resource FROM GenericResourceAllocation generic"
+                + " JOIN generic.genericDayAssignments dayAssignment"
+                + " JOIN dayAssignment.resource resource"
+                + " WHERE generic.task IN(:taskElements)";
+        return getSession().createQuery(query)
+                .setParameterList("taskElements",
+                taskElements).list();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Resource> findRelatedToSpecific(List<Task> taskElements) {
+        List<Resource> list = getSession()
+                .createQuery(
+                        "SELECT DISTINCT specificAllocation.resource FROM SpecificResourceAllocation specificAllocation "
+                                + " WHERE specificAllocation.task IN(:taskElements)")
+                .setParameterList(
+                "taskElements",
+                taskElements).list();
+        return list;
     }
 
 }
