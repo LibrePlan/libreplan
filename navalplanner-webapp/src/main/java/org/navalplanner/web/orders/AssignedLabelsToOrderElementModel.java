@@ -165,13 +165,30 @@ public class AssignedLabelsToOrderElementModel implements
     @Override
     @Transactional(readOnly = true)
     public Label findLabelByNameAndType(String labelName, LabelType labelType) {
-        reattachLabels();
-        Label label = labelDAO.findByNameAndType(labelName, labelType);
+        Label label = findLabelByNameAndTypeName(labelName, labelType.getName());
         if (label != null) {
             initializeLabel(label);
             cacheLabels.add(label);
         }
         return label;
+    }
+
+    /**
+     * Search {@link Label} by name and type in cache of labels
+     *
+     * @param labelName
+     * @param labelTypeName
+     * @return
+     */
+    private Label findLabelByNameAndTypeName(String labelName,
+            String labelTypeName) {
+        for (Label label : cacheLabels) {
+            if (label.getName().equals(labelName)
+                    && label.getType().getName().equals(labelTypeName)) {
+                return label;
+            }
+        }
+        return null;
     }
 
     @Override
