@@ -35,6 +35,7 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -94,6 +95,19 @@ public class ResourceAllocationDAO extends
                         + "join generic.criterions as criterion")
                 .list();
         return byCriterion(results);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterionFor(
+            List<Task> tasks) {
+        List<Object> list = getSession().createQuery(
+                "select generic, criterion "
+                        + "from GenericResourceAllocation as generic "
+                        + "join generic.criterions as criterion "
+                        + "join generic.task task where task in(:tasks)")
+                .setParameterList("tasks", tasks).list();
+        return byCriterion(list);
     }
 
     private Map<Criterion, List<GenericResourceAllocation>> byCriterion(
