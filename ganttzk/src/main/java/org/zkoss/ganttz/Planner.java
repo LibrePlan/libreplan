@@ -111,6 +111,20 @@ public class Planner extends HtmlMacroComponent  {
         }
     }
 
+    public void zoomIncrease() {
+        if (ganttPanel == null) {
+            return;
+        }
+        ganttPanel.zoomIncrease();
+    }
+
+    public void zoomDecrease() {
+        if (ganttPanel == null) {
+            return;
+        }
+        ganttPanel.zoomDecrease();
+    }
+
     public <T> void setConfiguration(PlannerConfiguration<T> configuration) {
         if (configuration == null)
             return;

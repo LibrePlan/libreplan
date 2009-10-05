@@ -1,4 +1,8 @@
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+<zscript><![CDATA[
+planner = self;
+]]>
+</zscript>
     <borderlayout sclass="plannerlayout" width="auto">
        <north height="30px" border="0">
        <hbox align="center">
@@ -6,8 +10,8 @@
         <button label="Back" />
         <button label="Company view" />
         <separator/>
-        <button label="+" />
-        <button label="-" />
+        <button label="+" onClick="planner.zoomIncrease();"/>
+        <button label="-" onClick="planner.zoomDecrease();"/>
         From: <datebox /> to: <datebox />
         <separator/>
         Filter:
