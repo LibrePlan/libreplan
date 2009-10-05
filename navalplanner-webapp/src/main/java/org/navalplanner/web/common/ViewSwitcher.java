@@ -71,4 +71,8 @@ public class ViewSwitcher implements Composer {
         isInPlanningOrder = true;
     }
 
+    public void goToResourceLoad() {
+        // TODO implement
+    }
+
 }

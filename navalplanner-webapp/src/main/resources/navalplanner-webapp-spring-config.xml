@@ -24,6 +24,7 @@
       <lookup-method name="getEditTaskCommand" bean="editTaskCommand"/>
       <lookup-method name="getCalendarAllocationCommand" bean="calendarAllocationCommand"/>
       <lookup-method name="getAddMilestoneCommand" bean="addMilestoneCommand"/>
+      <lookup-method name="getResourceLoadForOrderCommand" bean="resourceLoadForOrderCommand"/>
     </bean>
 
     <context:component-scan base-package="org.navalplanner.web"/>

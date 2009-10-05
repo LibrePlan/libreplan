@@ -90,6 +90,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         saveCommand.setState(planningState);
         configuration.addGlobalCommand(saveCommand);
 
+        IResourceLoadForOrderCommand resourceLoadForOrderCommand = getResourceLoadForOrderCommand();
+        resourceLoadForOrderCommand.initialize(order, switcher, planningState);
+        configuration.addGlobalCommand(resourceLoadForOrderCommand);
+
         IResourceAllocationCommand resourceAllocationCommand = getResourceAllocationCommand();
         resourceAllocationCommand.initialize(resourceAllocationController,
                 planningState);
@@ -198,6 +202,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract IEditTaskCommand getEditTaskCommand();
 
     protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
+
+    protected abstract IResourceLoadForOrderCommand getResourceLoadForOrderCommand();
 
     private Order reload(Order order) {
         try {
