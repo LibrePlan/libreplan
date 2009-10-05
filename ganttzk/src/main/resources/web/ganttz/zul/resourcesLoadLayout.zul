@@ -22,10 +22,7 @@
 
     <borderlayout sclass="resourcesloadlayout" width="auto">
        <north height="30px" border="0">
-       <hbox align="center">
-        <button label="Save" />
-        <button label="Back" />
-        <button label="Company view" />
+       <hbox align="center" id="toolbar">
         <separator/>
         <button label="+" />
         <button label="-" />

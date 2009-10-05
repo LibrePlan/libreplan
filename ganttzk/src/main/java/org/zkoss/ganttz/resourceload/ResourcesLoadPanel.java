@@ -26,13 +26,26 @@ import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.au.out.AuInvoke;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Separator;
 
 public class ResourcesLoadPanel extends HtmlMacroComponent {
+
+    public interface IToolbarCommand {
+        public void doAction();
+
+        public String getLabel();
+    }
 
     private TimeTrackerComponent timeTrackerComponent;
 
@@ -52,6 +65,39 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
         leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
         registerNeededScripts();
+    }
+
+    public void add(final IToolbarCommand... commands) {
+        Component toolbar = getToolbar();
+        Separator separator = getSeparator();
+        for (IToolbarCommand c : commands) {
+            toolbar.insertBefore(asButton(c), separator);
+        }
+    }
+
+    private Button asButton(final IToolbarCommand c) {
+        Button result = new Button();
+        result.addEventListener(Events.ON_CLICK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                c.doAction();
+            }
+        });
+        result.setLabel(c.getLabel());
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Separator getSeparator() {
+        List<Component> children = getToolbar().getChildren();
+        Separator separator = ComponentsFinder.findComponentsOfType(
+                Separator.class, children).get(0);
+        return separator;
+    }
+
+    private Component getToolbar() {
+        Component toolbar = getFellow("toolbar");
+        return toolbar;
     }
 
     private void registerNeededScripts() {
