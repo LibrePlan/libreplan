@@ -22,6 +22,7 @@ package org.navalplanner.web.planner;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 
@@ -34,7 +35,7 @@ public interface IOrderPlanningModel {
         public void use(PlannerConfiguration<TaskElement> configuration);
     }
 
-    void createConfiguration(Order order,
+    void createConfiguration(Order order, ViewSwitcher viewSwitcher,
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
             SplittingController splittingController,

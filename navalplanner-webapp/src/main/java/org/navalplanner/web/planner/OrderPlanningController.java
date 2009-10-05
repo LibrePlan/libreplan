@@ -79,7 +79,8 @@ public class OrderPlanningController implements
 
     @Override
     public void showSchedule(Order order) {
-        model.createConfiguration(order, resourceAllocationController,
+        model.createConfiguration(order, viewSwitcher,
+                resourceAllocationController,
                 editTaskController, splittingController,
                 calendarAllocationController,
                 new IConfigurationOnTransaction() {

@@ -34,6 +34,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -73,7 +74,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void createConfiguration(Order order,
+    public void createConfiguration(Order order, ViewSwitcher switcher,
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
             SplittingController splittingController,
