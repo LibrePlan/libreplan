@@ -146,7 +146,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     public void save() {
         try {
             workReportModel.save();
-            messagesForUser.showMessage(Level.ERROR,
+            messagesForUser.showMessage(Level.INFO,
                     _("Work report saved"));
         } catch (ValidationException e) {
             showInvalidValues(e);
