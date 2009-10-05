@@ -27,6 +27,7 @@ import java.util.concurrent.Callable;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.web.common.ViewSwitcher;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
 import org.zkoss.ganttz.timetracker.PairOfLists;
@@ -43,7 +44,7 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.api.Column;
 
-public abstract class AdvancedAllocationController extends
+public class AdvancedAllocationController extends
         GenericForwardComposer {
 
     private Div insertionPointTimetracker;
@@ -55,6 +56,11 @@ public abstract class AdvancedAllocationController extends
     private TimeTrackerComponentWithoutColumns timeTrackerComponent;
     private Grid leftPane;
     private TimeTrackedTable<FakeData> table;
+    private final ViewSwitcher switcher;
+
+    public AdvancedAllocationController(ViewSwitcher switcher) {
+        this.switcher = switcher;
+    }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -92,7 +98,9 @@ public abstract class AdvancedAllocationController extends
         backToPreviousButton();
     }
 
-    protected abstract void backToPreviousButton();
+    private void backToPreviousButton() {
+        switcher.goToPlanningOrderView();
+    }
 
     public void onClick$zoomIncrease() {
         timeTracker.zoomIncrease();
