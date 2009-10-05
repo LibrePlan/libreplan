@@ -710,11 +710,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 // There only can be one criterion for each criterion type
                 for (Criterion criterion : workReportLine.getCriterions()) {
                     if (criterionType.equals(criterion.getType())) {
-                        workReportLine.getCriterions().remove(criterion);
+                        workReportLine.removeCriterion(criterion);
                     }
                 }
-                workReportLine.getCriterions().add(
-                        (Criterion) listItem.getValue());
+                workReportLine.addCriterion((Criterion) listItem.getValue());
             }
         });
     }

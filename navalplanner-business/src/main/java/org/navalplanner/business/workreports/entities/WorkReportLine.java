@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.workreports.entities;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -105,7 +106,15 @@ public class WorkReportLine extends BaseEntity {
     }
 
     public Set<Criterion> getCriterions() {
-        return new HashSet<Criterion>(criterions);
+        return Collections.unmodifiableSet(criterions);
+    }
+
+    public void addCriterion(Criterion criterion) {
+        criterions.add(criterion);
+    }
+
+    public void removeCriterion(Criterion criterion) {
+        criterions.remove(criterion);
     }
 
     public void setCriterions(Set<Criterion> criterions) {
