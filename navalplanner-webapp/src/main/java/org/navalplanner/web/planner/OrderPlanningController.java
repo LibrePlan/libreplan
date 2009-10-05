@@ -33,6 +33,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
+import org.zkoss.ganttz.util.OnZKDesktopRegistry;
+import org.zkoss.ganttz.util.script.IScriptsRegister;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -75,6 +78,12 @@ public class OrderPlanningController implements
     private CalendarAllocationController calendarAllocationController;
 
     public OrderPlanningController() {
+        getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
+    }
+
+    private IScriptsRegister getScriptsRegister() {
+        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
+                .retrieve();
     }
 
     @Override
