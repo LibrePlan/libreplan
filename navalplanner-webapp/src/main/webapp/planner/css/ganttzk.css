@@ -505,6 +505,10 @@ tr.z-vbox-sep {
     display:none;
 }
 
+.timetrackergap {
+    position: relative;
+}
+
 .taskdetails_name {
     min-width: 150px;
 }
@@ -523,4 +527,3 @@ div.z-tree {
 
 .plannerlayout, .resourcesloadlayout {
     height:500px;
-}

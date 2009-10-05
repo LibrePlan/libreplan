@@ -43,9 +43,29 @@ FOOTER_HEIGHT = 40; // Design-relative footer height
 
 SCROLLBAR_WIDTH = 15; // Scrollbars default width
 
+
+function scrolledpannel() {
+	return YAHOO.util.Selector.query('.rightpanellayout div')[0];
+}
+
+function leftpanel() {
+	return YAHOO.util.Selector.query('.leftpanelgap')[0];
+}
+
+function plannergraph() {
+	return YAHOO.util.Selector.query('.plannergraph div')[0];
+}
+
+function timetrackergap() {
+	return YAHOO.util.Selector.query('.timetrackergap')[0];
+}
+
+function rightpanellayout() {
+	return YAHOO.util.Selector.query('.rightpanellayout div')[0];
+}
+
 zkTasklist.init = function(cmp) {
 	zkTasklist.adjust_height();
-	// relocateScrolls();
 	listenToScroll();
 }
 
@@ -58,19 +78,24 @@ zkTasklist.adjust_height = function(cmp) {
 
 /* Scrolls taskdetails compoent when scrolling ganttpanel component */
 function listenToScroll() {
-	var onScroll = function() {
-		var scrolledpannel = YAHOO.util.Selector
-				.query('.rightpanellayout div')[0];
-		elem = YAHOO.util.Selector.query('.timetrackergap')[0];
-		elem.style["position"] = "relative";
-		elem.style["left"] = "-" + scrolledpannel.scrollLeft + "px";
 
-		var leftpanel = YAHOO.util.Selector.query('.leftpanelgap')[0];
-		leftpanel.style["position"] = "relative";
-		leftpanel.style["top"] = "-" + scrolledpannel.scrollTop + "px";
+	timetrackergap_ = timetrackergap();
+	scrolledpannel_ = scrolledpannel();
+	leftpanel_ = leftpanel();
+	rightpanellayout_ = rightpanellayout();
+	plannergraph_ = plannergraph();
+
+	var onScroll = function() {
+		timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
+
+		leftpanel_.style["position"] = "relative";
+		leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
+
+		plannergraph_.style["position"] = "relative";
+		plannergraph_.scrollLeft = scrolledpannel_.scrollLeft;
 	};
 
-	YAHOO.util.Selector.query('.rightpanellayout div')[0].onscroll = onScroll;
+	rightpanellayout_.onscroll = onScroll;
 
 }
 

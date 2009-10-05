@@ -45,6 +45,24 @@ function addResourcesLoadListMethods(object) {
 		return YAHOO.util.Selector.query('.taskspanelgap')[0];
 	}
 
+	function resourcesloadgraph() {
+		return YAHOO.util.Selector.query('.resourcesloadgraph div')[0];
+	}
+
+	function scrolledpannel() {
+		return YAHOO.util.Selector.query('.rightpanellayout div')[0];
+	}
+
+
+	function timetrackergap() {
+		return YAHOO.util.Selector.query('.timetrackergap')[0];
+	}
+
+	function leftpanel() {
+		return YAHOO.util.Selector.query('.leftpanelgap .z-tree-body')[0];
+	}
+
+
 	object.init = function(cmp) {
 		this.adjustTimeTrackerSize(cmp);
 		YAHOO.util.Event.addListener(window, 'resize',
@@ -59,16 +77,22 @@ function addResourcesLoadListMethods(object) {
 	};
 
 	function listenToScroll() {
-		var onScroll = function() {
-			var scrolledpannel = YAHOO.util.Selector
-					.query('.rightpanellayout div')[0];
-			elem = YAHOO.util.Selector.query('.timetrackergap')[0];
-			elem.style["position"] = "relative";
-			elem.style["left"] = "-" + scrolledpannel.scrollLeft + "px";
 
-			var leftpanel = YAHOO.util.Selector.query('.leftpanelgap .z-tree-body')[0];
-			leftpanel.style["position"] = "relative";
-			leftpanel.style["top"] = "-" + scrolledpannel.scrollTop + "px";
+		var timetrackergap_ = timetrackergap();
+		var scrolledpannel_ = scrolledpannel();
+		var resourcesloadgraph_ = resourcesloadgraph();
+		var leftpanel_ = leftpanel();
+
+		var onScroll = function() {
+			timetrackergap_.style["position"] = "relative";
+			timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
+
+			leftpanel_.style["position"] = "relative";
+			leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
+
+			resourcesloadgraph_.style["position"] = "relative";
+			resourcesloadgraph_.scrollLeft = scrolledpannel_.scrollLeft;
+
 		};
 
 		YAHOO.util.Selector.query('.rightpanellayout div')[0].onscroll = onScroll;

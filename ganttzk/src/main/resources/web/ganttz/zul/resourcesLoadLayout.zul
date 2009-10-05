@@ -89,7 +89,7 @@
                     </vbox>
                 </west>
 
-                <center autoscroll="true">
+                <center autoscroll="true" sclass="resourcesloadgraph">
 
 <vbox>
 <zscript>

@@ -73,7 +73,7 @@ planner = self;
                     </vbox>
                 </west>
 
-                <center autoscroll="true">
+                <center autoscroll="true" sclass="plannergraph">
 
 <vbox>
 <zscript>
