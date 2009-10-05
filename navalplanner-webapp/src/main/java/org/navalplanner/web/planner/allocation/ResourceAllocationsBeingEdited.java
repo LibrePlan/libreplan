@@ -285,6 +285,7 @@ public class ResourceAllocationsBeingEdited {
 
     public void setCalculatedValue(CalculatedValue calculatedValue) {
         this.calculatedValue = calculatedValue;
+        this.daysDuration = task.getDaysDuration();
     }
 
     public AggregateOfResourceAllocations getInitialAggregate() {

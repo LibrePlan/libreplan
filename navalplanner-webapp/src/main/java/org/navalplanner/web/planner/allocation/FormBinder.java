@@ -115,6 +115,7 @@ class FormBinder {
         }
         resourceAllocationsBeingEdited.setCalculatedValue(calculatedValue);
         applyDisabledRules();
+        loadValuesForElapsedDays();
         applyButton.setDisabled(false);
     }
 
