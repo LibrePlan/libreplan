@@ -25,7 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +39,6 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.web.common.ComponentsReplacer;
 import org.navalplanner.web.common.IChildrenSnapshot;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -298,7 +296,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
 
     private void close() {
-        self.setVisible(false);
+        window.setVisible(false);
         clear();
     }
 
@@ -312,35 +310,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public void advanceAllocation() {
-        IChildrenSnapshot snapshot = ComponentsReplacer
-                .replaceAllChildren(window, "advance_allocation.zul",
-                new HashMap<String, Object>() {
-                    {
-                        put("advancedAllocationController",
-                                new AdvancedAllocationController() {
-
-                                    @Override
-                                    protected void backToPreviousButton() {
-                                        previousSnapshot.restore();
-                                    }
-                                });
-                    }
-                });
-        previousSnapshot = withWidth(snapshot, window.getWidth());
-        window.setWidth("1200px");
-    }
-
-    private IChildrenSnapshot withWidth(final IChildrenSnapshot snapshot,
-            final String currentWidth) {
-        return new IChildrenSnapshot() {
-
-            @Override
-            public IChildrenSnapshot restore() {
-                IChildrenSnapshot result = snapshot.restore();
-                window.setWidth(currentWidth);
-                return result;
-            }
-        };
+        switcher.goToAdvancedAllocation();
+        window.setVisible(false);
     }
 
     /**

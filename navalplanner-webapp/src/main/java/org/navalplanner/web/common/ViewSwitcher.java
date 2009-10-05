@@ -19,6 +19,9 @@
  */
 package org.navalplanner.web.common;
 
+import java.util.HashMap;
+
+import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -34,10 +37,28 @@ public class ViewSwitcher implements Composer {
 
     private org.zkoss.zk.ui.Component parent;
 
+    private IChildrenSnapshot planningOrder;
+
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         this.parent = comp;
     }
 
+    public void goToAdvancedAllocation() {
+        planningOrder = ComponentsReplacer.replaceAllChildren(parent,
+                "advance_allocation.zul",
+                new HashMap<String, Object>() {
+                    {
+                        put("advancedAllocationController",
+                                new AdvancedAllocationController() {
+
+                                    @Override
+                                    protected void backToPreviousButton() {
+                                        planningOrder.restore();
+                                    }
+                                });
+                    }
+                });
+    }
 
 }
