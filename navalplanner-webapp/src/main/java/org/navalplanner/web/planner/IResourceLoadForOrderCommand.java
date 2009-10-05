@@ -19,7 +19,6 @@
  */
 package org.navalplanner.web.planner;
 
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.zkoss.ganttz.extensions.ICommand;
@@ -30,7 +29,6 @@ import org.zkoss.ganttz.extensions.ICommand;
  */
 public interface IResourceLoadForOrderCommand extends ICommand<TaskElement>{
 
-    public void initialize(Order order, ViewSwitcher switcher,
-            PlanningState planningState);
+    public void initialize(ViewSwitcher switcher, PlanningState planningState);
 
 }

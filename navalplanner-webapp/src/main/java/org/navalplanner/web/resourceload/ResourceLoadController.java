@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.web.planner.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -47,6 +48,8 @@ public class ResourceLoadController extends GenericForwardComposer {
 
     private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
 
+    private PlanningState filterBy;
+
     public ResourceLoadController() {
     }
 
@@ -57,7 +60,11 @@ public class ResourceLoadController extends GenericForwardComposer {
 
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
-        resourceLoadModel.initGlobalView();
+        if (filterBy == null) {
+            resourceLoadModel.initGlobalView();
+        } else {
+            resourceLoadModel.initGlobalView(filterBy);
+        }
         ResourcesLoadPanel resourcesLoadPanel = buildResourcesLoadPanel();
         comp.appendChild(resourcesLoadPanel);
         resourcesLoadPanel.afterCompose();
@@ -71,5 +78,9 @@ public class ResourceLoadController extends GenericForwardComposer {
     private ResourcesLoadPanel buildResourcesLoadPanel() {
         return new ResourcesLoadPanel(resourceLoadModel.getLoadTimeLines(),
                 new TimeTracker(resourceLoadModel.getViewInterval()));
+    }
+
+    public void filterBy(PlanningState planningState) {
+        this.filterBy = planningState;
     }
 }

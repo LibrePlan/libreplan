@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,9 +39,11 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.planner.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -64,6 +67,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<LoadTimelinesGroup> loadTimeLines;
     private Interval viewInterval;
 
+    private PlanningState filterBy;
+
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView() {
@@ -75,6 +80,13 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public void initGlobalView(PlanningState filterBy) {
+        this.filterBy = filterBy;
+        initGlobalView();
+    }
+
     private Date plusFiveYears(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -84,10 +96,52 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private List<LoadTimelinesGroup> calculateLoadTimelinesGroups() {
         List<LoadTimelinesGroup> result = new ArrayList<LoadTimelinesGroup>();
-        List<Resource> allResources = resourcesDAO.list(Resource.class);
-        result.addAll(groupsFor(allResources));
-        result.addAll(groupsFor(resourceAllocationDAO.findGenericAllocationsByCriterion()));
+        result.addAll(groupsFor(resourcesToShow()));
+        result.addAll(groupsFor(genericAllocationsByCriterion()));
         return result;
+    }
+
+    private Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion() {
+        if (filter()) {
+            return resourceAllocationDAO
+                    .findGenericAllocationsByCriterionFor(justTasks(filterBy
+                            .getTasksToSave()));
+        } else {
+            return resourceAllocationDAO.findGenericAllocationsByCriterion();
+
+        }
+    }
+
+    private List<Resource> resourcesToShow() {
+        if (filter()) {
+            return resourcesForActiveTasks();
+        } else {
+            return allResources();
+        }
+    }
+
+    private boolean filter() {
+        return filterBy != null;
+    }
+
+    private List<Resource> resourcesForActiveTasks() {
+        filterBy.reassociateResourcesWithSession(resourcesDAO);
+        return resourcesDAO
+                .findResourcesRelatedTo(justTasks(filterBy.getTasksToSave()));
+    }
+
+    private List<Task> justTasks(Collection<? extends TaskElement> tasks) {
+        List<Task> result = new ArrayList<Task>();
+        for (TaskElement taskElement : tasks) {
+            if (taskElement instanceof Task) {
+                result.add((Task) taskElement);
+            }
+        }
+        return result;
+    }
+
+    private List<Resource> allResources() {
+        return resourcesDAO.list(Resource.class);
     }
 
     private List<LoadTimelinesGroup> groupsFor(
@@ -237,6 +291,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     public Interval getViewInterval() {
         return viewInterval;
     }
+
 }
 
 class PeriodsBuilder {

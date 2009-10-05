@@ -91,7 +91,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration.addGlobalCommand(saveCommand);
 
         IResourceLoadForOrderCommand resourceLoadForOrderCommand = getResourceLoadForOrderCommand();
-        resourceLoadForOrderCommand.initialize(order, switcher, planningState);
+        resourceLoadForOrderCommand.initialize(switcher, planningState);
         configuration.addGlobalCommand(resourceLoadForOrderCommand);
 
         IResourceAllocationCommand resourceAllocationCommand = getResourceAllocationCommand();

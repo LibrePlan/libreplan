@@ -21,7 +21,6 @@ package org.navalplanner.web.planner;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.resourceload.ResourceLoadController;
@@ -46,14 +45,14 @@ public class ResourceLoadForOrderCommand implements
     private ResourceLoadController resourceLoadController;
 
     @Override
-    public void initialize(Order order, ViewSwitcher switcher,
-            PlanningState planningState) {
+    public void initialize(ViewSwitcher switcher, PlanningState planningState) {
         this.switcher = switcher;
         this.planningState = planningState;
     }
 
     @Override
     public void doAction(IContext<TaskElement> context) {
+        resourceLoadController.filterBy(planningState);
         switcher.goToResourceLoad(resourceLoadController);
     }
 
