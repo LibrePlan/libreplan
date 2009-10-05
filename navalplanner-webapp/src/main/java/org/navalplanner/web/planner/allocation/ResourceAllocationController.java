@@ -46,6 +46,7 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.common.components.WorkerSearch;
 import org.navalplanner.web.planner.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -77,6 +78,8 @@ import org.zkoss.zul.api.Window;
 @org.springframework.stereotype.Component("resourceAllocationController")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ResourceAllocationController extends GenericForwardComposer {
+
+    private ViewSwitcher switcher;
 
     private IResourceAllocationModel resourceAllocationModel;
 
@@ -468,5 +471,13 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 }
             });
         }
+    }
+
+    public ViewSwitcher getSwitcher() {
+        return switcher;
+    }
+
+    public void setSwitcher(ViewSwitcher switcher) {
+        this.switcher = switcher;
     }
 }

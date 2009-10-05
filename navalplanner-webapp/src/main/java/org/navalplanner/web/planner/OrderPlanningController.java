@@ -22,6 +22,7 @@ package org.navalplanner.web.planner;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.navalplanner.web.planner.IOrderPlanningModel.IConfigurationOnTransaction;
@@ -40,6 +41,9 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class OrderPlanningController implements
         IOrderPlanningControllerEntryPoints {
+
+    @Autowired
+    private ViewSwitcher viewSwitcher;
 
     @Autowired
     private ResourceAllocationController resourceAllocationController;
@@ -100,6 +104,10 @@ public class OrderPlanningController implements
 
     public CalendarAllocationController getCalendarAllocationController() {
         return calendarAllocationController;
+    }
+
+    public ViewSwitcher getViewSwitcher() {
+        return viewSwitcher;
     }
 
 }

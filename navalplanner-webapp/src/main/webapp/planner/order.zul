@@ -32,17 +32,20 @@
     macroURI="/resources/search/worker_search.zul" ?>
 
 <zk>
-
     <zscript><![CDATA[
         planningController = orderPlanningController;
         allocationController = planningController.resourceAllocationController;
         splittingTaskController = planningController.splittingController;
         calendarController = planningController.calendarAllocationController;
+        switcher = planningController.viewSwitcher;
+        allocationController.switcher = switcher;
     ]]>
     </zscript>
 
-    <planner id="planner" self="@{define(content)}">
-    </planner>
+    <div apply="${switcher}" self="@{define(content)}">
+        <planner id="planner">
+        </planner>
+    </div>
 
     <div id="idContextMenuTaskAssignment"></div>
 
