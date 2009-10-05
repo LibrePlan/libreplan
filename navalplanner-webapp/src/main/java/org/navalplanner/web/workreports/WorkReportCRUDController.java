@@ -44,6 +44,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.zk.ui.Component;
@@ -53,6 +54,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.ListModel;
@@ -437,7 +439,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         // Bind workReportLine to listItem
         listItem.setValue(workReportLine);
 
-        appendTextboxResource(listItem);
+        appendAutocompleteResource(listItem);
         appendTextboxOrder(listItem);
         appendIntboxNumHours(listItem);
 
@@ -451,54 +453,46 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Append a Textbox @{link Resource} to listItem
+     * Append a Autobox @{link Resource} to listItem
      *
      * @param listItem
      */
-    private void appendTextboxResource(Listitem listItem) {
-        Textbox txtResource = new Textbox();
-        bindTextboxResource(txtResource, (WorkReportLine) listItem.getValue());
+    private void appendAutocompleteResource(final Listitem listItem) {
+        final Autocomplete autocomplete = new Autocomplete();
+        autocomplete.applyProperties();
+        autocomplete.setFinder("WorkerFinder");
 
-        // Insert textbox in listcell and append to listItem
+        // Getter, show worker selected
+        if (getWorker(listItem) != null) {
+            autocomplete.setSelectedItem(getWorker(listItem));
+        }
+
+        // Setter, set worker selected to WorkReportLine.resource
+        autocomplete.addEventListener("onSelect", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                final Comboitem comboitem = autocomplete.getSelectedItem();
+                if (comboitem == null) {
+                    throw new WrongValueException(_("Please, select a worker"));
+                }
+                // Update worker
+                WorkReportLine workReportLine = (WorkReportLine) listItem
+                        .getValue();
+                workReportLine.setResource((Worker) comboitem.getValue());
+                listItem.setValue(workReportLine);
+            }
+        });
+
+        // Insert autobox in listcell and append to listItem
         Listcell listCell = new Listcell();
-        listCell.appendChild(txtResource);
+        listCell.appendChild(autocomplete);
         listItem.appendChild(listCell);
     }
 
-    /**
-     * Binds Textbox @{link Resource} to a {@link WorkReportLine}
-     * {@link Resource}
-     *
-     * @param txtResource
-     * @param workReportLine
-     */
-    private void bindTextboxResource(final Textbox txtResource,
-            final WorkReportLine workReportLine) {
-        Util.bind(txtResource, new Util.Getter<String>() {
-
-            @Override
-            public String get() {
-                return (workReportLine.getResource() != null) ? ((Worker) workReportLine
-                        .getResource()).getNif()
-                        : "";
-            }
-
-        }, new Util.Setter<String>() {
-
-            @Override
-            public void set(String value) {
-                if (value.length() > 0) {
-                    Worker worker;
-                    try {
-                        worker = workReportModel.findWorker(value);
-                    } catch (InstanceNotFoundException e) {
-                        throw new WrongValueException(txtResource,
-                                _("Worker not found"));
-                    }
-                    workReportLine.setResource(worker);
-                }
-            }
-        });
+    private Worker getWorker(Listitem listitem) {
+        WorkReportLine workReportLine = (WorkReportLine) listitem.getValue();
+        return (Worker) workReportLine.getResource();
     }
 
     /**
@@ -750,7 +744,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             listItem.setValue(workReportLine);
 
             // Create textboxes
-            appendTextboxResource(listItem);
+            appendAutocompleteResource(listItem);
             appendTextboxOrder(listItem);
             appendIntboxNumHours(listItem);
 

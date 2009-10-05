@@ -28,9 +28,7 @@ import org.navalplanner.web.common.components.finders.IFinder;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 
 /**
  * Autocomplete component
@@ -46,19 +44,9 @@ import org.zkoss.zul.Comboitem;
  * @author Diego Pino García <dpino@igalia.com>
  */
 @SuppressWarnings("serial")
-public class Autocomplete extends HtmlMacroComponent {
-
-    private Combobox combo;
+public class Autocomplete extends Combobox {
 
     private IFinder finder;
-
-    public void afterCompose() {
-        super.afterCompose();
-        combo = (Combobox) getFellowIfAny("combo");
-        combo.setModel(finder.getModel());
-        combo.setItemRenderer(finder.getItemRenderer());
-        combo.setParent(this);
-    }
 
     public String getFinder() {
         return finder.getClass().toString();
@@ -66,10 +54,12 @@ public class Autocomplete extends HtmlMacroComponent {
 
     public void setFinder(String classname) {
         finder = (IFinder) getBean(StringUtils.uncapitalize(classname));
+        setModel(finder.getModel());
+        setItemRenderer(finder.getItemRenderer());
     }
 
-    public Comboitem getSelectedItem() {
-        return combo.getSelectedItem();
+    public void setSelectedItem(Object object) {
+        this.setValue(finder._toString(object));
     }
 
     private Object getBean(String classname) {
@@ -81,4 +71,5 @@ public class Autocomplete extends HtmlMacroComponent {
                 .getWebApplicationContext(servletContext);
         return webApplicationContext.getBean(classname);
     }
+
 }

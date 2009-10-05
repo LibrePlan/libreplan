@@ -25,8 +25,8 @@
 
     <component>
         <component-name>autocomplete</component-name>
-        <component-class>org.navalplanner.web.common.components.Autocomplete</component-class>
-        <macro-uri>/common/components/autocomplete.zul</macro-uri>
+        <component-class>org.navalplanner.web.common.components.Autobox</component-class>
+        <extends>combobox</extends>
     </component>
 
 </language-addon>
