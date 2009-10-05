@@ -72,7 +72,9 @@ public class ViewSwitcher implements Composer {
     }
 
     public void goToResourceLoad() {
-        // TODO implement
+        planningOrder = ComponentsReplacer.replaceAllChildren(parent,
+                "../resourceload/resourceloadfororder.zul",
+                new HashMap<String, Object>());
     }
 
 }
