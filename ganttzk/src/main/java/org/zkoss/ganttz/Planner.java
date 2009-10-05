@@ -36,8 +36,10 @@ import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zul.Separator;
 
 public class Planner extends HtmlMacroComponent  {
 
@@ -188,10 +190,33 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     private void setupComponents() {
-        this.leftPane = new LeftPane(contextualizedGlobalCommands,
-                this.diagramGraph.getTopLevelTasks());
+        insertGlobalCommands();
+        this.leftPane = new LeftPane(this.diagramGraph.getTopLevelTasks());
         this.ganttPanel = new GanttPanel(this.context,
                 commandsOnTasksContextualized, editTaskCommand);
+    }
+
+    private void insertGlobalCommands() {
+        Component toolbar = getToolbar();
+        Component firstSeparator = getFirstSeparatorFromToolbar();
+        for (CommandContextualized<?> c : contextualizedGlobalCommands) {
+            toolbar.insertBefore(c.toButton(), firstSeparator);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Component getFirstSeparatorFromToolbar() {
+        Component toolbar = getToolbar();
+        List<Component> children = toolbar.getChildren();
+        List<Separator> separators = ComponentsFinder
+                .findComponentsOfType(
+                Separator.class, children);
+        return separators.get(0);
+    }
+
+    private Component getToolbar() {
+        Component toolbar = getFellow("toolbar");
+        return toolbar;
     }
 
     void removeTask(Task task) {

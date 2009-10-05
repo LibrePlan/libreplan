@@ -27,7 +27,6 @@ import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
-import org.zkoss.zul.Button;
 
 /**
  * LeftPane of the planner. Responsible of showing global commands and the
@@ -38,8 +37,6 @@ public class LeftPane extends HtmlMacroComponent {
 
     private final List<Task> topLevelTasks;
 
-    private List<? extends CommandContextualized<?>> commands;
-
     private LeftTasksTree leftTasksTree;
 
     public void setGoingDownInLastArrowCommand(
@@ -48,10 +45,7 @@ public class LeftPane extends HtmlMacroComponent {
                 .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
     }
 
-    public LeftPane(
-            List<? extends CommandContextualized<?>> contextualizedCommands,
-            List<Task> topLevelTasks) {
-        this.commands = contextualizedCommands;
+    public LeftPane(List<Task> topLevelTasks) {
         this.topLevelTasks = topLevelTasks;
     }
 
@@ -59,28 +53,13 @@ public class LeftPane extends HtmlMacroComponent {
     public void afterCompose() {
         super.afterCompose();
         leftTasksTree = new LeftTasksTree(topLevelTasks);
-        addCommands();
         getContainer().appendChild(leftTasksTree);
         leftTasksTree.afterCompose();
     }
 
-    private void addCommands() {
-        Component commandsContainer = getCommandsContainer();
-        for (CommandContextualized<?> command : commands) {
-            Button button = command.toButton();
-            commandsContainer.appendChild(button);
-        }
-    }
-
     private Component getContainer() {
-        Component commandsContainer = getCommandsContainer();
-        Component container = commandsContainer.getParent();
+        Component container = getFellow("listdetails_container");
         return container;
-    }
-
-    private Component getCommandsContainer() {
-        Component commandsContainer = getFellow("leftpane_commands");
-        return commandsContainer;
     }
 
     public void taskRemoved(Task task) {
