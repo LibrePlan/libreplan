@@ -55,7 +55,13 @@ public class ScriptsComponent extends HtmlMacroComponent {
 
     void setDependencies(List<ScriptDependency> current) {
         this.current = current;
-        recreate();
+        if (!executionIsUpdatingPage()) {
+            recreate();
+        }
+    }
+
+    private boolean executionIsUpdatingPage() {
+        return Executions.getCurrent().isAsyncUpdate(null);
     }
 
 }
