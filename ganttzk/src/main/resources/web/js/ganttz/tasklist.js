@@ -374,6 +374,39 @@ zkTask.createArrow = function(cmp) {
 	YAHOO.util.Event.on(document.body, 'click', mouseClickListener);
 };
 
+function findPosX(obj)
+{
+  var curleft = 0;
+  if(obj.offsetParent)
+      while(1)
+      {
+        curleft += obj.offsetLeft;
+        if(!obj.offsetParent)
+          break;
+        obj = obj.offsetParent;
+      }
+  else if(obj.x)
+      curleft += obj.x;
+  return curleft;
+}
+
+function findPosY(obj)
+{
+  var curtop = 0;
+  if(obj.offsetParent)
+      while(1)
+      {
+        curtop += obj.offsetTop;
+        if(!obj.offsetParent)
+          break;
+        obj = obj.offsetParent;
+      }
+  else if(obj.y)
+      curtop += obj.y;
+  return curtop;
+}
+
+
 /*
  * This method is binded to the mouse click listener to determine if it is
  * positioned over any task
@@ -381,18 +414,22 @@ zkTask.createArrow = function(cmp) {
 zkTask.isOverTask = function(cmp, arrow) {
 
 	var listtasksNode = document.getElementById("listtasks");
-	// var ganttPanelNode = document.getElementById("ganttpanel");
-	var ganttPanelNode = document.getElementById("scroll_container");
+	var ganttPanelNode = document.getElementById("ganttpanel");
+	var scrollContainerPanelNode = document.getElementById("scroll_container");
+	var innerLayout = YAHOO.util.Selector.query('.rightpanellayout div')[0];
 
 	arrayTasks = zkTask.getElementsByAttribute(listtasksNode, "div", "z.type",
 			"ganttz.task.Task");
 	arrayTasks = arrayTasks.concat(zkTask.getElementsByAttribute(listtasksNode,
 			"div", "z.type", "ganttz.taskcontainer.TaskContainer"));
 
-	var xpos = zkTask.xMouse - ganttPanelNode.offsetLeft
-			+ ganttPanelNode.scrollLeft;
-	var ypos = zkTask.yMouse - ganttPanelNode.offsetTop
-			+ ganttPanelNode.scrollTop - listtasksNode.offsetTop;
+	a = findPosX(innerLayout);
+	b = findPosY(innerLayout);
+
+	var xpos = zkTask.xMouse - findPosX(innerLayout)
+			+ innerLayout.scrollLeft;
+	var ypos = zkTask.yMouse - findPosY(innerLayout) - 48 /* padding top */
+			+ innerLayout.scrollTop - listtasksNode.offsetTop;
 
 	for ( var i = 0; i < arrayTasks.length; i++) {
 		var task = arrayTasks[i];
