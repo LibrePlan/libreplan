@@ -215,14 +215,4 @@ public class CriterionsModel_V2 implements ICriterionsModel_V2 {
     public boolean getAllowHierarchy(){
         return this.criterionType.allowHierarchy();
     }
-
-    @Override
-    public void disableHierarchy(){
-        this.criterionTreeModel.flattenTree();
-    }
-
-    @Override
-    public void updateEnabledCriterions(boolean isChecked){
-        criterionTreeModel.updateEnabledCriterions(isChecked);
-    }
 }

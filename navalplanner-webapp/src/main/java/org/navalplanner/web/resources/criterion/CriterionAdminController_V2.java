@@ -56,6 +56,8 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
 
     private Window listing;
 
+    private Checkbox checkboxHierarchy;
+
     private Window confirmRemove;
 
     private boolean confirmingRemove = false;
@@ -81,15 +83,21 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
     }
 
     public void goToCreateForm() {
-        onlyOneVisible.showOnly(createComponent);
-        criterionsModel_V2.prepareForCreate();
-        Util.reloadBindings(createComponent);
+        try{
+            setupCriterionTreeController(editComponent);
+            onlyOneVisible.showOnly(createComponent);
+            criterionsModel_V2.prepareForCreate();
+            Util.reloadBindings(createComponent);
+        }catch(Exception e){}
     }
 
     public void goToEditForm(CriterionType criterionType) {
-        onlyOneVisible.showOnly(editComponent);
-        criterionsModel_V2.prepareForEdit(criterionType);
-        Util.reloadBindings(editComponent);
+        try{
+            setupCriterionTreeController(editComponent);
+            onlyOneVisible.showOnly(editComponent);
+            criterionsModel_V2.prepareForEdit(criterionType);
+            Util.reloadBindings(editComponent);
+        }catch(Exception e){}
     }
 
     public void confirmRemove(CriterionType criterionType) {
@@ -131,9 +139,11 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
     }
 
     public void confirmDisabledHierarchy(Checkbox checkbox) {
-        if(!checkbox.isChecked()){
+        checkboxHierarchy = checkbox;
+        if(!checkboxHierarchy.isChecked()){
             showConfirmingHierarchyWindow();
         }
+        editionTree.reloadTree();
     }
 
     public boolean allowRemove(CriterionType criterionType){
@@ -153,6 +163,7 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
     public void cancelDisEnabledHierarchy() {
         confirmingDisabledHierarchy = false;
         confirmDisabledHierarchy.setVisible(false);
+        checkboxHierarchy.setChecked(true);
         Util.reloadBindings(confirmDisabledHierarchy);
     }
 
@@ -176,17 +187,15 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
     }
 
     public void okDisEnabledHierarchy() {
-        criterionsModel_V2.disableHierarchy();
-        editionTree.reloadTree();
+        editionTree.disabledHierarchy();
         hideConfirmingHierarchtWindow();
         Util.reloadBindings(listing);
-        messagesForUser.showMessage(
-            Level.INFO, _("Fattened Tree {0}", criterionsModel_V2.getCriterionType().getName()));
+        messagesForUser.showMessage(Level.INFO, _("Fattened Tree {0}",
+                criterionsModel_V2.getCriterionType().getName()));
     }
 
     public void changeEnabled(Checkbox checkbox) {
-        criterionsModel_V2.updateEnabledCriterions(checkbox.isChecked());
-        editionTree.reloadTree();
+        editionTree.updateEnabledCriterions(checkbox.isChecked());
     }
 
     public CriterionTreeController getEdition() {
@@ -253,17 +262,11 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
         onlyOneVisible.showOnly(listing);
         comp.setVariable("controller", this, false);
         messagesForUser = new MessagesForUser(messagesContainer);
-
-        setupCriterionTreeController(comp, "editComponent");
-        setupCriterionTreeController(comp, "createComponent");
     }
 
-    private void setupCriterionTreeController(Component comp, String window
-            )throws Exception {
+    private void setupCriterionTreeController(Component comp)throws Exception {
         editionTree = new CriterionTreeController(criterionsModel_V2);
-        editionTree.doAfterCompose(comp.getFellow(window).getFellow(
+        editionTree.doAfterCompose(comp.getFellow(
                 "criterionsTree"));
     }
-
-
 }

@@ -253,7 +253,7 @@ public class CriterionTreeController extends GenericForwardComposer {
             unindentbutton.setHoverImage("/common/img/ico_izq.png");
             unindentbutton.setTooltiptext(_("Unindent"));
         }else{
-            unindentbutton = new Button("", "/common/img/ico_derecha_out.png");
+            unindentbutton = new Button("", "/common/img/ico_izq_out.png");
             unindentbutton.setTooltiptext(_("Not Unindent"));
         }
         unindentbutton.setSclass("icono");
@@ -334,6 +334,18 @@ public class CriterionTreeController extends GenericForwardComposer {
                 messagesForUser.showMessage(Level.INFO,invalidValue.getMessage());
             }
         }
+    }
+
+    public void disabledHierarchy(){
+        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        getModel().flattenTree();
+        reloadTree();
+    }
+
+    public void updateEnabledCriterions(boolean isChecked){
+        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        getModel().updateEnabledCriterions(isChecked);
+        reloadTree();
     }
 
     public void reloadTree(){

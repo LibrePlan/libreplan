@@ -70,8 +70,4 @@ public interface ICriterionsModel_V2 {
     List<Worker> getAllWorkers();
 
     boolean getAllowHierarchy();
-
-    void disableHierarchy();
-
-    void updateEnabledCriterions(boolean isChecked);
 }
