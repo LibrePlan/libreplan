@@ -83,7 +83,11 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public void addSpecificResourceAllocation(Worker worker) throws Exception {
-        resourceAllocationsBeingEdited.addSpecificResourceAllocationFor(worker);
+        planningState.reassociateResourcesWithSession(resourceDAO);
+        Resource reloaded = resourceDAO.findExistingEntity(worker.getId());
+        reattachResource(reloaded);
+        resourceAllocationsBeingEdited
+                .addSpecificResourceAllocationFor(reloaded);
     }
 
     @Override

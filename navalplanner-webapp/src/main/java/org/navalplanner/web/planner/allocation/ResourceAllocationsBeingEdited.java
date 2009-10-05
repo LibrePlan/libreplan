@@ -39,7 +39,6 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceAllocationWithDesiredResourcesPerDay;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.entities.Worker;
 
 public class ResourceAllocationsBeingEdited {
 
@@ -82,14 +81,14 @@ public class ResourceAllocationsBeingEdited {
         this.daysDuration = task.getDaysDuration();
     }
 
-    public void addSpecificResourceAllocationFor(Worker worker) {
-        if (alreadyExistsAllocationFor(worker)) {
+    public void addSpecificResourceAllocationFor(Resource resource) {
+        if (alreadyExistsAllocationFor(resource)) {
             throw new IllegalArgumentException(_(
-                    "{0} already assigned to resource allocation list", worker
-                            .getName()));
+                    "{0} already assigned to resource allocation list",
+                    resource.getDescription()));
         }
         SpecificAllocationDTO allocation = SpecificAllocationDTO
-                .forResource(worker);
+                .forResource(resource);
         currentAllocations.add(allocation);
     }
 
@@ -97,13 +96,14 @@ public class ResourceAllocationsBeingEdited {
         return new ArrayList<AllocationDTO>(currentAllocations);
     }
 
-    private boolean alreadyExistsAllocationFor(Worker worker) {
-        return !getAllocationsFor(worker).isEmpty();
+    private boolean alreadyExistsAllocationFor(Resource resource) {
+        return !getAllocationsFor(resource).isEmpty();
     }
 
-    private List<SpecificAllocationDTO> getAllocationsFor(Worker worker) {
-        List<SpecificAllocationDTO> found = SpecificAllocationDTO.withResource(
-                SpecificAllocationDTO.getSpecific(currentAllocations), worker);
+    private List<SpecificAllocationDTO> getAllocationsFor(Resource resource) {
+        List<SpecificAllocationDTO> found = SpecificAllocationDTO
+                .withResource(SpecificAllocationDTO
+                        .getSpecific(currentAllocations), resource);
         return found;
     }
 

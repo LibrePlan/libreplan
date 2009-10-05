@@ -28,7 +28,6 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * The information required for creating a {@link SpecificResourceAllocation}
@@ -37,10 +36,10 @@ import org.navalplanner.business.resources.entities.Worker;
 public class SpecificAllocationDTO extends AllocationDTO {
 
     public static List<SpecificAllocationDTO> withResource(
-            List<SpecificAllocationDTO> specific, Worker worker) {
+            List<SpecificAllocationDTO> specific, Resource resource) {
         List<SpecificAllocationDTO> result = new ArrayList<SpecificAllocationDTO>();
         for (SpecificAllocationDTO specificAllocationDTO : specific) {
-            if (areEquals(specificAllocationDTO.getResource(), worker)) {
+            if (areEquals(specificAllocationDTO.getResource(), resource)) {
                 result.add(specificAllocationDTO);
             }
         }
