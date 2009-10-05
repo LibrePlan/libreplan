@@ -24,6 +24,8 @@ import static org.navalplanner.web.I18nHelper._;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
+import org.navalplanner.web.resourceload.ResourceLoadController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -40,6 +42,9 @@ public class ResourceLoadForOrderCommand implements
     private PlanningState planningState;
     private ViewSwitcher switcher;
 
+    @Autowired
+    private ResourceLoadController resourceLoadController;
+
     @Override
     public void initialize(Order order, ViewSwitcher switcher,
             PlanningState planningState) {
@@ -49,7 +54,7 @@ public class ResourceLoadForOrderCommand implements
 
     @Override
     public void doAction(IContext<TaskElement> context) {
-        switcher.goToResourceLoad();
+        switcher.goToResourceLoad(resourceLoadController);
     }
 
     @Override

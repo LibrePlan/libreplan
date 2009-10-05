@@ -20,11 +20,17 @@
 
 package org.navalplanner.web.resourceload;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
+import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 
@@ -39,7 +45,14 @@ public class ResourceLoadController extends GenericForwardComposer {
     @Autowired
     private IResourceLoadModel resourceLoadModel;
 
+    private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
+
     public ResourceLoadController() {
+    }
+
+    public void add(IToolbarCommand... commands) {
+        Validate.noNullElements(commands);
+        this.commands.addAll(Arrays.asList(commands));
     }
 
     @Override
@@ -48,6 +61,11 @@ public class ResourceLoadController extends GenericForwardComposer {
         ResourcesLoadPanel resourcesLoadPanel = buildResourcesLoadPanel();
         comp.appendChild(resourcesLoadPanel);
         resourcesLoadPanel.afterCompose();
+        addCommands(resourcesLoadPanel);
+    }
+
+    private void addCommands(ResourcesLoadPanel resourcesLoadPanel) {
+        resourcesLoadPanel.add(commands.toArray(new IToolbarCommand[0]));
     }
 
     private ResourcesLoadPanel buildResourcesLoadPanel() {
