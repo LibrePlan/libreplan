@@ -220,6 +220,7 @@ public class AssignedLabelsToOrderElementController extends
                 .findLabelByNameAndType(labelName, labelType);
         if (label == null) {
             label = createLabel(labelName, labelType);
+            addLabel(label);
         } else {
             // Label is already assigned?
             if (isAssigned(label)) {
@@ -229,6 +230,19 @@ public class AssignedLabelsToOrderElementController extends
         }
         assignLabel(label);
         clear(txtLabelName);
+    }
+
+    /**
+     * Add {@link Label} to {@link Bandbox} list when assigning new label
+     *
+     * @param label
+     */
+    private void addLabel(Label label) {
+        List<Label> labels = (List<Label>) bdLabels.getVariable("allLabels",
+                true);
+        labels.add(label);
+        bdLabels.setVariable("allLabels", labels, true);
+        Util.reloadBindings(lbLabels);
     }
 
     private void clear(Textbox textbox) {
