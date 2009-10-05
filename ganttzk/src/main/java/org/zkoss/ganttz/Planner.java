@@ -127,7 +127,6 @@ public class Planner extends HtmlMacroComponent  {
         editTaskCommand = contextualize(context, configuration
                 .getEditTaskCommand());
         this.context = context;
-        // clear();
         context.add(configuration.getData());
         setupComponents();
 
@@ -135,13 +134,6 @@ public class Planner extends HtmlMacroComponent  {
         leftPane.afterCompose();
         getFellow("insertionPointRightPanel").appendChild(ganttPanel);
         ganttPanel.afterCompose();
-    }
-
-    private void clear() {
-        // this.leftPane = null;
-        // this.ganttPanel = null;
-        // getChildren().clear();
-        // Delete insertion point children
     }
 
     private <T> List<CommandOnTaskContextualized<T>> contextualize(
@@ -206,25 +198,6 @@ public class Planner extends HtmlMacroComponent  {
     @Override
     public void afterCompose() {
         super.afterCompose();
-        // leftPane);
-
-        // leftPane.afterCompose();
-        // ganttPanel.afterCompose();
-
-        // this.leftPane
-        // .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
-
-        // leftPane.afterCompose();
-
-        // timeTrackerComponent);
-        // getFellow("insertionPointRightPanel").appendChild(resourceLoadList);
-        // TimeTrackerComponent timetrackerheader = (TimeTrackerComponent)
-        // timeTrackerComponent .clone();
-        // getFellow("insertionPointTimetracker").
-        // appendChild(timetrackerheader);
-        // timetrackerheader.afterCompose();
-        // timeTrackerComponent.afterCompose();
-
     }
 
 }
