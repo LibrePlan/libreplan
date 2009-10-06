@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -162,14 +163,16 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 final Planner planner = getPlannerBeingConfigured();
 
                 final TimeTracker timeTracker = planner.getTimeTracker();
-                fillChart(order, chartComponent, timeTracker.getRealInterval());
+                fillChart(order, chartComponent, timeTracker.getRealInterval(),
+                        timeTracker.getHorizontalSize());
 
                 zoomListener = new IZoomLevelChangedListener() {
 
                     @Override
                     public void zoomLevelChanged(ZoomLevel detailLevel) {
                         fillChart(order, chartComponent, timeTracker
-                        .getRealInterval());
+                        .getRealInterval(), timeTracker
+                                .getHorizontalSize());
                     }
                 };
 
@@ -267,36 +270,63 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
-    private void fillChart(Order order, Chart chart, Interval interval) {
+    private void fillChart(Order order, Chart chart, Interval interval,
+            Integer size) {
         XYModel xymodel = new SimpleXYModel();
 
-        addLoad(order, xymodel);
-        addCalendarMaximumAvailability(order, xymodel);
+        addLoad(order, xymodel, interval.getStart(), interval.getFinish());
+        addCalendarMaximumAvailability(order, xymodel, interval.getStart(),
+                interval.getFinish());
 
         chart.setType("time_series");
-        chart.setWidth("1600px");
+        chart.setWidth(size + "px");
         chart.setHeight("175px");
         chart.setModel(xymodel);
     }
 
-    private void addLoad(Order order, XYModel xymodel) {
+    private void addLoad(Order order, XYModel xymodel, Date start, Date finish) {
         List<DayAssignment> dayAssignments = order.getDayAssignments();
         String title = "order";
 
         SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
         for (LocalDate day : mapDayAssignments.keySet()) {
             Integer hours = mapDayAssignments.get(day);
-            xymodel.addValue(title, new Long(day.toDateTimeAtStartOfDay()
-                    .getMillis()), hours);
+            xymodel.addValue(title, day.toDateTimeAtStartOfDay().getMillis(),
+                    hours);
         }
 
-        addResourcesLoad(order, xymodel, mapDayAssignments.keySet());
+        fillZeroValueFromStart(xymodel, start, title, mapDayAssignments);
+        fillZeroValueToFinish(xymodel, finish, title, mapDayAssignments);
+
+        String titleResorucesLoad = "all";
+        addResourcesLoad(order, xymodel, mapDayAssignments.keySet(), titleResorucesLoad);
+
+        fillZeroValueFromStart(xymodel, start, titleResorucesLoad, mapDayAssignments);
+        fillZeroValueToFinish(xymodel, finish, titleResorucesLoad, mapDayAssignments);
+    }
+
+    private void fillZeroValueFromStart(XYModel xymodel, Date start,
+            String title,
+            SortedMap<LocalDate, Integer> mapDayAssignments) {
+        if ((new LocalDate(start)).compareTo(mapDayAssignments.firstKey()) < 0) {
+            xymodel.addValue(title, start.getTime(), 0);
+            xymodel.addValue(title, mapDayAssignments.firstKey().minusDays(1)
+                    .toDateTimeAtStartOfDay().getMillis(), 0);
+        }
+    }
+
+    private void fillZeroValueToFinish(XYModel xymodel, Date finish,
+            String title, SortedMap<LocalDate, Integer> mapDayAssignments) {
+        if ((new LocalDate(finish)).compareTo(mapDayAssignments.lastKey()) > 0) {
+            xymodel.addValue(title, mapDayAssignments.lastKey().plusDays(1)
+                    .toDateTimeAtStartOfDay().getMillis(), 0);
+            xymodel.addValue(title, finish.getTime(), 0);
+        }
     }
 
     private void addResourcesLoad(Order order, XYModel xymodel,
-            Set<LocalDate> days) {
+            Set<LocalDate> days, String title) {
         List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
-        String title = "all";
 
         Set<Resource> resources = order.getResources();
         for (Resource resource : resources) {
@@ -313,7 +343,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
-    private void addCalendarMaximumAvailability(Order order, XYModel xymodel) {
+    private void addCalendarMaximumAvailability(Order order, XYModel xymodel,
+            Date start, Date finish) {
         String title = "max";
 
         SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(
@@ -323,6 +354,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             xymodel.addValue(title, new Long(day.toDateTimeAtStartOfDay()
                     .getMillis()), hours);
         }
+
+        fillZeroValueFromStart(xymodel, start, title, mapDayAssignments);
+        fillZeroValueToFinish(xymodel, finish, title, mapDayAssignments);
     }
 
     private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
