@@ -39,7 +39,10 @@ import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zul.CategoryModel;
+import org.zkoss.zul.Chart;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.SimpleCategoryModel;
 
 public class Planner extends HtmlMacroComponent  {
 
@@ -150,6 +153,7 @@ public class Planner extends HtmlMacroComponent  {
         leftPane.afterCompose();
         getFellow("insertionPointRightPanel").appendChild(ganttPanel);
         ganttPanel.afterCompose();
+        getFellow("insertionPointChart").appendChild(getChart());
     }
 
     private <T> List<CommandOnTaskContextualized<T>> contextualize(
@@ -237,6 +241,51 @@ public class Planner extends HtmlMacroComponent  {
     @Override
     public void afterCompose() {
         super.afterCompose();
+    }
+
+    private Chart getChart() {
+        CategoryModel catmodel = new SimpleCategoryModel();
+        catmodel.setValue("2008", "Q1 2008", new Integer(20));
+        catmodel.setValue("2008", "Q2 2008", new Integer(35));
+        catmodel.setValue("2008", "Q3 2008", new Integer(40));
+        catmodel.setValue("2008", "Q4 2008", new Integer(55));
+        catmodel.setValue("2009", "Q1 2008", new Integer(40));
+        catmodel.setValue("2009", "Q2 2008", new Integer(60));
+        catmodel.setValue("2009", "Q3 2008", new Integer(70));
+        catmodel.setValue("2009", "Q4 2008", new Integer(90));
+        catmodel.setValue("2010", "Q1 2008", new Integer(20));
+        catmodel.setValue("2010", "Q2 2008", new Integer(35));
+        catmodel.setValue("2010", "Q3 2008", new Integer(40));
+        catmodel.setValue("2010", "Q4 2008", new Integer(55));
+        catmodel.setValue("2011", "Q1 2008", new Integer(40));
+        catmodel.setValue("2011", "Q2 2008", new Integer(60));
+        catmodel.setValue("2011", "Q3 2008", new Integer(70));
+        catmodel.setValue("2011", "Q4 2008", new Integer(90));
+
+        catmodel.setValue("2008", "Q1 2009", new Integer(20));
+        catmodel.setValue("2008", "Q2 2009", new Integer(35));
+        catmodel.setValue("2008", "Q3 2009", new Integer(40));
+        catmodel.setValue("2008", "Q4 2009", new Integer(55));
+        catmodel.setValue("2009", "Q1 2009", new Integer(40));
+        catmodel.setValue("2009", "Q2 2009", new Integer(60));
+        catmodel.setValue("2009", "Q3 2009", new Integer(70));
+        catmodel.setValue("2009", "Q4 2009", new Integer(90));
+        catmodel.setValue("2010", "Q1 2009", new Integer(20));
+        catmodel.setValue("2010", "Q2 2009", new Integer(35));
+        catmodel.setValue("2010", "Q3 2009", new Integer(40));
+        catmodel.setValue("2010", "Q4 2009", new Integer(55));
+        catmodel.setValue("2011", "Q1 2009", new Integer(40));
+        catmodel.setValue("2011", "Q2 2009", new Integer(60));
+        catmodel.setValue("2011", "Q3 2009", new Integer(70));
+        catmodel.setValue("2011", "Q4 2009", new Integer(90));
+
+        Chart chart = new Chart();
+        chart.setType("stacked_area");
+        chart.setWidth("1600px");
+        chart.setHeight("175px");
+        chart.setModel(catmodel);
+
+        return chart;
     }
 
 }
