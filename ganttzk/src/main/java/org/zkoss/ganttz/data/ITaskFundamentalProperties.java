@@ -20,6 +20,7 @@
 
 package org.zkoss.ganttz.data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -46,6 +47,10 @@ public interface ITaskFundamentalProperties {
     public Date getHoursAdvanceEndDate();
 
     public Date getAdvanceEndDate();
+
+    public BigDecimal getHoursAdvancePercentage();
+
+    public BigDecimal getAdvancePercentage();
 
     public String getTooltipText();
 

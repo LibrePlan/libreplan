@@ -118,7 +118,7 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public BigDecimal getAdvancePercentage() {
         return advancePercentage;
- 
+    }
 
     @Override
     public String getTooltipText() {

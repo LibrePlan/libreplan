@@ -145,6 +145,12 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
+        public BigDecimal getHoursAdvancePercentage() {
+            OrderElement orderElement = taskElement.getOrderElement();
+            return orderElementDAO.getHoursAdvancePercentage(orderElement);
+        }
+
+        @Override
         public Date getAdvanceEndDate() {
             OrderElement orderElement = taskElement.getOrderElement();
             BigDecimal advancePercentage = orderElement.getAdvancePercentage();
@@ -159,6 +165,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             }
 
             return date.toDateTimeAtStartOfDay().toDate();
+        }
+
+        @Override
+        public BigDecimal getAdvancePercentage() {
+            return taskElement.getOrderElement().getAdvancePercentage();
         }
 
         private LocalDate calculateLimitDate(Integer hours) {
@@ -194,6 +205,14 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             }
 
             return lastDay.plusDays(1);
+        }
+
+        @Override
+        public String getTooltipText() {
+
+            return "Advance percentage : " + getAdvancePercentage().multiply(new BigDecimal(100)).toString()
+            + "% \n" + "Hours advance percentage : "
+            + getHoursAdvancePercentage().multiply(new BigDecimal(100)).toString() + "%";
         }
 
     }
