@@ -90,12 +90,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void createConfiguration(Order order, ViewSwitcher switcher,
+    public void setConfigurationToPlanner(Planner planner, Order order,
+            ViewSwitcher switcher,
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
             SplittingController splittingController,
-            CalendarAllocationController calendarAllocationController,
-            IConfigurationOnTransaction onTransaction) {
+            CalendarAllocationController calendarAllocationController) {
         Order orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled())
             throw new IllegalArgumentException(_(
@@ -139,46 +139,32 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         Chart chartComponent = new Chart();
         configuration.setChartComponent(chartComponent);
+        planner.setConfiguration(configuration);
 
-        withChartFilling(onTransaction, orderReloaded, chartComponent).use(
-                configuration);
+        setupChart(orderReloaded, chartComponent, planner.getTimeTracker());
+    }
+
+    private void setupChart(Order orderReloaded, Chart chartComponent,
+            TimeTracker timeTracker) {
+        fillChart(orderReloaded, chartComponent, timeTracker
+                .getRealInterval(), timeTracker.getHorizontalSize());
+        fillChartOnZoomChange(orderReloaded, chartComponent, timeTracker);
     }
 
     private IZoomLevelChangedListener zoomListener;
 
-    private IConfigurationOnTransaction withChartFilling(
-            final IConfigurationOnTransaction onTransaction,
-            final Order order,
-            final Chart chartComponent) {
-        return new IConfigurationOnTransaction() {
+    private void fillChartOnZoomChange(final Order order, final Chart chartComponent, final TimeTracker timeTracker) {
+
+        zoomListener = new IZoomLevelChangedListener() {
 
             @Override
-            public Planner getPlannerBeingConfigured() {
-                return onTransaction.getPlannerBeingConfigured();
-            }
-
-            @Override
-            public void use(PlannerConfiguration<TaskElement> configuration) {
-                onTransaction.use(configuration);
-                final Planner planner = getPlannerBeingConfigured();
-
-                final TimeTracker timeTracker = planner.getTimeTracker();
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
                 fillChart(order, chartComponent, timeTracker.getRealInterval(),
                         timeTracker.getHorizontalSize());
-
-                zoomListener = new IZoomLevelChangedListener() {
-
-                    @Override
-                    public void zoomLevelChanged(ZoomLevel detailLevel) {
-                        fillChart(order, chartComponent, timeTracker
-                        .getRealInterval(), timeTracker
-                                .getHorizontalSize());
-                    }
-                };
-
-                timeTracker.addZoomListener(zoomListener);
             }
         };
+
+        timeTracker.addZoomListener(zoomListener);
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(

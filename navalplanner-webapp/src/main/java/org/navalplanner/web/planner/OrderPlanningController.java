@@ -21,18 +21,15 @@
 package org.navalplanner.web.planner;
 
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
-import org.navalplanner.web.planner.IOrderPlanningModel.IConfigurationOnTransaction;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.Planner;
-import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
@@ -88,22 +85,9 @@ public class OrderPlanningController implements
 
     @Override
     public void showSchedule(Order order) {
-        model.createConfiguration(order, viewSwitcher,
-                resourceAllocationController,
-                editTaskController, splittingController,
-                calendarAllocationController,
-                new IConfigurationOnTransaction() {
-
-            @Override
-            public void use(PlannerConfiguration<TaskElement> configuration) {
-                planner.setConfiguration(configuration);
-            }
-
-            @Override
-            public Planner getPlannerBeingConfigured() {
-                return planner;
-            }
-        });
+        model.setConfigurationToPlanner(planner, order, viewSwitcher,
+                resourceAllocationController, editTaskController,
+                splittingController, calendarAllocationController);
     }
 
     public void registerPlanner(Planner planner) {
