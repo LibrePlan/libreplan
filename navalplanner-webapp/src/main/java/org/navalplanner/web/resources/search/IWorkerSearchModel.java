@@ -36,11 +36,12 @@ import org.navalplanner.business.resources.entities.Worker;
 public interface IWorkerSearchModel {
 
     /**
-     * Gets all {@link Criterion} and groups then by {@link CriterionType}
+     * Returns all {@link Worker} matching by name (firstname or surname)
      *
-     * @return HashMap<CriterionType, Set<Criterion>>
+     * @param name
+     * @return
      */
-    HashMap<CriterionType, Set<Criterion>> getCriterions();
+    List<Worker> findWorkers(String name);
 
     /**
      * Queries database for retrieving all workers that match to the parameters
@@ -51,12 +52,19 @@ public interface IWorkerSearchModel {
      *            {@link Worker} that complies all criterions
      * @return
      */
-    @SuppressWarnings("unchecked")
     List<Worker> findWorkers(String name, List<Criterion> criterions);
 
     /**
+     * Returns all workers
      *
      * @return
      */
     List<Worker> getAllWorkers();
+
+    /**
+     * Gets all {@link Criterion} and groups then by {@link CriterionType}
+     *
+     * @return HashMap<CriterionType, Set<Criterion>>
+     */
+    HashMap<CriterionType, Set<Criterion>> getCriterions();
 }

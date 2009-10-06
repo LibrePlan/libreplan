@@ -38,6 +38,28 @@ import org.navalplanner.business.resources.entities.Worker;
 public interface IWorkerDAO extends IGenericDAO<Worker, Long> {
 
     /**
+     * Returns workers which name/NIF partially matches with name, and complies
+     * all of the given criterions
+     *
+     * @param name
+     *            search worker by name/NIF
+     * @param criterions
+     *            search worker that matches with criterions
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    List<Worker> findByNameAndCriterions(String name, List<Criterion> criterions);
+
+    /**
+     * Returns workers which name/NIF partially matches with name
+     *
+     * @param name
+     *            search worker by name(firstname or surname)/NIF
+     *
+     */
+    List<Worker> findByNameOrNif(String name);
+
+    /**
      * Finds a {@link Worker} with the NIF param that should be unique.
      *
      * @param nif
@@ -55,17 +77,4 @@ public interface IWorkerDAO extends IGenericDAO<Worker, Long> {
      * @return
      */
     List<Worker> getWorkers();
-
-    /**
-     * Returns workers which name/NIF partially matches with name, and complies
-     * all of the given criterions
-     *
-     * @param name
-     *            search worker by name/NIF
-     * @param criterions
-     *            search worker that matches with criterions
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    List<Worker> findByNameAndCriterions(String name, List<Criterion> criterions);
 }

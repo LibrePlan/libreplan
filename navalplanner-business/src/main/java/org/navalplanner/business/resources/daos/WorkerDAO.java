@@ -20,10 +20,11 @@
 
 package org.navalplanner.business.resources.daos;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -68,29 +69,39 @@ public class WorkerDAO extends GenericDAOHibernate<Worker, Long>
     @SuppressWarnings("unchecked")
     @Override
     public List<Worker> findByNameAndCriterions(String name,
-            List<Criterion> criterionList) {
+            List<Criterion> criterions) {
 
-        // Prepare query
-        String strQuery = "SELECT worker FROM Worker worker ";
-
-        if (criterionList != null && criterionList.size() > 0) {
-            strQuery += "JOIN worker.criterionSatisfactions AS satisfaction "
-                    + "JOIN satisfaction.criterion AS criterion ";
+        // Find workers by name
+        List<Worker> workers;
+        if (name == null || name.isEmpty()) {
+            workers = getWorkers();
+        } else {
+            workers = findByNameOrNif(name);
         }
 
-        strQuery += "WHERE (UPPER(worker.firstName) LIKE :name OR worker.nif LIKE :name) ";
-        if (criterionList != null && criterionList.size() > 0) {
-            strQuery += " AND criterion IN (:criterionList)";
+        // If no criterions selected, returned found workers
+        if (criterions.isEmpty()) {
+            return workers;
         }
 
-        // Execute query
-        Query query = getSession().createQuery(strQuery);
-        query.setParameter("name", "%" + name.toUpperCase() + "%");
-        if (criterionList != null && criterionList.size() > 0) {
-            query.setParameterList("criterionList", criterionList);
+        // Filter by criterion
+        final List<Worker> result = new ArrayList<Worker>();
+        for (Worker worker : workers) {
+            if (worker.satisfiesCriterions(new HashSet(criterions))) {
+                result.add(worker);
+            }
         }
-
-        // Get result
-        return query.list();
+        return result;
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Worker> findByNameOrNif(String name) {
+        name = "%" + name + "%";
+        return getSession().createCriteria(Worker.class).add(
+                Restrictions.or(Restrictions.or(Restrictions.ilike("firstName",
+                        name), Restrictions.ilike("surname", name)),
+                        Restrictions.like("nif", name))).list();
+    }
+
 }
