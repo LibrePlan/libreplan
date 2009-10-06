@@ -227,8 +227,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private Chart getChartComponent(Order order) {
         XYModel xymodel = new SimpleXYModel();
 
-        addDayAssignmentsLoad(order, xymodel, "order");
-        addResourcesLoad(order, xymodel, "all");
+        addLoad(order, xymodel);
 
         Chart chart = new Chart();
         chart.setType("time_series");
@@ -239,9 +238,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return chart;
     }
 
-    private void addDayAssignmentsLoad(Order order, XYModel xymodel,
-            String title) {
+    private void addLoad(Order order, XYModel xymodel) {
         List<DayAssignment> dayAssignments = order.getDayAssignments();
+        String title = "order";
 
         SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
         for (LocalDate day : mapDayAssignments.keySet()) {
@@ -249,10 +248,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             xymodel.addValue(title, new Long(day.toDateTimeAtStartOfDay()
                     .getMillis()), hours);
         }
+
+        addResourcesLoad(order, xymodel, mapDayAssignments.keySet());
     }
 
-    private void addResourcesLoad(Order order, XYModel xymodel, String title) {
+    private void addResourcesLoad(Order order, XYModel xymodel,
+            Set<LocalDate> days) {
         List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
+        String title = "all";
 
         Set<Resource> resources = order.getResources();
         for (Resource resource : resources) {
@@ -261,9 +264,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
         for (LocalDate day : mapDayAssignments.keySet()) {
-            Integer hours = mapDayAssignments.get(day);
-            xymodel.addValue(title, new Long(day.toDateTimeAtStartOfDay()
-                    .getMillis()), hours);
+            if (days.contains(day)) {
+                Integer hours = mapDayAssignments.get(day);
+                xymodel.addValue(title, new Long(day.toDateTimeAtStartOfDay()
+                        .getMillis()), hours);
+            }
         }
     }
 
