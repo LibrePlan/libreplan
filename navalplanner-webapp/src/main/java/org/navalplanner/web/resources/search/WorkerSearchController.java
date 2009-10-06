@@ -125,16 +125,16 @@ public class WorkerSearchController extends GenericForwardComposer {
      * @param criterions
      */
     private void searchWorkers(String name, List<Criterion> criterions) {
-        if (name == null || name.length() == 0) {
+        // No text, and no criterions selected
+        if (criterions.isEmpty()
+                && (name == null || name.isEmpty())) {
             refreshListBoxWorkers(workerSearchModel.getAllWorkers());
             return;
         }
 
-        List<Worker> listWorkers = workerSearchModel.findWorkers(name,
-                getSelectedCriterions());
-        refreshListBoxWorkers(listWorkers
-                .toArray(new Worker[listWorkers
-                .size()]));
+        final List<Worker> listWorkers = workerSearchModel.findWorkers(name,
+                criterions);
+        refreshListBoxWorkers(listWorkers);
     }
 
     /**
