@@ -119,8 +119,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void doTheAllocation() {
         ResourceAllocationsBeingEdited allocator = resourceAllocationsBeingEdited
                 .taskModifying();
-        allocator.doAllocation();
-        Integer newDaysDuration = allocator.getDaysDuration();
+        AllocationResult allocationResult = allocator.doAllocation();
+        Integer newDaysDuration = allocationResult.getDaysDuration();
         if (task.getDaysDuration() != newDaysDuration) {
             task.setDaysDuration(newDaysDuration);
             ganttTask.setEndDate(task.getEndDate());

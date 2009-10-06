@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
@@ -185,7 +186,7 @@ public class ResourceAllocationsBeingEdited {
                 && getGenericAllocation().isEmptyResourcesPerDay();
     }
 
-    public AggregateOfResourceAllocations doAllocation() {
+    public AllocationResult doAllocation() {
         checkInvalidValues();
         List<ResourceAllocationWithDesiredResourcesPerDay> allocations = asResourceAllocations();
         switch (calculatedValue) {
@@ -203,7 +204,8 @@ public class ResourceAllocationsBeingEdited {
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
-        return new AggregateOfResourceAllocations(stripResourcesPerDay(allocations));
+        return new AllocationResult(new AggregateOfResourceAllocations(
+                stripResourcesPerDay(allocations)), daysDuration);
     }
 
     private Integer from(Date startDate, LocalDate end) {
@@ -294,6 +296,30 @@ public class ResourceAllocationsBeingEdited {
 
     public Task getTask() {
         return task;
+    }
+
+    public Integer getDaysDuration() {
+        return daysDuration;
+    }
+
+}
+
+class AllocationResult {
+
+    private final AggregateOfResourceAllocations aggregate;
+
+    private final Integer daysDuration;
+
+    AllocationResult(AggregateOfResourceAllocations aggregate,
+            Integer daysDuration) {
+        Validate.notNull(daysDuration);
+        Validate.notNull(daysDuration);
+        this.aggregate = aggregate;
+        this.daysDuration = daysDuration;
+    }
+
+    public AggregateOfResourceAllocations getAggregate() {
+        return aggregate;
     }
 
     public Integer getDaysDuration() {
