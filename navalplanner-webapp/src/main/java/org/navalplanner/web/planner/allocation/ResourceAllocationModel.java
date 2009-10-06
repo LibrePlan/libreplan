@@ -103,9 +103,21 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public void accept() {
+        stepsBeforeDoingAllocation();
+        doTheAllocation(resourceAllocationsBeingEdited
+                .doAllocation());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void accept(AllocationResult modifiedAllocationResult) {
+        stepsBeforeDoingAllocation();
+        doTheAllocation(modifiedAllocationResult);
+    }
+
+    private void stepsBeforeDoingAllocation() {
         planningState.reassociateResourcesWithSession(resourceDAO);
         removeDeletedAllocations();
-        doTheAllocation();
     }
 
     private void removeDeletedAllocations() {
@@ -116,9 +128,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
-    private void doTheAllocation() {
-        AllocationResult allocationResult = resourceAllocationsBeingEdited
-                .doAllocation();
+    private void doTheAllocation(AllocationResult allocationResult) {
         allocationResult.applyTo(task);
         ganttTask.setEndDate(task.getEndDate());
     }

@@ -47,6 +47,12 @@ import org.zkoss.zul.api.Column;
 public class AdvancedAllocationController extends
         GenericForwardComposer {
 
+    public interface IAdvanceAllocationResultReceiver {
+        public void accepted(AllocationResult modifiedAllocationResult);
+
+        public void cancel();
+    }
+
     private Div insertionPointTimetracker;
     private Div insertionPointLeftPanel;
     private Div insertionPointRightPanel;
@@ -58,11 +64,14 @@ public class AdvancedAllocationController extends
     private TimeTrackedTable<FakeData> table;
     private final ViewSwitcher switcher;
     private final AllocationResult allocationResult;
+    private final IAdvanceAllocationResultReceiver resultReceiver;
 
     public AdvancedAllocationController(ViewSwitcher switcher,
-            AllocationResult allocationResult) {
+            AllocationResult allocationResult,
+            IAdvanceAllocationResultReceiver resultReceiver) {
         this.switcher = switcher;
         this.allocationResult = allocationResult;
+        this.resultReceiver = resultReceiver;
     }
 
     @Override
@@ -94,15 +103,13 @@ public class AdvancedAllocationController extends
     }
 
     public void onClick$acceptButton() {
-        backToPreviousButton();
+        switcher.goToPlanningOrderView();
+        resultReceiver.accepted(allocationResult);
     }
 
     public void onClick$cancelButton() {
-        backToPreviousButton();
-    }
-
-    private void backToPreviousButton() {
         switcher.goToPlanningOrderView();
+        resultReceiver.cancel();
     }
 
     public void onClick$zoomIncrease() {

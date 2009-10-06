@@ -46,6 +46,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.common.components.WorkerSearch;
 import org.navalplanner.web.planner.PlanningState;
+import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
@@ -318,8 +319,24 @@ public class ResourceAllocationController extends GenericForwardComposer {
     public void advanceAllocation() {
         AllocationResult allocationResult = allocationsBeingEdited
                 .doAllocation();
-        switcher.goToAdvancedAllocation(allocationResult);
+        switcher.goToAdvancedAllocation(allocationResult,
+                createResultReceiver());
         window.setVisible(false);
+    }
+
+    private IAdvanceAllocationResultReceiver createResultReceiver() {
+        return new IAdvanceAllocationResultReceiver() {
+
+            @Override
+            public void cancel() {
+                showWindow();
+            }
+
+            @Override
+            public void accepted(AllocationResult modifiedAllocationResult) {
+                resourceAllocationModel.accept(modifiedAllocationResult);
+            }
+        };
     }
 
     /**

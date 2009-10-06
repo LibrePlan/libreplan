@@ -83,4 +83,6 @@ public interface IResourceAllocationModel {
             org.zkoss.ganttz.data.Task ganttTask,
             PlanningState planningState);
 
+    void accept(AllocationResult modifiedAllocationResult);
+
 }
