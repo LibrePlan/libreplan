@@ -168,6 +168,7 @@
                 <!--  Select worker -->
                 <hbox>
                     <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(event)" />
+                    <button label="${i18n:_('Close')}" onClick="allocationController.onCloseSelectWorkers()" />
                 </hbox>
             </tabpanel>
         </tabpanels>

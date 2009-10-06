@@ -164,6 +164,16 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     /**
+     * Close search worker in worker search tab
+     *
+     * @param e
+     */
+    public void onCloseSelectWorkers() {
+        tbResourceAllocation.setSelected(true);
+        workerSearch.clearAll();
+    }
+
+    /**
      * Adds a list of {@link Worker} to {@link ResourceAllocation} list
      * @param workers
      */
