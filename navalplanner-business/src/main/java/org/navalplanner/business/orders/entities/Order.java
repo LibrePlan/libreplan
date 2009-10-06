@@ -22,6 +22,7 @@ package org.navalplanner.business.orders.entities;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +35,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * It represents an {@link Order} with its related information. <br />
@@ -216,6 +218,14 @@ public class Order extends BaseEntity implements IOrderLineGroup, IValidable {
             result.addAll(orderElement.getAllChildren());
         }
         return result;
+    }
+
+    public Set<Resource> getResources() {
+        Set<Resource> resources = new HashSet<Resource>();
+        for (DayAssignment dayAssignment : getDayAssignments()) {
+            resources.add(dayAssignment.getResource());
+        }
+        return resources;
     }
 
 }

@@ -225,14 +225,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private Chart getChartComponent(Order order) {
-        SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(order);
-
         XYModel xymodel = new SimpleXYModel();
-        for (LocalDate day : mapDayAssignments.keySet()) {
-            Integer hours = mapDayAssignments.get(day);
-            xymodel.addValue("", new Long(day.toDateTimeAtStartOfDay()
-                    .getMillis()), hours);
-        }
+
+        addDayAssignmentsLoad(order, xymodel, "order");
+        addResourcesLoad(order, xymodel, "all");
 
         Chart chart = new Chart();
         chart.setType("time_series");
@@ -243,11 +239,38 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return chart;
     }
 
+    private void addDayAssignmentsLoad(Order order, XYModel xymodel,
+            String title) {
+        List<DayAssignment> dayAssignments = order.getDayAssignments();
+
+        SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
+        for (LocalDate day : mapDayAssignments.keySet()) {
+            Integer hours = mapDayAssignments.get(day);
+            xymodel.addValue(title, new Long(day.toDateTimeAtStartOfDay()
+                    .getMillis()), hours);
+        }
+    }
+
+    private void addResourcesLoad(Order order, XYModel xymodel, String title) {
+        List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
+
+        Set<Resource> resources = order.getResources();
+        for (Resource resource : resources) {
+            dayAssignments.addAll(resource.getAssignments());
+        }
+
+        SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
+        for (LocalDate day : mapDayAssignments.keySet()) {
+            Integer hours = mapDayAssignments.get(day);
+            xymodel.addValue(title, new Long(day.toDateTimeAtStartOfDay()
+                    .getMillis()), hours);
+        }
+    }
+
     private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
-            Order order) {
+            List<DayAssignment> dayAssignments) {
         SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
 
-        List<DayAssignment> dayAssignments = order.getDayAssignments();
         if (dayAssignments.isEmpty()) {
             return map;
         }
