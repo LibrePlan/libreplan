@@ -321,14 +321,19 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         String titleResorucesLoad = "all";
         addResourcesLoad(order, xymodel, mapDayAssignments.keySet(), titleResorucesLoad);
 
-        fillZeroValueFromStart(xymodel, start, titleResorucesLoad, mapDayAssignments);
-        fillZeroValueToFinish(xymodel, finish, titleResorucesLoad, mapDayAssignments);
+        fillZeroValueFromStart(xymodel, start, titleResorucesLoad,
+                mapDayAssignments);
+        fillZeroValueToFinish(xymodel, finish, titleResorucesLoad,
+                mapDayAssignments);
     }
 
     private void fillZeroValueFromStart(XYModel xymodel, Date start,
             String title,
             SortedMap<LocalDate, Integer> mapDayAssignments) {
-        if ((new LocalDate(start)).compareTo(mapDayAssignments.firstKey()) < 0) {
+        if (mapDayAssignments.isEmpty()) {
+            xymodel.addValue(title, start.getTime(), 0);
+        } else if ((new LocalDate(start)).compareTo(mapDayAssignments
+                .firstKey()) < 0) {
             xymodel.addValue(title, start.getTime(), 0);
             xymodel.addValue(title, mapDayAssignments.firstKey().minusDays(1)
                     .toDateTimeAtStartOfDay().getMillis(), 0);
@@ -337,7 +342,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private void fillZeroValueToFinish(XYModel xymodel, Date finish,
             String title, SortedMap<LocalDate, Integer> mapDayAssignments) {
-        if ((new LocalDate(finish)).compareTo(mapDayAssignments.lastKey()) > 0) {
+        if (mapDayAssignments.isEmpty()) {
+            xymodel.addValue(title, finish.getTime(), 0);
+        } else if ((new LocalDate(finish)).compareTo(mapDayAssignments
+                .lastKey()) > 0) {
             xymodel.addValue(title, mapDayAssignments.lastKey().plusDays(1)
                     .toDateTimeAtStartOfDay().getMillis(), 0);
             xymodel.addValue(title, finish.getTime(), 0);
