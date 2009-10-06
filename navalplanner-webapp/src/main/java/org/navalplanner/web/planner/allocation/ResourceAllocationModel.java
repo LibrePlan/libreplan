@@ -117,15 +117,12 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void doTheAllocation() {
-        ResourceAllocationsBeingEdited allocator = resourceAllocationsBeingEdited
-                .taskModifying();
-        AllocationResult allocationResult = allocator.doAllocation();
-        Integer newDaysDuration = allocationResult.getDaysDuration();
-        if (task.getDaysDuration() != newDaysDuration) {
-            task.setDaysDuration(newDaysDuration);
-            ganttTask.setEndDate(task.getEndDate());
-        }
-        task.setCalculatedValue(allocator.getCalculatedValue());
+        AllocationResult allocationResult = resourceAllocationsBeingEdited
+                .doAllocation();
+        task.mergeAllocation(resourceAllocationsBeingEdited
+                .getCalculatedValue(), allocationResult.getDaysDuration(),
+                allocationResult.getNew(), allocationResult.getModified());
+        ganttTask.setEndDate(task.getEndDate());
     }
 
     private List<Resource> getResourcesMatchingCriterions() {

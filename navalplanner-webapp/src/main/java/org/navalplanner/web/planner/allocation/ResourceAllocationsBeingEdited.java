@@ -24,9 +24,12 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
@@ -47,18 +50,14 @@ public class ResourceAllocationsBeingEdited {
             List<AllocationDTO> initialAllocations, IResourceDAO resourceDAO,
             List<Resource> resourcesBeingEdited) {
         return new ResourceAllocationsBeingEdited(task, initialAllocations,
-                resourceDAO, resourcesBeingEdited, false);
+                resourcesBeingEdited);
     }
 
     private final List<AllocationDTO> currentAllocations;
 
     private final Set<ResourceAllocation<?>> requestedToRemove = new HashSet<ResourceAllocation<?>>();
 
-    private IResourceDAO resourceDAO;
-
     private final Task task;
-
-    private final boolean modifyTask;
 
     private FormBinder formBinder = null;
 
@@ -69,13 +68,9 @@ public class ResourceAllocationsBeingEdited {
     private final List<Resource> resourcesMatchingCriterions;
 
     private ResourceAllocationsBeingEdited(Task task,
-            List<AllocationDTO> initialAllocations, IResourceDAO resourceDAO,
-            List<Resource> resourcesMatchingCriterions,
-            boolean modifyTask) {
+            List<AllocationDTO> initialAllocations, List<Resource> resourcesMatchingCriterions) {
         this.task = task;
-        this.resourceDAO = resourceDAO;
         this.resourcesMatchingCriterions = resourcesMatchingCriterions;
-        this.modifyTask = modifyTask;
         this.currentAllocations = new ArrayList<AllocationDTO>(
                 initialAllocations);
         this.calculatedValue = task.getCalculatedValue();
@@ -119,11 +114,10 @@ public class ResourceAllocationsBeingEdited {
         return requestedToRemove;
     }
 
-    public List<ResourceAllocationWithDesiredResourcesPerDay> asResourceAllocations() {
-        List<ResourceAllocationWithDesiredResourcesPerDay> result = new ArrayList<ResourceAllocationWithDesiredResourcesPerDay>();
-        for (AllocationDTO allocation : withoutZeroResourcesPerDayAllocations(currentAllocations)) {
-            result.add(createOrModify(allocation).withDesiredResourcesPerDay(
-                    allocation.getResourcesPerDay()));
+    private Map<AllocationDTO, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask() {
+        Map<AllocationDTO, ResourceAllocation<?>> result = new HashMap<AllocationDTO, ResourceAllocation<?>>();
+        for (AllocationDTO dto : withoutZeroResourcesPerDayAllocations(currentAllocations)) {
+            result.put(dto, dto.getOrigin());
         }
         return result;
     }
@@ -188,10 +182,12 @@ public class ResourceAllocationsBeingEdited {
 
     public AllocationResult doAllocation() {
         checkInvalidValues();
-        List<ResourceAllocationWithDesiredResourcesPerDay> allocations = asResourceAllocations();
+        Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> fromDetachedToAttached = getAllocationsWithRelationshipsToOriginal();
+        List<ResourceAllocationWithDesiredResourcesPerDay> allocations = asList(fromDetachedToAttached);
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
-            ResourceAllocation.allocating(allocations).withResources(
+            ResourceAllocation.allocating(allocations)
+                    .withResources(
                     resourcesMatchingCriterions).allocateOnTaskLength();
             daysDuration = task.getDaysDuration();
             break;
@@ -205,7 +201,38 @@ public class ResourceAllocationsBeingEdited {
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
         return new AllocationResult(new AggregateOfResourceAllocations(
-                stripResourcesPerDay(allocations)), daysDuration);
+                stripResourcesPerDay(allocations)), daysDuration,
+                fromDetachedToAttached);
+    }
+
+    private Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> getAllocationsWithRelationshipsToOriginal() {
+        Map<AllocationDTO, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask = allocationsWithTheirRelatedAllocationsOnTask();
+        Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> fromDetachedToAttached = instantiate(allocationsWithTheirRelatedAllocationsOnTask);
+        return fromDetachedToAttached;
+    }
+
+    private List<ResourceAllocationWithDesiredResourcesPerDay> asList(
+            Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> map) {
+        return new ArrayList<ResourceAllocationWithDesiredResourcesPerDay>(
+                map.keySet());
+    }
+
+    private Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> instantiate(
+            Map<AllocationDTO, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask) {
+        Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> result = new HashMap<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>>();
+        for (Entry<AllocationDTO, ResourceAllocation<?>> entry : allocationsWithTheirRelatedAllocationsOnTask
+                .entrySet()) {
+            AllocationDTO key = entry.getKey();
+            result.put(instantiate(key), entry.getValue());
+        }
+        return result;
+    }
+
+    private ResourceAllocationWithDesiredResourcesPerDay instantiate(
+            AllocationDTO key) {
+        return new ResourceAllocationWithDesiredResourcesPerDay(
+                createAllocation(key), key
+                        .getResourcesPerDay());
     }
 
     private Integer from(Date startDate, LocalDate end) {
@@ -222,32 +249,6 @@ public class ResourceAllocationsBeingEdited {
         return result;
     }
 
-    private ResourceAllocation<?> createOrModify(AllocationDTO allocation) {
-        if (!modifyTask) {
-            return createAllocation(allocation);
-        }
-        if (allocation.isModifying()) {
-            return reloadResourceIfNeeded(allocation.getOrigin());
-        } else {
-            ResourceAllocation<?> result = createAllocation(allocation);
-            task.addResourceAllocation(result);
-            return result;
-        }
-    }
-
-    private ResourceAllocation<?> reloadResourceIfNeeded(
-            ResourceAllocation<?> origin) {
-        if (origin instanceof SpecificResourceAllocation) {
-            SpecificResourceAllocation specific = (SpecificResourceAllocation) origin;
-            specific.setResource(getFromDB(specific.getResource()));
-        }
-        return origin;
-    }
-
-    private Resource getFromDB(Resource resource) {
-        return resourceDAO.findExistingEntity(resource.getId());
-    }
-
     private ResourceAllocation<?> createAllocation(AllocationDTO allocation) {
         if (allocation instanceof SpecificAllocationDTO) {
             SpecificAllocationDTO specific = (SpecificAllocationDTO) allocation;
@@ -258,18 +259,10 @@ public class ResourceAllocationsBeingEdited {
     }
 
     private ResourceAllocation<?> createSpecific(Resource resource) {
+
         SpecificResourceAllocation result = SpecificResourceAllocation
                 .create(task);
         result.setResource(resource);
-        return result;
-    }
-
-    public ResourceAllocationsBeingEdited taskModifying() {
-        ResourceAllocationsBeingEdited result = new ResourceAllocationsBeingEdited(
-                task, currentAllocations,
-                resourceDAO, resourcesMatchingCriterions, true);
-        result.formBinder = this.formBinder;
-        result.calculatedValue = this.calculatedValue;
         return result;
     }
 
@@ -306,16 +299,32 @@ public class ResourceAllocationsBeingEdited {
 
 class AllocationResult {
 
+    private static Map<ResourceAllocation<?>, ResourceAllocation<?>> translation(
+            Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> fromDetachedToAttached) {
+        Map<ResourceAllocation<?>, ResourceAllocation<?>> result = new HashMap<ResourceAllocation<?>, ResourceAllocation<?>>();
+        for (Entry<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> entry : fromDetachedToAttached
+                .entrySet()) {
+            result
+                    .put(entry.getKey().getResourceAllocation(), entry
+                            .getValue());
+        }
+        return result;
+    }
+
     private final AggregateOfResourceAllocations aggregate;
 
     private final Integer daysDuration;
 
+    private final Map<ResourceAllocation<?>, ResourceAllocation<?>> fromDetachedAllocationToAttached;
+
     AllocationResult(AggregateOfResourceAllocations aggregate,
-            Integer daysDuration) {
+            Integer daysDuration,
+            Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
         Validate.notNull(daysDuration);
-        Validate.notNull(daysDuration);
+        Validate.notNull(aggregate);
         this.aggregate = aggregate;
         this.daysDuration = daysDuration;
+        this.fromDetachedAllocationToAttached = translation(fromDetachedAllocationToAttached);
     }
 
     public AggregateOfResourceAllocations getAggregate() {
@@ -326,4 +335,25 @@ class AllocationResult {
         return daysDuration;
     }
 
+    public List<ResourceAllocation<?>> getNew() {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        for (Entry<ResourceAllocation<?>, ResourceAllocation<?>> entry : fromDetachedAllocationToAttached
+                .entrySet()) {
+            if (entry.getValue() == null) {
+                result.add(entry.getKey());
+            }
+        }
+        return result;
+    }
+
+    public Map<ResourceAllocation<?>, ResourceAllocation<?>> getModified() {
+        Map<ResourceAllocation<?>, ResourceAllocation<?>> result = new HashMap<ResourceAllocation<?>, ResourceAllocation<?>>();
+        for (Entry<ResourceAllocation<?>, ResourceAllocation<?>> entry : fromDetachedAllocationToAttached
+                .entrySet()) {
+            if (entry.getValue() != null) {
+                result.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return result;
+    }
 }
