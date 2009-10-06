@@ -145,12 +145,12 @@
             </listhead>
         </listbox>
 
+        <workerSearch />
+
         <hbox>
             <button label="${i18n:_('Accept')}" onClick="allocationController.accept()" />
             <button label="${i18n:_('Apply')}" id="applyButton"/>
             <button label="${i18n:_('Cancel')}" onClick="allocationController.cancel()" />
-            <button label="${i18n:_('Search resources...')}"
-                onClick="allocationController.showSearchResources()" />
             <button label="${i18n:_('Advance allocation')}" onClick="allocationController.advanceAllocation();"/>
         </hbox>
     </window>

@@ -18,43 +18,41 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window self="@{define(content)}" id="workerSearch"
-    apply="org.navalplanner.web.resources.search.WorkerSearchController"
-    title="${i18n:_('Search worker')}" closable="true" visible="false">
+<vbox apply="org.navalplanner.web.resources.search.WorkerSearchController">
 
-	<hbox style="margin-top: 3px">
-		<vbox style="margin-right: 5px">
-			<!-- Name  -->
-			<label value="${i18n:_('Name/ID')}" />
-			<textbox id="txtName"
-				onChanging="controller.searchWorkers(event)" />
+    <hbox>
+        <vbox>
+            <!-- Name  -->
+            <label value="${i18n:_('Name/ID')}" />
+            <textbox id="txtName"
+                onChanging="controller.searchWorkers(event)" />
 
-			<!-- Criterions -->
-			<label value="${i18n:_('Criterions')}" />
-			<tree id="criterionsTree" width="280px"
-				model="@{controller.criterions}" multiple="true">
-				<treecols>
-					<treecol label="Name" />
-				</treecols>
-			</tree>
-		</vbox>
+            <!--Matchings -->
+            <listbox id="listBoxWorkers" width="200px" mold="paging"
+                pageSize="10" rows="10" multiple="true"
+                itemRenderer="@{controller.listitemRenderer}">
+                <listhead>
+                    <listheader label="${i18n:_('Name')}" sort="auto" />
+                    <listheader label="${i18n:_('NIF')}" sort="auto" />
+                </listhead>
+            </listbox>
+        </vbox>
 
-		<vbox>
-			<!--Matchings -->
-			<listbox id="listBoxWorkers" width="200px" mold="paging"
-				pageSize="10" rows="10" multiple="true"
-				itemRenderer="@{controller.listitemRenderer}">
-				<listhead>
-					<listheader label="${i18n:_('Name')}" sort="auto" />
-					<listheader label="${i18n:_('NIF')}" sort="auto" />
-				</listhead>
-			</listbox>
-		</vbox>
-	</hbox>
-
-	<hbox>
-        <button style="margin-top: 5px" label="${i18n:_('Accept')}"
-            onClick="controller.onAccept(event)" />
+        <vbox>
+            <!-- Criterions -->
+            <label value="${i18n:_('Criterions')}" />
+            <tree id="criterionsTree" width="280px"
+                model="@{controller.criterions}"
+                multiple="true">
+                <treecols>
+                    <treecol label="Name" />
+                </treecols>
+            </tree>
+        </vbox>
     </hbox>
 
-</window>
+    <hbox>
+        <button label="${i18n:_('Accept')}"
+            onClick="controller.onAccept(event)" />
+    </hbox>
+</vbox>

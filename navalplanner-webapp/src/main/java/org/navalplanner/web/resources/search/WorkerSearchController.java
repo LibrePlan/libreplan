@@ -30,6 +30,7 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.components.WorkerSearch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -46,7 +47,10 @@ import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
+import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.TreeitemRenderer;
+import org.zkoss.zul.Treerow;
 
 /**
  * Controller for searching for {@link Worker}
@@ -66,6 +70,8 @@ public class WorkerSearchController extends GenericForwardComposer {
     private Tree criterionsTree;
 
     private Listbox listBoxWorkers;
+
+    CriterionRenderer criterionRenderer = new CriterionRenderer();
 
     public WorkerSearchController() {
 
@@ -96,16 +102,11 @@ public class WorkerSearchController extends GenericForwardComposer {
             });
         }
 
-        // Feed criterionsTree with criterions
-        if (criterionsTree.getModel() == null) {
-            criterionsTree.setModel(getCriterions());
-        }
+        // Initialize components
+        criterionsTree.setTreeitemRenderer(criterionRenderer);
+        listBoxWorkers.setItemRenderer(getListitemRenderer());
 
-        // Set renderer for listboxWorkers
-        if (listBoxWorkers.getItemRenderer() == null) {
-            listBoxWorkers.setItemRenderer(getListitemRenderer());
-        }
-
+        // Show all workers
         refreshListBoxWorkers(workerSearchModel.getAllWorkers());
     }
 
@@ -315,4 +316,49 @@ public class WorkerSearchController extends GenericForwardComposer {
             item.appendChild(listName);
         }
     }
+
+    public CriterionRenderer getCriterionRenderer() {
+        return criterionRenderer;
+    }
+
+    /**
+     * Render for criterionsTree
+     *
+     * I had to implement a renderer for the Tree, for settin open to tree for
+     * each treeitem while being rendered.
+     *
+     * I tried to do this by iterating through the list of items after setting
+     * model in doAfterCompose, but I got a ConcurrentModificationException. It
+     * seems that at that point some other component was using the list of item,
+     * so it was not possible to modify it. There's not other point where to
+     * initialize components but doAfterCompose.
+     *
+     * Finally, I tried this solution and it works
+     *
+     * @author Diego Pino Garcia <dpino@igalia.com>
+     *
+     */
+    private class CriterionRenderer implements TreeitemRenderer {
+
+        /**
+         * Copied verbatim from org.zkoss.zul.Tree;
+         */
+        @Override
+        public void render(Treeitem ti, Object node) throws Exception {
+            Treecell tc = new Treecell(Objects.toString(node));
+            Treerow tr = null;
+            ti.setValue(node);
+            if (ti.getTreerow() == null) {
+                tr = new Treerow();
+                tr.setParent(ti);
+                ti.setOpen(true); // Expand node
+            } else {
+                tr = ti.getTreerow();
+                tr.getChildren().clear();
+            }
+            tc.setParent(tr);
+        }
+
+    }
+
 }
