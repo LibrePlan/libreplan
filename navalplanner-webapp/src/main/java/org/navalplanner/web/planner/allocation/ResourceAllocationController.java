@@ -139,6 +139,10 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 .from(formBinder.getCalculatedValue());
         calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
         tbResourceAllocation.setSelected(true);
+        showWindow();
+    }
+
+    private void showWindow() {
         Util.reloadBindings(window);
         try {
             window.doModal();
