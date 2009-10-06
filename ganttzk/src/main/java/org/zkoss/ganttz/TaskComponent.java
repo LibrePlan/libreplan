@@ -22,7 +22,6 @@ package org.zkoss.ganttz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -316,15 +315,31 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private void updateCompletion() {
-        BigDecimal hoursAdvancePercentage = task.getHoursAdvancePercentage()
-                .multiply(new BigDecimal(100));
-        response(null, new AuInvoke(this, "resizeCompletionAdvance",
-                hoursAdvancePercentage.intValue() + "%"));
+        long beginMilliseconds = this.task.getBeginDate().getTime();
 
-        BigDecimal advancePercentage = task.getAdvancePercentage().multiply(
-                new BigDecimal(100));
+        long hoursAdvanceEndMilliseconds = this.task.getHoursAdvanceEndDate()
+                .getTime()
+                - beginMilliseconds;
+        if (hoursAdvanceEndMilliseconds < 0) {
+            hoursAdvanceEndMilliseconds = 0;
+        }
+        String widthHoursAdvancePercentage = getMapper().toPixels(
+                hoursAdvanceEndMilliseconds)
+                + "px";
+        response(null, new AuInvoke(this, "resizeCompletionAdvance",
+                widthHoursAdvancePercentage));
+
+        long advanceEndMilliseconds = this.task.getAdvanceEndDate()
+                .getTime()
+                - beginMilliseconds;
+        if (advanceEndMilliseconds < 0) {
+            advanceEndMilliseconds = 0;
+        }
+        String widthAdvancePercentage = getMapper().toPixels(
+                advanceEndMilliseconds)
+                + "px";
         response(null, new AuInvoke(this, "resizeCompletion2Advance",
-                advancePercentage.intValue() + "%"));
+                widthAdvancePercentage));
     }
 
     private DependencyList getDependencyList() {

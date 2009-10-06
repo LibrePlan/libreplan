@@ -22,7 +22,6 @@ package org.zkoss.ganttz.data;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -160,13 +159,13 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public BigDecimal getHoursAdvancePercentage() {
-        return fundamentalProperties.getHoursAdvancePercentage();
+    public Date getHoursAdvanceEndDate() {
+        return fundamentalProperties.getHoursAdvanceEndDate();
     }
 
     @Override
-    public BigDecimal getAdvancePercentage() {
-        return fundamentalProperties.getAdvancePercentage();
+    public Date getAdvanceEndDate() {
+        return fundamentalProperties.getAdvanceEndDate();
     }
 
 }

@@ -27,10 +27,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.Dependency.Type;
@@ -57,6 +60,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IDayAssignmentDAO dayAssignmentDAO;
 
     @Override
     public void setOrder(Order order) {
@@ -125,14 +131,69 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public BigDecimal getHoursAdvancePercentage() {
+        public Date getHoursAdvanceEndDate() {
             OrderElement orderElement = taskElement.getOrderElement();
-            return orderElementDAO.getHoursAdvancePercentage(orderElement);
+            Integer assignedHours = orderElementDAO
+                    .getAssignedHours(orderElement);
+
+            LocalDate date = calculateLimitDate(assignedHours);
+            if (date == null) {
+                return getBeginDate();
+            }
+
+            return date.toDateTimeAtStartOfDay().toDate();
         }
 
         @Override
-        public BigDecimal getAdvancePercentage() {
-            return taskElement.getOrderElement().getAdvancePercentage();
+        public Date getAdvanceEndDate() {
+            OrderElement orderElement = taskElement.getOrderElement();
+            BigDecimal advancePercentage = orderElement.getAdvancePercentage();
+            Integer hours = orderElement.getWorkHours();
+
+            Integer advanceHours = advancePercentage.multiply(
+                    new BigDecimal(hours)).intValue();
+
+            LocalDate date = calculateLimitDate(advanceHours);
+            if (date == null) {
+                return getBeginDate();
+            }
+
+            return date.toDateTimeAtStartOfDay().toDate();
+        }
+
+        private LocalDate calculateLimitDate(Integer hours) {
+            boolean limitReached = false;
+
+            Integer count = 0;
+            LocalDate lastDay = null;
+            Integer hoursLastDay = 0;
+
+            Map<LocalDate, Integer> daysMap = dayAssignmentDAO
+                    .getDayAssignmentsByTaksElementGroupByDay(taskElement);
+            if (daysMap.isEmpty()) {
+                return null;
+            }
+
+            for (LocalDate day : daysMap.keySet()) {
+                lastDay = day;
+                hoursLastDay = daysMap.get(day);
+
+                count += hoursLastDay;
+
+                if (count >= hours) {
+                    limitReached = true;
+                    break;
+                }
+            }
+
+            if (!limitReached) {
+                while (count < hours) {
+                    count += hoursLastDay;
+                    lastDay = lastDay.plusDays(1);
+                }
+            }
+
+            return lastDay.plusDays(1);
         }
 
     }

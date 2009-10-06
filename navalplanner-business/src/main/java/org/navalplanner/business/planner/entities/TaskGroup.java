@@ -22,7 +22,9 @@ package org.navalplanner.business.planner.entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -148,6 +150,18 @@ public class TaskGroup extends TaskElement {
             TaskGroup group = (TaskGroup) taskElement;
             return group.inferHoursGroupFromChildren();
         }
+    }
+
+    @Override
+    public Set<ResourceAllocation<?>> getResourceAllocations() {
+        Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
+
+        List<TaskElement> children = this.getChildren();
+        for (TaskElement child : children) {
+            result.addAll(child.getResourceAllocations());
+        }
+
+        return result;
     }
 
 }

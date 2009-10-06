@@ -68,7 +68,7 @@ public abstract class DayAssignment extends BaseEntity {
         Map<LocalDate, List<T>> result = new HashMap<LocalDate, List<T>>();
         for (T t : assignments) {
             LocalDate day = t.getDay();
-            if (!result.containsKey(day)){
+            if (!result.containsKey(day)) {
                 result.put(day, new ArrayList<T>());
             }
             result.get(day).add(t);
@@ -119,7 +119,8 @@ public abstract class DayAssignment extends BaseEntity {
         return new Comparator<DayAssignment>() {
 
             @Override
-            public int compare(DayAssignment assignment1, DayAssignment assignment2) {
+            public int compare(DayAssignment assignment1,
+                    DayAssignment assignment2) {
                 return assignment1.getDay().compareTo(assignment2.getDay());
             }
         };

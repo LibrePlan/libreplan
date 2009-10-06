@@ -263,4 +263,6 @@ public abstract class TaskElement extends BaseEntity {
         return calendar;
     }
 
+    public abstract Set<ResourceAllocation<?>> getResourceAllocations();
+
 }
