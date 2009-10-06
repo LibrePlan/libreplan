@@ -99,49 +99,83 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         Order orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled())
             throw new IllegalArgumentException(_(
-                    "The order {0} must be scheduled", order));
+                    "The order {0} must be scheduled", orderReloaded));
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
 
-        ISaveCommand saveCommand = getSaveCommand();
-        saveCommand.setState(planningState);
-        configuration.addGlobalCommand(saveCommand);
+        configuration.addGlobalCommand(buildSaveCommand());
+        configuration.addGlobalCommand(buildResourceLoadForOrderCommand(switcher));
 
-        IResourceLoadForOrderCommand resourceLoadForOrderCommand = getResourceLoadForOrderCommand();
-        resourceLoadForOrderCommand.initialize(switcher, planningState);
-        configuration.addGlobalCommand(resourceLoadForOrderCommand);
+        configuration.addCommandOnTask(buildResourceAllocationCommand(resourceAllocationController));
+        configuration.addCommandOnTask(buildSplitCommand(splittingController));
+        configuration.addCommandOnTask(buildMergeTaskCommand());
+        configuration.addCommandOnTask(buildMilestoneCommand());
+        configuration
+                .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
 
-        IResourceAllocationCommand resourceAllocationCommand = getResourceAllocationCommand();
-        resourceAllocationCommand.initialize(resourceAllocationController,
-                planningState);
-        configuration.addCommandOnTask(resourceAllocationCommand);
-
-        ISplitTaskCommand splitCommand = getSplitCommand();
-        splitCommand.setState(planningState);
-        splitCommand.setSplitWindowController(splittingController);
-        configuration.addCommandOnTask(splitCommand);
-
-        IMergeTaskCommand mergeCommand = getMergeTaskCommand();
-        mergeCommand.setState(planningState);
-        configuration.addCommandOnTask(mergeCommand);
-
-        IAddMilestoneCommand addMilestoneCommand = getAddMilestoneCommand();
-        addMilestoneCommand.setState(planningState);
-        configuration.addCommandOnTask(addMilestoneCommand);
-
-        IEditTaskCommand editTaskCommand = getEditTaskCommand();
-        editTaskCommand.setEditTaskController(editTaskController);
-        configuration.setEditTaskCommand(editTaskCommand);
-
-        ICalendarAllocationCommand calendarAllocationCommand = getCalendarAllocationCommand();
-        calendarAllocationCommand
-                .setCalendarAllocationController(calendarAllocationController);
-        configuration.addCommandOnTask(calendarAllocationCommand);
+        configuration.setEditTaskCommand(buildEditTaskCommand(editTaskController));
 
         Chart chartComponent = new Chart();
         configuration.setChartComponent(chartComponent);
+
         planner.setConfiguration(configuration);
 
         setupChart(orderReloaded, chartComponent, planner.getTimeTracker());
+    }
+
+    private ICalendarAllocationCommand buildCalendarAllocationCommand(
+            CalendarAllocationController calendarAllocationController) {
+        ICalendarAllocationCommand calendarAllocationCommand = getCalendarAllocationCommand();
+        calendarAllocationCommand
+                .setCalendarAllocationController(calendarAllocationController);
+        return calendarAllocationCommand;
+    }
+
+    private IEditTaskCommand buildEditTaskCommand(
+            EditTaskController editTaskController) {
+        IEditTaskCommand editTaskCommand = getEditTaskCommand();
+        editTaskCommand.setEditTaskController(editTaskController);
+        return editTaskCommand;
+    }
+
+    private IAddMilestoneCommand buildMilestoneCommand() {
+        IAddMilestoneCommand addMilestoneCommand = getAddMilestoneCommand();
+        addMilestoneCommand.setState(planningState);
+        return addMilestoneCommand;
+    }
+
+    private IMergeTaskCommand buildMergeTaskCommand() {
+        IMergeTaskCommand mergeCommand = getMergeTaskCommand();
+        mergeCommand.setState(planningState);
+        return mergeCommand;
+    }
+
+    private ISplitTaskCommand buildSplitCommand(
+            SplittingController splittingController) {
+        ISplitTaskCommand splitCommand = getSplitCommand();
+        splitCommand.setState(planningState);
+        splitCommand.setSplitWindowController(splittingController);
+        return splitCommand;
+    }
+
+    private IResourceAllocationCommand buildResourceAllocationCommand(
+            ResourceAllocationController resourceAllocationController) {
+        IResourceAllocationCommand resourceAllocationCommand = getResourceAllocationCommand();
+        resourceAllocationCommand.initialize(resourceAllocationController,
+                planningState);
+        return resourceAllocationCommand;
+    }
+
+    private IResourceLoadForOrderCommand buildResourceLoadForOrderCommand(
+            ViewSwitcher switcher) {
+        IResourceLoadForOrderCommand resourceLoadForOrderCommand = getResourceLoadForOrderCommand();
+        resourceLoadForOrderCommand.initialize(switcher, planningState);
+        return resourceLoadForOrderCommand;
+    }
+
+    private ISaveCommand buildSaveCommand() {
+        ISaveCommand saveCommand = getSaveCommand();
+        saveCommand.setState(planningState);
+        return saveCommand;
     }
 
     private void setupChart(Order orderReloaded, Chart chartComponent,
