@@ -43,7 +43,6 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.SimpleTreeModel;
 import org.zkoss.zul.SimpleTreeNode;
-import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
@@ -70,8 +69,6 @@ public class WorkerSearchController extends GenericForwardComposer {
     private Tree criterionsTree;
 
     private Listbox listBoxWorkers;
-
-    private Tabpanel tbpWorkerSearch;
 
     CriterionRenderer criterionRenderer = new CriterionRenderer();
 
@@ -183,9 +180,9 @@ public class WorkerSearchController extends GenericForwardComposer {
         clearAll();
     }
 
-    private void clearAll() {
+    public void clearAll() {
         txtName.setValue("");
-        listBoxWorkers.setModel(new SimpleListModel(new ArrayList<Worker>()));
+        refreshListBoxWorkers(workerSearchModel.getAllWorkers());
         criterionsTree.setModel(getCriterions());
     }
 

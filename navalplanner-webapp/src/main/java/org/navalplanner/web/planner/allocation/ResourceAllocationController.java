@@ -67,7 +67,6 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Tab;
-import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -108,8 +107,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Button applyButton;
 
     private WorkerSearch workerSearch;
-
-    private Tabpanel tbpWorkerSearch;
 
     private Tab tbResourceAllocation;
 
@@ -155,31 +152,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     /**
-     * Shows WorkerSearch window, add picked workers as
-     * {@link SpecificResourceAllocation} to {@link ResourceAllocation} list
-     * @return
+     * Pick resources selected from {@link WorkerSearch} and add them to
+     * resource allocation list
+     *
+     * @param e
      */
-    public void showSearchResources() {
-        WorkerSearch workerSearch = new WorkerSearch();
-        workerSearch.setParent(self.getParent());
-        workerSearch.afterCompose();
-
-        Window window = workerSearch.getWindow();
-        try {
-            window.doModal();
-        } catch (SuspendNotAllowedException e1) {
-            throw new RuntimeException(e1);
-        } catch (InterruptedException e1) {
-            throw new RuntimeException(e1);
-        }
-
-        addSpecificResourceAllocations(workerSearch.getWorkers());
-
-        Util.reloadBindings(allocationsList);
-    }
-
     public void onSelectWorkers(Event e) {
-        final List<Worker> workers = workerSearch.getWorkers();
         addSpecificResourceAllocations(workerSearch.getWorkers());
         tbResourceAllocation.setSelected(true);
         Util.reloadBindings(allocationsList);
@@ -316,6 +294,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     private void clear() {
+        workerSearch.clearAll();
         allocationsList.getItems().clear();
     }
 

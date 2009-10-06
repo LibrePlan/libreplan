@@ -20,13 +20,11 @@
 
 package org.navalplanner.web.common.components;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.resources.search.WorkerSearchController;
 import org.zkoss.zk.ui.HtmlMacroComponent;
-import org.zkoss.zul.Window;
 
 /**
  * ZK macro component for searching {@link Worker} entities
@@ -36,21 +34,16 @@ import org.zkoss.zul.Window;
 @SuppressWarnings("serial")
 public class WorkerSearch extends HtmlMacroComponent {
 
-    List<Worker> workers = new ArrayList<Worker>();
-
-    public Window getWindow() {
-        return (Window) getFellow("workerSearch");
-    }
-
     public List<Worker> getWorkers() {
         WorkerSearchController controller = (WorkerSearchController) this
                 .getVariable("controller", true);
-        final List<Worker> workers = controller.getSelectedWorkers();
-        return workers;
+        return controller.getSelectedWorkers();
     }
 
-    public void setWorkers(List<Worker> workers) {
-        this.workers = workers;
+    public void clearAll() {
+        WorkerSearchController controller = (WorkerSearchController) this
+                .getVariable("controller", true);
+        controller.clearAll();
     }
 
 }
