@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
@@ -40,7 +39,6 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceAllocationWithDesiredResourcesPerDay;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
@@ -297,82 +295,4 @@ public class ResourceAllocationsBeingEdited {
         return daysDuration;
     }
 
-}
-
-class AllocationResult {
-
-    private static Map<ResourceAllocation<?>, ResourceAllocation<?>> translation(
-            Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> fromDetachedToAttached) {
-        Map<ResourceAllocation<?>, ResourceAllocation<?>> result = new HashMap<ResourceAllocation<?>, ResourceAllocation<?>>();
-        for (Entry<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> entry : fromDetachedToAttached
-                .entrySet()) {
-            result
-                    .put(entry.getKey().getResourceAllocation(), entry
-                            .getValue());
-        }
-        return result;
-    }
-
-    private final AggregateOfResourceAllocations aggregate;
-
-    private final Integer daysDuration;
-
-    private final Map<ResourceAllocation<?>, ResourceAllocation<?>> fromDetachedAllocationToAttached;
-
-    private final CalculatedValue calculatedValue;
-
-    AllocationResult(
-            CalculatedValue calculatedValue,
-            AggregateOfResourceAllocations aggregate,
-            Integer daysDuration,
-            Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
-        Validate.notNull(daysDuration);
-        Validate.notNull(aggregate);
-        Validate.notNull(calculatedValue);
-        this.calculatedValue = calculatedValue;
-        this.aggregate = aggregate;
-        this.daysDuration = daysDuration;
-        this.fromDetachedAllocationToAttached = translation(fromDetachedAllocationToAttached);
-    }
-
-    public AggregateOfResourceAllocations getAggregate() {
-        return aggregate;
-    }
-
-    public Integer getDaysDuration() {
-        return daysDuration;
-    }
-
-    public List<ResourceAllocation<?>> getNew() {
-        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
-        for (Entry<ResourceAllocation<?>, ResourceAllocation<?>> entry : fromDetachedAllocationToAttached
-                .entrySet()) {
-            if (entry.getValue() == null) {
-                result.add(entry.getKey());
-            }
-        }
-        return result;
-    }
-
-    public List<Task.ModifiedAllocation> getModified() {
-        List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
-        for (Entry<ResourceAllocation<?>, ResourceAllocation<?>> entry : fromDetachedAllocationToAttached
-                .entrySet()) {
-            if (entry.getValue() != null) {
-                result.add(new ModifiedAllocation(entry.getValue(), entry
-                        .getKey()));
-            }
-        }
-        return result;
-    }
-
-    public CalculatedValue getCalculatedValue() {
-        return calculatedValue;
-    }
-
-    public void applyTo(Task task) {
-        task.mergeAllocation(getCalculatedValue(),
-                getDaysDuration(),
-                getNew(), getModified());
-    }
 }
