@@ -23,6 +23,7 @@ package org.navalplanner.business.orders.entities;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -30,6 +31,8 @@ import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.IValidable;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 
 /**
@@ -190,6 +193,29 @@ public class Order extends BaseEntity implements IOrderLineGroup, IValidable {
                         "At least one HoursGroup is needed for each OrderElement");
             }
         }
+    }
+
+    public List<DayAssignment> getDayAssignments() {
+        List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
+        for (OrderElement orderElement : getAllOrderElements()) {
+            Set<TaskElement> taskElements = orderElement.getTaskElements();
+            for (TaskElement taskElement : taskElements) {
+                Set<ResourceAllocation<?>> resourceAllocations = taskElement.getResourceAllocations();
+                for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+                    dayAssignments.addAll(resourceAllocation.getAssignments());
+                }
+            }
+        }
+        return dayAssignments;
+    }
+
+    private List<OrderElement> getAllOrderElements() {
+        List<OrderElement> result = new ArrayList<OrderElement>(
+                this.orderElements);
+        for (OrderElement orderElement : this.orderElements) {
+            result.addAll(orderElement.getAllChildren());
+        }
+        return result;
     }
 
 }

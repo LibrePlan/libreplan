@@ -24,13 +24,19 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
@@ -43,9 +49,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
-import org.zkoss.zul.CategoryModel;
 import org.zkoss.zul.Chart;
-import org.zkoss.zul.SimpleCategoryModel;
+import org.zkoss.zul.SimpleXYModel;
+import org.zkoss.zul.XYModel;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -124,7 +130,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 .setCalendarAllocationController(calendarAllocationController);
         configuration.addCommandOnTask(calendarAllocationCommand);
 
-        configuration.setChartComponent(getChartComponent());
+        configuration.setChartComponent(getChartComponent(orderReloaded));
 
         onTransaction.use(configuration);
     }
@@ -218,49 +224,55 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
-    private Chart getChartComponent() {
-        CategoryModel catmodel = new SimpleCategoryModel();
-        catmodel.setValue("2008", "Q1 2008", new Integer(20));
-        catmodel.setValue("2008", "Q2 2008", new Integer(35));
-        catmodel.setValue("2008", "Q3 2008", new Integer(40));
-        catmodel.setValue("2008", "Q4 2008", new Integer(55));
-        catmodel.setValue("2009", "Q1 2008", new Integer(40));
-        catmodel.setValue("2009", "Q2 2008", new Integer(60));
-        catmodel.setValue("2009", "Q3 2008", new Integer(70));
-        catmodel.setValue("2009", "Q4 2008", new Integer(90));
-        catmodel.setValue("2010", "Q1 2008", new Integer(20));
-        catmodel.setValue("2010", "Q2 2008", new Integer(35));
-        catmodel.setValue("2010", "Q3 2008", new Integer(40));
-        catmodel.setValue("2010", "Q4 2008", new Integer(55));
-        catmodel.setValue("2011", "Q1 2008", new Integer(40));
-        catmodel.setValue("2011", "Q2 2008", new Integer(60));
-        catmodel.setValue("2011", "Q3 2008", new Integer(70));
-        catmodel.setValue("2011", "Q4 2008", new Integer(90));
+    private Chart getChartComponent(Order order) {
+        SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(order);
 
-        catmodel.setValue("2008", "Q1 2009", new Integer(20));
-        catmodel.setValue("2008", "Q2 2009", new Integer(35));
-        catmodel.setValue("2008", "Q3 2009", new Integer(40));
-        catmodel.setValue("2008", "Q4 2009", new Integer(55));
-        catmodel.setValue("2009", "Q1 2009", new Integer(40));
-        catmodel.setValue("2009", "Q2 2009", new Integer(60));
-        catmodel.setValue("2009", "Q3 2009", new Integer(70));
-        catmodel.setValue("2009", "Q4 2009", new Integer(90));
-        catmodel.setValue("2010", "Q1 2009", new Integer(20));
-        catmodel.setValue("2010", "Q2 2009", new Integer(35));
-        catmodel.setValue("2010", "Q3 2009", new Integer(40));
-        catmodel.setValue("2010", "Q4 2009", new Integer(55));
-        catmodel.setValue("2011", "Q1 2009", new Integer(40));
-        catmodel.setValue("2011", "Q2 2009", new Integer(60));
-        catmodel.setValue("2011", "Q3 2009", new Integer(70));
-        catmodel.setValue("2011", "Q4 2009", new Integer(90));
+        XYModel xymodel = new SimpleXYModel();
+        for (LocalDate day : mapDayAssignments.keySet()) {
+            Integer hours = mapDayAssignments.get(day);
+            xymodel.addValue("", new Long(day.toDateTimeAtStartOfDay()
+                    .getMillis()), hours);
+        }
 
         Chart chart = new Chart();
-        chart.setType("stacked_area");
+        chart.setType("time_series");
         chart.setWidth("1600px");
         chart.setHeight("175px");
-        chart.setModel(catmodel);
+        chart.setModel(xymodel);
 
         return chart;
+    }
+
+    private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
+            Order order) {
+        SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
+
+        List<DayAssignment> dayAssignments = order.getDayAssignments();
+        if (dayAssignments.isEmpty()) {
+            return map;
+        }
+
+        Collections.sort(dayAssignments, new Comparator<DayAssignment>() {
+
+            @Override
+            public int compare(DayAssignment o1, DayAssignment o2) {
+                return o1.getDay().compareTo(o2.getDay());
+            }
+
+        });
+
+        for (DayAssignment dayAssignment : dayAssignments) {
+            LocalDate day = dayAssignment.getDay();
+            Integer hours = dayAssignment.getHours();
+
+            if (map.get(day) == null) {
+                map.put(day, hours);
+            } else {
+                map.put(day, map.get(day) + hours);
+            }
+        }
+
+        return map;
     }
 
 }
