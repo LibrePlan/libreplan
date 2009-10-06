@@ -51,6 +51,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.timetracker.TimeTracker;
+import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zul.Chart;
 import org.zkoss.zul.SimpleXYModel;
@@ -140,6 +143,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 configuration);
     }
 
+    private IZoomLevelChangedListener zoomListener;
+
     private IConfigurationOnTransaction withChartFilling(
             final IConfigurationOnTransaction onTransaction,
             final Order order,
@@ -154,9 +159,21 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             @Override
             public void use(PlannerConfiguration<TaskElement> configuration) {
                 onTransaction.use(configuration);
-                Planner planner = getPlannerBeingConfigured();
-                Interval interval = planner.getTimeTracker().getRealInterval();
-                fillChart(order, chartComponent, interval);
+                final Planner planner = getPlannerBeingConfigured();
+
+                final TimeTracker timeTracker = planner.getTimeTracker();
+                fillChart(order, chartComponent, timeTracker.getRealInterval());
+
+                zoomListener = new IZoomLevelChangedListener() {
+
+                    @Override
+                    public void zoomLevelChanged(ZoomLevel detailLevel) {
+                        fillChart(order, chartComponent, timeTracker
+                        .getRealInterval());
+                    }
+                };
+
+                timeTracker.addZoomListener(zoomListener);
             }
         };
     }
