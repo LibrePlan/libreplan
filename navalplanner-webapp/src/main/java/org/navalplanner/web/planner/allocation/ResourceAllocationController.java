@@ -314,7 +314,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     public void advanceAllocation() {
         AllocationResult allocationResult = allocationsBeingEdited
                 .doAllocation();
-        switcher.goToAdvancedAllocation();
+        switcher.goToAdvancedAllocation(allocationResult);
         window.setVisible(false);
     }
 

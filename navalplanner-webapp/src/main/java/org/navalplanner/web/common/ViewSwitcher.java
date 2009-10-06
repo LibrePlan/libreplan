@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
+import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.resourceload.ResourceLoadController;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -52,18 +53,18 @@ public class ViewSwitcher implements Composer {
         isInPlanningOrder = true;
     }
 
-    public void goToAdvancedAllocation() {
+    public void goToAdvancedAllocation(AllocationResult allocationResult) {
         planningOrder = ComponentsReplacer.replaceAllChildren(parent,
                 "advance_allocation.zul",
-                createArgsForAdvancedAllocation());
+                createArgsForAdvancedAllocation(allocationResult));
         isInPlanningOrder = false;
     }
 
-    private Map<String, Object> createArgsForAdvancedAllocation() {
+    private Map<String, Object> createArgsForAdvancedAllocation(
+            AllocationResult allocationResult) {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("advancedAllocationController",
-                new AdvancedAllocationController(
-                                ViewSwitcher.this));
+                new AdvancedAllocationController(this, allocationResult));
         return result;
     }
 

@@ -57,9 +57,12 @@ public class AdvancedAllocationController extends
     private Grid leftPane;
     private TimeTrackedTable<FakeData> table;
     private final ViewSwitcher switcher;
+    private final AllocationResult allocationResult;
 
-    public AdvancedAllocationController(ViewSwitcher switcher) {
+    public AdvancedAllocationController(ViewSwitcher switcher,
+            AllocationResult allocationResult) {
         this.switcher = switcher;
+        this.allocationResult = allocationResult;
     }
 
     @Override
