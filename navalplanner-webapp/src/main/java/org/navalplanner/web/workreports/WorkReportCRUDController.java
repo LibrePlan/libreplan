@@ -453,7 +453,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Append a Autobox @{link Resource} to listItem
+     * Append a Autocomplete @{link Resource} to listItem
      *
      * @param listItem
      */

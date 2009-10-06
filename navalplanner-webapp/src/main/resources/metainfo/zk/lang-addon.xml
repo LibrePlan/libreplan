@@ -25,7 +25,7 @@
 
     <component>
         <component-name>autocomplete</component-name>
-        <component-class>org.navalplanner.web.common.components.Autobox</component-class>
+        <component-class>org.navalplanner.web.common.components.Autocomplete</component-class>
         <extends>combobox</extends>
     </component>
 
