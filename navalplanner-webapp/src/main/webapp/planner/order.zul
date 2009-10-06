@@ -82,7 +82,7 @@
     </popup>
 
     <window id="resourceAllocationWindow" self="@{define(content)}"
-        apply="${allocationController}"
+        apply="${allocationController}" closable="true"
         title="${i18n:_('Resource allocation')}" width="600px" visible="false">
 
     <tabbox mold="accordion">

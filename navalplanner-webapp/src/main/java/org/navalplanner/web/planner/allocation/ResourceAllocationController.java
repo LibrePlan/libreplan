@@ -141,6 +141,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                 .from(formBinder.getCalculatedValue());
         calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
+        tbResourceAllocation.setSelected(true);
         Util.reloadBindings(window);
         try {
             window.doModal();
@@ -288,7 +289,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     // Triggered when closable button is clicked
     public void onClose(Event event) {
-        window.setVisible(false);
+        cancel();
         event.stopPropagation();
     }
 
