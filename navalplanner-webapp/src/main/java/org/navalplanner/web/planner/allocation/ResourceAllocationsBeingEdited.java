@@ -40,6 +40,7 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceAllocationWithDesiredResourcesPerDay;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
@@ -346,12 +347,13 @@ class AllocationResult {
         return result;
     }
 
-    public Map<ResourceAllocation<?>, ResourceAllocation<?>> getModified() {
-        Map<ResourceAllocation<?>, ResourceAllocation<?>> result = new HashMap<ResourceAllocation<?>, ResourceAllocation<?>>();
+    public List<Task.ModifiedAllocation> getModified() {
+        List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
         for (Entry<ResourceAllocation<?>, ResourceAllocation<?>> entry : fromDetachedAllocationToAttached
                 .entrySet()) {
             if (entry.getValue() != null) {
-                result.put(entry.getKey(), entry.getValue());
+                result.add(new ModifiedAllocation(entry.getValue(), entry
+                        .getKey()));
             }
         }
         return result;
