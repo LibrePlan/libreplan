@@ -20,6 +20,10 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -36,6 +40,19 @@ public class GenericDayAssignment extends DayAssignment {
             Resource resource) {
         return (GenericDayAssignment) create(new GenericDayAssignment(day, hours,
                 resource));
+    }
+
+    public static Set<GenericDayAssignment> copy(
+            GenericResourceAllocation newAllocation,
+            Collection<GenericDayAssignment> assignemnts) {
+        Set<GenericDayAssignment> result = new HashSet<GenericDayAssignment>();
+        for (GenericDayAssignment a : assignemnts) {
+            GenericDayAssignment r = create(a.getDay(), a.getHours(), a
+                    .getResource());
+            r.setGenericResourceAllocation(newAllocation);
+            result.add(r);
+        }
+        return result;
     }
 
     private GenericDayAssignment(LocalDate day, int hours, Resource resource) {
@@ -59,6 +76,10 @@ public class GenericDayAssignment extends DayAssignment {
             throw new IllegalStateException(
                     "the allocation cannot be changed once it has been set");
         this.genericResourceAllocation = genericResourceAllocation;
+    }
+
+    public void detach() {
+        genericResourceAllocation = null;
     }
 
 }

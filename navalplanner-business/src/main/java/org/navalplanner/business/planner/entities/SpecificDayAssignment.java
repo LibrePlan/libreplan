@@ -20,6 +20,10 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -30,6 +34,19 @@ import org.navalplanner.business.resources.entities.Resource;
  *
  */
 public class SpecificDayAssignment extends DayAssignment {
+
+    public static Set<SpecificDayAssignment> copy(
+            SpecificResourceAllocation allocation,
+            Collection<SpecificDayAssignment> specificDaysAssignment) {
+        Set<SpecificDayAssignment> result = new HashSet<SpecificDayAssignment>();
+        for (SpecificDayAssignment s : specificDaysAssignment) {
+            SpecificDayAssignment created = create(s.getDay(), s.getHours(), s
+                    .getResource());
+            created.setSpecificResourceAllocation(allocation);
+            result.add(created);
+        }
+        return result;
+    }
 
     private SpecificResourceAllocation specificResourceAllocation;
 
@@ -60,5 +77,9 @@ public class SpecificDayAssignment extends DayAssignment {
             throw new IllegalStateException(
                     "the allocation cannot be changed once it has been set");
         this.specificResourceAllocation = specificResourceAllocation;
+    }
+
+    void detach() {
+        this.specificResourceAllocation = null;
     }
 }
