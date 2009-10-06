@@ -105,6 +105,8 @@ public class WorkerSearchController extends GenericForwardComposer {
         if (listBoxWorkers.getItemRenderer() == null) {
             listBoxWorkers.setItemRenderer(getListitemRenderer());
         }
+
+        refreshListBoxWorkers(workerSearchModel.getAllWorkers());
     }
 
     /**
@@ -124,7 +126,7 @@ public class WorkerSearchController extends GenericForwardComposer {
      */
     private void searchWorkers(String name, List<Criterion> criterions) {
         if (name == null || name.length() == 0) {
-            refreshListBoxWorkers(new Worker[0]);
+            refreshListBoxWorkers(workerSearchModel.getAllWorkers());
             return;
         }
 
@@ -163,6 +165,10 @@ public class WorkerSearchController extends GenericForwardComposer {
      *            array of {@link Worker}
      */
     private void refreshListBoxWorkers(Worker[] workers) {
+        listBoxWorkers.setModel(new SimpleListModel(workers));
+    }
+
+    private void refreshListBoxWorkers(List<Worker> workers) {
         listBoxWorkers.setModel(new SimpleListModel(workers));
     }
 

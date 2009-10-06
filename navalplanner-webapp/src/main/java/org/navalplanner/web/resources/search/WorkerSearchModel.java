@@ -70,4 +70,10 @@ public class WorkerSearchModel implements IWorkerSearchModel {
     public List<Worker> findWorkers(String name, List<Criterion> criterions) {
         return workerDAO.findByNameAndCriterions(name, criterions);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Worker> getAllWorkers() {
+        return workerDAO.getWorkers();
+    }
 }

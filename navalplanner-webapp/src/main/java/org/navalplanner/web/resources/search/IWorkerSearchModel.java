@@ -53,4 +53,10 @@ public interface IWorkerSearchModel {
      */
     @SuppressWarnings("unchecked")
     List<Worker> findWorkers(String name, List<Criterion> criterions);
+
+    /**
+     *
+     * @return
+     */
+    List<Worker> getAllWorkers();
 }
