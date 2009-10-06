@@ -48,8 +48,10 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zul.Chart;
 import org.zkoss.zul.SimpleXYModel;
 import org.zkoss.zul.XYModel;
@@ -131,9 +133,32 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 .setCalendarAllocationController(calendarAllocationController);
         configuration.addCommandOnTask(calendarAllocationCommand);
 
-        configuration.setChartComponent(getChartComponent(orderReloaded));
+        Chart chartComponent = new Chart();
+        configuration.setChartComponent(chartComponent);
 
-        onTransaction.use(configuration);
+        withChartFilling(onTransaction, orderReloaded, chartComponent).use(
+                configuration);
+    }
+
+    private IConfigurationOnTransaction withChartFilling(
+            final IConfigurationOnTransaction onTransaction,
+            final Order order,
+            final Chart chartComponent) {
+        return new IConfigurationOnTransaction() {
+
+            @Override
+            public Planner getPlannerBeingConfigured() {
+                return onTransaction.getPlannerBeingConfigured();
+            }
+
+            @Override
+            public void use(PlannerConfiguration<TaskElement> configuration) {
+                onTransaction.use(configuration);
+                Planner planner = getPlannerBeingConfigured();
+                Interval interval = planner.getTimeTracker().getRealInterval();
+                fillChart(order, chartComponent, interval);
+            }
+        };
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(
@@ -225,19 +250,16 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
-    private Chart getChartComponent(Order order) {
+    private void fillChart(Order order, Chart chart, Interval interval) {
         XYModel xymodel = new SimpleXYModel();
 
         addLoad(order, xymodel);
         addCalendarMaximumAvailability(order, xymodel);
 
-        Chart chart = new Chart();
         chart.setType("time_series");
         chart.setWidth("1600px");
         chart.setHeight("175px");
         chart.setModel(xymodel);
-
-        return chart;
     }
 
     private void addLoad(Order order, XYModel xymodel) {

@@ -98,6 +98,11 @@ public class OrderPlanningController implements
             public void use(PlannerConfiguration<TaskElement> configuration) {
                 planner.setConfiguration(configuration);
             }
+
+            @Override
+            public Planner getPlannerBeingConfigured() {
+                return planner;
+            }
         });
     }
 
