@@ -39,7 +39,6 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.web.common.IChildrenSnapshot;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -108,9 +107,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private WorkerSearch workerSearch;
 
-    private Tab tbResourceAllocation;
-
-    private IChildrenSnapshot previousSnapshot;
+    private Tab tbResourceAllocation;    
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
