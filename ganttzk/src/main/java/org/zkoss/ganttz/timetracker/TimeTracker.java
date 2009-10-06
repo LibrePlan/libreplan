@@ -83,7 +83,7 @@ public class TimeTracker {
 
     private Interval realIntervalCached;
 
-    private Interval getRealInterval() {
+    public Interval getRealInterval() {
         if (realIntervalCached == null) {
             realIntervalCached = getTimeTrackerState().getRealIntervalFor(
                     interval);

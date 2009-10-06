@@ -33,6 +33,7 @@ import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
@@ -242,6 +243,10 @@ public class Planner extends HtmlMacroComponent  {
     @Override
     public void afterCompose() {
         super.afterCompose();
+    }
+
+    public TimeTracker getTimeTracker() {
+        return ganttPanel.getTimeTracker();
     }
 
 }
