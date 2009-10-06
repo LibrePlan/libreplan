@@ -20,7 +20,6 @@
 
 package org.navalplanner.web.planner.allocation;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -221,10 +220,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         List<GenericAllocationDTO> currentGeneric = AllocationDTO
                 .getGeneric(dtos);
         if (currentGeneric.isEmpty()) {
-            List<AllocationDTO> result = new ArrayList<AllocationDTO>();
-            result.add(0, GenericAllocationDTO.createDefault());
-            result.addAll(currentGeneric);
-            return result;
+            dtos.add(0, GenericAllocationDTO.createDefault());
         }
         return dtos;
     }
