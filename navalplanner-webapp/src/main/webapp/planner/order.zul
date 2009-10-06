@@ -92,75 +92,79 @@
         </tabs>
         <tabpanels>
             <tabpanel>
-                <panel title="${i18n:_('Calculation type')}">
-                    <panelchildren>
-                        <radiogroup id="calculationTypeSelector"
-                            onCheck="allocationController.calculationTypeSelected = self.selectedItem.value;">
-                            <grid>
-                                <rows>
-                                    <row
-                                        forEach="${allocationController.calculationTypes}">
-                                        <radio label="${each.name}"
-                                            value="${each}" />
-                                    </row>
-                                </rows>
-                            </grid>
-                        </radiogroup>
-                    </panelchildren>
-                </panel>
-                <panel title="${i18n:_('Duration')}">
-                    <panelchildren>
-                        <hbox>
-                            <label value="${i18n:_('Start')}:"
-                                style="font-weight:bold" />
-                            <datebox id="taskStartDateBox" />
-                            <label value="${i18n:_('Elapsed Days')}:"
-                                style="font-weight:bold" />
-                            <intbox id="taskElapsedDays" />
-                        </hbox>
-                    </panelchildren>
-                </panel>
-                <panel title="${i18n:_('Allocation')}" border="normal"
-                    style="margin-bottom: 5px">
-                    <panelchildren>
-                        <hbox>
-                            <label value="${i18n:_('Criterions')}:"
-                                style="font-weight:bold" />
-                            <label
-                                value="@{allocationController.taskCriterions}" />
-                        </hbox>
-                        <hbox>
-                            <label value="${i18n:_('Order Hours')}:"
-                                style="font-weight:bold" />
-                            <label
-                                value="@{allocationController.orderHours}" />
-                        </hbox>
-                        <hbox>
-                            <label value="${i18n:_('Assigned Hours')}:"
-                                style="font-weight:bold" />
-                            <intbox id="assignedHoursComponent" />
-                        </hbox>
-                    </panelchildren>
-                </panel>
+                <grid>
+                      <columns>
+                          <column width="200px" />
+                          <column />
+                      </columns>
+                      <rows>
+                        <!--  Calculation type -->
+                        <row>
+                            <label value="${i18n:_('Calculation type')}:" />
+                            <radiogroup id="calculationTypeSelector"
+                                onCheck="allocationController.calculationTypeSelected = self.selectedItem.value;">
+                                <grid>
+                                    <rows>
+                                        <row
+                                            forEach="${allocationController.calculationTypes}">
+                                            <radio label="${each.name}"
+                                                value="${each}" />
+                                        </row>
+                                    </rows>
+                                </grid>
+                            </radiogroup>
+                        </row>
+                        <!-- Duration -->
+                        <row>
+                            <label value="${i18n:_('Duration')}:" />
+                            <vbox>
+                                <label value="${i18n:_('Start')}" />
+                                <datebox id="taskStartDateBox" />
+                                <label value="${i18n:_('Elapsed Days')}" />
+                                <intbox id="taskElapsedDays" width="300px" />
+                            </vbox>
+                        </row>
+                        <!--  Required criterions -->
+                        <row>
+                            <label value="${i18n:_('Required criterions')}:" />
+                            <label value="@{allocationController.taskCriterions}" />
+                        </row>
+                        <!--  Total order hours -->
+                        <row>
+                                <label value="${i18n:_('Total order hours')}:" />
+                                <label value="@{allocationController.orderHours}" />
+                        </row>
+                        <!--  Assigned hours -->
+                        <row>
+                                <label value="${i18n:_('Assigned hours')}:"    />
+                                <intbox id="assignedHoursComponent" width="300px" />
+                        </row>
+                    </rows>
+                </grid>
 
-                <vbox id="messagesContainer"></vbox>
+                <!-- Assigned resources -->
+                <panel title="${i18n:_('Assigned resources')}" border="normal" style="margin-top: 5px">
+                    <panelchildren>
+                        <vbox id="messagesContainer"></vbox>
 
-                <listbox id="allocationsList"
-                    model="@{allocationController.resourceAllocations}"
-                    itemRenderer="@{allocationController.resourceAllocationRenderer}"
-                    style="margin-bottom: 5px">
-                    <listhead>
-                        <listheader label="${i18n:_('Name')}" />
-                        <listheader
-                            label="${i18n:_('Resources Per Day')}" />
-                        <listheader label="" />
-                    </listhead>
-                </listbox>
+                        <listbox id="allocationsList"
+                            model="@{allocationController.resourceAllocations}"
+                            itemRenderer="@{allocationController.resourceAllocationRenderer}"
+                            style="margin-bottom: 5px" fixedLayout="true" >
+                            <listhead>
+                                <listheader label="${i18n:_('Name')}" />
+                                <listheader
+                                    label="${i18n:_('Resources Per Day')}" />
+                                <listheader />
+                            </listhead>
+                        </listbox>
+                    </panelchildren>
+                </panel>
             </tabpanel>
 
+            <!-- Worker search -->
             <tabpanel>
                 <workerSearch id="workerSearch"/>
-
                 <!--  Select worker -->
                 <hbox>
                     <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(event)" />
