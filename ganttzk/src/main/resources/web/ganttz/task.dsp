@@ -27,8 +27,11 @@
 
 <div id="row${self.uuid}" class="row" z.valor="boxid="${self.uuid}">
     <div id="${self.uuid}" z.type="ganttz.task.Task" idTask="${self.id}"
-        z.autoz="true"${self.outerAttrs}" class="box">
+        z.autoz="true"${self.outerAttrs}" class="box"
+        onMouseover="zkTasklist.showTooltip('tasktooltip${self.uuid}');"
+        onMouseOut="zkTasklist.hideTooltip('tasktooltip${self.uuid}');">
         <div class="completion"></div>
         <div class="completion2"></div>
+		<div id="tasktooltip${self.uuid}" class="task_tooltip">TooltipText: </div>
     </div>
 </div>

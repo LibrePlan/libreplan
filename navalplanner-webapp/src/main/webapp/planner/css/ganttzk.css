@@ -527,3 +527,15 @@ div.z-tree {
 
 .plannerlayout, .resourcesloadlayout {
     height:500px;
+}
+
+.task_tooltip {
+    display:none;
+    font-size: 10px;
+    position: relative;
+    top: -30px;
+    width: 180px;
+    background-color: #f7f7bf;
+    border: solid 1px #CCCCCC;
+    z-index: 7;
+}

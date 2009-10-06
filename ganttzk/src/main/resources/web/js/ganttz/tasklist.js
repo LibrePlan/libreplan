@@ -44,6 +44,22 @@ FOOTER_HEIGHT = 40; // Design-relative footer height
 SCROLLBAR_WIDTH = 15; // Scrollbars default width
 
 
+zkTasklist.tooltipTimeout = "";
+
+zkTasklist.showTooltip = function(elem) {
+	zkTasklist.tooltipTimeout = setTimeout(function() {
+		document.getElementById(elem).style['display'] = 'block';
+	}, 1000);
+}
+
+zkTasklist.hideTooltip = function(elem) {
+	if (zkTasklist.tooltipTimeout) {
+		clearTimeout(zkTasklist.tooltipTimeout);
+	}
+	document.getElementById(elem).style["display"] = "none";
+}
+
+
 function scrolledpannel() {
 	return YAHOO.util.Selector.query('.rightpanellayout div')[0];
 }
@@ -76,7 +92,7 @@ zkTasklist.adjust_height = function(cmp) {
 	adjustScrollableDimensions();
 }
 
-/* Scrolls taskdetails compoent when scrolling ganttpanel component */
+/* Scrolls taskdetails component when scrolling ganttpanel component */
 function listenToScroll() {
 
 	timetrackergap_ = timetrackergap();
