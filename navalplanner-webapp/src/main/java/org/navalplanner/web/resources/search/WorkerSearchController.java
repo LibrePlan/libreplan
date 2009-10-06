@@ -300,9 +300,13 @@ public class WorkerSearchController extends GenericForwardComposer {
         private void appendLabelWorker(Listitem item) {
             Worker worker = (Worker) item.getValue();
 
-            Listcell listCell = new Listcell();
-            listCell.appendChild(new Label(worker.getName()));
-            item.appendChild(listCell);
+            Listcell listWorker = new Listcell();
+            listWorker.appendChild(new Label(worker.getName()));
+            item.appendChild(listWorker);
+
+            Listcell listName = new Listcell();
+            listName.appendChild(new Label(worker.getNif()));
+            item.appendChild(listName);
         }
     }
 }

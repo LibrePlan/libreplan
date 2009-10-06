@@ -45,8 +45,8 @@
 				pageSize="10" rows="10" multiple="true"
 				itemRenderer="@{controller.listitemRenderer}">
 				<listhead>
-					<listheader label="${i18n:_('Found workers')}"
-						sort="auto" />
+					<listheader label="${i18n:_('Name')}" sort="auto" />
+					<listheader label="${i18n:_('NIF')}" sort="auto" />
 				</listhead>
 			</listbox>
 		</vbox>
