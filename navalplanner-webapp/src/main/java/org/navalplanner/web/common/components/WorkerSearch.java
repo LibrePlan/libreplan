@@ -43,6 +43,9 @@ public class WorkerSearch extends HtmlMacroComponent {
     }
 
     public List<Worker> getWorkers() {
+        WorkerSearchController controller = (WorkerSearchController) this
+                .getVariable("controller", true);
+        final List<Worker> workers = controller.getSelectedWorkers();
         return workers;
     }
 

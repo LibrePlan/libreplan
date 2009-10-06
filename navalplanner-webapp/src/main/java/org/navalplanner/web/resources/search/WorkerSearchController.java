@@ -28,7 +28,6 @@ import java.util.Set;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.web.common.components.WorkerSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.Component;
@@ -44,6 +43,7 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.SimpleTreeModel;
 import org.zkoss.zul.SimpleTreeNode;
+import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
@@ -70,6 +70,8 @@ public class WorkerSearchController extends GenericForwardComposer {
     private Tree criterionsTree;
 
     private Listbox listBoxWorkers;
+
+    private Tabpanel tbpWorkerSearch;
 
     CriterionRenderer criterionRenderer = new CriterionRenderer();
 
@@ -187,13 +189,7 @@ public class WorkerSearchController extends GenericForwardComposer {
         criterionsTree.setModel(getCriterions());
     }
 
-    public void onSelect(Event event) {
-        self.setVisible(false);
-        ((WorkerSearch) self.getParent()).setWorkers(getSelectedWorkers());
-        clearAll();
-    }
-
-    private List<Worker> getSelectedWorkers() {
+    public List<Worker> getSelectedWorkers() {
         List<Worker> result = new ArrayList<Worker>();
 
         Set<Listitem> selectedItems = listBoxWorkers.getSelectedItems();

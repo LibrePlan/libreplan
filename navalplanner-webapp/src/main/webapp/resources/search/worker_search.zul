@@ -51,9 +51,4 @@
             </tree>
         </vbox>
     </hbox>
-
-    <hbox>
-        <button label="${i18n:_('Select')}"
-            onClick="controller.onAccept(event)" />
-    </hbox>
 </vbox>

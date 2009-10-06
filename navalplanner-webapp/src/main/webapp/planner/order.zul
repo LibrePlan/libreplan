@@ -87,11 +87,11 @@
 
     <tabbox mold="accordion">
         <tabs>
-            <tab label="${i18n:_('Resource allocation')}" />
+            <tab id="tbResourceAllocation" label="${i18n:_('Resource allocation')}" />
             <tab label="${i18n:_('Worker search')}" />
         </tabs>
         <tabpanels>
-            <tabpanel>
+            <tabpanel id="tbpResourceAllocation">
                 <panel title="${i18n:_('Calculation type')}">
                     <panelchildren>
                         <radiogroup id="calculationTypeSelector"
@@ -158,8 +158,13 @@
                 </listbox>
             </tabpanel>
 
-            <tabpanel>
-                <workerSearch />
+            <tabpanel id="tbpWorkerSearch">
+                <workerSearch id="workerSearch"/>
+
+                <!--  Select worker -->
+                <hbox>
+                    <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(event)" />
+                </hbox>
             </tabpanel>
         </tabpanels>
     </tabbox>

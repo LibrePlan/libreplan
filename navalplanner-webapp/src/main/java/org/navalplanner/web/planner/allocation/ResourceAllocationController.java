@@ -66,6 +66,8 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.SimpleConstraint;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -104,6 +106,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Intbox taskElapsedDays;
 
     private Button applyButton;
+
+    private WorkerSearch workerSearch;
+
+    private Tabpanel tbpWorkerSearch;
+
+    private Tab tbResourceAllocation;
 
     private IChildrenSnapshot previousSnapshot;
 
@@ -167,6 +175,13 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         addSpecificResourceAllocations(workerSearch.getWorkers());
 
+        Util.reloadBindings(allocationsList);
+    }
+
+    public void onSelectWorkers(Event e) {
+        final List<Worker> workers = workerSearch.getWorkers();
+        addSpecificResourceAllocations(workerSearch.getWorkers());
+        tbResourceAllocation.setSelected(true);
         Util.reloadBindings(allocationsList);
     }
 
