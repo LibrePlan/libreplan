@@ -432,4 +432,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return sum;
     }
 
+    public abstract void mergeAssignmentsAndResourcesPerDay(ResourceAllocation<?> modifications);
+
 }

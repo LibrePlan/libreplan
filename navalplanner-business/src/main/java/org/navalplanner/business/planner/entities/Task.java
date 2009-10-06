@@ -24,7 +24,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
@@ -220,6 +222,27 @@ public class Task extends TaskElement {
         }
 
         return result;
+    }
+
+    public void mergeAllocation(CalculatedValue calculatedValue,
+            Integer daysDuration, List<ResourceAllocation<?>> newAllocations,
+            Map<ResourceAllocation<?>, ResourceAllocation<?>> modified) {
+        this.calculatedValue = calculatedValue;
+        setDaysDuration(daysDuration);
+        addAllocations(newAllocations);
+        for (Entry<ResourceAllocation<?>, ResourceAllocation<?>> entry : modified
+                .entrySet()) {
+            ResourceAllocation<?> existent = entry.getValue();
+            Validate.isTrue(resourceAllocations.contains(existent));
+            ResourceAllocation<?> modifications = entry.getKey();
+            existent.mergeAssignmentsAndResourcesPerDay(modifications);
+        }
+    }
+
+    private void addAllocations(List<ResourceAllocation<?>> newAllocations) {
+        for (ResourceAllocation<?> resourceAllocation : newAllocations) {
+            addResourceAllocation(resourceAllocation);
+        }
     }
 
 }

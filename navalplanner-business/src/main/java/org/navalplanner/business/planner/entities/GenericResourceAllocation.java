@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
@@ -215,6 +216,31 @@ public class GenericResourceAllocation extends
         GenericAllocation genericAllocation = new GenericAllocation(resources);
         return new ArrayList<DayAssignment>(genericAllocation.distributeForDay(
                 day, hours));
+    }
+
+    @Override
+    public void mergeAssignmentsAndResourcesPerDay(ResourceAllocation<?> modifications) {
+        Validate.isTrue(modifications instanceof GenericResourceAllocation);
+        mergeAssignments((GenericResourceAllocation) modifications);
+        setResourcesPerDay(modifications.getResourcesPerDay());
+    }
+
+    private void mergeAssignments(GenericResourceAllocation modifications) {
+        Set<GenericDayAssignment> previous = modifications.genericDayAssignments;
+        moveToThis(modifications.genericDayAssignments);
+        clearFieldsCalculatedFromAssignments();
+        detach(previous);
+    }
+
+    private void detach(Set<GenericDayAssignment> previous) {
+        for (GenericDayAssignment genericDayAssignment : previous) {
+            genericDayAssignment.detach();
+        }
+    }
+
+    private void moveToThis(Set<GenericDayAssignment> assignemnts) {
+        this.genericDayAssignments = GenericDayAssignment.copy(this,
+                assignemnts);
     }
 
 }

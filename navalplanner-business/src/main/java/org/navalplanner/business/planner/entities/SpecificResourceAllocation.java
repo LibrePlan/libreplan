@@ -143,4 +143,24 @@ public class SpecificResourceAllocation extends
         result.add(specific);
         return result;
     }
+
+    @Override
+    public void mergeAssignmentsAndResourcesPerDay(ResourceAllocation<?> modifications) {
+        Validate.isTrue(modifications instanceof SpecificResourceAllocation);
+        mergeAssignments((SpecificResourceAllocation) modifications);
+        setResourcesPerDay(modifications.getResourcesPerDay());
+    }
+
+    private void mergeAssignments(SpecificResourceAllocation modifications) {
+        Set<SpecificDayAssignment> previous = this.specificDaysAssignment;
+        this.specificDaysAssignment = SpecificDayAssignment.copy(this,
+                modifications.specificDaysAssignment);
+        detach(previous);
+    }
+
+    private void detach(Set<SpecificDayAssignment> previous) {
+        for (SpecificDayAssignment p : previous) {
+            p.detach();
+        }
+    }
 }
