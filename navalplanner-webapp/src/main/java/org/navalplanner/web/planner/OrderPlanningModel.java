@@ -33,6 +33,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -228,6 +229,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         XYModel xymodel = new SimpleXYModel();
 
         addLoad(order, xymodel);
+        addCalendarMaximumAvailability(order, xymodel);
 
         Chart chart = new Chart();
         chart.setType("time_series");
@@ -272,8 +274,36 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
+    private void addCalendarMaximumAvailability(Order order, XYModel xymodel) {
+        String title = "max";
+
+        SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(
+                order.getDayAssignments(), true);
+        for (LocalDate day : mapDayAssignments.keySet()) {
+            Integer hours = mapDayAssignments.get(day);
+            xymodel.addValue(title, new Long(day.toDateTimeAtStartOfDay()
+                    .getMillis()), hours);
+        }
+    }
+
     private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
             List<DayAssignment> dayAssignments) {
+        return calculateHoursAdditionByDay(dayAssignments, false);
+    }
+
+    /**
+     * Calculate the hours by day for all the {@link DayAssignment} in the list.
+     *
+     * @param dayAssignments
+     *            The list of {@link DayAssignment}
+     * @param calendarHours
+     *            If <code>true</code> the resource's calendar will be used to
+     *            calculate the available hours. Otherwise, the
+     *            {@link DayAssignment} hours will be used.
+     * @return A map { day => hours } sorted by date
+     */
+    private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
+            List<DayAssignment> dayAssignments, boolean calendarHours) {
         SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
 
         if (dayAssignments.isEmpty()) {
@@ -291,7 +321,17 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         for (DayAssignment dayAssignment : dayAssignments) {
             LocalDate day = dayAssignment.getDay();
-            Integer hours = dayAssignment.getHours();
+            Integer hours = 0;
+
+            if (calendarHours) {
+                ResourceCalendar calendar = dayAssignment.getResource()
+                        .getCalendar();
+                if (calendar != null) {
+                    hours = calendar.getWorkableHours(dayAssignment.getDay());
+                }
+            } else {
+                hours = dayAssignment.getHours();
+            }
 
             if (map.get(day) == null) {
                 map.put(day, hours);
