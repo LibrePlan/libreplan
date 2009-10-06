@@ -29,6 +29,7 @@ import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
+import org.zkoss.zk.ui.Component;
 
 /**
  * A object that defines several extension points for gantt planner
@@ -77,6 +78,8 @@ public class PlannerConfiguration<T> {
     private ICommand<T> goingDownInLastArrowCommand = new NullCommand<T>();
 
     private ICommandOnTask<T> editTaskCommand = new NullCommandOnTask<T>();
+
+    private Component chartComponent;
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
@@ -133,4 +136,13 @@ public class PlannerConfiguration<T> {
         Validate.notNull(editTaskCommand);
         this.editTaskCommand = editTaskCommand;
     }
+
+    public void setChartComponent(Component chartComponent) {
+        this.chartComponent = chartComponent;
+    }
+
+    public Component getChartComponent() {
+        return chartComponent;
+    }
+
 }
