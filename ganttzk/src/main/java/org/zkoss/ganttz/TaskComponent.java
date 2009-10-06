@@ -371,4 +371,8 @@ public class TaskComponent extends Div implements AfterCompose {
         return isTopLevel;
     }
 
+    public String getTooltipText() {
+        return task.getTooltipText();
+    }
+
 }

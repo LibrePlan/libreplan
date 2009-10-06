@@ -20,6 +20,7 @@
 
 package org.zkoss.ganttz.data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -39,19 +40,29 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     private Date advanceEndDate;
 
+    private BigDecimal hoursAdvancePercentage;
+
+    private BigDecimal advancePercentage;
+
+    private String tooltipText;
+
     public DefaultFundamentalProperties() {
     }
 
     public DefaultFundamentalProperties(String name, Date beginDate,
             long lengthMilliseconds, String notes,
-            Date hoursAdvancePercentage,
-            Date advancePercentage) {
+            Date hoursAdvanceEndDate,
+            Date advanceEndDate,
+			BigDecimal hoursAdvancePercentage, BigDecimal advancePercentage) {
         this.name = name;
         this.beginDate = beginDate;
         this.lengthMilliseconds = lengthMilliseconds;
         this.notes = notes;
-        this.hoursAdvanceEndDate = hoursAdvancePercentage;
-        this.advanceEndDate = advancePercentage;
+        this.hoursAdvanceEndDate = hoursAdvanceEndDate;
+        this.advanceEndDate = advanceEndDate;
+        this.hoursAdvancePercentage = hoursAdvancePercentage;
+        this.advancePercentage = advancePercentage;
+        this.tooltipText = "Default tooltip";
     }
 
     public String getName() {
@@ -98,6 +109,20 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public Date getAdvanceEndDate() {
         return advanceEndDate;
+    }
+    @Override
+    public BigDecimal getHoursAdvancePercentage() {
+        return hoursAdvancePercentage;
+    }
+
+    @Override
+    public BigDecimal getAdvancePercentage() {
+        return advancePercentage;
+ 
+
+    @Override
+    public String getTooltipText() {
+        return tooltipText;
     }
 
 }

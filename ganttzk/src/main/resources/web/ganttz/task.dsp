@@ -32,6 +32,6 @@
         onMouseOut="zkTasklist.hideTooltip('tasktooltip${self.uuid}');">
         <div class="completion"></div>
         <div class="completion2"></div>
-		<div id="tasktooltip${self.uuid}" class="task_tooltip">TooltipText: </div>
+		<div id="tasktooltip${self.uuid}" class="task_tooltip">${self.tooltipText}</div>
     </div>
 </div>

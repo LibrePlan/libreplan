@@ -168,4 +168,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getAdvanceEndDate();
     }
 
+    public String getTooltipText() {
+        return fundamentalProperties.getTooltipText();
+    }
+
 }

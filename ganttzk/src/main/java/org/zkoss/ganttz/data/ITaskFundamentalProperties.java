@@ -47,4 +47,6 @@ public interface ITaskFundamentalProperties {
 
     public Date getAdvanceEndDate();
 
+    public String getTooltipText();
+
 }
