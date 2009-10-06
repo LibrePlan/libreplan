@@ -21,15 +21,16 @@
 <vbox apply="org.navalplanner.web.resources.search.WorkerSearchController">
 
     <hbox>
-        <vbox>
+        <vbox style="margin-right: 3px">
             <!-- Name  -->
-            <label value="${i18n:_('Name/ID')}" />
+            <label value="${i18n:_('Name/NIF')}" />
             <textbox id="txtName"
                 onChanging="controller.searchWorkers(event)" />
 
             <!--Matchings -->
-            <listbox id="listBoxWorkers" width="200px" mold="paging"
-                pageSize="10" rows="10" multiple="true"
+            <label value="${i18n:_('Found workers')}" />
+            <listbox id="listBoxWorkers" width="200px"
+                rows="10" vflex="true" multiple="true"
                 itemRenderer="@{controller.listitemRenderer}">
                 <listhead>
                     <listheader label="${i18n:_('Name')}" sort="auto" />
@@ -42,8 +43,8 @@
             <!-- Criterions -->
             <label value="${i18n:_('Criterions')}" />
             <tree id="criterionsTree" width="280px"
-                model="@{controller.criterions}"
-                multiple="true">
+                rows="10" vflex="true" multiple="true"
+                model="@{controller.criterions}">
                 <treecols>
                     <treecol label="Name" />
                 </treecols>
@@ -52,7 +53,7 @@
     </hbox>
 
     <hbox>
-        <button label="${i18n:_('Accept')}"
+        <button label="${i18n:_('Select')}"
             onClick="controller.onAccept(event)" />
     </hbox>
 </vbox>

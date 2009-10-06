@@ -187,7 +187,7 @@ public class WorkerSearchController extends GenericForwardComposer {
         criterionsTree.setModel(getCriterions());
     }
 
-    public void onAccept(Event event) {
+    public void onSelect(Event event) {
         self.setVisible(false);
         ((WorkerSearch) self.getParent()).setWorkers(getSelectedWorkers());
         clearAll();
