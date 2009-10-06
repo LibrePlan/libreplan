@@ -211,7 +211,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         public String getTooltipText() {
 
             return "Advance percentage : " + getAdvancePercentage().multiply(new BigDecimal(100)).toString()
-            + "% \n" + "Hours advance percentage : "
+                    + "% <br/>"
+                    + "Hours advance percentage : "
             + getHoursAdvancePercentage().multiply(new BigDecimal(100)).toString() + "%";
         }
 

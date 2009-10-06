@@ -113,7 +113,6 @@ min-width:200px;
     border: 1px solid;
     text-align: center;
     vertical-align: middle;
-    z-index: 10;
     cursor: pointer;
     cursor: hand;
 }
@@ -136,7 +135,6 @@ min-width:200px;
 }
 
 .dependence {
-    z-index: 1;
     position: absolute;
 }
 
@@ -144,6 +142,7 @@ min-width:200px;
     position: absolute;
     padding: 4px;
     cursor: crosshair;
+    z-index:-1;
 }
 
 .end,.start {
@@ -159,7 +158,6 @@ min-width:200px;
     margin-top: 0px;
     height: 5px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
     background-color: #FFCC99;
-    z-index: 5;
     border: 0px;
 }
 
@@ -167,7 +165,6 @@ min-width:200px;
     width: 0%;
     height: 5px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
     background-color: #75d9b0;
-    z-index: 5;
     border: 0px;
 }
 
@@ -179,7 +176,6 @@ min-width:200px;
 .row span {
     display: none;
     position: relative;
-    z-index: 5;
     color: #BBBBBB;
     white-space: nowrap;
 }
@@ -237,7 +233,6 @@ min-width:200px;
     float: left;
     padding: 0;
     margin: 0;
-    /* overflow: hidden; */
 }
 
 #ganttpanel table td {
@@ -301,7 +296,7 @@ table {
 #timetracker { /* border: solid 1px red; */
     position: absolute;
     float: left;
-    z-index: -1;
+    z-index: -20;
 }
 
 .resourcesload #timetracker {
@@ -533,9 +528,9 @@ div.z-tree {
     display:none;
     font-size: 10px;
     position: relative;
-    top: -30px;
-    width: 180px;
+    top: -40px;
+    width: 240px;
     background-color: #f7f7bf;
     border: solid 1px #CCCCCC;
-    z-index: 7;
+    /*z-index: 5; */
 }
