@@ -24,13 +24,13 @@
         <vbox style="margin-right: 3px">
             <!-- Name  -->
             <label value="${i18n:_('Name/NIF')}" />
-            <textbox id="txtName"
+            <textbox id="txtName" width="200px" style="margin-bottom: 5px"
                 onChanging="controller.searchWorkers(event)" />
 
             <!--Matchings -->
-            <label value="${i18n:_('Found workers')}" />
-            <listbox id="listBoxWorkers" width="200px"
-                rows="10" vflex="true" multiple="true"
+            <label value="${i18n:_('Found workers')}"/>
+            <listbox id="listBoxWorkers" width="250px" rows="10"
+                vflex="true" multiple="true"
                 itemRenderer="@{controller.listitemRenderer}">
                 <listhead>
                     <listheader label="${i18n:_('Name')}" sort="auto" />
