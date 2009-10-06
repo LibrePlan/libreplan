@@ -201,7 +201,8 @@ public class ResourceAllocationsBeingEdited {
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
-        return new AllocationResult(new AggregateOfResourceAllocations(
+        return new AllocationResult(calculatedValue,
+                new AggregateOfResourceAllocations(
                 stripResourcesPerDay(allocations)), daysDuration,
                 fromDetachedToAttached);
     }
@@ -318,11 +319,17 @@ class AllocationResult {
 
     private final Map<ResourceAllocation<?>, ResourceAllocation<?>> fromDetachedAllocationToAttached;
 
-    AllocationResult(AggregateOfResourceAllocations aggregate,
+    private final CalculatedValue calculatedValue;
+
+    AllocationResult(
+            CalculatedValue calculatedValue,
+            AggregateOfResourceAllocations aggregate,
             Integer daysDuration,
             Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
         Validate.notNull(daysDuration);
         Validate.notNull(aggregate);
+        Validate.notNull(calculatedValue);
+        this.calculatedValue = calculatedValue;
         this.aggregate = aggregate;
         this.daysDuration = daysDuration;
         this.fromDetachedAllocationToAttached = translation(fromDetachedAllocationToAttached);
@@ -357,5 +364,15 @@ class AllocationResult {
             }
         }
         return result;
+    }
+
+    public CalculatedValue getCalculatedValue() {
+        return calculatedValue;
+    }
+
+    public void applyTo(Task task) {
+        task.mergeAllocation(getCalculatedValue(),
+                getDaysDuration(),
+                getNew(), getModified());
     }
 }

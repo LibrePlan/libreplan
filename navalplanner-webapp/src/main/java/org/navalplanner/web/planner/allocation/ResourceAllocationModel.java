@@ -119,9 +119,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void doTheAllocation() {
         AllocationResult allocationResult = resourceAllocationsBeingEdited
                 .doAllocation();
-        task.mergeAllocation(resourceAllocationsBeingEdited
-                .getCalculatedValue(), allocationResult.getDaysDuration(),
-                allocationResult.getNew(), allocationResult.getModified());
+        allocationResult.applyTo(task);
         ganttTask.setEndDate(task.getEndDate());
     }
 
