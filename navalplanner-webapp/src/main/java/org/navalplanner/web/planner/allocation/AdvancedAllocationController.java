@@ -24,10 +24,13 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 
 import org.joda.time.DateTime;
@@ -48,6 +51,9 @@ import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
@@ -137,9 +143,14 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return rowsCached;
         }
         rowsCached = new ArrayList<Row>();
-        rowsCached.add(buildGroupingRow());
-        rowsCached.addAll(genericRows());
-        rowsCached.addAll(specificRows());
+        Row groupingRow = buildGroupingRow();
+        rowsCached.add(groupingRow);
+        List<Row> genericRows = genericRows();
+        groupingRow.listenTo(genericRows);
+        rowsCached.addAll(genericRows);
+        List<Row> specificRows = specificRows();
+        groupingRow.listenTo(specificRows);
+        rowsCached.addAll(specificRows);
         return rowsCached;
     }
 
@@ -302,6 +313,12 @@ abstract class ColumnOnRow implements IConvertibleToColumn {
     }
 }
 
+interface CellChangedListener {
+    public void changeOn(DetailItem detailItem);
+
+    public void changeOnGlobal();
+}
+
 class Row {
 
     static Row createRow(String name, int level,
@@ -309,27 +326,91 @@ class Row {
         return new Row(name, level, allocations);
     }
 
+    void listenTo(Collection<Row> rows) {
+        for (Row row : rows) {
+            listenTo(row);
+        }
+    }
+
+    void listenTo(Row row) {
+        row.add(new CellChangedListener() {
+
+            @Override
+            public void changeOnGlobal() {
+                reloadAllHours();
+            }
+
+            @Override
+            public void changeOn(DetailItem detailItem) {
+                Component component = componentsByDetailItem.get(detailItem);
+                if (component == null) {
+                    return;
+                }
+                reloadHoursOnInterval(component, detailItem);
+                reloadAllHours();
+            }
+        });
+
+    }
+
     private Component allHoursInput;
 
     private Label nameLabel;
 
+    private List<CellChangedListener> listeners = new ArrayList<CellChangedListener>();
+
+    private Map<DetailItem, Component> componentsByDetailItem = new WeakHashMap<DetailItem, Component>();
+
+    void add(CellChangedListener listener) {
+        listeners.add(listener);
+    }
+
+    private void fireCellChanged(DetailItem detailItem) {
+        for (CellChangedListener cellChangedListener : listeners) {
+            cellChangedListener.changeOn(detailItem);
+        }
+    }
+
+    private void fireCellChanged() {
+        for (CellChangedListener cellChangedListener : listeners) {
+            cellChangedListener.changeOnGlobal();
+        }
+    }
+
     Component getAllHours() {
         if (allHoursInput == null) {
             allHoursInput = buildAllHours();
-            return allHoursInput;
+            reloadAllHours();
+            addListenerIfNeeded(allHoursInput);
         }
         return allHoursInput;
     }
 
     private Component buildAllHours() {
+        return isGroupingRow() ? new Label() : new Intbox();
+    }
+
+    private void addListenerIfNeeded(Component allHoursComponent) {
         if (isGroupingRow()) {
-            Label label = new Label();
+            return;
+        }
+        Intbox intbox = (Intbox) allHoursComponent;
+        intbox.addEventListener(Events.ON_CHANGE, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                fireCellChanged();
+            }
+        });
+    }
+
+    private void reloadAllHours() {
+        if (isGroupingRow()) {
+            Label label = (Label) allHoursInput;
             label.setValue(aggregate.getTotalHours() + "");
-            return label;
         } else {
-            Intbox intbox = new Intbox();
+            Intbox intbox = (Intbox) allHoursInput;
             intbox.setValue(aggregate.getTotalHours());
-            return intbox;
         }
     }
 
@@ -372,14 +453,33 @@ class Row {
     }
 
     Component hoursOnInterval(DetailItem item) {
+        Component result = isGroupingRow() ? new Label() : new Intbox();
+        reloadHoursOnInterval(result, item);
+        componentsByDetailItem.put(item, result);
+        addListenerIfNeeded(item, result);
+        return result;
+    }
+
+    private void addListenerIfNeeded(final DetailItem item, Component component) {
         if (isGroupingRow()) {
-            Label label = new Label();
+            return;
+        }
+        component.addEventListener(Events.ON_CHANGE, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                fireCellChanged(item);
+            }
+        });
+    }
+
+    private void reloadHoursOnInterval(Component component, DetailItem item) {
+        if (isGroupingRow()) {
+            Label label = (Label) component;
             label.setValue(getHoursForDetailItem(item) + "");
-            return label;
         } else {
-            Intbox result = new Intbox();
-            result.setValue(getHoursForDetailItem(item));
-            return result;
+            Intbox intbox = (Intbox) component;
+            intbox.setValue(getHoursForDetailItem(item));
         }
     }
 
