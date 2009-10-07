@@ -392,7 +392,7 @@ class Row {
     }
 
     private Component buildAllHours() {
-        return isGroupingRow() ? new Label() : new Intbox();
+        return isGroupingRow() ? new Label() : noNegativeIntbox();
     }
 
     private void addListenerIfNeeded(Component allHoursComponent) {
@@ -452,14 +452,21 @@ class Row {
     }
 
     Component hoursOnInterval(DetailItem item) {
-        Component result = isGroupingRow() ? new Label() : new Intbox();
+        Component result = isGroupingRow() ? new Label() : noNegativeIntbox();
         reloadHoursOnInterval(result, item);
         componentsByDetailItem.put(item, result);
         addListenerIfNeeded(item, result);
         return result;
     }
 
-    private void addListenerIfNeeded(final DetailItem item, Component component) {
+    private Intbox noNegativeIntbox() {
+        Intbox result = new Intbox();
+        result.setConstraint("no negative, no empty");
+        return result;
+    }
+
+    private void addListenerIfNeeded(final DetailItem item,
+            final Component component) {
         if (isGroupingRow()) {
             return;
         }
