@@ -326,6 +326,20 @@ class Row {
         return new Row(name, level, allocations);
     }
 
+    private Component allHoursInput;
+
+    private Label nameLabel;
+
+    private List<CellChangedListener> listeners = new ArrayList<CellChangedListener>();
+
+    private Map<DetailItem, Component> componentsByDetailItem = new WeakHashMap<DetailItem, Component>();
+
+    private String name;
+
+    private int level;
+
+    private final AggregateOfResourceAllocations aggregate;
+
     void listenTo(Collection<Row> rows) {
         for (Row row : rows) {
             listenTo(row);
@@ -350,16 +364,7 @@ class Row {
                 reloadAllHours();
             }
         });
-
     }
-
-    private Component allHoursInput;
-
-    private Label nameLabel;
-
-    private List<CellChangedListener> listeners = new ArrayList<CellChangedListener>();
-
-    private Map<DetailItem, Component> componentsByDetailItem = new WeakHashMap<DetailItem, Component>();
 
     void add(CellChangedListener listener) {
         listeners.add(listener);
@@ -430,12 +435,6 @@ class Row {
         }
         return nameLabel;
     }
-
-    private String name;
-
-    private int level;
-
-    private final AggregateOfResourceAllocations aggregate;
 
     private Row(String name, int level,
             List<? extends ResourceAllocation<?>> allocations) {
