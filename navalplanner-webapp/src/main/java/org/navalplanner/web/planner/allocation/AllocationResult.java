@@ -28,7 +28,9 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceAllocationWithDesiredResourcesPerDay;
@@ -128,10 +130,37 @@ public class AllocationResult {
                 .getAllocationsSortedByStartDate();
     }
 
-    /**
-     * @return the task
-     */
     public Task getTask() {
         return task;
+    }
+
+    public List<GenericResourceAllocation> getGenericAllocations() {
+        return onlyGeneric(getAllSortedByStartDate());
+    }
+
+    private List<GenericResourceAllocation> onlyGeneric(
+            List<ResourceAllocation<?>> allocations) {
+        List<GenericResourceAllocation> result = new ArrayList<GenericResourceAllocation>();
+        for (ResourceAllocation<?> resourceAllocation : allocations) {
+            if (resourceAllocation instanceof GenericResourceAllocation) {
+                result.add((GenericResourceAllocation) resourceAllocation);
+            }
+        }
+        return result;
+    }
+
+    public List<SpecificResourceAllocation> getSpecificAllocations() {
+        return onlySpecific(getAllSortedByStartDate());
+    }
+
+    private List<SpecificResourceAllocation> onlySpecific(
+            List<ResourceAllocation<?>> allocations) {
+        List<SpecificResourceAllocation> result = new ArrayList<SpecificResourceAllocation>();
+        for (ResourceAllocation<?> r : allocations) {
+            if (r instanceof SpecificResourceAllocation) {
+                result.add((SpecificResourceAllocation) r);
+            }
+        }
+        return result;
     }
 }

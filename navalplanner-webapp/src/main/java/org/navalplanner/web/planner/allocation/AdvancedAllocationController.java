@@ -20,17 +20,24 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.Callable;
 
-import org.joda.time.Days;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.web.common.ViewSwitcher;
+import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
 import org.zkoss.ganttz.timetracker.PairOfLists;
@@ -47,8 +54,7 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.api.Column;
 
-public class AdvancedAllocationController extends
-        GenericForwardComposer {
+public class AdvancedAllocationController extends GenericForwardComposer {
 
     public interface IAdvanceAllocationResultReceiver {
         public void accepted(AllocationResult modifiedAllocationResult);
@@ -64,7 +70,7 @@ public class AdvancedAllocationController extends
 
     private TimeTrackerComponentWithoutColumns timeTrackerComponent;
     private Grid leftPane;
-    private TimeTrackedTable<FakeData> table;
+    private TimeTrackedTable<Row> table;
     private final ViewSwitcher switcher;
     private final AllocationResult allocationResult;
     private final IAdvanceAllocationResultReceiver resultReceiver;
@@ -90,13 +96,12 @@ public class AdvancedAllocationController extends
         timeTracker = new TimeTracker(intervalFromData());
         timeTrackerComponent = new TimeTrackerComponentWithoutColumns(
                 timeTracker, "timeTracker");
-        TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData> timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData>(
+        TimeTrackedTableWithLeftPane<Row, Row> timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<Row, Row>(
                 getDataSource(), getColumnsForLeft(), getLeftRenderer(),
                 getRightRenderer(), timeTracker);
 
         table = timeTrackedTableWithLeftPane.getRightPane();
-        leftPane = timeTrackedTableWithLeftPane
-                .getLeftPane();
+        leftPane = timeTrackedTableWithLeftPane.getLeftPane();
     }
 
     private void insertComponentsInLayout() {
@@ -123,50 +128,97 @@ public class AdvancedAllocationController extends
         timeTracker.zoomDecrease();
     }
 
-    private ICellForDetailItemRenderer<FakeColumn, FakeDataLeft> getLeftRenderer() {
-        return new ICellForDetailItemRenderer<FakeColumn, FakeDataLeft>() {
+    private List<Row> rowsCached = null;
+
+    private List<Row> getRows() {
+        if (rowsCached != null) {
+            return rowsCached;
+        }
+        rowsCached = new ArrayList<Row>();
+        rowsCached.add(buildGroupingRow());
+        rowsCached.addAll(genericRows());
+        rowsCached.addAll(specificRows());
+        return rowsCached;
+    }
+
+    private List<Row> specificRows() {
+        List<Row> result = new ArrayList<Row>();
+        for (SpecificResourceAllocation specificResourceAllocation : allocationResult
+                .getSpecificAllocations()) {
+            result.add(createSpecificRow(specificResourceAllocation));
+        }
+        return result;
+    }
+
+    private Row createSpecificRow(
+            SpecificResourceAllocation specificResourceAllocation) {
+        return Row.createRow(specificResourceAllocation.getResource()
+                        .getDescription(), 1, Arrays
+                        .asList(specificResourceAllocation));
+    }
+
+    private List<Row> genericRows() {
+        List<Row> result = new ArrayList<Row>();
+        for (GenericResourceAllocation genericResourceAllocation : allocationResult
+                .getGenericAllocations()) {
+            result.add(buildGenericRow(genericResourceAllocation));
+        }
+        return result;
+    }
+
+    private Row buildGenericRow(
+            GenericResourceAllocation genericResourceAllocation) {
+        return Row.createRow(ResourceLoadModel
+                .getName(genericResourceAllocation.getCriterions()), 1, Arrays
+                .asList(genericResourceAllocation));
+    }
+
+    private Row buildGroupingRow() {
+        String taskName = allocationResult.getTask().getName();
+        Row groupingRow = Row.createRow(taskName, 0, allocationResult
+                .getAllSortedByStartDate());
+        return groupingRow;
+    }
+
+    private ICellForDetailItemRenderer<ColumnOnRow, Row> getLeftRenderer() {
+        return new ICellForDetailItemRenderer<ColumnOnRow, Row>() {
 
             @Override
-            public Component cellFor(FakeColumn column, FakeDataLeft data) {
-                return new Label(column.getName() + data.getRowNumber());
+            public Component cellFor(ColumnOnRow column, Row row) {
+                return new Label("TODO");
             }
         };
     }
 
-    private List<FakeColumn> getColumnsForLeft() {
-        String[] names = { "A", "B", "C" };
-        List<FakeColumn> result = new ArrayList<FakeColumn>();
+    private List<ColumnOnRow> getColumnsForLeft() {
+        String[] names = { _("Name"), _("Function"), _("Hours") };
+        List<ColumnOnRow> result = new ArrayList<ColumnOnRow>();
         for (final String columnName : names) {
             result.add(createColumnWithLabel(columnName));
         }
         return result;
     }
 
-    private FakeColumn createColumnWithLabel(final String columnName) {
-        return new FakeColumn(columnName);
+    private ColumnOnRow createColumnWithLabel(final String columnName) {
+        return new ColumnOnRow(columnName);
     }
 
-    private Callable<PairOfLists<FakeDataLeft, FakeData>> getDataSource() {
-        return new Callable<PairOfLists<FakeDataLeft, FakeData>>() {
+    private Callable<PairOfLists<Row, Row>> getDataSource() {
+        return new Callable<PairOfLists<Row, Row>>() {
 
             @Override
-            public PairOfLists<FakeDataLeft, FakeData> call() throws Exception {
-                List<FakeData> right = new ArrayList<FakeData>();
-                List<FakeDataLeft> left = new ArrayList<FakeDataLeft>();
-                for (int i = 0; i < 10; i++) {
-                    right.add(new FakeData(6));
-                    left.add(new FakeDataLeft(i + 1));
-                }
-                return new PairOfLists<FakeDataLeft, FakeData>(left, right);
+            public PairOfLists<Row, Row> call() throws Exception {
+                List<Row> rows = getRows();
+                return new PairOfLists<Row, Row>(rows, rows);
             }
         };
     }
 
-    private ICellForDetailItemRenderer<DetailItem, FakeData> getRightRenderer() {
-        return new ICellForDetailItemRenderer<DetailItem, FakeData>() {
+    private ICellForDetailItemRenderer<DetailItem, Row> getRightRenderer() {
+        return new ICellForDetailItemRenderer<DetailItem, Row>() {
 
             @Override
-            public Component cellFor(DetailItem item, FakeData data) {
+            public Component cellFor(DetailItem item, Row data) {
                 Label label = new Label();
                 label.setValue(data.getHoursForDetailItem(item) + "h");
                 return label;
@@ -175,7 +227,8 @@ public class AdvancedAllocationController extends
     }
 
     private Interval intervalFromData() {
-        List<ResourceAllocation<?>> all = allocationResult.getAllSortedByStartDate();
+        List<ResourceAllocation<?>> all = allocationResult
+                .getAllSortedByStartDate();
         if (all.isEmpty()) {
             return new Interval(allocationResult.getTask().getStartDate(),
                     allocationResult.getTask().getEndDate());
@@ -216,10 +269,10 @@ public class AdvancedAllocationController extends
 
 }
 
-class FakeColumn implements IConvertibleToColumn {
+class ColumnOnRow implements IConvertibleToColumn {
     private final String columnName;
 
-    FakeColumn(String columnName) {
+    ColumnOnRow(String columnName) {
         this.columnName = columnName;
     }
 
@@ -235,29 +288,33 @@ class FakeColumn implements IConvertibleToColumn {
     }
 }
 
-class FakeDataLeft {
-    private final int row;
+class Row {
 
-    FakeDataLeft(int row) {
-        this.row = row;
+    public static Row createRow(String name, int level,
+            List<? extends ResourceAllocation<?>> allocations) {
+        return new Row(name, level, allocations);
     }
 
-    public int getRowNumber() {
-        return row;
+
+    private String name;
+
+    private int level;
+
+    private final AggregateOfResourceAllocations aggregate;
+
+    private Row(String name, int level,
+            List<? extends ResourceAllocation<?>> allocations) {
+        this.name = name;
+        this.level = level;
+        this.aggregate = new AggregateOfResourceAllocations(
+                new ArrayList<ResourceAllocation<?>>(allocations));
     }
 
-}
-
-class FakeData {
-    private final int hoursPerDay;
-
-    FakeData(int hoursPerDay) {
-        this.hoursPerDay = hoursPerDay;
+    public Integer getHoursForDetailItem(DetailItem item) {
+        DateTime startDate = item.getStartDate();
+        DateTime endDate = item.getEndDate();
+        return this.aggregate.hoursBetween(startDate.toLocalDate(), endDate
+                .toLocalDate());
     }
 
-    public int getHoursForDetailItem(DetailItem detail) {
-        Days daysBetween = Days.daysBetween(detail.getStartDate(), detail
-                .getEndDate());
-        return daysBetween.getDays() * hoursPerDay;
-    }
 }
