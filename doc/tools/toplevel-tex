@@ -1,0 +1,81 @@
+#! /bin/bash
+
+header='
+===================
+ Service Catalogue
+===================
+'
+
+mangle_sed='
+/^\\.\\.[ \\t]contents::/d
+s,\\(image::[[:space:]]*\\)\\(.*\\),\\1%s/\\2,
+s,\\(figure::[[:space:]]*\\)\\(.*\\),\\1%s/\\2,
+'
+
+# mangle_input [basedir]
+#
+mangle_input ()
+{
+	local program
+	printf -v program "${mangle_sed}" "$1" "$1"
+	sed -e "${program}"
+}
+
+
+longest ()
+{
+	local -i len=0
+	local item
+	for item in "$@" ; do
+		[[ ${#item} -gt ${len} ]] && len=${#item}
+	done
+	echo "${len}"
+}
+
+
+sects=( )
+texts=( )
+title=( )
+
+echo "${header}"
+while read -r item ; do
+	if [[ ${item} = \#* ]] ; then
+		continue
+	elif expr "${item}" : '^[[:space:]]*$' &> /dev/null ; then
+		continue
+	else
+		# Gather data
+		read -r sect text <<< "${item}"
+		title=( "${title[@]}" "$(head -n 1 "${sect}/${sect}.rst")" )
+		sects=( "${sects[@]}" "${sect}" )
+		texts=( "${texts[@]}" "${text}" )
+	fi
+done
+
+repeat_char ()
+{
+	local i
+	for (( i=0; i < $2 ; i++ )) ; do
+		echo -n "$1"
+	done
+}
+
+title_longest=$(longest "${title[@]}")
+title_longest=$((title_longest + 3))
+title_sub=$(repeat_char '=' ${title_longest})
+
+printf "%-${title_longest}s ================\n" "${title_sub}"
+printf "%-${title_longest}s Person in charge\n" "Section"
+printf "%-${title_longest}s ================\n" "${title_sub}"
+for (( i=0 ; i < ${#title[@]} ; i++ )) ; do
+	printf "%-${title_longest}s %s\n" "\`${title[$i]}\`_" "${texts[$i]}"
+done
+printf "%-${title_longest}s ================\n" "${title_sub}"
+
+printf "\n.. contents::\n\n"
+
+for sect in "${sects[@]}" ; do
+		mangle_input "$(dirname "${sect}/${sect}.rst")" < "${sect}/${sect}.rst"
+		echo
+done
+

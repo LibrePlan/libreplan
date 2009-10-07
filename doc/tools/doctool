@@ -1,0 +1,273 @@
+#! /usr/bin/env python
+
+import sys, shlex, subprocess
+from optparse import OptionParser, OptionGroup
+from docutils.writers import latex2e
+
+try:
+    import locale
+    locale.setlocale(locale.LC_ALL, '')
+except:
+    pass
+
+
+class AttributedDict(object):
+    def __init__(self):
+        object.__setattr__(self, "_items", dict())
+
+    def __getattr__(self, key):
+        return self._items.get(key)
+
+    def __delattr__(self, key):
+        if key in self._items:
+            del self._items[key]
+        else:
+            object.__delattr__(self, key)
+
+    def __setattr__(self, key, val):
+        if hasattr(self, key):
+            object.__setattr__(self, key, val)
+        else:
+            self._items[key] = val
+
+
+parser = OptionParser(usage="Usage: %prog <command> [options]")
+OPT = AttributedDict()
+
+OPT.common = OptionGroup(parser, "Common options")
+
+OPT.docinfo = OptionGroup(parser, "Documentation information")
+OPT.docinfo.add_option("-i", "--info", dest="docinfo",
+        default=None, metavar="FILE",
+        help="Read project information from FILE")
+
+
+def optparser(*groups):
+    parser.add_option_group(OPT.common)
+    [parser.add_option_group(g) for g in groups]
+    return parser
+
+
+class DupRefsRemover(object):
+    def __init__(self, out):
+        self.out = out
+        self.ref = dict()
+
+    def handle_line(self, line):
+        if line.startswith(".. _") and ":" in line:
+            r = map(lambda x: x.strip(), line[4:].split(":", 1))
+            if r[0] in self.ref:
+                # Do some sanity check
+                if self.ref[r[0]] != r[1]:
+                    raise ValueError("Reference '%s' mismatch (%s - %s)"
+                            % (r[0], self.ref[r[0]], r[1]))
+            else:
+                # Add reference and print it out
+                self.ref[r[0]] = r[1]
+                self.out.write(line)
+        else:
+            self.out.write(line)
+
+
+
+class ShellEscapeRunner(object):
+    def __init__(self, out):
+        self.out = out
+
+    def _expand(self, cmdline):
+        cmd = shlex.split(cmdline, False)
+        pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        return "\n  ".join(pipe.communicate()[0].rstrip().splitlines())
+
+
+    def handle_line(self, line):
+        index = line.find("!!")
+        if index < 0:
+            self.out.write(line)
+            return
+
+        self.out.write(line[:index].replace("\\!", "!"))
+        cmd = line[index+2:]
+        end = cmd.find("!!")
+        if end > index:
+            self.out.write(self._expand(cmd[:end].replace("\\!", "!")))
+            self.out.write(cmd[end+2:].replace("\\!", "!"))
+        else:
+            self.out.write(self._expand(cmd.replace("\\!", "!")))
+            self.out.write("\n")
+
+
+
+LATEX_SETTINGS = {
+    "documentclass"      : "scrbook",
+    "documentoptions"    : "11pt,oneside,a4paper",
+    "table_style"        : "booktabs",
+    "use_latex_footnotes": 1,
+    "use_latex_citations": 1,
+    "use_latex_toc"      : 1,
+    "use_latex_docinfo"  : 0,
+    "use_latex_abstract" : 1,
+}
+
+EBOOK_SETTINGS = dict(LATEX_SETTINGS)
+EBOOK_SETTINGS["documentoptions"] = "14pt,oneside,b5paper"
+
+HTML_SETTINGS = {
+    "field_name_limit"     : 20,
+    "cloak_email_addresses": 1,
+}
+
+
+# Those are two mocks needed to properly reuse the LaTeX code generator, but
+# avoiding generation of all the cruft from the preamble and the postamble,
+# and only the middle part.
+#
+class LaTeXStandaloneTranslator(latex2e.LaTeXTranslator):
+    def __init__(self, document):
+        latex2e.LaTeXTranslator.__init__(self, document)
+
+        # XXX We rely on DocumentClass having a document_class attribute and
+        #     on it not changing the attribute once initialization was done
+        #
+        if self.d_class.document_class == "igaliabk":
+            self.d_class.document_class = "book"
+
+class LaTeXInsertTranslator(LaTeXStandaloneTranslator):
+    def astext(self):
+        return "".join(self.body)
+
+class LaTeXCustomWriter(latex2e.Writer):
+    def __init__(self, translator_class):
+        latex2e.Writer.__init__(self)
+        self.translator_class = translator_class
+
+
+
+class DocTool(object):
+
+    def main(self, argv=None):
+        if argv is None:
+            argv = sys.argv
+
+        if len(argv) < 2:
+            raise SystemExit("Insufficient number of arguments")
+
+        method = getattr(self, "cmd_" + argv[1], self.no_command)
+        method(*argv[1:])
+
+    def cmd_rstinsert(self, cmd, *args):
+        from docutils.core import publish_cmdline, default_description
+        description = (
+            "Generates LaTeX portions to be included in documents " +
+            "from standalone reStructuredText sourtces " +
+            default_description)
+
+        publish_cmdline(writer=LaTeXCustomWriter(LaTeXInsertTranslator),
+                description=description,
+                argv=list(args)
+                )
+
+    def cmd_rst2latex(self, cmd, *args):
+        from docutils.core import publish_cmdline, default_description
+        description = (
+            'Generates LaTeX documents from RST sources. ' +
+            default_description)
+
+        publish_cmdline(writer=LaTeXCustomWriter(LaTeXStandaloneTranslator),
+                settings_overrides=LATEX_SETTINGS,
+                description=description,
+                argv=list(args),
+                )
+
+    def cmd_rst2ebook(self, cmd, *args):
+        from docutils.core import publish_cmdline, default_description
+        description = (
+            'Generates LaTeX documents from RST sources. ' +
+            default_description)
+
+        publish_cmdline(writer=LaTeXCustomWriter(LaTeXStandaloneTranslator),
+                settings_overrides=EBOOK_SETTINGS,
+                description=description,
+                argv=list(args),
+                )
+
+    def cmd_rst2html(self, cmd, *args):
+        from docutils.core import publish_cmdline, default_description
+        description = (
+            'Generates HTML documents from RST sources. ' +
+            default_description)
+
+        publish_cmdline(writer_name="html",
+                settings_overrides=HTML_SETTINGS,
+                description=description,
+                argv=list(args),
+                )
+
+    def cmd_toplevel(self, cmd, *args):
+        opts, args = optparser(OPT.docinfo).parse_args(list(args))
+
+        if opts.docinfo:
+            f = file(opts.docinfo, "rU")
+            e = ShellEscapeRunner(sys.stdout)
+            map(e.handle_line, f.readlines())
+            f.close()
+            print
+
+        print ".. contents::"
+        print
+
+        out = DupRefsRemover(sys.stdout)
+
+        for name in args:
+            if not name.endswith(".rst"):
+                continue
+
+            f = file(name, "rU")
+            map(out.handle_line,
+                    filter(lambda l: ".. contents::" not in l,
+                        f.readlines())
+                    )
+            f.close()
+            print
+
+
+    def cmd_htmlindex(self, cmd, *args):
+        opts, args = optparser(OPT.docinfo).parse_args(list(args))
+
+        if opts.docinfo:
+            f = file(opts.docinfo, "rU")
+            e = ShellEscapeRunner(sys.stdout)
+            map(e.handle_line, f.readlines())
+            f.close()
+            print
+
+        for name in args:
+            # Skip non-RST inputs
+            if not name.endswith(".rst"):
+                continue
+
+            f = file(name, "rU")
+            line = f.readline().strip()
+            f.close()
+            print "#. `%s <%s.html>`__" % (line, name[:-4])
+
+
+    def cmd_help(self, cmd, *args):
+        if args:
+            self.main([args[0], args[0], "--help"])
+        else:
+            print "Available commands:"
+            for k in dir(self):
+                if k.startswith("cmd_"):
+                    print " ", k[4:].replace("_", "-")
+
+    cmd_commands = cmd_help
+
+    def no_command(self, cmd, *args):
+        raise SystemExit("No such command '%s'" % cmd)
+
+
+
+if __name__ == "__main__":
+    DocTool().main()
+

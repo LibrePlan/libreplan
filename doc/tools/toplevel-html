@@ -1,0 +1,61 @@
+#! /bin/bash
+
+header='
+===================
+ Service Catalogue
+===================
+'
+
+longest ()
+{
+	local -i len=0
+	local item
+	for item in "$@" ; do
+		[[ ${#item} -gt ${len} ]] && len=${#item}
+	done
+	echo "${len}"
+}
+
+
+sects=( )
+texts=( )
+title=( )
+
+echo "${header}"
+while read -r item ; do
+	if [[ ${item} = \#* ]] ; then
+		continue
+	elif expr "${item}" : '^[[:space:]]*$' &> /dev/null ; then
+		continue
+	else
+		# Gather data
+		read -r sect text <<< "${item}"
+		title=( "${title[@]}" "$(head -n 1 "${sect}/${sect}.rst")" )
+		sects=( "${sects[@]}" "${sect}" )
+		texts=( "${texts[@]}" "${text}" )
+	fi
+done
+
+repeat_char ()
+{
+	local i
+	for (( i=0; i < $2 ; i++ )) ; do
+		echo -n "$1"
+	done
+}
+
+title_longest=$(longest "${title[@]}")
+sects_longest=$(longest "${sects[@]}")
+title_longest=$((title_longest + 2 * sects_longest + 12))
+title_sub=$(repeat_char '=' ${title_longest})
+
+printf "%-${title_longest}s ================\n" "${title_sub}"
+printf "%-${title_longest}s Person in charge\n" "Section"
+printf "%-${title_longest}s ================\n" "${title_sub}"
+for (( i=0 ; i < ${#title[@]} ; i++ )) ; do
+	printf "%-${title_longest}s %s\n" \
+		"\`${title[$i]} <${sects[$i]}/${sects[$i]}.html>\`_" \
+		"${texts[$i]}"
+done
+printf "%-${title_longest}s ================\n" "${title_sub}"
+
