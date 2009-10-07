@@ -25,13 +25,18 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.consecutiveDays;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.from;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveHours;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveResourceAllocation;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.easymock.IAnswer;
+import org.easymock.classextension.EasyMock;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -55,7 +60,7 @@ public class SpecificResourceAllocationTest {
 
     private int assignedHours = 0;
 
-    private void givenAssignedHours(int assignedHours){
+    private void givenAssignedHours(int assignedHours) {
         this.assignedHours = assignedHours;
     }
 
@@ -68,10 +73,40 @@ public class SpecificResourceAllocationTest {
         replay(this.calendar);
     }
 
-    private void givenWorker(){
+    private void givenResourceCalendar(final int defaultAnswer, final Map<LocalDate, Integer> answersForDates){
+        this.calendar = createNiceMock(ResourceCalendar.class);
+        expect(this.calendar.getWorkableHours(isA(LocalDate.class))).andAnswer(new IAnswer<Integer>() {
+
+            @Override
+            public Integer answer() throws Throwable {
+                LocalDate date = (LocalDate) EasyMock.getCurrentArguments()[0];
+                if(answersForDates.containsKey(date)){
+                    return answersForDates.get(date);
+                }
+                return defaultAnswer;
+            }
+        }).anyTimes();
+        expect(this.calendar.getWorkableHours(isA(Date.class)))
+        .andAnswer(new IAnswer<Integer>() {
+
+            @Override
+            public Integer answer() throws Throwable {
+                Date date = (Date) EasyMock.getCurrentArguments()[0];
+                LocalDate localDate = new LocalDate(date.getTime());
+                if(answersForDates.containsKey(localDate)){
+                    return answersForDates.get(localDate);
+                }
+                return defaultAnswer;
+            }
+        }).anyTimes();
+        replay(this.calendar);
+    }
+
+    private void givenWorker() {
         this.worker = createNiceMock(Worker.class);
         expect(this.worker.getCalendar()).andReturn(calendar).anyTimes();
-        expect(this.worker.getAssignedHours(isA(LocalDate.class))).andReturn(assignedHours).anyTimes();
+        expect(this.worker.getAssignedHours(isA(LocalDate.class))).andReturn(
+                assignedHours).anyTimes();
         replay(this.worker);
     }
 
@@ -136,6 +171,83 @@ public class SpecificResourceAllocationTest {
         givenSpecificResourceAllocation(start, 2);
         specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
         assertThat(specificResourceAllocation.getAssignments(), haveHours(4, 4));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cantAllocateOnAnWrongInterval() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        LocalDate dayBefore = start.plusDays(-1);
+        specificResourceAllocation.onInterval(start, dayBefore).allocateHours(
+                10);
+    }
+
+    @Test
+    public void canAllocateZeroHours() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cantAllocateNegativeHours() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start, start.plusDays(1))
+                .allocateHours(-1);
+    }
+
+    @Test
+    public void someHoursInAnIntervalCanBeAssigned() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(10);
+        assertThat(specificResourceAllocation.getAssignments(), haveHours(5, 5));
+    }
+
+    @Test
+    public void thePreviousAssignmentsAreReplacedWhenAllocationHoursOnInterval() {
+        givenResourceCalendarAlwaysReturning(3);
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(10);
+        assertThat(specificResourceAllocation.getAssignments(), haveHours(5, 5,
+                3, 3));
+    }
+
+    @Test
+    public void theResourcesPerDayAreRecalculatedWhenAllocationHoursOnInterval() {
+        givenResourceCalendarAlwaysReturning(3);
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        ResourcesPerDay original = ResourcesPerDay.amount(1);
+        specificResourceAllocation.allocate(original);
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(10);
+        ResourcesPerDay newResourcesPerDay = specificResourceAllocation
+                .getResourcesPerDay();
+        assertTrue("Expecting that the resources per day is increased",
+                newResourcesPerDay
+                .getAmount().compareTo(original.getAmount()) > 0);
+    }
+
+    @SuppressWarnings("serial")
+    @Test
+    public void theHoursAreDistributedTakingIntoAccountTheWorkableHours() {
+        final LocalDate start = new LocalDate(2000, 2, 4);
+        givenResourceCalendar(8, new HashMap<LocalDate, Integer>() {
+            {
+                put(start, 2);
+            }
+        });
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(10);
+        assertThat(specificResourceAllocation.getAssignments(), haveHours(2, 8));
     }
 
 }

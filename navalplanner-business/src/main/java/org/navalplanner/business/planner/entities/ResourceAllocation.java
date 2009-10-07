@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
@@ -295,6 +296,34 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return result;
         }
 
+        void allocate(LocalDate startInclusive, LocalDate endExclusive, int hours) {
+            Validate.isTrue(hours >= 0);
+            Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0,
+                    "the end must be equal or posterior than start");
+            List<T> assignmentsCreated = new ArrayList<T>();
+            List<LocalDate> days = getDays(startInclusive, endExclusive);
+            int[] hoursEachDay = hoursDistribution(days, hours);
+            int i = 0;
+            for (LocalDate day : getDays(startInclusive, endExclusive)) {
+                assignmentsCreated.addAll(distributeForDay(day,
+                        hoursEachDay[i++]));
+            }
+            removingAssignments(getAssignments(startInclusive, endExclusive));
+            addingAssignments(assignmentsCreated);
+            setResourcesPerDay(calculateResourcesPerDayFromAssignments());
+        }
+
+        private int[] hoursDistribution(List<LocalDate> days, int hoursToSum) {
+            List<Share> shares = new ArrayList<Share>();
+            for (LocalDate day : days) {
+                shares.add(new Share(-getWorkHoursPerDay()
+                        .getWorkableHours(day)));
+            }
+            ShareDivision original = ShareDivision.create(shares);
+            ShareDivision newShare = original.plus(hoursToSum);
+            return original.to(newShare);
+        }
+
         protected abstract List<T> distributeForDay(LocalDate day,
                 int totalHours);
 
@@ -315,6 +344,21 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             ResourcesPerDay resourcesPerDay) {
         Integer workableHours = getWorkHoursPerDay().getWorkableHours(day);
         return resourcesPerDay.asHoursGivenResourceWorkingDayOf(workableHours);
+    }
+
+    private ResourcesPerDay calculateResourcesPerDayFromAssignments() {
+        Map<LocalDate, List<DayAssignment>> byDay = DayAssignment
+                .byDay(getAssignments());
+        int sumTotalHours = 0;
+        int sumWorkableHours = 0;
+        for (Entry<LocalDate, List<DayAssignment>> entry : byDay.entrySet()) {
+            sumWorkableHours += getWorkHoursPerDay().getWorkableHours(
+                    entry.getKey())
+                    * entry.getValue().size();
+            sumTotalHours += getAssignedHours(entry.getValue());
+        }
+        return ResourcesPerDay.calculateFrom(
+                sumTotalHours, sumWorkableHours);
     }
 
     private IWorkHours getWorkHoursPerDay() {
@@ -413,33 +457,50 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
 
     public int getAssignedHours(final Resource resource, LocalDate start,
-            LocalDate end) {
-        return getAssignedHours(start, end, new PredicateOnDayAssignment() {
+            LocalDate endExclusive) {
+        return getAssignedHours(filter(getAssignments(start, endExclusive),new PredicateOnDayAssignment() {
 
             @Override
             public boolean satisfiedBy(DayAssignment dayAssignment) {
                 return dayAssignment.isAssignedTo(resource);
             }
-        });
+                }));
     }
 
-
-    public int getAssignedHours(LocalDate start, LocalDate end) {
-        return getAssignedHours(start, end,
-                PredicateOnDayAssignment.ALWAYS_TRUE);
-    }
-
-    private int getAssignedHours(LocalDate start, LocalDate end,
-            PredicateOnDayAssignment predicate) {
-        int sum = 0;
+    public List<DayAssignment> getAssignments(LocalDate start,
+            LocalDate endExclusive) {
+        List<DayAssignment> result = new ArrayList<DayAssignment>();
         for (DayAssignment dayAssignment : getAssignments()) {
-            if (dayAssignment.getDay().compareTo(end) >= 0) {
+            if (dayAssignment.getDay().compareTo(endExclusive) >= 0) {
                 break;
             }
-            if (dayAssignment.includedIn(start, end)
-                    && predicate.satisfiedBy(dayAssignment)) {
-                sum += dayAssignment.getHours();
+            if (dayAssignment.includedIn(start, endExclusive)) {
+                result.add(dayAssignment);
             }
+        }
+        return result;
+    }
+
+
+    public int getAssignedHours(LocalDate start, LocalDate endExclusive) {
+        return getAssignedHours(getAssignments(start, endExclusive));
+    }
+
+    private List<DayAssignment> filter(List<DayAssignment> assignments,
+            PredicateOnDayAssignment predicate) {
+        List<DayAssignment> result = new ArrayList<DayAssignment>();
+        for (DayAssignment dayAssignment : assignments) {
+            if (predicate.satisfiedBy(dayAssignment)) {
+                result.add(dayAssignment);
+            }
+        }
+        return result;
+    }
+
+    private int getAssignedHours(List<DayAssignment> assignments) {
+        int sum = 0;
+        for (DayAssignment dayAssignment : assignments) {
+            sum += dayAssignment.getHours();
         }
         return sum;
     }

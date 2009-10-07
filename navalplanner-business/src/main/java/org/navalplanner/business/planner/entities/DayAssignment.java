@@ -64,7 +64,7 @@ public abstract class DayAssignment extends BaseEntity {
     }
 
     public static <T extends DayAssignment> Map<LocalDate, List<T>> byDay(
-            Collection<T> assignments) {
+            Collection<? extends T> assignments) {
         Map<LocalDate, List<T>> result = new HashMap<LocalDate, List<T>>();
         for (T t : assignments) {
             LocalDate day = t.getDay();
