@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 
 /**
  * Computes aggregate values on a set{@link ResourceAllocation}
@@ -70,6 +71,14 @@ public class AggregateOfResourceAllocations {
         List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>(
                 resourceAllocations);
         return ResourceAllocation.sortedByStartDate(result);
+    }
+
+    public int hoursBetween(LocalDate startDate, LocalDate endDate) {
+        int sum = 0;
+        for (ResourceAllocation<?> r : resourceAllocations) {
+            sum += r.getAssignedHours(startDate, endDate);
+        }
+        return sum;
     }
 
 }
