@@ -23,6 +23,7 @@ package org.navalplanner.web.planner;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -138,7 +139,15 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
             LocalDate date = calculateLimitDate(assignedHours);
             if (date == null) {
-                return getBeginDate();
+                Integer hours = orderElement.getWorkHours();
+                if (hours == 0) {
+                    return getBeginDate();
+                } else {
+                    BigDecimal percentage = new BigDecimal(assignedHours)
+                            .setScale(2).divide(new BigDecimal(hours),
+                                    RoundingMode.DOWN);
+                    date = calculateLimitDate(percentage);
+                }
             }
 
             return date.toDateTimeAtStartOfDay().toDate();
@@ -161,10 +170,17 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
             LocalDate date = calculateLimitDate(advanceHours);
             if (date == null) {
-                return getBeginDate();
+                date = calculateLimitDate(advancePercentage);
             }
 
             return date.toDateTimeAtStartOfDay().toDate();
+        }
+
+        private LocalDate calculateLimitDate(BigDecimal advancePercentage) {
+            Long totalMillis = getLengthMilliseconds();
+            Long advanceMillis = advancePercentage.multiply(
+                    new BigDecimal(totalMillis)).longValue();
+            return new LocalDate(getBeginDate().getTime() + advanceMillis);
         }
 
         @Override
