@@ -51,7 +51,7 @@ public abstract class Finder implements IFinder {
     }
 
     /**
-     * Returns true if entry starts with text
+     * Returns true if entry contains text partly
      *
      * @param entry
      *            Element from model
@@ -60,7 +60,7 @@ public abstract class Finder implements IFinder {
      */
     @Override
     public boolean entryMatchesText(String entry, String text) {
-        return entry.toLowerCase().startsWith(text.toLowerCase());
+        return entry.toLowerCase().contains(text.toLowerCase());
     }
 
     /**
