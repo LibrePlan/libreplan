@@ -31,7 +31,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.IWorkHours;
@@ -275,8 +274,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             Task task = getTask();
             LocalDate startInclusive = new LocalDate(task.getStartDate());
             List<T> assignmentsCreated = new ArrayList<T>();
-            for (int i = 0; i < getDaysElapsedAt(task); i++) {
-                LocalDate day = startInclusive.plusDays(i);
+            LocalDate endExclusive = new LocalDate(task.getEndDate());
+            for (LocalDate day : getDays(startInclusive, endExclusive)) {
                 int totalForDay = calculateTotalToDistribute(day,
                         resourcesPerDay);
                 assignmentsCreated.addAll(distributeForDay(day, totalForDay));
@@ -285,11 +284,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             resetAssignmentsTo(assignmentsCreated);
         }
 
-        private int getDaysElapsedAt(Task task) {
-            LocalDate endExclusive = new LocalDate(task.getEndDate());
-            Days daysBetween = Days.daysBetween(new LocalDate(task
-                    .getStartDate()), endExclusive);
-            return daysBetween.getDays();
+        private List<LocalDate> getDays(LocalDate startInclusive,
+                LocalDate endExclusive) {
+            List<LocalDate> result = new ArrayList<LocalDate>();
+            LocalDate current = startInclusive;
+            do {
+                result.add(current);
+                current = current.plusDays(1);
+            } while (current.compareTo(endExclusive) < 0);
+            return result;
         }
 
         protected abstract List<T> distributeForDay(LocalDate day,
