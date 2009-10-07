@@ -105,17 +105,17 @@ public class SpecificResourceAllocation extends
     public void allocate(ResourcesPerDay resourcesPerDay) {
         Validate.notNull(resourcesPerDay);
         Validate.notNull(resource);
-        AssignmentsAllocation assignmentsAllocation = new AssignmentsAllocation() {
+        new SpecificAssignmentsAllocation().allocate(resourcesPerDay);
+    }
 
-            @Override
-            protected List<SpecificDayAssignment> distributeForDay(
-                    LocalDate day, int totalHours) {
-                return Arrays.asList(SpecificDayAssignment.create(day,
-                        totalHours, resource));
-            }
-        };
-
-        assignmentsAllocation.allocate(resourcesPerDay);
+    private final class SpecificAssignmentsAllocation extends
+            AssignmentsAllocation {
+        @Override
+        protected List<SpecificDayAssignment> distributeForDay(
+                LocalDate day, int totalHours) {
+            return Arrays.asList(SpecificDayAssignment.create(day,
+                    totalHours, resource));
+        }
     }
 
     @Override
