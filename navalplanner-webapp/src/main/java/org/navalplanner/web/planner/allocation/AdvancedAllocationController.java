@@ -21,12 +21,15 @@
 package org.navalplanner.web.planner.allocation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.Callable;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
@@ -84,7 +87,7 @@ public class AdvancedAllocationController extends
     }
 
     private void createComponents() {
-        timeTracker = new TimeTracker(createExampleInterval());
+        timeTracker = new TimeTracker(intervalFromData());
         timeTrackerComponent = new TimeTrackerComponentWithoutColumns(
                 timeTracker, "timeTracker");
         TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData> timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<FakeDataLeft, FakeData>(
@@ -171,10 +174,40 @@ public class AdvancedAllocationController extends
         };
     }
 
-    private Interval createExampleInterval() {
-        LocalDate start = new LocalDate(2008, 1, 1);
-        LocalDate end = new LocalDate(2009, 1, 1);
-        return new Interval(asDate(start), asDate(end));
+    private Interval intervalFromData() {
+        List<ResourceAllocation<?>> all = allocationResult.getAllSortedByStartDate();
+        if (all.isEmpty()) {
+            return new Interval(allocationResult.getTask().getStartDate(),
+                    allocationResult.getTask().getEndDate());
+        } else {
+            LocalDate start = all.get(0).getStartDate();
+            LocalDate end = getEnd(all);
+            return new Interval(asDate(start), asDate(end));
+        }
+    }
+
+    private LocalDate getEnd(List<ResourceAllocation<?>> all) {
+        ArrayList<ResourceAllocation<?>> reversed = reverse(all);
+        LocalDate end = reversed.get(0).getEndDate();
+        ListIterator<ResourceAllocation<?>> listIterator = reversed
+                .listIterator(1);
+        while (listIterator.hasNext()) {
+            ResourceAllocation<?> current = listIterator.next();
+            if (current.getEndDate().compareTo(end) >= 0) {
+                end = current.getEndDate();
+            } else {
+                return end;
+            }
+        }
+        return end;
+    }
+
+    private ArrayList<ResourceAllocation<?>> reverse(
+            List<ResourceAllocation<?>> all) {
+        ArrayList<ResourceAllocation<?>> reversed = new ArrayList<ResourceAllocation<?>>(
+                all);
+        Collections.reverse(reversed);
+        return reversed;
     }
 
     private Date asDate(LocalDate start) {
