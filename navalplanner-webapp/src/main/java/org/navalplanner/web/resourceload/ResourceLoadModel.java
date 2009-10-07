@@ -231,9 +231,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         for (Entry<Set<Criterion>, List<GenericResourceAllocation>> entry : byCriterions
                 .entrySet()) {
-            LoadTimeLine timeLine = buildTimeLine(new ArrayList<Criterion>(
-                    entry.getKey()),
-                            resource, entry.getValue());
+            LoadTimeLine timeLine = buildTimeLine(entry.getKey(), resource,
+                    entry.getValue());
             if (!timeLine.isEmpty()) {
                 result.add(timeLine);
             }
@@ -257,7 +256,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return secondLevel;
     }
 
-    private LoadTimeLine buildTimeLine(List<Criterion> criterions,
+    private LoadTimeLine buildTimeLine(Collection<Criterion> criterions,
             Resource resource,
             List<GenericResourceAllocation> allocationsSortedByStartDate) {
         return new LoadTimeLine(getName(criterions), PeriodsBuilder.build(
@@ -265,13 +264,14 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 allocationsSortedByStartDate));
     }
 
-    private String getName(List<Criterion> criterions) {
+    public static String getName(Collection<? extends Criterion> criterions) {
         if (criterions.isEmpty()) {
-            return _("generic all workers");
+            return _("[generic all workers]");
         }
         String[] names = new String[criterions.size()];
-        for (int i = 0; i < names.length; i++) {
-            names[i] = criterions.get(i).getName();
+        int i = 0;
+        for (Criterion criterion : criterions) {
+            names[i++] = criterion.getName();
         }
         return Arrays.toString(names);
     }
