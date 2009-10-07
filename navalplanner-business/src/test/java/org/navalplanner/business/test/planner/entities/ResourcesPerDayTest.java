@@ -44,25 +44,37 @@ public class ResourcesPerDayTest {
     @Test
     public void theUnitsAmoutCanBeRetrieved() {
         ResourcesPerDay units = ResourcesPerDay.amount(2);
-        assertThat(units.getAmount(), hasIntegerPart(2));
+        assertThat(units, readsAs(2, 0));
     }
 
-    private Matcher<BigDecimal> hasIntegerPart(final int integer) {
-        return new BaseMatcher<BigDecimal>() {
+    private Matcher<ResourcesPerDay> readsAs(final int integerPart,
+            final int decimalPart) {
+        return new BaseMatcher<ResourcesPerDay>() {
 
             @Override
             public boolean matches(Object arg) {
-                if (arg instanceof BigDecimal) {
-                    BigDecimal value = (BigDecimal) arg;
-                    return value.intValue() == integer;
+                if (arg instanceof ResourcesPerDay) {
+                    ResourcesPerDay r = (ResourcesPerDay) arg;
+                    return r.getAmount().intValue() == integerPart
+                            && getDecimalPart(r) == decimalPart;
                 }
                 return false;
             }
 
+            private int getDecimalPart(ResourcesPerDay r) {
+                BigDecimal onlyDecimal = r.getAmount().subtract(
+                        new BigDecimal(r.getAmount().intValue()));
+                BigDecimal decimalPartAsInt = onlyDecimal.movePointRight(2);
+                int result = decimalPartAsInt.intValue();
+                return result;
+            }
+
             @Override
             public void describeTo(Description description) {
-                description
-                        .appendText("must have an integer part of" + integer);
+                description.appendText("must have an integer part of"
+                        + integerPart);
+                description.appendText("must have " + decimalPart
+                        + " as decimal part");
             }
         };
     }
@@ -71,7 +83,7 @@ public class ResourcesPerDayTest {
     public void theUnitsAmountCanBeADecimalValue() {
         ResourcesPerDay resourcesPerDay = ResourcesPerDay
                 .amount(new BigDecimal(2.2));
-        assertThat(resourcesPerDay.getAmount(), hasIntegerPart(2));
+        assertThat(resourcesPerDay, readsAs(2, 20));
     }
 
     @Test
@@ -89,11 +101,10 @@ public class ResourcesPerDayTest {
         for (BigDecimal example : examples) {
             ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(example);
             assertThat(resourcesPerDay.getAmount().scale(), equalTo(2));
-            assertThat(
-                    resourcesPerDay.getAmount().movePointRight(2).intValue(),
-                    equalTo(224));
+            assertThat(resourcesPerDay, readsAs(2, 24));
         }
     }
+
 
     @Test
     public void canBeConvertedToHoursGivenTheWorkingDayHours() {
