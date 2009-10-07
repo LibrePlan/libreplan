@@ -49,8 +49,10 @@ import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.api.Column;
 
@@ -175,7 +177,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private Row buildGroupingRow() {
         String taskName = allocationResult.getTask().getName();
-        Row groupingRow = Row.createRow(taskName, 0, allocationResult
+        Row groupingRow = Row.createRow(taskName + " (task)", 0,
+                allocationResult
                 .getAllSortedByStartDate());
         return groupingRow;
     }
@@ -185,22 +188,33 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
             @Override
             public Component cellFor(ColumnOnRow column, Row row) {
-                return new Label("TODO");
+                return column.cellFor(row);
             }
         };
     }
 
     private List<ColumnOnRow> getColumnsForLeft() {
-        String[] names = { _("Name"), _("Function"), _("Hours") };
         List<ColumnOnRow> result = new ArrayList<ColumnOnRow>();
-        for (final String columnName : names) {
-            result.add(createColumnWithLabel(columnName));
-        }
-        return result;
-    }
+        result.add(new ColumnOnRow(_("Name")) {
 
-    private ColumnOnRow createColumnWithLabel(final String columnName) {
-        return new ColumnOnRow(columnName);
+            @Override
+            public Component cellFor(Row row) {
+                return row.getNameLabel();
+            }
+        });
+        result.add(new ColumnOnRow(_("Hours")) {
+            @Override
+            public Component cellFor(Row row) {
+                return row.getAllHours();
+            }
+        });
+        result.add(new ColumnOnRow(_("Function")) {
+            @Override
+            public Component cellFor(Row row) {
+                return row.getFunction();
+            }
+        });
+        return result;
     }
 
     private Callable<PairOfLists<Row, Row>> getDataSource() {
@@ -219,9 +233,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
             @Override
             public Component cellFor(DetailItem item, Row data) {
-                Label label = new Label();
-                label.setValue(data.getHoursForDetailItem(item) + "h");
-                return label;
+                return data.hoursOnInterval(item);
             }
         };
     }
@@ -269,12 +281,14 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
 }
 
-class ColumnOnRow implements IConvertibleToColumn {
+abstract class ColumnOnRow implements IConvertibleToColumn {
     private final String columnName;
 
     ColumnOnRow(String columnName) {
         this.columnName = columnName;
     }
+
+    public abstract Component cellFor(Row row);
 
     @Override
     public Column toColumn() {
@@ -290,11 +304,51 @@ class ColumnOnRow implements IConvertibleToColumn {
 
 class Row {
 
-    public static Row createRow(String name, int level,
+    static Row createRow(String name, int level,
             List<? extends ResourceAllocation<?>> allocations) {
         return new Row(name, level, allocations);
     }
 
+    private Component allHoursInput;
+
+    private Label nameLabel;
+
+    Component getAllHours() {
+        if (allHoursInput == null) {
+            allHoursInput = buildAllHours();
+            return allHoursInput;
+        }
+        return allHoursInput;
+    }
+
+    private Component buildAllHours() {
+        if (isGroupingRow()) {
+            Label label = new Label();
+            label.setValue(aggregate.getTotalHours() + "");
+            return label;
+        } else {
+            Intbox intbox = new Intbox();
+            intbox.setValue(aggregate.getTotalHours());
+            return intbox;
+        }
+    }
+
+    Component getFunction() {
+        if (isGroupingRow()) {
+            return new Label();
+        } else {
+            Combobox combobox = new Combobox();
+            return combobox;
+        }
+    }
+
+    Component getNameLabel() {
+        if (nameLabel == null) {
+            nameLabel = new Label();
+            nameLabel.setValue(name);
+        }
+        return nameLabel;
+    }
 
     private String name;
 
@@ -310,11 +364,27 @@ class Row {
                 new ArrayList<ResourceAllocation<?>>(allocations));
     }
 
-    public Integer getHoursForDetailItem(DetailItem item) {
+    private Integer getHoursForDetailItem(DetailItem item) {
         DateTime startDate = item.getStartDate();
         DateTime endDate = item.getEndDate();
         return this.aggregate.hoursBetween(startDate.toLocalDate(), endDate
                 .toLocalDate());
+    }
+
+    Component hoursOnInterval(DetailItem item) {
+        if (isGroupingRow()) {
+            Label label = new Label();
+            label.setValue(getHoursForDetailItem(item) + "");
+            return label;
+        } else {
+            Intbox result = new Intbox();
+            result.setValue(getHoursForDetailItem(item));
+            return result;
+        }
+    }
+
+    private boolean isGroupingRow() {
+        return level == 0;
     }
 
 }
