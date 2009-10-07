@@ -1,6 +1,7 @@
-AsignaciÃ³n de recursos
+Asignación de recursos
 ######################
 
+.. asigacion_
 .. contents::
 
 Contidos...

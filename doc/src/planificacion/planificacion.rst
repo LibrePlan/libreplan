@@ -1,7 +1,12 @@
-PlanificaciÃ³n de tarefas
+Planificación de tarefas
 ########################
 
+.. _tarefas:
 .. contents::
+
+
+Planificación de tarefas
+========================
 
 Contidos...
 

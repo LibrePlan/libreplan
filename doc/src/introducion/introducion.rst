@@ -16,3 +16,11 @@ A modo de resumo, poderíamos destacar os conceptos básicos cos que traballará a 
    * Etiquetas: Serán elementos que se usarán para o etiquetado das tarefas dos proxectos. Con estas etiquetas o usuario da aplicación poderá realizar agrupacións conceptuais das tarefas para posteriormente poder consultar información das mesmas de xeito agrupado e filtrado.
 
 
+Formularios
+===========
+Antes de realizar unha exposición das distintas funcionalidades asociadas ós módulos máis importantes, é necesario facer unha explicación xeral da filosofía de navegación e formularios.
+
+Existen 3 tipos de formularios:
+   * Formularios con botón de *Back*. Estes formularios forman parte de unha navegación máis completa, e os cambios que se van realizando vanse almacenando en memoria. Os cambios só se aplican cando o usuario almacena explícitamente toda pantalla dende a que chegou a dito formulario.
+   * Formularios con botón de *Save* e *Close*. Estes formularios permiten realizar 2 operacións. A primeira delas almacena e pecha a ventana actual e a segunda delas pecha sen almacenar os cambios.
+   * Formularios con botón de *Save*, "Save&Close" e "Close. Permiten realizar 3 operacións. A primeira delas almacena pero continúa no formulario actual. A segunda almacena e pecha o formulario. E a terceira pecha a ventana sen almacenar os cambios.

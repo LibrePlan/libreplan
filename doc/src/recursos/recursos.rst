@@ -1,7 +1,11 @@
-XestiÃ³n de recursos
+Xestión de recursos
 ###################
 
+.. _recursos:
 .. contents::
+
+Xestión de recursos
+===================
 
 Contidos...
 
