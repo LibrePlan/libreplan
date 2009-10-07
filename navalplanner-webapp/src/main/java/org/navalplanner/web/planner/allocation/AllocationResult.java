@@ -59,7 +59,12 @@ public class AllocationResult {
 
     private final CalculatedValue calculatedValue;
 
+    private List<ResourceAllocation<?>> allSortedByStartDate;
+
+    private final Task task;
+
     AllocationResult(
+            Task task,
             CalculatedValue calculatedValue,
             AggregateOfResourceAllocations aggregate,
             Integer daysDuration,
@@ -67,6 +72,8 @@ public class AllocationResult {
         Validate.notNull(daysDuration);
         Validate.notNull(aggregate);
         Validate.notNull(calculatedValue);
+        Validate.notNull(task);
+        this.task = task;
         this.calculatedValue = calculatedValue;
         this.aggregate = aggregate;
         this.daysDuration = daysDuration;
@@ -111,5 +118,20 @@ public class AllocationResult {
     public void applyTo(Task task) {
         task.mergeAllocation(getCalculatedValue(), getDaysDuration(), getNew(),
                 getModified());
+    }
+
+    public List<ResourceAllocation<?>> getAllSortedByStartDate() {
+        if (allSortedByStartDate != null) {
+            return allSortedByStartDate;
+        }
+        return allSortedByStartDate = aggregate
+                .getAllocationsSortedByStartDate();
+    }
+
+    /**
+     * @return the task
+     */
+    public Task getTask() {
+        return task;
     }
 }

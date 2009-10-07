@@ -199,7 +199,7 @@ public class ResourceAllocationsBeingEdited {
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
-        return new AllocationResult(calculatedValue,
+        return new AllocationResult(task, calculatedValue,
                 new AggregateOfResourceAllocations(
                 stripResourcesPerDay(allocations)), daysDuration,
                 fromDetachedToAttached);
