@@ -18,6 +18,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<div>
+<div height="22px"></div>
 <tree id="tasksTree">
     <treecols sizable="false">
         <treecol label="Name"/>
@@ -25,3 +27,4 @@
         <treecol label="End"/>
     </treecols>
 </tree>
+</div>

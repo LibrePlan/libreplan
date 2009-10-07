@@ -209,6 +209,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 .getAssociatedTasks()), resourceDAO.list(Resource.class));
         forceLoadOfDependenciesCollections(planningState.getInitial());
         forceLoadOfWorkingHours(planningState.getInitial());
+        forceLoadOfLabels(planningState.getInitial());
         return new PlannerConfiguration<TaskElement>(taskElementAdapter,
                 new TaskElementNavigator(), planningState.getInitial());
     }
@@ -261,6 +262,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private void forceLoadOfDepedenciesCollections(TaskElement task) {
         task.getDependenciesWithThisOrigin().size();
         task.getDependenciesWithThisDestination().size();
+    }
+
+    private void forceLoadOfLabels(List<TaskElement> initial) {
+        for (TaskElement taskElement : initial) {
+            taskElement.getOrderElement().getLabels().size();
+        }
     }
 
     // spring method injection

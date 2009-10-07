@@ -29,8 +29,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.labels.daos.ILabelDAO;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -42,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
@@ -64,6 +68,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Autowired
     private IDayAssignmentDAO dayAssignmentDAO;
+
+    @Autowired
+    private ILabelDAO labelDAO;
 
     @Override
     public void setOrder(Order order) {
@@ -224,12 +231,32 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
+        @Transactional(readOnly = true)
         public String getTooltipText() {
 
-            return "Advance percentage : " + getAdvancePercentage().multiply(new BigDecimal(100)).toString()
-                    + "% <br/>"
-                    + "Hours advance percentage : "
-            + getHoursAdvancePercentage().multiply(new BigDecimal(100)).toString() + "%";
+            Set<Label> labels;
+
+            String tooltip = "Advance: "
+                    + getAdvancePercentage().multiply(new BigDecimal(100))
+                            .toString() + "% , ";
+            tooltip += "Hours invested: "
+                    + getHoursAdvancePercentage().multiply(new BigDecimal(100))
+                            .toString() + "% <br/>";
+
+            if (taskElement.getOrderElement() != null) {
+                labels = taskElement.getOrderElement().getLabels();
+
+                if (labels.size() != 0) {
+                    tooltip += "Labels: ";
+                    for (Label label : labels) {
+                        tooltip += label.getName() + ", ";
+                    }
+                    tooltip = (tooltip.substring(0, tooltip.length() - 2))
+                            + ".";
+                }
+            }
+
+            return tooltip;
         }
 
     }
