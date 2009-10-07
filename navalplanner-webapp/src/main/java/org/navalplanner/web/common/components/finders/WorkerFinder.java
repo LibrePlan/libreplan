@@ -50,7 +50,7 @@ public class WorkerFinder extends Finder implements IFinder {
     @Override
     public String _toString(Object value) {
         final Worker worker = (Worker) value;
-        return worker.getName() + " - " + worker.getNif();
+        return (worker != null) ? worker.getName() + " - " + worker.getNif() : "";
     }
 
 }

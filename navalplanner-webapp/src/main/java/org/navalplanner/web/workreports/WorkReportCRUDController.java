@@ -459,6 +459,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     private void appendAutocompleteResource(final Listitem listItem) {
         final Autocomplete autocomplete = new Autocomplete();
+        autocomplete.setAutodrop(true);
         autocomplete.applyProperties();
         autocomplete.setFinder("WorkerFinder");
 
@@ -474,7 +475,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             public void onEvent(Event event) throws Exception {
                 final Comboitem comboitem = autocomplete.getSelectedItem();
                 if (comboitem == null) {
-                    throw new WrongValueException(_("Please, select a worker"));
+                    throw new WrongValueException(autocomplete,
+                            _("Please, select an item"));
                 }
                 // Update worker
                 WorkReportLine workReportLine = (WorkReportLine) listItem

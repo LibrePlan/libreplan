@@ -20,6 +20,10 @@
 
 package org.navalplanner.web.common.components;
 
+import static org.navalplanner.web.I18nHelper._;
+
+import java.util.List;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +32,11 @@ import org.navalplanner.web.common.components.finders.IFinder;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 
 /**
  * Autocomplete component
@@ -56,6 +64,53 @@ public class Autocomplete extends Combobox {
         finder = (IFinder) getBean(StringUtils.uncapitalize(classname));
         setModel(finder.getModel());
         setItemRenderer(finder.getItemRenderer());
+        bindOnChangeAutocomplete(this);
+    }
+
+    /**
+     * When there's only one possible item, autocomplete option automatically
+     * fills text with that option, but it doesn't set the compenent with the
+     * option selected
+     *
+     * To solve this problem, what I did was, when an onChange happens, search
+     * among all options the text filled by in the textbox. If there's one that
+     * matches, select that option. Otherwise, raise a WrongValueException
+     * prompting user to select a valid option
+     *
+     * @param autocomplete
+     */
+    private void bindOnChangeAutocomplete(final Autocomplete autocomplete) {
+        autocomplete.addEventListener("onChange", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                String text = autocomplete.getValue();
+                Object object = getItemByText(text);
+                if (object == null) {
+                    throw new WrongValueException(autocomplete,
+                            _("Please, select an item"));
+                }
+                autocomplete.setSelectedItem(object);
+            }
+        });
+    }
+
+    /**
+     * Searches for text among list of items, and returns item.value that
+     * matches
+     *
+     * @param text
+     * @return
+     */
+    public Object getItemByText(String text) {
+        final List<Comboitem> items = this.getItems();
+        for (Comboitem item: items) {
+            final String itemtext = finder._toString(item.getValue());
+            if (itemtext.toLowerCase().equals(text.toLowerCase())) {
+                return item.getValue();
+            }
+        }
+        return null;
     }
 
     public void setSelectedItem(Object object) {
