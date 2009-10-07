@@ -27,6 +27,8 @@ import static org.easymock.classextension.EasyMock.replay;
 import static org.junit.Assert.assertThat;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.consecutiveDays;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.from;
+import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveHours;
+import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveResourceAllocation;
 
 import java.util.Date;
 
@@ -107,8 +109,7 @@ public class SpecificResourceAllocationTest {
         givenSpecificResourceAllocation(new LocalDate(2000, 2, 4), 2);
         specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
         assertThat(specificResourceAllocation.getAssignments(),
-                DayAssignmentMatchers
-                        .haveResourceAllocation(specificResourceAllocation));
+                haveResourceAllocation(specificResourceAllocation));
     }
 
     @Test
@@ -125,8 +126,7 @@ public class SpecificResourceAllocationTest {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 2);
         specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
-        assertThat(specificResourceAllocation.getAssignments(),
-                DayAssignmentMatchers.haveHours(8, 8));
+        assertThat(specificResourceAllocation.getAssignments(), haveHours(8, 8));
     }
 
     @Test
@@ -135,8 +135,7 @@ public class SpecificResourceAllocationTest {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 2);
         specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
-        assertThat(specificResourceAllocation.getAssignments(),
-                DayAssignmentMatchers.haveHours(4, 4));
+        assertThat(specificResourceAllocation.getAssignments(), haveHours(4, 4));
     }
 
 }
