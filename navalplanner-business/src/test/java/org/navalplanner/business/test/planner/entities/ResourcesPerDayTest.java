@@ -72,7 +72,7 @@ public class ResourcesPerDayTest {
             @Override
             public void describeTo(Description description) {
                 description.appendText("must have an integer part of"
-                        + integerPart);
+                        + integerPart + " and ");
                 description.appendText("must have " + decimalPart
                         + " as decimal part");
             }
@@ -104,7 +104,6 @@ public class ResourcesPerDayTest {
             assertThat(resourcesPerDay, readsAs(2, 24));
         }
     }
-
 
     @Test
     public void canBeConvertedToHoursGivenTheWorkingDayHours() {
@@ -143,6 +142,25 @@ public class ResourcesPerDayTest {
                 new BigDecimal(1), new BigDecimal(0.10) };
         for (BigDecimal example : examples) {
             assertFalse(ResourcesPerDay.amount(example).isZero());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void canCalculateTheResourcesPerDayFromTheHoursWorkingAndTheWorkableHours() {
+        Object[] periodicalNumber = { ResourcesPerDay.calculateFrom(10, 3),
+                readsAs(3, 33) };
+        Object[][] examples = {
+                { ResourcesPerDay.calculateFrom(1000, 1000), readsAs(1, 00) },
+                { ResourcesPerDay.calculateFrom(2000, 1000), readsAs(2, 00) },
+                { ResourcesPerDay.calculateFrom(500, 1000), readsAs(0, 50) },
+                { ResourcesPerDay.calculateFrom(651, 1000), readsAs(0, 65) },
+                { ResourcesPerDay.calculateFrom(1986, 1000), readsAs(1, 99) },
+                periodicalNumber };
+        for (Object[] pair : examples) {
+            ResourcesPerDay first = (ResourcesPerDay) pair[0];
+            Matcher<ResourcesPerDay> matcher = (Matcher<ResourcesPerDay>) pair[1];
+            assertThat(first, matcher);
         }
     }
 

@@ -27,7 +27,10 @@ import org.apache.commons.lang.Validate;
 
 public class ResourcesPerDay {
 
-    private final BigDecimal amount;
+    public static ResourcesPerDay calculateFrom(int hoursWorking, int workableHours) {
+        return amount(new BigDecimal(hoursWorking).divide(new BigDecimal(
+                workableHours), 2, RoundingMode.HALF_UP));
+    }
 
     public static ResourcesPerDay amount(int amount) {
         return new ResourcesPerDay(new BigDecimal(amount));
@@ -36,6 +39,8 @@ public class ResourcesPerDay {
     public static ResourcesPerDay amount(BigDecimal decimal) {
         return new ResourcesPerDay(decimal);
     }
+
+    private final BigDecimal amount;
 
     private ResourcesPerDay(BigDecimal amount) {
         Validate.isTrue(amount.intValue() >= 0);
@@ -72,5 +77,11 @@ public class ResourcesPerDay {
         BigDecimal withoutDecimalpart = amount.movePointRight(2);
         return withoutDecimalpart.intValue() == 0;
     }
+
+    @Override
+    public String toString() {
+        return amount.toString();
+    }
+
 
 }
