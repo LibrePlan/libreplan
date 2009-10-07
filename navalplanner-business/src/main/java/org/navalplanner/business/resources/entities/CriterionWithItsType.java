@@ -32,6 +32,8 @@ public class CriterionWithItsType {
 
     private final Criterion criterion;
 
+    private String nameHierarchy;
+
     public CriterionWithItsType(ICriterionType<?> type, Criterion criterion) {
         Validate.notNull(type);
         Validate.notNull(criterion);
@@ -39,6 +41,7 @@ public class CriterionWithItsType {
                 "the criterion must be belong to the type");
         this.type = type;
         this.criterion = criterion;
+        this.nameHierarchy = getNamesHierarchy(criterion,"");
     }
 
     public ICriterionType<?> getType() {
@@ -47,5 +50,27 @@ public class CriterionWithItsType {
 
     public Criterion getCriterion() {
         return criterion;
+    }
+
+    public void setNameHierarchy(String nameHierarchy) {
+        this.nameHierarchy = nameHierarchy;
+    }
+
+    public String getNameHierarchy() {
+        return nameHierarchy;
+    }
+
+    public String getNameAndType(){
+        String etiqueta = type.getName();
+        return etiqueta.concat(" :: "+getNameHierarchy());
+    }
+
+    private String getNamesHierarchy(Criterion criterion,String etiqueta){
+        Criterion parent = criterion.getParent();
+        if(parent != null){
+            etiqueta = getNamesHierarchy(parent,etiqueta);
+            etiqueta = etiqueta.concat(" -> ");
+        }
+        return etiqueta.concat(criterion.getName());
     }
 }

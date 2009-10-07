@@ -180,6 +180,33 @@ public class WorkerModel implements IWorkerModel {
         baseCalendar.getExceptions().size();
     }
 
+
+    @Override
+    @Transactional(readOnly = true)
+    public void assignCriteria(Collection<? extends Criterion> criteria) {
+
+        /* Check worker's version. */
+        Worker worker = getWorker();
+        resourceDAO.checkVersion(worker);
+
+        /* Assign criteria. */
+        getLocalizationsAssigner().assign(criteria);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void unassignSatisfactions(
+            Collection<? extends CriterionSatisfaction> satisfactions) {
+
+        /* Check worker's version. */
+        Worker worker = getWorker();
+        resourceDAO.checkVersion(worker);
+
+        /* Unassign criterion satisfactions. */
+        getLocalizationsAssigner().unassign(satisfactions);
+
+    }
+
     @Override
     @Transactional(readOnly = true)
     public AddingSatisfactionResult addSatisfaction(ICriterionType<?> type,
@@ -214,42 +241,14 @@ public class WorkerModel implements IWorkerModel {
         return AddingSatisfactionResult.OK;
     }
 
-    @Override
-    @Transactional(readOnly = true)
+     @Transactional(readOnly = true)
     public void removeSatisfaction(CriterionSatisfaction satisfaction) {
 
         /* Check worker's version. */
-        Worker worker = getWorker();
         resourceDAO.checkVersion(worker);
 
         /* Remove criterion satisfaction. */
         worker.removeCriterionSatisfaction(satisfaction);
-
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public void assignCriteria(Collection<? extends Criterion> criteria) {
-
-        /* Check worker's version. */
-        Worker worker = getWorker();
-        resourceDAO.checkVersion(worker);
-
-        /* Assign criteria. */
-        getLocalizationsAssigner().assign(criteria);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public void unassignSatisfactions(
-            Collection<? extends CriterionSatisfaction> satisfactions) {
-
-        /* Check worker's version. */
-        Worker worker = getWorker();
-        resourceDAO.checkVersion(worker);
-
-        /* Unassign criterion satisfactions. */
-        getLocalizationsAssigner().unassign(satisfactions);
 
     }
 

@@ -70,6 +70,7 @@
     <version name="version" access="property" type="long" />
     <property access="field" name="startDate" not-null="true"/>
     <property access="field" name="finishDate"/>
+    <property access="field" name="isDeleted"/>
     <many-to-one access="field" name="criterion" not-null="true"/>
     <many-to-one access="field" column="resource" name="resource" not-null="true"/>
   </class>

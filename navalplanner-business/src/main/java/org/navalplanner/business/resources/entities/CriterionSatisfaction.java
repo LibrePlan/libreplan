@@ -25,6 +25,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -92,6 +93,7 @@ public class CriterionSatisfaction extends BaseEntity {
         }
     }
 
+    @NotNull
     private Date startDate;
 
     private Date finishDate;
@@ -201,5 +203,4 @@ public class CriterionSatisfaction extends BaseEntity {
         }
 
     }
-
 }
