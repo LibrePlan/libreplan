@@ -88,10 +88,15 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    protected void resetAssignmentsTo(List<SpecificDayAssignment> assignments) {
-        this.specificDaysAssignment = new HashSet<SpecificDayAssignment>(
-                assignments);
-        setParentFor(specificDaysAssignment);
+    protected void addingAssignments(
+            Collection<? extends SpecificDayAssignment> assignments) {
+        setParentFor(assignments);
+        this.specificDaysAssignment.addAll(assignments);
+    }
+
+    @Override
+    protected void removingAssignments(List<? extends DayAssignment> assignments) {
+        this.specificDaysAssignment.removeAll(assignments);
     }
 
     private void setParentFor(

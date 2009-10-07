@@ -300,7 +300,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     }
 
-    protected abstract void resetAssignmentsTo(List<T> assignments);
+    private void resetAssignmentsTo(List<T> assignments) {
+        removingAssignments(getAssignments());
+        addingAssignments(assignments);
+    }
+
+    protected abstract void addingAssignments(
+            Collection<? extends T> assignments);
+
+    protected abstract void removingAssignments(
+            List<? extends DayAssignment> assignments);
 
     final int calculateTotalToDistribute(LocalDate day,
             ResourcesPerDay resourcesPerDay) {
