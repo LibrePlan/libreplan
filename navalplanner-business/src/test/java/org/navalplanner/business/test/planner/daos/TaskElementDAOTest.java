@@ -48,6 +48,7 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -111,6 +112,11 @@ public class TaskElementDAOTest {
         return result;
     }
 
+    private TaskMilestone createValidTaskMilestone() {
+        TaskMilestone result = TaskMilestone.create();
+        return result;
+    }
+
     private void checkProperties(TaskElement inMemory, TaskElement fromDB) {
         assertThat(fromDB.getStartDate(), equalTo(inMemory.getStartDate()));
         assertThat(fromDB.getEndDate(), equalTo(inMemory.getEndDate()));
@@ -137,6 +143,21 @@ public class TaskElementDAOTest {
         checkProperties(task, fromDB);
         HoursGroup reloaded = ((Task) fromDB).getHoursGroup();
         assertThat(reloaded.getId(), equalTo(reloaded.getId()));
+    }
+
+    @Test
+    public void canSaveMilestone() {
+        TaskMilestone milestone = createValidTaskMilestone();
+        taskElementDAO.save(milestone);
+        // flushAndEvict(milestone);
+        // TaskElement fromDB;
+        // try {
+        // fromDB = taskElementDAO.find(milestone.getId());
+        // } catch (InstanceNotFoundException e) {
+        // throw new RuntimeException(e);
+        // }
+        // assertThat(fromDB.getId(), equalTo(milestone.getId()));
+        // assertThat(fromDB, is(TaskMilestone.class));
     }
 
     @Test

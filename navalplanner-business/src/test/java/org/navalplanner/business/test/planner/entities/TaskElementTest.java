@@ -46,6 +46,7 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -410,5 +411,18 @@ public class TaskElementTest {
         parent.addTaskElement(anotherChild);
         child.detach();
         assertThat(parent.getChildren().size(), equalTo(1));
+    }
+
+    @Test
+    public void MilestoneOrderElementIsNull() {
+        TaskMilestone milestone = new TaskMilestone();
+        OrderLine orderLine = OrderLine.create();
+        try {
+            milestone.setOrderElement(orderLine);
+        } catch (IllegalStateException e) {
+            // Ok Exception expected
+        } finally {
+            assertTrue(milestone.getOrderElement() == null);
+        }
     }
 }

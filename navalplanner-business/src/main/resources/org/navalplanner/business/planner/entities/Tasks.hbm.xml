@@ -54,6 +54,11 @@
                 <one-to-many class="TaskElement" />
             </list>
         </joined-subclass>
+
+        <joined-subclass name="TaskMilestone">
+            <key column="TASK_ELEMENT_ID"></key>
+        </joined-subclass>
+
     </class>
     <class name="Dependency">
         <id name="id" type="long" access="property">
