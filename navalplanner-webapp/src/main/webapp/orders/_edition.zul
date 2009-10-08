@@ -38,6 +38,10 @@
                             <textbox value="@{controller.order.name}" width="500px"/>
                         </row>
                         <row>
+                            <label value="${i18n:_('Code')}" />
+                            <textbox value="@{controller.order.code}" width="250px"/>
+                        </row>
+                        <row>
                             <label value="${i18n:_('Starting date')}" />
                             <datebox
                                 value="@{controller.order.initDate}" />
