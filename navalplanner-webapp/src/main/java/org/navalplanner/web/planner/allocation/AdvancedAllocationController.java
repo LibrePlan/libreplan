@@ -475,9 +475,12 @@ class Row {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                fireCellChanged(item);
                 Integer value = intbox.getValue();
-                allocateOnInterval(getAllocation(), item, value);
+                getAllocation().withPreviousAssociatedResources().onInterval(
+                        item.getStartDate().toLocalDate(),
+                        item.getEndDate().toLocalDate()).allocateHours(value);
+                fireCellChanged(item);
+                reloadAllHours();
             }
         });
     }
