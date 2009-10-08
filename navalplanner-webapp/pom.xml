@@ -132,14 +132,12 @@
         </dependency>
         <!-- ZK Timeplot -->
         <dependency>
-            <groupId>org.zkoss.zkforge</groupId>
+            <groupId>org.zkoss.zkforge.timeline</groupId>
             <artifactId>timelinez</artifactId>
-            <version>1.2_1</version>
         </dependency>
         <dependency>
-            <groupId>org.zkoss.zkforge</groupId>
+            <groupId>org.zkoss.zkforge.timeplot</groupId>
             <artifactId>timeplotz</artifactId>
-            <version>1.0_2</version>
         </dependency>
    </dependencies>
 </project>

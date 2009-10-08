@@ -357,6 +357,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         chart.appendChild(plotInfoOrder);
         chart.appendChild(plotInfoCompany);
 
+        size = size + (16 * 2);
         chart.setWidth(size + "px");
         chart.setHeight("200px");
     }

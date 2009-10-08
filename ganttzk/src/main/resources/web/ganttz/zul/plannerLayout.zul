@@ -65,7 +65,7 @@ planner = self;
         </center>
         <south height="100px" collapsible="true" splittable="true">
             <borderlayout>
-                <west width="200px" flex="true" collapsible="true"
+                <west width="284px" flex="true" collapsible="true"
                     splittable="true">
                     <vbox pack="center" align="center">
                     <label value="ResourcesLoadGraph details"
