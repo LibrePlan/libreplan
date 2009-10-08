@@ -257,4 +257,8 @@ public class GenericResourceAllocation extends
         return new ArrayList<Resource>(resources);
     }
 
+    public IAllocatable withPreviousAssociatedResources() {
+        return forResources(getAssociatedResources());
+    }
+
 }

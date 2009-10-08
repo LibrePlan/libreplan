@@ -113,7 +113,7 @@ public class ShareDivision {
             remainderIncrease = remainderIncrease - bucket.getIncreaseDone();
             assert remainderIncrease >= 0;
         }
-        assert remainderIncrease == 0 : "all is assigned";
+        assert remainderIncrease == 0 || shares.isEmpty() : "all is assigned";
         return ShareDivision.create(fromWrappers(wrapped));
     }
 

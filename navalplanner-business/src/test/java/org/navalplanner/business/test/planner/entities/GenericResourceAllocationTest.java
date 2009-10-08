@@ -359,4 +359,28 @@ public class GenericResourceAllocationTest {
         return new HashSet<Resource>(associatedResources);
     }
 
+    @Test
+    public void canAllocateHoursOnIntervalUsingPreviousResources() {
+        final int workableHoursDay = 8;
+        givenBaseCalendarWithoutExceptions(workableHoursDay);
+        LocalDate start = new LocalDate(2006, 10, 5);
+        final int days = 4;
+        givenTaskWithStartAndEnd(toInterval(start, Period.days(days)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithLoads(3, 12, 1);
+
+        genericResourceAllocation.forResources(workers).allocate(
+                ResourcesPerDay.amount(1));
+
+        final int hoursOnSubinterval = 3;
+        int daysSubinterval = 2;
+        genericResourceAllocation.withPreviousAssociatedResources().onInterval(
+                start,
+                start.plusDays(daysSubinterval)).allocateHours(
+                hoursOnSubinterval);
+        assertThat(genericResourceAllocation.getAssignedHours(),
+                equalTo(hoursOnSubinterval + (days - daysSubinterval)
+                        * workableHoursDay));
+    }
+
 }
