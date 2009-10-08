@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.orders;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
@@ -38,8 +40,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.api.Window;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Controller for CRUD actions <br />
@@ -94,26 +94,32 @@ public class OrderCRUDController extends GenericForwardComposer {
             messagesForUser.showMessage(Level.INFO, _("Order saved"));
             goToList();
         } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e, new IMessagesForUser.ICustomLabelCreator() {
+            if (e.getInvalidValues().length == 0) {
+                messagesForUser.showMessage(Level.INFO, e.getMessage());
+            } else {
+                messagesForUser.showInvalidValues(e,
+                        new IMessagesForUser.ICustomLabelCreator() {
 
-                @Override
-                public Component createLabelFor(InvalidValue invalidValue) {
-                    if (invalidValue.getBean() instanceof OrderElement) {
-                        Label result = new Label();
+                            @Override
+                            public Component createLabelFor(
+                                    InvalidValue invalidValue) {
+                                if (invalidValue.getBean() instanceof OrderElement) {
+                                    Label result = new Label();
 
-                        String orderElementName = ((OrderElement) invalidValue
-                                        .getBean()).getName();
+                                    String orderElementName = ((OrderElement) invalidValue
+                                            .getBean()).getName();
 
-                        result.setValue(orderElementName + " "
-                                        + invalidValue.getPropertyName() + ": "
-                                        + invalidValue.getMessage());
-                        return result;
-                    } else {
-                        return MessagesForUser
-                                        .createLabelFor(invalidValue);
+                                    result.setValue(orderElementName + " "
+                                            + invalidValue.getPropertyName()
+                                            + ": " + invalidValue.getMessage());
+                                    return result;
+                                } else {
+                                    return MessagesForUser
+                                            .createLabelFor(invalidValue);
+                                }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
