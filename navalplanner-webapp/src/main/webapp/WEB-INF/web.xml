@@ -25,6 +25,16 @@
         <servlet-name>dspLoader</servlet-name>
         <servlet-class>org.zkoss.web.servlet.dsp.InterpreterServlet</servlet-class>
     </servlet>
+    <servlet>
+        <description><![CDATA[Callback Servlet]]></description>
+        <servlet-name>callbackServlet</servlet-name>
+        <servlet-class>org.navalplanner.web.servlets.CallbackServlet</servlet-class>
+        <load-on-startup/>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>callbackServlet</servlet-name>
+        <url-pattern>/callback/*</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>dspLoader</servlet-name>
         <url-pattern>*.dsp</url-pattern>
