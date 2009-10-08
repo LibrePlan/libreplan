@@ -266,7 +266,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private void forceLoadOfLabels(List<TaskElement> initial) {
         for (TaskElement taskElement : initial) {
-            taskElement.getOrderElement().getLabels().size();
+            if (taskElement.isLeaf()) {
+                taskElement.getOrderElement().getLabels().size();
+            } else {
+                forceLoadOfLabels(taskElement.getChildren());
+            }
         }
     }
 
