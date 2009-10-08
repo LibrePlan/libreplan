@@ -86,6 +86,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     @Autowired
     private IResourceDAO resourceDAO;
 
+    private Integer maximunValueForChart = 0;
+
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
         @Override
@@ -323,28 +325,34 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private void fillChart(Order order, Timeplot chart, Interval interval,
             Integer size) {
+        chart.getChildren().clear();
+        maximunValueForChart = 0;
+
         Plotinfo plotInfoOrder = getLoadPlotInfo(order, interval.getStart(),
                 interval.getFinish());
         plotInfoOrder.setId("order");
         plotInfoOrder.setFillColor("0000FF");
 
-        ValueGeometry valueGeometry = new DefaultValueGeometry();
-        valueGeometry.setMin(0);
-        valueGeometry.setGridColor("#000000");
-        valueGeometry.setAxisLabelsPlacement("left");
-
         Plotinfo plotInfoCompany = getResourcesLoadPlotInfo(order, interval
                 .getStart(), interval.getFinish());
         plotInfoCompany.setId("company");
         plotInfoCompany.setFillColor("00FF00");
-        plotInfoCompany.setValueGeometry(valueGeometry);
 
         Plotinfo plotInfoMax = getCalendarMaximumAvailabilityPlotInfo(order,
                 interval.getStart(), interval.getFinish());
         plotInfoMax.setId("max");
         plotInfoMax.setLineColor("FF0000");
 
-        chart.getChildren().clear();
+        ValueGeometry valueGeometry = new DefaultValueGeometry();
+        valueGeometry.setMin(0);
+        valueGeometry.setMax(maximunValueForChart);
+        valueGeometry.setGridColor("#000000");
+        valueGeometry.setAxisLabelsPlacement("left");
+
+        plotInfoOrder.setValueGeometry(valueGeometry);
+        plotInfoCompany.setValueGeometry(valueGeometry);
+        plotInfoMax.setValueGeometry(valueGeometry);
+
         chart.appendChild(plotInfoMax);
         chart.appendChild(plotInfoOrder);
         chart.appendChild(plotInfoCompany);
@@ -438,6 +446,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private String getServletUri(
             final SortedMap<LocalDate, Integer> mapDayAssignments,
             final Date start, final Date finish) {
+        setMaximunValueForChartIfGreater(Collections.max(mapDayAssignments.values()));
+
         String uri = CallbackServlet
                 .registerAndCreateURLFor(new IServletRequestHandler() {
 
@@ -517,6 +527,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
 
         return map;
+    }
+
+    private void setMaximunValueForChartIfGreater(Integer max) {
+        if (maximunValueForChart < max) {
+            maximunValueForChart = max;
+        }
     }
 
 }
