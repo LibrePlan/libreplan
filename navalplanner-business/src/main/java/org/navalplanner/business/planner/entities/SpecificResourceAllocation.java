@@ -173,4 +173,9 @@ public class SpecificResourceAllocation extends
             p.detach();
         }
     }
+
+    @Override
+    public IAllocatable withPreviousAssociatedResources() {
+        return this;
+    }
 }

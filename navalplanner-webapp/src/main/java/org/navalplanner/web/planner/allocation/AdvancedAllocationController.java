@@ -470,11 +470,14 @@ class Row {
         if (isGroupingRow()) {
             return;
         }
+        final Intbox intbox = (Intbox) component;
         component.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
                 fireCellChanged(item);
+                Integer value = intbox.getValue();
+                allocateOnInterval(getAllocation(), item, value);
             }
         });
     }
@@ -487,6 +490,13 @@ class Row {
             Intbox intbox = (Intbox) component;
             intbox.setValue(getHoursForDetailItem(item));
         }
+    }
+
+    private ResourceAllocation<?> getAllocation() {
+        if (isGroupingRow()) {
+            throw new IllegalStateException("is grouping row");
+        }
+        return aggregate.getAllocationsSortedByStartDate().get(0);
     }
 
     private boolean isGroupingRow() {
