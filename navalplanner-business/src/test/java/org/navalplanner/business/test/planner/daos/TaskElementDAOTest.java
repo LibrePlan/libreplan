@@ -32,9 +32,13 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.hibernate.SessionFactory;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -66,6 +70,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TaskElementDAOTest {
 
+    @Resource
+    private IDataBootstrap defaultAdvanceTypesBootstrapListener;
+
+    @Before
+    public void loadRequiredaData() {
+        defaultAdvanceTypesBootstrapListener.loadRequiredData();
+    }
+
     @Autowired
     private ITaskElementDAO taskElementDAO;
 
@@ -94,6 +106,7 @@ public class TaskElementDAOTest {
         Order order = Order.create();
         order.setName("bla");
         order.setInitDate(new Date());
+        order.setCode("code");
         order.add(orderLine);
         try {
             order.checkValid();

@@ -98,8 +98,12 @@ public abstract class OrderElement extends BaseEntity {
 
     public abstract List<OrderElement> getChildren();
 
+    private static Date copy(Date date) {
+        return date != null ? new Date(date.getTime()) : date;
+    }
+
     public Date getInitDate() {
-        return initDate;
+        return copy(initDate);
     }
 
     public void setInitDate(Date initDate) {
@@ -107,7 +111,7 @@ public abstract class OrderElement extends BaseEntity {
     }
 
     public Date getEndDate() {
-        return endDate;
+        return copy(endDate);
     }
 
     public void setEndDate(Date endDate) {

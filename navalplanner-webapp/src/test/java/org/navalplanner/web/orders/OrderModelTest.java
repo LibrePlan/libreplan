@@ -102,6 +102,7 @@ public class OrderModelTest {
         order.setInitDate(year(2000));
         order.setName("name");
         order.setResponsible("responsible");
+        order.setCode("code");
         return order;
     }
 

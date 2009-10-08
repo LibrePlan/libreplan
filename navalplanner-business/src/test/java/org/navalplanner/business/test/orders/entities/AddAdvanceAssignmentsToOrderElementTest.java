@@ -105,6 +105,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
         order.setInitDate(CriterionSatisfactionDAOTest.year(2000));
         order.setName("name");
         order.setResponsible("responsible");
+        order.setCode("code");
         return order;
     }
 

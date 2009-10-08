@@ -49,15 +49,18 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
         OrderLineGroup result = new OrderLineGroup();
         result.setNewObject(true);
 
+        setupOrderLineGroup(result);
+
+        return result;
+    }
+
+    protected static void setupOrderLineGroup(OrderLineGroup result) {
         IndirectAdvanceAssignment indirectAdvanceAssignment = IndirectAdvanceAssignment
                 .create(true);
         AdvanceType advanceType = PredefinedAdvancedTypes.CHILDREN.getType();
-        indirectAdvanceAssignment
-                .setAdvanceType(advanceType);
+        indirectAdvanceAssignment.setAdvanceType(advanceType);
         indirectAdvanceAssignment.setOrderElement(result);
         result.addIndirectAdvanceAssignment(indirectAdvanceAssignment);
-
-        return result;
     }
 
     private List<OrderElement> children = new ArrayList<OrderElement>();
