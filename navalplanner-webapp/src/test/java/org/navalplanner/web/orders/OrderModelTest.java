@@ -139,6 +139,18 @@ public class OrderModelTest {
     }
 
     @Test
+    public void testCreation1() throws ValidationException {
+        orderModel.prepareForCreate();
+        Order order = (Order) orderModel.getOrder();
+        order.setName("name");
+        order.setCode("code");
+        order.setInitDate(new Date());
+
+        orderModel.save();
+        assertTrue(orderDAO.exists(order.getId()));
+    }
+
+    @Test
     public void testListing() throws Exception {
         List<Order> list = orderModel.getOrders();
         Order order = createValidOrder();
