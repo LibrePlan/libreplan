@@ -249,4 +249,12 @@ public class GenericResourceAllocation extends
                 assignemnts);
     }
 
+    public List<Resource> getAssociatedResources() {
+        Set<Resource> resources = new HashSet<Resource>();
+        for (DayAssignment dayAssignment : getAssignments()) {
+            resources.add(dayAssignment.getResource());
+        }
+        return new ArrayList<Resource>(resources);
+    }
+
 }

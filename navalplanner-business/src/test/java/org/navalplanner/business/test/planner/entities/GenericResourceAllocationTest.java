@@ -34,6 +34,7 @@ import static org.navalplanner.business.test.planner.entities.DayAssignmentMatch
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -336,6 +337,26 @@ public class GenericResourceAllocationTest {
         assertThat(genericResourceAllocation.getAssignedHours(),
                 equalTo(hoursOnSubinterval + (days - daysSubinterval)
                         * workableHoursDay));
+    }
+
+    @Test
+    public void theRelatedResourcesCanBeRetrieved() {
+        givenTaskWithStartAndEnd(toInterval(new LocalDate(2006, 10, 5), Period
+                .days(4)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithoutLoadAndWithoutCalendar();
+
+        List<Resource> resourcesGiven = Arrays.<Resource> asList(worker1,
+                worker2);
+        genericResourceAllocation.forResources(resourcesGiven)
+                .allocate(ResourcesPerDay.amount(1));
+        assertThat(asSet(genericResourceAllocation.getAssociatedResources()),
+                equalTo(asSet(genericResourceAllocation
+                        .getAssociatedResources())));
+    }
+
+    private Set<Resource> asSet(Collection<Resource> associatedResources) {
+        return new HashSet<Resource>(associatedResources);
     }
 
 }
