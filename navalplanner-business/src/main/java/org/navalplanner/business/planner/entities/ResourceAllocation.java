@@ -296,7 +296,32 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return result;
         }
 
-        void allocate(LocalDate startInclusive, LocalDate endExclusive, int hours) {
+        private class AllocateHoursOnInterval implements
+                IAllocateHoursOnInterval {
+
+            private final LocalDate start;
+            private final LocalDate end;
+
+            AllocateHoursOnInterval(LocalDate start, LocalDate end) {
+                Validate.isTrue(start.compareTo(end) <= 0,
+                        "the end must be equal or posterior than start");
+                this.start = start;
+                this.end = end;
+            }
+
+            public void allocateHours(int hours) {
+                allocate(start, end, hours);
+            }
+        }
+
+        @Override
+        public IAllocateHoursOnInterval onInterval(LocalDate start,
+                LocalDate end) {
+            return new AllocateHoursOnInterval(start, end);
+        }
+
+        private void allocate(LocalDate startInclusive, LocalDate endExclusive,
+                int hours) {
             Validate.isTrue(hours >= 0);
             Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0,
                     "the end must be equal or posterior than start");

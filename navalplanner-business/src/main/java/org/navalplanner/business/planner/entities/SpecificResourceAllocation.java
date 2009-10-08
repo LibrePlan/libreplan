@@ -123,29 +123,9 @@ public class SpecificResourceAllocation extends
         }
     }
 
-    public interface IAllocateHoursOnInterval {
-        void allocateHours(int hours);
-    }
-
-    private class AllocateHoursOnInterval implements IAllocateHoursOnInterval {
-
-        private final LocalDate start;
-        private final LocalDate end;
-
-        AllocateHoursOnInterval(LocalDate start, LocalDate end) {
-            this.start = start;
-            this.end = end;
-        }
-
-        public void allocateHours(int hours) {
-            new SpecificAssignmentsAllocation().allocate(start, end, hours);
-        }
-    }
-
+    @Override
     public IAllocateHoursOnInterval onInterval(LocalDate start, LocalDate end) {
-        Validate.isTrue(start.compareTo(end) <= 0,
-                "the end must be equal or posterior than start");
-        return new AllocateHoursOnInterval(start, end);
+        return new SpecificAssignmentsAllocation().onInterval(start, end);
     }
 
     @Override
