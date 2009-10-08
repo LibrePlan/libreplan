@@ -42,10 +42,11 @@ import org.zkoss.zul.TreeModel;
 public class OrderElementTreeModel {
 
     private static MutableTreeModel<OrderElement> createTreeFrom(Order order) {
-        List<OrderElement> orderElements = order.getOrderElements();
         MutableTreeModel<OrderElement> treeModel = MutableTreeModel
-                .create(OrderElement.class);
+                .create(
+                OrderElement.class, order);
         OrderElement parent = treeModel.getRoot();
+        List<OrderElement> orderElements = order.getOrderElements();
         treeModel.add(parent, orderElements);
         addChildren(treeModel, orderElements);
         return treeModel;
@@ -65,10 +66,8 @@ public class OrderElementTreeModel {
     }
 
     private MutableTreeModel<OrderElement> tree;
-    private final Order order;
 
     public OrderElementTreeModel(Order order) {
-        this.order = order;
         tree = createTreeFrom(order);
     }
 
@@ -122,17 +121,11 @@ public class OrderElementTreeModel {
     }
 
     private OrderElement toNode(IOrderLineGroup container) {
-        if (container == order) {
-            return tree.getRoot();
-        }
         return (OrderElement) container;
     }
 
     private IOrderLineGroup turnIntoContainerIfNeeded(
             OrderElement selectedForTurningIntoContainer) {
-        if (tree.isRoot(selectedForTurningIntoContainer)) {
-            return order;
-        }
         if (selectedForTurningIntoContainer instanceof IOrderLineGroup) {
             return (IOrderLineGroup) selectedForTurningIntoContainer;
         }
@@ -212,22 +205,19 @@ public class OrderElementTreeModel {
         tree.down(node);
     }
 
-    private IOrderLineGroup asOrderLineGroup(OrderElement node) {
-        if (tree.isRoot(node)) {
-            return order;
-        }
-        return (IOrderLineGroup) node;
+    private OrderLineGroup asOrderLineGroup(OrderElement node) {
+        return (OrderLineGroup) node;
     }
 
     public void removeNode(OrderElement orderElement) {
         if (orderElement == tree.getRoot()) {
             return;
         }
-        IOrderLineGroup parent = asOrderLineGroup(tree.getParent(orderElement));
+        OrderLineGroup parent = asOrderLineGroup(tree.getParent(orderElement));
         parent.remove(orderElement);
         tree.remove(orderElement);
         // If removed node was the last one and its parent is not the root node
-        if (parent != order && tree.getChildCount(parent) == 0) {
+        if (!tree.isRoot(parent) && tree.getChildCount(parent) == 0) {
             OrderElement asLeaf = ((OrderElement) parent).toLeaf();
             OrderElement parentContainer = getParent(toNode(parent));
             asOrderLineGroup(parentContainer).replace((OrderElement) parent,
