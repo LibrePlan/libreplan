@@ -312,4 +312,30 @@ public class GenericResourceAllocationTest {
                 .toDateTimeAtStartOfDay());
     }
 
+    @Test
+    public void canAllocateHoursOnInterval() {
+        final int workableHoursDay = 8;
+        givenBaseCalendarWithoutExceptions(workableHoursDay);
+        LocalDate start = new LocalDate(2006, 10, 5);
+        final int days = 4;
+        givenTaskWithStartAndEnd(toInterval(start, Period.days(days)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithLoads(3, 12, 1);
+
+        genericResourceAllocation.forResources(workers).allocate(
+                ResourcesPerDay.amount(1));
+
+        assertThat(genericResourceAllocation.getAssignedHours(),
+                equalTo(workableHoursDay * days));
+
+        final int hoursOnSubinterval = 3;
+        int daysSubinterval = 2;
+        genericResourceAllocation.forResources(workers).onInterval(start,
+                start.plusDays(daysSubinterval)).allocateHours(
+                hoursOnSubinterval);
+        assertThat(genericResourceAllocation.getAssignedHours(),
+                equalTo(hoursOnSubinterval + (days - daysSubinterval)
+                        * workableHoursDay));
+    }
+
 }
