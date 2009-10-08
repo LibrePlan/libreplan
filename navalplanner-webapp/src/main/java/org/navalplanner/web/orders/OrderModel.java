@@ -117,13 +117,7 @@ public class OrderModel implements IOrderModel {
         loadCriterions();
         this.order = getFromDB(order);
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
-        forceLoadAdvanceAssignments(this.order);
-    }
-
-    private void forceLoadAdvanceAssignments(Order order) {
-        for (OrderElement orderElement : order.getOrderElements()) {
-            forceLoadAdvanceAssignmentsAndMeasurements(orderElement);
-        }
+        forceLoadAdvanceAssignmentsAndMeasurements(this.order);
     }
 
     private void forceLoadAdvanceAssignmentsAndMeasurements(
