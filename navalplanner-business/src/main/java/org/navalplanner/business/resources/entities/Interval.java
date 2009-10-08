@@ -129,10 +129,11 @@ class Range extends Interval {
             Point point = (Point) interval;
             return point.overlapsWith(this);
         }
-        return contains(interval.start)
-                || (interval.end != null ? contains(interval.end)
-                        && !interval.end.equals(start) : end
-                        .compareTo(interval.start) > 0);
+        if (interval instanceof OpenEndedInterval) {
+            return interval.overlapsWith(this);
+        }
+        return interval.start.compareTo(this.end) < 0
+                && this.start.compareTo(interval.end) < 0;
     }
 
     @Override

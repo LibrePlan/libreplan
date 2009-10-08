@@ -20,16 +20,16 @@
 
 package org.navalplanner.business.test.resources.entities;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.year;
+
 import java.util.Date;
 
 import org.junit.Test;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.year;
 
 public class IntervalTest {
 
@@ -165,5 +165,13 @@ public class IntervalTest {
         Interval point = Interval.point(year(1990));
         Interval range = Interval.range(year(1990), year(1990));
         assertEquals(point, range);
+    }
+
+    @Test
+    public void testOverlappingWhenContained() {
+        Interval range = Interval.range(year(1990), year(2000));
+        Interval contained = Interval.range(year(1995), year(1997));
+        assertTrue(range.overlapsWith(contained));
+        assertTrue(contained.overlapsWith(range));
     }
 }
