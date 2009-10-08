@@ -130,5 +130,16 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
         </dependency>
+        <!-- ZK Timeplot -->
+        <dependency>
+            <groupId>org.zkoss.zkforge</groupId>
+            <artifactId>timelinez</artifactId>
+            <version>1.2_1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zkforge</groupId>
+            <artifactId>timeplotz</artifactId>
+            <version>1.0_2</version>
+        </dependency>
    </dependencies>
 </project>
