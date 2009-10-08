@@ -186,7 +186,7 @@ public class GenericResourceAllocationTest {
         genericResourceAllocation.forResources(Arrays.asList(worker1))
                 .allocate(ResourcesPerDay.amount(1));
 
-        List<GenericDayAssignment> assignments = (List<GenericDayAssignment>) genericResourceAllocation
+        List<GenericDayAssignment> assignments = genericResourceAllocation
                 .getAssignments();
         assertThat(assignments,
                 haveResourceAllocation(genericResourceAllocation));

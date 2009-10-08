@@ -204,7 +204,7 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    public List<? extends DayAssignment> getAssignments() {
+    public List<GenericDayAssignment> getAssignments() {
         return DayAssignment.orderedByDay(genericDayAssignments);
     }
 
