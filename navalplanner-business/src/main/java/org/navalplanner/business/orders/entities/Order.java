@@ -21,6 +21,7 @@
 package org.navalplanner.business.orders.entities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -101,6 +102,10 @@ public class Order extends OrderLineGroup implements IValidable {
 
     @Override
     public void checkValid() throws ValidationException {
+        if (this.getInitDate() == null) {
+            throw new ValidationException("initDate must not be null");
+        }
+
         if (this.isEndDateBeforeStart()) {
             throw new ValidationException("endDate must be after startDate");
         }
