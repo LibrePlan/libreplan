@@ -89,6 +89,20 @@
     </servlet-mapping>
     <!-- //// -->
 
+    <!-- CXF -->
+    <servlet>
+        <servlet-name>CXFServlet</servlet-name>
+        <display-name>CXF Servlet</display-name>
+        <servlet-class>
+            org.apache.cxf.transport.servlet.CXFServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CXFServlet</servlet-name>
+        <url-pattern>/ws/rest/*</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>/planner/main.zul</welcome-file>
     </welcome-file-list>
