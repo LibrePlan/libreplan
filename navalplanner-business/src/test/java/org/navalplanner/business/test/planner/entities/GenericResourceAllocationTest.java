@@ -383,4 +383,19 @@ public class GenericResourceAllocationTest {
                         * workableHoursDay));
     }
 
+    @Test
+    public void allocatingWithPreviousAssociatedResourcesCanBeUsedSafelyWhenNoAllocationHasBeenDone() {
+        final int workableHoursDay = 8;
+        givenBaseCalendarWithoutExceptions(workableHoursDay);
+        LocalDate start = new LocalDate(2006, 10, 5);
+        final int days = 4;
+        givenTaskWithStartAndEnd(toInterval(start, Period.days(days)));
+        givenGenericResourceAllocationForTask(task);
+
+        genericResourceAllocation.withPreviousAssociatedResources().allocate(
+                ResourcesPerDay.amount(1));
+
+        assertThat(genericResourceAllocation.getAssignedHours(), equalTo(0));
+    }
+
 }
