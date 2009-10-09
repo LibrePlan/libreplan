@@ -384,6 +384,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     * entry.getValue().size();
             sumTotalHours += getAssignedHours(entry.getValue());
         }
+        if (sumWorkableHours == 0) {
+            return ResourcesPerDay.amount(0);
+        }
         return ResourcesPerDay.calculateFrom(
                 sumTotalHours, sumWorkableHours);
     }
