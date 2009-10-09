@@ -30,6 +30,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -246,10 +247,14 @@ public class Task extends TaskElement {
     }
 
     public void mergeAllocation(CalculatedValue calculatedValue,
-            Integer daysDuration, List<ResourceAllocation<?>> newAllocations,
+            AggregateOfResourceAllocations aggregate,
+            List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications) {
         this.calculatedValue = calculatedValue;
-        setDaysDuration(daysDuration);
+        final LocalDate start = aggregate.getStart();
+        final LocalDate end = aggregate.getEnd();
+        setStartDate(start.toDateTimeAtStartOfDay().toDate());
+        setDaysDuration(Days.daysBetween(start, end).getDays());
         addAllocations(newAllocations);
         for (ModifiedAllocation pair : modifications) {
             Validate.isTrue(resourceAllocations.contains(pair.getOriginal()));

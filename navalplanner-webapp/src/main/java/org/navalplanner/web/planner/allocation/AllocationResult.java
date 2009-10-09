@@ -62,8 +62,6 @@ public class AllocationResult {
 
     private final CalculatedValue calculatedValue;
 
-    private List<ResourceAllocation<?>> allSortedByStartDate;
-
     private final Task task;
 
     AllocationResult(
@@ -119,16 +117,12 @@ public class AllocationResult {
     }
 
     public void applyTo(Task task) {
-        task.mergeAllocation(getCalculatedValue(), getDaysDuration(), getNew(),
+        task.mergeAllocation(getCalculatedValue(), aggregate, getNew(),
                 getModified());
     }
 
     public List<ResourceAllocation<?>> getAllSortedByStartDate() {
-        if (allSortedByStartDate != null) {
-            return allSortedByStartDate;
-        }
-        return allSortedByStartDate = aggregate
-                .getAllocationsSortedByStartDate();
+        return aggregate.getAllocationsSortedByStartDate();
     }
 
     public Task getTask() {

@@ -81,4 +81,32 @@ public class AggregateOfResourceAllocations {
         return sum;
     }
 
+    public LocalDate getStart() {
+        if(isEmpty()){
+            throw new IllegalStateException("the aggregate is empty");
+        }
+        return getAllocationsSortedByStartDate().get(0).getStartDate();
+    }
+
+    public LocalDate getEnd(){
+        if(isEmpty()){
+            throw new IllegalStateException("the aggregate is empty");
+        }
+        LocalDate result = null;
+        for (ResourceAllocation<?> allocation : resourceAllocations) {
+            result = bigger(allocation.getEndDate(), result);
+        }
+        return result;
+    }
+
+    private LocalDate bigger(LocalDate one, LocalDate other) {
+        if (one == null) {
+            return other;
+        }
+        if (other == null) {
+            return one;
+        }
+        return one.compareTo(other) > 0 ? one : other;
+    }
+
 }

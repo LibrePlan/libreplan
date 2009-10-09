@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -130,7 +131,13 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     private void doTheAllocation(AllocationResult allocationResult) {
         allocationResult.applyTo(task);
-        ganttTask.setEndDate(task.getEndDate());
+        ganttTask.setBeginDate(toDate(allocationResult.getAggregate()
+                .getStart()));
+        ganttTask.setEndDate(toDate(allocationResult.getAggregate().getEnd()));
+    }
+
+    private Date toDate(LocalDate start) {
+        return start.toDateTimeAtStartOfDay().toDate();
     }
 
     private List<Resource> getResourcesMatchingCriterions() {
