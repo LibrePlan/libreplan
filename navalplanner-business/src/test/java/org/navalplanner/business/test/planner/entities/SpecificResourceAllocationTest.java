@@ -24,6 +24,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.consecutiveDays;
@@ -248,6 +249,24 @@ public class SpecificResourceAllocationTest {
         specificResourceAllocation.onInterval(start, start.plusDays(2))
                 .allocateHours(10);
         assertThat(specificResourceAllocation.getAssignments(), haveHours(2, 8));
+    }
+
+    @Test
+    public void theEndDateOfTheAllocationIsExclusive() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 2);
+        specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
+        assertThat(specificResourceAllocation.getEndDate(),
+                equalTo(new LocalDate(2000, 2, 6)));
+    }
+
+    @Test
+    public void theAllocationIsFinishedByEndDate() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 2);
+        specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
+        assertTrue(specificResourceAllocation
+                .isAlreadyFinishedBy(specificResourceAllocation.getEndDate()));
     }
 
 }

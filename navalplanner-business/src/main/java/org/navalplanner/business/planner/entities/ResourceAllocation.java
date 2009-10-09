@@ -463,14 +463,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         if (assignments.isEmpty()) {
             return null;
         }
-        return assignments.get(assignments.size() - 1).getDay();
+        return assignments.get(assignments.size() - 1).getDay().plusDays(1);
     }
 
     public boolean isAlreadyFinishedBy(LocalDate date) {
         if (getEndDate() == null) {
             return false;
         }
-        return getEndDate().compareTo(date) < 0;
+        return getEndDate().compareTo(date) <= 0;
     }
 
     private interface PredicateOnDayAssignment {
