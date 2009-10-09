@@ -21,7 +21,6 @@
 package org.navalplanner.business.orders.entities;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +30,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -82,6 +82,15 @@ public class Order extends OrderLineGroup implements IValidable {
 
     public List<OrderElement> getOrderElements() {
         return new ArrayList<OrderElement>(getChildren());
+    }
+
+    public TaskGroup getAssociatedTaskElement() {
+        Set<TaskElement> taskElements = this.getTaskElements();
+        if (taskElements != null) {
+            return (TaskGroup) taskElements.iterator().next();
+        } else {
+            return null;
+        }
     }
 
     public List<TaskElement> getAssociatedTasks() {
