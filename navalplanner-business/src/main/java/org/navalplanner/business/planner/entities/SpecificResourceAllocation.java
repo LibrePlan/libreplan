@@ -82,9 +82,14 @@ public class SpecificResourceAllocation extends
         this.resource = resource;
     }
 
+    private List<SpecificDayAssignment> assignmentsOrderedCached;
     @Override
     public List<SpecificDayAssignment> getAssignments() {
-        return DayAssignment.orderedByDay(specificDaysAssignment);
+        if (assignmentsOrderedCached != null) {
+            return assignmentsOrderedCached;
+        }
+        return assignmentsOrderedCached = DayAssignment
+                .orderedByDay(specificDaysAssignment);
     }
 
     @Override
@@ -92,11 +97,13 @@ public class SpecificResourceAllocation extends
             Collection<? extends SpecificDayAssignment> assignments) {
         setParentFor(assignments);
         this.specificDaysAssignment.addAll(assignments);
+        this.assignmentsOrderedCached = null;
     }
 
     @Override
     protected void removingAssignments(List<? extends DayAssignment> assignments) {
         this.specificDaysAssignment.removeAll(assignments);
+        this.assignmentsOrderedCached = null;
     }
 
     private void setParentFor(
