@@ -170,33 +170,48 @@ public class OrderModelTest {
     }
 
     @Test
+    @NotTransactional
     public void removingOrderWithAssociatedTasksDeletesThem()
             throws ValidationException, InstanceNotFoundException {
-        Order order = createValidOrder();
-        OrderLine orderLine = OrderLine.create();
-        orderLine.setName("bla");
-        orderLine.setCode("00000000");
-        orderLine.setWorkHours(10);
-        order.add(orderLine);
-        orderModel.setOrder(order);
-        orderModel.save();
-        orderModel.convertToScheduleAndSave(order);
-        getSession().flush();
-        getSession().evict(order);
-        Order reloaded = orderDAO.find(order.getId());
-        OrderElement e = reloaded.getOrderElements().iterator().next();
-        assertThat(e.getTaskElements().size(), equalTo(1));
-        Set<TaskElement> taskElements = e.getTaskElements();
-        for (TaskElement t : taskElements) {
-            if (t instanceof Task) {
-                Task task = (Task) t;
-                task.getHoursGroup().dontPoseAsTransientObjectAnymore();
-                task.getOrderElement().dontPoseAsTransientObjectAnymore();
+        final Long orderId = adHocTransaction
+                .runOnTransaction(new IOnTransaction<Long>() {
+
+                    @Override
+                    public Long execute() {
+                        Order order = createValidOrder();
+                        OrderLine orderLine = OrderLine.create();
+                        orderLine.setName("bla");
+                        orderLine.setCode("00000000");
+                        orderLine.setWorkHours(10);
+                        order.add(orderLine);
+                        orderModel.setOrder(order);
+                        try {
+                            orderModel.save();
+                        } catch (ValidationException e) {
+                            throw new RuntimeException(e);
+                        }
+                        orderModel.convertToScheduleAndSave(order);
+                        getSession().flush();
+                        return order.getId();
+                    }
+                });
+        adHocTransaction.runOnTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                try {
+                    Order reloaded = orderDAO.find(orderId);
+                    OrderElement e = reloaded.getOrderElements().iterator()
+                            .next();
+                    assertThat(e.getTaskElements().size(), equalTo(1));
+                    orderModel.remove(reloaded);
+                    assertFalse(orderDAO.exists(orderId));
+                    return null;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }
-        orderModel.remove(reloaded);
-        orderModel.setOrder(reloaded);
-        assertFalse(orderDAO.exists(order.getId()));
+        });
     }
 
     @Test(expected = ValidationException.class)
@@ -225,11 +240,11 @@ public class OrderModelTest {
         for (int i = 0; i < containers.length; i++) {
             containers[i] = adHocTransaction
                     .runOnTransaction(new IOnTransaction<OrderLineGroup>() {
-                @Override
-                public OrderLineGroup execute() {
+                        @Override
+                        public OrderLineGroup execute() {
                             return OrderLineGroup.create();
-                }
-            });
+                        }
+                    });
             containers[i].setName("bla");
             containers[i].setCode("000000000");
             order.add(containers[i]);
@@ -413,8 +428,8 @@ public class OrderModelTest {
 
                     @Override
                     public Criterion execute() {
-                        CriterionType criterionType = CriterionType.create("test"
-                                + UUID.randomUUID(),"");
+                        CriterionType criterionType = CriterionType.create(
+                                "test" + UUID.randomUUID(), "");
                         criterionTypeDAO.save(criterionType);
                         Criterion criterion = Criterion.create("Test"
                                 + UUID.randomUUID(), criterionType);
