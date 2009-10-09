@@ -72,7 +72,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         public void cancel();
     }
 
-    public static class Restriction {
+    public abstract static class Restriction {
         public static Restriction onlyAssignOnInterval(LocalDate start,
                 LocalDate end){
             return new OnlyOnIntervalRestriction(start, end);
@@ -81,6 +81,12 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         public static Restriction fixedHours(int hours) {
             return new FixedHoursRestriction(hours);
         }
+
+        abstract LocalDate limitStartDate(LocalDate startDate);
+
+        abstract LocalDate limitEndDate(LocalDate localDate);
+
+        abstract boolean isDisabledEditionOn(DetailItem item);
     }
 
     private static class OnlyOnIntervalRestriction extends Restriction {
@@ -94,12 +100,26 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             this.end = end;
         }
 
-        public LocalDate getStart() {
-            return start;
+        private org.joda.time.Interval intervalAllowed() {
+            return new org.joda.time.Interval(start.toDateTimeAtStartOfDay(),
+                    end.toDateTimeAtStartOfDay());
         }
 
-        public LocalDate getEnd() {
-            return end;
+        @Override
+        boolean isDisabledEditionOn(DetailItem item) {
+            return !intervalAllowed().overlaps(
+                    new org.joda.time.Interval(item.getStartDate(), item
+                            .getEndDate()));
+        }
+
+        @Override
+        LocalDate limitEndDate(LocalDate argEnd) {
+            return end.compareTo(argEnd) < 0 ? end : argEnd;
+        }
+
+        @Override
+        LocalDate limitStartDate(LocalDate argStart) {
+            return start.compareTo(argStart) > 0 ? start : argStart;
         }
     }
 
@@ -112,6 +132,21 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         public int getHours() {
             return hours;
+        }
+
+        @Override
+        boolean isDisabledEditionOn(DetailItem item) {
+            return false;
+        }
+
+        @Override
+        LocalDate limitEndDate(LocalDate endDate) {
+            return endDate;
+        }
+
+        @Override
+        LocalDate limitStartDate(LocalDate startDate) {
+            return startDate;
         }
     }
 
@@ -210,7 +245,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private Row createSpecificRow(
             SpecificResourceAllocation specificResourceAllocation) {
-        return Row.createRow(specificResourceAllocation.getResource()
+        return Row.createRow(resultReceiver.getRestriction(),
+                specificResourceAllocation.getResource()
                         .getDescription(), 1, Arrays
                         .asList(specificResourceAllocation));
     }
@@ -226,14 +262,15 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private Row buildGenericRow(
             GenericResourceAllocation genericResourceAllocation) {
-        return Row.createRow(ResourceLoadModel
+        return Row.createRow(resultReceiver.getRestriction(), ResourceLoadModel
                 .getName(genericResourceAllocation.getCriterions()), 1, Arrays
                 .asList(genericResourceAllocation));
     }
 
     private Row buildGroupingRow() {
         String taskName = allocationResult.getTask().getName();
-        Row groupingRow = Row.createRow(taskName + " (task)", 0,
+        Row groupingRow = Row.createRow(resultReceiver.getRestriction(),
+                taskName + " (task)", 0,
                 allocationResult
                 .getAllSortedByStartDate());
         return groupingRow;
@@ -366,9 +403,10 @@ interface CellChangedListener {
 
 class Row {
 
-    static Row createRow(String name, int level,
+    static Row createRow(AdvancedAllocationController.Restriction restriction,
+            String name, int level,
             List<? extends ResourceAllocation<?>> allocations) {
-        return new Row(name, level, allocations);
+        return new Row(restriction, name, level, allocations);
     }
 
     private Component allHoursInput;
@@ -384,6 +422,8 @@ class Row {
     private int level;
 
     private final AggregateOfResourceAllocations aggregate;
+
+    private final AdvancedAllocationController.Restriction restriction;
 
     void listenTo(Collection<Row> rows) {
         for (Row row : rows) {
@@ -481,8 +521,10 @@ class Row {
         return nameLabel;
     }
 
-    private Row(String name, int level,
+    private Row(AdvancedAllocationController.Restriction restriction,
+            String name, int level,
             List<? extends ResourceAllocation<?>> allocations) {
+        this.restriction = restriction;
         this.name = name;
         this.level = level;
         this.aggregate = new AggregateOfResourceAllocations(
@@ -497,11 +539,17 @@ class Row {
     }
 
     Component hoursOnInterval(DetailItem item) {
-        Component result = isGroupingRow() ? new Label() : noNegativeIntbox();
+        Component result = isGroupingRow() ? new Label() : disableIfNeeded(
+                item, noNegativeIntbox());
         reloadHoursOnInterval(result, item);
         componentsByDetailItem.put(item, result);
         addListenerIfNeeded(item, result);
         return result;
+    }
+
+    private Intbox disableIfNeeded(DetailItem item, Intbox intBox) {
+        intBox.setDisabled(restriction.isDisabledEditionOn(item));
+        return intBox;
     }
 
     private Intbox noNegativeIntbox() {
@@ -522,8 +570,10 @@ class Row {
             public void onEvent(Event event) throws Exception {
                 Integer value = intbox.getValue();
                 getAllocation().withPreviousAssociatedResources().onInterval(
-                        item.getStartDate().toLocalDate(),
-                        item.getEndDate().toLocalDate()).allocateHours(value);
+                        restriction.limitStartDate(item.getStartDate()
+                                .toLocalDate()),
+                        restriction.limitEndDate(item.getEndDate()
+                                .toLocalDate())).allocateHours(value);
                 fireCellChanged(item);
                 reloadAllHours();
             }
