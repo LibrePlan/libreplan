@@ -40,6 +40,9 @@ import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
@@ -88,6 +91,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         abstract LocalDate limitEndDate(LocalDate localDate);
 
         abstract boolean isDisabledEditionOn(DetailItem item);
+
+        public abstract boolean isInvalidTotalHours(int totalHours);
+
+        public abstract void showInvalidHours(IMessagesForUser messages,
+                int totalHours);
     }
 
     private static class OnlyOnIntervalRestriction extends Restriction {
@@ -114,6 +122,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
+        public boolean isInvalidTotalHours(int totalHours) {
+            return false;
+        }
+
+        @Override
         LocalDate limitEndDate(LocalDate argEnd) {
             return end.compareTo(argEnd) < 0 ? end : argEnd;
         }
@@ -122,6 +135,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         LocalDate limitStartDate(LocalDate argStart) {
             return start.compareTo(argStart) > 0 ? start : argStart;
         }
+
+        @Override
+        public void showInvalidHours(IMessagesForUser messages, int totalHours) {
+            throw new UnsupportedOperationException();
+        }
     }
 
     private static class FixedHoursRestriction extends Restriction {
@@ -129,10 +147,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         private FixedHoursRestriction(int hours) {
             this.hours = hours;
-        }
-
-        public int getHours() {
-            return hours;
         }
 
         @Override
@@ -149,8 +163,21 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         LocalDate limitStartDate(LocalDate startDate) {
             return startDate;
         }
+
+        @Override
+        public boolean isInvalidTotalHours(int totalHours) {
+            return this.hours != totalHours;
+        }
+
+        @Override
+        public void showInvalidHours(IMessagesForUser messages, int totalHours) {
+            messages.showMessage(Level.WARNING,
+                    _("there must be {0} hours instead of {1}", hours,
+                            totalHours));
+        }
     }
 
+    private IMessagesForUser messages;
     private Div insertionPointTimetracker;
     private Div insertionPointLeftPanel;
     private Div insertionPointRightPanel;
@@ -175,6 +202,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        messages = new MessagesForUser(comp.getFellow("messages"));
         createComponents();
         insertComponentsInLayout();
         timeTrackerComponent.afterCompose();
@@ -246,7 +274,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private Row createSpecificRow(
             SpecificResourceAllocation specificResourceAllocation) {
-        return Row.createRow(resultReceiver.getRestriction(),
+        return Row.createRow(messages, resultReceiver.getRestriction(),
                 specificResourceAllocation.getResource()
                         .getDescription(), 1, Arrays
                         .asList(specificResourceAllocation));
@@ -263,14 +291,16 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private Row buildGenericRow(
             GenericResourceAllocation genericResourceAllocation) {
-        return Row.createRow(resultReceiver.getRestriction(), ResourceLoadModel
+        return Row.createRow(messages, resultReceiver.getRestriction(),
+                ResourceLoadModel
                 .getName(genericResourceAllocation.getCriterions()), 1, Arrays
                 .asList(genericResourceAllocation));
     }
 
     private Row buildGroupingRow() {
         String taskName = allocationResult.getTask().getName();
-        Row groupingRow = Row.createRow(resultReceiver.getRestriction(),
+        Row groupingRow = Row.createRow(messages, resultReceiver
+                .getRestriction(),
                 taskName + " (task)", 0,
                 allocationResult
                 .getAllSortedByStartDate());
@@ -404,10 +434,11 @@ interface CellChangedListener {
 
 class Row {
 
-    static Row createRow(AdvancedAllocationController.Restriction restriction,
+    static Row createRow(IMessagesForUser messages,
+            AdvancedAllocationController.Restriction restriction,
             String name, int level,
             List<? extends ResourceAllocation<?>> allocations) {
-        return new Row(restriction, name, level, allocations);
+        return new Row(messages, restriction, name, level, allocations);
     }
 
     private Component allHoursInput;
@@ -425,6 +456,8 @@ class Row {
     private final AggregateOfResourceAllocations aggregate;
 
     private final AdvancedAllocationController.Restriction restriction;
+
+    private final IMessagesForUser messages;
 
     void listenTo(Collection<Row> rows) {
         for (Row row : rows) {
@@ -513,7 +546,11 @@ class Row {
     private void reloadAllHours() {
         if (isGroupingRow()) {
             Label label = (Label) allHoursInput;
-            label.setValue(aggregate.getTotalHours() + "");
+            int totalHours = aggregate.getTotalHours();
+            label.setValue(totalHours + "");
+            if (restriction.isInvalidTotalHours(totalHours)) {
+                restriction.showInvalidHours(messages, totalHours);
+            }
         } else {
             Intbox intbox = (Intbox) allHoursInput;
             intbox.setValue(aggregate.getTotalHours());
@@ -537,9 +574,11 @@ class Row {
         return nameLabel;
     }
 
-    private Row(AdvancedAllocationController.Restriction restriction,
+    private Row(IMessagesForUser messages,
+            AdvancedAllocationController.Restriction restriction,
             String name, int level,
             List<? extends ResourceAllocation<?>> allocations) {
+        this.messages = messages;
         this.restriction = restriction;
         this.name = name;
         this.level = level;

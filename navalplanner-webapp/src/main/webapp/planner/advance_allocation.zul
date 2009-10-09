@@ -28,7 +28,7 @@
 </zscript>
 
     <borderlayout height="600px" width="auto" apply="${advancedAllocationController}" class="advancedassignment">
-       <north height="30px" border="0">
+       <north height="60px" border="0">
        <hbox align="center">
         <button label="${i18n:_('Accept')}" id="acceptButton" />
         <button label="${i18n:_('Cancel')}" id="cancelButton" />
@@ -36,6 +36,7 @@
         <button label="${i18n:_('+')}" id="zoomIncrease"/>
         <button label="${i18n:_('-')}" id="zoomDecrease"/>
         ${i18n:_('From')}: <datebox /> ${i18n:_('To')}: <datebox />
+        <div id="messages" />
        </hbox>
        </north>
 
@@ -52,7 +53,6 @@
                                     <treecol label="Listdetails headers" height="29px"/>
                                 </treecols>
                             </tree>
-
                             </vbox>
                         </north>
                         <center border="0">
@@ -68,10 +68,8 @@
                             <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
                         </center>
                     </borderlayout>
-
                 </center>
             </borderlayout>
         </center>
     </borderlayout>
-
 </zk>
