@@ -31,4 +31,6 @@ public interface IStructureNavigator<T> {
 
     public List<T> getChildren(T object);
 
+    public boolean isMilestone(T object);
+
 }

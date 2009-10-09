@@ -40,6 +40,7 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.ViewSwitcher;
@@ -85,6 +86,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         @Override
         public boolean isLeaf(TaskElement object) {
             return object.isLeaf();
+        }
+
+        @Override
+        public boolean isMilestone(TaskElement object) {
+            return object instanceof TaskMilestone;
         }
     }
 

@@ -146,7 +146,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
             LocalDate date = calculateLimitDate(assignedHours);
             if (date == null) {
-                Integer hours = orderElement.getWorkHours();
+                Integer hours = 0;
+                if (orderElement != null) {
+                    hours = orderElement.getWorkHours();
+                }
+
                 if (hours == 0) {
                     return getBeginDate();
                 } else {
@@ -163,14 +167,27 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public BigDecimal getHoursAdvancePercentage() {
             OrderElement orderElement = taskElement.getOrderElement();
-            return orderElementDAO.getHoursAdvancePercentage(orderElement);
+            if (orderElement != null) {
+                return orderElementDAO.getHoursAdvancePercentage(orderElement);
+            } else {
+                return new BigDecimal(0);
+            }
         }
 
         @Override
         public Date getAdvanceEndDate() {
             OrderElement orderElement = taskElement.getOrderElement();
-            BigDecimal advancePercentage = orderElement.getAdvancePercentage();
-            Integer hours = orderElement.getWorkHours();
+
+            BigDecimal advancePercentage;
+            Integer hours;
+            if (orderElement != null) {
+                advancePercentage = orderElement
+                        .getAdvancePercentage();
+                hours = orderElement.getWorkHours();
+            } else {
+                advancePercentage = new BigDecimal(0);
+                hours = new Integer(0);
+            }
 
             Integer advanceHours = advancePercentage.multiply(
                     new BigDecimal(hours)).intValue();
@@ -192,7 +209,10 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public BigDecimal getAdvancePercentage() {
-            return taskElement.getOrderElement().getAdvancePercentage();
+            if (taskElement.getOrderElement() != null) {
+                return taskElement.getOrderElement().getAdvancePercentage();
+            }
+            return new BigDecimal(0);
         }
 
         private LocalDate calculateLimitDate(Integer hours) {

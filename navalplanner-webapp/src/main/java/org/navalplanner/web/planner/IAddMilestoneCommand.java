@@ -23,8 +23,11 @@ package org.navalplanner.web.planner;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 
+/**
+ * Contract for {@link AddMilestoneCommand} <br />
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ */
 public interface IAddMilestoneCommand extends ICommandOnTask<TaskElement> {
 
     public void setState(PlanningState planningState);
-
 }

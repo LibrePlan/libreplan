@@ -18,38 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.zkoss.ganttz.data;
+package org.zkoss.ganttz;
 
-import java.util.List;
+import org.zkoss.ganttz.data.Task;
 
 /**
- * A {@link Task} that can't have children
- * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author javi
  */
-public class TaskLeaf extends Task {
+public class MilestoneComponent extends TaskComponent {
 
-    public TaskLeaf(ITaskFundamentalProperties fundamentalProperties) {
-        super(fundamentalProperties);
-    }
-
-    @Override
-    public List<Task> getTasks() throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isLeaf() {
-        return true;
-    }
-
-    @Override
-    public boolean isExpanded() throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isContainer() {
-        return false;
+    public MilestoneComponent(Task task) {
+        super(task);
     }
 
 }

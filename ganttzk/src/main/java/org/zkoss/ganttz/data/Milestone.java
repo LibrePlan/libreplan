@@ -21,13 +21,7 @@
 package org.zkoss.ganttz.data;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-
-import org.zkoss.ganttz.util.WeakReferencedListeners;
-import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
@@ -69,6 +63,11 @@ public class Milestone extends Task {
 
     @Override
     public boolean isLeaf() {
+        return false;
+    }
+
+    @Override
+    public boolean isContainer() {
         return false;
     }
 

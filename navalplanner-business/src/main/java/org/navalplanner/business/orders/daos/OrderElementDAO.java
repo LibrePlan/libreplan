@@ -115,6 +115,7 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     @Transactional(readOnly = true)
     public int getAssignedHours(OrderElement orderElement) {
         int addAsignedHoursChildren = 0;
+        if (orderElement != null) {
         if (!orderElement.getChildren().isEmpty()) {
             List<OrderElement> children = orderElement.getChildren();
             Iterator<OrderElement> iterador = children.iterator();
@@ -127,6 +128,8 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
         List<WorkReportLine> listWRL = this.workReportLineDAO
                 .findByOrderElement(orderElement);
         return (getAssignedDirectHours(listWRL) + addAsignedHoursChildren);
+        }
+        return 0;
     }
 
     private int getAssignedDirectHours(List<WorkReportLine> listWRL) {

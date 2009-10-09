@@ -27,6 +27,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.lang.Objects;
@@ -145,7 +146,11 @@ public class TaskComponent extends Div implements AfterCompose {
             result = TaskContainerComponent
                     .asTask((TaskContainer) task, taskList);
         } else {
-            result = new TaskComponent(task);
+            if (task instanceof Milestone) {
+                result = new MilestoneComponent(task);
+            } else {
+                result = new TaskComponent(task);
+            }
         }
         result.isTopLevel = isTopLevel;
         return result;

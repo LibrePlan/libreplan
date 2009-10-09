@@ -190,4 +190,9 @@ public class TaskContainer extends Task {
         tasks.addAll(position, tasksCreated);
     }
 
+    @Override
+    public boolean isContainer() {
+        return true;
+    }
+
 }

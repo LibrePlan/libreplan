@@ -20,16 +20,19 @@
 
 package org.navalplanner.web.planner;
 
-import org.navalplanner.business.planner.entities.Task;
+import static org.navalplanner.web.I18nHelper._;
+
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
-import static org.navalplanner.web.I18nHelper._;
-
+/**
+ * Command to add a new {@link TaskMilestone} <br />
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class AddMilestoneCommand implements IAddMilestoneCommand {
@@ -44,16 +47,9 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
     @Override
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement task) {
-        if (!(task instanceof TaskGroup)) {
-            return;
-        }
-/*        TaskGroup old = (TaskGroup) task;
-        if (!old.canBeMerged())
-            return;
-        Task result = old.merge();
-        context.replace(old, result);
-        planningState.removed(old);
-        planningState.added(result); */
+        TaskMilestone milestone = new TaskMilestone();
+        milestone.setName("new milestone");
+        context.add(milestone);
     }
 
     @Override

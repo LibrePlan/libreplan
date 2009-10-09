@@ -348,6 +348,11 @@ public class DataForPlanner {
             public boolean isLeaf(ITaskFundamentalProperties object) {
                 return object != container;
             }
+
+            @Override
+            public boolean isMilestone(ITaskFundamentalProperties object) {
+                return false;
+            }
         };
         return new PlannerConfiguration<ITaskFundamentalProperties>(
                 new AutoAdapter() {

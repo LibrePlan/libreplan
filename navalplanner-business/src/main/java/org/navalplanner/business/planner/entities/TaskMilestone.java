@@ -117,7 +117,7 @@ public class TaskMilestone extends TaskElement implements IValidable {
 
     @Override
     public Integer defaultWorkHours() {
-        return hoursGroup.getWorkingHours();
+        return new Integer(0);
     }
 
     @Override

@@ -36,6 +36,7 @@ import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
@@ -173,7 +174,11 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         accumulatedDependencies.addAll(adapter.getIncomingDependencies(data));
         final Task result;
         if (navigator.isLeaf(data)) {
-            result = new TaskLeaf(adapted);
+            if (navigator.isMilestone(data)) {
+                result = new Milestone(adapted);
+            } else {
+                result = new TaskLeaf(adapted);
+            }
         } else {
             TaskContainer container = new TaskContainer(adapted);
             for (T child : navigator.getChildren(data)) {

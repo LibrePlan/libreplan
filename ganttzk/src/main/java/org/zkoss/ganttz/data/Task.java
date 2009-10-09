@@ -68,9 +68,7 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     public abstract boolean isLeaf();
 
-    public boolean isContainer() {
-        return !isLeaf();
-    }
+    public abstract boolean isContainer();
 
     public abstract boolean isExpanded() throws UnsupportedOperationException;
 
