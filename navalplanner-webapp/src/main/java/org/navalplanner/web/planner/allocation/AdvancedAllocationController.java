@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
 import org.joda.time.DateTime;
@@ -437,6 +438,7 @@ class Row {
             @Override
             public void changeOnGlobal() {
                 reloadAllHours();
+                reloadHoursSameRowForDetailItems();
             }
 
             @Override
@@ -484,14 +486,28 @@ class Row {
         if (isGroupingRow()) {
             return;
         }
-        Intbox intbox = (Intbox) allHoursComponent;
+        final Intbox intbox = (Intbox) allHoursComponent;
         intbox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
+                Integer value = intbox.getValue();
+                getAllocation().withPreviousAssociatedResources().onInterval(
+                        getAllocation().getStartDate(),
+                        getAllocation().getEndDate())
+                        .allocateHours(value);
                 fireCellChanged();
+                reloadHoursSameRowForDetailItems();
+                reloadAllHours();
             }
         });
+    }
+
+    private void reloadHoursSameRowForDetailItems() {
+        for (Entry<DetailItem, Component> entry : componentsByDetailItem
+                .entrySet()) {
+            reloadHoursOnInterval(entry.getValue(), entry.getKey());
+        }
     }
 
     private void reloadAllHours() {
