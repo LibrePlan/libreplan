@@ -614,7 +614,7 @@ class Row {
     }
 
     private boolean isGroupingRow() {
-        return aggregate.getAllocationsSortedByStartDate().size() > 1;
+        return level == 0;
     }
 
 }
