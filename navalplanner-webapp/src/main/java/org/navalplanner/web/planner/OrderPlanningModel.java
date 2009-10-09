@@ -90,7 +90,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         @Override
         public boolean isMilestone(TaskElement object) {
-            return object instanceof TaskMilestone;
+            if (object != null) {
+                return object instanceof TaskMilestone;
+            }
+            return false;
         }
     }
 

@@ -15,7 +15,7 @@
         <property name="startDate" type="timestamp" />
         <property name="endDate" type="timestamp" />
 
-        <many-to-one name="orderElement" cascade="none" column="ORDER_ELEMENT_ID"/>
+        <many-to-one name="orderElement" cascade="none" column="ORDER_ELEMENT_ID" not-null="false" />
 
         <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"/>
 

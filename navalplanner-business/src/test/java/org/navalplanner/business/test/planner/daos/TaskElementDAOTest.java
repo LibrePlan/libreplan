@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +37,8 @@ import javax.annotation.Resource;
 
 import org.hibernate.SessionFactory;
 import org.junit.Before;
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
@@ -161,16 +164,22 @@ public class TaskElementDAOTest {
     @Test
     public void canSaveMilestone() {
         TaskMilestone milestone = createValidTaskMilestone();
+        ClassValidator<TaskMilestone> validator = new ClassValidator<TaskMilestone>(
+                TaskMilestone.class);
+        InvalidValue[] invalidValues = validator.getInvalidValues(milestone);
+        if (invalidValues.length > 0) {
+            throw new RuntimeException(Arrays.toString(invalidValues));
+        }
         taskElementDAO.save(milestone);
-        // flushAndEvict(milestone);
-        // TaskElement fromDB;
-        // try {
-        // fromDB = taskElementDAO.find(milestone.getId());
-        // } catch (InstanceNotFoundException e) {
-        // throw new RuntimeException(e);
-        // }
-        // assertThat(fromDB.getId(), equalTo(milestone.getId()));
-        // assertThat(fromDB, is(TaskMilestone.class));
+        flushAndEvict(milestone);
+        TaskElement fromDB;
+        try {
+            fromDB = taskElementDAO.find(milestone.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        assertThat(fromDB.getId(), equalTo(milestone.getId()));
+        assertThat(fromDB, is(TaskMilestone.class));
     }
 
     @Test

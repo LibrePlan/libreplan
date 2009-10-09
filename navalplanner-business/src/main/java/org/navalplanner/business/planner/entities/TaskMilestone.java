@@ -27,12 +27,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.navalplanner.business.common.IValidable;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
@@ -45,9 +43,6 @@ public class TaskMilestone extends TaskElement implements IValidable {
         milestone.setNewObject(true);
         return milestone;
     }
-
-    @NotNull
-    private HoursGroup hoursGroup;
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
 

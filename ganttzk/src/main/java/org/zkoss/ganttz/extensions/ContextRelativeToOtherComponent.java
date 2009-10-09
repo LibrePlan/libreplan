@@ -20,6 +20,7 @@
 
 package org.zkoss.ganttz.extensions;
 
+import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -77,6 +78,11 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
     @Override
     public TimeTracker getTimeTracker() {
         return context.getTimeTracker();
+    }
+
+    @Override
+    public IDomainAndBeansMapper<T> getMapper() {
+        return context.getMapper();
     };
 
 }

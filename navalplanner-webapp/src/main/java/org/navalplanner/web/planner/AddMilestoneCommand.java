@@ -49,7 +49,8 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
             TaskElement task) {
         TaskMilestone milestone = new TaskMilestone();
         milestone.setName("new milestone");
-        context.add(milestone);
+        context.add(context.getMapper().findPositionFor(task), milestone);
+        planningState.added(milestone);
     }
 
     @Override

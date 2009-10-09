@@ -238,7 +238,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         add(position, list);
     }
 
-    IDomainAndBeansMapper<T> getMapper() {
+    public IDomainAndBeansMapper<T> getMapper() {
         return mapper;
     }
 

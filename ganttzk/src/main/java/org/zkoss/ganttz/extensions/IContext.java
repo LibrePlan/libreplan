@@ -23,6 +23,7 @@ package org.zkoss.ganttz.extensions;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
+import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Position;
@@ -95,5 +96,7 @@ public interface IContext<T> {
      * @return the in use {@link TimeTracker Time Tracker}
      */
     TimeTracker getTimeTracker();
+
+    IDomainAndBeansMapper<T> getMapper();
 
 }
