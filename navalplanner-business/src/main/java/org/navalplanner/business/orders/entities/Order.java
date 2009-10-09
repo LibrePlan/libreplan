@@ -86,7 +86,7 @@ public class Order extends OrderLineGroup implements IValidable {
 
     public TaskGroup getAssociatedTaskElement() {
         Set<TaskElement> taskElements = this.getTaskElements();
-        if (taskElements != null) {
+        if (!taskElements.isEmpty()) {
             return (TaskGroup) taskElements.iterator().next();
         } else {
             return null;
