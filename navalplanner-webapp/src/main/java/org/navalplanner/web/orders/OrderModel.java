@@ -288,10 +288,7 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional
     public void convertToScheduleAndSave(Order order) {
-        List<OrderElement> orderElements = order.getOrderElements();
-        for (OrderElement orderElement : orderElements) {
-            taskElementDAO.save(convertToInitialSchedule(orderElement));
-        }
+        taskElementDAO.save(convertToInitialSchedule(order));
     }
 
 }
