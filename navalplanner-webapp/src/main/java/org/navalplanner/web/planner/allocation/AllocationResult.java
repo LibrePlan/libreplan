@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -163,4 +164,9 @@ public class AllocationResult {
         }
         return result;
     }
+
+    public LocalDate getStart() {
+        return new LocalDate(task.getStartDate().getTime());
+    }
+
 }

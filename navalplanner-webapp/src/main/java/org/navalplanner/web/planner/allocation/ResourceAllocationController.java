@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
@@ -47,6 +48,7 @@ import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.common.components.WorkerSearch;
 import org.navalplanner.web.planner.PlanningState;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
+import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
@@ -320,11 +322,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
         AllocationResult allocationResult = allocationsBeingEdited
                 .doAllocation();
         switcher.goToAdvancedAllocation(allocationResult,
-                createResultReceiver());
+                createResultReceiver(allocationResult));
         window.setVisible(false);
     }
 
-    private IAdvanceAllocationResultReceiver createResultReceiver() {
+    private IAdvanceAllocationResultReceiver createResultReceiver(
+            final AllocationResult allocation) {
         return new IAdvanceAllocationResultReceiver() {
 
             @Override
@@ -335,6 +338,23 @@ public class ResourceAllocationController extends GenericForwardComposer {
             @Override
             public void accepted(AllocationResult modifiedAllocationResult) {
                 resourceAllocationModel.accept(modifiedAllocationResult);
+            }
+
+            @Override
+            public Restriction getRestriction() {
+                switch (allocation.getCalculatedValue()) {
+                case END_DATE:
+                    return Restriction.fixedHours(allocation.getAggregate()
+                            .getTotalHours());
+                case NUMBER_OF_HOURS:
+                    LocalDate start = allocation.getStart();
+                    LocalDate end = start
+                            .plusDays(allocation.getDaysDuration());
+                    return Restriction.onlyAssignOnInterval(start, end);
+                default:
+                    throw new RuntimeException("unhandled case: "
+                            + allocation.getCalculatedValue());
+                }
             }
         };
     }

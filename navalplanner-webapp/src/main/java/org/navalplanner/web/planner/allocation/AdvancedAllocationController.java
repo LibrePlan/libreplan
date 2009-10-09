@@ -65,9 +65,54 @@ import org.zkoss.zul.api.Column;
 public class AdvancedAllocationController extends GenericForwardComposer {
 
     public interface IAdvanceAllocationResultReceiver {
+        public Restriction getRestriction();
+
         public void accepted(AllocationResult modifiedAllocationResult);
 
         public void cancel();
+    }
+
+    public static class Restriction {
+        public static Restriction onlyAssignOnInterval(LocalDate start,
+                LocalDate end){
+            return new OnlyOnIntervalRestriction(start, end);
+        }
+
+        public static Restriction fixedHours(int hours) {
+            return new FixedHoursRestriction(hours);
+        }
+    }
+
+    private static class OnlyOnIntervalRestriction extends Restriction {
+        private final LocalDate start;
+
+        private final LocalDate end;
+
+        private OnlyOnIntervalRestriction(LocalDate start, LocalDate end) {
+            super();
+            this.start = start;
+            this.end = end;
+        }
+
+        public LocalDate getStart() {
+            return start;
+        }
+
+        public LocalDate getEnd() {
+            return end;
+        }
+    }
+
+    private static class FixedHoursRestriction extends Restriction {
+        private final int hours;
+
+        private FixedHoursRestriction(int hours) {
+            this.hours = hours;
+        }
+
+        public int getHours() {
+            return hours;
+        }
     }
 
     private Div insertionPointTimetracker;
