@@ -43,6 +43,9 @@ FOOTER_HEIGHT = 40; // Design-relative footer height
 
 SCROLLBAR_WIDTH = 15; // Scrollbars default width
 
+DRAGABLE_PADDING = 20; // Drag padding for dependency creation
+
+
 
 zkTasklist.tooltipTimeout = "";
 
@@ -474,8 +477,9 @@ zkTask.isOverTask = function(cmp, arrow) {
 
 	for ( var i = 0; i < arrayTasks.length; i++) {
 		var task = arrayTasks[i];
-		if (((xpos) > (task.offsetLeft))
-				&& ((xpos) < (task.offsetLeft + task.offsetWidth))
+		/* Added margins to pointing errors */
+		if (((xpos) > (task.offsetLeft - DRAGABLE_PADDING))
+				&& ((xpos) < (task.offsetLeft + task.offsetWidth + DRAGABLE_PADDING))
 				&& (ypos > (task.offsetTop))
 				&& (ypos < (task.offsetTop + task.offsetHeight))) {
 			return task;

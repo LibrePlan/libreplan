@@ -7,22 +7,25 @@
  * if needed within the scheduler.
  */
 
-The next constants are used within the planner styling:
+/*
+    The next constants are used within the planner styling:
 
-Ganntz.ListdetailsWidth = 280
+    Ganntz.ListdetailsWidth = 280
 
-zkTasklist.HEIGHT_PER_TASK = 10
-zkTasklist.HEIGHT_PER_ROW = 15
-zkTasklist.HEIGHT_TIME_TRACKER = 120
+    zkTasklist.HEIGHT_PER_TASK = 10
+    zkTasklist.HEIGHT_PER_ROW = 15
+    zkTasklist.HEIGHT_TIME_TRACKER = 120
 
-zkTasklist.SCROLLBAR_WIDTH = 15
+    zkTasklist.SCROLLBAR_WIDTH = 15
 
-zkTasklist.SCROLL_CONTAINER_INITIAL_HEIGHT = 500
-zkTasklist.SCROLL_CONTAINER_INITIAL_WIDTH = 600
+    zkTasklist.SCROLL_CONTAINER_INITIAL_HEIGHT = 500
+    zkTasklist.SCROLL_CONTAINER_INITIAL_WIDTH = 600
 
-zkTasklist.GANTT_PANEL_LEFT = 300
+    zkTasklist.GANTT_PANEL_LEFT = 300
 
-*/ /* -------------- Listdetails -------------- */
+*/
+
+/* -------------- Listdetails -------------- */
     /* External listdetails box */
 .listdetails {
     margin-top: 0px;
@@ -213,7 +216,7 @@ min-width:200px;
     float: right;
     position:relative;
     left: 7px;
-    top: -13px;
+    top: -12px;
 }
 
 .row .closed {
