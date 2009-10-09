@@ -398,4 +398,26 @@ public class GenericResourceAllocationTest {
         assertThat(genericResourceAllocation.getAssignedHours(), equalTo(0));
     }
 
+    @Test
+    public void afterAllocatingMoreHoursOnIntervalTheResourcesPerDayAreIncreased() {
+        final int workableHoursDay = 8;
+        givenBaseCalendarWithoutExceptions(workableHoursDay);
+        LocalDate start = new LocalDate(2006, 10, 5);
+        final int days = 4;
+        givenTaskWithStartAndEnd(toInterval(start, Period.days(days)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithLoads(8, 8, 8);
+
+        genericResourceAllocation.forResources(workers).allocate(
+                ResourcesPerDay.amount(3));
+        ResourcesPerDay original = genericResourceAllocation
+                .getResourcesPerDay();
+        genericResourceAllocation.forResources(workers).onInterval(start,
+                start.plusDays(2)).allocateHours(60);
+        ResourcesPerDay current = genericResourceAllocation
+                .getResourcesPerDay();
+        assertTrue(current.getAmount()
+                .compareTo(original.getAmount()) > 0);
+    }
+
 }

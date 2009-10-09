@@ -380,8 +380,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         int sumWorkableHours = 0;
         for (Entry<LocalDate, List<DayAssignment>> entry : byDay.entrySet()) {
             sumWorkableHours += getWorkHoursPerDay().getWorkableHours(
-                    entry.getKey())
-                    * entry.getValue().size();
+                    entry.getKey());
             sumTotalHours += getAssignedHours(entry.getValue());
         }
         if (sumWorkableHours == 0) {
