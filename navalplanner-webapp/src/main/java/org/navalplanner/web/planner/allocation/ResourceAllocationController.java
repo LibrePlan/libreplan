@@ -341,7 +341,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             }
 
             @Override
-            public Restriction getRestriction() {
+            public Restriction createRestriction() {
                 switch (allocation.getCalculatedValue()) {
                 case END_DATE:
                     return Restriction.fixedHours(allocation.getAggregate()

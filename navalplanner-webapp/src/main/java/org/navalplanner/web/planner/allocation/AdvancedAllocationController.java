@@ -55,9 +55,11 @@ import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
@@ -69,7 +71,7 @@ import org.zkoss.zul.api.Column;
 public class AdvancedAllocationController extends GenericForwardComposer {
 
     public interface IAdvanceAllocationResultReceiver {
-        public Restriction getRestriction();
+        public Restriction createRestriction();
 
         public void accepted(AllocationResult modifiedAllocationResult);
 
@@ -96,6 +98,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         public abstract void showInvalidHours(IMessagesForUser messages,
                 int totalHours);
+
+        public abstract void markInvalidTotalHours(Row groupingRow,
+                int currentHours);
     }
 
     private static class OnlyOnIntervalRestriction extends Restriction {
@@ -140,6 +145,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         public void showInvalidHours(IMessagesForUser messages, int totalHours) {
             throw new UnsupportedOperationException();
         }
+
+        @Override
+        public void markInvalidTotalHours(Row groupingRow, int currentHours) {
+            throw new UnsupportedOperationException();
+        }
     }
 
     private static class FixedHoursRestriction extends Restriction {
@@ -172,8 +182,17 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         @Override
         public void showInvalidHours(IMessagesForUser messages, int totalHours) {
             messages.showMessage(Level.WARNING,
-                    _("there must be {0} hours instead of {1}", hours,
-                            totalHours));
+                    getMessage(totalHours));
+        }
+
+        private String getMessage(int totalHours) {
+            return _("there must be {0} hours instead of {1}", hours,
+                    totalHours);
+        }
+
+        @Override
+        public void markInvalidTotalHours(Row groupingRow, int totalHours) {
+            groupingRow.markErrorOnTotal(getMessage(totalHours));
         }
     }
 
@@ -190,6 +209,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private final ViewSwitcher switcher;
     private final AllocationResult allocationResult;
     private final IAdvanceAllocationResultReceiver resultReceiver;
+    private Restriction restriction;
 
     public AdvancedAllocationController(ViewSwitcher switcher,
             AllocationResult allocationResult,
@@ -197,6 +217,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         this.switcher = switcher;
         this.allocationResult = allocationResult;
         this.resultReceiver = resultReceiver;
+        this.restriction = resultReceiver.createRestriction();
     }
 
     @Override
@@ -228,6 +249,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     public void onClick$acceptButton() {
+        int totalHours = allocationResult.getAggregate().getTotalHours();
+        if (restriction.isInvalidTotalHours(totalHours)) {
+            restriction.markInvalidTotalHours(groupingRow,
+                    totalHours);
+        }
         switcher.goToPlanningOrderView();
         resultReceiver.accepted(allocationResult);
     }
@@ -246,13 +272,14 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private List<Row> rowsCached = null;
+    private Row groupingRow;
 
     private List<Row> getRows() {
         if (rowsCached != null) {
             return rowsCached;
         }
         rowsCached = new ArrayList<Row>();
-        Row groupingRow = buildGroupingRow();
+        groupingRow = buildGroupingRow();
         rowsCached.add(groupingRow);
         List<Row> genericRows = genericRows();
         groupingRow.listenTo(genericRows);
@@ -274,7 +301,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private Row createSpecificRow(
             SpecificResourceAllocation specificResourceAllocation) {
-        return Row.createRow(messages, resultReceiver.getRestriction(),
+        return Row.createRow(messages, restriction,
                 specificResourceAllocation.getResource()
                         .getDescription(), 1, Arrays
                         .asList(specificResourceAllocation));
@@ -291,7 +318,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private Row buildGenericRow(
             GenericResourceAllocation genericResourceAllocation) {
-        return Row.createRow(messages, resultReceiver.getRestriction(),
+        return Row.createRow(messages, restriction,
                 ResourceLoadModel
                 .getName(genericResourceAllocation.getCriterions()), 1, Arrays
                 .asList(genericResourceAllocation));
@@ -299,8 +326,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private Row buildGroupingRow() {
         String taskName = allocationResult.getTask().getName();
-        Row groupingRow = Row.createRow(messages, resultReceiver
-                .getRestriction(),
+        Row groupingRow = Row.createRow(messages, restriction,
                 taskName + " (task)", 0,
                 allocationResult
                 .getAllSortedByStartDate());
@@ -441,6 +467,10 @@ class Row {
         return new Row(messages, restriction, name, level, allocations);
     }
 
+    public void markErrorOnTotal(String message) {
+        throw new WrongValueException(allHoursInput, message);
+    }
+
     private Component allHoursInput;
 
     private Label nameLabel;
@@ -548,6 +578,7 @@ class Row {
             Label label = (Label) allHoursInput;
             int totalHours = aggregate.getTotalHours();
             label.setValue(totalHours + "");
+            Clients.closeErrorBox(label);
             if (restriction.isInvalidTotalHours(totalHours)) {
                 restriction.showInvalidHours(messages, totalHours);
             }
