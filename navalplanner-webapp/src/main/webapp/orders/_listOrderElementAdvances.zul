@@ -36,8 +36,8 @@
                      onSelect="manageOrderElementAdvancesController.prepareEditAdvanceMeasurements(self.selectedItem.value);"
                      pageSize="10">
                     <listhead sizable="true">
-                         <listheader label="${i18n:_('Type')}" />
-                         <listheader label="${i18n:_('Max value')}"/>
+                         <listheader label="${i18n:_('Type')}" tooltiptext="Advance unit type" />
+                         <listheader label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value"/>
                          <listheader label="${i18n:_('Current value')}"/>
                          <listheader label="${i18n:_('Percentage')}"/>
                          <listheader label="${i18n:_('Date')}"/>
@@ -61,8 +61,8 @@
                     <listbox id="editAdvancesMeasurement" height="200px"
                              model="@{manageOrderElementAdvancesController.advanceMeasurements}"
                              itemRenderer="@{manageOrderElementAdvancesController.advanceMeasurementRenderer}"
-                             mold="paging" pageSize="10">
-                            <listhead sizable="true">
+                             mold="paging" pageSize="10" sclass="advance-measurement">
+                            <listhead>
                                 <listheader label="${i18n:_('Value')}" />
                                 <listheader label="${i18n:_('Percentage')}" />
                                 <listheader label="${i18n:_('Date')}" />

@@ -415,8 +415,16 @@ div.z-grid {
 }
 
 .orderTree .name {
-    min-width:505px;
+    min-width:515px;
 }
+
+.orderTree .hours {
+    min-width:50px;
+}
+.orderTree .code {
+    min-width:50px;
+}
+
 
 .orderTree div.z-tree-cell-cnt {
     padding:0px;
@@ -452,4 +460,8 @@ div.z-grid {
     height: 17px;
     font-size: 11px !important;
     font-family: Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.advance-measurement {
+    width: 340px;
 }
