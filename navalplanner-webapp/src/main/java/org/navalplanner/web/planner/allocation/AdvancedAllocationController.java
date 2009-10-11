@@ -444,6 +444,7 @@ abstract class ColumnOnRow implements IConvertibleToColumn {
     public Column toColumn() {
         Column column = new org.zkoss.zul.Column();
         column.setLabel(columnName);
+        column.setSclass(((String) columnName).toLowerCase());
         return column;
     }
 

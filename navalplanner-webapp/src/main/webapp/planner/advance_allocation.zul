@@ -27,8 +27,8 @@
 ]]>
 </zscript>
 
-    <borderlayout height="600px" width="auto" apply="${advancedAllocationController}" class="advancedassignment">
-       <north height="60px" border="0">
+    <borderlayout width="auto" apply="${advancedAllocationController}" class="advancedallocationlayout">
+       <north height="30px" border="0">
        <hbox align="center">
         <button label="${i18n:_('Accept')}" id="acceptButton" />
         <button label="${i18n:_('Cancel')}" id="cancelButton" />
@@ -42,18 +42,11 @@
 
         <center border="0">
             <borderlayout sclass="resourcesload">
-                <west size="200px" flex="true" collapsible="true"
+                <west size="400px" flex="true" collapsible="true"
                     splittable="true" autoscroll="true">
 
                     <borderlayout >
-                        <north border="0" height="38px" flex="true" collapsible="true" sclass="advancedassignmentdetails">
-                            <vbox pack="center" align="center">
-                            <tree fixedLayout="true">
-                                <treecols>
-                                    <treecol label="Listdetails headers" height="29px"/>
-                                </treecols>
-                            </tree>
-                            </vbox>
+                        <north border="0" height="14px" flex="true" collapsible="true" sclass="advancedassignmentdetails">
                         </north>
                         <center border="0">
                             <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>

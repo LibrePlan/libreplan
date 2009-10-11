@@ -83,7 +83,7 @@
 
     <window id="resourceAllocationWindow" self="@{define(content)}"
         apply="${allocationController}" closable="true"
-        title="${i18n:_('Resource allocation')}" style="min-height:500px" width="600px" visible="false">
+        title="${i18n:_('Resource allocation')}" width="600px" visible="false">
 
     <tabbox mold="accordion-lite">
         <tabs>
@@ -150,7 +150,7 @@
                         <listbox id="allocationsList"
                             model="@{allocationController.resourceAllocations}"
                             itemRenderer="@{allocationController.resourceAllocationRenderer}"
-                            style="margin-bottom: 5px" fixedLayout="true" rows="5">
+                            style="margin-bottom: 5px" fixedLayout="true" rows="3">
                             <listhead>
                                 <listheader label="${i18n:_('Name')}" />
                                 <listheader

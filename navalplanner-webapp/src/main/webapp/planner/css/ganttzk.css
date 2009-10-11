@@ -391,7 +391,7 @@ tr.z-vbox-sep {
     /* overflow: auto; */
 }
 
-.advancedassignment #timetrackedtable {
+.advancedallocationlayout #timetrackedtable {
     float: none;
     width: auto;
     overflow: visible;
@@ -523,7 +523,7 @@ div.z-tree {
     border-bottom: 1px dotted #86A4BE !important;
 }
 
-.plannerlayout, .resourcesloadlayout {
+.plannerlayout, .resourcesloadlayout, .advancedallocationlayout {
     height:500px;
 }
 
@@ -536,4 +536,40 @@ div.z-tree {
     background-color: #f7f7bf;
     border: solid 1px #CCCCCC;
     /*z-index: 5; */
+}
+
+.advancedallocationlayout .name {
+    min-width:200px;
+}
+
+.advancedallocationlayout .second_level_ {
+    border-collapse: collapse;
+}
+
+.taskspanelgap table {
+    border-collapse: collapse;
+}
+
+.taskspanelgap input {
+    border: 0;
+    height: 19px;
+}
+
+.advancedallocationlayout .leftpanelgap .z-grid-header {
+    padding-bottom: 3px;
+    border-bottom: solid 1px #DDDDDD;
+    background: #FFFFFF;
+}
+
+.advancedallocationlayout div.z-row-cnt {
+    padding: 0;
+}
+
+.advancedallocationlayout .leftpanelgap td.z-row-inner {
+    padding-top:0;
+    padding-bottom:0;
+}
+
+.advancedallocationlayout .leftpanelgap input {
+    height:19px;
 }
