@@ -229,7 +229,6 @@ public class OrderElementController extends GenericForwardComposer {
             ((Intbox) window.getFellow("totalHours")).setDisabled(true);
 
             // Hide not needed buttons
-            window.getFellow("manageCriterions").setVisible(false);
             window.getFellow("addHoursGroup").setVisible(false);
             window.getFellow("deleteHoursGroup").setVisible(false);
         } else {
@@ -237,7 +236,6 @@ public class OrderElementController extends GenericForwardComposer {
             ((Intbox) window.getFellow("totalHours")).setDisabled(false);
 
             // Show needed buttons
-            window.getFellow("manageCriterions").setVisible(true);
             window.getFellow("addHoursGroup").setVisible(true);
             window.getFellow("deleteHoursGroup").setVisible(true);
 
@@ -265,9 +263,9 @@ public class OrderElementController extends GenericForwardComposer {
                     });
         }
 
-        // selectCriterions Vbox is always hidden
+
         reloadSelectedCriterionTypes();
-        window.getFellow("selectCriterions").setVisible(false);
+        window.getFellow("selectCriterions").setVisible(true);
 
         window.getFellow("hoursGroupsListbox").invalidate();
 

@@ -331,6 +331,11 @@ button.z-button {
 .z-textbox,.z-decimalbox,.z-intbox,.z-longbox,
 .z-doublebox, .z-datebox,  .z-datebox-inp, .z-datebox-focus .z-datebox-inp {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.leftpanelgap .z-textbox,.leftpanelgap .z-decimalbox,.leftpanelgap .z-intbox,
+.leftpanelgap .z-longbox,.leftpanelgap .z-doublebox,.leftpanelgap .z-datebox,
+.leftpanelgap .z-datebox-inp,.leftpanelgap .z-datebox-focus .z-datebox-inp {
     font-size: 11px;
 }
 
