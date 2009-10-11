@@ -107,16 +107,18 @@ public class DetailTwoTimeTrackerState extends TimeTrackerState {
                 initialYear);
         int quarterEndDate = calculateInQuarterPeriodDateInYear(endDate,endYear);
 
-            for (int j = initialYear; j <= endYear; j++) {
-                for (int i = (j == initialYear ? startDateQuarter : 0);
-                        i < (j == endYear ? quarterEndDate : 4); i++) {
-                    DetailItem quarter =
-                            new DetailItem(SECOND_LEVEL_ITEM_SIZE, "Q" + (i + 1),
+        for (int j = initialYear; j <= endYear; j++) {
+            final int initialQuarter = (j == initialYear) ? startDateQuarter - 1
+                    : 0;
+            final int endQuarter = (j == endYear) ? quarterEndDate : 4;
+            for (int i = initialQuarter; i < endQuarter; i++) {
+                DetailItem quarter = new DetailItem(SECOND_LEVEL_ITEM_SIZE, "Q"
+                        + (i + 1),
                             beginInterval, endInterval);
-                    result.add(quarter);
-                    beginInterval = beginInterval.plusMonths(3);
-                    endInterval = endInterval.plusMonths(3);
-                }
+                result.add(quarter);
+                beginInterval = beginInterval.plusMonths(3);
+                endInterval = endInterval.plusMonths(3);
+            }
         }
         return result;
     }
