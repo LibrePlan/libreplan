@@ -23,6 +23,7 @@ package org.navalplanner.web.planner.allocation;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -283,8 +284,25 @@ public class ResourceAllocationsBeingEdited {
         this.daysDuration = task.getDaysDuration();
     }
 
-    public AggregateOfResourceAllocations getInitialAggregate() {
-        return new AggregateOfResourceAllocations(task.getResourceAllocations());
+    public AllocationResult getInitialAllocation() {
+        Set<ResourceAllocation<?>> resourceAllocations = task.getResourceAllocations();
+        AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
+                resourceAllocations);
+        return new AllocationResult(task, task.getCalculatedValue(), aggregate,
+                task.getDaysDuration(),
+                buildMap(resourceAllocations));
+    }
+
+    private Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> buildMap(
+            Collection<ResourceAllocation<?>> resourceAllocations) {
+        Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> result = new HashMap<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>>();
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+            result.put(
+                    new ResourceAllocationWithDesiredResourcesPerDay(
+                            resourceAllocation, resourceAllocation
+                                    .getResourcesPerDay()), resourceAllocation);
+        }
+        return result;
     }
 
     public Task getTask() {

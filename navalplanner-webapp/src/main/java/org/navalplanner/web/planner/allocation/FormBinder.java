@@ -47,7 +47,10 @@ class FormBinder {
     private Intbox assignedHoursComponent;
 
     private final ResourceAllocationsBeingEdited resourceAllocationsBeingEdited;
+
     private AggregateOfResourceAllocations aggregate;
+
+    private AllocationResult lastAllocation;
 
     private Datebox taskStartDateBox;
 
@@ -82,8 +85,9 @@ class FormBinder {
     public FormBinder(
             ResourceAllocationsBeingEdited resourceAllocationsBeingEdited) {
         this.resourceAllocationsBeingEdited = resourceAllocationsBeingEdited;
-        this.aggregate = this.resourceAllocationsBeingEdited
-                .getInitialAggregate();
+        this.lastAllocation = this.resourceAllocationsBeingEdited
+            .getInitialAllocation();
+        this.aggregate = this.lastAllocation.getAggregate();
     }
 
     public void setAssignedHoursComponent(Intbox assignedHoursComponent) {
@@ -102,6 +106,10 @@ class FormBinder {
     private void assignedHoursComponentDisabilityRule() {
         this.assignedHoursComponent.setDisabled(resourceAllocationsBeingEdited
                 .getCalculatedValue() == CalculatedValue.NUMBER_OF_HOURS);
+    }
+
+    public AllocationResult getLastAllocation() {
+        return lastAllocation;
     }
 
     public void setCalculatedValue(CalculatedValue calculatedValue) {
@@ -162,7 +170,8 @@ class FormBinder {
     }
 
     private void doApply() {
-        aggregate = resourceAllocationsBeingEdited.doAllocation()
+        lastAllocation = resourceAllocationsBeingEdited.doAllocation();
+        aggregate = lastAllocation
                 .getAggregate();
         reloadValues();
     }
