@@ -64,6 +64,10 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
         timeTrackerElementId = timetrackerId;
     }
 
+    public int getHorizontalSizePixels() {
+        return timeTracker.getHorizontalSize();
+    }
+
     public String getTimeTrackerId() {
         return timeTrackerElementId;
     }

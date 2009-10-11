@@ -59,7 +59,7 @@ function onDecrease(timetracker) {
             </hbox>
         </n:div>
 
-        <grid id="firstleveldetails">
+        <grid id="firstleveldetails" width="${top.horizontalSizePixels}px;">
             <columns>
                 <column label="${each.name}" width="${each.size}px"
                     forEach="${top.detailsFirstLevel}"></column>
