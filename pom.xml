@@ -471,6 +471,7 @@
                 <directory>../src/main/jetty</directory>
                 <includes>
                     <include>jetty-env.xml</include>
+                    <include>log4j.properties</include>
                 </includes>
                 <targetPath>../jetty</targetPath>
                 <filtering>true</filtering>
@@ -585,6 +586,12 @@
                         </connector>
                     </connectors>
                     -->
+                    <systemProperties>
+                        <systemProperty>
+                            <name>log4j.configuration</name>
+                            <value>file:./target/jetty/log4j.properties</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
 
                 <dependencies>
