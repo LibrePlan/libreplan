@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.web.planner.tabs.Mode.ModeTypeChangedListener;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 
@@ -36,6 +37,8 @@ public class TabOnModeType implements ITab {
     private final Mode mode;
 
     private final EnumMap<ModeType, ITab> tabs;
+
+    private boolean beingShown = false;
 
     public static WithType forMode(Mode mode) {
         return new WithType(mode, new EnumMap<ModeType, ITab>(ModeType.class));
@@ -68,6 +71,23 @@ public class TabOnModeType implements ITab {
                 + tabs.keySet());
         this.mode = mode;
         this.tabs = new EnumMap<ModeType, ITab>(tabs);
+        this.mode.addListener(new ModeTypeChangedListener() {
+
+            @Override
+            public void typeChanged(ModeType oldType, ModeType newType) {
+                if (beingShown) {
+                    changeTab(oldType, newType);
+                }
+            }
+
+        });
+    }
+
+    private void changeTab(ModeType oldType, ModeType newType) {
+        ITab previousTab = tabs.get(oldType);
+        previousTab.hide();
+        ITab newTab = tabs.get(newType);
+        newTab.show();
     }
 
     private boolean handleAllCases(EnumMap<ModeType, ITab> tabs) {
@@ -98,11 +118,13 @@ public class TabOnModeType implements ITab {
 
     @Override
     public void hide() {
+        beingShown = false;
         getCurrentTab().hide();
     }
 
     @Override
     public void show() {
+        beingShown = true;
         getCurrentTab().show();
     }
 

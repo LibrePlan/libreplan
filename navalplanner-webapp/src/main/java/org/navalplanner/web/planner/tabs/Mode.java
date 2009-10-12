@@ -19,6 +19,9 @@
  */
 package org.navalplanner.web.planner.tabs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
 
@@ -36,6 +39,20 @@ public class Mode {
         return new Mode(new OrderCase(order));
     }
 
+    public interface ModeTypeChangedListener {
+        public void typeChanged(ModeType oldType, ModeType newType);
+    }
+
+    private List<ModeTypeChangedListener> listeners = new ArrayList<ModeTypeChangedListener>();
+
+    public void addListener(ModeTypeChangedListener listener) {
+        this.listeners.add(listener);
+    }
+
+    public void removeListener(ModeTypeChangedListener listener) {
+        this.listeners.remove(listener);
+    }
+
     private ModeCase current;
 
     Mode(ModeCase current) {
@@ -48,7 +65,28 @@ public class Mode {
     }
 
     public void goToOrderMode(Order order) {
-        current = current.createOrderMode(order);
+        changeTo(current.createOrderMode(order));
+    }
+
+    private void changeTo(ModeCase newCase) {
+        if (current == newCase) {
+            return;
+        }
+        ModeType previousType = current.getModeType();
+        current = newCase;
+        ModeType newType = current.getModeType();
+        if (previousType != newType) {
+            fireModeTypeChanged(previousType);
+        }
+    }
+
+    private void fireModeTypeChanged(ModeType previousType) {
+        Validate.notNull(previousType);
+        ModeType newType = this.getType();
+        Validate.notNull(newType);
+        for (ModeTypeChangedListener listener : listeners) {
+            listener.typeChanged(previousType, newType);
+        }
     }
 
     public boolean isOf(ModeType type) {
@@ -56,7 +94,7 @@ public class Mode {
     }
 
     public void up() {
-        current = current.up();
+        changeTo(current.up());
     }
 
     public ModeType getType() {
