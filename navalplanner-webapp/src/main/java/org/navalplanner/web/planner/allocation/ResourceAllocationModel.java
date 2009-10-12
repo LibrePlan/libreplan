@@ -30,6 +30,7 @@ import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -169,9 +170,12 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             Set<ResourceAllocation<?>> resourceAllocations) {
         resourceAllocations.size();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            resourceAllocation.getAssignments();
+            resourceAllocation.getAssignments().size();
             if (resourceAllocation instanceof SpecificResourceAllocation) {
                 reattachSpecificResourceAllocation((SpecificResourceAllocation) resourceAllocation);
+            } else if (resourceAllocation instanceof GenericResourceAllocation) {
+                ((GenericResourceAllocation) resourceAllocation)
+                        .getCriterions().size();
             }
             resourceAllocationDAO.save(resourceAllocation);
         }
