@@ -287,7 +287,12 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             taskElement.setName(taskElement.getOrderElement().getName());
         }
         if (taskElement.getStartDate() == null) {
-            taskElement.setStartDate(order.getInitDate());
+            if (order != null) {
+                taskElement.setStartDate(order.getInitDate());
+            } else {
+                taskElement.setStartDate(taskElement.getOrderElement()
+                        .getInitDate());
+            }
         }
         if (taskElement.getEndDate() == null) {
             Integer workHours = taskElement.getWorkHours();
