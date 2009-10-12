@@ -97,13 +97,13 @@ public class SpecificResourceAllocation extends
             Collection<? extends SpecificDayAssignment> assignments) {
         setParentFor(assignments);
         this.specificDaysAssignment.addAll(assignments);
-        this.assignmentsOrderedCached = null;
+        clearFieldsCalculatedFromAssignments();
     }
 
     @Override
     protected void removingAssignments(List<? extends DayAssignment> assignments) {
         this.specificDaysAssignment.removeAll(assignments);
-        this.assignmentsOrderedCached = null;
+        clearFieldsCalculatedFromAssignments();
     }
 
     private void setParentFor(
@@ -173,6 +173,11 @@ public class SpecificResourceAllocation extends
         this.specificDaysAssignment = SpecificDayAssignment.copy(this,
                 modifications.specificDaysAssignment);
         detach(previous);
+        clearFieldsCalculatedFromAssignments();
+    }
+
+    private void clearFieldsCalculatedFromAssignments() {
+        assignmentsOrderedCached = null;
     }
 
     private void detach(Set<SpecificDayAssignment> previous) {
