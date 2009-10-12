@@ -76,6 +76,7 @@ public class OrderPlanningController implements
 
     public OrderPlanningController() {
         getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
+        ResourceAllocationController.registerNeededScripts();
     }
 
     private IScriptsRegister getScriptsRegister() {

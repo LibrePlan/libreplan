@@ -51,6 +51,8 @@ import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdv
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.ganttz.util.OnZKDesktopRegistry;
+import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -110,7 +112,17 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private WorkerSearch workerSearch;
 
-    private Tab tbResourceAllocation;    
+    private Tab tbResourceAllocation;
+
+    public static void registerNeededScripts() {
+        getScriptsRegister()
+                .register(ScriptsRequiredByAdvancedAllocation.class);
+    }
+
+    private static IScriptsRegister getScriptsRegister() {
+        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
+                .retrieve();
+    }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
