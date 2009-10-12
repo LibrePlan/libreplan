@@ -328,12 +328,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0,
                     "the end must be equal or posterior than start");
             List<T> assignmentsCreated = new ArrayList<T>();
-            List<LocalDate> days = getDays(startInclusive, endExclusive);
-            int[] hoursEachDay = hoursDistribution(days, hours);
-            int i = 0;
-            for (LocalDate day : getDays(startInclusive, endExclusive)) {
-                assignmentsCreated.addAll(distributeForDay(day,
-                        hoursEachDay[i++]));
+            if (hours > 0) {
+                List<LocalDate> days = getDays(startInclusive, endExclusive);
+                int[] hoursEachDay = hoursDistribution(days, hours);
+                int i = 0;
+                for (LocalDate day : getDays(startInclusive, endExclusive)) {
+                    assignmentsCreated.addAll(distributeForDay(day,
+                            hoursEachDay[i++]));
+                }
             }
             removingAssignments(getAssignments(startInclusive, endExclusive));
             addingAssignments(assignmentsCreated);

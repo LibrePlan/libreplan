@@ -221,6 +221,18 @@ public class SpecificResourceAllocationTest {
     }
 
     @Test
+    public void allocatingZeroHoursOnIntervalRemovesThem() {
+        givenResourceCalendarAlwaysReturning(3);
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(0);
+        assertThat(specificResourceAllocation.getAssignments(), from(start
+                .plusDays(2)));
+    }
+
+    @Test
     public void theResourcesPerDayAreRecalculatedWhenAllocationHoursOnInterval() {
         givenResourceCalendarAlwaysReturning(3);
         LocalDate start = new LocalDate(2000, 2, 4);
