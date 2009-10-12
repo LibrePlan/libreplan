@@ -34,6 +34,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * An implementation of <code>IGenericDao</code> based on Hibernate's native
@@ -179,6 +180,7 @@ public class GenericDAOHibernate<E, PK extends Serializable> implements
 
     @SuppressWarnings("unchecked")
     @Override
+    @Transactional(readOnly = true)
     public <T extends E> List<T> list(Class<T> klass) {
         return getSession().createCriteria(klass).list();
     }

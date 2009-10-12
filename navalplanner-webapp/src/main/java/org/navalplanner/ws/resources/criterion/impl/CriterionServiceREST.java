@@ -29,7 +29,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import org.navalplanner.business.resources.daos.CriterionTypeDAO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.ws.common.api.WSError;
 import org.navalplanner.ws.common.api.WSErrorList;
 import org.navalplanner.ws.common.api.WSErrorType;
@@ -51,7 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CriterionServiceREST implements ICriterionService {
 
     @Autowired
-    private CriterionTypeDAO criterionTypeDAO;
+    private ICriterionTypeDAO criterionTypeDAO;
 
     @Override
     @GET
