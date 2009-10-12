@@ -46,7 +46,7 @@ import org.navalplanner.business.resources.entities.Resource;
 
 public class ResourceAllocationsBeingEdited {
 
-    public static ResourceAllocationsBeingEdited noTaskModifying(Task task,
+    public static ResourceAllocationsBeingEdited create(Task task,
             List<AllocationDTO> initialAllocations, IResourceDAO resourceDAO,
             List<Resource> resourcesBeingEdited) {
         return new ResourceAllocationsBeingEdited(task, initialAllocations,

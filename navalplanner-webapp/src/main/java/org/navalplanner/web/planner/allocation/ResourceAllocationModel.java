@@ -160,7 +160,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         List<AllocationDTO> currentAllocations = addDefaultGenericIfNeeded(AllocationDTO.toDTOs(this.task
                 .getResourceAllocations()));
         resourceAllocationsBeingEdited = ResourceAllocationsBeingEdited
-                .noTaskModifying(task, currentAllocations, resourceDAO,
+                .create(task, currentAllocations, resourceDAO,
                         reattachResources(getResourcesMatchingCriterions()));
         return resourceAllocationsBeingEdited;
     }
