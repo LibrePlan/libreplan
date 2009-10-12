@@ -79,12 +79,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             IStructureNavigator<TaskElement> {
         @Override
         public List<TaskElement> getChildren(TaskElement object) {
-            return object.getChildren();
+            return null;
         }
 
         @Override
         public boolean isLeaf(TaskElement object) {
-            return object.isLeaf();
+            return true;
         }
 
         @Override
@@ -202,11 +202,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private void forceLoadOfLabels(List<TaskElement> initial) {
         for (TaskElement taskElement : initial) {
-            if (taskElement.isLeaf()) {
-                taskElement.getOrderElement().getLabels().size();
-            } else {
-                forceLoadOfLabels(taskElement.getChildren());
-            }
+            taskElement.getOrderElement().getLabels().size();
         }
     }
 
