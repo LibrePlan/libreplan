@@ -37,6 +37,30 @@ public class TabOnModeType implements ITab {
 
     private final EnumMap<ModeType, ITab> tabs;
 
+    public static WithType forMode(Mode mode) {
+        return new WithType(mode, new EnumMap<ModeType, ITab>(ModeType.class));
+    }
+
+    public static class WithType{
+        private final Mode mode;
+
+        private EnumMap<ModeType, ITab> tabs;
+        private WithType(Mode mode, EnumMap<ModeType, ITab> tabs) {
+            this.mode = mode;
+            this.tabs = tabs;
+        }
+
+        public WithType forType(ModeType modeType, ITab tab) {
+            tabs.put(modeType, tab);
+            return this;
+        }
+
+        public TabOnModeType create() {
+            return new TabOnModeType(mode, tabs);
+        }
+
+    }
+
     public TabOnModeType(Mode mode, EnumMap<ModeType, ITab> tabs) {
         Validate.notNull(mode);
         Validate.isTrue(handleAllCases(tabs), "must handle all ModeTypes: "
