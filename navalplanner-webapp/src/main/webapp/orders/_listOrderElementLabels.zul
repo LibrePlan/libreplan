@@ -84,7 +84,7 @@
                     <label value="${i18n:_('Create and assign label')}" />
                 </vbox>
                 <hbox>
-                    <autocomplete id="cbLabelType"
+                    <autocomplete id="cbLabelType" onChange="txtLabelName.clearErrorMessage()"
                         finder="LabelTypeFinder" buttonVisible="true" />
                     <textbox id="txtLabelName" />
                     <button style="margin-top: -4px"
