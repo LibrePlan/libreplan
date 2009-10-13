@@ -270,12 +270,19 @@ public class OrderModel implements IOrderModel {
     private OrderElementTreeModel applyPredicate() {
         for (OrderElement orderElement : order.getOrderElements()) {
             reattachOrderElement(orderElement);
+            reattachLabels();
             initializeLabels(orderElement.getLabels());
-            if (predicate.complays(orderElement)) {
+            if (!predicate.complays(orderElement)) {
                 order.remove(orderElement);
             }
         }
         return new OrderElementTreeModel(order);
+    }
+
+    private void reattachLabels() {
+        for (Label label : cacheLabels) {
+            labelDAO.save(label);
+        }
     }
 
     private void reattachOrderElement(OrderElement orderElement) {
