@@ -69,4 +69,8 @@ public class TabSwitcher extends HtmlMacroComponent {
         return OnZKDesktopRegistry.getLocatorFor(IMenuItemsRegister.class);
     }
 
+    public TabsRegistry getTabsRegistry() {
+        return tabsRegistry;
+    }
+
 }

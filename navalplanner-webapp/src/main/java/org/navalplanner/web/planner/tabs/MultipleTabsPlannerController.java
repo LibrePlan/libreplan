@@ -36,12 +36,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.TabSwitcher;
+import org.zkoss.ganttz.TabsRegistry;
 import org.zkoss.ganttz.adapters.TabsConfiguration;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
@@ -53,7 +56,7 @@ import org.zkoss.zul.Label;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class MultipleTabsPlannerController {
+public class MultipleTabsPlannerController implements Composer {
 
     private static final String ENTERPRISE_VIEW = _("Enterprise");
 
@@ -71,6 +74,14 @@ public class MultipleTabsPlannerController {
     @Autowired
     private OrderCRUDController orderCRUDController;
 
+    private ITab planningTab;
+
+    private ITab resourceLoadTab;
+
+    private ITab ordersTab;
+
+    private TabSwitcher tabsSwitcher;
+
     public TabsConfiguration getTabs() {
         if (tabsConfiguration == null) {
             tabsConfiguration = buildTabsConfiguration();
@@ -79,8 +90,11 @@ public class MultipleTabsPlannerController {
     }
 
     private TabsConfiguration buildTabsConfiguration() {
-        return TabsConfiguration.create().add(createEnterpriseTab()).add(
-                createResourcesLoadTab()).add(createOrdersTab());
+        planningTab = createEnterpriseTab();
+        resourceLoadTab = createResourcesLoadTab();
+        ordersTab = createOrdersTab();
+        return TabsConfiguration.create().add(planningTab).add(resourceLoadTab)
+                .add(ordersTab);
     }
 
     private ITab createEnterpriseTab() {
@@ -210,7 +224,7 @@ public class MultipleTabsPlannerController {
             @Override
             public void showSchedule(Order order) {
                 mode.goToOrderMode(order);
-
+                getTabsRegistry().show(planningTab);
             }
         });
         return orderCRUDController;
@@ -242,6 +256,15 @@ public class MultipleTabsPlannerController {
                         + mode.getType()));
             }
         });
+    }
+
+    @Override
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+        tabsSwitcher = (TabSwitcher) comp;
+    }
+
+    private TabsRegistry getTabsRegistry() {
+        return tabsSwitcher.getTabsRegistry();
     }
 
 }

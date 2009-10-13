@@ -34,6 +34,6 @@
     multipleTabsPlanner = multipleTabsPlannerController;
 ]]>
 </zscript>
-    <tabSwitcher self="@{define(content)}" configuration="@{multipleTabsPlanner.tabs}">
+    <tabSwitcher self="@{define(content)}" configuration="@{multipleTabsPlanner.tabs}" apply="${multipleTabsPlanner}">
     </tabSwitcher>
 </zk>
