@@ -43,7 +43,6 @@ import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.web.common.ViewSwitcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -107,12 +106,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     @Override
     @Transactional(readOnly = true)
     public void setConfigurationToPlanner(Planner planner,
-            ViewSwitcher switcher, EditTaskController editTaskController) {
+            EditTaskController editTaskController) {
         PlannerConfiguration<TaskElement> configuration = createConfiguration();
 
         configuration.addGlobalCommand(buildSaveCommand());
-        configuration
-                .addGlobalCommand(buildResourceLoadForOrderCommand(switcher));
 
         configuration
                 .setEditTaskCommand(buildEditTaskCommand(editTaskController));
@@ -130,13 +127,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         IEditTaskCommand editTaskCommand = getEditTaskCommand();
         editTaskCommand.setEditTaskController(editTaskController);
         return editTaskCommand;
-    }
-
-    private IResourceLoadForOrderCommand buildResourceLoadForOrderCommand(
-            ViewSwitcher switcher) {
-        IResourceLoadForOrderCommand resourceLoadForOrderCommand = getResourceLoadForOrderCommand();
-        resourceLoadForOrderCommand.initialize(switcher, planningState);
-        return resourceLoadForOrderCommand;
     }
 
     private ISaveCommand buildSaveCommand() {

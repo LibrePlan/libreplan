@@ -20,9 +20,6 @@
 
 package org.navalplanner.web.planner;
 
-import org.navalplanner.web.common.ViewSwitcher;
-import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
-import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -31,6 +28,7 @@ import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
+import org.zkoss.zk.ui.util.GenericForwardComposer;
 
 /**
  * Controller for company planning view. Representation of company orders in the
@@ -40,11 +38,7 @@ import org.zkoss.ganttz.util.script.IScriptsRegister;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class CompanyPlanningController implements
-        ICompanyPlanningControllerEntryPoints {
-
-    @Autowired
-    private ViewSwitcher viewSwitcher;
+public class CompanyPlanningController extends GenericForwardComposer {
 
     @Autowired
     private EditTaskController editTaskController;
@@ -54,12 +48,8 @@ public class CompanyPlanningController implements
     }
 
     @Autowired
-    private IURLHandlerRegistry urlHandlerRegistry;
-
-    @Autowired
     private ICompanyPlanningModel model;
 
-    private Planner planner;
 
     public CompanyPlanningController() {
         getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
@@ -71,20 +61,10 @@ public class CompanyPlanningController implements
     }
 
     @Override
-    public void showSchedule() {
-        model.setConfigurationToPlanner(planner, viewSwitcher,
-                editTaskController);
-    }
-
-    public void registerPlanner(Planner planner) {
-        this.planner = planner;
-        final URLHandler<ICompanyPlanningControllerEntryPoints> handler = urlHandlerRegistry
-                .getRedirectorFor(ICompanyPlanningControllerEntryPoints.class);
-        handler.registerListener(this, planner.getPage());
-    }
-
-    public ViewSwitcher getViewSwitcher() {
-        return viewSwitcher;
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        Planner planner = (Planner) comp;
+        model.setConfigurationToPlanner(planner, editTaskController);
     }
 
 }

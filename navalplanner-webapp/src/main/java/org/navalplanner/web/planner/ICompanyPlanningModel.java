@@ -20,7 +20,6 @@
 
 package org.navalplanner.web.planner;
 
-import org.navalplanner.web.common.ViewSwitcher;
 import org.zkoss.ganttz.Planner;
 
 /**
@@ -30,7 +29,7 @@ import org.zkoss.ganttz.Planner;
  */
 public interface ICompanyPlanningModel {
 
-    void setConfigurationToPlanner(Planner planner, ViewSwitcher viewSwitcher,
+    void setConfigurationToPlanner(Planner planner,
             EditTaskController editTaskController);
 
 }

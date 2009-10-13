@@ -30,14 +30,11 @@
 <zk>
     <zscript><![CDATA[
         planningController = companyPlanningController;
-        switcher = planningController.viewSwitcher;
     ]]>
     </zscript>
 
-    <div apply="${switcher}" self="@{define(content)}">
-        <planner id="planner">
-        </planner>
-    </div>
+    <planner id="planner" apply="${planningController}" self="@{define(content)}">
+    </planner>
 
     <div id="idContextMenuTaskAssignment"></div>
 
@@ -72,10 +69,4 @@
         </grid>
         <button id="ok" label="${i18n:_('Accept')}" />
     </popup>
-
-    <zscript><![CDATA[
-        planningController.registerPlanner(planner);
-    ]]>
-    </zscript>
-
 </zk>

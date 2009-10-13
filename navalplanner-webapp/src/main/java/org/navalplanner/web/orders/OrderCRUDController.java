@@ -35,7 +35,6 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.planner.ICompanyPlanningControllerEntryPoints;
 import org.navalplanner.web.planner.IOrderPlanningControllerEntryPoints;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -72,7 +71,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     private boolean confirmingSchedule;
 
     private IOrderPlanningControllerEntryPoints planningControllerEntryPoints;
-    private ICompanyPlanningControllerEntryPoints companyPlanningControllerEntryPoints;
 
     public List<Order> getOrders() {
         return orderModel.getOrders();
