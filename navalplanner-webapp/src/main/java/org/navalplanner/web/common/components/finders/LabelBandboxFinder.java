@@ -53,7 +53,7 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
     private final String headers[] = { _("Type"), _("Name") };
 
     public LabelBandboxFinder() {
-
+        super();
     }
 
     @Override

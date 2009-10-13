@@ -21,6 +21,7 @@
 package org.navalplanner.web.common.components.finders;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.SimpleListModel;
@@ -35,10 +36,25 @@ import org.zkoss.zul.SimpleListModel;
  */
 public abstract class BandboxFinder implements IBandboxFinder {
 
-    @Override
+    ListModel model;
+
+    public BandboxFinder() {
+        initializeModel();
+    }
+
     @Transactional(readOnly = true)
-    public SimpleListModel getModel() {
-        return new SimpleListModel(getAll());
+    private void initializeModel() {
+        model = new SimpleListModel(getAll());
+    }
+
+    @Override
+    public ListModel getModel() {
+        return model;
+    }
+
+    @Override
+    public void setModel(ListModel model) {
+        this.model = model;
     }
 
     @Override

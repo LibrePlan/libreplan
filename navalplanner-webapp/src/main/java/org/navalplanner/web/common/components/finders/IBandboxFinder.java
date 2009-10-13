@@ -26,7 +26,6 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.SimpleListModel;
 
 /**
  * Interface for providing, displaying and matching elements for a
@@ -61,7 +60,13 @@ public interface IBandboxFinder {
      *
      * @return
      */
-    SimpleListModel getModel();
+    ListModel getModel();
+
+    /**
+     *
+     * @param model
+     */
+    void setModel(ListModel model);
 
     /**
      * Provides headers for {@link BandboxSearch}

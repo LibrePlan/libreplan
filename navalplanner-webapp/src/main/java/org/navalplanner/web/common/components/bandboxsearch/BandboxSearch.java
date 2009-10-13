@@ -27,6 +27,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.web.common.components.finders.IBandboxFinder;
 import org.springframework.web.context.WebApplicationContext;
@@ -55,9 +56,14 @@ public class BandboxSearch extends HtmlMacroComponent {
 
     private IBandboxFinder finder;
 
+    private List<? extends BaseEntity> model;
+
     public void afterCompose() {
         super.afterCompose();
         listbox = (Listbox) getFellowIfAny("listbox");
+        if (model != null) {
+            finder.setModel(new SimpleListModel(model));
+        }
         listbox.setModel(finder.getModel());
         listbox.setItemRenderer(finder.getItemRenderer());
 
@@ -112,7 +118,7 @@ public class BandboxSearch extends HtmlMacroComponent {
     private ListModel getSubModel(String inputText) {
         List result = new ArrayList();
 
-        final SimpleListModel model = finder.getModel();
+        final ListModel model = finder.getModel();
         for (int i = 0; i < model.getSize(); i++) {
             Object obj = model.getElementAt(i);
             if (finder.entryMatchesText(obj, inputText)) {
@@ -152,6 +158,14 @@ public class BandboxSearch extends HtmlMacroComponent {
         finder = (IBandboxFinder) getBean(StringUtils.uncapitalize(classname));
     }
 
+    public List<? extends BaseEntity> getModel() {
+        return model;
+    }
+
+    public void setModel(List<? extends BaseEntity> model) {
+        this.model = model;
+    }
+
     private Object getBean(String classname) {
         HttpServletRequest servletRequest = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
@@ -160,6 +174,40 @@ public class BandboxSearch extends HtmlMacroComponent {
         WebApplicationContext webApplicationContext = WebApplicationContextUtils
                 .getWebApplicationContext(servletContext);
         return webApplicationContext.getBean(classname);
+    }
+
+    /**
+     * Clears {@link Bandbox}
+     *
+     * Fills bandbox list model, clear bandbox textbox, and set selected label
+     * to null
+     *
+     * @param bandbox
+     */
+    public void clear() {
+        listbox.setModel(finder.getModel());
+        bandbox.setValue("");
+        bandbox.setVariable("selectedLabel", null, true);
+    }
+
+    /**
+     * Adds a new element to list of elements
+     *
+     * @param obj
+     */
+    public void addElement(Object obj) {
+        List<Object> list = asList(listbox.getModel());
+        list.add(obj);
+        listbox.setModel(new SimpleListModel(list));
+        Util.reloadBindings(listbox);
+    }
+
+    public List<Object> asList(ListModel model) {
+        List<Object> result = new ArrayList<Object>();
+        for (int i = 0; i < model.getSize(); i++) {
+            result.add(model.getElementAt(i));
+        }
+        return result;
     }
 
 }
