@@ -80,7 +80,7 @@ public class AssignedLabelsToOrderElementModel implements
     }
 
     private void initializeCacheLabels() {
-        if (cacheLabels == null) {
+        if (cacheLabels.isEmpty()) {
             cacheLabels = new HashSet<Label>();
             final List<Label> labels = labelDAO.getAll();
             initializeLabels(labels);
