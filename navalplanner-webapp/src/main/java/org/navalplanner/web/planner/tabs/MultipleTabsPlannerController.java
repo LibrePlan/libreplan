@@ -24,9 +24,11 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.CompanyPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +66,9 @@ public class MultipleTabsPlannerController {
 
     @Autowired
     private CompanyPlanningController companyPlanningController;
+
+    @Autowired
+    private OrderCRUDController orderCRUDController;
 
     public TabsConfiguration getTabs() {
         if (tabsConfiguration == null) {
@@ -183,13 +188,13 @@ public class MultipleTabsPlannerController {
         return new CreatedOnDemandTab(ORDERS_VIEW,
                 new IComponentCreator() {
 
-                    @Override
-                    public org.zkoss.zk.ui.Component create(
-                            org.zkoss.zk.ui.Component parent) {
+            @Override
+            public org.zkoss.zk.ui.Component create(
+                    org.zkoss.zk.ui.Component parent) {
+                Map<String, Object> args = new HashMap<String, Object>();
+                args.put("orderController", orderCRUDController);
                 org.zkoss.zk.ui.Component result = Executions.createComponents(
-                        "/orders/_ordersTab.zul",
-                                        parent,
-                                        null);
+                        "/orders/_ordersTab.zul", parent, args);
                 createBindingsFor(result);
                 Util.reloadBindings(result);
                 return result;

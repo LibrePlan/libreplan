@@ -22,7 +22,11 @@
 <?component name="edition" inline="true" macroURI="_edition.zul"?>
 <?component name="orderElement" inline="true" macroURI="_editOrderElement.zul"?>
 <zk>
-    <window apply="org.navalplanner.web.orders.OrderCRUDController">
+<zscript><![CDATA[
+    orderController = arg.get("orderController");
+]]>
+</zscript>
+    <window apply="${orderController}">
         <vbox id="messagesContainer"></vbox>
         <list top_id="listWindow" />
         <edition top_id="createWindow" title="${i18n:_('Create')}"

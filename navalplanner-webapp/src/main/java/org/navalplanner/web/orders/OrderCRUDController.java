@@ -36,6 +36,9 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.IOrderPlanningControllerEntryPoints;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Label;
@@ -45,11 +48,14 @@ import org.zkoss.zul.api.Window;
  * Controller for CRUD actions <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
+@org.springframework.stereotype.Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class OrderCRUDController extends GenericForwardComposer {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(OrderCRUDController.class);
 
+    @Autowired
     private IOrderModel orderModel;
 
     private IMessagesForUser messagesForUser;
