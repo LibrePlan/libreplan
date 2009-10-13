@@ -203,22 +203,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     // spring method injection
     protected abstract ITaskElementAdapter getTaskElementAdapter();
 
-    protected abstract ISaveCommand getSaveCommand();
-
-    protected abstract IResourceAllocationCommand getResourceAllocationCommand();
-
-    protected abstract ISplitTaskCommand getSplitCommand();
-
-    protected abstract IMergeTaskCommand getMergeTaskCommand();
-
-    protected abstract IAddMilestoneCommand getAddMilestoneCommand();
-
-    protected abstract IEditTaskCommand getEditTaskCommand();
-
-    protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
-
-    protected abstract IResourceLoadForOrderCommand getResourceLoadForOrderCommand();
-
     private void fillChart(Chart chart, Interval interval, Integer size) {
         XYModel xymodel = new SimpleXYModel();
 

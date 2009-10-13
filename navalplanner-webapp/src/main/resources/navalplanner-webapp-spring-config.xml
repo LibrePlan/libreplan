@@ -37,9 +37,6 @@
 
     <bean class="org.navalplanner.web.planner.CompanyPlanningModel" scope="prototype">
       <lookup-method name="getTaskElementAdapter" bean="taskElementAdapter"/>
-      <lookup-method name="getSaveCommand" bean="saveCommand"/>
-      <lookup-method name="getEditTaskCommand" bean="editTaskCommand"/>
-      <lookup-method name="getResourceLoadForOrderCommand" bean="resourceLoadForOrderCommand"/>
     </bean>
 
     <context:component-scan base-package="org.navalplanner"/>
