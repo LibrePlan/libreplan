@@ -63,9 +63,8 @@ public class BandboxSearch extends HtmlMacroComponent {
         super.afterCompose();
         listbox = (Listbox) getFellowIfAny("listbox");
         if (model != null) {
-            finder.setModel(new SimpleListModel(model));
+            setModel(new SimpleListModel(model));
         }
-        listbox.setModel(finder.getModel());
         listbox.setItemRenderer(finder.getItemRenderer());
 
         listhead = (Listhead) listbox.getFellowIfAny("listhead");
@@ -169,6 +168,12 @@ public class BandboxSearch extends HtmlMacroComponent {
 
     public void setModel(List<? extends BaseEntity> model) {
         this.model = model;
+        setModel(new SimpleListModel(model));
+    }
+
+    private void setModel(ListModel model) {
+        finder.setModel(model);
+        listbox.setModel(model);
     }
 
     private Object getBean(String classname) {
@@ -203,8 +208,7 @@ public class BandboxSearch extends HtmlMacroComponent {
     public void addElement(Object obj) {
         List<Object> list = asList(finder.getModel());
         list.add(obj);
-        finder.setModel(new SimpleListModel(list));
-        listbox.setModel(finder.getModel());
+        setModel(new SimpleListModel(list));
         Util.reloadBindings(listbox);
     }
 
