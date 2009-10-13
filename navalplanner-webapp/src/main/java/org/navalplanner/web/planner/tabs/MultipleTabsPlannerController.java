@@ -31,6 +31,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.CompanyPlanningController;
 import org.navalplanner.web.planner.IOrderPlanningGate;
+import org.navalplanner.web.planner.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -58,6 +59,22 @@ import org.zkoss.zul.Label;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MultipleTabsPlannerController implements Composer {
 
+    private final class OrderPlanningTab extends CreatedOnDemandTab {
+        private Order lastOrder;
+
+        OrderPlanningTab(String name, IComponentCreator componentCreator) {
+            super(name, componentCreator);
+        }
+
+        @Override
+        protected void afterShowAction() {
+            if (mode.isOf(ModeType.ORDER) && lastOrder != mode.getOrder()) {
+                lastOrder = mode.getOrder();
+                orderPlanningController.setOrder(lastOrder);
+            }
+        }
+    }
+
     private static final String ENTERPRISE_VIEW = _("Enterprise");
 
     private static final String RESOURCE_LOAD_VIEW = _("Resource Load");
@@ -81,6 +98,9 @@ public class MultipleTabsPlannerController implements Composer {
     private ITab ordersTab;
 
     private TabSwitcher tabsSwitcher;
+
+    @Autowired
+    private OrderPlanningController orderPlanningController;
 
     public TabsConfiguration getTabs() {
         if (tabsConfiguration == null) {
@@ -146,14 +166,20 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private ITab createOrderPlanningTab() {
-        return new CreatedOnDemandTab(ENTERPRISE_VIEW, new IComponentCreator() {
+        return new OrderPlanningTab(ENTERPRISE_VIEW, new IComponentCreator() {
 
             @Override
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
-                return withUpAndDownButton(new Label(
-                        "on enterprise view. mode: "
-                        + mode.getType()));
+                Map<String, Object> arguments = new HashMap<String, Object>();
+                orderPlanningController.setOrder(mode.getOrder());
+                arguments.put("orderPlanningController",
+                        orderPlanningController);
+                org.zkoss.zk.ui.Component result = Executions.createComponents(
+                        "/planner/order.zul",
+                        parent, arguments);
+                createBindingsFor(result);
+                return result;
             }
         });
     }
@@ -222,7 +248,7 @@ public class MultipleTabsPlannerController implements Composer {
         orderCRUDController.setPlanningControllerEntryPoints(new IOrderPlanningGate() {
 
             @Override
-            public void showSchedule(Order order) {
+            public void goToScheduleOf(Order order) {
                 mode.goToOrderMode(order);
                 getTabsRegistry().show(planningTab);
             }

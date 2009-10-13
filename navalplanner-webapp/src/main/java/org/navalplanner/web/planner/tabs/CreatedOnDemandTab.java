@@ -67,6 +67,10 @@ public class CreatedOnDemandTab implements ITab {
             component = componentCreator.create(parent);
         }
         component.setParent(parent);
+        afterShowAction();
+    }
+
+    protected void afterShowAction() {
     }
 
 }

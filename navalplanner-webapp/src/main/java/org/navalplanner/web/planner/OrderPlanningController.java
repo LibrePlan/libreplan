@@ -22,7 +22,6 @@ package org.navalplanner.web.planner;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.ViewSwitcher;
-import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -32,13 +31,14 @@ import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
+import org.zkoss.zk.ui.util.Composer;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class OrderPlanningController {
+public class OrderPlanningController implements Composer {
 
     @Autowired
     private ViewSwitcher viewSwitcher;
@@ -62,15 +62,14 @@ public class OrderPlanningController {
     }
 
     @Autowired
-    private IURLHandlerRegistry urlHandlerRegistry;
-
-    @Autowired
     private IOrderPlanningModel model;
 
     private Planner planner;
 
     @Autowired
     private CalendarAllocationController calendarAllocationController;
+
+    private Order order;
 
     public OrderPlanningController() {
         getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
@@ -82,14 +81,11 @@ public class OrderPlanningController {
                 .retrieve();
     }
 
-    private void setConfigurationForGiven(Order order) {
-        model.setConfigurationToPlanner(planner, order, viewSwitcher,
-                resourceAllocationController, editTaskController,
-                splittingController, calendarAllocationController);
-    }
-
-    public void registerPlanner(Planner planner) {
-        this.planner = planner;
+    public void setOrder(Order order) {
+        this.order = order;
+        if (planner != null) {
+            updateConfiguration();
+        }
     }
 
     public SplittingController getSplittingController() {
@@ -102,6 +98,21 @@ public class OrderPlanningController {
 
     public ViewSwitcher getViewSwitcher() {
         return viewSwitcher;
+    }
+
+    @Override
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+        if (order == null) {
+            throw new IllegalStateException("an order should have been set");
+        }
+        this.planner = (Planner) comp;
+        updateConfiguration();
+    }
+
+    private void updateConfiguration() {
+        model.setConfigurationToPlanner(planner, order, viewSwitcher,
+                resourceAllocationController, editTaskController,
+                splittingController, calendarAllocationController);
     }
 
 }

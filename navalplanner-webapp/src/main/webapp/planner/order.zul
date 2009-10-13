@@ -19,13 +19,7 @@
 -->
 
 <?page title="${i18n:_('Navalpro: Scheduling')}"?>
-<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
-<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
-<?link rel="stylesheet" type="text/css" href="/planner/css/ganttzk.css"?>
-<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
-<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
 
 <?component name="workerSearch"
     class="org.navalplanner.web.common.components.WorkerSearch"
@@ -33,7 +27,7 @@
 
 <zk>
     <zscript><![CDATA[
-        planningController = orderPlanningController;
+        planningController = arg.get("orderPlanningController");
         allocationController = planningController.resourceAllocationController;
         splittingTaskController = planningController.splittingController;
         calendarController = planningController.calendarAllocationController;
@@ -41,13 +35,11 @@
         allocationController.switcher = switcher;
     ]]>
     </zscript>
-
-    <div apply="${switcher}" self="@{define(content)}">
-        <planner id="planner">
+    <div>
+    <div apply="${switcher}" >
+        <planner id="planner" apply="${planningController}">
         </planner>
     </div>
-
-    <div id="idContextMenuTaskAssignment"></div>
 
     <popup width="300px" apply="${planningController.editTaskController}">
         <grid>
@@ -81,7 +73,7 @@
         <button id="ok" label="${i18n:_('Accept')}" />
     </popup>
 
-    <window id="resourceAllocationWindow" self="@{define(content)}"
+    <window id="resourceAllocationWindow"
         apply="${allocationController}" closable="true"
         title="${i18n:_('Resource allocation')}" width="600px" visible="false">
 
@@ -210,7 +202,7 @@
         </vbox>
     </window>
 
-    <window id="calendarAllocationWindow" self="@{define(content)}"
+    <window id="calendarAllocationWindow"
         apply="${calendarController}"
         title="${i18n:_('Calendar allocation')}" width="600px"
         closable="true" visible="false">
@@ -234,10 +226,5 @@
         </vbox>
 
     </window>
-
-    <zscript><![CDATA[
-        planningController.registerPlanner(planner);
-    ]]>
-    </zscript>
-
+    </div>
 </zk>
