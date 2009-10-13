@@ -20,7 +20,13 @@
 
 package org.navalplanner.web.planner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +34,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.Planner;
+import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
@@ -71,6 +78,8 @@ public class OrderPlanningController implements Composer {
 
     private Order order;
 
+    private List<ICommand<TaskElement>> additional = new ArrayList<ICommand<TaskElement>>();
+
     public OrderPlanningController() {
         getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
         ResourceAllocationController.registerNeededScripts();
@@ -81,8 +90,12 @@ public class OrderPlanningController implements Composer {
                 .retrieve();
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(Order order,
+            ICommand<TaskElement>... additionalCommands) {
+        Validate.notNull(additionalCommands);
+        Validate.noNullElements(additionalCommands);
         this.order = order;
+        this.additional = Arrays.asList(additionalCommands);
         if (planner != null) {
             updateConfiguration();
         }
@@ -112,7 +125,7 @@ public class OrderPlanningController implements Composer {
     private void updateConfiguration() {
         model.setConfigurationToPlanner(planner, order, viewSwitcher,
                 resourceAllocationController, editTaskController,
-                splittingController, calendarAllocationController);
+                splittingController, calendarAllocationController, additional);
     }
 
 }

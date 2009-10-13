@@ -66,6 +66,7 @@ import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -116,13 +117,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
             SplittingController splittingController,
-            CalendarAllocationController calendarAllocationController) {
+            CalendarAllocationController calendarAllocationController,
+            List<ICommand<TaskElement>> additional) {
         Order orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled())
             throw new IllegalArgumentException(_(
                     "The order {0} must be scheduled", orderReloaded));
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
-
+        addAdditional(additional, configuration);
         configuration.addGlobalCommand(buildSaveCommand());
 
         configuration.addCommandOnTask(buildResourceAllocationCommand(resourceAllocationController));
@@ -140,6 +142,13 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         planner.setConfiguration(configuration);
 
         setupChart(orderReloaded, chartComponent, planner.getTimeTracker());
+    }
+
+    private void addAdditional(List<ICommand<TaskElement>> additional,
+            PlannerConfiguration<TaskElement> configuration) {
+        for (ICommand<TaskElement> c : additional) {
+            configuration.addGlobalCommand(c);
+        }
     }
 
     private ICalendarAllocationCommand buildCalendarAllocationCommand(

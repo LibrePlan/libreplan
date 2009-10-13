@@ -20,10 +20,14 @@
 
 package org.navalplanner.web.planner;
 
+import java.util.List;
+
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.zkoss.ganttz.Planner;
+import org.zkoss.ganttz.extensions.ICommand;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -35,6 +39,7 @@ public interface IOrderPlanningModel {
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
             SplittingController splittingController,
-            CalendarAllocationController calendarAllocationController);
+            CalendarAllocationController calendarAllocationController,
+            List<ICommand<TaskElement>> additional);
 
 }
