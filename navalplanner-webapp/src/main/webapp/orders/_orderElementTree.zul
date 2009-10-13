@@ -36,6 +36,15 @@
         </hbox>
     </vbox>
     <vbox>
+        <hbox>
+          <!-- Filter by label -->
+          <combobox>
+              <comboitem label="Filter by Label" />
+          </combobox>
+          <bandboxSearch id="bdLabels" finder="LabelBandboxFinder" />
+        </hbox>
+    </vbox>
+    <vbox>
         <tree id="tree" width="1050" multiple="true" droppable="true"
             onDrop="orderElementTreeController.move(self, event.dragged)"
             model="@{orderElementTreeController.orderElementTreeModel}"
