@@ -272,7 +272,7 @@ public class OrderModel implements IOrderModel {
             reattachOrderElement(orderElement);
             reattachLabels();
             initializeLabels(orderElement.getLabels());
-            if (!predicate.complays(orderElement)) {
+            if (!predicate.accepts(orderElement)) {
                 order.remove(orderElement);
             }
         }
