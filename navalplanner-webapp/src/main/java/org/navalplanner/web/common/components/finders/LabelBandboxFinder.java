@@ -52,10 +52,6 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
 
     private final String headers[] = { _("Type"), _("Name") };
 
-    public LabelBandboxFinder() {
-        super();
-    }
-
     @Override
     @Transactional(readOnly = true)
     public List<Label> getAll() {
@@ -78,8 +74,8 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
     @Override
     public boolean entryMatchesText(Object obj, String text) {
         final Label label = (Label) obj;
-        return (label.getType().getName().contains(text) || label.getName()
-                .contains(text));
+        return (label.getType().getName().toLowerCase().contains(text) || label
+                .getName().toLowerCase().contains(text));
     }
 
     @Override
