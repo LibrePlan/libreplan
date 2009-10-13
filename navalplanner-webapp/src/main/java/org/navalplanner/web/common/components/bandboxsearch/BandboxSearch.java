@@ -64,6 +64,8 @@ public class BandboxSearch extends HtmlMacroComponent {
         listbox = (Listbox) getFellowIfAny("listbox");
         if (model != null) {
             setModel(new SimpleListModel(model));
+        } else {
+            listbox.setModel(finder.getModel());
         }
         listbox.setItemRenderer(finder.getItemRenderer());
 
