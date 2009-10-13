@@ -114,7 +114,7 @@
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>/planner/main.zul</welcome-file>
+        <welcome-file>/planner/index.zul</welcome-file>
     </welcome-file-list>
 
     <error-page>

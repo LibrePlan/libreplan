@@ -167,7 +167,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     public void initializeMenu() {
-        topItem(_("Planification"),"/planner/main.zul");
+        topItem(_("Planification"), "/planner/index.zul");
 
         topItem(_("Resources"), "/resources/worker/worker.zul",
                 subItem(_("Workers List"),"/resources/worker/worker.zul#list"),
