@@ -90,18 +90,18 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private TabsConfiguration buildTabsConfiguration() {
-        planningTab = createEnterpriseTab();
+        planningTab = createPlanningTab();
         resourceLoadTab = createResourcesLoadTab();
         ordersTab = createOrdersTab();
         return TabsConfiguration.create().add(planningTab).add(resourceLoadTab)
                 .add(ordersTab);
     }
 
-    private ITab createEnterpriseTab() {
+    private ITab createPlanningTab() {
         return TabOnModeType.forMode(mode)
-                  .forType(ModeType.GLOBAL,createGlobalEnterpriseTab())
-                  .forType(ModeType.ORDER, createOrderEnterpriseTab())
-                  .create();
+                .forType(ModeType.GLOBAL, createGlobalPlanningTab())
+                .forType(ModeType.ORDER, createOrderPlanningTab())
+                .create();
     }
 
     private org.zkoss.zk.ui.Component withUpAndDownButton(
@@ -129,7 +129,7 @@ public class MultipleTabsPlannerController implements Composer {
         return result;
     }
 
-    private ITab createGlobalEnterpriseTab() {
+    private ITab createGlobalPlanningTab() {
         return new CreatedOnDemandTab(ENTERPRISE_VIEW, new IComponentCreator() {
 
             @Override
@@ -145,7 +145,7 @@ public class MultipleTabsPlannerController implements Composer {
         });
     }
 
-    private ITab createOrderEnterpriseTab() {
+    private ITab createOrderPlanningTab() {
         return new CreatedOnDemandTab(ENTERPRISE_VIEW, new IComponentCreator() {
 
             @Override
