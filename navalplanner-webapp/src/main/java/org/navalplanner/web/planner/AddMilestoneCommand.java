@@ -22,11 +22,15 @@ package org.navalplanner.web.planner;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
@@ -39,18 +43,35 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
 
     private PlanningState planningState;
 
+    @Autowired
+    private ITaskElementDAO taskElementDAO;
+
     @Override
     public void setState(PlanningState planningState) {
         this.planningState = planningState;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement task) {
         TaskMilestone milestone = new TaskMilestone();
         milestone.setName("new milestone");
+
+        taskElementDAO.save(task);
+        getRoot(task).addTaskElement(getRoot(task).getChildren().indexOf(task),
+                milestone);
+
         context.add(context.getMapper().findPositionFor(task), milestone);
-        planningState.added(milestone);
+        planningState.added(milestone.getParent());
+    }
+
+    private TaskGroup getRoot(TaskElement task) {
+        if (task.getParent() == null) {
+            return (TaskGroup) task;
+        }
+
+        return getRoot(task.getParent());
     }
 
     @Override

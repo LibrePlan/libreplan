@@ -95,9 +95,8 @@ public class Order extends OrderLineGroup implements IValidable {
 
     public List<TaskElement> getAssociatedTasks() {
         ArrayList<TaskElement> result = new ArrayList<TaskElement>();
-        for (OrderElement orderElement : getChildren()) {
-            result.addAll(orderElement.getTaskElements());
-        }
+        TaskGroup taskGroup = getAssociatedTaskElement();
+        result.addAll(taskGroup.getChildren());
         return result;
     }
 

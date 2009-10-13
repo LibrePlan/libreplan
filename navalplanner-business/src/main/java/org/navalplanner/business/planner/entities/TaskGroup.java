@@ -51,9 +51,13 @@ public class TaskGroup extends TaskElement {
     }
 
     public void addTaskElement(TaskElement task) {
+        addTaskElement(taskElements.size(), task);
+    }
+
+    public void addTaskElement(Integer index, TaskElement task) {
         Validate.notNull(task);
         task.setParent(this);
-        taskElements.add(task);
+        taskElements.add(index, task);
     }
 
     @Override

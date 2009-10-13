@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -44,6 +43,7 @@ import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskMilestone;
@@ -228,8 +228,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             Order orderReloaded) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setOrder(orderReloaded);
-        planningState = new PlanningState(retainOnlyTopLevel(orderReloaded
-                .getAssociatedTasks()), resourceDAO.list(Resource.class));
+        planningState = new PlanningState(orderReloaded.getAssociatedTasks(),
+                resourceDAO.list(Resource.class));
+
         forceLoadOfDependenciesCollections(planningState.getInitial());
         forceLoadOfWorkingHours(planningState.getInitial());
         forceLoadOfLabels(planningState.getInitial());
@@ -237,35 +238,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 new TaskElementNavigator(), planningState.getInitial());
     }
 
-    private Collection<? extends TaskElement> retainOnlyTopLevel(
-            List<TaskElement> associatedTasks) {
-        Set<TaskElement> descendantsFromOther = new HashSet<TaskElement>();
-        for (TaskElement taskElement : associatedTasks) {
-            descandants(descendantsFromOther, taskElement);
-        }
-        ArrayList<TaskElement> result = new ArrayList<TaskElement>();
-        for (TaskElement taskElement : associatedTasks) {
-            if (!descendantsFromOther.contains(taskElement)) {
-                result.add(taskElement);
-            }
-        }
-        return result;
-    }
-
-    private void descandants(Set<TaskElement> accumulated,
-            TaskElement taskElement) {
-        if (taskElement.isLeaf()) {
-            return;
-        }
-        for (TaskElement t : taskElement.getChildren()) {
-            accumulated.add(t);
-            descandants(accumulated, t);
-        }
-    }
-
     private void forceLoadOfWorkingHours(List<TaskElement> initial) {
         for (TaskElement taskElement : initial) {
-            taskElement.getOrderElement().getWorkHours();
+            OrderElement orderElement = taskElement.getOrderElement();
+            if (orderElement != null) {
+                orderElement.getWorkHours();
+            }
             if (!taskElement.isLeaf()) {
                 forceLoadOfWorkingHours(taskElement.getChildren());
             }
@@ -290,7 +268,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private void forceLoadOfLabels(List<TaskElement> initial) {
         for (TaskElement taskElement : initial) {
             if (taskElement.isLeaf()) {
-                taskElement.getOrderElement().getLabels().size();
+                OrderElement orderElement = taskElement.getOrderElement();
+                if (orderElement != null) {
+                    orderElement.getLabels().size();
+                }
             } else {
                 forceLoadOfLabels(taskElement.getChildren());
             }

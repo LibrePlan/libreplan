@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -92,6 +93,9 @@ public class PlanningState {
     }
 
     private boolean isTopLevel(TaskElement taskElement) {
+        if (taskElement instanceof TaskMilestone) {
+            return true;
+        }
         return taskElement.getParent() == null;
     }
 
