@@ -38,10 +38,12 @@
     <vbox>
         <hbox>
           <!-- Filter by label -->
-          <combobox>
+          <combobox id="cbFilterType">
               <comboitem label="Filter by Label" />
           </combobox>
-          <bandboxSearch id="bdLabels" finder="LabelBandboxFinder" />
+          <bandboxSearch id="bdFilter" finder="LabelBandboxFinder" />
+          <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+                onClick="orderElementTreeController.onApplyFilter(event)"/>
         </hbox>
     </vbox>
     <vbox>

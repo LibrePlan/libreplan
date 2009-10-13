@@ -23,6 +23,7 @@ package org.navalplanner.web.orders;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -64,4 +65,5 @@ public interface IOrderModel {
 
     void convertToScheduleAndSave(Order order);
 
+    void addLabelPredicate(Label label);
 }

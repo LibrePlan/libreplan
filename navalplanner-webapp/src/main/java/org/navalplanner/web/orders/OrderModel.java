@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
@@ -36,7 +37,10 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.labels.daos.ILabelDAO;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
@@ -90,6 +94,12 @@ public class OrderModel implements IOrderModel {
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
+
+    @Autowired
+    private ILabelDAO labelDAO;
+
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -201,9 +211,49 @@ public class OrderModel implements IOrderModel {
         this.order = order;
     }
 
+    private IPredicate predicate;
+
+    public IPredicate getPredicate() {
+        return predicate;
+    }
+
+    public void setPredicate(IPredicate predicate) {
+        this.predicate = predicate;
+    }
+
     @Override
+    @Transactional(readOnly = true)
     public OrderElementTreeModel getOrderElementTreeModel() {
+        if (predicate != null) {
+            return applyPredicate();
+        }
         return orderElementTreeModel;
+    }
+
+    private OrderElementTreeModel applyPredicate() {
+        for (OrderElement orderElement : order.getOrderElements()) {
+            reattachOrderElement(orderElement);
+            initializeLabels(orderElement.getLabels());
+            if (predicate.complays(orderElement)) {
+                order.remove(orderElement);
+            }
+        }
+        return new OrderElementTreeModel(order);
+    }
+
+    private void reattachOrderElement(OrderElement orderElement) {
+        orderElementDAO.save(orderElement);
+    }
+
+    private void initializeLabels(Set<Label> labels) {
+        for (Label label : labels) {
+            initializeLabel(label);
+        }
+    }
+
+    private void initializeLabel(Label label) {
+        label.getName();
+        label.getType().getName();
     }
 
     @Override
@@ -289,6 +339,11 @@ public class OrderModel implements IOrderModel {
     @Transactional
     public void convertToScheduleAndSave(Order order) {
         taskElementDAO.save(convertToInitialSchedule(order));
+    }
+
+    @Override
+    public void addLabelPredicate(Label label) {
+        predicate = new LabelOrderElementPredicate(label);
     }
 
 }

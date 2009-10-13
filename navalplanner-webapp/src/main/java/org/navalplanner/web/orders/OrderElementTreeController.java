@@ -34,6 +34,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.DropEvent;
@@ -42,6 +43,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
@@ -60,6 +62,10 @@ import org.zkoss.zul.api.Tree;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class OrderElementTreeController extends GenericForwardComposer {
+
+    private Combobox cbFilterType;
+
+    private BandboxSearch bdFilter;
 
     private Tree tree;
 
@@ -518,6 +524,21 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 result.append(path[i] + 1);
             }
             return result.toString();
+        }
+    }
+
+    private final String FILTER_BY_LABEL = _("Filter by Label");
+
+    /**
+     *
+     * @param event
+     */
+    public void onApplyFilter(Event event) {
+        if (FILTER_BY_LABEL.equals(cbFilterType.getValue())) {
+            org.navalplanner.business.labels.entities.Label label = (org.navalplanner.business.labels.entities.Label) bdFilter
+                    .getSelectedElement();
+            orderModel.addLabelPredicate(label);
+            Util.reloadBindings(tree);
         }
     }
 
