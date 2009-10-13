@@ -141,17 +141,19 @@ public class AssignedLabelsToOrderElementModel implements
         return result;
     }
 
+    @Override
     public Label createLabel(String labelName, LabelType labelType) {
         Label label = Label.create(labelName);
         label.setType(labelType);
+        cacheLabels.add(label);
         return label;
     }
 
+    @Override
     @Transactional(readOnly = true)
     public void assignLabel(Label label) {
         reattachLabels();
         orderElement.addLabel(label);
-        cacheLabels.add(label);
     }
 
     @Override
