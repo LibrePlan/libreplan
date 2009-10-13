@@ -74,7 +74,8 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
     @Override
     public boolean entryMatchesText(Object obj, String text) {
         final Label label = (Label) obj;
-        return (label.getType().getName().toLowerCase().contains(text) || label
+        text = text.toLowerCase();
+        return (label.getType().getName().toLowerCase().contains(text.toLowerCase()) || label
                 .getName().toLowerCase().contains(text));
     }
 
