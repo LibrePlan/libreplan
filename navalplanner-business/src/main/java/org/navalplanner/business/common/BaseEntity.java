@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.common;
 
+import org.navalplanner.business.INewObject;
+
 
 /**
  * Base class for all the application entities.
@@ -28,7 +30,7 @@ package org.navalplanner.business.common;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public abstract class BaseEntity {
+public abstract class BaseEntity implements INewObject {
 
     private Long id;
 
@@ -60,7 +62,7 @@ public abstract class BaseEntity {
         this.newObject = newObject;
     }
 
-    protected boolean isNewObject() {
+    public boolean isNewObject() {
         return newObject;
     }
 

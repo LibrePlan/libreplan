@@ -35,4 +35,24 @@
         <macro-uri>/common/components/bandbox_search.zul</macro-uri>
     </component>
 
+    <component>
+        <component-name>newdatasortablecolumn</component-name>
+        <component-class>org.navalplanner.web.common.components.NewDataSortableColumn</component-class>
+        <extends>column</extends>
+    </component>
+    
+    <component>
+        <component-name>newdatasortablegrid</component-name>
+        <component-class>org.navalplanner.web.common.components.NewDataSortableGrid</component-class>
+        <extends>grid</extends>
+        <annotation>
+            <annotation-name>default-bind</annotation-name>
+            <property-name>model</property-name>
+            <attribute>
+                <attribute-name>converter</attribute-name>
+                <attribute-value>org.zkoss.zkplus.databind.ListModelConverter</attribute-value>
+            </attribute>
+        </annotation>
+    </component>
+
 </language-addon>
