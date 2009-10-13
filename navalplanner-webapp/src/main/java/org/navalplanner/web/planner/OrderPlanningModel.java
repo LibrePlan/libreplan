@@ -320,17 +320,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         Plotinfo plotInfoOrder = getLoadPlotInfo(order, interval.getStart(),
                 interval.getFinish());
-        plotInfoOrder.setId("order");
         plotInfoOrder.setFillColor("0000FF");
 
         Plotinfo plotInfoCompany = getResourcesLoadPlotInfo(order, interval
                 .getStart(), interval.getFinish());
-        plotInfoCompany.setId("company");
         plotInfoCompany.setFillColor("00FF00");
 
         Plotinfo plotInfoMax = getCalendarMaximumAvailabilityPlotInfo(order,
                 interval.getStart(), interval.getFinish());
-        plotInfoMax.setId("max");
         plotInfoMax.setLineColor("FF0000");
 
         ValueGeometry valueGeometry = new DefaultValueGeometry();
