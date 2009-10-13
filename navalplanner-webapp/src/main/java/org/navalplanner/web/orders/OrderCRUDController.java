@@ -264,4 +264,9 @@ public class OrderCRUDController extends GenericForwardComposer {
         return confirmingSchedule;
     }
 
+    public void setPlanningControllerEntryPoints(
+            IOrderPlanningControllerEntryPoints planningControllerEntryPoints) {
+        this.planningControllerEntryPoints = planningControllerEntryPoints;
+    }
+
 }

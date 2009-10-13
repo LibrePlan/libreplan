@@ -30,6 +30,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.CompanyPlanningController;
+import org.navalplanner.web.planner.IOrderPlanningControllerEntryPoints;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -192,7 +193,7 @@ public class MultipleTabsPlannerController {
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
                 Map<String, Object> args = new HashMap<String, Object>();
-                args.put("orderController", orderCRUDController);
+                args.put("orderController", setupOrderCrudController());
                 org.zkoss.zk.ui.Component result = Executions.createComponents(
                         "/orders/_ordersTab.zul", parent, args);
                 createBindingsFor(result);
@@ -201,6 +202,18 @@ public class MultipleTabsPlannerController {
             }
 
         });
+    }
+
+    private OrderCRUDController setupOrderCrudController() {
+        orderCRUDController.setPlanningControllerEntryPoints(new IOrderPlanningControllerEntryPoints() {
+
+            @Override
+            public void showSchedule(Order order) {
+                mode.goToOrderMode(order);
+
+            }
+        });
+        return orderCRUDController;
     }
 
     @SuppressWarnings("unchecked")
