@@ -41,7 +41,8 @@
           <combobox id="cbFilterType">
               <comboitem label="Filter by Label" />
           </combobox>
-          <bandboxSearch id="bdFilter" finder="LabelBandboxFinder" />
+          <bandboxSearch id="bdFilter" finder="LabelBandboxFinder"
+                model="@{orderElementTreeController.labels}"/>
           <button label="${i18n:_('Filter')}" style="margin-top: -4px"
                 onClick="orderElementTreeController.onApplyFilter(event)"/>
         </hbox>

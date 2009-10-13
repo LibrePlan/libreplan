@@ -77,6 +77,10 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
     private final OrderElementController orderElementController;
 
+    public List<org.navalplanner.business.labels.entities.Label> getLabels() {
+        return orderModel.getLabels();
+    }
+
     public OrderElementTreeitemRenderer getRenderer() {
         return renderer;
     }

@@ -22,6 +22,8 @@ package org.navalplanner.web.orders;
 
 import java.util.List;
 
+import javax.sql.rowset.Predicate;
+
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
@@ -31,39 +33,63 @@ import org.navalplanner.business.planner.entities.TaskElement;
 
 /**
  * Contract for {@link OrderModel}<br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public interface IOrderModel {
 
-    List<Order> getOrders();
+    /**
+     * Adds {@link Label} to list of labels
+     *
+     * @param label
+     */
+    void addLabel(Label label);
 
-    void prepareEditFor(Order order);
-
-    void prepareForCreate();
-
-    void save() throws ValidationException;
-
-    IOrderLineGroup getOrder();
-
-    void remove(Order order);
-
-    void prepareForRemove(Order order);
-
-    OrderElementTreeModel getOrderElementTreeModel();
-
-    IOrderElementModel getOrderElementModel(OrderElement orderElement);
-
-    void prepareForSchedule(Order order);
-
-    void schedule();
-
-    boolean isAlreadyScheduled(Order order);
-
-    void setOrder(Order order);
+    /**
+     * Adds a {@link Predicate} for filtering orders
+     *
+     * This filter is later consider by getOrderElementTreeModel
+     *
+     * @param label
+     */
+    void addLabelPredicate(Label label);
 
     TaskElement convertToInitialSchedule(OrderElement order);
 
     void convertToScheduleAndSave(Order order);
 
-    void addLabelPredicate(Label label);
+    /**
+     * Returns a list of {@link Label}
+     *
+     * @return
+     */
+    List<Label> getLabels();
+
+    IOrderLineGroup getOrder();
+
+    IOrderElementModel getOrderElementModel(OrderElement orderElement);
+
+    OrderElementTreeModel getOrderElementTreeModel();
+
+    List<Order> getOrders();
+
+    boolean isAlreadyScheduled(Order order);
+
+    void prepareEditFor(Order order);
+
+    void prepareForCreate();
+
+    void prepareForRemove(Order order);
+
+    void prepareForSchedule(Order order);
+
+    void remove(Order order);
+
+    void save() throws ValidationException;
+
+    void schedule();
+
+    void setOrder(Order order);
+
 }

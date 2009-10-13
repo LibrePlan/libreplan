@@ -23,8 +23,10 @@ package org.navalplanner.web.orders;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -101,6 +103,20 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
+    Set<Label> cacheLabels = new HashSet<Label>();
+
+    @Override
+    public List<Label> getLabels() {
+        final List<Label> result = new ArrayList<Label>();
+        result.addAll(cacheLabels);
+        return result;
+    }
+
+    @Override
+    public void addLabel(Label label) {
+        cacheLabels.add(label);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
@@ -124,10 +140,31 @@ public class OrderModel implements IOrderModel {
     @Transactional(readOnly = true)
     public void prepareEditFor(Order order) {
         Validate.notNull(order);
+        initializeCacheLabels();
         loadCriterions();
         this.order = getFromDB(order);
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
         forceLoadAdvanceAssignmentsAndMeasurements(this.order);
+    }
+
+    private void initializeCacheLabels() {
+        if (cacheLabels.isEmpty()) {
+            cacheLabels = new HashSet<Label>();
+            final List<Label> labels = labelDAO.getAll();
+            initializeLabels(labels);
+            cacheLabels.addAll(labels);
+        }
+    }
+
+    private void initializeLabels(Collection<Label> labels) {
+        for (Label label : labels) {
+            initializeLabel(label);
+        }
+    }
+
+    private void initializeLabel(Label label) {
+        label.getName();
+        label.getType().getName();
     }
 
     private void forceLoadAdvanceAssignmentsAndMeasurements(
@@ -243,17 +280,6 @@ public class OrderModel implements IOrderModel {
 
     private void reattachOrderElement(OrderElement orderElement) {
         orderElementDAO.save(orderElement);
-    }
-
-    private void initializeLabels(Set<Label> labels) {
-        for (Label label : labels) {
-            initializeLabel(label);
-        }
-    }
-
-    private void initializeLabel(Label label) {
-        label.getName();
-        label.getType().getName();
     }
 
     @Override

@@ -61,8 +61,6 @@ public class AssignedLabelsToOrderElementModel implements
 
     IOrderModel orderModel;
 
-    Set<Label> cacheLabels = new HashSet<Label>();
-
     @Override
     public OrderElement getOrderElement() {
         return orderElement;
@@ -76,18 +74,8 @@ public class AssignedLabelsToOrderElementModel implements
     @Override
     @Transactional(readOnly = true)
     public void init(OrderElement orderElement) {
-        initializeCacheLabels();
         this.orderElement = orderElement;
         initializeOrderElement(this.orderElement);
-    }
-
-    private void initializeCacheLabels() {
-        if (cacheLabels.isEmpty()) {
-            cacheLabels = new HashSet<Label>();
-            final List<Label> labels = labelDAO.getAll();
-            initializeLabels(labels);
-            cacheLabels.addAll(labels);
-        }
     }
 
     private void initializeOrderElement(OrderElement orderElement) {
@@ -98,6 +86,12 @@ public class AssignedLabelsToOrderElementModel implements
             orderElement.getParent().getName();
         }
         initializeLabels(orderElement.getLabels());
+    }
+
+    private void reattachLabels() {
+        for (Label label : orderModel.getLabels()) {
+            labelDAO.save(label);
+        }
     }
 
     private void initializeLabels(Collection<Label> labels) {
@@ -121,12 +115,6 @@ public class AssignedLabelsToOrderElementModel implements
         return result;
     }
 
-    private void reattachLabels() {
-        for (Label label : cacheLabels) {
-            labelDAO.save(label);
-        }
-    }
-
     @Override
     @Transactional(readOnly = true)
     public List<Label> getInheritedLabels() {
@@ -147,7 +135,7 @@ public class AssignedLabelsToOrderElementModel implements
     public Label createLabel(String labelName, LabelType labelType) {
         Label label = Label.create(labelName);
         label.setType(labelType);
-        cacheLabels.add(label);
+        orderModel.addLabel(label);
         return label;
     }
 
@@ -171,7 +159,6 @@ public class AssignedLabelsToOrderElementModel implements
         Label label = findLabelByNameAndTypeName(labelName, labelType.getName());
         if (label != null) {
             initializeLabel(label);
-            cacheLabels.add(label);
         }
         return label;
     }
@@ -185,7 +172,7 @@ public class AssignedLabelsToOrderElementModel implements
      */
     private Label findLabelByNameAndTypeName(String labelName,
             String labelTypeName) {
-        for (Label label : cacheLabels) {
+        for (Label label : orderModel.getLabels()) {
             if (label.getName().equals(labelName)
                     && label.getType().getName().equals(labelTypeName)) {
                 return label;
@@ -204,16 +191,6 @@ public class AssignedLabelsToOrderElementModel implements
             }
         }
         return false;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Label> getAllLabels() {
-        reattachLabels();
-        final List<Label> labels = new ArrayList<Label>();
-        labels.addAll(cacheLabels);
-        initializeLabels(labels);
-        return labels;
     }
 
     @Override
@@ -243,5 +220,10 @@ public class AssignedLabelsToOrderElementModel implements
     @Override
     public void setOrderModel(IOrderModel orderModel) {
         this.orderModel = orderModel;
+    }
+
+    @Override
+    public List<Label> getAllLabels() {
+        return (orderModel != null) ? orderModel.getLabels() : new ArrayList<Label>();
     }
 }
