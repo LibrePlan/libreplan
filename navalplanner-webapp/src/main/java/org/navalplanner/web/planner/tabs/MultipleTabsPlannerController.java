@@ -21,9 +21,12 @@ package org.navalplanner.web.planner.tabs;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.CompanyPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
@@ -182,10 +186,32 @@ public class MultipleTabsPlannerController {
                     @Override
                     public org.zkoss.zk.ui.Component create(
                             org.zkoss.zk.ui.Component parent) {
-                return withUpAndDownButton(new Label("on order view. mode: "
-                        + mode.getType()));
-                    }
-                });
+                org.zkoss.zk.ui.Component result = Executions.createComponents(
+                        "/orders/_ordersTab.zul",
+                                        parent,
+                                        null);
+                createBindingsFor(result);
+                Util.reloadBindings(result);
+                return result;
+            }
+
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private void createBindingsFor(org.zkoss.zk.ui.Component result) {
+        List<org.zkoss.zk.ui.Component> children = new ArrayList<org.zkoss.zk.ui.Component>(
+                result.getChildren());
+        for (org.zkoss.zk.ui.Component child : children) {
+            createBindingsFor(child);
+        }
+        setBinderFor(result);
+    }
+
+    private void setBinderFor(org.zkoss.zk.ui.Component result) {
+        AnnotateDataBinder binder = new AnnotateDataBinder(result, true);
+        result.setVariable("binder", binder, true);
+        binder.loadAll();
     }
 
     private ITab createOrderOrdersTab() {

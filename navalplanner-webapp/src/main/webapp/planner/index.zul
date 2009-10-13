@@ -34,8 +34,6 @@
     multipleTabsPlanner = multipleTabsPlannerController;
 ]]>
 </zscript>
-    <!-- choose lightLoad, mediumLoad or highLoad.
-     -->
     <tabSwitcher self="@{define(content)}" configuration="@{multipleTabsPlanner.tabs}">
     </tabSwitcher>
 </zk>
