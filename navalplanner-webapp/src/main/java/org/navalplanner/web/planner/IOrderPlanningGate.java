@@ -21,15 +21,12 @@
 package org.navalplanner.web.planner;
 
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.web.common.entrypoints.EntryPoint;
-import org.navalplanner.web.common.entrypoints.EntryPoints;
 
 /**
+ * This interface allows to go to the schedule of an {@link Order}
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-@EntryPoints(page = "/planner/order.zul", registerAs = "planningControllerEntryPoints")
-public interface IOrderPlanningControllerEntryPoints {
+public interface IOrderPlanningGate {
 
-    @EntryPoint("plan")
-    public void showSchedule(Order order);
+    public void goToScheduleOf(Order order);
 }

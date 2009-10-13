@@ -30,7 +30,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.CompanyPlanningController;
-import org.navalplanner.web.planner.IOrderPlanningControllerEntryPoints;
+import org.navalplanner.web.planner.IOrderPlanningGate;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -219,7 +219,7 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private OrderCRUDController setupOrderCrudController() {
-        orderCRUDController.setPlanningControllerEntryPoints(new IOrderPlanningControllerEntryPoints() {
+        orderCRUDController.setPlanningControllerEntryPoints(new IOrderPlanningGate() {
 
             @Override
             public void showSchedule(Order order) {

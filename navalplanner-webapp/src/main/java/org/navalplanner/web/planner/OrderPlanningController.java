@@ -23,7 +23,6 @@ package org.navalplanner.web.planner;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
-import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -39,8 +38,7 @@ import org.zkoss.ganttz.util.script.IScriptsRegister;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class OrderPlanningController implements
-        IOrderPlanningControllerEntryPoints {
+public class OrderPlanningController {
 
     @Autowired
     private ViewSwitcher viewSwitcher;
@@ -84,8 +82,7 @@ public class OrderPlanningController implements
                 .retrieve();
     }
 
-    @Override
-    public void showSchedule(Order order) {
+    private void setConfigurationForGiven(Order order) {
         model.setConfigurationToPlanner(planner, order, viewSwitcher,
                 resourceAllocationController, editTaskController,
                 splittingController, calendarAllocationController);
@@ -93,9 +90,6 @@ public class OrderPlanningController implements
 
     public void registerPlanner(Planner planner) {
         this.planner = planner;
-        final URLHandler<IOrderPlanningControllerEntryPoints> handler = urlHandlerRegistry
-                .getRedirectorFor(IOrderPlanningControllerEntryPoints.class);
-        handler.registerListener(this, planner.getPage());
     }
 
     public SplittingController getSplittingController() {

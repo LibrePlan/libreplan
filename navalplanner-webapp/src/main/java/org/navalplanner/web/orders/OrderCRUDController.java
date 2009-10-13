@@ -35,7 +35,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.planner.IOrderPlanningControllerEntryPoints;
+import org.navalplanner.web.planner.IOrderPlanningGate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -76,7 +76,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private boolean confirmingSchedule;
 
-    private IOrderPlanningControllerEntryPoints planningControllerEntryPoints;
+    private IOrderPlanningGate planningControllerEntryPoints;
 
     public List<Order> getOrders() {
         return orderModel.getOrders();
@@ -158,7 +158,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void goToShedulingView(Order order) {
-        planningControllerEntryPoints.showSchedule(order);
+        planningControllerEntryPoints.goToScheduleOf(order);
     }
 
     private void showScheduleConfirmingWindow() {
@@ -265,7 +265,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void setPlanningControllerEntryPoints(
-            IOrderPlanningControllerEntryPoints planningControllerEntryPoints) {
+            IOrderPlanningGate planningControllerEntryPoints) {
         this.planningControllerEntryPoints = planningControllerEntryPoints;
     }
 
