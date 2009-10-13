@@ -108,8 +108,13 @@ public class OrderCRUDController extends GenericForwardComposer {
                                 if (invalidValue.getBean() instanceof OrderElement) {
                                     Label result = new Label();
 
-                                    String orderElementName = ((OrderElement) invalidValue
-                                            .getBean()).getName();
+                                    String orderElementName;
+                                    if (invalidValue.getBean() instanceof Order) {
+                                        orderElementName = _("Order");
+                                    } else {
+                                        orderElementName = ((OrderElement) invalidValue
+                                                .getBean()).getName();
+                                    }
 
                                     result.setValue(orderElementName + " "
                                             + invalidValue.getPropertyName()
