@@ -59,7 +59,7 @@ public class AssignedLabelsToOrderElementModel implements
 
     OrderElement orderElement;
 
-    Set<Label> cacheLabels;
+    Set<Label> cacheLabels = new HashSet<Label>();
 
     @Override
     public OrderElement getOrderElement() {
@@ -81,7 +81,6 @@ public class AssignedLabelsToOrderElementModel implements
 
     private void initializeCacheLabels() {
         if (cacheLabels == null) {
-            System.out.println("### initializeCache");
             cacheLabels = new HashSet<Label>();
             final List<Label> labels = labelDAO.getAll();
             initializeLabels(labels);

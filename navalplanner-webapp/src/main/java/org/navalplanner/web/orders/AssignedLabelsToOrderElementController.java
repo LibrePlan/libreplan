@@ -22,7 +22,6 @@ package org.navalplanner.web.orders;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.navalplanner.business.labels.entities.Label;
@@ -30,19 +29,12 @@ import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listcell;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -65,11 +57,7 @@ public class AssignedLabelsToOrderElementController extends
 
     private Textbox txtLabelName;
 
-    private Bandbox bdLabels;
-
-    private Listbox lbLabels;
-
-    private LabelRenderer labelRenderer = new LabelRenderer();
+    private BandboxSearch bdLabels;
 
     public OrderElement getOrderElement() {
         return assignedLabelsToOrderElementModel.getOrderElement();
@@ -86,16 +74,8 @@ public class AssignedLabelsToOrderElementController extends
     public void openWindow(OrderElement orderElement) {
         assignedLabelsToOrderElementModel.init(orderElement);
 
-        // Configure bandbox with all labels
-        final List<Label> allLabels = getAllLabels();
-        bdLabels.setVariable("allLabels", allLabels, true);
-        lbLabels.setModel(new SimpleListModel(allLabels));
-
-        // Initialize selectedLabel
-        bdLabels.setVariable("selectedLabel", null, true);
-
         // Clear components
-        bdLabels.setValue("");
+        bdLabels.clear();
         txtLabelName.setValue("");
 
         Util.reloadBindings(window);
@@ -110,61 +90,13 @@ public class AssignedLabelsToOrderElementController extends
     }
 
     /**
-     * On selecting one {@link Label} from bandbox listbox
-     *
-     * Selected {@link Label} is stored in an internal {@link Bandbox} variable:
-     * selectedLabel,
-     *
-     * @param event
-     */
-    public void onSelectLabel(Event event) {
-        Listitem listitem = (Listitem) lbLabels.getSelectedItems().iterator()
-                .next();
-        Label label = (Label) listitem.getValue();
-        bdLabels.setValue(label.getType().getName() + " " + label.getName());
-        bdLabels.setVariable("selectedLabel", label, true);
-        bdLabels.close();
-    }
-
-    /**
-     * Search {@link Label} starting with input text
-     *
-     * @param event
-     */
-    public void onSearchLabels(InputEvent event) {
-        bdLabels.setVariable("selectedLabel", null, true);
-        List<Label> filteredLabels = matchesString(event.getValue());
-        lbLabels.setModel(new SimpleListModel(filteredLabels));
-        lbLabels.invalidate();
-    }
-
-    /**
-     * Find {@link Label} which name or type start with prefix
-     *
-     * @param prefix
-     */
-    @SuppressWarnings("unchecked")
-    private List<Label> matchesString(String prefix) {
-        List<Label> result = new ArrayList<Label>();
-        List<Label> labels = (List<Label>) bdLabels.getVariable("allLabels",
-                true);
-        for (Label label : labels) {
-            if (label.getName().contains(prefix)
-                    || label.getType().getName().contains(prefix)) {
-                result.add(label);
-            }
-        }
-        return result;
-    }
-
-    /**
      * Executed on pressing Assign button
      *
      * Adds selected label to direct labels list
      *
      */
     public void onAssignLabel() {
-        Label label = (Label) bdLabels.getVariable("selectedLabel", true);
+        Label label = (Label) bdLabels.getSelectedElement();
         if (label == null) {
             throw new WrongValueException(bdLabels, _("please, select a label"));
         }
@@ -172,24 +104,7 @@ public class AssignedLabelsToOrderElementController extends
             throw new WrongValueException(bdLabels, _("already assigned"));
         }
         assignLabel(label);
-        clear(bdLabels);
-    }
-
-    /**
-     * Clears {@link Bandbox}
-     *
-     * Fills bandbox list with all labels, clear bandbox textbox, and set
-     * selected label to null
-     *
-     * @param bandbox
-     */
-    @SuppressWarnings("unchecked")
-    private void clear(Bandbox bandbox) {
-        final List<Label> labels = (List<Label>) bandbox.getVariable(
-                "allLabels", true);
-        lbLabels.setModel(new SimpleListModel(labels));
-        bdLabels.setValue("");
-        bdLabels.setVariable("selectedLabel", null, true);
+        bdLabels.clear();
     }
 
     /**
@@ -219,8 +134,7 @@ public class AssignedLabelsToOrderElementController extends
         Label label = assignedLabelsToOrderElementModel
                 .findLabelByNameAndType(labelName, labelType);
         if (label == null) {
-            label = createLabel(labelName, labelType);
-            addLabel(label);
+            label = addLabel(labelName, labelType);
         } else {
             // Label is already assigned?
             if (isAssigned(label)) {
@@ -232,17 +146,15 @@ public class AssignedLabelsToOrderElementController extends
         clear(txtLabelName);
     }
 
-    /**
-     * Add {@link Label} to {@link Bandbox} list when assigning new label
-     *
-     * @param label
-     */
-    private void addLabel(Label label) {
-        List<Label> labels = (List<Label>) bdLabels.getVariable("allLabels",
-                true);
-        labels.add(label);
-        bdLabels.setVariable("allLabels", labels, true);
-        Util.reloadBindings(lbLabels);
+    private Label addLabel(String labelName, LabelType labelType) {
+        Label label = createLabel(labelName, labelType);
+        bdLabels.addElement(label);
+        return label;
+    }
+
+    private Label createLabel(String labelName, LabelType labelType) {
+        return assignedLabelsToOrderElementModel.createLabel(labelName,
+                labelType);
     }
 
     private void clear(Textbox textbox) {
@@ -256,11 +168,6 @@ public class AssignedLabelsToOrderElementController extends
 
     private boolean isAssigned(Label label) {
         return assignedLabelsToOrderElementModel.isAssigned(label);
-    }
-
-    private Label createLabel(String labelName, LabelType labelType) {
-        return assignedLabelsToOrderElementModel.createLabel(labelName,
-                labelType);
     }
 
     public void deleteLabel(Label label) {
@@ -303,33 +210,6 @@ public class AssignedLabelsToOrderElementController extends
         assignedLabelsToOrderElementModel.confirm();
         window.setVariable("status", new Integer(1), true);
         close();
-    }
-
-    public ListitemRenderer getLabelRenderer() {
-        return labelRenderer;
-    }
-
-    /**
-     * Render for {@link Label}
-     *
-     * @author Diego Pino Garcia <dpino@igalia.com>
-     */
-    private class LabelRenderer implements ListitemRenderer {
-
-        @Override
-        public void render(Listitem item, Object data) throws Exception {
-            Label label = (Label) data;
-
-            item.setValue(data);
-
-            final Listcell labelType = new Listcell();
-            labelType.setLabel(label.getType().getName());
-            labelType.setParent(item);
-
-            final Listcell labelName = new Listcell();
-            labelName.setLabel(label.getName());
-            labelName.setParent(item);
-        }
     }
 
 }

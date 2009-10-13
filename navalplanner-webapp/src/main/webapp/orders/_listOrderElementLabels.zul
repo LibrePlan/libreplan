@@ -71,22 +71,8 @@
                 <vbox>
                     <label value="${i18n:_('Assign Label')}" />
                     <hbox>
-                        <bandbox id="bdLabels" autodrop="true"
-                            onChanging="assignedLabelsController.onSearchLabels(event)">
-                            <bandpopup>
-                                <vbox height="50px">
-                                    <listbox id="lbLabels" width="200px"
-                                        height="100px" vflex="true"
-                                        itemRenderer="@{assignedLabelsController.labelRenderer}"
-                                        onSelect="assignedLabelsController.onSelectLabel(event)">
-                                        <listhead>
-                                            <listheader label="Type" />
-                                            <listheader label="Label" />
-                                        </listhead>
-                                    </listbox>
-                                </vbox>
-                            </bandpopup>
-                        </bandbox>
+                        <bandboxSearch id="bdLabels" finder="LabelBandboxFinder"
+                            model="@{assignedLabelsController.allLabels}" />
                         <button label="${i18n:_('Assign')}"
                             onClick="assignedLabelsController.onAssignLabel()"
                             style="margin-top: -4px" />
