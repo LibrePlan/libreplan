@@ -118,6 +118,26 @@ public class MultipleTabsPlannerController implements Composer {
     @Autowired
     private OrderPlanningController orderPlanningController;
 
+    private IComponentCreator ordersTabCreator = new IComponentCreator() {
+
+        private org.zkoss.zk.ui.Component result;
+
+        @Override
+        public org.zkoss.zk.ui.Component create(
+                org.zkoss.zk.ui.Component parent) {
+            if (result != null) {
+                return result;
+            }
+            Map<String, Object> args = new HashMap<String, Object>();
+            args.put("orderController", setupOrderCrudController());
+            result = Executions.createComponents(
+                    "/orders/_ordersTab.zul", parent, args);
+            createBindingsFor(result);
+            Util.reloadBindings(result);
+            return result;
+        }
+    };
+
     public TabsConfiguration getTabs() {
         if (tabsConfiguration == null) {
             tabsConfiguration = buildTabsConfiguration();
@@ -242,22 +262,7 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private ITab createGlobalOrdersTab() {
-        return new CreatedOnDemandTab(ORDERS_VIEW,
-                new IComponentCreator() {
-
-            @Override
-            public org.zkoss.zk.ui.Component create(
-                    org.zkoss.zk.ui.Component parent) {
-                Map<String, Object> args = new HashMap<String, Object>();
-                args.put("orderController", setupOrderCrudController());
-                org.zkoss.zk.ui.Component result = Executions.createComponents(
-                        "/orders/_ordersTab.zul", parent, args);
-                createBindingsFor(result);
-                Util.reloadBindings(result);
-                return result;
-            }
-
-        });
+        return new CreatedOnDemandTab(ORDERS_VIEW, ordersTabCreator);
     }
 
     private OrderCRUDController setupOrderCrudController() {
@@ -289,15 +294,14 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private ITab createOrderOrdersTab() {
-        return new CreatedOnDemandTab(ORDERS_VIEW, new IComponentCreator() {
-
+        return new CreatedOnDemandTab(ORDERS_VIEW, ordersTabCreator) {
             @Override
-            public org.zkoss.zk.ui.Component create(
-                    org.zkoss.zk.ui.Component parent) {
-                return withUpAndDownButton(new Label("on order view. mode: "
-                        + mode.getType()));
+            protected void afterShowAction() {
+                if (mode.isOf(ModeType.ORDER)) {
+                    orderCRUDController.goToEditForm(mode.getOrder());
+                }
             }
-        });
+        };
     }
 
     @Override
