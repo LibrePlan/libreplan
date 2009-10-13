@@ -147,15 +147,21 @@ public class Planner extends HtmlMacroComponent  {
         context.add(configuration.getData());
         setupComponents();
 
-        getFellow("insertionPointLeftPanel").appendChild(leftPane);
+        setAt("insertionPointLeftPanel", leftPane);
         leftPane.afterCompose();
-        getFellow("insertionPointRightPanel").appendChild(ganttPanel);
+        setAt("insertionPointRightPanel", ganttPanel);
         ganttPanel.afterCompose();
 
         Component chartComponent = configuration.getChartComponent();
         if (chartComponent != null) {
             getFellow("insertionPointChart").appendChild(chartComponent);
         }
+    }
+
+    private void setAt(String insertionPointId, Component component) {
+        Component insertionPoint = getFellow(insertionPointId);
+        insertionPoint.getChildren().clear();
+        insertionPoint.appendChild(component);
     }
 
     private <T> List<CommandOnTaskContextualized<T>> contextualize(
@@ -202,12 +208,27 @@ public class Planner extends HtmlMacroComponent  {
                 commandsOnTasksContextualized, editTaskCommand);
     }
 
+    @SuppressWarnings("unchecked")
     private void insertGlobalCommands() {
         Component toolbar = getToolbar();
         Component firstSeparator = getFirstSeparatorFromToolbar();
+        toolbar.getChildren().removeAll(getBefore(toolbar, firstSeparator));
         for (CommandContextualized<?> c : contextualizedGlobalCommands) {
             toolbar.insertBefore(c.toButton(), firstSeparator);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Component> getBefore(Component parent, Component child) {
+        List<Component> children = parent.getChildren();
+        List<Component> result = new ArrayList<Component>();
+        for (Component object : children) {
+            if (object == child) {
+                break;
+            }
+            result.add(object);
+        }
+        return result;
     }
 
     @SuppressWarnings("unchecked")
