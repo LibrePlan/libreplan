@@ -20,7 +20,6 @@
 
 package org.navalplanner.web.planner;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,8 +32,11 @@ import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -75,6 +77,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     @Autowired
     private IResourceDAO resourceDAO;
 
+    @Autowired
+    private IDayAssignmentDAO dayAssignmentDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
         @Override
@@ -103,11 +111,18 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         PlannerConfiguration<TaskElement> configuration = createConfiguration();
 
         configuration.addGlobalCommand(buildSaveCommand());
-        configuration.addGlobalCommand(buildResourceLoadForOrderCommand(switcher));
+        configuration
+                .addGlobalCommand(buildResourceLoadForOrderCommand(switcher));
 
-        configuration.setEditTaskCommand(buildEditTaskCommand(editTaskController));
+        configuration
+                .setEditTaskCommand(buildEditTaskCommand(editTaskController));
+
+        Chart chartComponent = new Chart();
+        configuration.setChartComponent(chartComponent);
 
         planner.setConfiguration(configuration);
+
+        setupChart(chartComponent, planner.getTimeTracker());
     }
 
     private IEditTaskCommand buildEditTaskCommand(
@@ -130,23 +145,31 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return saveCommand;
     }
 
-    private void setupChart(Order orderReloaded, Chart chartComponent,
-            TimeTracker timeTracker) {
-        fillChart(orderReloaded, chartComponent, timeTracker
-                .getRealInterval(), timeTracker.getHorizontalSize());
-        fillChartOnZoomChange(orderReloaded, chartComponent, timeTracker);
+    private void setupChart(Chart chartComponent, TimeTracker timeTracker) {
+        fillChart(chartComponent, timeTracker.getRealInterval(), timeTracker
+                .getHorizontalSize());
+        fillChartOnZoomChange(chartComponent, timeTracker);
     }
 
     private IZoomLevelChangedListener zoomListener;
 
-    private void fillChartOnZoomChange(final Order order, final Chart chartComponent, final TimeTracker timeTracker) {
+    private void fillChartOnZoomChange(final Chart chartComponent,
+            final TimeTracker timeTracker) {
 
         zoomListener = new IZoomLevelChangedListener() {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                fillChart(order, chartComponent, timeTracker.getRealInterval(),
-                        timeTracker.getHorizontalSize());
+                transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                    @Override
+                    public Void execute() {
+                        fillChart(chartComponent,
+                                timeTracker.getRealInterval(), timeTracker
+                                        .getHorizontalSize());
+                        return null;
+                    }
+                });
             }
         };
 
@@ -225,13 +248,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     protected abstract IResourceLoadForOrderCommand getResourceLoadForOrderCommand();
 
-    private void fillChart(Order order, Chart chart, Interval interval,
-            Integer size) {
+    private void fillChart(Chart chart, Interval interval, Integer size) {
         XYModel xymodel = new SimpleXYModel();
 
-        addLoad(order, xymodel, interval.getStart(), interval.getFinish());
-        addCalendarMaximumAvailability(order, xymodel, interval.getStart(),
-                interval.getFinish());
+        addLoad(xymodel, interval.getStart(), interval.getFinish());
+        addCalendarMaximumAvailability(xymodel, interval.getStart(), interval
+                .getFinish());
 
         chart.setType("time_series");
         chart.setWidth(size + "px");
@@ -239,9 +261,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         chart.setModel(xymodel);
     }
 
-    private void addLoad(Order order, XYModel xymodel, Date start, Date finish) {
-        List<DayAssignment> dayAssignments = order.getDayAssignments();
-        String title = "order";
+    private void addLoad(XYModel xymodel, Date start, Date finish) {
+        List<DayAssignment> dayAssignments = dayAssignmentDAO
+                .list(DayAssignment.class);
+        String title = "load";
 
         SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
         for (LocalDate day : mapDayAssignments.keySet()) {
@@ -252,14 +275,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         fillZeroValueFromStart(xymodel, start, title, mapDayAssignments);
         fillZeroValueToFinish(xymodel, finish, title, mapDayAssignments);
-
-        String titleResorucesLoad = "all";
-        addResourcesLoad(order, xymodel, mapDayAssignments.keySet(), titleResorucesLoad);
-
-        fillZeroValueFromStart(xymodel, start, titleResorucesLoad,
-                mapDayAssignments);
-        fillZeroValueToFinish(xymodel, finish, titleResorucesLoad,
-                mapDayAssignments);
     }
 
     private void fillZeroValueFromStart(XYModel xymodel, Date start,
@@ -287,31 +302,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
     }
 
-    private void addResourcesLoad(Order order, XYModel xymodel,
-            Set<LocalDate> days, String title) {
-        List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
-
-        Set<Resource> resources = order.getResources();
-        for (Resource resource : resources) {
-            dayAssignments.addAll(resource.getAssignments());
-        }
-
-        SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
-        for (LocalDate day : mapDayAssignments.keySet()) {
-            if (days.contains(day)) {
-                Integer hours = mapDayAssignments.get(day);
-                xymodel.addValue(title, new Long(day.toDateTimeAtStartOfDay()
-                        .getMillis()), hours);
-            }
-        }
-    }
-
-    private void addCalendarMaximumAvailability(Order order, XYModel xymodel,
-            Date start, Date finish) {
+    private void addCalendarMaximumAvailability(XYModel xymodel, Date start,
+            Date finish) {
         String title = "max";
 
         SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(
-                order.getDayAssignments(), true);
+                resourceDAO.list(Resource.class), start, finish);
         for (LocalDate day : mapDayAssignments.keySet()) {
             Integer hours = mapDayAssignments.get(day);
             xymodel.addValue(title, new Long(day.toDateTimeAtStartOfDay()
@@ -322,24 +318,15 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         fillZeroValueToFinish(xymodel, finish, title, mapDayAssignments);
     }
 
-    private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
-            List<DayAssignment> dayAssignments) {
-        return calculateHoursAdditionByDay(dayAssignments, false);
-    }
-
     /**
      * Calculate the hours by day for all the {@link DayAssignment} in the list.
      *
      * @param dayAssignments
      *            The list of {@link DayAssignment}
-     * @param calendarHours
-     *            If <code>true</code> the resource's calendar will be used to
-     *            calculate the available hours. Otherwise, the
-     *            {@link DayAssignment} hours will be used.
      * @return A map { day => hours } sorted by date
      */
     private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
-            List<DayAssignment> dayAssignments, boolean calendarHours) {
+            List<DayAssignment> dayAssignments) {
         SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
 
         if (dayAssignments.isEmpty()) {
@@ -357,23 +344,35 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         for (DayAssignment dayAssignment : dayAssignments) {
             LocalDate day = dayAssignment.getDay();
-            Integer hours = 0;
-
-            if (calendarHours) {
-                ResourceCalendar calendar = dayAssignment.getResource()
-                        .getCalendar();
-                if (calendar != null) {
-                    hours = calendar.getWorkableHours(dayAssignment.getDay());
-                }
-            } else {
-                hours = dayAssignment.getHours();
-            }
+            Integer hours = dayAssignment.getHours();
 
             if (map.get(day) == null) {
                 map.put(day, hours);
             } else {
                 map.put(day, map.get(day) + hours);
             }
+        }
+
+        return map;
+    }
+
+    private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
+            List<Resource> resources, Date start, Date finish) {
+        SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
+
+        LocalDate end = new LocalDate(finish);
+
+        for (LocalDate date = new LocalDate(start); date.compareTo(end) <= 0; date = date
+                .plusDays(1)) {
+            Integer hours = 0;
+            for (Resource resource : resources) {
+                ResourceCalendar calendar = resource.getCalendar();
+                if (calendar != null) {
+                    hours += calendar.getWorkableHours(date);
+                }
+            }
+
+            map.put(date, hours);
         }
 
         return map;
