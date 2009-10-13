@@ -20,7 +20,7 @@ public class LabelOrderElementPredicate implements IPredicate {
     public boolean complays(Object object) {
         final OrderElement orderElement = (OrderElement) object;
         for (Label label : orderElement.getLabels()) {
-            if (equalsLabel(label)) {
+            if (this.label != null && equalsLabel(label)) {
                 return true;
             }
         }
@@ -30,6 +30,11 @@ public class LabelOrderElementPredicate implements IPredicate {
     private boolean equalsLabel(Label label) {
         return (this.label.getName().equals(label.getName()) && this.label
                 .getType().getName().equals(label.getType().getName()));
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return (label == null);
     }
 
 }

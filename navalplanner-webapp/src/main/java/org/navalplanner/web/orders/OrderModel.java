@@ -224,7 +224,7 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public OrderElementTreeModel getOrderElementTreeModel() {
-        if (predicate != null) {
+        if (predicate != null && !predicate.isEmpty()) {
             return applyPredicate();
         }
         return orderElementTreeModel;

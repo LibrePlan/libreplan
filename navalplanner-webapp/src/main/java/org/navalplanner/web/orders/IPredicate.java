@@ -9,4 +9,5 @@ public interface IPredicate {
 
     boolean complays(Object object);
 
+    boolean isEmpty();
 }
