@@ -161,9 +161,9 @@ public class MultipleTabsPlannerController {
                     @Override
                     public org.zkoss.zk.ui.Component create(
                             org.zkoss.zk.ui.Component parent) {
-                        return withUpAndDownButton(new Label(
-                                "on resource load view. mode: "
-                                        + mode.getType()));
+                        return Executions.createComponents(
+                                        "/resourceload/_resourceload.zul",
+                                parent, null);
                     }
                 });
     }
