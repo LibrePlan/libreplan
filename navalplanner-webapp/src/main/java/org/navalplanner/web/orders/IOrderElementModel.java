@@ -43,4 +43,6 @@ public interface IOrderElementModel {
     Set<Criterion> getCriterionsHoursGroup(HoursGroup hoursGroup);
 
     CriterionType getCriterionType(Criterion criterion);
+
+    IOrderModel getOrderModel();
 }

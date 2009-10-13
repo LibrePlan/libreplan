@@ -118,4 +118,10 @@ public interface IAssignedLabelsToOrderElementModel {
      */
     void confirm();
 
+    /**
+     *
+     * @param orderModel
+     */
+    void setOrderModel(IOrderModel orderModel);
+
 }

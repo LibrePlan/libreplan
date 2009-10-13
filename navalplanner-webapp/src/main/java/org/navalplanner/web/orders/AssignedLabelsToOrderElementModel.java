@@ -59,6 +59,8 @@ public class AssignedLabelsToOrderElementModel implements
 
     OrderElement orderElement;
 
+    IOrderModel orderModel;
+
     Set<Label> cacheLabels = new HashSet<Label>();
 
     @Override
@@ -236,5 +238,10 @@ public class AssignedLabelsToOrderElementModel implements
     public void confirm() {
         reattachLabels();
         orderDAO.save(orderElement);
+    }
+
+    @Override
+    public void setOrderModel(IOrderModel orderModel) {
+        this.orderModel = orderModel;
     }
 }

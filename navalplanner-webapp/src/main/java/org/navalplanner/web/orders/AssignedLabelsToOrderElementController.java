@@ -68,6 +68,8 @@ public class AssignedLabelsToOrderElementController extends
     }
 
     public void openWindow(IOrderElementModel orderElementModel) {
+        assignedLabelsToOrderElementModel.setOrderModel(orderElementModel
+                .getOrderModel());
         openWindow(orderElementModel.getOrderElement());
     }
 

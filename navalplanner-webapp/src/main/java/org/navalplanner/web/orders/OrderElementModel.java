@@ -63,6 +63,11 @@ public class OrderElementModel implements IOrderElementModel {
     }
 
     @Override
+    public IOrderModel getOrderModel() {
+        return order;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public void setCurrent(OrderElement orderElement, OrderModel order) {
         orderElementDao.save(orderElement);
@@ -121,4 +126,5 @@ public class OrderElementModel implements IOrderElementModel {
         criterionType.getName();
         return criterionType;
     }
+
 }
