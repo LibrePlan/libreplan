@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.CompanyPlanningController;
@@ -40,6 +41,8 @@ import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.TabSwitcher;
 import org.zkoss.ganttz.TabsRegistry;
 import org.zkoss.ganttz.adapters.TabsConfiguration;
+import org.zkoss.ganttz.extensions.ICommand;
+import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -61,16 +64,29 @@ public class MultipleTabsPlannerController implements Composer {
 
     private final class OrderPlanningTab extends CreatedOnDemandTab {
         private Order lastOrder;
+        private ICommand<TaskElement> upCommand = new ICommand<TaskElement>() {
+
+            @Override
+            public void doAction(IContext<TaskElement> context) {
+                mode.up();
+            }
+
+            @Override
+            public String getName() {
+                return _("Up");
+            }
+        };
 
         OrderPlanningTab(String name, IComponentCreator componentCreator) {
             super(name, componentCreator);
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void afterShowAction() {
             if (mode.isOf(ModeType.ORDER) && lastOrder != mode.getOrder()) {
                 lastOrder = mode.getOrder();
-                orderPlanningController.setOrder(lastOrder);
+                orderPlanningController.setOrder(lastOrder, upCommand);
             }
         }
     }

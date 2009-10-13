@@ -34,7 +34,9 @@
     multipleTabsPlanner = multipleTabsPlannerController;
 ]]>
 </zscript>
-    <div id="idContextMenuTaskAssignment"></div>
+    <div id="idContextMenuTaskAssignment">
+        <div />
+    </div>
     <tabSwitcher self="@{define(content)}" configuration="@{multipleTabsPlanner.tabs}" apply="${multipleTabsPlanner}">
     </tabSwitcher>
 </zk>
