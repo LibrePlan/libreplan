@@ -124,7 +124,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
 
         configuration.addGlobalCommand(buildSaveCommand());
-        configuration.addGlobalCommand(buildResourceLoadForOrderCommand(switcher));
 
         configuration.addCommandOnTask(buildResourceAllocationCommand(resourceAllocationController));
         configuration.addCommandOnTask(buildSplitCommand(splittingController));
@@ -184,13 +183,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         resourceAllocationCommand.initialize(resourceAllocationController,
                 planningState);
         return resourceAllocationCommand;
-    }
-
-    private IResourceLoadForOrderCommand buildResourceLoadForOrderCommand(
-            ViewSwitcher switcher) {
-        IResourceLoadForOrderCommand resourceLoadForOrderCommand = getResourceLoadForOrderCommand();
-        resourceLoadForOrderCommand.initialize(switcher, planningState);
-        return resourceLoadForOrderCommand;
     }
 
     private ISaveCommand buildSaveCommand() {
@@ -312,8 +304,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract IEditTaskCommand getEditTaskCommand();
 
     protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
-
-    protected abstract IResourceLoadForOrderCommand getResourceLoadForOrderCommand();
 
     private Order reload(Order order) {
         try {

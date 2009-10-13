@@ -19,19 +19,15 @@
  */
 package org.navalplanner.web.common;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
-import org.navalplanner.web.resourceload.ResourceLoadController;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.zk.ui.util.Composer;
 
 /**
@@ -79,36 +75,4 @@ public class ViewSwitcher implements Composer {
         planningOrder.restore();
         isInPlanningOrder = true;
     }
-
-    public void goToResourceLoad(ResourceLoadController resourceLoadController) {
-        addCommands(resourceLoadController);
-        planningOrder = ComponentsReplacer.replaceAllChildren(parent,
-                "../resourceload/resourceloadfororder.zul",
-                argsForResourceLoad(resourceLoadController));
-        isInPlanningOrder = false;
-    }
-
-    private void addCommands(ResourceLoadController resourceLoadController) {
-        resourceLoadController.add(new IToolbarCommand() {
-
-            @Override
-            public void doAction() {
-                goToPlanningOrderView();
-            }
-
-            @Override
-            public String getLabel() {
-                return _("Back to Order Planning View");
-            }
-        });
-
-    }
-
-    private Map<String, Object> argsForResourceLoad(
-            ResourceLoadController resourceLoadController) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("resourceLoadController", resourceLoadController);
-        return result;
-    }
-
 }

@@ -32,7 +32,6 @@
       <lookup-method name="getEditTaskCommand" bean="editTaskCommand"/>
       <lookup-method name="getCalendarAllocationCommand" bean="calendarAllocationCommand"/>
       <lookup-method name="getAddMilestoneCommand" bean="addMilestoneCommand"/>
-      <lookup-method name="getResourceLoadForOrderCommand" bean="resourceLoadForOrderCommand"/>
     </bean>
 
     <bean class="org.navalplanner.web.planner.CompanyPlanningModel" scope="prototype">
