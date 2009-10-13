@@ -40,12 +40,6 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class CompanyPlanningController extends GenericForwardComposer {
 
-    @Autowired
-    private EditTaskController editTaskController;
-
-    public EditTaskController getEditTaskController() {
-        return editTaskController;
-    }
 
     @Autowired
     private ICompanyPlanningModel model;
@@ -64,7 +58,7 @@ public class CompanyPlanningController extends GenericForwardComposer {
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
         Planner planner = (Planner) comp;
-        model.setConfigurationToPlanner(planner, editTaskController);
+        model.setConfigurationToPlanner(planner);
     }
 
 }

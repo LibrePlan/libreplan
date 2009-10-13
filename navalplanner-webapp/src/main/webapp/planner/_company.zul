@@ -29,36 +29,4 @@
     </planner>
 
     <div id="idContextMenuTaskAssignment"></div>
-
-    <popup width="300px" apply="${planningController.editTaskController}">
-        <grid>
-            <rows>
-                <row>
-                    ${i18n:_('Name')}
-                    <textbox id="name" />
-                </row>
-                <row>
-                    ${i18n:_('Start')}
-                    <datebox id="startDateBox" compact="true" />
-                </row>
-                <row>
-                    ${i18n:_('End')}
-                    <datebox id="endDateBox" compact="true" />
-                </row>
-                <row>
-                    ${i18n:_('Notes')}
-                    <textbox id="notes" />
-                </row>
-                <row>
-                    Hours
-                    <intbox id="hours" disabled="true" />
-                </row>
-                <row id="durationRow">
-                    Duration (days)
-                    <intbox id="duration" />
-                </row>
-            </rows>
-        </grid>
-        <button id="ok" label="${i18n:_('Accept')}" />
-    </popup>
 </zk>

@@ -29,7 +29,6 @@ import org.zkoss.ganttz.Planner;
  */
 public interface ICompanyPlanningModel {
 
-    void setConfigurationToPlanner(Planner planner,
-            EditTaskController editTaskController);
+    void setConfigurationToPlanner(Planner planner);
 
 }

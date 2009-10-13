@@ -105,14 +105,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void setConfigurationToPlanner(Planner planner,
-            EditTaskController editTaskController) {
+    public void setConfigurationToPlanner(Planner planner) {
         PlannerConfiguration<TaskElement> configuration = createConfiguration();
-
-        configuration.addGlobalCommand(buildSaveCommand());
-
-        configuration
-                .setEditTaskCommand(buildEditTaskCommand(editTaskController));
 
         Chart chartComponent = new Chart();
         configuration.setChartComponent(chartComponent);
@@ -120,19 +114,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         planner.setConfiguration(configuration);
 
         setupChart(chartComponent, planner.getTimeTracker());
-    }
-
-    private IEditTaskCommand buildEditTaskCommand(
-            EditTaskController editTaskController) {
-        IEditTaskCommand editTaskCommand = getEditTaskCommand();
-        editTaskCommand.setEditTaskController(editTaskController);
-        return editTaskCommand;
-    }
-
-    private ISaveCommand buildSaveCommand() {
-        ISaveCommand saveCommand = getSaveCommand();
-        saveCommand.setState(planningState);
-        return saveCommand;
     }
 
     private void setupChart(Chart chartComponent, TimeTracker timeTracker) {
