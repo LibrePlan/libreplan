@@ -1,0 +1,6 @@
+##############
+Document Title
+##############
+
+:Version: !!git log -1 --format=%H
+:Date: !!git log -1 --format=%ad
