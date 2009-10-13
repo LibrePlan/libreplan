@@ -46,12 +46,11 @@ Para crear un calendario derivado na aplicación, é necesario facer o seguinte:
    * Premer na operación de administración de calendarios.
    * Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "______".
    * Unha vez realizada esta operación o sistema amosará un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.
- 
 
 Creación dun calendario por copia
 ---------------------------------
 
-Un calendario copiado é un calendario que se crea como copia exacta de outro existente, é dicir, que recibe todas as características do orixinal e ó mesmo tempo é posible modificalo para que conteña as súas particularidades. 
+Un calendario copiado é un calendario que se crea como copia exacta de outro existente, é dicir, que recibe todas as características do orixinal e ó mesmo tempo é posible modificalo para que conteña as súas particularidades.
 
 A diferencia entre copiar e derivar un calendario radica nos cambios no orixinal. No caso de copias, se o orixinal é modificado, non afectará á copia, sen embargo, cando se deriva, sí afecta ó fillo.
 
@@ -62,7 +61,6 @@ Para crear un calendario copiado na aplicación, é necesario facer o seguinte:
    * Premer na operación de administración de calendarios.
    * Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "______".
    * Unha vez realizada esta operación o sistema amosará un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.
- 
 
 Asignación de calendario a recursos
 -----------------------------------
