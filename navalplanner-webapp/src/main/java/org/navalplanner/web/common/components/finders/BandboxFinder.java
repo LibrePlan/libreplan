@@ -36,19 +36,14 @@ import org.zkoss.zul.SimpleListModel;
  */
 public abstract class BandboxFinder implements IBandboxFinder {
 
-    ListModel model;
-
-    public BandboxFinder() {
-        initializeModel();
-    }
-
-    @Transactional(readOnly = true)
-    private void initializeModel() {
-        model = new SimpleListModel(getAll());
-    }
+    private ListModel model;
 
     @Override
+    @Transactional(readOnly = true)
     public ListModel getModel() {
+        if (model == null) {
+            model = new SimpleListModel(getAll());
+        }
         return model;
     }
 
