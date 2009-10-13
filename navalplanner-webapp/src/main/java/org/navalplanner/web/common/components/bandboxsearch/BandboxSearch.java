@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.finders.IBandboxFinder;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -107,6 +108,10 @@ public class BandboxSearch extends HtmlMacroComponent {
 
     private void setSelectedElement(Object obj) {
         bandbox.setVariable("selectedElement", obj, true);
+    }
+
+    public Object getSelectedElement() {
+        return bandbox.getVariable("selectedElement", true);
     }
 
     /**
@@ -196,9 +201,10 @@ public class BandboxSearch extends HtmlMacroComponent {
      * @param obj
      */
     public void addElement(Object obj) {
-        List<Object> list = asList(listbox.getModel());
+        List<Object> list = asList(finder.getModel());
         list.add(obj);
-        listbox.setModel(new SimpleListModel(list));
+        finder.setModel(new SimpleListModel(list));
+        listbox.setModel(finder.getModel());
         Util.reloadBindings(listbox);
     }
 
