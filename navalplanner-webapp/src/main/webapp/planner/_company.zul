@@ -27,6 +27,4 @@
 
     <planner id="planner" apply="${planningController}">
     </planner>
-
-    <div id="idContextMenuTaskAssignment"></div>
 </zk>
