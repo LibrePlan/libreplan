@@ -143,6 +143,14 @@ public class OrderCRUDController extends GenericForwardComposer {
         goToList();
     }
 
+    public void up() {
+        if (onUp == null) {
+            throw new IllegalStateException(
+                    "in order to call up onUp action should have been set");
+        }
+        onUp.run();
+    }
+
     public void confirmRemove(Order order) {
         orderModel.prepareForRemove(order);
         showConfirmingWindow();
@@ -196,6 +204,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private boolean confirmingRemove = false;
+
+    private Runnable onUp;
 
     public boolean isConfirmingRemove() {
         return confirmingRemove;
@@ -267,6 +277,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void setPlanningControllerEntryPoints(
             IOrderPlanningGate planningControllerEntryPoints) {
         this.planningControllerEntryPoints = planningControllerEntryPoints;
+    }
+
+    public void setActionOnUp(Runnable onUp) {
+        this.onUp = onUp;
     }
 
 }

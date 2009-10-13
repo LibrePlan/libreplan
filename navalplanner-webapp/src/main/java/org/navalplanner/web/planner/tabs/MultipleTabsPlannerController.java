@@ -274,6 +274,12 @@ public class MultipleTabsPlannerController implements Composer {
                 getTabsRegistry().show(planningTab);
             }
         });
+        orderCRUDController.setActionOnUp(new Runnable() {
+            public void run() {
+                mode.up();
+                orderCRUDController.goToList();
+            }
+        });
         return orderCRUDController;
     }
 
