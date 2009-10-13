@@ -207,7 +207,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     private Button currentOne = null;
 
     @Override
-    public void addMenuItem(String name,
+    public Object addMenuItem(String name,
             org.zkoss.zk.ui.event.EventListener eventListener) {
         Hbox insertionPoint = getRegisteredItemsInsertionPoint();
         Button button = new Button();
@@ -217,7 +217,12 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 eventListener));
         insertionPoint.appendChild(button);
         insertionPoint.appendChild(separator());
+        return button;
+    }
 
+    @Override
+    public void activateMenuItem(Object key) {
+        switchCurrentButtonTo((Button) key);
     }
 
     private void setSelectClass(final Button button) {
@@ -237,12 +242,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 if (currentOne == button) {
                     return;
                 }
-                if (currentOne != null) {
-                    currentOne.setSclass("sub_menu");
-                    setDeselectedClass(currentOne);
-                }
-                setSelectClass(button);
-                currentOne = button;
+                switchCurrentButtonTo(button);
                 originalListener.onEvent(event);
             }
         };
@@ -256,6 +256,18 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     public String getContextPath() {
         return Executions.getCurrent().getContextPath();
+    }
+
+    private void switchCurrentButtonTo(final Button button) {
+        if (currentOne == button) {
+            return;
+        }
+        if (currentOne != null) {
+            currentOne.setSclass("sub_menu");
+            setDeselectedClass(currentOne);
+        }
+        setSelectClass(button);
+        currentOne = button;
     }
 
 }

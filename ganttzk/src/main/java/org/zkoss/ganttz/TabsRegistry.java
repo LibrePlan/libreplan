@@ -21,7 +21,9 @@
 package org.zkoss.ganttz;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.util.IMenuItemsRegister;
@@ -34,6 +36,10 @@ public class TabsRegistry {
     private List<ITab> tabs = new ArrayList<ITab>();
 
     private final Component parent;
+
+    private Map<ITab, Object> fromTabToMenuKey = new HashMap<ITab, Object>();
+
+    private IMenuItemsRegister menu;
 
     public TabsRegistry(Component parent) {
         this.parent = parent;
@@ -48,6 +54,13 @@ public class TabsRegistry {
         hideAllExcept(tab);
         tab.show();
         parent.invalidate();
+        activateMenuIfRegistered(tab);
+    }
+
+    private void activateMenuIfRegistered(ITab tab) {
+        if (fromTabToMenuKey.containsKey(tab)) {
+            menu.activateMenuItem(fromTabToMenuKey.get(tab));
+        }
     }
 
     private void hideAllExcept(ITab tab) {
@@ -65,14 +78,16 @@ public class TabsRegistry {
     }
 
     public void registerAtMenu(IMenuItemsRegister menu) {
+        this.menu = menu;
         for (final ITab t : tabs) {
-            menu.addMenuItem(t.getName(), new EventListener() {
+            Object key = menu.addMenuItem(t.getName(), new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
                     show(t);
                 }
             });
+            fromTabToMenuKey.put(t, key);
         }
     }
 }
