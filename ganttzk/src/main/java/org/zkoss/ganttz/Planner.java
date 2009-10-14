@@ -156,7 +156,7 @@ public class Planner extends HtmlMacroComponent  {
 
         Component chartComponent = configuration.getChartComponent();
         if (chartComponent != null) {
-            getFellow("insertionPointChart").appendChild(chartComponent);
+            setAt("insertionPointChart", chartComponent);
         }
 
         this.addingDependenciesEnabled = configuration
