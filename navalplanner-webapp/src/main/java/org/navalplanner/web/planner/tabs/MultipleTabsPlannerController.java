@@ -45,14 +45,10 @@ import org.zkoss.ganttz.adapters.TabsConfiguration;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.ITab;
+import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Div;
 
 /**
  * Creates and handles several tabs
@@ -163,31 +159,6 @@ public class MultipleTabsPlannerController implements Composer {
                 .create();
     }
 
-    private org.zkoss.zk.ui.Component withUpAndDownButton(
-            org.zkoss.zk.ui.Component component) {
-        Div result = new Div();
-        result.appendChild(component);
-        Button up = new Button();
-        up.setLabel("up");
-        up.addEventListener(Events.ON_CLICK, new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                mode.up();
-            }
-        });
-        Button down = new Button();
-        down.setLabel("down");
-        down.addEventListener(Events.ON_CLICK, new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                mode.goToOrderMode(new Order());
-            }
-        });
-        result.appendChild(up);
-        result.appendChild(down);
-        return result;
-    }
-
     private ITab createGlobalPlanningTab() {
         return new CreatedOnDemandTab(ENTERPRISE_VIEW, new IComponentCreator() {
 
@@ -237,6 +208,7 @@ public class MultipleTabsPlannerController implements Composer {
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
                 Map<String, Object> arguments = new HashMap<String, Object>();
+                resourceLoadController.add(resourceLoadUpCommand());
                 arguments.put("resourceLoadController",
                         resourceLoadController);
                 return Executions.createComponents(
@@ -336,6 +308,21 @@ public class MultipleTabsPlannerController implements Composer {
 
     private TabsRegistry getTabsRegistry() {
         return tabsSwitcher.getTabsRegistry();
+    }
+
+    private IToolbarCommand resourceLoadUpCommand() {
+        return new IToolbarCommand() {
+
+            @Override
+            public void doAction() {
+                mode.up();
+            }
+
+            @Override
+            public String getLabel() {
+                return _("Up");
+            }
+        };
     }
 
 }
