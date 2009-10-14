@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -497,7 +498,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 if (calendar != null) {
                     hours = calendar.getWorkableHours(dayAssignment.getDay());
                 } else {
-                    hours = 8;
+                    hours = SameWorkHoursEveryDay.getDefaultWorkingDay()
+                            .getWorkableHours(dayAssignment.getDay());
                 }
             } else {
                 hours = dayAssignment.getHours();

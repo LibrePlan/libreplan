@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -407,7 +408,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 if (calendar != null) {
                     hours += calendar.getWorkableHours(date);
                 } else {
-                    hours += 8;
+                    hours += SameWorkHoursEveryDay.getDefaultWorkingDay()
+                            .getWorkableHours(date);
                 }
             }
 
