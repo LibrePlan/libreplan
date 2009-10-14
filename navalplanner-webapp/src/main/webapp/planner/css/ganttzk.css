@@ -35,7 +35,6 @@
 
 #listdetails_container {
     position: relative;
-    border-bottom: 1px solid #86A4BE;
 }
 
 .listdetails img {
@@ -252,6 +251,10 @@ min-width:200px;
     border-collapse: collapse;
 }
 
+#timetrackerheader table {
+    border-collapse: collapse;
+}
+
 #timetracker .second_level_ tr {
     height: 14px;
 }
@@ -291,7 +294,7 @@ table {
 }
 
 #scroll_container {
-    margin-top: 47px;
+    margin-top: 0px;
     float: left;
     position: absolute;
 }
@@ -465,6 +468,17 @@ tr.z-vbox-sep {
     margin: 0px;
 }
 
+#ganttpanel #timetracker th {
+    display:none;
+}
+#ganttpanel #timetracker {
+    margin-top:-20px;
+}
+
+#timetrackerheader table {
+    border-collapse: collapse;
+}
+
 .resourceloadleftpane div.z-tree-cell-cnt {
     paddding-top: 2px;
     border-bottom: 1px dotted #CCCCCC;
@@ -507,8 +521,12 @@ tr.z-vbox-sep {
     position: relative;
 }
 
-.taskdetails_name {
-    min-width: 150px;
+.tree-datecolumn {
+    width: 100px;
+}
+
+.tree-text {
+    width: 150px;
 }
 
 .listdetails div.z-tree-cell-cnt {
@@ -524,7 +542,7 @@ div.z-tree {
 }
 
 .plannerlayout, .resourcesloadlayout, .advancedallocationlayout {
-    height:500px;
+    height:350px;
 }
 
 .task_tooltip {
@@ -572,4 +590,37 @@ div.z-tree {
 
 .advancedallocationlayout .leftpanelgap input {
     height:19px;
+}
+
+
+#tasksTree div.z-tree-header, #tasksTree div.z-tree-header tr, #tasksTree div.z-tree-footer {
+    overflow:visible;
+}
+
+#listdetails_container div.z-tree-body,
+#listdetails_container div.z-dottree-body,
+#listdetails_container div.z-filetree-body, #listdetails_container div.z-vfiletree-body {
+    overflow:visible;
+}
+
+.listdetails th {
+    display:visible;
+    margin-top:10px;
+}
+.listdetails {
+    position:relative;
+    top:-18px;
+}
+
+
+.plannerlayout div.z-tree, .plannerlayout div.z-grid {
+    border: 0;
+}
+
+#timetrackerheader table {
+height:15px;
+}
+
+#timetrackerheader .z-grid-body {
+display:none;
 }

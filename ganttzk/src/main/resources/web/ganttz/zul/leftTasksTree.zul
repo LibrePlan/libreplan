@@ -19,12 +19,11 @@
 -->
 
 <div>
-<div height="22px"></div>
-<tree id="tasksTree">
-    <treecols sizable="false">
-        <treecol label="Name"/>
-        <treecol label="Start"/>
-        <treecol label="End"/>
+<tree id="tasksTree" fixedLayout="true">
+    <treecols sizable="false" width="300px" sclass="taskTreeCols">
+        <treecol label="Name" sclass="tree-text"/>
+        <treecol label="Start" sclass="tree-datecolumn"/>
+        <treecol label="End" sclass="tree-datecolumn"/>
     </treecols>
 </tree>
 </div>
