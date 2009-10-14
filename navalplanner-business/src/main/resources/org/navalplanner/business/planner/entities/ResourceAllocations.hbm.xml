@@ -18,7 +18,7 @@
 
         <many-to-one class="AssignmentFunction" name="assignmentFunction" column="ASSIGNMENT_FUNCTION" not-null="false"/>
 
-        <joined-subclass name="SpecificResourceAllocation" table="SPECIFIC_RESOURCE_ALLOCATION">
+        <joined-subclass name="SpecificResourceAllocation" table="specific_resource_allocation">
             <key column="RESOURCE_ALLOCATION_ID" />
 
             <many-to-one name="resource"
@@ -30,7 +30,7 @@
             </set>
         </joined-subclass>
 
-        <joined-subclass name="GenericResourceAllocation" table="GENERIC_RESOURCE_ALLOCATION">
+        <joined-subclass name="GenericResourceAllocation" table="generic_resource_allocation">
             <key column="RESOURCE_ALLOCATION_ID" />
 
             <set name="criterions" table="all_criterions">
@@ -47,7 +47,7 @@
     </class>
 
     <!-- DayAssignment -->
-    <class name="DayAssignment" table="DAY_ASSIGNMENT">
+    <class name="DayAssignment" table="day_assignment">
         <id name="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
