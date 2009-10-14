@@ -18,8 +18,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var TIMETRACKER_OFFSET_TOP = 120;
-
 zkResourcesLoadList = addResourcesLoadListMethods( {});
 
 function addResourcesLoadListMethods(object) {
@@ -84,13 +82,8 @@ function addResourcesLoadListMethods(object) {
 		var leftpanel_ = leftpanel();
 
 		var onScroll = function() {
-			timetrackergap_.style["position"] = "relative";
 			timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
-
-			leftpanel_.style["position"] = "relative";
 			leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
-
-			resourcesloadgraph_.style["position"] = "relative";
 			resourcesloadgraph_.scrollLeft = scrolledpannel_.scrollLeft;
 
 		};

@@ -17,3 +17,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+// Check if this is advanced location tab
+
+function plannergraph() {
+	return YAHOO.util.Selector.query('.plannergraph div')[0];
+}
+
+
+	function listenToScroll() {
+
+		var timetrackergap_ = timetrackergap();
+		var scrolledpannel_ = scrolledpannel();
+		var resourcesloadgraph_ = resourcesloadgraph();
+		var leftpanel_ = leftpanel();
+
+		var onScroll = function() {
+			timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
+			leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
+			resourcesloadgraph_.scrollLeft = scrolledpannel_.scrollLeft;
+
+		};
+
+		YAHOO.util.Selector.query('.rightpanellayout div')[0].onscroll = onScroll;
+
+	}

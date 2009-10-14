@@ -607,24 +607,26 @@ div.z-tree {
     display:visible;
     margin-top:10px;
 }
+
 .listdetails {
     position:relative;
     top:-18px;
 }
 
-
-.plannerlayout div.z-tree, .plannerlayout div.z-grid {
+.plannerlayout div.z-tree, .plannerlayout div.z-grid,
+.resourcesload div.z-tree, .resourcesload div.z-grid {
     border: 0;
 }
 
 #timetrackerheader table {
-height:15px;
+    height:15px;
 }
 
 #timetrackerheader .z-grid-body {
-display:none;
+    display:none;
 }
 
-.taskheaderscontainer, .leftpanelgap, .plannergraph div {
-    position:relative";
+.taskheaderscontainer, .leftpanelgap, .plannergraph div,
+.resourcesloadgraph div {
+    position:relative;
 }

@@ -53,7 +53,7 @@
 
                     <borderlayout >
                         <north border="0" height="38px" flex="true" collapsible="true">
-                            <vbox pack="center" align="center">
+                            <vbox pack="top" align="center">
                             <tree fixedLayout="true">
                                 <treecols>
                                     <treecol label="Name" height="29px"/>
