@@ -2,7 +2,8 @@
  * This file is part of ###PROJECT_NAME###
  *
  * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
- *                    Desenvolvemento Tecnolóxico de Galicia
+ *                    Desenvolvemento Tecnolóxico de Galic
+ *                    ia
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -90,6 +91,9 @@ public class ResourceLoadComponent extends XulElement {
         Div result = new Div();
         result.setClass(String.format("taskassignmentinterval %s", loadPeriod
                 .getLoadLevel().getCategory()));
+        result.setTooltiptext("Load: "
+                + loadPeriod.getLoadLevel().getPercentage() + "%");
+
         result.setLeft(forCSS(getStartPixels(datesMapper, loadPeriod)));
         result.setWidth(forCSS(getWidthPixels(datesMapper, loadPeriod)));
         return result;
