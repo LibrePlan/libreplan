@@ -36,6 +36,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Servlet that allows to register custom responses. It must be declared at
@@ -45,6 +47,8 @@ import org.apache.commons.lang.Validate;
 public class CallbackServlet extends HttpServlet {
 
     private static final String MAPPING = "/callback/";
+
+    private static final Log LOG = LogFactory.getLog(CallbackServlet.class);
 
     private static final long CLEANING_PERIOD_MILLIS = 1000 * 60 * 10; // ten
     // minutes
@@ -139,9 +143,20 @@ public class CallbackServlet extends HttpServlet {
         synchronized (CallbackServlet.class) {
             if (contextPath == null) {
                 contextPath = config.getServletContext().getContextPath();
-                cleaningTimer.schedule(cleaningTask(), CLEANING_PERIOD_MILLIS,
-                        CLEANING_PERIOD_MILLIS);
+                scheduleTimer();
             }
+        }
+    }
+
+    private void scheduleTimer() {
+        try {
+            cleaningTimer.schedule(cleaningTask(), CLEANING_PERIOD_MILLIS,
+                    CLEANING_PERIOD_MILLIS);
+        } catch (Throwable e) {
+            LOG
+                    .error(
+                            "can't start cleaning timer. A memory leak will be caused!",
+                            e);
         }
     }
 
