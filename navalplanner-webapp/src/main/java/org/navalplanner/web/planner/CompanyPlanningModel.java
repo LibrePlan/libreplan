@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.planner;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,6 +31,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
@@ -44,11 +50,18 @@ import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.servlets.CallbackServlet;
+import org.navalplanner.web.servlets.CallbackServlet.IServletRequestHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkforge.timeplot.Plotinfo;
+import org.zkforge.timeplot.Timeplot;
+import org.zkforge.timeplot.data.PlotDataSource;
+import org.zkforge.timeplot.geometry.DefaultValueGeometry;
+import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
@@ -57,9 +70,6 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
-import org.zkoss.zul.Chart;
-import org.zkoss.zul.SimpleXYModel;
-import org.zkoss.zul.XYModel;
 
 /**
  * Model for company planning view.
@@ -83,6 +93,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    private Integer maximunValueForChart = 0;
 
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
@@ -110,7 +122,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     public void setConfigurationToPlanner(Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional) {
         PlannerConfiguration<TaskElement> configuration = createConfiguration();
-        Chart chartComponent = new Chart();
+        Timeplot chartComponent = new Timeplot();
         configuration.setChartComponent(chartComponent);
         addAdditionalCommands(additional, configuration);
 
@@ -129,7 +141,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
     }
 
-    private void setupChart(Chart chartComponent, TimeTracker timeTracker) {
+    private void setupChart(Timeplot chartComponent, TimeTracker timeTracker) {
         fillChart(chartComponent, timeTracker.getRealInterval(), timeTracker
                 .getHorizontalSize());
         fillChartOnZoomChange(chartComponent, timeTracker);
@@ -137,7 +149,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private IZoomLevelChangedListener zoomListener;
 
-    private void fillChartOnZoomChange(final Chart chartComponent,
+    private void fillChartOnZoomChange(final Timeplot chartComponent,
             final TimeTracker timeTracker) {
 
         zoomListener = new IZoomLevelChangedListener() {
@@ -222,74 +234,125 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     // spring method injection
     protected abstract ITaskElementAdapter getTaskElementAdapter();
 
-    private void fillChart(Chart chart, Interval interval, Integer size) {
-        XYModel xymodel = new SimpleXYModel();
+    private void fillChart(Timeplot chart, Interval interval, Integer size) {
+        chart.getChildren().clear();
+        maximunValueForChart = 0;
 
-        addLoad(xymodel, interval.getStart(), interval.getFinish());
-        addCalendarMaximumAvailability(xymodel, interval.getStart(), interval
+        Plotinfo plotInfoLoad = getLoadPlotInfo(interval.getStart(), interval
                 .getFinish());
+        plotInfoLoad.setFillColor("0000FF");
 
-        chart.setType("time_series");
+        Plotinfo plotInfoMax = getCalendarMaximumAvailabilityPlotInfo(interval
+                .getStart(), interval.getFinish());
+        plotInfoMax.setLineColor("FF0000");
+
+        ValueGeometry valueGeometry = new DefaultValueGeometry();
+        valueGeometry.setMin(0);
+        valueGeometry.setMax(maximunValueForChart);
+        valueGeometry.setGridColor("#000000");
+        valueGeometry.setAxisLabelsPlacement("left");
+
+        plotInfoLoad.setValueGeometry(valueGeometry);
+        plotInfoMax.setValueGeometry(valueGeometry);
+
+        chart.appendChild(plotInfoMax);
+        chart.appendChild(plotInfoLoad);
+
+        size = size + (16 * 2);
         chart.setWidth(size + "px");
-        chart.setHeight("175px");
-        chart.setModel(xymodel);
+        chart.setHeight("200px");
     }
 
-    private void addLoad(XYModel xymodel, Date start, Date finish) {
-        List<DayAssignment> dayAssignments = dayAssignmentDAO
-                .list(DayAssignment.class);
-        String title = "load";
-
+    private Plotinfo getLoadPlotInfo(Date start, Date finish) {
+        List<DayAssignment> dayAssignments = dayAssignmentDAO.list(DayAssignment.class);
         SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
-        for (LocalDate day : mapDayAssignments.keySet()) {
-            Integer hours = mapDayAssignments.get(day);
-            xymodel.addValue(title, day.toDateTimeAtStartOfDay().getMillis(),
-                    hours);
-        }
 
-        fillZeroValueFromStart(xymodel, start, title, mapDayAssignments);
-        fillZeroValueToFinish(xymodel, finish, title, mapDayAssignments);
+        String uri = getServletUri(mapDayAssignments, start, finish);
+
+        PlotDataSource pds = new PlotDataSource();
+        pds.setDataSourceUri(uri);
+        pds.setSeparator(" ");
+
+        Plotinfo plotInfo = new Plotinfo();
+        plotInfo.setPlotDataSource(pds);
+
+        return plotInfo;
     }
 
-    private void fillZeroValueFromStart(XYModel xymodel, Date start,
-            String title,
+    private void printLine(PrintWriter writer, LocalDate day, Integer hours) {
+        writer.println(day.toString("yyyyMMdd") + " " + hours);
+    }
+
+    private void fillZeroValueFromStart(PrintWriter writer, Date start,
             SortedMap<LocalDate, Integer> mapDayAssignments) {
+        LocalDate day = new LocalDate(start);
         if (mapDayAssignments.isEmpty()) {
-            xymodel.addValue(title, start.getTime(), 0);
-        } else if ((new LocalDate(start)).compareTo(mapDayAssignments
-                .firstKey()) < 0) {
-            xymodel.addValue(title, start.getTime(), 0);
-            xymodel.addValue(title, mapDayAssignments.firstKey().minusDays(1)
-                    .toDateTimeAtStartOfDay().getMillis(), 0);
+            printLine(writer, day, 0);
+        } else if (day.compareTo(mapDayAssignments.firstKey()) < 0) {
+            printLine(writer, day, 0);
+            printLine(writer, mapDayAssignments.firstKey().minusDays(1), 0);
         }
     }
 
-    private void fillZeroValueToFinish(XYModel xymodel, Date finish,
-            String title, SortedMap<LocalDate, Integer> mapDayAssignments) {
+    private void fillZeroValueToFinish(PrintWriter writer, Date finish,
+            SortedMap<LocalDate, Integer> mapDayAssignments) {
+        LocalDate day = new LocalDate(finish);
         if (mapDayAssignments.isEmpty()) {
-            xymodel.addValue(title, finish.getTime(), 0);
-        } else if ((new LocalDate(finish)).compareTo(mapDayAssignments
-                .lastKey()) > 0) {
-            xymodel.addValue(title, mapDayAssignments.lastKey().plusDays(1)
-                    .toDateTimeAtStartOfDay().getMillis(), 0);
-            xymodel.addValue(title, finish.getTime(), 0);
+            printLine(writer, day, 0);
+        } else if (day.compareTo(mapDayAssignments.lastKey()) > 0) {
+            printLine(writer, mapDayAssignments.lastKey().plusDays(1), 0);
+            printLine(writer, day, 0);
         }
     }
 
-    private void addCalendarMaximumAvailability(XYModel xymodel, Date start,
+    private Plotinfo getCalendarMaximumAvailabilityPlotInfo(Date start,
             Date finish) {
-        String title = "max";
-
         SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(
                 resourceDAO.list(Resource.class), start, finish);
-        for (LocalDate day : mapDayAssignments.keySet()) {
-            Integer hours = mapDayAssignments.get(day);
-            xymodel.addValue(title, new Long(day.toDateTimeAtStartOfDay()
-                    .getMillis()), hours);
+
+        String uri = getServletUri(mapDayAssignments, start, finish);
+
+        PlotDataSource pds = new PlotDataSource();
+        pds.setDataSourceUri(uri);
+        pds.setSeparator(" ");
+
+        Plotinfo plotInfo = new Plotinfo();
+        plotInfo.setPlotDataSource(pds);
+
+        return plotInfo;
+    }
+
+    private String getServletUri(
+            final SortedMap<LocalDate, Integer> mapDayAssignments,
+            final Date start, final Date finish) {
+        if (mapDayAssignments.isEmpty()) {
+            return "";
         }
 
-        fillZeroValueFromStart(xymodel, start, title, mapDayAssignments);
-        fillZeroValueToFinish(xymodel, finish, title, mapDayAssignments);
+        setMaximunValueForChartIfGreater(Collections.max(mapDayAssignments.values()));
+
+        String uri = CallbackServlet
+                .registerAndCreateURLFor(new IServletRequestHandler() {
+
+                    @Override
+                    public void handle(HttpServletRequest request,
+                            HttpServletResponse response)
+                            throws ServletException, IOException {
+                        PrintWriter writer = response.getWriter();
+
+                        fillZeroValueFromStart(writer, start, mapDayAssignments);
+
+                        for (LocalDate day : mapDayAssignments.keySet()) {
+                            Integer hours = mapDayAssignments.get(day);
+                            printLine(writer, day, hours);
+                        }
+
+                        fillZeroValueToFinish(writer, finish, mapDayAssignments);
+
+                        writer.close();
+                    }
+                });
+        return uri;
     }
 
     /**
@@ -350,6 +413,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         return map;
+    }
+
+    private void setMaximunValueForChartIfGreater(Integer max) {
+        if (maximunValueForChart < max) {
+            maximunValueForChart = max;
+        }
     }
 
 }
