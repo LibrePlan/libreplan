@@ -20,11 +20,17 @@
 
 package org.navalplanner.web.planner;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.Validate;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.Planner;
+import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
@@ -40,10 +46,10 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class CompanyPlanningController extends GenericForwardComposer {
 
-
     @Autowired
     private ICompanyPlanningModel model;
 
+    private List<ICommandOnTask<TaskElement>> additional = new ArrayList<ICommandOnTask<TaskElement>>();
 
     public CompanyPlanningController() {
         getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
@@ -58,7 +64,13 @@ public class CompanyPlanningController extends GenericForwardComposer {
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
         Planner planner = (Planner) comp;
-        model.setConfigurationToPlanner(planner);
+        model.setConfigurationToPlanner(planner, additional);
+    }
+
+    public void setAdditional(List<ICommandOnTask<TaskElement>> additional) {
+        Validate.notNull(additional);
+        Validate.noNullElements(additional);
+        this.additional = additional;
     }
 
 }

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.OrderCRUDController;
@@ -43,7 +44,9 @@ import org.zkoss.ganttz.TabSwitcher;
 import org.zkoss.ganttz.TabsRegistry;
 import org.zkoss.ganttz.adapters.TabsConfiguration;
 import org.zkoss.ganttz.extensions.ICommand;
+import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.zk.ui.Executions;
@@ -162,9 +165,30 @@ public class MultipleTabsPlannerController implements Composer {
     private ITab createGlobalPlanningTab() {
         return new CreatedOnDemandTab(ENTERPRISE_VIEW, new IComponentCreator() {
 
+            @SuppressWarnings("unchecked")
             @Override
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
+                List<ICommandOnTask<TaskElement>> commands = new ArrayList<ICommandOnTask<TaskElement>>();
+                commands.add(new ICommandOnTask<TaskElement>() {
+
+                    @Override
+                    public void doAction(
+                            IContextWithPlannerTask<TaskElement> context,
+                            TaskElement task) {
+                        OrderElement orderElement = task.getOrderElement();
+                        if (orderElement instanceof Order) {
+                            Order order = (Order) orderElement;
+                            mode.goToOrderMode(order);
+                        }
+                    }
+
+                    @Override
+                    public String getName() {
+                        return _("Schedule");
+                    }
+                });
+                companyPlanningController.setAdditional(commands);
                 HashMap<String, Object> args = new HashMap<String, Object>();
                 args.put("companyPlanningController",
                         companyPlanningController);

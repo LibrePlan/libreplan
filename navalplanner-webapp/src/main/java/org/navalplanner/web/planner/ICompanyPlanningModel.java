@@ -20,7 +20,11 @@
 
 package org.navalplanner.web.planner;
 
+import java.util.Collection;
+
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.zkoss.ganttz.Planner;
+import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
  * Contract for {@link CompanyPlanningModel}
@@ -29,6 +33,7 @@ import org.zkoss.ganttz.Planner;
  */
 public interface ICompanyPlanningModel {
 
-    void setConfigurationToPlanner(Planner planner);
+    void setConfigurationToPlanner(Planner planner,
+            Collection<ICommandOnTask<TaskElement>> additional);
 
 }

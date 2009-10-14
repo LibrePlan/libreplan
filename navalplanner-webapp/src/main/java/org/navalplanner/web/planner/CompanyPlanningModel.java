@@ -51,6 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -105,15 +106,23 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void setConfigurationToPlanner(Planner planner) {
+    public void setConfigurationToPlanner(Planner planner,
+            Collection<ICommandOnTask<TaskElement>> additional) {
         PlannerConfiguration<TaskElement> configuration = createConfiguration();
-
         Chart chartComponent = new Chart();
         configuration.setChartComponent(chartComponent);
-
+        addAdditionalCommands(additional, configuration);
         planner.setConfiguration(configuration);
 
         setupChart(chartComponent, planner.getTimeTracker());
+    }
+
+    private void addAdditionalCommands(
+            Collection<ICommandOnTask<TaskElement>> additional,
+            PlannerConfiguration<TaskElement> configuration) {
+        for (ICommandOnTask<TaskElement> t : additional) {
+            configuration.addCommandOnTask(t);
+        }
     }
 
     private void setupChart(Chart chartComponent, TimeTracker timeTracker) {
