@@ -60,7 +60,6 @@ zkTasklist.hideTooltip = function(elem) {
 	document.getElementById(elem).style["display"] = "none";
 }
 
-
 function scrolledpannel() {
 	return YAHOO.util.Selector.query('.rightpanellayout div')[0];
 }
@@ -77,6 +76,14 @@ function timetrackergap() {
 	return YAHOO.util.Selector.query('.timetrackergap')[0];
 }
 
+function taskheadersgap() {
+	return YAHOO.util.Selector.query('.taskheadersgap')[0];
+}
+
+function taskheaderscontainer() {
+	return YAHOO.util.Selector.query('.taskheaderscontainer')[0];
+}
+
 function rightpanellayout() {
 	return YAHOO.util.Selector.query('.rightpanellayout div')[0];
 }
@@ -84,6 +91,7 @@ function rightpanellayout() {
 zkTasklist.init = function(cmp) {
 	zkTasklist.adjust_height();
 	listenToScroll();
+	listenToTaskDetailsScroll();
 }
 
 /* Resizes ganttpanel heigh to fit window size */
@@ -104,20 +112,24 @@ function listenToScroll() {
 
 	var onScroll = function() {
 		timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
-
-		leftpanel_.style["position"] = "relative";
 		leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
-
-		plannergraph_.style["position"] = "relative";
 		plannergraph_.scrollLeft = scrolledpannel_.scrollLeft;
 	};
-
 	rightpanellayout_.onscroll = onScroll;
 
 }
 
-// Improve adjusting plannerlayout_center height based on window size */
-// YAHOO.util.Event.addListener(window, 'resize', relocateScrolls);
+function listenToTaskDetailsScroll() {
+	timetrackergap_ = timetrackergap();
+	taskheaderscontainer_ = taskheaderscontainer();
+
+	var onScrollTaskDetails = function() {
+		taskheaderscontainer__.style["left"] = "-" + leftpanel_.scrollLeft + "px";
+	};
+	leftpanel_.onscroll = onScrollTaskDetails;
+
+}
+
 
 /*
  * Move scrollbars to locate them on left and bottom window borders

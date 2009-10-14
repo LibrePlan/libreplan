@@ -35,7 +35,7 @@ planner = self;
                     splittable="true" autoscroll="true">
 
                     <borderlayout >
-                        <north border="0" height="32px" flex="true" collapsible="true">
+                        <north border="0" height="32px" flex="true" collapsible="true" sclass="taskheadersgap">
                             <vbox pack="center" align="center">
                             <tree fixedLayout="false">
                                 <treecols sizable="false">
@@ -46,7 +46,7 @@ planner = self;
                             </tree>
                             </vbox>
                         </north>
-                        <center border="0" style="overflow-x:scroll">
+                        <center border="0" sclass="leftpanelcontainer" style="overflow-x:scroll">
                             <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
                         </center>
                     </borderlayout>

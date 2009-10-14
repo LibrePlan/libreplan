@@ -542,7 +542,7 @@ div.z-tree {
 }
 
 .plannerlayout, .resourcesloadlayout, .advancedallocationlayout {
-    height:350px;
+    height:550px;
 }
 
 .task_tooltip {
@@ -623,4 +623,8 @@ height:15px;
 
 #timetrackerheader .z-grid-body {
 display:none;
+}
+
+.taskheaderscontainer, .leftpanelgap, .plannergraph div {
+    position:relative";
 }
