@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -522,6 +523,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         });
 
+        Set<Resource> resroucesAlreadyUsed = new HashSet<Resource>();
+
         for (DayAssignment dayAssignment : dayAssignments) {
             LocalDate day = dayAssignment.getDay();
             Integer hours = 0;
@@ -539,13 +542,22 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
 
             if (calendarHours) {
-                ResourceCalendar calendar = dayAssignment.getResource()
-                        .getCalendar();
-                if (calendar != null) {
-                    hours = calendar.getWorkableHours(dayAssignment.getDay());
-                } else {
-                    hours = SameWorkHoursEveryDay.getDefaultWorkingDay()
-                            .getWorkableHours(dayAssignment.getDay());
+                Resource resource = dayAssignment.getResource();
+
+                if (map.get(day) == null) {
+                    resroucesAlreadyUsed.clear();
+                }
+
+                if (!resroucesAlreadyUsed.contains(resource)) {
+                    resroucesAlreadyUsed.add(resource);
+                    ResourceCalendar calendar = resource.getCalendar();
+                    if (calendar != null) {
+                        hours = calendar.getWorkableHours(dayAssignment
+                                .getDay());
+                    } else {
+                        hours = SameWorkHoursEveryDay.getDefaultWorkingDay()
+                                .getWorkableHours(dayAssignment.getDay());
+                    }
                 }
             } else {
                 hours = dayAssignment.getHours();
