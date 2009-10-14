@@ -36,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.zul.Messagebox;
 
@@ -63,7 +62,6 @@ public class SaveCommand implements ISaveCommand {
     }
 
     @Override
-    @Transactional
     public void doAction(IContext<TaskElement> context) {
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
