@@ -163,9 +163,8 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private ITab createGlobalPlanningTab() {
-        return new CreatedOnDemandTab(ENTERPRISE_VIEW, new IComponentCreator() {
+        IComponentCreator componentCreator = new IComponentCreator() {
 
-            @SuppressWarnings("unchecked")
             @Override
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
@@ -196,7 +195,13 @@ public class MultipleTabsPlannerController implements Composer {
                         parent,
                         args);
             }
-        });
+        };
+        return new CreatedOnDemandTab(ENTERPRISE_VIEW, componentCreator) {
+            @Override
+            protected void afterShowAction() {
+                companyPlanningController.setConfigurationForPlanner();
+            }
+        };
     }
 
     private ITab createOrderPlanningTab() {

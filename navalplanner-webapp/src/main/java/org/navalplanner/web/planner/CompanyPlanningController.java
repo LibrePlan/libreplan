@@ -34,7 +34,7 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zk.ui.util.Composer;
 
 /**
  * Controller for company planning view. Representation of company orders in the
@@ -44,12 +44,14 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class CompanyPlanningController extends GenericForwardComposer {
+public class CompanyPlanningController implements Composer{
 
     @Autowired
     private ICompanyPlanningModel model;
 
     private List<ICommandOnTask<TaskElement>> additional = new ArrayList<ICommandOnTask<TaskElement>>();
+
+    private Planner planner;
 
     public CompanyPlanningController() {
         getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
@@ -61,9 +63,11 @@ public class CompanyPlanningController extends GenericForwardComposer {
     }
 
     @Override
-    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
-        super.doAfterCompose(comp);
-        Planner planner = (Planner) comp;
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
+        planner = (Planner) comp;
+    }
+
+    public void setConfigurationForPlanner() {
         model.setConfigurationToPlanner(planner, additional);
     }
 
