@@ -105,18 +105,22 @@ public class SaveCommand implements ISaveCommand {
         for (TaskElement taskElement : state.getTasksToSave()) {
             taskElementDAO.save(taskElement);
             if (taskElement instanceof Task) {
-                if (!((Task) taskElement).isValidResourceAllocationWorkers()) {
-                    throw new RuntimeException(_("The task '{0}' has some repeated Worker assigned",
-                                taskElement.getName()));
-                }
-                for (ResourceAllocation<?> resourceAllocation : ((Task) taskElement)
-                        .getResourceAllocations()) {
-                    resourceAllocation.dontPoseAsTransientObjectAnymore();
-                    for (DayAssignment dayAssignment : (List<? extends DayAssignment>) resourceAllocation
-                            .getAssignments()) {
-                        dayAssignment.dontPoseAsTransientObjectAnymore();
-                    }
-                }
+                saveTask(taskElement, (Task) taskElement);
+            }
+        }
+    }
+
+    private void saveTask(TaskElement taskElement, Task task) {
+        if (!task.isValidResourceAllocationWorkers()) {
+            throw new RuntimeException(_("The task '{0}' has some repeated Worker assigned",
+                        taskElement.getName()));
+        }
+        for (ResourceAllocation<?> resourceAllocation : task
+                .getResourceAllocations()) {
+            resourceAllocation.dontPoseAsTransientObjectAnymore();
+            for (DayAssignment dayAssignment : (List<? extends DayAssignment>) resourceAllocation
+                    .getAssignments()) {
+                dayAssignment.dontPoseAsTransientObjectAnymore();
             }
         }
     }
