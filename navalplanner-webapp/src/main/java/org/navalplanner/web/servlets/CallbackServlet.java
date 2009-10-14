@@ -92,7 +92,7 @@ public class CallbackServlet extends HttpServlet {
         return buildURLFromKey(generatedKey);
     }
 
-    private static String buildURLFromKey(String generatedKey) {
+    private static synchronized String buildURLFromKey(String generatedKey) {
         if (contextPath == null) {
             throw new IllegalStateException(CallbackServlet.class.getName()
                             + " has not been initialized. Register it at web.xml with a load-on-startup element");
