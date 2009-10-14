@@ -36,6 +36,7 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -112,6 +113,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         Chart chartComponent = new Chart();
         configuration.setChartComponent(chartComponent);
         addAdditionalCommands(additional, configuration);
+
+        configuration.setAddingDependenciesEnabled(false);
+
         planner.setConfiguration(configuration);
 
         setupChart(chartComponent, planner.getTimeTracker());
@@ -181,7 +185,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private void forceLoadOfWorkingHours(List<TaskElement> initial) {
         for (TaskElement taskElement : initial) {
-            taskElement.getOrderElement().getWorkHours();
+            OrderElement orderElement = taskElement.getOrderElement();
+            if (orderElement != null) {
+                orderElement.getWorkHours();
+            }
             if (!taskElement.isLeaf()) {
                 forceLoadOfWorkingHours(taskElement.getChildren());
             }
@@ -205,7 +212,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private void forceLoadOfLabels(List<TaskElement> initial) {
         for (TaskElement taskElement : initial) {
-            taskElement.getOrderElement().getLabels().size();
+            OrderElement orderElement = taskElement.getOrderElement();
+            if (orderElement != null) {
+                orderElement.getLabels().size();
+            }
         }
     }
 
