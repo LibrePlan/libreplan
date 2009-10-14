@@ -22,6 +22,10 @@ package org.navalplanner.web.planner;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -32,6 +36,7 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -108,6 +113,43 @@ public class SaveCommand implements ISaveCommand {
                 saveTask(taskElement, (Task) taskElement);
             }
         }
+        if (!state.getTasksToSave().isEmpty()) {
+            updateRootTaskPosition();
+        }
+    }
+
+    private void updateRootTaskPosition() {
+        TaskGroup rootTask = state.getRootTask();
+        final Date min = minDate(state.getTasksToSave());
+        rootTask.setStartDate(min);
+        final Date max = maxDate(state.getTasksToSave());
+        rootTask.setEndDate(max);
+        taskElementDAO.save(rootTask);
+    }
+
+    private Date maxDate(Collection<? extends TaskElement> tasksToSave) {
+        return Collections.max(toEndDates(tasksToSave));
+    }
+
+    private List<Date> toEndDates(Collection<? extends TaskElement> tasksToSave) {
+        List<Date> result = new ArrayList<Date>();
+        for (TaskElement taskElement : tasksToSave) {
+            result.add(taskElement.getEndDate());
+        }
+        return result;
+    }
+
+    private Date minDate(Collection<? extends TaskElement> tasksToSave) {
+        return Collections.min(toStartDates(tasksToSave));
+    }
+
+    private List<Date> toStartDates(
+            Collection<? extends TaskElement> tasksToSave) {
+        List<Date> result = new ArrayList<Date>();
+        for (TaskElement taskElement : tasksToSave) {
+            result.add(taskElement.getStartDate());
+        }
+        return result;
     }
 
     private void saveTask(TaskElement taskElement, Task task) {
