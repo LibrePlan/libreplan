@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
 
 import javax.servlet.ServletException;
@@ -210,6 +211,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private IZoomLevelChangedListener zoomListener;
 
+    private LocalDate minDate;
+
+    private LocalDate maxDate;
+
     private void fillChartOnZoomChange(final Order order,
             final Timeplot chartComponent, final TimeTracker timeTracker) {
 
@@ -346,6 +351,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         List<DayAssignment> dayAssignments = order.getDayAssignments();
         SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
 
+        SortedSet<LocalDate> keys = (SortedSet<LocalDate>) mapDayAssignments
+                .keySet();
+        minDate = keys.first();
+        maxDate = keys.last();
+
         String uri = getServletUri(mapDayAssignments, start, finish);
 
         PlotDataSource pds = new PlotDataSource();
@@ -393,7 +403,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             dayAssignments.addAll(resource.getAssignments());
         }
 
-        SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
+        SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(
+                dayAssignments, minDate, maxDate);
 
         String uri = getServletUri(mapDayAssignments, start, finish);
 
@@ -459,7 +470,20 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
             List<DayAssignment> dayAssignments) {
-        return calculateHoursAdditionByDay(dayAssignments, false);
+        return calculateHoursAdditionByDay(dayAssignments, false, null, null);
+    }
+
+    private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
+            List<DayAssignment> dayAssignments, LocalDate minDate,
+            LocalDate maxDate) {
+        return calculateHoursAdditionByDay(dayAssignments, false, minDate,
+                maxDate);
+    }
+
+    private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
+            List<DayAssignment> dayAssignments, boolean calendarHours) {
+        return calculateHoursAdditionByDay(dayAssignments, calendarHours, null,
+                null);
     }
 
     /**
@@ -471,10 +495,18 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
      *            If <code>true</code> the resource's calendar will be used to
      *            calculate the available hours. Otherwise, the
      *            {@link DayAssignment} hours will be used.
+     * @param minDate
+     *            If it's not <code>null</code>, just {@link DayAssignment} from
+     *            this date will be used.
+     * @param maxDate
+     *            If it's not <code>null</code>, just {@link DayAssignment} to
+     *            this date will be used.
+     *
      * @return A map { day => hours } sorted by date
      */
     private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
-            List<DayAssignment> dayAssignments, boolean calendarHours) {
+            List<DayAssignment> dayAssignments, boolean calendarHours,
+            LocalDate minDate, LocalDate maxDate) {
         SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
 
         if (dayAssignments.isEmpty()) {
@@ -493,6 +525,18 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         for (DayAssignment dayAssignment : dayAssignments) {
             LocalDate day = dayAssignment.getDay();
             Integer hours = 0;
+
+            if (minDate != null) {
+                if (day.compareTo(minDate) < 0) {
+                    continue;
+                }
+            }
+
+            if (maxDate != null) {
+                if (day.compareTo(maxDate) > 0) {
+                    continue;
+                }
+            }
 
             if (calendarHours) {
                 ResourceCalendar calendar = dayAssignment.getResource()
