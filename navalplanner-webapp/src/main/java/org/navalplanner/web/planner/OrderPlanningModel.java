@@ -443,6 +443,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private String getServletUri(
             final SortedMap<LocalDate, Integer> mapDayAssignments,
             final Date start, final Date finish) {
+        if (mapDayAssignments.isEmpty()) {
+            return "";
+        }
+
         setMaximunValueForChartIfGreater(Collections.max(mapDayAssignments.values()));
 
         String uri = CallbackServlet
