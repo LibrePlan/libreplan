@@ -22,13 +22,12 @@ package org.navalplanner.web.planner;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -83,8 +82,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Autowired
     private IOrderDAO orderDAO;
-
-    private PlanningState planningState;
 
     @Autowired
     private IResourceDAO resourceDAO;
@@ -175,18 +172,17 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private PlannerConfiguration<TaskElement> createConfiguration() {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
-        planningState = new PlanningState(retainOnlyTopLevel(), resourceDAO
-                .list(Resource.class));
-        forceLoadOfDependenciesCollections(planningState.getInitial());
-        forceLoadOfWorkingHours(planningState.getInitial());
-        forceLoadOfLabels(planningState.getInitial());
+        List<TaskElement> toShow = retainOnlyTopLevel();
+        forceLoadOfDependenciesCollections(toShow);
+        forceLoadOfWorkingHours(toShow);
+        forceLoadOfLabels(toShow);
         return new PlannerConfiguration<TaskElement>(taskElementAdapter,
-                new TaskElementNavigator(), planningState.getInitial());
+                new TaskElementNavigator(), toShow);
     }
 
-    private Collection<? extends TaskElement> retainOnlyTopLevel() {
+    private List<TaskElement> retainOnlyTopLevel() {
         List<Order> list = orderDAO.list(Order.class);
-        Set<TaskElement> result = new HashSet<TaskElement>();
+        List<TaskElement> result = new ArrayList<TaskElement>();
         for (Order order : list) {
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
             if (associatedTaskElement != null) {
