@@ -22,7 +22,7 @@ package org.navalplanner.web.resourceload;
 
 import java.util.List;
 
-import org.navalplanner.web.planner.PlanningState;
+import org.navalplanner.business.orders.entities.Order;
 import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
 import org.zkoss.ganttz.util.Interval;
 
@@ -30,7 +30,7 @@ public interface IResourceLoadModel {
 
     void initGlobalView();
 
-    void initGlobalView(PlanningState filterBy);
+    void initGlobalView(Order filterBy);
 
     List<LoadTimelinesGroup> getLoadTimeLines();
 

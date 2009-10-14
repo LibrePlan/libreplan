@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -43,7 +45,6 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.web.planner.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -62,12 +63,15 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private IResourceDAO resourcesDAO;
 
     @Autowired
+    private IOrderDAO orderDAO;
+
+    @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
 
     private List<LoadTimelinesGroup> loadTimeLines;
     private Interval viewInterval;
 
-    private PlanningState filterBy;
+    private Order filterBy;
 
     @Override
     @Transactional(readOnly = true)
@@ -82,8 +86,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void initGlobalView(PlanningState filterBy) {
+    public void initGlobalView(Order filterBy) {
         this.filterBy = filterBy;
+        orderDAO.save(filterBy);
         initGlobalView();
     }
 
@@ -105,7 +110,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         if (filter()) {
             return resourceAllocationDAO
                     .findGenericAllocationsByCriterionFor(justTasks(filterBy
-                            .getTasksToSave()));
+                            .getAssociatedTasks()));
         } else {
             return resourceAllocationDAO.findGenericAllocationsByCriterion();
 
@@ -125,9 +130,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<Resource> resourcesForActiveTasks() {
-        filterBy.reassociateResourcesWithSession(resourcesDAO);
-        return resourcesDAO
-                .findResourcesRelatedTo(justTasks(filterBy.getTasksToSave()));
+        return resourcesDAO.findResourcesRelatedTo(justTasks(filterBy
+                .getAssociatedTasks()));
     }
 
     private List<Task> justTasks(Collection<? extends TaskElement> tasks) {

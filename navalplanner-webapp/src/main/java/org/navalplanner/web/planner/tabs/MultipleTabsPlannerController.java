@@ -34,6 +34,7 @@ import org.navalplanner.web.planner.CompanyPlanningController;
 import org.navalplanner.web.planner.IOrderPlanningGate;
 import org.navalplanner.web.planner.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
+import org.navalplanner.web.resourceload.ResourceLoadController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -52,7 +53,6 @@ import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Label;
 
 /**
  * Creates and handles several tabs
@@ -117,6 +117,9 @@ public class MultipleTabsPlannerController implements Composer {
 
     @Autowired
     private OrderPlanningController orderPlanningController;
+
+    @Autowired
+    private ResourceLoadController resourceLoadController;
 
     private IComponentCreator ordersTabCreator = new IComponentCreator() {
 
@@ -228,16 +231,32 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private ITab createOrderResourcesLoadTab() {
-        return new CreatedOnDemandTab(RESOURCE_LOAD_VIEW, new IComponentCreator() {
+        IComponentCreator componentCreator = new IComponentCreator() {
 
             @Override
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
-                        return withUpAndDownButton(new Label(
-                                "on resource load view. mode: "
-                                        + mode.getType()));
+                Map<String, Object> arguments = new HashMap<String, Object>();
+                arguments.put("resourceLoadController",
+                        resourceLoadController);
+                return Executions.createComponents(
+                        "/resourceload/_resourceloadfororder.zul",
+                        parent,
+                        arguments);
             }
-        });
+        };
+        return new CreatedOnDemandTab(RESOURCE_LOAD_VIEW, componentCreator) {
+            private Order currentOrder;
+
+            @Override
+            protected void afterShowAction() {
+                if (mode.isOf(ModeType.ORDER)
+                        && mode.getOrder() != currentOrder) {
+                    currentOrder = mode.getOrder();
+                    resourceLoadController.filterBy(currentOrder);
+                }
+            }
+        };
     }
 
     private ITab createGlobalResourcesLoadTab() {

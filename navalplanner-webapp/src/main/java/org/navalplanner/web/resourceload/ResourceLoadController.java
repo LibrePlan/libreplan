@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.navalplanner.web.planner.PlanningState;
+import org.navalplanner.business.orders.entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zk.ui.util.Composer;
 
 /**
  * Controller for global resourceload view
@@ -41,14 +41,14 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class ResourceLoadController extends GenericForwardComposer {
+public class ResourceLoadController implements Composer {
 
     @Autowired
     private IResourceLoadModel resourceLoadModel;
 
     private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
 
-    private PlanningState filterBy;
+    private Order filterBy;
 
     public ResourceLoadController() {
     }
@@ -80,7 +80,7 @@ public class ResourceLoadController extends GenericForwardComposer {
                 new TimeTracker(resourceLoadModel.getViewInterval()));
     }
 
-    public void filterBy(PlanningState planningState) {
-        this.filterBy = planningState;
+    public void filterBy(Order order) {
+        this.filterBy = order;
     }
 }
