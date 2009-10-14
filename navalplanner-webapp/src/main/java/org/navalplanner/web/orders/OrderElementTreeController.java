@@ -92,10 +92,14 @@ public class OrderElementTreeController extends GenericForwardComposer {
     }
 
     public void indent() {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         if (tree.getSelectedCount() == 1) {
-            getModel().indent(getSelectedNode());
+            indent(getSelectedNode());
         }
+    }
+
+    private void indent(OrderElement orderElement) {
+        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        getModel().indent(orderElement);
     }
 
     public TreeModel getOrderElementTreeModel() {
@@ -110,24 +114,37 @@ public class OrderElementTreeController extends GenericForwardComposer {
     }
 
     public void unindent() {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         if (tree.getSelectedCount() == 1) {
-            getModel().unindent(getSelectedNode());
+            unindent(getSelectedNode());
         }
+    }
+
+    private void unindent(OrderElement orderElement) {
+        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        getModel().unindent(orderElement);
     }
 
     public void up() {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         if (tree.getSelectedCount() == 1) {
-            getModel().up(getSelectedNode());
+            up(getSelectedNode());
         }
     }
 
-    public void down() {
+    public void up(OrderElement orderElement) {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        getModel().up(orderElement);
+    }
+
+    public void down() {
         if (tree.getSelectedCount() == 1) {
-            getModel().down(getSelectedNode());
+            down(getSelectedNode());
         }
+    }
+
+    public void down(OrderElement orderElement) {
+        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        getModel().down(orderElement);
     }
 
     private OrderElement getSelectedNode() {
@@ -445,7 +462,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getModel().down(orderElementForThisRow);
+                    down(orderElementForThisRow);
                 }
             });
 
@@ -457,7 +474,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getModel().up(orderElementForThisRow);
+                    up(orderElementForThisRow);
                 }
             });
 
@@ -469,8 +486,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             indentbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getModel().indent(orderElementForThisRow);
-
+                    indent(orderElementForThisRow);
                 }
             });
 
@@ -483,9 +499,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
                     new EventListener() {
                         @Override
                         public void onEvent(Event event) throws Exception {
-                            getModel().unindent(
-                                    orderElementForThisRow);
-
+                            unindent(orderElementForThisRow);
                         }
                     });
 
