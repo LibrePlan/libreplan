@@ -253,7 +253,12 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private ITab createGlobalOrdersTab() {
-        return new CreatedOnDemandTab(ORDERS_VIEW, ordersTabCreator);
+        return new CreatedOnDemandTab(ORDERS_VIEW, ordersTabCreator) {
+            @Override
+            protected void afterShowAction() {
+                orderCRUDController.goToList();
+            }
+        };
     }
 
     private OrderCRUDController setupOrderCrudController() {
