@@ -66,24 +66,29 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private final FunctionalityExposedForExtensions<?> context;
 
+    private boolean addingDependenciesEnabled;
+
     public TaskList(
             FunctionalityExposedForExtensions<?> context,
             CommandOnTaskContextualized<?> editTaskCommand,
             List<Task> tasks,
-            List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized) {
+            List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
+            boolean addingDependenciesEnabled) {
         this.context = context;
         this.editTaskCommand = editTaskCommand;
         this.originalTasks = tasks;
         this.commandsOnTasksContextualized = commandsOnTasksContextualized;
+        this.addingDependenciesEnabled = addingDependenciesEnabled;
     }
 
     public static TaskList createFor(
             FunctionalityExposedForExtensions<?> context,
             CommandOnTaskContextualized<?> editTaskCommand,
-            List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized) {
+            List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
+            boolean addingDependenciesEnabled) {
         TaskList result = new TaskList(context, editTaskCommand, context
                 .getDiagramGraph().getTopLevelTasks(),
-                commandsOnTasksContextualized);
+                commandsOnTasksContextualized, addingDependenciesEnabled);
         return result;
     }
 
@@ -277,13 +282,17 @@ public class TaskList extends XulElement implements AfterCompose {
         if (contextMenu == null) {
             MenuBuilder<TaskComponent> menuBuilder = MenuBuilder.on(getPage(),
                     getTaskComponents());
-            menuBuilder.item("Add Dependency", new ItemAction<TaskComponent>() {
+            if (addingDependenciesEnabled) {
+                menuBuilder.item("Add Dependency",
+                        new ItemAction<TaskComponent>() {
 
-                @Override
-                public void onEvent(TaskComponent choosen, Event event) {
-                    choosen.addDependency();
-                }
-            });
+                            @Override
+                            public void onEvent(TaskComponent choosen,
+                                    Event event) {
+                                choosen.addDependency();
+                            }
+                        });
+            }
             for (CommandOnTaskContextualized<?> command : commandsOnTasksContextualized) {
                 menuBuilder.item(command.getName(), command.toItemAction());
             }

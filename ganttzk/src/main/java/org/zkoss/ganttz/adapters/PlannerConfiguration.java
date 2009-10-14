@@ -81,6 +81,8 @@ public class PlannerConfiguration<T> {
 
     private Component chartComponent;
 
+    private boolean addingDependenciesEnabled = true;
+
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
         this.adapter = adapter;
@@ -143,6 +145,14 @@ public class PlannerConfiguration<T> {
 
     public Component getChartComponent() {
         return chartComponent;
+    }
+
+    public void setAddingDependenciesEnabled(boolean addingDependenciesEnabled) {
+        this.addingDependenciesEnabled = addingDependenciesEnabled;
+    }
+
+    public boolean isAddingDependenciesEnabled() {
+        return addingDependenciesEnabled;
     }
 
 }

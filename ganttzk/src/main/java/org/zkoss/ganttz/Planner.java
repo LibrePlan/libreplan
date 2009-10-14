@@ -60,6 +60,8 @@ public class Planner extends HtmlMacroComponent  {
 
     private FunctionalityExposedForExtensions<?> context;
 
+    private boolean addingDependenciesEnabled;
+
     public Planner() {
         registerNeededScripts();
     }
@@ -156,6 +158,9 @@ public class Planner extends HtmlMacroComponent  {
         if (chartComponent != null) {
             getFellow("insertionPointChart").appendChild(chartComponent);
         }
+
+        this.addingDependenciesEnabled = configuration
+                .isAddingDependenciesEnabled();
     }
 
     private void setAt(String insertionPointId, Component component) {
@@ -205,7 +210,8 @@ public class Planner extends HtmlMacroComponent  {
         insertGlobalCommands();
         this.leftPane = new LeftPane(this.diagramGraph.getTopLevelTasks());
         this.ganttPanel = new GanttPanel(this.context,
-                commandsOnTasksContextualized, editTaskCommand);
+                commandsOnTasksContextualized, editTaskCommand,
+                addingDependenciesEnabled);
     }
 
     @SuppressWarnings("unchecked")
