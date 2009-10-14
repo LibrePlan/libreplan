@@ -20,7 +20,6 @@
 
 package org.navalplanner.business.planner.daos;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -105,7 +104,7 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
 
         for (Object[] object : list) {
             Date date = (Date) object[0];
-            BigInteger hours = (BigInteger) object[1];
+            Number hours = (Number) object[1];
             result.put(new LocalDate(date), hours.intValue());
         }
 
