@@ -496,6 +496,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                         .getCalendar();
                 if (calendar != null) {
                     hours = calendar.getWorkableHours(dayAssignment.getDay());
+                } else {
+                    hours = 8;
                 }
             } else {
                 hours = dayAssignment.getHours();

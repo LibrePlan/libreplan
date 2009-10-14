@@ -406,6 +406,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 ResourceCalendar calendar = resource.getCalendar();
                 if (calendar != null) {
                     hours += calendar.getWorkableHours(date);
+                } else {
+                    hours += 8;
                 }
             }
 
