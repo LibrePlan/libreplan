@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
@@ -41,8 +42,12 @@ public class PlanningState {
 
     private Set<Resource> resources = new HashSet<Resource>();
 
-    public PlanningState(Collection<? extends TaskElement> initialState,
+    private final TaskGroup rootTask;
+
+    public PlanningState(TaskGroup rootTask,
+            Collection<? extends TaskElement> initialState,
             Collection<? extends Resource> initialResources) {
+        this.rootTask = rootTask;
         this.initial = new ArrayList<TaskElement>(initialState);
         this.toSave = new HashSet<TaskElement>(initialState);
         this.toRemove = new HashSet<TaskElement>();
@@ -105,5 +110,9 @@ public class PlanningState {
         }
         toRemove.remove(taskElement);
         toSave.add(taskElement);
+    }
+
+    public TaskGroup getRootTask() {
+        return rootTask;
     }
 }

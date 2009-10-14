@@ -229,7 +229,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             Order orderReloaded) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setOrder(orderReloaded);
-        planningState = new PlanningState(orderReloaded.getAssociatedTasks(),
+        planningState = new PlanningState(orderReloaded
+                .getAssociatedTaskElement(),
+                orderReloaded.getAssociatedTasks(),
                 resourceDAO.list(Resource.class));
 
         forceLoadOfDependenciesCollections(planningState.getInitial());
