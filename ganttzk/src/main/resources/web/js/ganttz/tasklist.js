@@ -45,8 +45,6 @@ SCROLLBAR_WIDTH = 15; // Scrollbars default width
 
 DRAGABLE_PADDING = 20; // Drag padding for dependency creation
 
-
-
 zkTasklist.tooltipTimeout = "";
 
 zkTasklist.showTooltip = function(elem) {
@@ -276,40 +274,8 @@ zkTask.init = function(cmp) {
 			proxy : true
 		});
 
-		// Configure the task element to be resizable
-		cmp2 = document.getElementById('completion' + cmp.id);
-
-		var resize2 = new YAHOO.util.Resize(cmp2, {
-			handles : [ 'r' ],
-			proxy : true,
-			maxWidth : cmp.clientWidth - 2
-		// Considering 1px borders
-				});
-
-		resize2.on('resize', function(ev) {
-			cmp.style.top = "";
-			cmp2.style.top = "";
-			zkau.send( {
-				uuid : cmp2.id,
-				cmd : "updateProgress",
-				data : [ cmp2.style.width ]
-			});
-		}, zkTask, true);
-
 		resize.on('resize', function(ev) {
 			cmp.style.top = "";
-			cmp2.style.top = "";
-			cmp2 = document.getElementById('completion' + cmp.id);
-			resize2 = new YAHOO.util.Resize(cmp2, {
-				handles : [ 'r' ],
-				proxy : true,
-				maxWidth : cmp.clientWidth - 2
-			// Considering 1px borders
-					});
-			if ((cmp.clientWidth) < (cmp2.clientWidth)) {
-				cmp2.style.width = cmp.clientWidth - 2 + 'px';
-			}
-
 			zkau.send( {
 				uuid : cmp.id,
 				cmd : "updateSize",
