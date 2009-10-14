@@ -144,7 +144,7 @@ min-width:200px;
     position: absolute;
     padding: 4px;
     cursor: crosshair;
-    z-index:-1;
+    z-index:0;
 }
 
 .end,.start {

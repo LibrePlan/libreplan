@@ -450,7 +450,7 @@ zkTask.isOverTask = function(cmp, arrow) {
 
 	var xpos = zkTask.xMouse - findPosX(innerLayout)
 			+ innerLayout.scrollLeft;
-	var ypos = zkTask.yMouse - findPosY(innerLayout) - 48 /* padding top */
+	var ypos = zkTask.yMouse - findPosY(innerLayout)
 			+ innerLayout.scrollTop - listtasksNode.offsetTop;
 
 	for ( var i = 0; i < arrayTasks.length; i++) {
