@@ -138,12 +138,15 @@ public final class CriterionConverter {
     public final static CriterionType toEntity(
         CriterionTypeDTO criterionTypeDTO) {
 
-        CriterionType criterionType = CriterionType.create(
-            criterionTypeDTO.name,
-            criterionTypeDTO.description,
-            criterionTypeDTO.allowHierarchy,
-            criterionTypeDTO.allowSimultaneousCriterionsPerResource,
-            criterionTypeDTO.enabled,
+        CriterionType criterionType = CriterionType.create();
+
+        criterionType.setName(criterionTypeDTO.name);
+        criterionType.setDescription(criterionTypeDTO.description);
+        criterionType.setAllowHierarchy(criterionTypeDTO.allowHierarchy);
+        criterionType.setAllowSimultaneousCriterionsPerResource(
+            criterionTypeDTO.allowSimultaneousCriterionsPerResource);
+        criterionType.setEnabled(criterionTypeDTO.enabled);
+        criterionType.setResource(
             CriterionConverter.fromDTO(criterionTypeDTO.resource));
 
         for (CriterionDTO criterionDTO : criterionTypeDTO.criterions) {
@@ -187,8 +190,10 @@ public final class CriterionConverter {
         CriterionDTO childDTO, CriterionType criterionType,
         Criterion criterionParent) {
 
-        Criterion criterion = Criterion.create(childDTO.name, criterionType);
+        Criterion criterion = Criterion.create();
 
+        criterion.setName(childDTO.name);
+        criterion.setType(criterionType);
         criterion.setActive(childDTO.active);
         criterion.setParent(criterionParent);
 

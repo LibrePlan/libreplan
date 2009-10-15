@@ -20,27 +20,30 @@
 
 package org.navalplanner.ws.common.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * It represents list of errors in the service response.
+ * DTO for modeling the response to be returned when an internal service error
+ * occurs.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@XmlRootElement(name="errors")
-public class WSErrorList {
+@XmlRootElement(name="internal-error")
+public class InternalErrorDTO {
 
-    @XmlElement(name="error")
-    public List<WSError> errors = new ArrayList<WSError>();
+    @XmlAttribute
+    public String message;
 
-    public WSErrorList() {}
+    @XmlElement(name="stack-trace")
+    public String stackTrace;
 
-    public WSErrorList(List<WSError> errors) {
-        this.errors = errors;
+    public InternalErrorDTO() {}
+
+    public InternalErrorDTO(String message, String stackTrace) {
+        this.message = message;
+        this.stackTrace = stackTrace;
     }
 
 }

@@ -26,14 +26,12 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * DTO for <code>Criterion</code> entity.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@XmlRootElement(name="criterion")
 public class CriterionDTO {
 
     @XmlAttribute

@@ -20,15 +20,16 @@
 
 package org.navalplanner.ws.common.api;
 
-import javax.xml.bind.annotation.XmlEnum;
-
 /**
- * Enumeration type for the types of errors in <code>WSError</code>.
+ * Global names.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@XmlEnum
-public enum WSErrorType {
-    SERVICE_INTERNAL_ERROR,
-    VALIDATION_ERROR
+public class WSCommonGlobalNames {
+
+    public final static String REST_NAMESPACE =
+        "http://rest.ws.navalplanner.org";
+
+    private WSCommonGlobalNames() {}
+
 }

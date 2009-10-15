@@ -25,7 +25,7 @@
  */
 @javax.xml.bind.annotation.XmlSchema(
     elementFormDefault=javax.xml.bind.annotation.XmlNsForm.QUALIFIED,
-    namespace=WSGlobalNames.REST_NAMESPACE
+    namespace=WSCommonGlobalNames.REST_NAMESPACE
 )
 package org.navalplanner.ws.resources.criterion.api;
-import org.navalplanner.ws.common.api.WSGlobalNames;
+import org.navalplanner.ws.common.api.WSCommonGlobalNames;

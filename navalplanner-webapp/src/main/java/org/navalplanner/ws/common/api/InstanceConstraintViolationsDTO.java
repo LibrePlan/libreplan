@@ -18,13 +18,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package org.navalplanner.ws.common.api;
+
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
- * Specification of namespace for REST-based services.
+ * DTO for modeling the list of constraint violations on a given instance.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@javax.xml.bind.annotation.XmlSchema(
-    elementFormDefault=javax.xml.bind.annotation.XmlNsForm.QUALIFIED,
-    namespace=WSCommonGlobalNames.REST_NAMESPACE
-)
-package org.navalplanner.ws.common.api;
+public class InstanceConstraintViolationsDTO {
+
+    @XmlAttribute(name="instance-id")
+    public String instanceId;
+
+    @XmlElement(name="constraint-violation")
+    public List<ConstraintViolationDTO> constraintViolations;
+
+    public InstanceConstraintViolationsDTO() {}
+
+    public InstanceConstraintViolationsDTO(String instanceId,
+            List<ConstraintViolationDTO> constraintViolations) {
+
+        this.instanceId = instanceId;
+        this.constraintViolations = constraintViolations;
+
+    }
+
+}

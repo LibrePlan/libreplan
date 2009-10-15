@@ -27,8 +27,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.navalplanner.ws.common.api.WSError;
-import org.navalplanner.ws.common.api.WSErrorType;
+import org.navalplanner.ws.common.api.InternalErrorDTO;
 import org.springframework.stereotype.Component;
 
 /**
@@ -43,10 +42,8 @@ public class RuntimeExceptionMapper
 
     public Response toResponse(RuntimeException e) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
-            entity(new WSError(WSErrorType.SERVICE_INTERNAL_ERROR,
-                getStackTrace(e))).
-            type("application/xml").
-            build();
+            entity(new InternalErrorDTO(e.getMessage(),
+                getStackTrace(e))).type("application/xml").build();
     }
 
     private String getStackTrace(RuntimeException e) {

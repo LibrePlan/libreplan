@@ -21,35 +21,25 @@
 package org.navalplanner.ws.common.api;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * It represents an individual error in the service response.
+ * DTO for modeling a constraint violation.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@XmlRootElement(name="error")
-public class WSError {
+public class ConstraintViolationDTO {
+
+    @XmlAttribute(name="field-name")
+    public String fieldName;
 
     @XmlAttribute
-    public String instanceId;
+    public String mesage;
 
-    @XmlAttribute
-    public WSErrorType errorType;
+    public ConstraintViolationDTO() {}
 
-    public String explanation;
-
-    public WSError() {}
-
-    public WSError(WSErrorType errorType, String explanation) {
-        this.errorType = errorType;
-        this.explanation = explanation;
-    }
-
-    public WSError(String instanceId, WSErrorType errorType, String explanation) {
-        this.instanceId = instanceId;
-        this.errorType = errorType;
-        this.explanation = explanation;
+    public ConstraintViolationDTO(String fieldName, String mesage) {
+        this.fieldName = fieldName;
+        this.mesage = mesage;
     }
 
 }

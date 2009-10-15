@@ -26,14 +26,12 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * DTO for <code>CriterionType</code> entity.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@XmlRootElement(name="criterion-type")
 public class CriterionTypeDTO {
 
     @XmlAttribute
@@ -42,10 +40,10 @@ public class CriterionTypeDTO {
     @XmlAttribute
     public String description;
 
-    @XmlAttribute
+    @XmlAttribute(name="allow-hierarchy")
     public boolean allowHierarchy = true;
 
-    @XmlAttribute
+    @XmlAttribute(name="allow-simultaneous-criterions-per-resource")
     public boolean allowSimultaneousCriterionsPerResource = true;
 
     @XmlAttribute

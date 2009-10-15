@@ -20,16 +20,32 @@
 
 package org.navalplanner.ws.common.api;
 
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
- * Global names.
+ * DTO for modeling the constraint violations on a list of instances.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class WSGlobalNames {
+@XmlRootElement(name="instance-constraint-violations-list")
+public class InstanceConstraintViolationsListDTO {
 
-    public final static String REST_NAMESPACE =
-        "http://rest.ws.navalplanner.org";
+    @XmlElement(name="instance-constraint-violations")
+    public List<InstanceConstraintViolationsDTO>
+        instanceConstraintViolationsList;
 
-    private WSGlobalNames() {}
+    public InstanceConstraintViolationsListDTO() {}
+
+    public InstanceConstraintViolationsListDTO(
+        List<InstanceConstraintViolationsDTO>
+            instanceConstraintViolationsList) {
+
+        this.instanceConstraintViolationsList =
+            instanceConstraintViolationsList;
+
+    }
 
 }

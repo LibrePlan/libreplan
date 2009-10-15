@@ -27,15 +27,24 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
  * A criterion stored in the database <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class Criterion extends BaseEntity implements ICriterion {
+
+    public static Criterion create() {
+        Criterion criterion = new Criterion();
+        criterion.setNewObject(true);
+        return criterion;
+    }
 
     public static Criterion create(CriterionType type) {
         Criterion criterion = new Criterion(type);
@@ -57,6 +66,7 @@ public class Criterion extends BaseEntity implements ICriterion {
 
     private Criterion parent = null;
 
+    @Valid
     private Set<Criterion> children =  new HashSet<Criterion>();
 
     private boolean active = true;
@@ -153,6 +163,23 @@ public class Criterion extends BaseEntity implements ICriterion {
                     .append(getType(), other.getType()).isEquals();
         }
         return false;
+    }
+
+// FIXME: Internationalization must be provided.
+    @AssertTrue(message="un recurso deshabilitado tiene subrecursos " +
+        "habilitados")
+    public boolean checkConstraintActive() {
+
+        if (!active) {
+            for (Criterion c : children) {
+                if (c.isActive()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+
     }
 
 }

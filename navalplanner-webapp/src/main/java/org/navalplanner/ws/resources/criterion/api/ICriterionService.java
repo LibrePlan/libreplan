@@ -20,7 +20,7 @@
 
 package org.navalplanner.ws.resources.criterion.api;
 
-import org.navalplanner.ws.common.api.WSErrorList;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
  * Service for managing criterion-related entities.
@@ -31,6 +31,7 @@ public interface ICriterionService {
 
     public CriterionTypeListDTO getCriterionTypes();
 
-    public WSErrorList addCriterionTypes(CriterionTypeListDTO criterionTypes);
+    public InstanceConstraintViolationsListDTO addCriterionTypes(
+        CriterionTypeListDTO criterionTypes);
 
 }

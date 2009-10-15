@@ -29,10 +29,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
-import org.navalplanner.ws.common.api.WSError;
-import org.navalplanner.ws.common.api.WSErrorList;
-import org.navalplanner.ws.common.api.WSErrorType;
+import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
 import org.navalplanner.ws.resources.criterion.api.CriterionTypeDTO;
 import org.navalplanner.ws.resources.criterion.api.CriterionTypeListDTO;
 import org.navalplanner.ws.resources.criterion.api.ICriterionService;
@@ -64,31 +66,59 @@ public class CriterionServiceREST implements ICriterionService {
     @POST
     @Consumes("application/xml")
     @Transactional
-    public WSErrorList addCriterionTypes(CriterionTypeListDTO criterionTypes) {
+    public InstanceConstraintViolationsListDTO addCriterionTypes(
+        CriterionTypeListDTO criterionTypes) {
 
-        List<WSError> errorList = new ArrayList<WSError>();
+        // FIXME: now validations are executed twice: when calling
+        // CriterionType::validate and when Hibernate runs automatically
+        // validations. Not running validations explicitly
+        // (CriterionType::validate) makes more difficult/obscure to catch
+        // validation errors (a basic usage of IGeneriDAO::flush and
+        // InvalidStateException is not enough; furthermore, take into account
+        // that CriterionType::validate resolves an issue with our current
+        // usage of Hibernate).
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+            new ArrayList<InstanceConstraintViolationsDTO>();
+        int instanceNumber = 1;
 
         for (CriterionTypeDTO criterionTypeDTO :
             criterionTypes.criterionTypes) {
 
-            try {
+            CriterionType criterionType =
+                CriterionConverter.toEntity(criterionTypeDTO);
+            InvalidValue[] invalidValues =
+                criterionType.validate();
 
-                criterionTypeDAO.save(
-                    CriterionConverter.toEntity(criterionTypeDTO));
+            if (invalidValues.length > 0) {
 
-            } catch (Exception e) {
-                e.printStackTrace(System.out);
-                errorList.add(new WSError(criterionTypeDTO.name,
-                    WSErrorType.VALIDATION_ERROR, e.getMessage()));
+                instanceConstraintViolationsList.add(
+                    ConstraintViolationConverter.toDTO(
+                        generateInstanceId(instanceNumber,
+                            criterionTypeDTO.name),
+                        invalidValues));
+
+            } else {
+                criterionTypeDAO.save(criterionType);
             }
 
+            instanceNumber++;
+
         }
 
-        if (errorList.isEmpty()) {
-            return null;
-        } else {
-            return new WSErrorList(errorList);
+        return new InstanceConstraintViolationsListDTO(
+            instanceConstraintViolationsList);
+
+    }
+
+    private String generateInstanceId(int instanceNumber, String name) {
+
+        String instanceId = instanceNumber + "";
+
+        if (name != null &&  name.length() >= 0) {
+            instanceId += " (" + name + ")";
         }
+
+        return instanceId;
 
     }
 

@@ -21,6 +21,7 @@
 package org.navalplanner.business.common;
 
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -30,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * DI is a more convenient option. The DAOs or services are added to the
  * registry as needed.
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class Registry {
 
@@ -37,6 +39,9 @@ public class Registry {
 
     @Autowired
     private IAdvanceTypeDAO advanceTypeDao;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
 
     private Registry() {
     }
@@ -47,6 +52,10 @@ public class Registry {
 
     public static IAdvanceTypeDAO getAdvanceTypeDao() {
         return getInstance().advanceTypeDao;
+    }
+
+    public static ICriterionTypeDAO getCriterionTypeDAO() {
+        return getInstance().criterionTypeDAO;
     }
 
 }

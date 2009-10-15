@@ -20,21 +20,27 @@
 
 package org.navalplanner.business.resources.entities;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.springframework.stereotype.Component;
 
 /**
  * Base implementation of {@link ICriterionType} <br />
 
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 @Component
 public class CriterionType extends BaseEntity implements
@@ -74,6 +80,7 @@ public class CriterionType extends BaseEntity implements
 
     private ResourceEnum resource = ResourceEnum.getDefault();
 
+    @Valid
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
     private int numCriterions;
@@ -157,6 +164,10 @@ public class CriterionType extends BaseEntity implements
 
     public ResourceEnum resource() {
         return resource;
+    }
+
+    public void setResource(ResourceEnum resource) {
+        this.resource = resource;
     }
 
     @Override
@@ -252,4 +263,103 @@ public class CriterionType extends BaseEntity implements
     public int getNumCriterions(){
         return criterions.size();
     }
+
+// FIXME: Internationalization must be provided.
+    @AssertTrue(message="los nombres de los criterios deben ser únicos "
+        + "dentro de un tipo de criterio")
+    public boolean checkConstraintNonRepeatedCriterionNames() {
+
+        Set<String> criterionNames = new HashSet<String>();
+
+        for (Criterion c : criterions) {
+            if (criterionNames.contains(c.getName())) {
+                return false;
+            }
+            criterionNames.add(c.getName());
+        }
+
+        return true;
+
+    }
+
+// FIXME: Surprisingly, @AssertTrue in this method causes the Maven build to
+// fail due to out of memory (probably due to the configuration of Hibernate to
+// automatically execute validations when saving entities). Provisionally,
+// "validate" method has been provided as a hack.
+// FIXME: Internationalization must be provided.
+//    @AssertTrue(message="el nombre del tipo de criterion ya se está usando")
+    public boolean checkConstraintUniqueCriterionTypeName() {
+
+        ICriterionTypeDAO criterionTypeDAO = Registry.getCriterionTypeDAO();
+
+        if (isNewObject()) {
+            return !criterionTypeDAO.existsByName(this);
+        } else {
+            try {
+                CriterionType c = criterionTypeDAO.findUniqueByName(name);
+                return c.getId() == getId();
+            } catch (InstanceNotFoundException e) {
+                return true;
+            }
+
+        }
+
+    }
+
+// FIXME: Internationalization must be provided.
+    @AssertTrue(message="el tipo de recurso no permite jerarquía de recursos")
+    public boolean checkConstraintAllowHierarchy() {
+
+        if (!allowHierarchy) {
+            for (Criterion c : criterions) {
+                if (c.getParent() != null) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+
+    }
+
+// FIXME: Internationalization must be provided.
+    @AssertTrue(message="el tipo de recurso no permite criterios habilitados")
+    public boolean checkConstraintEnabled() {
+
+        if (!enabled) {
+            for (Criterion c : criterions) {
+                if (c.isActive()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+
+    }
+
+ // FIXME: hack to overcome problem with @AssertTrue and
+ // "checkConstraintUniqueCriterionTypeName" method.
+     public InvalidValue[] validate() {
+
+         ClassValidator<CriterionType> criterionTypeValidator =
+             new ClassValidator<CriterionType>(CriterionType.class);
+
+         InvalidValue[] invalidValues =
+             criterionTypeValidator.getInvalidValues(this);
+
+         if (!checkConstraintUniqueCriterionTypeName()) {
+             invalidValues =
+                 Arrays.copyOf(invalidValues, invalidValues.length+1);
+             invalidValues[invalidValues.length-1] =
+                 new InvalidValue("el nombre del tipo de criterion ya se " +
+                     "está usando", CriterionType.class,
+                     "checkConstraintUniqueCriterionTypeName",
+                     null, this);
+         }
+
+         return invalidValues;
+
+     }
+
 }
