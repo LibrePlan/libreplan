@@ -349,6 +349,10 @@ public class MultipleTabsPlannerController implements Composer {
             @Override
             protected void afterShowAction() {
                 orderCRUDController.goToList();
+                if (breadcrumbs.getChildren() != null) {
+                    breadcrumbs.getChildren().clear();
+                }
+                breadcrumbs.appendChild(new Label("Orders > Orders list"));
             }
         };
     }
