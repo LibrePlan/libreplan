@@ -261,7 +261,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         size = size + (16 * 2);
         chart.setWidth(size + "px");
-        chart.setHeight("200px");
+        chart.setHeight("100px");
     }
 
     private Plotinfo getLoadPlotInfo(Date start, Date finish) {

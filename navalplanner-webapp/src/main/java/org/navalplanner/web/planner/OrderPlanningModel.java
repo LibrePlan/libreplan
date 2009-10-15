@@ -349,7 +349,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         size = size + (16 * 2);
         chart.setWidth(size + "px");
-        chart.setHeight("200px");
+        chart.setHeight("100px");
     }
 
     private Plotinfo getLoadPlotInfo(Order order, Date start, Date finish) {
