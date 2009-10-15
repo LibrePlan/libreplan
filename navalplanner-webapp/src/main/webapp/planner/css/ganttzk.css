@@ -574,7 +574,7 @@ div.z-tree {
 }
 
 .advancedallocationlayout .leftpanelgap .z-grid-header {
-    padding-bottom: 3px;
+    /* padding-bottom: 3px; */
     border-bottom: solid 1px #DDDDDD;
     background: #FFFFFF;
 }
@@ -629,4 +629,27 @@ div.z-tree {
 .taskheaderscontainer, .leftpanelgap, .plannergraph div,
 .resourcesloadgraph div {
     position:relative;
+}
+
+.advancedassignmentdetails .z-grid-header table {
+    height:30px;
+}
+
+/* Advanced assignment */
+.advancedallocationlayout #timeTracker .z-vbox table {
+    height:15px;
+}
+
+.advancedallocationlayout #timeTracker .z-vbox .z-grid-body {
+    display:none;
+}
+
+.advancedassignmentdetails .z-row, .advancedallocationlayout .taskspanelgap .z-row {
+    height: 20px;
+}
+
+.advancedallocationlayout .taskspanelgap td.z-row-inner {
+    padding:1px;
+    padding-left: 3px;
+    padding-right: 3px;
 }
