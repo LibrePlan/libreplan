@@ -225,6 +225,12 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         switchCurrentButtonTo((Button) key);
     }
 
+    @Override
+    public void renameMenuItem(Object key, String name) {
+        Button button = (Button) key;
+        button.setLabel(name);
+    }
+
     private void setSelectClass(final Button button) {
         button.setSclass("sub_menu_active");
     }
