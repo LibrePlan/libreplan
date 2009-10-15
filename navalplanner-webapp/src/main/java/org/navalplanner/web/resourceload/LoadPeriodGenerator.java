@@ -183,15 +183,14 @@ abstract class LoadPeriodGenerator {
     private int calculateLoadPercentage() {
         final int totalResourceWorkHours = getTotalWorkHours();
         int assigned = getHoursAssigned();
-        double proportion = assigned / (double) totalResourceWorkHours;
-        try {
-            return new BigDecimal(proportion).scaleByPowerOfTen(2).intValue();
-        } catch (NumberFormatException e) {
-            LOG.error("totalResourceWorkHours: " + totalResourceWorkHours
-                    + ", assigned: " + assigned + "\n generator: "
-                    + ToStringBuilder.reflectionToString(this), e);
+        if (totalResourceWorkHours == 0) {
+            LOG.error("totalResourceWorkHours is zero. assigned: " + assigned
+                    + "\n generator: "
+                    + ToStringBuilder.reflectionToString(this));
             return 0;
         }
+        double proportion = assigned / (double) totalResourceWorkHours;
+        return new BigDecimal(proportion).scaleByPowerOfTen(2).intValue();
     }
 
     protected abstract int getHoursAssigned();
