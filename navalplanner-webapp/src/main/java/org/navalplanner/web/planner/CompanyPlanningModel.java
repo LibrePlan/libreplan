@@ -387,7 +387,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             }
         }
 
-        return map;
+        return groupByWeek(map);
     }
 
     private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
@@ -412,7 +412,32 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             map.put(date, hours);
         }
 
-        return map;
+        return groupByWeek(map);
+    }
+
+    private SortedMap<LocalDate, Integer> groupByWeek(
+            SortedMap<LocalDate, Integer> map) {
+        SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
+
+        for (LocalDate day : map.keySet()) {
+            LocalDate key = getKey(day);
+
+            if (result.get(key) == null) {
+                result.put(key, map.get(day));
+            } else {
+                result.put(key, result.get(key) + map.get(day));
+            }
+        }
+
+        for (LocalDate day : result.keySet()) {
+            result.put(day, result.get(day) / 7);
+        }
+
+        return result;
+    }
+
+    private LocalDate getKey(LocalDate date) {
+        return date.dayOfWeek().withMinimumValue().plusDays(3);
     }
 
     private void setMaximunValueForChartIfGreater(Integer max) {
