@@ -28,15 +28,20 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 
 public class LoadPeriod {
+
+    private static final Log LOG = LogFactory.getLog(LoadPeriod.class);
 
     private final LocalDate start;
 
     private final LocalDate end;
 
     private final LoadLevel loadLevel;
+
 
     public LoadPeriod(LocalDate start, LocalDate end, LoadLevel loadLevel) {
         Validate.notNull(start);
@@ -76,6 +81,7 @@ public class LoadPeriod {
             @Override
             public int compare(LoadPeriod o1, LoadPeriod o2) {
                 if (o1.overlaps(o2)) {
+                    LOG.warn(o1 + " overlaps with " + o2);
                     throw new IllegalArgumentException(o1 + " overlaps with "
                             + o2);
                 }
