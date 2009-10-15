@@ -35,6 +35,7 @@ import org.navalplanner.web.planner.CompanyPlanningController;
 import org.navalplanner.web.planner.IOrderPlanningGate;
 import org.navalplanner.web.planner.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
+import org.navalplanner.web.planner.tabs.Mode.ModeTypeChangedListener;
 import org.navalplanner.web.resourceload.ResourceLoadController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -143,6 +144,15 @@ public class MultipleTabsPlannerController implements Composer {
     public TabsConfiguration getTabs() {
         if (tabsConfiguration == null) {
             tabsConfiguration = buildTabsConfiguration();
+            mode.addListener(new ModeTypeChangedListener() {
+
+                @Override
+                public void typeChanged(ModeType oldType, ModeType newType) {
+                    for (ITab tab : tabsConfiguration.getTabs()) {
+                        tabsSwitcher.getTabsRegistry().loadNewName(tab);
+                    }
+                }
+            });
         }
         return tabsConfiguration;
     }
