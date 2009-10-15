@@ -20,21 +20,23 @@
 
 package org.navalplanner.business.planner.daos;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Query;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -62,50 +64,66 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
         Set<ResourceAllocation<?>> resourceAllocations = taskElement
                 .getResourceAllocations();
 
-        Set<Long> genericResourceAllocations = new HashSet<Long>();
-        Set<Long> specificResourceAllocations = new HashSet<Long>();
+        Set<GenericResourceAllocation> genericResourceAllocations = new HashSet<GenericResourceAllocation>();
+        Set<SpecificResourceAllocation> specificResourceAllocations = new HashSet<SpecificResourceAllocation>();
 
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof GenericResourceAllocation) {
                 Long id = resourceAllocation.getId();
                 if (id != null) {
-                    genericResourceAllocations.add(id);
+                    genericResourceAllocations
+                            .add((GenericResourceAllocation) resourceAllocation);
                 }
             } else if (resourceAllocation instanceof SpecificResourceAllocation) {
                 Long id = resourceAllocation.getId();
                 if (id != null) {
-                    specificResourceAllocations.add(id);
+                    specificResourceAllocations
+                            .add((SpecificResourceAllocation) resourceAllocation);
                 }
             }
         }
 
-        List<String> queries = new ArrayList<String>();
         if (!genericResourceAllocations.isEmpty()) {
-            String join = StringUtils.join(genericResourceAllocations, ",");
-            queries.add("generic_resource_allocation_id IN (" + join + ")");
+            Criteria criteria = getSession().createCriteria(
+                    GenericDayAssignment.class);
+            criteria.add(Restrictions.in("genericResourceAllocation",
+                    genericResourceAllocations));
+
+            criteria.setProjection(Projections.projectionList().add(
+                    Property.forName("day").group()).add(
+                    Projections.sum("hours")));
+
+            List<Object[]> list = criteria.list();
+
+            for (Object[] object : list) {
+                LocalDate date = (LocalDate) object[0];
+                Integer hours = (Integer) object[1];
+                result.put(date, hours.intValue());
+            }
         }
+
         if (!specificResourceAllocations.isEmpty()) {
-            String join = StringUtils.join(specificResourceAllocations, ",");
-            queries.add("specific_resource_allocation_id IN (" + join + ")");
-        }
+            Criteria criteria = getSession().createCriteria(
+                    SpecificDayAssignment.class);
+            criteria.add(Restrictions.in("specificResourceAllocation",
+                    specificResourceAllocations));
 
-        if (queries.isEmpty()) {
-            return result;
-        }
+            criteria.setProjection(Projections.projectionList().add(
+                    Property.forName("day").group()).add(
+                    Projections.sum("hours")));
 
-        String resourceAllocationsFilter = StringUtils.join(queries, " OR ");
+            List<Object[]> list = criteria.list();
 
-        String strQuery = "SELECT day, SUM(hours) " + "FROM day_assignment "
-                + "WHERE " + resourceAllocationsFilter + " "
-                + "GROUP BY day ORDER BY day";
+            for (Object[] object : list) {
+                LocalDate date = (LocalDate) object[0];
+                Integer hours = (Integer) object[1];
 
-        Query query = getSession().createSQLQuery(strQuery);
-        List<Object[]> list = query.list();
-
-        for (Object[] object : list) {
-            Date date = (Date) object[0];
-            Number hours = (Number) object[1];
-            result.put(new LocalDate(date), hours.intValue());
+                if (result.get(date) == null) {
+                    result.put(date, hours.intValue());
+                } else {
+                    result.put(date, result.get(date) + hours.intValue());
+                }
+            }
         }
 
         return result;
