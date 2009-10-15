@@ -91,11 +91,11 @@ public class MultipleTabsPlannerController implements Composer {
         }
     }
 
-    private static final String ENTERPRISE_VIEW = _("Enterprise");
+    private static final String ENTERPRISE_VIEW = _("Company Scheduling");
 
-    private static final String RESOURCE_LOAD_VIEW = _("Resource Load");
+    private static final String RESOURCE_LOAD_VIEW = _("Overall Resources Load");
 
-    private static final String ORDERS_VIEW = _("Orders");
+    private static final String ORDERS_VIEW = _("Orders List");
 
     private TabsConfiguration tabsConfiguration;
 
