@@ -20,7 +20,10 @@
 
 package org.navalplanner.web.resources.criterion;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
@@ -34,10 +37,9 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zul.Window;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Checkbox;
-import static org.navalplanner.web.I18nHelper._;
+import org.zkoss.zul.Window;
 
 /**
  * Controller for Criterions <br />
@@ -84,7 +86,7 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
 
     public void goToCreateForm() {
         try{
-            setupCriterionTreeController(editComponent);
+            setupCriterionTreeController(createComponent);
             onlyOneVisible.showOnly(createComponent);
             criterionsModel_V2.prepareForCreate();
             Util.reloadBindings(createComponent);

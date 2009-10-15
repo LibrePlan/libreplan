@@ -247,45 +247,6 @@ public class BaseCalendarDAOTest {
         baseCalendarDAO.flush();
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
-    public void notAllowTwoCalendarsWithTheSameName() {
-        BaseCalendar calendar1 = BaseCalendarTest.createBasicCalendar();
-        calendar1.setName("Test");
-        BaseCalendar calendar2 = BaseCalendarTest.createBasicCalendar();
-        calendar2.setName("Test");
-
-        assertThat(calendar2.getName(), equalTo(calendar1.getName()));
-        baseCalendarDAO.save(calendar1);
-        baseCalendarDAO.save(calendar2);
-        baseCalendarDAO.flush();
-    }
-
-    @Test
-    public void notAllowTwoCalendarsWithTheSameNameChangingCalendarName()
-            throws InstanceNotFoundException {
-        BaseCalendar calendar1 = BaseCalendarTest.createBasicCalendar();
-        calendar1.setName("Test");
-        BaseCalendar calendar2 = BaseCalendarTest.createBasicCalendar();
-        calendar2.setName("Test2");
-
-        baseCalendarDAO.save(calendar1);
-        baseCalendarDAO.save(calendar2);
-        baseCalendarDAO.flush();
-
-        calendar2 = baseCalendarDAO.find(calendar2.getId());
-        calendar2.setName("Test");
-
-        assertThat(calendar2.getName(), equalTo(calendar1.getName()));
-
-        try {
-            baseCalendarDAO.save(calendar2);
-            baseCalendarDAO.flush();
-            fail("It should throw an exception");
-        } catch (DataIntegrityViolationException e) {
-
-        }
-    }
-
     @Test
     public void findByName() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
