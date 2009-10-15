@@ -118,6 +118,10 @@ a.sub_menu:hover {
     color: #3B89B7;
     text-decoration: none;
 }
+.ruta span {
+    font-weight:bold;
+}
+
 .fondo_cabecera {
     background-image: url(../img/cabecera.jpg);
     background-position: right top;
@@ -130,4 +134,7 @@ a.sub_menu:hover {
     border-bottom-style: solid;
     border-top-color: #DCEEF9;
     border-bottom-color: #DCEEF9;
+}
+.ruta img {
+    margin-bottom:4px;
 }

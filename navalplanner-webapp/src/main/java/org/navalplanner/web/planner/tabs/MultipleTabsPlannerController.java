@@ -53,6 +53,7 @@ import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
+import org.zkoss.zul.Label;
 
 /**
  * Creates and handles several tabs
@@ -145,7 +146,10 @@ public class MultipleTabsPlannerController implements Composer {
             Util.reloadBindings(result);
             return result;
         }
+
     };
+
+    private org.zkoss.zk.ui.Component breadcrumbs;
 
     public TabsConfiguration getTabs() {
         if (tabsConfiguration == null) {
@@ -179,7 +183,7 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private ITab createGlobalPlanningTab() {
-        IComponentCreator componentCreator = new IComponentCreator() {
+        final IComponentCreator componentCreator = new IComponentCreator() {
 
             @Override
             public org.zkoss.zk.ui.Component create(
@@ -211,18 +215,23 @@ public class MultipleTabsPlannerController implements Composer {
                         parent,
                         args);
             }
+
         };
         return new CreatedOnDemandTab(ENTERPRISE_VIEW, componentCreator) {
             @Override
             protected void afterShowAction() {
+                super.afterShowAction();
                 companyPlanningController.setConfigurationForPlanner();
+                breadcrumbs.getChildren().clear();
+                breadcrumbs.appendChild(new Label(
+                        "Plannification > Company schedulling "));
             }
         };
     }
 
     private ITab createOrderPlanningTab() {
-        return new OrderPlanningTab(ORDER_ENTERPRISE_VIEW,
-                new IComponentCreator() {
+
+        final IComponentCreator componentCreator = new IComponentCreator() {
 
             @Override
             public org.zkoss.zk.ui.Component create(
@@ -237,7 +246,24 @@ public class MultipleTabsPlannerController implements Composer {
                 createBindingsFor(result);
                 return result;
             }
-        });
+
+        };
+        return new CreatedOnDemandTab( ORDER_ENTERPRISE_VIEW , componentCreator) {
+            @Override
+            protected void afterShowAction() {
+                if (breadcrumbs.getChildren() != null) {
+                    breadcrumbs.getChildren().clear();
+                }
+                breadcrumbs.appendChild(new Label(
+                        "Plannification > ORder schedulling "));
+                if (mode.isOf(ModeType.ORDER)) {
+                    breadcrumbs
+.appendChild(new Label("> "
+                            + mode.getOrder().getName()));
+                }
+
+            }
+        };
     }
 
     private ITab createResourcesLoadTab() {
@@ -262,6 +288,7 @@ public class MultipleTabsPlannerController implements Composer {
                         parent,
                         arguments);
             }
+
         };
         return new CreatedOnDemandTab(ORDER_RESOURCE_LOAD_VIEW,
                 componentCreator) {
@@ -269,18 +296,24 @@ public class MultipleTabsPlannerController implements Composer {
 
             @Override
             protected void afterShowAction() {
+                breadcrumbs.getChildren().clear();
+                breadcrumbs.appendChild(new Label("Planification"));
+                breadcrumbs.appendChild(new Label(" > "));
+                breadcrumbs.appendChild(new Label("Resources Load"));
+                breadcrumbs.appendChild(new Label(" > "));
                 if (mode.isOf(ModeType.ORDER)
                         && mode.getOrder() != currentOrder) {
                     currentOrder = mode.getOrder();
                     resourceLoadController.filterBy(currentOrder);
                 }
+                breadcrumbs.appendChild(new Label(currentOrder.getName()));
             }
         };
     }
 
     private ITab createGlobalResourcesLoadTab() {
-        return new CreatedOnDemandTab(RESOURCE_LOAD_VIEW,
-                new IComponentCreator() {
+
+        final IComponentCreator componentCreator = new IComponentCreator() {
 
                     @Override
                     public org.zkoss.zk.ui.Component create(
@@ -289,7 +322,19 @@ public class MultipleTabsPlannerController implements Composer {
                                         "/resourceload/_resourceload.zul",
                                 parent, null);
                     }
-                });
+
+        };
+        return new CreatedOnDemandTab(RESOURCE_LOAD_VIEW, componentCreator) {
+            @Override
+            protected void afterShowAction() {
+                if (breadcrumbs.getChildren() != null) {
+                    breadcrumbs.getChildren().clear();
+                }
+                breadcrumbs.appendChild(new Label(
+                        "Planification > Overall Resources Load"));
+            }
+        };
+
     }
 
     private ITab createOrdersTab() {
@@ -346,9 +391,14 @@ public class MultipleTabsPlannerController implements Composer {
         return new CreatedOnDemandTab(ORDER_ORDERS_VIEW, ordersTabCreator) {
             @Override
             protected void afterShowAction() {
+                breadcrumbs.getChildren().clear();
+                breadcrumbs.appendChild(new Label("order2 > "));
                 if (mode.isOf(ModeType.ORDER)) {
                     orderCRUDController.goToEditForm(mode.getOrder());
+                    breadcrumbs
+                            .appendChild(new Label(mode.getOrder().getName()));
                 }
+
             }
         };
     }
@@ -356,6 +406,7 @@ public class MultipleTabsPlannerController implements Composer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         tabsSwitcher = (TabSwitcher) comp;
+        breadcrumbs = comp.getPage().getFellow("breadcrumbs");
     }
 
     private TabsRegistry getTabsRegistry() {
