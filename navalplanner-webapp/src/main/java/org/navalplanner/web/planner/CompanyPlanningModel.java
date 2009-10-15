@@ -94,6 +94,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private Integer maximunValueForChart = 0;
 
+    private IZoomLevelChangedListener zoomListener;
+
+    private ZoomLevel zoomLevel = ZoomLevel.DETAIL_ONE;
+
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
         @Override
@@ -145,15 +149,15 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         fillChartOnZoomChange(chartComponent, timeTracker);
     }
 
-    private IZoomLevelChangedListener zoomListener;
-
     private void fillChartOnZoomChange(final Timeplot chartComponent,
             final TimeTracker timeTracker) {
 
         zoomListener = new IZoomLevelChangedListener() {
 
             @Override
-            public void zoomLevelChanged(ZoomLevel detailLevel) {
+            public void zoomLevelChanged(final ZoomLevel detailLevel) {
+                zoomLevel = detailLevel;
+
                 transactionService
                         .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                     @Override
@@ -387,7 +391,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             }
         }
 
-        return groupByWeek(map);
+        if (zoomLevel.equals(ZoomLevel.DETAIL_FIVE)) {
+            return map;
+        } else {
+            return groupByWeek(map);
+        }
     }
 
     private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
@@ -412,7 +420,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             map.put(date, hours);
         }
 
-        return groupByWeek(map);
+        if (zoomLevel.equals(ZoomLevel.DETAIL_FIVE)) {
+            return map;
+        } else {
+            return groupByWeek(map);
+        }
     }
 
     private SortedMap<LocalDate, Integer> groupByWeek(
