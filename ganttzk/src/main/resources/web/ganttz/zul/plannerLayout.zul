@@ -68,8 +68,7 @@ planner = self;
                 <west width="284px" flex="true" collapsible="true"
                     splittable="true">
                     <vbox pack="center" align="center">
-                    <label value="ResourcesLoadGraph details"
-                        width="150px"/>
+                        <div id="insertionPointChartLegend" />
                     </vbox>
                 </west>
                 <center autoscroll="true" sclass="plannergraph">

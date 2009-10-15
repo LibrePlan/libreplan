@@ -81,6 +81,8 @@ public class PlannerConfiguration<T> {
 
     private Component chartComponent;
 
+    private Component chartLegend;
+
     private boolean addingDependenciesEnabled = true;
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
@@ -145,6 +147,14 @@ public class PlannerConfiguration<T> {
 
     public Component getChartComponent() {
         return chartComponent;
+    }
+
+    public void setChartLegend(Component chartLegend) {
+        this.chartLegend = chartLegend;
+    }
+
+    public Component getChartLegend() {
+        return chartLegend;
     }
 
     public void setAddingDependenciesEnabled(boolean addingDependenciesEnabled) {
