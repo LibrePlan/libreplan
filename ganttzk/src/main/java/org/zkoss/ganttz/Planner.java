@@ -156,14 +156,8 @@ public class Planner extends HtmlMacroComponent  {
         setAt("insertionPointRightPanel", ganttPanel);
         ganttPanel.afterCompose();
 
-        // TimeTrackerComponent timetrackerheader = (TimeTrackerComponent)
-        // ganttPanel
-        // .getTimeTrackerComponent().clone();
-        // timetrackerheader.afterCompose();
-
         TimeTrackerComponent timetrackerheader = new TimeTrackerComponentWithoutColumns(
-                ganttPanel
-.getTimeTracker(), "timetrackerheader");
+                ganttPanel.getTimeTracker(), "timetrackerheader");
 
         setAt("insertionPointTimetracker", timetrackerheader);
         timetrackerheader.afterCompose();
