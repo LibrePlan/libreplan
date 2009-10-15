@@ -92,6 +92,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private Integer maximunValueForChart = 0;
 
+    private IZoomLevelChangedListener zoomListener;
+
+    private LocalDate minDate;
+
+    private LocalDate maxDate;
+
+    private ZoomLevel zoomLevel = ZoomLevel.DETAIL_ONE;
+
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
         @Override
@@ -210,12 +218,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         fillChartOnZoomChange(orderReloaded, chartComponent, timeTracker);
     }
 
-    private IZoomLevelChangedListener zoomListener;
-
-    private LocalDate minDate;
-
-    private LocalDate maxDate;
-
     private void fillChartOnZoomChange(final Order order,
             final Timeplot chartComponent, final TimeTracker timeTracker) {
 
@@ -223,6 +225,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
+                zoomLevel = detailLevel;
+
                 fillChart(order, chartComponent, timeTracker.getRealInterval(),
                         timeTracker.getHorizontalSize());
             }
@@ -570,7 +574,36 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
         }
 
-        return map;
+        if (zoomLevel.equals(ZoomLevel.DETAIL_FIVE)) {
+            return map;
+        } else {
+            return groupByWeek(map);
+        }
+    }
+
+    private SortedMap<LocalDate, Integer> groupByWeek(
+            SortedMap<LocalDate, Integer> map) {
+        SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
+
+        for (LocalDate day : map.keySet()) {
+            LocalDate key = getKey(day);
+
+            if (result.get(key) == null) {
+                result.put(key, map.get(day));
+            } else {
+                result.put(key, result.get(key) + map.get(day));
+            }
+        }
+
+        for (LocalDate day : result.keySet()) {
+            result.put(day, result.get(day) / 7);
+        }
+
+        return result;
+    }
+
+    private LocalDate getKey(LocalDate date) {
+        return date.dayOfWeek().withMinimumValue().plusDays(3);
     }
 
     private void setMaximunValueForChartIfGreater(Integer max) {
