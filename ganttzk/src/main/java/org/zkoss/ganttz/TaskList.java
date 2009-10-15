@@ -195,7 +195,7 @@ public class TaskList extends XulElement implements AfterCompose {
             final TaskComponent taskComponent) {
         if (editTaskCommand == null)
             return;
-        taskComponent.addEventListener("onClick", new EventListener() {
+        taskComponent.addEventListener("onDoubleClick", new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
