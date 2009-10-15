@@ -19,10 +19,12 @@
  */
 
 package org.navalplanner.web.resources.criterion;
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import static org.navalplanner.web.I18nHelper._;
+
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -61,7 +63,7 @@ public class CriterionTreeController extends GenericForwardComposer {
 
     private final ICriterionsModel_V2 criterionsModel;
 
-    private Component vbox;
+    private Textbox criterionName;
 
     public CriterionTreeitemRenderer getRenderer() {
         return renderer;
@@ -77,7 +79,12 @@ public class CriterionTreeController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("criterionTreeController", this, true);
-        this.vbox = comp;
+        criterionName = (Textbox) ((Vbox) self).getFellowIfAny("criterionName");
+        clearCriterionName();
+    }
+
+    private void clearCriterionName() {
+        criterionName.setValue("");
     }
 
     public TreeModel getCriterionTreeModel() {
@@ -328,6 +335,7 @@ public class CriterionTreeController extends GenericForwardComposer {
             } else {
                 getModel().addCriterion(getName());
             }
+            clearCriterionName();
             reloadTree();
         } catch (ValidationException e) {
             for (InvalidValue invalidValue : e.getInvalidValues()) {
@@ -336,7 +344,7 @@ public class CriterionTreeController extends GenericForwardComposer {
         }
     }
 
-    public void disabledHierarchy(){
+    public void disabledHierarchy() {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         getModel().flattenTree();
         reloadTree();
@@ -353,8 +361,7 @@ public class CriterionTreeController extends GenericForwardComposer {
     }
 
     private String getName() throws ValidationException{
-        String name = ((Textbox)((Vbox)vbox).
-                getFellow("criterionName")).getValue();
+        String name = criterionName.getValue();
         getModel().thereIsOtherWithSameNameAndType(name);
         getModel().validateNameNotEmpty(name);
         return name;
