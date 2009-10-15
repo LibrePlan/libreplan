@@ -356,10 +356,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         List<DayAssignment> dayAssignments = order.getDayAssignments();
         SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
 
-        SortedSet<LocalDate> keys = (SortedSet<LocalDate>) mapDayAssignments
-                .keySet();
-        minDate = keys.first();
-        maxDate = keys.last();
+        if (mapDayAssignments.isEmpty()) {
+            minDate = new LocalDate();
+            maxDate = new LocalDate();
+        } else {
+            SortedSet<LocalDate> keys = (SortedSet<LocalDate>) mapDayAssignments
+                    .keySet();
+            minDate = keys.first();
+            maxDate = keys.last();
+        }
 
         String uri = getServletUri(mapDayAssignments, start, finish);
 
