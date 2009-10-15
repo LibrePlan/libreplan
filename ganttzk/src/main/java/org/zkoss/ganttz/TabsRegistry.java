@@ -57,6 +57,13 @@ public class TabsRegistry {
         activateMenuIfRegistered(tab);
     }
 
+    public void loadNewName(ITab tab) {
+        if (fromTabToMenuKey.containsKey(tab)) {
+            Object key = fromTabToMenuKey.get(tab);
+            menu.renameMenuItem(key, tab.getName());
+        }
+    }
+
     private void activateMenuIfRegistered(ITab tab) {
         if (fromTabToMenuKey.containsKey(tab)) {
             menu.activateMenuItem(fromTabToMenuKey.get(tab));
@@ -90,4 +97,5 @@ public class TabsRegistry {
             fromTabToMenuKey.put(t, key);
         }
     }
+
 }

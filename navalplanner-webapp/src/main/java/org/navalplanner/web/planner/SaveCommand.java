@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -52,6 +54,8 @@ import org.zkoss.zul.Messagebox;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class SaveCommand implements ISaveCommand {
+
+    private static final Log LOG = LogFactory.getLog(SaveCommand.class);
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
@@ -121,33 +125,49 @@ public class SaveCommand implements ISaveCommand {
     private void updateRootTaskPosition() {
         TaskGroup rootTask = state.getRootTask();
         final Date min = minDate(state.getTasksToSave());
-        rootTask.setStartDate(min);
+        if (min != null) {
+            rootTask.setStartDate(min);
+        }
         final Date max = maxDate(state.getTasksToSave());
-        rootTask.setEndDate(max);
+        if (max != null) {
+            rootTask.setEndDate(max);
+        }
         taskElementDAO.save(rootTask);
     }
 
     private Date maxDate(Collection<? extends TaskElement> tasksToSave) {
-        return Collections.max(toEndDates(tasksToSave));
+        List<Date> endDates = toEndDates(tasksToSave);
+        return endDates.isEmpty() ? null : Collections.max(endDates);
     }
 
     private List<Date> toEndDates(Collection<? extends TaskElement> tasksToSave) {
         List<Date> result = new ArrayList<Date>();
         for (TaskElement taskElement : tasksToSave) {
-            result.add(taskElement.getEndDate());
+            Date endDate = taskElement.getEndDate();
+            if (endDate != null) {
+                result.add(endDate);
+            } else {
+                LOG.warn("the task" + taskElement + " has null end date");
+            }
         }
         return result;
     }
 
     private Date minDate(Collection<? extends TaskElement> tasksToSave) {
-        return Collections.min(toStartDates(tasksToSave));
+        List<Date> startDates = toStartDates(tasksToSave);
+        return startDates.isEmpty() ? null : Collections.min(startDates);
     }
 
     private List<Date> toStartDates(
             Collection<? extends TaskElement> tasksToSave) {
         List<Date> result = new ArrayList<Date>();
         for (TaskElement taskElement : tasksToSave) {
-            result.add(taskElement.getStartDate());
+            Date startDate = taskElement.getStartDate();
+            if (startDate != null) {
+                result.add(startDate);
+            } else {
+                LOG.warn("the task" + taskElement + " has null start date");
+            }
         }
         return result;
     }

@@ -35,6 +35,7 @@ import org.navalplanner.web.planner.CompanyPlanningController;
 import org.navalplanner.web.planner.IOrderPlanningGate;
 import org.navalplanner.web.planner.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
+import org.navalplanner.web.planner.tabs.Mode.ModeTypeChangedListener;
 import org.navalplanner.web.resourceload.ResourceLoadController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -90,11 +91,17 @@ public class MultipleTabsPlannerController implements Composer {
         }
     }
 
-    private static final String ENTERPRISE_VIEW = _("Enterprise");
+    private static final String ENTERPRISE_VIEW = _("Company Scheduling");
 
-    private static final String RESOURCE_LOAD_VIEW = _("Resource Load");
+    private static final String ORDER_ENTERPRISE_VIEW = _("Order Scheduling");
 
-    private static final String ORDERS_VIEW = _("Orders");
+    private static final String RESOURCE_LOAD_VIEW = _("Overall Resources Load");
+
+    private static final String ORDER_RESOURCE_LOAD_VIEW = _("Resources Load");
+
+    private static final String ORDERS_VIEW = _("Orders List");
+
+    private static final String ORDER_ORDERS_VIEW = _("Order Details");
 
     private TabsConfiguration tabsConfiguration;
 
@@ -143,6 +150,15 @@ public class MultipleTabsPlannerController implements Composer {
     public TabsConfiguration getTabs() {
         if (tabsConfiguration == null) {
             tabsConfiguration = buildTabsConfiguration();
+            mode.addListener(new ModeTypeChangedListener() {
+
+                @Override
+                public void typeChanged(ModeType oldType, ModeType newType) {
+                    for (ITab tab : tabsConfiguration.getTabs()) {
+                        tabsSwitcher.getTabsRegistry().loadNewName(tab);
+                    }
+                }
+            });
         }
         return tabsConfiguration;
     }
@@ -205,7 +221,8 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private ITab createOrderPlanningTab() {
-        return new OrderPlanningTab(ENTERPRISE_VIEW, new IComponentCreator() {
+        return new OrderPlanningTab(ORDER_ENTERPRISE_VIEW,
+                new IComponentCreator() {
 
             @Override
             public org.zkoss.zk.ui.Component create(
@@ -246,7 +263,8 @@ public class MultipleTabsPlannerController implements Composer {
                         arguments);
             }
         };
-        return new CreatedOnDemandTab(RESOURCE_LOAD_VIEW, componentCreator) {
+        return new CreatedOnDemandTab(ORDER_RESOURCE_LOAD_VIEW,
+                componentCreator) {
             private Order currentOrder;
 
             @Override
@@ -325,7 +343,7 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private ITab createOrderOrdersTab() {
-        return new CreatedOnDemandTab(ORDERS_VIEW, ordersTabCreator) {
+        return new CreatedOnDemandTab(ORDER_ORDERS_VIEW, ordersTabCreator) {
             @Override
             protected void afterShowAction() {
                 if (mode.isOf(ModeType.ORDER)) {

@@ -30,4 +30,6 @@ public interface IMenuItemsRegister {
 
     public void activateMenuItem(Object key);
 
+    public void renameMenuItem(Object key, String name);
+
 }
