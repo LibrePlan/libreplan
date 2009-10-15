@@ -74,6 +74,8 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Div;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -149,6 +151,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         Timeplot chartComponent = new Timeplot();
         configuration.setChartComponent(chartComponent);
+
+        configuration.setChartLegend(getChartLegend());
 
         planner.setConfiguration(configuration);
 
@@ -615,6 +619,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         if (maximunValueForChart < max) {
             maximunValueForChart = max;
         }
+    }
+
+    private org.zkoss.zk.ui.Component getChartLegend() {
+        Div div = new Div();
+
+        Executions.createComponents("/planner/_legendOrderPlanner.zul", div,
+                null);
+
+        return div;
     }
 
 }

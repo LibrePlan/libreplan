@@ -70,6 +70,8 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Div;
 
 /**
  * Model for company planning view.
@@ -129,6 +131,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         addAdditionalCommands(additional, configuration);
 
         configuration.setAddingDependenciesEnabled(false);
+
+        configuration.setChartLegend(getChartLegend());
 
         planner.setConfiguration(configuration);
 
@@ -456,6 +460,15 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         if (maximunValueForChart < max) {
             maximunValueForChart = max;
         }
+    }
+
+    private org.zkoss.zk.ui.Component getChartLegend() {
+        Div div = new Div();
+
+        Executions.createComponents("/planner/_legendCompanyPlanner.zul", div,
+                null);
+
+        return div;
     }
 
 }
