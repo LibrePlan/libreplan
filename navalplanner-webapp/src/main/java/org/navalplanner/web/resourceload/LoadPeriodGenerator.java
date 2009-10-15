@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.entities.GenericDayAssignment;
@@ -45,6 +48,8 @@ interface LoadPeriodGeneratorFactory {
 
 
 abstract class LoadPeriodGenerator {
+
+    private static final Log LOG = LogFactory.getLog(LoadPeriodGenerator.class);
 
     public static LoadPeriodGeneratorFactory onResource(Resource resource) {
         return new OnResourceFactory(resource);
@@ -182,7 +187,10 @@ abstract class LoadPeriodGenerator {
         try {
             return new BigDecimal(proportion).scaleByPowerOfTen(2).intValue();
         } catch (NumberFormatException e) {
-            throw new RuntimeException(e);
+            LOG.error("totalResourceWorkHours: " + totalResourceWorkHours
+                    + ", assigned: " + assigned + "\n generator: "
+                    + ToStringBuilder.reflectionToString(this), e);
+            return 0;
         }
     }
 
