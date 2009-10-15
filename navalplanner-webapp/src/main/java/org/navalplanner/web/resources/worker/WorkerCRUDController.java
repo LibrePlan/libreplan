@@ -57,8 +57,6 @@ import org.zkoss.zul.api.Window;
 public class WorkerCRUDController extends GenericForwardComposer implements
         IWorkerCRUDControllerEntryPoints {
 
-    private Window createWindow;
-
     private Window listWindow;
 
     private Window editWindow;
@@ -79,9 +77,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private Component messagesContainer;
 
-    private CriterionsController criterionsEditController;
-
-    private CriterionsController criterionsCreateController;
+    private CriterionsController criterionsController;
 
     private WorkRelationshipsController addWorkRelationship;
 
@@ -104,14 +100,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     public WorkerCRUDController() {
     }
 
-    public WorkerCRUDController(Window createWindow, Window listWindow,
+    public WorkerCRUDController( Window listWindow,
             Window editWindow, Window workRelationshipsWindow,
             Window addWorkRelationshipWindow,
             Window editWorkRelationshipWindow, Window editCalendarWindow,
             IWorkerModel workerModel,
             IMessagesForUser messages,
             IWorkerCRUDControllerEntryPoints workerCRUD) {
-        this.createWindow = createWindow;
         this.listWindow = listWindow;
         this.editWindow = editWindow;
         this.workRelationshipsWindow = workRelationshipsWindow;
@@ -138,16 +133,14 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void save() {
-
-        if(thereAreInvalidInputsOn(getCurrentWindow())){
-            return;
-        }
         try {
             if (baseCalendarEditionController != null) {
                 baseCalendarEditionController.save();
             }
-            if (criterionsEditController != null) {
-                criterionsEditController.save();
+            if(criterionsController != null){
+                if(!criterionsController.validate()){
+                    return;
+                }
             }
             workerModel.save();
             goToList();
@@ -155,7 +148,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             messages.showMessage(Level.INFO, _("Worker saved"));
         } catch (ValidationException e) {
             for (InvalidValue invalidValue : e.getInvalidValues()) {
-                messages.showMessage(Level.INFO, invalidValue.getPropertyName()+invalidValue.getMessage());
+                messages.showMessage(Level.ERROR, invalidValue.getPropertyName()+invalidValue.getMessage());
                 return;
             }
         }
@@ -171,20 +164,23 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToEditForm(Worker worker) {
-        getBookmarker().goToEditForm(worker);
-        workerModel.prepareEditFor(worker);
-        criterionsEditController.prepareForEdit( workerModel.getWorker());
-        if (isCalendarNotNull()) {
-            editCalendar();
-        }
-        getVisibility().showOnly(editWindow);
-        Util.reloadBindings(editWindow);
+            getBookmarker().goToEditForm(worker);
+            workerModel.prepareEditFor(worker);
+            if (isCalendarNotNull()) {
+                editCalendar();
+            }
+            editAsignedCriterions();
+            editWindow.setTitle(_("Edit Worker"));
+            getVisibility().showOnly(editWindow);
+            Util.reloadBindings(editWindow);
+
     }
 
     public void goToEditForm() {
         if (isCalendarNotNull()) {
             editCalendar();
         }
+        editWindow.setTitle(_("Edit Worker"));
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
     }
@@ -205,11 +201,12 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToCreateForm() {
-        getBookmarker().goToCreateForm();
-        workerModel.prepareForCreate();
-        criterionsEditController.prepareForEdit(workerModel.getWorker());
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
+            getBookmarker().goToCreateForm();
+            workerModel.prepareForCreate();
+            createAsignedCriterions();
+            editWindow.setTitle(_("Create Worker"));
+            getVisibility().showOnly(editWindow);
+            Util.reloadBindings(editWindow);
     }
 
     public void goToEditWorkRelationshipForm(CriterionSatisfaction satisfaction) {
@@ -226,7 +223,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         localizationsForEditionController = createLocalizationsController(comp,
                 "editWindow");
         localizationsForCreationController = createLocalizationsController(
-                comp, "createWindow");
+                comp, "editWindow");
         comp.setVariable("controller", this, true);
         if (messagesContainer == null)
             throw new RuntimeException(_("MessagesContainer is needed"));
@@ -244,15 +241,30 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
         handler.registerListener(this, page);
         getVisibility().showOnly(listWindow);
-
-        criterionsEditController = setupCriterionsController(editWindow);
-        criterionsCreateController = setupCriterionsController(createWindow);
     }
 
-    private CriterionsController setupCriterionsController(Window comp)throws Exception {
-        CriterionsController controller = new CriterionsController();
-        controller.doAfterCompose(comp.getFellow("criterionsContainer"));
-        return controller;
+    private void editAsignedCriterions(){
+        try{
+            setupCriterionsController();
+            criterionsController.prepareForEdit( workerModel.getWorker());
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createAsignedCriterions(){
+        try{
+            setupCriterionsController();
+            criterionsController.prepareForCreate( workerModel.getWorker());
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void setupCriterionsController()throws Exception {
+        criterionsController = new CriterionsController(workerModel);
+        criterionsController.doAfterCompose(getCurrentWindow().
+                getFellow("criterionsContainer"));
     }
 
     public BaseCalendarEditionController getEditionController() {
@@ -280,8 +292,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     private OnlyOneVisible getVisibility() {
         if (visibility == null) {
             visibility = new OnlyOneVisible(listWindow, editWindow,
-                    createWindow, workRelationshipsWindow,
-                    addWorkRelationshipWindow, editWorkRelationshipWindow);
+                    workRelationshipsWindow,addWorkRelationshipWindow,
+                    editWorkRelationshipWindow);
         }
         return visibility;
     }
@@ -397,11 +409,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     private Window getCurrentWindow() {
-        if (workerModel.isCreating()) {
-            return createWindow;
-        } else {
             return editWindow;
-        }
     }
 
     private void updateCalendarController() {

@@ -122,4 +122,6 @@ public interface IWorkerModel {
     void setCalendar(ResourceCalendar resourceCalendar);
 
     ResourceCalendar getCalendar();
+
+    IAssignedCriterionsModel getAssignedCriterionsModel();
 }

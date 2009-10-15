@@ -27,7 +27,6 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
-
 /**
  * Declares a interval of time in which the criterion is satisfied <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -164,8 +163,11 @@ public class CriterionSatisfaction extends BaseEntity {
     }
 
     public void finish(Date finish) {
-        Validate.notNull(finish);
-        Validate.isTrue(startDate.equals(finish) || startDate.before(finish));
+        Validate.isTrue(finish == null || getStartDate() == null
+                || getStartDate().equals(finish) || getStartDate().before(finish));
+        Validate.isTrue(finishDate == null || isNewObject() ||
+                getEndDate().equals(finish) || getEndDate().before(finish));
+        if(finish !=null) finish = new Date(finish.getTime());
         this.finishDate = finish;
     }
 
@@ -174,10 +176,15 @@ public class CriterionSatisfaction extends BaseEntity {
     }
 
     public void setEndDate(Date date) {
-        finishDate = date;
+        if(date != null) finish(date);
+        this.finishDate = date;
     }
 
     public void setStartDate(Date date) {
+        if(date != null){
+            Validate.isTrue(startDate == null || isNewObject() ||
+                getStartDate().equals(date) || getStartDate().after(date));
+        }
         startDate = date;
     }
 
@@ -201,6 +208,14 @@ public class CriterionSatisfaction extends BaseEntity {
             Interval thisInterval = getInterval();
             return !thisInterval.overlapsWith(other.getInterval());
         }
+    }
 
+    public void validate(){
+            Validate.notNull(resource);
+            Validate.notNull(startDate);
+            Validate.notNull(criterion);
+            Validate.isTrue(finishDate == null || finishDate.after(startDate));
+            Validate.isTrue(finishDate == null || startDate.equals(finishDate)
+                    || startDate.before(finishDate));
     }
 }

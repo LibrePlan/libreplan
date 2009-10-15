@@ -93,6 +93,9 @@ public class WorkerModel implements IWorkerModel {
     private IBaseCalendarModel baseCalendarModel;
 
     @Autowired
+    private IAssignedCriterionsModel assignedCriterionsModel;
+
+    @Autowired
     public WorkerModel(IResourceDAO resourceDAO,
             ICriterionDAO criterionDAO) {
         Validate.notNull(resourceDAO);
@@ -114,6 +117,9 @@ public class WorkerModel implements IWorkerModel {
             throw new ValidationException(invalidValues);
         }
         getLocalizationsAssigner().applyChanges();
+        if(assignedCriterionsModel != null){
+            assignedCriterionsModel.confirm();
+        }
         resourceDAO.save(worker);
         worker.checkNotOverlaps();
         worker = null;
@@ -484,6 +490,10 @@ public class WorkerModel implements IWorkerModel {
             return worker.getCalendar();
         }
         return null;
+    }
+
+    public IAssignedCriterionsModel getAssignedCriterionsModel() {
+        return assignedCriterionsModel;
     }
 
 }

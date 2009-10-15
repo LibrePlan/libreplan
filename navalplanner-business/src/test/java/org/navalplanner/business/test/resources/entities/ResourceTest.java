@@ -19,7 +19,7 @@
  */
 
 package org.navalplanner.business.test.resources.entities;
-
+import java.util.Date;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -27,6 +27,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.year;
+import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.date;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,11 +100,11 @@ public class ResourceTest {
                 createTypeThatMatches(otherCriterion), otherCriterion);
         Worker worker = Worker.create("firstName", "surName", "2333232");
         worker.addSatisfaction(criterionWithItsType, Interval
-                .from(CriterionSatisfactionDAOTest.year(2000)));
+                .range(year(2000),year(3000)));
         worker.addSatisfaction(otherCriterionWithItsType, Interval
-                .from(CriterionSatisfactionDAOTest.year(2000)));
+                .from(year(2000)));
         worker.addSatisfaction(criterionWithItsType, Interval
-                .from(CriterionSatisfactionDAOTest.year(4000)));
+                .from(year(4000)));
         assertEquals(2, worker.getSatisfactionsFor(criterionType).size());
         assertEquals(1, worker.getCurrentSatisfactionsFor(criterionType).size());
     }
@@ -121,13 +122,13 @@ public class ResourceTest {
         Worker worker = Worker.create("firstName", "surName", "2333232");
         assertThat(worker.getCurrentCriterionsFor(type).size(), equalTo(0));
         worker.addSatisfaction(criterionWithItsType, Interval
-                .from(CriterionSatisfactionDAOTest.year(2000)));
+                .range(year(2000),year(2010)));
         assertThat(worker.getCurrentCriterionsFor(type).size(), equalTo(1));
         worker.addSatisfaction(criterionWithItsType, Interval
-                .from(CriterionSatisfactionDAOTest.year(2002)));
+                .from(year(2010)));
         assertThat(worker.getCurrentCriterionsFor(type).size(), equalTo(1));
         worker.addSatisfaction(otherCriterionWithItsType, Interval
-                .from(CriterionSatisfactionDAOTest.year(2000)));
+                .from(year(2000)));
         assertThat(worker.getCurrentCriterionsFor(type).size(), equalTo(2));
     }
 
@@ -180,18 +181,18 @@ public class ResourceTest {
 
         Worker worker = Worker.create("firstName", "surName", "2333232");
         worker.addSatisfaction(criterionWithItsType, Interval
-                .from(CriterionSatisfactionDAOTest.year(2000)));
+                .range(year(2000),year(2002)));
         worker.addSatisfaction(criterionWithItsType, Interval
-                .from(CriterionSatisfactionDAOTest.year(2003)));
+                .from(year(2003)));
         worker.addSatisfaction(otherCriterionWithItsType, Interval
-                .from(CriterionSatisfactionDAOTest.year(2000)));
+                .from(year(2000)));
 
         assertEquals(2, worker.getSatisfactionsFor(criterionType).size());
-        assertEquals(1, worker.query().from(criterionType).enforcedInAll(
+        assertEquals(0, worker.query().from(criterionType).enforcedInAll(
                 Interval.range(year(2001), year(2005))).current().result()
                 .size());
-        assertEquals(2, worker.query().from(criterionType).enforcedInAll(
-                Interval.range(year(2004), year(2005))).current().result()
+        assertEquals(1, worker.query().from(criterionType).enforcedInAll(
+                Interval.range(year(2000), year(2001))).result()
                 .size());
         assertEquals(0, worker.query().from(criterionType).enforcedInAll(
                 Interval.range(year(1999), year(2005))).current().result()
@@ -254,7 +255,7 @@ public class ResourceTest {
         worker.addSatisfaction(new CriterionWithItsType(criterionType,
                 criterion), Interval.range(year(5000), year(6000)));
         worker.addSatisfaction(new CriterionWithItsType(criterionType,
-                criterion), Interval.from(year(4000)));
+                criterion), Interval.range(year(4000),year(5000)));
 
         assertThat(worker.query().from(criterion).enforcedInAll(
                 Interval.range(year(4001), year(4999))).result().size(),
@@ -294,7 +295,7 @@ public class ResourceTest {
         worker.addSatisfaction(new CriterionWithItsType(criterionType,
                 criterion), Interval.from(year(4000)));
         worker.addSatisfaction(new CriterionWithItsType(criterionType,
-                otherCriterion), Interval.from(year(3500)));
+                otherCriterion), Interval.range(year(3500),year(4000)));
         assertThat(worker.getSatisfactionsFor(otherCriterion).size(),
                 equalTo(1));
         CriterionSatisfaction satisfaction = worker.getSatisfactionsFor(
@@ -361,6 +362,57 @@ public class ResourceTest {
                 // ok
             }
         }
+    }
+
+    @Test
+    public void testCantAddCriterionSatisfactionWithOverlap() {
+        Criterion criterion = CriterionDAOTest.createValidCriterion();
+        Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
+        Worker worker = Worker.create("firstName", "surName", "2333232");
+        ICriterionType<Criterion> criterionType = createTypeThatMatches(false,
+                criterion,otherCriterion);
+
+        Interval intervalA = Interval.range(date(2009,10,14),date(2009,10,26));
+        Interval intervalB = Interval.range(date(2009,10,15),date(2009,10,24));
+        Interval intervalC = Interval.range(date(2009,10,12),date(2009,10,16));
+        Interval intervalE = Interval.range(date(2009,10,26),date(2009,10,30));
+        worker.addSatisfaction(new CriterionWithItsType(criterionType,
+                criterion), intervalA);
+        //Same Criterion
+        assertFalse(worker.canAddSatisfaction(new CriterionWithItsType(
+                criterionType, criterion), intervalB));
+        assertFalse(worker.canAddSatisfaction(new CriterionWithItsType(
+                criterionType, criterion), intervalC));
+        //Distict Criterion
+        assertFalse(worker.canAddSatisfaction(new CriterionWithItsType(
+                criterionType, otherCriterion), intervalC));
+        assertTrue(worker.canAddSatisfaction(new CriterionWithItsType(
+                criterionType, criterion), intervalE));
+    }
+
+    @Test
+    public void testCantAddCriterionSatisfactionWithTypeAllowMultipleResource() {
+        Criterion criterion = CriterionDAOTest.createValidCriterion();
+        Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
+        Worker worker = Worker.create("firstName", "surName", "2333232");
+        ICriterionType<Criterion> criterionType = createTypeThatMatches(true,
+                criterion,otherCriterion);
+
+        Interval intervalA = Interval.range(date(2009,10,8),date(2009,10,25));
+        Interval intervalB = Interval.range(date(2009,10,5),date(2009,10,9));
+        Interval intervalC = Interval.range(date(2009,11,12),date(2009,11,16));
+        Interval intervalE = Interval.range(date(2009,10,26),date(2009,10,30));
+        worker.addSatisfaction(new CriterionWithItsType(criterionType,
+                criterion), intervalA);
+        //Same Criterion
+        assertFalse(worker.canAddSatisfaction(new CriterionWithItsType(
+                criterionType, criterion), intervalB));
+        //Distinct Criterion
+        assertTrue(worker.canAddSatisfaction(new CriterionWithItsType(
+                criterionType, otherCriterion), intervalC));
+        //without overlap
+        assertTrue(worker.canAddSatisfaction(new CriterionWithItsType(
+                criterionType, criterion), intervalE));
     }
 
     public void testAddCriterionSatisfaction() throws Exception {

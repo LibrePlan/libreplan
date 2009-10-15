@@ -5,6 +5,7 @@
 
 package org.navalplanner.web.resources.worker;
 
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import org.hibernate.validator.NotNull;
@@ -19,6 +20,10 @@ import org.navalplanner.business.resources.entities.Interval;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class CriterionSatisfactionDTO {
+
+    public static final String START_DATE = "startDate";
+
+    public static final String CRITERION_WITH_ITS_TYPE = "criterionWithItsType";
 
     private String state;
 
@@ -39,9 +44,11 @@ public class CriterionSatisfactionDTO {
     private CriterionSatisfaction criterionSatisfaction;
 
     public CriterionSatisfactionDTO(){
-        this.setIsNewObject(Boolean.TRUE);
+        this.setIsNewObject(true);
         this.state = "";
         this.criterionAndType = "";
+        this.startDate =  new Date();
+        this.endDate = null;
     }
 
     public CriterionSatisfactionDTO(CriterionSatisfaction criterionSatisfaction) {
@@ -56,19 +63,13 @@ public class CriterionSatisfactionDTO {
         this.setCriterionWithItsType(new CriterionWithItsType(type,criterion));
     }
 
-    public String getCriterionAndType() {
-        if(criterionWithItsType == null) return criterionAndType;
-        return criterionWithItsType.getNameAndType();
-    }
-
     public void setCriterionAndType(String criterionAndType) {
         this.criterionAndType = criterionAndType;
     }
 
     public String getState() {
         if(startDate == null) return "";
-        if(!isFinished()) return "In force";
-        if(isCurrent()) return "In force";
+        if( !isFinished() || isCurrent() ) return "Current";
         return "Expired";
     }
 
@@ -174,13 +175,16 @@ public class CriterionSatisfactionDTO {
         if(isNewObject) return true;
         if((getEndDate() == null) ||
                 (endDate == null)) return true;
+        if(getCriterionSatisfaction().getEndDate() == null)
+            return true;
         if(endDate.compareTo(getCriterionSatisfaction().getEndDate()) >= 0)
             return true;
         return false;
     }
 
-    public String getNameAndType(){
-        if(criterionWithItsType == null) return "";
+    public String getCriterionAndType() {
+        if(criterionWithItsType == null) return criterionAndType;
         return criterionWithItsType.getNameAndType();
+
     }
 }

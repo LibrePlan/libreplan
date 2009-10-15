@@ -1,5 +1,4 @@
-<vbox id="criterionsContainer" style="padding: 10px">
-<panel title="${i18n:_('Assigned Criterions')}" border="normal">
+<panel id="criterionsContainer" title="${i18n:_('Assigned Criterions')}" border="normal">
     <panelchildren>
         <hbox align="center">
                 <separator bar="false" spacing="40px" orient="horizontal"/>
@@ -9,16 +8,15 @@
                 <label class="subtitulo" value="${i18n:_('Filters :')}" />
                 <combobox id="comboboxfilter"
                 onSelect="assignedCriterionsController.reload();">
-                    <comboitem label="all" />
-                    <comboitem label="in force" />
+                    <comboitem label="${i18n:_('All')}" />
+                    <comboitem label="${i18n:_('Currents')}" />
                 </combobox>
                 <separator bar="false" spacing="20px" orient="vertical"/>
         </hbox>
-        <grid id="listingCriterions"
-            model="@{assignedCriterionsController.criterionSatisfactionDTOs}"
-            mold="paging" pageSize="5">
+        <grid id="listingCriterions" mold="paging" pageSize="10" fixedLayout="true"
+            model="@{assignedCriterionsController.criterionSatisfactionDTOs}">
             <columns>
-                <column label="${i18n:_('Criterion name')}"/>
+                <column label="${i18n:_('Criterion name')}" sort="auto(criterionAndType)" sortDirection="ascending"/>
                 <column label="${i18n:_('Starting date')}" width="200px" align="center"/>
                 <column label="${i18n:_('Ending date')}" width="200px" align="center"/>
                 <column label="${i18n:_('State')}" width="70px" align="center"/>
@@ -27,13 +25,13 @@
             <rows>
                 <row self="@{each='criterionSatisfactionDTO'}" value="@{criterionSatisfactionDTO}">
                     <hbox>
-                    <bandbox width="500px"
-                        visible="@{criterionSatisfactionDTO.isNewObject}"
+                    <bandbox
+                        visible ="@{criterionSatisfactionDTO.isNewObject}"
                         value = "@{criterionSatisfactionDTO.criterionAndType}">
                         <bandpopup>
-                            <listbox width="500px" height="150px" fixedLayout="true"
-                             model="@{assignedCriterionsController.criterionWithItsTypes}"
-                             onSelect="assignedCriterionsController.selectCriterionAndType(self.selectedItem,
+                                <listbox width="500px" height="150px" fixedLayout="true"
+                                model="@{assignedCriterionsController.criterionWithItsTypes}"
+                                onSelect="assignedCriterionsController.selectCriterionAndType(self.selectedItem,
                                     self.parent.parent,self.parent.parent.parent.parent.value);">
                                 <listhead>
                                     <listheader label="Type" />
@@ -43,19 +41,20 @@
                                     <listcell label="@{criterionWithItsType.type.name}" />
                                     <listcell label="@{criterionWithItsType.nameHierarchy}" />
                                 </listitem>
-                            </listbox>
+                             </listbox>
                         </bandpopup>
                     </bandbox>
                     <label visible="@{criterionSatisfactionDTO.isOldObject}"
-                     value="@{criterionSatisfactionDTO.nameAndType}"/>
+                     value="@{criterionSatisfactionDTO.criterionAndType}"/>
                     </hbox>
-                    <datebox id="startDate" value="@{criterionSatisfactionDTO.startDate}"
-                    constraint="@{assignedCriterionsController.validateStartDate}"
-                    onChange="assignedCriterionsController.changeDate(self);" width="150px"/>
 
-                    <datebox id="endDate" value="@{criterionSatisfactionDTO.endDate}"
+                    <datebox value="@{criterionSatisfactionDTO.startDate}"
+                    constraint="@{assignedCriterionsController.validateStartDate}"
+                    onChange="assignedCriterionsController.changeStartDate(self,self.value);" width="150px"/>
+
+                    <datebox value="@{criterionSatisfactionDTO.endDate}"
                     constraint="@{assignedCriterionsController.validateEndDate}"
-                    onChange="assignedCriterionsController.changeDate(self);" width="150px"/>
+                    onChange="assignedCriterionsController.changeEndDate(self,self.value);" width="150px"/>
 
                     <label value="@{criterionSatisfactionDTO.state}"/>
 
@@ -69,4 +68,3 @@
         </grid>
     </panelchildren>
 </panel>
-</vbox>

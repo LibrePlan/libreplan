@@ -47,7 +47,7 @@ public class InvalidInputsChecker {
         return false;
     }
 
-    private static boolean isInvalid(Component child) {
+    public static boolean isInvalid(Component child) {
         if (child instanceof InputElement) {
             InputElement input = (InputElement) child;
             if (!input.isValid()) {

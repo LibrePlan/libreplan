@@ -24,11 +24,15 @@ public interface IAssignedCriterionsModel {
 
     void prepareForEdit(Worker worker);
 
+    void prepareForCreate(Worker worker);
+
     void addCriterionSatisfaction();
 
     void reattachmentWorker();
 
-    void save()throws ValidationException;
+    void confirm()throws ValidationException;
+
+    void validate()throws ValidationException;
 
     void remove(CriterionSatisfactionDTO criterionSatisfactionDTO);
 
