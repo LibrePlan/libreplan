@@ -27,6 +27,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
@@ -48,6 +50,8 @@ import org.zkoss.zul.Div;
  * @author javi
  */
 public class TaskComponent extends Div implements AfterCompose {
+
+    private static final Log LOG = LogFactory.getLog(TaskComponent.class);
 
     private static final int HEIGHT_PER_TASK = 10;
     private static final String STANDARD_TASK_COLOR = "#007bbe";
@@ -316,7 +320,15 @@ public class TaskComponent extends Div implements AfterCompose {
         if (dependencyList != null) {
             dependencyList.redrawDependenciesConnectedTo(this);
         }
-        updateCompletion();
+        updateCompletionIfPossible();
+    }
+
+    private void updateCompletionIfPossible() {
+        try {
+            updateCompletion();
+        } catch (Exception e) {
+            LOG.error("failure at updating completion", e);
+        }
     }
 
     private void updateCompletion() {
