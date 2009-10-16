@@ -82,8 +82,6 @@ public class LoadPeriod {
             public int compare(LoadPeriod o1, LoadPeriod o2) {
                 if (o1.overlaps(o2)) {
                     LOG.warn(o1 + " overlaps with " + o2);
-                    throw new IllegalArgumentException(o1 + " overlaps with "
-                            + o2);
                 }
                 int comparison = compareLocalDates(o1.start, o2.start);
                 if (comparison != 0)
