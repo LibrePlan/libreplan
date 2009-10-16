@@ -48,6 +48,6 @@ public interface ILoadChartFiller {
 
     boolean zoomByDay();
 
-    LocalDate getThursdayOfThisWeek(LocalDate date);
+    SortedMap<LocalDate, Integer> groupByWeek(SortedMap<LocalDate, Integer> map);
 
 }

@@ -285,7 +285,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         if (loadChartFiller.zoomByDay()) {
             return map;
         } else {
-            return groupByWeek(map);
+            return loadChartFiller.groupByWeek(map);
         }
     }
 
@@ -314,29 +314,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         if (loadChartFiller.zoomByDay()) {
             return map;
         } else {
-            return groupByWeek(map);
+            return loadChartFiller.groupByWeek(map);
         }
-    }
-
-    private SortedMap<LocalDate, Integer> groupByWeek(
-            SortedMap<LocalDate, Integer> map) {
-        SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
-
-        for (LocalDate day : map.keySet()) {
-            LocalDate key = loadChartFiller.getThursdayOfThisWeek(day);
-
-            if (result.get(key) == null) {
-                result.put(key, map.get(day));
-            } else {
-                result.put(key, result.get(key) + map.get(day));
-            }
-        }
-
-        for (LocalDate day : result.keySet()) {
-            result.put(day, result.get(day) / 7);
-        }
-
-        return result;
     }
 
     private org.zkoss.zk.ui.Component getChartLegend() {

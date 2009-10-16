@@ -25,6 +25,7 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -122,8 +123,7 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         }
     }
 
-    @Override
-    public LocalDate getThursdayOfThisWeek(LocalDate date) {
+    private LocalDate getThursdayOfThisWeek(LocalDate date) {
         return date.dayOfWeek().withMinimumValue().plusDays(DAYS_TO_THURSDAY);
     }
 
@@ -183,6 +183,28 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
     @Override
     public Integer getMaximunValueForChart() {
         return maximunValueForChart;
+    }
+
+    @Override
+    public SortedMap<LocalDate, Integer> groupByWeek(
+            SortedMap<LocalDate, Integer> map) {
+        SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
+
+        for (LocalDate day : map.keySet()) {
+            LocalDate key = getThursdayOfThisWeek(day);
+
+            if (result.get(key) == null) {
+                result.put(key, map.get(day));
+            } else {
+                result.put(key, result.get(key) + map.get(day));
+            }
+        }
+
+        for (LocalDate day : result.keySet()) {
+            result.put(day, result.get(day) / 7);
+        }
+
+        return result;
     }
 
 }
