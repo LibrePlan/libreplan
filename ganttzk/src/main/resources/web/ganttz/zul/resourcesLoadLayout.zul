@@ -19,13 +19,16 @@
 -->
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
-
+<zscript><![CDATA[
+resourcesLoadPanel = self;
+]]>
+</zscript>
     <borderlayout sclass="resourcesloadlayout" width="auto">
        <north height="30px" border="0">
        <hbox align="center" id="toolbar">
         <separator/>
-        <button label="+" />
-        <button label="-" />
+        <button label="+" onClick="resourcesLoadPanel.zoomIncrease();"/>
+        <button label="-" onClick="resourcesLoadPanel.zoomDecrease();"/>
         From: <datebox /> to: <datebox />
         <separator/>
         Filter:

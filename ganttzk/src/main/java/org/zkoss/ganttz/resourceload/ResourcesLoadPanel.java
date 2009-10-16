@@ -70,6 +70,14 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         registerNeededScripts();
     }
 
+    public void zoomIncrease() {
+        timeTracker.zoomIncrease();
+    }
+
+    public void zoomDecrease() {
+        timeTracker.zoomDecrease();
+    }
+
     public void add(final IToolbarCommand... commands) {
         Component toolbar = getToolbar();
         Separator separator = getSeparator();
