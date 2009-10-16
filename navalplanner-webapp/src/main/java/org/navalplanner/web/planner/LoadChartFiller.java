@@ -129,7 +129,7 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
 
     private LocalDate nextDay(LocalDate date) {
         if (zoomByDay()) {
-            return date;
+            return date.plusDays(1);
         } else {
             return date.plusWeeks(1);
         }
