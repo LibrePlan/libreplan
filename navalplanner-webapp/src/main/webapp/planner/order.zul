@@ -135,14 +135,14 @@
                 </grid>
 
                 <!-- Assigned resources -->
-                <panel title="${i18n:_('Assigned resources')}" border="normal" style="margin-top: 5px">
+                <panel title="${i18n:_('Assigned resources')}" border="normal" style="margin-top: 5px" sclass="assignedresources">
                     <panelchildren>
                         <vbox id="messagesContainer"></vbox>
 
                         <listbox id="allocationsList"
                             model="@{allocationController.resourceAllocations}"
                             itemRenderer="@{allocationController.resourceAllocationRenderer}"
-                            style="margin-bottom: 5px" fixedLayout="true" rows="3">
+                            style="margin-bottom: 5px" fixedLayout="true" rows="4">
                             <listhead>
                                 <listheader label="${i18n:_('Name')}" />
                                 <listheader

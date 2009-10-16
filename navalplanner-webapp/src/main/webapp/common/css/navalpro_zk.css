@@ -174,27 +174,34 @@ table {
     font-size: 1.2em;
 }
 
-.message_ERROR {
-    color: #ee0000;
+
+.message_ERROR, .message_INFO {
     padding: 15px;
-    border: solid 1px #ee0000;
-    background-color: #eecccc;
     margin: 10px;
     width: 300px;
 }
 
-.message_ERROR img {
+.message_WARNING img, .message_ERROR img {
     display: none;
 }
 
 
+.message_ERROR {
+    color: #ee0000;
+    border: solid 1px #ee0000;
+    background-color: #eecccc;
+}
+
+.message_WARNING {
+    color: #CC5013;
+    border: solid 1px #CC5013;
+    background-color: #FDCA87;
+}
+
 .message_INFO {
     color: #006600;
-    padding: 15px;
     border: solid 1px #006600;
     background-color: #cceecc;
-    margin: 10px;
-    width: 300px;
 }
 
 .message_INFO span {
@@ -202,6 +209,13 @@ table {
     top: -10px;
     left: 10px;
 }
+
+.advancedallocationlayout .message_WARNING {
+    padding: 3px 20px 3px 20px;
+    margin: 0;
+    width: auto;
+}
+
 
 .z-window-embedded {
     margin: 10px;
@@ -474,4 +488,13 @@ div.z-grid {
 
 .advance-measurement {
     width: 340px;
+}
+
+.assignedresources .icono .z-button-tr,
+.assignedresources .icono td.z-button-br {
+    display:none;
+}
+
+.assignedresources .z-listbox input {
+    height: 17px !important;
 }

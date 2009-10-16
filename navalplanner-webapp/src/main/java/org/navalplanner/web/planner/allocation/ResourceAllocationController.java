@@ -400,7 +400,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             bindResourcesPerDay(appendDecimalbox(item), data);
             // On click delete button
-            Button deleteButton = appendButton(item, _("Delete"));
+            Button deleteButton = appendDeleteButton(item);
             formBinder.setDeleteButtonFor(data, deleteButton);
             deleteButton.addEventListener("onClick", new EventListener() {
 
@@ -466,7 +466,28 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
 
         /**
+         * Appends delete {@link Button} to {@link Listitem}
+         * @param listitem
+         *            value for {@link Button}
+         * @return
+         */
+        private Button appendDeleteButton(Listitem listitem) {
+            Button button = new Button();
+            button.setSclass("icono");
+            button.setImage("/common/img/ico_borrar1.png");
+            button.setHoverImage("/common/img/ico_borrar.png");
+            button.setTooltiptext(_("Delete"));
+
+            Listcell listCell = new Listcell();
+            listCell.appendChild(button);
+            listitem.appendChild(listCell);
+
+            return button;
+        }
+
+        /**
          * Append a Textbox @{link Percentage} to listItem
+         *
          * @param listItem
          */
         private Decimalbox appendDecimalbox(Listitem item) {
