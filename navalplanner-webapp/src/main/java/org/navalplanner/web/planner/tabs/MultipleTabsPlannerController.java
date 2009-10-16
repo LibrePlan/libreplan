@@ -225,7 +225,6 @@ public class MultipleTabsPlannerController implements Composer {
         return new CreatedOnDemandTab(ENTERPRISE_VIEW, componentCreator) {
             @Override
             protected void afterShowAction() {
-                super.afterShowAction();
                 companyPlanningController.setConfigurationForPlanner();
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
@@ -257,6 +256,12 @@ public class MultipleTabsPlannerController implements Composer {
         return new CreatedOnDemandTab( ORDER_ENTERPRISE_VIEW , componentCreator) {
             @Override
             protected void afterShowAction() {
+
+                orderPlanningController.setOrder(mode.getOrder());
+		Map<String, Object> arguments = new HashMap<String, Object>();
+                arguments.put("orderPlanningController",
+                        orderPlanningController);
+
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }
