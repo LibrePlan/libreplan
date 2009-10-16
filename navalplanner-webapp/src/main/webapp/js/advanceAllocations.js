@@ -19,26 +19,22 @@
  */
 
 // Check if this is advanced location tab
+ADVANCE_ALLOCATIONS = {};
 
-function plannergraph() {
-	return YAHOO.util.Selector.query('.plannergraph div')[0];
-}
+ADVANCE_ALLOCATIONS.plannergraph = function() {
+    return YAHOO.util.Selector.query('.plannergraph div')[0];
+};
+ADVANCE_ALLOCATIONS.listenToScroll = function() {
+    var timetrackergap_ = timetrackergap();
+    var scrolledpannel_ = scrolledpannel();
+    var resourcesloadgraph_ = resourcesloadgraph();
+    var leftpanel_ = leftpanel();
 
+    var onScroll = function() {
+        timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
+        leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
+        resourcesloadgraph_.scrollLeft = scrolledpannel_.scrollLeft;
 
-	function listenToScroll() {
-
-		var timetrackergap_ = timetrackergap();
-		var scrolledpannel_ = scrolledpannel();
-		var resourcesloadgraph_ = resourcesloadgraph();
-		var leftpanel_ = leftpanel();
-
-		var onScroll = function() {
-			timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
-			leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
-			resourcesloadgraph_.scrollLeft = scrolledpannel_.scrollLeft;
-
-		};
-
-		YAHOO.util.Selector.query('.rightpanellayout div')[0].onscroll = onScroll;
-
-	}
+    };
+    YAHOO.util.Selector.query('.rightpanellayout div')[0].onscroll = onScroll;
+};
