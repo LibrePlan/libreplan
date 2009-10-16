@@ -57,9 +57,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private MutableTreeModel<LoadTimeLine> treeModel;
 
+    private final TimeTracker timeTracker;
+
     public ResourcesLoadPanel(List<LoadTimelinesGroup> groups,
             TimeTracker timeTracker) {
         this.groups = groups;
+        this.timeTracker = timeTracker;
         treeModel = createModelForTree();
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
         resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
@@ -141,13 +144,21 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
         getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
         getFellow("insertionPointRightPanel").appendChild(resourceLoadList);
+        TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
+        getFellow("insertionPointTimetracker").appendChild(timeTrackerHeader);
 
-        TimeTrackerComponent timetrackerheader = (TimeTrackerComponent) timeTrackerComponent
-                .clone();
-        getFellow("insertionPointTimetracker").appendChild(timetrackerheader);
-
-        timetrackerheader.afterCompose();
+        timeTrackerHeader.afterCompose();
         timeTrackerComponent.afterCompose();
+    }
+
+    private TimeTrackerComponent createTimeTrackerHeader() {
+        return new TimeTrackerComponent(
+                timeTracker) {
+
+         @Override
+         protected void scrollHorizontalPercentage(int pixelsDisplacement) {
+         }
+        };
     }
 
 }
