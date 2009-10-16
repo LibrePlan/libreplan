@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.planner;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,10 +28,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
@@ -50,8 +44,6 @@ import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.web.servlets.CallbackServlet;
-import org.navalplanner.web.servlets.CallbackServlet.IServletRequestHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -82,12 +74,6 @@ import org.zkoss.zul.Div;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
-    /**
-     * Number of days to Thursday since the beginning of the week. In order to
-     * calculate the middle of a week.
-     */
-    private final static int DAYS_TO_THURSDAY = 3;
-
     @Autowired
     private IOrderDAO orderDAO;
 
@@ -100,11 +86,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     @Autowired
     private IAdHocTransactionService transactionService;
 
-    private Integer maximunValueForChart = 0;
-
     private IZoomLevelChangedListener zoomListener;
 
-    private ZoomLevel zoomLevel = ZoomLevel.DETAIL_ONE;
+    private ILoadChartFiller loadChartFiller = new CompanyLoadChartFiller();
 
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
@@ -154,7 +138,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private void setupChart(Timeplot chartComponent, TimeTracker timeTracker) {
-        fillChart(chartComponent, timeTracker.getRealInterval(), timeTracker
+        loadChartFiller.fillChart(chartComponent,
+                timeTracker.getRealInterval(), timeTracker
                 .getHorizontalSize());
         fillChartOnZoomChange(chartComponent, timeTracker);
     }
@@ -166,15 +151,15 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
             @Override
             public void zoomLevelChanged(final ZoomLevel detailLevel) {
-                zoomLevel = detailLevel;
+                loadChartFiller.setZoomLevel(detailLevel);
 
                 transactionService
                         .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                     @Override
                     public Void execute() {
-                        fillChart(chartComponent,
-                                timeTracker.getRealInterval(), timeTracker
-                                        .getHorizontalSize());
+                        loadChartFiller.fillChart(chartComponent,
+                                        timeTracker.getRealInterval(),
+                                        timeTracker.getHorizontalSize());
                         return null;
                     }
                 });
@@ -262,165 +247,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     // spring method injection
     protected abstract ITaskElementAdapter getTaskElementAdapter();
 
-    private void fillChart(Timeplot chart, Interval interval, Integer size) {
-        chart.getChildren().clear();
-        chart.invalidate();
-        maximunValueForChart = 0;
-
-        Plotinfo plotInfoLoad = getLoadPlotInfo(interval.getStart(), interval
-                .getFinish());
-        plotInfoLoad.setFillColor("0000FF");
-
-        Plotinfo plotInfoMax = getCalendarMaximumAvailabilityPlotInfo(interval
-                .getStart(), interval.getFinish());
-        plotInfoMax.setLineColor("FF0000");
-
-        ValueGeometry valueGeometry = new DefaultValueGeometry();
-        valueGeometry.setMin(0);
-        valueGeometry.setMax(maximunValueForChart);
-        valueGeometry.setGridColor("#000000");
-        valueGeometry.setAxisLabelsPlacement("left");
-
-        plotInfoLoad.setValueGeometry(valueGeometry);
-        plotInfoMax.setValueGeometry(valueGeometry);
-
-        chart.appendChild(plotInfoMax);
-        chart.appendChild(plotInfoLoad);
-
-        size = size + (16 * 2);
-        chart.setWidth(size + "px");
-        chart.setHeight("100px");
-    }
-
-    private Plotinfo getLoadPlotInfo(Date start, Date finish) {
-        List<DayAssignment> dayAssignments = dayAssignmentDAO.list(DayAssignment.class);
-        SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
-
-        String uri = getServletUri(mapDayAssignments, start, finish);
-
-        PlotDataSource pds = new PlotDataSource();
-        pds.setDataSourceUri(uri);
-        pds.setSeparator(" ");
-
-        Plotinfo plotInfo = new Plotinfo();
-        plotInfo.setPlotDataSource(pds);
-
-        return plotInfo;
-    }
-
-    private void printLine(PrintWriter writer, LocalDate day, Integer hours) {
-        writer.println(day.toString("yyyyMMdd") + " " + hours);
-    }
-
-    private void fillZeroValueFromStart(PrintWriter writer, Date start,
-            SortedMap<LocalDate, Integer> mapDayAssignments) {
-        LocalDate day = new LocalDate(start);
-        if (mapDayAssignments.isEmpty()) {
-            printLine(writer, day, 0);
-        } else if (day.compareTo(mapDayAssignments.firstKey()) < 0) {
-            printLine(writer, day, 0);
-            if (!day.equals(mapDayAssignments.firstKey().minusDays(1))) {
-                printLine(writer, mapDayAssignments.firstKey().minusDays(1), 0);
-            }
-        }
-    }
-
-    private void fillZeroValueToFinish(PrintWriter writer, Date finish,
-            SortedMap<LocalDate, Integer> mapDayAssignments) {
-        LocalDate day = new LocalDate(finish);
-        if (mapDayAssignments.isEmpty()) {
-            printLine(writer, day, 0);
-        } else if (day.compareTo(mapDayAssignments.lastKey()) > 0) {
-            if (!day.equals(mapDayAssignments.lastKey().plusDays(1))) {
-                printLine(writer, mapDayAssignments.lastKey().plusDays(1), 0);
-            }
-            printLine(writer, day, 0);
-        }
-    }
-
-    private Plotinfo getCalendarMaximumAvailabilityPlotInfo(Date start,
-            Date finish) {
-        SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(
-                resourceDAO.list(Resource.class), start, finish);
-
-        String uri = getServletUri(mapDayAssignments, start, finish);
-
-        PlotDataSource pds = new PlotDataSource();
-        pds.setDataSourceUri(uri);
-        pds.setSeparator(" ");
-
-        Plotinfo plotInfo = new Plotinfo();
-        plotInfo.setPlotDataSource(pds);
-
-        return plotInfo;
-    }
-
-    private String getServletUri(
-            final SortedMap<LocalDate, Integer> mapDayAssignments,
-            final Date start, final Date finish) {
-        if (mapDayAssignments.isEmpty()) {
-            return "";
-        }
-
-        setMaximunValueForChartIfGreater(Collections.max(mapDayAssignments.values()));
-
-        String uri = CallbackServlet
-                .registerAndCreateURLFor(new IServletRequestHandler() {
-
-                    @Override
-                    public void handle(HttpServletRequest request,
-                            HttpServletResponse response)
-                            throws ServletException, IOException {
-                        PrintWriter writer = response.getWriter();
-
-                        fillZeroValueFromStart(writer, start, mapDayAssignments);
-
-                        LocalDate firstDay = firstDay(mapDayAssignments);
-                        LocalDate lastDay = lastDay(mapDayAssignments);
-
-                        for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = nextDay(day)) {
-                            Integer hours = mapDayAssignments.get(day) != null ? mapDayAssignments
-                                    .get(day)
-                                    : 0;
-                            printLine(writer, day, hours);
-                        }
-
-                        fillZeroValueToFinish(writer, finish, mapDayAssignments);
-
-                        writer.close();
-                    }
-                });
-        return uri;
-    }
-
-    private LocalDate firstDay(SortedMap<LocalDate, Integer> mapDayAssignments) {
-        LocalDate date = mapDayAssignments.firstKey();
-        if (zoomByDay()) {
-            return date;
-        } else {
-            return date.dayOfWeek().withMinimumValue().plusDays(
-                    DAYS_TO_THURSDAY);
-        }
-    }
-
-    private LocalDate lastDay(SortedMap<LocalDate, Integer> mapDayAssignments) {
-        LocalDate date = mapDayAssignments.lastKey();
-        if (zoomByDay()) {
-            return date;
-        } else {
-            return date.dayOfWeek().withMinimumValue().plusDays(
-                    DAYS_TO_THURSDAY);
-        }
-    }
-
-    private LocalDate nextDay(LocalDate date) {
-        if (zoomByDay()) {
-            return date;
-        } else {
-            return date.plusWeeks(1);
-        }
-    }
-
     /**
      * Calculate the hours by day for all the {@link DayAssignment} in the list.
      *
@@ -456,7 +282,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             }
         }
 
-        if (zoomLevel.equals(ZoomLevel.DETAIL_FIVE)) {
+        if (loadChartFiller.zoomByDay()) {
             return map;
         } else {
             return groupByWeek(map);
@@ -485,7 +311,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             map.put(date, hours);
         }
 
-        if (zoomLevel.equals(ZoomLevel.DETAIL_FIVE)) {
+        if (loadChartFiller.zoomByDay()) {
             return map;
         } else {
             return groupByWeek(map);
@@ -497,7 +323,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
 
         for (LocalDate day : map.keySet()) {
-            LocalDate key = getKey(day);
+            LocalDate key = loadChartFiller.getThursdayOfThisWeek(day);
 
             if (result.get(key) == null) {
                 result.put(key, map.get(day));
@@ -513,16 +339,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return result;
     }
 
-    private LocalDate getKey(LocalDate date) {
-        return date.dayOfWeek().withMinimumValue().plusDays(3);
-    }
-
-    private void setMaximunValueForChartIfGreater(Integer max) {
-        if (maximunValueForChart < max) {
-            maximunValueForChart = max;
-        }
-    }
-
     private org.zkoss.zk.ui.Component getChartLegend() {
         Div div = new Div();
 
@@ -532,8 +348,75 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return div;
     }
 
-    private boolean zoomByDay() {
-        return zoomLevel.equals(ZoomLevel.DETAIL_FIVE);
+    private class CompanyLoadChartFiller extends LoadChartFiller {
+
+        @Override
+        public void fillChart(Timeplot chart, Interval interval, Integer size) {
+            chart.getChildren().clear();
+            chart.invalidate();
+            resetMaximunValueForChart();
+
+            Plotinfo plotInfoLoad = getLoadPlotInfo(interval.getStart(),
+                    interval.getFinish());
+            plotInfoLoad.setFillColor("0000FF");
+
+            Plotinfo plotInfoMax = getCalendarMaximumAvailabilityPlotInfo(
+                    interval.getStart(), interval.getFinish());
+            plotInfoMax.setLineColor("FF0000");
+
+            ValueGeometry valueGeometry = new DefaultValueGeometry();
+            valueGeometry.setMin(0);
+            valueGeometry.setMax(getMaximunValueForChart());
+            valueGeometry.setGridColor("#000000");
+            valueGeometry.setAxisLabelsPlacement("left");
+
+            plotInfoLoad.setValueGeometry(valueGeometry);
+            plotInfoMax.setValueGeometry(valueGeometry);
+
+            chart.appendChild(plotInfoMax);
+            chart.appendChild(plotInfoLoad);
+
+            size = size + (16 * 2);
+            chart.setWidth(size + "px");
+            chart.setHeight("100px");
+        }
+
+        private Plotinfo getLoadPlotInfo(Date start, Date finish) {
+            List<DayAssignment> dayAssignments = dayAssignmentDAO
+                    .list(DayAssignment.class);
+            SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
+
+            String uri = getServletUri(mapDayAssignments,
+                    start, finish);
+
+            PlotDataSource pds = new PlotDataSource();
+            pds.setDataSourceUri(uri);
+            pds.setSeparator(" ");
+
+            Plotinfo plotInfo = new Plotinfo();
+            plotInfo.setPlotDataSource(pds);
+
+            return plotInfo;
+        }
+
+        private Plotinfo getCalendarMaximumAvailabilityPlotInfo(Date start,
+                Date finish) {
+            SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(
+                    resourceDAO.list(Resource.class), start, finish);
+
+            String uri = getServletUri(mapDayAssignments,
+                    start, finish);
+
+            PlotDataSource pds = new PlotDataSource();
+            pds.setDataSourceUri(uri);
+            pds.setSeparator(" ");
+
+            Plotinfo plotInfo = new Plotinfo();
+            plotInfo.setPlotDataSource(pds);
+
+            return plotInfo;
+        }
+
     }
 
 }
