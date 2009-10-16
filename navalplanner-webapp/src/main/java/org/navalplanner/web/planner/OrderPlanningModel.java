@@ -323,6 +323,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private void fillChart(Order order, Timeplot chart, Interval interval,
             Integer size) {
         chart.getChildren().clear();
+        chart.invalidate();
         maximunValueForChart = 0;
 
         Plotinfo plotInfoOrder = getLoadPlotInfo(order, interval.getStart(),

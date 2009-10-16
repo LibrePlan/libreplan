@@ -241,6 +241,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private void fillChart(Timeplot chart, Interval interval, Integer size) {
         chart.getChildren().clear();
+        chart.invalidate();
         maximunValueForChart = 0;
 
         Plotinfo plotInfoLoad = getLoadPlotInfo(interval.getStart(), interval
