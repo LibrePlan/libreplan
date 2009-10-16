@@ -131,12 +131,6 @@ public class LoadPeriodTest {
                 new LocalDate(endYear, endMonth, endDay), correctLoadLevel());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void loadPeriodsThatOverlapCannotBeSorted() {
-        LoadPeriod.sort(Arrays.asList(create(2009, 4, 10, 2010, 1, 12), create(
-                2009, 4, 11, 2011, 1, 20)));
-    }
-
     @Test
     public void loadPeriodsThatDontOverlapCanBeSorted() {
         givenUnsortedListOfPeriods();
