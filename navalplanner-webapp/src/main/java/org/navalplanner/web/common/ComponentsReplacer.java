@@ -42,6 +42,7 @@ public class ComponentsReplacer {
         public IChildrenSnapshot restore() {
             List<Component> removedChildren = removeChildren(parent);
             parent.getChildren().addAll(children);
+            parent.getPage().invalidate();
             return new ChildrenSnapshot(parent, removedChildren);
         }
     }
