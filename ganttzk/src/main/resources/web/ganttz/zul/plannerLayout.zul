@@ -71,7 +71,7 @@ planner = self;
                         <div id="insertionPointChartLegend" />
                     </vbox>
                 </west>
-                <center autoscroll="true" sclass="plannergraph">
+                <center sclass="plannergraph">
                     <vbox>
                         <div id="insertionPointChart" />
                     </vbox>

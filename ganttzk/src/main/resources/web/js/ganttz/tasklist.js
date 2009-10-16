@@ -69,7 +69,7 @@ function leftpanel() {
 }
 
 function plannergraph() {
-	return YAHOO.util.Selector.query('.plannergraph div')[0];
+	return YAHOO.util.Selector.query('.plannergraph')[0];
 }
 
 function timetrackergap() {
