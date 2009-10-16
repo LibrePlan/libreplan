@@ -84,6 +84,12 @@ import org.zkoss.zul.Div;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
+    /**
+     * Number of days to Thursday since the beginning of the week. In order to
+     * calculate the middle of a week.
+     */
+    private final static int DAYS_TO_THURSDAY = 3;
+
     @Autowired
     private IOrderDAO orderDAO;
 
@@ -470,8 +476,13 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
                         fillZeroValueFromStart(writer, start, mapDayAssignments);
 
-                        for (LocalDate day : mapDayAssignments.keySet()) {
-                            Integer hours = mapDayAssignments.get(day);
+                        LocalDate firstDay = firstDay(mapDayAssignments);
+                        LocalDate lastDay = lastDay(mapDayAssignments);
+
+                        for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = nextDay(day)) {
+                            Integer hours = mapDayAssignments.get(day) != null ? mapDayAssignments
+                                    .get(day)
+                                    : 0;
                             printLine(writer, day, hours);
                         }
 
@@ -481,6 +492,34 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     }
                 });
         return uri;
+    }
+
+    private LocalDate firstDay(SortedMap<LocalDate, Integer> mapDayAssignments) {
+        LocalDate date = mapDayAssignments.firstKey();
+        if (zoomByDay()) {
+            return date;
+        } else {
+            return date.dayOfWeek().withMinimumValue().plusDays(
+                    DAYS_TO_THURSDAY);
+        }
+    }
+
+    private LocalDate lastDay(SortedMap<LocalDate, Integer> mapDayAssignments) {
+        LocalDate date = mapDayAssignments.lastKey();
+        if (zoomByDay()) {
+            return date;
+        } else {
+            return date.dayOfWeek().withMinimumValue().plusDays(
+                    DAYS_TO_THURSDAY);
+        }
+    }
+
+    private LocalDate nextDay(LocalDate date) {
+        if (zoomByDay()) {
+            return date;
+        } else {
+            return date.plusWeeks(1);
+        }
     }
 
     private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
@@ -584,7 +623,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
         }
 
-        if (zoomLevel.equals(ZoomLevel.DETAIL_FIVE)) {
+        if (zoomByDay()) {
             return map;
         } else {
             return groupByWeek(map);
@@ -613,7 +652,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private LocalDate getKey(LocalDate date) {
-        return date.dayOfWeek().withMinimumValue().plusDays(3);
+        return date.dayOfWeek().withMinimumValue().plusDays(DAYS_TO_THURSDAY);
     }
 
     private void setMaximunValueForChartIfGreater(Integer max) {
@@ -629,6 +668,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 null);
 
         return div;
+    }
+
+    private boolean zoomByDay() {
+        return zoomLevel.equals(ZoomLevel.DETAIL_FIVE);
     }
 
 }
