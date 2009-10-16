@@ -19,11 +19,11 @@
 -->
 
 <window id="${arg.id}" title="${i18n:_('List label types')}">
-    <grid id="labelTypes" model="@{controller.labelTypes}"
+    <newdatasortablegrid id="labelTypes" model="@{controller.labelTypes}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('Name')}" sort="auto(name)" sortDirection="ascending" />
-            <column label="${i18n:_('Operations')}" />
+            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(name)" sortDirection="ascending" />
+            <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>
         <rows>
             <row self="@{each='labelType'}" value="@{labelType}">
@@ -41,6 +41,6 @@
                 </hbox>
             </row>
         </rows>
-    </grid>
+    </newdatasortablegrid>
     <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()"/>
 </window>

@@ -5,12 +5,12 @@
 
 package org.navalplanner.web.resources.worker;
 
-import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
+
 import org.hibernate.validator.NotNull;
-import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.INewObject;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.Interval;
@@ -19,7 +19,7 @@ import org.navalplanner.business.resources.entities.Interval;
  * DTO represents the handled data in the form of assigning satisfaction criterions.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class CriterionSatisfactionDTO {
+public class CriterionSatisfactionDTO implements INewObject {
 
     public static final String START_DATE = "startDate";
 
@@ -39,12 +39,12 @@ public class CriterionSatisfactionDTO {
 
     private Boolean isDeleted = false;
 
-    private Boolean isNewObject = false;
+    private Boolean newObject = false;
 
     private CriterionSatisfaction criterionSatisfaction;
 
     public CriterionSatisfactionDTO(){
-        this.setIsNewObject(true);
+        this.setNewObject(true);
         this.state = "";
         this.criterionAndType = "";
         this.startDate =  new Date();
@@ -77,16 +77,13 @@ public class CriterionSatisfactionDTO {
         this.state = state;
     }
 
-    public void setIsNewObject(Boolean isNewObject) {
-        this.isNewObject = isNewObject;
+    public void setNewObject(Boolean isNewObject) {
+        this.newObject = isNewObject;
     }
 
-    public Boolean isIsNewObject() {
-        return isNewObject == null ? false : isNewObject;
-    }
 
-    public Boolean isIsOldObject(){
-        return !isIsNewObject();
+    public Boolean isOldObject(){
+        return !isNewObject();
     }
 
     public CriterionWithItsType getCriterionWithItsType() {
@@ -156,7 +153,7 @@ public class CriterionSatisfactionDTO {
     }
 
     public boolean isPreviousStartDate(Date startDate){
-        if(isNewObject) return true;
+        if(newObject) return true;
         if((getStartDate() == null) ||
                 (startDate == null)) return true;
         if(startDate.compareTo(getCriterionSatisfaction().getStartDate()) <= 0)
@@ -172,7 +169,7 @@ public class CriterionSatisfactionDTO {
     }
 
     public boolean isPostEndDate(Date endDate){
-        if(isNewObject) return true;
+        if(newObject) return true;
         if((getEndDate() == null) ||
                 (endDate == null)) return true;
         if(getCriterionSatisfaction().getEndDate() == null)
@@ -186,5 +183,10 @@ public class CriterionSatisfactionDTO {
         if(criterionWithItsType == null) return criterionAndType;
         return criterionWithItsType.getNameAndType();
 
+    }
+
+    @Override
+    public boolean isNewObject() {
+        return newObject == null ? false : newObject;
     }
 }

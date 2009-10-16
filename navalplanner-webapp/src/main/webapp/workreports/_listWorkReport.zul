@@ -19,14 +19,14 @@
 -->
 
 <window id="${arg.top_id}" title="${i18n:_('Work report listing')}">
-    <grid id="listing" model="@{controller.workReports}" mold="paging"
+    <newdatasortablegrid id="listing" model="@{controller.workReports}" mold="paging"
         pageSize="5">
         <columns sizable="true">
-            <column label="${i18n:_('Date')}" sort="auto(date)" />
-            <column label="${i18n:_('Responsible')}" sort="auto(responsible)" />
-            <column label="${i18n:_('Place')}" sort="auto(place)" />
-            <column label="${i18n:_('Type')}" sort="auto(workReportType.name)"/>
-            <column label="${i18n:_('Actions')}" />
+            <newdatasortablecolumn label="${i18n:_('Date')}" sort="auto(date)" />
+            <newdatasortablecolumn label="${i18n:_('Responsible')}" sort="auto(responsible)" />
+            <newdatasortablecolumn label="${i18n:_('Place')}" sort="auto(place)" />
+            <newdatasortablecolumn label="${i18n:_('Type')}" sort="auto(workReportType.name)"/>
+            <newdatasortablecolumn label="${i18n:_('Actions')}" />
         </columns>
         <rows>
             <row self="@{each='workReport'}" value="@{workReport}">
@@ -50,5 +50,5 @@
                 </hbox>
             </row>
         </rows>
-    </grid>
+    </newdatasortablegrid>
 </window>

@@ -19,11 +19,11 @@
 -->
 
 <window id="listing" title="${i18n:_('Criterion type list')}">
-<grid model="@{controller.criterionTypes}" fixedLayout="true">
+<newdatasortablegrid model="@{controller.criterionTypes}" fixedLayout="true">
    <columns>
-        <column label="${i18n:_('Name')}" sort="auto(name)"/>
-        <column width="60px" label="${i18n:_('Enabled')}"/>
-        <column width="200px" label="${i18n:_('Operations')}"/>
+        <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(name)"/>
+        <newdatasortablecolumn width="60px" label="${i18n:_('Enabled')}"/>
+        <newdatasortablecolumn width="200px" label="${i18n:_('Operations')}"/>
     </columns>
     <rows>
         <row self="@{each='criterionType'}" value="@{criterionType}">
@@ -45,7 +45,7 @@
             </hbox>
         </row>
     </rows>
-</grid>
+</newdatasortablegrid>
 <button id="show_create_form" onClick="controller.goToCreateForm();" label="${i18n:_('Create')}">
 </button>
 </window>

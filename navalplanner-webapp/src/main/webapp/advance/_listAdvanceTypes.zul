@@ -19,12 +19,12 @@
 -->
 
 <window id="${arg.top_id}" title="${i18n:_('Advance type list')}">
-    <grid id="listing" model="@{controller.advanceTypes}" mold="paging"
+    <newdatasortablegrid id="listing" model="@{controller.advanceTypes}" mold="paging"
         pageSize="5" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('Name')}" sort="auto(unitName)"/>
-            <column label="${i18n:_('Enabled')}"/>
-            <column label="${i18n:_('Operations')}"/>
+            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(unitName)"/>
+            <newdatasortablecolumn label="${i18n:_('Enabled')}"/>
+            <newdatasortablecolumn label="${i18n:_('Operations')}"/>
 
         </columns>
         <rows>
@@ -50,7 +50,7 @@
 
             </row>
         </rows>
-    </grid>
+    </newdatasortablegrid>
     <button id="show_create_form" onClick="controller.goToCreateForm();" label="${i18n:_('Create')}">
     </button>
 </window>

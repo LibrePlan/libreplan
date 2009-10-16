@@ -19,13 +19,13 @@
 -->
 
 <window id="${arg.top_id}" title="${i18n:_('Workers list')}">
-    <grid id="listing" model="@{controller.workers}" mold="paging"
+    <newdatasortablegrid id="listing" model="@{controller.workers}" mold="paging"
         pageSize="5" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('First name')}" sort="auto(firstName)" />
-            <column label="${i18n:_('Surname')}" sort="auto(surname)" />
-            <column label="${i18n:_('NIF')}" sort="auto(nif)" />
-            <column label="${i18n:_('Operations')}" />
+            <newdatasortablecolumn label="${i18n:_('First name')}" sort="auto(firstName)"/>
+            <newdatasortablecolumn label="${i18n:_('Surname')}" sort="auto(surname)" />
+            <newdatasortablecolumn label="${i18n:_('NIF')}" sort="auto(nif)" />
+            <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>
         <rows>
             <row self="@{each='worker'}" value="@{worker}">
@@ -42,7 +42,7 @@
                 </hbox>
             </row>
         </rows>
-    </grid>
+    </newdatasortablegrid>
     <button id="show_create_form" onClick="controller.goToCreateForm();"
         label="${i18n:_('Create')}">
     </button>

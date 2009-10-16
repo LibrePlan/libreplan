@@ -44,12 +44,12 @@
     <vbox>
         <panel title="${i18n:_('Direct labels')}" border="normal">
             <panelchildren>
-                <grid id="directLabels" height="200px" fixedLayout="true"
+                <newdatasortablegrid id="directLabels" height="200px" fixedLayout="true"
                     model="@{assignedLabelsController.labels}">
                     <columns>
-                        <column label="${i18n:_('Label type')}" />
-                        <column label="${i18n:_('Value')}" />
-                        <column label="${i18n:_('Operations')}" />
+                        <newdatasortablecolumn label="${i18n:_('Label type')}" sort="auto(type.name)"/>
+                        <newdatasortablecolumn label="${i18n:_('Value')}" />
+                        <newdatasortablecolumn label="${i18n:_('Operations')}" />
                     </columns>
                     <rows>
                         <row self="@{each='label'}" value="@{label}">
@@ -65,7 +65,7 @@
 
                         </row>
                     </rows>
-                </grid>
+                </newdatasortablegrid>
 
                 <!-- Assign label -->
                 <vbox>

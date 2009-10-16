@@ -150,7 +150,7 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
 
     @Override
     public void remove(CriterionSatisfactionDTO criterionSatisfactionDTO){
-        if(criterionSatisfactionDTO.isIsNewObject()){
+        if(criterionSatisfactionDTO.isNewObject()){
             criterionSatisfactionDTOs.remove(criterionSatisfactionDTO);
         }else{
             criterionSatisfactionDTO.setIsDeleted(true);
@@ -309,7 +309,7 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
         Set<CriterionSatisfaction> newList = new HashSet<CriterionSatisfaction>();
         for(CriterionSatisfactionDTO satisfactionDTO :criterionSatisfactionDTOs){
             CriterionSatisfaction satisfaction;
-            if(satisfactionDTO.isIsNewObject()){
+            if(satisfactionDTO.isNewObject()){
                 Criterion criterion = satisfactionDTO.getCriterionWithItsType().getCriterion();
                 Interval interval = satisfactionDTO.getInterval();
                 satisfaction = CriterionSatisfaction.create(criterion, worker, interval);
