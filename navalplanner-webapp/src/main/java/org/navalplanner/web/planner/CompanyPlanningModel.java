@@ -296,7 +296,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             printLine(writer, day, 0);
         } else if (day.compareTo(mapDayAssignments.firstKey()) < 0) {
             printLine(writer, day, 0);
-            printLine(writer, mapDayAssignments.firstKey().minusDays(1), 0);
+            if (!day.equals(mapDayAssignments.firstKey().minusDays(1))) {
+                printLine(writer, mapDayAssignments.firstKey().minusDays(1), 0);
+            }
         }
     }
 
@@ -306,7 +308,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         if (mapDayAssignments.isEmpty()) {
             printLine(writer, day, 0);
         } else if (day.compareTo(mapDayAssignments.lastKey()) > 0) {
-            printLine(writer, mapDayAssignments.lastKey().plusDays(1), 0);
+            if (!day.equals(mapDayAssignments.lastKey().plusDays(1))) {
+                printLine(writer, mapDayAssignments.lastKey().plusDays(1), 0);
+            }
             printLine(writer, day, 0);
         }
     }
