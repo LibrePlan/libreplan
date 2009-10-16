@@ -169,7 +169,7 @@ class FormBinder {
         this.taskElapsedDays.setDisabled(true);
     }
 
-    private void doApply() {
+    void doApply() {
         lastAllocation = resourceAllocationsBeingEdited.doAllocation();
         aggregate = lastAllocation
                 .getAggregate();
