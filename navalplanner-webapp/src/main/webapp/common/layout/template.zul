@@ -60,7 +60,7 @@
         <n:tr class="ruta">
           <n:td width="10" height="25"></n:td>
           <n:td><n:a href="/navalplanner-webapp/" class="ruta"><n:strong>${i18n:_('START')}</n:strong></n:a></n:td>
-          <n:td width="15"><n:div align="center"><n:img src="/navalplanner-webapp/common/img/migas_separacion.gif" width="10" height="15" /></n:div></n:td>
+          <n:td width="15"><n:div align="center"><n:img src="/navalplanner-webapp/common/img/migas_separacion.gif" /></n:div></n:td>
           <n:td><div id="breadcrumbs"></div></n:td>
         </n:tr>
     </n:table></n:td>

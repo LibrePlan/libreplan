@@ -135,6 +135,7 @@ a.sub_menu:hover {
     border-top-color: #DCEEF9;
     border-bottom-color: #DCEEF9;
 }
-.ruta img {
-    margin-bottom:4px;
+
+.ruta div {
+    padding-bottom:3px;
 }

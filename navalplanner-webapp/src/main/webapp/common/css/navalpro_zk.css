@@ -183,6 +183,11 @@ table {
     width: 300px;
 }
 
+.message_ERROR img {
+    display: none;
+}
+
+
 .message_INFO {
     color: #006600;
     padding: 15px;

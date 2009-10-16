@@ -53,6 +53,7 @@ import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 
 /**
@@ -103,6 +104,10 @@ public class MultipleTabsPlannerController implements Composer {
     private static final String ORDERS_VIEW = _("Orders List");
 
     private static final String ORDER_ORDERS_VIEW = _("Order Details");
+
+    private static final String PLANNIFICATION = _("Plannification");
+
+    private static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";
 
     private TabsConfiguration tabsConfiguration;
 
@@ -223,8 +228,9 @@ public class MultipleTabsPlannerController implements Composer {
                 super.afterShowAction();
                 companyPlanningController.setConfigurationForPlanner();
                 breadcrumbs.getChildren().clear();
-                breadcrumbs.appendChild(new Label(
-                        "Plannification > Company schedulling "));
+                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(ENTERPRISE_VIEW));
             }
         };
     }
@@ -254,12 +260,13 @@ public class MultipleTabsPlannerController implements Composer {
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }
-                breadcrumbs.appendChild(new Label(
-                        "Plannification > ORder schedulling "));
+                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(ORDER_ENTERPRISE_VIEW));
                 if (mode.isOf(ModeType.ORDER)) {
+                    breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                     breadcrumbs
-.appendChild(new Label("> "
-                            + mode.getOrder().getName()));
+                            .appendChild(new Label(mode.getOrder().getName()));
                 }
 
             }
@@ -297,10 +304,10 @@ public class MultipleTabsPlannerController implements Composer {
             @Override
             protected void afterShowAction() {
                 breadcrumbs.getChildren().clear();
-                breadcrumbs.appendChild(new Label("Planification"));
-                breadcrumbs.appendChild(new Label(" > "));
-                breadcrumbs.appendChild(new Label("Resources Load"));
-                breadcrumbs.appendChild(new Label(" > "));
+                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(ORDER_RESOURCE_LOAD_VIEW));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 if (mode.isOf(ModeType.ORDER)
                         && mode.getOrder() != currentOrder) {
                     currentOrder = mode.getOrder();
@@ -330,8 +337,9 @@ public class MultipleTabsPlannerController implements Composer {
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }
-                breadcrumbs.appendChild(new Label(
-                        "Planification > Overall Resources Load"));
+                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(RESOURCE_LOAD_VIEW));
             }
         };
 
@@ -396,7 +404,8 @@ public class MultipleTabsPlannerController implements Composer {
             @Override
             protected void afterShowAction() {
                 breadcrumbs.getChildren().clear();
-                breadcrumbs.appendChild(new Label("order2 > "));
+                breadcrumbs.appendChild(new Label(ORDER_ORDERS_VIEW));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 if (mode.isOf(ModeType.ORDER)) {
                     orderCRUDController.goToEditForm(mode.getOrder());
                     breadcrumbs
