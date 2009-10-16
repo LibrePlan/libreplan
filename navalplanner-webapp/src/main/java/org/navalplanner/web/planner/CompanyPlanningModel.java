@@ -186,12 +186,29 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private PlannerConfiguration<TaskElement> createConfiguration() {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
-        List<TaskElement> toShow = retainOnlyTopLevel();
+        List<TaskElement> toShow = sortByStartDate(retainOnlyTopLevel());
         forceLoadOfDependenciesCollections(toShow);
         forceLoadOfWorkingHours(toShow);
         forceLoadOfLabels(toShow);
         return new PlannerConfiguration<TaskElement>(taskElementAdapter,
                 new TaskElementNavigator(), toShow);
+    }
+
+    private List<TaskElement> sortByStartDate(List<TaskElement> list) {
+        List<TaskElement> result = new ArrayList<TaskElement>(list);
+        Collections.sort(result, new Comparator<TaskElement>() {
+            @Override
+            public int compare(TaskElement o1, TaskElement o2) {
+                if (o1.getStartDate() == null) {
+                    return -1;
+                }
+                if (o2.getStartDate() == null) {
+                    return 1;
+                }
+                return o1.getStartDate().compareTo(o2.getStartDate());
+            }
+        });
+        return result;
     }
 
     private List<TaskElement> retainOnlyTopLevel() {
