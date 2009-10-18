@@ -153,9 +153,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
         List<LoadTimelinesGroup> result = new ArrayList<LoadTimelinesGroup>();
         for (Entry<Criterion, List<GenericResourceAllocation>> entry : genericAllocationsByCriterion
                 .entrySet()) {
+            List<GenericResourceAllocation> allocations = ResourceAllocation
+                    .sortedByStartDate(entry.getValue());
             LoadTimelinesGroup group = new LoadTimelinesGroup(createPrincipal(
-                    entry.getKey(),
-                            entry.getValue()), new ArrayList<LoadTimeLine>());
+                    entry.getKey(), allocations), new ArrayList<LoadTimeLine>());
             if (!group.isEmpty()) {
                 result.add(group);
             }
@@ -164,9 +165,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private LoadTimeLine createPrincipal(Criterion criterion,
-            List<GenericResourceAllocation> value) {
+            List<GenericResourceAllocation> orderedAllocations) {
         return new LoadTimeLine(criterion.getName(), createPeriods(criterion,
-                value));
+                orderedAllocations));
     }
 
     private List<LoadPeriod> createPeriods(Criterion criterion,
