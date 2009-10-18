@@ -20,7 +20,7 @@
 
 <vbox id="${arg.top_id}" apply="${controller.workers}">
  <grid model="@{controller.workers.workersForCurrentCriterion}"
-  mold="paging" pageSize="5" apply="${controller.workers}">
+  mold="paging" pageSize="10" apply="${controller.workers}">
   <columns>
    <column label="${i18n:_('Operations')}" />
    <column label="${i18n:_('Name')}" sort="auto(firstName)" />

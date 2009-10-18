@@ -20,7 +20,7 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Work report listing')}">
     <newdatasortablegrid id="listing" model="@{controller.workReports}" mold="paging"
-        pageSize="5">
+        pageSize="10">
         <columns sizable="true">
             <newdatasortablecolumn label="${i18n:_('Date')}" sort="auto(date)" />
             <newdatasortablecolumn label="${i18n:_('Responsible')}" sort="auto(responsible)" />

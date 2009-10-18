@@ -20,7 +20,7 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Work Report types')}">
     <grid id="listing" model="@{controller.workReportTypes}" mold="paging"
-        pageSize="5">
+        pageSize="10">
         <columns>
             <column label="${i18n:_('Name')}" sort="auto(name)" />
             <column label="${i18n:_('Operations')}" />

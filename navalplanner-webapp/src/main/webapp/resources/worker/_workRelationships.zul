@@ -22,7 +22,7 @@
     apply="${controller.workRelationshipsController}">
     <grid id="history"
         model="@{controller.workRelationship.criterionSatisfactions}"
-        mold="paging" pageSize="5">
+        mold="paging" pageSize="10">
         <columns>
             <column label="${i18n:_('Starting date')}" width="150px"/>
             <column label="${i18n:_('Ending date')}" width="150px"/>

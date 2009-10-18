@@ -25,7 +25,7 @@
 </vbox>
 <vbox>
      <grid id="listingWRL" style="border:0px" height="100%" model="@{asignedHoursToOrderElementController.workReportLines}" mold="paging"
-        pageSize="5">
+        pageSize="10">
         <columns>
             <column label="${i18n:_('Date')}" />
             <column label="${i18n:_('Resource')}" />

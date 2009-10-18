@@ -61,7 +61,7 @@
 
     <label class="subtitulo" value="${i18n:_('Log')}" />
     <grid id="listing" model="@{controller.localizations.localizationsHistory}"
-        mold="paging" pageSize="5">
+        mold="paging" pageSize="10">
         <columns>
             <column label="${i18n:_('Group')}" sort="auto(criterion.name)" />
             <column label="${i18n:_('Starting date')}" sort="auto(startDate)" />

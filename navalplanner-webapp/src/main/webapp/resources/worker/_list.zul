@@ -20,7 +20,7 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Workers list')}">
     <newdatasortablegrid id="listing" model="@{controller.workers}" mold="paging"
-        pageSize="5" fixedLayout="true">
+        pageSize="10" fixedLayout="true">
         <columns>
             <newdatasortablecolumn label="${i18n:_('First name')}" sort="auto(firstName)"/>
             <newdatasortablecolumn label="${i18n:_('Surname')}" sort="auto(surname)" />

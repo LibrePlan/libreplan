@@ -20,7 +20,7 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Advance type list')}">
     <newdatasortablegrid id="listing" model="@{controller.advanceTypes}" mold="paging"
-        pageSize="5" fixedLayout="true">
+        pageSize="10" fixedLayout="true">
         <columns>
             <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(unitName)"/>
             <newdatasortablecolumn label="${i18n:_('Enabled')}"/>

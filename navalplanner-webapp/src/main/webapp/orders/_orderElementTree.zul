@@ -51,7 +51,7 @@
         <tree id="tree" width="1050" multiple="true" droppable="true"
             onDrop="orderElementTreeController.move(self, event.dragged)"
             model="@{orderElementTreeController.orderElementTreeModel}"
-            treeitemRenderer="@{orderElementTreeController.renderer}" pageSize="5"
+            treeitemRenderer="@{orderElementTreeController.renderer}" pageSize="10"
             sclass="orderTree">
             <treecols sizable="false">
                 <treecol label="${i18n:_('Name and description')}" class="name"/>
