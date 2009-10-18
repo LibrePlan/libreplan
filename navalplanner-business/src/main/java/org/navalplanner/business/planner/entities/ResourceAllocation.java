@@ -49,10 +49,9 @@ import org.navalplanner.business.resources.entities.Resource;
 public abstract class ResourceAllocation<T extends DayAssignment> extends
         BaseEntity {
 
-    public static List<ResourceAllocation<?>> sortedByStartDate(
-            Collection<? extends ResourceAllocation<?>> allocations) {
-        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>(
-                allocations);
+    public static <R extends ResourceAllocation<?>> List<R> sortedByStartDate(
+            Collection<R> allocations) {
+        List<R> result = new ArrayList<R>(allocations);
         Collections.sort(result, byStartDateComparator());
         return result;
     }
