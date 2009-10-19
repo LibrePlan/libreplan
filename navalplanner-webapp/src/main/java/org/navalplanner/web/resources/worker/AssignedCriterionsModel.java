@@ -25,6 +25,7 @@ import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -62,6 +63,13 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
     private Worker worker;
 
     private Set<CriterionSatisfactionDTO> criterionSatisfactionDTOs = new HashSet<CriterionSatisfactionDTO>();
+
+    private static List<ResourceEnum> applicableResources = new ArrayList<ResourceEnum>();
+
+    static {
+        applicableResources.add(ResourceEnum.RESOURCE);
+        applicableResources.add(ResourceEnum.WORKER);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -160,7 +168,7 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
     @Transactional(readOnly = true)
     public List<CriterionWithItsType> getCriterionWithItsType() {
         criterionsWithItsTypes = new ArrayList<CriterionWithItsType>();
-        List<CriterionType> listTypes = criterionTypeDAO.getCriterionTypes();
+        List<CriterionType> listTypes = getCriterionTypes();
         for(CriterionType criterionType : listTypes){
             if(criterionType.isEnabled()){
                 Set<Criterion> listCriterion = getDirectCriterions(criterionType);
@@ -168,6 +176,11 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
             }
         }
         return criterionsWithItsTypes;
+    }
+
+    private List<CriterionType> getCriterionTypes() {
+        return criterionTypeDAO
+                .getCriterionTypesByResources(applicableResources);
     }
 
     private void getCriterionWithItsType(CriterionType type, Set<Criterion> children){
