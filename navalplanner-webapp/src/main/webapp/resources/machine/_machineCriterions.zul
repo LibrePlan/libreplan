@@ -27,11 +27,12 @@
             <rows>
                 <row self="@{each='criterionSatisfactionDTO'}" value="@{criterionSatisfactionDTO}">
                     <hbox>
+                    <!--  Select criterion -->
                     <bandbox width="500px"
                         visible="@{criterionSatisfactionDTO.isNewObject}"
                         value = "@{criterionSatisfactionDTO.criterionAndType}">
                         <bandpopup>
-                            <listbox width="500px" height="150px" fixedLayout="true"
+                            <listbox id="lbCriterions" width="500px" height="150px" fixedLayout="true"
                              model="@{assignedCriterionsController.criterionWithItsTypes}"
                              onSelect="assignedCriterionsController.selectCriterionAndType(self.selectedItem,
                                     self.parent.parent,self.parent.parent.parent.parent.value);">

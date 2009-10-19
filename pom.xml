@@ -78,7 +78,7 @@
                 <!-- Naval Planner environment properties -->
                 <navalplanner.mode>dev</navalplanner.mode>
                 <!-- Hibernate properties -->
-                <hibernate.show_sql>true</hibernate.show_sql>
+                <hibernate.show_sql>false</hibernate.show_sql>
                 <hibernate.format_sql>true</hibernate.format_sql>
                 <hibernate.use_sql_comments>true</hibernate.use_sql_comments>
                 <hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
