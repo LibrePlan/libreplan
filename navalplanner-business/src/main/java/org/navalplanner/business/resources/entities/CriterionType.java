@@ -166,10 +166,6 @@ public class CriterionType extends BaseEntity implements
         return resource;
     }
 
-    public void setResource(ResourceEnum resource) {
-        this.resource = resource;
-    }
-
     public String getResource() {
         return resource.toString();
     }
