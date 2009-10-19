@@ -678,6 +678,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
      * {@link IPredicate}
      */
     public void clear() {
+        cbFilterType.setSelectedIndex(0);
         bdFilter.clear();
         predicate = null;
     }
