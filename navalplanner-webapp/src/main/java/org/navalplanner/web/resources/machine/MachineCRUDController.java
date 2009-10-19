@@ -164,11 +164,14 @@ public class MachineCRUDController extends GenericForwardComposer {
             goToList();
             messagesForUser.showMessage(Level.INFO, _("Machine saved"));
         } catch (ValidationException e) {
-            messagesForUser
-                    .showMessage(Level.INFO, _("Could not save Machine"));
+            messagesForUser.showMessage(Level.ERROR, _("Could not save Machine"));
             e.printStackTrace();
         }
     }
+
+    // public void validate() {
+    // machineModel.validate();
+    // }
 
     private void saveCalendar() throws ValidationException {
         if (baseCalendarEditionController != null) {

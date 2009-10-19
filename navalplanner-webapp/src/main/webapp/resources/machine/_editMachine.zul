@@ -56,8 +56,7 @@
             </tabpanel>
             <tabpanel>
                 <!-- Assigned criterions -->
-                <!-- <include src="_machineCriterions.zul" model="controller.machine"/> -->
-                <criterions model="@{controller.machine}" />
+                <criterions />
             </tabpanel>
             <tabpanel>
                 <!-- Calendar -->
