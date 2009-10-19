@@ -38,7 +38,7 @@
             <n:tr>
               <n:td class="usuario">${i18n:_('user: admin')}</n:td>
               <n:td><n:a href="/navalplanner-webapp/common/layout/login_v01.zul" class="cerrar_sesion">${i18n:_('SIGN OUT')}</n:a></n:td>
-            <n:td><n:a href="#"><n:img src="/navalplanner-webapp/common/img/axuda.gif" alt="Axuda" width="23" height="24" border="0" /></n:a></n:td>
+            <n:td><n:a href="https://naval.igalia.com/fileadmin/templates/doc/index.html"><n:img src="/navalplanner-webapp/common/img/axuda.gif" alt="Axuda" width="23" height="24" border="0" /></n:a></n:td>
             </n:tr>
           </n:table></n:td>
         </n:tr>
