@@ -34,6 +34,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceAllocationWithDesiredResourcesPerDay;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -277,6 +278,26 @@ public class Task extends TaskElement {
 
     @Override
     protected void moveAllocations() {
+        List<ResourceAllocationWithDesiredResourcesPerDay> allocations = ResourceAllocationWithDesiredResourcesPerDay
+                .fromExistent(resourceAllocations);
+        if (allocations.isEmpty()) {
+            return;
+        }
+        switch (calculatedValue) {
+        case NUMBER_OF_HOURS:
+            ResourceAllocation.allocating(allocations)
+                    .withExistentResources()
+                    .allocateOnTaskLength();
+            break;
+        case END_DATE:
+            LocalDate end = ResourceAllocation.allocating(allocations)
+                    .withExistentResources()
+                    .untilAllocating(getAssignedHours());
+            setEndDate(end.toDateTimeAtStartOfDay().toDate());
+            break;
+        default:
+            throw new RuntimeException("cant handle: " + calculatedValue);
+        }
 
     }
 

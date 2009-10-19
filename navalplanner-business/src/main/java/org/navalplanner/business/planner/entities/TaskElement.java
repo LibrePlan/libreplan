@@ -137,6 +137,7 @@ public abstract class TaskElement extends BaseEntity {
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
+
     }
 
     /**
@@ -144,7 +145,10 @@ public abstract class TaskElement extends BaseEntity {
      * @param newStartDate
      */
     public void moveTo(Date newStartDate) {
+        long durationMilliseconds = this.endDate.getTime()
+                - this.startDate.getTime();
         this.startDate = newStartDate;
+        this.endDate = new Date(this.startDate.getTime() + durationMilliseconds);
         moveAllocations();
     }
 

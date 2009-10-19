@@ -32,11 +32,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.Dependency.Type;
@@ -63,7 +66,13 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     private Order order;
 
     @Autowired
+    private IAdHocTransactionService transactionService;
+
+    @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private ITaskElementDAO taskDAO;
 
     @Autowired
     private IDayAssignmentDAO dayAssignmentDAO;
@@ -118,9 +127,21 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public long setBeginDate(Date beginDate) {
-            taskElement.setStartDate(beginDate);
-            updateEndDate();
+        public long setBeginDate(final Date beginDate) {
+            return transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<Long>() {
+                        @Override
+                        public Long execute() {
+                            taskDAO.save(taskElement);
+                            return setBeginDateInsideTransaction(beginDate);
+                        }
+                    });
+        }
+
+        private Long setBeginDateInsideTransaction(final Date beginDate) {
+            taskElement.moveTo(beginDate);
+            lengthMilliseconds = taskElement.getEndDate().getTime()
+                    - taskElement.getStartDate().getTime();
             return lengthMilliseconds;
         }
 
@@ -275,7 +296,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
             return tooltip;
         }
-
     }
 
     @Override
