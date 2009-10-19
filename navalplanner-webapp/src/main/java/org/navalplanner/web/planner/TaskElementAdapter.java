@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -68,9 +67,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Autowired
     private IDayAssignmentDAO dayAssignmentDAO;
-
-    @Autowired
-    private ILabelDAO labelDAO;
 
     @Override
     public void setOrder(Order order) {
