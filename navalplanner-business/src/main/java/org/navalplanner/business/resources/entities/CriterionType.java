@@ -170,6 +170,14 @@ public class CriterionType extends BaseEntity implements
         this.resource = resource;
     }
 
+    public String getResource() {
+        return resource.toString();
+    }
+
+    public void setResource(String resource) {
+        this.resource = ResourceEnum.valueOf(resource);
+    }
+
     @Override
     public Criterion createCriterion(String name) {
         return Criterion.withNameAndType(name, this);

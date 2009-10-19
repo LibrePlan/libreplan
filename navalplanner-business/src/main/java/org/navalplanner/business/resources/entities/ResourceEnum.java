@@ -21,6 +21,7 @@
 package org.navalplanner.business.resources.entities;
 
 
+
 /**
  *
  * @author Diego Pino Garcia<dpino@igalia.com>
@@ -28,7 +29,8 @@ package org.navalplanner.business.resources.entities;
 public enum ResourceEnum {
 
     RESOURCE(Resource.class),
-    WORKER(Worker.class);
+    WORKER(Worker.class),
+    MACHINE(Machine.class);
 
     Class clase;
 
@@ -42,6 +44,10 @@ public enum ResourceEnum {
 
     public static ResourceEnum getDefault() {
         return RESOURCE;
+    }
+
+    public String toString() {
+        return clase.getSimpleName().toUpperCase();
     }
 
     public boolean isAssignableFrom(Class clase) {
