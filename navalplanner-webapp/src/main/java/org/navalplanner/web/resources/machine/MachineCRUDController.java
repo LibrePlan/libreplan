@@ -45,6 +45,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -111,7 +112,12 @@ public class MachineCRUDController extends GenericForwardComposer {
     public void goToCreateForm() {
         machineModel.initCreate();
         criterionsController.prepareForCreate(machineModel.getMachine());
-        editWindow.setTitle(_("Create machine"));
+        selectMachineDataTab();
+        showEditWindow(_("Create machine"));
+    }
+
+    private void showEditWindow(String title) {
+        editWindow.setTitle(title);
         showEditWindow();
     }
 
@@ -130,8 +136,13 @@ public class MachineCRUDController extends GenericForwardComposer {
         machineModel.initEdit(machine);
         prepareCriterionsForEdit();
         prepareCalendarForEdit();
-        editWindow.setTitle(_("Edit machine"));
-        showEditWindow();
+        selectMachineDataTab();
+        showEditWindow(_("Edit machine"));
+    }
+
+    private void selectMachineDataTab() {
+        Tab tabMachineData = (Tab) editWindow.getFellow("tbMachineData");
+        tabMachineData.setSelected(true);
     }
 
     private void prepareCriterionsForEdit() {
@@ -168,10 +179,6 @@ public class MachineCRUDController extends GenericForwardComposer {
             e.printStackTrace();
         }
     }
-
-    // public void validate() {
-    // machineModel.validate();
-    // }
 
     private void saveCalendar() throws ValidationException {
         if (baseCalendarEditionController != null) {

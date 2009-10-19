@@ -23,7 +23,7 @@
 <window id="editWindow" >
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('Machine data')}"></tab>
+            <tab id="tbMachineData" label="${i18n:_('Machine data')}"></tab>
             <tab label="${i18n:_('Assigned criterions')}"></tab>
             <tab label="${i18n:_('Calendar')}"></tab>
             <tab label="${i18n:_('Configuration')}"></tab>
