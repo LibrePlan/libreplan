@@ -100,6 +100,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     public long setBeginDate(Date beginDate) {
         Date previousValue = fundamentalProperties.getBeginDate();
         long oldLength = fundamentalProperties.getLengthMilliseconds();
+        fundamentalProperties.setBeginDate(beginDate);
         fundamentalPropertiesListeners.firePropertyChange("beginDate",
                 previousValue, fundamentalProperties.getBeginDate());
         fireLengthMilliseconds(oldLength);

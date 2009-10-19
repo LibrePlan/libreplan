@@ -20,10 +20,28 @@
 
 package org.navalplanner.business.planner.entities.allocationalgorithms;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 
 public class ResourceAllocationWithDesiredResourcesPerDay {
+
+    public static List<ResourceAllocationWithDesiredResourcesPerDay> fromExistent(
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        List<ResourceAllocationWithDesiredResourcesPerDay> result = new ArrayList<ResourceAllocationWithDesiredResourcesPerDay>();
+        for (ResourceAllocation<?> resourceAllocation : allocations) {
+            ResourcesPerDay perDay = resourceAllocation
+                    .getResourcesPerDay();
+            Validate.notNull(perDay);
+            result.add(new ResourceAllocationWithDesiredResourcesPerDay(
+                    resourceAllocation, perDay));
+        }
+        return result;
+    }
 
     private final ResourceAllocation<?> resourceAllocation;
 
