@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
@@ -49,12 +50,12 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
-import org.zkoss.zul.api.Tree;
 
 /**
  * Controller for {@link OrderElement} tree view of {@link Order} entities <br />
@@ -468,12 +469,21 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 }
             });
 
-            Button upbutton = new Button("", "/common/img/ico_bajar1.png");
-            upbutton.setDisabled(predicate != null);
-            upbutton.setHoverImage("/common/img/ico_bajar.png");
+            Button upbutton = new Button("");
+            if (isFirstLevelElement(orderElementForThisRow)
+                    && isPredicateApplied()) {
+                upbutton.setDisabled(true);
+                upbutton.setImage("/common/img/ico_bajar_out.png");
+                upbutton.setHoverImage("/common/img/ico_bajar_out.png");
+                upbutton.setTooltiptext("");
+            } else {
+                upbutton.setDisabled(false);
+                upbutton.setImage("/common/img/ico_bajar1.png");
+                upbutton.setHoverImage("/common/img/ico_bajar.png");
+                upbutton.setTooltiptext(_("Move down"));
+            }
             upbutton.setParent(tcOperations);
             upbutton.setSclass("icono");
-            upbutton.setTooltiptext(_("Move down"));
             upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
@@ -481,12 +491,21 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 }
             });
 
-            Button downbutton = new Button("", "/common/img/ico_subir1.png");
-            downbutton.setDisabled(predicate != null);
-            downbutton.setHoverImage("/common/img/ico_subir.png");
+            Button downbutton = new Button("");
+            if (isFirstLevelElement(orderElementForThisRow)
+                    && isPredicateApplied()) {
+                downbutton.setDisabled(true);
+                downbutton.setImage("/common/img/ico_subir_out.png");
+                downbutton.setHoverImage("/common/img/ico_subir_out.png");
+                downbutton.setTooltiptext("");
+            } else {
+                downbutton.setDisabled(false);
+                downbutton.setImage("/common/img/ico_subir1.png");
+                downbutton.setHoverImage("/common/img/ico_subir.png");
+                downbutton.setTooltiptext(_("Move up"));
+            }
             downbutton.setParent(tcOperations);
             downbutton.setSclass("icono");
-            downbutton.setTooltiptext(_("Move up"));
             downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
@@ -494,9 +513,19 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 }
             });
 
-            Button indentbutton = new Button("", "/common/img/ico_derecha1.png");
-            indentbutton.setDisabled(predicate != null);
-            indentbutton.setHoverImage("/common/img/ico_derecha.png");
+            Button indentbutton = new Button("");
+            if (isFirstLevelElement(orderElementForThisRow)
+                    && isPredicateApplied()) {
+                indentbutton.setDisabled(true);
+                indentbutton.setImage("/common/img/ico_derecha_out.png");
+                indentbutton.setHoverImage("/common/img/ico_derecha_out.png");
+                indentbutton.setTooltiptext("");
+            } else {
+                indentbutton.setDisabled(false);
+                indentbutton.setImage("/common/img/ico_derecha1.png");
+                indentbutton.setHoverImage("/common/img/ico_derecha.png");
+                indentbutton.setTooltiptext(_("Indent"));
+            }
             indentbutton.setParent(tcOperations);
             indentbutton.setSclass("icono");
             indentbutton.setTooltiptext(_("Indent"));
@@ -507,12 +536,21 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 }
             });
 
-            Button unindentbutton = new Button("", "/common/img/ico_izq1.png");
-            unindentbutton.setDisabled(predicate != null);
-            unindentbutton.setHoverImage("/common/img/ico_izq.png");
+            Button unindentbutton = new Button("");
+            if (isFirstLevelElement(orderElementForThisRow)
+                    && isPredicateApplied()) {
+                unindentbutton.setDisabled(true);
+                unindentbutton.setImage("/common/img/ico_izq_out.png");
+                unindentbutton.setHoverImage("/common/img/ico_izq_out.png");
+                unindentbutton.setTooltiptext("");
+            } else {
+                unindentbutton.setDisabled(false);
+                unindentbutton.setImage("/common/img/ico_izq1.png");
+                unindentbutton.setHoverImage("/common/img/ico_izq.png");
+                unindentbutton.setTooltiptext(_("Unindent"));
+            }
             unindentbutton.setParent(tcOperations);
             unindentbutton.setSclass("icono");
-            unindentbutton.setTooltiptext(_("Unindent"));
             unindentbutton.addEventListener(Events.ON_CLICK,
                     new EventListener() {
                         @Override
@@ -535,8 +573,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
             });
 
             tcOperations.setParent(tr);
-
-            // item.setOpen(false);
 
             tr.addEventListener("onDrop", new EventListener() {
 
@@ -563,6 +599,15 @@ public class OrderElementTreeController extends GenericForwardComposer {
         }
     }
 
+    private boolean isFirstLevelElement(OrderElement orderElement) {
+        final IOrderLineGroup root = orderModel.getOrder();
+        return (orderElement != null && orderElement.getParent() == root);
+    }
+
+    private boolean isPredicateApplied() {
+        return (predicate != null);
+    }
+
     private final String SHOW_ALL = _("Show all");
 
     /**
@@ -580,7 +625,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 Util.reloadBindings(tree);
             }
         }
-        updateControlButtons();
     }
 
     private final String FILTER_BY_LABEL = _("Filter by Label");
@@ -603,7 +647,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
             predicate = new LabelOrderElementPredicate(label);
             filterByPredicate();
         }
-        updateControlButtons();
     }
 
     private org.navalplanner.business.labels.entities.Label getSelectedLabel() {
@@ -613,11 +656,20 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
     Button btnIndent, btnUnindent, btnUp, btnDown;
 
-    private void updateControlButtons() {
-        btnIndent.setDisabled(predicate != null);
-        btnUnindent.setDisabled(predicate != null);
-        btnUp.setDisabled(predicate != null);
-        btnDown.setDisabled(predicate != null);
+    /**
+     * Disable control buttons (up, down, indent, unindent) for 1st level order
+     * elements
+     */
+    public void updateControlButtons() {
+        final OrderElement orderElement = (tree.getSelectedItem() != null) ? (OrderElement) tree
+                .getSelectedItem().getValue()
+                : null;
+        boolean disabled = isPredicateApplied()
+                && isFirstLevelElement(orderElement);
+        btnIndent.setDisabled(disabled);
+        btnUnindent.setDisabled(disabled);
+        btnUp.setDisabled(disabled);
+        btnDown.setDisabled(disabled);
     }
 
     /**

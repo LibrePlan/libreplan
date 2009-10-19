@@ -58,6 +58,7 @@
     <vbox>
         <tree id="tree" width="1050" multiple="true" droppable="true"
             onDrop="orderElementTreeController.move(self, event.dragged)"
+            onSelect="orderElementTreeController.updateControlButtons()"
             model="@{orderElementTreeController.orderElementTreeModel}"
             treeitemRenderer="@{orderElementTreeController.renderer}" pageSize="10"
             sclass="orderTree">
