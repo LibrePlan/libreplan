@@ -22,8 +22,10 @@ package org.navalplanner.web.resources.machine;
 
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -77,4 +79,22 @@ public class MachineModel implements IMachineModel {
         resourceDAO.save(machine);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public void initEdit(Machine machine) {
+        Validate.notNull(machine);
+        this.machine = getFromDB(machine);
+    }
+
+    private Machine getFromDB(Machine machine) {
+        return getFromDB(machine.getId());
+    }
+
+    private Machine getFromDB(Long id) {
+        try {
+            return (Machine) resourceDAO.find(id);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

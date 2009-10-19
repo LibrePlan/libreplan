@@ -36,18 +36,18 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Code')}" />
-                            <textbox
-                                value="@{controller.machine.code}" constraint="no empty" width="500px"/>
+                            <textbox value="@{controller.machine.code}" width="500px"
+                                constraint="no empty:${i18n:_('cannot be null or empty')}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Name')}" />
-                            <textbox
-                                value="@{controller.machine.name}" constraint="no empty" width="500px"/>
+                            <textbox value="@{controller.machine.name}" width="500px"
+                                constraint="no empty:${i18n:_('cannot be null or empty')}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Description')}" />
-                            <textbox
-                                value="@{controller.machine.description}" constraint="no empty" width="500px"/>
+                            <textbox value="@{controller.machine.description}" width="500px"
+                                constraint="no empty:${i18n:_('cannot be null or empty')}" />
                         </row>
                     </rows>
                 </grid>

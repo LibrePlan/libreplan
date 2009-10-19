@@ -92,7 +92,7 @@ public class MachineCRUDController extends GenericForwardComposer {
     }
 
     public void goToEditForm(Machine machine) {
-        // model.initEdit(machine);
+        machineModel.initEdit(machine);
         editWindow.setTitle(_("Edit machine"));
         showEditWindow();
         Util.reloadBindings(editWindow);

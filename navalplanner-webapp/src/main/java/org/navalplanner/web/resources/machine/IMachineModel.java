@@ -38,4 +38,6 @@ public interface IMachineModel {
 
     void confirmSave() throws ValidationException;
 
+    void initEdit(Machine machine);
+
 }
