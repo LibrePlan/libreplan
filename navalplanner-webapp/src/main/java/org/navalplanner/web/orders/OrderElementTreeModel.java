@@ -203,8 +203,42 @@ public class OrderElementTreeModel {
         if (getChildren(destination).contains(toBeMoved)) {
             return;// it's already moved
         }
+        if (isGreatInHierarchy(toBeMoved, destination)) {
+            return;
+        }
         removeNode(toBeMoved);
         addOrderElementAt(destination, toBeMoved, position);
+    }
+
+    private boolean isGreatInHierarchy(OrderElement parent, OrderElement child) {
+        return find(child, getChildren(parent));
+    }
+
+    private boolean find(OrderElement child, List<OrderElement> children) {
+        if (children.indexOf(child) >= 0)
+            return true;
+        for (OrderElement criterionDTO : children) {
+            return find(child, getChildren(criterionDTO));
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if parent is an ancestor of child
+     *
+     * @param parent
+     * @param child
+     * @return
+     */
+    private boolean isAncestor(OrderElement parent, OrderElement child) {
+        OrderElement orderElement = child.getParent();
+        while (orderElement != null) {
+            if (orderElement.equals(parent)) {
+                return true;
+            }
+            orderElement = orderElement.getParent();
+        }
+        return false;
     }
 
     public void up(OrderElement node) {

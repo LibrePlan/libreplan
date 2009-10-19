@@ -167,6 +167,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
             getModel().move(fromNode, toNode);
         }
+        filterByPredicateIfAny();
     }
 
     public void addOrderElement() {
