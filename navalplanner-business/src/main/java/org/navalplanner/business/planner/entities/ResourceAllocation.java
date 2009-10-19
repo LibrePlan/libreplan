@@ -26,8 +26,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
@@ -155,6 +157,22 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             Validate.noNullElements(resources);
             return new AllocationsAndResourcesCurried(task, resources,
                     resourceAllocations);
+        }
+
+        public AllocationsAndResourcesCurried withExistentResources() {
+            return new AllocationsAndResourcesCurried(task,
+                    getResourcesFrom(ResourceAllocationWithDesiredResourcesPerDay
+                            .stripResourcesPerDay(resourceAllocations)),
+                    resourceAllocations);
+        }
+
+        private List<Resource> getResourcesFrom(
+                List<ResourceAllocation<?>> allocations) {
+            Set<Resource> resources = new HashSet<Resource>();
+            for (ResourceAllocation<?> resourceAllocation : allocations) {
+                resources.addAll(resourceAllocation.getAssociatedResources());
+            }
+            return new ArrayList<Resource>(resources);
         }
     }
 
