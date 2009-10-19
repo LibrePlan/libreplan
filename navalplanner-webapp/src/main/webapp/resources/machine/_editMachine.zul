@@ -19,6 +19,7 @@
 -->
 
 <?component name="criterions" inline="true" macroURI="_machineCriterions.zul"?>
+<?component name="resourceCalendar" inline="true" macroURI="_calendar.zul"?>
 <window id="editWindow" >
     <tabbox>
         <tabs>
@@ -58,8 +59,9 @@
                 <!-- <include src="_machineCriterions.zul" model="controller.machine"/> -->
                 <criterions model="@{controller.machine}" />
             </tabpanel>
-            <tabpanel visible="false">
+            <tabpanel>
                 <!-- Calendar -->
+                <resourceCalendar />
             </tabpanel>
             <tabpanel visible="false">
                 <!-- Configuration-->

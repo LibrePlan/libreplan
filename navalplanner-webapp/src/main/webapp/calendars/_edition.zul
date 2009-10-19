@@ -34,38 +34,45 @@
 <vbox>
 
     <hbox>
-
-    <vbox>
-
-    <hbox>
-        <label value="${i18n:_('Name')}" />
-        <textbox value="@{calendarController.editionController.baseCalendar.name}" />
-    </hbox>
-
-    <hbox>
-        <label value="${i18n:_('Type')}" />
         <vbox>
-            <label value="@{calendarController.editionController.calendarType}" />
-            <combobox id="parentCalendars"
-                visible="@{calendarController.editionController.isDerived}"
-                disabled="@{calendarController.editionController.isDateValidFromPast}">
-                <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
-                    label="@{baseCalnedar.name}" />
-            </combobox>
+            <!-- Calendar data -->
+            <grid>
+                <columns>
+                    <column/>
+                    <column/>
+                </columns>
+                <rows>
+                    <row>
+                        <label value="${i18n:_('Name')}" />
+                        <textbox value="@{calendarController.editionController.baseCalendar.name}" width="300px"
+                            constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Type')}" />
+                        <vbox>
+                            <label value="@{calendarController.editionController.calendarType}" />
+                            <combobox id="parentCalendars"
+                                visible="@{calendarController.editionController.isDerived}"
+                                disabled="@{calendarController.editionController.isDateValidFromPast}">
+                                <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
+                                    label="@{baseCalnedar.name}" />
+                            </combobox>
+                        </vbox>
+                    </row>
+                </rows>
+            </grid>
+
+            <!-- Edit calendar -->
+            <listbox id="hoursPerDay"
+                model="@{calendarController.editionController.getHoursPerDay}"
+                itemRenderer="@{calendarController.editionController.hoursPerDayRenderer}">
+                <listhead>
+                    <listheader label="${i18n:_('Day of week')}" />
+                    <listheader label="${i18n:_('Hours')}" />
+                    <listheader label="${i18n:_('By default')}" />
+                </listhead>
+            </listbox>
         </vbox>
-    </hbox>
-
-    <listbox id="hoursPerDay"
-        model="@{calendarController.editionController.getHoursPerDay}"
-        itemRenderer="@{calendarController.editionController.hoursPerDayRenderer}">
-        <listhead>
-            <listheader label="${i18n:_('Day of week')}" />
-            <listheader label="${i18n:_('Hours')}" />
-            <listheader label="${i18n:_('By default')}" />
-        </listhead>
-    </listbox>
-
-    </vbox>
 
     <vbox id="dayInformation">
 

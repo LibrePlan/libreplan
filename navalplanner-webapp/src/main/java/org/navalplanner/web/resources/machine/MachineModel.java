@@ -26,6 +26,9 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.IMachineDAO;
@@ -33,7 +36,9 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Machine;
+import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -52,9 +57,16 @@ public class MachineModel implements IMachineModel {
     @Autowired
     IMachineDAO machineDAO;
 
+    @Autowired
+    IBaseCalendarDAO baseCalendarDAO;
+
     private Machine machine;
 
     private ClassValidator<Machine> validator = new ClassValidator<Machine>(Machine.class);
+
+    @Autowired
+    @Qualifier("subclass")
+    private IBaseCalendarModel baseCalendarModel;
 
     @Override
     public void initCreate() {
@@ -75,12 +87,13 @@ public class MachineModel implements IMachineModel {
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
+        if (machine.getCalendar() != null) {
+            baseCalendarModel.checkInvalidValuesCalendar(machine.getCalendar());
+        }
         InvalidValue[] invalidValues = validator.getInvalidValues(getMachine());
         if (invalidValues.length > 0) {
             throw new ValidationException(invalidValues);
         }
-        System.out.println("### criterionSatisfactions: "
-                + machine.getCriterionSatisfactions().size());
         resourceDAO.save(machine);
     }
 
@@ -124,6 +137,24 @@ public class MachineModel implements IMachineModel {
         if (criterion.getParent() != null) {
             criterion.getParent().getName();
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BaseCalendar> getBaseCalendars() {
+        return baseCalendarDAO.getBaseCalendars();
+    }
+
+    @Override
+    public void setCalendar(ResourceCalendar resourceCalendar) {
+        if (machine != null) {
+            machine.setCalendar(resourceCalendar);
+        }
+    }
+
+    @Override
+    public ResourceCalendar getCalendar() {
+        return (machine != null) ? machine.getCalendar() : null;
     }
 
 }

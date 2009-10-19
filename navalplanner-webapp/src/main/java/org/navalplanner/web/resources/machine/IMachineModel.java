@@ -22,13 +22,23 @@ package org.navalplanner.web.resources.machine;
 
 import java.util.List;
 
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Machine;
 
 /*
+ * This interface contains the operations to create/edit a machine.
+ *
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public interface IMachineModel {
+
+    void confirmSave() throws ValidationException;
+
+    List<BaseCalendar> getBaseCalendars();
+
+    ResourceCalendar getCalendar();
 
     Machine getMachine();
 
@@ -36,8 +46,8 @@ public interface IMachineModel {
 
     void initCreate();
 
-    void confirmSave() throws ValidationException;
-
     void initEdit(Machine machine);
+
+    void setCalendar(ResourceCalendar resourceCalendar);
 
 }
