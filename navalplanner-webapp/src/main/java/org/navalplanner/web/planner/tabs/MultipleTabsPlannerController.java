@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.OrderCRUDController;
@@ -45,9 +44,7 @@ import org.zkoss.ganttz.TabSwitcher;
 import org.zkoss.ganttz.TabsRegistry;
 import org.zkoss.ganttz.adapters.TabsConfiguration;
 import org.zkoss.ganttz.extensions.ICommand;
-import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
-import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.zk.ui.Executions;
@@ -93,9 +90,7 @@ public class MultipleTabsPlannerController implements Composer {
         }
     }
 
-    private static final String ENTERPRISE_VIEW = _("Company Scheduling");
 
-    private static final String ORDER_ENTERPRISE_VIEW = _("Order Scheduling");
 
     private static final String RESOURCE_LOAD_VIEW = _("Overall Resources Load");
 
@@ -105,9 +100,9 @@ public class MultipleTabsPlannerController implements Composer {
 
     private static final String ORDER_ORDERS_VIEW = _("Order Details");
 
-    private static final String PLANNIFICATION = _("Plannification");
+    public static final String PLANNIFICATION = _("Plannification");
 
-    private static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";
+    public static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";
 
     private TabsConfiguration tabsConfiguration;
 
@@ -173,109 +168,12 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private TabsConfiguration buildTabsConfiguration() {
-        planningTab = createPlanningTab();
+        planningTab = PlanningTabCreator.create(mode, companyPlanningController,
+                orderPlanningController, breadcrumbs);
         resourceLoadTab = createResourcesLoadTab();
         ordersTab = createOrdersTab();
         return TabsConfiguration.create().add(planningTab).add(resourceLoadTab)
                 .add(ordersTab);
-    }
-
-    private ITab createPlanningTab() {
-        return TabOnModeType.forMode(mode)
-                .forType(ModeType.GLOBAL, createGlobalPlanningTab())
-                .forType(ModeType.ORDER, createOrderPlanningTab())
-                .create();
-    }
-
-    private ITab createGlobalPlanningTab() {
-        final IComponentCreator componentCreator = new IComponentCreator() {
-
-            @Override
-            public org.zkoss.zk.ui.Component create(
-                    org.zkoss.zk.ui.Component parent) {
-                List<ICommandOnTask<TaskElement>> commands = new ArrayList<ICommandOnTask<TaskElement>>();
-                commands.add(new ICommandOnTask<TaskElement>() {
-
-                    @Override
-                    public void doAction(
-                            IContextWithPlannerTask<TaskElement> context,
-                            TaskElement task) {
-                        OrderElement orderElement = task.getOrderElement();
-                        if (orderElement instanceof Order) {
-                            Order order = (Order) orderElement;
-                            mode.goToOrderMode(order);
-                        }
-                    }
-
-                    @Override
-                    public String getName() {
-                        return _("Schedule");
-                    }
-                });
-                companyPlanningController.setAdditional(commands);
-                HashMap<String, Object> args = new HashMap<String, Object>();
-                args.put("companyPlanningController",
-                        companyPlanningController);
-                return Executions.createComponents("/planner/_company.zul",
-                        parent,
-                        args);
-            }
-
-        };
-        return new CreatedOnDemandTab(ENTERPRISE_VIEW, componentCreator) {
-            @Override
-            protected void afterShowAction() {
-                companyPlanningController.setConfigurationForPlanner();
-                breadcrumbs.getChildren().clear();
-                breadcrumbs.appendChild(new Label(PLANNIFICATION));
-                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(ENTERPRISE_VIEW));
-            }
-        };
-    }
-
-    private ITab createOrderPlanningTab() {
-
-        final IComponentCreator componentCreator = new IComponentCreator() {
-
-            @Override
-            public org.zkoss.zk.ui.Component create(
-                    org.zkoss.zk.ui.Component parent) {
-                Map<String, Object> arguments = new HashMap<String, Object>();
-                orderPlanningController.setOrder(mode.getOrder());
-                arguments.put("orderPlanningController",
-                        orderPlanningController);
-                org.zkoss.zk.ui.Component result = Executions.createComponents(
-                        "/planner/order.zul",
-                        parent, arguments);
-                createBindingsFor(result);
-                return result;
-            }
-
-        };
-        return new CreatedOnDemandTab( ORDER_ENTERPRISE_VIEW , componentCreator) {
-            @Override
-            protected void afterShowAction() {
-
-                orderPlanningController.setOrder(mode.getOrder());
-		Map<String, Object> arguments = new HashMap<String, Object>();
-                arguments.put("orderPlanningController",
-                        orderPlanningController);
-
-                if (breadcrumbs.getChildren() != null) {
-                    breadcrumbs.getChildren().clear();
-                }
-                breadcrumbs.appendChild(new Label(PLANNIFICATION));
-                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(ORDER_ENTERPRISE_VIEW));
-                if (mode.isOf(ModeType.ORDER)) {
-                    breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                    breadcrumbs
-                            .appendChild(new Label(mode.getOrder().getName()));
-                }
-
-            }
-        };
     }
 
     private ITab createResourcesLoadTab() {
@@ -389,7 +287,7 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     @SuppressWarnings("unchecked")
-    private void createBindingsFor(org.zkoss.zk.ui.Component result) {
+    static void createBindingsFor(org.zkoss.zk.ui.Component result) {
         List<org.zkoss.zk.ui.Component> children = new ArrayList<org.zkoss.zk.ui.Component>(
                 result.getChildren());
         for (org.zkoss.zk.ui.Component child : children) {
@@ -398,7 +296,7 @@ public class MultipleTabsPlannerController implements Composer {
         setBinderFor(result);
     }
 
-    private void setBinderFor(org.zkoss.zk.ui.Component result) {
+    private static void setBinderFor(org.zkoss.zk.ui.Component result) {
         AnnotateDataBinder binder = new AnnotateDataBinder(result, true);
         result.setVariable("binder", binder, true);
         binder.loadAll();
