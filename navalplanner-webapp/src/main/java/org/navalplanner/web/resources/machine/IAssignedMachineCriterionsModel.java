@@ -61,4 +61,6 @@ public interface IAssignedMachineCriterionsModel {
     public void setCriterionWithItsType(
             CriterionSatisfactionDTO criterionSatisfactionDTO,
             CriterionWithItsType criterionAndType) throws WrongValueException;
+
+    void prepareForCreate(Resource resource);
 }

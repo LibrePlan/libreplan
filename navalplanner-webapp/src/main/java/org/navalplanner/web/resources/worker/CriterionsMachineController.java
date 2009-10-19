@@ -88,7 +88,11 @@ public class CriterionsMachineController extends GenericForwardComposer {
     }
 
     public void prepareForEdit(Machine machine) {
-        this.assignedMachineCriterionsModel.prepareForEdit(machine);
+        assignedMachineCriterionsModel.prepareForEdit(machine);
+    }
+
+    public void prepareForCreate(Machine machine) {
+        assignedMachineCriterionsModel.prepareForCreate(machine);
     }
 
     public Set<CriterionSatisfactionDTO> getCriterionSatisfactionDTOs() {

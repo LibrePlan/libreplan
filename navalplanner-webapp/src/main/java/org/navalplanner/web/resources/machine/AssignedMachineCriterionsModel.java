@@ -70,6 +70,11 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     }
 
     @Override
+    public void prepareForCreate(Resource resource) {
+        this.resource = resource;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public void reattachmentResource() {
         resourceDAO.save(resource);

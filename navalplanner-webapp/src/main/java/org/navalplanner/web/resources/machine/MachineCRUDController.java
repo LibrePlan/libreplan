@@ -110,6 +110,7 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     public void goToCreateForm() {
         machineModel.initCreate();
+        criterionsController.prepareForCreate(machineModel.getMachine());
         editWindow.setTitle(_("Create machine"));
         showEditWindow();
     }
