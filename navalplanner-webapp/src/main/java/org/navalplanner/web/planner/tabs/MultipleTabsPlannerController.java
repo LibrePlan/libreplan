@@ -22,18 +22,14 @@ package org.navalplanner.web.planner.tabs;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.CompanyPlanningController;
 import org.navalplanner.web.planner.IOrderPlanningGate;
 import org.navalplanner.web.planner.OrderPlanningController;
-import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.navalplanner.web.planner.tabs.Mode.ModeTypeChangedListener;
 import org.navalplanner.web.resourceload.ResourceLoadController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +43,8 @@ import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
-import org.zkoss.zul.Image;
-import org.zkoss.zul.Label;
 
 /**
  * Creates and handles several tabs
@@ -90,10 +83,6 @@ public class MultipleTabsPlannerController implements Composer {
         }
     }
 
-    private static final String ORDERS_VIEW = _("Orders List");
-
-    private static final String ORDER_ORDERS_VIEW = _("Order Details");
-
     public static final String PLANNIFICATION = _("Plannification");
 
     public static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";
@@ -122,27 +111,6 @@ public class MultipleTabsPlannerController implements Composer {
     @Autowired
     private ResourceLoadController resourceLoadController;
 
-    private IComponentCreator ordersTabCreator = new IComponentCreator() {
-
-        private org.zkoss.zk.ui.Component result;
-
-        @Override
-        public org.zkoss.zk.ui.Component create(
-                org.zkoss.zk.ui.Component parent) {
-            if (result != null) {
-                return result;
-            }
-            Map<String, Object> args = new HashMap<String, Object>();
-            args.put("orderController", setupOrderCrudController());
-            result = Executions.createComponents(
-                    "/orders/_ordersTab.zul", parent, args);
-            createBindingsFor(result);
-            Util.reloadBindings(result);
-            return result;
-        }
-
-    };
-
     private org.zkoss.zk.ui.Component breadcrumbs;
 
     public TabsConfiguration getTabs() {
@@ -166,47 +134,17 @@ public class MultipleTabsPlannerController implements Composer {
                 orderPlanningController, breadcrumbs);
         resourceLoadTab = ResourcesLoadTabCreator.create(mode,
                 resourceLoadController, upCommand(), breadcrumbs);
-        ordersTab = createOrdersTab();
+        ordersTab = OrdersTabCreator.create(mode, orderCRUDController,
+                breadcrumbs, new IOrderPlanningGate() {
+
+                    @Override
+                    public void goToScheduleOf(Order order) {
+                        mode.goToOrderMode(order);
+                        getTabsRegistry().show(planningTab);
+                    }
+                });
         return TabsConfiguration.create().add(planningTab).add(resourceLoadTab)
                 .add(ordersTab);
-    }
-
-    private ITab createOrdersTab() {
-        return TabOnModeType.forMode(mode)
-                .forType(ModeType.GLOBAL, createGlobalOrdersTab())
-                .forType(ModeType.ORDER, createOrderOrdersTab())
-                .create();
-    }
-
-    private ITab createGlobalOrdersTab() {
-        return new CreatedOnDemandTab(ORDERS_VIEW, ordersTabCreator) {
-            @Override
-            protected void afterShowAction() {
-                orderCRUDController.goToList();
-                if (breadcrumbs.getChildren() != null) {
-                    breadcrumbs.getChildren().clear();
-                }
-                breadcrumbs.appendChild(new Label("Orders > Orders list"));
-            }
-        };
-    }
-
-    private OrderCRUDController setupOrderCrudController() {
-        orderCRUDController.setPlanningControllerEntryPoints(new IOrderPlanningGate() {
-
-            @Override
-            public void goToScheduleOf(Order order) {
-                mode.goToOrderMode(order);
-                getTabsRegistry().show(planningTab);
-            }
-        });
-        orderCRUDController.setActionOnUp(new Runnable() {
-            public void run() {
-                mode.up();
-                orderCRUDController.goToList();
-            }
-        });
-        return orderCRUDController;
     }
 
     @SuppressWarnings("unchecked")
@@ -223,23 +161,6 @@ public class MultipleTabsPlannerController implements Composer {
         AnnotateDataBinder binder = new AnnotateDataBinder(result, true);
         result.setVariable("binder", binder, true);
         binder.loadAll();
-    }
-
-    private ITab createOrderOrdersTab() {
-        return new CreatedOnDemandTab(ORDER_ORDERS_VIEW, ordersTabCreator) {
-            @Override
-            protected void afterShowAction() {
-                breadcrumbs.getChildren().clear();
-                breadcrumbs.appendChild(new Label(ORDER_ORDERS_VIEW));
-                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                if (mode.isOf(ModeType.ORDER)) {
-                    orderCRUDController.goToEditForm(mode.getOrder());
-                    breadcrumbs
-                            .appendChild(new Label(mode.getOrder().getName()));
-                }
-
-            }
-        };
     }
 
     @Override
