@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
@@ -184,10 +183,7 @@ abstract class LoadPeriodGenerator {
         final int totalResourceWorkHours = getTotalWorkHours();
         int assigned = getHoursAssigned();
         if (totalResourceWorkHours == 0) {
-            LOG.error("totalResourceWorkHours is zero. assigned: " + assigned
-                    + "\n generator: "
-                    + ToStringBuilder.reflectionToString(this));
-            return 0;
+            return Integer.MAX_VALUE;
         }
         double proportion = assigned / (double) totalResourceWorkHours;
         return new BigDecimal(proportion).scaleByPowerOfTen(2).intValue();
