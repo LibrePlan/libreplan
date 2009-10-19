@@ -190,4 +190,9 @@ public class SpecificResourceAllocation extends
     public IAllocatable withPreviousAssociatedResources() {
         return this;
     }
+
+    @Override
+    public List<Resource> getAssociatedResources() {
+        return Arrays.asList(resource);
+    }
 }

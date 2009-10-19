@@ -232,6 +232,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     }
 
+    public abstract List<Resource> getAssociatedResources();
+
     protected abstract List<DayAssignment> createAssignmentsAtDay(
             List<Resource> resources, LocalDate day,
             ResourcesPerDay resourcesPerDay, int limit);

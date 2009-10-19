@@ -249,6 +249,7 @@ public class GenericResourceAllocation extends
                 assignemnts);
     }
 
+    @Override
     public List<Resource> getAssociatedResources() {
         Set<Resource> resources = new HashSet<Resource>();
         for (DayAssignment dayAssignment : getAssignments()) {
