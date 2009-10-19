@@ -84,8 +84,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     @Autowired
     private IResourceDAO resourceDAO;
 
-    private Integer maximunValueForChart = 0;
-
     private IZoomLevelChangedListener zoomListener;
 
     private LocalDate minDate;
