@@ -22,7 +22,6 @@ package org.navalplanner.business.planner.entities;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -46,8 +45,6 @@ public class TaskMilestone extends TaskElement implements IValidable {
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
 
-    private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
-
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -56,7 +53,7 @@ public class TaskMilestone extends TaskElement implements IValidable {
     }
 
     public Set<ResourceAllocation<?>> getResourceAllocations() {
-        return Collections.unmodifiableSet(resourceAllocations);
+        return Collections.emptySet();
     }
 
     public int getAssignedHours() {
