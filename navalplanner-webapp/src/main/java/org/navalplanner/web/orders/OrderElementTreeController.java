@@ -468,6 +468,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             });
 
             Button upbutton = new Button("", "/common/img/ico_bajar1.png");
+            upbutton.setDisabled(predicate != null);
             upbutton.setHoverImage("/common/img/ico_bajar.png");
             upbutton.setParent(tcOperations);
             upbutton.setSclass("icono");
@@ -480,6 +481,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             });
 
             Button downbutton = new Button("", "/common/img/ico_subir1.png");
+            downbutton.setDisabled(predicate != null);
             downbutton.setHoverImage("/common/img/ico_subir.png");
             downbutton.setParent(tcOperations);
             downbutton.setSclass("icono");
@@ -492,6 +494,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             });
 
             Button indentbutton = new Button("", "/common/img/ico_derecha1.png");
+            indentbutton.setDisabled(predicate != null);
             indentbutton.setHoverImage("/common/img/ico_derecha.png");
             indentbutton.setParent(tcOperations);
             indentbutton.setSclass("icono");
@@ -504,6 +507,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             });
 
             Button unindentbutton = new Button("", "/common/img/ico_izq1.png");
+            unindentbutton.setDisabled(predicate != null);
             unindentbutton.setHoverImage("/common/img/ico_izq.png");
             unindentbutton.setParent(tcOperations);
             unindentbutton.setSclass("icono");
@@ -572,12 +576,22 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 predicate = null;
                 Util.reloadBindings(tree);
             }
+            updateControlButtons();
         }
     }
 
     private org.navalplanner.business.labels.entities.Label getSelectedLabel() {
         return (org.navalplanner.business.labels.entities.Label) bdFilter
                 .getSelectedElement();
+    }
+
+    Button btnIndent, btnUnindent, btnUp, btnDown;
+
+    private void updateControlButtons() {
+        btnIndent.setDisabled(predicate != null);
+        btnUnindent.setDisabled(predicate != null);
+        btnUp.setDisabled(predicate != null);
+        btnDown.setDisabled(predicate != null);
     }
 
 }

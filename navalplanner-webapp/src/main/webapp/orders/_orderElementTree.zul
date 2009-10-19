@@ -27,12 +27,14 @@
             <button label="${i18n:_('Delete order element')}"
                 onClick="orderElementTreeController.removeOrderElement();">
             </button>
-            <button label="${i18n:_('Indent')}"
-                onClick="orderElementTreeController.indent();">
-            </button>
-            <button label="${i18n:_('Unindent')}" onClick="orderElementTreeController.unindent();" />
-            <button label="${i18n:_('Up')}" onClick="orderElementTreeController.up();"></button>
-            <button label="${i18n:_('Down')}" onClick="orderElementTreeController.down();"></button>
+            <button id="btnIndent" label="${i18n:_('Indent')}"
+                onClick="orderElementTreeController.indent();" />
+            <button id="btnUnindent" label="${i18n:_('Unindent')}"
+                onClick="orderElementTreeController.unindent();" />
+            <button id="btnUp" label="${i18n:_('Up')}"
+                onClick="orderElementTreeController.up();" />
+            <button id="btnDown" label="${i18n:_('Down')}"
+                onClick="orderElementTreeController.down();" />
         </hbox>
     </vbox>
     <vbox>

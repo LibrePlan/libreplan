@@ -253,13 +253,6 @@ public class OrderModel implements IOrderModel {
         return orderElementTreeModel;
     }
 
-    /**
-     * Iterates through order.orderElements, and checks if orderElement holds
-     * predicate. In case it's true, add orderElement and all its children to
-     * filtered orderElements list
-     *
-     * @return
-     */
     @Override
     @Transactional(readOnly = true)
     public OrderElementTreeModel getOrderElementsFilteredByPredicate(
