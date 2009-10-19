@@ -40,8 +40,9 @@
     <vbox>
         <hbox>
           <!-- Filter by label -->
-          <combobox id="cbFilterType">
-              <comboitem label="Filter by Label" />
+          <combobox id="cbFilterType" value="${i18n:_('Filter by Label')}"
+            constraint="no empty:${i18n:_('cannot be null or empty')}">
+              <comboitem label="${i18n:_('Filter by Label')}" />
           </combobox>
           <bandboxSearch id="bdFilter" finder="LabelBandboxFinder"
                 model="@{orderElementTreeController.labels}"/>
