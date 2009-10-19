@@ -507,7 +507,6 @@ div.z-grid {
     background-color:transparent;
 }
 
-
 /* ------- Chart legends  ------- */
 .legend {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
@@ -552,6 +551,13 @@ div.z-grid {
 
 .legend .other {
     background-color:#00FF00;
+    height:10px;
+    width:25px;
+    margin-bottom:2px;
+    margin-right:5px;
+}
+
+.legend .resourceload {
     height:10px;
     width:25px;
     margin-bottom:2px;

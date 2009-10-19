@@ -82,13 +82,33 @@ resourcesLoadPanel = self;
                 </center>
             </borderlayout>
         </center>
-        <south height="20%" collapsible="true" splittable="true">
+        <south height="160px" collapsible="true" splittable="true">
             <borderlayout>
-                <west size="200px" flex="true" collapsible="true"
-                    splittable="true">
+                <west width="240px" flex="true" collapsible="true"
+                    splittable="true" sclass="legend-gap">
                     <vbox pack="center" align="center">
-                    <label value="ResourcesLoadGraph details"
-                        width="150px"/>
+                    <vbox sclass="legend">
+
+                        <hbox pack="center" sclass="legend-title">
+                            <n:label class="title">${i18n:_('Assignation percentage')}</n:label>
+                        </hbox>
+
+                        <hbox pack="center" sclass="legend-row">
+                            <n:div class="resourceload SOME_LOAD" />
+                            <n:label>${i18n:_('0% - 100%')}</n:label>
+                        </hbox>
+
+                        <hbox pack="center" sclass="legend-row">
+                            <n:div class="resourceload FULL_LOAD" />
+                            <n:label>${i18n:_('100%')}</n:label>
+                        </hbox>
+
+                        <hbox pack="center" sclass="legend-row">
+                            <n:div class="resourceload OVERLOAD" />
+                            <n:label>${i18n:_('+ 100%')}</n:label>
+                        </hbox>
+
+                    </vbox>
                     </vbox>
                 </west>
 

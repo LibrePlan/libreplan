@@ -408,19 +408,15 @@ tr.z-vbox-sep {
 }
 
 .FULL_LOAD {
-    background-color: green;
+    background-color: #fdbe13;
 }
 
 .SOME_LOAD {
-    background-color: orange;
+    background-color: #98d471;
 }
 
 .OVERLOAD {
-    background-color: red;
-}
-
-.NO_LOAD {
-    background-color: #007bbe;
+    background-color: #ff5a11;
 }
 
 .row_resourceload {

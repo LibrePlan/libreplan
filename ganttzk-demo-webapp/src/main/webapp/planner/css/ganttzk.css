@@ -338,8 +338,3 @@ tr.z-vbox-sep {
 #ganttpanel_scroller_y {
 	display:none;
 }
-
-
-.advancedallocationlayout .second_level_ th {
-    min-width:100px;
-}
