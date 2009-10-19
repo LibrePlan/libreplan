@@ -32,6 +32,13 @@
       <property name="surname"/>
       <property name="nif"/>
     </joined-subclass>
+
+    <joined-subclass name="org.navalplanner.business.resources.entities.Machine">
+      <key column="MACHINE_ID"/>
+      <property name="code"/>
+      <property name="name"/>
+      <property name="description"/>
+    </joined-subclass>
   </class>
 
   <!-- Criterion -->
