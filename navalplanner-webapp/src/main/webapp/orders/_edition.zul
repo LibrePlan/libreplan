@@ -23,8 +23,8 @@
 <button label="${i18n:_('Up')}" onClick="controller.up();" />
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('General data')}"></tab>
-            <tab label="${i18n:_('Order elements')}"></tab>
+            <tab id="tabGeneralData" label="${i18n:_('General data')}" />
+            <tab label="${i18n:_('Order elements')}" />
         </tabs>
         <tabpanels>
             <tabpanel>

@@ -595,4 +595,13 @@ public class OrderElementTreeController extends GenericForwardComposer {
         btnDown.setDisabled(predicate != null);
     }
 
+    /**
+     * Clear {@link BandboxSearch} for Labels, and initializes
+     * {@link IPredicate}
+     */
+    public void clear() {
+        bdFilter.clear();
+        predicate = null;
+    }
+
 }

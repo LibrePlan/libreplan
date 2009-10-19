@@ -199,7 +199,7 @@ public class BandboxSearch extends HtmlMacroComponent {
     public void clear() {
         listbox.setModel(finder.getModel());
         bandbox.setValue("");
-        bandbox.setVariable("selectedLabel", null, true);
+        clearSelectedElement();
     }
 
     /**

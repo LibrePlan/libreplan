@@ -42,6 +42,7 @@ import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -228,8 +229,21 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToEditForm(Order order) {
         orderModel.prepareEditFor(order);
+        clearOrderElementTreeController(editWindow);
+        selectDefaultTab(editWindow);
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
+    }
+
+    private void selectDefaultTab(Component comp) {
+        Tab tabGeneralData = (Tab) comp.getFellowIfAny("tabGeneralData");
+        tabGeneralData.setSelected(true);
+    }
+
+    private void clearOrderElementTreeController(Component comp) {
+        OrderElementTreeController controller = (OrderElementTreeController) comp
+                .getVariable("orderElementTreeController", true);
+        controller.clear();
     }
 
     public void remove(Order order) {
@@ -241,6 +255,8 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToCreateForm() {
         orderModel.prepareForCreate();
+        clearOrderElementTreeController(createWindow);
+        selectDefaultTab(createWindow);
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
