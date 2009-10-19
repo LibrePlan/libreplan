@@ -202,7 +202,7 @@ public class ResourceAllocationsBeingEdited {
         }
         return new AllocationResult(task, calculatedValue,
                 new AggregateOfResourceAllocations(
-                stripResourcesPerDay(allocations)), daysDuration,
+                ResourceAllocationWithDesiredResourcesPerDay.stripResourcesPerDay(allocations)), daysDuration,
                 fromDetachedToAttached);
     }
 
@@ -239,15 +239,6 @@ public class ResourceAllocationsBeingEdited {
     private Integer from(Date startDate, LocalDate end) {
         LocalDate start = new LocalDate(startDate.getTime());
         return Days.daysBetween(start, end).getDays();
-    }
-
-    private List<ResourceAllocation<?>> stripResourcesPerDay(
-            List<ResourceAllocationWithDesiredResourcesPerDay> withResourcesPerDay) {
-        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
-        for (ResourceAllocationWithDesiredResourcesPerDay r : withResourcesPerDay) {
-            result.add(r.getResourceAllocation());
-        }
-        return result;
     }
 
     private ResourceAllocation<?> createAllocation(AllocationDTO allocation) {

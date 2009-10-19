@@ -61,4 +61,13 @@ public class ResourceAllocationWithDesiredResourcesPerDay {
     public ResourcesPerDay getResourcesPerDay() {
         return resourcesPerDay;
     }
+
+    public static List<ResourceAllocation<?>> stripResourcesPerDay(
+            List<ResourceAllocationWithDesiredResourcesPerDay> withResourcesPerDay) {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        for (ResourceAllocationWithDesiredResourcesPerDay r : withResourcesPerDay) {
+            result.add(r.getResourceAllocation());
+        }
+        return result;
+    }
 }
