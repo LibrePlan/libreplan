@@ -230,7 +230,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         timeTrackerComponent.afterCompose();
         table.afterCompose();
         Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
-        System.out.println("Accessing after compose");
     }
 
     private void createComponents() {
@@ -367,6 +366,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 return row.getFunction();
             }
         });
+
         return result;
     }
 
@@ -616,6 +616,9 @@ class Row {
         this.messages = messages;
         this.restriction = restriction;
         this.name = name;
+        if (level != 0) {
+            this.name = "  · " + this.name;
+        }
         this.level = level;
         this.aggregate = new AggregateOfResourceAllocations(
                 new ArrayList<ResourceAllocation<?>>(allocations));
@@ -674,6 +677,7 @@ class Row {
         if (isGroupingRow()) {
             Label label = (Label) component;
             label.setValue(getHoursForDetailItem(item) + "");
+            label.setClass("calculated-hours");
         } else {
             Intbox intbox = (Intbox) component;
             intbox.setValue(getHoursForDetailItem(item));

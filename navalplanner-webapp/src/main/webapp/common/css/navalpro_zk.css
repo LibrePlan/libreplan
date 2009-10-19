@@ -498,3 +498,11 @@ div.z-grid {
 .assignedresources .z-listbox input {
     height: 17px !important;
 }
+
+/* Highlight advancedallocation grouping row */
+.resourcesload .taskspanelgap .z-grid-body tr:first-child {
+    background-color: #E8E8E8;
+}
+.resourcesload .taskspanelgap .z-grid-body tr.z-row td {
+    background-color:transparent;
+}
