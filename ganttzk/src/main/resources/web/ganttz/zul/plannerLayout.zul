@@ -66,7 +66,7 @@ planner = self;
         <south height="150px" collapsible="true" splittable="true">
             <borderlayout>
                 <west width="284px" flex="true" collapsible="true"
-                    splittable="true">
+                    splittable="true" sclass="legend-gap">
                     <vbox pack="center" align="center">
                         <div id="insertionPointChartLegend" />
                     </vbox>

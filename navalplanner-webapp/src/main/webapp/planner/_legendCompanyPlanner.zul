@@ -21,18 +21,20 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
-<vbox>
+<vbox sclass="legend">
 
-    <label style="font-weight:bold;">${i18n:_('Legend')}</label>
-
-    <hbox>
-        <label>${i18n:_('Capability')}</label>
-        <n:div style="background-color:#FF0000;height:1px;width:25px;" />
+    <hbox pack="center" sclass="legend-title">
+        <n:label class="title">${i18n:_('Chart legend')}</n:label>
     </hbox>
 
-    <hbox>
-        <label>${i18n:_('Load')}</label>
-        <n:div style="background-color:#0000FF;height:10px;width:25px;" />
+    <hbox pack="center" sclass="legend-row">
+        <n:div class="capability"/>
+        <n:label>${i18n:_('Total capability')}</n:label>
+    </hbox>
+
+    <hbox pack="center" sclass="legend-row">
+        <n:div class="load" />
+        <n:label>${i18n:_('Assigned load')}</n:label>
     </hbox>
 
 </vbox>

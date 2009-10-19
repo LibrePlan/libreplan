@@ -506,3 +506,54 @@ div.z-grid {
 .resourcesload .taskspanelgap .z-grid-body tr.z-row td {
     background-color:transparent;
 }
+
+
+/* ------- Chart legends  ------- */
+.legend {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    border: solid 1px #000000;
+    padding: 10px 30px 10px 30px;
+    background-color: #FFFFFF;
+}
+
+.legend td {
+    vertical-align:bottom;
+}
+
+.legend .title {
+    display:block;
+    font-weight:bold;
+    margin-bottom: 5px;
+}
+
+.legend-row {
+    margin:2px;
+}
+
+.legend-gap {
+    background-color: #E8E8E8;
+}
+
+.legend .capability {
+    border-top:solid 1px #FF0000;
+    height:7px;
+    width:25px;
+    margin-right:5px;
+}
+
+.legend .load {
+    background-color:#0000FF;
+    height:10px;
+    width:25px;
+    margin-bottom:2px;
+    margin-right:5px;
+}
+
+.legend .other {
+    background-color:#00FF00;
+    height:10px;
+    width:25px;
+    margin-bottom:2px;
+    margin-right:5px;
+}
