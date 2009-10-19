@@ -5,25 +5,38 @@
 package org.navalplanner.web.resources.worker;
 
 import static org.navalplanner.web.I18nHelper._;
+import static org.navalplanner.web.common.InvalidInputsChecker.isInvalid;
+import static org.navalplanner.web.common.InvalidInputsChecker.thereAreInvalidInputsOn;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
 
 /**
  *
@@ -32,30 +45,48 @@ import org.zkoss.zul.Row;
 public class CriterionsController extends GenericForwardComposer {
 
     private IAssignedCriterionsModel assignedCriterionsModel;
-    private Combobox comboboxFilter;
+    private Combobox comboboxfilter;
     private Grid listingCriterions;
+    private IMessagesForUser messages;
+    private Component messagesContainer;
 
-    protected CriterionsController() {
+    CriterionsController(IWorkerModel workerModel) {
+        assignedCriterionsModel = workerModel.getAssignedCriterionsModel();
     }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        if (messagesContainer == null)
+            throw new RuntimeException(_("MessagesContainer is needed"));
+        messages = new MessagesForUser(messagesContainer);
         comp.setVariable("assignedCriterionsController", this, true);
-        comboboxFilter = (Combobox) comp.getFellow("comboboxfilter");
-        listingCriterions = (Grid) comp.getFellow("listingCriterions");
+        //comboboxFilter = (Combobox) comp.getFellow("comboboxfilter");
+        //listingCriterions = (Grid) comp.getFellow("listingCriterions");
+    }
+
+    public IAssignedCriterionsModel getModel(){
+        return this.assignedCriterionsModel;
     }
 
     public void prepareForEdit(Worker worker) {
         this.assignedCriterionsModel.prepareForEdit(worker);
+        reload();
     }
 
-    public Set<CriterionSatisfactionDTO> getCriterionSatisfactionDTOs() {
-        Comboitem comboitem = comboboxFilter.getSelectedItem();
-        if((comboitem != null) && (comboitem.getLabel().equals("in force"))) {
-                return assignedCriterionsModel.getFilterCriterionSatisfactions();
-            }
-        return assignedCriterionsModel.getAllCriterionSatisfactions();
+    public void prepareForCreate(Worker worker) {
+        this.assignedCriterionsModel.prepareForCreate(worker);
+    }
+
+    public List<CriterionSatisfactionDTO> getCriterionSatisfactionDTOs() {
+        List<CriterionSatisfactionDTO> list = new ArrayList<CriterionSatisfactionDTO>();
+        Comboitem comboitem = comboboxfilter.getSelectedItem();
+        if((comboitem != null) && (comboitem.getLabel().equals("Currents"))) {
+                list.addAll(assignedCriterionsModel.getFilterCriterionSatisfactions());
+        }else{
+            list.addAll(assignedCriterionsModel.getAllCriterionSatisfactions());
+        }
+        return list;
     }
 
     public void addCriterionSatisfaction() {
@@ -69,6 +100,18 @@ public class CriterionsController extends GenericForwardComposer {
 
     public void reload() {
         Util.reloadBindings(listingCriterions);
+        forceSortGridSatisfaction();
+    }
+
+    public void forceSortGridSatisfaction() {
+        Column column = (Column) listingCriterions.getColumns().getFirstChild();
+        ListModelExt model = (ListModelExt) listingCriterions.getModel();
+        if ("ascending".equals(column.getSortDirection())) {
+            model.sort(column.getSortAscending(), true);
+        }
+        if ("descending".equals(column.getSortDirection())) {
+            model.sort(column.getSortDescending(), false);
+        }
     }
 
     public void remove(CriterionSatisfactionDTO criterionSatisfactionDTO){
@@ -108,7 +151,14 @@ public class CriterionsController extends GenericForwardComposer {
             }
     }
 
-    public void changeDate(Component comp){
+    public void changeStartDate(Component comp,Date value){
+        CriterionSatisfactionDTO criterionSatisfactionDTO =
+            (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
+        validateCriterionWithItsType(criterionSatisfactionDTO,comp);
+        reload();
+    }
+
+    public void changeEndDate(Component comp,Date value){
         CriterionSatisfactionDTO criterionSatisfactionDTO =
             (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
         validateCriterionWithItsType(criterionSatisfactionDTO,comp);
@@ -120,17 +170,21 @@ public class CriterionsController extends GenericForwardComposer {
                         @Override
                         public void validate(Component comp, Object value)
                                 throws WrongValueException {
-                            CriterionSatisfactionDTO criterionSatisfactionDTO =
-                                    (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
-                            if(!criterionSatisfactionDTO.isLessToEndDate((Date) value)){
-                                throw new WrongValueException(comp,
-                                        _("Start date is not valid, the new start date must be lower than the end date"));
-                            }else if(!criterionSatisfactionDTO.isPreviousStartDate((Date) value)){
-                                throw new WrongValueException(comp,
-                                        _("End date is not valid, the new end date must be later the current end date"));
-                            }
+                            validateStartDate(comp,value);
                         }
                     };
+    }
+
+    private void validateStartDate(Component comp, Object value){
+        CriterionSatisfactionDTO criterionSatisfactionDTO =
+            (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
+        if(!criterionSatisfactionDTO.isLessToEndDate((Date) value)){
+            throw new WrongValueException(comp,
+                _("Start date is not valid, the new start date must be lower than the end date"));
+        }else if(!criterionSatisfactionDTO.isPreviousStartDate((Date) value)){
+            throw new WrongValueException(comp,
+                _("End date is not valid, the new end date must be later the current end date"));
+        }
     }
 
     public Constraint validateEndDate(){
@@ -138,21 +192,25 @@ public class CriterionsController extends GenericForwardComposer {
                         @Override
                         public void validate(Component comp, Object value)
                                 throws WrongValueException {
-                            CriterionSatisfactionDTO criterionSatisfactionDTO =
-                                    (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
-                            if(!criterionSatisfactionDTO.isGreaterStartDate((Date) value)){
-                                throw new WrongValueException(comp,
-                                        _("End date is not valid, the new end date must be greater than the start date"));
-                            }else if(!criterionSatisfactionDTO.isPostEndDate((Date) value)){
-                                throw new WrongValueException(comp,
-                                        _("End date is not valid, the new end date must be later the current end date"));
-                            }
-                            validateCriterionWithItsType(criterionSatisfactionDTO,comp);
+                           validateEndDate(comp,value);
                         }
                     };
     }
 
-       /**
+
+    private void validateEndDate(Component comp, Object value){
+        CriterionSatisfactionDTO criterionSatisfactionDTO =
+            (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
+        if(!criterionSatisfactionDTO.isGreaterStartDate((Date) value)){
+            throw new WrongValueException(comp,
+                _("End date is not valid, the new end date must be greater than the start date"));
+        }else if(!criterionSatisfactionDTO.isPostEndDate((Date) value)){
+            throw new WrongValueException(comp,
+                _("End date is not valid, the new end date must be later the current end date"));
+        }
+    }
+
+    /**
      * Shows invalid values for {@link CriterionSatisfaction}
      * entities
      *
@@ -183,7 +241,7 @@ public class CriterionsController extends GenericForwardComposer {
         return true;
     }
 
-       /**
+     /**
      * Shows invalid inputs for {@link CriterionSatisfactionDTO} entities
      *
      * @param
@@ -265,7 +323,7 @@ public class CriterionsController extends GenericForwardComposer {
         }
     }
 
-     /**
+    /**
      * Locates which {@link row} is bound to {@link WorkReportLine} in
      * rows
      *
@@ -313,9 +371,5 @@ public class CriterionsController extends GenericForwardComposer {
     private Bandbox getBandType(Row row) {
         return (Bandbox)((Hbox) row.getChildren().get(0))
                 .getChildren().get(0);
-    }
-
-    public void save() throws ValidationException{
-          assignedCriterionsModel.save();
     }
 }

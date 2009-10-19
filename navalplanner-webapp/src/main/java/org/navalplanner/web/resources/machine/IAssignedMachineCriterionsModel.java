@@ -63,4 +63,8 @@ public interface IAssignedMachineCriterionsModel {
             CriterionWithItsType criterionAndType) throws WrongValueException;
 
     void prepareForCreate(Resource resource);
+
+    void validate() throws ValidationException, IllegalStateException;
+
+    void confirm() throws ValidationException, IllegalStateException;
 }

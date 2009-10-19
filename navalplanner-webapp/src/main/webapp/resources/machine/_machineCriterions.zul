@@ -9,8 +9,8 @@
                 <label class="subtitulo" value="${i18n:_('Filters :')}" />
                 <combobox id="comboboxFilter"
                 onSelect="assignedCriterionsController.reload();">
-                    <comboitem label="all" />
-                    <comboitem label="in force" />
+                 <comboitem label="${i18n:_('All')}" />
+                    <comboitem label="${i18n:_('Currents')}" />
                 </combobox>
                 <separator bar="false" spacing="20px" orient="vertical"/>
         </hbox>
@@ -18,7 +18,7 @@
             model="@{assignedCriterionsController.criterionSatisfactionDTOs}"
             mold="paging" pageSize="5">
             <columns>
-                <column label="${i18n:_('Criterion name')}"/>
+                <column label="${i18n:_('Criterion name')}" sort="auto(criterionAndType)" sortDirection="ascending" />
                 <column label="${i18n:_('Starting date')}" width="200px" align="center"/>
                 <column label="${i18n:_('Ending date')}" width="200px" align="center"/>
                 <column label="${i18n:_('State')}" width="70px" align="center"/>
@@ -48,7 +48,7 @@
                         </bandpopup>
                     </bandbox>
                     <label visible="@{criterionSatisfactionDTO.isOldObject}"
-                     value="@{criterionSatisfactionDTO.nameAndType}"/>
+                        value="@{criterionSatisfactionDTO.criterionAndType}"/>
                     </hbox>
                     <datebox id="startDate" value="@{criterionSatisfactionDTO.startDate}"
                     constraint="@{assignedCriterionsController.validateStartDate}"

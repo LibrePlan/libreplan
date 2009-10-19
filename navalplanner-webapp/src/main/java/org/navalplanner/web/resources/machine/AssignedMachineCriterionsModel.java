@@ -1,5 +1,7 @@
 package org.navalplanner.web.resources.machine;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -36,6 +38,9 @@ import org.zkoss.zk.ui.WrongValueException;
 @Service()
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class AssignedMachineCriterionsModel implements IAssignedMachineCriterionsModel {
+
+    private ClassValidator<CriterionSatisfactionDTO> satisfactionDTOValidator = new ClassValidator<CriterionSatisfactionDTO>(
+            CriterionSatisfactionDTO.class);
 
     private ClassValidator<CriterionSatisfactionDTO> satisfactionValidator = new ClassValidator<CriterionSatisfactionDTO>(
             CriterionSatisfactionDTO.class);
@@ -340,6 +345,63 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
         satisfaction.setCriterion(newCriterion);
         satisfaction.setStartDate(newStartDate);
         satisfaction.setEndDate(newEndDate);
+    }
+
+    @Override
+    public void validate() throws ValidationException, IllegalStateException {
+        validateDTOs();
+    }
+
+    @Override
+    public void confirm() throws ValidationException, IllegalStateException {
+        updateDTOs();
+    }
+
+    private void validateDTOs() throws ValidationException {
+        Set<CriterionSatisfactionDTO> listDTOs = new HashSet<CriterionSatisfactionDTO>(
+                criterionSatisfactionDTOs);
+        for (CriterionSatisfactionDTO satisfactionDTO : listDTOs) {
+            InvalidValue[] invalidValues;
+            invalidValues = satisfactionDTOValidator
+                    .getInvalidValues(satisfactionDTO);
+            if (invalidValues.length > 0) {
+                throw new ValidationException(invalidValues);
+            }
+            Criterion criterion = satisfactionDTO.getCriterionWithItsType()
+                    .getCriterion();
+            if (checkSameCriterionAndSameInterval(satisfactionDTO)) {
+                throw new IllegalStateException(_("The {0} can not be assigned to this resource. Its interval overlap with other criterion", criterion.getName()));
+            }
+            if (checkNotAllowSimultaneousCriterionsPerResource(satisfactionDTO)) {
+                throw new IllegalStateException(_("The {0} is not valid, criterionType overlaps with other criterionSatisfaction from the same criterionType", criterion.getName()));
+            }
+        }
+    }
+
+    private void updateDTOs() throws ValidationException, IllegalStateException {
+        // Create a new list of Criterion satisfaction
+        Set<CriterionSatisfaction> newList = new HashSet<CriterionSatisfaction>();
+        for (CriterionSatisfactionDTO satisfactionDTO : criterionSatisfactionDTOs) {
+            CriterionSatisfaction satisfaction;
+            if (satisfactionDTO.isIsNewObject()) {
+                Criterion criterion = satisfactionDTO.getCriterionWithItsType()
+                        .getCriterion();
+                Interval interval = satisfactionDTO.getInterval();
+                satisfaction = CriterionSatisfaction.create(criterion,
+                        resource, interval);
+
+            } else {
+                satisfaction = satisfactionDTO.getCriterionSatisfaction();
+                if (satisfactionDTO.isIsDeleted()) {
+                    satisfaction.setIsDeleted(true);
+                } else {
+                    satisfaction.setStartDate(satisfactionDTO.getStartDate());
+                    satisfaction.finish(satisfactionDTO.getEndDate());
+                }
+            }
+            newList.add(satisfaction);
+        }
+        resource.addSatisfactions(newList);
     }
 
 }
