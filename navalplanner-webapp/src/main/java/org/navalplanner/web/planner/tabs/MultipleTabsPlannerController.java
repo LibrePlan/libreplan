@@ -55,6 +55,22 @@ public class MultipleTabsPlannerController implements Composer {
 
     public static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";
 
+    @SuppressWarnings("unchecked")
+    static void createBindingsFor(org.zkoss.zk.ui.Component result) {
+        List<org.zkoss.zk.ui.Component> children = new ArrayList<org.zkoss.zk.ui.Component>(
+                result.getChildren());
+        for (org.zkoss.zk.ui.Component child : children) {
+            createBindingsFor(child);
+        }
+        setBinderFor(result);
+    }
+
+    private static void setBinderFor(org.zkoss.zk.ui.Component result) {
+        AnnotateDataBinder binder = new AnnotateDataBinder(result, true);
+        result.setVariable("binder", binder, true);
+        binder.loadAll();
+    }
+
     private TabsConfiguration tabsConfiguration;
 
     private Mode mode = Mode.initial();
@@ -113,22 +129,6 @@ public class MultipleTabsPlannerController implements Composer {
                 });
         return TabsConfiguration.create().add(planningTab).add(resourceLoadTab)
                 .add(ordersTab);
-    }
-
-    @SuppressWarnings("unchecked")
-    static void createBindingsFor(org.zkoss.zk.ui.Component result) {
-        List<org.zkoss.zk.ui.Component> children = new ArrayList<org.zkoss.zk.ui.Component>(
-                result.getChildren());
-        for (org.zkoss.zk.ui.Component child : children) {
-            createBindingsFor(child);
-        }
-        setBinderFor(result);
-    }
-
-    private static void setBinderFor(org.zkoss.zk.ui.Component result) {
-        AnnotateDataBinder binder = new AnnotateDataBinder(result, true);
-        result.setVariable("binder", binder, true);
-        binder.loadAll();
     }
 
     @Override
