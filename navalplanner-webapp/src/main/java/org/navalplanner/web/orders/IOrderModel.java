@@ -22,8 +22,6 @@ package org.navalplanner.web.orders;
 
 import java.util.List;
 
-import javax.sql.rowset.Predicate;
-
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
@@ -46,15 +44,6 @@ public interface IOrderModel {
      */
     void addLabel(Label label);
 
-    /**
-     * Adds a {@link Predicate} for filtering orders
-     *
-     * This filter is later consider by getOrderElementTreeModel
-     *
-     * @param label
-     */
-    void addLabelPredicate(Label label);
-
     TaskElement convertToInitialSchedule(OrderElement order);
 
     void convertToScheduleAndSave(Order order);
@@ -69,6 +58,15 @@ public interface IOrderModel {
     IOrderLineGroup getOrder();
 
     IOrderElementModel getOrderElementModel(OrderElement orderElement);
+
+    /**
+     * Iterates through order.orderElements, and checks if orderElement holds
+     * predicate. In case it's true, add orderElement and all its children to
+     * filtered orderElements list
+     *
+     * @return
+     */
+    OrderElementTreeModel getOrderElementsFilteredByPredicate(IPredicate predicate);
 
     OrderElementTreeModel getOrderElementTreeModel();
 

@@ -31,5 +31,4 @@ public interface IPredicate {
 
     boolean accepts(Object object);
 
-    boolean isEmpty();
 }

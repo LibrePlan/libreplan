@@ -52,6 +52,16 @@ public class OrderElementTreeModel {
         return treeModel;
     }
 
+    private static MutableTreeModel<OrderElement> createTreeFrom(Order order,
+            List<OrderElement> orderElements) {
+        MutableTreeModel<OrderElement> treeModel = MutableTreeModel.create(
+                OrderElement.class, order);
+        OrderElement parent = treeModel.getRoot();
+        treeModel.add(parent, orderElements);
+        addChildren(treeModel, orderElements);
+        return treeModel;
+    }
+
     private static void addChildren(MutableTreeModel<OrderElement> treeModel,
             List<OrderElement> orderElements) {
         for (OrderElement orderElement : orderElements) {
@@ -69,6 +79,10 @@ public class OrderElementTreeModel {
 
     public OrderElementTreeModel(Order order) {
         tree = createTreeFrom(order);
+    }
+
+    public OrderElementTreeModel(Order order, List<OrderElement> orderElements) {
+        tree = createTreeFrom(order, orderElements);
     }
 
     public TreeModel asTree() {

@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.orders;
 
+import java.util.List;
+
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.OrderElement;
 
@@ -40,6 +42,20 @@ public class LabelOrderElementPredicate implements IPredicate {
     @Override
     public boolean accepts(Object object) {
         final OrderElement orderElement = (OrderElement) object;
+        return accepts(orderElement) || accepts(orderElement.getChildren());
+    }
+
+    /**
+     * Returns true if at least there's one {@link Label} in
+     * {@link OrderElement} that holds predicate or orderElement is a new object
+     *
+     * @param orderElement
+     * @return
+     */
+    private boolean accepts(OrderElement orderElement) {
+        if (orderElement.isNewObject()) {
+            return true;
+        }
         for (Label label : orderElement.getLabels()) {
             if (this.label != null && equalsLabel(label)) {
                 return true;
@@ -48,14 +64,24 @@ public class LabelOrderElementPredicate implements IPredicate {
         return false;
     }
 
+    /**
+     * Returns true if there's at least on element in orderElements which any of
+     * its labels holds predicate
+     *
+     * @param orderElements
+     * @return
+     */
+    private boolean accepts(List<OrderElement> orderElements) {
+        boolean result = false;
+        for (OrderElement orderElement : orderElements) {
+            result |= accepts(orderElement);
+        }
+        return result;
+    }
+
     private boolean equalsLabel(Label label) {
         return (this.label.getName().equals(label.getName()) && this.label
                 .getType().getName().equals(label.getType().getName()));
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return (label == null);
     }
 
 }

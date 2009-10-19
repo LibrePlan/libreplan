@@ -248,35 +248,39 @@ public class OrderModel implements IOrderModel {
         this.order = order;
     }
 
-    private IPredicate predicate;
-
-    public IPredicate getPredicate() {
-        return predicate;
-    }
-
-    public void setPredicate(IPredicate predicate) {
-        this.predicate = predicate;
-    }
-
     @Override
-    @Transactional(readOnly = true)
     public OrderElementTreeModel getOrderElementTreeModel() {
-        if (predicate != null && !predicate.isEmpty()) {
-            return applyPredicate();
-        }
         return orderElementTreeModel;
     }
 
-    private OrderElementTreeModel applyPredicate() {
+    /**
+     * Iterates through order.orderElements, and checks if orderElement holds
+     * predicate. In case it's true, add orderElement and all its children to
+     * filtered orderElements list
+     *
+     * @return
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public OrderElementTreeModel getOrderElementsFilteredByPredicate(
+            IPredicate predicate) {
+        // Iterate through orderElements from order
+        List<OrderElement> orderElements = new ArrayList<OrderElement>();
         for (OrderElement orderElement : order.getOrderElements()) {
             reattachOrderElement(orderElement);
             reattachLabels();
             initializeLabels(orderElement.getLabels());
-            if (!predicate.accepts(orderElement)) {
-                order.remove(orderElement);
+            // Accepts predicate, add it to list of orderElements
+            if (predicate.accepts(orderElement)) {
+                orderElements.add(orderElement);
             }
         }
-        return new OrderElementTreeModel(order);
+        // No elements filtered, return original tree order
+        if (orderElements.isEmpty()) {
+            return orderElementTreeModel;
+        }
+        // Return list of filtered elements
+        return new OrderElementTreeModel(order, orderElements);
     }
 
     private void reattachLabels() {
@@ -372,11 +376,6 @@ public class OrderModel implements IOrderModel {
     @Transactional
     public void convertToScheduleAndSave(Order order) {
         taskElementDAO.save(convertToInitialSchedule(order));
-    }
-
-    @Override
-    public void addLabelPredicate(Label label) {
-        predicate = new LabelOrderElementPredicate(label);
     }
 
 }

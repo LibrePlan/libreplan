@@ -77,6 +77,8 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
     private final OrderElementController orderElementController;
 
+    private IPredicate predicate;
+
     public List<org.navalplanner.business.labels.entities.Label> getLabels() {
         return orderModel.getLabels();
     }
@@ -103,10 +105,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
     }
 
     public TreeModel getOrderElementTreeModel() {
-        if (getModel() == null) {
-            return null;
-        }
-        return getModel().asTree();
+        return (getModel() != null) ? getModel().asTree() : null;
     }
 
     private OrderElementTreeModel getModel() {
@@ -176,6 +175,20 @@ public class OrderElementTreeController extends GenericForwardComposer {
         } else {
             getModel().addOrderElement();
         }
+        filterByPredicateIfAny();
+    }
+
+    private void filterByPredicateIfAny() {
+        if (predicate != null) {
+            filterByPredicate();
+        }
+    }
+
+    private void filterByPredicate() {
+        OrderElementTreeModel orderElementTreeModel = orderModel
+                .getOrderElementsFilteredByPredicate(predicate);
+        tree.setModel(orderElementTreeModel.asTree());
+        tree.invalidate();
     }
 
     private static class TreeViewStateSnapshot {
@@ -547,17 +560,24 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
     private final String FILTER_BY_LABEL = _("Filter by Label");
 
-    /**
-     *
-     * @param event
-     */
     public void onApplyFilter(Event event) {
         if (FILTER_BY_LABEL.equals(cbFilterType.getValue())) {
-            org.navalplanner.business.labels.entities.Label label = (org.navalplanner.business.labels.entities.Label) bdFilter
-                    .getSelectedElement();
-            orderModel.addLabelPredicate(label);
-            Util.reloadBindings(tree);
+            org.navalplanner.business.labels.entities.Label label = getSelectedLabel();
+            if (label != null) {
+                // Create predicate and filter order elements by predicate
+                predicate = new LabelOrderElementPredicate(label);
+                filterByPredicate();
+            } else {
+                // Delete predicate and set back to original tree model
+                predicate = null;
+                Util.reloadBindings(tree);
+            }
         }
+    }
+
+    private org.navalplanner.business.labels.entities.Label getSelectedLabel() {
+        return (org.navalplanner.business.labels.entities.Label) bdFilter
+                .getSelectedElement();
     }
 
 }
