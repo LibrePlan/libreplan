@@ -168,4 +168,8 @@ public class TaskGroup extends TaskElement {
         return result;
     }
 
+    @Override
+    protected void moveAllocations() {
+        // do nothing
+    }
 }

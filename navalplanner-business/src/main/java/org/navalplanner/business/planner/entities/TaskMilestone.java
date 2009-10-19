@@ -120,4 +120,8 @@ public class TaskMilestone extends TaskElement implements IValidable {
 
     }
 
+    @Override
+    protected void moveAllocations() {
+        // do nothing
+    }
 }

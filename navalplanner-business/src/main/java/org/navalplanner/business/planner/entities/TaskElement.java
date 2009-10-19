@@ -139,6 +139,17 @@ public abstract class TaskElement extends BaseEntity {
         this.startDate = startDate;
     }
 
+    /**
+     * Sets the startDate to newStartDate. It can update the endDate
+     * @param newStartDate
+     */
+    public void moveTo(Date newStartDate) {
+        this.startDate = newStartDate;
+        moveAllocations();
+    }
+
+    protected abstract void moveAllocations();
+
     public Date getEndDate() {
         return endDate;
     }

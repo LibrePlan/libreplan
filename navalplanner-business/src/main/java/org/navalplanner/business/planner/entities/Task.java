@@ -275,5 +275,10 @@ public class Task extends TaskElement {
         }
     }
 
+    @Override
+    protected void moveAllocations() {
+
+    }
+
 }
 
