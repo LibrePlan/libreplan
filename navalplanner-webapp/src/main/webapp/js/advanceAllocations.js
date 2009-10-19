@@ -21,20 +21,20 @@
 // Check if this is advanced location tab
 ADVANCE_ALLOCATIONS = {};
 
-ADVANCE_ALLOCATIONS.plannergraph = function() {
-    return YAHOO.util.Selector.query('.plannergraph div')[0];
+ADVANCE_ALLOCATIONS.taskspanel = function() {
+    return YAHOO.util.Selector.query('.taskspanelgap .z-grid-body')[0];
 };
+
+ADVANCE_ALLOCATIONS.timetrackergap = function() {
+	return YAHOO.util.Selector.query('.timetrackergap')[0];
+}
+
 ADVANCE_ALLOCATIONS.listenToScroll = function() {
-    var timetrackergap_ = timetrackergap();
-    var scrolledpannel_ = scrolledpannel();
-    var resourcesloadgraph_ = resourcesloadgraph();
-    var leftpanel_ = leftpanel();
+    var timetrackergap_ = ADVANCE_ALLOCATIONS.timetrackergap();
+    var taskspanel_ = ADVANCE_ALLOCATIONS.taskspanel();
 
     var onScroll = function() {
-        timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
-        leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
-        resourcesloadgraph_.scrollLeft = scrolledpannel_.scrollLeft;
-
+        timetrackergap_.style["left"] = "-" + taskspanel_.scrollLeft + "px";
     };
-    YAHOO.util.Selector.query('.rightpanellayout div')[0].onscroll = onScroll;
+    taskspanel_.onscroll = onScroll;
 };

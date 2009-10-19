@@ -44,6 +44,7 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.ViewSwitcher;
+import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
@@ -228,6 +229,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         insertComponentsInLayout();
         timeTrackerComponent.afterCompose();
         table.afterCompose();
+        Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
+        System.out.println("Accessing after compose");
     }
 
     private void createComponents() {
