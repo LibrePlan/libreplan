@@ -39,6 +39,7 @@ import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;
 
 /**
@@ -205,24 +206,21 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
     }
 
     public void saveAndClose(){
-        try{
+        try {
+            clearUserMessages();
             save();
             close();
-        } catch (ValidationException e) {}
+        } catch (ValidationException e) {
+
+        }
     }
 
-    public void saveAndContinue(){
-        try{
-            save();
-        } catch (ValidationException e) {}
-    }
-
-    public void close(){
+    public void close() {
         onlyOneVisible.showOnly(listing);
         Util.reloadBindings(listing);
     }
 
-    private void save() throws ValidationException{
+    private void save() throws ValidationException {
         try {
             criterionsModel_V2.saveCriterionType();
             messagesForUser.showMessage(Level.INFO,
@@ -235,6 +233,29 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
             }
             throw e;
         }
+    }
+
+    private void clearUserMessages() {
+        messagesForUser.clearMessages();
+    }
+
+    public void saveAndContinue() {
+        try{
+            save();
+            reloadCriterionType();
+        } catch (ValidationException e) {
+
+        }
+    }
+
+    private void reloadCriterionType() {
+        Tree tree = (Tree) getCurrentWindow().getFellowIfAny("tree");
+        criterionsModel_V2.reloadCriterionType();
+        Util.reloadBindings(tree);
+    }
+
+    private Component getCurrentWindow() {
+        return (editComponent.isVisible()) ? editComponent : createComponent;
     }
 
     public List<CriterionType> getCriterionTypes() {

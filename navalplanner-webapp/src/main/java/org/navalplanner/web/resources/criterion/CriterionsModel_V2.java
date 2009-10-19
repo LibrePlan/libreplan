@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +38,6 @@ import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -168,7 +166,6 @@ public class CriterionsModel_V2 implements ICriterionsModel_V2 {
             throw new ValidationException(invalidValues);
         criterionTreeModel.saveCriterions(criterionType);
         criterionTypeDAO.save(criterionType);
-
     }
 
     @Override
@@ -215,4 +212,12 @@ public class CriterionsModel_V2 implements ICriterionsModel_V2 {
     public boolean getAllowHierarchy(){
         return this.criterionType.allowHierarchy();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void reloadCriterionType() {
+        this.criterionType = getFromDB(criterionType);
+        this.criterionTreeModel = new CriterionTreeModel(this.criterionType);
+    }
+
 }

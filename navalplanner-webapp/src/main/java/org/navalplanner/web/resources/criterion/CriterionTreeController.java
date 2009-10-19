@@ -339,7 +339,8 @@ public class CriterionTreeController extends GenericForwardComposer {
             reloadTree();
         } catch (ValidationException e) {
             for (InvalidValue invalidValue : e.getInvalidValues()) {
-                messagesForUser.showMessage(Level.INFO,invalidValue.getMessage());
+                messagesForUser.showMessage(Level.ERROR, invalidValue
+                        .getMessage());
             }
         }
     }

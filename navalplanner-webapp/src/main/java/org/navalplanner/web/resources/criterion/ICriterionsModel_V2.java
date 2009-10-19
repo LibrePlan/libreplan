@@ -36,38 +36,47 @@ import org.navalplanner.business.resources.entities.Worker;
  */
 public interface ICriterionsModel_V2 {
 
-    List<CriterionType> getTypes();
+    boolean getAllowHierarchy();
 
-    Collection<Criterion> getCriterionsFor(ICriterionType<?> type);
+    List<Worker> getAllWorkers();
 
     Criterion getCriterion();
+
+    Collection<Criterion> getCriterionsFor(ICriterionType<?> type);
 
     ICriterionTreeModel getCriterionTreeModel();
 
     ICriterionType<?> getCriterionType();
 
+    <T extends Resource> List<T> getResourcesSatisfyingCurrentCriterionOfType(
+            Class<T> klass);
+
+    ICriterionType<?> getTypeFor(Criterion criterion);
+
+    List<CriterionType> getTypes();
+
+    boolean isApplyableToWorkers(Criterion criterion);
+
+    boolean isEditing();
+
     void prepareForCreate();
 
     void prepareForCreate(CriterionType criterionType);
 
+    public void prepareForEdit(CriterionType criterionType);
+
     public void prepareForRemove(CriterionType criterionType);
 
-    public void prepareForEdit(CriterionType criterionType);
+    /**
+     * Reloads {@link CriterionType} from DB and all its criterions
+     *
+     * This method should be call after saveAndContinue() from controller to
+     * synchronize what has been committed to DB after saving and the model
+     *
+     */
+    void reloadCriterionType();
 
     public void remove(CriterionType criterionType);
 
-    ICriterionType<?> getTypeFor(Criterion criterion);
-
     void saveCriterionType() throws ValidationException;
-
-    boolean isEditing();
-
-    boolean isApplyableToWorkers(Criterion criterion);
-
-    <T extends Resource> List<T> getResourcesSatisfyingCurrentCriterionOfType(
-            Class<T> klass);
-
-    List<Worker> getAllWorkers();
-
-    boolean getAllowHierarchy();
 }
