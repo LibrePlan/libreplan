@@ -167,7 +167,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
 
     @Override
     public void remove(CriterionSatisfactionDTO criterionSatisfactionDTO) {
-        if (criterionSatisfactionDTO.isIsNewObject()) {
+        if (criterionSatisfactionDTO.isNewObject()) {
             criterionSatisfactionDTOs.remove(criterionSatisfactionDTO);
         } else {
             criterionSatisfactionDTO.setIsDeleted(true);
@@ -312,7 +312,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     }
 
     private void save(CriterionSatisfactionDTO satisfactionDTO) {
-        if (satisfactionDTO.isIsNewObject()) {
+        if (satisfactionDTO.isNewObject()) {
             addNewSatisfaction(satisfactionDTO);
         } else {
             if (satisfactionDTO.isIsDeleted()) {
@@ -383,7 +383,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
         Set<CriterionSatisfaction> newList = new HashSet<CriterionSatisfaction>();
         for (CriterionSatisfactionDTO satisfactionDTO : criterionSatisfactionDTOs) {
             CriterionSatisfaction satisfaction;
-            if (satisfactionDTO.isIsNewObject()) {
+            if (satisfactionDTO.isNewObject()) {
                 Criterion criterion = satisfactionDTO.getCriterionWithItsType()
                         .getCriterion();
                 Interval interval = satisfactionDTO.getInterval();

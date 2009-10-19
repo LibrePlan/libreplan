@@ -20,7 +20,7 @@
 
 <window id="listWindow" title="${i18n:_('Machines list')}">
     <grid id="listing" model="@{controller.machines}" mold="paging"
-        pageSize="5" fixedLayout="true">
+        pageSize="10" fixedLayout="true">
         <columns>
             <column label="${i18n:_('Code')}" sort="auto(code)" />
             <column label="${i18n:_('Name')}" sort="auto(name)" />
