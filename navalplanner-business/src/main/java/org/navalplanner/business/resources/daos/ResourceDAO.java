@@ -69,6 +69,9 @@ public class ResourceDAO extends GenericDAOHibernate<Resource, Long> implements
 
     @Override
     public List<Resource> findResourcesRelatedTo(List<Task> taskElements) {
+        if (taskElements.isEmpty()) {
+            return new ArrayList<Resource>();
+        }
         List<Resource> result = new ArrayList<Resource>();
         result.addAll(findRelatedToSpecific(taskElements));
         result.addAll(findRelatedToGeneric(taskElements));

@@ -77,12 +77,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Transactional(readOnly = true)
     public void initGlobalView() {
         filterBy = null;
-        loadTimeLines = calculateLoadTimelinesGroups();
-        if (!loadTimeLines.isEmpty()) {
-            viewInterval = LoadTimelinesGroup.getIntervalFrom(loadTimeLines);
-        } else {
-            viewInterval = new Interval(new Date(), plusFiveYears(new Date()));
-        }
+        doGlobalView();
     }
 
     @Override
@@ -90,7 +85,16 @@ public class ResourceLoadModel implements IResourceLoadModel {
     public void initGlobalView(Order filterBy) {
         this.filterBy = filterBy;
         orderDAO.save(filterBy);
-        initGlobalView();
+        doGlobalView();
+    }
+
+    private void doGlobalView() {
+        loadTimeLines = calculateLoadTimelinesGroups();
+        if (!loadTimeLines.isEmpty()) {
+            viewInterval = LoadTimelinesGroup.getIntervalFrom(loadTimeLines);
+        } else {
+            viewInterval = new Interval(new Date(), plusFiveYears(new Date()));
+        }
     }
 
     private Date plusFiveYears(Date date) {

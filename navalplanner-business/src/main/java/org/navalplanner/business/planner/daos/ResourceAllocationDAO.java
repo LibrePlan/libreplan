@@ -101,6 +101,9 @@ public class ResourceAllocationDAO extends
     @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterionFor(
             List<Task> tasks) {
+        if (tasks.isEmpty()) {
+            return new HashMap<Criterion, List<GenericResourceAllocation>>();
+        }
         List<Object> list = getSession().createQuery(
                 "select generic, criterion "
                         + "from GenericResourceAllocation as generic "

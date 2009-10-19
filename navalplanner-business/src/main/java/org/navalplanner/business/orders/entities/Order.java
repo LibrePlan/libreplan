@@ -101,11 +101,7 @@ public class Order extends OrderLineGroup implements IValidable {
     }
 
     public boolean isSomeTaskElementScheduled() {
-        for (OrderElement orderElement : getChildren()) {
-            if (orderElement.isScheduled())
-                return true;
-        }
-        return false;
+        return isScheduled();
     }
 
     @Override
