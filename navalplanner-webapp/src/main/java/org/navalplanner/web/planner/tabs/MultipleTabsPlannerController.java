@@ -90,12 +90,6 @@ public class MultipleTabsPlannerController implements Composer {
         }
     }
 
-
-
-    private static final String RESOURCE_LOAD_VIEW = _("Overall Resources Load");
-
-    private static final String ORDER_RESOURCE_LOAD_VIEW = _("Resources Load");
-
     private static final String ORDERS_VIEW = _("Orders List");
 
     private static final String ORDER_ORDERS_VIEW = _("Order Details");
@@ -170,82 +164,11 @@ public class MultipleTabsPlannerController implements Composer {
     private TabsConfiguration buildTabsConfiguration() {
         planningTab = PlanningTabCreator.create(mode, companyPlanningController,
                 orderPlanningController, breadcrumbs);
-        resourceLoadTab = createResourcesLoadTab();
+        resourceLoadTab = ResourcesLoadTabCreator.create(mode,
+                resourceLoadController, upCommand(), breadcrumbs);
         ordersTab = createOrdersTab();
         return TabsConfiguration.create().add(planningTab).add(resourceLoadTab)
                 .add(ordersTab);
-    }
-
-    private ITab createResourcesLoadTab() {
-        return TabOnModeType.forMode(mode)
-                .forType(ModeType.GLOBAL, createGlobalResourcesLoadTab())
-                .forType(ModeType.ORDER, createOrderResourcesLoadTab())
-                .create();
-    }
-
-    private ITab createOrderResourcesLoadTab() {
-        IComponentCreator componentCreator = new IComponentCreator() {
-
-            @Override
-            public org.zkoss.zk.ui.Component create(
-                    org.zkoss.zk.ui.Component parent) {
-                Map<String, Object> arguments = new HashMap<String, Object>();
-                resourceLoadController.add(resourceLoadUpCommand());
-                arguments.put("resourceLoadController",
-                        resourceLoadController);
-                return Executions.createComponents(
-                        "/resourceload/_resourceloadfororder.zul",
-                        parent,
-                        arguments);
-            }
-
-        };
-        return new CreatedOnDemandTab(ORDER_RESOURCE_LOAD_VIEW,
-                componentCreator) {
-            private Order currentOrder;
-
-            @Override
-            protected void afterShowAction() {
-                breadcrumbs.getChildren().clear();
-                breadcrumbs.appendChild(new Label(PLANNIFICATION));
-                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(ORDER_RESOURCE_LOAD_VIEW));
-                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                if (mode.isOf(ModeType.ORDER)
-                        && mode.getOrder() != currentOrder) {
-                    currentOrder = mode.getOrder();
-                    resourceLoadController.filterBy(currentOrder);
-                }
-                breadcrumbs.appendChild(new Label(currentOrder.getName()));
-            }
-        };
-    }
-
-    private ITab createGlobalResourcesLoadTab() {
-
-        final IComponentCreator componentCreator = new IComponentCreator() {
-
-                    @Override
-                    public org.zkoss.zk.ui.Component create(
-                            org.zkoss.zk.ui.Component parent) {
-                        return Executions.createComponents(
-                                        "/resourceload/_resourceload.zul",
-                                parent, null);
-                    }
-
-        };
-        return new CreatedOnDemandTab(RESOURCE_LOAD_VIEW, componentCreator) {
-            @Override
-            protected void afterShowAction() {
-                if (breadcrumbs.getChildren() != null) {
-                    breadcrumbs.getChildren().clear();
-                }
-                breadcrumbs.appendChild(new Label(PLANNIFICATION));
-                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(RESOURCE_LOAD_VIEW));
-            }
-        };
-
     }
 
     private ITab createOrdersTab() {
@@ -329,7 +252,7 @@ public class MultipleTabsPlannerController implements Composer {
         return tabsSwitcher.getTabsRegistry();
     }
 
-    private IToolbarCommand resourceLoadUpCommand() {
+    private IToolbarCommand upCommand() {
         return new IToolbarCommand() {
 
             @Override

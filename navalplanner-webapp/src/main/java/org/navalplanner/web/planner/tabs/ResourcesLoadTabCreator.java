@@ -1,0 +1,140 @@
+/*
+ * This file is part of ###PROJECT_NAME###
+ *
+ * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+ *                    Desenvolvemento Tecnolóxico de Galicia
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.navalplanner.web.planner.tabs;
+
+import static org.navalplanner.web.I18nHelper._;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
+import org.navalplanner.web.resourceload.ResourceLoadController;
+import org.zkoss.ganttz.extensions.ITab;
+import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Image;
+import org.zkoss.zul.Label;
+
+/**
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ *
+ */
+public class ResourcesLoadTabCreator {
+
+    private static final String RESOURCE_LOAD_VIEW = _("Overall Resources Load");
+
+    private static final String ORDER_RESOURCE_LOAD_VIEW = _("Resources Load");
+
+    public static ITab create(Mode mode,
+            ResourceLoadController resourceLoadController,
+            IToolbarCommand upCommand, Component breadcrumbs) {
+        return new ResourcesLoadTabCreator(mode, resourceLoadController,
+                upCommand, breadcrumbs)
+                .build();
+    }
+
+    private final Mode mode;
+    private final ResourceLoadController resourceLoadController;
+    private final IToolbarCommand upCommand;
+    private final Component breadcrumbs;
+
+    private ResourcesLoadTabCreator(Mode mode,
+            ResourceLoadController resourceLoadController,
+            IToolbarCommand upCommand, Component breadcrumbs) {
+        this.mode = mode;
+        this.resourceLoadController = resourceLoadController;
+        this.upCommand = upCommand;
+        this.breadcrumbs = breadcrumbs;
+    }
+
+    private ITab build() {
+        return TabOnModeType.forMode(mode)
+            .forType(ModeType.GLOBAL, createGlobalResourcesLoadTab())
+            .forType(ModeType.ORDER, createOrderResourcesLoadTab())
+            .create();
+    }
+
+    private ITab createOrderResourcesLoadTab() {
+        IComponentCreator componentCreator = new IComponentCreator() {
+
+            @Override
+            public org.zkoss.zk.ui.Component create(
+                    org.zkoss.zk.ui.Component parent) {
+                Map<String, Object> arguments = new HashMap<String, Object>();
+                resourceLoadController.add(upCommand);
+                arguments.put("resourceLoadController", resourceLoadController);
+                return Executions.createComponents(
+                        "/resourceload/_resourceloadfororder.zul", parent,
+                        arguments);
+            }
+
+        };
+        return new CreatedOnDemandTab(ORDER_RESOURCE_LOAD_VIEW,
+                componentCreator) {
+            private Order currentOrder;
+
+            @Override
+            protected void afterShowAction() {
+                breadcrumbs.getChildren().clear();
+                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(ORDER_RESOURCE_LOAD_VIEW));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                if (mode.isOf(ModeType.ORDER)
+                        && mode.getOrder() != currentOrder) {
+                    currentOrder = mode.getOrder();
+                    resourceLoadController.filterBy(currentOrder);
+                }
+                breadcrumbs.appendChild(new Label(currentOrder.getName()));
+            }
+        };
+    }
+
+    private ITab createGlobalResourcesLoadTab() {
+
+        final IComponentCreator componentCreator = new IComponentCreator() {
+
+            @Override
+            public org.zkoss.zk.ui.Component create(
+                    org.zkoss.zk.ui.Component parent) {
+                return Executions.createComponents(
+                        "/resourceload/_resourceload.zul", parent, null);
+            }
+
+        };
+        return new CreatedOnDemandTab(RESOURCE_LOAD_VIEW, componentCreator) {
+            @Override
+            protected void afterShowAction() {
+                if (breadcrumbs.getChildren() != null) {
+                    breadcrumbs.getChildren().clear();
+                }
+                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(RESOURCE_LOAD_VIEW));
+            }
+        };
+
+    }
+
+}
