@@ -152,6 +152,169 @@ public class CriterionsController extends GenericForwardComposer {
                     };
     }
 
+       /**
+     * Shows invalid values for {@link CriterionSatisfaction}
+     * entities
+     *
+     * @param e
+     */
+    public boolean validate() throws ValidationException{
+        try{
+            if(thereAreInvalidInputsOn(this.listingCriterions)){
+                showInvalidInputs();
+                return false;
+            }
+            assignedCriterionsModel.validate();
+            reload();
+        } catch (ValidationException e) {
+            showInvalidValues(e);
+             for (InvalidValue invalidValue : e.getInvalidValues()) {
+                messages.showMessage(Level.ERROR, invalidValue.getPropertyName()+invalidValue.getMessage());
+                return false;
+            }
+        } catch (IllegalStateException e) {
+                messages.showMessage(Level.ERROR,e.getMessage());
+                return false;
+        }
+        catch (IllegalArgumentException e) {
+                 messages.showMessage(Level.ERROR,e.getMessage());
+                return false;
+        }
+        return true;
+    }
+
+       /**
+     * Shows invalid inputs for {@link CriterionSatisfactionDTO} entities
+     *
+     * @param
+     */
+    private void showInvalidInputs(){
+         if(listingCriterions != null){
+            Rows rows = listingCriterions.getRows();
+            List<Row> listRows = rows.getChildren();
+            for(Row row : listRows){
+                //Validate endDate Domain Restricctions.
+                Datebox endDate = getEndDatebox(row);
+                if(isInvalid(endDate)){
+                    validateEndDate(endDate, endDate.getValue());
+                }
+                //Validate startDate Domain Restricctions.
+                Datebox startDate = getStartDatebox(row);
+                if(isInvalid(startDate)){
+                    validateStartDate(startDate, startDate.getValue());
+                }
+                //Validate endDate Domain Restricctions.
+                Bandbox bandCriterion = getBandType(row);
+                if(isInvalid(bandCriterion)){
+                    CriterionSatisfactionDTO satisfactionDTO =
+                        (CriterionSatisfactionDTO)row.getValue();
+                    validateCriterionWithItsType(satisfactionDTO,bandCriterion);
+                }
+            }
+         }
+    }
+
+        /**
+     * Shows invalid values for {@link CriterionSatisfactionDTO} entities
+     *
+     * @param e
+     */
+    private void showInvalidValues(ValidationException e) {
+        for (InvalidValue invalidValue : e.getInvalidValues()) {
+            Object value = invalidValue.getBean();
+            if(value instanceof CriterionSatisfactionDTO){
+                validateCriterionSatisfactionDTO(invalidValue,
+                        (CriterionSatisfactionDTO)value);
+            }
+        }
+    }
+
+    /**
+     * Validates {@link CriterionSatisfactionDTO} data constraints
+     *
+     * @param invalidValue
+     */
+    private void validateCriterionSatisfactionDTO(InvalidValue invalidValue,
+            CriterionSatisfactionDTO satisfactionDTO) {
+        if(listingCriterions != null){
+
+            // Find which listItem contains CriterionSatisfaction inside listBox
+            Row row = findRowOfCriterionSatisfactionDTO(listingCriterions.getRows(),
+                    satisfactionDTO);
+
+            if (row != null) {
+                String propertyName = invalidValue.getPropertyName();
+
+                if (CriterionSatisfactionDTO.START_DATE.equals(propertyName)) {
+                    // Locate TextboxResource
+                    Datebox startDate = getStartDatebox(row);
+                    // Value is incorrect, clear
+                    startDate.setValue(null);
+                    throw new WrongValueException(startDate,
+                            _("The start date cannot be null"));
+                }
+                if (CriterionSatisfactionDTO.CRITERION_WITH_ITS_TYPE.equals(propertyName)) {
+                    // Locate TextboxResource
+                    Bandbox bandType = getBandType(row);
+                    // Value is incorrect, clear
+                    bandType.setValue(null);
+                    throw new WrongValueException(bandType,
+                            _("The criterion and its type cannot be null"));
+                }
+            }
+        }
+    }
+
+     /**
+     * Locates which {@link row} is bound to {@link WorkReportLine} in
+     * rows
+     *
+     * @param Rows
+     * @param CriterionSatisfactionDTO
+     * @return
+     */
+    private Row findRowOfCriterionSatisfactionDTO(Rows rows,
+            CriterionSatisfactionDTO satisfactionDTO) {
+        List<Row> listRows = (List<Row>) rows.getChildren();
+        for (Row row : listRows) {
+            if (satisfactionDTO.equals(row.getValue())) {
+                return row;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Locates {@link Datebox} criterion satisfaction in {@link row}
+     *
+     * @param row
+     * @return
+     */
+    private Datebox getStartDatebox(Row row) {
+        return (Datebox) (row.getChildren().get(1));
+    }
+
+    /**
+     * Locates {@link Datebox} criterion satisfaction in {@link row}
+     *
+     * @param row
+     * @return
+     */
+    private Datebox getEndDatebox(Row row) {
+        return (Datebox) (row.getChildren().get(2));
+    }
+
+    /**
+     * Locates {@link Bandbox} criterion satisfaction in {@link row}
+     *
+     * @param row
+     * @return
+     */
+    private Bandbox getBandType(Row row) {
+        return (Bandbox)((Hbox) row.getChildren().get(0))
+                .getChildren().get(0);
+    }
+
     public void save() throws ValidationException{
           assignedCriterionsModel.save();
     }
