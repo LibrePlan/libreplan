@@ -105,7 +105,9 @@ public class OrdersTabCreator {
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }
-                breadcrumbs.appendChild(new Label("Orders > Orders list"));
+                breadcrumbs.appendChild(new Label(PlanningTabCreator.ENTERPRISE_VIEW));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(ORDER_ORDERS_VIEW));
             }
         };
     }

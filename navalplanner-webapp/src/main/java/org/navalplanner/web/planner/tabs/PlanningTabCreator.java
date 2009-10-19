@@ -49,9 +49,9 @@ import org.zkoss.zul.Label;
  */
 public class PlanningTabCreator {
 
-    private static final String ENTERPRISE_VIEW = _("Company Scheduling");
+    public static final String ENTERPRISE_VIEW = _("Company Scheduling");
 
-    private static final String ORDER_ENTERPRISE_VIEW = _("Order Scheduling");
+    public static final String ORDER_ENTERPRISE_VIEW = _("Order Scheduling");
 
     private final Mode mode;
     private final CompanyPlanningController companyPlanningController;
