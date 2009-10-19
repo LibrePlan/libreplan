@@ -21,8 +21,10 @@ package org.navalplanner.web.planner.allocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
@@ -117,8 +119,26 @@ public class AllocationResult {
     }
 
     public void applyTo(Task task) {
+        List<ModifiedAllocation> modified = getModified();
         task.mergeAllocation(getCalculatedValue(), aggregate, getNew(),
-                getModified());
+                modified, getNotModified(originals(modified)));
+    }
+
+    private List<ResourceAllocation<?>> originals(
+            List<ModifiedAllocation> modified) {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        for (ModifiedAllocation modifiedAllocation : modified) {
+            result.add(modifiedAllocation.getOriginal());
+        }
+        return result;
+    }
+
+    private Set<ResourceAllocation<?>> getNotModified(
+            List<ResourceAllocation<?>> modified) {
+        Set<ResourceAllocation<?>> all = new HashSet<ResourceAllocation<?>>(
+                task.getResourceAllocations());
+        all.removeAll(modified);
+        return all;
     }
 
     public List<ResourceAllocation<?>> getAllSortedByStartDate() {

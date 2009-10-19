@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -249,18 +251,22 @@ public class Task extends TaskElement {
     public void mergeAllocation(CalculatedValue calculatedValue,
             AggregateOfResourceAllocations aggregate,
             List<ResourceAllocation<?>> newAllocations,
-            List<ModifiedAllocation> modifications) {
+            List<ModifiedAllocation> modifications,
+            Collection<? extends ResourceAllocation<?>> toRemove) {
         this.calculatedValue = calculatedValue;
         final LocalDate start = aggregate.getStart();
         final LocalDate end = aggregate.getEnd();
         setStartDate(start.toDateTimeAtStartOfDay().toDate());
         setDaysDuration(Days.daysBetween(start, end).getDays());
-        addAllocations(newAllocations);
+        List<ResourceAllocation<?>> modified = new ArrayList<ResourceAllocation<?>>();
         for (ModifiedAllocation pair : modifications) {
             Validate.isTrue(resourceAllocations.contains(pair.getOriginal()));
             pair.getOriginal().mergeAssignmentsAndResourcesPerDay(
                     pair.getModification());
+            modified.add(pair.getOriginal());
         }
+        resourceAllocations.removeAll(toRemove);
+        addAllocations(newAllocations);
     }
 
     private void addAllocations(List<ResourceAllocation<?>> newAllocations) {
