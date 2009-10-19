@@ -21,6 +21,7 @@
 package org.navalplanner.web.resources.machine;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.ClassValidator;
@@ -29,6 +30,8 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Machine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -76,6 +79,8 @@ public class MachineModel implements IMachineModel {
         if (invalidValues.length > 0) {
             throw new ValidationException(invalidValues);
         }
+        System.out.println("### criterionSatisfactions: "
+                + machine.getCriterionSatisfactions().size());
         resourceDAO.save(machine);
     }
 
@@ -92,9 +97,33 @@ public class MachineModel implements IMachineModel {
 
     private Machine getFromDB(Long id) {
         try {
-            return (Machine) resourceDAO.find(id);
+            Machine machine = (Machine) resourceDAO.find(id);
+            initializeCriterionsSatisfactions(machine
+                    .getCriterionSatisfactions());
+            return machine;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
+
+    private void initializeCriterionsSatisfactions(
+            Set<CriterionSatisfaction> criterionSatisfactions) {
+        for (CriterionSatisfaction criterionSatisfaction : criterionSatisfactions) {
+            initializeCriterionSatisfaction(criterionSatisfaction);
+        }
+    }
+
+    private void initializeCriterionSatisfaction(
+            CriterionSatisfaction criterionSatisfaction) {
+        initializeCriterion(criterionSatisfaction.getCriterion());
+    }
+
+    private void initializeCriterion(Criterion criterion) {
+        criterion.getName();
+        criterion.getName();
+        if (criterion.getParent() != null) {
+            criterion.getParent().getName();
+        }
+    }
+
 }

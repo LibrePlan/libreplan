@@ -32,6 +32,8 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
+import org.navalplanner.web.resources.worker.CriterionsController;
+import org.navalplanner.web.resources.worker.CriterionsMachineController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.api.Window;
@@ -57,6 +59,8 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     private Component messagesContainer;
 
+    private CriterionsMachineController criterionsController;
+
     public MachineCRUDController() {
 
     }
@@ -66,7 +70,20 @@ public class MachineCRUDController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
+        setupCriterionsController();
         showListWindow();
+    }
+
+    private void setupCriterionsController() throws Exception {
+        final Component comp = editWindow.getFellowIfAny("criterionsContainer");
+        criterionsController = new CriterionsMachineController();
+        criterionsController.doAfterCompose(comp);
+    }
+
+    private CriterionsController getCriterionsController() {
+        return (CriterionsController) editWindow.getFellow(
+                "criterionsContainer").getAttribute(
+                "assignedCriterionsController");
     }
 
     private void showListWindow() {
@@ -91,8 +108,15 @@ public class MachineCRUDController extends GenericForwardComposer {
         getVisibility().showOnly(editWindow);
     }
 
+    /**
+     * Loads {@link Machine} into model, shares loaded {@link Machine} with
+     * {@link CriterionsController}
+     *
+     * @param machine
+     */
     public void goToEditForm(Machine machine) {
         machineModel.initEdit(machine);
+        criterionsController.prepareForEdit(machineModel.getMachine());
         editWindow.setTitle(_("Edit machine"));
         showEditWindow();
         Util.reloadBindings(editWindow);
@@ -101,6 +125,9 @@ public class MachineCRUDController extends GenericForwardComposer {
     public void save() {
         validate();
         try {
+            if (criterionsController != null) {
+                criterionsController.save();
+            }
             machineModel.confirmSave();
             goToList();
             messagesForUser.showMessage(Level.INFO, _("Machine saved"));

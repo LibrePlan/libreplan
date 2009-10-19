@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-
 import java.util.Set;
+
 import org.hibernate.validator.ClassValidator;
 import static org.navalplanner.web.I18nHelper._;
 import org.hibernate.validator.InvalidValue;
@@ -32,14 +32,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zul.Listbox;
 
 /**
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-@Service
+@Service()
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class AssignedCriterionsModel implements IAssignedCriterionsModel {
 

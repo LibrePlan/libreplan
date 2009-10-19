@@ -1,0 +1,72 @@
+<vbox id="criterionsContainer" style="padding: 10px" >
+<panel title="${i18n:_('Assigned Criterions')}" border="normal">
+    <panelchildren>
+        <hbox align="center">
+                <separator bar="false" spacing="40px" orient="horizontal"/>
+                <separator bar="false" spacing="20px" orient="vertical"/>
+                <button onClick="assignedCriterionsController.addCriterionSatisfaction();"
+                    label="${i18n:_('Add criterion')}" />
+                <label class="subtitulo" value="${i18n:_('Filters :')}" />
+                <combobox id="comboboxFilter"
+                onSelect="assignedCriterionsController.reload();">
+                    <comboitem label="all" />
+                    <comboitem label="in force" />
+                </combobox>
+                <separator bar="false" spacing="20px" orient="vertical"/>
+        </hbox>
+        <grid id="listingCriterions"
+            model="@{assignedCriterionsController.criterionSatisfactionDTOs}"
+            mold="paging" pageSize="5">
+            <columns>
+                <column label="${i18n:_('Criterion name')}"/>
+                <column label="${i18n:_('Starting date')}" width="200px" align="center"/>
+                <column label="${i18n:_('Ending date')}" width="200px" align="center"/>
+                <column label="${i18n:_('State')}" width="70px" align="center"/>
+                <column label="${i18n:_('Operations')}" width="70px" align="center"/>
+            </columns>
+            <rows>
+                <row self="@{each='criterionSatisfactionDTO'}" value="@{criterionSatisfactionDTO}">
+                    <hbox>
+                    <bandbox width="500px"
+                        visible="@{criterionSatisfactionDTO.isNewObject}"
+                        value = "@{criterionSatisfactionDTO.criterionAndType}">
+                        <bandpopup>
+                            <listbox width="500px" height="150px" fixedLayout="true"
+                             model="@{assignedCriterionsController.criterionWithItsTypes}"
+                             onSelect="assignedCriterionsController.selectCriterionAndType(self.selectedItem,
+                                    self.parent.parent,self.parent.parent.parent.parent.value);">
+                                <listhead>
+                                    <listheader label="Type" />
+                                    <listheader label="Criterion" />
+                                </listhead>
+                                <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}">
+                                    <listcell label="@{criterionWithItsType.type.name}" />
+                                    <listcell label="@{criterionWithItsType.nameHierarchy}" />
+                                </listitem>
+                            </listbox>
+                        </bandpopup>
+                    </bandbox>
+                    <label visible="@{criterionSatisfactionDTO.isOldObject}"
+                     value="@{criterionSatisfactionDTO.nameAndType}"/>
+                    </hbox>
+                    <datebox id="startDate" value="@{criterionSatisfactionDTO.startDate}"
+                    constraint="@{assignedCriterionsController.validateStartDate}"
+                    onChange="assignedCriterionsController.changeDate(self);" width="150px"/>
+
+                    <datebox id="endDate" value="@{criterionSatisfactionDTO.endDate}"
+                    constraint="@{assignedCriterionsController.validateEndDate}"
+                    onChange="assignedCriterionsController.changeDate(self);" width="150px"/>
+
+                    <label value="@{criterionSatisfactionDTO.state}"/>
+
+                    <button sclass="icono" image="/common/img/ico_borrar1.png"
+                        hoverImage="/common/img/ico_borrar.png"
+                        tooltiptext="${i18n:_('Delete')}"
+                        onClick="assignedCriterionsController.remove(self.parent.value);">
+                    </button>
+                </row>
+            </rows>
+        </grid>
+    </panelchildren>
+</panel>
+</vbox>

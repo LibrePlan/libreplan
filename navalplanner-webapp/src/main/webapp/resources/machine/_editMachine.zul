@@ -18,6 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<?component name="criterions" inline="true" macroURI="_machineCriterions.zul"?>
 <window id="editWindow" >
     <tabbox>
         <tabs>
@@ -54,6 +55,8 @@
             </tabpanel>
             <tabpanel>
                 <!-- Assigned criterions -->
+                <!-- <include src="_machineCriterions.zul" model="controller.machine"/> -->
+                <criterions model="@{controller.machine}" />
             </tabpanel>
             <tabpanel visible="false">
                 <!-- Calendar -->

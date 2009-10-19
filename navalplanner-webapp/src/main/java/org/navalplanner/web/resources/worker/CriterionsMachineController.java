@@ -12,8 +12,9 @@ import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
-import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.resources.machine.IAssignedMachineCriterionsModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -27,44 +28,46 @@ import org.zkoss.zul.Row;
 
 /**
  *
- * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
-public class CriterionsController extends GenericForwardComposer {
+public class CriterionsMachineController extends GenericForwardComposer {
 
-    private IAssignedCriterionsModel assignedCriterionsModel;
+    private IAssignedMachineCriterionsModel assignedMachineCriterionsModel;
+
     private Combobox comboboxFilter;
+
     private Grid listingCriterions;
 
-    protected CriterionsController() {
+    public CriterionsMachineController() {
+
     }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("assignedCriterionsController", this, true);
-        comboboxFilter = (Combobox) comp.getFellow("comboboxfilter");
-        listingCriterions = (Grid) comp.getFellow("listingCriterions");
     }
 
-    public void prepareForEdit(Worker worker) {
-        this.assignedCriterionsModel.prepareForEdit(worker);
+    public void prepareForEdit(Machine machine) {
+        this.assignedMachineCriterionsModel.prepareForEdit(machine);
     }
 
     public Set<CriterionSatisfactionDTO> getCriterionSatisfactionDTOs() {
         Comboitem comboitem = comboboxFilter.getSelectedItem();
         if((comboitem != null) && (comboitem.getLabel().equals("in force"))) {
-                return assignedCriterionsModel.getFilterCriterionSatisfactions();
+            return assignedMachineCriterionsModel
+                    .getFilterCriterionSatisfactions();
             }
-        return assignedCriterionsModel.getAllCriterionSatisfactions();
+        return assignedMachineCriterionsModel.getAllCriterionSatisfactions();
     }
 
     public void addCriterionSatisfaction() {
-        assignedCriterionsModel.addCriterionSatisfaction();
+        assignedMachineCriterionsModel.addCriterionSatisfaction();
         reload();
     }
 
     public List<CriterionWithItsType> getCriterionWithItsTypes(){
-        return assignedCriterionsModel.getCriterionWithItsType();
+        return assignedMachineCriterionsModel.getCriterionWithItsType();
     }
 
     public void reload() {
@@ -72,7 +75,7 @@ public class CriterionsController extends GenericForwardComposer {
     }
 
     public void remove(CriterionSatisfactionDTO criterionSatisfactionDTO){
-        assignedCriterionsModel.remove(criterionSatisfactionDTO);
+        assignedMachineCriterionsModel.remove(criterionSatisfactionDTO);
         reload();
     }
 
@@ -90,7 +93,8 @@ public class CriterionsController extends GenericForwardComposer {
 
     public void setCriterionWithItsType(CriterionWithItsType criterionAndType,
             CriterionSatisfactionDTO satisfaction,Bandbox bandbox)  throws WrongValueException{
-            this.assignedCriterionsModel.setCriterionWithItsType(satisfaction, criterionAndType);
+        this.assignedMachineCriterionsModel.setCriterionWithItsType(
+                satisfaction, criterionAndType);
             validateCriterionWithItsType(satisfaction,bandbox);
     }
 
@@ -98,11 +102,13 @@ public class CriterionsController extends GenericForwardComposer {
             Component comp) throws WrongValueException{
             if(satisfaction.getCriterionWithItsType() == null) return;
             if(satisfaction.getStartDate() == null) return;
-            if(assignedCriterionsModel.checkSameCriterionAndSameInterval(satisfaction)){
+        if (assignedMachineCriterionsModel
+                .checkSameCriterionAndSameInterval(satisfaction)) {
                 throw new WrongValueException(comp,
                                         _("Criterion is not valid, the criterion overlap other criterionSatisfaction whith same criterion"));
             }
-            if(assignedCriterionsModel.checkNotAllowSimultaneousCriterionsPerResource(satisfaction)){
+        if (assignedMachineCriterionsModel
+                .checkNotAllowSimultaneousCriterionsPerResource(satisfaction)) {
                 throw new WrongValueException(comp,
                                         _("CriterionType is not valid, the criterionType overlap other criterionSatisfaction whith same criterionType"));
             }
@@ -153,6 +159,6 @@ public class CriterionsController extends GenericForwardComposer {
     }
 
     public void save() throws ValidationException{
-          assignedCriterionsModel.save();
+        assignedMachineCriterionsModel.save();
     }
 }
