@@ -50,6 +50,8 @@ public class ResourceLoadController implements Composer {
 
     private Order filterBy;
 
+    private org.zkoss.zk.ui.Component parent;
+
     public ResourceLoadController() {
     }
 
@@ -60,13 +62,19 @@ public class ResourceLoadController implements Composer {
 
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+        this.parent = comp;
+        reload();
+    }
+
+    public void reload() {
         if (filterBy == null) {
             resourceLoadModel.initGlobalView();
         } else {
             resourceLoadModel.initGlobalView(filterBy);
         }
         ResourcesLoadPanel resourcesLoadPanel = buildResourcesLoadPanel();
-        comp.appendChild(resourcesLoadPanel);
+        this.parent.getChildren().clear();
+        this.parent.appendChild(resourcesLoadPanel);
         resourcesLoadPanel.afterCompose();
         addCommands(resourcesLoadPanel);
     }

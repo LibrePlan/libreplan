@@ -95,6 +95,9 @@ public class MultipleTabsPlannerController implements Composer {
     @Autowired
     private ResourceLoadController resourceLoadController;
 
+    @Autowired
+    private ResourceLoadController resourceLoadControllerGlobal;
+
     private org.zkoss.zk.ui.Component breadcrumbs;
 
     public TabsConfiguration getTabs() {
@@ -117,7 +120,9 @@ public class MultipleTabsPlannerController implements Composer {
         planningTab = PlanningTabCreator.create(mode, companyPlanningController,
                 orderPlanningController, breadcrumbs);
         resourceLoadTab = ResourcesLoadTabCreator.create(mode,
-                resourceLoadController, upCommand(), breadcrumbs);
+                resourceLoadController, upCommand(),
+                resourceLoadControllerGlobal,
+                breadcrumbs);
         ordersTab = OrdersTabCreator.create(mode, orderCRUDController,
                 breadcrumbs, new IOrderPlanningGate() {
 

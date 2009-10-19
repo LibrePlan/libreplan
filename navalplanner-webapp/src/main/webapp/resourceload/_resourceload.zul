@@ -23,7 +23,7 @@
 <zk>
 
     <zscript><![CDATA[
-        rsController = resourceLoadController;
+        rsController = arg.get("resourceLoadController");;
     ]]>
     </zscript>
     <div apply="${rsController}" self="@{define(content)}">

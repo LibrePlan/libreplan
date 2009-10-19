@@ -48,23 +48,31 @@ public class ResourcesLoadTabCreator {
 
     public static ITab create(Mode mode,
             ResourceLoadController resourceLoadController,
-            IToolbarCommand upCommand, Component breadcrumbs) {
+            IToolbarCommand upCommand,
+            ResourceLoadController resourceLoadControllerGlobal,
+            Component breadcrumbs) {
         return new ResourcesLoadTabCreator(mode, resourceLoadController,
-                upCommand, breadcrumbs)
+                upCommand, resourceLoadControllerGlobal, breadcrumbs)
                 .build();
     }
 
     private final Mode mode;
     private final ResourceLoadController resourceLoadController;
+
+    private final ResourceLoadController resourceLoadControllerGlobal;
+
     private final IToolbarCommand upCommand;
     private final Component breadcrumbs;
 
     private ResourcesLoadTabCreator(Mode mode,
             ResourceLoadController resourceLoadController,
-            IToolbarCommand upCommand, Component breadcrumbs) {
+            IToolbarCommand upCommand,
+            ResourceLoadController resourceLoadControllerGlobal,
+            Component breadcrumbs) {
         this.mode = mode;
         this.resourceLoadController = resourceLoadController;
         this.upCommand = upCommand;
+        this.resourceLoadControllerGlobal = resourceLoadControllerGlobal;
         this.breadcrumbs = breadcrumbs;
     }
 
@@ -92,7 +100,6 @@ public class ResourcesLoadTabCreator {
         };
         return new CreatedOnDemandTab(ORDER_RESOURCE_LOAD_VIEW,
                 componentCreator) {
-            private Order currentOrder;
 
             @Override
             protected void afterShowAction() {
@@ -101,11 +108,9 @@ public class ResourcesLoadTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(ORDER_RESOURCE_LOAD_VIEW));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                if (mode.isOf(ModeType.ORDER)
-                        && mode.getOrder() != currentOrder) {
-                    currentOrder = mode.getOrder();
-                    resourceLoadController.filterBy(currentOrder);
-                }
+                Order currentOrder = mode.getOrder();
+                resourceLoadController.filterBy(currentOrder);
+                resourceLoadController.reload();
                 breadcrumbs.appendChild(new Label(currentOrder.getName()));
             }
         };
@@ -118,14 +123,19 @@ public class ResourcesLoadTabCreator {
             @Override
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
+                Map<String, Object> arguments = new HashMap<String, Object>();
+                arguments.put("resourceLoadController",
+                        resourceLoadControllerGlobal);
                 return Executions.createComponents(
-                        "/resourceload/_resourceload.zul", parent, null);
+                        "/resourceload/_resourceload.zul", parent, arguments);
             }
 
         };
         return new CreatedOnDemandTab(RESOURCE_LOAD_VIEW, componentCreator) {
             @Override
             protected void afterShowAction() {
+                resourceLoadControllerGlobal.filterBy(null);
+                resourceLoadControllerGlobal.reload();
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }
@@ -134,7 +144,6 @@ public class ResourcesLoadTabCreator {
                 breadcrumbs.appendChild(new Label(RESOURCE_LOAD_VIEW));
             }
         };
-
     }
 
 }

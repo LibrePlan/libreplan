@@ -76,6 +76,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView() {
+        filterBy = null;
         loadTimeLines = calculateLoadTimelinesGroups();
         if (!loadTimeLines.isEmpty()) {
             viewInterval = LoadTimelinesGroup.getIntervalFrom(loadTimeLines);
