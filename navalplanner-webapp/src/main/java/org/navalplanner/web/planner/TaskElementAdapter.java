@@ -118,9 +118,10 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public void setBeginDate(Date beginDate) {
+        public long setBeginDate(Date beginDate) {
             taskElement.setStartDate(beginDate);
             updateEndDate();
+            return lengthMilliseconds;
         }
 
         @Override

@@ -77,8 +77,9 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return beginDate;
     }
 
-    public void setBeginDate(Date beginDate) {
+    public long setBeginDate(Date beginDate) {
         this.beginDate = beginDate;
+        return lengthMilliseconds;
     }
 
     public long getLengthMilliseconds() {

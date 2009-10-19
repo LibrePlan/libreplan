@@ -97,11 +97,13 @@ public abstract class Task implements ITaskFundamentalProperties {
                 previousValue, name);
     }
 
-    public void setBeginDate(Date beginDate) {
+    public long setBeginDate(Date beginDate) {
         Date previousValue = fundamentalProperties.getBeginDate();
-        fundamentalProperties.setBeginDate(beginDate);
+        long oldLength = fundamentalProperties.getLengthMilliseconds();
         fundamentalPropertiesListeners.firePropertyChange("beginDate",
                 previousValue, fundamentalProperties.getBeginDate());
+        fireLengthMilliseconds(oldLength);
+        return fundamentalProperties.getLengthMilliseconds();
     }
 
     public Date getBeginDate() {
@@ -111,6 +113,10 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void setLengthMilliseconds(long lengthMilliseconds) {
         long previousValue = fundamentalProperties.getLengthMilliseconds();
         fundamentalProperties.setLengthMilliseconds(lengthMilliseconds);
+        fireLengthMilliseconds(previousValue);
+    }
+
+    private void fireLengthMilliseconds(long previousValue) {
         fundamentalPropertiesListeners.firePropertyChange("lengthMilliseconds",
                 previousValue, fundamentalProperties.getLengthMilliseconds());
     }
