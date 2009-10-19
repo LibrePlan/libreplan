@@ -23,10 +23,11 @@ package org.navalplanner.business.test.resources.daos;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,6 +38,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -134,6 +136,33 @@ public class CriterionTypeDAOTest {
         criterionTypeDAO.save(criterion2);
         List<CriterionType> list = criterionTypeDAO.getCriterionTypes();
         assertEquals(previous + 2, list.size());
+    }
+
+    @Test
+    public void testGetCriterionTypesByResourceType() {
+        // Add RESOURCE criterionType
+        CriterionType criterionType = createValidCriterionType();
+        criterionType.setResource(ResourceEnum.RESOURCE);
+        criterionTypeDAO.save(criterionType);
+
+        // Add WORKER criterionType
+        criterionType = createValidCriterionType();
+        criterionType.setResource(ResourceEnum.WORKER);
+        criterionTypeDAO.save(criterionType);
+
+        // Get number of criterionTypes of type RESOURCE
+        List<ResourceEnum> resources = new ArrayList<ResourceEnum>();
+        resources.add(ResourceEnum.RESOURCE);
+        List<CriterionType> criterions = criterionTypeDAO.getCriterionTypesByResources(resources);
+        int numberOfCriterionsOfTypeResource = criterions.size();
+
+        // Get number of criterionTypes of type WORKER
+        resources.add(ResourceEnum.WORKER);
+        criterions = criterionTypeDAO
+                .getCriterionTypesByResources(resources);
+        int numberOfCriterionsOfTypeResourceAndWorker = criterions.size();
+
+        assertTrue(numberOfCriterionsOfTypeResourceAndWorker >= numberOfCriterionsOfTypeResource);
     }
 
 }

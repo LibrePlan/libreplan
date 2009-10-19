@@ -20,11 +20,13 @@
 
 package org.navalplanner.business.resources.daos;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 
 /**
  * DAO for {@link CriterionTypeDAO} <br />
@@ -45,4 +47,7 @@ public interface ICriterionTypeDAO extends IGenericDAO<CriterionType, Long> {
     public void removeByName(CriterionType criterionType);
 
     List<CriterionType> getCriterionTypes();
+
+    List<CriterionType> getCriterionTypesByResources(
+            Collection<ResourceEnum> resources);
 }

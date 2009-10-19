@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.resources.daos;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -28,6 +29,7 @@ import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.springframework.stereotype.Component;
 
 /**
@@ -88,6 +90,14 @@ public class CriterionTypeDAO extends GenericDAOHibernate<CriterionType, Long>
     @Override
     public List<CriterionType> getCriterionTypes() {
         return list(CriterionType.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<CriterionType> getCriterionTypesByResources(
+            Collection<ResourceEnum> resources) {
+        return getSession().createCriteria(CriterionType.class).add(
+                Restrictions.in("resource", resources)).list();
     }
 
 }
