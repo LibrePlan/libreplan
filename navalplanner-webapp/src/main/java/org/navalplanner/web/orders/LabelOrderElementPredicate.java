@@ -21,6 +21,7 @@
 package org.navalplanner.web.orders;
 
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -56,7 +57,13 @@ public class LabelOrderElementPredicate implements IPredicate {
         if (orderElement.isNewObject()) {
             return true;
         }
-        for (Label label : orderElement.getLabels()) {
+
+        final Set<Label> labels = orderElement.getLabels();
+        if (label.getName().isEmpty() && labels.isEmpty()) {
+            return true;
+        }
+
+        for (Label label : labels) {
             if (this.label != null && equalsLabel(label)) {
                 return true;
             }

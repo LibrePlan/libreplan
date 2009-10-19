@@ -563,22 +563,47 @@ public class OrderElementTreeController extends GenericForwardComposer {
         }
     }
 
-    private final String FILTER_BY_LABEL = _("Filter by Label");
+    private final String SHOW_ALL = _("Show all");
 
-    public void onApplyFilter(Event event) {
-        if (FILTER_BY_LABEL.equals(cbFilterType.getValue())) {
-            org.navalplanner.business.labels.entities.Label label = getSelectedLabel();
-            if (label != null) {
-                // Create predicate and filter order elements by predicate
-                predicate = new LabelOrderElementPredicate(label);
-                filterByPredicate();
-            } else {
-                // Delete predicate and set back to original tree model
+    /**
+     * Show all order elements in current order
+     *
+     * @param event
+     */
+    public void onShowAll(Event event) {
+        final String selectedOption = ((Combobox) event.getTarget()).getValue();
+        if (SHOW_ALL.equals(selectedOption)) {
+            // Delete predicate and set back to original tree model
+            if (predicate != null) {
+                bdFilter.clear();
                 predicate = null;
                 Util.reloadBindings(tree);
             }
-            updateControlButtons();
         }
+        updateControlButtons();
+    }
+
+    private final String FILTER_BY_LABEL = _("Filter by Label");
+
+    /**
+     * Apply filter to order elements in current order
+     *
+     * @param event
+     */
+    public void onApplyFilter(Event event) {
+        final String selectedOption = cbFilterType.getValue();
+        // Filter order elements by label
+        if (FILTER_BY_LABEL.equals(selectedOption)) {
+            org.navalplanner.business.labels.entities.Label label = getSelectedLabel();
+            if (label == null) {
+                label = org.navalplanner.business.labels.entities.Label
+                        .create("");
+            }
+            // Create predicate and filter order elements by predicate
+            predicate = new LabelOrderElementPredicate(label);
+            filterByPredicate();
+        }
+        updateControlButtons();
     }
 
     private org.navalplanner.business.labels.entities.Label getSelectedLabel() {
