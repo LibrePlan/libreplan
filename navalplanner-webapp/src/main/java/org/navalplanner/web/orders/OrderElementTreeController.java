@@ -240,6 +240,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             getModel().removeNode(
                     (OrderElement) treeItem.getValue());
         }
+        filterByPredicateIfAny();
     }
 
     void doEditFor(Order order) {
