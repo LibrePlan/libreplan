@@ -22,7 +22,11 @@ package org.navalplanner.web.resources.machine;
 
 import java.util.List;
 
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.IMachineDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Machine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -38,12 +42,39 @@ import org.springframework.transaction.annotation.Transactional;
 public class MachineModel implements IMachineModel {
 
     @Autowired
+    IResourceDAO resourceDAO;
+
+    @Autowired
     IMachineDAO machineDAO;
+
+    private Machine machine;
+
+    private ClassValidator<Machine> validator = new ClassValidator<Machine>(Machine.class);
+
+    @Override
+    public void initCreate() {
+        machine = Machine.create();
+    }
 
     @Override
     @Transactional(readOnly = true)
     public List<Machine> getMachines() {
         return machineDAO.getAll();
+    }
+
+    @Override
+    public Machine getMachine() {
+        return machine;
+    }
+
+    @Override
+    @Transactional
+    public void confirmSave() throws ValidationException {
+        InvalidValue[] invalidValues = validator.getInvalidValues(getMachine());
+        if (invalidValues.length > 0) {
+            throw new ValidationException(invalidValues);
+        }
+        resourceDAO.save(machine);
     }
 
 }

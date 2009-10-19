@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -80,7 +81,7 @@ public class MachineCRUDController extends GenericForwardComposer {
     }
 
     public void goToCreateForm() {
-        // entity.initCreate();
+        machineModel.initCreate();
         editWindow.setTitle(_("Create machine"));
         showEditWindow();
         Util.reloadBindings(editWindow);
@@ -99,9 +100,13 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     public void save() {
         validate();
-        // model.confirmSave();
-        goToList();
-        messagesForUser.showMessage(Level.INFO, _("Machine saved"));
+        try {
+            machineModel.confirmSave();
+            goToList();
+            messagesForUser.showMessage(Level.INFO, _("Machine saved"));
+        } catch (ValidationException e) {
+            e.printStackTrace();
+        }
     }
 
     private void validate() {
@@ -113,12 +118,16 @@ public class MachineCRUDController extends GenericForwardComposer {
         Util.reloadBindings(listWindow);
     }
 
-    public void close() {
+    public void cancel() {
         goToList();
     }
 
     public List<Machine> getMachines() {
         return machineModel.getMachines();
+    }
+
+    public Machine getMachine() {
+        return machineModel.getMachine();
     }
 
 }

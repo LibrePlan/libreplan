@@ -27,9 +27,7 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 
 <?component name="list" inline="true" macroURI="_listMachines.zul"?>
-<!--
 <?component name="edition" inline="true" macroURI="_editMachine.zul"?>
--->
 
 <zk>
     <window self="@{define(content)}"
@@ -37,8 +35,6 @@
             sclass="machinewindow">
         <vbox id="messagesContainer" />
         <list id="listWindow" />
-        <!--
         <edition id="editWindow" />
-        -->
     </window>
 </zk>

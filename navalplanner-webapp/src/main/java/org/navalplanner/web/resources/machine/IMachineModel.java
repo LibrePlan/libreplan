@@ -22,6 +22,7 @@ package org.navalplanner.web.resources.machine;
 
 import java.util.List;
 
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Machine;
 
 /*
@@ -29,6 +30,12 @@ import org.navalplanner.business.resources.entities.Machine;
  */
 public interface IMachineModel {
 
+    Machine getMachine();
+
     List<Machine> getMachines();
+
+    void initCreate();
+
+    void confirmSave() throws ValidationException;
 
 }
