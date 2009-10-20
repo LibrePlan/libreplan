@@ -188,6 +188,7 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     private void saveCriterions() throws ValidationException {
         if (criterionsController != null) {
+            criterionsController.validate();
             criterionsController.save();
         }
     }
