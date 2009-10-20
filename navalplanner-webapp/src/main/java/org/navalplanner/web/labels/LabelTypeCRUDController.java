@@ -216,6 +216,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         validate();
         try {
             labelTypeModel.confirmSave();
+            goToEditForm(labelTypeModel.getLabelType());
             messagesEditWindow.showMessage(Level.INFO, _("Label saved"));
         } catch (ValidationException e) {
             showInvalidValues(e);
