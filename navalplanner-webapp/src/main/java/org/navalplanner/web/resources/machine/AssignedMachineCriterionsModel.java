@@ -77,6 +77,8 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     @Override
     public void prepareForCreate(Resource resource) {
         this.resource = resource;
+        criterionsWithItsTypes = new ArrayList<CriterionWithItsType>();
+        criterionSatisfactionDTOs = new HashSet<CriterionSatisfactionDTO>();
     }
 
     @Override
