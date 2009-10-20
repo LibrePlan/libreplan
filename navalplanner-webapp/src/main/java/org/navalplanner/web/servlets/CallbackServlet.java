@@ -98,9 +98,6 @@ public class CallbackServlet extends HttpServlet {
 
     private static synchronized String buildURLFromKey(String generatedKey) {
         if (contextPath == null) {
-            System.out
-                    .println(CallbackServlet.class.getName()
-                            + " has not been initialized. Register it at web.xml with a load-on-startup element");
             throw new IllegalStateException(CallbackServlet.class.getName()
                             + " has not been initialized. Register it at web.xml with a load-on-startup element");
         }
@@ -142,12 +139,10 @@ public class CallbackServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        System.out.println("init");
         super.init(config);
         synchronized (CallbackServlet.class) {
             if (contextPath == null) {
                 contextPath = config.getServletContext().getContextPath();
-                System.out.println("before launching timer");
                 scheduleTimer();
             }
         }
@@ -157,9 +152,7 @@ public class CallbackServlet extends HttpServlet {
         try {
             cleaningTimer.schedule(cleaningTask(), CLEANING_PERIOD_MILLIS,
                     CLEANING_PERIOD_MILLIS);
-            System.out.println("after launching timer");
         } catch (Throwable e) {
-            e.printStackTrace();
             LOG
                     .error(
                             "can't start cleaning timer. A memory leak will be caused!",
