@@ -82,11 +82,10 @@ resourcesLoadPanel = self;
                 </center>
             </borderlayout>
         </center>
-        <south height="160px" collapsible="true" splittable="true">
+        <south height="150px" collapsible="true" splittable="true">
             <borderlayout>
-                <west width="240px" flex="true" collapsible="true"
-                    splittable="true" sclass="legend-gap">
-                    <vbox pack="center" align="center">
+                <center sclass="legend-gap">
+                    <vbox pack="center" align="center" height="150px" width="100%">
                     <vbox sclass="legend">
 
                         <hbox pack="center" sclass="legend-title">
@@ -110,55 +109,6 @@ resourcesLoadPanel = self;
 
                     </vbox>
                     </vbox>
-                </west>
-
-                <center autoscroll="true" sclass="resourcesloadgraph">
-
-<vbox>
-<zscript>
-CategoryModel catmodel = new SimpleCategoryModel();
-catmodel.setValue("2008", "Q1 2008", new Integer(20));
-catmodel.setValue("2008", "Q2 2008", new Integer(35));
-catmodel.setValue("2008", "Q3 2008", new Integer(40));
-catmodel.setValue("2008", "Q4 2008", new Integer(55));
-catmodel.setValue("2009", "Q1 2008", new Integer(40));
-catmodel.setValue("2009", "Q2 2008", new Integer(60));
-catmodel.setValue("2009", "Q3 2008", new Integer(70));
-catmodel.setValue("2009", "Q4 2008", new Integer(90));
-catmodel.setValue("2010", "Q1 2008", new Integer(20));
-catmodel.setValue("2010", "Q2 2008", new Integer(35));
-catmodel.setValue("2010", "Q3 2008", new Integer(40));
-catmodel.setValue("2010", "Q4 2008", new Integer(55));
-catmodel.setValue("2011", "Q1 2008", new Integer(40));
-catmodel.setValue("2011", "Q2 2008", new Integer(60));
-catmodel.setValue("2011", "Q3 2008", new Integer(70));
-catmodel.setValue("2011", "Q4 2008", new Integer(90));
-
-catmodel.setValue("2008", "Q1 2009", new Integer(20));
-catmodel.setValue("2008", "Q2 2009", new Integer(35));
-catmodel.setValue("2008", "Q3 2009", new Integer(40));
-catmodel.setValue("2008", "Q4 2009", new Integer(55));
-catmodel.setValue("2009", "Q1 2009", new Integer(40));
-catmodel.setValue("2009", "Q2 2009", new Integer(60));
-catmodel.setValue("2009", "Q3 2009", new Integer(70));
-catmodel.setValue("2009", "Q4 2009", new Integer(90));
-catmodel.setValue("2010", "Q1 2009", new Integer(20));
-catmodel.setValue("2010", "Q2 2009", new Integer(35));
-catmodel.setValue("2010", "Q3 2009", new Integer(40));
-catmodel.setValue("2010", "Q4 2009", new Integer(55));
-catmodel.setValue("2011", "Q1 2009", new Integer(40));
-catmodel.setValue("2011", "Q2 2009", new Integer(60));
-catmodel.setValue("2011", "Q3 2009", new Integer(70));
-catmodel.setValue("2011", "Q4 2009", new Integer(90));
-
-</zscript>
-	<chart id="barchart" width="1600px" height="175px"
-		type="stacked_area" fgAlpha="128" />
-	<zscript>
-  barchart.setModel(catmodel);
-</zscript>
-</vbox>
-
                 </center>
             </borderlayout>
         </south>
