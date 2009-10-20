@@ -37,10 +37,10 @@ import org.navalplanner.web.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkforge.timeplot.Timeplot;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.zk.ui.Executions;
 
 /**
  * Abstract class with the basic functionality to fill the chart.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public abstract class LoadChartFiller implements ILoadChartFiller {
@@ -70,32 +70,37 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         setMaximunValueForChartIfGreater(Collections.max(mapDayAssignments
                 .values()));
 
-        String uri = CallbackServlet
-                .registerAndCreateURLFor(new IServletRequestHandler() {
+        HttpServletRequest request = (HttpServletRequest) Executions
+                .getCurrent().getNativeRequest();
+        String uri = CallbackServlet.registerAndCreateURLFor(request,
+                        new IServletRequestHandler() {
 
-                    @Override
-                    public void handle(HttpServletRequest request,
-                            HttpServletResponse response)
-                            throws ServletException, IOException {
-                        PrintWriter writer = response.getWriter();
+                            @Override
+                            public void handle(HttpServletRequest request,
+                                    HttpServletResponse response)
+                                    throws ServletException, IOException {
+                                PrintWriter writer = response.getWriter();
 
-                        fillZeroValueFromStart(writer, start, mapDayAssignments);
+                                fillZeroValueFromStart(writer, start,
+                                        mapDayAssignments);
 
-                        LocalDate firstDay = firstDay(mapDayAssignments);
-                        LocalDate lastDay = lastDay(mapDayAssignments);
+                                LocalDate firstDay = firstDay(mapDayAssignments);
+                                LocalDate lastDay = lastDay(mapDayAssignments);
 
-                        for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = nextDay(day)) {
-                            Integer hours = mapDayAssignments.get(day) != null ? mapDayAssignments
-                                    .get(day)
-                                    : 0;
-                            printLine(writer, day, hours);
-                        }
+                                for (LocalDate day = firstDay; day
+                                        .compareTo(lastDay) <= 0; day = nextDay(day)) {
+                                    Integer hours = mapDayAssignments.get(day) != null ? mapDayAssignments
+                                            .get(day)
+                                            : 0;
+                                    printLine(writer, day, hours);
+                                }
 
-                        fillZeroValueToFinish(writer, finish, mapDayAssignments);
+                                fillZeroValueToFinish(writer, finish,
+                                        mapDayAssignments);
 
-                        writer.close();
-                    }
-                });
+                                writer.close();
+                            }
+                        });
         return uri;
     }
 

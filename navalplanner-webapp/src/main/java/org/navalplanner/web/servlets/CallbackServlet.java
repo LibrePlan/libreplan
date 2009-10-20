@@ -55,7 +55,6 @@ public class CallbackServlet extends HttpServlet {
 
     private static final long EXPIRATION_TIME_MILLIS = 1000 * 60 * 30; // half
     // hour;
-    private static String contextPath;
 
     private static Random random = new Random();
 
@@ -84,7 +83,8 @@ public class CallbackServlet extends HttpServlet {
         }
     }
 
-    public static String registerAndCreateURLFor(IServletRequestHandler handler) {
+    public static String registerAndCreateURLFor(HttpServletRequest request,
+            IServletRequestHandler handler) {
         // theorically could be an infinite loop, must be improved. Gods of
         // computer science forgive me
         String generatedKey = "";
@@ -93,15 +93,12 @@ public class CallbackServlet extends HttpServlet {
         do {
             generatedKey = generateKey();
         } while (handlersCallbacks.putIfAbsent(generatedKey, toBeRegistered) != null);
-        return buildURLFromKey(generatedKey);
+        return buildURLFromKey(request, generatedKey);
     }
 
-    private static synchronized String buildURLFromKey(String generatedKey) {
-        if (contextPath == null) {
-            throw new IllegalStateException(CallbackServlet.class.getName()
-                            + " has not been initialized. Register it at web.xml with a load-on-startup element");
-        }
-        return contextPath + MAPPING + generatedKey;
+    private static synchronized String buildURLFromKey(
+            HttpServletRequest request, String generatedKey) {
+        return request.getContextPath() + MAPPING + generatedKey;
     }
 
     private static String generateKey() {
@@ -140,12 +137,7 @@ public class CallbackServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        synchronized (CallbackServlet.class) {
-            if (contextPath == null) {
-                contextPath = config.getServletContext().getContextPath();
-                scheduleTimer();
-            }
-        }
+        scheduleTimer();
     }
 
     private void scheduleTimer() {
