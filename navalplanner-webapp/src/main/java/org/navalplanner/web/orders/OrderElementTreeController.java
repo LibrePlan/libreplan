@@ -243,10 +243,13 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public void removeOrderElement() {
         Set<Treeitem> selectedItems = tree.getSelectedItems();
         for (Treeitem treeItem : selectedItems) {
-            getModel().removeNode(
-                    (OrderElement) treeItem.getValue());
+            remove((OrderElement) treeItem.getValue());
         }
         filterByPredicateIfAny();
+    }
+
+    private void remove(OrderElement orderElement) {
+        getModel().removeNode(orderElement);
     }
 
     void doEditFor(Order order) {
@@ -574,8 +577,8 @@ public class OrderElementTreeController extends GenericForwardComposer {
             removebutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    getModel().removeNode(
-                            orderElementForThisRow);
+                    remove(orderElementForThisRow);
+                    filterByPredicateIfAny();
                 }
             });
 
