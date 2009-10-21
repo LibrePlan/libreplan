@@ -103,6 +103,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
     private void indent(OrderElement orderElement) {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         getModel().indent(orderElement);
+        filterByPredicateIfAny();
     }
 
     public TreeModel getOrderElementTreeModel() {
@@ -122,6 +123,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
     private void unindent(OrderElement orderElement) {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         getModel().unindent(orderElement);
+        filterByPredicateIfAny();
     }
 
     public void up() {
@@ -134,6 +136,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public void up(OrderElement orderElement) {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         getModel().up(orderElement);
+        filterByPredicateIfAny();
     }
 
     public void down() {
@@ -145,6 +148,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public void down(OrderElement orderElement) {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         getModel().down(orderElement);
+        filterByPredicateIfAny();
     }
 
     private OrderElement getSelectedNode() {
@@ -264,7 +268,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
         }
 
         @Override
-        public void render(Treeitem item, Object data) throws Exception {
+        public void render(final Treeitem item, Object data) throws Exception {
             final OrderElement orderElementForThisRow = (OrderElement) data;
             item.setValue(data);
             if (snapshotOfOpenedNodes != null) {
@@ -455,6 +459,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             cellForHours.setParent(tr);
 
             Treecell tcOperations = new Treecell();
+            tcOperations.setParent(tr);
 
             Button editbutton = new Button("", "/common/img/ico_editar1.png");
             editbutton.setHoverImage("/common/img/ico_editar.png");
@@ -514,6 +519,32 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 }
             });
 
+            final Button unindentbutton = new Button("");
+            if (isPredicateApplied()
+                    && (item.getLevel() == 0 || item.getLevel() == 1)) {
+                unindentbutton.setDisabled(true);
+                unindentbutton.setImage("/common/img/ico_izq_out.png");
+                unindentbutton.setHoverImage("/common/img/ico_izq_out.png");
+                unindentbutton.setTooltiptext("");
+            } else {
+                unindentbutton.setDisabled(false);
+                unindentbutton.setImage("/common/img/ico_izq1.png");
+                unindentbutton.setHoverImage("/common/img/ico_izq.png");
+                unindentbutton.setTooltiptext(_("Unindent"));
+            }
+            unindentbutton.setParent(tcOperations);
+            unindentbutton.setSclass("icono");
+            unindentbutton.addEventListener(Events.ON_CLICK,
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            unindent(orderElementForThisRow);
+                            final Button button = (Button) event.getTarget();
+                            Events.postEvent("updateUnindentButton", button,
+                                    null);
+                        }
+                    });
+
             Button indentbutton = new Button("");
             if (isFirstLevelElement(orderElementForThisRow)
                     && isPredicateApplied()) {
@@ -534,31 +565,10 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     indent(orderElementForThisRow);
+                    final Button button = (Button) event.getTarget();
+                    Events.postEvent("updateUnindentButton", button, null);
                 }
             });
-
-            Button unindentbutton = new Button("");
-            if (isFirstLevelElement(orderElementForThisRow)
-                    && isPredicateApplied()) {
-                unindentbutton.setDisabled(true);
-                unindentbutton.setImage("/common/img/ico_izq_out.png");
-                unindentbutton.setHoverImage("/common/img/ico_izq_out.png");
-                unindentbutton.setTooltiptext("");
-            } else {
-                unindentbutton.setDisabled(false);
-                unindentbutton.setImage("/common/img/ico_izq1.png");
-                unindentbutton.setHoverImage("/common/img/ico_izq.png");
-                unindentbutton.setTooltiptext(_("Unindent"));
-            }
-            unindentbutton.setParent(tcOperations);
-            unindentbutton.setSclass("icono");
-            unindentbutton.addEventListener(Events.ON_CLICK,
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            unindent(orderElementForThisRow);
-                        }
-                    });
 
             Button removebutton = new Button("", "/common/img/ico_borrar1.png");
             removebutton.setHoverImage("/common/img/ico_borrar.png");
@@ -572,8 +582,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
                             orderElementForThisRow);
                 }
             });
-
-            tcOperations.setParent(tr);
 
             tr.addEventListener("onDrop", new EventListener() {
 
@@ -599,6 +607,61 @@ public class OrderElementTreeController extends GenericForwardComposer {
             return result.toString();
         }
     }
+
+    public void updateUnindentButton(Event event) {
+        printf("Update unindent button event: " + event);
+        Events.postEvent("updateUnindentButton", (Button) event.getTarget(),
+                (OrderElement) event.getData());
+    }
+
+    private void printf(String str) {
+        System.out.println("### " + str);
+    }
+
+    public void updateUnindentButton(Treeitem item, Button button) {
+        System.out.println("### item: " + item.getLabel() + "; "
+                + item.getLevel());
+        if (isPredicateApplied()
+                && (item.getLevel() == 1 || item.getLevel() == 2)) {
+            System.out.println("### unindent");
+            button.setDisabled(true);
+            button.setImage("/common/img/ico_izq_out.png");
+            button.setHoverImage("/common/img/ico_izq_out.png");
+            button.setTooltiptext("");
+        } else {
+            System.out.println("### no unindent");
+            button.setDisabled(false);
+            button.setImage("/common/img/ico_izq1.png");
+            button.setHoverImage("/common/img/ico_izq.png");
+            button.setTooltiptext(_("Unindent"));
+        }
+        button.setTooltiptext("ACTUALIZADO!!!");
+        tree.renderItem(item);
+        // item.invalidate();
+        // button.invalidate();
+    }
+
+    // public void updateUnindentButton(Button button, OrderElement
+    // orderElement) {
+    // System.out.println("### updateUnindentButton: " + button.getLabel()
+    // + "; " + orderElement.getName());
+    //
+    //
+    // tree.getRoot()
+    //
+    // printf("orderModel.getOrder(): " + orderModel.getOrder());
+    // printf("orderElement: " + orderElement);
+    // printf("orderElement.getParent(): " + orderElement.getParent());
+    //
+    // if (isPredicateApplied()
+    // && (isFirstLevelElement(orderElement) || isFirstLevelElement(orderElement
+    // .getParent()))) {
+    //
+    // } else {
+    //
+    // }
+    // button.invalidate();
+    // }
 
     private boolean isFirstLevelElement(OrderElement orderElement) {
         final IOrderLineGroup root = orderModel.getOrder();
