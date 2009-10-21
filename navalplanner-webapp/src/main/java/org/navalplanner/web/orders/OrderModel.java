@@ -268,10 +268,6 @@ public class OrderModel implements IOrderModel {
                 orderElements.add(orderElement);
             }
         }
-        // No elements filtered, return original tree order
-        if (orderElements.isEmpty()) {
-            return orderElementTreeModel;
-        }
         // Return list of filtered elements
         return new OrderElementTreeModel(order, orderElements);
     }
