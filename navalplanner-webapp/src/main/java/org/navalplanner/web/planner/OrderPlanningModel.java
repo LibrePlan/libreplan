@@ -90,9 +90,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private LocalDate maxDate;
 
-    private ILoadChartFiller loadChartFiller = new OrderLoadChartFiller();
-
-    private Order order;
+    private ILoadChartFiller loadChartFiller;
 
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
@@ -209,16 +207,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private void setupChart(Order orderReloaded, Timeplot chartComponent,
             TimeTracker timeTracker) {
-        this.order = orderReloaded;
+        loadChartFiller = new OrderLoadChartFiller(orderReloaded);
         loadChartFiller.fillChart(chartComponent, timeTracker
                 .getRealInterval(), timeTracker.getHorizontalSize());
-        fillChartOnZoomChange(orderReloaded, chartComponent, timeTracker);
+        fillChartOnZoomChange(chartComponent, timeTracker);
     }
 
-    private void fillChartOnZoomChange(final Order order,
-            final Timeplot chartComponent, final TimeTracker timeTracker) {
-        this.order = order;
-
+    private void fillChartOnZoomChange(final Timeplot chartComponent,
+            final TimeTracker timeTracker) {
         zoomListener = new IZoomLevelChangedListener() {
 
             @Override
@@ -433,12 +429,17 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private class OrderLoadChartFiller extends LoadChartFiller {
 
+        private final Order order;
+
+        public OrderLoadChartFiller(Order orderReloaded) {
+            this.order = orderReloaded;
+        }
+
         @Override
         public void fillChart(Timeplot chart, Interval interval, Integer size) {
             chart.getChildren().clear();
             chart.invalidate();
             resetMaximunValueForChart();
-
             Plotinfo plotInfoOrder = getLoadPlotInfo(order,
                     interval.getStart(), interval.getFinish());
             plotInfoOrder.setFillColor("0000FF");
