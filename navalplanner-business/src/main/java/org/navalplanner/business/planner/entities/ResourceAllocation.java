@@ -495,13 +495,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private interface PredicateOnDayAssignment {
-        public static final PredicateOnDayAssignment ALWAYS_TRUE = new PredicateOnDayAssignment() {
-
-            @Override
-            public boolean satisfiedBy(DayAssignment dayAssignment) {
-                return true;
-            }
-        };
         boolean satisfiedBy(DayAssignment dayAssignment);
     }
 
