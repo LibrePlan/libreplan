@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -81,5 +82,6 @@ public class SpecificDayAssignment extends DayAssignment {
 
     void detach() {
         this.specificResourceAllocation = null;
+        getResource().removeAssignments(Arrays.asList(this));
     }
 }

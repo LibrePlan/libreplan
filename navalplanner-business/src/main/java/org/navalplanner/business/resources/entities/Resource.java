@@ -596,6 +596,13 @@ public abstract class Resource extends BaseEntity{
         this.dayAssignments.addAll(assignments);
     }
 
+    public void removeAssignments(
+            Collection<? extends DayAssignment> assignments) {
+        Validate.noNullElements(assignments);
+        clearCachedData();
+        this.dayAssignments.removeAll(assignments);
+    }
+
     public List<DayAssignment> getAssignments() {
         return new ArrayList<DayAssignment>(dayAssignments);
     }
