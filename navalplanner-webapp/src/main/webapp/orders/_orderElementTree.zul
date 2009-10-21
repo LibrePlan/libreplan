@@ -18,23 +18,26 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<!--
+    disabled="@{orderElementTreeController.itemSelected}"
+    disabled="@{orderElementTreeController.notItemSelected}"
+ -->
+
 <vbox id="orderElementTree">
     <vbox>
         <hbox>
-            <button label="${i18n:_('New order element')}"
-                onClick="orderElementTreeController.addOrderElement();">
-            </button>
-            <button label="${i18n:_('Delete order element')}"
-                onClick="orderElementTreeController.removeOrderElement();">
-            </button>
-            <button id="btnIndent" label="${i18n:_('Indent')}"
-                onClick="orderElementTreeController.indent();" />
-            <button id="btnUnindent" label="${i18n:_('Unindent')}"
-                onClick="orderElementTreeController.unindent();" />
-            <button id="btnUp" label="${i18n:_('Up')}"
-                onClick="orderElementTreeController.up();" />
+            <button id="btnNew" label="${i18n:_('New order element')}"
+                onClick="orderElementTreeController.addOrderElement();" />
             <button id="btnDown" label="${i18n:_('Down')}"
                 onClick="orderElementTreeController.down();" />
+            <button id="btnUp" label="${i18n:_('Up')}"
+                onClick="orderElementTreeController.up();" />
+            <button id="btnUnindent" label="${i18n:_('Unindent')}"
+                onClick="orderElementTreeController.unindent();" />
+            <button id="btnIndent" label="${i18n:_('Indent')}"
+                onClick="orderElementTreeController.indent();" />
+            <button id="btnDelete" label="${i18n:_('Delete order element')}"
+                onClick="orderElementTreeController.removeOrderElement();" />
         </hbox>
     </vbox>
     <vbox>
@@ -58,7 +61,7 @@
     <vbox>
         <tree id="tree" width="1050" multiple="true" droppable="true"
             onDrop="orderElementTreeController.move(self, event.dragged)"
-            onSelect="orderElementTreeController.updateControlButtons()"
+            onSelect="orderElementTreeController.updateControlButtons(event)"
             model="@{orderElementTreeController.orderElementTreeModel}"
             treeitemRenderer="@{orderElementTreeController.renderer}" pageSize="10"
             sclass="orderTree">

@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
@@ -49,6 +48,7 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.RendererCtrl;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
@@ -259,7 +259,8 @@ public class OrderElementTreeController extends GenericForwardComposer {
         comp.setVariable("orderElementTreeController", this, true);
     }
 
-    public class OrderElementTreeitemRenderer implements TreeitemRenderer {
+    public class OrderElementTreeitemRenderer implements TreeitemRenderer,
+            RendererCtrl {
 
         private Map<OrderElement, Intbox> map = new HashMap<OrderElement, Intbox>();
         private Map<OrderElement, Textbox> mapC = new HashMap<OrderElement, Textbox>();
@@ -476,7 +477,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             });
 
             Button upbutton = new Button("");
-            if (isFirstLevelElement(orderElementForThisRow)
+            if (isFirstLevelElement(item)
                     && isPredicateApplied()) {
                 upbutton.setDisabled(true);
                 upbutton.setImage("/common/img/ico_bajar_out.png");
@@ -498,7 +499,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             });
 
             Button downbutton = new Button("");
-            if (isFirstLevelElement(orderElementForThisRow)
+            if (isFirstLevelElement(item)
                     && isPredicateApplied()) {
                 downbutton.setDisabled(true);
                 downbutton.setImage("/common/img/ico_subir_out.png");
@@ -520,8 +521,8 @@ public class OrderElementTreeController extends GenericForwardComposer {
             });
 
             final Button unindentbutton = new Button("");
-            if (isPredicateApplied()
-                    && (item.getLevel() == 0 || item.getLevel() == 1)) {
+            if ((isFirstLevelElement(item) || isSecondLevelElement(item))
+                    && isPredicateApplied()) {
                 unindentbutton.setDisabled(true);
                 unindentbutton.setImage("/common/img/ico_izq_out.png");
                 unindentbutton.setHoverImage("/common/img/ico_izq_out.png");
@@ -539,14 +540,11 @@ public class OrderElementTreeController extends GenericForwardComposer {
                         @Override
                         public void onEvent(Event event) throws Exception {
                             unindent(orderElementForThisRow);
-                            final Button button = (Button) event.getTarget();
-                            Events.postEvent("updateUnindentButton", button,
-                                    null);
                         }
                     });
 
             Button indentbutton = new Button("");
-            if (isFirstLevelElement(orderElementForThisRow)
+            if (isFirstLevelElement(item)
                     && isPredicateApplied()) {
                 indentbutton.setDisabled(true);
                 indentbutton.setImage("/common/img/ico_derecha_out.png");
@@ -565,8 +563,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     indent(orderElementForThisRow);
-                    final Button button = (Button) event.getTarget();
-                    Events.postEvent("updateUnindentButton", button, null);
                 }
             });
 
@@ -593,7 +589,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
                             (Component) dropEvent.getDragged());
                 }
             });
-
         }
 
         private String pathAsString(int[] path) {
@@ -606,66 +601,29 @@ public class OrderElementTreeController extends GenericForwardComposer {
             }
             return result.toString();
         }
-    }
 
-    public void updateUnindentButton(Event event) {
-        printf("Update unindent button event: " + event);
-        Events.postEvent("updateUnindentButton", (Button) event.getTarget(),
-                (OrderElement) event.getData());
-    }
+        @Override
+        public void doCatch(Throwable ex) throws Throwable {
 
-    private void printf(String str) {
-        System.out.println("### " + str);
-    }
-
-    public void updateUnindentButton(Treeitem item, Button button) {
-        System.out.println("### item: " + item.getLabel() + "; "
-                + item.getLevel());
-        if (isPredicateApplied()
-                && (item.getLevel() == 1 || item.getLevel() == 2)) {
-            System.out.println("### unindent");
-            button.setDisabled(true);
-            button.setImage("/common/img/ico_izq_out.png");
-            button.setHoverImage("/common/img/ico_izq_out.png");
-            button.setTooltiptext("");
-        } else {
-            System.out.println("### no unindent");
-            button.setDisabled(false);
-            button.setImage("/common/img/ico_izq1.png");
-            button.setHoverImage("/common/img/ico_izq.png");
-            button.setTooltiptext(_("Unindent"));
         }
-        button.setTooltiptext("ACTUALIZADO!!!");
-        tree.renderItem(item);
-        // item.invalidate();
-        // button.invalidate();
+
+        @Override
+        public void doFinally() {
+            resetControlButtons();
+        }
+
+        @Override
+        public void doTry() {
+
+        }
     }
 
-    // public void updateUnindentButton(Button button, OrderElement
-    // orderElement) {
-    // System.out.println("### updateUnindentButton: " + button.getLabel()
-    // + "; " + orderElement.getName());
-    //
-    //
-    // tree.getRoot()
-    //
-    // printf("orderModel.getOrder(): " + orderModel.getOrder());
-    // printf("orderElement: " + orderElement);
-    // printf("orderElement.getParent(): " + orderElement.getParent());
-    //
-    // if (isPredicateApplied()
-    // && (isFirstLevelElement(orderElement) || isFirstLevelElement(orderElement
-    // .getParent()))) {
-    //
-    // } else {
-    //
-    // }
-    // button.invalidate();
-    // }
+    private boolean isFirstLevelElement(Treeitem item) {
+        return (item.getLevel() == 0);
+    }
 
-    private boolean isFirstLevelElement(OrderElement orderElement) {
-        final IOrderLineGroup root = orderModel.getOrder();
-        return (orderElement != null && orderElement.getParent() == root);
+    private boolean isSecondLevelElement(Treeitem item) {
+        return (item.getLevel() == 1);
     }
 
     private boolean isPredicateApplied() {
@@ -718,22 +676,45 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 .getSelectedElement();
     }
 
-    Button btnIndent, btnUnindent, btnUp, btnDown;
+    public boolean isItemSelected() {
+        return (tree.getSelectedItem() != null);
+    }
+
+    public boolean isNotItemSelected() {
+        return !isItemSelected();
+    }
+
+    Button btnNew, btnDown, btnUp, btnUnindent, btnIndent, btnDelete;
+
+    private void resetControlButtons() {
+        btnNew.setDisabled(isPredicateApplied());
+        btnIndent.setDisabled(true);
+        btnUnindent.setDisabled(true);
+        btnUp.setDisabled(true);
+        btnDown.setDisabled(true);
+        btnDelete.setDisabled(true);
+    }
 
     /**
-     * Disable control buttons (up, down, indent, unindent) for 1st level order
-     * elements
+     * Disable control buttons (new, up, down, indent, unindent, delete)
      */
-    public void updateControlButtons() {
-        final OrderElement orderElement = (tree.getSelectedItem() != null) ? (OrderElement) tree
-                .getSelectedItem().getValue()
-                : null;
-        boolean disabled = isPredicateApplied()
-                && isFirstLevelElement(orderElement);
-        btnIndent.setDisabled(disabled);
-        btnUnindent.setDisabled(disabled);
-        btnUp.setDisabled(disabled);
-        btnDown.setDisabled(disabled);
+    public void updateControlButtons(Event event) {
+        updateControlButtons((Tree) event.getTarget());
+    }
+
+    public void updateControlButtons(Tree tree) {
+        final Treeitem item = tree.getSelectedItem();
+
+        boolean disabledLevel1 = isPredicateApplied() && isFirstLevelElement(item);
+        boolean disabledLevel2 = isPredicateApplied()
+                && (isFirstLevelElement(item) || isSecondLevelElement(item));
+
+        btnNew.setDisabled(false);
+        btnDown.setDisabled(disabledLevel1);
+        btnUp.setDisabled(disabledLevel1);
+        btnUnindent.setDisabled(disabledLevel2);
+        btnIndent.setDisabled(disabledLevel1);
+        btnDelete.setDisabled(false);
     }
 
     /**
