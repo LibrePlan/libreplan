@@ -65,6 +65,8 @@ public class SaveCommand implements ISaveCommand {
     @Autowired
     private IAdHocTransactionService transactionService;
 
+    private List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
+
     @Override
     public void setState(PlanningState state) {
         this.state = state;
@@ -79,7 +81,14 @@ public class SaveCommand implements ISaveCommand {
                 return null;
             }
         });
+        fireAfterSave();
         notifyUserThatSavingIsDone();
+    }
+
+    private void fireAfterSave() {
+        for (IAfterSaveListener listener : listeners) {
+            listener.onAfterSave();
+        }
     }
 
     private void notifyUserThatSavingIsDone() {
@@ -190,6 +199,16 @@ public class SaveCommand implements ISaveCommand {
     @Override
     public String getName() {
         return _("Save");
+    }
+
+    @Override
+    public void addListener(IAfterSaveListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(IAfterSaveListener listener) {
+        listeners.remove(listener);
     }
 
 }

@@ -47,6 +47,7 @@ import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.ViewSwitcher;
+import org.navalplanner.web.planner.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -128,7 +129,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     "The order {0} must be scheduled", orderReloaded));
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
         addAdditional(additional, configuration);
-        configuration.addGlobalCommand(buildSaveCommand());
+        ISaveCommand saveCommand = buildSaveCommand();
+        configuration.addGlobalCommand(saveCommand);
 
         configuration.addCommandOnTask(buildResourceAllocationCommand(resourceAllocationController));
         configuration.addCommandOnTask(buildSplitCommand(splittingController));
@@ -146,7 +148,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         planner.setConfiguration(configuration);
 
-        setupChart(orderReloaded, chartComponent, planner.getTimeTracker());
+        setupChart(orderReloaded, chartComponent, planner.getTimeTracker(), saveCommand);
     }
 
     private void addAdditional(List<ICommand<TaskElement>> additional,
@@ -206,11 +208,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private void setupChart(Order orderReloaded, Timeplot chartComponent,
-            TimeTracker timeTracker) {
+            TimeTracker timeTracker, ISaveCommand saveCommand) {
         loadChartFiller = new OrderLoadChartFiller(orderReloaded);
         loadChartFiller.fillChart(chartComponent, timeTracker
                 .getRealInterval(), timeTracker.getHorizontalSize());
         fillChartOnZoomChange(chartComponent, timeTracker);
+        fillChartOnSave(chartComponent, timeTracker, saveCommand);
     }
 
     private void fillChartOnZoomChange(final Timeplot chartComponent,
@@ -227,6 +230,18 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         };
 
         timeTracker.addZoomListener(zoomListener);
+    }
+
+    private void fillChartOnSave(final Timeplot chartComponent,
+            final TimeTracker timeTracker, ISaveCommand saveCommand) {
+        saveCommand.addListener(new IAfterSaveListener() {
+
+            @Override
+            public void onAfterSave() {
+                loadChartFiller.fillChart(chartComponent, timeTracker
+                        .getRealInterval(), timeTracker.getHorizontalSize());
+            }
+        });
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(

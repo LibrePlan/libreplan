@@ -29,6 +29,14 @@ import org.zkoss.ganttz.extensions.ICommand;
  */
 public interface ISaveCommand extends ICommand<TaskElement> {
 
+    public interface IAfterSaveListener {
+        void onAfterSave();
+    }
+
     public void setState(PlanningState planningState);
+
+    public void addListener(IAfterSaveListener listener);
+
+    public void removeListener(IAfterSaveListener listener);
 
 }
