@@ -3,6 +3,7 @@
 planner = self;
 ]]>
 </zscript>
+
     <borderlayout sclass="plannerlayout" width="auto">
        <north height="30px" border="0">
        <hbox align="center" id="toolbar">
@@ -63,7 +64,7 @@ planner = self;
                 </center>
             </borderlayout>
         </center>
-        <south height="150px" collapsible="true" splittable="true">
+        <south height="150px" collapsible="true" title="Resources load graph">
             <borderlayout>
                 <west width="284px" flex="true" collapsible="true"
                     splittable="true" sclass="legend-gap">
