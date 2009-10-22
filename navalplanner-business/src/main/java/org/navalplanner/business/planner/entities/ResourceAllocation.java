@@ -450,6 +450,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     protected abstract Class<T> getDayAssignmentType();
 
+    ResourceAllocation<T> copy() {
+        ResourceAllocation<T> copy = createCopy();
+        copy.resourcesPerDay = resourcesPerDay;
+        copy.task = task;
+        copy.assignmentFunction = assignmentFunction;
+        return copy;
+    }
+
+    abstract ResourceAllocation<T> createCopy();
+
     public AssignmentFunction getAssignmentFunction() {
         return assignmentFunction;
     }

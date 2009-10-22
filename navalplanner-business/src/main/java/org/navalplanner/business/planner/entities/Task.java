@@ -229,6 +229,26 @@ public class Task extends TaskElement {
     }
 
     public static class ModifiedAllocation {
+
+        public static List<ModifiedAllocation> copy(
+                Collection<ResourceAllocation<?>> resourceAllocations) {
+            List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
+            for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+                result.add(new ModifiedAllocation(resourceAllocation,
+                        resourceAllocation.copy()));
+            }
+            return result;
+        }
+
+        public static List<ResourceAllocation<?>> modified(
+                Collection<ModifiedAllocation> collection) {
+            List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+            for (ModifiedAllocation modifiedAllocation : collection) {
+                result.add(modifiedAllocation.getModification());
+            }
+            return result;
+        }
+
         private final ResourceAllocation<?> original;
 
         private final ResourceAllocation<?> modification;
@@ -256,9 +276,18 @@ public class Task extends TaskElement {
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
             Collection<? extends ResourceAllocation<?>> toRemove) {
-        this.calculatedValue = calculatedValue;
         final LocalDate start = aggregate.getStart();
         final LocalDate end = aggregate.getEnd();
+        mergeAllocation(start, end, calculatedValue, newAllocations,
+                modifications, toRemove);
+    }
+
+    private void mergeAllocation(final LocalDate start, final LocalDate end,
+            CalculatedValue calculatedValue,
+            List<ResourceAllocation<?>> newAllocations,
+            List<ModifiedAllocation> modifications,
+            Collection<? extends ResourceAllocation<?>> toRemove) {
+        this.calculatedValue = calculatedValue;
         setStartDate(start.toDateTimeAtStartOfDay().toDate());
         setDaysDuration(Days.daysBetween(start, end).getDays());
         List<ResourceAllocation<?>> modified = new ArrayList<ResourceAllocation<?>>();
@@ -286,8 +315,11 @@ public class Task extends TaskElement {
 
     @Override
     protected void moveAllocations() {
+        List<ModifiedAllocation> copied = ModifiedAllocation
+                .copy(resourceAllocations);
         List<ResourceAllocationWithDesiredResourcesPerDay> allocations = ResourceAllocationWithDesiredResourcesPerDay
-                .fromExistent(resourceAllocations);
+                .fromExistent(ModifiedAllocation
+                        .modified(copied));
         if (allocations.isEmpty()) {
             return;
         }
@@ -306,7 +338,14 @@ public class Task extends TaskElement {
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
+        mergeAllocation(asLocalDate(getStartDate()), asLocalDate(getEndDate()),
+                calculatedValue, Collections
+                        .<ResourceAllocation<?>> emptyList(), copied,
+                Collections.<ResourceAllocation<?>> emptyList());
+    }
 
+    private LocalDate asLocalDate(Date date) {
+        return new LocalDate(date.getTime());
     }
 
 }

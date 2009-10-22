@@ -256,4 +256,12 @@ public class GenericResourceAllocation extends
         return forResources(getAssociatedResources());
     }
 
+    @Override
+    ResourceAllocation<GenericDayAssignment> createCopy() {
+        GenericResourceAllocation allocation = create();
+        allocation.genericDayAssignments = new HashSet<GenericDayAssignment>(
+                this.genericDayAssignments);
+        return allocation;
+    }
+
 }

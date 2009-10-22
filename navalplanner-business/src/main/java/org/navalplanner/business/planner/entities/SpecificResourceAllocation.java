@@ -188,4 +188,13 @@ public class SpecificResourceAllocation extends
     public List<Resource> getAssociatedResources() {
         return Arrays.asList(resource);
     }
+
+    @Override
+    ResourceAllocation<SpecificDayAssignment> createCopy() {
+        SpecificResourceAllocation result = create(getTask());
+        result.specificDaysAssignment = new HashSet<SpecificDayAssignment>(
+                this.specificDaysAssignment);
+        result.resource = getResource();
+        return result;
+    }
 }
