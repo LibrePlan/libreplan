@@ -28,11 +28,8 @@ import java.util.Set;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
-import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -64,9 +61,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Autowired
     private IHoursGroupDAO hoursGroupDAO;
-
-    @Autowired
-    private IResourceAllocationDAO resourceAllocationDAO;
 
     private Task task;
 
@@ -154,7 +148,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         this.planningState = planningState;
         planningState.reassociateResourcesWithSession(resourceDAO);
         taskElementDAO.save(this.task);
-        reattachResourceAllocations(this.task.getResourceAllocations());
         hoursGroupDAO.save(this.task.getHoursGroup());
         reattachHoursGroup(this.task.getHoursGroup());
         reattachCriterions(this.task.getHoursGroup().getCriterions());
@@ -164,27 +157,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 .create(task, currentAllocations, resourceDAO,
                         reattachResources(getResourcesMatchingCriterions()));
         return resourceAllocationsBeingEdited;
-    }
-
-    private void reattachResourceAllocations(
-            Set<ResourceAllocation<?>> resourceAllocations) {
-        resourceAllocations.size();
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            resourceAllocation.getAssignments().size();
-            if (resourceAllocation instanceof SpecificResourceAllocation) {
-                reattachSpecificResourceAllocation((SpecificResourceAllocation) resourceAllocation);
-            } else if (resourceAllocation instanceof GenericResourceAllocation) {
-                ((GenericResourceAllocation) resourceAllocation)
-                        .getCriterions().size();
-            }
-            resourceAllocationDAO.save(resourceAllocation);
-        }
-    }
-
-    private void reattachSpecificResourceAllocation(
-            SpecificResourceAllocation resourceAllocation) {
-        Resource resource = resourceAllocation.getResource();
-        reattachResource(resource);
     }
 
     private void reattachHoursGroup(HoursGroup hoursGroup) {
@@ -217,7 +189,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void reattachResource(Resource resource) {
         resourceDAO.save(resource);
         reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
-        resource.getAssignments();
         if (resource.getCalendar() != null) {
             resource.getCalendar().getWorkableHours(new LocalDate());
         }
