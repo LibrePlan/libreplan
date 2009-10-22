@@ -560,6 +560,17 @@ div.z-tree {
     border-collapse: collapse;
 }
 
+.advancedallocationlayout .second_level_ th {
+    width:150px;
+}
+.advancedallocationlayout .taskspanelgap td.z-row-inner {
+    padding:0 !important;
+}
+.advancedallocationlayout .taskspanelgap td.z-row-inner input {
+    padding-top:2px;
+    padding-bottom:2px;
+}
+
 .taskspanelgap table {
     border-collapse: collapse;
 }

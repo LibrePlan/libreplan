@@ -44,7 +44,6 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.ViewSwitcher;
-import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
@@ -54,6 +53,8 @@ import org.zkoss.ganttz.timetracker.TimeTrackedTableWithLeftPane;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
+import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -229,17 +230,22 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         insertComponentsInLayout();
         timeTrackerComponent.afterCompose();
         table.afterCompose();
-        Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
     }
 
     private void createComponents() {
-        timeTracker = new TimeTracker(intervalFromData());
+        timeTracker = new TimeTracker(addYearMarginTointerval());
         timeTrackerComponent = new TimeTrackerComponentWithoutColumns(
                 timeTracker, "timeTracker");
         TimeTrackedTableWithLeftPane<Row, Row> timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<Row, Row>(
                 getDataSource(), getColumnsForLeft(), getLeftRenderer(),
                 getRightRenderer(), timeTracker);
 
+        timeTracker.addZoomListener(new IZoomLevelChangedListener() {
+            @Override
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
+            }
+        });
         table = timeTrackedTableWithLeftPane.getRightPane();
         leftPane = timeTrackedTableWithLeftPane.getLeftPane();
     }
@@ -402,6 +408,13 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             LocalDate end = getEnd(all);
             return new Interval(asDate(start), asDate(end));
         }
+    }
+
+    private Interval addYearMarginTointerval() {
+        Interval interval = intervalFromData();
+        return new Interval(new DateTime(interval.getStart()).minusYears(1)
+                .toDate(), new DateTime(interval.getFinish()).plusYears(1)
+                .toDate());
     }
 
     private LocalDate getEnd(List<ResourceAllocation<?>> all) {
