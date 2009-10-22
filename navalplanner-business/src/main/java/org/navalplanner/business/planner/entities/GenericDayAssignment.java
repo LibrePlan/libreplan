@@ -48,10 +48,11 @@ public class GenericDayAssignment extends DayAssignment {
             Collection<GenericDayAssignment> assignemnts) {
         Set<GenericDayAssignment> result = new HashSet<GenericDayAssignment>();
         for (GenericDayAssignment a : assignemnts) {
-            GenericDayAssignment r = create(a.getDay(), a.getHours(), a
+            GenericDayAssignment created = create(a.getDay(), a.getHours(), a
                     .getResource());
-            r.setGenericResourceAllocation(newAllocation);
-            result.add(r);
+            created.setGenericResourceAllocation(newAllocation);
+            created.associateToResource();
+            result.add(created);
         }
         return result;
     }
@@ -79,7 +80,8 @@ public class GenericDayAssignment extends DayAssignment {
         this.genericResourceAllocation = genericResourceAllocation;
     }
 
-    public void detach() {
+    @Override
+    void detach() {
         genericResourceAllocation = null;
         getResource().removeAssignments(Arrays.asList(this));
     }

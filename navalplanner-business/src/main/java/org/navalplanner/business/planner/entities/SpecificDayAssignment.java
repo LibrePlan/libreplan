@@ -44,6 +44,7 @@ public class SpecificDayAssignment extends DayAssignment {
             SpecificDayAssignment created = create(s.getDay(), s.getHours(), s
                     .getResource());
             created.setSpecificResourceAllocation(allocation);
+            created.associateToResource();
             result.add(created);
         }
         return result;
@@ -80,6 +81,7 @@ public class SpecificDayAssignment extends DayAssignment {
         this.specificResourceAllocation = specificResourceAllocation;
     }
 
+    @Override
     void detach() {
         this.specificResourceAllocation = null;
         getResource().removeAssignments(Arrays.asList(this));

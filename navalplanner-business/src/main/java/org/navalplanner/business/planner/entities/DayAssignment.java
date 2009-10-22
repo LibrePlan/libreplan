@@ -21,6 +21,7 @@
 package org.navalplanner.business.planner.entities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -135,5 +136,11 @@ public abstract class DayAssignment extends BaseEntity {
         return day.compareTo(startInclusive) >= 0
                 && day.compareTo(endExclusive) < 0;
     }
+
+    protected void associateToResource() {
+        getResource().addNewAssignments(Arrays.asList(this));
+    }
+
+    abstract void detach();
 
 }

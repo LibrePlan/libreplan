@@ -21,6 +21,7 @@
 package org.navalplanner.business.resources.entities;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Calendar;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.Days;

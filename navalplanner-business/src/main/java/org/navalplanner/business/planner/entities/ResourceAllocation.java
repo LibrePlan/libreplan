@@ -550,4 +550,20 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public abstract void mergeAssignmentsAndResourcesPerDay(ResourceAllocation<?> modifications);
 
+    void detachAssignments() {
+        for (DayAssignment dayAssignment : getAssignments()) {
+            dayAssignment.detach();
+        }
+    }
+
+    void detach() {
+        detachAssignments();
+    }
+
+    void associateAssignmentsToResource() {
+        for (DayAssignment dayAssignment : getAssignments()) {
+            dayAssignment.associateToResource();
+        }
+    }
+
 }

@@ -106,10 +106,12 @@ public class Task extends TaskElement {
                     "the resourceAllocation's task must be this task");
         }
         resourceAllocations.add(resourceAllocation);
+        resourceAllocation.associateAssignmentsToResource();
     }
 
     public void removeResourceAllocation(
             ResourceAllocation<?> resourceAllocation) {
+        resourceAllocation.detach();
         resourceAllocations.remove(resourceAllocation);
     }
 
@@ -266,8 +268,14 @@ public class Task extends TaskElement {
                     pair.getModification());
             modified.add(pair.getOriginal());
         }
-        resourceAllocations.removeAll(toRemove);
+        remove(toRemove);
         addAllocations(newAllocations);
+    }
+
+    private void remove(Collection<? extends ResourceAllocation<?>> toRemove) {
+        for (ResourceAllocation<?> resourceAllocation : toRemove) {
+            removeResourceAllocation(resourceAllocation);
+        }
     }
 
     private void addAllocations(List<ResourceAllocation<?>> newAllocations) {

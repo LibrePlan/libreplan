@@ -232,16 +232,9 @@ public class GenericResourceAllocation extends
     }
 
     private void mergeAssignments(GenericResourceAllocation modifications) {
-        Set<GenericDayAssignment> previous = this.genericDayAssignments;
+        detachAssignments();
         moveToThis(modifications.genericDayAssignments);
         clearFieldsCalculatedFromAssignments();
-        detach(previous);
-    }
-
-    private void detach(Set<GenericDayAssignment> previous) {
-        for (GenericDayAssignment genericDayAssignment : previous) {
-            genericDayAssignment.detach();
-        }
     }
 
     private void moveToThis(Set<GenericDayAssignment> assignemnts) {

@@ -169,21 +169,14 @@ public class SpecificResourceAllocation extends
     }
 
     private void mergeAssignments(SpecificResourceAllocation modifications) {
-        Set<SpecificDayAssignment> previous = this.specificDaysAssignment;
+        detachAssignments();
         this.specificDaysAssignment = SpecificDayAssignment.copy(this,
                 modifications.specificDaysAssignment);
-        detach(previous);
         clearFieldsCalculatedFromAssignments();
     }
 
     private void clearFieldsCalculatedFromAssignments() {
         assignmentsOrderedCached = null;
-    }
-
-    private void detach(Set<SpecificDayAssignment> previous) {
-        for (SpecificDayAssignment p : previous) {
-            p.detach();
-        }
     }
 
     @Override
