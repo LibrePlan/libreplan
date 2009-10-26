@@ -20,7 +20,6 @@
 
 package org.navalplanner.web.planner;
 
-import java.util.Date;
 import java.util.SortedMap;
 
 import org.joda.time.LocalDate;
@@ -37,14 +36,7 @@ public interface ILoadChartFiller {
 
     void fillChart(Timeplot chart, Interval interval, Integer size);
 
-    String getServletUri(final SortedMap<LocalDate, Integer> mapDayAssignments,
-            final Date start, final Date finish);
-
     void setZoomLevel(ZoomLevel zoomLevel);
-
-    void resetMaximunValueForChart();
-
-    Integer getMaximunValueForChart();
 
     boolean zoomByDay();
 

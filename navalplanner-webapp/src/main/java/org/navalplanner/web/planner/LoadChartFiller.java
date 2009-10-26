@@ -59,8 +59,7 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
     public abstract void fillChart(Timeplot chart, Interval interval,
             Integer size);
 
-    @Override
-    public String getServletUri(
+    protected String getServletUri(
             final SortedMap<LocalDate, Integer> mapDayAssignments,
             final Date start, final Date finish) {
         if (mapDayAssignments.isEmpty()) {
@@ -180,13 +179,11 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         this.zoomLevel = zoomLevel;
     }
 
-    @Override
-    public void resetMaximunValueForChart() {
+    protected void resetMaximunValueForChart() {
         this.maximunValueForChart = 0;
     }
 
-    @Override
-    public Integer getMaximunValueForChart() {
+    protected Integer getMaximunValueForChart() {
         return maximunValueForChart;
     }
 
