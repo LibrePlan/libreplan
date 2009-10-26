@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
@@ -76,6 +77,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Autowired
     private IDayAssignmentDAO dayAssignmentDAO;
+
+    private List<IOnMoveListener> listeners = new ArrayList<IOnMoveListener>();
 
     @Override
     public void setOrder(Order order) {
@@ -128,14 +131,17 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public long setBeginDate(final Date beginDate) {
-            return transactionService
+            Long runOnReadOnlyTransaction = transactionService
                     .runOnReadOnlyTransaction(new IOnTransaction<Long>() {
                         @Override
                         public Long execute() {
                             taskDAO.save(taskElement);
-                            return setBeginDateInsideTransaction(beginDate);
+                            Long result = setBeginDateInsideTransaction(beginDate);
+                            fireTaskElementMoved(taskElement);
+                            return result;
                         }
                     });
+            return runOnReadOnlyTransaction;
         }
 
         private Long setBeginDateInsideTransaction(final Date beginDate) {
@@ -392,6 +398,23 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         Type type = toDomainType(dependency.getType());
         source.removeDependencyWithDestination(dependency.getDestination(),
                 type);
+    }
+
+    private void fireTaskElementMoved(TaskElement taskElement) {
+        for (IOnMoveListener moveListener : listeners) {
+            moveListener.moved(taskElement);
+        }
+    }
+
+    @Override
+    public void addListener(IOnMoveListener moveListener) {
+        Validate.notNull(moveListener);
+        listeners.add(moveListener);
+    }
+
+    @Override
+    public void removeListener(IOnMoveListener moveListener) {
+        listeners.remove(moveListener);
     }
 
 }

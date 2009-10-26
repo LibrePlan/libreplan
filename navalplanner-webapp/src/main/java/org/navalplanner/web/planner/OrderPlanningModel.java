@@ -46,6 +46,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ISaveCommand.IAfterSaveListener;
+import org.navalplanner.web.planner.ITaskElementAdapter.IOnMoveListener;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -88,6 +89,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private LocalDate minDate;
 
     private LocalDate maxDate;
+
+    private ITaskElementAdapter taskElementAdapter;
 
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
@@ -150,10 +153,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private void refillLoadChartWhenNeeded(Planner planner,
-            ISaveCommand saveCommand,
-            LoadChart loadChart) {
+            ISaveCommand saveCommand, final LoadChart loadChart) {
         planner.getTimeTracker().addZoomListener(fillOnZoomChange(loadChart));
         saveCommand.addListener(fillChartOnSave(loadChart));
+        taskElementAdapter.addListener(new IOnMoveListener() {
+            @Override
+            public void moved(TaskElement taskElement) {
+                loadChart.fillChart();
+            }
+        });
     }
 
     private void addAdditional(List<ICommand<TaskElement>> additional,
@@ -246,7 +254,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private PlannerConfiguration<TaskElement> createConfiguration(
             Order orderReloaded) {
-        ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
+        taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setOrder(orderReloaded);
         planningState = new PlanningState(orderReloaded
                 .getAssociatedTaskElement(),
