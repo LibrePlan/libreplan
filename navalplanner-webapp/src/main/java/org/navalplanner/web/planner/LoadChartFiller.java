@@ -45,6 +45,111 @@ import org.zkoss.zk.ui.Executions;
  */
 public abstract class LoadChartFiller implements ILoadChartFiller {
 
+    private final class GraphicSpecificationCreator implements
+            IServletRequestHandler {
+
+        private final LocalDate finish;
+        private final SortedMap<LocalDate, Integer> mapDayAssignments;
+        private final LocalDate start;
+
+        private GraphicSpecificationCreator(Date finish,
+                SortedMap<LocalDate, Integer> mapDayAssignments, Date start) {
+            this.finish = new LocalDate(finish);
+            this.mapDayAssignments = mapDayAssignments;
+            this.start = new LocalDate(start);
+        }
+
+        @Override
+        public void handle(HttpServletRequest request,
+                HttpServletResponse response) throws ServletException,
+                IOException {
+            PrintWriter writer = response.getWriter();
+            fillValues(writer);
+            writer.close();
+        }
+
+        private void fillValues(PrintWriter writer) {
+            fillZeroValueFromStart(writer);
+            fillInnerValues(writer, firstDay(), lastDay());
+            fillZeroValueToFinish(writer);
+        }
+
+        private void fillInnerValues(PrintWriter writer, LocalDate firstDay,
+                LocalDate lastDay) {
+            for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = nextDay(day)) {
+                Integer hours = getHoursForDay(day);
+                printLine(writer, day, hours);
+            }
+        }
+
+        private LocalDate nextDay(LocalDate date) {
+            if (zoomByDay()) {
+                return date.plusDays(1);
+            } else {
+                return date.plusWeeks(1);
+            }
+        }
+
+        private LocalDate firstDay() {
+            LocalDate date = mapDayAssignments.firstKey();
+            return convertAsNeededByZoom(date);
+        }
+
+        private LocalDate lastDay() {
+            LocalDate date = mapDayAssignments.lastKey();
+            return convertAsNeededByZoom(date);
+        }
+
+        private LocalDate convertAsNeededByZoom(LocalDate date) {
+            if (zoomByDay()) {
+                return date;
+            } else {
+                return getThursdayOfThisWeek(date);
+            }
+        }
+
+        private int getHoursForDay(LocalDate day) {
+            return mapDayAssignments.get(day) != null ? mapDayAssignments
+                    .get(day) : 0;
+        }
+
+        private void printLine(PrintWriter writer, LocalDate day, Integer hours) {
+            writer.println(day.toString("yyyyMMdd") + " " + hours);
+        }
+
+        private void fillZeroValueFromStart(PrintWriter writer) {
+            printLine(writer, start, 0);
+            if (startIsPreviousToPreviousDayToFirstAssignment()) {
+                printLine(writer, previousDayToFirstAssignment(), 0);
+            }
+        }
+
+        private boolean startIsPreviousToPreviousDayToFirstAssignment() {
+            return !mapDayAssignments.isEmpty()
+                    && start.compareTo(previousDayToFirstAssignment()) < 0;
+        }
+
+        private LocalDate previousDayToFirstAssignment() {
+            return mapDayAssignments.firstKey().minusDays(1);
+        }
+
+        private void fillZeroValueToFinish(PrintWriter writer) {
+            if (finishIsPosteriorToNextDayToLastAssignment()) {
+                printLine(writer, nextDayToLastAssignment(), 0);
+            }
+            printLine(writer, finish, 0);
+        }
+
+        private boolean finishIsPosteriorToNextDayToLastAssignment() {
+            return !mapDayAssignments.isEmpty()
+                    && finish.compareTo(nextDayToLastAssignment()) > 0;
+        }
+
+        private LocalDate nextDayToLastAssignment() {
+            return mapDayAssignments.lastKey().plusDays(1);
+        }
+    }
+
     /**
      * Number of days to Thursday since the beginning of the week. In order to
      * calculate the middle of a week.
@@ -72,34 +177,8 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         HttpServletRequest request = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
         String uri = CallbackServlet.registerAndCreateURLFor(request,
-                        new IServletRequestHandler() {
-
-                            @Override
-                            public void handle(HttpServletRequest request,
-                                    HttpServletResponse response)
-                                    throws ServletException, IOException {
-                                PrintWriter writer = response.getWriter();
-
-                                fillZeroValueFromStart(writer, start,
-                                        mapDayAssignments);
-
-                                LocalDate firstDay = firstDay(mapDayAssignments);
-                                LocalDate lastDay = lastDay(mapDayAssignments);
-
-                                for (LocalDate day = firstDay; day
-                                        .compareTo(lastDay) <= 0; day = nextDay(day)) {
-                                    Integer hours = mapDayAssignments.get(day) != null ? mapDayAssignments
-                                            .get(day)
-                                            : 0;
-                                    printLine(writer, day, hours);
-                                }
-
-                                fillZeroValueToFinish(writer, finish,
-                                        mapDayAssignments);
-
-                                writer.close();
-                            }
-                        });
+                new GraphicSpecificationCreator(finish, mapDayAssignments,
+                        start));
         return uri;
     }
 
@@ -109,69 +188,13 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         }
     }
 
-    private LocalDate firstDay(SortedMap<LocalDate, Integer> mapDayAssignments) {
-        LocalDate date = mapDayAssignments.firstKey();
-        if (zoomByDay()) {
-            return date;
-        } else {
-            return getThursdayOfThisWeek(date);
-        }
-    }
-
-    private LocalDate lastDay(SortedMap<LocalDate, Integer> mapDayAssignments) {
-        LocalDate date = mapDayAssignments.lastKey();
-        if (zoomByDay()) {
-            return date;
-        } else {
-            return getThursdayOfThisWeek(date);
-        }
-    }
-
     private LocalDate getThursdayOfThisWeek(LocalDate date) {
         return date.dayOfWeek().withMinimumValue().plusDays(DAYS_TO_THURSDAY);
-    }
-
-    private LocalDate nextDay(LocalDate date) {
-        if (zoomByDay()) {
-            return date.plusDays(1);
-        } else {
-            return date.plusWeeks(1);
-        }
     }
 
     @Override
     public boolean zoomByDay() {
         return zoomLevel.equals(ZoomLevel.DETAIL_FIVE);
-    }
-
-    private void fillZeroValueFromStart(PrintWriter writer, Date start,
-            SortedMap<LocalDate, Integer> mapDayAssignments) {
-        LocalDate day = new LocalDate(start);
-        if (mapDayAssignments.isEmpty()) {
-            printLine(writer, day, 0);
-        } else if (day.compareTo(mapDayAssignments.firstKey()) < 0) {
-            printLine(writer, day, 0);
-            if (!day.equals(mapDayAssignments.firstKey().minusDays(1))) {
-                printLine(writer, mapDayAssignments.firstKey().minusDays(1), 0);
-            }
-        }
-    }
-
-    private void fillZeroValueToFinish(PrintWriter writer, Date finish,
-            SortedMap<LocalDate, Integer> mapDayAssignments) {
-        LocalDate day = new LocalDate(finish);
-        if (mapDayAssignments.isEmpty()) {
-            printLine(writer, day, 0);
-        } else if (day.compareTo(mapDayAssignments.lastKey()) > 0) {
-            if (!day.equals(mapDayAssignments.lastKey().plusDays(1))) {
-                printLine(writer, mapDayAssignments.lastKey().plusDays(1), 0);
-            }
-            printLine(writer, day, 0);
-        }
-    }
-
-    private void printLine(PrintWriter writer, LocalDate day, Integer hours) {
-        writer.println(day.toString("yyyyMMdd") + " " + hours);
     }
 
     @Override
