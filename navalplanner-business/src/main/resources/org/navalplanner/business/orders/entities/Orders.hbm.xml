@@ -57,7 +57,7 @@
         <joined-subclass name="OrderLine">
             <key column="ORDERELEMENTID"></key>
 
-            <set name="hoursGroups" access="field" cascade="all" inverse="true">
+            <set name="hoursGroups" access="field" cascade="all,delete-orphan" inverse="true">
                 <key column="PARENT_ORDER_LINE" not-null="false"></key>
                 <one-to-many class="HoursGroup" />
             </set>

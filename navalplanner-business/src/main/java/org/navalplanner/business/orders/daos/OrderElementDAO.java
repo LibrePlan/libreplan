@@ -53,6 +53,13 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
 
+    @Override
+    public List<OrderElement> findWithoutParent() {
+        Criteria c = getSession().createCriteria(OrderElement.class);
+        c.add(Restrictions.isNull("parent"));
+        return (List<OrderElement>) c.list();
+    }
+
     public List<OrderElement> findByCode(String code) {
         Criteria c = getSession().createCriteria(OrderElement.class);
         c.add(Restrictions.eq("code", code));

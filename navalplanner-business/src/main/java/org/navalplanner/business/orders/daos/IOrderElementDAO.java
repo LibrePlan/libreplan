@@ -34,6 +34,9 @@ import org.navalplanner.business.orders.entities.OrderElement;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
+
+    public List<OrderElement> findWithoutParent();
+
     public List<OrderElement> findByCode(String code);
 
     public OrderElement findUniqueByCode(String code)
