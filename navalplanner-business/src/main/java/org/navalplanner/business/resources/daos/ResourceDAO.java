@@ -21,6 +21,7 @@
 package org.navalplanner.business.resources.daos;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -72,10 +73,10 @@ public class ResourceDAO extends GenericDAOHibernate<Resource, Long> implements
         if (taskElements.isEmpty()) {
             return new ArrayList<Resource>();
         }
-        List<Resource> result = new ArrayList<Resource>();
+        Set<Resource> result = new LinkedHashSet<Resource>();
         result.addAll(findRelatedToSpecific(taskElements));
         result.addAll(findRelatedToGeneric(taskElements));
-        return result;
+        return new ArrayList<Resource>(result);
     }
 
     @SuppressWarnings("unchecked")
