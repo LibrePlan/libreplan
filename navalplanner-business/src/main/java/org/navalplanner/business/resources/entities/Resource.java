@@ -327,20 +327,6 @@ public abstract class Resource extends BaseEntity{
         return newSatisfaction;
     }
 
-    private Date getFinishDate(ICriterionType<?> type,
-            CriterionSatisfaction newSatisfaction, Interval interval) {
-        if (!type.isAllowSimultaneousCriterionsPerResource()) {
-            CriterionSatisfaction posterior = getNext(type, newSatisfaction,
-                    this.getCriterionSatisfactions());
-            if (posterior != null && posterior.overlapsWith(interval)) {
-                assert !posterior.overlapsWith(Interval.range(interval
-                        .getStart(), posterior.getStartDate()));
-                return posterior.getStartDate();
-            }
-        }
-        return interval.getEnd();
-    }
-
     /**
      * @param orderedSatisfactions
      * @param newSatisfaction
