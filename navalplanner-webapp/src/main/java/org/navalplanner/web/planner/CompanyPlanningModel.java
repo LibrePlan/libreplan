@@ -367,17 +367,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             if (dayAssignments.isEmpty()) {
                 return map;
             }
-
-            Collections.sort(dayAssignments, new Comparator<DayAssignment>() {
-
-                @Override
-                public int compare(DayAssignment o1, DayAssignment o2) {
-                    return o1.getDay().compareTo(o2.getDay());
-                }
-
-            });
-
-            for (DayAssignment dayAssignment : dayAssignments) {
+            for (DayAssignment dayAssignment : DayAssignment
+                    .orderedByDay(dayAssignments)) {
                 LocalDate day = dayAssignment.getDay();
                 Integer hours = dayAssignment.getHours();
 

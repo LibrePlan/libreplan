@@ -24,8 +24,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -472,18 +470,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 return map;
             }
 
-            Collections.sort(dayAssignments, new Comparator<DayAssignment>() {
-
-                @Override
-                public int compare(DayAssignment o1, DayAssignment o2) {
-                    return o1.getDay().compareTo(o2.getDay());
-                }
-
-            });
-
             Set<Resource> resroucesAlreadyUsed = new HashSet<Resource>();
 
-            for (DayAssignment dayAssignment : dayAssignments) {
+            for (DayAssignment dayAssignment : DayAssignment
+                    .orderedByDay(dayAssignments)) {
                 LocalDate day = dayAssignment.getDay();
                 Integer hours = 0;
 
