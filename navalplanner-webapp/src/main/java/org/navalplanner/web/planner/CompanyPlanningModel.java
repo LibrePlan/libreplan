@@ -25,9 +25,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
@@ -327,26 +330,48 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
                 List<Resource> resources, Date start, Date finish) {
-            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
+            return new HoursByDayCalculator<Entry<LocalDate, List<Resource>>>() {
 
-            LocalDate end = new LocalDate(finish);
-
-            for (LocalDate date = new LocalDate(start); date.compareTo(end) <= 0; date = date
-                    .plusDays(1)) {
-                Integer hours = 0;
-                for (Resource resource : resources) {
-                    ResourceCalendar calendar = resource.getCalendar();
-                    if (calendar != null) {
-                        hours += calendar.getWorkableHours(date);
-                    } else {
-                        hours += SameWorkHoursEveryDay.getDefaultWorkingDay()
-                                .getWorkableHours(date);
-                    }
+                @Override
+                protected LocalDate getDayFor(
+                        Entry<LocalDate, List<Resource>> element) {
+                    return element.getKey();
                 }
 
-                map.put(date, hours);
+                @Override
+                protected int getHoursFor(
+                        Entry<LocalDate, List<Resource>> element) {
+                    int sum = 0;
+                    for (Resource resource : element.getValue()) {
+                        sum += hoursFor(resource, element.getKey());
+                    }
+                    return sum;
+                }
+
+                private int hoursFor(Resource resource, LocalDate day) {
+                    int result = 0;
+                    ResourceCalendar calendar = resource.getCalendar();
+                    if (calendar != null) {
+                        result += calendar.getWorkableHours(day);
+                    } else {
+                        result += SameWorkHoursEveryDay.getDefaultWorkingDay()
+                                .getWorkableHours(day);
+                    }
+                    return result;
+                }
+            }.calculate(getResourcesByDateBetween(
+                    resources, start, finish));
+        }
+
+        private Set<Entry<LocalDate, List<Resource>>> getResourcesByDateBetween(
+                List<Resource> resources, Date start, Date finish) {
+            LocalDate end = new LocalDate(finish);
+            Map<LocalDate, List<Resource>> result = new HashMap<LocalDate, List<Resource>>();
+            for (LocalDate date = new LocalDate(start); date.compareTo(end) <= 0; date = date
+                    .plusDays(1)) {
+                result.put(date, resources);
             }
-            return convertAsNeededByZoom(map);
+            return result.entrySet();
         }
 
         /**
@@ -357,25 +382,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
          */
         private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
                 List<DayAssignment> dayAssignments) {
-            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
-
-            if (dayAssignments.isEmpty()) {
-                return map;
-            }
-            for (DayAssignment dayAssignment : DayAssignment
-                    .orderedByDay(dayAssignments)) {
-                LocalDate day = dayAssignment.getDay();
-                Integer hours = dayAssignment.getHours();
-
-                if (map.get(day) == null) {
-                    map.put(day, hours);
-                } else {
-                    map.put(day, map.get(day) + hours);
-                }
-            }
-            return convertAsNeededByZoom(map);
+            return new DefaultDayAssignmentCalculator().calculate(dayAssignments);
         }
-
     }
 
 }

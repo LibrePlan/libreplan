@@ -22,6 +22,7 @@ package org.navalplanner.web.planner;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.SortedMap;
@@ -32,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.web.servlets.CallbackServlet;
 import org.navalplanner.web.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkforge.timeplot.Timeplot;
@@ -44,6 +46,47 @@ import org.zkoss.zk.ui.Executions;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public abstract class LoadChartFiller implements ILoadChartFiller {
+
+    protected abstract class HoursByDayCalculator<T> {
+        SortedMap<LocalDate, Integer> calculate(Collection<? extends T> elements) {
+            SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
+            if (elements.isEmpty()) {
+                return result;
+            }
+            for (T element : elements) {
+                if (included(element)) {
+                    int hours = getHoursFor(element);
+                    LocalDate day = getDayFor(element);
+                    if (!result.containsKey(day)) {
+                        result.put(day, 0);
+                    }
+                    result.put(day, result.get(day) + hours);
+                }
+            }
+            return convertAsNeededByZoom(result);
+        }
+
+        protected abstract LocalDate getDayFor(T element);
+
+        protected abstract int getHoursFor(T element);
+
+        protected boolean included(T each) {
+            return true;
+        }
+    }
+
+    protected class DefaultDayAssignmentCalculator extends
+            HoursByDayCalculator<DayAssignment> {
+        @Override
+        protected LocalDate getDayFor(DayAssignment element) {
+            return element.getDay();
+        }
+
+        @Override
+        protected int getHoursFor(DayAssignment element) {
+            return element.getHours();
+        }
+    }
 
     private final class GraphicSpecificationCreator implements
             IServletRequestHandler {
@@ -230,7 +273,8 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         return result;
     }
 
-    protected SortedMap<LocalDate, Integer> convertAsNeededByZoom(SortedMap<LocalDate, Integer> map) {
+    protected SortedMap<LocalDate, Integer> convertAsNeededByZoom(
+            SortedMap<LocalDate, Integer> map) {
         if (isZoomByDay()) {
             return map;
         } else {
