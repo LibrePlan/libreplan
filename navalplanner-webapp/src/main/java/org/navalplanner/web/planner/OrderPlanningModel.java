@@ -89,8 +89,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private LocalDate maxDate;
 
-    private ILoadChartFiller loadChartFiller;
-
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
         @Override
@@ -146,7 +144,16 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         planner.setConfiguration(configuration);
 
-        setupChart(orderReloaded, chartComponent, planner.getTimeTracker(), saveCommand);
+        LoadChart loadChart = setupChart(orderReloaded, chartComponent, planner
+                .getTimeTracker());
+        refillLoadChartWhenNeeded(planner, saveCommand, loadChart);
+    }
+
+    private void refillLoadChartWhenNeeded(Planner planner,
+            ISaveCommand saveCommand,
+            LoadChart loadChart) {
+        planner.getTimeTracker().addZoomListener(fillOnZoomChange(loadChart));
+        saveCommand.addListener(fillChartOnSave(loadChart));
     }
 
     private void addAdditional(List<ICommand<TaskElement>> additional,
@@ -205,41 +212,36 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return saveCommand;
     }
 
-    private void setupChart(Order orderReloaded, Timeplot chartComponent,
-            TimeTracker timeTracker, ISaveCommand saveCommand) {
-        loadChartFiller = new OrderLoadChartFiller(orderReloaded);
-        loadChartFiller.fillChart(chartComponent, timeTracker
-                .getRealInterval(), timeTracker.getHorizontalSize());
-        fillChartOnZoomChange(chartComponent, timeTracker);
-        fillChartOnSave(chartComponent, timeTracker, saveCommand);
+    private LoadChart setupChart(Order orderReloaded, Timeplot chartComponent,
+            TimeTracker timeTracker) {
+        OrderLoadChartFiller loadChartFiller = new OrderLoadChartFiller(
+                orderReloaded);
+        LoadChart result = new LoadChart(chartComponent, loadChartFiller,
+                timeTracker);
+        result.fillChart();
+        return result;
     }
 
-    private void fillChartOnZoomChange(final Timeplot chartComponent,
-            final TimeTracker timeTracker) {
+    private IZoomLevelChangedListener fillOnZoomChange(final LoadChart loadChart) {
         zoomListener = new IZoomLevelChangedListener() {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                loadChartFiller.setZoomLevel(detailLevel);
-
-                loadChartFiller.fillChart(chartComponent, timeTracker
-                        .getRealInterval(), timeTracker.getHorizontalSize());
+                loadChart.fillChart();
             }
         };
-
-        timeTracker.addZoomListener(zoomListener);
+        return zoomListener;
     }
 
-    private void fillChartOnSave(final Timeplot chartComponent,
-            final TimeTracker timeTracker, ISaveCommand saveCommand) {
-        saveCommand.addListener(new IAfterSaveListener() {
+    private IAfterSaveListener fillChartOnSave(final LoadChart loadChart) {
+        IAfterSaveListener result = new IAfterSaveListener() {
 
-            @Override
+                    @Override
             public void onAfterSave() {
-                loadChartFiller.fillChart(chartComponent, timeTracker
-                        .getRealInterval(), timeTracker.getHorizontalSize());
+                loadChart.fillChart();
             }
-        });
+        };
+        return result;
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(

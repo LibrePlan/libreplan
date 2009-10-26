@@ -89,8 +89,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private IZoomLevelChangedListener zoomListener;
 
-    private ILoadChartFiller loadChartFiller = new CompanyLoadChartFiller();
-
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
         @Override
@@ -139,35 +137,30 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private void setupChart(Timeplot chartComponent, TimeTracker timeTracker) {
-        loadChartFiller.fillChart(chartComponent,
-                timeTracker.getRealInterval(), timeTracker
-                .getHorizontalSize());
-        fillChartOnZoomChange(chartComponent, timeTracker);
+        LoadChart loadChart = new LoadChart(chartComponent,
+                new CompanyLoadChartFiller(), timeTracker);
+        loadChart.fillChart();
+        timeTracker.addZoomListener(fillOnZoomChange(loadChart));
     }
 
-    private void fillChartOnZoomChange(final Timeplot chartComponent,
-            final TimeTracker timeTracker) {
+    private IZoomLevelChangedListener fillOnZoomChange(
+            final LoadChart loadChart) {
 
         zoomListener = new IZoomLevelChangedListener() {
 
             @Override
             public void zoomLevelChanged(final ZoomLevel detailLevel) {
-                loadChartFiller.setZoomLevel(detailLevel);
-
                 transactionService
                         .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                     @Override
                     public Void execute() {
-                        loadChartFiller.fillChart(chartComponent,
-                                        timeTracker.getRealInterval(),
-                                        timeTracker.getHorizontalSize());
+                        loadChart.fillChart();
                         return null;
                     }
                 });
             }
         };
-
-        timeTracker.addZoomListener(zoomListener);
+        return zoomListener;
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration() {
