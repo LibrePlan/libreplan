@@ -346,12 +346,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
                 map.put(date, hours);
             }
-
-            if (zoomByDay()) {
-                return map;
-            } else {
-                return groupByWeek(map);
-            }
+            return convertAsNeededByZoom(map);
         }
 
         /**
@@ -378,12 +373,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     map.put(day, map.get(day) + hours);
                 }
             }
-
-            if (zoomByDay()) {
-                return map;
-            } else {
-                return groupByWeek(map);
-            }
+            return convertAsNeededByZoom(map);
         }
 
     }

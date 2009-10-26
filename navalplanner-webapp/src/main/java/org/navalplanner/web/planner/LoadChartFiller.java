@@ -83,7 +83,7 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         }
 
         private LocalDate nextDay(LocalDate date) {
-            if (zoomByDay()) {
+            if (isZoomByDay()) {
                 return date.plusDays(1);
             } else {
                 return date.plusWeeks(1);
@@ -101,7 +101,7 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         }
 
         private LocalDate convertAsNeededByZoom(LocalDate date) {
-            if (zoomByDay()) {
+            if (isZoomByDay()) {
                 return date;
             } else {
                 return getThursdayOfThisWeek(date);
@@ -192,7 +192,7 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         return date.dayOfWeek().withMinimumValue().plusDays(DAYS_TO_THURSDAY);
     }
 
-    protected boolean zoomByDay() {
+    private boolean isZoomByDay() {
         return zoomLevel.equals(ZoomLevel.DETAIL_FIVE);
     }
 
@@ -228,6 +228,14 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         }
 
         return result;
+    }
+
+    protected SortedMap<LocalDate, Integer> convertAsNeededByZoom(SortedMap<LocalDate, Integer> map) {
+        if (isZoomByDay()) {
+            return map;
+        } else {
+            return groupByWeek(map);
+        }
     }
 
 }

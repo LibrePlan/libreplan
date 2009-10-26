@@ -518,11 +518,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 }
             }
 
-            if (zoomByDay()) {
-                return map;
-            } else {
-                return groupByWeek(map);
-            }
+            return convertAsNeededByZoom(map);
         }
 
         private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
