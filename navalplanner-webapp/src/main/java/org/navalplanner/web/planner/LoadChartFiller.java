@@ -192,8 +192,7 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         return date.dayOfWeek().withMinimumValue().plusDays(DAYS_TO_THURSDAY);
     }
 
-    @Override
-    public boolean zoomByDay() {
+    protected boolean zoomByDay() {
         return zoomLevel.equals(ZoomLevel.DETAIL_FIVE);
     }
 
@@ -210,8 +209,7 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         return maximunValueForChart;
     }
 
-    @Override
-    public SortedMap<LocalDate, Integer> groupByWeek(
+    protected SortedMap<LocalDate, Integer> groupByWeek(
             SortedMap<LocalDate, Integer> map) {
         SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
 

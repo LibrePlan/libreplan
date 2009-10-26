@@ -20,9 +20,6 @@
 
 package org.navalplanner.web.planner;
 
-import java.util.SortedMap;
-
-import org.joda.time.LocalDate;
 import org.zkforge.timeplot.Timeplot;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
@@ -37,9 +34,5 @@ public interface ILoadChartFiller {
     void fillChart(Timeplot chart, Interval interval, Integer size);
 
     void setZoomLevel(ZoomLevel zoomLevel);
-
-    boolean zoomByDay();
-
-    SortedMap<LocalDate, Integer> groupByWeek(SortedMap<LocalDate, Integer> map);
 
 }

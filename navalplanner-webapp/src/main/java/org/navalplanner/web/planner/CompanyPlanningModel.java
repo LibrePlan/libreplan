@@ -247,77 +247,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     // spring method injection
     protected abstract ITaskElementAdapter getTaskElementAdapter();
 
-    /**
-     * Calculate the hours by day for all the {@link DayAssignment} in the list.
-     *
-     * @param dayAssignments
-     *            The list of {@link DayAssignment}
-     * @return A map { day => hours } sorted by date
-     */
-    private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
-            List<DayAssignment> dayAssignments) {
-        SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
-
-        if (dayAssignments.isEmpty()) {
-            return map;
-        }
-
-        Collections.sort(dayAssignments, new Comparator<DayAssignment>() {
-
-            @Override
-            public int compare(DayAssignment o1, DayAssignment o2) {
-                return o1.getDay().compareTo(o2.getDay());
-            }
-
-        });
-
-        for (DayAssignment dayAssignment : dayAssignments) {
-            LocalDate day = dayAssignment.getDay();
-            Integer hours = dayAssignment.getHours();
-
-            if (map.get(day) == null) {
-                map.put(day, hours);
-            } else {
-                map.put(day, map.get(day) + hours);
-            }
-        }
-
-        if (loadChartFiller.zoomByDay()) {
-            return map;
-        } else {
-            return loadChartFiller.groupByWeek(map);
-        }
-    }
-
-    private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
-            List<Resource> resources, Date start, Date finish) {
-        SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
-
-        LocalDate end = new LocalDate(finish);
-
-        for (LocalDate date = new LocalDate(start); date.compareTo(end) <= 0; date = date
-                .plusDays(1)) {
-            Integer hours = 0;
-            for (Resource resource : resources) {
-                ResourceCalendar calendar = resource.getCalendar();
-                if (calendar != null) {
-                    hours += calendar.getWorkableHours(date);
-                } else {
-                    hours += SameWorkHoursEveryDay.getDefaultWorkingDay()
-                            .getWorkableHours(date);
-                }
-            }
-
-            map.put(date, hours);
-        }
-
-        if (loadChartFiller.zoomByDay()) {
-            return map;
-        } else {
-            return loadChartFiller.groupByWeek(map);
-        }
-    }
-
     private org.zkoss.zk.ui.Component getChartLegend() {
         Div div = new Div();
 
@@ -394,6 +323,76 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             plotInfo.setPlotDataSource(pds);
 
             return plotInfo;
+        }
+
+        private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
+                List<Resource> resources, Date start, Date finish) {
+            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
+
+            LocalDate end = new LocalDate(finish);
+
+            for (LocalDate date = new LocalDate(start); date.compareTo(end) <= 0; date = date
+                    .plusDays(1)) {
+                Integer hours = 0;
+                for (Resource resource : resources) {
+                    ResourceCalendar calendar = resource.getCalendar();
+                    if (calendar != null) {
+                        hours += calendar.getWorkableHours(date);
+                    } else {
+                        hours += SameWorkHoursEveryDay.getDefaultWorkingDay()
+                                .getWorkableHours(date);
+                    }
+                }
+
+                map.put(date, hours);
+            }
+
+            if (zoomByDay()) {
+                return map;
+            } else {
+                return groupByWeek(map);
+            }
+        }
+
+        /**
+         * Calculate the hours by day for all the {@link DayAssignment} in the list.
+         * @param dayAssignments
+         *            The list of {@link DayAssignment}
+         * @return A map { day => hours } sorted by date
+         */
+        private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
+                List<DayAssignment> dayAssignments) {
+            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
+
+            if (dayAssignments.isEmpty()) {
+                return map;
+            }
+
+            Collections.sort(dayAssignments, new Comparator<DayAssignment>() {
+
+                @Override
+                public int compare(DayAssignment o1, DayAssignment o2) {
+                    return o1.getDay().compareTo(o2.getDay());
+                }
+
+            });
+
+            for (DayAssignment dayAssignment : dayAssignments) {
+                LocalDate day = dayAssignment.getDay();
+                Integer hours = dayAssignment.getHours();
+
+                if (map.get(day) == null) {
+                    map.put(day, hours);
+                } else {
+                    map.put(day, map.get(day) + hours);
+                }
+            }
+
+            if (zoomByDay()) {
+                return map;
+            } else {
+                return groupByWeek(map);
+            }
         }
 
     }
