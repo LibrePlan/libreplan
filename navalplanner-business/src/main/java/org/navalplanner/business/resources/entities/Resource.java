@@ -33,12 +33,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.InvalidValue;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.DayAssignment;
 
 // FIXME: Alternatively, Resource can be modeled with the style:
@@ -315,10 +317,22 @@ public abstract class Resource extends BaseEntity{
             newSatisfaction.validate();
             criterionSatisfactions.add(newSatisfaction);
             return newSatisfaction;
-        } else {
-            throw new IllegalStateException(" The "+criterion.getName()+
-                    " can not be assigned to this resource. Its interval overlap with other criterion");
         }
+        final String message = getReasonForNotAddingSatisfaction(type);
+        throw new IllegalStateException(message);
+    }
+
+    private String getReasonForNotAddingSatisfaction(ICriterionType<?> type) {
+        if (cannotApplyResourceToCriterionType(type)) {
+            return "Cannot apply criterion of type " + type.getName()
+                    + " to a " + getClass().getSimpleName();
+        } else {
+            return "Criterion satisfaction overlaps with other criterion satisfactions";
+        }
+    }
+
+    private boolean cannotApplyResourceToCriterionType(ICriterionType<?> type) {
+        return (type != null && !type.criterionCanBeRelatedTo(getClass()));
     }
 
     private CriterionSatisfaction createNewSatisfaction(Interval interval,
@@ -401,6 +415,43 @@ public abstract class Resource extends BaseEntity{
 
     public boolean canAddSatisfaction(
             CriterionWithItsType criterionWithItsType, Interval interval) {
+        CriterionSatisfaction satisfaction = createNewSatisfaction(interval, criterionWithItsType.getCriterion());
+        return canAddSatisfaction(criterionWithItsType.getType(), satisfaction, this.getCriterionSatisfactions());
+    }
+
+    private boolean canAddSatisfaction(ICriterionType<?> type, CriterionSatisfaction satisfaction, Set<CriterionSatisfaction> satisfactions) {
+        final Criterion criterion = satisfaction.getCriterion();
+        final Interval interval = Interval.range(satisfaction.getStartDate(), satisfaction.getEndDate());
+
+        if (!type.criterionCanBeRelatedTo(getClass())) {
+            return false;
+        }
+
+        CriterionSatisfaction previousSameCriterion = getPreviousSameCriterion
+        (criterion, satisfaction, satisfactions);
+        CriterionSatisfaction posteriorSameCriterion = getNextSameCriterion
+        (criterion, satisfaction, satisfactions);
+
+        boolean canAdd = ((previousSameCriterion == null ||
+                !previousSameCriterion.overlapsWith(interval)) &&
+                ( posteriorSameCriterion == null ||
+                        !posteriorSameCriterion.overlapsWith(interval)));
+
+        if(!canAdd) return false;
+        if (type.isAllowSimultaneousCriterionsPerResource()){
+            return true;
+        }
+
+        CriterionSatisfaction previous = getPrevious(type , satisfaction, satisfactions);
+        CriterionSatisfaction posterior = getNext(type, satisfaction, satisfactions);
+
+        return (previous == null || !previous.overlapsWith(interval)) &&
+        ( posterior == null || !posterior.overlapsWith(interval));
+    }
+
+    public boolean _canAddSatisfaction(
+            CriterionWithItsType criterionWithItsType, Interval interval) {
+
         ICriterionType<?> type = criterionWithItsType.getType();
         Criterion criterion = criterionWithItsType.getCriterion();
         if (!type.criterionCanBeRelatedTo(getClass())) {
@@ -623,7 +674,7 @@ public abstract class Resource extends BaseEntity{
         return calendar.getTime();
     }
 
-    public void addSatisfactions(Set<CriterionSatisfaction> addlist){
+    public void addSatisfactions(Set<CriterionSatisfaction> addlist) throws ValidationException {
         //Create a newList with new Satisfactions and the old satisfactions
         Set<CriterionSatisfaction> newList = new HashSet<CriterionSatisfaction>(addlist);
         for(CriterionSatisfaction satisfaction : criterionSatisfactions){
@@ -638,48 +689,37 @@ public abstract class Resource extends BaseEntity{
                 activeList.add(satisfaction);
             }
         }
-        if(isValidSatisfactions(activeList)){
-            criterionSatisfactions.clear();
-            criterionSatisfactions.addAll(newList);
-        }else
-            throw new IllegalStateException(
-                "This set of satisfaction not is " +
-                "valid because exists overlap with others criterions satisfaction");
+        validateSatisfactions(activeList);
+        criterionSatisfactions.clear();
+        criterionSatisfactions.addAll(newList);
     }
 
-    public boolean isValidSatisfactions(Set<CriterionSatisfaction> newList){
-        for(CriterionSatisfaction satisfaction : newList){
-            //Copied list without the satisfaction to check
-            Set<CriterionSatisfaction> checkedList = new HashSet<CriterionSatisfaction>(newList);
-            checkedList.remove(satisfaction);
-
-            CriterionType type = satisfaction.getCriterion().getType();
-            Criterion criterion = satisfaction.getCriterion();
-            Interval interval = satisfaction.getInterval();
-
-            CriterionSatisfaction previousSameCriterion = getPreviousSameCriterion
-                    (criterion, satisfaction,checkedList);
-            CriterionSatisfaction posteriorSameCriterion = getNextSameCriterion
-                (criterion, satisfaction,checkedList);
-
-            boolean canAdd = ((previousSameCriterion == null ||
-                !previousSameCriterion.overlapsWith(interval)) &&
-                ( posteriorSameCriterion == null ||
-                !posteriorSameCriterion.overlapsWith(interval)));
-
-        if(!canAdd) return false;
-        if (type.isAllowSimultaneousCriterionsPerResource()){
-            return true;
+    private void validateSatisfactions(Set<CriterionSatisfaction> satisfactions)
+    throws ValidationException {
+        for (CriterionSatisfaction satisfaction : satisfactions) {
+            final Set<CriterionSatisfaction> remainingSatisfactions = new HashSet<CriterionSatisfaction>();
+            remainingSatisfactions.addAll(satisfactions);
+            remainingSatisfactions.remove(satisfaction);
+            validateSatisfaction(satisfaction, remainingSatisfactions);
         }
-
-        CriterionSatisfaction previous = getPrevious(type,satisfaction,checkedList);
-        CriterionSatisfaction posterior = getNext(type,satisfaction,checkedList);
-
-        return (previous == null || !previous.overlapsWith(interval)) &&
-                ( posterior == null || !posterior.overlapsWith(interval));
-        }
-        return true;
     }
 
+    private void validateSatisfaction(CriterionSatisfaction satisfaction,
+            Set<CriterionSatisfaction> satisfactions)
+    throws ValidationException {
+
+        if (!canAddSatisfaction(satisfaction, satisfactions)) {
+            String message = getReasonForNotAddingSatisfaction(satisfaction
+                    .getCriterion().getType());
+            final InvalidValue invalidValue = new InvalidValue(message,
+                    CriterionSatisfaction.class, "resource", this, satisfaction);
+            throw new ValidationException(invalidValue);
+        }
+    }
+
+    private boolean canAddSatisfaction(CriterionSatisfaction satisfaction, Set<CriterionSatisfaction> satisfactions) {
+        final ICriterionType<?> type = satisfaction.getCriterion().getType();
+        return canAddSatisfaction(type, satisfaction, satisfactions);
+    }
 
 }

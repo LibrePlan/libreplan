@@ -207,15 +207,16 @@ public class CriterionType extends BaseEntity implements
         }
     }
 
+    /**
+     * A {@link CriterionType} can be related with {@link Resource} matching
+     * attribute resource and it's always related with resource of type RESOURCE
+     */
     @Override
     public boolean criterionCanBeRelatedTo(Class<? extends Resource> klass) {
-        for (ResourceEnum resource : ResourceEnum.values()) {
-            if (resource.isAssignableFrom(klass)) {
-                return true;
-            }
-        }
-        return false;
+        return ResourceEnum.RESOURCE.equals(resource())
+                || resource().isAssignableFrom(klass);
     }
+
 
     /**
      * Two criterion types are equals if they both got the same name

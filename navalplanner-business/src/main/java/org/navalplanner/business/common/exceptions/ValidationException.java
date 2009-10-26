@@ -35,6 +35,17 @@ public class ValidationException extends Exception {
         return invalidValues;
     }
 
+    public ValidationException(InvalidValue invalidValue) {
+        super();
+        storeInvalidValues(toArray(invalidValue));
+    }
+
+    private InvalidValue[] toArray(InvalidValue invalidValue) {
+        InvalidValue[] invalidValues = new InvalidValue[1];
+        invalidValues[0] = invalidValue;
+        return invalidValues;
+    }
+
     public ValidationException(InvalidValue[] invalidValues) {
         super();
         storeInvalidValues(invalidValues);
