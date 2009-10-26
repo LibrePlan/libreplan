@@ -33,8 +33,6 @@ import java.util.SortedMap;
 import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.ResourceCalendar;
-import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -341,24 +339,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 @Override
                 protected int getHoursFor(
                         Entry<LocalDate, List<Resource>> element) {
-                    int sum = 0;
-                    for (Resource resource : element.getValue()) {
-                        sum += hoursFor(resource, element.getKey());
-                    }
-                    return sum;
+                    LocalDate day = element.getKey();
+                    List<Resource> resources = element.getValue();
+                    return sumHoursForDay(resources, day);
                 }
 
-                private int hoursFor(Resource resource, LocalDate day) {
-                    int result = 0;
-                    ResourceCalendar calendar = resource.getCalendar();
-                    if (calendar != null) {
-                        result += calendar.getWorkableHours(day);
-                    } else {
-                        result += SameWorkHoursEveryDay.getDefaultWorkingDay()
-                                .getWorkableHours(day);
-                    }
-                    return result;
-                }
             }.calculate(getResourcesByDateBetween(
                     resources, start, finish));
         }

@@ -33,7 +33,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.servlets.CallbackServlet;
 import org.navalplanner.web.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkforge.timeplot.Timeplot;
@@ -86,6 +89,28 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         protected int getHoursFor(DayAssignment element) {
             return element.getHours();
         }
+    }
+
+    protected final int sumHoursForDay(
+            Collection<? extends Resource> resources,
+            LocalDate day) {
+        int sum = 0;
+        for (Resource resource : resources) {
+            sum += hoursFor(resource, day);
+        }
+        return sum;
+    }
+
+    private int hoursFor(Resource resource, LocalDate day) {
+        int result = 0;
+        ResourceCalendar calendar = resource.getCalendar();
+        if (calendar != null) {
+            result += calendar.getWorkableHours(day);
+        } else {
+            result += SameWorkHoursEveryDay.getDefaultWorkingDay()
+                    .getWorkableHours(day);
+        }
+        return result;
     }
 
     private final class GraphicSpecificationCreator implements

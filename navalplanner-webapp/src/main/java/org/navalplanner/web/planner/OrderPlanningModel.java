@@ -25,16 +25,16 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.ResourceCalendar;
-import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -428,8 +428,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         private Plotinfo getCalendarMaximumAvailabilityPlotInfo(Order order,
                 Date start, Date finish) {
-            SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(
-                    order.getDayAssignments(), true);
+            SortedMap<LocalDate, Integer> mapDayAssignments = calculateCapacity(order.getDayAssignments());
 
             String uri = getServletUri(mapDayAssignments, start, finish);
 
@@ -443,101 +442,54 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             return plotInfo;
         }
 
-        /**
-         * Calculate the hours by day for all the {@link DayAssignment} in the list.
-         *
-         * @param dayAssignments
-         *            The list of {@link DayAssignment}
-         * @param calendarHours
-         *            If <code>true</code> the resource's calendar will be used to
-         *            calculate the available hours. Otherwise, the
-         *            {@link DayAssignment} hours will be used.
-         * @param minDate
-         *            If it's not <code>null</code>, just {@link DayAssignment} from
-         *            this date will be used.
-         * @param maxDate
-         *            If it's not <code>null</code>, just {@link DayAssignment} to
-         *            this date will be used.
-         *
-         * @return A map { day => hours } sorted by date
-         */
-        private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
-                List<DayAssignment> dayAssignments, boolean calendarHours,
-                LocalDate minDate, LocalDate maxDate) {
-            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
+        private SortedMap<LocalDate, Integer> calculateCapacity(
+                List<DayAssignment> dayAssignments) {
+            return new HoursByDayCalculator<Entry<LocalDate, Collection<Resource>>>() {
 
-            if (dayAssignments.isEmpty()) {
-                return map;
-            }
+                @Override
+                protected LocalDate getDayFor(
+                        Entry<LocalDate, Collection<Resource>> element) {
+                    return element.getKey();
+                }
 
-            Set<Resource> resroucesAlreadyUsed = new HashSet<Resource>();
+                @Override
+                protected int getHoursFor(
+                        Entry<LocalDate, Collection<Resource>> element) {
+                    Collection<Resource> resources = element.getValue();
+                    LocalDate day = element.getKey();
+                    return sumHoursForDay(resources, day);
+                }
 
-            for (DayAssignment dayAssignment : DayAssignment
-                    .orderedByDay(dayAssignments)) {
+            }.calculate(resourcesByDate(dayAssignments));
+        }
+
+        private Collection<Entry<LocalDate, Collection<Resource>>> resourcesByDate(
+                List<DayAssignment> dayAssignments) {
+            Map<LocalDate, Collection<Resource>> result = new HashMap<LocalDate, Collection<Resource>>();
+            for (DayAssignment dayAssignment : dayAssignments) {
                 LocalDate day = dayAssignment.getDay();
-                Integer hours = 0;
-
-                if (minDate != null) {
-                    if (day.compareTo(minDate) < 0) {
-                        continue;
-                    }
+                if (!result.containsKey(day)) {
+                    result.put(day, new HashSet<Resource>());
                 }
-
-                if (maxDate != null) {
-                    if (day.compareTo(maxDate) > 0) {
-                        continue;
-                    }
-                }
-
-                if (calendarHours) {
-                    Resource resource = dayAssignment.getResource();
-
-                    if (map.get(day) == null) {
-                        resroucesAlreadyUsed.clear();
-                    }
-
-                    if (!resroucesAlreadyUsed.contains(resource)) {
-                        resroucesAlreadyUsed.add(resource);
-                        ResourceCalendar calendar = resource.getCalendar();
-                        if (calendar != null) {
-                            hours = calendar.getWorkableHours(dayAssignment
-                                    .getDay());
-                        } else {
-                            hours = SameWorkHoursEveryDay.getDefaultWorkingDay()
-                                    .getWorkableHours(dayAssignment.getDay());
-                        }
-                    }
-                } else {
-                    hours = dayAssignment.getHours();
-                }
-
-                if (map.get(day) == null) {
-                    map.put(day, hours);
-                } else {
-                    map.put(day, map.get(day) + hours);
-                }
+                result.get(day).add(dayAssignment.getResource());
             }
-
-            return convertAsNeededByZoom(map);
+            return result.entrySet();
         }
 
         private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
                 List<DayAssignment> dayAssignments) {
-            return calculateHoursAdditionByDay(dayAssignments, false, null,
-                    null);
+            return new DefaultDayAssignmentCalculator()
+                    .calculate(dayAssignments);
         }
 
         private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
-                List<DayAssignment> dayAssignments, LocalDate minDate,
-                LocalDate maxDate) {
-            return calculateHoursAdditionByDay(dayAssignments, false, minDate,
-                    maxDate);
-        }
-
-        private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
-                List<DayAssignment> dayAssignments, boolean calendarHours) {
-            return calculateHoursAdditionByDay(dayAssignments, calendarHours,
-                    null, null);
+                List<DayAssignment> dayAssignments, final LocalDate minDate,
+                final LocalDate maxDate) {
+            return new DefaultDayAssignmentCalculator() {
+                protected boolean included(DayAssignment each) {
+                    return each.includedIn(minDate, maxDate);
+                };
+            }.calculate(dayAssignments);
         }
 
     }
