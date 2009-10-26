@@ -91,6 +91,9 @@ abstract class LoadPeriodGenerator {
 
     protected LoadPeriodGenerator(LocalDate start,
             LocalDate end, List<ResourceAllocation<?>> allocationsOnInterval) {
+        Validate.notNull(start);
+        Validate.notNull(end);
+        Validate.notNull(allocationsOnInterval);
         this.start = start;
         this.end = end;
         this.allocationsOnInterval = allocationsOnInterval;
