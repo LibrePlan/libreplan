@@ -48,6 +48,8 @@ import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.ITaskElementAdapter.IOnMoveListener;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
+import org.navalplanner.web.planner.calendar.CalendarAllocationController;
+import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;

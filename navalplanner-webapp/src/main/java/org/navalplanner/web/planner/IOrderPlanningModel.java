@@ -26,6 +26,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
+import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommand;
 

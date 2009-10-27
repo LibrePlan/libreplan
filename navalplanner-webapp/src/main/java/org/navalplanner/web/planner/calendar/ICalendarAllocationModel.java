@@ -18,19 +18,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.calendar;
 
-import org.navalplanner.business.planner.entities.TaskElement;
-import org.zkoss.ganttz.extensions.ICommandOnTask;
+import java.util.List;
+
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.planner.entities.Task;
 
 /**
- * Contract for {@link CalendarAllocationCommand}.
+ * Contract for {@link CalendarAllocationModel}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ICalendarAllocationCommand extends ICommandOnTask<TaskElement> {
+public interface ICalendarAllocationModel {
 
-    void setCalendarAllocationController(
-            CalendarAllocationController calendarAllocationController);
+    List<BaseCalendar> getBaseCalendars();
+
+    void setTask(Task task);
+
+    void confirmAssignCalendar(BaseCalendar calendar);
+
+    void cancel();
+
+    BaseCalendar getAssignedCalendar();
 
 }
