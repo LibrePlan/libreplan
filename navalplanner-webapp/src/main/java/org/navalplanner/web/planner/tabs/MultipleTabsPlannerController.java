@@ -127,10 +127,12 @@ public class MultipleTabsPlannerController implements Composer {
                     }
                 });
         final State<Void> typeChanged = typeChangedState();
+        ITab advancedAllocation = AdvancedAllocationTabCreator.create();
         return TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
-            .add(tabWithNameReloading(ordersTab, typeChanged));
+            .add(tabWithNameReloading(ordersTab, typeChanged))
+            .add(visibleOnlyOnOrderMode(advancedAllocation));
     }
 
     private ChangeableTab tabWithNameReloading(ITab tab,
@@ -148,6 +150,19 @@ public class MultipleTabsPlannerController implements Composer {
             }
         });
         return typeChanged;
+    }
+
+    private ChangeableTab visibleOnlyOnOrderMode(ITab tab) {
+        final State<Boolean> state = State.create(mode.isOf(ModeType.ORDER));
+        ChangeableTab result = configure(tab).visibleOn(state);
+        mode.addListener(new ModeTypeChangedListener() {
+
+            @Override
+            public void typeChanged(ModeType oldType, ModeType newType) {
+                state.changeValueTo(ModeType.ORDER == newType);
+            }
+        });
+        return result;
     }
 
     @Override
