@@ -20,6 +20,7 @@
 package org.navalplanner.web.planner.tabs;
 
 import static org.navalplanner.web.I18nHelper._;
+import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.TabSwitcher;
 import org.zkoss.ganttz.TabsRegistry;
+import org.zkoss.ganttz.adapters.State;
 import org.zkoss.ganttz.adapters.TabsConfiguration;
+import org.zkoss.ganttz.adapters.TabsConfiguration.ChangeableTab;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.zk.ui.util.Composer;
@@ -103,15 +106,6 @@ public class MultipleTabsPlannerController implements Composer {
     public TabsConfiguration getTabs() {
         if (tabsConfiguration == null) {
             tabsConfiguration = buildTabsConfiguration();
-            mode.addListener(new ModeTypeChangedListener() {
-
-                @Override
-                public void typeChanged(ModeType oldType, ModeType newType) {
-                    for (ITab tab : tabsConfiguration.getTabs()) {
-                        tabsSwitcher.getTabsRegistry().loadNewName(tab);
-                    }
-                }
-            });
         }
         return tabsConfiguration;
     }
@@ -132,8 +126,28 @@ public class MultipleTabsPlannerController implements Composer {
                         getTabsRegistry().show(planningTab);
                     }
                 });
-        return TabsConfiguration.create().add(planningTab).add(resourceLoadTab)
-                .add(ordersTab);
+        final State<Void> typeChanged = typeChangedState();
+        return TabsConfiguration.create()
+            .add(tabWithNameReloading(planningTab, typeChanged))
+            .add(tabWithNameReloading(resourceLoadTab, typeChanged))
+            .add(tabWithNameReloading(ordersTab, typeChanged));
+    }
+
+    private ChangeableTab tabWithNameReloading(ITab tab,
+            final State<Void> typeChanged) {
+        return configure(tab).reloadNameOn(typeChanged);
+    }
+
+    private State<Void> typeChangedState() {
+        final State<Void> typeChanged = State.create();
+        mode.addListener(new ModeTypeChangedListener() {
+
+            @Override
+            public void typeChanged(ModeType oldType, ModeType newType) {
+                typeChanged.changeValueTo(null);
+            }
+        });
+        return typeChanged;
     }
 
     @Override
