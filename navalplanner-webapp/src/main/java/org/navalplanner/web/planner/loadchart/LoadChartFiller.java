@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.loadchart;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -51,7 +51,8 @@ import org.zkoss.zk.ui.Executions;
 public abstract class LoadChartFiller implements ILoadChartFiller {
 
     protected abstract class HoursByDayCalculator<T> {
-        SortedMap<LocalDate, Integer> calculate(Collection<? extends T> elements) {
+        public SortedMap<LocalDate, Integer> calculate(
+                Collection<? extends T> elements) {
             SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
             if (elements.isEmpty()) {
                 return result;
@@ -80,6 +81,9 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
 
     protected class DefaultDayAssignmentCalculator extends
             HoursByDayCalculator<DayAssignment> {
+        public DefaultDayAssignmentCalculator() {
+        }
+
         @Override
         protected LocalDate getDayFor(DayAssignment element) {
             return element.getDay();

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.loadchart;
 
 import org.zkforge.timeplot.Timeplot;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;

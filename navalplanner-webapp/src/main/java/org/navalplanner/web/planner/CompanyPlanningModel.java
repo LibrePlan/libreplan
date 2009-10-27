@@ -45,6 +45,8 @@ import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.planner.loadchart.LoadChart;
+import org.navalplanner.web.planner.loadchart.LoadChartFiller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -360,7 +362,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
          */
         private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
                 List<DayAssignment> dayAssignments) {
-            return new DefaultDayAssignmentCalculator().calculate(dayAssignments);
+            return new DefaultDayAssignmentCalculator()
+                    .calculate(dayAssignments);
         }
     }
 

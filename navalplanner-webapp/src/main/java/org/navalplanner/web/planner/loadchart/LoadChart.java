@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.loadchart;
 
 import org.apache.commons.lang.Validate;
 import org.zkforge.timeplot.Timeplot;
@@ -43,7 +43,7 @@ public class LoadChart {
         this.timeTracker = timeTracker;
     }
 
-    void fillChart() {
+    public void fillChart() {
         filler.fillChart(timeplot, timeTracker.getRealInterval(), timeTracker.getHorizontalSize());
     }
 

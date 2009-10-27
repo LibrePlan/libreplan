@@ -50,6 +50,8 @@ import org.navalplanner.web.planner.ITaskElementAdapter.IOnMoveListener;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
+import org.navalplanner.web.planner.loadchart.LoadChart;
+import org.navalplanner.web.planner.loadchart.LoadChartFiller;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.splitting.IMergeTaskCommand;
 import org.navalplanner.web.planner.splitting.ISplitTaskCommand;
