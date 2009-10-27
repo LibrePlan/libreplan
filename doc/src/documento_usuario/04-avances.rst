@@ -30,6 +30,10 @@ O sistema conta con dous tipos de avance creados por defecto:
    * Porcentual: Tipo de avance xeral que permite medir o avance dun proxecto ou tarefa en base ó porcentaxe que se estima de compleción do mesmo, por exemplo, unha tarefa está ó 30% respecto ó 100% estimado nun día concreto.
    * Unidades: Tipo de avance xeral que permite medir o avance en unidades sen necesidade de especificar as unidades concretas. A tarefa comprendía a creación de 3000 unidades e o avance son 500 unidades sobre as 3000 estimadas.
 
+.. figure:: images/tipos-avances.png
+   :scale: 70
+
+
 O usuario poderá crear novos tipos de avance do seguinte xeito:
    * O usuario accede á sección de "Administración".
    * Preme na opción do menú de segundo nivel "______".
@@ -47,8 +51,27 @@ O usuario poderá crear novos tipos de avance do seguinte xeito:
 Introdución de avances en base a tipo
 -------------------------------------
 
+A introdución dos avances vaise realizar sobre os elementos de pedido, sen embargo, será posible facelo con un atallo dende as tarefas de planificación. Será responsabilidade do usuario da aplicación a decisión sobre qué tipos de avance desexa asociar a cada elemento de pedido.
+
+Será posible introducir un tipo de avance único e defectivo para todo un pedido.
+
+Antes de poder realizar medidas de avance, é necesario asociar o tipo elixido ó pedido, por exemplo, un avance de tipo porcentaxe para medir porcentualmente os avances realizados sobre o total da tarefa ou un avance de tipo pactado por se se queren introducir a futuro medicións de avances pactadas co cliente.
+
+.. figure:: images/avance.png
+   :scale: 70
+
+Para introducir medicións de avance será necesario realizar o seguinte:
+   * Seleccionar o tipo de avance para o que desexa introducir o avance.
+      * Se non existe ningún tipo de avance é necesario engadir un tipo de avance.
+   * No formulario que aparece debaixo cos campos "______" e "______" introducir o valor absoluto da medida e a data que se lle desexa asignar á medida tomada.
+   * O sistema almacenará automáticamente os datos introducidos.
+
 
 
 Contraste de avances sobre un elemento do pedido
 ------------------------------------------------
 
+Será posible contrastar gráficamente as evolucións dos avances dos pedidos en base ás medicións realizadas. Cada tipo de avance dispón dunha columna con botóns de chequeo (de título "______") o cal ó ser marcado se amosará a gráfica de evolucións de medidas realizadas sobre o elemento de pedido.
+
+.. figure:: images/contraste-avance.png
+   :scale: 70

@@ -35,6 +35,10 @@ Premendo no botón *Create* poderase acceder ó formulario de creación/edición
 No formulario de edición de criterios que se amosa na imaxe anterior poderanse realizar as seguintes operacións:
    * Edición do nome do criterio
    * Indicar se é posible asignar varios valores simultáneamente ó mesmo elemento para o tipo de criterio seleccionado. Por exemplo, un recurso que satisfai dous criterios, soldador e torneiro.
+   * Indicar o tipo do criterio:
+      * Tipo xenérico: Criterio que poderá satisfacer indistintamente unha máquina ou un traballador.
+      * Tipo traballador: Criterio que poderá satisfacer un traballador exclusivamente.
+      * Tipo máquina: Criterio que poderá satisfacer unha máquina exclusivamente.
    * Indicar se o criterio é xerárquico ou non. Existen casos nos que os criterios deben ser tratados xerárquicamente, é dicir, que o feito de ser un criterio asignado a un elemento non folla faga que este criterio estea asignado automáticamente ós fillos. Un exemplo claro de xerarquización de criterios é o criterio localización, unha persoa que teña asignado Galicia como localización pertencerá á localización España por ser xerárquico.
    * Indicar se o criterio está habilitado e deshabilitado. Esta é a forma de borrar criterios. Debido a que unha vez creado un criterio e utilizado en datos históricos, estes non poden ser cambiados, o criterio debe existir no sistema. Para evitar que este criterio saia en diferentes elementos de selección, poderá ser invalidado.
    * Realizar unha descrición do criterio.
