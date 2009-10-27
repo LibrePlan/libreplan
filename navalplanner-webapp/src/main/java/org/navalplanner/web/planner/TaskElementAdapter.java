@@ -59,7 +59,7 @@ import org.zkoss.ganttz.data.ITaskFundamentalProperties;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @Component
-@Scope(BeanDefinition.SCOPE_SINGLETON)
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class TaskElementAdapter implements ITaskElementAdapter {
 
     private Order order;
