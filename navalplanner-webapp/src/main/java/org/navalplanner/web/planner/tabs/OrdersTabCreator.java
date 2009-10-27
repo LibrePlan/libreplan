@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.OrderCRUDController;
-import org.navalplanner.web.planner.IOrderPlanningGate;
+import org.navalplanner.web.planner.order.IOrderPlanningGate;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;

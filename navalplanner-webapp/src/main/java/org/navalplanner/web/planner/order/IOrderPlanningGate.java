@@ -18,25 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.order;
 
-import org.navalplanner.business.planner.entities.TaskElement;
-import org.zkoss.ganttz.extensions.ICommand;
+import org.navalplanner.business.orders.entities.Order;
 
 /**
- * Contract for {@link SaveCommand} <br />
+ * This interface allows to go to the schedule of an {@link Order}
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public interface ISaveCommand extends ICommand<TaskElement> {
+public interface IOrderPlanningGate {
 
-    public interface IAfterSaveListener {
-        void onAfterSave();
-    }
-
-    public void setState(PlanningState planningState);
-
-    public void addListener(IAfterSaveListener listener);
-
-    public void removeListener(IAfterSaveListener listener);
-
+    public void goToScheduleOf(Order order);
 }

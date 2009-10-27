@@ -23,7 +23,7 @@
     <context:annotation-config />
     <bean class="org.navalplanner.web.common.entrypoints.RedirectorSynthetiser"></bean>
 
-    <bean class="org.navalplanner.web.planner.OrderPlanningModel" scope="prototype">
+    <bean class="org.navalplanner.web.planner.order.OrderPlanningModel" scope="prototype">
       <lookup-method name="getTaskElementAdapter" bean="taskElementAdapter"/>
       <lookup-method name="getSaveCommand" bean="saveCommand"/>
       <lookup-method name="getResourceAllocationCommand" bean="resourceAllocationCommand"/>

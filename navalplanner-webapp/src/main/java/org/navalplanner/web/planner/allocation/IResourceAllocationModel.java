@@ -28,7 +28,7 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.web.planner.PlanningState;
+import org.navalplanner.web.planner.order.PlanningState;
 
 /**
  * Contract for {@link Task}.

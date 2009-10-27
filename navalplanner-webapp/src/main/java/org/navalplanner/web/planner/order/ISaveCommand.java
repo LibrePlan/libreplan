@@ -18,31 +18,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.order;
 
-import java.util.List;
-
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.web.common.ViewSwitcher;
-import org.navalplanner.web.planner.allocation.ResourceAllocationController;
-import org.navalplanner.web.planner.calendar.CalendarAllocationController;
-import org.navalplanner.web.planner.splitting.SplittingController;
-import org.navalplanner.web.planner.taskedition.EditTaskController;
-import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommand;
 
 /**
+ * Contract for {@link SaveCommand} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public interface IOrderPlanningModel {
+public interface ISaveCommand extends ICommand<TaskElement> {
 
-    void setConfigurationToPlanner(Planner planner, Order order,
-            ViewSwitcher viewSwitcher,
-            ResourceAllocationController resourceAllocationController,
-            EditTaskController editTaskController,
-            SplittingController splittingController,
-            CalendarAllocationController calendarAllocationController,
-            List<ICommand<TaskElement>> additional);
+    public interface IAfterSaveListener {
+        void onAfterSave();
+    }
+
+    public void setState(PlanningState planningState);
+
+    public void addListener(IAfterSaveListener listener);
+
+    public void removeListener(IAfterSaveListener listener);
 
 }

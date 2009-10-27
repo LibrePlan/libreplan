@@ -33,7 +33,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.CompanyPlanningController;
-import org.navalplanner.web.planner.OrderPlanningController;
+import org.navalplanner.web.planner.order.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;

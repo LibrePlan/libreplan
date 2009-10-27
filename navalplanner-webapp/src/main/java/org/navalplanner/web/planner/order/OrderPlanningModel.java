@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.order;
 
 import static org.navalplanner.web.I18nHelper._;
 
@@ -45,7 +45,7 @@ import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.ViewSwitcher;
-import org.navalplanner.web.planner.ISaveCommand.IAfterSaveListener;
+import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.ITaskElementAdapter.IOnMoveListener;
 import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
@@ -54,6 +54,7 @@ import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
 import org.navalplanner.web.planner.loadchart.LoadChart;
 import org.navalplanner.web.planner.loadchart.LoadChartFiller;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
+import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.splitting.IMergeTaskCommand;
 import org.navalplanner.web.planner.splitting.ISplitTaskCommand;
 import org.navalplanner.web.planner.splitting.SplittingController;
