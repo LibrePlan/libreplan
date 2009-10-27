@@ -56,8 +56,6 @@ import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 /**
  * Responsible of adaptating a {@link TaskElement} into a
  * {@link ITaskFundamentalProperties} <br />
- * This class is managed by spring so version checking and reatachments are
- * allowed, but they're not used by now.
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @Component
