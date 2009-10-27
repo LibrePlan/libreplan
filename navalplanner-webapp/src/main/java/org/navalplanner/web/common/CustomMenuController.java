@@ -158,10 +158,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         return this;
     }
 
-    private CustomMenuItem subItem(String name, String url, boolean disabled) {
-        return new CustomMenuItem(name, url, disabled);
-    }
-
     private CustomMenuItem subItem(String name, String url) {
         return new CustomMenuItem(name, url);
     }
