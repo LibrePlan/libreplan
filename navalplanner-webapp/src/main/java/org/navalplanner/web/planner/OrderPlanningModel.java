@@ -47,6 +47,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.ITaskElementAdapter.IOnMoveListener;
+import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;

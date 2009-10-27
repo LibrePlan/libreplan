@@ -24,7 +24,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.web.planner.IResourceAllocationCommand;
 import org.navalplanner.web.planner.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;

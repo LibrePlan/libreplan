@@ -18,11 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.allocation;
 
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.web.planner.allocation.ResourceAllocationCommand;
-import org.navalplanner.web.planner.allocation.ResourceAllocationController;
+import org.navalplanner.web.planner.PlanningState;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
