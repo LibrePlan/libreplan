@@ -48,8 +48,8 @@ public class TabSwitcher extends HtmlMacroComponent {
     private void addTabsFromComfiguration(TabsConfiguration configuration) {
         container.getChildren().clear();
         tabsRegistry = new TabsRegistry(container);
-        configuration.applyTo(tabsRegistry);
-        tabsRegistry.registerAtMenu(getMenuItemsRegisterLocator().retrieve());
+        IMenuItemsRegister menu = getMenuItemsRegisterLocator().retrieve();
+        configuration.applyTo(tabsRegistry, menu);
         tabsRegistry.showFirst();
     }
 

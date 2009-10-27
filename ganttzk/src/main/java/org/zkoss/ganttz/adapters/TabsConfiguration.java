@@ -26,6 +26,7 @@ import java.util.List;
 import org.zkoss.ganttz.TabsRegistry;
 import org.zkoss.ganttz.adapters.State.IValueChangeListener;
 import org.zkoss.ganttz.extensions.ITab;
+import org.zkoss.ganttz.util.IMenuItemsRegister;
 
 public class TabsConfiguration {
 
@@ -38,12 +39,19 @@ public class TabsConfiguration {
 
         private State<Void> reloadNameState;
 
+        private State<Boolean> visibility;
+
         ChangeableTab(ITab tab) {
             this.tab = tab;
         }
 
         public ChangeableTab reloadNameOn(State<Void> reloadName) {
             this.reloadNameState = reloadName;
+            return this;
+        }
+
+        public ChangeableTab visibleOn(State<Boolean> visibility) {
+            this.visibility = visibility;
             return this;
         }
     }
@@ -67,10 +75,14 @@ public class TabsConfiguration {
         return this;
     }
 
-    public void applyTo(TabsRegistry tabsRegistry) {
+    public void applyTo(TabsRegistry tabsRegistry, IMenuItemsRegister menu) {
         for (ChangeableTab tab : tabs) {
             tabsRegistry.add(tab.tab);
+        }
+        tabsRegistry.registerAtMenu(menu);
+        for (ChangeableTab tab : tabs) {
             reloadNameIfNeeded(tabsRegistry, tab);
+            changeVisibilityWhenNeeded(tabsRegistry, tab);
         }
     }
 
@@ -84,6 +96,21 @@ public class TabsConfiguration {
             @Override
             public void hasChanged(State<Void> condition) {
                 tabsRegistry.loadNewName(tab.tab);
+            }
+        });
+    }
+
+    private void changeVisibilityWhenNeeded(final TabsRegistry tabsRegistry,
+            final ChangeableTab tab) {
+        if (tab.visibility == null) {
+            return;
+        }
+        tabsRegistry.toggleVisibilityTo(tab.tab, tab.visibility.getValue());
+        tab.visibility.addListener(new IValueChangeListener<Boolean>() {
+
+            @Override
+            public void hasChanged(State<Boolean> state) {
+                tabsRegistry.toggleVisibilityTo(tab.tab, state.getValue());
             }
         });
     }
