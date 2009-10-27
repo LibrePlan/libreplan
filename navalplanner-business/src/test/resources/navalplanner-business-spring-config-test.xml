@@ -54,6 +54,9 @@
                 <value>
                     org/navalplanner/business/labels/entities/Labels.hbm.xml
                 </value>
+                <value>
+                    org/navalplanner/business/requirements/entities/Requirements.hbm.xml
+                </value>
                  <value>
                     TestEntities.hbm.xml
                 </value>

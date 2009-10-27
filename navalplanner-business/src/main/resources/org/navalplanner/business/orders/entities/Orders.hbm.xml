@@ -30,6 +30,11 @@
 			<many-to-many column="LABEL_ID" class="org.navalplanner.business.labels.entities.Label" />
 		</set>
 
+        <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true">
+            <key column="ORDER_ELEMENT_ID" not-null="false"></key>
+            <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement"/>
+        </set>
+
         <!-- Inverse navigation from OrderElement to OrderLineGroup -->
         <many-to-one name="parent" access="field" cascade="all"/>
 
@@ -76,11 +81,9 @@
         <property name="percentage" access="field" />
         <property name="fixedPercentage" access="field" />
 
-        <set name="criterions" table="CriterionHoursGroup" cascade="all"
-            access="field" inverse="false">
-            <key column="hoursGroupId" not-null="false" />
-            <many-to-many column="criterionId"
-                class="org.navalplanner.business.resources.entities.Criterion" />
+        <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true">
+            <key column="HOURS_GROUP_ID" not-null="false"></key>
+            <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement"/>
         </set>
 
         <many-to-one name="parentOrderLine" column="PARENT_ORDER_LINE"

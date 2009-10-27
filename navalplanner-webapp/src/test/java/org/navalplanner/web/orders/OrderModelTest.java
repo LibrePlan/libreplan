@@ -59,6 +59,9 @@ import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.requirements.entities.CriterionRequirement;
+import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -382,37 +385,39 @@ public class OrderModelTest {
         hoursGroup2.setWorkingHours(5);
 
         orderLine.addHoursGroup(hoursGroup);
-        orderLine.addHoursGroup(hoursGroup2);
+        //orderLine.addHoursGroup(hoursGroup2);
 
-        hoursGroup.addCriterion(criterion);
-        hoursGroup2.addCriterion(criterion);
+        CriterionRequirement criterionRequirement =
+                DirectCriterionRequirement.create(criterion);
+
+        hoursGroup.addCriterionRequirement(criterionRequirement);
+        //hoursGroup2.addCriterionRequirement(criterionRequirement);
 
         orderModel.setOrder(order);
         orderModel.save();
-
         adHocTransaction.runOnTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
                 try {
+                    sessionFactory.getCurrentSession().flush();
                     Order reloaded = orderDAO.find(order.getId());
-
                     List<OrderElement> orderElements = reloaded
                             .getOrderElements();
                     assertThat(orderElements.size(), equalTo(1));
 
                     List<HoursGroup> hoursGroups = orderElements.get(0)
                             .getHoursGroups();
-                    assertThat(hoursGroups.size(), equalTo(2));
+                    assertThat(hoursGroups.size(), equalTo(1));
+
+                    Set<CriterionRequirement> criterionRequirements = hoursGroups.get(0)
+                            .getCriterionRequirements();
+                    assertThat(criterionRequirements.size(), equalTo(1));
 
                     Set<Criterion> criterions = hoursGroups.get(0)
                             .getCriterions();
                     assertThat(criterions.size(), equalTo(1));
 
-                    Criterion criterion = criterions.iterator().next();
-
-                    assertThat(criterion.getName(),
-                            equalTo(OrderModelTest.this.criterion.getName()));
                 } catch (InstanceNotFoundException e) {
                     throw new RuntimeException(e);
                 }

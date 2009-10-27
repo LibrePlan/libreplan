@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.requirements.entities">
+  <class name="CriterionRequirement">
+    <id access="property" name="id" type="long">
+      <generator class="hilo">
+        <param name="max_lo">100</param>
+      </generator>
+    </id>
+    <discriminator column="CRITERION_REQUIREMENT_TYPE" type="string"/>
+    <version access="property" name="version" type="long"/>
+    <!-- Inverse navigation from CriterionRequirement to HoursGroup -->
+    <many-to-one class="org.navalplanner.business.orders.entities.HoursGroup" column="HOURS_GROUP_ID" name="hoursGroup"/>
+    <!-- Inverse navigation from CriterionRequirement to OrderElement -->
+    <many-to-one class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID" name="orderElement"/>
+    <!-- Inverse navigation from CriterionRequirement to Criterion -->
+    <many-to-one class="org.navalplanner.business.resources.entities.Criterion" column="CRITERION_ID" name="criterion"/>
+
+    <subclass discriminator-value="DIRECT" name="DirectCriterionRequirement">
+      <set access="field" cascade="all,delete-orphan" inverse="true" name="children">
+        <key column="parent"/>
+        <one-to-many class="IndirectCriterionRequirement"/>
+      </set>
+    </subclass>
+    <subclass discriminator-value="INDIRECT" name="IndirectCriterionRequirement">
+      <many-to-one class="DirectCriterionRequirement" column="parent" name="parent"/>
+      <property access="field" name="isValid"/>
+    </subclass>
+  </class>
+</hibernate-mapping>

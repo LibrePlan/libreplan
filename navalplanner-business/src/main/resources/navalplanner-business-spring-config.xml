@@ -46,6 +46,9 @@
                 <value>
                     org/navalplanner/business/labels/entities/Labels.hbm.xml
                 </value>
+                <value>
+                    org/navalplanner/business/requirements/entities/Requirements.hbm.xml
+                </value>
                 </list>
         </property>
     </bean>

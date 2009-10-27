@@ -103,6 +103,7 @@ public class OrderElementModel implements IOrderElementModel {
 
     private void loadCriterionTypes() {
         for (CriterionType criterionType : criterionTypeDAO.getCriterionTypes()) {
+            criterionType.getCriterions().size();
             mapCriterionTypes.put(criterionType.getName(), criterionType);
         }
     }

@@ -17,17 +17,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.navalplanner.business.orders.entities;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.requirements.entities.CriterionRequirement;
+import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.ICriterionType;
+
 
 public class HoursGroup extends BaseEntity implements Cloneable {
 
@@ -44,7 +49,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
 
     private Boolean fixedPercentage = false;
 
-    private Set<Criterion> criterions = new HashSet<Criterion>();
+    private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
 
     @NotNull
     private OrderLine parentOrderLine;
@@ -105,60 +110,85 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return this.fixedPercentage;
     }
 
-    public void setCriterions(Set<Criterion> criterions) {
-        this.criterions = criterions;
+    public void setCriterionRequirements(Set<CriterionRequirement> criterionRequirements) {
+        this.criterionRequirements = criterionRequirements;
+    }
+
+    public Set<CriterionRequirement> getCriterionRequirements() {
+        return criterionRequirements;
     }
 
     public Set<Criterion> getCriterions() {
-        return criterions;
-    }
-
-    public void addCriterion(Criterion criterion) {
-        Criterion oldCriterion = getCriterionByType(criterion.getType());
-        if (oldCriterion != null) {
-            removeCriterion(oldCriterion);
+        Set<Criterion> criterions = new HashSet<Criterion>();
+        for(CriterionRequirement criterionRequirement: criterionRequirements){
+            criterions.add(criterionRequirement.getCriterion());
         }
-
-        criterions.add(criterion);
+        return Collections.unmodifiableSet(criterions);
     }
 
-    public void removeCriterion(Criterion criterion) {
-        criterions.remove(criterion);
+    public void addCriterionRequirement(CriterionRequirement requirement) {
+        if (canAddCriterionRequirement(requirement)) {
+            requirement.setHoursGroup(this);
+            criterionRequirements.add(requirement);
+        } else {
+            throw new IllegalStateException(
+                    " The "
+                            + requirement.getCriterion().getName()
+                            + " can not be assigned to this hoursGroup because it already exist in other hoursGroup");
+        }
     }
 
-    public Criterion getCriterionByType(ICriterionType<?> type) {
-        for (Criterion criterion : criterions) {
-            if (criterion.getType().equals(type)) {
-                return criterion;
+    private boolean canAddCriterionRequirement(
+            CriterionRequirement newRequirement) {
+        for (CriterionRequirement requirement : criterionRequirements) {
+            if (requirement.getCriterion()
+                    .equals(newRequirement.getCriterion())) {
+                return false;
             }
         }
+        return true;
+    }
 
+    /* TO REMOVE */
+    public void removeDirectCriterionRequirement(Criterion criterion){
+        CriterionRequirement oldCriterionRequirement =
+ getDirectCriterionRequirementByCriterion(criterion);
+        if (oldCriterionRequirement != null) {
+            removeCriterionRequirement(oldCriterionRequirement);
+        }
+    }
+
+    public void removeCriterionRequirement(CriterionRequirement criterionRequirement) {
+        criterionRequirements.remove(criterionRequirement);
+    }
+
+    /* TO REMOVE */
+    public CriterionRequirement getDirectCriterionRequirementByCriterion(
+            Criterion criterion) {
+        for (CriterionRequirement requirement : getDirectCriterionRequirement()) {
+                Criterion oldCriterion = requirement.getCriterion();
+            if ((oldCriterion != null)
+                    && (criterion.getId().equals(oldCriterion.getId()))) {
+                    return requirement;
+                }
+        }
         return null;
     }
 
-    public Criterion getCriterionByType(String type) {
-        // TODO: Check if hoursgroup has criterions
-        for (Criterion criterion : criterions) {
-            if (criterion.getType().getName().equals(type)) {
-                return criterion;
-            }
-        }
+    /* TO REMOVE */
+    public void addDirectRequirementCriterion(Criterion criterion) {
+        CriterionRequirement newCriterionRequirement =
+                DirectCriterionRequirement.create(criterion);
+        addCriterionRequirement(newCriterionRequirement);
+    }
 
+    /* TO REMOVE */
+    public Criterion getDirectCriterion(Criterion criterion) {
+        CriterionRequirement requirement = getDirectCriterionRequirementByCriterion(criterion);
+        if (requirement != null) {
+            return requirement.getCriterion();
+        }
         return null;
-    }
-
-    public void removeCriterionByType(ICriterionType<?> type) {
-        Criterion criterion = getCriterionByType(type);
-        if (criterion != null) {
-            removeCriterion(criterion);
-        }
-    }
-
-    public void removeCriterionByType(String type) {
-        Criterion criterion = getCriterionByType(type);
-        if (criterion != null) {
-            removeCriterion(criterion);
-        }
     }
 
     public void setParentOrderLine(OrderLine parentOrderLine) {
@@ -169,4 +199,59 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return parentOrderLine;
     }
 
+    public void updateCriterionRequirements(){
+        OrderLine newParent = getParentOrderLine();
+        Set<IndirectCriterionRequirement> currentIndirects =
+                getCurrentRequirement();
+        criterionRequirements.removeAll(getIndirectCriterionRequirement());
+        criterionRequirements.addAll(currentIndirects);
+    }
+
+    private Set<IndirectCriterionRequirement> getCurrentRequirement(){
+        Set<IndirectCriterionRequirement> currentRequirements =
+                new HashSet<IndirectCriterionRequirement>();
+        for(IndirectCriterionRequirement requirement :getIndirectRequirementParent()){
+            IndirectCriterionRequirement newRequirement = findRequirementByParent(requirement
+                    .getParent());
+            if(newRequirement == null){
+                newRequirement = IndirectCriterionRequirement.
+                        create(requirement.getParent(),true);
+            }
+            currentRequirements.add(requirement);
+        }
+        return currentRequirements;
+    }
+
+    private List<IndirectCriterionRequirement> getIndirectRequirementParent() {
+        return getParentOrderLine().getIndirectCriterionRequirement();
+    }
+
+    private IndirectCriterionRequirement findRequirementByParent(
+            CriterionRequirement newParent) {
+        for (IndirectCriterionRequirement requirement : getIndirectCriterionRequirement()) {
+            if (requirement.getParent().equals(newParent))
+                return (IndirectCriterionRequirement) requirement;
+        }
+        return null;
+    }
+
+    private List<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
+        List<IndirectCriterionRequirement> list = new ArrayList<IndirectCriterionRequirement>();
+        for(CriterionRequirement criterionRequirement : criterionRequirements ){
+            if(criterionRequirement instanceof IndirectCriterionRequirement){
+                list.add((IndirectCriterionRequirement) criterionRequirement);
+            }
+        }
+        return list;
+    }
+
+    private List<DirectCriterionRequirement> getDirectCriterionRequirement() {
+        List<DirectCriterionRequirement> list = new ArrayList<DirectCriterionRequirement>();
+        for(CriterionRequirement criterionRequirement : criterionRequirements ){
+            if(criterionRequirement instanceof DirectCriterionRequirement){
+                list.add((DirectCriterionRequirement) criterionRequirement);
+            }
+        }
+        return list;
+    }
 }

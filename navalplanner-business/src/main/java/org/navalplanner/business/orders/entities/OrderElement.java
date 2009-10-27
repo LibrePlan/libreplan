@@ -40,6 +40,9 @@ import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlob
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.requirements.entities.CriterionRequirement;
+import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 
 public abstract class OrderElement extends BaseEntity {
 
@@ -64,6 +67,8 @@ public abstract class OrderElement extends BaseEntity {
     private String code;
 
     private Set<TaskElement> taskElements = new HashSet<TaskElement>();
+
+    private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
 
     protected OrderLineGroup parent;
 
@@ -328,4 +333,85 @@ public abstract class OrderElement extends BaseEntity {
         return result;
     }
 
+    private void setCriterionRequirements(Set<CriterionRequirement> criterionRequirements) {
+        this.criterionRequirements = criterionRequirements;
+    }
+
+    public Set<CriterionRequirement> getCriterionRequirements() {
+        return Collections.unmodifiableSet(criterionRequirements);
+    }
+
+    public void updateCriterionRequirements(){
+        updateCriterionRequirement();
+        for(OrderElement orderElement : getChildren()){
+            orderElement.updateCriterionRequirements();
+        }
+    }
+
+    protected void updateCriterionRequirement() {
+        OrderElement newParent = this.getParent();
+        Set<IndirectCriterionRequirement> currentIndirects =
+                getCurrentIndirectRequirements(newParent);
+        criterionRequirements.removeAll(getIndirectCriterionRequirement());
+        criterionRequirements.addAll(currentIndirects);
+    }
+
+    protected Set<IndirectCriterionRequirement> getCurrentIndirectRequirements(
+            OrderElement newParent){
+        Set<IndirectCriterionRequirement> currentIndirects =
+                new HashSet<IndirectCriterionRequirement>();
+        if(newParent != null){
+            for(CriterionRequirement requirement :newParent.getCriterionRequirements()){
+                IndirectCriterionRequirement indirect = getCurrentIndirectRequirement(requirement);
+                currentIndirects.add(indirect);
+            }
+        }
+        return currentIndirects;
+    }
+
+    protected IndirectCriterionRequirement getCurrentIndirectRequirement(
+            CriterionRequirement requirement){
+        IndirectCriterionRequirement indirect;
+        DirectCriterionRequirement parent;
+        if(requirement instanceof DirectCriterionRequirement){
+            parent = (DirectCriterionRequirement)requirement;
+            indirect = findIndirectRequirementByParent(parent);
+        }else{
+            parent = ((IndirectCriterionRequirement)requirement).getParent();
+            indirect = findIndirectRequirementByParent(parent);
+        }
+        if(indirect == null){
+            indirect = IndirectCriterionRequirement.create(parent,true);
+        }
+        return (IndirectCriterionRequirement)indirect;
+    }
+
+    private IndirectCriterionRequirement findIndirectRequirementByParent(
+            DirectCriterionRequirement newParent) {
+        for (IndirectCriterionRequirement requirement : getIndirectCriterionRequirement()) {
+            if (requirement.getParent().equals(newParent))
+                return requirement;
+        }
+        return null;
+    }
+
+    public void removeCriterionRequirement(CriterionRequirement criterionRequirement){
+        //Remove the criterionRequirement into orderelement.
+        criterionRequirements.remove(criterionRequirement);
+    }
+
+    public void addCriterionRequirement(CriterionRequirement criterionRequirement){
+        criterionRequirement.setOrderElement(this);
+        this.criterionRequirements.add(criterionRequirement);
+    }
+
+    protected List<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
+        List<IndirectCriterionRequirement> list = new ArrayList<IndirectCriterionRequirement>();
+        for (CriterionRequirement criterionRequirement : criterionRequirements) {
+            if (criterionRequirement instanceof IndirectCriterionRequirement) {
+                list.add((IndirectCriterionRequirement) criterionRequirement);
+            }
+        }
+        return list;
+    }
 }

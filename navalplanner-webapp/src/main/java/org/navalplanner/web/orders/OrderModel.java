@@ -135,6 +135,13 @@ public class OrderModel implements IOrderModel {
         }
     }
 
+    public Map<CriterionType, List<Criterion>> getMapCriterions(){
+        final Map<CriterionType, List<Criterion>> result =
+                new HashMap<CriterionType, List<Criterion>>();
+        result.putAll(mapCriterions);
+        return result;
+    }
+
     @Override
     @Transactional(readOnly = true)
     public void prepareEditFor(Order order) {

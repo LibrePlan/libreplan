@@ -150,12 +150,12 @@ public class OrderElementController extends GenericForwardComposer {
             for (HoursGroup hoursGroup : hoursGroups) {
                 String key = "";
                 for (CriterionType criterionType : criterionTypes) {
-                    Criterion criterion = hoursGroup
-                            .getCriterionByType(criterionType);
-                    if (criterion != null) {
-                        key += criterion.getName() + ";";
+                    for (Criterion criterion : criterionType.getCriterions()) {
+                        if(hoursGroup.getDirectCriterion(criterion) != null){
+                            key += criterion.getName() + ";";
                     } else {
-                        key += ";";
+                            key += ";";
+                    }
                     }
                 }
 
@@ -165,8 +165,8 @@ public class OrderElementController extends GenericForwardComposer {
                     // aggregation that join HoursGroup with the same Criterions
                     hoursGroupAggregation = new HoursGroup();
                     hoursGroupAggregation.setWorkingHours(hoursGroup.getWorkingHours());
-                    hoursGroupAggregation.setCriterions(hoursGroup
-                            .getCriterions());
+                    hoursGroupAggregation.setCriterionRequirements(
+                            hoursGroup.getCriterionRequirements());
                 } else {
                     Integer newHours = hoursGroupAggregation.getWorkingHours() + hoursGroup.getWorkingHours();
                     hoursGroupAggregation.setWorkingHours(newHours);
@@ -419,7 +419,10 @@ public class OrderElementController extends GenericForwardComposer {
     private void removeCriterionsFromHoursGroup(CriterionType type) {
         OrderElement orderElement = getOrderElement();
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
-            hoursGroup.removeCriterionByType(type);
+            for (Criterion criterion : type.getCriterions()) {
+                hoursGroup
+.removeDirectCriterionRequirement(criterion);
+            }
         }
     }
 
@@ -433,9 +436,6 @@ public class OrderElementController extends GenericForwardComposer {
         @Override
         public void render(Listitem item, Object data) throws Exception {
             final HoursGroup hoursGroup = (HoursGroup) data;
-
-            hoursGroup.getCriterions();
-
             item.setValue(hoursGroup);
 
             Listcell cellWorkingHours = new Listcell();
@@ -495,8 +495,7 @@ public class OrderElementController extends GenericForwardComposer {
                     emptyListitem.setParent(criterionListbox);
 
                     // Get the Criterion of the current type in the HoursGroup
-                    final Criterion criterionHoursGroup = hoursGroup
-                            .getCriterionByType(criterionType);
+                    final Criterion criterionHoursGroup = null;
 
                     // For each possible Criterion of the current type
                     for (Criterion criterion : model
@@ -632,8 +631,7 @@ public class OrderElementController extends GenericForwardComposer {
                     emptyListitem.setParent(criterionListbox);
 
                     // Get the Criterion of the current type in the HoursGroup
-                    final Criterion criterionHoursGroup = hoursGroup
-                            .getCriterionByType(criterionType);
+                    final Criterion criterionHoursGroup = null;
 
                     // For each possible Criterion of the current type
                     for (Criterion criterion : model
@@ -662,11 +660,11 @@ public class OrderElementController extends GenericForwardComposer {
                                         throws Exception {
                                     Criterion criterion = (Criterion) criterionListbox
                                             .getSelectedItem().getValue();
-                                    if (criterion == null) {
-                                        hoursGroup
-                                                .removeCriterion(criterionHoursGroup);
-                                    } else {
-                                        hoursGroup.addCriterion(criterion);
+                                    try {
+                                        hoursGroup.addDirectRequirementCriterion(criterion);
+                                    } catch (Exception e) {
+                                        // At moment it do nothing -- change
+                                        // with new interface.
                                     }
                                 }
                             });
