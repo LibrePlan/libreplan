@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.company;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,6 +45,7 @@ import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.loadchart.LoadChart;
 import org.navalplanner.web.planner.loadchart.LoadChartFiller;
 import org.springframework.beans.factory.annotation.Autowired;

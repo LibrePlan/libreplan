@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.orders.OrderCRUDController;
-import org.navalplanner.web.planner.CompanyPlanningController;
+import org.navalplanner.web.planner.company.CompanyPlanningController;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
 import org.navalplanner.web.planner.order.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.Mode.ModeTypeChangedListener;

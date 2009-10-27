@@ -34,7 +34,7 @@
       <lookup-method name="getAddMilestoneCommand" bean="addMilestoneCommand"/>
     </bean>
 
-    <bean class="org.navalplanner.web.planner.CompanyPlanningModel" scope="prototype">
+    <bean class="org.navalplanner.web.planner.company.CompanyPlanningModel" scope="prototype">
       <lookup-method name="getTaskElementAdapter" bean="taskElementAdapter"/>
     </bean>
 
