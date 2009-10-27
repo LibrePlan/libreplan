@@ -21,7 +21,6 @@
 package org.zkoss.ganttz;
 
 import org.zkoss.ganttz.adapters.TabsConfiguration;
-import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.util.IMenuItemsRegister;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.zk.ui.Component;
@@ -49,9 +48,7 @@ public class TabSwitcher extends HtmlMacroComponent {
     private void addTabsFromComfiguration(TabsConfiguration configuration) {
         container.getChildren().clear();
         tabsRegistry = new TabsRegistry(container);
-        for (ITab tab : configuration.getTabs()) {
-            tabsRegistry.add(tab);
-        }
+        configuration.applyTo(tabsRegistry);
         tabsRegistry.registerAtMenu(getMenuItemsRegisterLocator().retrieve());
         tabsRegistry.showFirst();
     }

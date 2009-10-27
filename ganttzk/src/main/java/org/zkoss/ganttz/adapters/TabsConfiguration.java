@@ -21,29 +21,71 @@
 package org.zkoss.ganttz.adapters;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import org.zkoss.ganttz.TabsRegistry;
+import org.zkoss.ganttz.adapters.State.IValueChangeListener;
 import org.zkoss.ganttz.extensions.ITab;
 
 public class TabsConfiguration {
+
+    public static ChangeableTab configure(ITab tab) {
+        return new ChangeableTab(tab);
+    }
+
+    public static class ChangeableTab {
+        private final ITab tab;
+
+        private State<Void> reloadNameState;
+
+        ChangeableTab(ITab tab) {
+            this.tab = tab;
+        }
+
+        public ChangeableTab reloadNameOn(State<Void> reloadName) {
+            this.reloadNameState = reloadName;
+            return this;
+        }
+    }
 
     public static TabsConfiguration create() {
         return new TabsConfiguration();
     }
 
-    private List<ITab> tabs = new ArrayList<ITab>();
+    private List<ChangeableTab> tabs = new ArrayList<ChangeableTab>();
 
     private TabsConfiguration() {
     }
 
     public TabsConfiguration add(ITab tab) {
-        tabs.add(tab);
+        tabs.add(new ChangeableTab(tab));
         return this;
     }
 
-    public List<ITab> getTabs() {
-        return Collections.unmodifiableList(tabs);
+    public TabsConfiguration add(ChangeableTab changeableTab) {
+        tabs.add(changeableTab);
+        return this;
+    }
+
+    public void applyTo(TabsRegistry tabsRegistry) {
+        for (ChangeableTab tab : tabs) {
+            tabsRegistry.add(tab.tab);
+            reloadNameIfNeeded(tabsRegistry, tab);
+        }
+    }
+
+    private void reloadNameIfNeeded(final TabsRegistry tabsRegistry,
+            final ChangeableTab tab) {
+        if (tab.reloadNameState == null) {
+            return;
+        }
+        tab.reloadNameState.addListener(new IValueChangeListener<Void>() {
+
+            @Override
+            public void hasChanged(State<Void> condition) {
+                tabsRegistry.loadNewName(tab.tab);
+            }
+        });
     }
 
 }
