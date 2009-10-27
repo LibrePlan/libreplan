@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner;
+package org.navalplanner.web.planner.taskedition;
 
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
