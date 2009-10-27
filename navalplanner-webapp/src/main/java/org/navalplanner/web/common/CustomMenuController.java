@@ -169,19 +169,19 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Workers List"),
                     "/resources/worker/worker.zul#list"),
                 subItem(_("Machines List"),
- "/resources/machine/machines.zul"));
+                    "/resources/machine/machines.zul"));
 
-        topItem(_("Work reports"), "/workreports/workReportTypes.zul", subItem(
-                _("Work report types"), "/workreports/workReportTypes.zul"),
+        topItem(_("Work reports"), "/workreports/workReportTypes.zul",
+                subItem(_("Work report types"),
+                    "/workreports/workReportTypes.zul"),
                 subItem(_("Work report list"),
-                        "/workreports/workReport.zul#list"));
+                    "/workreports/workReport.zul#list"));
 
-        topItem(_("Administration"),
-                "/advance/advanceTypes.zul",
+        topItem(_("Administration"), "/advance/advanceTypes.zul",
                 subItem(_("Manage advances types"),
-                        "/advance/advanceTypes.zul"),
+                    "/advance/advanceTypes.zul"),
                 subItem(_("Manage criterions"),
-                        "/resources/criterions/criterions-V2.zul"),
+                    "/resources/criterions/criterions-V2.zul"),
                 subItem(_("Calendars"), "/calendars/calendars.zul"),
                 subItem(_("Label types"), "/labels/labelTypes.zul"));
 
