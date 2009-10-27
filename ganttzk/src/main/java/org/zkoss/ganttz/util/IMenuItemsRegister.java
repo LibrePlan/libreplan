@@ -32,4 +32,6 @@ public interface IMenuItemsRegister {
 
     public void renameMenuItem(Object key, String name);
 
+    public void toggleVisibilityTo(Object key, boolean visible);
+
 }

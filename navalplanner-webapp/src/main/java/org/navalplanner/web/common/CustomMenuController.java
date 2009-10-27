@@ -235,6 +235,13 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         button.setLabel(name);
     }
 
+    @Override
+    public void toggleVisibilityTo(Object key, boolean visible) {
+        Button button = (Button) key;
+        button.setVisible(visible);
+        button.getNextSibling().setVisible(visible);
+    }
+
     private void setSelectClass(final Button button) {
         button.setSclass("sub_menu_active");
     }

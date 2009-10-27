@@ -64,6 +64,12 @@ public class TabsRegistry {
         }
     }
 
+    public void toggleVisibilityTo(ITab tab, boolean visible) {
+        if (fromTabToMenuKey.containsKey(tab)) {
+            menu.toggleVisibilityTo(fromTabToMenuKey.get(tab), visible);
+        }
+    }
+
     private void activateMenuIfRegistered(ITab tab) {
         if (fromTabToMenuKey.containsKey(tab)) {
             menu.activateMenuItem(fromTabToMenuKey.get(tab));
