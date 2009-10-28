@@ -22,6 +22,7 @@ package org.navalplanner.business.planner.daos;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -68,37 +69,32 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
 
         List<GenericResourceAllocation> genericResourceAllocations = withId(getOfType(
                 GenericResourceAllocation.class, resourceAllocations));
+
         List<SpecificResourceAllocation> specificResourceAllocations = withId(getOfType(
                 SpecificResourceAllocation.class, resourceAllocations));
 
-        if (!genericResourceAllocations.isEmpty()) {
-            Criteria criteria = getSession().createCriteria(
-                    GenericDayAssignment.class);
-            criteria.add(Restrictions.in("genericResourceAllocation",
-                    genericResourceAllocations));
-
-            criteria.setProjection(Projections.projectionList().add(
-                    Property.forName("day").group()).add(
-                    Projections.sum("hours")));
-            List<Object[]> list = criteria.list();
-            addHoursByDate(result, list);
-        }
-
-        if (!specificResourceAllocations.isEmpty()) {
-            Criteria criteria = getSession().createCriteria(
-                    SpecificDayAssignment.class);
-            criteria.add(Restrictions.in("specificResourceAllocation",
-                    specificResourceAllocations));
-
-            criteria.setProjection(Projections.projectionList().add(
-                    Property.forName("day").group()).add(
-                    Projections.sum("hours")));
-
-            List<Object[]> list = criteria.list();
-            addHoursByDate(result, list);
-        }
+        addHoursByDate(result, queryHoursByDay(GenericDayAssignment.class,
+                "genericResourceAllocation", genericResourceAllocations));
+        addHoursByDate(result, queryHoursByDay(SpecificDayAssignment.class,
+                "specificResourceAllocation", specificResourceAllocations));
 
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends DayAssignment, R extends ResourceAllocation<T>> List<Object[]> queryHoursByDay(
+            Class<T> classBeingSearched, String allocationRelationship,
+            List<R> allocations) {
+        if (allocations.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Criteria criteria = getSession().createCriteria(classBeingSearched);
+        criteria.add(Restrictions.in(allocationRelationship, allocations));
+
+        criteria.setProjection(Projections.projectionList().add(
+                Property.forName("day").group()).add(Projections.sum("hours")));
+        List<Object[]> list = criteria.list();
+        return list;
     }
 
     private void addHoursByDate(SortedMap<LocalDate, Integer> result,
