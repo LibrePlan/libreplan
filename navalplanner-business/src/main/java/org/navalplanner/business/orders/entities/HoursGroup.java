@@ -30,7 +30,6 @@ import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
-import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 
 
@@ -197,52 +196,6 @@ public class HoursGroup extends BaseEntity implements Cloneable {
 
     public OrderLine getParentOrderLine() {
         return parentOrderLine;
-    }
-
-    public void updateCriterionRequirements(){
-        OrderLine newParent = getParentOrderLine();
-        Set<IndirectCriterionRequirement> currentIndirects =
-                getCurrentRequirement();
-        criterionRequirements.removeAll(getIndirectCriterionRequirement());
-        criterionRequirements.addAll(currentIndirects);
-    }
-
-    private Set<IndirectCriterionRequirement> getCurrentRequirement(){
-        Set<IndirectCriterionRequirement> currentRequirements =
-                new HashSet<IndirectCriterionRequirement>();
-        for(IndirectCriterionRequirement requirement :getIndirectRequirementParent()){
-            IndirectCriterionRequirement newRequirement = findRequirementByParent(requirement
-                    .getParent());
-            if(newRequirement == null){
-                newRequirement = IndirectCriterionRequirement.
-                        create(requirement.getParent(),true);
-            }
-            currentRequirements.add(requirement);
-        }
-        return currentRequirements;
-    }
-
-    private List<IndirectCriterionRequirement> getIndirectRequirementParent() {
-        return getParentOrderLine().getIndirectCriterionRequirement();
-    }
-
-    private IndirectCriterionRequirement findRequirementByParent(
-            CriterionRequirement newParent) {
-        for (IndirectCriterionRequirement requirement : getIndirectCriterionRequirement()) {
-            if (requirement.getParent().equals(newParent))
-                return (IndirectCriterionRequirement) requirement;
-        }
-        return null;
-    }
-
-    private List<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
-        List<IndirectCriterionRequirement> list = new ArrayList<IndirectCriterionRequirement>();
-        for(CriterionRequirement criterionRequirement : criterionRequirements ){
-            if(criterionRequirement instanceof IndirectCriterionRequirement){
-                list.add((IndirectCriterionRequirement) criterionRequirement);
-            }
-        }
-        return list;
     }
 
     private List<DirectCriterionRequirement> getDirectCriterionRequirement() {

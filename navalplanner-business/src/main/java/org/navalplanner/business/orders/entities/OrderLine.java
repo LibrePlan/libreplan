@@ -415,11 +415,4 @@ public class OrderLine extends OrderElement {
         }
         return result;
     }
-
-    public void updateCriterionRequirements() {
-        updateCriterionRequirements();
-        for (HoursGroup hoursGroup : this.getHoursGroups()) {
-            hoursGroup.updateCriterionRequirements();
-        }
-    }
 }

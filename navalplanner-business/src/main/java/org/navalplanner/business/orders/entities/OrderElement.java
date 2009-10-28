@@ -341,60 +341,6 @@ public abstract class OrderElement extends BaseEntity {
         return Collections.unmodifiableSet(criterionRequirements);
     }
 
-    public void updateCriterionRequirements(){
-        updateCriterionRequirement();
-        for(OrderElement orderElement : getChildren()){
-            orderElement.updateCriterionRequirements();
-        }
-    }
-
-    protected void updateCriterionRequirement() {
-        OrderElement newParent = this.getParent();
-        Set<IndirectCriterionRequirement> currentIndirects =
-                getCurrentIndirectRequirements(newParent);
-        criterionRequirements.removeAll(getIndirectCriterionRequirement());
-        criterionRequirements.addAll(currentIndirects);
-    }
-
-    protected Set<IndirectCriterionRequirement> getCurrentIndirectRequirements(
-            OrderElement newParent){
-        Set<IndirectCriterionRequirement> currentIndirects =
-                new HashSet<IndirectCriterionRequirement>();
-        if(newParent != null){
-            for(CriterionRequirement requirement :newParent.getCriterionRequirements()){
-                IndirectCriterionRequirement indirect = getCurrentIndirectRequirement(requirement);
-                currentIndirects.add(indirect);
-            }
-        }
-        return currentIndirects;
-    }
-
-    protected IndirectCriterionRequirement getCurrentIndirectRequirement(
-            CriterionRequirement requirement){
-        IndirectCriterionRequirement indirect;
-        DirectCriterionRequirement parent;
-        if(requirement instanceof DirectCriterionRequirement){
-            parent = (DirectCriterionRequirement)requirement;
-            indirect = findIndirectRequirementByParent(parent);
-        }else{
-            parent = ((IndirectCriterionRequirement)requirement).getParent();
-            indirect = findIndirectRequirementByParent(parent);
-        }
-        if(indirect == null){
-            indirect = IndirectCriterionRequirement.create(parent,true);
-        }
-        return (IndirectCriterionRequirement)indirect;
-    }
-
-    private IndirectCriterionRequirement findIndirectRequirementByParent(
-            DirectCriterionRequirement newParent) {
-        for (IndirectCriterionRequirement requirement : getIndirectCriterionRequirement()) {
-            if (requirement.getParent().equals(newParent))
-                return requirement;
-        }
-        return null;
-    }
-
     public void removeCriterionRequirement(CriterionRequirement criterionRequirement){
         //Remove the criterionRequirement into orderelement.
         criterionRequirements.remove(criterionRequirement);
