@@ -32,6 +32,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
@@ -351,8 +352,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
             }
 
             @Override
-            public void accepted(AllocationResult modifiedAllocationResult) {
-                resourceAllocationModel.accept(modifiedAllocationResult);
+            public void accepted(AggregateOfResourceAllocations aggregate) {
+                resourceAllocationModel.accept(allocation);
             }
 
             @Override

@@ -42,6 +42,7 @@ import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -74,13 +75,20 @@ import org.zkoss.zul.api.Column;
 public class AdvancedAllocationController extends GenericForwardComposer {
 
     public static class AllocationInput {
-        private final AllocationResult result;
+        private final AggregateOfResourceAllocations aggregate;
 
         private final IAdvanceAllocationResultReceiver resultReceiver;
 
-        public AllocationInput(AllocationResult result,
+        private TaskElement task;
+
+        public AllocationInput(AggregateOfResourceAllocations aggregate,
+                TaskElement task,
                 IAdvanceAllocationResultReceiver resultReceiver) {
-            this.result = result;
+            Validate.notNull(aggregate);
+            Validate.notNull(resultReceiver);
+            Validate.notNull(task);
+            this.aggregate = aggregate;
+            this.task = task;
             this.resultReceiver = resultReceiver;
         }
 
@@ -89,7 +97,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     public interface IAdvanceAllocationResultReceiver {
         public Restriction createRestriction();
 
-        public void accepted(AllocationResult modifiedAllocationResult);
+        public void accepted(AggregateOfResourceAllocations modifiedAllocations);
 
         public void cancel();
     }
@@ -274,7 +282,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     public void onClick$acceptButton() {
         for (AllocationInput allocationInput : allocationInputs) {
-            int totalHours = allocationInput.result.getAggregate()
+            int totalHours = allocationInput.aggregate
                     .getTotalHours();
             Restriction restriction = allocationInput.resultReceiver
                     .createRestriction();
@@ -285,7 +293,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
         back.goBack();
         for (AllocationInput allocationInput : allocationInputs) {
-            allocationInput.resultReceiver.accepted(allocationInput.result);
+            allocationInput.resultReceiver.accepted(allocationInput.aggregate);
         }
     }
 
@@ -327,9 +335,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private List<Row> specificRows(AllocationInput allocationInput) {
-        final AllocationResult allocationResult = allocationInput.result;
         List<Row> result = new ArrayList<Row>();
-        for (SpecificResourceAllocation specificResourceAllocation : allocationResult
+        for (SpecificResourceAllocation specificResourceAllocation : allocationInput.aggregate
                 .getSpecificAllocations()) {
             result.add(createSpecificRow(specificResourceAllocation,
                     allocationInput.resultReceiver.createRestriction()));
@@ -347,9 +354,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private List<Row> genericRows(AllocationInput allocationInput) {
-        final AllocationResult allocationResult = allocationInput.result;
         List<Row> result = new ArrayList<Row>();
-        for (GenericResourceAllocation genericResourceAllocation : allocationResult
+        for (GenericResourceAllocation genericResourceAllocation : allocationInput.aggregate
                 .getGenericAllocations()) {
             result.add(buildGenericRow(genericResourceAllocation,
                     allocationInput.resultReceiver.createRestriction()));
@@ -367,14 +373,12 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private Row buildGroupingRow(AllocationInput allocationInput) {
-        AllocationResult allocationResult = allocationInput.result;
         Restriction restriction = allocationInput.resultReceiver
                 .createRestriction();
-        String taskName = allocationResult.getTask().getName();
-        Row groupingRow = Row.createRow(messages, restriction,
-                taskName + " (task)", 0,
-                allocationResult
-                .getAllSortedByStartDate());
+        String taskName = allocationInput.task.getName();
+        Row groupingRow = Row.createRow(messages, restriction, taskName
+                + " (task)", 0, allocationInput.aggregate
+                .getAllocationsSortedByStartDate());
         return groupingRow;
     }
 
@@ -437,19 +441,19 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Interval intervalFromData() {
         Interval result = null;
         for (AllocationInput each : allocationInputs) {
-            Interval intervalForInput = intervalFrom(each.result);
+            Interval intervalForInput = intervalFrom(each);
             result = result == null ? intervalForInput : result
                     .coalesce(intervalForInput);
         }
         return result;
     }
 
-    private Interval intervalFrom(AllocationResult allocationResult) {
-        List<ResourceAllocation<?>> all = allocationResult
-                .getAllSortedByStartDate();
+    private Interval intervalFrom(AllocationInput input) {
+        List<ResourceAllocation<?>> all = input.aggregate
+                .getAllocationsSortedByStartDate();
         if (all.isEmpty()) {
-            return new Interval(allocationResult.getTask().getStartDate(),
-                    allocationResult.getTask().getEndDate());
+            return new Interval(input.task.getStartDate(), input.task
+                    .getEndDate());
         } else {
             LocalDate start = all.get(0).getStartDate();
             LocalDate end = getEnd(all);

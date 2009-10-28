@@ -84,7 +84,8 @@ public class ViewSwitcher implements Composer {
     private List<AllocationInput> asAllocationInput(
             AllocationResult allocationResult,
             IAdvanceAllocationResultReceiver resultReceiver) {
-        return Collections.singletonList(new AllocationInput(allocationResult,
+        return Collections.singletonList(new AllocationInput(allocationResult
+                .getAggregate(), allocationResult.getTask(),
                 resultReceiver));
     }
 
