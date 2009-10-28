@@ -51,6 +51,18 @@ import org.navalplanner.business.resources.entities.Resource;
 public abstract class ResourceAllocation<T extends DayAssignment> extends
         BaseEntity {
 
+    public static <T extends ResourceAllocation<?>> List<T> getOfType(
+            Class<T> type,
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
+        List<T> result = new ArrayList<T>();
+        for (ResourceAllocation<?> allocation : resourceAllocations) {
+            if (type.isInstance(allocation)) {
+                result.add(type.cast(allocation));
+            }
+        }
+        return result;
+    }
+
     public static <R extends ResourceAllocation<?>> List<R> sortedByStartDate(
             Collection<R> allocations) {
         List<R> result = new ArrayList<R>(allocations);

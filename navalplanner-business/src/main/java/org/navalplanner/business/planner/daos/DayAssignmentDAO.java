@@ -76,7 +76,7 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
     private void addResultsFromGeneric(
             SortedMap<LocalDate, Integer> result,
             Collection<ResourceAllocation<?>> resourceAllocations) {
-        List<GenericResourceAllocation> genericResourceAllocations = withId(getOfType(
+        List<GenericResourceAllocation> genericResourceAllocations = withId(ResourceAllocation.getOfType(
                 GenericResourceAllocation.class, resourceAllocations));
         addToResult(result, queryHoursByDay(GenericDayAssignment.class,
                 "genericResourceAllocation", genericResourceAllocations));
@@ -84,21 +84,10 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
 
     private void addResultsFromSpecific(SortedMap<LocalDate, Integer> result,
             Collection<ResourceAllocation<?>> resourceAllocations) {
-        List<SpecificResourceAllocation> specificResourceAllocations = withId(getOfType(
+        List<SpecificResourceAllocation> specificResourceAllocations = withId(ResourceAllocation.getOfType(
                 SpecificResourceAllocation.class, resourceAllocations));
         addToResult(result, queryHoursByDay(SpecificDayAssignment.class,
                 "specificResourceAllocation", specificResourceAllocations));
-    }
-
-    private <T extends ResourceAllocation<?>> List<T> getOfType(Class<T> type,
-            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
-        List<T> result = new ArrayList<T>();
-        for (ResourceAllocation<?> allocation : resourceAllocations) {
-            if (type.isInstance(allocation)) {
-                result.add(type.cast(allocation));
-            }
-        }
-        return result;
     }
 
     private <T extends BaseEntity> List<T> withId(List<T> elements) {
