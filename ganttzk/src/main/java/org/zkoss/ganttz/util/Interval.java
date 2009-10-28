@@ -23,7 +23,11 @@
  */
 package org.zkoss.ganttz.util;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+
+import org.apache.commons.lang.Validate;
 
 public class Interval {
     private final Date start;
@@ -78,5 +82,12 @@ public class Interval {
 
     private boolean isIncluded(Date date) {
         return start.compareTo(date) <= 0 && finish.compareTo(date) >= 0;
+    }
+
+    public Interval coalesce(Interval otherInterval) {
+        Validate.notNull(otherInterval);
+        return new Interval(Collections.min(Arrays.asList(start,
+                otherInterval.start)), Collections.max(Arrays.asList(finish,
+                otherInterval.finish)));
     }
 }
