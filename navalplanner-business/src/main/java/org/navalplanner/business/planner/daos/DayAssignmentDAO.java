@@ -20,7 +20,8 @@
 
 package org.navalplanner.business.planner.daos;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -31,6 +32,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericDayAssignment;
@@ -64,24 +66,10 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
         Set<ResourceAllocation<?>> resourceAllocations = taskElement
                 .getResourceAllocations();
 
-        Set<GenericResourceAllocation> genericResourceAllocations = new HashSet<GenericResourceAllocation>();
-        Set<SpecificResourceAllocation> specificResourceAllocations = new HashSet<SpecificResourceAllocation>();
-
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            if (resourceAllocation instanceof GenericResourceAllocation) {
-                Long id = resourceAllocation.getId();
-                if (id != null) {
-                    genericResourceAllocations
-                            .add((GenericResourceAllocation) resourceAllocation);
-                }
-            } else if (resourceAllocation instanceof SpecificResourceAllocation) {
-                Long id = resourceAllocation.getId();
-                if (id != null) {
-                    specificResourceAllocations
-                            .add((SpecificResourceAllocation) resourceAllocation);
-                }
-            }
-        }
+        List<GenericResourceAllocation> genericResourceAllocations = withId(getOfType(
+                GenericResourceAllocation.class, resourceAllocations));
+        List<SpecificResourceAllocation> specificResourceAllocations = withId(getOfType(
+                SpecificResourceAllocation.class, resourceAllocations));
 
         if (!genericResourceAllocations.isEmpty()) {
             Criteria criteria = getSession().createCriteria(
@@ -126,6 +114,27 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
             }
         }
 
+        return result;
+    }
+
+    private <T extends BaseEntity> List<T> withId(List<T> elements) {
+        List<T> result = new ArrayList<T>();
+        for (T element : elements) {
+            if (element.getId() != null) {
+                result.add(element);
+            }
+        }
+        return result;
+    }
+
+    private <T extends ResourceAllocation<?>> List<T> getOfType(Class<T> type,
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
+        List<T> result = new ArrayList<T>();
+        for (ResourceAllocation<?> allocation : resourceAllocations) {
+            if (type.isInstance(allocation)) {
+                result.add(type.cast(allocation));
+            }
+        }
         return result;
     }
 
