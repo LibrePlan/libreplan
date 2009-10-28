@@ -36,16 +36,6 @@ import org.navalplanner.business.planner.entities.TaskElement;
 public interface IDayAssignmentDAO extends
         IGenericDAO<DayAssignment, Long> {
 
-    /**
-     * Gets the list of {@link DayAssignment} for a {@link TaskElement} grouped
-     * by day.
-     *
-     * Returns a map where the day is the key and the hours for that day the
-     * value.
-     *
-     * @param taskElement
-     * @return A map {day => hours} sorted by date
-     */
     SortedMap<LocalDate, Integer> getDayAssignmentsByTaksElementGroupByDay(
             TaskElement taskElement);
 
