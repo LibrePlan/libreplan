@@ -449,23 +449,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
 
         /**
-         * Appends {@link Button} to {@link Listitem}
-         * @param listitem
-         * @param label
-         *            value for {@link Button}
-         * @return
-         */
-        private Button appendButton(Listitem listitem, String label) {
-            Button button = new Button(label);
-
-            Listcell listCell = new Listcell();
-            listCell.appendChild(button);
-            listitem.appendChild(listCell);
-
-            return button;
-        }
-
-        /**
          * Appends delete {@link Button} to {@link Listitem}
          * @param listitem
          *            value for {@link Button}
