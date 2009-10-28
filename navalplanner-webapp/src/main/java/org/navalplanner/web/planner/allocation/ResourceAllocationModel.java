@@ -29,6 +29,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -149,6 +150,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         planningState.reassociateResourcesWithSession(resourceDAO);
         taskElementDAO.save(this.task);
         hoursGroupDAO.save(this.task.getHoursGroup());
+        loadCriterionsOfGenericAllocations();
         reattachHoursGroup(this.task.getHoursGroup());
         reattachCriterions(this.task.getHoursGroup().getCriterions());
         List<AllocationDTO> currentAllocations = addDefaultGenericIfNeeded(AllocationDTO.toDTOs(this.task
@@ -157,6 +159,17 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 .create(task, currentAllocations, resourceDAO,
                         reattachResources(getResourcesMatchingCriterions()));
         return resourceAllocationsBeingEdited;
+    }
+
+    private void loadCriterionsOfGenericAllocations() {
+        Set<ResourceAllocation<?>> resourceAllocations = this.task
+                .getResourceAllocations();
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+            if (resourceAllocation instanceof GenericResourceAllocation) {
+                GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
+                generic.getCriterions().size();
+            }
+        }
     }
 
     private void reattachHoursGroup(HoursGroup hoursGroup) {
