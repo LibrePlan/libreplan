@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -62,49 +61,44 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
     @Transactional(readOnly = true)
     public SortedMap<LocalDate, Integer> getHoursAssignedByDayFor(
             TaskElement taskElement) {
+        return calculateHoursAssignedByDayFor(taskElement
+                .getResourceAllocations());
+    }
+
+    private SortedMap<LocalDate, Integer> calculateHoursAssignedByDayFor(
+            Collection<ResourceAllocation<?>> resourceAllocations) {
         SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
-
-        Set<ResourceAllocation<?>> resourceAllocations = taskElement
-                .getResourceAllocations();
-
-        List<GenericResourceAllocation> genericResourceAllocations = withId(getOfType(
-                GenericResourceAllocation.class, resourceAllocations));
-
-        List<SpecificResourceAllocation> specificResourceAllocations = withId(getOfType(
-                SpecificResourceAllocation.class, resourceAllocations));
-
-        addHoursByDate(result, queryHoursByDay(GenericDayAssignment.class,
-                "genericResourceAllocation", genericResourceAllocations));
-        addHoursByDate(result, queryHoursByDay(SpecificDayAssignment.class,
-                "specificResourceAllocation", specificResourceAllocations));
-
+        addResultsFromGeneric(result, resourceAllocations);
+        addResultsFromSpecific(result, resourceAllocations);
         return result;
     }
 
-    @SuppressWarnings("unchecked")
-    private <T extends DayAssignment, R extends ResourceAllocation<T>> List<Object[]> queryHoursByDay(
-            Class<T> classBeingSearched, String allocationRelationship,
-            List<R> allocations) {
-        if (allocations.isEmpty()) {
-            return Collections.emptyList();
-        }
-        Criteria criteria = getSession().createCriteria(classBeingSearched);
-        criteria.add(Restrictions.in(allocationRelationship, allocations));
-
-        criteria.setProjection(Projections.projectionList().add(
-                Property.forName("day").group()).add(Projections.sum("hours")));
-        List<Object[]> list = criteria.list();
-        return list;
+    private void addResultsFromGeneric(
+            SortedMap<LocalDate, Integer> result,
+            Collection<ResourceAllocation<?>> resourceAllocations) {
+        List<GenericResourceAllocation> genericResourceAllocations = withId(getOfType(
+                GenericResourceAllocation.class, resourceAllocations));
+        addToResult(result, queryHoursByDay(GenericDayAssignment.class,
+                "genericResourceAllocation", genericResourceAllocations));
     }
 
-    private void addHoursByDate(SortedMap<LocalDate, Integer> result,
-            List<Object[]> list) {
-        for (Object[] object : list) {
-            LocalDate date = (LocalDate) object[0];
-            Integer hours = (Integer) object[1];
-            int current = result.get(date) != null ? result.get(date) : 0;
-            result.put(date, current + hours);
+    private void addResultsFromSpecific(SortedMap<LocalDate, Integer> result,
+            Collection<ResourceAllocation<?>> resourceAllocations) {
+        List<SpecificResourceAllocation> specificResourceAllocations = withId(getOfType(
+                SpecificResourceAllocation.class, resourceAllocations));
+        addToResult(result, queryHoursByDay(SpecificDayAssignment.class,
+                "specificResourceAllocation", specificResourceAllocations));
+    }
+
+    private <T extends ResourceAllocation<?>> List<T> getOfType(Class<T> type,
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
+        List<T> result = new ArrayList<T>();
+        for (ResourceAllocation<?> allocation : resourceAllocations) {
+            if (type.isInstance(allocation)) {
+                result.add(type.cast(allocation));
+            }
         }
+        return result;
     }
 
     private <T extends BaseEntity> List<T> withId(List<T> elements) {
@@ -117,15 +111,29 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
         return result;
     }
 
-    private <T extends ResourceAllocation<?>> List<T> getOfType(Class<T> type,
-            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
-        List<T> result = new ArrayList<T>();
-        for (ResourceAllocation<?> allocation : resourceAllocations) {
-            if (type.isInstance(allocation)) {
-                result.add(type.cast(allocation));
-            }
+    @SuppressWarnings("unchecked")
+    private <T extends DayAssignment, R extends ResourceAllocation<T>> List<Object[]> queryHoursByDay(
+            Class<T> classBeingSearched, String allocationRelationship,
+            List<R> allocations) {
+        if (allocations.isEmpty()) {
+            return Collections.emptyList();
         }
-        return result;
+        Criteria criteria = getSession().createCriteria(classBeingSearched);
+        criteria.add(Restrictions.in(allocationRelationship, allocations));
+        criteria.setProjection(Projections.projectionList().add(
+                Property.forName("day").group()).add(Projections.sum("hours")));
+        List<Object[]> list = criteria.list();
+        return list;
+    }
+
+    private void addToResult(SortedMap<LocalDate, Integer> result,
+            List<Object[]> list) {
+        for (Object[] object : list) {
+            LocalDate date = (LocalDate) object[0];
+            Integer hours = (Integer) object[1];
+            int current = result.get(date) != null ? result.get(date) : 0;
+            result.put(date, current + hours);
+        }
     }
 
 }
