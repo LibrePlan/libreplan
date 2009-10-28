@@ -109,4 +109,14 @@ public class AggregateOfResourceAllocations {
         return one.compareTo(other) > 0 ? one : other;
     }
 
+    public List<SpecificResourceAllocation> getSpecificAllocations() {
+        return ResourceAllocation.getOfType(SpecificResourceAllocation.class,
+                resourceAllocations);
+    }
+
+    public List<GenericResourceAllocation> getGenericAllocations() {
+        return ResourceAllocation.getOfType(GenericResourceAllocation.class,
+                resourceAllocations);
+    }
+
 }
