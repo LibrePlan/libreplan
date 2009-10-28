@@ -245,7 +245,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             Integer hoursLastDay = 0;
 
             Map<LocalDate, Integer> daysMap = dayAssignmentDAO
-                    .getDayAssignmentsByTaksElementGroupByDay(taskElement);
+                    .getHoursAssignedByDayFor(taskElement);
             if (daysMap.isEmpty()) {
                 return null;
             }

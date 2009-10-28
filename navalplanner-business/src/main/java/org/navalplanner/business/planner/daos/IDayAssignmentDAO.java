@@ -36,7 +36,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 public interface IDayAssignmentDAO extends
         IGenericDAO<DayAssignment, Long> {
 
-    SortedMap<LocalDate, Integer> getDayAssignmentsByTaksElementGroupByDay(
+    SortedMap<LocalDate, Integer> getHoursAssignedByDayFor(
             TaskElement taskElement);
 
 }

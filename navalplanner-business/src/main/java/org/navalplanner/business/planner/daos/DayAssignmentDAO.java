@@ -57,7 +57,7 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
 
     @Override
     @Transactional(readOnly = true)
-    public SortedMap<LocalDate, Integer> getDayAssignmentsByTaksElementGroupByDay(
+    public SortedMap<LocalDate, Integer> getHoursAssignedByDayFor(
             TaskElement taskElement) {
         SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
 
