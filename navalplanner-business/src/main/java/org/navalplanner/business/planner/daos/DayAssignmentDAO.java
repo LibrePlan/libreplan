@@ -80,14 +80,8 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
             criteria.setProjection(Projections.projectionList().add(
                     Property.forName("day").group()).add(
                     Projections.sum("hours")));
-
             List<Object[]> list = criteria.list();
-
-            for (Object[] object : list) {
-                LocalDate date = (LocalDate) object[0];
-                Integer hours = (Integer) object[1];
-                result.put(date, hours.intValue());
-            }
+            addHoursByDate(result, list);
         }
 
         if (!specificResourceAllocations.isEmpty()) {
@@ -101,20 +95,20 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
                     Projections.sum("hours")));
 
             List<Object[]> list = criteria.list();
-
-            for (Object[] object : list) {
-                LocalDate date = (LocalDate) object[0];
-                Integer hours = (Integer) object[1];
-
-                if (result.get(date) == null) {
-                    result.put(date, hours.intValue());
-                } else {
-                    result.put(date, result.get(date) + hours.intValue());
-                }
-            }
+            addHoursByDate(result, list);
         }
 
         return result;
+    }
+
+    private void addHoursByDate(SortedMap<LocalDate, Integer> result,
+            List<Object[]> list) {
+        for (Object[] object : list) {
+            LocalDate date = (LocalDate) object[0];
+            Integer hours = (Integer) object[1];
+            int current = result.get(date) != null ? result.get(date) : 0;
+            result.put(date, current + hours);
+        }
     }
 
     private <T extends BaseEntity> List<T> withId(List<T> elements) {
