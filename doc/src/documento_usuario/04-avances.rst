@@ -3,75 +3,89 @@ Avances
 
 .. contents::
 
-O avance dun proxecto marca o grao no que se est· cumplindo co alcance estimado para a realizaciÛn do mesmo, asimesmo, o avance dunha tarefa indica ese mesmo grao para o alcance estimado para dita tarefa.
+O avance dun proxecto marca o grao no que se est√° cumplindo co alcance estimado para a realizaci√≥n do mesmo, asimesmo, o avance dunha tarefa indica ese mesmo grao para o alcance estimado para dita tarefa.
 
-Xeralmente os avances non teÒen un modo autom·tico de ser medidos, e È unha persoa quen en base · experiencia ou · realizaciÛn de unha lista de chequeo determina o grao de compleciÛn de unha tarefa ou un proxecto.
+Xeralmente os avances non te√±en un modo autom√°tico de ser medidos, e √© unha persoa quen en base √° experiencia ou √° realizaci√≥n de unha lista de chequeo determina o grao de compleci√≥n de unha tarefa ou un proxecto.
 
-Cabe destacar que hai unha diferencia importante entre a uso de horas asignadas a unha tarefa ou proxecto, co grao de avance nesa mesma tarefa ou proxecto. Mentres que o uso de horas pode estar en desvÌo ou non, o proxecto pode estar nun grao de avance inferior Û estimado para o dÌa no que se est· controlando ou superior. Prod˙cense, debido a estas d˙as medidas, varias posibles situaciÛns:
-   * ConsumÌronse menos horas das estimadas para o elemento a medir e Û mesmo tempo o proxecto est· indo m·is lento do estimado, porque o avance È inferior Û estimado para o dÌa de control.
-   * ConsumÌronse menos horas das estimadas para o elemento a medir e Û mesmo tempo o proxecto est· indo m·is r·pido do estimado, porque o avance È inferior Û estimado para o dÌa de control.
-   * ConsumÌronse m·is horas das estimadas e Û mesmo tempo o proxecto est· indo m·is lento do estimado, porque o avance È inferior Û estimado para o dÌa de control.
-   * ConsumÌronse m·is horas das estimadas e Û mesmo tempo o proxecto est· indo m·is r·pido do estimado, porque o avance È inferior Û estimado para o dÌa de control.
+Cabe destacar que hai unha diferencia importante entre a uso de horas asignadas a unha tarefa ou proxecto, co grao de avance nesa mesma tarefa ou proxecto. Mentres que o uso de horas pode estar en desv√≠o ou non, o proxecto pode estar nun grao de avance inferior √≥ estimado para o d√≠a no que se est√° controlando ou superior. Prod√∫cense, debido a estas d√∫as medidas, varias posibles situaci√≥ns:
 
-O contraste de estas posibles situaciÛns È posible realizalo dende a propia planificaciÛn, utilizando informaciÛn do grao de avance e por outro lado do grao de uso de horas. Neste capÌtulo tratarase a introduciÛn da informaciÛn para poder levar un control do avance.
+   * Consum√≠ronse menos horas das estimadas para o elemento a medir e √≥ mesmo tempo o proxecto est√° indo m√°is lento do estimado, porque o avance √© inferior √≥ estimado para o d√≠a de control.
+   * Consum√≠ronse menos horas das estimadas para o elemento a medir e √≥ mesmo tempo o proxecto est√° indo m√°is r√°pido do estimado, porque o avance √© inferior √≥ estimado para o d√≠a de control.
+   * Consum√≠ronse m√°is horas das estimadas e √≥ mesmo tempo o proxecto est√° indo m√°is lento do estimado, porque o avance √© inferior √≥ estimado para o d√≠a de control.
+   * Consum√≠ronse m√°is horas das estimadas e √≥ mesmo tempo o proxecto est√° indo m√°is r√°pido do estimado, porque o avance √© inferior √≥ estimado para o d√≠a de control.
 
-A filosofÌa implantada no proxecto para o control do avance est· baseada en que o usuario divida ata o punto no que desexa o control de avances dos seus proxectos. En consecuencia, se o usuario desexa controlar a nivel de pedido, sÛ debe introducir informaciÛn nos elementos de nivel 1, cando se desexa poder dispoÒer de un control m·is fino sobre as tarefas, debe introducir informaciÛn de avances en niveis inferiores, sendo o sistema que propaga cara arriba na xerarquÌa todos os datos.
+O contraste de estas posibles situaci√≥ns √© posible realizalo dende a propia planificaci√≥n, utilizando informaci√≥n do grao de avance e por outro lado do grao de uso de horas. Neste cap√≠tulo tratarase a introduci√≥n da informaci√≥n para poder levar un control do avance.
 
-XestiÛn de tipos de avance
---------------------------
-Cada empresa pode ter unhas necesidades diferentes de control do avance dos seus proxectos, e concretamente das tarefas que os compoÒen, por esta razÛn foi necesario contemplar a existencia dunhas entidades no sistema chamadas "tipos de avance". Os tipos de avance son diferentes tipoloxÌas que cada usuario pode dar de alta no sistema para medir o avance dunha tarefa. Por exemplo, unha tarefa pode ser medida porcentualmente, pero Û mesmo tempo ese avance porcentual se traduce en un avance en *Toneladas* sobre o acordado co cliente.
+A filosof√≠a implantada no proxecto para o control do avance est√° baseada en que o usuario divida ata o punto no que desexa o control de avances dos seus proxectos. En consecuencia, se o usuario desexa controlar a nivel de pedido, s√≥ debe introducir informaci√≥n nos elementos de nivel 1, cando se desexa poder dispo√±er de un control m√°is fino sobre as tarefas, debe introducir informaci√≥n de avances en niveis inferiores, sendo o sistema que propaga cara arriba na xerarqu√≠a todos os datos.
 
-Un tipo de avance est· caracterizado por un nome, un valor m·ximo e unha precisiÛn:
-   * Nome: Ser· un nome representativo que o usuario debe recordar para cando seleccione a asignaciÛn de avances sexa capaz de entender quÈ tipo de avance est· medindo.
-   * Valor m·ximo: … o valor m·ximo que se lle permitir· a unha tarefa ou proxecto establecer como medida total de avance. Por exemplo, traballando con *Toneladas*, se se considera que o m·ximo normal en toneladas È de 4000 e nunca vai a haber tarefas que requiran realizar m·is de 4000 toneladas de alg˙n material, ese deberÌa ser o valor m·ximo establecido.
-   * PrecisiÛn: … o valor dos incrementos que se permitir·n para o tipo de avance creado. Por exemplo, se o avance en *Toneladas* se vai a medir en valores redondeados, poderÌa ser 1 a precisiÛn. Dende ese momento, sÛ se poderÌan introducir medidas de avance con n˙meros enteiros, por exemplo, 1, 2, 300, etc.
+Xesti√≥n de tipos de avance
+==========================
+
+Cada empresa pode ter unhas necesidades diferentes de control do avance dos seus proxectos, e concretamente das tarefas que os compo√±en, por esta raz√≥n foi necesario contemplar a existencia dunhas entidades no sistema chamadas "tipos de avance". Os tipos de avance son diferentes tipolox√≠as que cada usuario pode dar de alta no sistema para medir o avance dunha tarefa. Por exemplo, unha tarefa pode ser medida porcentualmente, pero √≥ mesmo tempo ese avance porcentual se traduce en un avance en *Toneladas* sobre o acordado co cliente.
+
+Un tipo de avance est√° caracterizado por un nome, un valor m√°ximo e unha precisi√≥n:
+
+   * Nome: Ser√° un nome representativo que o usuario debe recordar para cando seleccione a asignaci√≥n de avances sexa capaz de entender qu√© tipo de avance est√° medindo.
+   * Valor m√°ximo: √â o valor m√°ximo que se lle permitir√° a unha tarefa ou proxecto establecer como medida total de avance. Por exemplo, traballando con *Toneladas*, se se considera que o m√°ximo normal en toneladas √© de 4000 e nunca vai a haber tarefas que requiran realizar m√°is de 4000 toneladas de alg√∫n material, ese deber√≠a ser o valor m√°ximo establecido.
+   * Precisi√≥n: √â o valor dos incrementos que se permitir√°n para o tipo de avance creado. Por exemplo, se o avance en *Toneladas* se vai a medir en valores redondeados, poder√≠a ser 1 a precisi√≥n. Dende ese momento, s√≥ se poder√≠an introducir medidas de avance con n√∫meros enteiros, por exemplo, 1, 2, 300, etc.
 
 O sistema conta con dous tipos de avance creados por defecto:
-   * Porcentual: Tipo de avance xeral que permite medir o avance dun proxecto ou tarefa en base Û porcentaxe que se estima de compleciÛn do mesmo, por exemplo, unha tarefa est· Û 30% respecto Û 100% estimado nun dÌa concreto.
-   * Unidades: Tipo de avance xeral que permite medir o avance en unidades sen necesidade de especificar as unidades concretas. A tarefa comprendÌa a creaciÛn de 3000 unidades e o avance son 500 unidades sobre as 3000 estimadas.
+
+   * Porcentual: Tipo de avance xeral que permite medir o avance dun proxecto ou tarefa en base √≥ porcentaxe que se estima de compleci√≥n do mesmo, por exemplo, unha tarefa est√° √≥ 30% respecto √≥ 100% estimado nun d√≠a concreto.
+   * Unidades: Tipo de avance xeral que permite medir o avance en unidades sen necesidade de especificar as unidades concretas. A tarefa comprend√≠a a creaci√≥n de 3000 unidades e o avance son 500 unidades sobre as 3000 estimadas.
 
 .. figure:: images/tipos-avances.png
    :scale: 70
 
 
-O usuario poder· crear novos tipos de avance do seguinte xeito:
-   * O usuario accede · secciÛn de "AdministraciÛn".
-   * Preme na opciÛn do men˙ de segundo nivel "______".
+O usuario poder√° crear novos tipos de avance do seguinte xeito:
+
+   * O usuario accede √° secci√≥n de "Administraci√≥n".
+   * Preme na opci√≥n do men√∫ de segundo nivel "______".
    * O sistema amosa un listado de tipos de avance existentes.
-   * Con cada tipo de avance o usuario poder·:
+   * Con cada tipo de avance o usuario poder√°:
+
       * Editar
       * Borrar
-   * A maiores, o usuario poder· crear un tipo de avance novo.
-   * Coa ediciÛn ou a creaciÛn, o sistema amosar· un formulario coa seguinte informaciÛn:
+
+   * A maiores, o usuario poder√° crear un tipo de avance novo.
+   * Coa edici√≥n ou a creaci√≥n, o sistema amosar√° un formulario coa seguinte informaci√≥n:
+
       * Nome do tipo de avance.
-      * Valor m·ximo que acepta o tipo de avance.
+      * Valor m√°ximo que acepta o tipo de avance.
       * Precision di tipo de avance.
 
 
-IntroduciÛn de avances en base a tipo
--------------------------------------
+Introduci√≥n de avances en base a tipo
+=====================================
 
-A introduciÛn dos avances vaise realizar sobre os elementos de pedido, sen embargo, ser· posible facelo con un atallo dende as tarefas de planificaciÛn. Ser· responsabilidade do usuario da aplicaciÛn a decisiÛn sobre quÈ tipos de avance desexa asociar a cada elemento de pedido.
+A introduci√≥n dos avances vaise realizar sobre os elementos de pedido, sen embargo, ser√° posible facelo con un atallo dende as tarefas de planificaci√≥n. Ser√° responsabilidade do usuario da aplicaci√≥n a decisi√≥n sobre qu√© tipos de avance desexa asociar a cada elemento de pedido.
 
-Ser· posible introducir un tipo de avance ˙nico e defectivo para todo un pedido.
+Ser√° posible introducir un tipo de avance √∫nico e defectivo para todo un pedido.
 
-Antes de poder realizar medidas de avance, È necesario asociar o tipo elixido Û pedido, por exemplo, un avance de tipo porcentaxe para medir porcentualmente os avances realizados sobre o total da tarefa ou un avance de tipo pactado por se se queren introducir a futuro mediciÛns de avances pactadas co cliente.
+Antes de poder realizar medidas de avance, √© necesario asociar o tipo elixido √≥ pedido, por exemplo, un avance de tipo porcentaxe para medir porcentualmente os avances realizados sobre o total da tarefa ou un avance de tipo pactado por se se queren introducir a futuro medici√≥ns de avances pactadas co cliente.
 
 .. figure:: images/avance.png
    :scale: 70
 
-Para introducir mediciÛns de avance ser· necesario realizar o seguinte:
+Para introducir medici√≥ns de avance ser√° necesario realizar o seguinte:
+
    * Seleccionar o tipo de avance para o que desexa introducir o avance.
-      * Se non existe ning˙n tipo de avance È necesario engadir un tipo de avance.
-   * No formulario que aparece debaixo cos campos "______" e "______" introducir o valor absoluto da medida e a data que se lle desexa asignar · medida tomada.
-   * O sistema almacenar· autom·ticamente os datos introducidos.
+
+      * Se non existe ning√∫n tipo de avance √© necesario engadir un tipo de avance.
+
+   * No formulario que aparece debaixo cos campos "______" e "______" introducir o valor absoluto da medida e a data que se lle desexa asignar √° medida tomada.
+   * O sistema almacenar√° autom√°ticamente os datos introducidos.
 
 
 
 Contraste de avances sobre un elemento do pedido
-------------------------------------------------
+================================================
 
-Ser· posible contrastar gr·ficamente as evoluciÛns dos avances dos pedidos en base ·s mediciÛns realizadas. Cada tipo de avance dispÛn dunha columna con botÛns de chequeo (de tÌtulo "______") o cal Û ser marcado se amosar· a gr·fica de evoluciÛns de medidas realizadas sobre o elemento de pedido.
+Ser√° posible contrastar gr√°ficamente as evoluci√≥ns dos avances dos pedidos en base √°s medici√≥ns realizadas. Cada tipo de avance disp√≥n dunha columna con bot√≥ns de chequeo (de t√≠tulo "______") o cal √≥ ser marcado se amosar√° a gr√°fica de evoluci√≥ns de medidas realizadas sobre o elemento de pedido.
 
 .. figure:: images/contraste-avance.png
    :scale: 70
+
+
+
