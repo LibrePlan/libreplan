@@ -722,11 +722,13 @@ class Row {
             @Override
             public void onEvent(Event event) throws Exception {
                 Integer value = intbox.getValue();
-                getAllocation().withPreviousAssociatedResources().onInterval(
-                        restriction.limitStartDate(item.getStartDate()
-                                .toLocalDate()),
-                        restriction.limitEndDate(item.getEndDate()
-                                .toLocalDate())).allocateHours(value);
+                LocalDate startDate = restriction.limitStartDate(item
+                        .getStartDate().toLocalDate());
+                LocalDate endDate = restriction.limitEndDate(item.getEndDate()
+                        .toLocalDate());
+                getAllocation().withPreviousAssociatedResources()
+                                   .onInterval(startDate, endDate)
+                                   .allocateHours(value);
                 fireCellChanged(item);
                 reloadAllHours();
             }
