@@ -28,6 +28,7 @@ import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
+import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -65,9 +66,19 @@ public class ViewSwitcher implements Composer {
             IAdvanceAllocationResultReceiver resultReceiver) {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("advancedAllocationController",
-                new AdvancedAllocationController(this, asAllocationInput(
+                new AdvancedAllocationController(createBack(),
+                        asAllocationInput(
                         allocationResult, resultReceiver)));
         return result;
+    }
+
+    private IBack createBack() {
+        return new IBack() {
+            @Override
+            public void goBack() {
+                goToPlanningOrderView();
+            }
+        };
     }
 
     private List<AllocationInput> asAllocationInput(

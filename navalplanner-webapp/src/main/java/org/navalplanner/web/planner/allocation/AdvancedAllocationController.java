@@ -45,7 +45,6 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
@@ -93,6 +92,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         public void accepted(AllocationResult modifiedAllocationResult);
 
         public void cancel();
+    }
+
+    public interface IBack {
+        public void goBack();
     }
 
     public abstract static class Restriction {
@@ -223,15 +226,15 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private TimeTrackerComponentWithoutColumns timeTrackerComponent;
     private Grid leftPane;
     private TimeTrackedTable<Row> table;
-    private final ViewSwitcher switcher;
+    private final IBack back;
     private final List<AllocationInput> allocationInputs;
 
-    public AdvancedAllocationController(ViewSwitcher switcher,
+    public AdvancedAllocationController(IBack back,
             List<AllocationInput> allocationInputs) {
-        Validate.notNull(switcher);
+        Validate.notNull(back);
         Validate.noNullElements(allocationInputs);
         Validate.isTrue(!allocationInputs.isEmpty());
-        this.switcher = switcher;
+        this.back = back;
         this.allocationInputs = allocationInputs;
     }
 
@@ -280,14 +283,14 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 restriction.markInvalidTotalHours(groupingRow, totalHours);
             }
         }
-        switcher.goToPlanningOrderView();
+        back.goBack();
         for (AllocationInput allocationInput : allocationInputs) {
             allocationInput.resultReceiver.accepted(allocationInput.result);
         }
     }
 
     public void onClick$cancelButton() {
-        switcher.goToPlanningOrderView();
+        back.goBack();
         for (AllocationInput allocationInput : allocationInputs) {
             allocationInput.resultReceiver.cancel();
         }
