@@ -162,16 +162,8 @@ public class CriterionType extends BaseEntity implements
         this.allowSimultaneousCriterionsPerResource = allowSimultaneousCriterionsPerResource;
     }
 
-    public ResourceEnum resource() {
+    public ResourceEnum getResource() {
         return resource;
-    }
-
-    public String getResource() {
-        return resource.toString();
-    }
-
-    public void setResource(String resource) {
-        setResource(ResourceEnum.valueOf(resource));
     }
 
     public void setResource(ResourceEnum resource) {
@@ -213,8 +205,8 @@ public class CriterionType extends BaseEntity implements
      */
     @Override
     public boolean criterionCanBeRelatedTo(Class<? extends Resource> klass) {
-        return ResourceEnum.RESOURCE.equals(resource())
-                || resource().isAssignableFrom(klass);
+        return ResourceEnum.RESOURCE.equals(getResource())
+                || getResource().isAssignableFrom(klass);
     }
 
 

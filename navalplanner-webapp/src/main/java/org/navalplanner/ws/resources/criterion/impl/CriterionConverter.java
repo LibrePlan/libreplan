@@ -99,7 +99,7 @@ public final class CriterionConverter {
             criterionType.allowHierarchy(),
             criterionType.isAllowSimultaneousCriterionsPerResource(),
             criterionType.isEnabled(),
-            toDTO(criterionType.resource()),
+            toDTO(criterionType.getResource()),
             criterionDTOs);
 
     }
