@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -34,6 +35,7 @@ import java.util.WeakHashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
@@ -71,6 +73,19 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.api.Column;
 
 public class AdvancedAllocationController extends GenericForwardComposer {
+
+    public static class AllocationInput {
+        private final AllocationResult result;
+
+        private final IAdvanceAllocationResultReceiver resultReceiver;
+
+        public AllocationInput(AllocationResult result,
+                IAdvanceAllocationResultReceiver resultReceiver) {
+            this.result = result;
+            this.resultReceiver = resultReceiver;
+        }
+
+    }
 
     public interface IAdvanceAllocationResultReceiver {
         public Restriction createRestriction();
@@ -209,17 +224,15 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Grid leftPane;
     private TimeTrackedTable<Row> table;
     private final ViewSwitcher switcher;
-    private final AllocationResult allocationResult;
-    private final IAdvanceAllocationResultReceiver resultReceiver;
-    private Restriction restriction;
+    private final List<AllocationInput> allocationInputs;
 
     public AdvancedAllocationController(ViewSwitcher switcher,
-            AllocationResult allocationResult,
-            IAdvanceAllocationResultReceiver resultReceiver) {
+            List<AllocationInput> allocationInputs) {
+        Validate.notNull(switcher);
+        Validate.noNullElements(allocationInputs);
+        Validate.isTrue(!allocationInputs.isEmpty());
         this.switcher = switcher;
-        this.allocationResult = allocationResult;
-        this.resultReceiver = resultReceiver;
-        this.restriction = resultReceiver.createRestriction();
+        this.allocationInputs = allocationInputs;
     }
 
     @Override
@@ -257,18 +270,27 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     public void onClick$acceptButton() {
-        int totalHours = allocationResult.getAggregate().getTotalHours();
-        if (restriction.isInvalidTotalHours(totalHours)) {
-            restriction.markInvalidTotalHours(groupingRow,
-                    totalHours);
+        for (AllocationInput allocationInput : allocationInputs) {
+            int totalHours = allocationInput.result.getAggregate()
+                    .getTotalHours();
+            Restriction restriction = allocationInput.resultReceiver
+                    .createRestriction();
+            if (restriction.isInvalidTotalHours(totalHours)) {
+                Row groupingRow = groupingRows.get(allocationInput);
+                restriction.markInvalidTotalHours(groupingRow, totalHours);
+            }
         }
         switcher.goToPlanningOrderView();
-        resultReceiver.accepted(allocationResult);
+        for (AllocationInput allocationInput : allocationInputs) {
+            allocationInput.resultReceiver.accepted(allocationInput.result);
+        }
     }
 
     public void onClick$cancelButton() {
         switcher.goToPlanningOrderView();
-        resultReceiver.cancel();
+        for (AllocationInput allocationInput : allocationInputs) {
+            allocationInput.resultReceiver.cancel();
+        }
     }
 
     public void onClick$zoomIncrease() {
@@ -280,59 +302,71 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private List<Row> rowsCached = null;
-    private Row groupingRow;
+    private Map<AllocationInput, Row> groupingRows = new HashMap<AllocationInput, Row>();
 
     private List<Row> getRows() {
         if (rowsCached != null) {
             return rowsCached;
         }
         rowsCached = new ArrayList<Row>();
-        groupingRow = buildGroupingRow();
-        rowsCached.add(groupingRow);
-        List<Row> genericRows = genericRows();
-        groupingRow.listenTo(genericRows);
-        rowsCached.addAll(genericRows);
-        List<Row> specificRows = specificRows();
-        groupingRow.listenTo(specificRows);
-        rowsCached.addAll(specificRows);
+        for (AllocationInput allocationInput : allocationInputs) {
+            Row groupingRow = buildGroupingRow(allocationInput);
+            groupingRows.put(allocationInput, groupingRow);
+            rowsCached.add(groupingRow);
+            List<Row> genericRows = genericRows(allocationInput);
+            groupingRow.listenTo(genericRows);
+            rowsCached.addAll(genericRows);
+            List<Row> specificRows = specificRows(allocationInput);
+            groupingRow.listenTo(specificRows);
+            rowsCached.addAll(specificRows);
+        }
         return rowsCached;
     }
 
-    private List<Row> specificRows() {
+    private List<Row> specificRows(AllocationInput allocationInput) {
+        final AllocationResult allocationResult = allocationInput.result;
         List<Row> result = new ArrayList<Row>();
         for (SpecificResourceAllocation specificResourceAllocation : allocationResult
                 .getSpecificAllocations()) {
-            result.add(createSpecificRow(specificResourceAllocation));
+            result.add(createSpecificRow(specificResourceAllocation,
+                    allocationInput.resultReceiver.createRestriction()));
         }
         return result;
     }
 
     private Row createSpecificRow(
-            SpecificResourceAllocation specificResourceAllocation) {
+            SpecificResourceAllocation specificResourceAllocation,
+            Restriction restriction) {
         return Row.createRow(messages, restriction,
                 specificResourceAllocation.getResource()
                         .getDescription(), 1, Arrays
                         .asList(specificResourceAllocation));
     }
 
-    private List<Row> genericRows() {
+    private List<Row> genericRows(AllocationInput allocationInput) {
+        final AllocationResult allocationResult = allocationInput.result;
         List<Row> result = new ArrayList<Row>();
         for (GenericResourceAllocation genericResourceAllocation : allocationResult
                 .getGenericAllocations()) {
-            result.add(buildGenericRow(genericResourceAllocation));
+            result.add(buildGenericRow(genericResourceAllocation,
+                    allocationInput.resultReceiver.createRestriction()));
         }
         return result;
     }
 
     private Row buildGenericRow(
-            GenericResourceAllocation genericResourceAllocation) {
+            GenericResourceAllocation genericResourceAllocation,
+            Restriction restriction) {
         return Row.createRow(messages, restriction,
                 ResourceLoadModel
                 .getName(genericResourceAllocation.getCriterions()), 1, Arrays
                 .asList(genericResourceAllocation));
     }
 
-    private Row buildGroupingRow() {
+    private Row buildGroupingRow(AllocationInput allocationInput) {
+        AllocationResult allocationResult = allocationInput.result;
+        Restriction restriction = allocationInput.resultReceiver
+                .createRestriction();
         String taskName = allocationResult.getTask().getName();
         Row groupingRow = Row.createRow(messages, restriction,
                 taskName + " (task)", 0,
@@ -398,6 +432,16 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private Interval intervalFromData() {
+        Interval result = null;
+        for (AllocationInput each : allocationInputs) {
+            Interval intervalForInput = intervalFrom(each.result);
+            result = result == null ? intervalForInput : result
+                    .coalesce(intervalForInput);
+        }
+        return result;
+    }
+
+    private Interval intervalFrom(AllocationResult allocationResult) {
         List<ResourceAllocation<?>> all = allocationResult
                 .getAllSortedByStartDate();
         if (all.isEmpty()) {

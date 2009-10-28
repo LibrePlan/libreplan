@@ -19,11 +19,14 @@
  */
 package org.navalplanner.web.common;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AllocationResult;
+import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -32,7 +35,6 @@ import org.zkoss.zk.ui.util.Composer;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -63,9 +65,16 @@ public class ViewSwitcher implements Composer {
             IAdvanceAllocationResultReceiver resultReceiver) {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("advancedAllocationController",
-                new AdvancedAllocationController(this, allocationResult,
-                        resultReceiver));
+                new AdvancedAllocationController(this, asAllocationInput(
+                        allocationResult, resultReceiver)));
         return result;
+    }
+
+    private List<AllocationInput> asAllocationInput(
+            AllocationResult allocationResult,
+            IAdvanceAllocationResultReceiver resultReceiver) {
+        return Collections.singletonList(new AllocationInput(allocationResult,
+                resultReceiver));
     }
 
     public void goToPlanningOrderView() {
