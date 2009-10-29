@@ -49,6 +49,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.RendererCtrl;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
@@ -726,9 +727,17 @@ public class OrderElementTreeController extends GenericForwardComposer {
      * {@link IPredicate}
      */
     public void clear() {
+        selectDefaultTab();
         cbFilterType.setSelectedIndex(0);
         bdFilter.clear();
         predicate = null;
     }
+
+    Tab tabGeneralData;
+
+    private void selectDefaultTab() {
+        tabGeneralData.setSelected(true);
+    }
+
 
 }

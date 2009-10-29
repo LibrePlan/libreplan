@@ -64,9 +64,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private Component messagesContainer;
 
-    private Component editWindow;
-
-    private Component createWindow;
+    private Window editWindow;
 
     private Component listWindow;
 
@@ -80,8 +78,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private OnlyOneVisible getVisibility() {
         if (cachedOnlyOneVisible == null) {
-            cachedOnlyOneVisible = new OnlyOneVisible(listWindow, editWindow,
-                    createWindow);
+            cachedOnlyOneVisible = new OnlyOneVisible(listWindow, editWindow);
         }
         return cachedOnlyOneVisible;
     }
@@ -195,29 +192,24 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToEditForm(Order order) {
         orderModel.prepareEditFor(order);
-        clearOrderElementTreeController(editWindow);
-        selectDefaultTab(editWindow);
+        showEditWindow(_("Edit order"));
+    }
+
+    private void showEditWindow(String title) {
+        clearEditWindow();
+        editWindow.setTitle(title);
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
     }
 
-    private void selectDefaultTab(Component comp) {
-        Tab tabGeneralData = (Tab) comp.getFellowIfAny("tabGeneralData");
-        tabGeneralData.setSelected(true);
-    }
-
-    private void clearOrderElementTreeController(Component comp) {
-        OrderElementTreeController controller = (OrderElementTreeController) comp
-                .getVariable("orderElementTreeController", true);
+    private void clearEditWindow() {
+        OrderElementTreeController controller = (OrderElementTreeController) editWindow.getVariable("orderElementTreeController", true);
         controller.clear();
     }
 
     public void goToCreateForm() {
         orderModel.prepareForCreate();
-        clearOrderElementTreeController(createWindow);
-        selectDefaultTab(createWindow);
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
+        showEditWindow(_("Create order"));
     }
 
     @Override
@@ -230,10 +222,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         OrderElementController orderElementController = new OrderElementController();
         orderElementController.doAfterCompose(comp
                 .getFellow("editOrderElement"));
-
         setupOrderElementTreeController(comp, "editWindow",
-                orderElementController);
-        setupOrderElementTreeController(comp, "createWindow",
                 orderElementController);
     }
 

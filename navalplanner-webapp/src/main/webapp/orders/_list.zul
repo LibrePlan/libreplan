@@ -24,11 +24,15 @@
         <columns>
             <column label="${i18n:_('Name')}" sort="auto(name)" />
             <column label="${i18n:_('Code')}" sort="auto(code)" />
-            <column label="${i18n:_('Starting date')}" sort="auto(initDate)" />
-            <column label="${i18n:_('Ending date')}" sort="auto(endDate)" />
-            <column label="${i18n:_('Responsible')}" sort="auto(responsible)" />
+            <column label="${i18n:_('Starting date')}"
+                sort="auto(initDate)" />
+            <column label="${i18n:_('Ending date')}"
+                sort="auto(endDate)" />
+            <column label="${i18n:_('Responsible')}"
+                sort="auto(responsible)" />
             <column label="${i18n:_('Customer')}" sort="auto(customer)" />
-            <column label="${i18n:_('Description')}" sort="auto(description)" />
+            <column label="${i18n:_('Description')}"
+                sort="auto(description)" />
             <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>
@@ -41,18 +45,21 @@
                 <label value="@{order.customer}" />
                 <label value="@{order.description}" />
                 <hbox>
-                    <button sclass="icono" image="/common/img/ico_editar1.png"
+                    <button sclass="icono"
+                        image="/common/img/ico_editar1.png"
                         hoverImage="/common/img/ico_editar.png"
                         tooltiptext="${i18n:_('Edit')}"
                         onClick="controller.goToEditForm(self.parent.parent.value);">
                     </button>
 
-                    <button sclass="icono" image="/common/img/ico_borrar1.png"
+                    <button sclass="icono"
+                        image="/common/img/ico_borrar1.png"
                         hoverImage="/common/img/ico_borrar.png"
                         tooltiptext="${i18n:_('Delete')}"
                         onClick="controller.confirmRemove(self.parent.parent.value)" />
 
-                    <button sclass="icono" image="/common/img/ico_planificador1.png"
+                    <button sclass="icono"
+                        image="/common/img/ico_planificador1.png"
                         hoverImage="/common/img/ico_planificador.png"
                         tooltiptext="${i18n:_('Schedule')}"
                         onClick="controller.confirmSchedule(self.parent.parent.value);" />
@@ -60,7 +67,6 @@
             </row>
         </rows>
     </grid>
-    <button id="show_create_form" onClick="controller.goToCreateForm();"
-        label="${i18n:_('Create')}">
-    </button>
+    <button id="show_create_form" label="${i18n:_('Create')}"
+         onClick="controller.goToCreateForm()" />
 </window>

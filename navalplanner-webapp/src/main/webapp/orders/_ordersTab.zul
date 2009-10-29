@@ -27,13 +27,9 @@
 ]]>
 </zscript>
     <window apply="${orderController}">
-        <vbox id="messagesContainer"></vbox>
+        <vbox id="messagesContainer" />
         <list top_id="listWindow" />
-        <edition top_id="createWindow" title="${i18n:_('Create')}"
-            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
-        <edition top_id="editWindow" title="${i18n:_('Edit order')}"
-            save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
-        <orderElement top_id="editOrderElement" title="${i18n:_('Edit order element')}"
-            back_button_label="${i18n:_('Back')}" />
+        <edition top_id="editWindow" />
+        <orderElement top_id="editOrderElement" title="${i18n:_('Edit order element')}" />
     </window>
 </zk>

@@ -19,7 +19,7 @@
 -->
 
 <?component name="orderElementTree" inline="true" macroURI="_orderElementTree.zul"?>
-<window id="${arg.top_id}" title="${arg.title}">
+<window id="${arg.top_id}">
     <tabbox>
         <tabs>
             <tab id="tabGeneralData" label="${i18n:_('General data')}" />
@@ -76,8 +76,6 @@
         </tabpanels>
     </tabbox>
 
-    <button onClick="controller.save();"
-        label="${arg.save_button_label}" />
-    <button onClick="controller.cancel();"
-        label="${arg.cancel_button_label}" />
+    <button label="${i18n:_('Save')}" onClick="controller.save()" />
+    <button label="${i18n:_('Cancel')}" onClick="controller.cancel()" />
 </window>
