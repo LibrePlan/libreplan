@@ -651,6 +651,9 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 predicate = null;
                 Util.reloadBindings(tree);
             }
+            bdFilter.setDisabled(true);
+        } else {
+            bdFilter.setDisabled(false);
         }
     }
 
@@ -728,7 +731,8 @@ public class OrderElementTreeController extends GenericForwardComposer {
      */
     public void clear() {
         selectDefaultTab();
-        cbFilterType.setSelectedIndex(0);
+        cbFilterType.setSelectedIndex(0);	// Select show all option
+        bdFilter.setDisabled(true);			// Disable when show all option is selected
         bdFilter.clear();
         predicate = null;
     }

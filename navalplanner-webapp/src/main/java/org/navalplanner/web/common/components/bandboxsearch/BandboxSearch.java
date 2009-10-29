@@ -178,6 +178,10 @@ public class BandboxSearch extends HtmlMacroComponent {
         listbox.setModel(model);
     }
 
+    public void setDisabled(boolean disabled) {
+        bandbox.setDisabled(disabled);
+    }
+
     private Object getBean(String classname) {
         HttpServletRequest servletRequest = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
