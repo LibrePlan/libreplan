@@ -1,4 +1,5 @@
-<vbox id="${arg.id}">
+<vbox id="${arg.id}"
+    apply="org.navalplanner.web.orders.DetailsOrderElementController">
     <!-- Details data -->
     <grid fixedLayout="true">
         <columns>
@@ -9,22 +10,22 @@
             <row>
                 <label value="${i18n:_('Order element name')}" />
                 <textbox id="name"
-                    value="@{orderElementController.orderElement.name}"
+                    value="@{detailsController.orderElement.name}"
                     constraint="no empty:${i18n:_('Cannot be empty or null')}" width="500px" />
             </row>
             <row>
                 <label value="${i18n:_('Code ')}" />
                 <textbox id="code"
-                    value="@{orderElementController.orderElement.code}"
+                    value="@{detailsController.orderElement.code}"
                     constraint="no empty:${i18n:_('Cannot be empty or null')}" width="150px" />
             </row>
             <row>
                 <label value="${i18n:_('Starting date')}" />
                 <hbox>
                     <datebox id="initDate"
-                        value="@{orderElementController.orderElement.initDate}" />
+                        value="@{detailsController.orderElement.initDate}" />
                     <checkbox id="mandatoryInit"
-                        checked="@{orderElementController.orderElement.mandatoryInit}" />
+                        checked="@{detailsController.orderElement.mandatoryInit}" />
                     <label value="${i18n:_('Mandatory')}" />
                 </hbox>
             </row>
@@ -32,21 +33,21 @@
                 <label value="${i18n:_('Ending date')}" />
                 <hbox>
                     <datebox id="endDate"
-                        value="@{orderElementController.orderElement.endDate}" />
+                        value="@{detailsController.orderElement.endDate}" />
                     <checkbox id="mandatoryEnd"
-                        checked="@{orderElementController.orderElement.mandatoryEnd}" />
+                        checked="@{detailsController.orderElement.mandatoryEnd}" />
                     <label value="${i18n:_('Mandatory')}" />
                 </hbox>
             </row>
             <row>
                 <label value="${i18n:_('Total hours')}" />
                 <intbox id="totalHours"
-                    value="@{orderElementController.orderElement.workHours}" />
+                    value="@{detailsController.orderElement.workHours}" />
             </row>
             <row>
                 <label value="${i18n:_('Description')}" />
                 <textbox id="description" rows="3"
-                    value="@{orderElementController.orderElement.description}"
+                    value="@{detailsController.orderElement.description}"
                     width="600px" />
             </row>
         </rows>
@@ -56,16 +57,16 @@
     <panel title="${i18n:_('Hours group')}">
         <panelchildren>
             <hbox>
-                <button id="addHoursGroup"
+                <button id="btnAddHoursGroup"
                     label="${i18n:_('Add new hours group')}"
-                    onClick="orderElementController.addHoursGroup()" />
-                <button id="deleteHoursGroup"
+                    onClick="detailsController.addHoursGroup()" />
+                <button id="btnDeleteHoursGroup"
                     label="${i18n:_('Delete hours group')}"
-                    onClick="orderElementController.deleteHoursGroups()" />
+                    onClick="detailsController.deleteHoursGroups()" />
             </hbox>
             <listbox id="hoursGroupsListbox" multiple="true"
-                model="@{orderElementController.hoursGroups}"
-                itemRenderer="@{orderElementController.renderer}" rows="3">
+                model="@{detailsController.hoursGroups}"
+                itemRenderer="@{detailsController.renderer}" rows="3">
                 <listhead sizable="false">
                     <listheader label="${i18n:_('Hours')}" />
                     <listheader label="${i18n:_('%')}" />
@@ -79,9 +80,9 @@
         <panelchildren>
             <vbox id="selectCriterions">
                 <twowayselector
-                    assignedObjects="@{orderElementController.selectedCriterionTypes, access='both'}"
+                    assignedObjects="@{detailsController.selectedCriterionTypes, access='both'}"
                     assignedTitle="Selected types"
-                    unassignedObjects="@{orderElementController.criterionTypes}"
+                    unassignedObjects="@{detailsController.criterionTypes}"
                     unassignedTitle="Criterion types" columns="name" />
             </vbox>
         </panelchildren>
