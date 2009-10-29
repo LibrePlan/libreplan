@@ -72,10 +72,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private OnlyOneVisible cachedOnlyOneVisible;
 
-    private Window confirmSchedule;
-
-    private boolean confirmingSchedule;
-
     private IOrderPlanningGate planningControllerEntryPoints;
 
     public List<Order> getOrders() {
@@ -170,44 +166,29 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void confirmSchedule(Order order) {
-        if (!orderModel.isAlreadyScheduled(order)) {
-            orderModel.prepareForSchedule(order);
-            showScheduleConfirmingWindow();
-        } else {
+        if (orderModel.isAlreadyScheduled(order)) {
             goToShedulingView(order);
+            return;
         }
+
+        try {
+            int status = Messagebox.show(_("Confirm scheduling {0}. Are you sure?", order.getName()), "Schedule",
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                schedule(order);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void schedule(Order order) {
+        orderModel.schedule(order);
+        goToShedulingView(order);
     }
 
     private void goToShedulingView(Order order) {
         planningControllerEntryPoints.goToScheduleOf(order);
-    }
-
-    private void showScheduleConfirmingWindow() {
-        confirmingSchedule = true;
-        try {
-            Util.reloadBindings(confirmSchedule);
-            confirmSchedule.doModal();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void schedule() {
-        try {
-            orderModel.schedule();
-            goToShedulingView((Order) orderModel.getOrder());
-        } finally {
-            hideScheduleConfirmingWindow();
-        }
-    }
-
-    public void cancelSchedule() {
-        hideScheduleConfirmingWindow();
-    }
-
-    private void hideScheduleConfirmingWindow() {
-        confirmingSchedule = false;
-        Util.reloadBindings(confirmSchedule);
     }
 
     private Runnable onUp;
@@ -262,10 +243,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                 orderModel, orderElementController);
         controller.doAfterCompose(comp.getFellow(window).getFellow(
                 "orderElementTree"));
-    }
-
-    public boolean isConfirmingSchedule() {
-        return confirmingSchedule;
     }
 
     public void setPlanningControllerEntryPoints(

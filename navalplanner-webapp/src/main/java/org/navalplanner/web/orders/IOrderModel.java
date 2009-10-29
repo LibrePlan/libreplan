@@ -84,13 +84,11 @@ public interface IOrderModel {
 
     void prepareForCreate();
 
-    void prepareForSchedule(Order order);
-
     void remove(Order order);
 
     void save() throws ValidationException;
 
-    void schedule();
+    void schedule(Order order);
 
     void setOrder(Order order);
 

@@ -309,13 +309,8 @@ public class OrderModel implements IOrderModel {
     }
 
     @Override
-    public void prepareForSchedule(Order order) {
-        this.order = order;
-    }
-
-    @Override
     @Transactional
-    public void schedule() {
+    public void schedule(Order order) {
         convertToScheduleAndSave(getFromDB(order));
     }
 
