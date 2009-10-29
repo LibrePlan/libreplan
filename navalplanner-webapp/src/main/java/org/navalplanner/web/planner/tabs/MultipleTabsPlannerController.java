@@ -25,7 +25,10 @@ import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.company.CompanyPlanningController;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
@@ -103,6 +106,15 @@ public class MultipleTabsPlannerController implements Composer {
 
     private org.zkoss.zk.ui.Component breadcrumbs;
 
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IOrderDAO orderDAO;
+
+    @Autowired
+    private ITaskElementDAO taskElementDAO;
+
     public TabsConfiguration getTabs() {
         if (tabsConfiguration == null) {
             tabsConfiguration = buildTabsConfiguration();
@@ -127,7 +139,8 @@ public class MultipleTabsPlannerController implements Composer {
                     }
                 });
         final State<Void> typeChanged = typeChangedState();
-        ITab advancedAllocation = AdvancedAllocationTabCreator.create();
+        ITab advancedAllocation = AdvancedAllocationTabCreator.create(mode,
+                transactionService, orderDAO, taskElementDAO);
         return TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
