@@ -48,8 +48,6 @@ public class OrderElementController extends GenericForwardComposer {
 
     private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
 
-    private AssignedLabelsToOrderElementController assignedLabelsController;
-
     private Component orderElementDetails;
 
     private DetailsOrderElementController detailsController;
@@ -57,6 +55,10 @@ public class OrderElementController extends GenericForwardComposer {
     private Component orderElementHours;
 
     private AsignedHoursToOrderElementController assignedHoursController;
+
+    private Component orderElementLabels;
+
+    private AssignedLabelsToOrderElementController assignedLabelsController;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -71,7 +73,6 @@ public class OrderElementController extends GenericForwardComposer {
     private void setupDetailsOrderElementController(Component comp)throws Exception{
         detailsController = (DetailsOrderElementController)
             orderElementDetails.getVariable("detailsController", true);
-        detailsController.setOrderElementModel(orderElementModel);
     }
 
     private void setupAsignedHoursToOrderElementController(Component comp)throws Exception{
@@ -81,8 +82,8 @@ public class OrderElementController extends GenericForwardComposer {
 
     private void setupAssignedLabelsToOrderElementController(Component comp)
             throws Exception {
-        assignedLabelsController = new AssignedLabelsToOrderElementController();
-        assignedLabelsController.doAfterCompose(comp);
+        assignedLabelsController = (AssignedLabelsToOrderElementController)
+            orderElementLabels.getVariable("assignedLabelsController", true);
     }
 
     private void setupManageOrderElementAdvancesController(Component comp)
@@ -126,6 +127,7 @@ public class OrderElementController extends GenericForwardComposer {
     private void clearAll() {
         clear();
         detailsController.clear();
+        assignedLabelsController.clear();
     }
 
     private void clear() {

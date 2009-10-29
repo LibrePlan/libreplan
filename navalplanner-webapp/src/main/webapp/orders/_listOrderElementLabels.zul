@@ -18,7 +18,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<vbox id="listOrderElementLabels">
+<vbox id="${arg.id}"
+    apply="org.navalplanner.web.orders.AssignedLabelsToOrderElementController" >
     <!-- Indirect labels -->
     <vbox>
         <panel title="${i18n:_('Indirect labels')}" border="normal">

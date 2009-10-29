@@ -49,8 +49,6 @@ public class AssignedLabelsToOrderElementController extends
 
     private IAssignedLabelsToOrderElementModel assignedLabelsToOrderElementModel;
 
-    private Window window;
-
     private Autocomplete cbLabelType;
 
     private Grid directLabels;
@@ -80,15 +78,14 @@ public class AssignedLabelsToOrderElementController extends
         bdLabels.clear();
         txtLabelName.setValue("");
 
-        Util.reloadBindings(window);
+        Util.reloadBindings(self);
         Util.reloadBindings(directLabels);
     }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp.getFellow("listOrderElementLabels"));
+        super.doAfterCompose(comp);
         comp.setVariable("assignedLabelsController", this, true);
-        window = (Window) comp;
     }
 
     /**
@@ -161,6 +158,10 @@ public class AssignedLabelsToOrderElementController extends
 
     private void clear(Textbox textbox) {
         textbox.setValue("");
+    }
+
+    public void clear() {
+
     }
 
     private void assignLabel(Label label) {
