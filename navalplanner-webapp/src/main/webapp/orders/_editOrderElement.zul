@@ -38,7 +38,7 @@
                 <orderElementDetails id="orderElementDetails" />
             </tabpanel>
             <tabpanel>
-                <listOrderElementHours/>
+                <listOrderElementHours id="listOrderElementHours" />
             </tabpanel>
             <tabpanel>
                 <listOrderElementAdvances/>
