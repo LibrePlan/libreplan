@@ -113,6 +113,7 @@ public class AdvancedAllocationTabCreator {
     private final IAdHocTransactionService adHocTransactionService;
     private final IOrderDAO orderDAO;
     private final ITaskElementDAO taskElementDAO;
+    private AdvancedAllocationController advancedAllocationController;
 
     public static ITab create(final Mode mode,
             IAdHocTransactionService adHocTransactionService,
@@ -135,35 +136,55 @@ public class AdvancedAllocationTabCreator {
     }
 
     private ITab build() {
+        IComponentCreator advanceAllocationComponentCreator = new IComponentCreator() {
+            @Override
+            public Component create(final Component parent) {
+                return adHocTransactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<Component>() {
+                            @Override
+                            public Component execute() {
+                                return createComponent(parent);
+                            }
+
+                        });
+            }
+
+        };
         return new CreatedOnDemandTab(ADVANCED_ALLOCATION_VIEW,
-                new IComponentCreator() {
-                    @Override
-                    public Component create(final Component parent) {
-                        return adHocTransactionService
-                                .runOnReadOnlyTransaction(new IOnTransaction<Component>() {
-                                    @Override
-                                    public Component execute() {
-                                        return createComponent(parent);
-                                    }
+                advanceAllocationComponentCreator) {
+            private boolean firstTime = true;
+            @Override
+            protected void afterShowAction() {
+                if (firstTime) {
+                    firstTime = false;
+                    return;
+                }
+                adHocTransactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
 
-                                });
-                    }
-
-                });
+                            @Override
+                            public Void execute() {
+                                resetController();
+                                return null;
+                            }
+                        });
+            }
+        };
     }
 
     private Component createComponent(final Component parent) {
         Order order = mode.getOrder();
-        orderDAO.save(order);
         return Executions.createComponents("advance_allocation.zul", parent,
                 argsWithController(order));
     }
 
     private Map<String, Object> argsWithController(Order order) {
+        orderDAO.save(order);
         Map<String, Object> result = new HashMap<String, Object>();
+        advancedAllocationController = new AdvancedAllocationController(
+                createBack(), createAllocationInputsFor(order));
         result.put("advancedAllocationController",
-                new AdvancedAllocationController(createBack(),
-                        createAllocationInputsFor(order)));
+                        advancedAllocationController);
         return result;
     }
 
@@ -209,6 +230,13 @@ public class AdvancedAllocationTabCreator {
                 resourceAllocations);
         return new AllocationInput(aggregate, task, new ResultReceiver(task
                 .getCalculatedValue(), aggregate));
+    }
+
+    private void resetController() {
+        Order order = mode.getOrder();
+        orderDAO.save(order);
+        advancedAllocationController.reset(createBack(),
+                createAllocationInputsFor(order));
     }
 
 }

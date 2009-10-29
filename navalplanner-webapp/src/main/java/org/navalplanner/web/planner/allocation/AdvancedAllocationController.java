@@ -322,11 +322,17 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private TimeTrackerComponentWithoutColumns timeTrackerComponent;
     private Grid leftPane;
     private TimeTrackedTable<Row> table;
-    private final IBack back;
-    private final List<AllocationInput> allocationInputs;
+    private IBack back;
+    private List<AllocationInput> allocationInputs;
+    private Component associatedComponent;
 
     public AdvancedAllocationController(IBack back,
             List<AllocationInput> allocationInputs) {
+        setInputData(back, allocationInputs);
+
+    }
+
+    private void setInputData(IBack back, List<AllocationInput> allocationInputs) {
         Validate.notNull(back);
         Validate.noNullElements(allocationInputs);
         Validate.isTrue(!allocationInputs.isEmpty());
@@ -334,10 +340,21 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         this.allocationInputs = allocationInputs;
     }
 
+    public void reset(IBack back, List<AllocationInput> allocationInputs) {
+        setInputData(back, allocationInputs);
+        loadAndInitializeComponents();
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        messages = new MessagesForUser(comp.getFellow("messages"));
+        this.associatedComponent = comp;
+        loadAndInitializeComponents();
+    }
+
+    private void loadAndInitializeComponents() {
+        messages = new MessagesForUser(associatedComponent
+                .getFellow("messages"));
         createComponents();
         insertComponentsInLayout();
         timeTrackerComponent.afterCompose();
@@ -363,8 +380,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private void insertComponentsInLayout() {
+        insertionPointRightPanel.getChildren().clear();
         insertionPointRightPanel.appendChild(table);
+        insertionPointLeftPanel.getChildren().clear();
         insertionPointLeftPanel.appendChild(leftPane);
+        insertionPointTimetracker.getChildren().clear();
         insertionPointTimetracker.appendChild(timeTrackerComponent);
     }
 
