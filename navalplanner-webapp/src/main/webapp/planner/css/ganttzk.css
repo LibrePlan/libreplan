@@ -543,13 +543,19 @@ div.z-tree {
 
 .task_tooltip {
     display:none;
-    font-size: 10px;
-    position: relative;
-    top: -40px;
-    width: 240px;
+    font-size: 11px;
+    position: absolute;
+    top: 15px;
+    width: 270px;
+    margin-left: 5px;
     background-color: #f7f7bf;
     border: solid 1px #CCCCCC;
-    /*z-index: 5; */
+    z-index: 6;
+    -moz-box-shadow: 1px 1px 10px #666666;
+}
+
+.yui-resize {
+    z-index: auto !important;
 }
 
 .advancedallocationlayout .name {

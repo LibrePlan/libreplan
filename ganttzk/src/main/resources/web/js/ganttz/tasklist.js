@@ -48,8 +48,10 @@ DRAGABLE_PADDING = 20; // Drag padding for dependency creation
 zkTasklist.tooltipTimeout = "";
 
 zkTasklist.showTooltip = function(elem) {
-	zkTasklist.tooltipTimeout = setTimeout(function() {
+	zkTasklist.tooltipTimeout = setTimeout(function(offset) {
 		document.getElementById(elem).style['display'] = 'block';
+		offset = zkTask.xMouse - document.getElementById(elem).parentNode.offsetLeft - leftpanelcontainer().offsetWidth + rightpanellayout().scrollLeft;
+		document.getElementById(elem).style['left'] = offset + 'px';
 	}, 1000);
 }
 
@@ -86,6 +88,10 @@ function taskheaderscontainer() {
 
 function rightpanellayout() {
 	return YAHOO.util.Selector.query('.rightpanellayout div')[0];
+}
+
+function leftpanelcontainer() {
+	return YAHOO.util.Selector.query('.leftpanelcontainer')[0];
 }
 
 zkTasklist.init = function(cmp) {
@@ -633,37 +639,3 @@ zkTaskContainer.setClass = function(cmp, newclass) {
 
 zkTaskContainer.resizeCompletionAdvance = zkTask.resizeCompletionAdvance;
 zkTaskContainer.resizeCompletion2Advance = zkTask.resizeCompletion2Advance;
-
-/*
- * We will not allow taskcontainer move or resize untill its behaviour its
- * clearly specified
- *
- * YAHOO.example.DDRegion = function(id, sGroup, config) { this.cont =
- * config.cont; YAHOO.example.DDRegion.superclass.constructor.apply(this,
- * arguments); };
- *
- * var myDom = YAHOO.util.Dom, myEvent = YAHOO.util.Event
- *
- * YAHOO.extend(YAHOO.example.DDRegion, YAHOO.util.DD, { cont : null, init :
- * function() { //Call the parent's init method
- * YAHOO.example.DDRegion.superclass.init.apply(this, arguments);
- * this.initConstraints();
- *
- * myEvent.on(window, 'resize', function() { this.initConstraints(); }, this,
- * true); }, initConstraints : function() {
- *
- * //Get the top, right, bottom and left positions var region =
- * myDom.getRegion(this.cont);
- *  // Get the element we are working on var el = this.getEl();
- *  // Get the xy position of it var xy = myDom.getXY(el);
- *  // Get the width and height var width = parseInt(myDom.getStyle(el,
- * 'width'), 10); var height = parseInt(myDom.getStyle(el, 'height'), 10);
- *  // Set left to x minus left var left = xy[0] - region.left;
- *  // Set right to right minus x minus width var right = region.right - xy[0] -
- * width;
- *  // Set top to y minus top var top = xy[1] - region.top;
- *  // Set bottom to bottom minus y minus height var bottom = region.bottom -
- * xy[1] - height;
- *  // Set the constraints based on the above calculations
- * this.setXConstraint(left, right); this.setYConstraint(top, bottom); } });
- */
