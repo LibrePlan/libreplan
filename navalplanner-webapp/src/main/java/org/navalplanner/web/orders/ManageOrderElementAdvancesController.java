@@ -38,6 +38,7 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -103,35 +104,33 @@ public class ManageOrderElementAdvancesController extends
         return manageOrderElementAdvancesModel.getAdvanceAssignments();
     }
 
-    public void cancel() {
-        window.setVisible(false);
-        Util.reloadBindings(window.getParent());
+    public void close()  {
+        validate();
     }
 
-    public void accept() throws org.navalplanner.business.common.exceptions.InstanceNotFoundException, DuplicateValueTrueReportGlobalAdvanceException {
-        if(!validateDataForm()){
+    public void validate() {
+        if (!validateDataForm()){
                messagesForUser.showMessage(
-            Level.INFO, _("Values are not valid, the values must not be null"));
+            Level.ERROR, _("Values are not valid, the values must not be null"));
             return;
         }
-        if(!validateReportGlobalAdvance()){
+        if (!validateReportGlobalAdvance()){
                messagesForUser.showMessage(
-            Level.INFO, _("The Spread values are not valid, must be exist at least one value of spread to true"));
+            Level.ERROR, _("The Spread values are not valid, must be exist at least one value of spread to true"));
             return;
         }
-        try{
-            this.manageOrderElementAdvancesModel.accept();
-            window.setVisible(false);
-            Util.reloadBindings(window.getParent());
-        }catch(DuplicateAdvanceAssignmentForOrderElementException e){
-            messagesForUser.showMessage( Level.INFO, _("It not must be include Advance with the same advance type."));
-            return;
-        }catch(DuplicateValueTrueReportGlobalAdvanceException e){
+        try {
+            manageOrderElementAdvancesModel.accept();
+        } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
+            messagesForUser.showMessage(Level.ERROR, _("It not must be include Advance with the same advance type."));
+        } catch(DuplicateValueTrueReportGlobalAdvanceException e) {
             messagesForUser.showMessage(
-            Level.INFO, _("The Spread values are not valid, There are several spread values to true"));
-            return;
+            Level.ERROR, _("The Spread values are not valid, There are several spread values to true"));
+        } catch (InstanceNotFoundException e) {
+            messagesForUser.showMessage(
+                    Level.ERROR, e.getMessage());
+            e.printStackTrace();
         }
-
     }
 
     public void openWindow(IOrderElementModel orderElementModel) {

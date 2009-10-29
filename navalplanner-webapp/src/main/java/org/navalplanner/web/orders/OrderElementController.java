@@ -144,6 +144,7 @@ public class OrderElementController extends GenericForwardComposer {
 
     private void closeAll() {
         detailsController.close();
+        manageOrderElementAdvancesController.close();
         close();
     }
 
