@@ -21,7 +21,9 @@
 <?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <?component name="listOrderElementLabels" inline="true" macroURI="_listOrderElementLabels.zul"?>
-<window visible="false" id="${arg.top_id}" title="${i18n:_('Edit order element')}"  width="950px" left="50px" top="50px">
+<window id="${arg.top_id}" title="${i18n:_('Edit order element')}"
+    width="950px" left="50px" top="50px"
+    closable="true" visible="false">
  <tabbox height="620px">
         <tabs>
             <tab label="${i18n:_('Details')}"></tab>

@@ -734,4 +734,9 @@ public class OrderElementController extends GenericForwardComposer {
         }
     }
 
+    public void onClose(Event event) {
+        self.setVisible(false);
+        event.stopPropagation();
+    }
+
 }
