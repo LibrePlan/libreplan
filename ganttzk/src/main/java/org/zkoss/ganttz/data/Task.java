@@ -107,6 +107,12 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getLengthMilliseconds();
     }
 
+    public void fireChangesForOldValues(Date oldBegin, long oldLength) {
+        fundamentalPropertiesListeners.firePropertyChange("beginDate",
+                oldBegin, fundamentalProperties.getBeginDate());
+        fireLengthMilliseconds(oldLength);
+    }
+
     public Date getBeginDate() {
         return new Date(fundamentalProperties.getBeginDate().getTime());
     }

@@ -126,14 +126,10 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void doTheAllocation(AllocationResult allocationResult) {
+        Date oldBeginDate = ganttTask.getBeginDate();
+        long oldLength = ganttTask.getLengthMilliseconds();
         allocationResult.applyTo(task);
-        ganttTask.setBeginDate(toDate(allocationResult.getAggregate()
-                .getStart()));
-        ganttTask.setEndDate(toDate(allocationResult.getAggregate().getEnd()));
-    }
-
-    private Date toDate(LocalDate start) {
-        return start.toDateTimeAtStartOfDay().toDate();
+        ganttTask.fireChangesForOldValues(oldBeginDate, oldLength);
     }
 
     private List<Resource> getResourcesMatchingCriterions() {
