@@ -18,11 +18,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<!--
-    disabled="@{orderElementTreeController.itemSelected}"
-    disabled="@{orderElementTreeController.notItemSelected}"
- -->
-
 <vbox id="orderElementTree">
     <vbox>
         <hbox>
@@ -77,13 +72,4 @@
             </treecols>
         </tree>
     </vbox>
-    <!--zscript>
-        void move(Component dragged) {
-        if (self instanceof Treerow) {
-        self.parent.insertBefore(dragged, self.getNextSibling() );
-        } else {
-        self.appendChild(dragged);
-        }
-        }
-        </zscript-->
 </vbox>
