@@ -1,7 +1,7 @@
 <vbox id="${arg.id}"
     apply="org.navalplanner.web.orders.DetailsOrderElementController">
     <!-- Details data -->
-    <grid fixedLayout="true">
+    <grid id="details" fixedLayout="true">
         <columns>
             <column width="200px" />
             <column />

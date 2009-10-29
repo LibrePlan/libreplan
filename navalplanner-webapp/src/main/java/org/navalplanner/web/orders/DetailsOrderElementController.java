@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
@@ -49,6 +50,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -56,7 +58,6 @@ import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.RendererCtrl;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Listhead;
 
@@ -526,10 +527,13 @@ public class DetailsOrderElementController extends
 
     private Vbox selectCriterions;
 
+    private Grid details;
+
     public void openWindow(IOrderElementModel model) {
         setOrderElementModel(model);
 
         final OrderElement orderElement = getOrderElement();
+        details.setVisible(!(getOrderElement() instanceof Order));
          // If is a container
         if (orderElement instanceof OrderLineGroup) {
             // Disable fields just used in the OrderLine
