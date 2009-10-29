@@ -56,6 +56,7 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Listhead;
@@ -207,6 +208,12 @@ public class OrderElementController extends GenericForwardComposer {
         manageOrderElementAdvancesController.doAfterCompose(comp);
     }
 
+    Tab tabDetails;
+
+    private void clearAll() {
+        tabDetails.setSelected(true);
+    }
+
     /**
      * Open the window to edit a {@link OrderElement}. If it's a
      * {@link OrderLineGroup} less fields will be enabled.
@@ -214,9 +221,9 @@ public class OrderElementController extends GenericForwardComposer {
      *            The {@link OrderElement} to be edited
      */
     public void openWindow(IOrderElementModel model){
+        clearAll();
 
         this.model = model;
-
         final OrderElement orderElement = model.getOrderElement();
 
         asignedHoursController.openWindow(model);

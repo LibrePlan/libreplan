@@ -26,7 +26,7 @@
     closable="true" visible="false">
  <tabbox height="620px">
         <tabs>
-            <tab label="${i18n:_('Details')}"></tab>
+            <tab id="tabDetails" label="${i18n:_('Details')}"></tab>
             <tab label="${i18n:_('Assigned hours')}"></tab>
             <tab label="${i18n:_('Advances')}"></tab>
             <tab label="${i18n:_('Labels')}"></tab>
