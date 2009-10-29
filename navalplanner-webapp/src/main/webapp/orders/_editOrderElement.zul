@@ -21,6 +21,8 @@
 <?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <?component name="listOrderElementLabels" inline="true" macroURI="_listOrderElementLabels.zul"?>
+<?component name="orderElementDetails" inline="true" macroURI="_orderElementDetails.zul"?>
+
 <window id="${arg.top_id}" title="${i18n:_('Edit order element')}"
     width="950px" left="50px" top="50px"
     closable="true" visible="false">
@@ -32,113 +34,9 @@
             <tab label="${i18n:_('Labels')}"></tab>
         </tabs>
         <tabpanels>
-            <tabpanel>
-                <grid fixedLayout="true">
-                    <columns>
-                        <column width="200px" />
-                        <column  />
-                    </columns>
-
-                    <rows>
-                        <row>
-                            <label value="${i18n:_('Order element name')}" />
-                            <textbox id="name"
-                                value="@{orderElementController.orderElement.name,save-when='backButton.onClick'}" constraint="no empty" width="500px"/>
-                        </row>
-                        <row>
-                            <label value="${i18n:_('Code ')}" />
-            <textbox id="code"
-                value="@{orderElementController.orderElement.code,
-                save-when='backButton.onClick'}" constraint="no empty" width="150px"/>
-                        </row>
-
-
-                        <row>
-            <label value="${i18n:_('Starting date')}" />
-            <hbox><datebox id="initDate"
-                value="@{orderElementController.orderElement.initDate,
-                save-when='backButton.onClick'}" />
-            <checkbox id="mandatoryInit"
-                checked="@{orderElementController.orderElement.mandatoryInit},
-                save-when='backButton.onClick'" />
-            <label value="${i18n:_('Mandatory')}" />
-        </hbox>
-                        </row>
-<row>
-            <label value="${i18n:_('Ending date')}" />
-        <hbox>
-            <datebox id="endDate"
-                value="@{orderElementController.orderElement.endDate,
-                save-when='backButton.onClick'}" />
-            <checkbox id="mandatoryEnd"
-                checked="@{orderElementController.orderElement.mandatoryEnd,
-                save-when='backButton.onClick'}" />
-            <label value="${i18n:_('Mandatory')}" />
-        </hbox>
-</row>
-
-<row>
-            <label value="${i18n:_('Total hours')}" />
-            <intbox id="totalHours"
-                value="@{orderElementController.orderElement.workHours}" />
-</row>
-<row>
-            <label value="${i18n:_('Description')}" />
-        <textbox id="description" rows="3"
-            value="@{orderElementController.orderElement.description,
-            save-when='backButton.onClick'}" width="600px" />
-</row>
-</rows>
-</grid>
-
-<panel title="${i18n:_('Hours group')}">
-            <panelchildren>
-
-
-        <hbox>
-            <button id="addHoursGroup" label="${i18n:_('Add new hours group')}"
-                onClick="orderElementController.addHoursGroup();" />
-            <button id="deleteHoursGroup" label="${i18n:_('Delete hours group')}"
-                onClick="orderElementController.deleteHoursGroups();" />
-        </hbox>
-
-        <listbox id="hoursGroupsListbox" multiple="true"
-            model="@{orderElementController.hoursGroups}"
-            itemRenderer="@{orderElementController.renderer}" rows="3">
-             <listhead sizable="false">
-                 <listheader label="${i18n:_('Hours')}" />
-                 <listheader label="${i18n:_('%')}" />
-             </listhead>
-        </listbox>
-
-            </panelchildren>
-
-    </panel>
-
-<panel title="${i18n:_('Manage criterions')}">
-            <panelchildren>
-        <vbox id="selectCriterions">
-
-            <twowayselector
-                assignedObjects="@{orderElementController.selectedCriterionTypes,
-                    access='both'}"
-                assignedTitle="Selected types"
-                unassignedObjects="@{orderElementController.criterionTypes}"
-                unassignedTitle="Criterion types"
-                columns="name"
-            />
-
-        </vbox>
-
-        <hbox>
-            <button id="backButton"
-                onClick="orderElementController.back();"
-                label="${arg.back_button_label}" />
-        </hbox>
-            </panelchildren>
-
-    </panel>
- </tabpanel>
+             <tabpanel>
+                <orderElementDetails id="orderElementDetails" />
+            </tabpanel>
             <tabpanel>
                 <listOrderElementHours/>
             </tabpanel>
@@ -150,4 +48,8 @@
             </tabpanel>
         </tabpanels>
   </tabbox>
+  <hbox>
+    <button label="${i18n:_('Save')}" />
+      <button label="${i18n:_('Cancel')}" />
+  </hbox>
 </window>
