@@ -218,7 +218,9 @@ public class OrderCRUDController extends GenericForwardComposer {
                 remove(order);
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            messagesForUser.showMessage(
+                    Level.ERROR, e.getMessage());
+            LOG.error(_("Error on showing removing element: ", e.getKey()), e);
         }
     }
 

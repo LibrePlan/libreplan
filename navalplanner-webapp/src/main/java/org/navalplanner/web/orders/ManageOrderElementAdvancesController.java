@@ -29,6 +29,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
@@ -44,6 +46,7 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.resources.criterion.CriterionAdminController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -73,6 +76,8 @@ import org.zkoss.zul.XYModel;
 
 public class ManageOrderElementAdvancesController extends
         GenericForwardComposer {
+
+    private static final Log LOG = LogFactory .getLog(ManageOrderElementAdvancesController.class);
 
     private IMessagesForUser messagesForUser;
 
@@ -128,7 +133,7 @@ public class ManageOrderElementAdvancesController extends
         } catch (InstanceNotFoundException e) {
             messagesForUser.showMessage(
                     Level.ERROR, e.getMessage());
-            e.printStackTrace();
+            LOG.error(_("Couldn't find element: {0}", e.getKey()), e);
         }
     }
 
