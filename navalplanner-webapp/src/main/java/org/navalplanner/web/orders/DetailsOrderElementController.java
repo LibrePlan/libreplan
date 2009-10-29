@@ -532,7 +532,7 @@ public class DetailsOrderElementController extends
         setOrderElementModel(model);
 
         final OrderElement orderElement = getOrderElement();
-        details.setVisible(!(getOrderElement() instanceof Order));
+        details.setVisible(orderElement != null && !(orderElement instanceof Order));
          // If is a container
         if (orderElement instanceof OrderLineGroup) {
             // Disable fields just used in the OrderLine
