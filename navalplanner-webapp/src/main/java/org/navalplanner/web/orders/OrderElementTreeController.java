@@ -695,12 +695,14 @@ public class OrderElementTreeController extends GenericForwardComposer {
     Button btnNew, btnDown, btnUp, btnUnindent, btnIndent, btnDelete;
 
     private void resetControlButtons() {
+        final boolean disabled = tree.getSelectedItem() == null;
+
         btnNew.setDisabled(isPredicateApplied());
-        btnIndent.setDisabled(true);
-        btnUnindent.setDisabled(true);
-        btnUp.setDisabled(true);
-        btnDown.setDisabled(true);
-        btnDelete.setDisabled(true);
+        btnIndent.setDisabled(disabled);
+        btnUnindent.setDisabled(disabled);
+        btnUp.setDisabled(disabled);
+        btnDown.setDisabled(disabled);
+        btnDelete.setDisabled(disabled);
     }
 
     /**

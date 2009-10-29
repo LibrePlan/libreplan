@@ -220,7 +220,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         } catch (InterruptedException e) {
             messagesForUser.showMessage(
                     Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ", e.getKey()), e);
+            LOG.error(_("Error on showing removing element: ", order.getId()), e);
         }
     }
 
