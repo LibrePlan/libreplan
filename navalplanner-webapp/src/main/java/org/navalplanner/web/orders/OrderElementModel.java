@@ -47,7 +47,7 @@ public class OrderElementModel implements IOrderElementModel {
     private OrderModel order;
 
     @Autowired
-    private IOrderElementDAO orderElementDao;
+    private IOrderElementDAO orderElementDAO;
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDao;
@@ -70,7 +70,7 @@ public class OrderElementModel implements IOrderElementModel {
     @Override
     @Transactional(readOnly = true)
     public void setCurrent(OrderElement orderElement, OrderModel order) {
-        orderElementDao.save(orderElement);
+        orderElementDAO.save(orderElement);
 
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
             hoursGroup.getCriterions().size();
@@ -126,6 +126,17 @@ public class OrderElementModel implements IOrderElementModel {
         criterionTypeDao.save(criterionType);
         criterionType.getName();
         return criterionType;
+    }
+
+    @Override
+    public void confirmCancel() {
+
+    }
+
+    @Override
+    @Transactional
+    public void confirmSave() {
+        orderElementDAO.save(orderElement);
     }
 
 }

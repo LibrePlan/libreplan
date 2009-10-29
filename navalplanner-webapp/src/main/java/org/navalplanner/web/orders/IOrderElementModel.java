@@ -30,13 +30,9 @@ import org.navalplanner.business.resources.entities.CriterionType;
 
 public interface IOrderElementModel {
 
-    OrderElement getOrderElement();
+    void confirmCancel();
 
-    void setCurrent(OrderElement orderElement, OrderModel order);
-
-    List<CriterionType> getCriterionTypes();
-
-    CriterionType getCriterionTypeByName(String name);
+    void confirmSave();
 
     List<Criterion> getCriterionsFor(CriterionType type);
 
@@ -44,5 +40,14 @@ public interface IOrderElementModel {
 
     CriterionType getCriterionType(Criterion criterion);
 
+    CriterionType getCriterionTypeByName(String name);
+
+    List<CriterionType> getCriterionTypes();
+
+    OrderElement getOrderElement();
+
     IOrderModel getOrderModel();
+
+    void setCurrent(OrderElement orderElement, OrderModel order);
+
 }

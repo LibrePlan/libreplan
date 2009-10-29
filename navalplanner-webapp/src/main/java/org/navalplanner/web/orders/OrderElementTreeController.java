@@ -293,7 +293,8 @@ public class OrderElementTreeController extends GenericForwardComposer {
                         public void onEvent(Event event) throws Exception {
                             IOrderElementModel model = orderModel
                                     .getOrderElementModel(orderElementForThisRow);
-                            orderElementController.initEdit(model);
+                            orderElementController.openWindow(model);
+                            // Util.reloadBindings(tree);
                         }
 
                     });
@@ -475,7 +476,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 public void onEvent(Event event) throws Exception {
                     IOrderElementModel model = orderModel
                             .getOrderElementModel(orderElementForThisRow);
-                    orderElementController.initEdit(model);
+                    orderElementController.openWindow(model);
                 }
             });
 

@@ -49,7 +49,6 @@
         </tabpanels>
   </tabbox>
   <hbox>
-    <button label="${i18n:_('Save')}" />
-      <button label="${i18n:_('Cancel')}" />
+     <button label="${i18n:_('Back')}" onClick="orderElementController.back()"/>
   </hbox>
 </window>

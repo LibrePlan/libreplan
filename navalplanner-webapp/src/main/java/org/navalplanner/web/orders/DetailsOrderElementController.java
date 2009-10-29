@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
@@ -75,7 +76,6 @@ public class DetailsOrderElementController extends
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        System.out.println("### details.doAfterCompose");
         comp.setVariable("detailsController", this, true);
     }
 
@@ -112,7 +112,6 @@ public class DetailsOrderElementController extends
         Set<CriterionType> criterionTypes = getSelectedCriterionTypes();
         // If there isn't any CriterionType selected
         if (criterionTypes.isEmpty()) {
-            System.out.println("### orderElementModel: " + getOrderElement());
             return getOrderElement().getHoursGroups();
         }
 
@@ -468,7 +467,6 @@ public class DetailsOrderElementController extends
 
         @Override
         public void doCatch(Throwable ex) throws Throwable {
-            // TODO Auto-generated method stub
 
         }
 
@@ -516,15 +514,6 @@ public class DetailsOrderElementController extends
 
     }
 
-
-    public void goToEditForm() {
-
-    }
-
-    public void goToCreateForm() {
-
-    }
-
     public void clear() {
         selectTab();
     }
@@ -544,7 +533,7 @@ public class DetailsOrderElementController extends
     private Vbox selectCriterions;
 
     public void openWindow(IOrderElementModel model) {
-        this.orderElementModel = model;
+        setOrderElementModel(model);
 
         final OrderElement orderElement = model.getOrderElement();
          // If is a container
@@ -679,5 +668,19 @@ public class DetailsOrderElementController extends
         }
     }
 
+    public void close() {
+        validate();
+        Clients.closeErrorBox(hoursGroupsListbox);
+    }
+
+    public void validate() {
+        if (!getOrderElement().checkAtLeastOneHoursGroup()) {
+            throw new WrongValueException(hoursGroupsListbox, _("At least one HoursGroup is needed"));
+        }
+
+        for (CriterionType criterionType : getCriterionTypes()) {
+            removeCriterionsFromHoursGroup(criterionType);
+        }
+    }
 
 }
