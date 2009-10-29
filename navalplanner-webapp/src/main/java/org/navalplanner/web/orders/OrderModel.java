@@ -208,7 +208,7 @@ public class OrderModel implements IOrderModel {
     @Transactional(readOnly = true)
     public void prepareForCreate() {
         loadCriterions();
-
+        initializeCacheLabels();
         this.order = Order.create();
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
         this.order.setInitDate(new Date());
