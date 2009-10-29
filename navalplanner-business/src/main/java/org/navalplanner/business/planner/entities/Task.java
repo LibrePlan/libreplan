@@ -290,12 +290,10 @@ public class Task extends TaskElement {
         this.calculatedValue = calculatedValue;
         setStartDate(start.toDateTimeAtStartOfDay().toDate());
         setDaysDuration(Days.daysBetween(start, end).getDays());
-        List<ResourceAllocation<?>> modified = new ArrayList<ResourceAllocation<?>>();
         for (ModifiedAllocation pair : modifications) {
             Validate.isTrue(resourceAllocations.contains(pair.getOriginal()));
             pair.getOriginal().mergeAssignmentsAndResourcesPerDay(
                     pair.getModification());
-            modified.add(pair.getOriginal());
         }
         remove(toRemove);
         addAllocations(newAllocations);
