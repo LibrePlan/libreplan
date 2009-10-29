@@ -29,6 +29,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Window;
 
 /**
@@ -121,7 +122,20 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     private void clearAll() {
+        clear();
         detailsController.clear();
+    }
+
+    private void clear() {
+        selectTab();
+    }
+
+    Tab tabDetails;
+
+    private void selectTab() {
+        if (tabDetails != null) {
+            tabDetails.setSelected(true);
+        }
     }
 
     public void back() {

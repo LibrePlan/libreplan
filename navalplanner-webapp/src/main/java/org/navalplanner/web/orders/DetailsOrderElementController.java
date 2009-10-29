@@ -515,13 +515,7 @@ public class DetailsOrderElementController extends
     }
 
     public void clear() {
-        selectTab();
-    }
 
-    private void selectTab() {
-        if (detailsTab != null) {
-            detailsTab.setSelected(true);
-        }
     }
 
     private Intbox totalHours;
