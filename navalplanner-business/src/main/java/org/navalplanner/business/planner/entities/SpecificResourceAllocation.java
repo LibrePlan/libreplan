@@ -163,6 +163,9 @@ public class SpecificResourceAllocation extends
 
     @Override
     public void mergeAssignmentsAndResourcesPerDay(ResourceAllocation<?> modifications) {
+        if (modifications == this) {
+            return;
+        }
         Validate.isTrue(modifications instanceof SpecificResourceAllocation);
         mergeAssignments((SpecificResourceAllocation) modifications);
         setResourcesPerDay(modifications.getResourcesPerDay());

@@ -226,6 +226,9 @@ public class GenericResourceAllocation extends
 
     @Override
     public void mergeAssignmentsAndResourcesPerDay(ResourceAllocation<?> modifications) {
+        if (modifications == this) {
+            return;
+        }
         Validate.isTrue(modifications instanceof GenericResourceAllocation);
         mergeAssignments((GenericResourceAllocation) modifications);
         setResourcesPerDay(modifications.getResourcesPerDay());
