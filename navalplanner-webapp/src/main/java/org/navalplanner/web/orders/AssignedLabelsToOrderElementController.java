@@ -189,29 +189,7 @@ public class AssignedLabelsToOrderElementController extends
         return assignedLabelsToOrderElementModel.getAllLabels();
     }
 
-    /**
-     * Undo changes and close window
-     *
-     * @param event
-     */
-    public void onCancel() {
-        cancel();
-        close();
-    }
+    public void close() {
 
-    private void cancel() {
-        assignedLabelsToOrderElementModel.cancel();
-        window.setVariable("status", new Integer(0), true);
     }
-
-    private void close() {
-        window.setVisible(false);
-    }
-
-    public void onAccept() {
-        assignedLabelsToOrderElementModel.confirm();
-        window.setVariable("status", new Integer(1), true);
-        close();
-    }
-
 }

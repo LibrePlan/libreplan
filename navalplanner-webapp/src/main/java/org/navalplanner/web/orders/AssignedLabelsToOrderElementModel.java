@@ -194,30 +194,6 @@ public class AssignedLabelsToOrderElementModel implements
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public void cancel() {
-        try {
-            reattachLabels();
-            OrderElement orderElement = orderDAO
-                    .find(this.orderElement.getId());
-            initializeOrderElement(orderElement);
-
-            Set<Label> labels = new HashSet<Label>();
-            labels.addAll(orderElement.getLabels());
-            this.orderElement.setLabels(labels);
-        } catch (InstanceNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public void confirm() {
-        reattachLabels();
-        orderDAO.save(orderElement);
-    }
-
-    @Override
     public void setOrderModel(IOrderModel orderModel) {
         this.orderModel = orderModel;
     }
@@ -226,4 +202,5 @@ public class AssignedLabelsToOrderElementModel implements
     public List<Label> getAllLabels() {
         return (orderModel != null) ? orderModel.getLabels() : new ArrayList<Label>();
     }
+
 }
