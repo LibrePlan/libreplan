@@ -108,9 +108,9 @@ public class DetailsOrderElementController extends
         if (orderElementModel.getOrderElement() instanceof OrderLine) {
             return getOrderElement().getHoursGroups();
         }
-
-        // It's an OrderLineGroup
+        // If it's an OrderLineGroup
         Set<CriterionType> criterionTypes = getSelectedCriterionTypes();
+
         // If there isn't any CriterionType selected
         if (criterionTypes.isEmpty()) {
             return getOrderElement().getHoursGroups();
@@ -121,16 +121,17 @@ public class DetailsOrderElementController extends
         // Map key will be an String with the Criterions separated by ;
         Map<String, HoursGroup> map = new HashMap<String, HoursGroup>();
 
-        Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
+        List<HoursGroup> hoursGroups = getOrderElement().getHoursGroups();
+
         for (HoursGroup hoursGroup : hoursGroups) {
             String key = "";
             for (CriterionType criterionType : criterionTypes) {
-                Criterion criterion = hoursGroup
-                .getCriterionByType(criterionType);
-                if (criterion != null) {
-                    key += criterion.getName() + ";";
-                } else {
-                    key += ";";
+                for (Criterion criterion : criterionType.getCriterions()) {
+                    if(hoursGroup.getDirectCriterion(criterion) != null){
+                        key += criterion.getName() + ";";
+                    } else {
+                        key += ";";
+                    }
                 }
             }
 
@@ -140,8 +141,8 @@ public class DetailsOrderElementController extends
                 // aggregation that join HoursGroup with the same Criterions
                 hoursGroupAggregation = new HoursGroup();
                 hoursGroupAggregation.setWorkingHours(hoursGroup.getWorkingHours());
-                hoursGroupAggregation.setCriterions(hoursGroup
-                        .getCriterions());
+                hoursGroupAggregation.setCriterionRequirements(
+                        hoursGroup.getCriterionRequirements());
             } else {
                 Integer newHours = hoursGroupAggregation.getWorkingHours() + hoursGroup.getWorkingHours();
                 hoursGroupAggregation.setWorkingHours(newHours);
@@ -258,8 +259,7 @@ public class DetailsOrderElementController extends
                     emptyListitem.setParent(criterionListbox);
 
                     // Get the Criterion of the current type in the HoursGroup
-                    final Criterion criterionHoursGroup = hoursGroup
-                            .getCriterionByType(criterionType);
+                    final Criterion criterionHoursGroup = null;
 
                     // For each possible Criterion of the current type
                     for (Criterion criterion : orderElementModel
@@ -395,8 +395,7 @@ public class DetailsOrderElementController extends
                     emptyListitem.setParent(criterionListbox);
 
                     // Get the Criterion of the current type in the HoursGroup
-                    final Criterion criterionHoursGroup = hoursGroup
-                            .getCriterionByType(criterionType);
+                    final Criterion criterionHoursGroup = null;
 
                     // For each possible Criterion of the current type
                     for (Criterion criterion : orderElementModel
@@ -425,11 +424,11 @@ public class DetailsOrderElementController extends
                                         throws Exception {
                                     Criterion criterion = (Criterion) criterionListbox
                                             .getSelectedItem().getValue();
-                                    if (criterion == null) {
-                                        hoursGroup
-                                                .removeCriterion(criterionHoursGroup);
-                                    } else {
-                                        hoursGroup.addCriterion(criterion);
+                                    try {
+                                        hoursGroup.addDirectRequirementCriterion(criterion);
+                                    } catch (Exception e) {
+                                        // At moment it do nothing -- change
+                                        // with new interface.
                                     }
                                 }
                             });
@@ -662,7 +661,9 @@ public class DetailsOrderElementController extends
     private void removeCriterionsFromHoursGroup(CriterionType type) {
         OrderElement orderElement = getOrderElement();
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
-            hoursGroup.removeCriterionByType(type);
+            for (Criterion criterion : type.getCriterions()) {
+                hoursGroup.removeDirectCriterionRequirement(criterion);
+            }
         }
     }
 
