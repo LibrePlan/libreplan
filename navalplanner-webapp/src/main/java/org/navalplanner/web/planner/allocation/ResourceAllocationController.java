@@ -49,6 +49,7 @@ import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.common.components.WorkerSearch;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
+import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -210,6 +211,53 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
     }
 
+    private final class AdvanceAllocationResultReceiver implements
+            IAdvanceAllocationResultReceiver {
+
+        private final AllocationResult allocation;
+
+        private AdvanceAllocationResultReceiver(AllocationResult allocation) {
+            this.allocation = allocation;
+        }
+
+        @Override
+        public void cancel() {
+            showWindow();
+        }
+
+        @Override
+        public void accepted(AggregateOfResourceAllocations aggregate) {
+            resourceAllocationModel.accept(allocation);
+        }
+
+        @Override
+        public Restriction createRestriction() {
+            return Restriction.build(new IRestrictionSource() {
+
+                @Override
+                public int getTotalHours() {
+                    return allocation.getAggregate().getTotalHours();
+                }
+
+                @Override
+                public LocalDate getStart() {
+                    return allocation.getStart();
+                }
+
+                @Override
+                public LocalDate getEnd() {
+                    return getStart()
+                            .plusDays(allocation.getDaysDuration());
+                }
+
+                @Override
+                public CalculatedValue getCalculatedValue() {
+                    return allocation.getCalculatedValue();
+                }
+            });
+        }
+    }
+
     public enum CalculationTypeRadio {
 
         NUMBER_OF_HOURS(CalculatedValue.NUMBER_OF_HOURS) {
@@ -344,35 +392,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private IAdvanceAllocationResultReceiver createResultReceiver(
             final AllocationResult allocation) {
-        return new IAdvanceAllocationResultReceiver() {
-
-            @Override
-            public void cancel() {
-                showWindow();
-            }
-
-            @Override
-            public void accepted(AggregateOfResourceAllocations aggregate) {
-                resourceAllocationModel.accept(allocation);
-            }
-
-            @Override
-            public Restriction createRestriction() {
-                switch (allocation.getCalculatedValue()) {
-                case END_DATE:
-                    return Restriction.fixedHours(allocation.getAggregate()
-                            .getTotalHours());
-                case NUMBER_OF_HOURS:
-                    LocalDate start = allocation.getStart();
-                    LocalDate end = start
-                            .plusDays(allocation.getDaysDuration());
-                    return Restriction.onlyAssignOnInterval(start, end);
-                default:
-                    throw new RuntimeException("unhandled case: "
-                            + allocation.getCalculatedValue());
-                }
-            }
-        };
+        return new AdvanceAllocationResultReceiver(allocation);
     }
 
     /**

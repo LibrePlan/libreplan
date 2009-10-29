@@ -39,6 +39,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
+import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -167,12 +168,39 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     public abstract static class Restriction {
-        public static Restriction onlyAssignOnInterval(LocalDate start,
+
+        public interface IRestrictionSource {
+            int getTotalHours();
+
+            LocalDate getStart();
+
+            LocalDate getEnd();
+
+            CalculatedValue getCalculatedValue();
+
+        }
+
+        public static Restriction build(IRestrictionSource restrictionSource) {
+            switch (restrictionSource.getCalculatedValue()) {
+            case END_DATE:
+                return Restriction
+                        .fixedHours(restrictionSource
+                        .getTotalHours());
+            case NUMBER_OF_HOURS:
+                return Restriction.onlyAssignOnInterval(restrictionSource
+                        .getStart(), restrictionSource.getEnd());
+            default:
+                throw new RuntimeException("unhandled case: "
+                        + restrictionSource.getCalculatedValue());
+            }
+        }
+
+        private static Restriction onlyAssignOnInterval(LocalDate start,
                 LocalDate end){
             return new OnlyOnIntervalRestriction(start, end);
         }
 
-        public static Restriction fixedHours(int hours) {
+        private static Restriction fixedHours(int hours) {
             return new FixedHoursRestriction(hours);
         }
 
