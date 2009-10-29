@@ -66,7 +66,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private Window editWindow;
 
-    private Component listWindow;
+    private Window listWindow;
 
     private OnlyOneVisible cachedOnlyOneVisible;
 
@@ -190,8 +190,12 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void goToList() {
-        Util.reloadBindings(listWindow);
-        getVisibility().showOnly(listWindow);
+        showWindow(listWindow);
+    }
+
+    private void showWindow(Window window) {
+        getVisibility().showOnly(window);
+        Util.reloadBindings(window);
     }
 
     public void cancel() {
@@ -254,20 +258,23 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToEditForm(Order order) {
         orderModel.prepareEditFor(order);
-
-        final IOrderElementModel orderElementModel = getOrderElementModel();
-        detailsController.openWindow(orderElementModel);
-        assignedHoursController.openWindow(orderElementModel);
-        manageOrderElementAdvancesController.openWindow(orderElementModel);
-        assignedLabelsController.openWindow(orderElementModel);
         showEditWindow(_("Edit order"));
     }
 
     private void showEditWindow(String title) {
         clearEditWindow();
+        initializeTabs();
         editWindow.setTitle(title);
-        getVisibility().showOnly(editWindow);
-        Util.reloadBindings(editWindow);
+        showWindow(editWindow);
+    }
+
+    private void initializeTabs() {
+        final IOrderElementModel orderElementModel = getOrderElementModel();
+
+        detailsController.openWindow(orderElementModel);
+        assignedHoursController.openWindow(orderElementModel);
+        manageOrderElementAdvancesController.openWindow(orderElementModel);
+        assignedLabelsController.openWindow(orderElementModel);
     }
 
     private void clearEditWindow() {
