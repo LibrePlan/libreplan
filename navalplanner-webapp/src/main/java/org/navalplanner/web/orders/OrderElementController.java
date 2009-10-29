@@ -46,8 +46,6 @@ public class OrderElementController extends GenericForwardComposer {
      */
     private IOrderElementModel orderElementModel;
 
-    private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
-
     private Component orderElementDetails;
 
     private DetailsOrderElementController detailsController;
@@ -55,6 +53,10 @@ public class OrderElementController extends GenericForwardComposer {
     private Component orderElementHours;
 
     private AsignedHoursToOrderElementController assignedHoursController;
+
+    private Component orderElementAdvances;
+
+    private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
 
     private Component orderElementLabels;
 
@@ -70,26 +72,25 @@ public class OrderElementController extends GenericForwardComposer {
         setupAssignedLabelsToOrderElementController(comp);
     }
 
-    private void setupDetailsOrderElementController(Component comp)throws Exception{
+    private void setupDetailsOrderElementController(Component comp) throws Exception{
         detailsController = (DetailsOrderElementController)
-            orderElementDetails.getVariable("detailsController", true);
+        orderElementDetails.getVariable("detailsController", true);
     }
 
-    private void setupAsignedHoursToOrderElementController(Component comp)throws Exception{
+    private void setupAsignedHoursToOrderElementController(Component comp) throws Exception{
         assignedHoursController = (AsignedHoursToOrderElementController)
-            orderElementHours.getVariable("asignedHoursToOrderElementController", true);
+        orderElementHours.getVariable("asignedHoursToOrderElementController", true);
+    }
+
+    private void setupManageOrderElementAdvancesController(Component comp) throws Exception {
+        manageOrderElementAdvancesController = (ManageOrderElementAdvancesController)
+        orderElementAdvances.getVariable("manageOrderElementAdvancesController", true);
     }
 
     private void setupAssignedLabelsToOrderElementController(Component comp)
-            throws Exception {
+    throws Exception {
         assignedLabelsController = (AssignedLabelsToOrderElementController)
-            orderElementLabels.getVariable("assignedLabelsController", true);
-    }
-
-    private void setupManageOrderElementAdvancesController(Component comp)
-            throws Exception {
-        manageOrderElementAdvancesController = new ManageOrderElementAdvancesController();
-        manageOrderElementAdvancesController.doAfterCompose(comp);
+        orderElementLabels.getVariable("assignedLabelsController", true);
     }
 
     public OrderElement getOrderElement() {

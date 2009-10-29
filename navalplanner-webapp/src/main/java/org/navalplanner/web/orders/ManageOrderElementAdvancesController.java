@@ -50,6 +50,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Chart;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -62,7 +63,6 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Radio;
-import org.zkoss.zul.Window;
 import org.zkoss.zul.XYModel;
 
 /**
@@ -75,8 +75,6 @@ public class ManageOrderElementAdvancesController extends
 
     private IMessagesForUser messagesForUser;
 
-    private Window window;
-
     private int indexSelectedItem = -1;
 
     private IManageOrderElementAdvancesModel manageOrderElementAdvancesModel;
@@ -87,13 +85,13 @@ public class ManageOrderElementAdvancesController extends
 
     private Set<AdvanceAssignment> selectedAdvances = new HashSet<AdvanceAssignment>();
 
+    private Component messagesContainerAdvances;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp.getFellow("listOrderElementAdvances"));
+        super.doAfterCompose(comp);
         comp.setVariable("manageOrderElementAdvancesController", this, true);
-        window = (Window) comp;
-        messagesForUser = new MessagesForUser(window
-                .getFellow("messagesContainerAdvances"));
+        messagesForUser = new MessagesForUser(messagesContainerAdvances);
     }
 
     public List<AdvanceMeasurement> getAdvanceMeasurements() {
@@ -138,52 +136,52 @@ public class ManageOrderElementAdvancesController extends
                 .getOrderElement());
         this.indexSelectedItem = -1;
         selectedAdvances.clear();
-        Util.reloadBindings(window);
+        Util.reloadBindings(self);
     }
+
+    private Listbox editAdvances;
 
     public void prepareEditAdvanceMeasurements(AdvanceAssignment advanceAssignment) {
         manageOrderElementAdvancesModel
                 .prepareEditAdvanceMeasurements(advanceAssignment);
-        Listbox listAdvances = ((Listbox) window.getFellow("editAdvances"));
-        this.indexSelectedItem = listAdvances.getIndexOfItem(listAdvances.getSelectedItem());
-        Util.reloadBindings(window);
+        this.indexSelectedItem = editAdvances.getIndexOfItem(editAdvances.getSelectedItem());
+        Util.reloadBindings(self);
     }
 
     public void goToCreateLineAdvanceAssignment() {
         manageOrderElementAdvancesModel.addNewLineAdvaceAssignment();
         manageOrderElementAdvancesModel.prepareEditAdvanceMeasurements(null);
         this.indexSelectedItem = -1;
-        Util.reloadBindings(window);
+        Util.reloadBindings(self);
     }
 
     public void goToCreateLineAdvanceMeasurement() {
         manageOrderElementAdvancesModel.addNewLineAdvaceMeasurement();
-        Util.reloadBindings(window);
+        Util.reloadBindings(self);
     }
 
     public void goToRemoveLineAdvanceAssignment(){
-        Listbox listAdvances = (Listbox) window.getFellow("editAdvances");
-        Listitem listItem = listAdvances.getItemAtIndex(indexSelectedItem);
-        if(listItem != null){
-
+        Listitem listItem = editAdvances.getItemAtIndex(indexSelectedItem);
+        if (listItem != null) {
             AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                     .getValue();
             manageOrderElementAdvancesModel
                     .removeLineAdvanceAssignment(advanceAssignment);
-            Util.reloadBindings(window);
+            Util.reloadBindings(self);
         }
     }
 
+    private Listbox editAdvancesMeasurement;
+
     public void goToRemoveLineAdvanceMeasurement(){
-        Listbox listAdvancesMeasurement = (Listbox)window.getFellow("editAdvancesMeasurement");
-        Listitem selectedItem = listAdvancesMeasurement.getSelectedItem();
+        Listitem selectedItem = editAdvancesMeasurement.getSelectedItem();
         if(selectedItem != null){
             AdvanceMeasurement advanceMeasurement = (AdvanceMeasurement) selectedItem
                     .getValue();
             if (advanceMeasurement != null) {
                 manageOrderElementAdvancesModel
                         .removeLineAdvanceMeasurement(advanceMeasurement);
-                Util.reloadBindings(window);
+                Util.reloadBindings(self);
             }
         }
     }
@@ -337,7 +335,7 @@ public class ManageOrderElementAdvancesController extends
                     @Override
                     public void onEvent(Event event) throws Exception {
                         setPercentage();
-                        Util.reloadBindings(window);
+                        Util.reloadBindings(self);
                     }
                 });
 
@@ -480,7 +478,7 @@ public class ManageOrderElementAdvancesController extends
                 } else {
                     selectedAdvances.remove(advance);
                 }
-                Util.reloadBindings(window);
+                Util.reloadBindings(self);
             }
         });
 
@@ -499,7 +497,7 @@ public class ManageOrderElementAdvancesController extends
             public void onEvent(Event event) throws Exception {
                 manageOrderElementAdvancesModel
                         .removeLineAdvanceAssignment(advance);
-                Util.reloadBindings(window);
+                Util.reloadBindings(self);
             }
         });
 
@@ -524,10 +522,9 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void setPercentage(){
-        Listbox listAdvances = ((Listbox) window.getFellow("editAdvances"));
-        if ((this.indexSelectedItem < listAdvances.getItemCount())
+        if ((this.indexSelectedItem < editAdvances.getItemCount())
                 && (this.indexSelectedItem >= 0)) {
-            Listitem selectedItem = listAdvances.getItemAtIndex(indexSelectedItem);
+            Listitem selectedItem = editAdvances.getItemAtIndex(indexSelectedItem);
             AdvanceAssignment advanceAssignment = (AdvanceAssignment) selectedItem
                     .getValue();
 
@@ -554,8 +551,7 @@ public class ManageOrderElementAdvancesController extends
 
     private void setCurrentValue(){
       if(this.indexSelectedItem >= 0){
-            Listbox listAdvances = ((Listbox) window.getFellow("editAdvances"));
-            Listitem selectedItem = listAdvances.getItemAtIndex(indexSelectedItem);
+            Listitem selectedItem = editAdvances.getItemAtIndex(indexSelectedItem);
             AdvanceAssignment advanceAssignment = (AdvanceAssignment) selectedItem
                     .getValue();
 
@@ -577,20 +573,21 @@ public class ManageOrderElementAdvancesController extends
 
     }
 
+    private Chart chart;
+
     public void setCurrentDate(Listitem item){
         this.manageOrderElementAdvancesModel.sortListAdvanceMeasurement();
-        Util.reloadBindings(window.getFellow("editAdvancesMeasurement"));
+        Util.reloadBindings(editAdvancesMeasurement);
 
         this.setCurrentDate();
         this.setPercentage();
         this.setCurrentValue();
-        Util.reloadBindings(window.getFellow("chart"));
+        Util.reloadBindings(chart);
     }
 
     private void setCurrentDate(){
          if(this.indexSelectedItem >= 0){
-            Listbox listAdvances = ((Listbox) window.getFellow("editAdvances"));
-            Listitem selectedItem = listAdvances.getItemAtIndex(indexSelectedItem);
+            Listitem selectedItem = editAdvances.getItemAtIndex(indexSelectedItem);
             AdvanceAssignment advanceAssignment = (AdvanceAssignment) selectedItem
                     .getValue();
 
@@ -619,14 +616,13 @@ public class ManageOrderElementAdvancesController extends
 
     private void cleanFields(){
         this.manageOrderElementAdvancesModel.cleanAdvance();
-        Util.reloadBindings(window);
+        Util.reloadBindings(self);
     }
 
     private void setReportGlobalAdvance(final Listitem item){
-        Listbox listAdvances = (Listbox) window.getFellow("editAdvances");
-        for(int i=0; i< listAdvances.getChildren().size(); i++){
-            if(listAdvances.getChildren().get(i) instanceof Listitem){
-                Listitem listItem = (Listitem) listAdvances.getChildren().get(i);
+        for(int i=0; i< editAdvances.getChildren().size(); i++){
+            if(editAdvances.getChildren().get(i) instanceof Listitem){
+                Listitem listItem = (Listitem) editAdvances.getChildren().get(i);
                 Listcell celdaSpread = (Listcell) listItem.getChildren().get(5);
                 Radio radioSpread = ((Radio)celdaSpread.getFirstChild());
                 if(!radioSpread.isDisabled()){
@@ -648,10 +644,9 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private boolean validateListAdvanceAssignment(){
-        Listbox listAdvances = (Listbox) window.getFellow("editAdvances");
-        for(int i=0; i< listAdvances.getChildren().size(); i++){
-            if(listAdvances.getChildren().get(i) instanceof Listitem){
-                Listitem listItem = (Listitem) listAdvances.getChildren().get(i);
+        for(int i=0; i< editAdvances.getChildren().size(); i++){
+            if(editAdvances.getChildren().get(i) instanceof Listitem){
+                Listitem listItem = (Listitem) editAdvances.getChildren().get(i);
                 AdvanceAssignment advance = (AdvanceAssignment) listItem
                         .getValue();
                 if (advance.getAdvanceType() == null)
@@ -672,10 +667,9 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private boolean validateListAdvanceMeasurement(){
-        Listbox listAdvances = (Listbox) window.getFellow("editAdvancesMeasurement");
-        for(int i=0; i< listAdvances.getChildren().size(); i++){
-            if(listAdvances.getChildren().get(i) instanceof Listitem){
-                Listitem listItem = (Listitem) listAdvances.getChildren().get(i);
+        for(int i=0; i< editAdvancesMeasurement.getChildren().size(); i++){
+            if(editAdvancesMeasurement.getChildren().get(i) instanceof Listitem){
+                Listitem listItem = (Listitem) editAdvancesMeasurement.getChildren().get(i);
                 AdvanceMeasurement advance = (AdvanceMeasurement) listItem
                         .getValue();
                 if (advance.getValue() == null)
@@ -688,11 +682,10 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private boolean validateReportGlobalAdvance(){
-        Listbox listAdvances = (Listbox) window.getFellow("editAdvances");
         boolean existItems = false;
-        for(int i=0; i< listAdvances.getChildren().size(); i++){
-            if(listAdvances.getChildren().get(i) instanceof Listitem){
-                Listitem listItem = (Listitem) listAdvances.getChildren().get(i);
+        for(int i=0; i< editAdvances.getChildren().size(); i++){
+            if(editAdvances.getChildren().get(i) instanceof Listitem){
+                Listitem listItem = (Listitem) editAdvances.getChildren().get(i);
                 AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                         .getValue();
                 existItems = true;
@@ -701,8 +694,7 @@ public class ManageOrderElementAdvancesController extends
                 }
             }
         }
-        if(!existItems) return true;
-        return false;
+        return (!existItems);
     }
 
     public AdvanceMeasurementRenderer getAdvanceMeasurementRenderer() {
@@ -754,8 +746,8 @@ public class ManageOrderElementAdvancesController extends
                 @Override
                 public void set(BigDecimal value) {
                     advanceMeasurement.setValue(value);
-                    Util.reloadBindings(window.getFellow("chart"));
-                    Util.reloadBindings(window.getFellow("editAdvances"));
+                    Util.reloadBindings(chart);
+                    Util.reloadBindings(editAdvances);
                 }
             });
         }
@@ -809,7 +801,7 @@ public class ManageOrderElementAdvancesController extends
                     advanceMeasurement.setDate(new LocalDate(value));
                     manageOrderElementAdvancesModel
                             .sortListAdvanceMeasurement();
-                    Util.reloadBindings(window);
+                    Util.reloadBindings(self);
                 }
             });
         }
@@ -873,7 +865,7 @@ public class ManageOrderElementAdvancesController extends
                 public void onEvent(Event event) throws Exception {
                     manageOrderElementAdvancesModel
                             .removeLineAdvanceMeasurement(advance);
-                    Util.reloadBindings(window);
+                    Util.reloadBindings(self);
                 }
             });
 
