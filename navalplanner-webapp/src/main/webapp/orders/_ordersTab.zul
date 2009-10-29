@@ -36,22 +36,6 @@
         <orderElement top_id="editOrderElement" title="${i18n:_('Edit order element')}"
             back_button_label="${i18n:_('Back')}" />
 
-        <window visible="@{controller.confirmingRemove}"
-            id="confirmRemove" title="${i18n:_('Confirm')}" width="500px"
-            position="center">
-            <vbox>
-                <hbox>
-                    <i18n value="Confirm deleting {0} ?" arg0="@{controller.order.name}"/>
-                </hbox>
-                <hbox>
-                    <button label="${i18n:_('Yes')}"
-                        onClick="controller.remove(controller.order);" />
-                    <button label="${i18n:_('No')}"
-                        onClick="controller.cancelRemove();" />
-                </hbox>
-            </vbox>
-        </window>
-
         <window visible="@{controller.confirmingSchedule}"
             id="confirmSchedule" title="${i18n:_('Confirm')}" width="500px"
             position="center">

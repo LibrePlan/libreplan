@@ -50,13 +50,12 @@
                     <button sclass="icono" image="/common/img/ico_borrar1.png"
                         hoverImage="/common/img/ico_borrar.png"
                         tooltiptext="${i18n:_('Delete')}"
-                        onClick="controller.confirmRemove(self.parent.parent.value);">
-                    </button>
+                        onClick="controller.confirmRemove(self.parent.parent.value)" />
+
                     <button sclass="icono" image="/common/img/ico_planificador1.png"
                         hoverImage="/common/img/ico_planificador.png"
                         tooltiptext="${i18n:_('Schedule')}"
-                        onClick="controller.confirmSchedule(self.parent.parent.value);">
-                    </button>
+                        onClick="controller.confirmSchedule(self.parent.parent.value);" />
                 </hbox>
             </row>
         </rows>

@@ -42,6 +42,7 @@ import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.api.Window;
 
@@ -70,8 +71,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Component listWindow;
 
     private OnlyOneVisible cachedOnlyOneVisible;
-
-    private Window confirmRemove;
 
     private Window confirmSchedule;
 
@@ -153,8 +152,21 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void confirmRemove(Order order) {
-        orderModel.prepareForRemove(order);
-        showConfirmingWindow();
+        try {
+            int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?", order.getName()), "Delete",
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                remove(order);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void remove(Order order) {
+        orderModel.remove(order);
+        Util.reloadBindings(self);
+        messagesForUser.showMessage(Level.INFO, _("Removed {0}", order.getName()));
     }
 
     public void confirmSchedule(Order order) {
@@ -198,34 +210,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         Util.reloadBindings(confirmSchedule);
     }
 
-    public void cancelRemove() {
-        confirmingRemove = false;
-        confirmRemove.setVisible(false);
-        Util.reloadBindings(confirmRemove);
-    }
-
-    private boolean confirmingRemove = false;
-
     private Runnable onUp;
-
-    public boolean isConfirmingRemove() {
-        return confirmingRemove;
-    }
-
-    private void hideConfirmingWindow() {
-        confirmingRemove = false;
-        Util.reloadBindings(confirmRemove);
-    }
-
-    private void showConfirmingWindow() {
-        confirmingRemove = true;
-        try {
-            Util.reloadBindings(confirmRemove);
-            confirmRemove.doModal();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public void goToEditForm(Order order) {
         orderModel.prepareEditFor(order);
@@ -244,13 +229,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         OrderElementTreeController controller = (OrderElementTreeController) comp
                 .getVariable("orderElementTreeController", true);
         controller.clear();
-    }
-
-    public void remove(Order order) {
-        orderModel.remove(order);
-        hideConfirmingWindow();
-        Util.reloadBindings(listWindow);
-        messagesForUser.showMessage(Level.INFO, _("Removed {0}", order.getName()));
     }
 
     public void goToCreateForm() {

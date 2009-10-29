@@ -84,8 +84,6 @@ public interface IOrderModel {
 
     void prepareForCreate();
 
-    void prepareForRemove(Order order);
-
     void prepareForSchedule(Order order);
 
     void remove(Order order);

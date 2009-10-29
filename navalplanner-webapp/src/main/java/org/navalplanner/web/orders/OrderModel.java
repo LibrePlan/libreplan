@@ -267,11 +267,6 @@ public class OrderModel implements IOrderModel {
     }
 
     @Override
-    public void prepareForRemove(Order order) {
-        this.order = order;
-    }
-
-    @Override
     public OrderElementTreeModel getOrderElementTreeModel() {
         return orderElementTreeModel;
     }
