@@ -38,7 +38,7 @@ public class AsignedHoursToOrderElementController extends
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp.getFellow("listOrderElementHours"));
+        super.doAfterCompose(comp);
         comp.setVariable("asignedHoursToOrderElementController", this, true);
     }
 

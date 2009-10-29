@@ -46,8 +46,6 @@ public class OrderElementController extends GenericForwardComposer {
      */
     private IOrderElementModel orderElementModel;
 
-    private AsignedHoursToOrderElementController asignedHoursController;
-
     private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
 
     private AssignedLabelsToOrderElementController assignedLabelsController;
@@ -55,6 +53,10 @@ public class OrderElementController extends GenericForwardComposer {
     private Component orderElementDetails;
 
     private DetailsOrderElementController detailsController;
+
+    private Component orderElementHours;
+
+    private AsignedHoursToOrderElementController assignedHoursController;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -73,8 +75,8 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     private void setupAsignedHoursToOrderElementController(Component comp)throws Exception{
-        asignedHoursController = new AsignedHoursToOrderElementController();
-        asignedHoursController.doAfterCompose(comp);
+        assignedHoursController = (AsignedHoursToOrderElementController)
+            orderElementHours.getVariable("asignedHoursToOrderElementController", true);
     }
 
     private void setupAssignedLabelsToOrderElementController(Component comp)
@@ -104,7 +106,7 @@ public class OrderElementController extends GenericForwardComposer {
         setOrderElementModel(model);
 
         detailsController.openWindow(model);
-        asignedHoursController.openWindow(model);
+        assignedHoursController.openWindow(model);
         manageOrderElementAdvancesController.openWindow(model);
         assignedLabelsController.openWindow(model);
 
