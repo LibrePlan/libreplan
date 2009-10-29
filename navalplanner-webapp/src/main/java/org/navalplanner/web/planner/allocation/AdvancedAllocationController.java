@@ -79,7 +79,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         private final IAdvanceAllocationResultReceiver resultReceiver;
 
-        private TaskElement task;
+        private final TaskElement task;
 
         public AllocationInput(AggregateOfResourceAllocations aggregate,
                 TaskElement task,
@@ -90,6 +90,66 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             this.aggregate = aggregate;
             this.task = task;
             this.resultReceiver = resultReceiver;
+        }
+
+        List<ResourceAllocation<?>> getAllocationsSortedByStartDate() {
+            return getAggregate().getAllocationsSortedByStartDate();
+        }
+
+        int getTotalHours() {
+            return getAggregate().getTotalHours();
+        }
+
+        AggregateOfResourceAllocations getAggregate() {
+            return aggregate;
+        }
+
+        String getTaskName() {
+            return task.getName();
+        }
+
+        IAdvanceAllocationResultReceiver getResultReceiver() {
+            return resultReceiver;
+        }
+
+        Interval calculateInterval() {
+            List<ResourceAllocation<?>> all = getAllocationsSortedByStartDate();
+            if (all.isEmpty()) {
+                return new Interval(task.getStartDate(), task
+                        .getEndDate());
+            } else {
+                LocalDate start = all.get(0).getStartDate();
+                LocalDate end = getEnd(all);
+                return new Interval(asDate(start), asDate(end));
+            }
+        }
+
+        private static LocalDate getEnd(List<ResourceAllocation<?>> all) {
+            ArrayList<ResourceAllocation<?>> reversed = reverse(all);
+            LocalDate end = reversed.get(0).getEndDate();
+            ListIterator<ResourceAllocation<?>> listIterator = reversed
+                    .listIterator(1);
+            while (listIterator.hasNext()) {
+                ResourceAllocation<?> current = listIterator.next();
+                if (current.getEndDate().compareTo(end) >= 0) {
+                    end = current.getEndDate();
+                } else {
+                    return end;
+                }
+            }
+            return end;
+        }
+
+        private static ArrayList<ResourceAllocation<?>> reverse(
+                List<ResourceAllocation<?>> all) {
+            ArrayList<ResourceAllocation<?>> reversed = new ArrayList<ResourceAllocation<?>>(
+                    all);
+            Collections.reverse(reversed);
+            return reversed;
+        }
+
+        private static Date asDate(LocalDate start) {
+            return start.toDateMidnight().toDate();
         }
 
     }
@@ -282,9 +342,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     public void onClick$acceptButton() {
         for (AllocationInput allocationInput : allocationInputs) {
-            int totalHours = allocationInput.aggregate
-                    .getTotalHours();
-            Restriction restriction = allocationInput.resultReceiver
+            int totalHours = allocationInput.getTotalHours();
+            Restriction restriction = allocationInput.getResultReceiver()
                     .createRestriction();
             if (restriction.isInvalidTotalHours(totalHours)) {
                 Row groupingRow = groupingRows.get(allocationInput);
@@ -293,14 +352,15 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
         back.goBack();
         for (AllocationInput allocationInput : allocationInputs) {
-            allocationInput.resultReceiver.accepted(allocationInput.aggregate);
+            allocationInput.getResultReceiver().accepted(allocationInput
+                    .getAggregate());
         }
     }
 
     public void onClick$cancelButton() {
         back.goBack();
         for (AllocationInput allocationInput : allocationInputs) {
-            allocationInput.resultReceiver.cancel();
+            allocationInput.getResultReceiver().cancel();
         }
     }
 
@@ -336,10 +396,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<Row> specificRows(AllocationInput allocationInput) {
         List<Row> result = new ArrayList<Row>();
-        for (SpecificResourceAllocation specificResourceAllocation : allocationInput.aggregate
+        for (SpecificResourceAllocation specificResourceAllocation : allocationInput.getAggregate()
                 .getSpecificAllocations()) {
             result.add(createSpecificRow(specificResourceAllocation,
-                    allocationInput.resultReceiver.createRestriction()));
+                    allocationInput.getResultReceiver().createRestriction()));
         }
         return result;
     }
@@ -355,10 +415,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<Row> genericRows(AllocationInput allocationInput) {
         List<Row> result = new ArrayList<Row>();
-        for (GenericResourceAllocation genericResourceAllocation : allocationInput.aggregate
+        for (GenericResourceAllocation genericResourceAllocation : allocationInput.getAggregate()
                 .getGenericAllocations()) {
             result.add(buildGenericRow(genericResourceAllocation,
-                    allocationInput.resultReceiver.createRestriction()));
+                    allocationInput.getResultReceiver().createRestriction()));
         }
         return result;
     }
@@ -373,11 +433,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private Row buildGroupingRow(AllocationInput allocationInput) {
-        Restriction restriction = allocationInput.resultReceiver
+        Restriction restriction = allocationInput.getResultReceiver()
                 .createRestriction();
-        String taskName = allocationInput.task.getName();
+        String taskName = allocationInput.getTaskName();
         Row groupingRow = Row.createRow(messages, restriction, taskName
-                + " (task)", 0, allocationInput.aggregate
+                + " (task)", 0, allocationInput
                 .getAllocationsSortedByStartDate());
         return groupingRow;
     }
@@ -441,24 +501,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Interval intervalFromData() {
         Interval result = null;
         for (AllocationInput each : allocationInputs) {
-            Interval intervalForInput = intervalFrom(each);
+            Interval intervalForInput = each.calculateInterval();
             result = result == null ? intervalForInput : result
                     .coalesce(intervalForInput);
         }
         return result;
-    }
-
-    private Interval intervalFrom(AllocationInput input) {
-        List<ResourceAllocation<?>> all = input.aggregate
-                .getAllocationsSortedByStartDate();
-        if (all.isEmpty()) {
-            return new Interval(input.task.getStartDate(), input.task
-                    .getEndDate());
-        } else {
-            LocalDate start = all.get(0).getStartDate();
-            LocalDate end = getEnd(all);
-            return new Interval(asDate(start), asDate(end));
-        }
     }
 
     private Interval addYearMarginTointerval() {
@@ -466,34 +513,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         return new Interval(new DateTime(interval.getStart()).minusYears(1)
                 .toDate(), new DateTime(interval.getFinish()).plusYears(1)
                 .toDate());
-    }
-
-    private LocalDate getEnd(List<ResourceAllocation<?>> all) {
-        ArrayList<ResourceAllocation<?>> reversed = reverse(all);
-        LocalDate end = reversed.get(0).getEndDate();
-        ListIterator<ResourceAllocation<?>> listIterator = reversed
-                .listIterator(1);
-        while (listIterator.hasNext()) {
-            ResourceAllocation<?> current = listIterator.next();
-            if (current.getEndDate().compareTo(end) >= 0) {
-                end = current.getEndDate();
-            } else {
-                return end;
-            }
-        }
-        return end;
-    }
-
-    private ArrayList<ResourceAllocation<?>> reverse(
-            List<ResourceAllocation<?>> all) {
-        ArrayList<ResourceAllocation<?>> reversed = new ArrayList<ResourceAllocation<?>>(
-                all);
-        Collections.reverse(reversed);
-        return reversed;
-    }
-
-    private Date asDate(LocalDate start) {
-        return start.toDateMidnight().toDate();
     }
 
 }
