@@ -57,21 +57,18 @@ public class AssignedLabelsToOrderElementController extends
 
     private BandboxSearch bdLabels;
 
-    public OrderElement getOrderElement() {
-        return assignedLabelsToOrderElementModel.getOrderElement();
-    }
-
-    public void setOrderElement(OrderElement orderElement) {
-        assignedLabelsToOrderElementModel.setOrderElement(orderElement);
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        comp.setVariable("assignedLabelsController", this, true);
     }
 
     public void openWindow(IOrderElementModel orderElementModel) {
-        assignedLabelsToOrderElementModel.setOrderModel(orderElementModel
-                .getOrderModel());
-        openWindow(orderElementModel.getOrderElement());
+        setOrderElementModel(orderElementModel);
+        openWindow(getOrderElement());
     }
 
-    public void openWindow(OrderElement orderElement) {
+    private void openWindow(OrderElement orderElement) {
         assignedLabelsToOrderElementModel.init(orderElement);
 
         // Clear components
@@ -82,10 +79,28 @@ public class AssignedLabelsToOrderElementController extends
         Util.reloadBindings(directLabels);
     }
 
-    @Override
-    public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp);
-        comp.setVariable("assignedLabelsController", this, true);
+    IOrderElementModel orderElementModel;
+
+    public void setOrderElementModel(IOrderElementModel orderElementModel) {
+        this.orderElementModel = orderElementModel;
+        setOrderElement(orderElementModel.getOrderElement());
+        setOrderModel(orderElementModel.getOrderModel());
+    }
+
+    private void setOrderModel(IOrderModel orderModel) {
+        if (assignedLabelsToOrderElementModel != null) {
+            assignedLabelsToOrderElementModel.setOrderModel(orderModel);
+        }
+    }
+
+    public OrderElement getOrderElement() {
+        return orderElementModel.getOrderElement();
+    }
+
+    public void setOrderElement(OrderElement orderElement) {
+        if (assignedLabelsToOrderElementModel != null) {
+            assignedLabelsToOrderElementModel.setOrderElement(orderElement);
+        }
     }
 
     /**

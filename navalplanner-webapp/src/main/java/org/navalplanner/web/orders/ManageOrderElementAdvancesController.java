@@ -39,6 +39,7 @@ import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -131,12 +132,22 @@ public class ManageOrderElementAdvancesController extends
         }
     }
 
+    IOrderElementModel orderElementModel;
+
     public void openWindow(IOrderElementModel orderElementModel) {
-        this.manageOrderElementAdvancesModel.init(orderElementModel
-                .getOrderElement());
+        setOrderElementModel(orderElementModel);
+        manageOrderElementAdvancesModel.init(getOrderElement());
         this.indexSelectedItem = -1;
         selectedAdvances.clear();
         Util.reloadBindings(self);
+    }
+
+    public void setOrderElementModel(IOrderElementModel orderElementModel) {
+        this.orderElementModel = orderElementModel;
+    }
+
+    private OrderElement getOrderElement() {
+        return orderElementModel.getOrderElement();
     }
 
     private Listbox editAdvances;

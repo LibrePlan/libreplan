@@ -529,7 +529,7 @@ public class DetailsOrderElementController extends
     public void openWindow(IOrderElementModel model) {
         setOrderElementModel(model);
 
-        final OrderElement orderElement = model.getOrderElement();
+        final OrderElement orderElement = getOrderElement();
          // If is a container
         if (orderElement instanceof OrderLineGroup) {
             // Disable fields just used in the OrderLine

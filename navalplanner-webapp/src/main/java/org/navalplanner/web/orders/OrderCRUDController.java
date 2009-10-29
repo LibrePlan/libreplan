@@ -30,6 +30,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -43,7 +44,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -71,6 +71,68 @@ public class OrderCRUDController extends GenericForwardComposer {
     private OnlyOneVisible cachedOnlyOneVisible;
 
     private IOrderPlanningGate planningControllerEntryPoints;
+
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        messagesForUser = new MessagesForUser(messagesContainer);
+        comp.setVariable("controller", this, true);
+        getVisibility().showOnly(listWindow);
+
+        OrderElementController orderElementController = new OrderElementController();
+        orderElementController.doAfterCompose(comp
+                .getFellow("editOrderElement"));
+        setupOrderElementTreeController(comp, orderElementController);
+        setupDetailsOrderElementController(comp);
+        setupAsignedHoursToOrderElementController(comp);
+        setupManageOrderElementAdvancesController(comp);
+        setupAssignedLabelsToOrderElementController(comp);
+    }
+
+    private void setupOrderElementTreeController(Component comp,
+            OrderElementController orderElementController) throws Exception {
+        OrderElementTreeController controller = new OrderElementTreeController(
+                orderModel, orderElementController);
+        controller.doAfterCompose(editWindow.getFellowIfAny("orderElementTree"));
+    }
+
+    private DetailsOrderElementController detailsController;
+
+    private void setupDetailsOrderElementController(Component comp) throws Exception {
+        Component orderElementDetails = editWindow.getFellowIfAny("orderElementDetails");
+        detailsController = (DetailsOrderElementController)
+            orderElementDetails.getVariable("detailsController", true);
+    }
+
+    private IOrderElementModel getOrderElementModel() {
+        final Order order = (Order) orderModel.getOrder();
+        return orderModel.getOrderElementModel(order);
+    }
+
+    private AsignedHoursToOrderElementController assignedHoursController;
+
+    private void setupAsignedHoursToOrderElementController(Component comp) throws Exception{
+        Component orderElementHours = editWindow.getFellowIfAny("orderElementHours");
+        assignedHoursController = (AsignedHoursToOrderElementController)
+            orderElementHours.getVariable("asignedHoursToOrderElementController", true);
+    }
+
+        private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
+
+    private void setupManageOrderElementAdvancesController(Component comp) throws Exception {
+        Component orderElementAdvances = editWindow.getFellowIfAny("orderElementAdvances");
+        manageOrderElementAdvancesController = (ManageOrderElementAdvancesController)
+            orderElementAdvances.getVariable("manageOrderElementAdvancesController", true);
+    }
+
+    private AssignedLabelsToOrderElementController assignedLabelsController;
+
+    private void setupAssignedLabelsToOrderElementController(Component comp)
+    throws Exception {
+        Component orderElementLabels = editWindow.getFellowIfAny("orderElementLabels");
+        assignedLabelsController = (AssignedLabelsToOrderElementController)
+            orderElementLabels.getVariable("assignedLabelsController", true);
+    }
 
     public List<Order> getOrders() {
         return orderModel.getOrders();
@@ -192,6 +254,12 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToEditForm(Order order) {
         orderModel.prepareEditFor(order);
+
+        final IOrderElementModel orderElementModel = getOrderElementModel();
+        detailsController.openWindow(orderElementModel);
+        assignedHoursController.openWindow(orderElementModel);
+        manageOrderElementAdvancesController.openWindow(orderElementModel);
+        assignedLabelsController.openWindow(orderElementModel);
         showEditWindow(_("Edit order"));
     }
 
@@ -210,28 +278,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void goToCreateForm() {
         orderModel.prepareForCreate();
         showEditWindow(_("Create order"));
-    }
-
-    @Override
-    public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp);
-        messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("controller", this, true);
-        getVisibility().showOnly(listWindow);
-
-        OrderElementController orderElementController = new OrderElementController();
-        orderElementController.doAfterCompose(comp
-                .getFellow("editOrderElement"));
-        setupOrderElementTreeController(comp, "editWindow",
-                orderElementController);
-    }
-
-    private void setupOrderElementTreeController(Component comp, String window,
-            OrderElementController orderElementController) throws Exception {
-        OrderElementTreeController controller = new OrderElementTreeController(
-                orderModel, orderElementController);
-        controller.doAfterCompose(comp.getFellow(window).getFellow(
-                "orderElementTree"));
     }
 
     public void setPlanningControllerEntryPoints(

@@ -22,6 +22,7 @@ package org.navalplanner.web.orders;
 
 import java.util.List;
 
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -66,10 +67,20 @@ public class AsignedHoursToOrderElementController extends
         return asignedHoursToOrderElementModel.getProgressWork();
     }
 
+    IOrderElementModel orderElementModel;
+
     public void openWindow(IOrderElementModel orderElementModel) {
-        this.asignedHoursToOrderElementModel.initOrderElement(orderElementModel
-                .getOrderElement());
+        setOrderElementModel(orderElementModel);
+        asignedHoursToOrderElementModel.initOrderElement(getOrderElement());
         viewPercentage();
+    }
+
+    public void setOrderElementModel(IOrderElementModel orderElementModel) {
+        this.orderElementModel = orderElementModel;
+    }
+
+    private OrderElement getOrderElement() {
+        return orderElementModel.getOrderElement();
     }
 
     Progressmeter hoursProgressBar;
