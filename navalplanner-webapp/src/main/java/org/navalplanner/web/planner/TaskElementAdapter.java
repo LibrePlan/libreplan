@@ -89,12 +89,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     private class TaskElementWrapper implements ITaskFundamentalProperties {
 
         private final TaskElement taskElement;
-        private long lengthMilliseconds;
 
         protected TaskElementWrapper(TaskElement taskElement) {
             this.taskElement = taskElement;
-            this.lengthMilliseconds = taskElement.getEndDate().getTime()
-                    - taskElement.getStartDate().getTime();
         }
 
         @Override
@@ -124,7 +121,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public long getLengthMilliseconds() {
-            return lengthMilliseconds;
+            return taskElement.getEndDate().getTime()
+                    - taskElement.getStartDate().getTime();
         }
 
         @Override
@@ -144,20 +142,17 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         private Long setBeginDateInsideTransaction(final Date beginDate) {
             taskElement.moveTo(beginDate);
-            lengthMilliseconds = taskElement.getEndDate().getTime()
-                    - taskElement.getStartDate().getTime();
-            return lengthMilliseconds;
+            return getLengthMilliseconds();
         }
 
         @Override
         public void setLengthMilliseconds(long lengthMilliseconds) {
-            this.lengthMilliseconds = lengthMilliseconds;
-            updateEndDate();
+            updateEndDate(lengthMilliseconds);
         }
 
-        private void updateEndDate() {
+        private void updateEndDate(long lengthMilliseconds) {
             taskElement.setEndDate(new Date(getBeginDate().getTime()
-                    + this.lengthMilliseconds));
+                    + lengthMilliseconds));
         }
 
         @Override
