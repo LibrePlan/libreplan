@@ -31,6 +31,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
@@ -112,26 +113,24 @@ public class AdvancedAllocationTabCreator {
     private final Mode mode;
     private final IAdHocTransactionService adHocTransactionService;
     private final IOrderDAO orderDAO;
-    private final ITaskElementDAO taskElementDAO;
     private AdvancedAllocationController advancedAllocationController;
+
 
     public static ITab create(final Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO) {
         return new AdvancedAllocationTabCreator(mode, adHocTransactionService,
-                orderDAO, taskElementDAO).build();
+                orderDAO).build();
     }
 
     private AdvancedAllocationTabCreator(Mode mode,
             IAdHocTransactionService adHocTransactionService,
-            IOrderDAO orderDAO, ITaskElementDAO taskElementDAO) {
+ IOrderDAO orderDAO) {
         Validate.notNull(mode);
         Validate.notNull(adHocTransactionService);
         Validate.notNull(orderDAO);
-        Validate.notNull(taskElementDAO);
         this.adHocTransactionService = adHocTransactionService;
         this.orderDAO = orderDAO;
-        this.taskElementDAO = taskElementDAO;
         this.mode = mode;
     }
 
@@ -179,13 +178,20 @@ public class AdvancedAllocationTabCreator {
     }
 
     private Map<String, Object> argsWithController(Order order) {
-        orderDAO.save(order);
         Map<String, Object> result = new HashMap<String, Object>();
         advancedAllocationController = new AdvancedAllocationController(
                 createBack(), createAllocationInputsFor(order));
         result.put("advancedAllocationController",
                         advancedAllocationController);
         return result;
+    }
+
+    private Order reload(Order order) {
+        try {
+            return orderDAO.find(order.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private IBack createBack() {
@@ -198,9 +204,14 @@ public class AdvancedAllocationTabCreator {
     }
 
     private List<AllocationInput> createAllocationInputsFor(Order order) {
+        Order orderReloaded = reload(order);
+        return createAllocationsWithOrderReloaded(orderReloaded);
+    }
+
+    private List<AllocationInput> createAllocationsWithOrderReloaded(
+            Order orderReloaded) {
         List<AllocationInput> result = new ArrayList<AllocationInput>();
-        order.getAssociatedTasks();
-        for (TaskElement taskElement : order.getTaskElements()) {
+        for (TaskElement taskElement : orderReloaded.getTaskElements()) {
             addAllocations(result, taskElement);
             if (taskElement instanceof Task) {
                 Task t = (Task) taskElement;
@@ -212,7 +223,6 @@ public class AdvancedAllocationTabCreator {
 
     private void addAllocations(List<AllocationInput> result,
             TaskElement taskElement) {
-        taskElementDAO.save(taskElement);
         if (taskElement instanceof Task) {
             result.add(createAllocationInputFor((Task) taskElement));
         }
@@ -234,7 +244,6 @@ public class AdvancedAllocationTabCreator {
 
     private void resetController() {
         Order order = mode.getOrder();
-        orderDAO.save(order);
         advancedAllocationController.reset(createBack(),
                 createAllocationInputsFor(order));
     }
