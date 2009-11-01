@@ -298,6 +298,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return new AllocationBeingModified(this, resourcesPerDay);
     }
 
+    public AllocationBeingModified copyWithCurrentResourcesPerDay() {
+        return new AllocationBeingModified(this.copy(), getResourcesPerDay());
+    }
+
     public abstract IAllocatable withPreviousAssociatedResources();
 
     protected abstract class AssignmentsAllocation implements IAllocatable {

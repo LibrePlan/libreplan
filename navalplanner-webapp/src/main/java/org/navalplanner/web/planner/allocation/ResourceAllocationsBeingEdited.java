@@ -277,19 +277,20 @@ public class ResourceAllocationsBeingEdited {
 
     public AllocationResult getInitialAllocation() {
         Set<ResourceAllocation<?>> resourceAllocations = task.getResourceAllocations();
+        Map<AllocationBeingModified, ResourceAllocation<?>> forModification = forModification(resourceAllocations);
         AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
-                resourceAllocations);
+                AllocationBeingModified.stripResourcesPerDay(forModification
+                        .keySet()));
         return new AllocationResult(task, task.getCalculatedValue(), aggregate,
-                task.getDaysDuration(),
-                buildMap(resourceAllocations));
+                task.getDaysDuration(), forModification);
     }
 
-    private Map<AllocationBeingModified, ResourceAllocation<?>> buildMap(
+    private Map<AllocationBeingModified, ResourceAllocation<?>> forModification(
             Collection<ResourceAllocation<?>> resourceAllocations) {
         Map<AllocationBeingModified, ResourceAllocation<?>> result = new HashMap<AllocationBeingModified, ResourceAllocation<?>>();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            result.put(new AllocationBeingModified(resourceAllocation,
-                    resourceAllocation.getResourcesPerDay()),resourceAllocation);
+            result.put(resourceAllocation.copyWithCurrentResourcesPerDay(),
+                    resourceAllocation);
         }
         return result;
     }

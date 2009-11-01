@@ -63,7 +63,7 @@ public class AllocationBeingModified {
     }
 
     public static List<ResourceAllocation<?>> stripResourcesPerDay(
-            List<AllocationBeingModified> withResourcesPerDay) {
+            Collection<AllocationBeingModified> withResourcesPerDay) {
         List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
         for (AllocationBeingModified r : withResourcesPerDay) {
             result.add(r.getBeingModified());
