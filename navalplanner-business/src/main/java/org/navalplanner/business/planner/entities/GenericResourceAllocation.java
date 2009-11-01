@@ -66,7 +66,7 @@ public class GenericResourceAllocation extends
         return result;
     }
 
-    private Set<Criterion> criterions;
+    private Set<Criterion> criterions = new HashSet<Criterion>();
 
     private Set<GenericDayAssignment> genericDayAssignments = new HashSet<GenericDayAssignment>();
 
