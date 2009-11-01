@@ -46,6 +46,27 @@ import org.navalplanner.business.resources.entities.Resource;
 
 public class ResourceAllocationsBeingEdited {
 
+    public static AllocationResult createInitialAllocation(Task task) {
+        Set<ResourceAllocation<?>> resourceAllocations = task
+                .getResourceAllocations();
+        Map<AllocationBeingModified, ResourceAllocation<?>> forModification = forModification(resourceAllocations);
+        AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
+                AllocationBeingModified.stripResourcesPerDay(forModification
+                        .keySet()));
+        return new AllocationResult(task, task.getCalculatedValue(), aggregate,
+                task.getDaysDuration(), forModification);
+    }
+
+    private static Map<AllocationBeingModified, ResourceAllocation<?>> forModification(
+            Collection<ResourceAllocation<?>> resourceAllocations) {
+        Map<AllocationBeingModified, ResourceAllocation<?>> result = new HashMap<AllocationBeingModified, ResourceAllocation<?>>();
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+            result.put(resourceAllocation.copyWithCurrentResourcesPerDay(),
+                    resourceAllocation);
+        }
+        return result;
+    }
+
     public static ResourceAllocationsBeingEdited create(Task task,
             List<AllocationDTO> initialAllocations, IResourceDAO resourceDAO,
             List<Resource> resourcesBeingEdited) {
@@ -276,24 +297,9 @@ public class ResourceAllocationsBeingEdited {
     }
 
     public AllocationResult getInitialAllocation() {
-        Set<ResourceAllocation<?>> resourceAllocations = task.getResourceAllocations();
-        Map<AllocationBeingModified, ResourceAllocation<?>> forModification = forModification(resourceAllocations);
-        AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
-                AllocationBeingModified.stripResourcesPerDay(forModification
-                        .keySet()));
-        return new AllocationResult(task, task.getCalculatedValue(), aggregate,
-                task.getDaysDuration(), forModification);
+        return createInitialAllocation(task);
     }
 
-    private Map<AllocationBeingModified, ResourceAllocation<?>> forModification(
-            Collection<ResourceAllocation<?>> resourceAllocations) {
-        Map<AllocationBeingModified, ResourceAllocation<?>> result = new HashMap<AllocationBeingModified, ResourceAllocation<?>>();
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            result.put(resourceAllocation.copyWithCurrentResourcesPerDay(),
-                    resourceAllocation);
-        }
-        return result;
-    }
 
     public Task getTask() {
         return task;
