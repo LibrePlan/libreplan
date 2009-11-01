@@ -124,8 +124,7 @@ public class AdvancedAllocationTabCreator {
     }
 
     private AdvancedAllocationTabCreator(Mode mode,
-            IAdHocTransactionService adHocTransactionService,
- IOrderDAO orderDAO) {
+            IAdHocTransactionService adHocTransactionService, IOrderDAO orderDAO) {
         Validate.notNull(mode);
         Validate.notNull(adHocTransactionService);
         Validate.notNull(orderDAO);

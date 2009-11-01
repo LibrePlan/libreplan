@@ -145,7 +145,7 @@ public class MultipleTabsPlannerController implements Composer {
             .add(tabWithNameReloading(planningTab, typeChanged))
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
             .add(tabWithNameReloading(ordersTab, typeChanged))
-            .add(visibleOnlyOnOrderMode(advancedAllocation));
+            .add(visibleOnlyAtOrderMode(advancedAllocation));
     }
 
     private ChangeableTab tabWithNameReloading(ITab tab,
@@ -165,7 +165,7 @@ public class MultipleTabsPlannerController implements Composer {
         return typeChanged;
     }
 
-    private ChangeableTab visibleOnlyOnOrderMode(ITab tab) {
+    private ChangeableTab visibleOnlyAtOrderMode(ITab tab) {
         final State<Boolean> state = State.create(mode.isOf(ModeType.ORDER));
         ChangeableTab result = configure(tab).visibleOn(state);
         mode.addListener(new ModeTypeChangedListener() {
