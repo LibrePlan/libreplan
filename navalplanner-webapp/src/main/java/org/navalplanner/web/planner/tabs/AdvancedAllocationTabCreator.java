@@ -23,6 +23,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +41,11 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
+import org.navalplanner.web.planner.allocation.AllocationResult;
+import org.navalplanner.web.planner.allocation.ResourceAllocationsBeingEdited;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;
@@ -61,11 +66,26 @@ public class AdvancedAllocationTabCreator {
 
         private final CalculatedValue calculatedValue;
         private final AggregateOfResourceAllocations aggregate;
+        private AllocationResult allocationResult;
+        private final Task task;
+        private Set<Resource> associatedResources;
 
-        ResultReceiver(CalculatedValue calculatedValue,
-                AggregateOfResourceAllocations aggregate) {
-            this.calculatedValue = calculatedValue;
-            this.aggregate = aggregate;
+        public ResultReceiver(Task task) {
+            this.calculatedValue = task.getCalculatedValue();
+            this.allocationResult = ResourceAllocationsBeingEdited
+                    .createInitialAllocation(task);
+            this.aggregate = this.allocationResult.getAggregate();
+            this.task = task;
+            this.associatedResources = getAssociatedResources(task);
+        }
+
+        private Set<Resource> getAssociatedResources(Task task) {
+            Set<Resource> result = new HashSet<Resource>();
+            for (ResourceAllocation<?> resourceAllocation : task
+                    .getResourceAllocations()) {
+                result.addAll(resourceAllocation.getAssociatedResources());
+            }
+            return result;
         }
 
         @Override
@@ -105,7 +125,33 @@ public class AdvancedAllocationTabCreator {
 
         @Override
         public void accepted(AggregateOfResourceAllocations modifiedAllocations) {
-            // TODO apply changes
+            Validate
+                    .isTrue(allocationResult.getAggregate() == modifiedAllocations);
+            adHocTransactionService
+                    .runOnTransaction(new IOnTransaction<Void>() {
+
+                        @Override
+                        public Void execute() {
+                            reattachResources();
+                            applyChanges();
+                            return null;
+                        }
+                    });
+        }
+
+        public AggregateOfResourceAllocations getAggregate() {
+            return aggregate;
+        }
+
+        private void reattachResources() {
+            for (Resource each : associatedResources) {
+                resourceDAO.save(each);
+            }
+        }
+
+        private void applyChanges() {
+            taskElementDAO.save(task);
+            allocationResult.applyTo(task);
         }
     }
 
@@ -115,26 +161,33 @@ public class AdvancedAllocationTabCreator {
     private final IOrderDAO orderDAO;
     private AdvancedAllocationController advancedAllocationController;
     private final IBack onBack;
+    private final ITaskElementDAO taskElementDAO;
 
+    private final IResourceDAO resourceDAO;
 
     public static ITab create(final Mode mode,
             IAdHocTransactionService adHocTransactionService,
-            IOrderDAO orderDAO, ITaskElementDAO taskElementDAO, IBack onBack) {
+            IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
+            IResourceDAO resourceDAO, IBack onBack) {
         return new AdvancedAllocationTabCreator(mode, adHocTransactionService,
-                orderDAO, taskElementDAO, onBack).build();
+                orderDAO, taskElementDAO, resourceDAO, onBack).build();
     }
 
     private AdvancedAllocationTabCreator(Mode mode,
             IAdHocTransactionService adHocTransactionService,
-            IOrderDAO orderDAO, ITaskElementDAO taskElementDAO, IBack onBack) {
+            IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
+            IResourceDAO resourceDAO, IBack onBack) {
         Validate.notNull(mode);
         Validate.notNull(adHocTransactionService);
         Validate.notNull(orderDAO);
+        Validate.notNull(resourceDAO);
         Validate.notNull(onBack);
         this.adHocTransactionService = adHocTransactionService;
         this.orderDAO = orderDAO;
         this.mode = mode;
         this.onBack = onBack;
+        this.taskElementDAO = taskElementDAO;
+        this.resourceDAO = resourceDAO;
     }
 
     private ITab build() {
@@ -155,6 +208,7 @@ public class AdvancedAllocationTabCreator {
         return new CreatedOnDemandTab(ADVANCED_ALLOCATION_VIEW,
                 advanceAllocationComponentCreator) {
             private boolean firstTime = true;
+
             @Override
             protected void afterShowAction() {
                 if (firstTime) {
@@ -184,7 +238,8 @@ public class AdvancedAllocationTabCreator {
         Map<String, Object> result = new HashMap<String, Object>();
         advancedAllocationController = new AdvancedAllocationController(onBack,
                 createAllocationInputsFor(order));
-        result.put("advancedAllocationController",
+        result
+                .put("advancedAllocationController",
                         advancedAllocationController);
         return result;
     }
@@ -228,12 +283,9 @@ public class AdvancedAllocationTabCreator {
     }
 
     private AllocationInput createAllocationInputFor(Task task) {
-        Set<ResourceAllocation<?>> resourceAllocations = task
-                .getResourceAllocations();
-        AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
-                resourceAllocations);
-        return new AllocationInput(aggregate, task, new ResultReceiver(task
-                .getCalculatedValue(), aggregate));
+        ResultReceiver resultReceiver = new ResultReceiver(task);
+        return new AllocationInput(resultReceiver.getAggregate(), task,
+                resultReceiver);
     }
 
     private void resetController() {

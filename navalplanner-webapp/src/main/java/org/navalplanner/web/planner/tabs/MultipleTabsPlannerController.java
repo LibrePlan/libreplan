@@ -29,6 +29,7 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.navalplanner.web.planner.company.CompanyPlanningController;
@@ -116,6 +117,9 @@ public class MultipleTabsPlannerController implements Composer {
     @Autowired
     private ITaskElementDAO taskElementDAO;
 
+    @Autowired
+    private IResourceDAO resourceDAO;
+
     public TabsConfiguration getTabs() {
         if (tabsConfiguration == null) {
             tabsConfiguration = buildTabsConfiguration();
@@ -141,7 +145,7 @@ public class MultipleTabsPlannerController implements Composer {
                 });
         final State<Void> typeChanged = typeChangedState();
         ITab advancedAllocation = AdvancedAllocationTabCreator.create(mode,
-                transactionService, orderDAO, taskElementDAO,
+                transactionService, orderDAO, taskElementDAO, resourceDAO,
                 returnToPlanningTab());
         return TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
