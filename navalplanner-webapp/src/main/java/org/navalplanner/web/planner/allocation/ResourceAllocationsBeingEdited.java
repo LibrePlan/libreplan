@@ -40,7 +40,7 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceAllocationWithDesiredResourcesPerDay;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -182,8 +182,8 @@ public class ResourceAllocationsBeingEdited {
 
     public AllocationResult doAllocation() {
         checkInvalidValues();
-        Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> fromDetachedToAttached = getAllocationsWithRelationshipsToOriginal();
-        List<ResourceAllocationWithDesiredResourcesPerDay> allocations = asList(fromDetachedToAttached);
+        Map<AllocationBeingModified, ResourceAllocation<?>> fromDetachedToAttached = getAllocationsWithRelationshipsToOriginal();
+        List<AllocationBeingModified> allocations = asList(fromDetachedToAttached);
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
             ResourceAllocation.allocating(allocations)
@@ -202,25 +202,25 @@ public class ResourceAllocationsBeingEdited {
         }
         return new AllocationResult(task, calculatedValue,
                 new AggregateOfResourceAllocations(
-                ResourceAllocationWithDesiredResourcesPerDay.stripResourcesPerDay(allocations)), daysDuration,
+                AllocationBeingModified.stripResourcesPerDay(allocations)), daysDuration,
                 fromDetachedToAttached);
     }
 
-    private Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> getAllocationsWithRelationshipsToOriginal() {
+    private Map<AllocationBeingModified, ResourceAllocation<?>> getAllocationsWithRelationshipsToOriginal() {
         Map<AllocationDTO, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask = allocationsWithTheirRelatedAllocationsOnTask();
-        Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> fromDetachedToAttached = instantiate(allocationsWithTheirRelatedAllocationsOnTask);
+        Map<AllocationBeingModified, ResourceAllocation<?>> fromDetachedToAttached = instantiate(allocationsWithTheirRelatedAllocationsOnTask);
         return fromDetachedToAttached;
     }
 
-    private List<ResourceAllocationWithDesiredResourcesPerDay> asList(
-            Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> map) {
-        return new ArrayList<ResourceAllocationWithDesiredResourcesPerDay>(
+    private List<AllocationBeingModified> asList(
+            Map<AllocationBeingModified, ResourceAllocation<?>> map) {
+        return new ArrayList<AllocationBeingModified>(
                 map.keySet());
     }
 
-    private Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> instantiate(
+    private Map<AllocationBeingModified, ResourceAllocation<?>> instantiate(
             Map<AllocationDTO, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask) {
-        Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> result = new HashMap<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>>();
+        Map<AllocationBeingModified, ResourceAllocation<?>> result = new HashMap<AllocationBeingModified, ResourceAllocation<?>>();
         for (Entry<AllocationDTO, ResourceAllocation<?>> entry : allocationsWithTheirRelatedAllocationsOnTask
                 .entrySet()) {
             AllocationDTO key = entry.getKey();
@@ -229,9 +229,9 @@ public class ResourceAllocationsBeingEdited {
         return result;
     }
 
-    private ResourceAllocationWithDesiredResourcesPerDay instantiate(
+    private AllocationBeingModified instantiate(
             AllocationDTO key) {
-        return new ResourceAllocationWithDesiredResourcesPerDay(
+        return new AllocationBeingModified(
                 createAllocation(key), key
                         .getResourcesPerDay());
     }
@@ -284,14 +284,12 @@ public class ResourceAllocationsBeingEdited {
                 buildMap(resourceAllocations));
     }
 
-    private Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> buildMap(
+    private Map<AllocationBeingModified, ResourceAllocation<?>> buildMap(
             Collection<ResourceAllocation<?>> resourceAllocations) {
-        Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> result = new HashMap<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>>();
+        Map<AllocationBeingModified, ResourceAllocation<?>> result = new HashMap<AllocationBeingModified, ResourceAllocation<?>>();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            result.put(
-                    new ResourceAllocationWithDesiredResourcesPerDay(
-                            resourceAllocation, resourceAllocation
-                                    .getResourcesPerDay()), resourceAllocation);
+            result.put(new AllocationBeingModified(resourceAllocation,
+                    resourceAllocation.getResourcesPerDay()),resourceAllocation);
         }
         return result;
     }

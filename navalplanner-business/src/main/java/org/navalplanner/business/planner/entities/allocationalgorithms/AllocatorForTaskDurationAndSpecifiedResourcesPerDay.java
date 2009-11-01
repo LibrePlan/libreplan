@@ -30,21 +30,21 @@ import org.navalplanner.business.resources.entities.Resource;
 
 public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
 
-    private List<ResourceAllocationWithDesiredResourcesPerDay> allocations;
+    private List<AllocationBeingModified> allocations;
 
     private List<Resource> resources;
 
     public AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
-            List<ResourceAllocationWithDesiredResourcesPerDay> allocations,
+            List<AllocationBeingModified> allocations,
             List<Resource> resources) {
         this.allocations = allocations;
         this.resources = resources;
     }
 
     public void allocateOnTaskLength() {
-        for (ResourceAllocationWithDesiredResourcesPerDay allocation : allocations) {
-            doAllocationForFixedTask(allocation.getResourceAllocation(),
-                    allocation.getResourcesPerDay());
+        for (AllocationBeingModified allocation : allocations) {
+            doAllocationForFixedTask(allocation.getBeingModified(),
+                    allocation.getGoal());
         }
     }
 

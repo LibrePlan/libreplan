@@ -36,7 +36,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
-import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceAllocationWithDesiredResourcesPerDay;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -45,12 +45,12 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceA
 public class AllocationResult {
 
     private static Map<ResourceAllocation<?>, ResourceAllocation<?>> translation(
-            Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> fromDetachedToAttached) {
+            Map<AllocationBeingModified, ResourceAllocation<?>> fromDetachedToAttached) {
         Map<ResourceAllocation<?>, ResourceAllocation<?>> result = new HashMap<ResourceAllocation<?>, ResourceAllocation<?>>();
-        for (Entry<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> entry : fromDetachedToAttached
+        for (Entry<AllocationBeingModified, ResourceAllocation<?>> entry : fromDetachedToAttached
                 .entrySet()) {
             result
-                    .put(entry.getKey().getResourceAllocation(), entry
+                    .put(entry.getKey().getBeingModified(), entry
                             .getValue());
         }
         return result;
@@ -71,7 +71,7 @@ public class AllocationResult {
             CalculatedValue calculatedValue,
             AggregateOfResourceAllocations aggregate,
             Integer daysDuration,
-            Map<ResourceAllocationWithDesiredResourcesPerDay, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
+            Map<AllocationBeingModified, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
         Validate.notNull(daysDuration);
         Validate.notNull(aggregate);
         Validate.notNull(calculatedValue);

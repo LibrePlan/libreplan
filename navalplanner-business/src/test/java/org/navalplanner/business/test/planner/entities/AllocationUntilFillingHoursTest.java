@@ -38,13 +38,13 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceAllocationWithDesiredResourcesPerDay;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 
 public class AllocationUntilFillingHoursTest {
 
-    private List<ResourceAllocationWithDesiredResourcesPerDay> allocations = new ArrayList<ResourceAllocationWithDesiredResourcesPerDay>();
+    private List<AllocationBeingModified> allocations = new ArrayList<AllocationBeingModified>();
 
     private List<Resource> resources = new ArrayList<Resource>();
 
@@ -67,7 +67,7 @@ public class AllocationUntilFillingHoursTest {
     @Test(expected = IllegalArgumentException.class)
     public void mustReceiveAtLeastOneAllocation() {
         ResourceAllocation
-                .allocating(new ArrayList<ResourceAllocationWithDesiredResourcesPerDay>());
+                .allocating(new ArrayList<AllocationBeingModified>());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class AllocationUntilFillingHoursTest {
         ResourceAllocation.allocating(allocations).withResources(resources)
                 .untilAllocating(32);
         ResourceAllocation<?> allocation = allocations.get(0)
-                .getResourceAllocation();
+                .getBeingModified();
         assertThat(allocation.getAssignments(), haveHours(16, 16));
     }
 
@@ -95,9 +95,9 @@ public class AllocationUntilFillingHoursTest {
         ResourceAllocation.allocating(allocations).withResources(resources)
                 .untilAllocating(32);
         ResourceAllocation<?> first = allocations.get(0)
-                .getResourceAllocation();
+                .getBeingModified();
         ResourceAllocation<?> second = allocations.get(1)
-                .getResourceAllocation();
+                .getBeingModified();
         assertThat(first.getAssignments(), haveHours(8, 8));
         assertThat(second.getAssignments(), haveHours(8, 8));
     }
@@ -109,9 +109,9 @@ public class AllocationUntilFillingHoursTest {
         ResourceAllocation.allocating(allocations).withResources(resources)
                 .untilAllocating(60);
         ResourceAllocation<?> first = allocations.get(0)
-                .getResourceAllocation();
+                .getBeingModified();
         ResourceAllocation<?> second = allocations.get(1)
-                .getResourceAllocation();
+                .getBeingModified();
         assertThat(first.getAssignments(), haveHours(16, 16, 8));
         assertThat(second.getAssignments(), haveHours(8, 8, 4));
     }
@@ -123,9 +123,9 @@ public class AllocationUntilFillingHoursTest {
         ResourceAllocation.allocating(allocations).withResources(resources)
                 .untilAllocating(36);
         ResourceAllocation<?> first = allocations.get(0)
-                .getResourceAllocation();
+                .getBeingModified();
         ResourceAllocation<?> second = allocations.get(1)
-                .getResourceAllocation();
+                .getBeingModified();
         assertThat(first.getAssignments(), haveHours(8, 8, 8));
         assertThat(second.getAssignments(), haveHours(4, 4, 4));
     }
@@ -139,11 +139,11 @@ public class AllocationUntilFillingHoursTest {
         ResourceAllocation.allocating(allocations).withResources(resources)
                 .untilAllocating(64);
         ResourceAllocation<?> generic = allocations.get(0)
-                .getResourceAllocation();
+                .getBeingModified();
         ResourceAllocation<?> firstSpecific = allocations.get(1)
-                .getResourceAllocation();
+                .getBeingModified();
         ResourceAllocation<?> secondSpecific = allocations.get(2)
-                .getResourceAllocation();
+                .getBeingModified();
         assertThat(generic.getAssignments(), haveHours(16, 16));
         assertThat(firstSpecific.getAssignments(), haveHours(8, 8));
         assertThat(secondSpecific.getAssignments(), haveHours(8, 8));
@@ -177,7 +177,7 @@ public class AllocationUntilFillingHoursTest {
 
     private void givenGenericAllocation(ResourcesPerDay resourcesPerDay) {
         createTaskIfNotCreatedYet();
-        allocations.add(new ResourceAllocationWithDesiredResourcesPerDay(
+        allocations.add(new AllocationBeingModified(
                 GenericResourceAllocation.create(task), resourcesPerDay));
     }
 
@@ -188,7 +188,7 @@ public class AllocationUntilFillingHoursTest {
         for (ResourcesPerDay resourcesPerDay : specifiedResourcesPerDay) {
             SpecificResourceAllocation allocation = createSpecificResourceAllocationFor(
                     task, worker);
-            allocations.add(new ResourceAllocationWithDesiredResourcesPerDay(
+            allocations.add(new AllocationBeingModified(
                     allocation, resourcesPerDay));
         }
     }
@@ -214,11 +214,11 @@ public class AllocationUntilFillingHoursTest {
 
     private void givenAllocationsWithoutTask() {
         allocations
-                .add(new ResourceAllocationWithDesiredResourcesPerDay(
+                .add(new AllocationBeingModified(
                         createStubAllocationReturning(null), ResourcesPerDay
                                 .amount(2)));
         allocations
-                .add(new ResourceAllocationWithDesiredResourcesPerDay(
+                .add(new AllocationBeingModified(
                         createStubAllocationReturning(null), ResourcesPerDay
                                 .amount(2)));
     }
@@ -226,16 +226,16 @@ public class AllocationUntilFillingHoursTest {
     private void givenAllocationsBelongingToDifferentTasks() {
         Task task = createStubTask();
         allocations
-                .add(new ResourceAllocationWithDesiredResourcesPerDay(
+                .add(new AllocationBeingModified(
                         createStubAllocationReturning(task), ResourcesPerDay
                                 .amount(2)));
         allocations
-                .add(new ResourceAllocationWithDesiredResourcesPerDay(
+                .add(new AllocationBeingModified(
                         createStubAllocationReturning(task), ResourcesPerDay
                                 .amount(2)));
         Task other = createStubTask();
         allocations
-                .add(new ResourceAllocationWithDesiredResourcesPerDay(
+                .add(new AllocationBeingModified(
                         createStubAllocationReturning(other), ResourcesPerDay
                                 .amount(2)));
     }

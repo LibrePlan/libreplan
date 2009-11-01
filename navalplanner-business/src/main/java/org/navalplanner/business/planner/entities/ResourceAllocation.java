@@ -39,9 +39,9 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForSpecifiedResourcesPerDayAndHours;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
-import org.navalplanner.business.planner.entities.allocationalgorithms.ResourceAllocationWithDesiredResourcesPerDay;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -103,18 +103,18 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public static AllocationsCurried allocating(
-            List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations) {
+            List<AllocationBeingModified> resourceAllocations) {
         return new AllocationsCurried(resourceAllocations);
     }
 
     public static class AllocationsCurried {
 
-        private final List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations;
+        private final List<AllocationBeingModified> resourceAllocations;
 
         private final Task task;
 
         public AllocationsCurried(
-                List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations) {
+                List<AllocationBeingModified> resourceAllocations) {
             Validate.notNull(resourceAllocations);
             Validate.notEmpty(resourceAllocations);
             Validate.noNullElements(resourceAllocations);
@@ -122,14 +122,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             checkAllHaveSameTask(resourceAllocations);
             checkNoAllocationWithZeroResourcesPerDay(resourceAllocations);
             this.resourceAllocations = resourceAllocations;
-            this.task = resourceAllocations.get(0).getResourceAllocation()
+            this.task = resourceAllocations.get(0).getBeingModified()
                     .getTask();
         }
 
         private static void checkNoAllocationWithZeroResourcesPerDay(
-                List<ResourceAllocationWithDesiredResourcesPerDay> allocations) {
-            for (ResourceAllocationWithDesiredResourcesPerDay r : allocations) {
-                if (isZero(r.getResourcesPerDay().getAmount())) {
+                List<AllocationBeingModified> allocations) {
+            for (AllocationBeingModified r : allocations) {
+                if (isZero(r.getGoal().getAmount())) {
                     throw new IllegalArgumentException(
                             "all resources per day must be no zero");
                 }
@@ -141,23 +141,23 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         private static void checkNoOneHasNullTask(
-                List<ResourceAllocationWithDesiredResourcesPerDay> allocations) {
-            for (ResourceAllocationWithDesiredResourcesPerDay resourceAllocationWithDesiredResourcesPerDay : allocations) {
-                if (resourceAllocationWithDesiredResourcesPerDay
-                        .getResourceAllocation().getTask() == null)
+                List<AllocationBeingModified> allocations) {
+            for (AllocationBeingModified allocationBeingModified : allocations) {
+                if (allocationBeingModified
+                        .getBeingModified().getTask() == null)
                     throw new IllegalArgumentException(
                             "all allocations must have task");
             }
         }
 
         private static void checkAllHaveSameTask(
-                List<ResourceAllocationWithDesiredResourcesPerDay> resourceAllocations) {
+                List<AllocationBeingModified> resourceAllocations) {
             Task task = null;
-            for (ResourceAllocationWithDesiredResourcesPerDay r : resourceAllocations) {
+            for (AllocationBeingModified r : resourceAllocations) {
                 if (task == null) {
-                    task = r.getResourceAllocation().getTask();
+                    task = r.getBeingModified().getTask();
                 }
-                if (!task.equals(r.getResourceAllocation().getTask())) {
+                if (!task.equals(r.getBeingModified().getTask())) {
                     throw new IllegalArgumentException(
                             "all allocations must belong to the same task");
                 }
@@ -173,7 +173,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         public AllocationsAndResourcesCurried withExistentResources() {
             return new AllocationsAndResourcesCurried(task,
-                    getResourcesFrom(ResourceAllocationWithDesiredResourcesPerDay
+                    getResourcesFrom(AllocationBeingModified
                             .stripResourcesPerDay(resourceAllocations)),
                     resourceAllocations);
         }
@@ -191,13 +191,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     public static class AllocationsAndResourcesCurried {
         private List<Resource> resources;
 
-        private List<ResourceAllocationWithDesiredResourcesPerDay> allocations;
+        private List<AllocationBeingModified> allocations;
 
         private final Task task;
 
         public AllocationsAndResourcesCurried(Task task,
                 List<Resource> resources,
-                List<ResourceAllocationWithDesiredResourcesPerDay> allocations) {
+                List<AllocationBeingModified> allocations) {
             this.task = task;
             this.resources = resources;
             this.allocations = allocations;
@@ -232,8 +232,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         private boolean thereIsGenericAllocation() {
-            for (ResourceAllocationWithDesiredResourcesPerDay r : allocations) {
-                if (r.getResourceAllocation() instanceof GenericResourceAllocation) {
+            for (AllocationBeingModified r : allocations) {
+                if (r.getBeingModified() instanceof GenericResourceAllocation) {
                     return true;
                 }
             }
@@ -293,10 +293,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return task;
     }
 
-    public ResourceAllocationWithDesiredResourcesPerDay withDesiredResourcesPerDay(
+    public AllocationBeingModified withDesiredResourcesPerDay(
             ResourcesPerDay resourcesPerDay) {
-        return new ResourceAllocationWithDesiredResourcesPerDay(this,
-                resourcesPerDay);
+        return new AllocationBeingModified(this, resourcesPerDay);
     }
 
     public abstract IAllocatable withPreviousAssociatedResources();
