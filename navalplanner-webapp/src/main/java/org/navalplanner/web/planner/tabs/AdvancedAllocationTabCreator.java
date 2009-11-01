@@ -114,23 +114,27 @@ public class AdvancedAllocationTabCreator {
     private final IAdHocTransactionService adHocTransactionService;
     private final IOrderDAO orderDAO;
     private AdvancedAllocationController advancedAllocationController;
+    private final IBack onBack;
 
 
     public static ITab create(final Mode mode,
             IAdHocTransactionService adHocTransactionService,
-            IOrderDAO orderDAO, ITaskElementDAO taskElementDAO) {
+            IOrderDAO orderDAO, ITaskElementDAO taskElementDAO, IBack onBack) {
         return new AdvancedAllocationTabCreator(mode, adHocTransactionService,
-                orderDAO).build();
+                orderDAO, taskElementDAO, onBack).build();
     }
 
     private AdvancedAllocationTabCreator(Mode mode,
-            IAdHocTransactionService adHocTransactionService, IOrderDAO orderDAO) {
+            IAdHocTransactionService adHocTransactionService,
+            IOrderDAO orderDAO, ITaskElementDAO taskElementDAO, IBack onBack) {
         Validate.notNull(mode);
         Validate.notNull(adHocTransactionService);
         Validate.notNull(orderDAO);
+        Validate.notNull(onBack);
         this.adHocTransactionService = adHocTransactionService;
         this.orderDAO = orderDAO;
         this.mode = mode;
+        this.onBack = onBack;
     }
 
     private ITab build() {
@@ -178,8 +182,8 @@ public class AdvancedAllocationTabCreator {
 
     private Map<String, Object> argsWithController(Order order) {
         Map<String, Object> result = new HashMap<String, Object>();
-        advancedAllocationController = new AdvancedAllocationController(
-                createBack(), createAllocationInputsFor(order));
+        advancedAllocationController = new AdvancedAllocationController(onBack,
+                createAllocationInputsFor(order));
         result.put("advancedAllocationController",
                         advancedAllocationController);
         return result;
@@ -191,15 +195,6 @@ public class AdvancedAllocationTabCreator {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private IBack createBack() {
-        return new IBack() {
-            @Override
-            public void goBack() {
-                // do nothing
-            }
-        };
     }
 
     private List<AllocationInput> createAllocationInputsFor(Order order) {
@@ -243,7 +238,7 @@ public class AdvancedAllocationTabCreator {
 
     private void resetController() {
         Order order = mode.getOrder();
-        advancedAllocationController.reset(createBack(),
+        advancedAllocationController.reset(onBack,
                 createAllocationInputsFor(order));
     }
 

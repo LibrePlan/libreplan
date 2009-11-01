@@ -30,6 +30,7 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.web.orders.OrderCRUDController;
+import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.navalplanner.web.planner.company.CompanyPlanningController;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
 import org.navalplanner.web.planner.order.OrderPlanningController;
@@ -140,12 +141,23 @@ public class MultipleTabsPlannerController implements Composer {
                 });
         final State<Void> typeChanged = typeChangedState();
         ITab advancedAllocation = AdvancedAllocationTabCreator.create(mode,
-                transactionService, orderDAO, taskElementDAO);
+                transactionService, orderDAO, taskElementDAO,
+                returnToPlanningTab());
         return TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
             .add(tabWithNameReloading(ordersTab, typeChanged))
             .add(visibleOnlyAtOrderMode(advancedAllocation));
+    }
+
+    private IBack returnToPlanningTab() {
+        return new IBack() {
+
+            @Override
+            public void goBack() {
+                getTabsRegistry().show(planningTab);
+            }
+        };
     }
 
     private ChangeableTab tabWithNameReloading(ITab tab,
