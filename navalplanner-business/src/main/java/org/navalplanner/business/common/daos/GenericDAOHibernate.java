@@ -203,4 +203,9 @@ public class GenericDAOHibernate<E, PK extends Serializable> implements
         getSession().flush();
     }
 
+    @Override
+    public void reattach(E entity) {
+        getSession().saveOrUpdate(entity);
+    }
+
 }

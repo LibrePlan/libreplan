@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 /**
  * The interface all DAOs (Data Access Objects) must implement. In general,
@@ -51,6 +52,15 @@ public interface IGenericDAO <E, PK extends Serializable>{
      *             if the entity has some invalid values
      */
     public void save(E entity) throws ValidationException;
+
+    /**
+     * It reattaches the entity to the current session. This method bypasses
+     * hibernate validations and must only be used on read only transaction
+     * {@link OptimisticLockingFailureException} can be thrown if the entity has
+     * been updated for another transaction
+     * @param entity
+     */
+    public void reattach(E entity);
 
     /**
      * It inserts the object passed as a parameter in the ORM session. Unlike
