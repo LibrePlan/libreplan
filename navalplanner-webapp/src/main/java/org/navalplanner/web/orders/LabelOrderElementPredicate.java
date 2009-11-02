@@ -43,7 +43,8 @@ public class LabelOrderElementPredicate implements IPredicate {
     @Override
     public boolean accepts(Object object) {
         final OrderElement orderElement = (OrderElement) object;
-        return accepts(orderElement) || accepts(orderElement.getChildren());
+
+        return accepts(orderElement.getParent()) || accepts(orderElement) || accepts(orderElement.getChildren());
     }
 
     /**
@@ -54,6 +55,9 @@ public class LabelOrderElementPredicate implements IPredicate {
      * @return
      */
     private boolean accepts(OrderElement orderElement) {
+        if (orderElement == null) {
+            return false;
+        }
         if (orderElement.isNewObject()) {
             return true;
         }
