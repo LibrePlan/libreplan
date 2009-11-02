@@ -27,4 +27,10 @@ public interface IDisabilityConfiguration {
 
     public boolean isAddingDependenciesEnabled();
 
+    public boolean isMovingTasksEnabled();
+
+    public boolean isResizingTasksEnabled();
+
+    public boolean isEditingDatesEnabled();
+
 }

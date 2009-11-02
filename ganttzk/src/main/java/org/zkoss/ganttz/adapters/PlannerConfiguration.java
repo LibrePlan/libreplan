@@ -85,6 +85,12 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean addingDependenciesEnabled = true;
 
+    private boolean movingTasksEnabled = true;
+
+    private boolean resizingTasksEnabled = true;
+
+    private boolean editingDatesEnabled = true;
+
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
         this.adapter = adapter;
@@ -164,6 +170,33 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isAddingDependenciesEnabled() {
         return addingDependenciesEnabled;
+    }
+
+    @Override
+    public boolean isMovingTasksEnabled() {
+        return movingTasksEnabled;
+    }
+
+    public void setMovingTasksEnabled(boolean movingTasksEnabled) {
+        this.movingTasksEnabled = movingTasksEnabled;
+    }
+
+    @Override
+    public boolean isResizingTasksEnabled() {
+        return resizingTasksEnabled;
+    }
+
+    public void setResizingTasksEnabled(boolean resizingTasksEnabled) {
+        this.resizingTasksEnabled = resizingTasksEnabled;
+    }
+
+    @Override
+    public boolean isEditingDatesEnabled() {
+        return editingDatesEnabled;
+    }
+
+    public void setEditingDatesEnabled(boolean editingDatesEnabled) {
+        this.editingDatesEnabled = editingDatesEnabled;
     }
 
 }
