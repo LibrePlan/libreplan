@@ -145,6 +145,7 @@ public class GenericDAOHibernate<E, PK extends Serializable> implements
     }
 
     @SuppressWarnings("unchecked")
+    @Transactional(readOnly = true)
     public E find(PK id) throws InstanceNotFoundException {
 
         E entity = (E) getSession().get(entityClass, id);
