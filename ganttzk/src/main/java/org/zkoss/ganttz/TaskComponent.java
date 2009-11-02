@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
@@ -143,18 +144,20 @@ public class TaskComponent extends Div implements AfterCompose {
         }
     };
 
+    private final IDisabilityConfiguration disabilityConfiguration;
+
     public static TaskComponent asTaskComponent(Task task, TaskList taskList,
             boolean isTopLevel) {
         final TaskComponent result;
         if (task.isContainer()) {
-            result = TaskContainerComponent
-                    .asTask((TaskContainer) task, taskList);
+            result = TaskContainerComponent.asTask((TaskContainer) task,
+                    taskList);
+        } else if (task instanceof Milestone) {
+            result = new MilestoneComponent(task, taskList
+                    .getDisabilityConfiguration());
         } else {
-            if (task instanceof Milestone) {
-                result = new MilestoneComponent(task);
-            } else {
-                result = new TaskComponent(task);
-            }
+            result = new TaskComponent(task, taskList
+                    .getDisabilityConfiguration());
         }
         result.isTopLevel = isTopLevel;
         return result;
@@ -164,12 +167,14 @@ public class TaskComponent extends Div implements AfterCompose {
         return asTaskComponent(task, taskList, true);
     }
 
-    public TaskComponent(Task task) {
+    public TaskComponent(Task task,
+            IDisabilityConfiguration disabilityConfiguration) {
         setHeight(HEIGHT_PER_TASK + "px");
         setContext("idContextMenuTaskAssignment");
         this.task = task;
         setColor(STANDARD_TASK_COLOR);
         setId(UUID.randomUUID().toString());
+        this.disabilityConfiguration = disabilityConfiguration;
     }
 
     protected String calculateClass() {

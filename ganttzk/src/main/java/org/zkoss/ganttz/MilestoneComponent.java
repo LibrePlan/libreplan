@@ -20,6 +20,7 @@
 
 package org.zkoss.ganttz;
 
+import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Task;
 
 /**
@@ -27,8 +28,9 @@ import org.zkoss.ganttz.data.Task;
  */
 public class MilestoneComponent extends TaskComponent {
 
-    public MilestoneComponent(Task task) {
-        super(task);
+    public MilestoneComponent(Task task,
+            IDisabilityConfiguration disabilityConfiguration) {
+        super(task, disabilityConfiguration);
     }
 
 }

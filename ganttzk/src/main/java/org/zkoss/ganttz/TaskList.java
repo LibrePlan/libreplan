@@ -67,7 +67,7 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private final FunctionalityExposedForExtensions<?> context;
 
-    private boolean addingDependenciesEnabled;
+    private final IDisabilityConfiguration disabilityConfiguration;
 
     public TaskList(
             FunctionalityExposedForExtensions<?> context,
@@ -79,8 +79,7 @@ public class TaskList extends XulElement implements AfterCompose {
         this.editTaskCommand = editTaskCommand;
         this.originalTasks = tasks;
         this.commandsOnTasksContextualized = commandsOnTasksContextualized;
-        this.addingDependenciesEnabled = disabilityConfiguration
-                .isAddingDependenciesEnabled();
+        this.disabilityConfiguration = disabilityConfiguration;
     }
 
     public static TaskList createFor(
@@ -284,7 +283,7 @@ public class TaskList extends XulElement implements AfterCompose {
         if (contextMenu == null) {
             MenuBuilder<TaskComponent> menuBuilder = MenuBuilder.on(getPage(),
                     getTaskComponents());
-            if (addingDependenciesEnabled) {
+            if (disabilityConfiguration.isAddingDependenciesEnabled()) {
                 menuBuilder.item("Add Dependency",
                         new ItemAction<TaskComponent>() {
 
@@ -332,5 +331,9 @@ public class TaskList extends XulElement implements AfterCompose {
     public void addDependency(TaskComponent source, TaskComponent destination) {
         context.addDependency(new Dependency(source.getTask(), destination
                 .getTask(), DependencyType.END_START));
+    }
+
+    public IDisabilityConfiguration getDisabilityConfiguration() {
+        return disabilityConfiguration;
     }
 }
