@@ -220,6 +220,7 @@ public class ManageOrderElementAdvancesModel implements
     @Override
     public void removeLineAdvanceAssignment(AdvanceAssignment advance) {
         this.listAdvanceAssignments.remove(advance);
+        orderElement.removeAdvanceAssignment(advance);
         this.advanceAssignment = null;
     }
 
