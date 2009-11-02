@@ -48,6 +48,9 @@ import org.zkoss.ganttz.adapters.TabsConfiguration;
 import org.zkoss.ganttz.adapters.TabsConfiguration.ChangeableTab;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 
@@ -157,10 +160,27 @@ public class MultipleTabsPlannerController implements Composer {
 
     private IBack returnToPlanningTab() {
         return new IBack() {
+            private String eventName = "onShowPlanningTab";
+            {
+                tabsSwitcher.addEventListener(eventName, showPlanningTab());
+            }
+
+            private EventListener showPlanningTab() {
+                return new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        getTabsRegistry().show(planningTab);
+                    }
+                };
+            }
 
             @Override
             public void goBack() {
-                getTabsRegistry().show(planningTab);
+                notGoBackImmediately();
+            }
+
+            private void notGoBackImmediately() {
+                Events.postEvent(new Event(eventName, tabsSwitcher));
             }
         };
     }
