@@ -151,6 +151,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void save() {
         try {
+            manageOrderElementAdvancesController.save();
             orderModel.save();
             messagesForUser.showMessage(Level.INFO, _("Order saved"));
             goToList();

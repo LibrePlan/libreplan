@@ -47,7 +47,7 @@ public interface IManageOrderElementAdvancesModel {
 
     public List<AdvanceAssignment> getAdvanceAssignments();
 
-    public void init(OrderElement orderElement);
+    public void initEdit(OrderElement orderElement);
 
     public void addNewLineAdvaceAssignment();
 
@@ -80,7 +80,7 @@ public interface IManageOrderElementAdvancesModel {
 
     public String getInfoAdvanceAssignment();
 
-    public void accept()throws InstanceNotFoundException,
+    public void confirmSave()throws InstanceNotFoundException,
             DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException;
 

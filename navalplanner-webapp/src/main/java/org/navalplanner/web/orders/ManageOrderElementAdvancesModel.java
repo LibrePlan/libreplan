@@ -150,7 +150,7 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public void init(OrderElement orderElement) {
+    public void initEdit(OrderElement orderElement) {
         this.orderElement = orderElement;
         this.advanceAssignment = null;
         if (orderElement != null){
@@ -294,12 +294,12 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public void accept()throws InstanceNotFoundException,
-            DuplicateAdvanceAssignmentForOrderElementException,
-            DuplicateValueTrueReportGlobalAdvanceException{
-            orderElementDAO.checkVersion(orderElement);
-            reattachmentOrderElement();
-            validateBasicData();
+    public void confirmSave()throws InstanceNotFoundException,
+        DuplicateAdvanceAssignmentForOrderElementException,
+        DuplicateValueTrueReportGlobalAdvanceException{
+        orderElementDAO.checkVersion(orderElement);
+        reattachmentOrderElement();
+        validateBasicData();
     }
 
     private void validateBasicData()  throws InstanceNotFoundException,

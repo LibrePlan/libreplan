@@ -109,27 +109,30 @@ public class ManageOrderElementAdvancesController extends
     }
 
     public void close()  {
-        validate();
+        save();
     }
 
-    public void validate() {
-        if (!validateDataForm()){
-               messagesForUser.showMessage(
-            Level.ERROR, _("Values are not valid, the values must not be null"));
+    private void validate() {
+        if (!validateDataForm()) {
+            messagesForUser.showMessage(
+                    Level.ERROR, _("values are not valid, the values must not be null"));
             return;
         }
-        if (!validateReportGlobalAdvance()){
-               messagesForUser.showMessage(
-            Level.ERROR, _("The Spread values are not valid, must be exist at least one value of spread to true"));
-            return;
+        if (!validateReportGlobalAdvance()) {
+            messagesForUser.showMessage(
+                    Level.ERROR, _("spread values are not valid, at least one value should be true"));
         }
+    }
+
+    public void save() {
+        validate();
         try {
-            manageOrderElementAdvancesModel.accept();
+            manageOrderElementAdvancesModel.confirmSave();
         } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
-            messagesForUser.showMessage(Level.ERROR, _("It not must be include Advance with the same advance type."));
+            messagesForUser.showMessage(Level.ERROR, _("cannot include an Advance of the same Advance type twice"));
         } catch(DuplicateValueTrueReportGlobalAdvanceException e) {
             messagesForUser.showMessage(
-            Level.ERROR, _("The Spread values are not valid, There are several spread values to true"));
+                    Level.ERROR, _("spread values are not valid, at least one value should be true"));
         } catch (InstanceNotFoundException e) {
             messagesForUser.showMessage(
                     Level.ERROR, e.getMessage());
@@ -141,7 +144,7 @@ public class ManageOrderElementAdvancesController extends
 
     public void openWindow(IOrderElementModel orderElementModel) {
         setOrderElementModel(orderElementModel);
-        manageOrderElementAdvancesModel.init(getOrderElement());
+        manageOrderElementAdvancesModel.initEdit(getOrderElement());
         this.indexSelectedItem = -1;
         selectedAdvances.clear();
         Util.reloadBindings(self);
