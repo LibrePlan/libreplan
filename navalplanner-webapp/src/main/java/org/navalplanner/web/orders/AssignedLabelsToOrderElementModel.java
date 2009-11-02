@@ -78,7 +78,7 @@ public class AssignedLabelsToOrderElementModel implements
 
     private void initializeOrderElement(OrderElement orderElement) {
         reattachLabels();
-        orderDAO.save(orderElement);
+        orderDAO.reattach(orderElement);
         orderElement.getName();
         if (orderElement.getParent() != null) {
             orderElement.getParent().getName();
