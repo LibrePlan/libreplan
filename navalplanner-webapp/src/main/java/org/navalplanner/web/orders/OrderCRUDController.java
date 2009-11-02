@@ -149,12 +149,22 @@ public class OrderCRUDController extends GenericForwardComposer {
         return orderModel.getOrder();
     }
 
-    public void save() {
+    public void saveAndContinue() {
+        save();
+        orderModel.initEdit((Order) orderModel.getOrder());
+        initializeTabs();
+    }
+
+    public void saveAndExit() {
+        save();
+        goToList();
+    }
+
+    private void save() {
         try {
             manageOrderElementAdvancesController.save();
             orderModel.save();
             messagesForUser.showMessage(Level.INFO, _("Order saved"));
-            goToList();
         } catch (ValidationException e) {
             if (e.getInvalidValues().length == 0) {
                 messagesForUser.showMessage(Level.INFO, e.getMessage());
@@ -260,7 +270,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Runnable onUp;
 
     public void goToEditForm(Order order) {
-        orderModel.prepareEditFor(order);
+        orderModel.initEdit(order);
         showEditWindow(_("Edit order"));
     }
 

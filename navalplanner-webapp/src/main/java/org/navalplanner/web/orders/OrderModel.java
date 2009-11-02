@@ -144,7 +144,7 @@ public class OrderModel implements IOrderModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void prepareEditFor(Order order) {
+    public void initEdit(Order order) {
         Validate.notNull(order);
         initializeCacheLabels();
         loadCriterions();

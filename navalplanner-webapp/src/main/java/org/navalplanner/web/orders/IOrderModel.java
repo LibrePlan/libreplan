@@ -80,7 +80,7 @@ public interface IOrderModel {
 
     boolean isAlreadyScheduled(Order order);
 
-    void prepareEditFor(Order order);
+    void initEdit(Order order);
 
     void prepareForCreate();
 

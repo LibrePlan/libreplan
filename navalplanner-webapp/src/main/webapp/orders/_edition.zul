@@ -96,7 +96,9 @@
             </tabpanel>
         </tabpanels>
     </tabbox>
-
-    <button label="${i18n:_('Save')}" onClick="controller.save()" />
-    <button label="${i18n:_('Cancel')}" onClick="controller.cancel()" />
+    <hbox>
+        <button label="${i18n:_('Save')}" onClick="controller.saveAndExit()" />
+        <button label="${i18n:_('Save &amp; Continue')}" onClick="controller.saveAndContinue()" />
+        <button label="${i18n:_('Cancel')}" onClick="controller.cancel()" />
+    </hbox>
 </window>
