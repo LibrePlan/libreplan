@@ -143,6 +143,4 @@ public interface IGenericDAO <E, PK extends Serializable>{
 
     public void flush();
 
-    void associateToSession(E entity);
-
 }
