@@ -27,7 +27,7 @@ import org.hibernate.validator.InvalidValue;
  * Encapsulates some validation failure <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class ValidationException extends Exception {
+public class ValidationException extends RuntimeException {
 
     private InvalidValue[] invalidValues;
 
