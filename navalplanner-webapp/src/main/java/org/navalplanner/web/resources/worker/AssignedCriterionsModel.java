@@ -5,14 +5,14 @@
 
 package org.navalplanner.web.resources.worker;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.hibernate.validator.ClassValidator;
-import static org.navalplanner.web.I18nHelper._;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -24,7 +24,6 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Interval;
-import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,15 +116,15 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
     @Override
     @Transactional(readOnly = true)
     public void reattachmentWorker(){
-            resourceDAO.save(worker);
-            for(CriterionSatisfaction criterionSatisfaction :
-                worker.getCriterionSatisfactions()){
-                criterionSatisfaction.getCriterion().getName();
-                criterionSatisfaction.getCriterion().getType().getName();
-                if(criterionSatisfaction.getCriterion().getParent() != null){
-                    criterionSatisfaction.getCriterion().getParent().getName();
-                }
+        resourceDAO.reattach(worker);
+        for (CriterionSatisfaction criterionSatisfaction : worker
+                .getCriterionSatisfactions()) {
+            criterionSatisfaction.getCriterion().getName();
+            criterionSatisfaction.getCriterion().getType().getName();
+            if (criterionSatisfaction.getCriterion().getParent() != null) {
+                criterionSatisfaction.getCriterion().getParent().getName();
             }
+        }
     }
 
     @Override

@@ -292,7 +292,7 @@ public class OrderModel implements IOrderModel {
 
     private void reattachLabels() {
         for (Label label : cacheLabels) {
-            labelDAO.save(label);
+            labelDAO.reattach(label);
         }
     }
 

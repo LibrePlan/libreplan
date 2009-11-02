@@ -144,8 +144,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         this.task = task;
         this.planningState = planningState;
         planningState.reassociateResourcesWithSession(resourceDAO);
-        taskElementDAO.save(this.task);
-        hoursGroupDAO.save(this.task.getHoursGroup());
+        taskElementDAO.reattach(this.task);
+        hoursGroupDAO.reattach(this.task.getHoursGroup());
         loadCriterionsOfGenericAllocations();
         reattachHoursGroup(this.task.getHoursGroup());
         reattachCriterions(this.task.getHoursGroup().getCriterions());
@@ -196,7 +196,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void reattachResource(Resource resource) {
-        resourceDAO.save(resource);
+        resourceDAO.reattach(resource);
         reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
         if (resource.getCalendar() != null) {
             resource.getCalendar().getWorkableHours(new LocalDate());

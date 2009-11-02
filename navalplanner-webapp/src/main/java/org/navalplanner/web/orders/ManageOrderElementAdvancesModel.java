@@ -172,7 +172,7 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     public void reattachmentOrderElement() {
-        orderElementDAO.save(orderElement);
+        orderElementDAO.reattach(orderElement);
     }
 
     private void fillVariables() {

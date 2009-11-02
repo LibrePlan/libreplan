@@ -84,7 +84,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     @Override
     @Transactional(readOnly = true)
     public void reattachmentResource() {
-        resourceDAO.save(resource);
+        resourceDAO.reattach(resource);
         initializeCriterionSatisfactions(resource.getCriterionSatisfactions());
     }
 
@@ -109,7 +109,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     }
 
     private void reattachCriterionType(CriterionType criterionType) {
-        criterionTypeDAO.save(criterionType);
+        criterionTypeDAO.reattach(criterionType);
     }
 
     private void initDTOs() {

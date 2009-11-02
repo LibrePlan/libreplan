@@ -131,7 +131,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                     .runOnReadOnlyTransaction(new IOnTransaction<Long>() {
                         @Override
                         public Long execute() {
-                            taskDAO.save(taskElement);
+                            taskDAO.reattach(taskElement);
                             Long result = setBeginDateInsideTransaction(beginDate);
                             fireTaskElementMoved(taskElement);
                             return result;

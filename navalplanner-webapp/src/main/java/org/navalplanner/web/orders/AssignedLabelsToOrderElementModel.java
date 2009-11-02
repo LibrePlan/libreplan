@@ -22,11 +22,9 @@ package org.navalplanner.web.orders;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
@@ -90,7 +88,7 @@ public class AssignedLabelsToOrderElementModel implements
 
     private void reattachLabels() {
         for (Label label : orderModel.getLabels()) {
-            labelDAO.save(label);
+            labelDAO.reattach(label);
         }
     }
 

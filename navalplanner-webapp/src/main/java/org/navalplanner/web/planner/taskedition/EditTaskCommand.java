@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.planner.taskedition;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -29,8 +31,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Command to edit a {@link TaskElement}.
@@ -51,7 +51,7 @@ public class EditTaskCommand implements IEditTaskCommand {
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement) {
 
-        taskElementDAO.save(taskElement);
+        taskElementDAO.reattach(taskElement);
         if (taskElement instanceof Task) {
             forceLoadHoursGroup((Task) taskElement);
         }

@@ -70,7 +70,7 @@ public class OrderElementModel implements IOrderElementModel {
     @Override
     @Transactional(readOnly = true)
     public void setCurrent(OrderElement orderElement, OrderModel order) {
-        orderElementDAO.save(orderElement);
+        orderElementDAO.reattach(orderElement);
 
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
             hoursGroup.getCriterions().size();
@@ -123,7 +123,7 @@ public class OrderElementModel implements IOrderElementModel {
     @Transactional(readOnly = true)
     public CriterionType getCriterionType(Criterion criterion) {
         CriterionType criterionType = criterion.getType();
-        criterionTypeDao.save(criterionType);
+        criterionTypeDao.reattach(criterionType);
         criterionType.getName();
         return criterionType;
     }

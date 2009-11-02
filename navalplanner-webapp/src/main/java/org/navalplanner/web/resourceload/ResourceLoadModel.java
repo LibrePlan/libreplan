@@ -84,7 +84,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Transactional(readOnly = true)
     public void initGlobalView(Order filterBy) {
         this.filterBy = filterBy;
-        orderDAO.save(filterBy);
+        orderDAO.reattach(filterBy);
         doGlobalView();
     }
 

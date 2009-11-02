@@ -59,7 +59,7 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
         TaskMilestone milestone = new TaskMilestone();
         milestone.setName("new milestone");
 
-        taskElementDAO.save(task);
+        taskElementDAO.reattach(task);
         getRoot(task).addTaskElement(getRoot(task).getChildren().indexOf(task),
                 milestone);
 
