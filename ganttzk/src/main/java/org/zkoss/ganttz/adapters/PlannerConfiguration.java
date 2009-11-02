@@ -35,7 +35,7 @@ import org.zkoss.zk.ui.Component;
  * A object that defines several extension points for gantt planner
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class PlannerConfiguration<T> {
+public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private static class NullCommand<T> implements ICommand<T> {
 
@@ -161,6 +161,7 @@ public class PlannerConfiguration<T> {
         this.addingDependenciesEnabled = addingDependenciesEnabled;
     }
 
+    @Override
     public boolean isAddingDependenciesEnabled() {
         return addingDependenciesEnabled;
     }
