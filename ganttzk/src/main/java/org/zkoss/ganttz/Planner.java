@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
@@ -62,7 +63,7 @@ public class Planner extends HtmlMacroComponent  {
 
     private FunctionalityExposedForExtensions<?> context;
 
-    private boolean addingDependenciesEnabled;
+    private IDisabilityConfiguration disabilityConfiguration;
 
     public Planner() {
         registerNeededScripts();
@@ -148,6 +149,7 @@ public class Planner extends HtmlMacroComponent  {
         editTaskCommand = contextualize(context, configuration
                 .getEditTaskCommand());
         this.context = context;
+        this.disabilityConfiguration = configuration;
         context.add(configuration.getData());
         setupComponents();
 
@@ -171,9 +173,6 @@ public class Planner extends HtmlMacroComponent  {
         if (chartLegend != null) {
             setAt("insertionPointChartLegend", chartLegend);
         }
-
-        this.addingDependenciesEnabled = configuration
-                .isAddingDependenciesEnabled();
     }
 
     private void setAt(String insertionPointId, Component component) {
@@ -224,7 +223,7 @@ public class Planner extends HtmlMacroComponent  {
         this.leftPane = new LeftPane(this.diagramGraph.getTopLevelTasks());
         this.ganttPanel = new GanttPanel(this.context,
                 commandsOnTasksContextualized, editTaskCommand,
-                addingDependenciesEnabled);
+                disabilityConfiguration);
     }
 
     @SuppressWarnings("unchecked")

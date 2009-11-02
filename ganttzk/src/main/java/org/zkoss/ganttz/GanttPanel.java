@@ -22,6 +22,7 @@ package org.zkoss.ganttz;
 
 import java.util.List;
 
+import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
@@ -43,14 +44,14 @@ public class GanttPanel extends XulElement implements AfterCompose {
             FunctionalityExposedForExtensions<?> context,
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
             CommandOnTaskContextualized<?> editTaskCommand,
-            boolean addingDependenciesEnabled) {
+            IDisabilityConfiguration disabilityConfiguration) {
         this.diagramGraph = context.getDiagramGraph();
         timeTrackerComponent = timeTrackerForGanttPanel(context
                 .getTimeTracker());
         appendChild(timeTrackerComponent);
         dependencyList = new DependencyList(context);
         tasksLists = TaskList.createFor(context, editTaskCommand,
-                commandsOnTasksContextualized, addingDependenciesEnabled);
+                commandsOnTasksContextualized, disabilityConfiguration);
         appendChild(tasksLists);
         appendChild(dependencyList);
     }

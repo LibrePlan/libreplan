@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.Position;
@@ -73,22 +74,23 @@ public class TaskList extends XulElement implements AfterCompose {
             CommandOnTaskContextualized<?> editTaskCommand,
             List<Task> tasks,
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
-            boolean addingDependenciesEnabled) {
+            IDisabilityConfiguration disabilityConfiguration) {
         this.context = context;
         this.editTaskCommand = editTaskCommand;
         this.originalTasks = tasks;
         this.commandsOnTasksContextualized = commandsOnTasksContextualized;
-        this.addingDependenciesEnabled = addingDependenciesEnabled;
+        this.addingDependenciesEnabled = disabilityConfiguration
+                .isAddingDependenciesEnabled();
     }
 
     public static TaskList createFor(
             FunctionalityExposedForExtensions<?> context,
             CommandOnTaskContextualized<?> editTaskCommand,
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
-            boolean addingDependenciesEnabled) {
+            IDisabilityConfiguration disabilityConfiguration) {
         TaskList result = new TaskList(context, editTaskCommand, context
                 .getDiagramGraph().getTopLevelTasks(),
-                commandsOnTasksContextualized, addingDependenciesEnabled);
+                commandsOnTasksContextualized, disabilityConfiguration);
         return result;
     }
 
