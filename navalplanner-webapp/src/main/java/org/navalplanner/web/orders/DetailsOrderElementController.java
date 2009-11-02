@@ -57,6 +57,7 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Panel;
 import org.zkoss.zul.RendererCtrl;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Listhead;
@@ -528,11 +529,16 @@ public class DetailsOrderElementController extends
 
     private Grid details;
 
+    private Panel panelCriterions;
+
     public void openWindow(IOrderElementModel model) {
         setOrderElementModel(model);
 
         final OrderElement orderElement = getOrderElement();
-        details.setVisible(orderElement != null && !(orderElement instanceof Order));
+        // Hide details and panelCriterion for Order
+        final boolean isOrder = orderElement != null && orderElement instanceof Order;
+        details.setVisible(!isOrder);
+        panelCriterions.setVisible(!isOrder);
          // If is a container
         if (orderElement instanceof OrderLineGroup) {
             // Disable fields just used in the OrderLine
