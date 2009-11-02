@@ -260,47 +260,55 @@ zkTask.cleanup = function(cmp) {
 }
 
 zkTask.init = function(cmp) {
+    function addDragSupport() {
+        // Configure the drag&drop over the component
+        var dd = zkTask.getDD(cmp);
+        // when the tasks is being dragged the related dependencies are redrawn
+        dd.on('dragEvent', function(ev) {
+            // Slight overload. It could be more efficent to overwrite the YUI
+                // method
+                // that is setting the top property
+                cmp.style.top = "";
+                if (cmp['relatedDependencies']) {
+                    for ( var i = 0; i < cmp.relatedDependencies.length; i++) {
+                        zkDependency.draw(cmp.relatedDependencies[i]);
+                    }
+                }
+            }, null, false);
+        // Register the event endDragEvent
+        dd.on('endDragEvent', function(ev) {
+            zkau.send( {
+                uuid : cmp.id,
+                cmd : "updatePosition",
+                data : [ cmp.style.left, cmp.style.top ]
+            });
+
+        }, null, false);
+    }
+
+    function addResizeSupport() {
+        // Configure the task element to be resizable
+        var resize = new YAHOO.util.Resize(cmp.id, {
+            handles : [ 'r' ],
+            proxy : true
+        });
+
+        resize.on('resize', function(ev) {
+            cmp.style.top = "";
+            zkau.send( {
+                uuid : cmp.id,
+                cmd : "updateSize",
+                data : [ cmp.style.width ]
+            });
+
+        }, zkTask, true);
+    }
+
 	// Instead of executing the code directly, a callback is created
 	// that will be executed when the user passes the mouse over the task
 	var callback = function() {
-		// Configure the drag&drop over the component
-		var dd = zkTask.getDD(cmp);
-		// when the tasks is being dragged the related dependencies are redrawn
-		dd.on('dragEvent', function(ev) {
-			// Slight overload. It could be more efficent to overwrite the YUI
-				// method
-				// that is setting the top property
-				cmp.style.top = "";
-				if (cmp['relatedDependencies']) {
-					for ( var i = 0; i < cmp.relatedDependencies.length; i++) {
-						zkDependency.draw(cmp.relatedDependencies[i]);
-					}
-				}
-			}, null, false);
-		// Register the event endDragEvent
-		dd.on('endDragEvent', function(ev) {
-			zkau.send( {
-				uuid : cmp.id,
-				cmd : "updatePosition",
-				data : [ cmp.style.left, cmp.style.top ]
-			});
-
-		}, null, false);
-		// Configure the task element to be resizable
-		var resize = new YAHOO.util.Resize(cmp.id, {
-			handles : [ 'r' ],
-			proxy : true
-		});
-
-		resize.on('resize', function(ev) {
-			cmp.style.top = "";
-			zkau.send( {
-				uuid : cmp.id,
-				cmd : "updateSize",
-				data : [ cmp.style.width ]
-			});
-
-		}, zkTask, true);
+	    addDragSupport();
+		addResizeSupport();
 		// it removes itself, so it's not executed again:
 		YAHOO.util.Event.removeListener(cmp, "mouseover", callback);
 	}
