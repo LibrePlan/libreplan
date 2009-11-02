@@ -122,13 +122,20 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         configuration.setChartComponent(chartComponent);
         addAdditionalCommands(additional, configuration);
 
-        configuration.setAddingDependenciesEnabled(false);
+        disableSomeFeatures(configuration);
 
         configuration.setChartLegend(getChartLegend());
 
         planner.setConfiguration(configuration);
 
         setupChart(chartComponent, planner.getTimeTracker());
+    }
+
+    private void disableSomeFeatures(
+            PlannerConfiguration<TaskElement> configuration) {
+        configuration.setAddingDependenciesEnabled(false);
+        configuration.setMovingTasksEnabled(false);
+        configuration.setResizingTasksEnabled(false);
     }
 
     private void addAdditionalCommands(

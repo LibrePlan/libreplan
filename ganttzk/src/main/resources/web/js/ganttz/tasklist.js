@@ -304,11 +304,16 @@ zkTask.init = function(cmp) {
         }, zkTask, true);
     }
 
+    function movingTasksEnabled() {
+        return cmp.getAttribute('movingTasksEnabled') === 'true';
+    }
+
 	// Instead of executing the code directly, a callback is created
 	// that will be executed when the user passes the mouse over the task
 	var callback = function() {
-	    addDragSupport();
-		addResizeSupport();
+	    if (movingTasksEnabled()) {
+            addDragSupport();
+        }
 		// it removes itself, so it's not executed again:
 		YAHOO.util.Event.removeListener(cmp, "mouseover", callback);
 	}

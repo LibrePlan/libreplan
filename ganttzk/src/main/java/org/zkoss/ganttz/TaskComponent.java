@@ -224,17 +224,20 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public Command getCommand(String cmdId) {
+        Command result = null;
+        if ("updatePosition".equals(cmdId)
+                && isMovingTasksEnabled()) {
+            result = _updatecmd;
+        } else if ("updateSize".equals(cmdId)) {
+            result = _updatewidthcmd;
+        } else if ("addDependency".equals(cmdId)) {
+            result = _adddependencycmd;
+        }
+        return result;
+    }
 
-        Command c = null;
-
-        if ("updatePosition".equals(cmdId))
-            c = _updatecmd;
-        else if ("updateSize".equals(cmdId))
-            c = _updatewidthcmd;
-        else if ("addDependency".equals(cmdId))
-            c = _adddependencycmd;
-
-        return c;
+    public boolean isMovingTasksEnabled() {
+        return disabilityConfiguration.isMovingTasksEnabled();
     }
 
     // Command action to do
