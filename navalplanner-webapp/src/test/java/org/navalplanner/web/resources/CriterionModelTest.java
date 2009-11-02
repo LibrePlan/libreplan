@@ -31,12 +31,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.validator.InvalidStateException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -83,12 +81,11 @@ public class CriterionModelTest {
 
     private Criterion criterion;
 
-    @Test(expected = InvalidStateException.class)
-    public void cantSaveCriterionWithoutName() throws Exception {
+    @Test(expected = ValidationException.class)
+    public void cantSaveCriterionWithoutName() {
         givenValidCriterion();
         criterion.setName("");
         criterionModel.save(criterion);
-        sessionFactory.getCurrentSession().flush();
     }
 
     private Criterion givenValidCriterion() {

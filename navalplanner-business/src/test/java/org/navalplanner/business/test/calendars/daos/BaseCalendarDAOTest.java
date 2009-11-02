@@ -32,7 +32,6 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 import java.util.List;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.validator.InvalidStateException;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +40,7 @@ import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.test.calendars.entities.BaseCalendarTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -94,6 +94,7 @@ public class BaseCalendarDAOTest {
         baseCalendarDAO.save(calendar);
 
         BaseCalendar derivedCalendar = calendar.newDerivedCalendar();
+        derivedCalendar.setName("derived");
         baseCalendarDAO.save(derivedCalendar);
 
         try {
@@ -229,22 +230,20 @@ public class BaseCalendarDAOTest {
         baseCalendarDAO.flush();
     }
 
-    @Test(expected = InvalidStateException.class)
+    @Test(expected = ValidationException.class)
     public void notAllowTwoCalendarsWithNullName() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         calendar.setName(null);
 
         baseCalendarDAO.save(calendar);
-        baseCalendarDAO.flush();
     }
 
-    @Test(expected = InvalidStateException.class)
+    @Test(expected = ValidationException.class)
     public void notAllowTwoCalendarsWithEmptyName() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         calendar.setName("");
 
         baseCalendarDAO.save(calendar);
-        baseCalendarDAO.flush();
     }
 
     @Test

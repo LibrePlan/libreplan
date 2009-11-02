@@ -32,7 +32,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,8 +80,17 @@ public class GenericDAOHibernate<E, PK extends Serializable> implements
         return sessionFactory.getCurrentSession();
     }
 
-    public void save(E entity) {
+    public void save(E entity) throws ValidationException {
+        checkIsValid(entity);
         getSession().saveOrUpdate(entity);
+    }
+
+    private void checkIsValid(E entity) throws ValidationException {
+        ClassValidator<E> classValidator = new ClassValidator<E>(entityClass);
+        InvalidValue[] invalidValues = classValidator.getInvalidValues(entity);
+        if (invalidValues.length > 0) {
+            throw new ValidationException(invalidValues);
+        }
     }
 
     public void reattachUnmodifiedEntity(E entity) {

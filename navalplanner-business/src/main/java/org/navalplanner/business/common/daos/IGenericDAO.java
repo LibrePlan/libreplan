@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 
 /**
  * The interface all DAOs (Data Access Objects) must implement. In general,
@@ -46,8 +47,10 @@ public interface IGenericDAO <E, PK extends Serializable>{
      * executed (if the entity has version control enabled) with the possible
      * <code>org.springframework.dao.OptimisticLockingFailureException</code>
      * being thrown.
+     * @throws ValidationException
+     *             if the entity has some invalid values
      */
-    public void save(E entity);
+    public void save(E entity) throws ValidationException;
 
     /**
      * It inserts the object passed as a parameter in the ORM session. Unlike
