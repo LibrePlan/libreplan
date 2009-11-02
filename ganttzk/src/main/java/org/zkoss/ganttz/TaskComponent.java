@@ -228,12 +228,17 @@ public class TaskComponent extends Div implements AfterCompose {
         if ("updatePosition".equals(cmdId)
                 && isMovingTasksEnabled()) {
             result = _updatecmd;
-        } else if ("updateSize".equals(cmdId)) {
+        } else if ("updateSize".equals(cmdId)
+                && isResizingTasksEnabled()) {
             result = _updatewidthcmd;
         } else if ("addDependency".equals(cmdId)) {
             result = _adddependencycmd;
         }
         return result;
+    }
+
+    public boolean isResizingTasksEnabled() {
+        return disabilityConfiguration.isResizingTasksEnabled();
     }
 
     public boolean isMovingTasksEnabled() {
