@@ -128,8 +128,9 @@ public class MultipleTabsPlannerController implements Composer {
     }
 
     private TabsConfiguration buildTabsConfiguration() {
-        planningTab = PlanningTabCreator.create(mode, companyPlanningController,
-                orderPlanningController, breadcrumbs);
+        planningTab = PlanningTabCreator.create(mode,
+                companyPlanningController, orderPlanningController, orderDAO,
+                breadcrumbs);
         resourceLoadTab = ResourcesLoadTabCreator.create(mode,
                 resourceLoadController, upCommand(),
                 resourceLoadControllerGlobal,

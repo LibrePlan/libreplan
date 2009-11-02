@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -59,22 +61,26 @@ public class PlanningTabCreator {
 
     private final OrderPlanningController orderPlanningController;
 
+    private final IOrderDAO orderDAO;
+
     public static ITab create(Mode mode,
             CompanyPlanningController companyPlanningController,
             OrderPlanningController orderPlanningController,
+            IOrderDAO orderDAO,
             Component breadcrumbs) {
         return new PlanningTabCreator(mode, companyPlanningController,
-                orderPlanningController, breadcrumbs).create();
+                orderPlanningController, breadcrumbs, orderDAO).create();
     }
 
     private PlanningTabCreator(Mode mode,
             CompanyPlanningController companyPlanningController,
             OrderPlanningController orderPlanningController,
-            Component breadcrumbs) {
+            Component breadcrumbs, IOrderDAO orderDAO) {
         this.mode = mode;
         this.companyPlanningController = companyPlanningController;
         this.orderPlanningController = orderPlanningController;
         this.breadcrumbs = breadcrumbs;
+        this.orderDAO = orderDAO;
     }
 
     private ITab create() {
@@ -153,7 +159,7 @@ public class PlanningTabCreator {
             @Override
             protected void afterShowAction() {
 
-                orderPlanningController.setOrder(mode.getOrder());
+                orderPlanningController.setOrder(reload(mode.getOrder()));
                 Map<String, Object> arguments = new HashMap<String, Object>();
                 arguments.put("orderPlanningController",
                         orderPlanningController);
@@ -172,6 +178,14 @@ public class PlanningTabCreator {
 
             }
         };
+    }
+
+    protected Order reload(Order order) {
+        try {
+            return orderDAO.find(order.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
