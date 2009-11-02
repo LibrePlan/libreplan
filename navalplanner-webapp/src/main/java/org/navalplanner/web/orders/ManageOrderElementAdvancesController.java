@@ -46,7 +46,7 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.resources.criterion.CriterionAdminController;
+import org.zkoss.util.InvalidValueException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -108,36 +108,37 @@ public class ManageOrderElementAdvancesController extends
         return manageOrderElementAdvancesModel.getAdvanceAssignments();
     }
 
-    public void close()  {
-        save();
+    public boolean close()  {
+        return save();
     }
 
-    private void validate() {
+    private void validate() throws InvalidValueException {
         if (!validateDataForm()) {
-            messagesForUser.showMessage(
-                    Level.ERROR, _("values are not valid, the values must not be null"));
-            return;
+            throw new InvalidValueException(_("values are not valid, the values must not be null"));
         }
         if (!validateReportGlobalAdvance()) {
-            messagesForUser.showMessage(
-                    Level.ERROR, _("spread values are not valid, at least one value should be true"));
+            throw new InvalidValueException(_("spread values are not valid, at least one value should be true"));
         }
     }
 
-    public void save() {
-        validate();
+    public boolean save() {
         try {
+            validate();
             manageOrderElementAdvancesModel.confirmSave();
+            return true;
         } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
             messagesForUser.showMessage(Level.ERROR, _("cannot include an Advance of the same Advance type twice"));
-        } catch(DuplicateValueTrueReportGlobalAdvanceException e) {
+        } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
             messagesForUser.showMessage(
                     Level.ERROR, _("spread values are not valid, at least one value should be true"));
+        } catch (InvalidValueException e) {
+            messagesForUser.showMessage(Level.ERROR, e.getMessage());
         } catch (InstanceNotFoundException e) {
             messagesForUser.showMessage(
                     Level.ERROR, e.getMessage());
             LOG.error(_("Couldn't find element: {0}", e.getKey()), e);
         }
+        return false;
     }
 
     IOrderElementModel orderElementModel;

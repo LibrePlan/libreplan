@@ -31,7 +31,7 @@
             <tab label="${i18n:_('Order elements')}" />
             <tab label="${i18n:_('Details')}" />
             <tab label="${i18n:_('Assigned hours')}" />
-            <tab label="${i18n:_('Advances')}" />
+            <tab id="tabAdvances" label="${i18n:_('Advances')}" />
             <tab label="${i18n:_('Label')}" />
         </tabs>
         <tabpanels>

@@ -132,14 +132,17 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     private void clear() {
-        selectTab();
+        selectDefaultTab();
     }
 
-    Tab tabDetails;
+    private void selectDefaultTab() {
+        selectTab("tabDetails");
+    }
 
-    private void selectTab() {
-        if (tabDetails != null) {
-            tabDetails.setSelected(true);
+    private void selectTab(String str) {
+        Tab tab = (Tab) self.getFellowIfAny(str);
+        if (tab != null) {
+            tab.setSelected(true);
         }
     }
 
@@ -149,7 +152,10 @@ public class OrderElementController extends GenericForwardComposer {
 
     private void closeAll() {
         detailsController.close();
-        manageOrderElementAdvancesController.close();
+        if (!manageOrderElementAdvancesController.close()) {
+            selectTab("tabAdvances");
+            return;
+        }
         close();
     }
 

@@ -30,7 +30,6 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -44,6 +43,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -153,6 +153,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         save();
         orderModel.initEdit((Order) orderModel.getOrder());
         initializeTabs();
+        showWindow(editWindow);
     }
 
     public void saveAndExit() {
@@ -161,8 +162,12 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void save() {
+        if (!manageOrderElementAdvancesController.save()) {
+            selectTab("tabAdvances");
+            return;
+        }
+
         try {
-            manageOrderElementAdvancesController.save();
             orderModel.save();
             messagesForUser.showMessage(Level.INFO, _("Order saved"));
         } catch (ValidationException e) {
@@ -197,6 +202,13 @@ public class OrderCRUDController extends GenericForwardComposer {
                     }
                 });
             }
+        }
+    }
+
+    private void selectTab(String str) {
+        Tab tab = (Tab) editWindow.getFellowIfAny(str);
+        if (tab != null) {
+            tab.setSelected(true);
         }
     }
 
