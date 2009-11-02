@@ -26,8 +26,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -277,5 +280,22 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public abstract Set<ResourceAllocation<?>> getResourceAllocations();
+
+    public SortedMap<LocalDate, Integer> getHoursAssignedByDay() {
+        SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
+        for (ResourceAllocation<?> resourceAllocation : getResourceAllocations()) {
+            for (DayAssignment each : resourceAllocation
+                    .getAssignments()) {
+                addToResult(result, each.getDay(), each.getHours());
+            }
+        }
+        return result;
+    }
+
+    private void addToResult(SortedMap<LocalDate, Integer> result,
+            LocalDate date, int hours) {
+        int current = result.get(date) != null ? result.get(date) : 0;
+        result.put(date, current + hours);
+    }
 
 }
