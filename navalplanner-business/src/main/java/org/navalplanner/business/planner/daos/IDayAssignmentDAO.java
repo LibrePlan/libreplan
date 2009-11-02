@@ -20,12 +20,8 @@
 
 package org.navalplanner.business.planner.daos;
 
-import java.util.SortedMap;
-
-import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
-import org.navalplanner.business.planner.entities.TaskElement;
 
 /**
  * DAO interface for {@link DayAssignment}
@@ -34,9 +30,6 @@ import org.navalplanner.business.planner.entities.TaskElement;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public interface IDayAssignmentDAO extends
-        IGenericDAO<DayAssignment, Long> {
-
-    SortedMap<LocalDate, Integer> getHoursAssignedByDayFor(
-            TaskElement taskElement);
+ IGenericDAO<DayAssignment, Long> {
 
 }
