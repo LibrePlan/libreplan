@@ -259,9 +259,6 @@ public class DetailsOrderElementController extends
                     Listitem emptyListitem = new Listitem();
                     emptyListitem.setParent(criterionListbox);
 
-                    // Get the Criterion of the current type in the HoursGroup
-                    final Criterion criterionHoursGroup = null;
-
                     // For each possible Criterion of the current type
                     for (Criterion criterion : orderElementModel
                             .getCriterionsFor(criterionType)) {
@@ -270,14 +267,6 @@ public class DetailsOrderElementController extends
                         listitem.setValue(criterion);
                         listitem.setLabel(criterion.getName());
                         listitem.setParent(criterionListbox);
-
-                        // Check if it matches with the HoursGroup criterion
-                        if ((criterionHoursGroup != null)
-                                && (criterionHoursGroup.getName()
-                                        .equals(criterion.getName()))) {
-                            // Mark as selected
-                            criterionListbox.setSelectedItem(listitem);
-                        }
                     }
 
                     cellCriterion.appendChild(criterionListbox);
@@ -395,9 +384,6 @@ public class DetailsOrderElementController extends
                     Listitem emptyListitem = new Listitem();
                     emptyListitem.setParent(criterionListbox);
 
-                    // Get the Criterion of the current type in the HoursGroup
-                    final Criterion criterionHoursGroup = null;
-
                     // For each possible Criterion of the current type
                     for (Criterion criterion : orderElementModel
                             .getCriterionsFor(criterionType)) {
@@ -406,14 +392,6 @@ public class DetailsOrderElementController extends
                         listitem.setValue(criterion);
                         listitem.setLabel(criterion.getName());
                         listitem.setParent(criterionListbox);
-
-                        // Check if it matches with the HoursGroup criterion
-                        if ((criterionHoursGroup != null)
-                                && (criterionHoursGroup.getName()
-                                        .equals(criterion.getName()))) {
-                            // Mark as selected
-                            criterionListbox.setSelectedItem(listitem);
-                        }
                     }
 
                     // Add operation for Criterion selection

@@ -37,9 +37,6 @@ public class InvalidInputsChecker {
         }
         List<Component> children = component.getChildren();
         for (Component child : children) {
-            if (isInvalid(child)) {
-                return true;
-            }
             if (thereAreInvalidInputsOn(child)) {
                 return true;
             }
