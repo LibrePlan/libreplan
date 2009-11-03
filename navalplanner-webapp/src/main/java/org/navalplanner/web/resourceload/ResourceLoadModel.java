@@ -351,13 +351,16 @@ class PeriodsBuilder {
                 iterator.remove();
                 List<LoadPeriodGenerator> generated = current.join(next);
                 final LoadPeriodGenerator positionToComeBack = generated.get(0);
-                List<LoadPeriodGenerator> sortedByStartDate = mergeListsKeepingByStartSortOrder(
-                        generated, loadPeriodsGenerators.subList(iterator
-                                .nextIndex(), loadPeriodsGenerators.size()));
-                final int takenFromRemaining = sortedByStartDate.size()
+                final List<LoadPeriodGenerator> remaining = loadPeriodsGenerators
+                        .subList(iterator
+                        .nextIndex(), loadPeriodsGenerators.size());
+                List<LoadPeriodGenerator> generatorsSortedByStartDate = mergeListsKeepingByStartSortOrder(
+                        generated, remaining);
+                final int takenFromRemaining = generatorsSortedByStartDate
+                        .size()
                         - generated.size();
                 removeNextElements(iterator, takenFromRemaining);
-                addAtCurrentPosition(iterator, sortedByStartDate);
+                addAtCurrentPosition(iterator, generatorsSortedByStartDate);
                 rewind(iterator, positionToComeBack);
             }
         }

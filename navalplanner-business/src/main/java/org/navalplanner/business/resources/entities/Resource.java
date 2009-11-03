@@ -21,7 +21,6 @@
 package org.navalplanner.business.resources.entities;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -652,10 +651,12 @@ public abstract class Resource extends BaseEntity{
     }
 
     public int getTotalWorkHours(LocalDate start, LocalDate end) {
-        IWorkHours calendar = getCalendar() != null ? getCalendar()
-                : SameWorkHoursEveryDay
-                        .getDefaultWorkingDay();
-        return getTotalWorkHoursFor(calendar, start, end);
+        return getTotalWorkHoursFor(calendarOrDefault(), start, end);
+    }
+
+    private IWorkHours calendarOrDefault() {
+        return getCalendar() != null ? getCalendar() : SameWorkHoursEveryDay
+                .getDefaultWorkingDay();
     }
 
     private int getTotalWorkHoursFor(IWorkHours calendar, LocalDate start,
@@ -670,15 +671,6 @@ public abstract class Resource extends BaseEntity{
             }
         }
         return sum;
-    }
-
-    public Date date(int year,int month, int day) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DAY_OF_MONTH, day);
-        return calendar.getTime();
     }
 
     public void addSatisfactions(Set<CriterionSatisfaction> addlist) throws ValidationException {

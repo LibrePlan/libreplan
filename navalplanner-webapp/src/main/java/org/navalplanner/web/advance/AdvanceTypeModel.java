@@ -144,9 +144,8 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
         if (name.isEmpty()) {
             return true;
         }
-        List<AdvanceType> listAdvanceType = advanceTypeDAO
-                .list(AdvanceType.class);
-        for (AdvanceType advanceType : listAdvanceType) {
+        for (AdvanceType advanceType : advanceTypeDAO
+                .list(AdvanceType.class)) {
             if ((advanceType.getId() == null)
                     || (!advanceType.getId().equals(this.advanceType.getId()))
                     && (advanceType.getUnitName().contains(name) || (name

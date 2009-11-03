@@ -102,9 +102,9 @@ public class WorkReportModel implements IWorkReportModel {
     @Transactional(readOnly = true)
     private WorkReport getFromDB(Long id) {
         try {
-            WorkReport workReport = workReportDAO.find(id);
-            forceLoadEntities(workReport);
-            return workReport;
+            WorkReport result = workReportDAO.find(id);
+            forceLoadEntities(result);
+            return result;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -197,9 +197,9 @@ public class WorkReportModel implements IWorkReportModel {
     @Transactional(readOnly = true)
     public List<WorkReport> getWorkReports() {
         List<WorkReport> result = new ArrayList<WorkReport>();
-        for (WorkReport workReport : workReportDAO.list(WorkReport.class)) {
-            workReport.getWorkReportType().getName();
-            result.add(workReport);
+        for (WorkReport each : workReportDAO.list(WorkReport.class)) {
+            each.getWorkReportType().getName();
+            result.add(each);
         }
         return result;
     }

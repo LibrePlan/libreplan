@@ -160,9 +160,9 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     private void forceLoadAdvanceAssignmentsAndMeasurements() {
-        for (DirectAdvanceAssignment advanceAssignment : orderElement
+        for (DirectAdvanceAssignment each : orderElement
                 .getDirectAdvanceAssignments()) {
-            advanceAssignment.getAdvanceMeasurements().size();
+            each.getAdvanceMeasurements().size();
         }
         if (orderElement instanceof OrderLineGroup) {
             ((OrderLineGroup) orderElement).getIndirectAdvanceAssignments().size();
@@ -176,15 +176,15 @@ public class ManageOrderElementAdvancesModel implements
     private void fillVariables() {
         this.listAdvanceAssignments = new ArrayList<AdvanceAssignment>();
 
-        for (DirectAdvanceAssignment advanceAssignment : this.orderElement
+        for (DirectAdvanceAssignment each : this.orderElement
                 .getDirectAdvanceAssignments()) {
-            this.listAdvanceAssignments.add(advanceAssignment);
+            this.listAdvanceAssignments.add(each);
         }
 
         if (this.orderElement instanceof OrderLineGroup) {
-            for (IndirectAdvanceAssignment advanceAssignment : ((OrderLineGroup) this.orderElement)
+            for (IndirectAdvanceAssignment each : ((OrderLineGroup) this.orderElement)
                     .getIndirectAdvanceAssignments()) {
-                this.listAdvanceAssignments.add(advanceAssignment);
+                this.listAdvanceAssignments.add(each);
             }
         }
     }
@@ -255,9 +255,9 @@ public class ManageOrderElementAdvancesModel implements
     private boolean existsAdvanceTypeAlreadyInThisOrderElement(
             AdvanceType advanceType) {
         if (listAdvanceAssignments != null) {
-            for (AdvanceAssignment advanceAssignment : listAdvanceAssignments) {
-                if ((advanceAssignment.getAdvanceType() != null)
-                        && (advanceAssignment.getAdvanceType().getUnitName()
+            for (AdvanceAssignment each : listAdvanceAssignments) {
+                if ((each.getAdvanceType() != null)
+                        && (each.getAdvanceType().getUnitName()
                                 .equals(advanceType.getUnitName()))) {
                     return true;
                 }
@@ -306,36 +306,37 @@ public class ManageOrderElementAdvancesModel implements
         DuplicateAdvanceAssignmentForOrderElementException,
         DuplicateValueTrueReportGlobalAdvanceException{
         updateRemoveAdvances();
-        for (AdvanceAssignment advanceAssignment : this.listAdvanceAssignments) {
-            if (advanceAssignment instanceof DirectAdvanceAssignment) {
-                validateBasicData((DirectAdvanceAssignment) advanceAssignment);
+        for (AdvanceAssignment each : this.listAdvanceAssignments) {
+            if (each instanceof DirectAdvanceAssignment) {
+                validateBasicData((DirectAdvanceAssignment) each);
             }
         }
     }
 
     private void updateRemoveAdvances(){
-        for(AdvanceAssignment advanceAssignment : this.listAdvanceAssignments){
-            AdvanceAssignment advance = yetExistAdvanceAssignment(advanceAssignment);
+        for (AdvanceAssignment each : this.listAdvanceAssignments) {
+            AdvanceAssignment advance = yetExistAdvanceAssignment(each);
             if (advance == null) {
-                removeAdvanceAssignment(advanceAssignment);
+                removeAdvanceAssignment(each);
             }
         }
     }
 
-    private void validateBasicData(DirectAdvanceAssignment advanceAssignment)
+    private void validateBasicData(
+            DirectAdvanceAssignment directAdvanceAssignment)
             throws InstanceNotFoundException,DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
-        if (advanceAssignment.getVersion() == null) {
-            addAdvanceAssignment(advanceAssignment);
+        if (directAdvanceAssignment.getVersion() == null) {
+            addAdvanceAssignment(directAdvanceAssignment);
         }
     }
 
     private AdvanceAssignment yetExistAdvanceAssignment(
-            AdvanceAssignment advanceAssignment) {
+            AdvanceAssignment assignment) {
         for (AdvanceAssignment advance : this.orderElement
                 .getDirectAdvanceAssignments()) {
             if (advance.getVersion() != null
-                    && advance.getId().equals(advanceAssignment.getId())) {
+                    && advance.getId().equals(assignment.getId())) {
                 return advance;
             }
         }
@@ -350,9 +351,9 @@ public class ManageOrderElementAdvancesModel implements
         this.orderElement.addAdvanceAssignment(newAdvanceAssignment);
     }
 
-    private void removeAdvanceAssignment(AdvanceAssignment advanceAssignment){
-        if (advanceAssignment != null) {
-            orderElement.removeAdvanceAssignment(advanceAssignment);
+    private void removeAdvanceAssignment(AdvanceAssignment assignment) {
+        if (assignment != null) {
+            orderElement.removeAdvanceAssignment(assignment);
         }
     }
 
@@ -412,9 +413,9 @@ public class ManageOrderElementAdvancesModel implements
     @Override
     @Transactional(readOnly = true)
     public AdvanceMeasurement getLastAdvanceMeasurement(
-            DirectAdvanceAssignment advanceAssignment) {
-        if (advanceAssignment != null) {
-            SortedSet<AdvanceMeasurement> advanceMeasurements = advanceAssignment
+            DirectAdvanceAssignment assignment) {
+        if (assignment != null) {
+            SortedSet<AdvanceMeasurement> advanceMeasurements = assignment
                     .getAdvanceMeasurements();
             if (advanceMeasurements.size() > 0) {
                 return advanceMeasurements.first();
@@ -439,20 +440,20 @@ public class ManageOrderElementAdvancesModel implements
     @Override
     public BigDecimal getPercentageAdvanceMeasurement(
             AdvanceMeasurement advanceMeasurement) {
-        AdvanceAssignment advanceAssignment = advanceMeasurement
+        AdvanceAssignment assignment = advanceMeasurement
                 .getAdvanceAssignment();
-        if (advanceAssignment == null) {
+        if (assignment == null) {
             return BigDecimal.ZERO;
         }
 
         BigDecimal maxValue;
-        if (advanceAssignment instanceof IndirectAdvanceAssignment) {
+        if (assignment instanceof IndirectAdvanceAssignment) {
             maxValue = ((OrderLineGroup) this.orderElement)
                     .calculateFakeDirectAdvanceAssignment(
-                            (IndirectAdvanceAssignment) advanceAssignment)
+                            (IndirectAdvanceAssignment) assignment)
                     .getMaxValue();
         } else {
-            maxValue = ((DirectAdvanceAssignment) advanceAssignment)
+            maxValue = ((DirectAdvanceAssignment) assignment)
                     .getMaxValue();
         }
 
@@ -508,12 +509,12 @@ public class ManageOrderElementAdvancesModel implements
     public XYModel getChartData(Set<AdvanceAssignment> selectedAdvances) {
         XYModel xymodel = new SimpleXYModel();
 
-        for (AdvanceAssignment advanceAssignment : selectedAdvances) {
+        for (AdvanceAssignment each : selectedAdvances) {
             DirectAdvanceAssignment directAdvanceAssignment;
-            if (advanceAssignment instanceof DirectAdvanceAssignment) {
-                directAdvanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
+            if (each instanceof DirectAdvanceAssignment) {
+                directAdvanceAssignment = (DirectAdvanceAssignment) each;
             } else {
-                directAdvanceAssignment = calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advanceAssignment);
+                directAdvanceAssignment = calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) each);
             }
             String title = getInfoAdvanceAssignment(directAdvanceAssignment);
             SortedSet<AdvanceMeasurement> listAdvanceMeasurements = directAdvanceAssignment

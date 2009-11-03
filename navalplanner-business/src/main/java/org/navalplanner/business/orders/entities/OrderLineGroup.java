@@ -183,8 +183,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     @Override
     public Integer getWorkHours() {
         int result = 0;
-        List<OrderElement> children = getChildren();
-        for (OrderElement orderElement : children) {
+        for (OrderElement orderElement : getChildren()) {
             result += orderElement.getWorkHours();
         }
         return result;

@@ -95,9 +95,9 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     @Transactional(readOnly = true)
     private WorkReportType getFromDB(Long id) {
         try {
-            WorkReportType workReportType = workReportTypeDAO.find(id);
-            reattachCriterionTypes(workReportType);
-            return workReportType;
+            WorkReportType result = workReportTypeDAO.find(id);
+            reattachCriterionTypes(result);
+            return result;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

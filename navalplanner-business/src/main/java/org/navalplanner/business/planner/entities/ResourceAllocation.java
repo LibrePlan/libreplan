@@ -309,10 +309,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         @Override
         public final void allocate(ResourcesPerDay resourcesPerDay) {
-            Task task = getTask();
-            LocalDate startInclusive = new LocalDate(task.getStartDate());
+            Task currentTask = getTask();
+            LocalDate startInclusive = new LocalDate(currentTask.getStartDate());
             List<T> assignmentsCreated = new ArrayList<T>();
-            LocalDate endExclusive = new LocalDate(task.getEndDate());
+            LocalDate endExclusive = new LocalDate(currentTask.getEndDate());
             for (LocalDate day : getDays(startInclusive, endExclusive)) {
                 int totalForDay = calculateTotalToDistribute(day,
                         resourcesPerDay);

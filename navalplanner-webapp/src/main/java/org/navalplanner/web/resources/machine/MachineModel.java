@@ -110,10 +110,10 @@ public class MachineModel implements IMachineModel {
 
     private Machine getFromDB(Long id) {
         try {
-            Machine machine = (Machine) resourceDAO.find(id);
-            initializeCriterionsSatisfactions(machine
+            Machine result = (Machine) resourceDAO.find(id);
+            initializeCriterionsSatisfactions(result
                     .getCriterionSatisfactions());
-            return machine;
+            return result;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

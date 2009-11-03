@@ -194,9 +194,8 @@ public abstract class OrderElement extends BaseEntity {
 
     public void removeAdvanceAssignment(AdvanceAssignment advanceAssignment) {
         directAdvanceAssignments.remove(advanceAssignment);
-        OrderLineGroup parent = this.getParent();
-        if (parent != null) {
-            parent.removeIndirectAdvanceAssignment(advanceAssignment
+        if (this.getParent() != null) {
+            this.getParent().removeIndirectAdvanceAssignment(advanceAssignment
                     .getAdvanceType());
         }
     }
@@ -239,15 +238,14 @@ public abstract class OrderElement extends BaseEntity {
         newAdvanceAssignment.setOrderElement(this);
         this.directAdvanceAssignments.add(newAdvanceAssignment);
 
-        OrderLineGroup parent = this.getParent();
-        if (parent != null) {
+        if (this.getParent() != null) {
             IndirectAdvanceAssignment indirectAdvanceAssignment = IndirectAdvanceAssignment
                     .create();
             indirectAdvanceAssignment.setAdvanceType(newAdvanceAssignment
                     .getAdvanceType());
-            indirectAdvanceAssignment.setOrderElement(parent);
+            indirectAdvanceAssignment.setOrderElement(this.getParent());
 
-            parent.addIndirectAdvanceAssignment(indirectAdvanceAssignment);
+            this.getParent().addIndirectAdvanceAssignment(indirectAdvanceAssignment);
         }
     }
 

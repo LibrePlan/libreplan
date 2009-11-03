@@ -191,9 +191,7 @@ public class WorkerModel implements IWorkerModel {
     @Transactional(readOnly = true)
     public void assignCriteria(Collection<? extends Criterion> criteria) {
 
-        /* Check worker's version. */
-        Worker worker = getWorker();
-        resourceDAO.checkVersion(worker);
+        resourceDAO.checkVersion(getWorker());
 
         /* Assign criteria. */
         getLocalizationsAssigner().assign(criteria);
@@ -204,9 +202,7 @@ public class WorkerModel implements IWorkerModel {
     public void unassignSatisfactions(
             Collection<? extends CriterionSatisfaction> satisfactions) {
 
-        /* Check worker's version. */
-        Worker worker = getWorker();
-        resourceDAO.checkVersion(worker);
+        resourceDAO.checkVersion(getWorker());
 
         /* Unassign criterion satisfactions. */
         getLocalizationsAssigner().unassign(satisfactions);

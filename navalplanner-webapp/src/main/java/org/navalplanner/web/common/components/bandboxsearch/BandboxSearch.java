@@ -124,9 +124,9 @@ public class BandboxSearch extends HtmlMacroComponent {
     private ListModel getSubModel(String inputText) {
         List result = new ArrayList();
 
-        final ListModel model = finder.getModel();
-        for (int i = 0; i < model.getSize(); i++) {
-            Object obj = model.getElementAt(i);
+        final ListModel finderModel = finder.getModel();
+        for (int i = 0; i < finderModel.getSize(); i++) {
+            Object obj = finderModel.getElementAt(i);
             if (finder.entryMatchesText(obj, inputText)) {
                 result.add(obj);
             }

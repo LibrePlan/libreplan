@@ -67,8 +67,8 @@ public class LabelOrderElementPredicate implements IPredicate {
             return true;
         }
 
-        for (Label label : labels) {
-            if (this.label != null && equalsLabel(label)) {
+        for (Label each : labels) {
+            if (label != null && equalsLabel(each)) {
                 return true;
             }
         }

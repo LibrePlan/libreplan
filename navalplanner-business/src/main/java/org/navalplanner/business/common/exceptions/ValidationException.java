@@ -41,9 +41,9 @@ public class ValidationException extends RuntimeException {
     }
 
     private InvalidValue[] toArray(InvalidValue invalidValue) {
-        InvalidValue[] invalidValues = new InvalidValue[1];
-        invalidValues[0] = invalidValue;
-        return invalidValues;
+        InvalidValue[] result = new InvalidValue[1];
+        result[0] = invalidValue;
+        return result;
     }
 
     public ValidationException(InvalidValue[] invalidValues) {

@@ -79,8 +79,8 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Transactional(readOnly = true)
     public List<BaseCalendar> getBaseCalendars() {
         List<BaseCalendar> baseCalendars = baseCalendarDAO.getBaseCalendars();
-        for (BaseCalendar baseCalendar : baseCalendars) {
-            forceLoad(baseCalendar);
+        for (BaseCalendar each : baseCalendars) {
+            forceLoad(each);
         }
         return baseCalendars;
     }
@@ -143,8 +143,8 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Transactional(readOnly = true)
     private BaseCalendar getFromDB(Long id) {
         try {
-            BaseCalendar baseCalendar = baseCalendarDAO.find(id);
-            return baseCalendar;
+            BaseCalendar result = baseCalendarDAO.find(id);
+            return result;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -157,7 +157,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     /*
      * Intermediate conversation steps
      */
-
     @Override
     public BaseCalendar getBaseCalendar() {
         return baseCalendar;

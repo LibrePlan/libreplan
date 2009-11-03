@@ -31,7 +31,6 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
@@ -51,9 +50,6 @@ public class LabelTypeModel implements ILabelTypeModel {
 
     @Autowired
     private ILabelTypeDAO labelTypeDAO;
-
-    @Autowired
-    private ILabelDAO labelDAO;
 
     private LabelType labelType;
 
@@ -201,9 +197,9 @@ public class LabelTypeModel implements ILabelTypeModel {
 
     private LabelType getFromDB(Long id) {
         try {
-            LabelType labelType = labelTypeDAO.find(id);
-            reattachLabels(labelType);
-            return labelType;
+            LabelType result = labelTypeDAO.find(id);
+            reattachLabels(result);
+            return result;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

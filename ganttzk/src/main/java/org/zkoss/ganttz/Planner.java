@@ -141,20 +141,20 @@ public class Planner extends HtmlMacroComponent  {
             return;
         }
         this.diagramGraph = new GanttDiagramGraph();
-        FunctionalityExposedForExtensions<T> context = new FunctionalityExposedForExtensions<T>(
+        FunctionalityExposedForExtensions<T> newContext = new FunctionalityExposedForExtensions<T>(
                 this, configuration.getAdapter(), configuration.getNavigator(),
                 diagramGraph);
-        this.contextualizedGlobalCommands = contextualize(context,
+        this.contextualizedGlobalCommands = contextualize(newContext,
                 configuration.getGlobalCommands());
-        this.commandsOnTasksContextualized = contextualize(context,
+        this.commandsOnTasksContextualized = contextualize(newContext,
                 configuration.getCommandsOnTasks());
-        goingDownInLastArrowCommand = contextualize(context, configuration
+        goingDownInLastArrowCommand = contextualize(newContext, configuration
                 .getGoingDownInLastArrowCommand());
-        editTaskCommand = contextualize(context, configuration
+        editTaskCommand = contextualize(newContext, configuration
                 .getEditTaskCommand());
-        this.context = context;
+        this.context = newContext;
         this.disabilityConfiguration = configuration;
-        context.add(configuration.getData());
+        newContext.add(configuration.getData());
         setupComponents();
 
         setAt("insertionPointLeftPanel", leftPane);

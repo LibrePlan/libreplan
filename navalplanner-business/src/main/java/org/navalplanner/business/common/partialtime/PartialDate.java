@@ -115,12 +115,12 @@ public class PartialDate implements ReadablePartial {
         }
 
         private Granularity getPrevious() {
-            Granularity granularity = Granularity.values()[ordinal() - 1];
+            Granularity result = Granularity.values()[ordinal() - 1];
             // we bypass week, as it isn't part of the rest of hierarchy
-            if (granularity == WEEK) {
+            if (result == WEEK) {
                 return WEEK.getPrevious();
             }
-            return granularity;
+            return result;
         }
 
         private List<Integer> asIntegersList(int[] values) {
@@ -390,8 +390,8 @@ public class PartialDate implements ReadablePartial {
         Validate.isTrue(this.granularity.equals(start.getGranularity()),
                 "must have the same granularity");
         Validate.isTrue(this.after(start));
-        int[] values = substract(this.values, start.values);
-        return this.granularity.asQuantity(values);
+        int[] substractedValues = substract(this.values, start.values);
+        return this.granularity.asQuantity(substractedValues);
     }
 
     private static int[] substract(List<Integer> bigger, List<Integer> other) {

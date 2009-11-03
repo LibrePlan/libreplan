@@ -109,9 +109,9 @@ public class CriterionsModel implements ICriterionsModel {
     @Override
     @Transactional(readOnly = true)
     public ICriterionType<?> getTypeFor(Criterion criterion) {
-        for (ICriterionType<?> criterionType : getTypes()) {
-            if (criterionType.contains(criterion)) {
-                return criterionType;
+        for (ICriterionType<?> each : getTypes()) {
+            if (each.contains(criterion)) {
+                return each;
             }
         }
         throw new RuntimeException(_("{0} not found type for criterion ", criterion));

@@ -204,29 +204,15 @@ public class Task extends TaskElement {
     }
 
     public Set<GenericResourceAllocation> getGenericResourceAllocations() {
-        Set<GenericResourceAllocation> result = new HashSet<GenericResourceAllocation>();
-
-        Set<ResourceAllocation<?>> resourceAllocations = getResourceAllocations();
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            if (resourceAllocation instanceof GenericResourceAllocation) {
-                result.add((GenericResourceAllocation) resourceAllocation);
-            }
-        }
-
-        return result;
+        return new HashSet<GenericResourceAllocation>(ResourceAllocation
+                .getOfType(GenericResourceAllocation.class,
+                        getResourceAllocations()));
     }
 
     public Set<SpecificResourceAllocation> getSpecificResourceAllocations() {
-        Set<SpecificResourceAllocation> result = new HashSet<SpecificResourceAllocation>();
-
-        Set<ResourceAllocation<?>> resourceAllocations = getResourceAllocations();
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            if (resourceAllocation instanceof SpecificResourceAllocation) {
-                result.add((SpecificResourceAllocation) resourceAllocation);
-            }
-        }
-
-        return result;
+        return new HashSet<SpecificResourceAllocation>(ResourceAllocation
+                .getOfType(SpecificResourceAllocation.class,
+                        getResourceAllocations()));
     }
 
     public static class ModifiedAllocation {
