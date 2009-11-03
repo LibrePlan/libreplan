@@ -1,14 +1,5 @@
 #!/usr/bin/perl
 
-# Parses ZUL files for REG_EXPS and adds ENTRIES to a keys.pot file
-# (respecting keys.pot format)
-#
-# If keys.pot exists, appends new elements to it
-#
-# If a msgid exists inside keys.pot file, updates its list of files
-# pointing to that entry
-#
-
 # Copyright (C) 2009 Diego Pino García <dpino@igalia.com>
 #
 # This program is free software; you can redistribute it and/or
@@ -26,11 +17,23 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA  02110-1301, USA.
 
+# Parses ZUL files for REG_EXPS and adds ENTRIES to a keys.pot file
+# (respecting keys.pot format)
+#
+# If keys.pot exists, appends new elements to it
+#
+# If a msgid exists inside keys.pot file, updates its list of files
+# pointing to that entry
+#
+# Options:
+#       --keys, -k    point to an existing keys.pot file, creates a new one otherwise
+#       --dir, -d     path to root file containing ZUL files, gets everything under
+
 use File::Spec;
 use Getopt::Long qw(:config gnu_getopt no_ignore_case);
 use Date::Format;
 
-my $DEBUG = 0;
+my $DEBUG = 1;
 my $TOKEN = 'i18n:_';
 my @REG_EXPS = qw(i18n:_{1,2}\\('(.*?)'.*?\\) <i18n\s.*?value=["'](.*?)["']);
 my $DEFAULT_KEYS_FILE = "./keys.pot";
@@ -70,7 +73,7 @@ foreach $msgid (keys %ENTRIES) {
     foreach $filename (@{$ENTRIES{$msgid}}) {
         print FILE "\#: $filename\n";
     }
-    print FILE "msgid \"$msgid\"\n";
+    print FILE "msgid $msgid\n";
     print FILE "msgstr \"\"\n\n";
 }
 
@@ -151,16 +154,25 @@ sub parse_KEYS()
 {
     my ($keys_filename) = @_;
     my @filenames = ();
+    my $key = "";
 
     open FILE, $keys_filename;
     while (<FILE>) {
+        chomp;
         if (/^#:\s+(.*)/) {
 # &debug("filenames: ".$1);
             push @filenames, $1;
         }
-        if (/^msgid "(.*?)"/) {
+        if (/^msgid "(.*?)"$/) {
 # &debug("msgid: $1");
-            $ENTRIES{$1} = [@filenames];
+            $key = "\"$1\"";
+        }
+        if (/^"(.*?)"$/) {
+            $key .= "\n"."\"$1\"";
+        }
+        if (/^msgstr/) {
+            &debug("msgid: $key");
+            $ENTRIES{$key} = [@filenames];
             @filenames = ();
         }
     }
@@ -196,6 +208,7 @@ sub parse_ZUL()
             ($msgid) = $line =~ /$regexp/;
 
             if ($msgid ne "") {
+                $msgid = "\"$msgid\"";
                 &addEntry($msgid, $filename.":".$line);
             }
         }
@@ -239,6 +252,14 @@ sub debug()
     }
 }
 
+sub trim($)
+{
+    my $string = shift;
+    $string =~ s/^\s+//;
+    $string =~ s/\s+$//;
+    return $string;
+}
+
 sub help()
 {
     print "Parses ZUL files searching for gettext ENTRIES and append to keys.pot file\n";
@@ -247,12 +268,4 @@ sub help()
     print "\t--help, -h\tOPTIONAL\tShow this help\n";
 
     exit();
-}
-
-sub trim($)
-{
-    my $string = shift;
-    $string =~ s/^\s+//;
-    $string =~ s/\s+$//;
-    return $string;
 }
