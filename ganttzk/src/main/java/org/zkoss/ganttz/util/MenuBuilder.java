@@ -54,9 +54,9 @@ public class MenuBuilder<T extends XulElement> {
     }
 
     private class Item {
-        final String name;
+        private final String name;
 
-        final ItemAction<T> action;
+        private final ItemAction<T> action;
 
         Item(String name, ItemAction<T> action) {
             this.name = name;

@@ -141,7 +141,7 @@ public class ManageOrderElementAdvancesController extends
         return false;
     }
 
-    IOrderElementModel orderElementModel;
+    private IOrderElementModel orderElementModel;
 
     public void openWindow(IOrderElementModel orderElementModel) {
         setOrderElementModel(orderElementModel);

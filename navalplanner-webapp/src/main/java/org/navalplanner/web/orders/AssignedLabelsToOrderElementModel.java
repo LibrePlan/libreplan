@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.labels.daos.ILabelDAO;
-import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
@@ -47,17 +46,14 @@ public class AssignedLabelsToOrderElementModel implements
         IAssignedLabelsToOrderElementModel {
 
     @Autowired
-    IOrderElementDAO orderDAO;
+    private IOrderElementDAO orderDAO;
 
     @Autowired
-    ILabelTypeDAO labelTypeDAO;
+    private ILabelDAO labelDAO;
 
-    @Autowired
-    ILabelDAO labelDAO;
+    private OrderElement orderElement;
 
-    OrderElement orderElement;
-
-    IOrderModel orderModel;
+    private IOrderModel orderModel;
 
     @Override
     public OrderElement getOrderElement() {

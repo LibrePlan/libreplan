@@ -22,6 +22,7 @@ package org.navalplanner.business.requirements.entities;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -33,7 +34,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 public class DirectCriterionRequirement extends CriterionRequirement{
 
 
-    Set<IndirectCriterionRequirement> children =
+    private Set<IndirectCriterionRequirement> children =
             new HashSet<IndirectCriterionRequirement>();
 
     public static DirectCriterionRequirement create(){

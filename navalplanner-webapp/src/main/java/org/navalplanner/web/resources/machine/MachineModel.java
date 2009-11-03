@@ -52,13 +52,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class MachineModel implements IMachineModel {
 
     @Autowired
-    IResourceDAO resourceDAO;
+    private IResourceDAO resourceDAO;
 
     @Autowired
-    IMachineDAO machineDAO;
+    private IMachineDAO machineDAO;
 
     @Autowired
-    IBaseCalendarDAO baseCalendarDAO;
+    private IBaseCalendarDAO baseCalendarDAO;
 
     private Machine machine;
 

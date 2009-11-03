@@ -74,7 +74,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderModel implements IOrderModel {
 
     @Autowired
-    ICriterionTypeDAO criterionTypeDAO;
+    private ICriterionTypeDAO criterionTypeDAO;
 
     private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
 
@@ -103,7 +103,7 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
-    Set<Label> cacheLabels = new HashSet<Label>();
+    private Set<Label> cacheLabels = new HashSet<Label>();
 
     @Override
     public List<Label> getLabels() {

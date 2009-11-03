@@ -71,7 +71,7 @@ public class WorkerSearchController extends GenericForwardComposer {
 
     private Listbox listBoxWorkers;
 
-    CriterionRenderer criterionRenderer = new CriterionRenderer();
+    private CriterionRenderer criterionRenderer = new CriterionRenderer();
 
     public WorkerSearchController() {
 

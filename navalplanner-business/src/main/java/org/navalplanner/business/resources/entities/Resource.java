@@ -287,11 +287,11 @@ public abstract class Resource extends BaseEntity{
             this.resource = resource;
         }
 
-        final Resource resource;
+        private final Resource resource;
 
-        final CriterionWithItsType type;
+        private final CriterionWithItsType type;
 
-        final Interval interval;
+        private final Interval interval;
 
         CriterionSatisfaction addSatisfaction() {
             return resource.addSatisfaction(type, interval);

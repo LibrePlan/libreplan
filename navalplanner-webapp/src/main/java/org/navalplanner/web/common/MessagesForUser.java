@@ -50,8 +50,8 @@ public class MessagesForUser extends GenericForwardComposer implements
     // seconds
 
     private class ComponentHolderTimestamped {
-        final Component component;
-        final long timestamp;
+        private final Component component;
+        private final long timestamp;
 
         ComponentHolderTimestamped(Component component) {
             this.component = component;

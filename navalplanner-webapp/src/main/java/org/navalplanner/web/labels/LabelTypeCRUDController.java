@@ -57,7 +57,7 @@ import org.zkoss.zul.Window;
 public class LabelTypeCRUDController extends GenericForwardComposer {
 
     @Autowired
-    ILabelTypeModel labelTypeModel;
+    private ILabelTypeModel labelTypeModel;
 
     private Window listWindow;
 

@@ -692,7 +692,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
         return !isItemSelected();
     }
 
-    Button btnNew, btnDown, btnUp, btnUnindent, btnIndent, btnDelete;
+    private Button btnNew, btnDown, btnUp, btnUnindent, btnIndent, btnDelete;
 
     private void resetControlButtons() {
         final boolean disabled = tree.getSelectedItem() == null;

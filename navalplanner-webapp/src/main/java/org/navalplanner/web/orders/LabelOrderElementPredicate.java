@@ -34,7 +34,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
  */
 public class LabelOrderElementPredicate implements IPredicate {
 
-    Label label;
+    private Label label;
 
     public LabelOrderElementPredicate(Label label) {
         this.label = label;

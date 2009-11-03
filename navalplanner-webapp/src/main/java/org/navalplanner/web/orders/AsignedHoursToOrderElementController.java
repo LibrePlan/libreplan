@@ -35,7 +35,7 @@ import org.zkoss.zul.Progressmeter;
 public class AsignedHoursToOrderElementController extends
         GenericForwardComposer {
 
-    IAsignedHoursToOrderElementModel asignedHoursToOrderElementModel;
+    private IAsignedHoursToOrderElementModel asignedHoursToOrderElementModel;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -67,7 +67,7 @@ public class AsignedHoursToOrderElementController extends
         return asignedHoursToOrderElementModel.getProgressWork();
     }
 
-    IOrderElementModel orderElementModel;
+    private IOrderElementModel orderElementModel;
 
     public void openWindow(IOrderElementModel orderElementModel) {
         setOrderElementModel(orderElementModel);
@@ -83,9 +83,9 @@ public class AsignedHoursToOrderElementController extends
         return orderElementModel.getOrderElement();
     }
 
-    Progressmeter hoursProgressBar;
+    private Progressmeter hoursProgressBar;
 
-    Progressmeter exceedHoursProgressBar;
+    private Progressmeter exceedHoursProgressBar;
 
     /**
      * This method shows the percentage of the imputed hours with respect to the

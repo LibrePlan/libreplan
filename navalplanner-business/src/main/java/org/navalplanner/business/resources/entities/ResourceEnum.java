@@ -32,14 +32,14 @@ public enum ResourceEnum {
     WORKER(Worker.class),
     MACHINE(Machine.class);
 
-    Class clase;
+    private Class<?> klass;
 
-    private ResourceEnum(Class clase) {
-        this.clase = clase;
+    private ResourceEnum(Class<?> clase) {
+        this.klass = clase;
     }
 
-    public Class asClass() {
-        return clase;
+    public Class<?> asClass() {
+        return klass;
     }
 
     public static ResourceEnum getDefault() {
@@ -47,10 +47,10 @@ public enum ResourceEnum {
     }
 
     public String toString() {
-        return clase.getSimpleName().toUpperCase();
+        return klass.getSimpleName().toUpperCase();
     }
 
-    public boolean isAssignableFrom(Class clase) {
+    public boolean isAssignableFrom(Class<?> clase) {
         return asClass().isAssignableFrom(clase);
     }
 }

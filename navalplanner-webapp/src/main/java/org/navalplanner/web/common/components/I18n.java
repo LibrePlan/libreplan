@@ -33,15 +33,15 @@ import org.zkoss.zul.Label;
 @SuppressWarnings("serial")
 public class I18n extends HtmlMacroComponent {
 
-    public String value;
+    private String value;
 
-    public String arg0;
+    private String arg0;
 
-    public String arg1;
+    private String arg1;
 
-    public String arg2;
+    private String arg2;
 
-    public String arg3;
+    private String arg3;
 
     public I18n() {
 
