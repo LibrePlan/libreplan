@@ -298,7 +298,7 @@ public class CriterionType extends BaseEntity implements
         } else {
             try {
                 CriterionType c = criterionTypeDAO.findUniqueByName(name);
-                return c.getId() == getId();
+                return c.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
             }

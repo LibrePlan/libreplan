@@ -295,9 +295,9 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public void confirmSave()throws InstanceNotFoundException,
-        DuplicateAdvanceAssignmentForOrderElementException,
-        DuplicateValueTrueReportGlobalAdvanceException{
+    public void confirmSave() throws InstanceNotFoundException,
+            DuplicateAdvanceAssignmentForOrderElementException,
+            DuplicateValueTrueReportGlobalAdvanceException {
         orderElementDAO.checkVersion(orderElement);
         reattachmentOrderElement();
         validateBasicData();
@@ -335,7 +335,7 @@ public class ManageOrderElementAdvancesModel implements
         for (AdvanceAssignment advance : this.orderElement
                 .getDirectAdvanceAssignments()) {
             if ((advance.getVersion() != null)
-                    && (advance.getId() == advanceAssignment.getId()))
+                    && (advance.getId().equals(advanceAssignment.getId())))
                 return advance;
         }
         return null;
