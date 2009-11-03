@@ -34,7 +34,6 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
@@ -736,11 +735,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         public void render(Listitem listItem, Object data) throws Exception {
             WorkReportLine workReportLine = (WorkReportLine) data;
 
-            // Convert Resource to Worker
-            if (workReportLine.getResource() instanceof Resource) {
-                workReportLine.setResource(workReportModel
-                        .asWorker(workReportLine.getResource()));
-            }
+            workReportLine.setResource(workReportModel.asWorker(workReportLine
+                    .getResource()));
 
             listItem.setValue(workReportLine);
 
