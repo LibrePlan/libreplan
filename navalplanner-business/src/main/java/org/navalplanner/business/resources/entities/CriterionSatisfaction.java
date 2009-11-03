@@ -167,10 +167,7 @@ public class CriterionSatisfaction extends BaseEntity {
                 || getStartDate().equals(finish) || getStartDate().before(finish));
         Validate.isTrue(finishDate == null || isNewObject() ||
                 getEndDate().equals(finish) || getEndDate().before(finish));
-        if(finish !=null) {
-            finish = new Date(finish.getTime());
-        }
-        this.finishDate = finish;
+        this.finishDate = new Date(finish.getTime());
     }
 
     public boolean isFinished() {

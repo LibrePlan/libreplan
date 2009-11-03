@@ -49,14 +49,15 @@ public class Dependency {
 
     private static Date apply(Calculation calculation, Task origin,
             Date current, Collection<? extends Dependency> dependencies) {
+        Date result = null;
         for (Dependency dependency : dependencies) {
             switch (calculation) {
             case START:
-                current = dependency.getType().calculateStartDestinyTask(
+                result = dependency.getType().calculateStartDestinyTask(
                         dependency.getSource(), current);
                 break;
             case END:
-                current = dependency.getType().calculateEndDestinyTask(
+                result = dependency.getType().calculateEndDestinyTask(
                         dependency.getSource(), current);
                 break;
             default:
@@ -64,7 +65,7 @@ public class Dependency {
                         + calculation);
             }
         }
-        return current;
+        return result;
     }
 
     private final Task source;

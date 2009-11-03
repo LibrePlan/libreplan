@@ -323,12 +323,11 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
      */
     public Integer getWorkableHours(LocalDate init, LocalDate end) {
         int total = 0;
-
-        while (init.compareTo(end) <= 0) {
-            total += getWorkableHours(init);
+        for (LocalDate current = init; current.compareTo(end) <= 0; current = current
+                .plusDays(1)) {
+            total += getWorkableHours(current);
             init = init.plusDays(1);
         }
-
         return total;
     }
 

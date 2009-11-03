@@ -97,11 +97,12 @@ public class WorkerDAO extends GenericDAOHibernate<Worker, Long>
     @SuppressWarnings("unchecked")
     @Override
     public List<Worker> findByNameOrNif(String name) {
-        name = "%" + name + "%";
+        String containsName = "%" + name + "%";
         return getSession().createCriteria(Worker.class).add(
-                Restrictions.or(Restrictions.or(Restrictions.ilike("firstName",
-                        name), Restrictions.ilike("surname", name)),
-                        Restrictions.like("nif", name))).list();
+                        Restrictions.or(Restrictions.or(Restrictions.ilike(
+                                "firstName", containsName), Restrictions.ilike(
+                                "surname", containsName)), Restrictions.like(
+                                "nif", containsName))).list();
     }
 
 }

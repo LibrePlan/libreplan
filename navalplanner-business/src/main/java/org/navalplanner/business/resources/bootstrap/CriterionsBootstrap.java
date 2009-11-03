@@ -90,15 +90,17 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
         if (!criterionTypeDAO.exists(criterionType.getId())
                 && !criterionTypeDAO.existsByName(criterionType)) {
             criterionTypeDAO.save(criterionType);
+            return criterionType;
         } else {
             try {
-                criterionType = criterionTypeDAO.findUniqueByName(criterionType
+                CriterionType result = criterionTypeDAO
+                        .findUniqueByName(criterionType
                         .getName());
+                return result;
             } catch (InstanceNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
-        return criterionType;
     }
 
     private Map<CriterionType, List<String>> getTypesWithCriterions() {

@@ -103,11 +103,11 @@ public class PartialDate implements ReadablePartial {
 
         TimeQuantity asQuantity(TimeQuantity acc, List<Integer> values) {
             Integer current = values.remove(values.size() - 1);
-            acc = acc.plus(current, this);
+            TimeQuantity result = acc.plus(current, this);
             if (hasPrevious()) {
-                acc = getPrevious().asQuantity(acc, values);
+                result = getPrevious().asQuantity(result, values);
             }
-            return acc;
+            return result;
         }
 
         private boolean hasPrevious() {
