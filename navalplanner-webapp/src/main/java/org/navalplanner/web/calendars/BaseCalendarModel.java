@@ -192,7 +192,8 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
     @Override
     public Date getSelectedDay() {
-        return this.selectedDate;
+        return selectedDate != null ? new Date(this.selectedDate.getTime())
+                : null;
     }
 
     @Override

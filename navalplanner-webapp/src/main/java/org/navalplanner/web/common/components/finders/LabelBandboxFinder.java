@@ -86,7 +86,7 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
 
     @Override
     public String[] getHeaders() {
-        return headers;
+        return headers.clone();
     }
 
     @Override

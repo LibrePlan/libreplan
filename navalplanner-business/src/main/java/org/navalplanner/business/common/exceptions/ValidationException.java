@@ -32,7 +32,7 @@ public class ValidationException extends RuntimeException {
     private InvalidValue[] invalidValues;
 
     public InvalidValue[] getInvalidValues() {
-        return invalidValues;
+        return invalidValues.clone();
     }
 
     public ValidationException(InvalidValue invalidValue) {

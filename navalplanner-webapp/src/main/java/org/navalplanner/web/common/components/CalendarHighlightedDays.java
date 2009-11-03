@@ -51,15 +51,15 @@ public class CalendarHighlightedDays extends HtmlMacroComponent {
     }
 
     public Date getInternalValue() {
-        return value;
+        return value != null ? new Date(value.getTime()) : null;
     }
 
     public void setValue(Date value) {
-        this.value = value;
+        this.value = value != null ? new Date(value.getTime()) : null;
     }
 
     public Date getValue() {
-        return value;
+        return value != null ? new Date(value.getTime()) : null;
     }
 
     public void setAncestorExceptionDays(String ancestorExceptionDays) {

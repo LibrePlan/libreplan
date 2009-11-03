@@ -166,6 +166,9 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void setEndDate(Date value) {
+        if (value == null) {
+            return;
+        }
         setLengthMilliseconds(value.getTime() - getBeginDate().getTime());
     }
 

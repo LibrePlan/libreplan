@@ -137,11 +137,12 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public Date getStartDate() {
-        return startDate;
+        return startDate != null ? new Date(startDate.getTime()) : null;
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        this.startDate = startDate != null ? new Date(startDate.getTime())
+                : null;
 
     }
 
@@ -150,6 +151,9 @@ public abstract class TaskElement extends BaseEntity {
      * @param newStartDate
      */
     public void moveTo(Date newStartDate) {
+        if (newStartDate == null) {
+            return;
+        }
         long durationMilliseconds = this.endDate.getTime()
                 - this.startDate.getTime();
         this.startDate = newStartDate;
@@ -160,11 +164,11 @@ public abstract class TaskElement extends BaseEntity {
     protected abstract void moveAllocations();
 
     public Date getEndDate() {
-        return endDate;
+        return endDate != null ? new Date(endDate.getTime()) : endDate;
     }
 
     public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+        this.endDate = endDate != null ? new Date(endDate.getTime()) : null;
     }
 
     void add(Dependency dependency) {

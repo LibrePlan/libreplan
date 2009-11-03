@@ -30,13 +30,13 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     private String name;
 
-    private Date beginDate = null;
+    private long beginDate;
 
     private long lengthMilliseconds = 0;
 
     private String notes;
 
-    private Date hoursAdvanceEndDate;
+    private long hoursAdvanceEndDate;
 
     private Date advanceEndDate;
 
@@ -55,10 +55,10 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
             Date advanceEndDate,
 			BigDecimal hoursAdvancePercentage, BigDecimal advancePercentage) {
         this.name = name;
-        this.beginDate = beginDate;
+        this.beginDate = beginDate.getTime();
         this.lengthMilliseconds = lengthMilliseconds;
         this.notes = notes;
-        this.hoursAdvanceEndDate = hoursAdvanceEndDate;
+        this.hoursAdvanceEndDate = hoursAdvanceEndDate.getTime();
         this.advanceEndDate = advanceEndDate;
         this.hoursAdvancePercentage = hoursAdvancePercentage;
         this.advancePercentage = advancePercentage;
@@ -74,11 +74,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     public Date getBeginDate() {
-        return beginDate;
+        return new Date(beginDate);
     }
 
     public long setBeginDate(Date beginDate) {
-        this.beginDate = beginDate;
+        this.beginDate = beginDate.getTime();
         return lengthMilliseconds;
     }
 
@@ -105,12 +105,13 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     @Override
     public Date getHoursAdvanceEndDate() {
-        return hoursAdvanceEndDate;
+        return new Date(hoursAdvanceEndDate);
     }
 
     @Override
     public Date getAdvanceEndDate() {
-        return advanceEndDate;
+        return advanceEndDate != null ? new Date(advanceEndDate.getTime())
+                : null;
     }
     @Override
     public BigDecimal getHoursAdvancePercentage() {

@@ -79,7 +79,7 @@ public class IntervalOfPartialDatesType implements CompositeUserType {
 
     @Override
     public String[] getPropertyNames() {
-        return PROPERTY_NAMES;
+        return PROPERTY_NAMES.clone();
     }
 
     @Override
