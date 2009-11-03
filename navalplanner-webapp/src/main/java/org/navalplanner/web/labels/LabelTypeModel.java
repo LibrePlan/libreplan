@@ -227,8 +227,8 @@ public class LabelTypeModel implements ILabelTypeModel {
     }
 
     @Override
-    public void addLabel() {
-        Label label = Label.create("");
+    public void addLabel(String value) {
+        Label label = Label.create(value);
         label.setType(labelType);
         labelType.addLabel(label);
     }

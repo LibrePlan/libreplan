@@ -23,7 +23,7 @@
 <vbox id="criterionsTree">
     <vbox>
         <hbox align="center">
-            <textbox value="" id="criterionName" width="200px"/>
+            <textbox value="" id="criterionName" width="200px" onOK="criterionTreeController.addCriterion();"/>
             <button id="add_new_criterion" label="${i18n:_('New criterion')}"
                 onClick="criterionTreeController.addCriterion();"/>
         </hbox>

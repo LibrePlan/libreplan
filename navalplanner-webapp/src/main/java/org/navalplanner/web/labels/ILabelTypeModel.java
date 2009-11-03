@@ -79,7 +79,7 @@ public interface ILabelTypeModel {
     /**
      * Add {@link Label} to {@link LabelType}
      */
-    void addLabel();
+    void addLabel(String value);
 
     /**
      *

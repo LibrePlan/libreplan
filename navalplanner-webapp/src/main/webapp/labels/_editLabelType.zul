@@ -50,8 +50,11 @@
                 <panel title="${i18n:_('Label list')}"
                     border="normal">
                     <panelchildren>
+			<hbox valign="center">
+                        <textbox id="newLabelTextbox" value="" width="200px" onOK="controller.createLabel()" />
                         <button label="${i18n:_('New label')}"
                             onClick="controller.createLabel()" />
+			</hbox>
                         <grid id="gridLabels" height="320px"
                             model="@{controller.labels}" fixedLayout="true">
                             <columns sizable="true">

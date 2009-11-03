@@ -75,6 +75,8 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
 
     private Grid gridLabels;
 
+    private Textbox newLabelTextbox;
+
     public LabelTypeCRUDController() {
 
     }
@@ -89,6 +91,8 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         gridLabels = (Grid) editWindow.getFellowIfAny("gridLabels");
         gridLabelTypes = (Grid) listWindow.getFellowIfAny("gridLabelTypes");
         showListWindow();
+        newLabelTextbox = (Textbox) editWindow
+                .getFellowIfAny("newLabelTextbox");
     }
 
     private void showListWindow() {
@@ -270,11 +274,12 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
 
     public void createLabel() {
         validate();
-        labelTypeModel.addLabel();
+        labelTypeModel.addLabel(newLabelTextbox.getValue());
         Util.reloadBindings(gridLabels);
         // After adding a new row, model might be disordered, so we force it to
         // sort again respecting previous settings
         forceSortGridLabels();
+        newLabelTextbox.setValue("");
     }
 
     /**
