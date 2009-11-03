@@ -34,8 +34,9 @@ public enum ZoomLevel {
     private final TimeTrackerState state;
 
     private ZoomLevel(TimeTrackerState state) {
-        if (state == null)
+        if (state == null) {
             throw new IllegalArgumentException("state cannot be null");
+        }
         this.state = state;
     }
 

@@ -43,10 +43,12 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
 
     private ContextRelativeToOtherComponent(Component component,
             IContext<T> context) {
-        if (component == null)
+        if (component == null) {
             throw new IllegalArgumentException("component must be not null");
-        if (context == null)
+        }
+        if (context == null) {
             throw new IllegalArgumentException("context must be not null");
+        }
         this.component = component;
         this.context = context;
     }

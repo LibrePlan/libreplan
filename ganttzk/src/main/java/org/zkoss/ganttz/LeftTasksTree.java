@@ -205,8 +205,9 @@ public class LeftTasksTree extends HtmlMacroComponent {
             }
 
             private int getPositionOfChild() {
-                if (positionOfChildCached != null)
+                if (positionOfChildCached != null) {
                     return positionOfChildCached;
+                }
                 int[] path = tasksTreeModel.getPath(parent, child);
                 return positionOfChildCached = path[path.length - 1];
             }
@@ -251,8 +252,9 @@ public class LeftTasksTree extends HtmlMacroComponent {
         }
 
         public void isBeingRendered(final Task parent, final Treeitem item) {
-            if (!pendingToAddChildren.contains(parent))
+            if (!pendingToAddChildren.contains(parent)) {
                 return;
+            }
             markLoaded(item);
             fillModel(parent, 0, parent.getTasks(), false);
             pendingToAddChildren.remove(parent);
@@ -270,8 +272,9 @@ public class LeftTasksTree extends HtmlMacroComponent {
         private Method setLoadedMethod = null;
 
         private Method getSetLoadedMethod() {
-            if (setLoadedMethod != null)
+            if (setLoadedMethod != null) {
                 return setLoadedMethod;
+            }
             try {
                 Method method = Treeitem.class.getDeclaredMethod("setLoaded",
                         Boolean.TYPE);

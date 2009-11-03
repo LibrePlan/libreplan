@@ -83,10 +83,12 @@ public class MenuBuilder<T extends XulElement> {
     }
 
     public MenuBuilder<T> item(String name, ItemAction<T> itemAction) {
-        if (name == null)
+        if (name == null) {
             throw new IllegalArgumentException("name cannot be null");
-        if (itemAction == null)
+        }
+        if (itemAction == null) {
             throw new IllegalArgumentException("itemAction cannot be null");
+        }
         items.add(new Item(name, itemAction));
         return this;
     }

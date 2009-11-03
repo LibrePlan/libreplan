@@ -49,8 +49,9 @@ public class MergeTaskCommand implements IMergeTaskCommand {
             return;
         }
         TaskGroup old = (TaskGroup) task;
-        if (!old.canBeMerged())
+        if (!old.canBeMerged()) {
             return;
+        }
         Task result = old.merge();
         context.replace(old, result);
         planningState.removed(old);

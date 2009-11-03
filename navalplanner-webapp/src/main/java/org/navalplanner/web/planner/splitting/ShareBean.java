@@ -70,8 +70,9 @@ public class ShareBean {
     }
 
     public void setName(String name) {
-        if (StringUtils.isEmpty(name))
+        if (StringUtils.isEmpty(name)) {
             return;
+        }
         this.name = name;
     }
 
@@ -80,8 +81,9 @@ public class ShareBean {
     }
 
     public void setHours(Integer share) {
-        if (share == null || share <= 0)
+        if (share == null || share <= 0) {
             return;
+        }
         this.hours = share;
     }
 

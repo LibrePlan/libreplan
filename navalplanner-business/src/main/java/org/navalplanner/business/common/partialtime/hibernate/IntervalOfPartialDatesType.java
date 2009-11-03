@@ -68,10 +68,12 @@ public class IntervalOfPartialDatesType implements CompositeUserType {
 
     @Override
     public boolean equals(Object x, Object y) throws HibernateException {
-        if (x == y)
+        if (x == y) {
             return true;
-        if (x == null || y == null)
+        }
+        if (x == null || y == null) {
             return false;
+        }
         return x.equals(y);
     }
 
@@ -114,8 +116,9 @@ public class IntervalOfPartialDatesType implements CompositeUserType {
                 0, 2), owner);
         PartialDate end = PARTIAL_DATE_TYPE.nullSafeGet(rs, subArray(names, 2,
                 2), owner);
-        if (start == null || end == null)
+        if (start == null || end == null) {
             return null;
+        }
         return new IntervalOfPartialDates(start, end);
     }
 

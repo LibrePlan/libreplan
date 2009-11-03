@@ -87,10 +87,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     public void setLengthMilliseconds(long lengthMilliseconds) {
-        if (lengthMilliseconds < 0)
+        if (lengthMilliseconds < 0) {
             throw new IllegalArgumentException(
                     "a task must not have a negative length. Received value: "
                             + lengthMilliseconds);
+        }
         this.lengthMilliseconds = lengthMilliseconds;
     }
 

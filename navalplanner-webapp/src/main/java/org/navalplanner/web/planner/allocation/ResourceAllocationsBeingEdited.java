@@ -280,9 +280,10 @@ public class ResourceAllocationsBeingEdited {
     }
 
     public FormBinder createFormBinder() {
-        if (formBinder != null)
+        if (formBinder != null) {
             throw new IllegalStateException(
                     "there is already a binder associated with this object");
+        }
         formBinder = new FormBinder(this);
         return formBinder;
     }

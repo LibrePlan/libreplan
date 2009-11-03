@@ -55,8 +55,9 @@ public class TaskContainerComponent extends TaskComponent implements
 
     public TaskContainerComponent(TaskContainer taskContainer, TaskList taskList) {
         super(taskContainer, taskList.getDisabilityConfiguration());
-        if (!taskContainer.isContainer())
+        if (!taskContainer.isContainer()) {
             throw new IllegalArgumentException();
+        }
         this.expandListener = new IExpandListener() {
 
             @Override

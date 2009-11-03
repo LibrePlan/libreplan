@@ -57,8 +57,9 @@ public class CriterionsController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        if (messagesContainer == null)
+        if (messagesContainer == null) {
             throw new RuntimeException(_("MessagesContainer is needed"));
+        }
         messages = new MessagesForUser(messagesContainer);
         comp.setVariable("assignedCriterionsController", this, true);
         //comboboxFilter = (Combobox) comp.getFellow("comboboxfilter");
@@ -139,8 +140,12 @@ public class CriterionsController extends GenericForwardComposer {
 
     private void validateCriterionWithItsType(CriterionSatisfactionDTO satisfaction,
             Component comp) throws WrongValueException{
-            if(satisfaction.getCriterionWithItsType() == null) return;
-            if(satisfaction.getStartDate() == null) return;
+            if(satisfaction.getCriterionWithItsType() == null) {
+                return;
+            }
+            if(satisfaction.getStartDate() == null) {
+                return;
+            }
             if(assignedCriterionsModel.checkSameCriterionAndSameInterval(satisfaction)){
                 throw new WrongValueException(comp,
                                         _("Criterion is not valid, the criterion overlap other criterionSatisfaction whith same criterion"));

@@ -97,8 +97,9 @@ public class GenericResourceAllocation extends
     public List<GenericDayAssignment> getOrderedAssignmentsFor(Resource resource) {
         List<GenericDayAssignment> list = getOrderedAssignmentsFor().get(
                 resource);
-        if (list == null)
+        if (list == null) {
             return Collections.emptyList();
+        }
         return Collections.unmodifiableList(list);
     }
 

@@ -215,8 +215,9 @@ public class OrderElementTreeModel {
     }
 
     private boolean find(OrderElement child, List<OrderElement> children) {
-        if (children.indexOf(child) >= 0)
+        if (children.indexOf(child) >= 0) {
             return true;
+        }
         for (OrderElement criterionDTO : children) {
             return find(child, getChildren(criterionDTO));
         }

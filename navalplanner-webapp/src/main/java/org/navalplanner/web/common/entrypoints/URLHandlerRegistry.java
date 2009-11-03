@@ -47,8 +47,9 @@ public class URLHandlerRegistry implements IURLHandlerRegistry {
 
     @SuppressWarnings("unchecked")
     public <T> URLHandler<T> getRedirectorFor(Class<T> klassWithLinkableMetadata) {
-        if (cached.containsKey(klassWithLinkableMetadata))
+        if (cached.containsKey(klassWithLinkableMetadata)) {
             return (URLHandler<T>) cached.get(klassWithLinkableMetadata);
+        }
         URLHandler<T> result = new URLHandler<T>(converterFactory,
                 executorRetriever, klassWithLinkableMetadata);
         cached.put(klassWithLinkableMetadata, result);

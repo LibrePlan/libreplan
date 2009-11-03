@@ -70,10 +70,12 @@ public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
     @Override
     protected LocalDate round(LocalDate date, boolean down) {
-        if (date.getMonthOfYear() == 1 && date.getDayOfMonth() == 1)
+        if (date.getMonthOfYear() == 1 && date.getDayOfMonth() == 1) {
             return date;
-        if (date.getMonthOfYear() == 7 && date.getDayOfMonth() == 1)
+        }
+        if (date.getMonthOfYear() == 7 && date.getDayOfMonth() == 1) {
             return date;
+        }
         date = date.withDayOfMonth(1);
         if (date.getMonthOfYear() < 7) {
             return down ? date.withMonthOfYear(1) : date.withMonthOfYear(7);

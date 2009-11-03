@@ -62,8 +62,9 @@ public abstract class TaskElement extends BaseEntity {
     private BaseCalendar calendar;
 
     public Integer getWorkHours() {
-        if (shareOfHours != null)
+        if (shareOfHours != null) {
             return shareOfHours;
+        }
         return defaultWorkHours();
     }
 
@@ -116,9 +117,10 @@ public abstract class TaskElement extends BaseEntity {
     public void setOrderElement(OrderElement orderElement)
             throws IllegalArgumentException, IllegalStateException {
         Validate.notNull(orderElement, "orderElement must be not null");
-        if (this.orderElement != null)
+        if (this.orderElement != null) {
             throw new IllegalStateException(
                     "once a orderElement is set, it cannot be changed");
+        }
         this.orderElement = orderElement;
     }
 

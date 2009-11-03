@@ -110,8 +110,9 @@ public class CriterionsModel implements ICriterionsModel {
     @Transactional(readOnly = true)
     public ICriterionType<?> getTypeFor(Criterion criterion) {
         for (ICriterionType<?> criterionType : getTypes()) {
-            if (criterionType.contains(criterion))
+            if (criterionType.contains(criterion)) {
                 return criterionType;
+            }
         }
         throw new RuntimeException(_("{0} not found type for criterion ", criterion));
     }
@@ -121,8 +122,9 @@ public class CriterionsModel implements ICriterionsModel {
     public void saveCriterion() throws ValidationException {
         InvalidValue[] invalidValues = criterionValidator
                 .getInvalidValues(criterion);
-        if (invalidValues.length > 0)
+        if (invalidValues.length > 0) {
             throw new ValidationException(invalidValues);
+        }
         try {
             save(criterion);
         } finally {
@@ -163,8 +165,9 @@ public class CriterionsModel implements ICriterionsModel {
     @Transactional(readOnly = true)
     public <T extends Resource> List<T> getResourcesSatisfyingCurrentCriterionOfType(
             Class<T> klass) {
-        if (criterion == null)
+        if (criterion == null) {
             return new ArrayList<T>();
+        }
         return getResourcesSatisfying(klass, criterion);
     }
 

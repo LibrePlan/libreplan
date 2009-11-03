@@ -167,8 +167,9 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
 
     private MutableTreeModel(Class<T> type, Node<T> root) {
         super(root);
-        if (type == null)
+        if (type == null) {
             throw new IllegalArgumentException("type cannot be null");
+        }
         nodesByDomainObject.put(unwrap(root), root);
         this.root = root;
     }
@@ -177,8 +178,9 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
     public int[] getPath(Object parent, Object last) {
         Node<T> parentNode = find(parent);
         Node<T> lastNode = find(last);
-        if (parentNode == null || lastNode == null)
+        if (parentNode == null || lastNode == null) {
             return new int[0];
+        }
         List<Integer> path = lastNode.until(parentNode);
         return asIntArray(path);
     }
@@ -221,8 +223,9 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
     }
 
     private void add(Node<T> parent, Integer position, List<Node<T>> children) {
-        if (children.isEmpty())
+        if (children.isEmpty()) {
             return;
+        }
         int indexFrom = position == null ? parent.children.size() : position;
         int indexTo = indexFrom + children.size() - 1;
         parent.addAll(position, children);
@@ -254,9 +257,10 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
 
     public void remove(T node) {
         Node<T> found = find(node);
-        if (found.isRoot())
+        if (found.isRoot()) {
             throw new IllegalArgumentException(node
                     + " is root. It can't be removed");
+        }
         int positionInParent = found.remove();
         nodesByDomainObject.remove(node);
         fireEvent(unwrap(found.parentNode), positionInParent, positionInParent,
@@ -265,8 +269,9 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
 
     public T getParent(T node) {
         Node<T> associatedNode = find(node);
-        if (associatedNode.equals(root))
+        if (associatedNode.equals(root)) {
             throw new IllegalArgumentException(node + " is root");
+        }
         return unwrap(associatedNode.getParent());
     }
 

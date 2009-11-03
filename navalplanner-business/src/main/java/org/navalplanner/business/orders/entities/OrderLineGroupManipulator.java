@@ -55,8 +55,9 @@ public class OrderLineGroupManipulator implements IOrderLineGroup {
     }
 
     private void setParentIfRequired(OrderElement orderElement) {
-        if (this.parent != null)
+        if (this.parent != null) {
             orderElement.setParent(this.parent);
+        }
     }
 
     @Override

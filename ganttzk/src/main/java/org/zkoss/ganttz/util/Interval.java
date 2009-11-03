@@ -37,12 +37,15 @@ public class Interval {
     private final long lengthBetween;
 
     public Interval(Date start, Date finish) {
-        if (start == null)
+        if (start == null) {
             throw new IllegalArgumentException("begin cannot be null");
-        if (finish == null)
+        }
+        if (finish == null) {
             throw new IllegalArgumentException("end cannot be null");
-        if (start.compareTo(finish) > 0)
+        }
+        if (start.compareTo(finish) > 0) {
             throw new IllegalArgumentException("start must be prior to end");
+        }
         this.start = start;
         this.finish = finish;
         lengthBetween = this.finish.getTime() - this.start.getTime();
@@ -74,9 +77,10 @@ public class Interval {
     }
 
     public double getProportion(Date date) {
-        if (!isIncluded(date))
+        if (!isIncluded(date)) {
             throw new IllegalArgumentException("date " + date
                     + " must be between [" + start + "," + finish + "]");
+        }
         return ((double) date.getTime() - start.getTime()) / lengthBetween;
     }
 

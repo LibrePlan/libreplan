@@ -34,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.WrongValueException;
 
 /**
- *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
@@ -74,40 +73,40 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
     @Transactional(readOnly = true)
     public void prepareForEdit(Worker worker) {
         this.worker = worker;
-        if(worker != null){
+        if (worker != null) {
             reattachmentWorker();
             initDTOs();
         }
     }
 
-    public void prepareForCreate(Worker worker){
+    public void prepareForCreate(Worker worker) {
         this.worker = worker;
         this.criterionSatisfactionDTOs = new HashSet<CriterionSatisfactionDTO>();
     }
 
-    private void initDTOs(){
+    private void initDTOs() {
         criterionSatisfactionDTOs = new HashSet<CriterionSatisfactionDTO>();
-        for(CriterionSatisfaction criterionSatisfaction :
-            worker.getCriterionSatisfactions()){
-                if(!criterionSatisfaction.isIsDeleted()){
-                    CriterionSatisfactionDTO dto =
-                            new CriterionSatisfactionDTO(criterionSatisfaction);
-                    criterionSatisfactionDTOs.add(dto);
-                }
+        for (CriterionSatisfaction criterionSatisfaction : worker
+                .getCriterionSatisfactions()) {
+            if (!criterionSatisfaction.isIsDeleted()) {
+                CriterionSatisfactionDTO dto = new CriterionSatisfactionDTO(
+                        criterionSatisfaction);
+                criterionSatisfactionDTOs.add(dto);
+            }
         }
     }
 
     @Override
     public Set<CriterionSatisfactionDTO> getAllCriterionSatisfactions() {
-        if(worker == null){
+        if (worker == null) {
             return new HashSet<CriterionSatisfactionDTO>();
         }
         return allSatisfactionsDTO();
     }
 
-     @Override
+    @Override
     public Set<CriterionSatisfactionDTO> getFilterCriterionSatisfactions() {
-        if(worker == null){
+        if (worker == null) {
             return new HashSet<CriterionSatisfactionDTO>();
         }
         return filterSatisfactionsDTO();
@@ -115,7 +114,7 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void reattachmentWorker(){
+    public void reattachmentWorker() {
         resourceDAO.reattach(worker);
         for (CriterionSatisfaction criterionSatisfaction : worker
                 .getCriterionSatisfactions()) {
@@ -128,26 +127,26 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
     }
 
     @Override
-    public void addCriterionSatisfaction(){
+    public void addCriterionSatisfaction() {
         CriterionSatisfactionDTO criterionSatisfactionDTO = new CriterionSatisfactionDTO();
         this.criterionSatisfactionDTOs.add(criterionSatisfactionDTO);
     }
 
-    private Set<CriterionSatisfactionDTO> allSatisfactionsDTO(){
+    private Set<CriterionSatisfactionDTO> allSatisfactionsDTO() {
         Set<CriterionSatisfactionDTO> satisfactions = new HashSet<CriterionSatisfactionDTO>();
-        for(CriterionSatisfactionDTO criterionSatisfactionDTO : criterionSatisfactionDTOs){
-            if(!criterionSatisfactionDTO.isIsDeleted()){
+        for (CriterionSatisfactionDTO criterionSatisfactionDTO : criterionSatisfactionDTOs) {
+            if (!criterionSatisfactionDTO.isIsDeleted()) {
                 satisfactions.add(criterionSatisfactionDTO);
             }
         }
         return satisfactions;
     }
 
-    private Set<CriterionSatisfactionDTO> filterSatisfactionsDTO(){
+    private Set<CriterionSatisfactionDTO> filterSatisfactionsDTO() {
         Set<CriterionSatisfactionDTO> satisfactions = new HashSet<CriterionSatisfactionDTO>();
-        for(CriterionSatisfactionDTO criterionSatisfactionDTO : criterionSatisfactionDTOs){
-            if((!criterionSatisfactionDTO.isIsDeleted())&&
-                    (criterionSatisfactionDTO.isCurrent())){
+        for (CriterionSatisfactionDTO criterionSatisfactionDTO : criterionSatisfactionDTOs) {
+            if ((!criterionSatisfactionDTO.isIsDeleted())
+                    && (criterionSatisfactionDTO.isCurrent())) {
                 satisfactions.add(criterionSatisfactionDTO);
             }
         }
@@ -155,10 +154,10 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
     }
 
     @Override
-    public void remove(CriterionSatisfactionDTO criterionSatisfactionDTO){
-        if(criterionSatisfactionDTO.isNewObject()){
+    public void remove(CriterionSatisfactionDTO criterionSatisfactionDTO) {
+        if (criterionSatisfactionDTO.isNewObject()) {
             criterionSatisfactionDTOs.remove(criterionSatisfactionDTO);
-        }else{
+        } else {
             criterionSatisfactionDTO.setIsDeleted(true);
         }
     }
@@ -168,10 +167,10 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
     public List<CriterionWithItsType> getCriterionWithItsType() {
         criterionsWithItsTypes = new ArrayList<CriterionWithItsType>();
         List<CriterionType> listTypes = getCriterionTypes();
-        for(CriterionType criterionType : listTypes){
-            if(criterionType.isEnabled()){
+        for (CriterionType criterionType : listTypes) {
+            if (criterionType.isEnabled()) {
                 Set<Criterion> listCriterion = getDirectCriterions(criterionType);
-                getCriterionWithItsType(criterionType,listCriterion );
+                getCriterionWithItsType(criterionType, listCriterion);
             }
         }
         return criterionsWithItsTypes;
@@ -182,22 +181,26 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
                 .getCriterionTypesByResources(applicableResources);
     }
 
-    private void getCriterionWithItsType(CriterionType type, Set<Criterion> children){
-        for(Criterion criterion : children){
-             if(criterion.isActive()){
-                //Create the criterion with its criterionType and its Hierarchy label
-                CriterionWithItsType criterionAndType = new CriterionWithItsType(type,criterion);
-                //Add to the list
+    private void getCriterionWithItsType(CriterionType type,
+            Set<Criterion> children) {
+        for (Criterion criterion : children) {
+            if (criterion.isActive()) {
+                // Create the criterion with its criterionType and its Hierarchy
+                // label
+                CriterionWithItsType criterionAndType = new CriterionWithItsType(
+                        type, criterion);
+                // Add to the list
                 criterionsWithItsTypes.add(criterionAndType);
-                getCriterionWithItsType(type,criterion.getChildren());
-             }
+                getCriterionWithItsType(type, criterion.getChildren());
+            }
         }
     }
 
-    private static Set<Criterion> getDirectCriterions(CriterionType criterionType){
+    private static Set<Criterion> getDirectCriterions(
+            CriterionType criterionType) {
         Set<Criterion> criterions = new HashSet<Criterion>();
-        for(Criterion criterion : criterionType.getCriterions()){
-            if(criterion.getParent() == null){
+        for (Criterion criterion : criterionType.getCriterions()) {
+            if (criterion.getParent() == null) {
                 criterions.add(criterion);
             }
         }
@@ -205,47 +208,51 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
     }
 
     @Override
-    public void setCriterionWithItsType(CriterionSatisfactionDTO criterionSatisfactionDTO,
-            CriterionWithItsType criterionAndType) throws WrongValueException{
-            criterionSatisfactionDTO.setCriterionWithItsType(criterionAndType);
+    public void setCriterionWithItsType(
+            CriterionSatisfactionDTO criterionSatisfactionDTO,
+            CriterionWithItsType criterionAndType) throws WrongValueException {
+        criterionSatisfactionDTO.setCriterionWithItsType(criterionAndType);
     }
 
     @Override
-    public boolean checkSameCriterionAndSameInterval(CriterionSatisfactionDTO satisfaction){
+    public boolean checkSameCriterionAndSameInterval(
+            CriterionSatisfactionDTO satisfaction) {
         return existSameCriterionAndInterval(satisfaction);
     }
 
     @Override
     public boolean checkNotAllowSimultaneousCriterionsPerResource(
-            CriterionSatisfactionDTO satisfaction){
-        ICriterionType<?> type = satisfaction.getCriterionWithItsType().getType();
+            CriterionSatisfactionDTO satisfaction) {
+        ICriterionType<?> type = satisfaction.getCriterionWithItsType()
+                .getType();
         if (type.isAllowSimultaneousCriterionsPerResource()) {
             return false;
         }
         return existSameCriterionTypeAndInterval(satisfaction);
     }
 
-
-    private boolean existSameCriterionTypeAndInterval(CriterionSatisfactionDTO satisfaction){
-        for(CriterionSatisfactionDTO otherSatisfaction : criterionSatisfactionDTOs){
-            if((!otherSatisfaction.equals(satisfaction))&&
-                    (!otherSatisfaction.isIsDeleted())&&
-                    (!satisfaction.isIsDeleted())&&
-                    (sameCriterionType(otherSatisfaction,satisfaction)) &&
-                    (sameInterval(otherSatisfaction,satisfaction))) {
+    private boolean existSameCriterionTypeAndInterval(
+            CriterionSatisfactionDTO satisfaction) {
+        for (CriterionSatisfactionDTO otherSatisfaction : criterionSatisfactionDTOs) {
+            if ((!otherSatisfaction.equals(satisfaction))
+                    && (!otherSatisfaction.isIsDeleted())
+                    && (!satisfaction.isIsDeleted())
+                    && (sameCriterionType(otherSatisfaction, satisfaction))
+                    && (sameInterval(otherSatisfaction, satisfaction))) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean existSameCriterionAndInterval(CriterionSatisfactionDTO satisfaction){
-        for(CriterionSatisfactionDTO otherSatisfaction : criterionSatisfactionDTOs){
-            if((!otherSatisfaction.equals(satisfaction))&&
-                    (!otherSatisfaction.isIsDeleted())&&
-                    (!satisfaction.isIsDeleted())&&
-                    (sameCriterion(otherSatisfaction,satisfaction)) &&
-                    (sameInterval(otherSatisfaction,satisfaction))) {
+    private boolean existSameCriterionAndInterval(
+            CriterionSatisfactionDTO satisfaction) {
+        for (CriterionSatisfactionDTO otherSatisfaction : criterionSatisfactionDTOs) {
+            if ((!otherSatisfaction.equals(satisfaction))
+                    && (!otherSatisfaction.isIsDeleted())
+                    && (!satisfaction.isIsDeleted())
+                    && (sameCriterion(otherSatisfaction, satisfaction))
+                    && (sameInterval(otherSatisfaction, satisfaction))) {
                 return true;
             }
         }
@@ -253,83 +260,96 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
     }
 
     private boolean sameCriterion(CriterionSatisfactionDTO otherSatisfaction,
-            CriterionSatisfactionDTO satisfaction){
-        if(otherSatisfaction.getCriterionWithItsType() == null) return false;
-        Criterion otherCriterion = otherSatisfaction.getCriterionWithItsType().getCriterion();
-        if(otherCriterion.getId().equals(satisfaction.getCriterionWithItsType().getCriterion().getId()))
+            CriterionSatisfactionDTO satisfaction) {
+        if (otherSatisfaction.getCriterionWithItsType() == null) {
+            return false;
+        }
+        Criterion otherCriterion = otherSatisfaction.getCriterionWithItsType()
+                .getCriterion();
+        if (otherCriterion.getId().equals(
+                satisfaction.getCriterionWithItsType().getCriterion().getId())) {
             return true;
+        }
         return false;
     }
 
-    private boolean sameCriterionType(CriterionSatisfactionDTO otherSatisfaction,
-            CriterionSatisfactionDTO satisfaction){
-        if(otherSatisfaction.getCriterionWithItsType() == null) return false;
-        ICriterionType<?> criterionType = otherSatisfaction.getCriterionWithItsType().getType();
-        if(criterionType.equals(satisfaction.getCriterionWithItsType().getType()))
-            return true;
-        return false;
+    private boolean sameCriterionType(
+            CriterionSatisfactionDTO otherSatisfaction,
+            CriterionSatisfactionDTO satisfaction) {
+        if (otherSatisfaction.getCriterionWithItsType() == null) {
+            return false;
+        }
+        ICriterionType<?> criterionType = otherSatisfaction
+                .getCriterionWithItsType().getType();
+        return criterionType.equals(satisfaction.getCriterionWithItsType()
+                .getType());
     }
 
     private boolean sameInterval(CriterionSatisfactionDTO otherSatisfaction,
-            CriterionSatisfactionDTO satisfaction){
-        if(otherSatisfaction.getStartDate() == null) return false;
+            CriterionSatisfactionDTO satisfaction) {
+        if (otherSatisfaction.getStartDate() == null) {
+            return false;
+        }
         Interval otherInterval = otherSatisfaction.getInterval();
         Interval interval = satisfaction.getInterval();
-        if((satisfaction.overlapsWith(otherInterval))||
-                (otherSatisfaction.overlapsWith(interval)))
-            return true;
-        return false;
+        return (satisfaction.overlapsWith(otherInterval))
+                || (otherSatisfaction.overlapsWith(interval));
     }
 
     @Override
-    public void validate()
-            throws ValidationException,IllegalStateException {
+    public void validate() throws ValidationException, IllegalStateException {
         validateDTOs();
     }
 
     @Override
-    public void confirm()
-            throws ValidationException,IllegalStateException {
+    public void confirm() throws ValidationException, IllegalStateException {
         updateDTOs();
     }
 
-    private void validateDTOs() throws ValidationException{
-        Set<CriterionSatisfactionDTO> listDTOs =
-                new HashSet<CriterionSatisfactionDTO>(criterionSatisfactionDTOs);
-        for(CriterionSatisfactionDTO satisfactionDTO : listDTOs){
+    private void validateDTOs() throws ValidationException {
+        Set<CriterionSatisfactionDTO> listDTOs = new HashSet<CriterionSatisfactionDTO>(
+                criterionSatisfactionDTOs);
+        for (CriterionSatisfactionDTO satisfactionDTO : listDTOs) {
             InvalidValue[] invalidValues;
-            invalidValues = satisfactionDTOValidator.getInvalidValues(satisfactionDTO);
-            if (invalidValues.length > 0){
+            invalidValues = satisfactionDTOValidator
+                    .getInvalidValues(satisfactionDTO);
+            if (invalidValues.length > 0) {
                 throw new ValidationException(invalidValues);
             }
-            Criterion criterion = satisfactionDTO.getCriterionWithItsType().getCriterion();
-            if(checkSameCriterionAndSameInterval(satisfactionDTO)){
-                throw new IllegalStateException(_(" The "+criterion.getName()+
-                    " can not be assigned to this resource. Its interval overlap with other criterion"));
+            Criterion criterion = satisfactionDTO.getCriterionWithItsType()
+                    .getCriterion();
+            if (checkSameCriterionAndSameInterval(satisfactionDTO)) {
+                throw new IllegalStateException(
+                        _(" The "
+                                + criterion.getName()
+                                + " can not be assigned to this resource. Its interval overlap with other criterion"));
             }
-            if(checkNotAllowSimultaneousCriterionsPerResource(satisfactionDTO)){
-                throw new IllegalStateException(_(" The "+criterion.getName()+
-                                        "is not valid, the criterionType overlap other criterionSatisfaction whith same criterionType"));
+            if (checkNotAllowSimultaneousCriterionsPerResource(satisfactionDTO)) {
+                throw new IllegalStateException(
+                        _(" The "
+                                + criterion.getName()
+                                + "is not valid, the criterionType overlap other criterionSatisfaction whith same criterionType"));
             }
         }
     }
 
-
-    private void updateDTOs()throws ValidationException,IllegalStateException {
-        //Create a new list of Criterion satisfaction
+    private void updateDTOs() throws ValidationException, IllegalStateException {
+        // Create a new list of Criterion satisfaction
         Set<CriterionSatisfaction> newList = new HashSet<CriterionSatisfaction>();
-        for(CriterionSatisfactionDTO satisfactionDTO :criterionSatisfactionDTOs){
+        for (CriterionSatisfactionDTO satisfactionDTO : criterionSatisfactionDTOs) {
             CriterionSatisfaction satisfaction;
-            if(satisfactionDTO.isNewObject()){
-                Criterion criterion = satisfactionDTO.getCriterionWithItsType().getCriterion();
+            if (satisfactionDTO.isNewObject()) {
+                Criterion criterion = satisfactionDTO.getCriterionWithItsType()
+                        .getCriterion();
                 Interval interval = satisfactionDTO.getInterval();
-                satisfaction = CriterionSatisfaction.create(criterion, worker, interval);
+                satisfaction = CriterionSatisfaction.create(criterion, worker,
+                        interval);
 
-            }else{
+            } else {
                 satisfaction = satisfactionDTO.getCriterionSatisfaction();
-                if(satisfactionDTO.isIsDeleted()){
-                     satisfaction.setIsDeleted(true);
-                }else{
+                if (satisfactionDTO.isIsDeleted()) {
+                    satisfaction.setIsDeleted(true);
+                } else {
                     satisfaction.setStartDate(satisfactionDTO.getStartDate());
                     satisfaction.finish(satisfactionDTO.getEndDate());
                 }

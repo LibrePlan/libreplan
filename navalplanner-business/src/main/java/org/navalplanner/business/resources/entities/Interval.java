@@ -43,10 +43,12 @@ public abstract class Interval {
 
     public static Interval range(Date start, Date end) {
         Validate.notNull(start, "start date must be not null");
-        if (end == null)
+        if (end == null) {
             return from(start);
-        if (start.equals(end))
+        }
+        if (start.equals(end)) {
             return point(start);
+        }
         return new Range(start, end);
     }
 

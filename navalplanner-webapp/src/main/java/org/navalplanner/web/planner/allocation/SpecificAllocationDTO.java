@@ -47,10 +47,12 @@ public class SpecificAllocationDTO extends AllocationDTO {
     }
 
     private static boolean areEquals(Resource one, Resource other) {
-        if (one == other)
+        if (one == other) {
             return true;
-        if (one == null || other == null)
+        }
+        if (one == null || other == null) {
             return false;
+        }
         return one.equals(other);
     }
 

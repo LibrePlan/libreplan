@@ -139,8 +139,9 @@ public class AdvanceType extends BaseEntity {
     }
 
     public String getType() {
-        if (isUpdatable())
+        if (isUpdatable()) {
             return "De Usuario";
+        }
         return "Predefinido";
     }
 
@@ -148,25 +149,24 @@ public class AdvanceType extends BaseEntity {
     }
 
     public boolean isPrecisionValid(BigDecimal precision) {
-        if ((this.defaultMaxValue == null) || (precision == null))
+        if ((this.defaultMaxValue == null) || (precision == null)) {
             return true;
-        if (this.defaultMaxValue.compareTo(precision) < 0)
-            return false;
-        return true;
+        }
+        return this.defaultMaxValue.compareTo(precision) >= 0;
 
     }
 
     public boolean isDefaultMaxValueValid(BigDecimal defaultMaxValue) {
-        if ((this.unitPrecision == null) || (defaultMaxValue == null))
+        if ((this.unitPrecision == null) || (defaultMaxValue == null)) {
             return true;
-        if (this.unitPrecision.compareTo(defaultMaxValue) > 0)
-            return false;
-        return true;
+        }
+        return this.unitPrecision.compareTo(defaultMaxValue) <= 0;
     }
 
     public static boolean equivalentInDB(AdvanceType type, AdvanceType otherType) {
-        if (type.getId() == null || otherType.getId() == null)
+        if (type.getId() == null || otherType.getId() == null) {
             return false;
+        }
         return type.getId().equals(otherType.getId());
     }
 

@@ -84,8 +84,9 @@ public abstract class Resource extends BaseEntity{
         Set<CriterionSatisfaction> satisfactionActives =
                 new HashSet<CriterionSatisfaction>();
         for(CriterionSatisfaction satisfaction:criterionSatisfactions){
-            if(!satisfaction.isIsDeleted())
+            if(!satisfaction.isIsDeleted()) {
                 satisfactionActives.add(satisfaction);
+            }
         }
         return satisfactionActives;
     }
@@ -187,8 +188,9 @@ public abstract class Resource extends BaseEntity{
         private boolean isAcceptedByAllPredicates(
                 CriterionSatisfaction criterionSatisfaction) {
             for (IPredicate predicate : predicates) {
-                if (!predicate.accepts(criterionSatisfaction))
+                if (!predicate.accepts(criterionSatisfaction)) {
                     return false;
+                }
             }
             return true;
         }
@@ -437,7 +439,9 @@ public abstract class Resource extends BaseEntity{
                 ( posteriorSameCriterion == null ||
                         !posteriorSameCriterion.overlapsWith(interval)));
 
-        if(!canAdd) return false;
+        if(!canAdd) {
+            return false;
+        }
         if (type.isAllowSimultaneousCriterionsPerResource()){
             return true;
         }
@@ -470,7 +474,9 @@ public abstract class Resource extends BaseEntity{
                 ( posteriorSameCriterion == null ||
                 !posteriorSameCriterion.overlapsWith(interval)));
 
-        if(!canAdd) return false;
+        if(!canAdd) {
+            return false;
+        }
         if (type.isAllowSimultaneousCriterionsPerResource()){
             return true;
         }
@@ -562,8 +568,9 @@ public abstract class Resource extends BaseEntity{
                     if (previous != null) {
                         checkNotOverlaps(previous, current);
                     }
-                    if (next != null)
+                    if (next != null) {
                         checkNotOverlaps(current, next);
+                    }
                 }
             }
 

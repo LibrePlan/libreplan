@@ -48,8 +48,9 @@ public class TimeQuantityType implements UserType {
         JSONObject jsonObject = new JSONObject();
         for (Granularity granularity : Granularity.values()) {
             Integer value = timeQuantity.valueFor(granularity);
-            if (value != 0)
+            if (value != 0) {
                 jsonObject.put(granularity.name(), value);
+            }
         }
         return jsonObject.toString();
     }
@@ -86,10 +87,12 @@ public class TimeQuantityType implements UserType {
 
     @Override
     public boolean equals(Object x, Object y) throws HibernateException {
-        if (x == y)
+        if (x == y) {
             return true;
-        if (x == null || y == null)
+        }
+        if (x == null || y == null) {
             return false;
+        }
         return x.equals(y);
     }
 

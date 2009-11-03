@@ -58,9 +58,10 @@ public class OnZKDesktopRegistry<T> {
     }
 
     public T retrieve() throws IllegalStateException {
-        if (!isRegistered())
+        if (!isRegistered()) {
             throw new IllegalStateException("no " + klass.getSimpleName()
                     + " registered");
+        }
         return klass.cast(get());
     }
 

@@ -64,10 +64,12 @@ public class ResourcesPerDayType implements UserType {
 
     @Override
     public boolean equals(Object x, Object y) throws HibernateException {
-        if (x == y)
+        if (x == y) {
             return true;
-        if (x == null || y == null)
+        }
+        if (x == null || y == null) {
             return false;
+        }
         return x.equals(y);
     }
 
@@ -86,8 +88,9 @@ public class ResourcesPerDayType implements UserType {
             throws HibernateException, SQLException {
         BigDecimal bigDecimal = (BigDecimal) Hibernate.BIG_DECIMAL.nullSafeGet(
                 rs, names[0]);
-        if (bigDecimal == null)
+        if (bigDecimal == null) {
             return null;
+        }
         return ResourcesPerDay.amount(bigDecimal);
     }
 

@@ -75,8 +75,9 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     TaskList getTaskList() {
-        if (ganttPanel == null)
+        if (ganttPanel == null) {
             return null;
+        }
         List<Object> children = ganttPanel.getChildren();
         return ComponentsFinder.findComponentsOfType(TaskList.class, children).get(0);
     }
@@ -86,13 +87,15 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public DependencyList getDependencyList() {
-        if (ganttPanel == null)
+        if (ganttPanel == null) {
             return null;
+        }
         List<Object> children = ganttPanel.getChildren();
         List<DependencyList> found = ComponentsFinder.findComponentsOfType(DependencyList.class,
                 children);
-        if (found.isEmpty())
+        if (found.isEmpty()) {
             return null;
+        }
         return found.get(0);
     }
 
@@ -134,8 +137,9 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public <T> void setConfiguration(PlannerConfiguration<T> configuration) {
-        if (configuration == null)
+        if (configuration == null) {
             return;
+        }
         this.diagramGraph = new GanttDiagramGraph();
         FunctionalityExposedForExtensions<T> context = new FunctionalityExposedForExtensions<T>(
                 this, configuration.getAdapter(), configuration.getNavigator(),
@@ -200,8 +204,9 @@ public class Planner extends HtmlMacroComponent  {
 
     private <T> CommandContextualized<T> contextualize(IContext<T> context,
             ICommand<T> command) {
-        if (command == null)
+        if (command == null) {
             return null;
+        }
         return CommandContextualized.create(command, context);
     }
 

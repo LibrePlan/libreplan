@@ -68,8 +68,9 @@ public class ScriptDependency {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other)
+        if (this == other) {
             return true;
+        }
         if (other instanceof ScriptDependency) {
             return url.equals(((ScriptDependency) other).url);
         }

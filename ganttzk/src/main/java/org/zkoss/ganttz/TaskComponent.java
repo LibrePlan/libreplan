@@ -62,10 +62,11 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private static int stripPx(String pixels) {
         Matcher matcher = pixelsSpecificationPattern.matcher(pixels);
-        if (!matcher.matches())
+        if (!matcher.matches()) {
             throw new IllegalArgumentException("pixels " + pixels
                     + " is not valid. It must be "
                     + pixelsSpecificationPattern.pattern());
+        }
         return Integer.valueOf(matcher.group(1));
     }
 
@@ -311,8 +312,9 @@ public class TaskComponent extends Div implements AfterCompose {
 
     @Override
     public void setParent(Component parent) {
-        if (parent != null && !(parent instanceof TaskList))
+        if (parent != null && !(parent instanceof TaskList)) {
             throw new UiException("Unsupported parent for rows: " + parent);
+        }
         super.setParent(parent);
     }
 
@@ -321,8 +323,9 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private void updateProperties() {
-        if (!isInPage())
+        if (!isInPage()) {
             return;
+        }
         setLeft("0");
         setLeft(getMapper().toPixels(this.task.getBeginDate()) + "px");
         setWidth("0");

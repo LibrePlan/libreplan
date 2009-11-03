@@ -127,8 +127,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public LocalizationsController getLocalizations() {
-        if (workerModel.isCreating())
+        if (workerModel.isCreating()) {
             return localizationsForCreationController;
+        }
         return localizationsForEditionController;
     }
 
@@ -225,8 +226,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         localizationsForCreationController = createLocalizationsController(
                 comp, "editWindow");
         comp.setVariable("controller", this, true);
-        if (messagesContainer == null)
+        if (messagesContainer == null) {
             throw new RuntimeException(_("MessagesContainer is needed"));
+        }
         messages = new MessagesForUser(messagesContainer);
         this.addWorkRelationship = new WorkRelationshipsController(
                 this.workerModel, this, messages);

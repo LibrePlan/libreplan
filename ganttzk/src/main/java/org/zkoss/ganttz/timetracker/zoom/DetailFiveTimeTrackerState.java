@@ -90,8 +90,9 @@ public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
     @Override
     protected LocalDate round(LocalDate date, boolean down) {
         int dayOfWeek = date.getDayOfWeek();
-        if (dayOfWeek == 1)
+        if (dayOfWeek == 1) {
             return date;
+        }
         return down ? date.withDayOfWeek(1) : date.withDayOfWeek(1)
                 .plusWeeks(1);
     }

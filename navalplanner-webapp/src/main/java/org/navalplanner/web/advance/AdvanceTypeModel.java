@@ -141,8 +141,9 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
     @Override
     @Transactional
     public boolean distinctNames(String name) {
-        if (name.isEmpty())
+        if (name.isEmpty()) {
             return true;
+        }
         List<AdvanceType> listAdvanceType = advanceTypeDAO
                 .list(AdvanceType.class);
         for (AdvanceType advanceType : listAdvanceType) {

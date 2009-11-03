@@ -144,9 +144,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 List<AllocationBeingModified> allocations) {
             for (AllocationBeingModified allocationBeingModified : allocations) {
                 if (allocationBeingModified
-                        .getBeingModified().getTask() == null)
+                        .getBeingModified().getTask() == null) {
                     throw new IllegalArgumentException(
                             "all allocations must have task");
+                }
             }
         }
 

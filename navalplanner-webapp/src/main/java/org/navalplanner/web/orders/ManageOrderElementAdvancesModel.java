@@ -96,8 +96,7 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public String getInfoAdvanceAssignment(){
-        if ((this.advanceAssignment == null) ||
-                (this.orderElement == null)) {
+        if (this.advanceAssignment == null || this.orderElement == null) {
             return "";
         }
         return getInfoAdvanceAssignment(this.advanceAssignment);
@@ -119,8 +118,7 @@ public class ManageOrderElementAdvancesModel implements
     @Override
     @Transactional(readOnly = true)
     public List<AdvanceMeasurement> getAdvanceMeasurements() {
-        if ((this.advanceAssignment == null) ||
-                (this.orderElement == null)) {
+        if (this.advanceAssignment == null || this.orderElement == null) {
             return new ArrayList<AdvanceMeasurement>();
         }
         return new ArrayList<AdvanceMeasurement>(this.advanceAssignment
@@ -275,8 +273,9 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public boolean isReadOnlyAdvanceMeasurements(){
-        if (this.advanceAssignment == null)
+        if (this.advanceAssignment == null) {
             return true;
+        }
         return this.isIndirectAdvanceAssignment;
     }
 
@@ -308,8 +307,9 @@ public class ManageOrderElementAdvancesModel implements
         DuplicateValueTrueReportGlobalAdvanceException{
         updateRemoveAdvances();
         for (AdvanceAssignment advanceAssignment : this.listAdvanceAssignments) {
-            if (advanceAssignment instanceof DirectAdvanceAssignment)
+            if (advanceAssignment instanceof DirectAdvanceAssignment) {
                 validateBasicData((DirectAdvanceAssignment) advanceAssignment);
+            }
         }
     }
 
@@ -334,9 +334,10 @@ public class ManageOrderElementAdvancesModel implements
             AdvanceAssignment advanceAssignment) {
         for (AdvanceAssignment advance : this.orderElement
                 .getDirectAdvanceAssignments()) {
-            if ((advance.getVersion() != null)
-                    && (advance.getId().equals(advanceAssignment.getId())))
+            if (advance.getVersion() != null
+                    && advance.getId().equals(advanceAssignment.getId())) {
                 return advance;
+            }
         }
         return null;
     }
@@ -362,7 +363,9 @@ public class ManageOrderElementAdvancesModel implements
             BigDecimal precision = this.advanceAssignment.getAdvanceType()
                     .getUnitPrecision();
             BigDecimal result[] = value.divideAndRemainder(precision);
-            if(result[1].compareTo(BigDecimal.ZERO) == 0) return true;
+            if(result[1].compareTo(BigDecimal.ZERO) == 0) {
+                return true;
+            }
             return false;
         }
         return true;
@@ -370,26 +373,30 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public boolean greatThanMaxValue(BigDecimal value){
-        if ((this.advanceAssignment == null)
-                || (this.advanceAssignment.getMaxValue() == null))
+        if (this.advanceAssignment == null
+                || this.advanceAssignment.getMaxValue() == null) {
             return false;
-        if (value.compareTo(this.advanceAssignment.getMaxValue()) > 0)
+        }
+        if (value.compareTo(this.advanceAssignment.getMaxValue()) > 0) {
              return true;
+        }
         return false;
     }
 
     @Override
     public boolean isDistinctValidDate(Date value,
             AdvanceMeasurement newAdvanceMeasurement) {
-        if (this.advanceAssignment == null)
+        if (this.advanceAssignment == null) {
             return true;
+        }
         for (AdvanceMeasurement advanceMeasurement : advanceAssignment
                 .getAdvanceMeasurements()) {
             LocalDate oldDate = advanceMeasurement.getDate();
-            if ((oldDate != null)
-                    && (!newAdvanceMeasurement.equals(advanceMeasurement))
-                    && (oldDate.compareTo(new LocalDate(value)) == 0))
+            if (oldDate != null
+                    && !newAdvanceMeasurement.equals(advanceMeasurement)
+                    && oldDate.compareTo(new LocalDate(value)) == 0) {
                 return false;
+            }
         }
         return true;
     }

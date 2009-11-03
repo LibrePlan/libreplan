@@ -269,37 +269,34 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
 
     private boolean sameCriterion(CriterionSatisfactionDTO otherSatisfaction,
             CriterionSatisfactionDTO satisfaction) {
-        if (otherSatisfaction.getCriterionWithItsType() == null)
+        if (otherSatisfaction.getCriterionWithItsType() == null){
             return false;
+        }
         Criterion otherCriterion = otherSatisfaction.getCriterionWithItsType()
                 .getCriterion();
-        if (otherCriterion.getId().equals(
-                satisfaction.getCriterionWithItsType().getCriterion().getId()))
-            return true;
-        return false;
+        return otherCriterion.getId().equals(
+                satisfaction.getCriterionWithItsType().getCriterion().getId());
     }
 
     private boolean sameCriterionType(
             CriterionSatisfactionDTO otherSatisfaction,
             CriterionSatisfactionDTO satisfaction) {
-        if (otherSatisfaction.getCriterionWithItsType() == null)
+        if (otherSatisfaction.getCriterionWithItsType() == null) {
             return false;
+        }
         ICriterionType<?> criterionType = otherSatisfaction
                 .getCriterionWithItsType().getType();
-        if (criterionType.equals(satisfaction.getCriterionWithItsType()
-                .getType()))
-            return true;
-        return false;
+        return criterionType.equals(satisfaction.getCriterionWithItsType()
+                .getType());
     }
 
     private boolean sameInterval(CriterionSatisfactionDTO otherSatisfaction,
             CriterionSatisfactionDTO satisfaction) {
-        if (otherSatisfaction.getStartDate() == null)
+        if (otherSatisfaction.getStartDate() == null) {
             return false;
+        }
         Interval otherInterval = otherSatisfaction.getInterval();
-        if (satisfaction.overlapsWith(otherInterval))
-            return true;
-        return false;
+        return satisfaction.overlapsWith(otherInterval);
     }
 
     public void save() throws ValidationException {
@@ -307,8 +304,9 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
         for (CriterionSatisfactionDTO satisfactionDTO : this.criterionSatisfactionDTOs) {
             invalidValues = satisfactionValidator
                     .getInvalidValues(satisfactionDTO);
-            if (invalidValues.length > 0)
+            if (invalidValues.length > 0) {
                 throw new ValidationException(invalidValues);
+            }
             save(satisfactionDTO);
         }
     }

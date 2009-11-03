@@ -61,10 +61,12 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         @Override
         public Task findAssociatedBean(T domainObject)
                 throws IllegalArgumentException {
-            if (domainObject == null)
+            if (domainObject == null) {
                 throw new IllegalArgumentException("domainObject is null");
-            if (!fromDomainToTask.containsKey(domainObject))
+            }
+            if (!fromDomainToTask.containsKey(domainObject)) {
                 throw new IllegalArgumentException("not found " + domainObject);
+            }
             return fromDomainToTask.get(domainObject);
         }
 
@@ -85,8 +87,9 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
                 fromTaskToParent.put(task, parent);
             } else if (insertionPositionForTop != null) {
                 topLevel.add(insertionPositionForTop, task);
-            } else
+            } else {
                 topLevel.add(task);
+            }
         }
 
         void remove(T domainObject) {
@@ -104,10 +107,12 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         @Override
         public T findAssociatedDomainObject(Task task)
                 throws IllegalArgumentException {
-            if (task == null)
+            if (task == null) {
                 throw new IllegalArgumentException("taskBean is null");
-            if (!fromTaskToDomain.containsKey(task))
+            }
+            if (!fromTaskToDomain.containsKey(task)) {
                 throw new IllegalArgumentException();
+            }
             return fromTaskToDomain.get(task);
         }
 
@@ -283,8 +288,9 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     public void addDependency(Dependency dependency) {
-        if (!canAddDependency(dependency))
+        if (!canAddDependency(dependency)) {
             return;
+        }
         diagramGraph.add(dependency);
         getDependencyList().addDependencyComponent(
                 getTaskList().asDependencyComponent(dependency));

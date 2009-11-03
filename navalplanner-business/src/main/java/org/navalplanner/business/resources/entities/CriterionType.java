@@ -218,11 +218,13 @@ public class CriterionType extends BaseEntity implements
      */
     @Override
     public boolean equals(Object o) {
-        if (o instanceof CriterionType == false)
+        if (o instanceof CriterionType == false) {
             return false;
+        }
 
-        if (this == o)
+        if (this == o) {
             return true;
+        }
 
         CriterionType criterionType = (CriterionType) o;
 

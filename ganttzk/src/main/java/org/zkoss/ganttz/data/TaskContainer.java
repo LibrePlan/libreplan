@@ -57,8 +57,9 @@ public class TaskContainer extends Task {
     private static <T> T getSmallest(Collection<T> elements,
             Comparator<T> comparator) {
         List<T> withoutNulls = removeNulls(elements);
-        if (withoutNulls.isEmpty())
+        if (withoutNulls.isEmpty()) {
             throw new IllegalArgumentException("at least one required");
+        }
         T result = null;
         for (T element : withoutNulls) {
             result = result == null ? element : (comparator.compare(result,
@@ -111,8 +112,9 @@ public class TaskContainer extends Task {
     }
 
     public Date getSmallestBeginDateFromChildren() {
-        if (tasks.isEmpty())
+        if (tasks.isEmpty()) {
             return getBeginDate();
+        }
         return getSmallest(getStartDates());
     }
 
@@ -133,8 +135,9 @@ public class TaskContainer extends Task {
     }
 
     public Date getBiggestDateFromChildren() {
-        if (tasks.isEmpty())
+        if (tasks.isEmpty()) {
             return getEndDate();
+        }
         return getBiggest(getEndDates());
     }
 

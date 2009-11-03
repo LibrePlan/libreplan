@@ -37,10 +37,11 @@ public class ScriptDependenciesSorter implements IScriptsRegister {
     public static List<ScriptDependency> extractFrom(Class<?> classWithScripts) {
         ScriptsRequiredDeclaration annotation = classWithScripts
                 .getAnnotation(ScriptsRequiredDeclaration.class);
-        if (annotation == null)
+        if (annotation == null) {
             throw new IllegalArgumentException(classWithScripts
                     + " must be annotated with "
                     + ScriptsRequiredDeclaration.class.getName());
+        }
         List<ScriptDependency> dependsOn = getDependencies(annotation);
         List<ScriptDependency> result = new ArrayList<ScriptDependency>();
         for (Field field : getStringFields(getStaticFields(classWithScripts

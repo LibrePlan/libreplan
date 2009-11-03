@@ -219,8 +219,9 @@ public class OrderModel implements IOrderModel {
     public void save() throws ValidationException {
         reattachCriterions();
         InvalidValue[] invalidValues = orderValidator.getInvalidValues(order);
-        if (invalidValues.length > 0)
+        if (invalidValues.length > 0) {
             throw new ValidationException(invalidValues);
+        }
 
         order.checkValid();
         this.orderDAO.save(order);
@@ -336,10 +337,11 @@ public class OrderModel implements IOrderModel {
             return convertToTaskGroup(group);
         } else {
             OrderLine line = (OrderLine) order;
-            if (line.getHoursGroups().isEmpty())
+            if (line.getHoursGroups().isEmpty()) {
                 throw new IllegalArgumentException(_(
                         "The line must have at least one {0} associated",
                         HoursGroup.class.getSimpleName()));
+            }
             return line.getHoursGroups().size() > 1 ? convertToTaskGroup(line)
                     : convertToTask(line);
         }

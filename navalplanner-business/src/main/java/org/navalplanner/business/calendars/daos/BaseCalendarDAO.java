@@ -95,10 +95,12 @@ public class BaseCalendarDAO extends GenericDAOHibernate<BaseCalendar, Long>
     @Override
     public boolean thereIsOtherWithSameName(BaseCalendar baseCalendar) {
         List<BaseCalendar> withSameName = findByName(baseCalendar);
-        if (withSameName.isEmpty())
+        if (withSameName.isEmpty()) {
             return false;
-        if (withSameName.size() > 1)
+        }
+        if (withSameName.size() > 1) {
             return true;
+        }
         return areDifferentInDB(withSameName.get(0), baseCalendar);
     }
 

@@ -67,16 +67,18 @@ public class GanttDiagramGraph {
         private final Map<Task, Object> alreadyRegistered = new WeakHashMap<Task, Object>();
 
         private ParentShrinkingEnforcer(final TaskContainer container) {
-            if (container == null)
+            if (container == null) {
                 throw new IllegalArgumentException("container cannot be null");
+            }
             this.container = container;
             registerListeners();
         }
 
         void registerListeners() {
             for (Task subtask : this.container.getTasks()) {
-                if (alreadyRegistered.containsKey(subtask))
+                if (alreadyRegistered.containsKey(subtask)) {
                     continue;
+                }
                 subtask
                         .addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
 
@@ -102,8 +104,9 @@ public class GanttDiagramGraph {
         private final Task task;
 
         private DependencyRulesEnforcer(Task task) {
-            if (task == null)
+            if (task == null) {
                 throw new IllegalArgumentException("task cannot be null");
+            }
             this.task = task;
             this.task
                     .addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
@@ -121,8 +124,9 @@ public class GanttDiagramGraph {
             Date beginDate = task.getBeginDate();
             Date newStart = Dependency
                     .calculateStart(task, beginDate, incoming);
-            if (!beginDate.equals(newStart))
+            if (!beginDate.equals(newStart)) {
                 task.setBeginDate(newStart);
+            }
             Date endDate = task.getEndDate();
             Date newEnd = Dependency.calculateEnd(task, endDate, incoming);
             if (!endDate.equals(newEnd)) {

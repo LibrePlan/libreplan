@@ -163,8 +163,9 @@ public class DataForPlanner {
             @Override
             public List<ITaskFundamentalProperties> getChildren(
                     ITaskFundamentalProperties object) {
-                if (object == container)
+                if (object == container) {
                     return containerChildren;
+                }
                 return new ArrayList<ITaskFundamentalProperties>();
             }
 

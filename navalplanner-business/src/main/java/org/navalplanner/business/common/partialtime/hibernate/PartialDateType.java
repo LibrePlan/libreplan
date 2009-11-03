@@ -82,10 +82,12 @@ public class PartialDateType implements UserType {
 
     @Override
     public boolean equals(Object x, Object y) throws HibernateException {
-        if (x == y)
+        if (x == y) {
             return true;
-        if (x == null || y == null)
+        }
+        if (x == null || y == null) {
             return false;
+        }
         return x.equals(y);
     }
 
@@ -106,8 +108,9 @@ public class PartialDateType implements UserType {
                 names[0]);
         String granularity = (String) Hibernate.STRING
                 .nullSafeGet(rs, names[1]);
-        if (timestamp == null || granularity == null)
+        if (timestamp == null || granularity == null) {
             return null;
+        }
         return PartialDate.createFromDataForPersistence(timestamp, granularity);
     }
 

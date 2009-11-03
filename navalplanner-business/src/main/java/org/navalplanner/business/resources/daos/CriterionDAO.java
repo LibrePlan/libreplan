@@ -54,10 +54,12 @@ public class CriterionDAO extends GenericDAOHibernate<Criterion, Long>
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public boolean thereIsOtherWithSameNameAndType(Criterion criterion) {
         List<Criterion> withSameNameAndType = findByNameAndType(criterion);
-        if (withSameNameAndType.isEmpty())
+        if (withSameNameAndType.isEmpty()) {
             return false;
-        if (withSameNameAndType.size() > 1)
+        }
+        if (withSameNameAndType.size() > 1) {
             return true;
+        }
         return areDifferentInDB(withSameNameAndType.get(0), criterion);
     }
 
@@ -68,8 +70,9 @@ public class CriterionDAO extends GenericDAOHibernate<Criterion, Long>
 
     @Override
     public List<Criterion> findByNameAndType(Criterion criterion) {
-        if (criterion.getType() == null) return new ArrayList<Criterion>();
-
+        if (criterion.getType() == null) {
+            return new ArrayList<Criterion>();
+        }
         Criteria c = getSession().createCriteria(Criterion.class);
         c.add(Restrictions.eq("name", criterion.getName()).ignoreCase())
                 .createCriteria("type")
@@ -81,9 +84,10 @@ public class CriterionDAO extends GenericDAOHibernate<Criterion, Long>
     public Criterion findUniqueByNameAndType(Criterion criterion) throws InstanceNotFoundException {
         List<Criterion> list = findByNameAndType(criterion);
 
-        if (list.size() != 1)
+        if (list.size() != 1) {
             throw new InstanceNotFoundException(criterion, Criterion.class
                     .getName());
+        }
 
         return list.get(0);
     }
@@ -98,8 +102,9 @@ public class CriterionDAO extends GenericDAOHibernate<Criterion, Long>
 
     @Override
     public Criterion find(Criterion criterion) throws InstanceNotFoundException {
-        if (criterion.getId() != null)
+        if (criterion.getId() != null) {
             return super.find(criterion.getId());
+        }
         Criterion result = findUniqueByNameAndType(criterion);
 
         return result;

@@ -78,8 +78,9 @@ public class TabsRegistry {
 
     private void hideAllExcept(ITab tab) {
         for (ITab t : tabs) {
-            if (t.equals(tab))
+            if (t.equals(tab)) {
                 continue;
+            }
             t.hide();
         }
     }

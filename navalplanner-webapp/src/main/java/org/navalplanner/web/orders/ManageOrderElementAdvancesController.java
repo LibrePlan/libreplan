@@ -271,8 +271,9 @@ public class ManageOrderElementAdvancesController extends
 
                 if ((advance.getAdvanceType() != null)
                     && (advance.getAdvanceType().getId().equals(advanceType
-                            .getId())))
+                                .getId()))) {
                     comboAdvanceTypes.setSelectedItem(comboItem);
+                }
             }
         }
         comboAdvanceTypes.addEventListener(Events.ON_SELECT,
@@ -669,8 +670,9 @@ public class ManageOrderElementAdvancesController extends
                 Listitem listItem = (Listitem) editAdvances.getChildren().get(i);
                 AdvanceAssignment advance = (AdvanceAssignment) listItem
                         .getValue();
-                if (advance.getAdvanceType() == null)
+                if (advance.getAdvanceType() == null) {
                     return false;
+                }
 
                 DirectAdvanceAssignment directAdvanceAssignment;
                 if (advance instanceof IndirectAdvanceAssignment) {
@@ -679,8 +681,9 @@ public class ManageOrderElementAdvancesController extends
                 } else {
                     directAdvanceAssignment = (DirectAdvanceAssignment) advance;
                 }
-                if (directAdvanceAssignment.getMaxValue() == null)
+                if (directAdvanceAssignment.getMaxValue() == null) {
                     return false;
+                }
             }
         }
         return true;
@@ -692,10 +695,9 @@ public class ManageOrderElementAdvancesController extends
                 Listitem listItem = (Listitem) editAdvancesMeasurement.getChildren().get(i);
                 AdvanceMeasurement advance = (AdvanceMeasurement) listItem
                         .getValue();
-                if (advance.getValue() == null)
+                if (advance.getValue() == null || advance.getDate() == null) {
                     return false;
-                if (advance.getDate() == null)
-                    return false;
+                }
             }
         }
         return true;

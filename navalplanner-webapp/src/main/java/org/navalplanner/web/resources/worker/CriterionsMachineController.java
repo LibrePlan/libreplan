@@ -120,8 +120,12 @@ public class CriterionsMachineController extends GenericForwardComposer {
 
     private void validateCriterionWithItsType(CriterionSatisfactionDTO satisfaction,
             Component comp) throws WrongValueException{
-            if(satisfaction.getCriterionWithItsType() == null) return;
-            if(satisfaction.getStartDate() == null) return;
+            if(satisfaction.getCriterionWithItsType() == null) {
+                return;
+            }
+            if(satisfaction.getStartDate() == null) {
+                return;
+            }
         if (assignedMachineCriterionsModel
                 .checkSameCriterionAndSameInterval(satisfaction)) {
                 throw new WrongValueException(comp,

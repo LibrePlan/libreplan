@@ -90,8 +90,9 @@ public class TaskGroup extends TaskElement {
         for (TaskElement t : taskElements) {
             if (t instanceof TaskGroup) {
                 TaskGroup group = (TaskGroup) t;
-                if (!group.canBeMerged())
+                if (!group.canBeMerged()) {
                     return false;
+                }
             }
         }
         return true;
@@ -109,10 +110,12 @@ public class TaskGroup extends TaskElement {
         HoursGroup hoursGroup = null;
         for (TaskElement taskElement : taskElements) {
             HoursGroup current = getHoursGroupFor(taskElement);
-            if (current == null)
+            if (current == null) {
                 return false;
-            if (hoursGroup == null)
+            }
+            if (hoursGroup == null) {
                 hoursGroup = current;
+            }
             if (!current.equals(hoursGroup)) {
                 return false;
             }
@@ -133,9 +136,10 @@ public class TaskGroup extends TaskElement {
     }
 
     public Task merge() {
-        if (!canBeMerged())
+        if (!canBeMerged()) {
             throw new IllegalStateException(
                     "merge must not be called on a TaskGroup such canBeMerged returns false");
+        }
         HoursGroup hoursGroup = inferHoursGroupFromChildren();
         Task result = Task.createTask(hoursGroup);
         result.copyPropertiesFrom(this);

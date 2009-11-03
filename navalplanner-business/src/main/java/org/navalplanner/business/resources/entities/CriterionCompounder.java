@@ -128,8 +128,9 @@ public class CriterionCompounder {
         @Override
         public boolean isSatisfiedBy(Resource resource) {
             for (ICriterion criterion : criterions) {
-                if (!criterion.isSatisfiedBy(resource))
+                if (!criterion.isSatisfiedBy(resource)) {
                     return false;
+                }
             }
             return true;
         }
@@ -137,8 +138,9 @@ public class CriterionCompounder {
         @Override
         public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
             for (ICriterion criterion : criterions) {
-                if (!criterion.isSatisfiedBy(resource, start, end))
+                if (!criterion.isSatisfiedBy(resource, start, end)) {
                     return false;
+                }
             }
             return true;
         }

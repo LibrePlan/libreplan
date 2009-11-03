@@ -150,8 +150,9 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
     }
 
     public boolean allowRemove(CriterionType criterionType){
-        if(criterionType.getCriterions().size() > 0)
+        if(criterionType.getCriterions().size() > 0) {
             return false;
+        }
         return true;
     }
 

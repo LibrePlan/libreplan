@@ -54,8 +54,9 @@ public class LoadLevel {
         protected abstract boolean contains(int percentage);
         public static Category categoryFor(int percentage) {
             for (Category category : values()) {
-                if (category.contains(percentage))
+                if (category.contains(percentage)) {
                     return category;
+                }
             }
             throw new IllegalArgumentException("couldn't handle " + percentage);
         }

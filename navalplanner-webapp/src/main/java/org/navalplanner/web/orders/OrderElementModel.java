@@ -85,8 +85,9 @@ public class OrderElementModel implements IOrderElementModel {
     public List<CriterionType> getCriterionTypes() {
         List<CriterionType> result = new ArrayList<CriterionType>();
 
-        if (mapCriterionTypes.isEmpty())
+        if (mapCriterionTypes.isEmpty()) {
             loadCriterionTypes();
+        }
         result.addAll(mapCriterionTypes.values());
 
         return result;
@@ -95,8 +96,9 @@ public class OrderElementModel implements IOrderElementModel {
     @Override
     @Transactional(readOnly = true)
     public CriterionType getCriterionTypeByName(String name) {
-        if (mapCriterionTypes.isEmpty())
+        if (mapCriterionTypes.isEmpty()) {
             loadCriterionTypes();
+        }
 
         return mapCriterionTypes.get(name);
     }

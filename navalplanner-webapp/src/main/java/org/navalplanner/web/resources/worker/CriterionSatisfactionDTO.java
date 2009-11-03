@@ -68,8 +68,12 @@ public class CriterionSatisfactionDTO implements INewObject {
     }
 
     public String getState() {
-        if(startDate == null) return "";
-        if( !isFinished() || isCurrent() ) return "Current";
+        if (startDate == null) {
+            return "";
+        }
+        if (!isFinished() || isCurrent()) {
+            return "Current";
+        }
         return "Expired";
     }
 
@@ -112,8 +116,10 @@ public class CriterionSatisfactionDTO implements INewObject {
 
     public boolean isCurrent() {
         Date now = new Date();
-        if(!isFinished()) return true;
-        return (now.compareTo(getEndDate()) <= 0);
+        if (!isFinished()) {
+            return true;
+        }
+        return now.compareTo(getEndDate()) <= 0;
     }
 
      public Interval getInterval() {
@@ -146,41 +152,58 @@ public class CriterionSatisfactionDTO implements INewObject {
     }
 
     public boolean isLessToEndDate(Date startDate){
-        if((getEndDate() == null) ||
-                (startDate == null)) return true;
-        if(startDate.compareTo(getEndDate()) < 0) return true;
+        if (getEndDate() == null || startDate == null) {
+            return true;
+        }
+        if (startDate.compareTo(getEndDate()) < 0) {
+            return true;
+        }
         return false;
     }
 
     public boolean isPreviousStartDate(Date startDate){
-        if(newObject) return true;
-        if((getStartDate() == null) ||
-                (startDate == null)) return true;
-        if(startDate.compareTo(getCriterionSatisfaction().getStartDate()) <= 0)
+        if (newObject) {
             return true;
+        }
+        if (getStartDate() == null || startDate == null) {
+            return true;
+        }
+        if (startDate.compareTo(getCriterionSatisfaction().getStartDate()) <= 0) {
+            return true;
+        }
         return false;
     }
 
     public boolean isGreaterStartDate(Date endDate){
-        if((getStartDate() == null) ||
-                (endDate == null)) return true;
-        if(endDate.compareTo(getStartDate()) >= 0) return true;
+        if (getStartDate() == null || endDate == null) {
+            return true;
+        }
+        if (endDate.compareTo(getStartDate()) >= 0) {
+            return true;
+        }
         return false;
     }
 
     public boolean isPostEndDate(Date endDate){
-        if(newObject) return true;
-        if((getEndDate() == null) ||
-                (endDate == null)) return true;
-        if(getCriterionSatisfaction().getEndDate() == null)
+        if (newObject) {
             return true;
-        if(endDate.compareTo(getCriterionSatisfaction().getEndDate()) >= 0)
+        }
+        if (getEndDate() == null || endDate == null) {
             return true;
+        }
+        if (getCriterionSatisfaction().getEndDate() == null) {
+            return true;
+        }
+        if (endDate.compareTo(getCriterionSatisfaction().getEndDate()) >= 0) {
+            return true;
+        }
         return false;
     }
 
     public String getCriterionAndType() {
-        if(criterionWithItsType == null) return criterionAndType;
+        if (criterionWithItsType == null) {
+            return criterionAndType;
+        }
         return criterionWithItsType.getNameAndType();
 
     }

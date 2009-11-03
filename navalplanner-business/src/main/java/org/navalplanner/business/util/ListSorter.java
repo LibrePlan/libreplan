@@ -88,8 +88,9 @@ public class ListSorter<T> {
      */
     public void modified(T element) throws NoSuchElementException {
         int index = indexOfElement(element);
-        if ((index == list.size()))
+        if ((index == list.size())) {
             throw new NoSuchElementException("not found: " + element);
+        }
         list.remove(index);
         insert(element);
     }
@@ -104,8 +105,9 @@ public class ListSorter<T> {
     private int indexOfElement(T element) {
         int index = 0;
         for (T t : list) {
-            if (t == element)
+            if (t == element) {
                 break;
+            }
             index++;
         }
         return index;
@@ -119,9 +121,10 @@ public class ListSorter<T> {
      */
     public void add(T element) {
         Validate.notNull(element);
-        if (exists(element))
+        if (exists(element)) {
             throw new IllegalArgumentException(element
                     + " already exists. Duplicateds not allowed");
+        }
         insert(element);
     }
 

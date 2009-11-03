@@ -105,9 +105,10 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
             @Override
             public void validate(Component comp, Object value)
                     throws WrongValueException {
-                if (((BigDecimal) value) == null)
+                if (((BigDecimal) value) == null) {
                     throw new WrongValueException(comp,
                             _("Value is not valid, the default max value must not be null"));
+                }
 
                 if (!(advanceTypeModel.isPrecisionValid((BigDecimal) value))) {
                     throw new WrongValueException(
@@ -124,9 +125,10 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
             @Override
             public void validate(Component comp, Object value)
                     throws WrongValueException {
-                if (((BigDecimal) value) == null)
+                if (((BigDecimal) value) == null) {
                     throw new WrongValueException(comp,
                             _("Value is not valid, the Precision value must not be null "));
+                }
                 if (!(advanceTypeModel
                         .isDefaultMaxValueValid((BigDecimal) value))) {
                     throw new WrongValueException(
@@ -143,9 +145,10 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
             @Override
             public void validate(Component comp, Object value)
                     throws WrongValueException {
-                if (((String) value).isEmpty())
+                if (((String) value).isEmpty()) {
                     throw new WrongValueException(comp,
                             _("The name is not valid, the name must not be null "));
+                }
                 if (!(advanceTypeModel.distinctNames((String) value))) {
                     throw new WrongValueException(comp,
                             _("The name is not valid, Exist other advance type with a similar name. "));

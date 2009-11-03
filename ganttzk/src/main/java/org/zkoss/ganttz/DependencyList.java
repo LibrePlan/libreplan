@@ -77,8 +77,9 @@ public class DependencyList extends XulElement implements AfterCompose {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-            if (!evt.getPropertyName().equals("visible"))
+            if (!evt.getPropertyName().equals("visible")) {
                 return;
+            }
             if (dependencyMustBeVisible() != isDependencyNowVisible()) {
                 toggleDependencyExistence(dependencyMustBeVisible());
             }
@@ -156,8 +157,9 @@ public class DependencyList extends XulElement implements AfterCompose {
             listener = new IZoomLevelChangedListener() {
                 @Override
                 public void zoomLevelChanged(ZoomLevel detailLevel) {
-                    if (!isInPage())
+                    if (!isInPage()) {
                         return;
+                    }
                     for (DependencyComponent dependencyComponent : getDependencyComponents()) {
                         dependencyComponent.zoomChanged();
                     }

@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.common.entrypoints;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,8 +42,6 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.BookmarkEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * <br />
@@ -95,8 +95,9 @@ public class URLHandler<T> {
     }
 
     public void doTransition(String methodName, Object... values) {
-        if (isFlagedInThisRequest())
+        if (isFlagedInThisRequest()) {
             return;
+        }
         flagAlreadyExecutedInThisRequest();
         if (!metadata.containsKey(methodName)) {
             LOG.error("Method " + methodName
@@ -120,8 +121,9 @@ public class URLHandler<T> {
                 .getRequestPath();
         if (requestPath.contains(page)) {
             doBookmark(fragment);
-        } else
+        } else {
             sendRedirect(fragment);
+        }
     }
 
     private boolean isFlagedInThisRequest() {
@@ -138,8 +140,9 @@ public class URLHandler<T> {
     }
 
     private String stripHash(String fragment) {
-        if (fragment.startsWith("#"))
+        if (fragment.startsWith("#")) {
             return fragment.substring(1);
+        }
         return fragment;
     }
 
@@ -151,12 +154,14 @@ public class URLHandler<T> {
     private String getFragment(String[] parameterNames,
             String[] stringRepresentations) {
         StringBuilder result = new StringBuilder();
-        if (parameterNames.length > 0)
+        if (parameterNames.length > 0) {
             result.append("#");
+        }
         for (int i = 0; i < parameterNames.length; i++) {
             result.append(parameterNames[i]);
-            if (stringRepresentations[i] != null)
+            if (stringRepresentations[i] != null) {
                 result.append("=").append(stringRepresentations[i]);
+            }
             if (i < parameterNames.length - 1) {
                 result.append(";");
             }
@@ -224,8 +229,9 @@ public class URLHandler<T> {
     }
 
     private String insertSemicolonIfNeeded(String uri) {
-        if (!uri.startsWith(";"))
+        if (!uri.startsWith(";")) {
             return ";" + uri;
+        }
         return uri;
     }
 

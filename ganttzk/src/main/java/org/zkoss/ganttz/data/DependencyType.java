@@ -79,8 +79,9 @@ public enum DependencyType {
     };
 
     private static Date getBigger(Date date1, Date date2) {
-        if (date1.before(date2))
+        if (date1.before(date2)) {
             return date2;
+        }
         return date1;
     }
 

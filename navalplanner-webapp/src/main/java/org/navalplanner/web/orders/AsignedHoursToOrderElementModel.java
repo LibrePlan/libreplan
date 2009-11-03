@@ -107,8 +107,9 @@ public class AsignedHoursToOrderElementModel implements
         if (orderElement == null) {
             return 0;
         }
-        if (orderElement.getChildren().isEmpty())
+        if (orderElement.getChildren().isEmpty()) {
             return 0;
+        }
         int asignedDirectChildren = getTotalAsignedHours()
                 - this.asignedDirectHours;
         return asignedDirectChildren;

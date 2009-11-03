@@ -177,9 +177,10 @@ public class Task extends TaskElement {
 
     public TaskGroup split(int... shares) {
         int totalSumOfHours = sum(shares);
-        if (totalSumOfHours != getWorkHours())
+        if (totalSumOfHours != getWorkHours()) {
             throw new IllegalArgumentException(
                     "the shares don't sum up the work hours");
+        }
         TaskGroup result = TaskGroup.create();
         result.copyPropertiesFrom(this);
         result.shareOfHours = this.shareOfHours;

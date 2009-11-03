@@ -135,9 +135,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
         Order orderReloaded = reload(order);
-        if (!orderReloaded.isSomeTaskElementScheduled())
+        if (!orderReloaded.isSomeTaskElementScheduled()) {
             throw new IllegalArgumentException(_(
                     "The order {0} must be scheduled", orderReloaded));
+        }
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
         addAdditional(additional, configuration);
         ISaveCommand saveCommand = buildSaveCommand();

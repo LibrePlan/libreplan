@@ -282,10 +282,12 @@ public class PartialDate implements ReadablePartial {
         Iterator<Integer> otherIterator = other.values.iterator();
         while (iterator.hasNext()) {
             int diff = iterator.next() - otherIterator.next();
-            if (diff > 0)
+            if (diff > 0) {
                 return false;
-            if (diff < 0)
+            }
+            if (diff < 0) {
                 return true;
+            }
         }
         return false;
     }
@@ -295,9 +297,10 @@ public class PartialDate implements ReadablePartial {
     }
 
     public LocalDate tryToConvertToLocalDate() throws IllegalArgumentException {
-        if (!this.canBeConvertedToLocalDate())
+        if (!this.canBeConvertedToLocalDate()) {
             throw new IllegalArgumentException("the partialDate " + this
                     + " can't support be converted to local date");
+        }
         return new LocalDate(this.normalizedInstant, ISOChronology
                 .getInstance(DateTimeZone.getDefault()));
     }
@@ -405,10 +408,11 @@ public class PartialDate implements ReadablePartial {
     }
 
     public Integer valueFor(Granularity granularity) {
-        if (this.granularity.isMoreCoarseGrainedThan(granularity))
+        if (this.granularity.isMoreCoarseGrainedThan(granularity)) {
             throw new IllegalArgumentException(granularity
                     + " is more specific than this instance granularity: "
                     + this.granularity);
+        }
         return get(granularity.getMostSpecific());
     }
 

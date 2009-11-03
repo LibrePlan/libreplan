@@ -50,8 +50,9 @@ public class ConverterFactory implements IConverterFactory {
 
     @Override
     public <T> IConverter<? super T> getConverterFor(Class<T> klass) {
-        if (convertersByType.containsKey(klass))
+        if (convertersByType.containsKey(klass)) {
             return (IConverter<? super T>) convertersByType.get(klass);
+        }
         for (Class<?> registeredKlass : convertersByType.keySet()) {
             if (registeredKlass.isAssignableFrom(klass)) {
                 IConverter<?> result = convertersByType.get(registeredKlass);

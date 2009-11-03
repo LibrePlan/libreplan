@@ -151,8 +151,9 @@ public class CriterionsModel_V2 implements ICriterionsModel_V2 {
     @Transactional(readOnly = true)
     public ICriterionType<?> getTypeFor(Criterion criterion) {
         for (ICriterionType<?> criterionType : getTypes()) {
-            if (criterionType.contains(criterion))
+            if (criterionType.contains(criterion)) {
                 return criterionType;
+            }
         }
         throw new RuntimeException(_("{0} not found type for criterion ", criterion));
     }
@@ -162,8 +163,9 @@ public class CriterionsModel_V2 implements ICriterionsModel_V2 {
     public void saveCriterionType() throws ValidationException {
         InvalidValue[] invalidValues = criterionTypeValidator
                 .getInvalidValues(criterionType);
-        if (invalidValues.length > 0)
+        if (invalidValues.length > 0) {
             throw new ValidationException(invalidValues);
+        }
         criterionTreeModel.saveCriterions(criterionType);
         criterionTypeDAO.save(criterionType);
     }
@@ -184,8 +186,9 @@ public class CriterionsModel_V2 implements ICriterionsModel_V2 {
     @Transactional(readOnly = true)
     public <T extends Resource> List<T> getResourcesSatisfyingCurrentCriterionOfType(
             Class<T> klass) {
-        if (criterion == null)
+        if (criterion == null) {
             return new ArrayList<T>();
+        }
         return getResourcesSatisfying(klass, criterion);
     }
 

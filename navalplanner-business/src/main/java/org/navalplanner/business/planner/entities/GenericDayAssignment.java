@@ -74,9 +74,10 @@ public class GenericDayAssignment extends DayAssignment {
 
     protected void setGenericResourceAllocation(
             GenericResourceAllocation genericResourceAllocation) {
-        if (this.genericResourceAllocation != null)
+        if (this.genericResourceAllocation != null) {
             throw new IllegalStateException(
                     "the allocation cannot be changed once it has been set");
+        }
         this.genericResourceAllocation = genericResourceAllocation;
     }
 

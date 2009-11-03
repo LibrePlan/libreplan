@@ -422,8 +422,9 @@ public class CriterionTreeModel implements ICriterionTreeModel{
     }
 
     private boolean find(CriterionDTO child,List<CriterionDTO> children){
-        if(children.indexOf(child) >= 0)
+        if(children.indexOf(child) >= 0) {
             return true;
+        }
         for(CriterionDTO criterionDTO : children){
             return find(child,getChildren(criterionDTO));
         }

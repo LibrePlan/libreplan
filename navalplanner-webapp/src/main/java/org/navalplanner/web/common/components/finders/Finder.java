@@ -120,15 +120,17 @@ public abstract class Finder implements IFinder {
          */
         public ListModel getSubModel(Object value, int nRows) {
             final String idx = value == null ? "" : objectToString(value);
-            if (nRows < 0)
+            if (nRows < 0) {
                 nRows = 10;
+            }
             final LinkedList data = new LinkedList();
             for (int i = 0; i < getSize(); i++) {
                 if (idx.equals("")
                         || entryMatchesText(_toString(getElementAt(i)), idx)) {
                     data.add(getElementAt(i));
-                    if (--nRows <= 0)
+                    if (--nRows <= 0) {
                         break; // done
+                    }
                 }
             }
             return new SimpleListModelExt(data);

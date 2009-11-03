@@ -164,10 +164,12 @@ public abstract class OrderElement extends BaseEntity {
 
     public boolean isFormatCodeValid(String code) {
 
-        if (code.contains("_"))
+        if (code.contains("_")) {
             return false;
-        if (code.equals(""))
+        }
+        if (code.equals("")) {
             return false;
+        }
         return true;
     }
 

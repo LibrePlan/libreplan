@@ -86,8 +86,9 @@ public class LoadPeriod {
                             + o2);
                 }
                 int comparison = compareLocalDates(o1.start, o2.start);
-                if (comparison != 0)
+                if (comparison != 0) {
                     return comparison;
+                }
                 return compareLocalDates(o1.end, o2.end);
             }
         });
@@ -95,10 +96,12 @@ public class LoadPeriod {
     }
 
     private static int compareLocalDates(LocalDate l1, LocalDate l2) {
-        if (l1.isBefore(l2))
+        if (l1.isBefore(l2)) {
             return -1;
-        if (l1.isAfter(l2))
+        }
+        if (l1.isAfter(l2)) {
             return 1;
+        }
         return 0;
     }
 

@@ -44,8 +44,9 @@ public class WeakReferencedListeners<T> {
     }
 
     public synchronized void addListener(T listener) {
-        if (listener == null)
+        if (listener == null) {
             throw new IllegalArgumentException("listener cannot be null");
+        }
         listeners.add(new WeakReference<T>(listener));
     }
 
@@ -55,9 +56,9 @@ public class WeakReferencedListeners<T> {
         ArrayList<T> active = new ArrayList<T>();
         while (listIterator.hasNext()) {
             T listener = listIterator.next().get();
-            if (listener == null)
+            if (listener == null) {
                 listIterator.remove();
-            else {
+            } else {
                 active.add(listener);
             }
         }

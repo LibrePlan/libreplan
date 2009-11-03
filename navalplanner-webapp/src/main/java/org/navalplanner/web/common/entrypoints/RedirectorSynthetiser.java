@@ -75,8 +75,9 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
         }
 
         private URLHandler<?> getHandler() {
-            if (urlHandler != null)
+            if (urlHandler != null) {
                 return urlHandler;
+            }
             URLHandlerRegistry registry = (URLHandlerRegistry) BeanFactoryUtils
                     .beanOfType(beanFactory, URLHandlerRegistry.class);
             urlHandler = registry.getRedirectorFor(pageInterface);

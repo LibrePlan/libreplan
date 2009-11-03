@@ -139,8 +139,9 @@ public class CriterionModelTest {
 
     private CriterionType ensureExists(CriterionType transientType) {
         List<CriterionType> found = criterionTypeDAO.findByName(transientType);
-        if (!found.isEmpty())
+        if (!found.isEmpty()) {
             return found.get(0);
+        }
         criterionTypeDAO.save(transientType);
         return criterionTypeDAO.findByName(transientType).get(0);
     }

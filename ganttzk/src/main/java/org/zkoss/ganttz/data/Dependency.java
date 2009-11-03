@@ -77,12 +77,15 @@ public class Dependency {
 
     public Dependency(Task source, Task destination,
             DependencyType type, boolean visible) {
-        if (source == null)
+        if (source == null) {
             throw new IllegalArgumentException("source cannot be null");
-        if (destination == null)
+        }
+        if (destination == null) {
             throw new IllegalArgumentException("destination cannot be null");
-        if (type == null)
+        }
+        if (type == null) {
             throw new IllegalArgumentException("type cannot be null");
+        }
         this.source = source;
         this.destination = destination;
         this.type = type;
@@ -102,12 +105,15 @@ public class Dependency {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Dependency other = (Dependency) obj;
         return new EqualsBuilder().append(this.destination, other.destination)
                 .append(this.source, other.source)

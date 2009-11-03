@@ -148,8 +148,9 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private TaskComponent getFirstTopTaskComponent() {
         List<TaskComponent> taskComponents = getTopLevelTaskComponents();
-        if (taskComponents.isEmpty())
+        if (taskComponents.isEmpty()) {
             return null;
+        }
         return taskComponents.get(0);
     }
 
@@ -194,8 +195,9 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private void addListenerForTaskComponentEditForm(
             final TaskComponent taskComponent) {
-        if (editTaskCommand == null)
+        if (editTaskCommand == null) {
             return;
+        }
         taskComponent.addEventListener("onDoubleClick", new EventListener() {
 
             @Override

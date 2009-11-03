@@ -98,8 +98,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
         public boolean contains(String requestPath) {
             for (CustomMenuItem item : thisAndChildren()) {
-                if (requestContains(requestPath, item.unencodedURL))
+                if (requestContains(requestPath, item.unencodedURL)) {
                     return true;
+                }
             }
             return false;
         }
@@ -198,8 +199,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     public List<CustomMenuItem> getCustomMenuSecondaryItems() {
         for (CustomMenuItem ci : this.firstLevel) {
-            if (ci.isActiveParent())
+            if (ci.isActiveParent()) {
                 return ci.getChildren();
+            }
         }
         return Collections.<CustomMenuItem> emptyList();
     }
