@@ -138,7 +138,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     }
 
     public Set<ExceptionDay> getExceptions(Date date) {
-        return getExceptions(date);
+        return getExceptions(new LocalDate(date));
     }
 
     public Set<ExceptionDay> getExceptions(LocalDate date) {
