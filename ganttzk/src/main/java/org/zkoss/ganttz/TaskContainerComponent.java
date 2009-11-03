@@ -51,7 +51,7 @@ public class TaskContainerComponent extends TaskComponent implements
     private List<TaskComponent> subtaskComponents = new ArrayList<TaskComponent>();
     private final TaskList taskList;
 
-    private IExpandListener expandListener;
+    private transient IExpandListener expandListener;
 
     public TaskContainerComponent(TaskContainer taskContainer, TaskList taskList) {
         super(taskContainer, taskList.getDisabilityConfiguration());

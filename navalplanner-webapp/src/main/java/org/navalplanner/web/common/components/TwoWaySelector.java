@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.common.components;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -38,8 +40,6 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * ZK macro component that shows two {@link Listbox} allowing to move objects
@@ -90,7 +90,7 @@ public class TwoWaySelector extends HtmlMacroComponent {
      *
      * @author Manuel Rego Casasnovas <mrego@igalia.com>
      */
-    private ListitemRenderer renderer = new ListitemRenderer() {
+    private transient ListitemRenderer renderer = new ListitemRenderer() {
         @Override
         public void render(Listitem item, Object data) throws Exception {
 

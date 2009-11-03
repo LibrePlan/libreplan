@@ -210,7 +210,7 @@ public class TaskComponent extends Div implements AfterCompose {
     private boolean isTopLevel;
 
     private final Task task;
-    private PropertyChangeListener propertiesListener;
+    private transient PropertyChangeListener propertiesListener;
 
     public Task getTask() {
         return task;

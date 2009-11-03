@@ -105,7 +105,7 @@ public class DependencyList extends XulElement implements AfterCompose {
 
     private static final Log LOG = LogFactory.getLog(DependencyList.class);
 
-    private IZoomLevelChangedListener listener;
+    private transient IZoomLevelChangedListener listener;
 
     private final FunctionalityExposedForExtensions<?> context;
 

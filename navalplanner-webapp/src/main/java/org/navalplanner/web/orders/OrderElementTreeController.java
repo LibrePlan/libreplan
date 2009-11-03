@@ -79,7 +79,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
     private final OrderElementController orderElementController;
 
-    private IPredicate predicate;
+    private transient IPredicate predicate;
 
     public List<org.navalplanner.business.labels.entities.Label> getLabels() {
         return orderModel.getLabels();

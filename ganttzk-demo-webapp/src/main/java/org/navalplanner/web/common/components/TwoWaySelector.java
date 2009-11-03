@@ -88,7 +88,7 @@ public class TwoWaySelector extends HtmlMacroComponent {
      *
      * @author Manuel Rego Casasnovas <mrego@igalia.com>
      */
-    private ListitemRenderer renderer = new ListitemRenderer() {
+    private transient ListitemRenderer renderer = new ListitemRenderer() {
         @Override
         public void render(Listitem item, Object data) throws Exception {
 

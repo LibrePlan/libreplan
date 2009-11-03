@@ -131,7 +131,7 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
 
     private final Node<T> root;
 
-    private Map<T, Node<T>> nodesByDomainObject = new WeakHashMap<T, Node<T>>();
+    private transient Map<T, Node<T>> nodesByDomainObject = new WeakHashMap<T, Node<T>>();
 
     private static <T> Node<T> wrapOne(T object) {
         return new Node<T>(object);

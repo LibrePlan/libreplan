@@ -55,7 +55,7 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private static final int HEIGHT_PER_ROW = 20; /* 30 */
 
-    private IZoomLevelChangedListener zoomLevelChangedListener;
+    private transient IZoomLevelChangedListener zoomLevelChangedListener;
 
     private Menupopup contextMenu;
 

@@ -186,7 +186,7 @@ public class DetailsOrderElementController extends
         Util.reloadBindings(self);
     }
 
-    private ListitemRenderer renderer = new HoursGroupListitemRender();
+    private transient ListitemRenderer renderer = new HoursGroupListitemRender();
 
     public ListitemRenderer getRenderer() {
         return renderer;

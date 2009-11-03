@@ -63,7 +63,7 @@ public class Planner extends HtmlMacroComponent  {
 
     private FunctionalityExposedForExtensions<?> context;
 
-    private IDisabilityConfiguration disabilityConfiguration;
+    private transient IDisabilityConfiguration disabilityConfiguration;
 
     public Planner() {
         registerNeededScripts();

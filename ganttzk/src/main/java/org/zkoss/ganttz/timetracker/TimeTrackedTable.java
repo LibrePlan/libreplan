@@ -37,7 +37,7 @@ public class TimeTrackedTable<T> extends HtmlMacroComponent {
     private final Callable<List<T>> data;
     private final ICellForDetailItemRenderer<DetailItem, T> cellRenderer;
     private final TimeTracker timeTracker;
-    private IZoomLevelChangedListener zoomListener;
+    private transient IZoomLevelChangedListener zoomListener;
 
     public TimeTrackedTable(Callable<List<T>> dataSource,
             ICellForDetailItemRenderer<DetailItem, T> cellRenderer,
