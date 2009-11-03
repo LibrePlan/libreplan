@@ -50,6 +50,20 @@ public class ShareDivision {
             return share.getHours() - other.share.getHours();
         }
 
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof ShareWrapper) {
+                ShareWrapper other = (ShareWrapper) obj;
+                return getHours() == other.getHours();
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return getHours();
+        }
+
         public static List<ShareWrapper> wrap(List<Share> shares) {
             List<ShareWrapper> result = new ArrayList<ShareWrapper>();
             int i = 0;
