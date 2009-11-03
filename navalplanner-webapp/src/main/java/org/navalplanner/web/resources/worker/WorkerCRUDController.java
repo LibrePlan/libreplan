@@ -22,8 +22,6 @@ package org.navalplanner.web.resources.worker;
 
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.common.ConcurrentModificationDetector.addAutomaticHandlingOfConcurrentModification;
-import static org.navalplanner.web.common.InvalidInputsChecker.thereAreInvalidInputsOn;
-
 import java.util.Date;
 import java.util.List;
 

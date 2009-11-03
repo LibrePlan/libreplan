@@ -36,7 +36,6 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
 
 /**
  * Controller for showing OrderElement assigned labels

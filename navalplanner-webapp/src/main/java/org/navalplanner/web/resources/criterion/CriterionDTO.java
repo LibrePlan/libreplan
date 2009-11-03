@@ -30,15 +30,10 @@ import java.util.List;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
-import org.navalplanner.business.common.BaseEntity;
 /**
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>

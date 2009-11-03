@@ -20,12 +20,6 @@
 
 package org.navalplanner.web.common.components;
 
-import static org.navalplanner.web.I18nHelper._;
-
-import java.util.Comparator;
-
-import org.apache.commons.lang.Validate;
-import org.navalplanner.business.INewObject;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;

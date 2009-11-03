@@ -25,9 +25,7 @@
 
 package org.navalplanner.web.resources.criterion;
 
-import java.util.List;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.zkoss.zul.TreeModel;
 
