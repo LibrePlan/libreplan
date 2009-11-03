@@ -83,7 +83,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
             String[] requestData = request.getData();
 
-            if ((requestData != null) && (requestData.length != 2)) {
+            if (requestData == null || requestData.length != 2) {
                 throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
                         new Object[] { Objects.toString(requestData), this });
             } else {
@@ -134,7 +134,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
             String[] requestData = request.getData();
 
-            if ((requestData != null) && (requestData.length != 1)) {
+            if (requestData == null || requestData.length != 1) {
                 throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
                         new Object[] { Objects.toString(requestData), this });
             } else {
