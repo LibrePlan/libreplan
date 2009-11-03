@@ -30,6 +30,9 @@ import org.zkoss.util.Locales;
 
 public class I18nHelper {
 
+    private I18nHelper() {
+    }
+
     private static HashMap<Locale, I18n> localesCache = new HashMap<Locale, I18n>();
 
     public static I18n getI18n() {

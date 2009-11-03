@@ -28,6 +28,9 @@ import org.zkoss.zk.ui.Executions;
 
 public class ComponentsReplacer {
 
+    private ComponentsReplacer() {
+    }
+
     private static class ChildrenSnapshot implements IChildrenSnapshot {
         private final List<Component> children;
         private final Component parent;

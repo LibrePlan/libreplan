@@ -28,6 +28,9 @@ import org.zkoss.ganttz.util.script.ScriptsRequiredDeclaration;
 @ScriptsRequiredDeclaration
 public class ScriptsRequiredByAdvancedAllocation {
 
+    private ScriptsRequiredByAdvancedAllocation() {
+    }
+
     public static final String ADVANDED_ALLOCATION = "/js/advanceAllocations.js";
 
 }

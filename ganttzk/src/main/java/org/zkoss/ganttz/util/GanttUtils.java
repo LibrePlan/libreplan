@@ -27,6 +27,9 @@ package org.zkoss.ganttz.util;
  */
 public class GanttUtils {
 
+    private GanttUtils() {
+    }
+
     public static int getIntFromStylePosition(String position) throws Exception {
 
         String[] tokens = position.split("px");

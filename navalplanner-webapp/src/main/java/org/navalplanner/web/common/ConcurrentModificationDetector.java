@@ -25,6 +25,9 @@ import org.springframework.dao.OptimisticLockingFailureException;
 
 public class ConcurrentModificationDetector {
 
+    private ConcurrentModificationDetector() {
+    }
+
     public static <T> T addAutomaticHandlingOfConcurrentModification(Class<T> interfaceClass,
             T model, final String backURL) {
         IExceptionHandler<OptimisticLockingFailureException> handler = createHandler(backURL);

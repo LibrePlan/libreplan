@@ -29,6 +29,9 @@ import java.util.List;
  */
 public class ComponentsFinder {
 
+    private ComponentsFinder() {
+    }
+
     public static <T> List<T> findComponentsOfType(Class<T> type,
             List<? extends Object> children) {
         ArrayList<T> result = new ArrayList<T>();

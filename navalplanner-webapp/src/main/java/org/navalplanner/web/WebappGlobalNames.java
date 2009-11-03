@@ -27,6 +27,9 @@ package org.navalplanner.web;
  */
 public class WebappGlobalNames {
 
+    private WebappGlobalNames() {
+    }
+
     public final static String WEBAPP_SPRING_CONFIG_FILE = "classpath:/navalplanner-webapp-spring-config.xml";
 
 }

@@ -25,6 +25,9 @@ import org.zkoss.ganttz.util.script.ScriptsRequiredDeclaration;
 @ScriptsRequiredDeclaration(dependsOn = { YUIMin.class, ScrollSyncScript.class })
 public class ScriptsRequiredByPlanner {
 
+    private ScriptsRequiredByPlanner() {
+    }
+
     public static final String SELECTOR = "/zkau/web/js/yui/2.7.0/selector/selector-min.js";
     public static final String YAHOO_DOM_EVENT = "/zkau/web/js/yui/2.7.0/yahoo-dom-event/yahoo-dom-event.js";
     public static final String DRAGDROPMIN = "/zkau/web/js/yui/2.7.0/dragdrop/dragdrop-min.js";

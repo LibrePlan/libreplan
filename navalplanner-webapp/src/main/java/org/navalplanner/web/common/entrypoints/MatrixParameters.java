@@ -34,6 +34,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class MatrixParameters {
 
+    private MatrixParameters() {
+    }
+
     private static Pattern matrixParamPattern = Pattern
             .compile(";([^/=;]+)=?([^/;]+)?");
 

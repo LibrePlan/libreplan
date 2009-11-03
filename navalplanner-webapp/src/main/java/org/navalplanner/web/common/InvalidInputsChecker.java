@@ -31,6 +31,9 @@ import org.zkoss.zul.impl.api.InputElement;
  */
 public class InvalidInputsChecker {
 
+    private InvalidInputsChecker() {
+    }
+
     public static boolean thereAreInvalidInputsOn(Component component) {
         if (isInvalid(component)) {
             return true;

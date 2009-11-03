@@ -46,6 +46,9 @@ import org.zkoss.zul.Textbox;
  */
 public class Util {
 
+    private Util() {
+    }
+
     public static void reloadBindings(Component... toReload) {
         for (Component reload : toReload) {
             DataBinder binder = Util.getBinder(reload);
