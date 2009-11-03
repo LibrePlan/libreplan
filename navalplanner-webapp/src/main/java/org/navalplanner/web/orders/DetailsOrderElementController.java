@@ -119,22 +119,12 @@ public class DetailsOrderElementController extends
 
         // Creates a map in order to join HoursGroup with the same
         // Criterions.
-        // Map key will be an String with the Criterions separated by ;
-        Map<String, HoursGroup> map = new HashMap<String, HoursGroup>();
+        Map<Set<Criterion>, HoursGroup> map = new HashMap<Set<Criterion>, HoursGroup>();
 
         List<HoursGroup> hoursGroups = getOrderElement().getHoursGroups();
 
         for (HoursGroup hoursGroup : hoursGroups) {
-            String key = "";
-            for (CriterionType criterionType : criterionTypes) {
-                for (Criterion criterion : criterionType.getCriterions()) {
-                    if(hoursGroup.getDirectCriterion(criterion) != null){
-                        key += criterion.getName() + ";";
-                    } else {
-                        key += ";";
-                    }
-                }
-            }
+            Set<Criterion> key = getKeyFor(hoursGroup, criterionTypes);
 
             HoursGroup hoursGroupAggregation = map.get(key);
             if (hoursGroupAggregation == null) {
@@ -153,6 +143,19 @@ public class DetailsOrderElementController extends
         }
 
         return new ArrayList<HoursGroup>(map.values());
+    }
+
+    private Set<Criterion> getKeyFor(HoursGroup hoursGroup,
+            Set<CriterionType> criterionTypes) {
+        Set<Criterion> key = new HashSet<Criterion>();
+        for (CriterionType criterionType : criterionTypes) {
+            for (Criterion criterion : criterionType.getCriterions()) {
+                if(hoursGroup.getDirectCriterion(criterion) != null){
+                    key.add(criterion);
+                }
+            }
+        }
+        return key;
     }
 
     /**
