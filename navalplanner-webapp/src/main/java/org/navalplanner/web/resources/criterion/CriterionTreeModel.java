@@ -25,17 +25,18 @@
 
 package org.navalplanner.web.resources.criterion;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import static org.navalplanner.web.I18nHelper._;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import java.util.Set;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.web.common.Util;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zul.TreeModel;
 
@@ -250,13 +251,6 @@ public class CriterionTreeModel implements ICriterionTreeModel{
             toBeMoved.setParent(destination);
             destination.getChildren().add(position,toBeMoved);
         }
-    }
-
-    private CriterionDTO toNode(CriterionDTO container) {
-        if (container == criterionRootDTO) {
-            return tree.getRoot();
-        }
-        return (CriterionDTO) container;
     }
 
     private CriterionDTO asCriterion(CriterionDTO node) {

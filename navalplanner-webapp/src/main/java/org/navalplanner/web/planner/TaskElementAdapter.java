@@ -39,7 +39,6 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -72,9 +71,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Autowired
     private ITaskElementDAO taskDAO;
-
-    @Autowired
-    private IDayAssignmentDAO dayAssignmentDAO;
 
     private List<IOnMoveListener> listeners = new ArrayList<IOnMoveListener>();
 

@@ -41,7 +41,6 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
-import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 
 public abstract class OrderElement extends BaseEntity {
@@ -331,10 +330,6 @@ public abstract class OrderElement extends BaseEntity {
             result.addAll(orderElement.getAllChildren());
         }
         return result;
-    }
-
-    private void setCriterionRequirements(Set<CriterionRequirement> criterionRequirements) {
-        this.criterionRequirements = criterionRequirements;
     }
 
     public Set<CriterionRequirement> getCriterionRequirements() {

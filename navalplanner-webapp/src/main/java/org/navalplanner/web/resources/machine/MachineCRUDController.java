@@ -36,7 +36,6 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.resources.worker.CriterionsController;
 import org.navalplanner.web.resources.worker.CriterionsMachineController;
 import org.zkoss.zk.ui.Component;
@@ -60,8 +59,6 @@ public class MachineCRUDController extends GenericForwardComposer {
     private Window editWindow;
 
     private IMachineModel machineModel;
-
-    private IURLHandlerRegistry URLHandlerRegistry;
 
     private OnlyOneVisible visibility;
 
@@ -333,13 +330,6 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     public BaseCalendarEditionController getEditionController() {
         return baseCalendarEditionController;
-    }
-
-    @SuppressWarnings("unused")
-    private CriterionsController getCriterionsController() {
-        return (CriterionsController) editWindow.getFellow(
-                "criterionsContainer").getAttribute(
-                "assignedCriterionsController");
     }
 
 }

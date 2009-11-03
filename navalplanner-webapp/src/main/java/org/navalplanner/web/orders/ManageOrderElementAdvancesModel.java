@@ -341,19 +341,6 @@ public class ManageOrderElementAdvancesModel implements
         return null;
     }
 
-    private boolean yetExistAdvanceMeasurement(
-            DirectAdvanceAssignment advanceAssignment,
-            AdvanceMeasurement advanceMeasurement){
-        for (AdvanceMeasurement advance : advanceAssignment
-                .getAdvanceMeasurements()) {
-            if ((advance.getVersion() != null)
-                    && (advance.getId() == advanceMeasurement.getId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Transactional(readOnly = true)
     private void addAdvanceAssignment(
             DirectAdvanceAssignment newAdvanceAssignment)
@@ -366,12 +353,6 @@ public class ManageOrderElementAdvancesModel implements
         if (advanceAssignment != null) {
             orderElement.removeAdvanceAssignment(advanceAssignment);
         }
-    }
-
-    private void removeAdvanceMeasurement(AdvanceMeasurement advanceMeasurement){
-        DirectAdvanceAssignment advanceAssignment = (DirectAdvanceAssignment) advanceMeasurement
-                .getAdvanceAssignment();
-        advanceAssignment.getAdvanceMeasurements().remove(advanceMeasurement);
     }
 
     @Override

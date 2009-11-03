@@ -150,16 +150,6 @@ public class WorkerSearchController extends GenericForwardComposer {
         return result;
     }
 
-    /**
-     * Refresh listBoxWorkers with new {@link Worker} results
-     *
-     * @param workers
-     *            array of {@link Worker}
-     */
-    private void refreshListBoxWorkers(Worker[] workers) {
-        listBoxWorkers.setModel(new SimpleListModel(workers));
-    }
-
     private void refreshListBoxWorkers(List<Worker> workers) {
         listBoxWorkers.setModel(new SimpleListModel(workers));
     }

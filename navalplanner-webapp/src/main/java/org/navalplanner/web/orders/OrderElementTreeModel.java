@@ -223,24 +223,6 @@ public class OrderElementTreeModel {
         return false;
     }
 
-    /**
-     * Returns true if parent is an ancestor of child
-     *
-     * @param parent
-     * @param child
-     * @return
-     */
-    private boolean isAncestor(OrderElement parent, OrderElement child) {
-        OrderElement orderElement = child.getParent();
-        while (orderElement != null) {
-            if (orderElement.equals(parent)) {
-                return true;
-            }
-            orderElement = orderElement.getParent();
-        }
-        return false;
-    }
-
     public void up(OrderElement node) {
         IOrderLineGroup orderLineGroup = asOrderLineGroup(tree.getParent(node));
         orderLineGroup.up(node);
