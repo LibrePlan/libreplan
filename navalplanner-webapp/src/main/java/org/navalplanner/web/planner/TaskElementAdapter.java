@@ -199,7 +199,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 hours = orderElement.getWorkHours();
             } else {
                 advancePercentage = new BigDecimal(0);
-                hours = new Integer(0);
+                hours = Integer.valueOf(0);
             }
 
             Integer advanceHours = advancePercentage.multiply(

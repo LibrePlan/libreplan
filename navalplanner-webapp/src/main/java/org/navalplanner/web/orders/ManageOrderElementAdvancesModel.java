@@ -521,7 +521,7 @@ public class ManageOrderElementAdvancesModel implements
                     }
                     LocalDate date = advanceMeasurement.getDate();
                     if ((value != null) && (date != null)) {
-                        xymodel.addValue(title, new Long(date
+                        xymodel.addValue(title, Long.valueOf(date
                                 .toDateTimeAtStartOfDay().getMillis()), value);
                     }
                 }

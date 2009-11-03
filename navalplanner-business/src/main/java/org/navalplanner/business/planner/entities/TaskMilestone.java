@@ -109,7 +109,7 @@ public class TaskMilestone extends TaskElement implements IValidable {
 
     @Override
     public Integer defaultWorkHours() {
-        return new Integer(0);
+        return Integer.valueOf(0);
     }
 
     @Override
