@@ -265,29 +265,28 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Transactional(readOnly = true)
         public String getTooltipText() {
 
-            Set<Label> labels;
+            StringBuilder result = new StringBuilder();
+            result.append("Advance: ")
+                  .append(getAdvancePercentage().multiply(new BigDecimal(100)))
+                  .append("% , ");
 
-            String tooltip = "Advance: "
-                    + getAdvancePercentage().multiply(new BigDecimal(100))
-                            .toString() + "% , ";
-            tooltip += "Hours invested: "
-                    + getHoursAdvancePercentage().multiply(new BigDecimal(100))
-                            .toString() + "% <br/>";
+            result.append("Hours invested: ")
+                  .append(getHoursAdvancePercentage()
+                            .multiply(new BigDecimal(100)))
+                  .append("% <br/>");
 
             if (taskElement.getOrderElement() != null) {
-                labels = taskElement.getOrderElement().getLabels();
+                Set<Label> labels = taskElement.getOrderElement().getLabels();
 
-                if (labels.size() != 0) {
-                    tooltip += "Labels: ";
+                if (!labels.isEmpty()) {
+                    result.append("Labels: ");
                     for (Label label : labels) {
-                        tooltip += label.getName() + ", ";
+                        result.append(label.getName()).append(", ");
                     }
-                    tooltip = (tooltip.substring(0, tooltip.length() - 2))
-                            + ".";
+                    result.delete(result.length() - 2, result.length());
                 }
             }
-
-            return tooltip;
+            return result.toString();
         }
     }
 
