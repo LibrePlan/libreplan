@@ -96,7 +96,7 @@ public class NewDataSortableGrid extends Grid implements AfterCompose {
         }
 
         ListModelExt model = (ListModelExt) getModel();
-        if (lastSortedColumnAscending == true) {
+        if (lastSortedColumnAscending) {
             model.sort(lastSortedColumn.getSortAscending(),
                     lastSortedColumnAscending);
         } else {
