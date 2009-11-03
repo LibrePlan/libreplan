@@ -21,9 +21,10 @@
 package org.navalplanner.web.resources.search;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -216,12 +217,12 @@ public class WorkerSearchController extends GenericForwardComposer {
      * @return
      */
     public TreeModel getCriterions() {
-        HashMap<CriterionType, Set<Criterion>> criterions = workerSearchModel
+        Map<CriterionType, Set<Criterion>> criterions = workerSearchModel
                 .getCriterions();
 
         List<CriterionTreeNode> rootList = new ArrayList<CriterionTreeNode>();
-        for (CriterionType key : criterions.keySet()) {
-            rootList.add(asNode(key, criterions.get(key)));
+        for (Entry<CriterionType, Set<Criterion>> entry : criterions.entrySet()) {
+            rootList.add(asNode(entry.getKey(), entry.getValue()));
         }
         CriterionTreeNode root = new CriterionTreeNode("Root", rootList);
         return new SimpleTreeModel(root);

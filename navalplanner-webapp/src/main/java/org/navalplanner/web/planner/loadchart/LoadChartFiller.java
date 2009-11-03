@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -284,21 +285,19 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
     protected SortedMap<LocalDate, Integer> groupByWeek(
             SortedMap<LocalDate, Integer> map) {
         SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
-
-        for (LocalDate day : map.keySet()) {
+        for (Entry<LocalDate, Integer> entry : map.entrySet()) {
+            LocalDate day = entry.getKey();
             LocalDate key = getThursdayOfThisWeek(day);
-
+            Integer hours = entry.getValue() == null ? 0 : entry.getValue();
             if (result.get(key) == null) {
-                result.put(key, map.get(day));
+                result.put(key, hours);
             } else {
-                result.put(key, result.get(key) + map.get(day));
+                result.put(key, result.get(key) + hours);
             }
         }
-
         for (LocalDate day : result.keySet()) {
             result.put(day, result.get(day) / 7);
         }
-
         return result;
     }
 

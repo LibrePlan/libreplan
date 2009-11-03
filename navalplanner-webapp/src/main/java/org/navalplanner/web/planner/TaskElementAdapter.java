@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -240,13 +241,10 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             if (daysMap.isEmpty()) {
                 return null;
             }
-
-            for (LocalDate day : daysMap.keySet()) {
-                lastDay = day;
-                hoursLastDay = daysMap.get(day);
-
+            for (Entry<LocalDate, Integer> entry : daysMap.entrySet()) {
+                lastDay = entry.getKey();
+                hoursLastDay = entry.getValue();
                 count += hoursLastDay;
-
                 if (count >= hours) {
                     limitReached = true;
                     break;
