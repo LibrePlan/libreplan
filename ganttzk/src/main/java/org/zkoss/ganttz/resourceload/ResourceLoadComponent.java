@@ -47,7 +47,7 @@ public class ResourceLoadComponent extends XulElement {
 
     private final LoadTimeLine loadLine;
     private final TimeTracker timeTracker;
-    private IZoomLevelChangedListener zoomChangedListener;
+    private transient IZoomLevelChangedListener zoomChangedListener;
 
     private ResourceLoadComponent(final TimeTracker timeTracker,
             final LoadTimeLine loadLine) {

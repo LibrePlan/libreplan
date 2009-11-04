@@ -99,11 +99,11 @@ public class CriterionSatisfactionDTO implements INewObject {
     }
 
     public Date getStartDate() {
-        return new Date(startDate.getTime());
+        return startDate != null ? new Date(startDate.getTime()) : null;
     }
 
     public Date getEndDate() {
-        return new Date(endDate.getTime());
+        return endDate != null ? new Date(endDate.getTime()) : null;
     }
 
     public CriterionSatisfaction getCriterionSatisfaction() {

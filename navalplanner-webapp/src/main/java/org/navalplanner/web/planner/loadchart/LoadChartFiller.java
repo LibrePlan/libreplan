@@ -295,8 +295,9 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
                 result.put(key, result.get(key) + hours);
             }
         }
-        for (LocalDate day : result.keySet()) {
-            result.put(day, result.get(day) / 7);
+        for (Entry<LocalDate, Integer> entry : result.entrySet()) {
+            LocalDate day = entry.getKey();
+            result.put(entry.getKey(), result.get(day) / 7);
         }
         return result;
     }
