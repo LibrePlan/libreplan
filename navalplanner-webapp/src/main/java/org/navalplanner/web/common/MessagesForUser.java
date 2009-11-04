@@ -116,12 +116,17 @@ public class MessagesForUser extends GenericForwardComposer implements
 
     @Override
     public void invalidValue(InvalidValue invalidValue, ICustomLabelCreator customLabelCreator) {
-        addMessage(customLabelCreator.createLabelFor(invalidValue));
+        if (customLabelCreator == null) {
+            invalidValue(invalidValue);
+        } else {
+            addMessage(Level.WARNING, customLabelCreator
+                    .createLabelFor(invalidValue));
+        }
     }
 
     @Override
     public void invalidValue(InvalidValue invalidValue) {
-        addMessage(createLabelFor(invalidValue));
+        addMessage(Level.WARNING, createLabelFor(invalidValue));
     }
 
     public static Label createLabelFor(InvalidValue invalidValue) {
@@ -133,26 +138,31 @@ public class MessagesForUser extends GenericForwardComposer implements
 
     @Override
     public void showMessage(Level level, String message) {
-        final Label label = new Label(message);
+        addMessage(level, new Label(message));
+    }
+
+    private void addMessage(Level level, final Component label) {
+        final Div messageEntry = createMessage(level, label);
+        container.appendChild(messageEntry);
+        Events.echoEvent(DETACH_EVENT_NAME, messageEntry, "");
+        messageEntry.addEventListener(DETACH_EVENT_NAME, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                pendingToDetach.offer(new ComponentHolderTimestamped(
+                        messageEntry));
+            }
+        });
+    }
+
+    private Div createMessage(Level level, final Component label) {
         Div div = new Div();
         Image tick = new Image("/common/img/ico_ok.png");
         tick.setSclass("tick");
         div.setSclass("message_" + level.toString());
         div.appendChild(tick);
         div.appendChild(label);
-        addMessage(div);
-    }
-
-    private void addMessage(final Component label) {
-        container.appendChild(label);
-        Events.echoEvent(DETACH_EVENT_NAME, label, "");
-        label.addEventListener(DETACH_EVENT_NAME, new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                pendingToDetach.offer(new ComponentHolderTimestamped(label));
-            }
-        });
+        return div;
     }
 
     @Override
@@ -164,18 +174,17 @@ public class MessagesForUser extends GenericForwardComposer implements
         }
     }
 
+
     @Override
     public void showInvalidValues(ValidationException e) {
-        for (InvalidValue invalidValue : e.getInvalidValues()) {
-            invalidValue(invalidValue);
-        }
-        if (!StringUtils.isEmpty(e.getMessage())) {
-            showMessage(Level.INFO, e.getMessage());
-        }
+        showInvalidValues(e, null);
     }
 
     @Override
     public void showInvalidValues(ValidationException e, ICustomLabelCreator customLabelCreator) {
+        if (!StringUtils.isEmpty(e.getMessage())) {
+            showMessage(Level.WARNING, e.getMessage());
+        }
         for (InvalidValue invalidValue : e.getInvalidValues()) {
             invalidValue(invalidValue, customLabelCreator);
         }
