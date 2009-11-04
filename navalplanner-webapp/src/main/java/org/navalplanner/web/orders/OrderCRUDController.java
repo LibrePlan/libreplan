@@ -54,6 +54,33 @@ import org.zkoss.zul.api.Window;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class OrderCRUDController extends GenericForwardComposer {
 
+    private final class LabelCreatorForInvalidValues implements
+            IMessagesForUser.ICustomLabelCreator {
+        @Override
+        public Component createLabelFor(
+                InvalidValue invalidValue) {
+            if (invalidValue.getBean() instanceof OrderElement) {
+                Label result = new Label();
+
+                String orderElementName;
+                if (invalidValue.getBean() instanceof Order) {
+                    orderElementName = _("Order");
+                } else {
+                    orderElementName = ((OrderElement) invalidValue
+                            .getBean()).getName();
+                }
+
+                result.setValue(orderElementName + " "
+                        + invalidValue.getPropertyName() + ": "
+                        + invalidValue.getMessage());
+                return result;
+            } else {
+                return MessagesForUser
+                        .createLabelFor(invalidValue);
+            }
+        }
+    }
+
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(OrderCRUDController.class);
 
@@ -157,52 +184,24 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void saveAndExit() {
-        save();
-        goToList();
+        final boolean couldSave = save();
+        if (couldSave) {
+            goToList();
+        }
     }
 
-    private void save() {
+    private boolean save() {
         if (!manageOrderElementAdvancesController.save()) {
             selectTab("tabAdvances");
-            return;
         }
-
         try {
             orderModel.save();
             messagesForUser.showMessage(Level.INFO, _("Order saved"));
+            return true;
         } catch (ValidationException e) {
-            if (e.getInvalidValues().length == 0) {
-                messagesForUser.showMessage(Level.INFO, e.getMessage());
-            } else {
-                messagesForUser.showInvalidValues(e,
-                        new IMessagesForUser.ICustomLabelCreator() {
-
-                            @Override
-                            public Component createLabelFor(
-                                    InvalidValue invalidValue) {
-                                if (invalidValue.getBean() instanceof OrderElement) {
-                                    Label result = new Label();
-
-                                    String orderElementName;
-                                    if (invalidValue.getBean() instanceof Order) {
-                                        orderElementName = _("Order");
-                                    } else {
-                                        orderElementName = ((OrderElement) invalidValue
-                                                .getBean()).getName();
-                                    }
-
-                                    result.setValue(orderElementName + " "
-                                            + invalidValue.getPropertyName()
-                                            + ": " + invalidValue.getMessage());
-                                    return result;
-                                } else {
-                                    return MessagesForUser
-                                            .createLabelFor(invalidValue);
-                                }
-                    }
-                });
-            }
+            messagesForUser.showInvalidValues(e, new LabelCreatorForInvalidValues());
         }
+        return false;
     }
 
     private void selectTab(String str) {
