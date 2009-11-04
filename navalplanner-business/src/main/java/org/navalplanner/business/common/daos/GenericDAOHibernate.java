@@ -85,7 +85,9 @@ public class GenericDAOHibernate<E, PK extends Serializable> implements
         getSession().saveOrUpdate(entity);
     }
 
+    @SuppressWarnings("unchecked")
     private void checkIsValid(E entity) throws ValidationException {
+        Class<E> entityClass = (Class<E>) entity.getClass();
         ClassValidator<E> classValidator = new ClassValidator<E>(entityClass);
         InvalidValue[] invalidValues = classValidator.getInvalidValues(entity);
         if (invalidValues.length > 0) {

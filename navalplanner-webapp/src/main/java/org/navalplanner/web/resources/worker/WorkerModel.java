@@ -33,8 +33,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
@@ -79,14 +77,10 @@ public class WorkerModel implements IWorkerModel {
             PredefinedCriterionTypes.LEAVE,
             PredefinedCriterionTypes.WORK_RELATIONSHIP };
     private Worker worker;
-    private ClassValidator<Worker> workerValidator;
 
     private final ICriterionDAO criterionDAO;
 
     private IMultipleCriterionActiveAssigner localizationsAssigner;
-
-    private ClassValidator<BaseCalendar> baseCalendarValidator = new ClassValidator<BaseCalendar>(
-            BaseCalendar.class);
 
     @Autowired
     @Qualifier("subclass")
@@ -101,7 +95,6 @@ public class WorkerModel implements IWorkerModel {
         Validate.notNull(resourceDAO);
         Validate.notNull(criterionDAO);
         this.resourceDAO = resourceDAO;
-        this.workerValidator = new ClassValidator<Worker>(Worker.class);
         this.criterionDAO = criterionDAO;
     }
 
@@ -110,11 +103,6 @@ public class WorkerModel implements IWorkerModel {
     public void save() throws ValidationException {
         if (worker.getCalendar() != null) {
             baseCalendarModel.checkInvalidValuesCalendar(worker.getCalendar());
-        }
-        InvalidValue[] invalidValues = workerValidator
-                .getInvalidValues(getWorker());
-        if (invalidValues.length > 0) {
-            throw new ValidationException(invalidValues);
         }
         getLocalizationsAssigner().applyChanges();
         if(assignedCriterionsModel != null){
