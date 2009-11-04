@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -62,6 +63,12 @@ public class Task extends TaskElement {
      */
     public Task() {
 
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "order element associated to a task must be not null")
+    private boolean theOrderElementMustBeNotNull() {
+        return getOrderElement() != null;
     }
 
     private Task(HoursGroup hoursGroup) {

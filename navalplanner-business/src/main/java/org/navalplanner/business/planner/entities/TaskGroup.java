@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.AssertTrue;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderLine;
 
@@ -48,6 +49,12 @@ public class TaskGroup extends TaskElement {
      */
     public TaskGroup() {
 
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "order element associated to a task group must be not null")
+    private boolean theOrderElementMustBeNotNull() {
+        return getOrderElement() != null;
     }
 
     public void addTaskElement(TaskElement task) {
