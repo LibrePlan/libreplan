@@ -32,8 +32,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
@@ -82,9 +80,6 @@ public class OrderModel implements IOrderModel {
     private IOrderDAO orderDAO;
 
     private Order order;
-
-    private ClassValidator<Order> orderValidator = new ClassValidator<Order>(
-            Order.class);
 
     private OrderElementTreeModel orderElementTreeModel;
 
@@ -218,11 +213,6 @@ public class OrderModel implements IOrderModel {
     @Transactional
     public void save() throws ValidationException {
         reattachCriterions();
-        InvalidValue[] invalidValues = orderValidator.getInvalidValues(order);
-        if (invalidValues.length > 0) {
-            throw new ValidationException(invalidValues);
-        }
-
         order.checkValid();
         this.orderDAO.save(order);
         deleteOrderElementNotParent();

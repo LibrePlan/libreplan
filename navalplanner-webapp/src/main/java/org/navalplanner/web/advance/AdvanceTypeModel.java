@@ -26,8 +26,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -48,9 +46,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdvanceTypeModel implements IAdvanceTypeModel {
 
     private AdvanceType advanceType;
-
-    private ClassValidator<AdvanceType> advanceTypeValidator = new ClassValidator<AdvanceType>(
-            AdvanceType.class);
 
     @Autowired
     private IAdvanceTypeDAO advanceTypeDAO;
@@ -104,11 +99,6 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
     @Override
     @Transactional
     public void save() throws ValidationException {
-        InvalidValue[] invalidValues = advanceTypeValidator
-                .getInvalidValues(advanceType);
-        if (invalidValues.length > 0) {
-            throw new ValidationException(invalidValues);
-        }
         advanceTypeDAO.save(advanceType);
         checkCanBeModified(advanceType);
     }

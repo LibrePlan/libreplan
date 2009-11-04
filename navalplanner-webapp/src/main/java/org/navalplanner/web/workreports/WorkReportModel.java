@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
@@ -64,12 +62,6 @@ public class WorkReportModel implements IWorkReportModel {
     private IWorkerDAO workerDAO;
 
     private WorkReport workReport;
-
-    private ClassValidator<WorkReport> workReportValidator = new ClassValidator<WorkReport>(
-            WorkReport.class);
-
-    private ClassValidator<WorkReportLine> workReportLineValidator = new ClassValidator<WorkReportLine>(
-            WorkReportLine.class);
 
     private boolean editing = false;
 
@@ -145,22 +137,6 @@ public class WorkReportModel implements IWorkReportModel {
     @Override
     @Transactional
     public void save() throws ValidationException {
-        InvalidValue[] invalidValues = workReportValidator
-                .getInvalidValues(workReport);
-
-        if (invalidValues.length > 0) {
-            throw new ValidationException(invalidValues);
-        }
-
-        // Check WorkReportLines
-        for (WorkReportLine workReportLine : workReport.getWorkReportLines()) {
-            invalidValues = workReportLineValidator
-                    .getInvalidValues(workReportLine);
-
-            if (invalidValues.length > 0) {
-                throw new ValidationException(invalidValues);
-            }
-        }
         workReportDAO.save(workReport);
     }
 

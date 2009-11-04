@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 
 /**
  * This class models a worker.
@@ -44,6 +45,7 @@ public class Worker extends Resource {
         return worker;
     }
 
+    @NotNull
     @NotEmpty
     private String firstName;
 

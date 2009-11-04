@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
@@ -62,8 +60,6 @@ public class MachineModel implements IMachineModel {
 
     private Machine machine;
 
-    private ClassValidator<Machine> validator = new ClassValidator<Machine>(Machine.class);
-
     @Autowired
     @Qualifier("subclass")
     private IBaseCalendarModel baseCalendarModel;
@@ -89,10 +85,6 @@ public class MachineModel implements IMachineModel {
     public void confirmSave() throws ValidationException {
         if (machine.getCalendar() != null) {
             baseCalendarModel.checkInvalidValuesCalendar(machine.getCalendar());
-        }
-        InvalidValue[] invalidValues = validator.getInvalidValues(getMachine());
-        if (invalidValues.length > 0) {
-            throw new ValidationException(invalidValues);
         }
         resourceDAO.save(machine);
     }

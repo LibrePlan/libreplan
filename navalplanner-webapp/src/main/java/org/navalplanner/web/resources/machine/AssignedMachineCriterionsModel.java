@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -38,12 +37,6 @@ import org.zkoss.zk.ui.WrongValueException;
 @Service()
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class AssignedMachineCriterionsModel implements IAssignedMachineCriterionsModel {
-
-    private ClassValidator<CriterionSatisfactionDTO> satisfactionDTOValidator = new ClassValidator<CriterionSatisfactionDTO>(
-            CriterionSatisfactionDTO.class);
-
-    private ClassValidator<CriterionSatisfactionDTO> satisfactionValidator = new ClassValidator<CriterionSatisfactionDTO>(
-            CriterionSatisfactionDTO.class);
 
     @Autowired
     private IResourceDAO resourceDAO;
@@ -300,13 +293,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     }
 
     public void save() throws ValidationException {
-        InvalidValue[] invalidValues;
         for (CriterionSatisfactionDTO satisfactionDTO : this.criterionSatisfactionDTOs) {
-            invalidValues = satisfactionValidator
-                    .getInvalidValues(satisfactionDTO);
-            if (invalidValues.length > 0) {
-                throw new ValidationException(invalidValues);
-            }
             save(satisfactionDTO);
         }
     }
@@ -361,12 +348,6 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
         Set<CriterionSatisfactionDTO> listDTOs = new HashSet<CriterionSatisfactionDTO>(
                 criterionSatisfactionDTOs);
         for (CriterionSatisfactionDTO satisfactionDTO : listDTOs) {
-            InvalidValue[] invalidValues;
-            invalidValues = satisfactionDTOValidator
-                    .getInvalidValues(satisfactionDTO);
-            if (invalidValues.length > 0) {
-                throw new ValidationException(invalidValues);
-            }
             Criterion criterion = satisfactionDTO.getCriterionWithItsType()
                     .getCriterion();
             if (checkSameCriterionAndSameInterval(satisfactionDTO)) {

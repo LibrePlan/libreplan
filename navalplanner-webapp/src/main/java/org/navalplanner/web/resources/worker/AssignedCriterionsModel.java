@@ -12,12 +12,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
-import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -41,17 +38,8 @@ import org.zkoss.zk.ui.WrongValueException;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class AssignedCriterionsModel implements IAssignedCriterionsModel {
 
-    private ClassValidator<CriterionSatisfactionDTO> satisfactionDTOValidator = new ClassValidator<CriterionSatisfactionDTO>(
-            CriterionSatisfactionDTO.class);
-
-    private ClassValidator<CriterionSatisfaction> satisfactionValidator = new ClassValidator<CriterionSatisfaction>(
-            CriterionSatisfaction.class);
-
     @Autowired
     private IResourceDAO resourceDAO;
-
-    @Autowired
-    private IWorkerDAO workerDAO;
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
@@ -310,12 +298,6 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
         Set<CriterionSatisfactionDTO> listDTOs = new HashSet<CriterionSatisfactionDTO>(
                 criterionSatisfactionDTOs);
         for (CriterionSatisfactionDTO satisfactionDTO : listDTOs) {
-            InvalidValue[] invalidValues;
-            invalidValues = satisfactionDTOValidator
-                    .getInvalidValues(satisfactionDTO);
-            if (invalidValues.length > 0) {
-                throw new ValidationException(invalidValues);
-            }
             Criterion criterion = satisfactionDTO.getCriterionWithItsType()
                     .getCriterion();
             if (checkSameCriterionAndSameInterval(satisfactionDTO)) {

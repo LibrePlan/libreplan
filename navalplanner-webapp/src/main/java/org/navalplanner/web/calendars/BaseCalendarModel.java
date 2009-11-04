@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
@@ -63,9 +62,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     private Date selectedDate;
 
     protected boolean editing = false;
-
-    private ClassValidator<BaseCalendar> baseCalendarValidator = new ClassValidator<BaseCalendar>(
-            BaseCalendar.class);
 
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
@@ -430,12 +426,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Override
     public void checkInvalidValuesCalendar(BaseCalendar entity)
             throws ValidationException {
-        InvalidValue[] invalidValues = baseCalendarValidator
-        .getInvalidValues(entity);
-        if (invalidValues.length > 0) {
-            throw new ValidationException(invalidValues);
-        }
-
         if (baseCalendarDAO.thereIsOtherWithSameName(entity)) {
             InvalidValue[] invalidValues2 = { new InvalidValue(_(
                     "{0} already exists", entity.getName()),

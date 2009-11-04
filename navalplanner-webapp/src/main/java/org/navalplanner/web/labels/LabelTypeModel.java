@@ -23,11 +23,9 @@ package org.navalplanner.web.labels;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -52,12 +50,6 @@ public class LabelTypeModel implements ILabelTypeModel {
     private ILabelTypeDAO labelTypeDAO;
 
     private LabelType labelType;
-
-    private ClassValidator<LabelType> validatorLabelType = new ClassValidator<LabelType>(
-            LabelType.class);
-
-    private ClassValidator<Label> validatorLabel = new ClassValidator<Label>(
-            Label.class);
 
     public LabelTypeModel() {
 
@@ -92,64 +84,16 @@ public class LabelTypeModel implements ILabelTypeModel {
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
-        ArrayList<InvalidValue> invalidValues = new ArrayList<InvalidValue>();
-
-        // Check properties
-        invalidValues.addAll(checkLabelTypeProperties());
-        invalidValues.addAll(checkLabelsProperties());
-        if (invalidValues.size() > 0) {
-            throw new ValidationException(invalidValues
-                    .toArray(new InvalidValue[0]));
-        }
-
-        // Check elements are unique
-        invalidValues.addAll(checkLabelTypeUnique());
-        invalidValues.addAll(checkLabelsUnique());
-        if (invalidValues.size() > 0) {
-            throw new ValidationException(invalidValues
-                    .toArray(new InvalidValue[0]));
-        }
+        checkLabelTypeUnique();
+        checkLabelsUnique();
 
         labelTypeDAO.save(labelType);
     }
 
-    /**
-     * Check errors in {@link LabelType}
-     *
-     * @return
-     */
-    private List<InvalidValue> checkLabelTypeProperties() {
-        List<InvalidValue> result = new ArrayList<InvalidValue>();
-        result.addAll(Arrays.asList(validatorLabelType
-                .getInvalidValues(labelType)));
-        return result;
-    }
-
-    /**
-     * Check errors in {@link Label}
-     *
-     * @return
-     */
-    private List<InvalidValue> checkLabelsProperties() {
-        List<InvalidValue> result = new ArrayList<InvalidValue>();
-        for (Label label : labelType.getLabels()) {
-            result.addAll(Arrays.asList(validatorLabel
-                            .getInvalidValues(label)));
-        }
-        return result;
-    }
-
-    /**
-     * Check {@link LabelType} name is unique
-     *
-     * @return
-     */
-    private List<InvalidValue> checkLabelTypeUnique() {
-        List<InvalidValue> result = new ArrayList<InvalidValue>();
+    private void checkLabelTypeUnique() {
         if (!labelTypeDAO.isUnique(labelType)) {
-            result.add(createInvalidValue(labelType));
+            throw new ValidationException(createInvalidValue(labelType));
         }
-        return result;
     }
 
     private InvalidValue createInvalidValue(LabelType labelType) {
@@ -164,9 +108,8 @@ public class LabelTypeModel implements ILabelTypeModel {
      * @return
      * @throws ValidationException
      */
-    private List<InvalidValue> checkLabelsUnique() throws ValidationException {
+    private void checkLabelsUnique() throws ValidationException {
         List<InvalidValue> result = new ArrayList<InvalidValue>();
-
         List<Label> labels = new ArrayList<Label>(labelType.getLabels());
         for (int i = 0; i < labels.size(); i++) {
             for (int j = i + 1; j < labels.size(); j++) {
@@ -175,7 +118,9 @@ public class LabelTypeModel implements ILabelTypeModel {
                 }
             }
         }
-        return result;
+        if (!result.isEmpty()) {
+            throw new ValidationException(result.toArray(new InvalidValue[0]));
+        }
     }
 
     private InvalidValue createInvalidValue(Label label) {

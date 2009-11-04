@@ -56,10 +56,9 @@ public class WorkReportLine extends BaseEntity {
 
     private Integer numHours;
 
-    @NotNull
+
     private Resource resource;
 
-    @NotNull
     private OrderElement orderElement;
 
     private WorkReport workReport;
@@ -89,6 +88,7 @@ public class WorkReportLine extends BaseEntity {
         this.numHours = numHours;
     }
 
+    @NotNull
     public Resource getResource() {
         return resource;
     }
@@ -97,6 +97,7 @@ public class WorkReportLine extends BaseEntity {
         this.resource = resource;
     }
 
+    @NotNull
     public OrderElement getOrderElement() {
         return orderElement;
     }

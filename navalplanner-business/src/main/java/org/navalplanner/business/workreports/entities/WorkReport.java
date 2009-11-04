@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -61,6 +62,7 @@ public class WorkReport extends BaseEntity {
 
     private WorkReportType workReportType;
 
+    @Valid
     private Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
 
     /**

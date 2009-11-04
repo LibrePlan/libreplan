@@ -29,8 +29,6 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -56,9 +54,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CriterionsModel_V2 implements ICriterionsModel_V2 {
 
     private static final Log log = LogFactory.getLog(CriterionsModel.class);
-
-    private ClassValidator<CriterionType> criterionTypeValidator = new ClassValidator<CriterionType>(
-            CriterionType.class);
 
     @Autowired
     private ICriterionDAO criterionDAO;
@@ -161,11 +156,6 @@ public class CriterionsModel_V2 implements ICriterionsModel_V2 {
     @Override
     @Transactional
     public void saveCriterionType() throws ValidationException {
-        InvalidValue[] invalidValues = criterionTypeValidator
-                .getInvalidValues(criterionType);
-        if (invalidValues.length > 0) {
-            throw new ValidationException(invalidValues);
-        }
         criterionTreeModel.saveCriterions(criterionType);
         criterionTypeDAO.save(criterionType);
     }
