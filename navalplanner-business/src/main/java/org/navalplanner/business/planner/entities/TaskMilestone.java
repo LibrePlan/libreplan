@@ -26,16 +26,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.AssertTrue;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.navalplanner.business.common.IValidable;
-import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class TaskMilestone extends TaskElement implements IValidable {
+public class TaskMilestone extends TaskElement {
 
     public static TaskMilestone create() {
         TaskMilestone milestone = new TaskMilestone();
@@ -112,12 +111,10 @@ public class TaskMilestone extends TaskElement implements IValidable {
         return Integer.valueOf(0);
     }
 
-    @Override
-    public void checkValid() throws ValidationException {
-        if (super.getOrderElement() != null) {
-            throw new ValidationException("Not null milestone orderelement");
-        }
-
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "order element associated to a milestone must be null")
+    private boolean theOrderElementMustBeNull() {
+        return getOrderElement() == null;
     }
 
     @Override

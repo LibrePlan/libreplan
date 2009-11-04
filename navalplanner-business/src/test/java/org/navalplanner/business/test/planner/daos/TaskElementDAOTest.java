@@ -109,7 +109,6 @@ public class TaskElementDAOTest {
         order.setCode("code");
         order.add(orderLine);
         try {
-            order.checkValid();
             orderDAO.save(order);
             sessionFactory.getCurrentSession().flush();
         } catch (ValidationException e) {
