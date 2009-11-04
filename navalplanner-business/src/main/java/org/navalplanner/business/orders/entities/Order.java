@@ -25,8 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.navalplanner.business.common.IValidable;
-import org.navalplanner.business.common.exceptions.ValidationException;
+import org.hibernate.validator.AssertTrue;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -37,7 +36,7 @@ import org.navalplanner.business.resources.entities.Resource;
  * It represents an {@link Order} with its related information. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Order extends OrderLineGroup implements IValidable {
+public class Order extends OrderLineGroup {
 
     public static Order create() {
         Order order = new Order();
@@ -104,22 +103,27 @@ public class Order extends OrderLineGroup implements IValidable {
         return isScheduled();
     }
 
-    @Override
-    public void checkValid() throws ValidationException {
-        if (this.getInitDate() == null) {
-            throw new ValidationException("initDate must not be null");
-        }
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "the order must have a init date")
+    private boolean theOrderMustHaveStartDate() {
+        return getInitDate() != null;
+    }
 
-        if (this.isEndDateBeforeStart()) {
-            throw new ValidationException("endDate must be after startDate");
-        }
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "end date must be after start date")
+    private boolean theEndDateMustBeAfterStart() {
+        return !this.isEndDateBeforeStart();
+    }
 
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "At least one HoursGroup is needed for each OrderElement")
+    private boolean atLeastOneHoursGroupForEachOrderElement() {
         for (OrderElement orderElement : this.getOrderElements()) {
             if (!orderElement.checkAtLeastOneHoursGroup()) {
-                throw new ValidationException(
-                        "At least one HoursGroup is needed for each OrderElement");
+                return false;
             }
         }
+        return true;
     }
 
     public List<DayAssignment> getDayAssignments() {

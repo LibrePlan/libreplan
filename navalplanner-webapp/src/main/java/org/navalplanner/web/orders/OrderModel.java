@@ -213,7 +213,6 @@ public class OrderModel implements IOrderModel {
     @Transactional
     public void save() throws ValidationException {
         reattachCriterions();
-        order.checkValid();
         this.orderDAO.save(order);
         deleteOrderElementNotParent();
     }
