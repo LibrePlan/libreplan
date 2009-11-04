@@ -132,8 +132,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         final URLHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
         handler.registerListener(this, page);
-        // Shows a blank page until createWindow is completely rendered
-        getVisibility().showOnly(null);
+        getVisibility().showOnly(listWindow);
     }
 
     private OnlyOneVisible getVisibility() {

@@ -176,7 +176,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Work report types"),
                     "/workreports/workReportTypes.zul"),
                 subItem(_("Work report list"),
-                    "/workreports/workReport.zul#list"));
+                    "/workreports/workReport.zul"));
 
         topItem(_("Administration"), "/advance/advanceTypes.zul",
                 subItem(_("Manage advances types"),
