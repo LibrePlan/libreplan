@@ -78,7 +78,7 @@ import org.zkoss.zul.api.Window;
 public class WorkReportCRUDController extends GenericForwardComposer implements
         IWorkReportCRUDControllerEntryPoints {
 
-	private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(WorkReportCRUDController.class);
+    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(WorkReportCRUDController.class);
 
     private Window createWindow;
 
@@ -150,14 +150,28 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 : visibility;
     }
 
-    public void save() {
+    public void saveAndExit() {
+        if (save()) {
+            goToList();
+        }
+    }
+
+    public void saveAndContinue() {
+        if (save()) {
+            goToEditForm(getWorkReport());
+        }
+    }
+
+    public boolean save() {
         try {
             workReportModel.save();
             messagesForUser.showMessage(Level.INFO,
                     _("Work report saved"));
+            return true;
         } catch (ValidationException e) {
             showInvalidValues(e);
         }
+        return false;
     }
 
     /**
