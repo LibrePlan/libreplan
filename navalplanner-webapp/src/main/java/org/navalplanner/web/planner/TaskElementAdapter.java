@@ -62,6 +62,28 @@ import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class TaskElementAdapter implements ITaskElementAdapter {
 
+    public static void doTaskInitialization(Order order,
+            final TaskElement taskElement) {
+        if (taskElement.getName() == null) {
+            taskElement.setName(taskElement.getOrderElement().getName());
+        }
+        if (taskElement.getStartDate() == null) {
+            if (order != null) {
+                taskElement.setStartDate(order.getInitDate());
+            } else {
+                taskElement.setStartDate(taskElement.getOrderElement()
+                        .getInitDate());
+            }
+            Validate.notNull(taskElement.getStartDate());
+        }
+        if (taskElement.getEndDate() == null) {
+            Integer workHours = taskElement.getWorkHours();
+            long endDateTime = taskElement.getStartDate().getTime()
+                    + (workHours * 3600l * 1000);
+            taskElement.setEndDate(new Date(endDateTime));
+        }
+    }
+
     private Order order;
 
     @Autowired
@@ -292,25 +314,10 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Override
     public ITaskFundamentalProperties adapt(final TaskElement taskElement) {
-        if (taskElement.getName() == null) {
-            taskElement.setName(taskElement.getOrderElement().getName());
-        }
-        if (taskElement.getStartDate() == null) {
-            if (order != null) {
-                taskElement.setStartDate(order.getInitDate());
-            } else {
-                taskElement.setStartDate(taskElement.getOrderElement()
-                        .getInitDate());
-            }
-        }
-        if (taskElement.getEndDate() == null) {
-            Integer workHours = taskElement.getWorkHours();
-            long endDateTime = taskElement.getStartDate().getTime()
-                    + (workHours * 3600l * 1000);
-            taskElement.setEndDate(new Date(endDateTime));
-        }
+        doTaskInitialization(order, taskElement);
         return new TaskElementWrapper(taskElement);
     }
+
 
     @Override
     public List<DomainDependency<TaskElement>> getIncomingDependencies(

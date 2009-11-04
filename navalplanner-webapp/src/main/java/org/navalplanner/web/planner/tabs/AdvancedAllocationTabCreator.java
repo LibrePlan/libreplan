@@ -43,6 +43,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.allocation.ResourceAllocationsBeingEdited;
@@ -70,7 +71,8 @@ public class AdvancedAllocationTabCreator {
         private final Task task;
         private Set<Resource> associatedResources;
 
-        public ResultReceiver(Task task) {
+        public ResultReceiver(Order order, Task task) {
+            TaskElementAdapter.doTaskInitialization(order, task);
             this.calculatedValue = task.getCalculatedValue();
             this.allocationResult = ResourceAllocationsBeingEdited
                     .createInitialAllocation(task);
@@ -261,29 +263,29 @@ public class AdvancedAllocationTabCreator {
             Order orderReloaded) {
         List<AllocationInput> result = new ArrayList<AllocationInput>();
         for (TaskElement taskElement : orderReloaded.getTaskElements()) {
-            addAllocations(result, taskElement);
+            addAllocations(orderReloaded, result, taskElement);
             if (taskElement instanceof Task) {
                 Task t = (Task) taskElement;
-                result.add(createAllocationInputFor(t));
+                result.add(createAllocationInputFor(orderReloaded, t));
             }
         }
         return result;
     }
 
-    private void addAllocations(List<AllocationInput> result,
-            TaskElement taskElement) {
+    private void addAllocations(Order order,
+            List<AllocationInput> result, TaskElement taskElement) {
         if (taskElement instanceof Task) {
-            result.add(createAllocationInputFor((Task) taskElement));
+            result.add(createAllocationInputFor(order, (Task) taskElement));
         }
         if (!taskElement.isLeaf()) {
             for (TaskElement each : taskElement.getChildren()) {
-                addAllocations(result, each);
+                addAllocations(order, result, each);
             }
         }
     }
 
-    private AllocationInput createAllocationInputFor(Task task) {
-        ResultReceiver resultReceiver = new ResultReceiver(task);
+    private AllocationInput createAllocationInputFor(Order order, Task task) {
+        ResultReceiver resultReceiver = new ResultReceiver(order, task);
         return new AllocationInput(resultReceiver.getAggregate(), task,
                 resultReceiver);
     }
