@@ -103,16 +103,16 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     private String getInfoAdvanceAssignment(
-            DirectAdvanceAssignment advanceAssignment) {
-        if (advanceAssignment == null) {
+            DirectAdvanceAssignment assignment) {
+        if (assignment == null) {
             return "";
         }
-        if ((advanceAssignment.getAdvanceType() == null)
-                || advanceAssignment.getMaxValue() == null) {
+        if ((assignment.getAdvanceType() == null)
+                || assignment.getMaxValue() == null) {
             return "";
         }
-        return _("{0} (max: {1})", advanceAssignment.getAdvanceType()
-                .getUnitName(), advanceAssignment.getMaxValue());
+        return _("{0} (max: {1})", assignment.getAdvanceType()
+                .getUnitName(), assignment.getMaxValue());
     }
 
     @Override
@@ -135,14 +135,16 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public void prepareEditAdvanceMeasurements(AdvanceAssignment advanceAssignment) {
-        if (advanceAssignment instanceof IndirectAdvanceAssignment) {
+    public void prepareEditAdvanceMeasurements(AdvanceAssignment assignment) {
+        if (assignment instanceof IndirectAdvanceAssignment) {
             this.advanceAssignment = ((OrderLineGroup) this.orderElement)
-                    .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advanceAssignment);
+                    .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) assignment);
             this.isIndirectAdvanceAssignment = true;
         } else {
-            this.advanceAssignment = (DirectAdvanceAssignment) advanceAssignment;
+	    if (assignment instanceof DirectAdvanceAssignment) {
+	    this.advanceAssignment = (DirectAdvanceAssignment) assignment;
             this.isIndirectAdvanceAssignment = false;
+	    }
         }
     }
 
@@ -405,7 +407,7 @@ public class ManageOrderElementAdvancesModel implements
     @Override
     public BigDecimal getUnitPrecision(){
         if (this.advanceAssignment == null) {
-            return new BigDecimal(0);
+            return BigDecimal.ZERO;
         }
         return this.advanceAssignment.getAdvanceType().getUnitPrecision();
     }
