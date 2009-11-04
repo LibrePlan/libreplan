@@ -1,0 +1,2206 @@
+# Spanish translations for PACKAGE package
+# Traducciones al español para el paquete PACKAGE.
+# Copyright (C) 2009 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Jacobo Aragunde Pérez <jaragunde@igalia.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-11-04 17:55+0100\n"
+"PO-Revision-Date: 2009-11-04 18:39+0100\n"
+"Last-Translator: Jacobo Aragunde Pérez <jaragunde@igalia.com>\n"
+"Language-Team: Spanish <>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:176
+msgid "Work report types"
+msgstr "Tipos de informe de trabajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_editOrderElement.zul:<button
+#: label="${i18n:_('Back')}" onClick="orderElementController.back()"/>
+msgid "Back"
+msgstr "Atrás"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<label
+#: value="${i18n:_('Customer')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:<column
+#: label="${i18n:_('Customer')}" sort="auto(customer)"
+msgid "Customer"
+msgstr "Cliente"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:181
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_workers.zul:<button
+#: id="adminButton" label="${i18n:_('Administration')}"
+#: disabled="@{controller.workers.changeAssignmentsDisabled}"
+#: onClick="controller.workers.showList(event);"></button>
+msgid "Administration"
+msgstr "Administración"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReport.zul:<window
+#: id="${arg.top_id}" title="${i18n:_('Work report listing')}">
+msgid "Work report listing"
+msgstr "Listado de informes de trabajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<button
+#: label="${i18n:_('Create exception')}"
+msgid "Create exception"
+msgstr "Crear excepción"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_editWorkRelationship.zul:label="${i18n:_('Cancel
+#: and return')}"/>
+msgid "Cancel and return"
+msgstr "Cancelar y volver"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/worker.zul:<edition
+#: top_id="editWindow" title="${i18n:_('Edit worker')}"
+msgid "Edit worker"
+msgstr "Editar trabajador"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions-V2.zul:id="confirmDisabledHierarchy"
+#: title="${i18n:_('Warning')}" sizable="true"
+msgid "Warning"
+msgstr "Advertencia"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:360
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:<column
+#: label="${i18n:_('Operations')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_workers.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_criterionsTree.zul:<treecol
+#: width="150px" align="center"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_list.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_list-V2.zul:<newdatasortablecolumn
+#: width="200px" label="${i18n:_('Operations')}"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_workRelationships.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:<newdatasortablecolumn
+#: width="70px" align="center"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_list.zul:<newdatasortablecolumn
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_listMachines.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_listAdvanceTypes.zul:<newdatasortablecolumn
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_editLabelType.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_listLabelTypes.zul:<newdatasortablecolumn
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<listheader
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<treecol
+#: class="operations"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:<newdatasortablecolumn
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<listheader
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_list.zul:<treecol
+msgid "Operations"
+msgstr "Operaciones"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:label="${i18n:_('Add
+#: criterion')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:label="${i18n:_('Add
+msgid "Add criterion"
+msgstr "Añadir criterio"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:660
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<comboitem
+#: label="${i18n:_('Filter by Label')}"
+msgid "Filter by Label"
+msgstr "Filtrar por etiqueta"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<label
+#: value="${i18n:_('Hours of day')}" />
+msgid "Hours of day"
+msgstr "Horas del día"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<button
+#: label="${i18n:_('Select')}"
+#: onClick="allocationController.onSelectWorkers(event)" />
+msgid "Select"
+msgstr "Seleccionar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AdvancedAllocationController.java:305
+msgid "there must be {0} hours instead of {1}"
+msgstr "debe haber {0} horas en lugar de {1}"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkRelationshipsController.java:154
+msgid ""
+"Time period contains non valid data. Ending data must be older than starting "
+"date"
+msgstr ""
+"El período de tiempo contiene datos inválidos. La fecha de fin debe ser "
+"mayor que la de inicio"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementHours.zul:<panel
+#: title="${i18n:_('Percentage of consumed budget hours / consumed')}">
+msgid "Percentage of consumed budget hours / hours consumed"
+msgstr "Porcentaje de horas de presupuesto consumidas / horas consumidas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<listheader
+#: label="${i18n:_('Show')}"/>
+msgid "Show"
+msgstr "Mostrar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:328
+msgid "Create derived"
+msgstr "Crear derivado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/search/worker_search.zul:<label
+#: value="${i18n:_('Name/NIF')}" />
+msgid "Name/NIF"
+msgstr "Nombre/NIF"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/FormBinder.java:237
+msgid "it must be greater than zero"
+msgstr "debe ser mayor que cero"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/machine/MachineCRUDController.java:236
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/machine/MachineCRUDController.java:247
+msgid "Please, select a calendar"
+msgstr "Por favor, seleccione un calendario"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<listheader
+#: label="${i18n:_('Summary')}" />
+msgid "Summary"
+msgstr "Resumen"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resourceload/resourceload.zul:<?page
+#: title="${i18n:_('Navalpro: Scheduling')}"?>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/advance_allocation.zul:<?page
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/main.zul:<?page
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/resources_use.zul:<?page
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/index.zul:<?page
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<?page
+msgid "Navalpro: Scheduling"
+msgstr "Navalpro: planificación"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_editWorkReport.zul:<label
+#: value="${i18n:_('Place')}:" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReport.zul:<newdatasortablecolumn
+#: label="${i18n:_('Place')}" sort="auto(place)"
+msgid "Place"
+msgstr "Lugar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:179
+msgid "Removed calendar \"{0}\""
+msgstr "Borrado calendario \"{0}\""
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/LabelBandboxFinder.java:53
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AdvancedAllocationController.java:505
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:<column
+#: label="${i18n:_('Name')}" sort="auto(name)" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_editWorkReportType.zul:<label
+#: value="${i18n:_('Name')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_workers.zul:<column
+#: sort="auto(firstName)"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_workers.zul:<listheader
+#: sort="auto(surname)"></listheader>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_criterionsTree.zul:<treecol
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_list.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_list-V2.zul:<newdatasortablecolumn
+#: sort="auto(name)"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/search/worker_search.zul:<listheader
+#: sort="auto"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_editMachine.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_listMachines.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_listAdvanceTypes.zul:<newdatasortablecolumn
+#: sort="auto(unitName)"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_editLabelType.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_editLabelType.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_listLabelTypes.zul:<newdatasortablecolumn
+#: sortDirection="ascending"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/main.zul:${i18n:_('Name')}
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:${i18n:_('Name')}
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<listheader
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<listheader
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_list.zul:<treecol
+msgid "Name"
+msgstr "Nombre"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkRelationshipsController.java:159
+msgid ""
+"Could not save time period. Time period overlaps with another non-compatible "
+"time period"
+msgstr ""
+"No se pudo guardar el período de tiempo. El período se solapa con otro "
+"período de tiempo incompatible"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:<button
+#: id="assignButton" label="${i18n:_('&lt;&lt;')}"></button>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/components/twowayselector.zul:<button
+#: label="${i18n:_('&lt;&lt;')}"
+msgid "&lt;&lt;"
+msgstr "&lt;&lt;"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/AssignedLabelsToOrderElementController.java:135
+msgid "please, select an item"
+msgstr "por favor, seleccione un elemento"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<listheader
+#: label="${i18n:_('Day of week')}" />
+msgid "Day of week"
+msgstr "Día de la semana"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_workers.zul:<column
+#: label="${i18n:_('Surname')}" sort="auto(surname)" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_list.zul:<newdatasortablecolumn
+msgid "Surname"
+msgstr "Apellidos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_editWorkReport.zul:<label
+#: value="${i18n:_('Date')}:" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReport.zul:<newdatasortablecolumn
+#: label="${i18n:_('Date')}" sort="auto(date)"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<listheader
+#: label="${i18n:_('Date')}"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:xAxis="${i18n:_('Date')}"
+#: yAxis= "${i18n:_('Value')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementHours.zul:<column
+msgid "Date"
+msgstr "Fecha"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:229
+msgid "It not could remove the order element "
+msgstr "No se pudo borrar el elemento de pedido "
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<tab
+#: label="${i18n:_('History')}"
+msgid "History"
+msgstr "Historia"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:<button
+#: label="${i18n:_('New work report')}"
+msgid "New work report"
+msgstr "Nuevo informe de trabajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementHours.zul:<panel
+#: title="${i18n:_('Order lines imputation')}">
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementHours.zul:value="${i18n:_('Order
+#: imputation')}:" />
+msgid "Order lines imputation"
+msgstr "Imputación de líneas de pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<panel
+#: title="${i18n:_('Advance assignments')}" border="normal">
+msgid "Advance assignments"
+msgstr "Asignaciones de avances"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/advance_allocation.zul:${i18n:_('From')}:
+#: <datebox /> ${i18n:_('To')}:
+msgid "From"
+msgstr "De"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_ordersTab.zul:<orderElement
+#: top_id="editOrderElement" title="${i18n:_('Edit order element')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_editOrderElement.zul:<window
+#: id="${arg.top_id}"
+msgid "Edit order element"
+msgstr "Editar elemento de pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsMachineController.java:308
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsController.java:325
+msgid "The criterion and its type cannot be null"
+msgstr "El criterio y su tipo no pueden ser nulos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:tooltiptext="${i18n:_('Click
+#: on the icons to execute operation in order element')}"/>
+msgid "Click on the icons to execute operation in the order element"
+msgstr ""
+"Haga click en los iconos para ejecutar la operación en el elemento de pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/advance/AdvanceTypeCRUDController.java:110
+msgid "Value is not valid, the default max value must not be null"
+msgstr "El valor no es válido, el valor máximo por defecto no debe ser nulo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderCRUDController.java:312
+msgid "Create order"
+msgstr "Crear pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsMachineController.java:168
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsMachineController.java:192
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsController.java:191
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsController.java:214
+msgid ""
+"End date is not valid, the new end date must be later the current end date"
+msgstr ""
+"La fecha de fin no es válida, la nueva fecha de fin debe ser posterior a la "
+"actual"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/layout/template.zul:<customMenu
+#: top_id="customMenu" title="${i18n:_('Main menu')}"/>
+msgid "Main menu"
+msgstr "Menú principal"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/search/worker_search.zul:<label
+#: value="${i18n:_('Found workers')}"/>
+msgid "Found workers"
+msgstr "Trabajadores encontrados"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:130
+msgid "cannot include an Advance of the same Advance type twice"
+msgstr "no se puede asignar un avance del mismo tipo dos veces"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/labels/LabelTypeCRUDController.java:224
+msgid "Label saved"
+msgstr "Etiqueta salvada"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<label
+#: value="${i18n:_('Duration')}:" />
+msgid "Duration"
+msgstr "Duración"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<label
+#: value="${i18n:_('Elapsed Days')}" />
+msgid "Elapsed Days"
+msgstr "Días transcurridos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/main.zul:${i18n:_('Start')}
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:${i18n:_('Start')}
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<label
+#: value="${i18n:_('Start')}" />
+msgid "Start"
+msgstr "Comienzo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<button
+#: id="btnDown" label="${i18n:_('Down')}"
+msgid "Down"
+msgstr "Abajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:label="${i18n:_('Save
+#: &amp; Continue')}"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_editLabelType.zul:<button
+#: label="${i18n:_('Save Continue')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<button
+#: onClick="controller.saveAndContinue()" />
+msgid "Save &amp; Continue"
+msgstr "Guardar y continuar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<tab
+#: label="${i18n:_('Label')}" />
+msgid "Label"
+msgstr "Etiqueta"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/_legendOrderPlanner.zul:<n:label>${i18n:_('Capability')}</n:label>
+msgid "Capability"
+msgstr "Capacidad"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/PlanningTabCreator.java:115
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:tooltiptext="${i18n:_('Schedule')}"
+msgid "Schedule"
+msgstr "Planificar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkRelationshipsController.java:163
+msgid "Unexpected: {0}"
+msgstr "Inesperado: {0}"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/main.zul:${i18n:_('Notes')}
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:${i18n:_('Notes')}
+msgid "Notes"
+msgstr "Notas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/AssignedLabelsToOrderElementController.java:142
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_editMachine.zul:constraint="no
+#: empty:${i18n:_('cannot be null or empty')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_editLabelType.zul:constraint="no
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:constraint="no
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:constraint="no
+msgid "cannot be null or empty"
+msgstr "no puede ser nulo o vacío"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:395
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/DetailsOrderElementController.java:553
+msgid "Value is not valid, taking into account the current list of HoursGroup"
+msgstr ""
+"El valor no es válido, teniendo en cuenta la lista actual de HoursGroup"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:<panel
+#: title="${i18n:_('Hours group')}">
+msgid "Hours group"
+msgstr "Grupo de horas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/labels/LabelTypeCRUDController.java:328
+msgid "Delete item. Are you sure?"
+msgstr "Borrar elemento. ¿Está seguro?"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/machine/MachineCRUDController.java:137
+msgid "Edit machine"
+msgstr "Editar máquina"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/main.zul:${i18n:_('End')}
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:${i18n:_('End')}
+msgid "End"
+msgstr "Fin"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_workRelationships.zul:<column
+#: label="${i18n:_('Relationship')}"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_editWorkRelationship.zul:<column
+msgid "Relationship"
+msgstr "Relación"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:149
+msgid "Work report saved"
+msgstr "Informe de trabajo guardado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_calendar.zul:<radio
+#: id="createCopy" label="${i18n:_('Create copy of calendar')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_calendar.zul:<radio
+msgid "Create copy of calendar"
+msgstr "Crear copia del calendario"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionTreeController.java:275
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:562
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:566
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<button
+#: id="btnIndent" label="${i18n:_('Indent')}"
+msgid "Indent"
+msgstr "Indentar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:189
+msgid "Quality management"
+msgstr "Gestión de la calidad"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:<window
+#: id="${arg.top_id}" title="${i18n:_('Orders list')}">
+msgid "Orders list"
+msgstr "Lista de pedidos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/advance/AdvanceTypeCRUDController.java:130
+msgid "Value is not valid, the Precision value must not be null "
+msgstr "Valor inválido, el valor de precisión no debe ser nulo "
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:214
+msgid "Resource cannot be null"
+msgstr "El recurso no puede ser nulo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:382
+msgid "Not working day"
+msgstr "Día no laborable"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:127
+msgid "Base calendar \"{0}\" saved"
+msgstr "Calendario base \"{0}\" salvado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:<tab
+#: visible="false" label="${i18n:_('Locations')}"></tab>
+msgid "Locations"
+msgstr "Ubicaciones"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/advance/AdvanceTypeModel.java:88
+msgid "The advanceType cannot be modified"
+msgstr "El advanceType no puede ser modificado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/ResourceAllocationCommand.java:59
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:title="${i18n:_('Resource
+#: allocation')}" width="600px" visible="false">
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<tab
+#: id="tbResourceAllocation" label="${i18n:_('Resource
+#: image="common/img/ico_bajar.png"/>
+msgid "Resource allocation"
+msgstr "Asignación de recursos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_editLabelType.zul:<panel
+#: title="${i18n:_('Label list')}"
+msgid "Label list"
+msgstr "Lista de etiquetas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:120
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:133
+msgid "spread values are not valid, at least one value should be true"
+msgstr ""
+"los valores de propagación no son válidos, al menos uno debe ser verdadero"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:<label
+#: value="${i18n:_('Create and assign label')}" />
+msgid "Create and assign label"
+msgstr "Crear y asignar etiqueta"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:<comboitem
+#: label="${i18n:_('Current')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:<comboitem
+msgid "Current"
+msgstr "Actual"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderCRUDController.java:246
+msgid "Error on showing removing element: "
+msgstr "Error al mostrar el elemento a borrar: "
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/SaveCommand.java:96
+msgid "Information"
+msgstr "Información"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:label="${i18n:_('Remove
+#: exception')}"
+msgid "Remove exception"
+msgstr "Borrar excepción"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkerCRUDController.java:147
+msgid "Worker saved"
+msgstr "Trabajador guardado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementHours.zul:<panel
+#: title="${i18n:_('Direct imputation')}">
+msgid "Direct imputation"
+msgstr "Imputación directa"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/advanceTypes.zul:<edition
+#: top_id="createWindow" title="${i18n:_('Create new advance type')}"
+msgid "Create new advance type"
+msgstr "Crear un nuevo tipo de avance"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/PlanningTabCreator.java:54
+msgid "Company Scheduling"
+msgstr "Planificación de la compañía"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:186
+msgid "Calendars"
+msgstr "Calendarios"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_createNewVersion.zul:id="createNewVersion"
+#: title="${i18n:_('Create new version')}" >
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:label="${i18n:_('Create
+msgid "Create new version"
+msgstr "Crear versión nueva"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:<label
+#: value="${i18n:_('Mandatory')}" />
+msgid "Mandatory"
+msgstr "Obligatorio"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<listheader
+#: label="${i18n:_('Expiring Date')}" />
+msgid "Expiring Date"
+msgstr "Fecha de expiración"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/SaveCommand.java:96
+msgid "Scheduling saved"
+msgstr "Planificación guardada"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_editWorkReport.zul:<button
+#: label="${i18n:_('Add new row')}"
+msgid "Add new row"
+msgstr "Añadir nueva fila"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:157
+msgid "Derived"
+msgstr "Derivado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<button
+#: label="${i18n:_('Add new advance assignment')}"
+msgid "Add new advance assignment"
+msgstr "Añadir nueva asignación de avance"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionsModel.java:138
+msgid "Could not save new criterion"
+msgstr "No se pudo guardar el nuevo criterio"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkerModel.java:140
+msgid "Worker must be not-null"
+msgstr "El trabajador no debe ser nulo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:description="${i18n:_('Show
+#: all order elements')}" />
+msgid "Show all order elements"
+msgstr "Mostrar todos los elementos de pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionTreeController.java:278
+msgid "Not indent"
+msgstr "No indentar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/machine/MachineCRUDController.java:253
+msgid "Unknow option {0} to create a resource calendar"
+msgstr "Opción desconocida {0} al crear un calendario de recursos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementHours.zul:value="${i18n:_('Imputed
+#: hours'):}" />
+msgid "Imputed hours"
+msgstr "Horas imputadas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:188
+msgid "Responsible cannot be null"
+msgstr "El responsable no puede ser nulo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<label
+#: value="${i18n:_('Required criteria')}:" />
+msgid "Required criteria"
+msgstr "Criterios necesarios"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionsModel.java:133
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/labels/LabelTypeModel.java:101
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/labels/LabelTypeModel.java:128
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/labels/LabelTypeCRUDController.java:307
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarModel.java:431
+msgid "{0} already exists"
+msgstr "{0} ya existe"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/labels/LabelTypeCRUDController.java:152
+msgid "Edit label type"
+msgstr "Editar tipo de etiqueta"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkerCRUDController.java:206
+msgid "Create Worker"
+msgstr "Crear trabajador"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:<label
+#: value="${i18n:_('Code ')}" />
+msgid "Code "
+msgstr "Código"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:<label
+#: class="subtitulo" value="${i18n:_('Non-assigned locations')}" />
+msgid "Non-assigned locations"
+msgstr "Ubicaciones no asignadas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/machine/AssignedMachineCriterionsModel.java:357
+msgid ""
+"The {0} is not valid, criterionType overlaps with other "
+"criterionSatisfaction from the same criterionType"
+msgstr ""
+"{0} no es válido, criterionType se solapa con otro criterionSatisfaction del "
+"mismo criterionType"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/_legendCompanyPlanner.zul:<n:label
+#: class="title">${i18n:_('Chart legend')}</n:label>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/_legendOrderPlanner.zul:<n:label
+msgid "Chart legend"
+msgstr "Leyenda del gráfico"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_criterionsTree.zul:<treecol
+#: width="60px" align="center" label="${i18n:_('Active')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_editAdvanceTypes.zul:<label
+#: value="${i18n:_('Active')}"
+msgid "Active"
+msgstr "Activo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/_legendOrderPlanner.zul:<n:label>${i18n:_('Other
+#: assignments')}</n:label>
+msgid "Other assignments"
+msgstr "Otras asignaciones"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/worker.zul:<editWorkRelationship
+#: top_id="editWorkRelationshipWindow" title="${i18n:_('Edit work
+#: relationship')}"
+msgid "Edit work relationship"
+msgstr "Editar relación de trabajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:<label
+#: value="${i18n:_('First name')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_list.zul:<newdatasortablecolumn
+#: label="${i18n:_('First sort="auto(firstName)"/>
+msgid "First name"
+msgstr "Nombre"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionTreeController.java:261
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:539
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<button
+#: id="btnUnindent" label="${i18n:_('Unindent')}"
+msgid "Unindent"
+msgstr "Desindentar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:<panel
+#: title="${i18n:_('Direct labels')}" border="normal">
+msgid "Direct labels"
+msgstr "Etiquetas directas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<button
+#: id="btnDelete" label="${i18n:_('Delete order element')}"
+msgid "Delete order element"
+msgstr "Borrar elemento de pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReport.zul:<newdatasortablecolumn
+#: label="${i18n:_('Actions')}" />
+msgid "Actions"
+msgstr "Acciones"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/PlanningTabCreator.java:56
+msgid "Order Scheduling"
+msgstr "Planificación de pedidos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/event_error.zul:<window
+#: title="${i18n:__('Error',
+#: requestScope['javax.servlet.error.status_code'])}"
+msgid "Error"
+msgstr "Error"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_editAdvanceTypes.zul:<label
+#: value="${i18n:_('Precision')}" />
+msgid "Precision"
+msgstr "Precisión"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeModel.java:99
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<button
+#: id="btnNew" label="${i18n:_('New order element')}"
+msgid "New order element"
+msgstr "Nuevo elemento de pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderCRUDController.java:238
+msgid "Confirm deleting {0}. Are you sure?"
+msgstr "Confirmar el borrado de {0}. ¿Está seguro?"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsMachineController.java:132
+msgid ""
+"Criterion is not valid, the criterion overlap other criterionSatisfaction "
+"whith same criterion"
+msgstr ""
+"Criterion no es válido, otro criterionSatisfaction se solapa con el mismo "
+"criterion"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:<panel
+#: title="${i18n:_('Indirect labels')}" border="normal">
+msgid "Indirect labels"
+msgstr "Etiquetas indirectas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/FormBinder.java:232
+msgid "it must be no zero or must add more allocations"
+msgstr "no debe ser cero o debe contener más ubicaciones"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:172
+msgid ""
+"The calendar was not removed because it still has children. Some other "
+"calendar is derived from this one."
+msgstr ""
+"El calendario no fue borrado porque aún tiene hijos. Algún otro calendario "
+"deriva de este."
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsController.java:151
+msgid ""
+"Criterion is not valid, it overlaps other criterionSatisfaction with the "
+"same criterion"
+msgstr ""
+"Criterion no válido, otro criterionSatisfaction se solapa con el mismo "
+"criterionType"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:140
+msgid "The order {0} must be scheduled"
+msgstr "El pedido {0} debe ser planificado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/labels/LabelTypeCRUDController.java:165
+msgid "Label type saved"
+msgstr "Tipo de etiqueta salvado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/machine/MachineCRUDController.java:113
+msgid "Create machine"
+msgstr "Crear máquina"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:<listitem
+#: label="${i18n:_('Machine')}" value="MACHINE" />
+msgid "Machine"
+msgstr "Máquina"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/advance/AdvanceTypeCRUDController.java:136
+msgid ""
+"Value is not valid, the Precision value must be less than the defalt max "
+"value "
+msgstr ""
+"El valor no es válido, el valor de precisión debe ser menor que el valor "
+"máximo por defecto "
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/MultipleTabsPlannerController.java:238
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<button
+#: id="btnUp" label="${i18n:_('Up')}"
+msgid "Up"
+msgstr "Arriba"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:<window
+#: id="${arg.top_id}" title="${i18n:_('Work Report types')}">
+msgid "Work Report types"
+msgstr "Tipos de informe de trabajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsController.java:155
+msgid ""
+"CriterionType is not valid, it overlaps other criterionSatisfaction with the "
+"same criterionType"
+msgstr ""
+"CriterionType no válido, otro criterionSatisfaction se solapa con el mismo "
+"criterionType"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/error.zul:<button
+#: id="reload" label="${i18n:_('Reload')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/event_error.zul:<button
+msgid "Reload"
+msgstr "Recargar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_list-V2.zul:<window
+#: id="listing" title="${i18n:_('Criterion type list')}">
+msgid "Criterion type list"
+msgstr "Lista de tipos de criterio"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/SaveCommand.java:186
+msgid "The task '{0}' has some repeated Worker assigned"
+msgstr "La tarea '{0}' tiene asignado algún trabajador repetido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<treecol
+#: label="${i18n:_('Name and description')}" class="name"/>
+msgid "Name and description"
+msgstr "Nombre y descripción"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<panel
+#: title="${i18n:_('Assigned resources')}" border="normal" style="margin-top:
+#: 5px" sclass="assignedresources">
+msgid "Assigned resources"
+msgstr "Recursos asignados"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<button
+#: label="${i18n:_('Add new advance measurement')}"
+msgid "Add new advance measurement"
+msgstr "Añadir nueva medida de avance"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:517
+msgid "Move up"
+msgstr "Mover arriba"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionTreeController.java:292
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_list-V2.zul:tooltiptext="${i18n:_('Not
+#: deletable')}" disabled="@{criterionType.immutable}">
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_listAdvanceTypes.zul:tooltiptext="${i18n:_('Not
+#: disabled="@{advanceType.immutable}"
+#: onClick="controller.confirmRemove(self.parent.parent.value);">
+msgid "Not deletable"
+msgstr "Imborrable"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_workers.zul:<column
+#: label="${i18n:_('NIF')}" sort="auto(nif)" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/search/worker_search.zul:<listheader
+#: sort="auto"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:<label
+#: value="${i18n:_('NIF')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_list.zul:<newdatasortablecolumn
+msgid "NIF"
+msgstr "NIF"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_editWorkReportType.zul:<label
+#: value="${i18n:_('Criterion types')}" />
+msgid "Criterion types"
+msgstr "Tipos de criterio"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<tab
+#: label="${i18n:_('Worker search')}" image="common/img/ico_bajar.png"/>
+msgid "Worker search"
+msgstr "Búsqueda de trabajadores"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_listAdvanceTypes.zul:tooltiptext="${i18n:_('Not
+#: editable')}" disabled="@{advanceType.immutable}"
+#: onClick="controller.goToEditForm(self.parent.parent.value);">
+msgid "Not editable"
+msgstr "No editable"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:167
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/MultipleTabsPlannerController.java:65
+msgid "Scheduling"
+msgstr "Planificación"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementHours.zul:<label
+#: value="${i18n:_('Total')}:" />
+msgid "Total"
+msgstr "Total"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/calendars.zul:id="confirmRemove"
+#: title="${i18n:_('Confirmation')}" sizable="true"
+msgid "Confirmation"
+msgstr "Confirmación"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/search/worker_search.zul:<label
+#: value="${i18n:_('Criteria')}" />
+msgid "Criteria"
+msgstr "Criterios"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/OrdersTabCreator.java:47
+msgid "Order Details"
+msgstr "Detalles de pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementHours.zul:value="${i18n:_('Budget
+#: hours')}:" />
+msgid "Budget hours"
+msgstr "Horas del presupuesto"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:<label
+#: value="${i18n:_('Assign Label')}" />
+msgid "Assign Label"
+msgstr "Asignar etiqueta"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_listLabelTypes.zul:<window
+#: id="${arg.id}" title="${i18n:_('List label types')}">
+msgid "List label types"
+msgstr "Listar tipos de etiqueta"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/OrdersTabCreator.java:45
+msgid "Orders List"
+msgstr "Lista de pedidos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:547
+msgid "OrderElement not found"
+msgstr "OrderElement no encontrado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/machine/MachineCRUDController.java:175
+msgid "Could not save Machine"
+msgstr "No se pudo guardar la máquina"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:<newdatasortablecolumn
+#: label="${i18n:_('State')}" sort="auto(state)" width="70px" align="center"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:<column
+msgid "State"
+msgstr "Estado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/layout/login_v01.zul:<n:td
+#: class="usuario_clave">${i18n:_('Password')}</n:td>
+msgid "Password"
+msgstr "Contraseña"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:<tab
+#: label="${i18n:_('Personal data')}"></tab>
+msgid "Personal data"
+msgstr "Datos personales"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:638
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<combobox
+#: id="cbFilterType" value="${i18n:_('Show all')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<comboitem
+#: label="${i18n:_('Show
+msgid "Show all"
+msgstr "Mostrar todo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:175
+msgid "Work reports"
+msgstr "Informes de trabajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:222
+msgid "Código cannot be null"
+msgstr "Código no puede ser nulo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/entrypoints/URLHandler.java:85
+msgid "{0} annotation required on {1}"
+msgstr "{0} anotación obligatoria en {1}"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_createNewVersion.zul:<label
+#: value="${i18n:_('Valid from')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<listheader
+#: label="${i18n:_('Valid
+msgid "Valid from"
+msgstr "Válido desde"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionAdminController_V2.java:197
+msgid "Fattened Tree {0}"
+msgstr "Árbol aplanado {0}"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkerCRUDController.java:228
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsController.java:61
+msgid "MessagesContainer is needed"
+msgstr "Es necesario un MessagesContainer"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_workRelationships.zul:<column
+#: label="${i18n:_('Ending date')}" width="150px"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:<column
+#: sort="auto(endDate)" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:<newdatasortablecolumn
+#: width="200px" align="center"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_editWorkRelationship.zul:<column
+#: date')}"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<label
+#: value="${i18n:_('Ending
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:<column
+msgid "Ending date"
+msgstr "Fecha de fin"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:380
+msgid "Exception"
+msgstr "Excepción"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderCRUDController.java:286
+msgid "Edit order"
+msgstr "Editar pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_calendar.zul:<calendarEdition
+#: top_id="editCalendarWindow" title="${i18n:_('Edit Calendar')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_calendar.zul:<calendarEdition
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/calendars.zul:<edition
+#: top_id="editWindow"
+msgid "Edit Calendar"
+msgstr "Editar calendario"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/splitting/MergeTaskCommand.java:63
+msgid "Merge"
+msgstr "Combinar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:<comboitem
+#: label="${i18n:_('All')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:<comboitem
+msgid "All"
+msgstr "Todo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/advance_allocation.zul:<button
+#: label="${i18n:_('Accept')}" id="acceptButton" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/main.zul:<button
+#: id="ok"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<button
+#: id="splitOk"
+msgid "Accept"
+msgstr "Aceptar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_list.zul:<window
+#: id="${arg.top_id}" title="${i18n:_('Calendars List')}">
+msgid "Calendars List"
+msgstr "Lista de calendarios"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:constraint="no
+#: empty:${i18n:_('Cannot be empty or null')}" width="500px" /> width="150px"
+msgid "Cannot be empty or null"
+msgstr "No puede ser vacío o nulo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkerCRUDController.java:172
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkerCRUDController.java:182
+msgid "Edit Worker"
+msgstr "Editar trabajador"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:<label
+#: value="${i18n:_('Hierarchy')}" />
+msgid "Hierarchy"
+msgstr "Jerarquía"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<listheader
+#: label="${i18n:_('Calculated')}"/>
+msgid "Calculated"
+msgstr "Calculado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:170
+msgid "Workers List"
+msgstr "Lista de trabajadores"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionsModel_V2.java:188
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionsModel.java:168
+msgid "Criterion must be not-null"
+msgstr "El criterio no debe ser nulo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:<listitem
+#: label="${i18n:_('Worker')}" value="WORKER" />
+msgid "Worker"
+msgstr "Trabajador"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/AssignedCriterionsModel.java:305
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/AssignedCriterionsModel.java:311
+msgid " The "
+msgstr " El "
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<chart
+#: id="chart" title="${i18n:_('Advance Progress')}"
+msgid "Advance Progress"
+msgstr "Progreso de avance"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkRelationshipsController.java:148
+msgid "Time period saved"
+msgstr "Período de tiempo guardado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_editWorkReport.zul:<tab
+#: label="${i18n:_('Report data')}"></tab>
+msgid "Report data"
+msgstr "Datos del informe"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionTreeController.java:264
+msgid "Not Unindent"
+msgstr "No desindentar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<tab
+#: label="${i18n:_('Order elements')}" />
+msgid "Order elements"
+msgstr "Elementos de pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:<label
+#: value="${i18n:_('Order element name')}" />
+msgid "Order element name"
+msgstr "Nombre del elemento de pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:352
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_editMachine.zul:<label
+#: value="${i18n:_('Code')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_listMachines.zul:<column
+#: label="${i18n:_('Code')}" sort="auto(code)"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<treecol
+#: class="code"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:<column
+msgid "Code"
+msgstr "Código"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:<label
+#: class="subtitulo" value="${i18n:_('Filters')}:" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:<label
+msgid "Filters"
+msgstr "Filtros"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionAdminController.java:103
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions.zul:<workers
+#: top_id="workersComponent" title="${i18n:_('Workers')}"
+#: cancel_button_label="${i18n:_('Return')}"/>
+msgid "Workers"
+msgstr "Trabajadores"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:216
+msgid "Advance measurements: "
+msgstr "Medidas de avance: "
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsMachineController.java:188
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsController.java:188
+msgid ""
+"Start date is not valid, the new start date must be lower than the end date"
+msgstr ""
+"La fecha de inicio no es válida, la fecha de inicio nueva debe ser anterior "
+"a la fecha de fin"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_calendar.zul:save_button_label="${i18n:_('Save
+#: changes')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_calendar.zul:save_button_label="${i18n:_('Save
+msgid "Save changes"
+msgstr "Guardar cambios"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:414
+msgid "Hours for an exception day should be greater or equal than zero"
+msgstr "Las horas para un día de excepción deben ser mayores o iguales a cero"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionTreeModel.java:320
+msgid "Already exists other criterion with the same name"
+msgstr "Ya existe otro criterio con el mismo nombre"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_editAdvanceTypes.zul:<label
+#: value="${i18n:_('Unit name')}" />
+msgid "Unit name"
+msgstr "Nombre de la unidad"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/FormBinder.java:242
+msgid "at least one no empty allocation is needed"
+msgstr "es necesaria al menos una asignación no vacía"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/TwoWaySelector.java:67
+msgid "Assigned"
+msgstr "Asignado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:159
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:385
+msgid "Normal"
+msgstr "Normal"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:841
+msgid "Value is not valid, the current value must be less than max value"
+msgstr ""
+"El valor no es válido, el valor actual debe ser menor que el valor máximo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<tab
+#: label="${i18n:_('Details')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_editOrderElement.zul:<tab
+#: id="tabDetails" label="${i18n:_('Details')}"></tab>
+msgid "Details"
+msgstr "Detalles"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:183
+msgid "Date cannot be null"
+msgstr "La fecha no puede ser nula"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<listheader
+#: label="${i18n:_('Value')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:<newdatasortablecolumn
+msgid "Value"
+msgstr "Valor"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:478
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/Autocomplete.java:91
+msgid "Please, select an item"
+msgstr "Por favor, seleccione un elemento"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/calendars.zul:<i18n
+#: value="Do you want to delete &quot;{0}&quot;?"
+msgid "Do you want to delete &quot;{0}&quot;?"
+msgstr "¿Quiere borrar &quot;{0}&quot;?"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/FormBinder.java:250
+msgid ""
+"there are no workers for required criteria. So the generic allocation can't "
+"be done"
+msgstr ""
+"No hay trabajadores con los criterios solicitados. Por tanto, no se puede "
+"hacer la asignación genérica"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<listheader
+#: label="${i18n:_('Parent')}" />
+msgid "Parent"
+msgstr "Padre"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportTypeCRUDController.java:139
+msgid "Work report type saved"
+msgstr "Tipo de informe de trabajo guardado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/splitting/SplitTaskCommand.java:85
+msgid "Split task"
+msgstr "Dividir tarea"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_criterionsTree.zul:<button
+#: id="add_new_criterion" label="${i18n:_('New criterion')}"
+msgid "New criterion"
+msgstr "Criterio nuevo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:178
+msgid "Work report list"
+msgstr "Lista de informes de trabajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:<label
+#: value="${i18n:_('Description')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_editMachine.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_listMachines.zul:<column
+#: label="${i18n:_('Description')}" sort="auto(description)"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:<column
+msgid "Description"
+msgstr "Descripción"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<button
+#: label="${i18n:_('Apply')}" id="applyButton" />
+msgid "Apply"
+msgstr "Aplicar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/_legendOrderPlanner.zul:<n:label>${i18n:_('Load
+#: due to order')}</n:label>
+msgid "Load due to order"
+msgstr "Carga debido a pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/machine/AssignedMachineCriterionsModel.java:354
+msgid ""
+"The {0} can not be assigned to this resource. Its interval overlaps with "
+"other criterion"
+msgstr ""
+"El {0} no se puede asignar a este recurso. Su intervalo se solapa con otro "
+"criterio"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/converters/ConverterFactory.java:63
+msgid "Not found converter for {0}"
+msgstr "No se encontró un conversor para {0}"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:187
+msgid "Label types"
+msgstr "Tipos de etiqueta"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/worker.zul:<workRelationships
+#: top_id="workRelationshipsWindow" title="${i18n:_('Work relationships')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:title="${i18n:_('Work
+#: save_button_label="${i18n:_('Save')}"
+msgid "Work relationships"
+msgstr "Relaciones de trabajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:label="${i18n:_('Delete
+#: hours group')}"
+msgid "Delete hours group"
+msgstr "Borrar grupo de horas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/layout/login_v01.zul:<n:td
+#: class="usuario_clave">${i18n:_('User')}</n:td>
+msgid "User"
+msgstr "Usuario"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/DetailsOrderElementController.java:664
+msgid "At least one HoursGroup is needed"
+msgstr "Es necesario al menos un HoursGroup"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderCRUDController.java:188
+msgid "Order"
+msgstr "Pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:<label
+#: value="${i18n:_('Multiple values per resource')}"/>
+msgid "Multiple values per resource"
+msgstr "Múltiples valores por recurso"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:120
+msgid "Work report deleted"
+msgstr "Informe de trabajo borrado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/labels/LabelTypeCRUDController.java:136
+msgid "Create label type"
+msgstr "Crear tipo de etiqueta"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<label
+#: value="${i18n:_('Select the calendar')}" />
+msgid "Select the calendar"
+msgstr "Seleccionar el calendario"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:<tab
+#: visible="false" label="${i18n:_('Work record')}"></tab>
+msgid "Work record"
+msgstr "Registro de trabajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionAdminController.java:174
+msgid "Criterion saved"
+msgstr "Criterio guardado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/workReport.zul:<edition
+#: top_id="createWindow" title="${i18n:_('Edit work report')}"
+msgid "Edit work report"
+msgstr "Editar informe de trabajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_workRelationships.zul:<column
+#: label="${i18n:_('Starting date')}" width="150px"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:<listheader
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:<column
+#: sort="auto(startDate)" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:<newdatasortablecolumn
+#: width="200px" align="center"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_editWorkRelationship.zul:<column
+#: date')}"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<label
+#: value="${i18n:_('Starting
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:<column
+msgid "Starting date"
+msgstr "Fecha de inicio"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionsModel_V2.java:153
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionsModel.java:113
+msgid "{0} not found type for criterion "
+msgstr "{0} no encontrado tipo para criterio "
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/advance_allocation.zul:<button
+#: label="${i18n:_('-')}" id="zoomDecrease"/>
+msgid "-"
+msgstr "-"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AdvancedAllocationController.java:518
+msgid "Function"
+msgstr "Función"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_workers.zul:<button
+#: label="${i18n:_('Cancel')}" id="cancelList"></button>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions-V2.zul:<button
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:cancel_button_label="${i18n:_('Cancel')}"
+#: />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_editMachine.zul:<button
+#: onClick="controller.cancel();"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/advance_allocation.zul:<button
+#: id="cancelButton"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<button
+#: id="splitCancel"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<button
+#: onClick="controller.cancel()"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/calendars.zul:cancel_button_label="${i18n:_('Cancel')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_createNewVersion.zul:<button
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<listheader
+#: label="${i18n:_('Current value')}"/>
+msgid "Current value"
+msgstr "Valor actual"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderCRUDController.java:263
+msgid "Confirm scheduling {0}. Are you sure?"
+msgstr "Confirmar planificación {0}. ¿Está seguro?"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:172
+msgid "Machines List"
+msgstr "Lista de máquinas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/layout/template.zul:<n:td
+#: class="usuario">${i18n:_('user: admin')}</n:td>
+msgid "user: admin"
+msgstr "usuario: admin"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionAdminController.java:93
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/taskedition/EditTaskCommand.java:69
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:474
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:352
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:tooltiptext="${i18n:_('Edit')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/workReportTypes.zul:<edition
+#: top_id="editWindow" title="${i18n:_('Edit')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReport.zul:tooltiptext="${i18n:_('Edit')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:<tab
+#: label="${i18n:_('Edit')}" width="850"></tab>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_workers.zul:<button
+#: onClick="controller.workers.goToEditPage(self.getParent().getValue());"></button>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions-V2.zul:<edition
+#: top_id="editComponent"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions.zul:<edition
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_list-V2.zul:tooltiptext="${i18n:_('Edit')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/worker.zul:add_button_label="${i18n:_('Edit')}"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_workRelationships.zul:<button
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_list.zul:tooltiptext="${i18n:_('Edit')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_listMachines.zul:tooltiptext="${i18n:_('Edit')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_listAdvanceTypes.zul:tooltiptext="${i18n:_('Edit')}"
+#: disabled="@{advanceType.immutable}"
+#: onClick="controller.goToEditForm(self.parent.parent.value);">
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_editAdvanceTypes.zul:<tab
+#: label="${i18n:_('Edit')}"></tab>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_listLabelTypes.zul:tooltiptext="${i18n:_('Edit')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:tooltiptext="${i18n:_('Edit')}"
+msgid "Edit"
+msgstr "Editar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_list.zul:<window
+#: id="${arg.top_id}" title="${i18n:_('Workers list')}">
+msgid "Workers list"
+msgstr "Lista de trabajadores"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_editWorkReport.zul:<label
+#: value="${i18n:_('Responsible')}:" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReport.zul:<newdatasortablecolumn
+#: label="${i18n:_('Responsible')}" sort="auto(responsible)"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<label
+#: value="${i18n:_('Responsible')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:<column
+msgid "Responsible"
+msgstr "Responsable"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<listheader
+#: label="${i18n:_('By default')}" />
+msgid "By default"
+msgstr "Por defecto"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/calendars.zul:<edition
+#: top_id="createWindow" title="${i18n:_('Create Calendar')}"
+msgid "Create Calendar"
+msgstr "Crear Calendario"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_editMachine.zul:<tab
+#: label="${i18n:_('Configuration')}"></tab>
+msgid "Configuration"
+msgstr "Configuración"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_calendar.zul:label="${i18n:_('Create
+#: calendar from scratch')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_calendar.zul:label="${i18n:_('Create
+msgid "Create calendar from scratch"
+msgstr "Crear calendario desde cero"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:533
+msgid "Go to this calendar"
+msgstr "Ir a este calendario"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:label="${i18n:_('Add
+#: new hours group')}"
+msgid "Add new hours group"
+msgstr "Añadir nuevo grupo de horas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsMachineController.java:137
+msgid ""
+"CriterionType is not valid, the criterionType overlap other "
+"criterionSatisfaction whith same criterionType"
+msgstr ""
+"CriterionType no válido, el criterionType se solapa con otro "
+"criterionSatisfaction con el mismo criterionType"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsMachineController.java:164
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsController.java:211
+msgid ""
+"End date is not valid, the new end date must be greater than the start date"
+msgstr ""
+"Fecha de fin inválida, la fecha de fin nueva debe ser posterior a la fecha "
+"de inicio"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_editAdvanceTypes.zul:<label
+#: value="${i18n:_('Percentage')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<listheader
+#: label="${i18n:_('Percentage')}"/> label="${i18n:_('Percentage')}"
+msgid "Percentage"
+msgstr "Porcentaje"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:tooltiptext="${i18n:_('Total
+#: order element hours')}" />
+msgid "Total order element hours"
+msgstr "Total de horas en elementos de pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<label
+#: value="${i18n:_('Calculation type')}:" />
+msgid "Calculation type"
+msgstr "Tipo de cálculo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:184
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:<panel
+#: id="panelCriterions" title="${i18n:_('Manage criteria')}">
+msgid "Manage criteria"
+msgstr "Gestionar criterios"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/advance/AdvanceTypeCRUDController.java:116
+msgid ""
+"Value is not valid, the Precision value must be less than the defalt max "
+"value and not null"
+msgstr ""
+"El valor no es válido, el valor de precisión debe ser menor que el valor "
+"máximo por defecto y no debe ser nulo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesModel.java:114
+msgid "{0} (max: {1})"
+msgstr "{0} (máx: {1})"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/_legendCompanyPlanner.zul:<n:label>${i18n:_('Total
+#: capability')}</n:label>
+msgid "Total capability"
+msgstr "Capacidad total"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/ResourceAllocationsBeingEdited.java:104
+msgid "{0} already assigned to resource allocation list"
+msgstr "{0} ya está en la lista de asignación de recursos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/calendars.zul:<?page
+#: title="${i18n:_('Navalpro: Calendars')}"?>
+msgid "Navalpro: Calendars"
+msgstr "Navalpro: Calendarios"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:<label
+#: class="subtitulo" value="${i18n:_('Log')}" />
+msgid "Log"
+msgstr "Diario"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/event_error.zul:<button
+#: id="continueWorking" label="${i18n:_('Continue')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/concurrent_modification.zul:<button
+#: id="continue"
+msgid "Continue"
+msgstr "Continuar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/LabelBandboxFinder.java:53
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReport.zul:<newdatasortablecolumn
+#: label="${i18n:_('Type')}" sort="auto(workReportType.name)"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:<label
+#: value="${i18n:_('Type')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_editAdvanceTypes.zul:<label
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<listheader
+#: tooltiptext="Advance unit type"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<label
+msgid "Type"
+msgstr "Tipo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/layout/login_v01.zul:<n:input
+#: name="button" type="submit" class="entrar" id="button"
+#: value="${i18n:_('Sign in')}" />
+msgid "Sign in"
+msgstr "Registrarse"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:description="${i18n:_('Filter
+#: all order elements by label')}" />
+msgid "Filter all order elements by label"
+msgstr "Filtrar todos los elementos de pedido por etiqueta"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/splitting/SplittingController.java:76
+msgid "The sum is not equal: {0}"
+msgstr "La suma no es igual: {0}"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:378
+msgid "Derived exception"
+msgstr "Excepción derivada"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_criterionsTree.zul:<panel
+#: title="${i18n:_('Associated Criteria')}" border="normal">
+msgid "Associated Criteria"
+msgstr "Criterios asignados"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_editOrderElement.zul:<tab
+#: label="${i18n:_('Labels')}"></tab>
+msgid "Labels"
+msgstr "Etiquetas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/GenericAllocationDTO.java:40
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/ResourceAllocationController.java:452
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:<listitem
+#: label="${i18n:_('Generic')}" value="RESOURCE" />
+msgid "Generic"
+msgstr "Genérico"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:847
+msgid "Value is not valid, the Precision value must be exact "
+msgstr "El valor no es válido, el valor de precisión debe ser exacto "
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<label
+#: value="${i18n:_('Total order hours')}:" />
+msgid "Total order hours"
+msgstr "Total de horas de pedido"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:139
+msgid "Couldn't find element: {0}"
+msgstr "No se pudo encontrar el elemento: {0}"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<tab
+#: label="${i18n:_('Data')}" id="dataTab" />
+msgid "Data"
+msgstr "Datos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<treecol
+#: label="${i18n:_('Estimated init')}" class="estimated_init"/>
+msgid "Estimated init"
+msgstr "Inicio estimado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<label
+#: value="${i18n:_('Total hours')}:" /> <label id="totalHoursLabel"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:<label
+#: hours')}"
+msgid "Total hours"
+msgstr "Horas totales"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/advanceTypes.zul:<?page
+#: title="${i18n:_('Navalpro: AdvanceTypes')}"?>
+msgid "Navalpro: AdvanceTypes"
+msgstr "Navalpro: AdvanceTypes"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:<button
+#: id="unassignButton" label="${i18n:_('&gt;&gt;')}"></button>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/components/twowayselector.zul:<button
+#: label="${i18n:_('&gt;&gt;')}"
+msgid "&gt;&gt;"
+msgstr "&gt;&gt;"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_editAdvanceTypes.zul:<label
+#: value="${i18n:_('Default max value')}" />
+msgid "Default max value"
+msgstr "Valor máximo por defecto"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/TwoWaySelector.java:109
+msgid "Unknown attribute '{0}' in class {1}"
+msgstr "Atributo desconocido '{0}' en la clase {1}"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/calendar/CalendarAllocationCommand.java:57
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:title="${i18n:_('Calendar
+#: allocation')}" width="600px"
+msgid "Calendar allocation"
+msgstr "Asignación de calendario"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/ResourceAllocationController.java:272
+msgid "Calculate End Date"
+msgstr "Calcular fecha de fin"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/AssignedLabelsToOrderElementController.java:114
+msgid "please, select a label"
+msgstr "por favor, seleccione una etiqueta"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/AssignedLabelsToOrderElementController.java:117
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/AssignedLabelsToOrderElementController.java:155
+msgid "already assigned"
+msgstr "ya asignado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:<tab
+#: label="${i18n:_('Calendar')}"></tab>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_editMachine.zul:<tab
+msgid "Calendar"
+msgstr "Calendario"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:169
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/worker.zul:<?page
+#: title="${i18n:_('Resources')}"?>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/machines.zul:<?page
+msgid "Resources"
+msgstr "Recursos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resourceload/ResourceLoadModel.java:279
+msgid "[generic all workers]"
+msgstr "[genérico todos los trabajadores]"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionAdminController_V2.java:228
+msgid "CriterionType and its criteria saved"
+msgstr "CriterionType y sus criterios guardados"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:<newdatasortablecolumn
+#: label="${i18n:_('Criterion name')}" sort="auto(criterionAndType)"
+#: sortDirection="ascending"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:<column
+#: sortDirection="ascending" />
+msgid "Criterion name"
+msgstr "Nombre del criterio"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:117
+msgid "values are not valid, the values must not be null"
+msgstr "los valores no son válidos, no deben ser nulos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<label
+#: value="${i18n:_('to')}" />
+msgid "to"
+msgstr "a"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/advance/AdvanceTypeCRUDController.java:154
+msgid ""
+"The name is not valid, there is another advance type with a similar name. "
+msgstr ""
+"El nombre no es válido, ya hay otro tipo de avance con un nombre similar. "
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/DetailsOrderElementController.java:478
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:<listheader
+#: label="${i18n:_('%')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementHours.zul:<label
+#: value="${i18n:_('%')}"
+msgid "%"
+msgstr "%"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_calendar.zul:cancel_button_label="${i18n:_('Remove
+#: calendar')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_calendar.zul:cancel_button_label="${i18n:_('Remove
+msgid "Remove calendar"
+msgstr "Borrar calendario"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:349
+msgid ""
+"Value is not valid.\n"
+" Code cannot contain chars like '_' \n"
+" and should not be empty"
+msgstr ""
+"El valor no es válido.\n"
+" El código no puede contener caracteres como '_' \n"
+" y no debe ser vacío"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/TwoWaySelector.java:78
+msgid "Unassigned"
+msgstr "No asignado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_createNewVersion.zul:<label
+#: value="${i18n:_('Select the date from which new version will be valid')}"
+#: />
+msgid "Select the date from which the new version will be valid"
+msgstr "Seleccione la fecha a partir de la cual la versión nueva será válida"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/advance_allocation.zul:<button
+#: label="${i18n:_('+')}" id="zoomIncrease"/>
+msgid "+"
+msgstr "+"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:350
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementHours.zul:<column
+#: label="${i18n:_('Resource')}" />
+msgid "Resource"
+msgstr "Recurso"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_calendar.zul:<radio
+#: id="createDerived" label="${i18n:_('Create derived calendar')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_calendar.zul:<radio
+msgid "Create derived calendar"
+msgstr "Crear calendario derivado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/entrypoints/RedirectorSynthetiser.java:122
+msgid "Could not load any resource"
+msgstr "No se pudo cargar un recurso"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionAdminController.java:123
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/worker.zul:add_button_label="${i18n:_('Add')}"/>
+msgid "Add"
+msgstr "Añadir"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<tab
+#: id="tabAdvances" label="${i18n:_('Advances')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_editOrderElement.zul:<tab
+#: label="${i18n:_('Advances')}"></tab>
+msgid "Advances"
+msgstr "Avances"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<button
+#: label="${i18n:_('Advance allocation')}"
+msgid "Advance allocation"
+msgstr "Asignación de avances"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkerModel.java:303
+msgid ""
+"You must allow multiple active criteria for this type to use this assignment "
+"strategy"
+msgstr ""
+"Debe permitir múltiples criterios activos para este tipo para usar esta "
+"estrategia de asignación"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:213
+msgid "Advance measurements"
+msgstr "Medidas de avance"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:label="${i18n:_('Close')}"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_editLabelType.zul:<button
+#: label="${i18n:_('Close')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<button
+#: onClick="allocationController.onCloseSelectWorkers()" />
+msgid "Close"
+msgstr "Cerrar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_editMachine.zul:<tab
+#: id="tbMachineData" label="${i18n:_('Machine data')}"></tab>
+msgid "Machine data"
+msgstr "Datos de la máquina"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/DetailsOrderElementController.java:484
+msgid "Fixed percentage"
+msgstr "Porcentaje fijo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:<label
+#: value="${i18n:_('Last name')}" />
+msgid "Last name"
+msgstr "Apellidos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:358
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:371
+msgid "{0} not supported yet"
+msgstr "{0} aún no soportado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/AdvancedAllocationTabCreator.java:160
+msgid "Advanced Allocation"
+msgstr "Asignación de avances"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:363
+msgid "Remove"
+msgstr "Borrar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_editLabelType.zul:<tab
+#: label="${i18n:_('Label type')}"></tab>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:<column
+#: type')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:<newdatasortablecolumn
+#: sort="auto(type.name)"/>
+msgid "Label type"
+msgstr "Tipo de etiqueta"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:340
+msgid "Create copy"
+msgstr "Crear copia"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_workRelationships.zul:<button
+#: label="${i18n:_('New entry')}"
+msgid "New entry"
+msgstr "Entrada nueva"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/ResourcesLoadTabCreator.java:47
+msgid "Resources Load"
+msgstr "Carga de recursos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/ResourcesLoadTabCreator.java:45
+msgid "Overall Resources Load"
+msgstr "Carga global de recursos"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/machine/MachineCRUDController.java:173
+msgid "Machine saved"
+msgstr "Máquina guardada"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_listAdvanceTypes.zul:<window
+#: id="${arg.top_id}" title="${i18n:_('Advance type list')}">
+msgid "Advance type list"
+msgstr "Lista de tipos de avance"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<label
+#: value="${i18n:_('Type of day')}" />
+msgid "Type of day"
+msgstr "Tipo de día"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:354
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AdvancedAllocationController.java:512
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/DetailsOrderElementController.java:476
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<column
+#: label="${i18n:_('Hours')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementDetails.zul:<listheader
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<treecol
+#: class="hours"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementHours.zul:<column
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_edition.zul:<listheader
+msgid "Hours"
+msgstr "Horas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionTreeModel.java:334
+msgid "The name of the criterion is empty."
+msgstr "El nombre del criterio está vacío."
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_editLabelType.zul:<button
+#: label="${i18n:_('New label')}"
+msgid "New label"
+msgstr "Etiqueta nueva"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/SaveCommand.java:201
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/workReport.zul:save_button_label="${i18n:_('Save')}"
+#: cancel_button_label="${i18n:_('Cancel')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/workReportTypes.zul:save_button_label="${i18n:_('Save')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:label="${i18n:_('Save')}"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_workers.zul:<button
+#: label="${i18n:_('Save')}" id="saveList"></button>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions-V2.zul:save_button_label="${i18n:_('Save')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions.zul:save_button_label="${i18n:_('Save')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/worker.zul:save_button_label="${i18n:_('Save')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_editWorkRelationship.zul:label="${i18n:_('Save')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_editMachine.zul:<button
+#: onClick="controller.save();"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/advanceTypes.zul:save_button_label="${i18n:_('Save')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_editLabelType.zul:<button
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<button
+#: onClick="controller.saveAndExit()"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/calendars.zul:save_button_label="${i18n:_('Save')}"
+msgid "Save"
+msgstr "Guardar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/layout/login_v01.zul:<n:td
+#: class="identificacion">${i18n:_('AUTHENTICATE')}</n:td>
+msgid "AUTHENTICATE"
+msgstr "AUTENTICAR"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/error.zul:<button
+#: id="quitSession" label="${i18n:_('Exit session')}"></button>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/event_error.zul:<button
+msgid "Exit session"
+msgstr "Salir de la sesión"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsMachineController.java:299
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/CriterionsController.java:317
+msgid "The start date cannot be null"
+msgstr "La fecha de inicio no puede ser nula"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:<listheader
+#: label="${i18n:_('Group')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:<column
+#: sort="auto(criterion.name)" />
+msgid "Group"
+msgstr "Grupo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_edition-V2.zul:<label
+#: value="${i18n:_('Enabled')}" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_list.zul:<column
+#: label="${i18n:_('Enabled')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_list-V2.zul:<newdatasortablecolumn
+#: width="60px" label="${i18n:_('Enabled')}"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_listAdvanceTypes.zul:<newdatasortablecolumn
+msgid "Enabled"
+msgstr "Activado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<listheader
+#: label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value"/>
+msgid "Max value"
+msgstr "Valor máximo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<treecol
+#: label="${i18n:_('Estimated end')}" class="estimated_end"/>
+msgid "Estimated end"
+msgstr "Fin estimado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/workReportTypes.zul:<button
+#: label="${i18n:_('No')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions-V2.zul:<button
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/advanceTypes.zul:<button
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/calendars.zul:<button
+msgid "No"
+msgstr "No"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/advance/AdvanceTypeCRUDController.java:150
+msgid "The name is not valid, the name must not be null "
+msgstr "El nombre no es válido, no debe ser nulo "
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/advanceTypes.zul:<edition
+#: top_id="editWindow" title="${i18n:_('Edit advance type data')}"
+msgid "Edit advance type data"
+msgstr "Editar datos del tipo de avance"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:<listheader
+#: label="${i18n:_('Spread')}"/>
+msgid "Spread"
+msgstr "Propagación"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportTypeCRUDController.java:191
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionAdminController_V2.java:141
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/advance/AdvanceTypeCRUDController.java:206
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderCRUDController.java:253
+msgid "Removed {0}"
+msgstr "{0} borrado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<label
+#: value="${i18n:_('Assigned hours')}:" />
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<tab
+#: label="${i18n:_('Assigned hours')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_editOrderElement.zul:<tab
+#: hours')}"></tab>
+msgid "Assigned hours"
+msgstr "Horas asignadas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:<tab
+#: label="${i18n:_('Assigned criteria')}"></tab>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:<panel
+#: id="criterionsContainer" title="${i18n:_('Assigned criteria')}"
+#: border="normal">
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:<panel
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_editMachine.zul:<tab
+msgid "Assigned criteria"
+msgstr "Criterios asignados"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/_legendCompanyPlanner.zul:<n:label>${i18n:_('Assigned
+#: load')}</n:label>
+msgid "Assigned load"
+msgstr "Carga asignada"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_listMachines.zul:<window
+#: id="listWindow" title="${i18n:_('Machines list')}">
+msgid "Machines list"
+msgstr "Lista de máquinas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_orderElementTree.zul:<button
+#: label="${i18n:_('Filter')}" style="margin-top: -4px"
+msgid "Filter"
+msgstr "Filtro"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:label="${i18n:_('Resources
+#: Per Day')}" />
+msgid "Resources Per Day"
+msgstr "Recursos por día"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarModel.java:434
+msgid "Could not save new calendar"
+msgstr "No se pudo guardar el calendario nuevo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionsModel_V2.java:187
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionsModel.java:167
+msgid "ResourceType must be not-null"
+msgstr "ResourceType no debe ser nulo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderCRUDController.java:172
+msgid "Order saved"
+msgstr "Pedido salvado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:495
+msgid "Move down"
+msgstr "Mover abajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:label="${i18n:_('Create
+#: &amp; Assign')}"
+msgid "Create &amp; Assign"
+msgstr "Crear y asignar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkRelationshipsController.java:135
+msgid "Couldn't find criterion {0}"
+msgstr "No se pudo encontrar el criterio {0}"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_editWorkReportType.zul:<tab
+#: label="${i18n:_('Report structure')}"></tab>
+msgid "Report structure"
+msgstr "Estructura del informe"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/workReportTypes.zul:<button
+#: label="${i18n:_('Yes')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions-V2.zul:<button
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/advanceTypes.zul:<button
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/calendars.zul:<button
+msgid "Yes"
+msgstr "Sí"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:<label
+#: class="subtitulo" value="${i18n:_('Assigned locations')}" />
+msgid "Assigned locations"
+msgstr "Ubicaciones asignadas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_edition.zul:<tab
+#: id="tabGeneralData" label="${i18n:_('General data')}" />
+msgid "General data"
+msgstr "Datos generales"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/milestone/AddMilestoneCommand.java:80
+msgid "Add Milestone"
+msgstr "Añadir hito"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/labels/LabelTypeCRUDController.java:328
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/workReportTypes.zul:id="confirmRemove"
+#: title="${i18n:_('Confirm')}" width="500px"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions-V2.zul:id="confirmRemove"
+#: sizable="true"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/advanceTypes.zul:id="confirmRemove"
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/planner/order.zul:<button
+#: label="${i18n:_('Assign')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:<button
+msgid "Assign"
+msgstr "Asignar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/ResourceAllocationController.java:266
+msgid "Calculate Number of Hours"
+msgstr "Calcular número de horas"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:label="${i18n:_('Create')}">
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/workReportTypes.zul:<edition
+#: top_id="createWindow" title="${i18n:_('Create')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions-V2.zul:<edition
+#: top_id="createComponent"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions.zul:<edition
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_list-V2.zul:<button
+#: id="show_create_form" onClick="controller.goToCreateForm();"
+#: label="${i18n:_('Create')}">
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_calendar.zul:<button
+#: label="${i18n:_('Create')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_list.zul:label="${i18n:_('Create')}">
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_calendar.zul:<button
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_listMachines.zul:label="${i18n:_('Create')}">
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_listAdvanceTypes.zul:<button
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_listLabelTypes.zul:<button
+#: onClick="controller.goToCreateForm()"/>
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:<button
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_createNewVersion.zul:<button
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/calendars/_list.zul:label="${i18n:_('Create')}">
+msgid "Create"
+msgstr "Crear"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/criterions-V2.zul:<button
+#: label="${i18n:_('Ok')}"
+msgid "Ok"
+msgstr "Aceptar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/worker.zul:<editWorkRelationship
+#: top_id="addWorkRelationshipWindow" title="${i18n:_('Add work
+#: relationship')}"
+msgid "Add work relationship"
+msgstr "Añadir relación de trabajo"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:182
+msgid "Manage advance types"
+msgstr "Gestionar tipos de avance"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/layout/template.zul:<n:td><n:a
+#: href="/navalplanner-webapp/"
+#: class="ruta"><n:strong>${i18n:_('START')}</n:strong></n:a></n:td>
+msgid "START"
+msgstr "INICIO"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/advance/AdvanceTypeCRUDController.java:164
+msgid "Advance type saved"
+msgstr "Tipo de avance guardado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:332
+msgid "The line must have at least one {0} associated"
+msgstr "La línea debe tener al menos un {0} asociado"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/common/layout/template.zul:<n:td><n:a
+#: href="/navalplanner-webapp/common/layout/login_v01.zul"
+#: class="cerrar_sesion">${i18n:_('SIGN OUT')}</n:a></n:td>
+msgid "SIGN OUT"
+msgstr "SALIR"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:578
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionTreeController.java:289
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/ResourceAllocationController.java:483
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:910
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:578
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:tooltiptext="${i18n:_('Delete')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_editWorkReport.zul:<button
+#: label="${i18n:_('Delete')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/workreports/_listWorkReport.zul:tooltiptext="${i18n:_('Delete')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/criterions/_list-V2.zul:tooltiptext="${i18n:_('Delete')}"
+#: disabled="@{criterionType.immutable}"
+#: onClick="controller.confirmRemove(self.parent.parent.value);">
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_workRelationships.zul:<button
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:tooltiptext="${i18n:_('Delete')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:tooltiptext="${i18n:_('Delete')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/advance/_listAdvanceTypes.zul:tooltiptext="${i18n:_('Delete')}"
+#: disabled="@{advanceType.immutable}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_editLabelType.zul:tooltiptext="${i18n:_('Delete')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/labels/_listLabelTypes.zul:tooltiptext="${i18n:_('Delete')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_list.zul:tooltiptext="${i18n:_('Delete')}"
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:tooltiptext="${i18n:_('Delete')}"
+msgid "Delete"
+msgstr "Borrar"
+
+#: /home/jaragunde/projects/xestion-producion/navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:872
+msgid ""
+"The date is not valid, the date must be unique for this advanced assignment"
+msgstr "La fecha no es válida, debe ser única para esta asignación de avance"
+
+#~ msgid ""
+#~ "The Spread values are not valid, there are several true spread values"
+#~ msgstr ""
+#~ "Los valores de propagación no son válidos, hay varios valores activados"
+
+#, fuzzy
+#~ msgid "Filters:"
+#~ msgstr "Filtro"
+
+#~ msgid "Planification"
+#~ msgstr "Planificación"
