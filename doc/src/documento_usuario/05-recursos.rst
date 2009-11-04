@@ -8,27 +8,27 @@ A aplicación xestiona dous tipos de recursos diferentes: recursos traballadores
 
 Os recursos traballadores representan os traballadores das empresas. As características principais son:
 
-   * Satisfarán un ou varios criterios de tipo xenérico ou tipo traballador.
-   * Son asignables específicamente a unha tarefa.
-   * Son asignables como parte da asignación xenérica a unha tarefa que requira un criterio que satisfai o traballador.
-   * Disporán de un calendario por defecto ou específico se así o decide o usuario.
+* Satisfarán un ou varios criterios de tipo xenérico ou tipo traballador.
+* Son asignables específicamente a unha tarefa.
+* Son asignables como parte da asignación xenérica a unha tarefa que requira un criterio que satisfai o traballador.
+* Disporán de un calendario por defecto ou específico se así o decide o usuario.
 
 Os recursos máquina representan as máquinas das empresas. As características principais son:
 
-   * Satisfarán un ou varios criterios de tipo xenérico ou tipo máquina.
-   * Son asignables específicamente a unha tarefa.
-   * Son asignables como parte da asignación xenérica a unha tarefa que requira un criterio que satisfai a máquina.
-   * Disporán de un calendario por defecto ou específico se así o decide o usuario.
-   * Contará un unha pantalla de configuración na que se poderá establecer un valor *alfa* que represente a relación entre máquina e traballador.
+* Satisfarán un ou varios criterios de tipo xenérico ou tipo máquina.
+* Son asignables específicamente a unha tarefa.
+* Son asignables como parte da asignación xenérica a unha tarefa que requira un criterio que satisfai a máquina.
+* Disporán de un calendario por defecto ou específico se así o decide o usuario.
+* Contará un unha pantalla de configuración na que se poderá establecer un valor *alfa* que represente a relación entre máquina e traballador.
 
-      * O *alfa* representa canto tempo dun traballador é necesario para que a máquina funcione. Por exemplo, un alfa de 0.5 indica que de cada 8 horas de máquina son necesarias 4 de un traballador.
-      * É posible asignar un *alfa* de xeito específico a un traballador, é dicir, elíxese o traballador que estará ocupado esa porcentaxe do seu tempo coa máquina.
-      * Ou ben, é posible facer unha asignación xenérica en base a un criterio, de xeito que se asigna unha porcentaxe do uso a todos os criterios que satisfán ese criterio e teñen tempo dispoñible. O funcionamento da asignación xenérica será a mesma que a explicada para asignacións xenéricas a tarefas.
+  * O *alfa* representa canto tempo dun traballador é necesario para que a máquina funcione. Por exemplo, un alfa de 0.5 indica que de cada 8 horas de máquina son necesarias 4 de un traballador.
+  * É posible asignar un *alfa* de xeito específico a un traballador, é dicir, elíxese o traballador que estará ocupado esa porcentaxe do seu tempo coa máquina.
+  * Ou ben, é posible facer unha asignación xenérica en base a un criterio, de xeito que se asigna unha porcentaxe do uso a todos os criterios que satisfán ese criterio e teñen tempo dispoñible. O funcionamento da asignación xenérica será a mesma que a explicada para asignacións xenéricas a tarefas.
 
 O usuario poderá crear, editar e invalidar (nunca borrar definitivamente) traballadores da empresa dende a pestana de "Recursos". Dende dita pestana existen as seguintes operacións:
 
-   * Listado de traballadores: Os traballadores amosaranse listados e paxinados, dende onde poderán xestionar os seus datos.
-   * Listado de máquinas: As máquinas amosaranse listados e paxinados, dende onde poderán xestionar os seus datos.
+* Listado de traballadores: Os traballadores amosaranse listados e paxinados, dende onde poderán xestionar os seus datos.
+* Listado de máquinas: As máquinas amosaranse listados e paxinados, dende onde poderán xestionar os seus datos.
 
 Xestión de traballadores
 ========================
@@ -40,9 +40,9 @@ Unha vez na edición dun recurso, o usuario poderá acceder ás seguintes pestan
 
 1) Pestana de datos de traballador. Esta pestana permitirá editar os datos básicos de identificación do traballador.
 
-      * Nome
-      * Apelidos
-      * DNI
+   * Nome
+   * Apelidos
+   * DNI
 
 .. figure:: images/worker-personal-data.png
    :scale: 70

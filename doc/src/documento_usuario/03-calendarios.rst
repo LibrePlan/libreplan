@@ -12,17 +12,17 @@ Administración de calendarios
 
 A administración de calendarios actuará do seguinte xeito:
 
-   * Cada día é independente entre sí e cada ano ten días diferentes, é dicir, se se marca o 8 de Decembro de 2009 como festivo eso non quere dicir que o ano 2010 xa teña o día 8 de Decembro como festivo.
-   * Os días laborais márcanse en base a días da semana, é dicir, se se determina que o normal é traballar 8 horas os luns, quedarán todos os luns de todas as semanas dos diferentes anos marcados como 8 horas dispoñibles.
-   * É posible marcar excepcións, é dicir, elixir un día concreto no que as horas dispoñibles sexan diferentes á regla xeral para dito día da semana.
+* Cada día é independente entre sí e cada ano ten días diferentes, é dicir, se se marca o 8 de Decembro de 2009 como festivo eso non quere dicir que o ano 2010 xa teña o día 8 de Decembro como festivo.
+* Os días laborais márcanse en base a días da semana, é dicir, se se determina que o normal é traballar 8 horas os luns, quedarán todos os luns de todas as semanas dos diferentes anos marcados como 8 horas dispoñibles.
+* É posible marcar excepcións, é dicir, elixir un día concreto no que as horas dispoñibles sexan diferentes á regla xeral para dito día da semana.
 
 
 A administración de calendarios está accesible dende as operacións de "Administración". Desde dito punto o usuario pode realizar o seguinte
 
-   1. Crear un novo calendario dende cero.
-   2. Crear un calendario derivado de outro calendario.
-   3. Crear un calendario como copia de outro calendario.
-   4. Editar un calendario existente.
+1. Crear un novo calendario dende cero.
+2. Crear un calendario derivado de outro calendario.
+3. Crear un calendario como copia de outro calendario.
+4. Editar un calendario existente.
 
 .. figure:: images/calendar-administration.png
    :scale: 70
@@ -34,9 +34,9 @@ Creación dun novo calendario
 
 Para a creación dun novo calendario é necesario premer no botón "______". O sistema amosará un formulario no que o usuario poderá realizar as seguintes operacións:
 
-   * Marcar as horas dispoñibles para cada día da semana (luns, martes, mércores, xoves, venres, sábados e domingos).
-   * Seleccionar un día específico do calendario.
-   * Asignar horas como excepción a un día específico do calendario.
+* Marcar as horas dispoñibles para cada día da semana (luns, martes, mércores, xoves, venres, sábados e domingos).
+* Seleccionar un día específico do calendario.
+* Asignar horas como excepción a un día específico do calendario.
 
 Con estas operacións un usuario da aplicación ten a capacidade de personalizar os calendarios completamente ás súas necesidades. Para almacenar os cambios no formulario é necesario premer no botón "______".
 
@@ -59,10 +59,10 @@ Un exemplo de uso de calendarios derivados é a existencia dun calendario xeral 
 
 Para crear un calendario derivado na aplicación, é necesario facer o seguinte:
 
-   * Acceder ó menú de *Administración*.
-   * Premer na operación de administración de calendarios.
-   * Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "______".
-   * Unha vez realizada esta operación o sistema amosará un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.
+* Acceder ó menú de *Administración*.
+* Premer na operación de administración de calendarios.
+* Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "______".
+* Unha vez realizada esta operación o sistema amosará un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.
 
 Creación dun calendario por copia
 ---------------------------------
@@ -75,10 +75,10 @@ Un exemplo de uso de calendario por copia é o dispor de un calendario para Pont
 
 Para crear un calendario copiado na aplicación, é necesario facer o seguinte:
 
-   * Acceder ó menú de *Administración*.
-   * Premer na operación de administración de calendarios.
-   * Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "______".
-   * Unha vez realizada esta operación o sistema amosará un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.
+* Acceder ó menú de *Administración*.
+* Premer na operación de administración de calendarios.
+* Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "______".
+* Unha vez realizada esta operación o sistema amosará un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.
 
 Asignación de calendario a recursos
 -----------------------------------
@@ -87,20 +87,20 @@ Un recurso poderá recibir como asignación un calendario existente ou un calend
 
 Os casos posibles son:
 
-   * *Creación de un calendario para o recurso a partir de cero*. Neste caso, o calendario será únicamente para o recurso e calqueira característica que se lle desexe asignar deberá ser modificada no propio calendario do recurso.
-   * *Creación de un calendario para o recurso como copia de calendario existente*. O calendario recollerá dende un principio as especificidades do calendario orixinal, sen embargo, unha vez asignado, deberá ser modificado dende o propio recurso.
-   * *Creación de un calendario para o recurso como derivado de calendario existente*. O calendario recollerá dende un principio as especificidades do calendario orixinal e, ó mesmo tempo, se o calendario orixinal é modificado para todos, o propio recurso recibirá esas modificacións de xeito indirecto, tal e como se comentou na sección de calendarios derivados.
+* *Creación de un calendario para o recurso a partir de cero*. Neste caso, o calendario será únicamente para o recurso e calqueira característica que se lle desexe asignar deberá ser modificada no propio calendario do recurso.
+* *Creación de un calendario para o recurso como copia de calendario existente*. O calendario recollerá dende un principio as especificidades do calendario orixinal, sen embargo, unha vez asignado, deberá ser modificado dende o propio recurso.
+* *Creación de un calendario para o recurso como derivado de calendario existente*. O calendario recollerá dende un principio as especificidades do calendario orixinal e, ó mesmo tempo, se o calendario orixinal é modificado para todos, o propio recurso recibirá esas modificacións de xeito indirecto, tal e como se comentou na sección de calendarios derivados.
 
 Para asignar un calendario a un recurso é necesario dar os seguintes pasos:
 
-   * Acceder á edición de recursos.
-   * Seleccionar a pestana de "______".
-   * A partir da pestana anterior aparecerá un formulario de edición de calendarios que permitirá:
-      * Crear un calendario dende cero premendo no botón "______".
-      * Crear un calendario derivado premendo no botón "______".
-      * Crear un botón como copia premendo no botón "______".
-   * O sistema amosará un formulario de edición de calendarios cos datos cargados en base á opción elixida no paso anterior.
-   * Para almacenar é necsario premer en Save.
+* Acceder á edición de recursos.
+* Seleccionar a pestana de "______".
+* A partir da pestana anterior aparecerá un formulario de edición de calendarios que permitirá:
+  * Crear un calendario dende cero premendo no botón "______".
+  * Crear un calendario derivado premendo no botón "______".
+  * Crear un botón como copia premendo no botón "______".
+* O sistema amosará un formulario de edición de calendarios cos datos cargados en base á opción elixida no paso anterior.
+* Para almacenar é necsario premer en Save.
 
 
 
