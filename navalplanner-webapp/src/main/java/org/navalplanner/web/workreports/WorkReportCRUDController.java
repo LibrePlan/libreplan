@@ -22,12 +22,14 @@ package org.navalplanner.web.workreports;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -76,6 +78,8 @@ import org.zkoss.zul.api.Window;
 public class WorkReportCRUDController extends GenericForwardComposer implements
         IWorkReportCRUDControllerEntryPoints {
 
+	private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(WorkReportCRUDController.class);
+
     private Window createWindow;
 
     private Window listWindow;
@@ -100,24 +104,29 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private final static int PAGING = 10;
 
-
     /**
-     * Delete {@link WorkReport}
-     *
-     * FIXME: Should show a {@link Messagebox} to confirm deletion. Popping up a
-     * {@link Messagebox} from a page where there is also a {@link Listbox}
-     * causes an unexpected error. Bug reported to ZK.
-     *
-     * ZK Bug Tracker URL:
-     * http://sourceforge.net/tracker/?atid=785191&group_id=152762&func=browse
-     * Bug ID: 2832573
+     * Show confirm window for deleting {@link WorkReport}
      *
      * @param workReport
      */
     public void showConfirmDelete(WorkReport workReport) {
-        workReportModel.remove(workReport);
-        Util.reloadBindings(listWindow);
-        messagesForUser.showMessage(Level.INFO, _("Work report deleted"));
+        try {
+            final String workReportName = formatWorkReportName(workReport);
+            int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?", workReportName), "Delete",
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                workReportModel.remove(workReport);
+            }
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(
+                    Level.ERROR, e.getMessage());
+            LOG.error(_("Error on removing element: ", workReport.getId()), e);
+        }
+    }
+
+    private String formatWorkReportName(WorkReport workReport) {
+        final SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
+        return workReport.getWorkReportType().getName() + " - " + sdf.format(workReport.getDate());
     }
 
     public List<WorkReport> getWorkReports() {
