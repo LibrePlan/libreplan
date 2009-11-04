@@ -25,10 +25,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -200,6 +202,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
         if (resource.getCalendar() != null) {
             resource.getCalendar().getWorkableHours(new LocalDate());
+        }
+        for (DayAssignment dayAssignment : resource.getAssignments()) {
+            Hibernate.initialize(dayAssignment);
         }
     }
 

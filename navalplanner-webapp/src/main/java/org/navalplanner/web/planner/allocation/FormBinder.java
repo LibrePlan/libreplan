@@ -171,8 +171,7 @@ class FormBinder {
 
     void doApply() {
         lastAllocation = resourceAllocationsBeingEdited.doAllocation();
-        aggregate = lastAllocation
-                .getAggregate();
+        aggregate = lastAllocation.getAggregate();
         reloadValues();
     }
 
