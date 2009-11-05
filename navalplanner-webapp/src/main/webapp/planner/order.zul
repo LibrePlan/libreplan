@@ -116,9 +116,9 @@
                                 <intbox id="taskElapsedDays" width="300px" />
                             </vbox>
                         </row>
-                        <!--  Required criterions -->
+                        <!--  Required criteria -->
                         <row>
-                            <label value="${i18n:_('Required criterions')}:" />
+                            <label value="${i18n:_('Required criteria')}:" />
                             <label value="@{allocationController.taskCriterions}" />
                         </row>
                         <!--  Total order hours -->
@@ -181,7 +181,7 @@
     <window id="splittingWindow" visible="false" apply="${splittingTaskController}" minwidth="${400}" >
         <vbox>
             <hbox>
-            <label value="${i18n:_('Total hours:')}" /> <label id="totalHoursLabel"/>
+            <label value="${i18n:_('Total hours')}:" /> <label id="totalHoursLabel"/>
             </hbox>
             <grid id="sharesListing" fixedLayout="true">
                 <columns sizable="true">

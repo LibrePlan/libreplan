@@ -164,7 +164,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     public void initializeMenu() {
-        topItem(_("Planification"), "/planner/index.zul");
+        topItem(_("Scheduling"), "/planner/index.zul");
 
         topItem(_("Resources"), "/resources/worker/worker.zul",
                 subItem(_("Workers List"),
@@ -179,9 +179,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     "/workreports/workReport.zul"));
 
         topItem(_("Administration"), "/advance/advanceTypes.zul",
-                subItem(_("Manage advances types"),
+                subItem(_("Manage advance types"),
                     "/advance/advanceTypes.zul"),
-                subItem(_("Manage criterions"),
+                subItem(_("Manage criteria"),
                     "/resources/criterions/criterions-V2.zul"),
                 subItem(_("Calendars"), "/calendars/calendars.zul"),
                 subItem(_("Label types"), "/labels/labelTypes.zul"));

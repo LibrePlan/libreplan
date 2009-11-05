@@ -40,8 +40,8 @@
         </vbox>
 
         <vbox>
-            <!-- Criterions -->
-            <label value="${i18n:_('Criterions')}" />
+            <!-- Criteria -->
+            <label value="${i18n:_('Criteria')}" />
             <tree id="criterionsTree" width="280px"
                 rows="10" vflex="true" multiple="true"
                 model="@{controller.criterions}">

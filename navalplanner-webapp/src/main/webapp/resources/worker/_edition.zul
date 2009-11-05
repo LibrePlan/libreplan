@@ -26,7 +26,7 @@
     <tabbox>
         <tabs>
             <tab label="${i18n:_('Personal data')}"></tab>
-            <tab label="${i18n:_('Assigned criterions')}"></tab>
+            <tab label="${i18n:_('Assigned criteria')}"></tab>
             <tab visible="false" label="${i18n:_('Locations')}"></tab>
             <tab visible="false" label="${i18n:_('Work record')}"></tab>
             <tab label="${i18n:_('Calendar')}"></tab>

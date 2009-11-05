@@ -108,13 +108,13 @@
                                 <rows>
                                     <row>
                                         <label
-                                            value="${i18n:_('Budget hours:')}" />
+                                            value="${i18n:_('Budget hours')}:" />
                                         <label
                                             value="@{asignedHoursToOrderElementController.estimatedHours}" />
                                     </row>
                                     <row>
                                         <label
-                                            value="${i18n:_('Imputed hours:')}" />
+                                            value="${i18n:_('Imputed hours')}:" />
                                         <label
                                             value="@{asignedHoursToOrderElementController.totalAsignedHours}" />
                                     </row>

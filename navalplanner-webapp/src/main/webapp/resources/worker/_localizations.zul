@@ -27,7 +27,7 @@
                 model="@{controller.localizations.activeSatisfactions}"
                 height="200px" multiple="true" checkmark="true">
                 <listhead>
-                    <listheader label="${i18n:_('Grup')}"
+                    <listheader label="${i18n:_('Group')}"
                         sort="auto(criterion.name)"></listheader>
                     <listheader label="${i18n:_('Starting date')}"
                         sort="auto(startDate)" />

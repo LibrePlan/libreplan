@@ -170,7 +170,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             messagesForUser
                     .showMessage(Level.ERROR,
                             _("The calendar was not removed because it still has children. "
-                                    + "Some other calendar is derived from this."));
+                                    + "Some other calendar is derived from this one."));
         } else {
             baseCalendarModel.confirmRemove();
             hideConfirmingWindow();

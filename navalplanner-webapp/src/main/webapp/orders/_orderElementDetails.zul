@@ -75,8 +75,8 @@
         </panelchildren>
     </panel>
 
-    <!--  Manage criterions -->
-    <panel id="panelCriterions" title="${i18n:_('Manage criterions')}">
+    <!--  Manage criteria -->
+    <panel id="panelCriterions" title="${i18n:_('Manage criteria')}">
         <panelchildren>
             <vbox id="selectCriterions">
                 <twowayselector

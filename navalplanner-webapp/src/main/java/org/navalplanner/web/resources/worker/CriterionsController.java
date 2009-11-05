@@ -148,11 +148,11 @@ public class CriterionsController extends GenericForwardComposer {
             }
             if(assignedCriterionsModel.checkSameCriterionAndSameInterval(satisfaction)){
                 throw new WrongValueException(comp,
-                                        _("Criterion is not valid, the criterion overlap other criterionSatisfaction whith same criterion"));
+                                        _("Criterion is not valid, it overlaps other criterionSatisfaction with the same criterion"));
             }
             if(assignedCriterionsModel.checkNotAllowSimultaneousCriterionsPerResource(satisfaction)){
                 throw new WrongValueException(comp,
-                                        _("CriterionType is not valid, the criterionType overlap other criterionSatisfaction whith same criterionType"));
+                                        _("CriterionType is not valid, it overlaps other criterionSatisfaction with the same criterionType"));
             }
     }
 

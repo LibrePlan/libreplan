@@ -869,7 +869,7 @@ public class ManageOrderElementAdvancesController extends
                                         advanceMeasurement)) {
                             throw new WrongValueException(
                                     comp,
-                                    _("The date is not valid, the date must be unique for this  advance assignment"));
+                                    _("The date is not valid, the date must be unique for this advanced assignment"));
                         }
                     }
                 }

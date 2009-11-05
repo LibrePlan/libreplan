@@ -247,7 +247,7 @@ class FormBinder {
                 .get(generic);
         throw new WrongValueException(
                 decimalbox,
-                _("there are no workers for required criterions. So the generic allocation can't be done"));
+                _("there are no workers for required criteria. So the generic allocation can't be done"));
     }
 
     public void setAllocationsList(Listbox allocationsList) {

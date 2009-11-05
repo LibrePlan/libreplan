@@ -62,7 +62,7 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MultipleTabsPlannerController implements Composer {
 
-    public static final String PLANNIFICATION = _("Plannification");
+    public static final String PLANNIFICATION = _("Scheduling");
 
     public static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";
 

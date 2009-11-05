@@ -300,7 +300,7 @@ public class WorkerModel implements IWorkerModel {
             Validate
                     .isTrue(
                             type.isAllowSimultaneousCriterionsPerResource(),
-                            _("Must allow multiple active criterions for this type to use this assignment strategy"));
+                            _("You must allow multiple active criteria for this type to use this assignment strategy"));
             this.criterionDAO = criterionDAO;
             this.resource = resource;
             this.type = type;

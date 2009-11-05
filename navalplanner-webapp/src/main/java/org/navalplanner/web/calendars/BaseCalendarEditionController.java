@@ -375,7 +375,7 @@ public abstract class BaseCalendarEditionController extends
 
         switch (typeOfDay) {
         case ANCESTOR_EXCEPTION:
-            return _("Derived excpetion");
+            return _("Derived exception");
         case OWN_EXCEPTION:
             return _("Exception");
         case ZERO_HOURS:

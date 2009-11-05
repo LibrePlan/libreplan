@@ -38,17 +38,17 @@
                         <rows>
                             <row>
                                 <label
-                                    value="${i18n:_('Responsible:')}" />
+                                    value="${i18n:_('Responsible')}:" />
                                 <textbox id="responsible"
                                     value="@{controller.workReport.responsible}" width="300px" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Place:')}" />
+                                <label value="${i18n:_('Place')}:" />
                                 <textbox
                                     value="@{controller.workReport.place}" width="300px" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Date:')}" />
+                                <label value="${i18n:_('Date')}:" />
                                 <datebox id="date"
                                     value="@{controller.workReport.date}" />
                             </row>

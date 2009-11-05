@@ -351,7 +351,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
             Criterion criterion = satisfactionDTO.getCriterionWithItsType()
                     .getCriterion();
             if (checkSameCriterionAndSameInterval(satisfactionDTO)) {
-                throw new IllegalStateException(_("The {0} can not be assigned to this resource. Its interval overlap with other criterion", criterion.getName()));
+                throw new IllegalStateException(_("The {0} can not be assigned to this resource. Its interval overlaps with other criterion", criterion.getName()));
             }
             if (checkNotAllowSimultaneousCriterionsPerResource(satisfactionDTO)) {
                 throw new IllegalStateException(_("The {0} is not valid, criterionType overlaps with other criterionSatisfaction from the same criterionType", criterion.getName()));

@@ -1,15 +1,15 @@
-<panel id="criterionsContainer" title="${i18n:_('Assigned Criterions')}" border="normal">
+<panel id="criterionsContainer" title="${i18n:_('Assigned criteria')}" border="normal">
     <panelchildren>
         <hbox align="center">
                 <separator bar="false" spacing="40px" orient="horizontal"/>
                 <separator bar="false" spacing="20px" orient="vertical"/>
                 <button onClick="assignedCriterionsController.addCriterionSatisfaction();"
                     label="${i18n:_('Add criterion')}" />
-                <label class="subtitulo" value="${i18n:_('Filters :')}" />
+                <label class="subtitulo" value="${i18n:_('Filters')}:" />
                 <combobox id="comboboxfilter"
                 onSelect="assignedCriterionsController.reload();">
                     <comboitem label="${i18n:_('All')}" />
-                    <comboitem label="${i18n:_('Currents')}" />
+                    <comboitem label="${i18n:_('Current')}" />
                 </combobox>
                 <separator bar="false" spacing="20px" orient="vertical"/>
         </hbox>

@@ -225,7 +225,7 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
         try {
             criterionsModel_V2.saveCriterionType();
             messagesForUser.showMessage(Level.INFO,
-                    _("CriterionType and its criterions saved"));
+                    _("CriterionType and its criteria saved"));
         } catch (ValidationException e) {
             for (InvalidValue invalidValue : e.getInvalidValues()) {
                 String message = invalidValue.getPropertyName() + " : "
