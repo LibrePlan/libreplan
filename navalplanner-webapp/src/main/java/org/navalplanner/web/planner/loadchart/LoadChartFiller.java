@@ -41,6 +41,10 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.servlets.CallbackServlet;
 import org.navalplanner.web.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkforge.timeplot.Timeplot;
+import org.zkforge.timeplot.geometry.DefaultTimeGeometry;
+import org.zkforge.timeplot.geometry.DefaultValueGeometry;
+import org.zkforge.timeplot.geometry.TimeGeometry;
+import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Executions;
@@ -309,6 +313,38 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         } else {
             return groupByWeek(map);
         }
+    }
+
+    @Override
+    public TimeGeometry getTimeGeometry(Interval interval) {
+        LocalDate start = new LocalDate(interval.getStart());
+        LocalDate finish = new LocalDate(interval.getFinish());
+
+        TimeGeometry timeGeometry = new DefaultTimeGeometry();
+
+        if (!isZoomByDay()) {
+            start = getThursdayOfThisWeek(start);
+            finish = getThursdayOfThisWeek(finish);
+        }
+
+        String min = start.toString("yyyyMMdd");
+        String max = finish.toString("yyyyMMdd");
+
+        timeGeometry.setMin(Integer.valueOf(min));
+        timeGeometry.setMax(Integer.valueOf(max));
+
+        return timeGeometry;
+    }
+
+    @Override
+    public ValueGeometry getValueGeometry(Integer maximum) {
+        DefaultValueGeometry valueGeometry = new DefaultValueGeometry();
+        valueGeometry.setMin(0);
+        valueGeometry.setMax(maximum);
+        valueGeometry.setGridColor("#000000");
+        valueGeometry.setAxisLabelsPlacement("left");
+
+        return valueGeometry;
     }
 
 }

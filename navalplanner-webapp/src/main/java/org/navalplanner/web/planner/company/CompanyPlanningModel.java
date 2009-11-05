@@ -56,7 +56,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.data.PlotDataSource;
-import org.zkforge.timeplot.geometry.DefaultValueGeometry;
+import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
@@ -276,14 +276,14 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     interval.getStart(), interval.getFinish());
             plotInfoMax.setLineColor("FF0000");
 
-            ValueGeometry valueGeometry = new DefaultValueGeometry();
-            valueGeometry.setMin(0);
-            valueGeometry.setMax(getMaximunValueForChart());
-            valueGeometry.setGridColor("#000000");
-            valueGeometry.setAxisLabelsPlacement("left");
+            ValueGeometry valueGeometry = getValueGeometry(getMaximunValueForChart());
+            TimeGeometry timeGeometry = getTimeGeometry(interval);
 
             plotInfoLoad.setValueGeometry(valueGeometry);
             plotInfoMax.setValueGeometry(valueGeometry);
+
+            plotInfoLoad.setTimeGeometry(timeGeometry);
+            plotInfoMax.setTimeGeometry(timeGeometry);
 
             chart.appendChild(plotInfoMax);
             chart.appendChild(plotInfoLoad);
