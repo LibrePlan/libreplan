@@ -26,6 +26,7 @@ import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Worker;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO interface for the <code>Worker</code> entity.
@@ -69,6 +70,7 @@ public interface IWorkerDAO extends IGenericDAO<Worker, Long> {
      *             If there're more than one {@link Worker} with this NIF or
      *             there isn't any {@link Worker} with this NIF
      */
+    @Transactional(readOnly = true)
     Worker findUniqueByNif(String nif) throws InstanceNotFoundException;
 
     /**
@@ -76,5 +78,6 @@ public interface IWorkerDAO extends IGenericDAO<Worker, Long> {
      *
      * @return
      */
+    @Transactional(readOnly = true)
     List<Worker> getWorkers();
 }

@@ -65,6 +65,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
     }
 
     public void prepareForEdit(Machine machine) {
+        machine.getConfigurationUnits();
         assignedMachineCriterionsModel.prepareForEdit(machine);
     }
 

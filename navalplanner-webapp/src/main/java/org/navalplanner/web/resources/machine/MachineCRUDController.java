@@ -25,6 +25,8 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -36,6 +38,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.resources.worker.CriterionsController;
 import org.navalplanner.web.resources.worker.CriterionsMachineController;
 import org.zkoss.zk.ui.Component;
@@ -49,8 +52,8 @@ import org.zkoss.zul.api.Window;
 
 /**
  * Controller for {@link Machine} resource <br />
-
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class MachineCRUDController extends GenericForwardComposer {
 
@@ -60,13 +63,22 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     private IMachineModel machineModel;
 
+    private IURLHandlerRegistry URLHandlerRegistry;
+
     private OnlyOneVisible visibility;
 
     private IMessagesForUser messagesForUser;
 
     private Component messagesContainer;
 
+    private Component configurationUnits;
+
     private CriterionsMachineController criterionsController;
+
+    private MachineConfigurationController configurationController;
+
+    private static final Log LOG = LogFactory
+            .getLog(MachineCRUDController.class);
 
     public MachineCRUDController() {
 
@@ -86,6 +98,7 @@ public class MachineCRUDController extends GenericForwardComposer {
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
         setupCriterionsController();
+        setupConfigurationController();
         showListWindow();
     }
 
@@ -106,9 +119,16 @@ public class MachineCRUDController extends GenericForwardComposer {
         criterionsController.doAfterCompose(comp);
     }
 
+    private void setupConfigurationController() throws Exception {
+        configurationUnits = editWindow.getFellow("configurationUnits");
+        configurationController = (MachineConfigurationController) configurationUnits
+                .getVariable("configurationController", true);
+    }
+
     public void goToCreateForm() {
         machineModel.initCreate();
         criterionsController.prepareForCreate(machineModel.getMachine());
+        configurationController.initConfigurationController(machineModel);
         selectMachineDataTab();
         showEditWindow(_("Create machine"));
     }
@@ -135,6 +155,7 @@ public class MachineCRUDController extends GenericForwardComposer {
         prepareCalendarForEdit();
         selectMachineDataTab();
         showEditWindow(_("Edit machine"));
+        configurationController.initConfigurationController(machineModel);
     }
 
     private void selectMachineDataTab() {
@@ -173,7 +194,7 @@ public class MachineCRUDController extends GenericForwardComposer {
             messagesForUser.showMessage(Level.INFO, _("Machine saved"));
         } catch (ValidationException e) {
             messagesForUser.showMessage(Level.ERROR, _("Could not save Machine"));
-            e.printStackTrace();
+            LOG.error(e);
         }
     }
 
@@ -330,6 +351,17 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     public BaseCalendarEditionController getEditionController() {
         return baseCalendarEditionController;
+    }
+
+    @SuppressWarnings("unused")
+    private CriterionsController getCriterionsController() {
+        return (CriterionsController) editWindow.getFellow(
+                "criterionsContainer").getAttribute(
+                "assignedCriterionsController");
+    }
+
+    public MachineConfigurationController getConfigurationController() {
+        return configurationController;
     }
 
 }

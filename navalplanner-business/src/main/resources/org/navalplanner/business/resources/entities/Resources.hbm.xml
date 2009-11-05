@@ -38,6 +38,12 @@
       <property name="code"/>
       <property name="name"/>
       <property name="description"/>
+      <set inverse="true" name="configurationUnits" cascade="all-delete-orphan">
+        <key column="machine" not-null="true" />
+        <one-to-many
+            class="MachineWorkersConfigurationUnit" />
+    </set>
+
     </joined-subclass>
   </class>
 
@@ -102,6 +108,44 @@
         <key column="id_criterion_type" />
         <one-to-many class="Criterion" />
     </set>
+  </class>
+
+
+  <!-- MachineWorkersConfigurationUnit -->
+  <class name="MachineWorkersConfigurationUnit" table="machineworkersconfigurationunit">
+    <id name="id" access="property" type="long">
+      <generator class="hilo">
+        <param name="max_lo">100</param>
+      </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+    <property access="field" name="name" not-null="true"/>
+    <property access="field" name="alpha" not-null="true"/>
+    <many-to-one access="field" name="machine" class="Machine" not-null="true"/>
+    <set name="requiredCriterions" table="machine_configuration_unit_required_criterions" inverse="false">
+        <key column="id" not-null="false" />
+        <many-to-many class="org.navalplanner.business.resources.entities.Criterion" column="CRITERION_ID"/>
+    </set>
+      <set inverse="true" name="workerAssignments" cascade="all-delete-orphan">
+        <key column="configuration_id" />
+        <one-to-many
+            class="MachineWorkerAssignment" />
+    </set>
+
+  </class>
+
+  <!-- MachineWorkerAssignment -->
+  <class name="MachineWorkerAssignment" table="machineworkerassignment">
+    <id name="id" access="property" type="long">
+      <generator class="hilo">
+        <param name="max_lo">100</param>
+      </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+    <property access="field" name="startDate" />
+    <property access="field" name="finishDate"/>
+    <many-to-one access="field" name="machineWorkersConfigurationUnit" column="configuration_id" class="MachineWorkersConfigurationUnit" not-null="true"/>
+    <many-to-one access="field" name="worker" class="Worker" column="worker_id" />
   </class>
 
 </hibernate-mapping>

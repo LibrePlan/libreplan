@@ -1,4 +1,4 @@
-<vbox id="criterionsContainer" style="padding: 10px" >
+<vbox id="criterionsContainer">
 <vbox id="messagesContainer"/>
 <panel title="${i18n:_('Assigned criteria')}" border="normal">
     <panelchildren>

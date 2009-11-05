@@ -26,6 +26,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Machine;
+import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 
 /*
  * This interface contains the operations to create/edit a machine.
@@ -44,10 +45,11 @@ public interface IMachineModel {
 
     List<Machine> getMachines();
 
+    List<MachineWorkersConfigurationUnit> getConfigurationUnits();
+
     void initCreate();
 
     void initEdit(Machine machine);
 
     void setCalendar(ResourceCalendar resourceCalendar);
-
 }

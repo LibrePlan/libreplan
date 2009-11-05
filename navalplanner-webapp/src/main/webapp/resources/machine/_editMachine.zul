@@ -20,6 +20,7 @@
 
 <?component name="criterions" inline="true" macroURI="_machineCriterions.zul"?>
 <?component name="resourceCalendar" inline="true" macroURI="_calendar.zul"?>
+<?component name="machineConfigurationUnits" inline="true" macroURI="_machineConfigurationUnits.zul"?>
 <window id="editWindow" >
     <tabbox>
         <tabs>
@@ -63,7 +64,8 @@
                 <resourceCalendar />
             </tabpanel>
             <tabpanel visible="false">
-                <!-- Configuration-->
+                <!-- Configuration units -->
+                <machineConfigurationUnits id="configurationUnits" />
             </tabpanel>
         </tabpanels>
     </tabbox>

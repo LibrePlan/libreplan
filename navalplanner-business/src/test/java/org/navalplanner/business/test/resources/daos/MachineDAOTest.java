@@ -27,13 +27,19 @@ import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.IMachineDAO;
+import org.navalplanner.business.resources.daos.IWorkerDAO;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
+import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
+import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -54,12 +60,24 @@ public class MachineDAOTest {
     @Autowired
     IMachineDAO machineDAO;
 
+    @Autowired
+    IWorkerDAO workerDAO;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
     private Machine createValidMachine() {
         Machine machine = Machine.create();
         machine.setCode("code");
         machine.setName("name");
         machine.setDescription("description");
         return machine;
+    }
+
+    private Worker createValidWorker() {
+        Worker worker = Worker.create();
+        worker.setFirstName("FirstName");
+        return worker;
     }
 
     @Test
@@ -90,4 +108,21 @@ public class MachineDAOTest {
         List<Machine> list = machineDAO.list(Machine.class);
         assertEquals(previous + 1, list.size());
     }
+
+    @Test
+    public void testSaveConfigurationUnits() throws InstanceNotFoundException {
+        Machine machine = createValidMachine();
+        MachineWorkersConfigurationUnit configurationUnit = MachineWorkersConfigurationUnit
+                .create(machine, "Operation", new BigDecimal(1));
+        Criterion criterion = CriterionDAOTest.createValidCriterion();
+        configurationUnit.addRequiredCriterion(criterion);
+        machine.addMachineWorkersConfigurationUnit(configurationUnit);
+        machineDAO.save(machine);
+        assertTrue(machine.getId() != null);
+        assertTrue(machine.getConfigurationUnits().size() != 0);
+        assertTrue(machine.getConfigurationUnits().iterator().next()
+                .getRequiredCriterions().size() != 0);
+    }
+
+
 }

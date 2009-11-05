@@ -1,6 +1,8 @@
 package org.navalplanner.business.resources.entities;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.validator.NotEmpty;
@@ -16,6 +18,22 @@ public class Machine extends Resource {
     @NotEmpty
     private String description;
 
+    private Set<MachineWorkersConfigurationUnit> configurationUnits = new HashSet<MachineWorkersConfigurationUnit>();
+
+    public Set<MachineWorkersConfigurationUnit> getConfigurationUnits() {
+        return Collections.unmodifiableSet(configurationUnits);
+    }
+
+    public void addMachineWorkersConfigurationUnit(
+            MachineWorkersConfigurationUnit unit) {
+        configurationUnits.add(unit);
+    }
+
+    public void removeMachineWorkersConfigurationUnit(
+            MachineWorkersConfigurationUnit unit) {
+        configurationUnits.remove(unit);
+    }
+
     protected Machine() {
 
     }
@@ -24,6 +42,7 @@ public class Machine extends Resource {
         this.code = code;
         this.name = name;
         this.description = description;
+        getConfigurationUnits();
     }
 
     public static Machine create() {
