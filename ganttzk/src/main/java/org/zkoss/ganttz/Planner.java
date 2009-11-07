@@ -47,7 +47,7 @@ import org.zkoss.zul.Separator;
 
 public class Planner extends HtmlMacroComponent  {
 
-    private GanttDiagramGraph diagramGraph = new GanttDiagramGraph();
+    private GanttDiagramGraph diagramGraph;
 
     private LeftPane leftPane;
 
@@ -217,10 +217,6 @@ public class Planner extends HtmlMacroComponent  {
             result.add(contextualize(context, command));
         }
         return result;
-    }
-
-    public GanttDiagramGraph getGanttDiagramGraph() {
-        return diagramGraph;
     }
 
     private void setupComponents() {
