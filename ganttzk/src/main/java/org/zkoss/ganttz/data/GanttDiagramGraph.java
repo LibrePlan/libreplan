@@ -34,6 +34,7 @@ import java.util.WeakHashMap;
 
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
+import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
  * This class contains a graph with the {@link Task tasks} as vertexes and the
@@ -51,6 +52,16 @@ public class GanttDiagramGraph {
     private Map<Task, ParentShrinkingEnforcer> parentShrinkingEnforcerByTask = new WeakHashMap<Task, ParentShrinkingEnforcer>();
 
     private List<Task> topLevelTasks = new ArrayList<Task>();
+
+    private final List<Constraint<Date>> globalStartConstraints;
+
+    private final List<Constraint<Date>> globalEndConstraints;
+
+    public GanttDiagramGraph(List<Constraint<Date>> globalStartConstraints,
+            List<Constraint<Date>> globalEndConstraints) {
+        this.globalStartConstraints = globalStartConstraints;
+        this.globalEndConstraints = globalEndConstraints;
+    }
 
     private List<DependencyRulesEnforcer> getOutgoing(Task task) {
         ArrayList<DependencyRulesEnforcer> result = new ArrayList<DependencyRulesEnforcer>();
