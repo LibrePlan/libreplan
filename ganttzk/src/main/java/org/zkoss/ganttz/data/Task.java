@@ -26,6 +26,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.zkoss.ganttz.data.constraint.Constraint;
+import org.zkoss.ganttz.data.constraint.DateConstraint;
+
 /**
  * This class contains the information of a task. It can be modified and
  * notifies of the changes to the interested parties. <br/>
@@ -152,6 +155,14 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     public Date getEndDate() {
         return new Date(getBeginDate().getTime() + getLengthMilliseconds());
+    }
+
+    public Constraint<Date> getCurrentLengthConstraint() {
+        return DateConstraint.biggerOrEqualThan(getEndDate());
+    }
+
+    public Constraint<Date> getEndDateBiggerThanStartDate() {
+        return DateConstraint.biggerOrEqualThan(getBeginDate());
     }
 
     public String getNotes() {
