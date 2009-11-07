@@ -153,23 +153,18 @@ public class GanttDiagramGraph {
         }
 
         private void enforceStartDate(Set<Dependency> incoming) {
-            List<Constraint<Date>> startConstraints = Dependency
+            List<Constraint<Date>> dependencyConstraints = Dependency
                     .getStartConstraints(incoming);
-            Date newStart = Constraint.apply(null,
-                    plusGlobalStartConstraints(startConstraints));
+            Date newStart = Constraint.<Date> initialValue(null)
+                                      .withConstraints(dependencyConstraints)
+                                      .withConstraints(task.getStartConstraints())
+                                      .withConstraints(globalStartConstraints)
+                                      .apply();
             if (!task.getBeginDate().equals(newStart)) {
                 task.setBeginDate(newStart);
             }
         }
 
-    }
-
-    private List<Constraint<Date>> plusGlobalStartConstraints(
-            List<Constraint<Date>> startConstraints) {
-        List<Constraint<Date>> result = new ArrayList<Constraint<Date>>();
-        result.addAll(startConstraints);
-        result.addAll(globalStartConstraints);
-        return result;
     }
 
     public void enforceAllRestrictions() {
