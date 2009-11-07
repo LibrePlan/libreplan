@@ -29,7 +29,9 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
+import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -53,6 +55,9 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     @Autowired
     private IWorkReportTypeDAO workReportTypeDAO;
 
+    @Autowired
+    private IWorkReportDAO workReportDAO;
+
     private WorkReportType workReportType;
 
     private boolean editing = false;
@@ -60,6 +65,13 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     @Override
     public WorkReportType getWorkReportType() {
         return this.workReportType;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean thereAreWorkReportsFor(WorkReportType workReportType) {
+        final List<WorkReport> workReports = workReportDAO.getAllByWorkReportType(workReportType);
+        return (workReports != null && !workReports.isEmpty());
     }
 
     @Override
@@ -117,7 +129,7 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
 
     @Override
     @Transactional
-    public void remove(WorkReportType workReportType) {
+    public void confirmRemove(WorkReportType workReportType) {
         try {
             workReportTypeDAO.remove(workReportType.getId());
         } catch (InstanceNotFoundException e) {

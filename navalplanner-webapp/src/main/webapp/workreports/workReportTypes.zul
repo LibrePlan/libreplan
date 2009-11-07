@@ -36,20 +36,5 @@
             save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
         <edition top_id="editWindow" title="${i18n:_('Edit')}"
             save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
-        <window visible="@{controller.confirmingRemove}"
-            id="confirmRemove" title="${i18n:_('Confirm')}" width="500px"
-            position="center">
-            <vbox>
-                <hbox>
-                ¿Do you want to delete <label value="@{controller.workReportType.name}"/>?
-                </hbox>
-                <hbox>
-                    <button label="${i18n:_('Yes')}"
-                        onClick="controller.remove(controller.workReportType);" />
-                    <button label="${i18n:_('No')}"
-                        onClick="controller.cancelRemove();" />
-                </hbox>
-            </vbox>
-        </window>
     </window>
 </zk>

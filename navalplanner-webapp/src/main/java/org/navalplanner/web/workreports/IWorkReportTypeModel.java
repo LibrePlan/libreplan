@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 
 /**
@@ -62,7 +63,7 @@ public interface IWorkReportTypeModel {
      * @param workReportType
      *            The object to be removed
      */
-    void remove(WorkReportType workReportType);
+    void confirmRemove(WorkReportType workReportType);
 
     /**
      * Makes some operations needed before create a new {@link WorkReportType}.
@@ -107,5 +108,13 @@ public interface IWorkReportTypeModel {
      * @return true if it's editing a {@link WorkReportType}
      */
     boolean isEditing();
+
+    /**
+     * Check if there is any {@link WorkReport} bound to {@link WorkReportType}
+     *
+     * @param workReportType
+     * @return
+     */
+    boolean thereAreWorkReportsFor(WorkReportType workReportType);
 
 }

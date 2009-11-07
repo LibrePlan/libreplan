@@ -20,8 +20,13 @@
 
 package org.navalplanner.business.workreports.daos;
 
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.workreports.entities.WorkReport;
+import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -35,5 +40,12 @@ import org.springframework.stereotype.Repository;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class WorkReportDAO extends GenericDAOHibernate<WorkReport, Long>
         implements IWorkReportDAO {
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<WorkReport> getAllByWorkReportType(WorkReportType workReportType) {
+		final Criteria criteria = getSession().createCriteria(WorkReport.class);
+		return criteria.add(Restrictions.eq("workReportType", workReportType)).list();
+	}
 
 }

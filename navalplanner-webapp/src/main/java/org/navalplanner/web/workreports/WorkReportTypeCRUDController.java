@@ -20,10 +20,13 @@
 
 package org.navalplanner.web.workreports;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.workreports.entities.WorkReportType;
@@ -37,9 +40,9 @@ import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Window;
-
-import static org.navalplanner.web.I18nHelper._;
 
 /**
  * Controller for CRUD actions over a {@link WorkReportType}
@@ -49,15 +52,14 @@ import static org.navalplanner.web.I18nHelper._;
 public class WorkReportTypeCRUDController extends GenericForwardComposer
         implements IWorkReportTypeCRUDControllerEntryPoints {
 
+     private static final org.apache.commons.logging.Log LOG = LogFactory
+     .getLog(WorkReportTypeCRUDController.class);
+
     private Window listWindow;
 
     private Window createWindow;
 
     private Window editWindow;
-
-    private Window confirmRemove;
-
-    private boolean confirmingRemove = false;
 
     private IWorkReportTypeModel workReportTypeModel;
 
@@ -154,38 +156,39 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     }
 
     public void confirmRemove(WorkReportType workReportType) {
-        workReportTypeModel.prepareForRemove(workReportType);
-        showConfirmingWindow();
-    }
+        if (thereAreWorkReportsFor(workReportType)) {
+            try {
+                Messagebox.show(_("Cannot delete work report type. There are some work reports bound to it."),
+                        _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+            } catch (InterruptedException e) {
+                LOG.error(_("Error on showing warning message removing workReportType: ", workReportType.getId()), e);
+            }
+            return;
+        }
 
-    public void cancelRemove() {
-        confirmingRemove = false;
-        confirmRemove.setVisible(false);
-        Util.reloadBindings(confirmRemove);
-    }
-
-    public boolean isConfirmingRemove() {
-        return confirmingRemove;
-    }
-
-    private void hideConfirmingWindow() {
-        confirmingRemove = false;
-        Util.reloadBindings(confirmRemove);
-    }
-
-    private void showConfirmingWindow() {
-        confirmingRemove = true;
+        // Show remove confirming window
         try {
-            Util.reloadBindings(confirmRemove);
-            confirmRemove.doModal();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            if (Messagebox.show(_("Delete item. Are you sure?"), _("Confirm"),
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
+                workReportTypeModel.confirmRemove(workReportType);
+                final Grid workReportTypes = (Grid) listWindow.getFellowIfAny("listing");
+                if (workReportTypes != null) {
+                    Util.reloadBindings(workReportTypes);
+                }
+            }
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(
+                    Level.ERROR, e.getMessage());
+            LOG.error(_("Error on removing workReportType: ", workReportType.getId()), e);
         }
     }
 
+    private boolean thereAreWorkReportsFor(WorkReportType workReportType) {
+        return workReportTypeModel.thereAreWorkReportsFor(workReportType);
+    }
+
     public void remove(WorkReportType workReportType) {
-        workReportTypeModel.remove(workReportType);
-        hideConfirmingWindow();
+        workReportTypeModel.confirmRemove(workReportType);
         Util.reloadBindings(listWindow);
         messagesForUser.showMessage(
             Level.INFO, _("Removed {0}", workReportType.getName()));
