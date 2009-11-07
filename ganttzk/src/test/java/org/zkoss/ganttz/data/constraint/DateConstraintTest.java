@@ -32,6 +32,7 @@ public class DateConstraintTest {
 
     private Constraint<Date> biggerOrEqualThanNow = DateConstraint
             .biggerOrEqualThan(now);
+    private Constraint<Date> equalToNow = DateConstraint.equalTo(now);
 
     @Test
     public void canCreateConstraintBiggerThan() {
@@ -51,6 +52,19 @@ public class DateConstraintTest {
     public void applyingBiggerOrEqualThanConstraintToNullNotFails() {
         assertThat(biggerOrEqualThanNow.applyTo(null), equalTo(new Date(now
                 .getTime())));
+    }
+
+    @Test
+    public void canCreateConstraintEqualTo(){
+        assertThat(equalToNow.applyTo(new Date(now.getTime() + 1000)),
+                equalTo(now));
+    }
+
+    @Test
+    public void equalToNullLeaveValuesUnmodified() {
+        Constraint<Date> equalToNull = DateConstraint.equalTo(null);
+        Date value = new Date(now.getTime() + 1000);
+        assertThat(equalToNull.applyTo(value), equalTo(value));
     }
 
 }

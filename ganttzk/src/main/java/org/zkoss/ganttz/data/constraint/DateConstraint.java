@@ -34,6 +34,13 @@ public abstract class DateConstraint extends Constraint<Date> {
         return new BiggerOrEqualThan(date);
     }
 
+    public static Constraint<Date> equalTo(Date date) {
+        if (date == null) {
+            return Constraint.voidConstraint();
+        }
+        return new EqualTo(date);
+    }
+
     private long value;
 
     protected long getValue() {
@@ -61,6 +68,22 @@ public abstract class DateConstraint extends Constraint<Date> {
     }
 
     protected abstract boolean isSatisfiedBy(Long time);
+
+    static final class EqualTo extends DateConstraint {
+        EqualTo(Date date) {
+            super(date);
+        }
+
+        @Override
+        protected long applyConstraintTo(Long time) {
+            return getValue();
+        }
+
+        @Override
+        protected boolean isSatisfiedBy(Long time) {
+            return getValue() == time;
+        }
+    }
 
     static class BiggerOrEqualThan extends DateConstraint {
 
