@@ -28,6 +28,14 @@
                     <poDirectory>${project.build.sourceDirectory}/../resources/i18n</poDirectory>
                     <keywords>-k_</keywords>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>dist</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
