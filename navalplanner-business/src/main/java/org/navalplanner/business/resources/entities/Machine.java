@@ -42,7 +42,6 @@ public class Machine extends Resource {
         this.code = code;
         this.name = name;
         this.description = description;
-        getConfigurationUnits();
     }
 
     public static Machine create() {

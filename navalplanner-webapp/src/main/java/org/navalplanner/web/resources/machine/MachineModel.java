@@ -21,24 +21,36 @@
 package org.navalplanner.web.resources.machine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
+import org.hsqldb.lib.Collection;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkerAssignment;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
+import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,21 +61,39 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MachineModel implements IMachineModel {
+    private static Log LOG = LogFactory.getLog(MachineModel.class);
+    /*
+     * State field. Machine is the root of the aggregate
+     * for holding the state. Includes:
+     *
+     * the Machine instance and associated entities.
+     * The MachineWorkersConfigurationUnit set of the machine,
+     * the MachineWorkerAssigments of each MachineWorkersConfigurationUnit instance,
+     * the Criterion set required by each MachineWorkersConfigurationUnit instance,
+     * the calendar associated with the Machine instance
+     *
+     */
+    private Machine machine;
+    private Map<Long,Criterion> criterions = new HashMap<Long,Criterion>();
+    private Map<Long,Worker> workers = new HashMap<Long,Worker>();
 
     @Autowired
     private IResourceDAO resourceDAO;
-
     @Autowired
     private IMachineDAO machineDAO;
-
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
-
-    private Machine machine;
+    @Autowired
+    private ICriterionDAO criterionDAO;
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+    @Autowired
+    private IWorkerDAO workerDAO;
 
     private ClassValidator<Machine> validator = new ClassValidator<Machine>(
             Machine.class);
@@ -72,6 +102,30 @@ public class MachineModel implements IMachineModel {
     @Qualifier("subclass")
     private IBaseCalendarModel baseCalendarModel;
 
+    private void reattachCriterionsCache() {
+        for (Criterion each: criterions.values()) {
+            criterionDAO.reattachUnmodifiedEntity(each);
+        }
+    }
+
+    private void reattachWorkersCache() {
+        for (Worker each: workers.values()) {
+            workerDAO.reattachUnmodifiedEntity(each);
+        }
+    }
+
+    private void insertInCriterionsCacheIfNotExist(Criterion criterion) {
+        if (!criterions.containsValue(criterion)) {
+            criterions.put(criterion.getId(), criterion);
+        }
+    }
+
+    private void insertInWorkersCacheIfNotExist(Worker worker) {
+        if (!workers.containsValue(worker)) {
+            workers.put(worker.getId(), worker);
+        }
+    }
+
     @Override
     public void initCreate() {
         machine = Machine.create();
@@ -79,8 +133,54 @@ public class MachineModel implements IMachineModel {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Machine> getMachines() {
-        return machineDAO.getAll();
+    public void initEdit(Machine machine) {
+        Validate.notNull(machine);
+        try {
+            this.machine = (Machine) resourceDAO.find(machine.getId());
+            loadDepedentEntities();
+        } catch (InstanceNotFoundException e) {
+            LOG.error("Machine with id " + machine.getId()
+                    + " not found", e);
+            throw new RuntimeException();
+        }
+    }
+
+    private void loadDepedentEntities() {
+        reattachCriterionsCache();
+        reattachWorkersCache();
+        loadCriterionSatisfactions();
+        loadConfigurationUnits();
+    }
+
+    private void loadCriterionSatisfactions() {
+        for (CriterionSatisfaction each: machine.getCriterionSatisfactions()) {
+            each.getStartDate();
+            each.getCriterion().getName();
+            insertInCriterionsCacheIfNotExist(each.getCriterion());
+        }
+    }
+
+    private void loadConfigurationUnits() {
+        for (MachineWorkersConfigurationUnit each : machine.getConfigurationUnits()) {
+            each.getName();
+            loadRequiredCriterionsOf(each);
+            loadMachineWorkersAssignmentsOf(each);
+        }
+    }
+
+    private void loadRequiredCriterionsOf(MachineWorkersConfigurationUnit configurationUnit) {
+        for (Criterion each: configurationUnit.getRequiredCriterions()) {
+            each.getName();
+            insertInCriterionsCacheIfNotExist(each);
+        }
+    }
+
+    private void loadMachineWorkersAssignmentsOf(MachineWorkersConfigurationUnit configurationUnit) {
+        for (MachineWorkerAssignment each: configurationUnit.getWorkerAssignments()) {
+            each.getStartDate();
+            each.getWorker().getName();
+            insertInWorkersCacheIfNotExist(each.getWorker());
+        }
     }
 
     @Override
@@ -90,11 +190,59 @@ public class MachineModel implements IMachineModel {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MachineWorkersConfigurationUnit> getConfigurationUnits() {
+    public List<MachineWorkersConfigurationUnit> getConfigurationUnitsOfMachine() {
         ArrayList<MachineWorkersConfigurationUnit> elements = new ArrayList<MachineWorkersConfigurationUnit>();
         if ( machine != null )
             elements.addAll(machine.getConfigurationUnits());
         return elements;
+    }
+
+    @Override
+    public void setCalendarOfMachine(ResourceCalendar resourceCalendar) {
+        if (machine != null) {
+            machine.setCalendar(resourceCalendar);
+        }
+    }
+
+    @Override
+    public ResourceCalendar getCalendarOfMachine() {
+        return (machine != null) ? machine.getCalendar() : null;
+    }
+
+    @Transactional(readOnly=true)
+    @Override
+    public void addWorkerAssigmentToConfigurationUnit(
+            MachineWorkersConfigurationUnit unit) {
+        // TODO: Modify method to add the WorkerAssigment to add
+        Worker worker = workerDAO.getWorkers().iterator().next();
+
+        for (MachineWorkersConfigurationUnit each:
+            machine.getConfigurationUnits()) {
+            if (each == unit) {
+                each.addNewWorkerAssignment(worker);
+            }
+        }
+    }
+
+    @Transactional(readOnly=true)
+    @Override
+    public void addCriterionRequirementToConfigurationUnit(
+            MachineWorkersConfigurationUnit unit) {
+        // TODO: Modify method to add the criterion to add as parameter
+        HashSet<ResourceEnum> appliableToMachine =
+            new HashSet<ResourceEnum>();
+        appliableToMachine.add(ResourceEnum.MACHINE);
+        appliableToMachine.add(ResourceEnum.RESOURCE);
+        boolean stop = false;
+        for (CriterionType each:
+            criterionTypeDAO.getCriterionTypesByResources(appliableToMachine)) {
+            for (Criterion eachCriterion: each.getCriterions()) {
+                unit.addRequiredCriterion(eachCriterion);
+                stop = true;
+                break;
+            }
+            if (stop) break;
+        }
     }
 
     @Override
@@ -112,82 +260,13 @@ public class MachineModel implements IMachineModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void initEdit(Machine machine) {
-        Validate.notNull(machine);
-        this.machine = getFromDB(machine);
-    }
-
-    private Machine getFromDB(Machine machine) {
-        return getFromDB(machine.getId());
-    }
-
-    private Machine getFromDB(Long id) {
-        try {
-            Machine machine = (Machine) resourceDAO.find(id);
-            initializeCriterionsSatisfactions(machine
-                    .getCriterionSatisfactions());
-            initializeConfigurationUnits(machine.getConfigurationUnits());
-            return machine;
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void initializeCriterionsSatisfactions(
-            Set<CriterionSatisfaction> criterionSatisfactions) {
-        for (CriterionSatisfaction criterionSatisfaction : criterionSatisfactions) {
-            initializeCriterionSatisfaction(criterionSatisfaction);
-        }
-    }
-
-    private void initializeCriterionSatisfaction(
-            CriterionSatisfaction criterionSatisfaction) {
-        initializeCriterion(criterionSatisfaction.getCriterion());
-    }
-
-    private void initializeCriterion(Criterion criterion) {
-        criterion.getName();
-        criterion.getName();
-        if (criterion.getParent() != null) {
-            criterion.getParent().getName();
-        }
-    }
-
-    private void initializeConfigurationUnits(
-            Set<MachineWorkersConfigurationUnit> configurationUnits) {
-        for (MachineWorkersConfigurationUnit configurationUnit : configurationUnits) {
-            initializeConfigurationUnit(configurationUnit);
-        }
-    }
-
-    private void initializeConfigurationUnit(
-            MachineWorkersConfigurationUnit configurationUnit) {
-        configurationUnit.getName();
-        for (Criterion criterion : configurationUnit.getRequiredCriterions()) {
-            criterion.getName();
-        }
-        for (MachineWorkerAssignment assignment : configurationUnit
-                .getWorkerAssignments()) {
-            assignment.getWorker().getName();
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<BaseCalendar> getBaseCalendars() {
         return baseCalendarDAO.getBaseCalendars();
     }
 
     @Override
-    public void setCalendar(ResourceCalendar resourceCalendar) {
-        if (machine != null) {
-            machine.setCalendar(resourceCalendar);
-        }
+    @Transactional(readOnly = true)
+    public List<Machine> getMachines() {
+        return machineDAO.getAll();
     }
-
-    @Override
-    public ResourceCalendar getCalendar() {
-        return (machine != null) ? machine.getCalendar() : null;
-    }
-
 }

@@ -100,48 +100,32 @@ public class MachineConfigurationController extends GenericForwardComposer {
     }
 
     public List<MachineWorkersConfigurationUnit> getConfigurationUnits() {
-        return this.machineModel.getConfigurationUnits();
+        return this.machineModel.getConfigurationUnitsOfMachine();
     }
 
     public List<MachineWorkerAssignment> getWorkerAssignments() {
         // Need to specify concrete unit
         MachineWorkersConfigurationUnit unit = (MachineWorkersConfigurationUnit) this.machineModel
-                .getConfigurationUnits().iterator().next();
+                .getConfigurationUnitsOfMachine().iterator().next();
         return (List<MachineWorkerAssignment>) unit.getWorkerAssignments();
     }
 
     public List<Criterion> getRequiredCriterions() {
         // Need to specify concrete unit
         MachineWorkersConfigurationUnit unit = (MachineWorkersConfigurationUnit) this.machineModel
-                .getConfigurationUnits().iterator().next();
+                .getConfigurationUnitsOfMachine().iterator().next();
         return (List<Criterion>) unit.getRequiredCriterions();
-    }
-
-    @Transactional(readOnly = true)
-    public void addValidMachineWorkerAssignments(
-            MachineWorkersConfigurationUnit unit) {
-        Worker worker = null;
-        // Pending to add selected worker from autocomplete component
-        worker = workerDAO.getWorkers().iterator().next();
-        unit.addNewWorkerAssignment(worker);
-    }
-
-    public void addValidCriterionRequirement(
-            MachineWorkersConfigurationUnit unit) {
-        // Pending to add selected criterion from autocomplete component
-        Criterion criterion = criterionDAO.getAll().iterator().next();
-        unit.addRequiredCriterion(criterion);
     }
 
     public void addWorkerAssignment(MachineWorkersConfigurationUnit unit,
             Component c) {
-        addValidMachineWorkerAssignments(unit);
+        machineModel.addWorkerAssigmentToConfigurationUnit(unit);
         Util.reloadBindings(c.getNextSibling());
     }
 
     public void addCriterionRequirement(MachineWorkersConfigurationUnit unit,
             Component c) {
-        addValidCriterionRequirement(unit);
+        machineModel.addCriterionRequirementToConfigurationUnit(unit);
         Util.reloadBindings(c.getNextSibling());
     }
 

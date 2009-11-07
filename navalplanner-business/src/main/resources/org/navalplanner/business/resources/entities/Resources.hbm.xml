@@ -126,7 +126,7 @@
         <key column="id" not-null="false" />
         <many-to-many class="org.navalplanner.business.resources.entities.Criterion" column="CRITERION_ID"/>
     </set>
-      <set inverse="true" name="workerAssignments" cascade="all-delete-orphan">
+    <set inverse="true" name="workerAssignments" cascade="all-delete-orphan">
         <key column="configuration_id" />
         <one-to-many
             class="MachineWorkerAssignment" />
@@ -144,7 +144,7 @@
     <version name="version" access="property" type="long" />
     <property access="field" name="startDate" />
     <property access="field" name="finishDate"/>
-    <many-to-one access="field" name="machineWorkersConfigurationUnit" column="configuration_id" class="MachineWorkersConfigurationUnit" not-null="true"/>
+    <many-to-one access="field" name="machineWorkersConfigurationUnit" class="MachineWorkersConfigurationUnit" column="configuration_id" not-null="true"/>
     <many-to-one access="field" name="worker" class="Worker" column="worker_id" />
   </class>
 

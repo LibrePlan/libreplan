@@ -173,7 +173,7 @@ public class MachineCRUDController extends GenericForwardComposer {
         }
 
         updateCalendarController();
-        resourceCalendarModel.initEdit(machineModel.getCalendar());
+        resourceCalendarModel.initEdit(machineModel.getCalendarOfMachine());
         try {
             baseCalendarEditionController.doAfterCompose(editCalendarWindow);
         } catch (Exception e) {
@@ -275,7 +275,7 @@ public class MachineCRUDController extends GenericForwardComposer {
         }
 
         updateCalendarController();
-        machineModel.setCalendar((ResourceCalendar) resourceCalendarModel
+        machineModel.setCalendarOfMachine((ResourceCalendar) resourceCalendarModel
                 .getBaseCalendar());
         try {
             baseCalendarEditionController.doAfterCompose(editCalendarWindow);
@@ -311,7 +311,7 @@ public class MachineCRUDController extends GenericForwardComposer {
             @Override
             public void goToList() {
                 machineModel
-                        .setCalendar((ResourceCalendar) resourceCalendarModel
+                        .setCalendarOfMachine((ResourceCalendar) resourceCalendarModel
                                 .getBaseCalendar());
                 reloadWindow();
             }
@@ -319,14 +319,14 @@ public class MachineCRUDController extends GenericForwardComposer {
             @Override
             public void cancel() {
                 resourceCalendarModel.cancel();
-                machineModel.setCalendar(null);
+                machineModel.setCalendarOfMachine(null);
                 reloadWindow();
             }
 
             @Override
             public void save() {
                 machineModel
-                        .setCalendar((ResourceCalendar) resourceCalendarModel
+                        .setCalendarOfMachine((ResourceCalendar) resourceCalendarModel
                                 .getBaseCalendar());
                 reloadWindow();
             }
@@ -342,7 +342,7 @@ public class MachineCRUDController extends GenericForwardComposer {
     }
 
     public boolean isCalendarNull() {
-        return (machineModel.getCalendar() == null);
+        return (machineModel.getCalendarOfMachine() == null);
     }
 
     public boolean isCalendarNotNull() {

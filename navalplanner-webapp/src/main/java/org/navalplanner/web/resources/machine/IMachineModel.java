@@ -21,35 +21,62 @@
 package org.navalplanner.web.resources.machine;
 
 import java.util.List;
-
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 
 /*
  * This interface contains the operations to create/edit a machine.
  *
+ * Conversation state: the Machine instance and associated entities.
+ * The MachineWorkersConfigurationUnit set of the machine,
+ * the MachineWorkerAssigments of each MachineWorkersConfigurationUnit instance,
+ * the Criterion set required by each MachineWorkersConfigurationUnit instance,
+ * the calendar associated with the Machine instance
+ *
+ * <strong>Conversation protocol:</strong>
+ *
+ * <strong>Initial steps:</strong>
+ *   <code>initCreate</code>
+ *   <code>initEdit</code>
+ *
+ * <strong>Intermediate conversational steps:</strong>
+ *   <code>getConfigurationUnitsOfMachine</code>
+ *   <code>setCalendarOfMachine</code>
+ *   <code>setCalendarOfMachine</code>
+ *
+ * <strong>Final conversational step:</strong>
+ *   <code>confirmSave()</code>
+ *
+ * <strong>Not conversational steps:</strong>
+ *   <code>getMachines()</code>
+ *   <code>getBaseCalendars()</code>
+ *
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public interface IMachineModel {
-
-    void confirmSave() throws ValidationException;
-
-    List<BaseCalendar> getBaseCalendars();
-
-    ResourceCalendar getCalendar();
-
-    Machine getMachine();
-
-    List<Machine> getMachines();
-
-    List<MachineWorkersConfigurationUnit> getConfigurationUnits();
-
+    // Initial conversational steps
     void initCreate();
-
     void initEdit(Machine machine);
 
-    void setCalendar(ResourceCalendar resourceCalendar);
+    // Intermediate conversation steps
+    Machine getMachine();
+    ResourceCalendar getCalendarOfMachine();
+    List<MachineWorkersConfigurationUnit> getConfigurationUnitsOfMachine();
+    void setCalendarOfMachine(ResourceCalendar resourceCalendar);
+    void addWorkerAssigmentToConfigurationUnit(MachineWorkersConfigurationUnit
+            machineWorkersConfigurationUnit);
+    void addCriterionRequirementToConfigurationUnit(
+            MachineWorkersConfigurationUnit criterion);
+
+    // Final conversational step
+    void confirmSave() throws ValidationException;
+
+    // Non conversational methods
+    List<Machine> getMachines();
+    List<BaseCalendar> getBaseCalendars();
 }
