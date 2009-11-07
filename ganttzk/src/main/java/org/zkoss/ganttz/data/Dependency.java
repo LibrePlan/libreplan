@@ -75,38 +75,6 @@ public class Dependency {
         return result;
     }
 
-    public static Date calculateStart(Task origin, Date current,
-            Collection<? extends Dependency> dependencies) {
-        return apply(Calculation.START, origin, current, dependencies);
-    }
-
-    public static Date calculateEnd(Task origin, Date current,
-            Collection<? extends Dependency> depencencies) {
-        return apply(Calculation.END, origin, current, depencencies);
-    }
-
-
-    private static Date apply(Calculation calculation, Task origin,
-            Date current, Collection<? extends Dependency> dependencies) {
-        Date result = null;
-        for (Dependency dependency : dependencies) {
-            switch (calculation) {
-            case START:
-                result = dependency.getType().calculateStartDestinyTask(
-                        dependency.getSource(), current);
-                break;
-            case END:
-                result = dependency.getType().calculateEndDestinyTask(
-                        dependency.getSource(), current);
-                break;
-            default:
-                throw new RuntimeException("unexpected calculation "
-                        + calculation);
-            }
-        }
-        return result;
-    }
-
     private List<Constraint<Date>> toConstraints(
             Calculation calculation) {
         return calculation.toConstraints(source, type);
