@@ -246,9 +246,8 @@ public class TaskComponent extends Div implements AfterCompose {
         return disabilityConfiguration.isMovingTasksEnabled();
     }
 
-    // Command action to do
     void doUpdatePosition(String leftX, String topY) {
-        this.task.setBeginDate(getMapper().toDate(stripPx(leftX)));
+        this.task.moveTo(getMapper().toDate(stripPx(leftX)));
     }
 
     void doUpdateSize(String size) {

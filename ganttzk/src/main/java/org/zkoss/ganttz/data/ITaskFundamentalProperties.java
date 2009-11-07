@@ -64,4 +64,6 @@ public interface ITaskFundamentalProperties {
 
     List<Constraint<Date>> getStartConstraints();
 
+    public void moveTo(Date date);
+
 }

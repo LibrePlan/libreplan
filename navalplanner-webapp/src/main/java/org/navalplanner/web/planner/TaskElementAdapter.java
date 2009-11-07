@@ -342,6 +342,15 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             }
 
         }
+
+        @Override
+        public void moveTo(Date date) {
+            setBeginDate(date);
+            if (taskElement instanceof Task) {
+                Task task = (Task) taskElement;
+                task.explicityMoved(date);
+            }
+        }
     }
 
     @Override

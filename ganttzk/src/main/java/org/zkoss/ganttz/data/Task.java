@@ -217,4 +217,11 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getTooltipText();
     }
 
+    public void moveTo(Date date) {
+        Date previousStart = getBeginDate();
+        long previousLength = getLengthMilliseconds();
+        fundamentalProperties.moveTo(date);
+        fireChangesForPreviousValues(previousStart, previousLength);
+    }
+
 }

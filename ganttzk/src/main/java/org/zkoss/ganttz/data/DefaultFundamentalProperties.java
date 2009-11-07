@@ -137,4 +137,9 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return Collections.emptyList();
     }
 
+    @Override
+    public void moveTo(Date date) {
+        setBeginDate(date);
+    }
+
 }
