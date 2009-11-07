@@ -58,6 +58,13 @@ public class Task extends TaskElement {
 
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
+    private StartConstraintType startConstraintType = StartConstraintType.AS_SOON_AS_POSSIBLE;
+
+    public StartConstraintType getStartConstraintType() {
+        return startConstraintType != null ? startConstraintType
+                : StartConstraintType.AS_SOON_AS_POSSIBLE;
+    }
+
     /**
      * Constructor for hibernate. Do not use!
      */

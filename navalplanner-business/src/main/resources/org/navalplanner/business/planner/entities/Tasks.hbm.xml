@@ -40,6 +40,11 @@
                     <param name="enumClass">org.navalplanner.business.planner.entities.CalculatedValue</param>
                 </type>
             </property>
+            <property name="startConstraintType">
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">org.navalplanner.business.planner.entities.StartConstraintType</param>
+                </type>
+            </property>
             <set name="resourceAllocations" cascade="all-delete-orphan">
                 <key column="TASK" />
                 <one-to-many class="ResourceAllocation" />
