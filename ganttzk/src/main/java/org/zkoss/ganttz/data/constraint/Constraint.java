@@ -35,13 +35,13 @@ public abstract class Constraint<T> {
         public void constraintViolated(Constraint<T> constraint, T value);
     }
 
-    public static <T> T apply(T currentValue, Constraint<T>... constraints) {
-        return apply(currentValue, Arrays.asList(constraints));
+    public static <T> T apply(T initialValue, Constraint<T>... constraints) {
+        return apply(initialValue, Arrays.asList(constraints));
     }
 
-    public static <T> T apply(T currentValue,
+    public static <T> T apply(T initialValue,
             Collection<Constraint<T>> constraints) {
-        T result = currentValue;
+        T result = initialValue;
         for (Constraint<T> each : constraints) {
             result = each.applyTo(result);
         }

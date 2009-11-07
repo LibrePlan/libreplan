@@ -43,7 +43,7 @@ public class ConstraintTest {
 
         @Override
         protected Integer applyConstraintTo(Integer currentValue) {
-            return currentValue;
+            return Math.max(6, currentValue);
         }
 
         @Override
@@ -85,12 +85,6 @@ public class ConstraintTest {
         };
         assertThat(biggerThanFive.applyTo(5), equalTo(6));
     }
-
-    @Test(expected = IllegalStateException.class)
-    public void aConstraintMustReturnValuesThatSatisfiesItsCriterion() {
-        biggerThanFive.applyTo(4);
-    }
-
 
     @SuppressWarnings("unchecked")
     @Test
