@@ -136,10 +136,18 @@ public class GanttDiagramGraph {
             enforceEndDate(incoming);
         }
 
+        @SuppressWarnings("unchecked")
         private void enforceEndDate(Set<Dependency> incoming) {
-            Date endDate = task.getEndDate();
-            Date newEnd = Dependency.calculateEnd(task, endDate, incoming);
-            if (!endDate.equals(newEnd)) {
+            Constraint<Date> currentLength = task.getCurrentLengthConstraint();
+            Constraint<Date> respectStartDate = task
+                    .getEndDateBiggerThanStartDate();
+            Date newEnd = Constraint.<Date> initialValue(null)
+                                    .withConstraints(currentLength)
+                                    .withConstraints(Dependency
+                                            .getEndConstraints(incoming))
+                                    .withConstraints(respectStartDate)
+                                    .apply();
+            if (!task.getEndDate().equals(newEnd)) {
                 task.setEndDate(newEnd);
             }
         }
