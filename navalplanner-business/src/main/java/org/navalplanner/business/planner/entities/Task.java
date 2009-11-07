@@ -58,12 +58,7 @@ public class Task extends TaskElement {
 
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
-    private StartConstraintType startConstraintType = StartConstraintType.AS_SOON_AS_POSSIBLE;
-
-    public StartConstraintType getStartConstraintType() {
-        return startConstraintType != null ? startConstraintType
-                : StartConstraintType.AS_SOON_AS_POSSIBLE;
-    }
+    private TaskStartConstraint startConstraint = new TaskStartConstraint();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -310,6 +305,17 @@ public class Task extends TaskElement {
         for (ResourceAllocation<?> resourceAllocation : newAllocations) {
             addResourceAllocation(resourceAllocation);
         }
+    }
+
+    public void explicityMoved(Date date) {
+        getStartConstraint().explicityMovedTo(date);
+    }
+
+    public TaskStartConstraint getStartConstraint() {
+        if (startConstraint == null) {
+            startConstraint = new TaskStartConstraint();
+        }
+        return startConstraint;
     }
 
     @Override

@@ -46,6 +46,7 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -320,17 +321,19 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         public List<Constraint<Date>> getStartConstraints() {
             if (taskElement instanceof Task) {
                 Task task = (Task) taskElement;
-                StartConstraintType constraintType = task
+                TaskStartConstraint startConstraint = task.getStartConstraint();
+                final StartConstraintType constraintType = startConstraint
                         .getStartConstraintType();
                 switch (constraintType) {
                 case AS_SOON_AS_POSSIBLE:
                     return Collections.emptyList();
                 case START_IN_FIXED_DATE:
                     return Collections.singletonList(DateConstraint
-                            .equalTo(task.getStartDate()));
+                            .equalTo(startConstraint.getConstraintDate()));
                 case START_NOT_EARLIER_THAN:
                     return Collections.singletonList(DateConstraint
-                            .biggerOrEqualThan(task.getStartDate()));
+                            .biggerOrEqualThan(startConstraint
+                                    .getConstraintDate()));
                 default:
                     throw new RuntimeException("can't handle " + constraintType);
                 }

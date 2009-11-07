@@ -19,30 +19,38 @@
  */
 package org.navalplanner.business.planner.entities;
 
+import java.util.Date;
+
+import org.apache.commons.lang.Validate;
+
 /**
- * Enum with all possible ways of calculating the start of a task <br />
+ * Component class that encapsulates a {@link StartConstraintType} and its
+ * associated constraint date <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public enum StartConstraintType {
-    AS_SOON_AS_POSSIBLE {
-        @Override
-        public StartConstraintType newTypeAfterMoved() {
-            return START_NOT_EARLIER_THAN;
-        }
-    },
-    START_NOT_EARLIER_THAN {
-        @Override
-        public StartConstraintType newTypeAfterMoved() {
-            return START_NOT_EARLIER_THAN;
-        }
-    },
-    START_IN_FIXED_DATE {
-        @Override
-        public StartConstraintType newTypeAfterMoved() {
-            return START_NOT_EARLIER_THAN;
-        }
-    };
+public class TaskStartConstraint {
 
-    public abstract StartConstraintType newTypeAfterMoved();
+    private StartConstraintType startConstraintType = StartConstraintType.AS_SOON_AS_POSSIBLE;
+
+    private Date constraintDate = null;
+
+    public TaskStartConstraint() {
+    }
+
+    public StartConstraintType getStartConstraintType() {
+        return startConstraintType != null ? startConstraintType
+                : StartConstraintType.AS_SOON_AS_POSSIBLE;
+    }
+
+    public void explicityMovedTo(Date date) {
+        Validate.notNull(date);
+        startConstraintType = startConstraintType.newTypeAfterMoved();
+        constraintDate = new Date(date.getTime());
+    }
+
+    public Date getConstraintDate() {
+        return constraintDate != null ? new Date(constraintDate.getTime())
+                : null;
+    }
 
 }
