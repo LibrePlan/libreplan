@@ -22,9 +22,12 @@ package org.zkoss.ganttz.adapters;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.zkoss.ganttz.data.constraint.Constraint;
+import org.zkoss.ganttz.data.constraint.DateConstraint;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
@@ -91,6 +94,9 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean editingDatesEnabled = true;
 
+    private Date notBeforeThan = null;
+
+
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
         this.adapter = adapter;
@@ -130,6 +136,10 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public ICommand<T> getGoingDownInLastArrowCommand() {
         return goingDownInLastArrowCommand;
+    }
+
+    public void setNotBeforeThan(Date notBeforeThan) {
+        this.notBeforeThan = new Date(notBeforeThan.getTime());
     }
 
     public void setGoingDownInLastArrowCommand(
@@ -197,6 +207,19 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public void setEditingDatesEnabled(boolean editingDatesEnabled) {
         this.editingDatesEnabled = editingDatesEnabled;
+    }
+
+    public List<Constraint<Date>> getStartConstraints() {
+        if (notBeforeThan != null) {
+            return Collections.singletonList(DateConstraint
+                    .biggerOrEqualThan(notBeforeThan));
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public List<Constraint<Date>> getEndConstraints() {
+        return Collections.emptyList();
     }
 
 }
