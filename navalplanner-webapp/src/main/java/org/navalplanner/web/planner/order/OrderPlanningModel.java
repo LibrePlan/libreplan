@@ -277,8 +277,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         forceLoadOfDependenciesCollections(planningState.getInitial());
         forceLoadOfWorkingHours(planningState.getInitial());
         forceLoadOfLabels(planningState.getInitial());
-        return new PlannerConfiguration<TaskElement>(taskElementAdapter,
+        PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
+                taskElementAdapter,
                 new TaskElementNavigator(), planningState.getInitial());
+        result.setNotBeforeThan(orderReloaded.getInitDate());
+        return result;
     }
 
     private void forceLoadOfWorkingHours(List<TaskElement> initial) {

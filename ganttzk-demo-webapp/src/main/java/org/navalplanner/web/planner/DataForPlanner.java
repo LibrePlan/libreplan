@@ -35,7 +35,6 @@ import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.DefaultFundamentalProperties;
 import org.zkoss.ganttz.data.DependencyType;
-import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
@@ -52,10 +51,6 @@ public class DataForPlanner {
 
     public DataForPlanner() {
 
-    }
-
-    public GanttDiagramGraph getEmpty() {
-        return new GanttDiagramGraph();
     }
 
     private PlannerConfiguration<ITaskFundamentalProperties> addCommands(
@@ -179,7 +174,8 @@ public class DataForPlanner {
                 return false;
             }
         };
-        return new PlannerConfiguration<ITaskFundamentalProperties>(
+        return mustStartNotTwoMonthsBeforeThan(now,
+                new PlannerConfiguration<ITaskFundamentalProperties>(
                 new AutoAdapter() {
                     @Override
                     public List<DomainDependency<ITaskFundamentalProperties>> getOutcomingDependencies(
@@ -194,8 +190,16 @@ public class DataForPlanner {
                         }
                         return result;
                     }
-                }, navigator, list);
+                }, navigator, list));
     }
+
+    private PlannerConfiguration<ITaskFundamentalProperties> mustStartNotTwoMonthsBeforeThan(
+            Date date,
+            PlannerConfiguration<ITaskFundamentalProperties> plannerConfiguration) {
+        plannerConfiguration.setNotBeforeThan(twoMonthsBefore(date));
+        return plannerConfiguration;
+    }
+
 
     private DefaultFundamentalProperties createTask(String name, Date now,
             Date end) {
@@ -207,6 +211,13 @@ public class DataForPlanner {
     private void addNewTask(IContext<ITaskFundamentalProperties> context) {
         context.add(createTask(_("New task"), new Date(),
                 twoMonthsLater(new Date())));
+    }
+
+    private Date twoMonthsBefore(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MONTH, -2);
+        return calendar.getTime();
     }
 
     private static Date twoMonthsLater(Date now) {
