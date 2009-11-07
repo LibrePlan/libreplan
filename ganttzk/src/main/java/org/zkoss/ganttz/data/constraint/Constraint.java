@@ -53,6 +53,24 @@ public abstract class Constraint<T> {
         return result;
     }
 
+    private static final Constraint<Object> VOID_CONSTRAINT = new Constraint<Object>() {
+
+        @Override
+        protected Object applyConstraintTo(Object currentValue) {
+            return currentValue;
+        }
+
+        @Override
+        public boolean isSatisfiedBy(Object value) {
+            return true;
+        }
+    };
+
+    @SuppressWarnings("unchecked")
+    public static <T> Constraint<T> voidConstraint() {
+        return (Constraint<T>) VOID_CONSTRAINT;
+    }
+
     private WeakReferencedListeners<IConstraintViolationListener<T>> weakListeners = WeakReferencedListeners
             .create();
 

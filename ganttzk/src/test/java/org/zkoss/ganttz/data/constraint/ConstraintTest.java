@@ -112,6 +112,7 @@ public class ConstraintTest {
         assertThat(result, equalTo(4));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void theViolatedConstraintsNotifiesItsListeners() {
         final Constraint<Integer>[] constraintViolated = new Constraint[1];
