@@ -132,17 +132,25 @@ public class GanttDiagramGraph {
 
         void enforce() {
             Set<Dependency> incoming = graph.incomingEdgesOf(task);
+            enforceStartDate(incoming);
+            enforceEndDate(incoming);
+        }
+
+        private void enforceEndDate(Set<Dependency> incoming) {
+            Date endDate = task.getEndDate();
+            Date newEnd = Dependency.calculateEnd(task, endDate, incoming);
+            if (!endDate.equals(newEnd)) {
+                task.setEndDate(newEnd);
+            }
+        }
+
+        private void enforceStartDate(Set<Dependency> incoming) {
             List<Constraint<Date>> startConstraints = Dependency
                     .getStartConstraints(incoming);
             Date newStart = Constraint.apply(null,
                     plusGlobalStartConstraints(startConstraints));
             if (!task.getBeginDate().equals(newStart)) {
                 task.setBeginDate(newStart);
-            }
-            Date endDate = task.getEndDate();
-            Date newEnd = Dependency.calculateEnd(task, endDate, incoming);
-            if (!endDate.equals(newEnd)) {
-                task.setEndDate(newEnd);
             }
         }
 
