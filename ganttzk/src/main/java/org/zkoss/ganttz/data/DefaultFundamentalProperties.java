@@ -21,7 +21,11 @@
 package org.zkoss.ganttz.data;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+
+import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -126,6 +130,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public String getTooltipText() {
         return tooltipText;
+    }
+
+    @Override
+    public List<Constraint<Date>> getStartConstraints() {
+        return Collections.emptyList();
     }
 
 }

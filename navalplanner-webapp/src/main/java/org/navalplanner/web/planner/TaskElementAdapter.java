@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,8 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.StartConstraintType;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +55,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.constraint.Constraint;
+import org.zkoss.ganttz.data.constraint.DateConstraint;
 
 /**
  * Responsible of adaptating a {@link TaskElement} into a
@@ -309,6 +314,30 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 }
             }
             return result.toString();
+        }
+
+        @Override
+        public List<Constraint<Date>> getStartConstraints() {
+            if (taskElement instanceof Task) {
+                Task task = (Task) taskElement;
+                StartConstraintType constraintType = task
+                        .getStartConstraintType();
+                switch (constraintType) {
+                case AS_SOON_AS_POSSIBLE:
+                    return Collections.emptyList();
+                case START_IN_FIXED_DATE:
+                    return Collections.singletonList(DateConstraint
+                            .equalTo(task.getStartDate()));
+                case START_NOT_EARLIER_THAN:
+                    return Collections.singletonList(DateConstraint
+                            .biggerOrEqualThan(task.getStartDate()));
+                default:
+                    throw new RuntimeException("can't handle " + constraintType);
+                }
+            } else {
+                return Collections.emptyList();
+            }
+
         }
     }
 

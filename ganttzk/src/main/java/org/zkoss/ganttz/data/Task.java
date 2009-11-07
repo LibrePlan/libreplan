@@ -54,6 +54,11 @@ public abstract class Task implements ITaskFundamentalProperties {
         this(new DefaultFundamentalProperties());
     }
 
+    @Override
+    public List<Constraint<Date>> getStartConstraints() {
+        return fundamentalProperties.getStartConstraints();
+    }
+
     public Task(String name, Date beginDate, long lengthMilliseconds) {
         this();
         if (name == null) {
