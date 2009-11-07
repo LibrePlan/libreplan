@@ -20,7 +20,12 @@
 
 package org.zkoss.ganttz.data;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+
+import org.zkoss.ganttz.data.constraint.Constraint;
+import org.zkoss.ganttz.data.constraint.DateConstraint;
 
 /**
  * This enum tells the type of a depepdency. Each instance contanins the correct
@@ -40,6 +45,17 @@ public enum DependencyType {
                 Date current) {
             return current;
         }
+
+        @Override
+        public List<Constraint<Date>> getEndConstraints(Task source) {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List<Constraint<Date>> getStartConstraints(Task source) {
+            return Collections.emptyList();
+        }
+
     },
     END_START {
         @Override
@@ -52,6 +68,17 @@ public enum DependencyType {
                 Date current) {
             return getBigger(originalTask.getEndDate(), current);
         }
+
+        @Override
+        public List<Constraint<Date>> getStartConstraints(Task source) {
+            return Collections.singletonList(biggerThanTaskEndDate(source));
+        }
+
+        @Override
+        public List<Constraint<Date>> getEndConstraints(Task source) {
+            return Collections.emptyList();
+        }
+
     },
     START_START {
 
@@ -63,6 +90,16 @@ public enum DependencyType {
         @Override
         public Date calculateStartDestinyTask(Task originTask, Date current) {
             return getBigger(originTask.getBeginDate(), current);
+        }
+
+        @Override
+        public List<Constraint<Date>> getEndConstraints(Task source) {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List<Constraint<Date>> getStartConstraints(Task source) {
+            return Collections.singletonList(biggerThanTaskStartDate(source));
         }
     },
     END_END {
@@ -76,7 +113,26 @@ public enum DependencyType {
         public Date calculateStartDestinyTask(Task originTask, Date current) {
             return current;
         }
+
+        @Override
+        public List<Constraint<Date>> getEndConstraints(Task source) {
+            return Collections.singletonList(biggerThanTaskEndDate(source));
+        }
+
+        @Override
+        public List<Constraint<Date>> getStartConstraints(Task source) {
+            return Collections.emptyList();
+        }
     };
+
+    protected Constraint<Date> biggerThanTaskEndDate(Task source) {
+        return DateConstraint.biggerOrEqualThan(source.getEndDate());
+    }
+
+    protected Constraint<Date> biggerThanTaskStartDate(Task source) {
+        return DateConstraint
+                .biggerOrEqualThan(source.getBeginDate());
+    }
 
     private static Date getBigger(Date date1, Date date2) {
         if (date1.before(date2)) {
@@ -90,4 +146,8 @@ public enum DependencyType {
 
     public abstract Date calculateStartDestinyTask(Task originTask,
             Date current);
+
+    public abstract List<Constraint<Date>> getStartConstraints(Task source);
+
+    public abstract List<Constraint<Date>> getEndConstraints(Task source);
 }

@@ -20,11 +20,14 @@
 
 package org.zkoss.ganttz.data;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
  * This class represents a dependency. Contains the source and the destination.
@@ -34,7 +37,42 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class Dependency {
 
     private enum Calculation {
-        START, END;
+        START {
+            @Override
+            public List<Constraint<Date>> toConstraints(Task source,
+                    DependencyType type) {
+                return type.getStartConstraints(source);
+            }
+        },
+        END {
+            @Override
+            public List<Constraint<Date>> toConstraints(Task source,
+                    DependencyType type) {
+                return type.getEndConstraints(source);
+            }
+        };
+
+        abstract List<Constraint<Date>> toConstraints(Task source,
+                DependencyType type);
+    }
+
+    public static List<Constraint<Date>> getStartConstraints(
+            Collection<Dependency> dependencies) {
+        return getConstraintsFor(dependencies, Calculation.START);
+    }
+
+    public static List<Constraint<Date>> getEndConstraints(
+            Collection<Dependency> incoming) {
+        return getConstraintsFor(incoming, Calculation.END);
+    }
+
+    private static List<Constraint<Date>> getConstraintsFor(
+            Collection<Dependency> dependencies, Calculation calculation) {
+        List<Constraint<Date>> result = new ArrayList<Constraint<Date>>();
+        for (Dependency dependency : dependencies) {
+            result.addAll(dependency.toConstraints(calculation));
+        }
+        return result;
     }
 
     public static Date calculateStart(Task origin, Date current,
@@ -46,6 +84,7 @@ public class Dependency {
             Collection<? extends Dependency> depencencies) {
         return apply(Calculation.END, origin, current, depencencies);
     }
+
 
     private static Date apply(Calculation calculation, Task origin,
             Date current, Collection<? extends Dependency> dependencies) {
@@ -66,6 +105,11 @@ public class Dependency {
             }
         }
         return result;
+    }
+
+    private List<Constraint<Date>> toConstraints(
+            Calculation calculation) {
+        return calculation.toConstraints(source, type);
     }
 
     private final Task source;
