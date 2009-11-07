@@ -38,11 +38,8 @@
                         </row>
                         <row>
                             <label value="${i18n:_('Type')}" />
-                            <listbox id="lbResource" mold="select" selectedItem="@{controller.criterionType.resource}">
-                                <listitem label="${i18n:_('Generic')}" value="RESOURCE" />
-                                <listitem label="${i18n:_('Worker')}" value="WORKER" />
-                                <listitem label="${i18n:_('Machine')}" value="MACHINE" />
-                            </listbox>
+                            <zscript>Object[] resourceTypes = org.navalplanner.business.resources.entities.ResourceEnum.values();</zscript>
+                            <listbox id="lbResource" mold="select" model="@{resourceTypes}" selectedItem="@{controller.criterionType.resource}"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Multiple values per resource')}"/>
