@@ -39,23 +39,15 @@ import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
  */
 public class ConstraintTest {
 
-    private Constraint<Integer> biggerThanFive = new Constraint<Integer>() {
+    private Constraint<Integer> biggerThanFive = biggerThan(5);
 
-        @Override
-        protected Integer applyConstraintTo(Integer currentValue) {
-            return Math.max(6, currentValue);
-        }
+    private Constraint<Integer> biggerThanSeven = biggerThan(7);
 
-        @Override
-        public boolean isSatisfiedBy(Integer value) {
-            return value != null && value > 5;
-        }
-    };
     private Constraint<Integer> lessThanFive = new Constraint<Integer>() {
 
         @Override
         public boolean isSatisfiedBy(Integer value) {
-            return value!=null && value <5;
+            return value != null && value < 5;
         }
 
         @Override
@@ -63,6 +55,21 @@ public class ConstraintTest {
             return Math.min(4, currentValue);
         }
     };
+
+    private static Constraint<Integer> biggerThan(final int limit) {
+        return new Constraint<Integer>() {
+
+            @Override
+            protected Integer applyConstraintTo(Integer currentValue) {
+                return Math.max(limit + 1, currentValue);
+            }
+
+            @Override
+            public boolean isSatisfiedBy(Integer value) {
+                return value != null && value > limit;
+            }
+        };
+    }
 
     @Test
     public void ifThereIsNoConstraintsTheOriginalValueIsReturned() {
@@ -127,6 +134,41 @@ public class ConstraintTest {
                 });
         Constraint.apply(6, biggerThanFive, lessThanFive);
         assertThat(constraintViolated[0], equalTo(biggerThanFive));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void theApplicationCanBeDoneUsingAFluentInterface() {
+        assertThat(Constraint.initialValue(3)
+                             .withConstraints(biggerThanFive)
+                             .apply(),
+                   equalTo(6));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void severalConstraintsCanBeChained() {
+        assertThat(Constraint.initialValue(3)
+                             .withConstraints(biggerThanFive)
+                             .withConstraints(biggerThanSeven)
+                             .apply(),
+                   equalTo(8));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void chainingSeveralConstrainsShowsThePriority() {
+        assertThat(Constraint.initialValue(5)
+                             .withConstraints(biggerThanFive)
+                             .withConstraints(lessThanFive)
+                             .apply(),
+                   equalTo(4));
+
+        assertThat(Constraint.initialValue(5)
+                             .withConstraints(lessThanFive)
+                             .withConstraints(biggerThanFive)
+                             .apply(),
+                   equalTo(6));
     }
 
 }

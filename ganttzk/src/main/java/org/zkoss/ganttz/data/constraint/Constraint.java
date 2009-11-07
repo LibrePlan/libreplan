@@ -19,8 +19,10 @@
  */
 package org.zkoss.ganttz.data.constraint;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
@@ -33,6 +35,37 @@ public abstract class Constraint<T> {
 
     public interface IConstraintViolationListener<T> {
         public void constraintViolated(Constraint<T> constraint, T value);
+    }
+
+    public static class ConstraintBuilder<T> {
+
+        private final T value;
+
+        private final List<Constraint<T>> constraints = new ArrayList<Constraint<T>>();
+
+        public ConstraintBuilder(T value) {
+            this.value = value;
+        }
+
+        public ConstraintBuilder<T> withConstraints(
+                Constraint<T>... constraints) {
+            return withConstraints(Arrays.asList(constraints));
+        }
+
+        public ConstraintBuilder<T> withConstraints(
+                List<Constraint<T>> constraints) {
+            this.constraints.addAll(constraints);
+            return this;
+        }
+
+        public T apply() {
+            return Constraint.apply(value, constraints);
+        }
+
+    }
+
+    public static <T> ConstraintBuilder<T> initialValue(T value) {
+        return new ConstraintBuilder<T>(value);
     }
 
     public static <T> T apply(T initialValue, Constraint<T>... constraints) {
