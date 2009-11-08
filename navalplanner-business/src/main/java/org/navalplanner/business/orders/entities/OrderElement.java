@@ -83,13 +83,6 @@ public abstract class OrderElement extends BaseEntity {
 
     public abstract List<HoursGroup> getHoursGroups();
 
-    /**
-     * @return the duration in milliseconds
-     */
-    public long getDuration() {
-        return endDate.getTime() - initDate.getTime();
-    }
-
     public String getName() {
         return name;
     }
