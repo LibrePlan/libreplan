@@ -45,6 +45,8 @@ public abstract class TaskElement extends BaseEntity {
 
     private Date endDate;
 
+    private LocalDate deadline;
+
     private String name;
 
     private String notes;
@@ -169,6 +171,14 @@ public abstract class TaskElement extends BaseEntity {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate != null ? new Date(endDate.getTime()) : null;
+    }
+
+    public LocalDate getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
     }
 
     void add(Dependency dependency) {
