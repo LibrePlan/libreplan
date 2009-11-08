@@ -89,7 +89,17 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     }
 
     public void onClick$ok(Event event) {
-        popUp.close();
+        if (okPressed()) {
+            popUp.close();
+        }
+    }
+
+    /**
+     * hook for executing actions when ok is pressed.
+     * @return <code>true</code> only if can exit the popup
+     */
+    protected boolean okPressed() {
+        return true;
     }
 
 }
