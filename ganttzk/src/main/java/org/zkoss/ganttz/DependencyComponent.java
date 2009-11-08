@@ -23,9 +23,9 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
-import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -44,20 +44,19 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     private DependencyType type;
 
+    private Dependency dependency;
+
     public DependencyComponent(TaskComponent source, TaskComponent destination,
-            DependencyType type) {
-        this.type = type;
-        if (source == null) {
-            throw new IllegalArgumentException("source cannot be null");
-        }
-        if (destination == null) {
-            throw new IllegalArgumentException("destination cannot be null");
-        }
-        if (type == null) {
-            throw new IllegalArgumentException("type must be not null");
-        }
+            Dependency dependency) {
+        Validate.notNull(dependency);
+        Validate.notNull(source);
+        Validate.notNull(destination);
+        Validate.isTrue(source.getTask() == dependency.getSource());
+        Validate.isTrue(destination.getTask() == dependency.getDestination());
+        this.type = dependency.getType();
         this.source = source;
         this.destination = destination;
+        this.dependency = dependency;
     }
 
     @Override
@@ -122,9 +121,8 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         return destination;
     }
 
-    public Dependency getDependency(GanttDiagramGraph diagramGraph) {
-        return diagramGraph.getDependencyFrom(source.getTask(),
-                destination.getTask());
+    public Dependency getDependency() {
+        return dependency;
     }
 
     public DependencyType getDependencyType() {

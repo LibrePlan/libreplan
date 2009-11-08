@@ -58,7 +58,7 @@ public class DependencyList extends XulElement implements AfterCompose {
 
         @Override
         public void onEvent(final DependencyComponent choosen, Event event) {
-            context.changeType(dependencyFor(choosen), type);
+            context.changeType(choosen.getDependency(), type);
         }
     }
 
@@ -197,7 +197,7 @@ public class DependencyList extends XulElement implements AfterCompose {
                                         final DependencyComponent choosen,
                                         Event event) {
                                     context
-                                            .removeDependency(dependencyFor(choosen));
+                                            .removeDependency(choosen.getDependency());
                                 }
                             });
             contextMenuBuilder.item("Set End-Start", new ChangeTypeAction(
@@ -264,10 +264,5 @@ public class DependencyList extends XulElement implements AfterCompose {
                 this.removeChild(dependencyComponent);
             }
         }
-    }
-
-    private Dependency dependencyFor(
-            final DependencyComponent dependencyComponent) {
-        return dependencyComponent.getDependency(context.getDiagramGraph());
     }
 }
