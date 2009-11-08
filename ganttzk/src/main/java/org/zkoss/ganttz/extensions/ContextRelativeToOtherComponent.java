@@ -85,6 +85,11 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
     @Override
     public IDomainAndBeansMapper<T> getMapper() {
         return context.getMapper();
-    };
+    }
+
+    @Override
+    public void recalculatePosition(T domainObject) {
+        context.recalculatePosition(domainObject);
+    }
 
 }

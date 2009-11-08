@@ -99,4 +99,10 @@ public interface IContext<T> {
 
     IDomainAndBeansMapper<T> getMapper();
 
+    /**
+     * Recalculates the position of the task associated to domainObject.
+     * @param domainObject
+     */
+    void recalculatePosition(T domainObject);
+
 }

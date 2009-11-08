@@ -325,4 +325,10 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         return timeTracker;
     }
 
+    @Override
+    public void recalculatePosition(T domainObject) {
+        Task associatedTask = mapper.findAssociatedBean(domainObject);
+        diagramGraph.enforceRestrictions(associatedTask);
+    }
+
 }

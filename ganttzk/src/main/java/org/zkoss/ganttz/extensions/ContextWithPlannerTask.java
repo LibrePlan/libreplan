@@ -90,4 +90,9 @@ public class ContextWithPlannerTask<T> implements IContextWithPlannerTask<T> {
         return context.getMapper();
     }
 
+    @Override
+    public void recalculatePosition(T domainObject) {
+        context.recalculatePosition(domainObject);
+    }
+
 }

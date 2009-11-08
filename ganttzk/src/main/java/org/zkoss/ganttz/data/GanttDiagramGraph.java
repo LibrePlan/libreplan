@@ -247,6 +247,10 @@ public class GanttDiagramGraph {
         getEnforcer(destination).enforce();
     }
 
+    public void enforceRestrictions(Task task) {
+        getEnforcer(task).enforce();
+    }
+
     public boolean contains(Dependency dependency) {
         return graph.containsEdge(dependency);
     }
