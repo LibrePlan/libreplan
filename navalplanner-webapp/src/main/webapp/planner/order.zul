@@ -68,6 +68,15 @@
                     Duration (days)
                     <intbox id="duration" disabled="${true}"/>
                 </row>
+                <row id="startConstraint">
+                    ${i18n:_('Constraint')}
+                    <vbox>
+                        <combobox id="startConstraintTypes">
+                        </combobox>
+                        <datebox id="startConstraintDate" compact="true"
+                            constraint ="no empty"/>
+                    </vbox>
+                </row>
             </rows>
         </grid>
         <button id="ok" label="${i18n:_('Accept')}" />
