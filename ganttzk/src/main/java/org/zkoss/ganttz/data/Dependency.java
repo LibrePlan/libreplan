@@ -28,6 +28,8 @@ import java.util.List;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.zkoss.ganttz.data.constraint.Constraint;
+import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
+import org.zkoss.ganttz.util.ConstraintViolationNotificator;
 
 /**
  * This class represents a dependency. Contains the source and the destination.
@@ -75,11 +77,6 @@ public class Dependency {
         return result;
     }
 
-    private List<Constraint<Date>> toConstraints(
-            Calculation calculation) {
-        return calculation.toConstraints(source, type);
-    }
-
     private final Task source;
 
     private final Task destination;
@@ -87,6 +84,9 @@ public class Dependency {
     private DependencyType type;
 
     private final boolean visible;
+
+    private ConstraintViolationNotificator<Date> violationsNotificator = ConstraintViolationNotificator
+            .create();
 
     public Dependency(Task source, Task destination,
             DependencyType type, boolean visible) {
@@ -108,6 +108,16 @@ public class Dependency {
     public Dependency(Task source, Task destination,
             DependencyType type) {
         this(source, destination, type, true);
+    }
+
+    private List<Constraint<Date>> toConstraints(Calculation calculation) {
+        return violationsNotificator.withListener(calculation.toConstraints(
+                source, type));
+    }
+
+    public void addConstraintViolationListener(
+            IConstraintViolationListener<Date> listener) {
+        violationsNotificator.addConstraintViolationListener(listener);
     }
 
     @Override
