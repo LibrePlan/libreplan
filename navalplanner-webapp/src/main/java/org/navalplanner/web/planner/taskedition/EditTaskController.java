@@ -20,16 +20,13 @@
 
 package org.navalplanner.web.planner.taskedition;
 
-import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 
 /**
@@ -47,8 +44,6 @@ public class EditTaskController extends GenericForwardComposer {
 
     private Intbox duration;
 
-    private Datebox endDateBox;
-
     /**
      * Controller from the Gantt to manage common fields on edit {@link Task}
      * popup.
@@ -65,32 +60,20 @@ public class EditTaskController extends GenericForwardComposer {
 
     private void updateComponentValuesForTask() {
         if (currentTaskElement instanceof Task) {
-            // If it's a Task
-            // Show fields
-            hours.getFellow("durationRow").setVisible(true);
-
-            Task task = (Task) currentTaskElement;
-
-            // Sets the value of fields
-            duration.setValue(task.getDaysDuration());
-
-            // Disable some fields depending on fixedDuration value
-            duration
-                    .setDisabled(task.getCalculatedValue() == CalculatedValue.END_DATE);
-            ((Datebox) hours.getFellow("endDateBox")).setDisabled(task
-                    .getCalculatedValue() == CalculatedValue.END_DATE);
+            showDurationRow((Task) currentTaskElement);
         } else {
-            // If it's a TaskGroup
-            // Hide fields
-            hours.getFellow("durationRow").setVisible(false);
+            hideDurationRow();
         }
-
-        // Sets the values for the common fields
-        endDateBox.setValue(currentTaskElement.getEndDate());
         hours.setValue(currentTaskElement.getWorkHours());
+    }
 
-        // Update the Task size in the Gantt
-        taskEditFormComposer.onChange$endDateBox(null);
+    private void hideDurationRow() {
+        hours.getFellow("durationRow").setVisible(false);
+    }
+
+    private void showDurationRow(Task task) {
+        hours.getFellow("durationRow").setVisible(true);
+        duration.setValue(task.getDaysDuration());
     }
 
     @Override
@@ -98,24 +81,4 @@ public class EditTaskController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         taskEditFormComposer.doAfterCompose(comp);
     }
-
-    public void onChange$duration(Event event) {
-        if ((currentTaskElement instanceof Task)
-                && isValidDuration(duration.getValue())) {
-            Task task = (Task) currentTaskElement;
-            task.setDaysDuration(duration.getValue());
-        }
-
-        updateComponentValuesForTask();
-    }
-
-    private boolean isValidDuration(Integer duration) {
-        return duration != null && duration > 0;
-    }
-
-    public void onChange$endDateBox(Event event) {
-        currentTaskElement.setEndDate(endDateBox.getValue());
-        updateComponentValuesForTask();
-    }
-
 }

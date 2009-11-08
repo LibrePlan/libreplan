@@ -50,11 +50,11 @@
                 </row>
                 <row>
                     ${i18n:_('Start')}
-                    <datebox id="startDateBox" compact="true" />
+                    <datebox id="startDateBox" compact="true" disabled="${true}"/>
                 </row>
                 <row>
                     ${i18n:_('End')}
-                    <datebox id="endDateBox" compact="true" />
+                    <datebox id="endDateBox" compact="true" disabled="${true}"/>
                 </row>
                 <row>
                     ${i18n:_('Notes')}
@@ -62,11 +62,11 @@
                 </row>
                 <row>
                     Hours
-                    <intbox id="hours" disabled="true" />
+                    <intbox id="hours" disabled="${true}" />
                 </row>
                 <row id="durationRow">
                     Duration (days)
-                    <intbox id="duration" />
+                    <intbox id="duration" disabled="${true}"/>
                 </row>
             </rows>
         </grid>
