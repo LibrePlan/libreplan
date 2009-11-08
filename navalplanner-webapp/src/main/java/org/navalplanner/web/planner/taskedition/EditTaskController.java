@@ -28,6 +28,7 @@ import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.TaskEditFormComposer;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -147,11 +148,13 @@ public class EditTaskController extends GenericForwardComposer {
 
     private Row startConstraint;
 
-    public void showEditFormFor(Component openRelativeTo,
-            org.zkoss.ganttz.data.Task task,
+    private IContextWithPlannerTask<TaskElement> currentContext;
+
+    public void showEditFormFor(IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement) {
+        this.currentContext = context;
         this.currentTaskElement = taskElement;
-        taskEditFormComposer.showEditFormFor(openRelativeTo, task);
+        taskEditFormComposer.showEditFormFor(context.getRelativeTo(), context.getTask());
         updateComponentValuesForTask();
     }
 

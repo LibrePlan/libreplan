@@ -56,8 +56,7 @@ public class EditTaskCommand implements IEditTaskCommand {
             forceLoadHoursGroup((Task) taskElement);
         }
 
-        editTaskController.showEditFormFor(context.getRelativeTo(), context
-                .getTask(), taskElement);
+        editTaskController.showEditFormFor(context, taskElement);
     }
 
     private void forceLoadHoursGroup(Task task) {
