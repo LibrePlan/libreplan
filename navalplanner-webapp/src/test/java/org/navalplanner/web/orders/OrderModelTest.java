@@ -41,6 +41,7 @@ import javax.annotation.Resource;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
@@ -491,6 +492,20 @@ public class OrderModelTest {
         assertThat(group.getOrderElement(), equalTo((OrderElement) orderLine));
         assertThat(group.getHoursGroup(), equalTo(hoursGroup));
         assertThat(taskElement.getWorkHours(), equalTo(hours));
+    }
+
+    @Test
+    public void theDeadlineIsCopied() {
+        OrderLine orderLine = OrderLine.create();
+        orderLine.setName("bla");
+        orderLine.setCode("000000000");
+        final int hours = 30;
+        HoursGroup hoursGroup = createHoursGroup(hours);
+        orderLine.addHoursGroup(hoursGroup);
+        orderLine.setDeadline(year(2007));
+        TaskElement task = orderModel
+                .convertToInitialSchedule(orderLine);
+        assertThat(task.getDeadline(), equalTo(new LocalDate(year(2007))));
     }
 
     @Test

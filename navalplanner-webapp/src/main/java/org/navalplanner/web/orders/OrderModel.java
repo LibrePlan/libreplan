@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
@@ -321,9 +322,10 @@ public class OrderModel implements IOrderModel {
 
     @Override
     public TaskElement convertToInitialSchedule(OrderElement order) {
+        TaskElement result;
         if (order instanceof OrderLineGroup) {
             OrderLineGroup group = (OrderLineGroup) order;
-            return convertToTaskGroup(group);
+            result = convertToTaskGroup(group);
         } else {
             OrderLine line = (OrderLine) order;
             if (line.getHoursGroups().isEmpty()) {
@@ -331,9 +333,13 @@ public class OrderModel implements IOrderModel {
                         "The line must have at least one {0} associated",
                         HoursGroup.class.getSimpleName()));
             }
-            return line.getHoursGroups().size() > 1 ? convertToTaskGroup(line)
+            result = line.getHoursGroups().size() > 1 ? convertToTaskGroup(line)
                     : convertToTask(line);
         }
+        if (order.getDeadline() != null) {
+            result.setDeadline(new LocalDate(order.getDeadline()));
+        }
+        return result;
     }
 
     private TaskGroup convertToTaskGroup(OrderLine line) {
