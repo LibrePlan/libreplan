@@ -431,13 +431,13 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
                         @Override
                         public Date get() {
-                            return orderElementForThisRow.getEndDate();
+                            return orderElementForThisRow.getDeadline();
                         }
                     }, new Util.Setter<Date>() {
 
                         @Override
                         public void set(Date value) {
-                            orderElementForThisRow.setEndDate(value);
+                            orderElementForThisRow.setDeadline(value);
                         }
                     }));
 

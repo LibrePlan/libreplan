@@ -56,9 +56,9 @@
                                 value="@{controller.order.initDate}" />
                         </row>
                         <row>
-                            <label value="${i18n:_('Ending date')}" />
+                            <label value="${i18n:_('Deadline')}" />
                             <datebox
-                                value="@{controller.order.endDate}" />
+                                value="@{controller.order.deadline}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Responsible')}" />

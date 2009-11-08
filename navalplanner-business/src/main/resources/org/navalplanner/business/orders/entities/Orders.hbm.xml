@@ -11,7 +11,7 @@
 
         <property name="name" access="field" />
         <property name="initDate" access="field" />
-        <property name="endDate" access="field" />
+        <property name="deadline" access="field" />
         <property name="mandatoryInit" access="field" />
         <property name="mandatoryEnd" access="field" />
         <property name="description" access="field" />

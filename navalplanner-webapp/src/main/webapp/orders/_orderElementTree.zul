@@ -63,8 +63,8 @@
             <treecols sizable="false">
                 <treecol label="${i18n:_('Name and description')}" class="name"/>
                 <treecol label="${i18n:_('Code')}" class="code"/>
-                <treecol label="${i18n:_('Estimated init')}" class="estimated_init"/>
-                <treecol label="${i18n:_('Estimated end')}" class="estimated_end"/>
+                <treecol label="${i18n:_('Must start after')}" class="estimated_init"/>
+                <treecol label="${i18n:_('Deadline')}" class="estimated_end"/>
                 <treecol label="${i18n:_('Hours')}" class="hours"
                     tooltiptext="${i18n:_('Total order element hours')}" />
                 <treecol label="${i18n:_('Operations')}" class="operations"

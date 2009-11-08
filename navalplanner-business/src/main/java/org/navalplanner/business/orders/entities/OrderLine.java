@@ -83,7 +83,7 @@ public class OrderLine extends OrderElement {
         result.setName(getName());
         result.setCode(getCode());
         result.setInitDate(getInitDate());
-        result.setEndDate(getEndDate());
+        result.setDeadline(getDeadline());
 
         this.setName(getName() + " (copy)");
         this.setCode(getCode() + " (copy)");

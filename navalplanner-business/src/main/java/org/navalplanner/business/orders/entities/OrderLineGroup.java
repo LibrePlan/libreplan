@@ -155,7 +155,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
 
         result.setName(getName());
         result.setInitDate(getInitDate());
-        result.setEndDate(getEndDate());
+        result.setDeadline(getDeadline());
         result.setWorkHours(0);
         result.directAdvanceAssignments = new HashSet<DirectAdvanceAssignment>(
                 this.directAdvanceAssignments);

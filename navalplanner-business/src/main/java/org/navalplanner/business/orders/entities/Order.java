@@ -75,8 +75,8 @@ public class Order extends OrderLineGroup {
         this.customer = customer;
     }
 
-    public boolean isEndDateBeforeStart() {
-        return getEndDate() != null && getEndDate().before(getInitDate());
+    public boolean isDeadlineBeforeStart() {
+        return getDeadline() != null && getDeadline().before(getInitDate());
     }
 
     public List<OrderElement> getOrderElements() {
@@ -110,9 +110,9 @@ public class Order extends OrderLineGroup {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "end date must be after start date")
-    private boolean theEndDateMustBeAfterStart() {
-        return !this.isEndDateBeforeStart();
+    @AssertTrue(message = "deadline must be after start date")
+    private boolean theDeadlineMustBeAfterStart() {
+        return !this.isDeadlineBeforeStart();
     }
 
     @SuppressWarnings("unused")

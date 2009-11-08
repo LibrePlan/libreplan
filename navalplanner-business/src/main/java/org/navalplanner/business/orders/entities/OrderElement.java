@@ -50,7 +50,7 @@ public abstract class OrderElement extends BaseEntity {
 
     private Date initDate;
 
-    private Date endDate;
+    private Date deadline;
 
     private Boolean mandatoryInit = false;
 
@@ -107,12 +107,12 @@ public abstract class OrderElement extends BaseEntity {
         this.initDate = initDate;
     }
 
-    public Date getEndDate() {
-        return copy(endDate);
+    public Date getDeadline() {
+        return copy(deadline);
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public void setDeadline(Date deadline) {
+        this.deadline = deadline;
     }
 
     public void setMandatoryInit(Boolean mandatoryInit) {

@@ -26,8 +26,8 @@
             <column label="${i18n:_('Code')}" sort="auto(code)" />
             <column label="${i18n:_('Starting date')}"
                 sort="auto(initDate)" />
-            <column label="${i18n:_('Ending date')}"
-                sort="auto(endDate)" />
+            <column label="${i18n:_('Deadline')}"
+                sort="auto(deadline)" />
             <column label="${i18n:_('Responsible')}"
                 sort="auto(responsible)" />
             <column label="${i18n:_('Customer')}" sort="auto(customer)" />
@@ -40,7 +40,7 @@
                 <label value="@{order.name}" />
                 <label value="@{order.code}" />
                 <label value="@{order.initDate}" />
-                <label value="@{order.endDate}" />
+                <label value="@{order.deadline}" />
                 <label value="@{order.responsible}" />
                 <label value="@{order.customer}" />
                 <label value="@{order.description}" />

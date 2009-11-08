@@ -220,7 +220,7 @@ public class OrderModelTest {
     public void shouldSendValidationExceptionIfEndDateIsBeforeThanStartingDate()
             throws ValidationException {
         Order order = createValidOrder();
-        order.setEndDate(year(0));
+        order.setDeadline(year(0));
         orderModel.setOrder(order);
         orderModel.save();
     }
