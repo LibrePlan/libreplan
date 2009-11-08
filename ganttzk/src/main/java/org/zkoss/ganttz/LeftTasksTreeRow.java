@@ -107,11 +107,6 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         return endDateBox;
     }
 
-    public void setEndDateBox(Datebox endDateBox) {
-        this.endDateBox = endDateBox;
-        this.endDateBox.setFormat("dd/MM/yyyy");
-    }
-
     public Task getData() {
         return task;
     }
@@ -337,6 +332,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private void findComponentsForEndDateCell(Treecell treecell) {
         endDateBox = findDateBoxOfCell(treecell);
+        endDateBox.setDisabled(true);
         endDateTextBox = findTextBoxOfCell(treecell);
     }
 
@@ -352,13 +348,8 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     public void updateBean() {
         Date begin = getStartDateBox().getValue();
-        Date end = getEndDateBox().getValue();
-        if (end.before(begin)) {
-            end = new Date(begin.getTime() + task.getLengthMilliseconds());
-        }
         task.setName(getNameBox().getValue());
         task.setBeginDate(begin);
-        task.setEndDate(end);
     }
 
     private void updateComponents() {
