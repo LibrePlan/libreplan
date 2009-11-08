@@ -24,25 +24,35 @@ package org.navalplanner.business.planner.entities;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public enum StartConstraintType {
-    AS_SOON_AS_POSSIBLE {
+    AS_SOON_AS_POSSIBLE(false) {
         @Override
         public StartConstraintType newTypeAfterMoved() {
             return START_NOT_EARLIER_THAN;
         }
     },
-    START_NOT_EARLIER_THAN {
+    START_NOT_EARLIER_THAN(true) {
         @Override
         public StartConstraintType newTypeAfterMoved() {
             return START_NOT_EARLIER_THAN;
         }
     },
-    START_IN_FIXED_DATE {
+    START_IN_FIXED_DATE(true) {
         @Override
         public StartConstraintType newTypeAfterMoved() {
             return START_NOT_EARLIER_THAN;
         }
     };
 
+    private boolean dateRequired;
+
+    private StartConstraintType(boolean dateRequired) {
+        this.dateRequired = dateRequired;
+    }
+
     public abstract StartConstraintType newTypeAfterMoved();
+
+    public boolean isAssociatedDateRequired() {
+        return dateRequired;
+    }
 
 }
