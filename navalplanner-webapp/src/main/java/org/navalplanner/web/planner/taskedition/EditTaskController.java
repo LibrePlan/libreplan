@@ -21,6 +21,8 @@
 package org.navalplanner.web.planner.taskedition;
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.Date;
+
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -134,7 +136,12 @@ public class EditTaskController extends GenericForwardComposer {
      * Controller from the Gantt to manage common fields on edit {@link Task}
      * popup.
      */
-    private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer();
+    private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer() {
+        protected boolean okPressed() {
+            return !(currentTaskElement instanceof Task)
+                    || saveConstraintChanges();
+        };
+    };
 
     private TaskElement currentTaskElement;
 
@@ -201,6 +208,22 @@ public class EditTaskController extends GenericForwardComposer {
         TaskStartConstraint taskStartConstraint = currentTaskElementAsTask()
                 .getStartConstraint();
         startConstraintDate.setValue(taskStartConstraint.getConstraintDate());
+    }
+
+    private boolean saveConstraintChanges() {
+        TaskStartConstraint taskConstraint = currentTaskElementAsTask()
+                .getStartConstraint();
+        WebStartConstraintType type = (WebStartConstraintType) startConstraintTypes
+                .getSelectedItemApi().getValue();
+        Date inputDate = type.isAssociatedDateRequired() ? startConstraintDate
+                .getValue() : null;
+        if (taskConstraint.isValid(type.getType(), inputDate)) {
+            taskConstraint.update(type.getType(), inputDate);
+            currentContext.recalculatePosition(currentTaskElement);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private Task currentTaskElementAsTask() {
