@@ -142,4 +142,9 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         setBeginDate(date);
     }
 
+    @Override
+    public Date getDeadline() {
+        return null;
+    }
+
 }

@@ -224,4 +224,9 @@ public abstract class Task implements ITaskFundamentalProperties {
         fireChangesForPreviousValues(previousStart, previousLength);
     }
 
+    @Override
+    public Date getDeadline() {
+        return fundamentalProperties.getDeadline();
+    }
+
 }

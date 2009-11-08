@@ -351,6 +351,15 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 task.explicityMoved(date);
             }
         }
+
+        @Override
+        public Date getDeadline() {
+            LocalDate deadline = taskElement.getDeadline();
+            if (deadline == null) {
+                return null;
+            }
+            return deadline.toDateTimeAtStartOfDay().toDate();
+        }
     }
 
     @Override

@@ -44,6 +44,12 @@ public interface ITaskFundamentalProperties {
 
     public Date getBeginDate();
 
+    /**
+     * The deadline associated to the task. It can return null if has no
+     * deadline associated
+     */
+    public Date getDeadline();
+
     public void setLengthMilliseconds(long lengthMilliseconds);
 
     public long getLengthMilliseconds();
