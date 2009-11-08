@@ -59,4 +59,15 @@ public class TaskStartConstraint {
         this.startConstraintType = StartConstraintType.START_NOT_EARLIER_THAN;
     }
 
+    public boolean isValid(StartConstraintType type, Date value) {
+        return type != null
+                && type.isAssociatedDateRequired() == (value != null);
+    }
+
+    public void update(StartConstraintType type, Date value) {
+        Validate.isTrue(isValid(type, value));
+        this.startConstraintType = type;
+        this.constraintDate = value;
+    }
+
 }
