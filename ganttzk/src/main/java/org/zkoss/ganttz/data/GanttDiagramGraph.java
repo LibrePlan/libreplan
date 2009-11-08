@@ -57,10 +57,14 @@ public class GanttDiagramGraph {
 
     private final List<Constraint<Date>> globalEndConstraints;
 
+    private final boolean dependenciesConstraintsHavePriority;
+
     public GanttDiagramGraph(List<Constraint<Date>> globalStartConstraints,
-            List<Constraint<Date>> globalEndConstraints) {
+            List<Constraint<Date>> globalEndConstraints,
+            boolean dependenciesConstraintsHavePriority) {
         this.globalStartConstraints = globalStartConstraints;
         this.globalEndConstraints = globalEndConstraints;
+        this.dependenciesConstraintsHavePriority = dependenciesConstraintsHavePriority;
     }
 
     private List<DependencyRulesEnforcer> getOutgoing(Task task) {
@@ -155,16 +159,27 @@ public class GanttDiagramGraph {
         private void enforceStartDate(Set<Dependency> incoming) {
             List<Constraint<Date>> dependencyConstraints = Dependency
                     .getStartConstraints(incoming);
-            Date newStart = Constraint.<Date> initialValue(null)
-                                      .withConstraints(dependencyConstraints)
-                                      .withConstraints(task.getStartConstraints())
-                                      .withConstraints(globalStartConstraints)
-                                      .apply();
+            Date newStart;
+            if (dependenciesConstraintsHavePriority) {
+                newStart = Constraint.<Date> initialValue(null)
+                                     .withConstraints(task
+                                             .getStartConstraints())
+                                     .withConstraints(dependencyConstraints)
+                                     .withConstraints(globalStartConstraints)
+                                     .apply();
+
+            } else {
+                newStart = Constraint.<Date> initialValue(null)
+                                     .withConstraints(dependencyConstraints)
+                                     .withConstraints(task
+                                             .getStartConstraints())
+                                     .withConstraints(globalStartConstraints)
+                                     .apply();
+            }
             if (!task.getBeginDate().equals(newStart)) {
                 task.setBeginDate(newStart);
             }
         }
-
     }
 
     public void enforceAllRestrictions() {

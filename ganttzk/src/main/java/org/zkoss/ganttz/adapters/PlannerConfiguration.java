@@ -96,6 +96,7 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private Date notBeforeThan = null;
 
+    private boolean dependenciesConstraintsHavePriority = false;
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
@@ -220,6 +221,14 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public List<Constraint<Date>> getEndConstraints() {
         return Collections.emptyList();
+    }
+
+    public boolean isDependenciesConstraintsHavePriority() {
+        return dependenciesConstraintsHavePriority;
+    }
+
+    public void setDependenciesConstraintsHavePriority(boolean haveDependenciesPriority) {
+        this.dependenciesConstraintsHavePriority = haveDependenciesPriority;
     }
 
 }

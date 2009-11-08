@@ -141,8 +141,8 @@ public class Planner extends HtmlMacroComponent  {
             return;
         }
         this.diagramGraph = new GanttDiagramGraph(configuration
-                .getStartConstraints(), configuration
-                        .getEndConstraints());
+                .getStartConstraints(), configuration.getEndConstraints(),
+                configuration.isDependenciesConstraintsHavePriority());
         FunctionalityExposedForExtensions<T> newContext = new FunctionalityExposedForExtensions<T>(
                 this, configuration.getAdapter(), configuration.getNavigator(),
                 diagramGraph);
