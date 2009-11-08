@@ -349,7 +349,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     public void updateBean() {
         Date begin = getStartDateBox().getValue();
         task.setName(getNameBox().getValue());
-        task.setBeginDate(begin);
+        task.moveTo(begin);
     }
 
     private void updateComponents() {
