@@ -53,4 +53,10 @@ public class TaskStartConstraint {
                 : null;
     }
 
+    public void notEarlierThan(Date date) {
+        Validate.notNull(date);
+        this.constraintDate = date;
+        this.startConstraintType = StartConstraintType.START_NOT_EARLIER_THAN;
+    }
+
 }

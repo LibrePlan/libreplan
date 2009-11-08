@@ -28,6 +28,7 @@ import java.util.Set;
 import org.hibernate.validator.AssertTrue;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.entities.Resource;
@@ -156,6 +157,11 @@ public class Order extends OrderLineGroup {
             resources.add(dayAssignment.getResource());
         }
         return resources;
+    }
+
+    @Override
+    protected void applyStartConstraintTo(Task task) {
+        // the initDate of order don't imply a start constraint at a task
     }
 
 }

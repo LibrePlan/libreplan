@@ -39,6 +39,7 @@ import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentFo
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
@@ -347,5 +348,20 @@ public abstract class OrderElement extends BaseEntity {
             }
         }
         return list;
+    }
+
+    public void updateStartConstraintIfNeeded(Task task) {
+        if (getInitDate() != null) {
+            applyStartConstraintTo(task);
+            return;
+        }
+        OrderLineGroup parent = getParent();
+        if (parent != null) {
+            parent.updateStartConstraintIfNeeded(task);
+        }
+    }
+
+    protected void applyStartConstraintTo(Task task) {
+        task.getStartConstraint().notEarlierThan(this.getInitDate());
     }
 }

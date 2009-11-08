@@ -24,6 +24,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -57,6 +58,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -503,9 +505,56 @@ public class OrderModelTest {
         HoursGroup hoursGroup = createHoursGroup(hours);
         orderLine.addHoursGroup(hoursGroup);
         orderLine.setDeadline(year(2007));
-        TaskElement task = orderModel
-                .convertToInitialSchedule(orderLine);
+        TaskElement task = orderModel.convertToInitialSchedule(orderLine);
         assertThat(task.getDeadline(), equalTo(new LocalDate(year(2007))));
+    }
+
+    @Test
+    public void ifNoParentWithStartDateTheStartConstraintIsSoonAsPossible() {
+        OrderLine orderLine = OrderLine.create();
+        orderLine.setName("bla");
+        orderLine.setCode("000000000");
+        HoursGroup hoursGroup = createHoursGroup(30);
+        orderLine.addHoursGroup(hoursGroup);
+        Task task = (Task) orderModel
+                .convertToInitialSchedule(orderLine);
+        assertThat(task.getStartConstraint().getStartConstraintType(),
+                equalTo(StartConstraintType.AS_SOON_AS_POSSIBLE));
+        assertThat(task.getStartConstraint().getConstraintDate(), nullValue());
+    }
+
+    @Test
+    public void ifSomeParentHasInitDateTheStartConstraintIsNotEarlierThan() {
+        OrderLine orderLine = OrderLine.create();
+        orderLine.setName("bla");
+        orderLine.setCode("000000000");
+        final Date initDate = year(2008);
+        orderLine.setInitDate(initDate);
+        HoursGroup hoursGroup = createHoursGroup(30);
+        orderLine.addHoursGroup(hoursGroup);
+        Task task = (Task) orderModel
+                .convertToInitialSchedule(orderLine);
+        assertThat(task.getStartConstraint().getStartConstraintType(),
+                equalTo(StartConstraintType.START_NOT_EARLIER_THAN));
+        assertThat(task.getStartConstraint().getConstraintDate(),
+                equalTo(initDate));
+    }
+
+    @Test
+    public void unlessTheOnlyParentWithInitDateNotNullIsTheOrder() {
+        Order order = Order.create();
+        final Date initDate = year(2008);
+        order.setInitDate(initDate);
+        OrderLine orderLine = OrderLine.create();
+        order.add(orderLine);
+        orderLine.setName("bla");
+        orderLine.setCode("000000000");
+        HoursGroup hoursGroup = createHoursGroup(30);
+        orderLine.addHoursGroup(hoursGroup);
+        Task task = (Task) orderModel.convertToInitialSchedule(orderLine);
+        assertThat(task.getStartConstraint().getStartConstraintType(),
+                equalTo(StartConstraintType.AS_SOON_AS_POSSIBLE));
+        assertThat(task.getStartConstraint().getConstraintDate(), nullValue());
     }
 
     @Test
