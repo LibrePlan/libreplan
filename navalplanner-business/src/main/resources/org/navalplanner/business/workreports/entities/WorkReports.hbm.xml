@@ -57,7 +57,7 @@
 
     <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID" not-null="true"/>
 
-    <set name="criterions" table="CRITERION_WORK_REPORT_LINE" cascade="all" inverse="false">
+    <set name="criterions" table="CRITERION_WORK_REPORT_LINE" inverse="false">
         <key column="WORK_REPORT_LINE_ID" not-null="false" />
         <many-to-many class="org.navalplanner.business.resources.entities.Criterion" column="CRITERION_ID"/>
     </set>
