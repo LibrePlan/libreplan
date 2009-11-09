@@ -33,7 +33,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 /**
  * Label entity
  *
- * @author Diego Pino Garcia<dpino@igalia.com
+ * @author Diego Pino Garcia<dpino@igalia.com>
  *
  */
 public class Label extends BaseEntity {
