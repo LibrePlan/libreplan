@@ -22,9 +22,6 @@ package org.navalplanner.web.planner.tabs;
 import static org.navalplanner.web.I18nHelper._;
 import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -52,7 +49,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
-import org.zkoss.zkplus.databind.AnnotateDataBinder;
 
 /**
  * Creates and handles several tabs
@@ -65,22 +61,6 @@ public class MultipleTabsPlannerController implements Composer {
     public static final String PLANNIFICATION = _("Scheduling");
 
     public static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";
-
-    @SuppressWarnings("unchecked")
-    static void createBindingsFor(org.zkoss.zk.ui.Component result) {
-        List<org.zkoss.zk.ui.Component> children = new ArrayList<org.zkoss.zk.ui.Component>(
-                result.getChildren());
-        for (org.zkoss.zk.ui.Component child : children) {
-            createBindingsFor(child);
-        }
-        setBinderFor(result);
-    }
-
-    private static void setBinderFor(org.zkoss.zk.ui.Component result) {
-        AnnotateDataBinder binder = new AnnotateDataBinder(result, true);
-        result.setVariable("binder", binder, true);
-        binder.loadAll();
-    }
 
     private TabsConfiguration tabsConfiguration;
 

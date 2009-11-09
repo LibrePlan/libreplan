@@ -21,7 +21,6 @@ package org.navalplanner.web.planner.tabs;
 
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
-import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.createBindingsFor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +66,7 @@ public class OrdersTabCreator {
             args.put("orderController", setupOrderCrudController());
             result = Executions.createComponents("/orders/_ordersTab.zul",
                     parent, args);
-            createBindingsFor(result);
+            Util.createBindingsFor(result);
             Util.reloadBindings(result);
             return result;
         }

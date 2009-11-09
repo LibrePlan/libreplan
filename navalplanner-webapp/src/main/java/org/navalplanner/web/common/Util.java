@@ -21,13 +21,16 @@
 package org.navalplanner.web.common;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.databind.DataBinder;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
@@ -69,6 +72,22 @@ public class Util {
 
     public static DataBinder getBinder(Component component) {
         return (DataBinder) component.getVariable("binder", false);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void createBindingsFor(org.zkoss.zk.ui.Component result) {
+        List<org.zkoss.zk.ui.Component> children = new ArrayList<org.zkoss.zk.ui.Component>(
+                result.getChildren());
+        for (org.zkoss.zk.ui.Component child : children) {
+            createBindingsFor(child);
+        }
+        setBinderFor(result);
+    }
+
+    private static void setBinderFor(org.zkoss.zk.ui.Component result) {
+        AnnotateDataBinder binder = new AnnotateDataBinder(result, true);
+        result.setVariable("binder", binder, true);
+        binder.loadAll();
     }
 
     /**

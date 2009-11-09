@@ -22,7 +22,6 @@ package org.navalplanner.web.planner.tabs;
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
-import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.createBindingsFor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +33,7 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.company.CompanyPlanningController;
 import org.navalplanner.web.planner.order.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
@@ -150,7 +150,7 @@ public class PlanningTabCreator {
                         orderPlanningController);
                 org.zkoss.zk.ui.Component result = Executions.createComponents(
                         "/planner/order.zul", parent, arguments);
-                createBindingsFor(result);
+                Util.createBindingsFor(result);
                 return result;
             }
 
