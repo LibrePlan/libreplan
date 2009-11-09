@@ -20,14 +20,11 @@
 
 package org.navalplanner.business.resources.entities;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
@@ -284,12 +281,7 @@ public class CriterionType extends BaseEntity implements
 
     }
 
-// FIXME: Surprisingly, @AssertTrue in this method causes the Maven build to
-// fail due to out of memory (probably due to the configuration of Hibernate to
-// automatically execute validations when saving entities). Provisionally,
-// "validate" method has been provided as a hack.
-// FIXME: Internationalization must be provided.
-//    @AssertTrue(message="el nombre del tipo de criterion ya se está usando")
+    @AssertTrue(message="el nombre del tipo de criterion ya se está usando")
     public boolean checkConstraintUniqueCriterionTypeName() {
 
         ICriterionTypeDAO criterionTypeDAO = Registry.getCriterionTypeDAO();
@@ -339,29 +331,5 @@ public class CriterionType extends BaseEntity implements
         return true;
 
     }
-
- // FIXME: hack to overcome problem with @AssertTrue and
- // "checkConstraintUniqueCriterionTypeName" method.
-     public InvalidValue[] validate() {
-
-         ClassValidator<CriterionType> criterionTypeValidator =
-             new ClassValidator<CriterionType>(CriterionType.class);
-
-         InvalidValue[] invalidValues =
-             criterionTypeValidator.getInvalidValues(this);
-
-         if (!checkConstraintUniqueCriterionTypeName()) {
-             invalidValues =
-                 Arrays.copyOf(invalidValues, invalidValues.length+1);
-             invalidValues[invalidValues.length-1] =
-                 new InvalidValue("el nombre del tipo de criterion ya se " +
-                     "está usando", CriterionType.class,
-                     "checkConstraintUniqueCriterionTypeName",
-                     null, this);
-         }
-
-         return invalidValues;
-
-     }
 
 }

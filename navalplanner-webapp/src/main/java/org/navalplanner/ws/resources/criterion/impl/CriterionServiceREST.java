@@ -29,7 +29,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
@@ -86,19 +86,15 @@ public class CriterionServiceREST implements ICriterionService {
 
             CriterionType criterionType =
                 CriterionConverter.toEntity(criterionTypeDTO);
-            InvalidValue[] invalidValues =
-                criterionType.validate();
 
-            if (invalidValues.length > 0) {
-
+            try {
+                criterionTypeDAO.save(criterionType);
+            } catch (ValidationException e) {
                 instanceConstraintViolationsList.add(
                     ConstraintViolationConverter.toDTO(
                         generateInstanceId(instanceNumber,
                             criterionTypeDTO.name),
-                        invalidValues));
-
-            } else {
-                criterionTypeDAO.save(criterionType);
+                        e.getInvalidValues()));
             }
 
             instanceNumber++;

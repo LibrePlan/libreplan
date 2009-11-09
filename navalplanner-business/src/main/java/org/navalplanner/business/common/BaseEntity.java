@@ -20,7 +20,10 @@
 
 package org.navalplanner.business.common;
 
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.INewObject;
+import org.navalplanner.business.common.exceptions.ValidationException;
 
 
 /**
@@ -29,6 +32,7 @@ import org.navalplanner.business.INewObject;
  * It provides the basic behavior for id and version fields.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public abstract class BaseEntity implements INewObject {
 
@@ -78,6 +82,15 @@ public abstract class BaseEntity implements INewObject {
      */
     public void dontPoseAsTransientObjectAnymore() {
         setNewObject(false);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void validate() throws ValidationException {
+        ClassValidator classValidator = new ClassValidator(this.getClass());
+        InvalidValue[] invalidValues = classValidator.getInvalidValues(this);
+        if (invalidValues.length > 0) {
+            throw new ValidationException(invalidValues);
+        }
     }
 
 }

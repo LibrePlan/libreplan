@@ -32,8 +32,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +56,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @param <PK>
  *            Primary key class
  */
-public class GenericDAOHibernate<E, PK extends Serializable> implements
-        IGenericDAO<E, PK> {
+public class GenericDAOHibernate<E extends BaseEntity,
+        PK extends Serializable> implements IGenericDAO<E, PK> {
 
     private Class<E> entityClass;
 
@@ -81,18 +80,8 @@ public class GenericDAOHibernate<E, PK extends Serializable> implements
     }
 
     public void save(E entity) throws ValidationException {
-        checkIsValid(entity);
+        entity.validate();
         getSession().saveOrUpdate(entity);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void checkIsValid(E entity) throws ValidationException {
-        Class<E> entityClass = (Class<E>) entity.getClass();
-        ClassValidator<E> classValidator = new ClassValidator<E>(entityClass);
-        InvalidValue[] invalidValues = classValidator.getInvalidValues(entity);
-        if (invalidValues.length > 0) {
-            throw new ValidationException(invalidValues);
-        }
     }
 
     public void reattachUnmodifiedEntity(E entity) {
