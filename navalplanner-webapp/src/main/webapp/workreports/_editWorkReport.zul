@@ -21,64 +21,63 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
 <window id="${arg.top_id}" title="${arg.title}">
-	<tabbox>
-		<tabs>
-			<tab label="${i18n:_('Report data')}"></tab>
-		</tabs>
-		<tabpanels>
-			<tabpanel>
-				<vbox>
-					<!-- Work report details  -->
-					<grid fixedLayout="false">
-						<columns>
-							<column width="200px" />
-							<column />
-						</columns>
-						<rows>
-							<row>
-								<label
-									value="${i18n:_('Responsible')}:" />
-								<textbox id="responsible"
-									value="@{controller.workReport.responsible}" width="300px" />
-							</row>
-							<row>
-								<label value="${i18n:_('Place')}:" />
-								<textbox
-									value="@{controller.workReport.place}" width="300px" />
-							</row>
-							<row>
-								<label value="${i18n:_('Date')}:" />
-								<datebox id="date"
-									value="@{controller.workReport.date}" />
-							</row>
-						</rows>
-					</grid>
+    <tabbox>
+        <tabs>
+            <tab label="${i18n:_('Report data')}"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <vbox>
+                    <!-- Work report details  -->
+                    <grid fixedLayout="false">
+                        <columns>
+                            <column width="200px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label
+                                    value="${i18n:_('Responsible')}:" />
+                                <textbox id="responsible"
+                                    value="@{controller.workReport.responsible}" width="300px" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Place')}:" />
+                                <textbox
+                                    value="@{controller.workReport.place}" width="300px" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Date')}:" />
+                                <datebox id="date"
+                                    value="@{controller.workReport.date}" />
+                            </row>
+                        </rows>
+                    </grid>
 
-					<!-- Work report lines -->
-					<panel title="${i18n:_('Work report lines')}"
-						border="normal">
-						<panelchildren>
-							<hbox>
-								<button label="${i18n:_('Add new row')}"
-									onClick="controller.addWorkReportLine()" />
-								<button label="${i18n:_('Delete')}"
-									onClick="controller.removeWorkReportLine()" />
-							</hbox>
+                    <!-- Work report lines -->
+                    <panel title="${i18n:_('Work report lines')}"
+                        border="normal">
+                        <panelchildren>
+                            <hbox>
+                                <button label="${i18n:_('Add new row')}"
+                                    onClick="controller.addWorkReportLine()" />
+                            </hbox>
 
-							<listbox id="listWorkReportLines"
-								model="@{controller.workReportLines}" />
-						</panelchildren>
-					</panel>
-				</vbox>
-			</tabpanel>
-		</tabpanels>
-	</tabbox>
+                            <grid id="listWorkReportLines"
+                                model="@{controller.workReportLines}"
+                                rowRenderer="@{controller.renderer}" />
+                        </panelchildren>
+                    </panel>
+                </vbox>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
 
-	<button onClick="controller.saveAndExit();"
-		label="${arg.save_button_label}" />
-	<button onClick="controller.saveAndContinue();"
-		label="Save &amp; Continue" />
-	<button onClick="controller.cancel();"
-		label="${arg.cancel_button_label}" />
+    <button onClick="controller.saveAndExit();"
+        label="${arg.save_button_label}" />
+    <button onClick="controller.saveAndContinue();"
+        label="Save &amp; Continue" />
+    <button onClick="controller.cancel();"
+        label="${arg.cancel_button_label}" />
 
 </window>
