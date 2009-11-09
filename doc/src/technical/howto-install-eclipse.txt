@@ -1,0 +1,87 @@
+Procedimiento de instalación de eclipse y configuración con el
+proyecto de Xestión da Produción.
+
+En la página del proyecto Eclipse  (http://www.eclipse.org/) navegar a
+la sección de Downloads.
+
+Downloads:
+Eclipse IDE for Java EE Developers (188 MB)
+
+Descargar eclipse-jee-galileo-SR1-linux-gtk-x86_64.tar.gz
+
+Descomprimir y entrar en la carpeta eclipse/
+
+tar zxvf eclipse-jee-galileo-SR1-linux-gtk-x86_64.tar.gz
+
+Crear el siguiente script para ejecutar eclipse (necesario para arquitecturas 64bits con GTK. Es recomendable meterlo en la carpeta ~/bin si esta está en el path del usuario.
+
+-------------------------
+#!/bin/sh
+
+export GDK_NATIVE_WINDOWS=1
+~/eclipse/eclipse
+--------------------------
+
+Darle permisos de ejecución chmod +x eclipse
+
+Ejecutar eclipse
+
+$eclipse
+
+Aceptar el workspace por defecto y marcarlo para que no pregunte más
+
+
+Como instalar el Plugin de Maven2 (http://m2eclipse.sonatype.org/)
+
+Menu Eclipse -> Help -> Install new software 
+
+Se pulsa sobre la opción Add:  y se añade
+
+Name: Maven2 Eclipse
+Location : http://m2eclipse.sonatype.org/update-dev/
+
+Se marca la opción de Maven integration para instalar y se pulsa Next, para que calcule las dependencias.
+
+Se da siguiente una vez mostradas las dependencias y se aceptan las licencias y se pulsa sobre el botón Finish para que Eclipse proceda a la instalación.
+
+Una vez terminada la instalación recomienda realizar el reinicio del entorno y se pulsa sobre la opción Yes para que proceda.
+
+Una vez reiniciado el entorno se procedrá a Importar el proyecto
+
+Menu Eclipse -> File -> Import ....
+
+Se slecciona como Import Source 
+   	     Maven ->  Existing Maven Project
+
+Como directorio raiz se marca la ruta donde se encuentra descargado el
+repositorio GIT del proyecto xestion produccion. Una vez seleccionado 
+aparecerán los proyectos que lo conforman y se aceptarán todos para su 
+importación pulsando sobre la opción Finish.
+
+Lo siguiente será ejecutar la aplicación desde el entorno, para ello será 
+preciso seleccionar con el botón derecho el proyecto navalplanner-webapp y 
+en la opción Run As seleccionar Run Configurations....
+
+se crea una nueva como Maven Build haciendo doble click sobre el ratón
+como nombre a esta New_configuracion podemos poner Maven Xestion Producion
+
+Como base directory se podrá selecionar Browse WorkSpace y allí la aplicación 
+navalplanner-webapp
+
+Como Goals se marcará: jetty:stop jetty:run
+
+Es recomendable marcar la opción Skip Tests y Resolve Workspace artifacts.
+También es posible marcar la opción Offline si queremos que maven no 
+acceda a internet para descargar los paquetes.
+
+Pulsamos sobre la opción Run. Y nos realizará una primera ejecución y 
+la aplicación ya estará disponible en http://localhost:8080/navalplanner-webapp/
+
+A partir de este momento la opción por defecto de ejecuución será la que acabamos de ejecutar y será accesible desde la barra de herramientas de Eclipse.
+También la depuración ejecutará esta opción por defecto.
+
+
+
+
+
+
