@@ -40,32 +40,20 @@ import org.navalplanner.business.workreports.entities.WorkReportType;
 public interface IWorkReportModel {
 
     /**
-     * Gets the current {@link WorkReport}.
+     * Add new {@link WorkReportLine} to {@link WorkReport}
      *
-     * @return A {@link WorkReport}
+     * @return
      */
-    WorkReport getWorkReport();
+    WorkReportLine addWorkReportLine();
 
     /**
-     * Stores the current {@link WorkReport}.
+     * Converts @{link Resource} to @{link Worker}
      *
-     * @throws ValidationException
-     *             If validation fails
+     * @param resource
+     * @return
+     * @throws InstanceNotFoundException
      */
-    void save() throws ValidationException;
-
-    /**
-     * Makes some operations needed before create a new {@link WorkReport}.
-     */
-    void prepareForCreate(WorkReportType workReportType);
-
-    /**
-     * Makes some operations needed before edit a {@link WorkReport}.
-     *
-     * @param workReport
-     *            The object to be edited
-     */
-    void prepareEditFor(WorkReport workReport);
+    Worker asWorker(Resource resource) throws InstanceNotFoundException;
 
     /**
      * Finds an @{link OrdrElement} by code
@@ -85,13 +73,27 @@ public interface IWorkReportModel {
     Worker findWorker(String nif) throws InstanceNotFoundException;
 
     /**
-     * Converts @{link Resource} to @{link Worker}
+     * Returns distinguished code for {@link OrderElement}
      *
-     * @param resource
+     * @param orderElement
      * @return
-     * @throws InstanceNotFoundException
      */
-    Worker asWorker(Resource resource) throws InstanceNotFoundException;
+    String getDistinguishedCode(OrderElement orderElement)
+            throws InstanceNotFoundException;
+
+    /**
+     * Gets the current {@link WorkReport}.
+     *
+     * @return A {@link WorkReport}
+     */
+    WorkReport getWorkReport();
+
+    /**
+     * Return all {@link WorkReportLine} associated with current {@link WorkReport}
+     *
+     * @return
+     */
+    List<WorkReportLine> getWorkReportLines();
 
     /**
      * Get all {@link WorkReport} elements
@@ -108,20 +110,17 @@ public interface IWorkReportModel {
     boolean isEditing();
 
     /**
-     * Returns distinguished code for {@link OrderElement}
+     * Makes some operations needed before edit a {@link WorkReport}.
      *
-     * @param orderElement
-     * @return
+     * @param workReport
+     *            The object to be edited
      */
-    String getDistinguishedCode(OrderElement orderElement)
-            throws InstanceNotFoundException;
+    void initEdit(WorkReport workReport);
 
     /**
-     * Add new {@link WorkReportLine} to {@link WorkReport}
-     *
-     * @return
+     * Makes some operations needed before create a new {@link WorkReport}.
      */
-    WorkReportLine addWorkReportLine();
+    void initCreate(WorkReportType workReportType);
 
     /**
      * Removes {@link WorkReport}
@@ -138,9 +137,10 @@ public interface IWorkReportModel {
     void removeWorkReportLine(WorkReportLine workReportLine);
 
     /**
-     * Return all {@link WorkReportLine} associated with current {@link WorkReport}
+     * Stores the current {@link WorkReport}.
      *
-     * @return
+     * @throws ValidationException
+     *             If validation fails
      */
-    List<WorkReportLine> getWorkReportLines();
+    void confirmSave() throws ValidationException;
 }

@@ -24,7 +24,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -58,7 +57,6 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
-import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listhead;
@@ -66,7 +64,6 @@ import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
 
@@ -166,7 +163,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     public boolean save() {
         try {
-            workReportModel.save();
+            workReportModel.confirmSave();
             messagesForUser.showMessage(Level.INFO,
                     _("Work report saved"));
             return true;
@@ -302,14 +299,14 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     public void goToCreateForm(WorkReportType workReportType) {
-        workReportModel.prepareForCreate(workReportType);
+        workReportModel.initCreate(workReportType);
         prepareWorkReportList();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
 
     public void goToEditForm(WorkReport workReport) {
-        workReportModel.prepareEditFor(workReport);
+        workReportModel.initEdit(workReport);
         prepareWorkReportList();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);

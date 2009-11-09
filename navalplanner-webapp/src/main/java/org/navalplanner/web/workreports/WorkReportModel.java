@@ -73,7 +73,7 @@ public class WorkReportModel implements IWorkReportModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void prepareForCreate(WorkReportType workReportType) {
+    public void initCreate(WorkReportType workReportType) {
         editing = false;
         workReport = WorkReport.create();
         workReport.setWorkReportType(workReportType);
@@ -81,7 +81,7 @@ public class WorkReportModel implements IWorkReportModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void prepareEditFor(WorkReport workReport) {
+    public void initEdit(WorkReport workReport) {
         editing = true;
         Validate.notNull(workReport);
         this.workReport = getFromDB(workReport);
@@ -137,7 +137,7 @@ public class WorkReportModel implements IWorkReportModel {
 
     @Override
     @Transactional
-    public void save() throws ValidationException {
+    public void confirmSave() throws ValidationException {
         workReportDAO.save(workReport);
     }
 
