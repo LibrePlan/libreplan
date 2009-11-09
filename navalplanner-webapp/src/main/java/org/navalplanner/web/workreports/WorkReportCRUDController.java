@@ -553,12 +553,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Append a delete {@link Button} numHours to {@link Row}
+     * Append a delete {@link Button} to {@link Row}
      *
      * @param row
      */
-    private void appendDeleteButton(Row row) {
-        final Row li = row;
+    private void appendDeleteButton(final Row row) {
         Button delete = new Button("", "/common/img/ico_borrar1.png");
         delete.setHoverImage("/common/img/ico_borrar.png");
         delete.setSclass("icono");
@@ -566,11 +565,30 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         delete.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                WorkReportLine workReportLine = (WorkReportLine) li.getValue();
-                removeWorkReportLine(workReportLine);
+                confirmRemove((WorkReportLine) row.getValue());
             }
         });
         row.appendChild(delete);
+    }
+
+    public void confirmRemove(WorkReportLine workReportLine) {
+        try {
+            int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?", getWorkReportLineName(workReportLine)), _("Delete"),
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                removeWorkReportLine(workReportLine);
+            }
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(
+                    Level.ERROR, e.getMessage());
+            LOG.error(_("Error on showing removing element: ", workReportLine.getId()), e);
+        }
+    }
+
+    private String getWorkReportLineName(WorkReportLine workReportLine) {
+        final String resourceName = ((Worker) workReportLine.getResource()).getName();
+        final String code = workReportLine.getOrderElement().getCode();
+        return resourceName + " - " + code;
     }
 
     /**
