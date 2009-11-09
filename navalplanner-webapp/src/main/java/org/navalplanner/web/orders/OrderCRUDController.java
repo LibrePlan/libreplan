@@ -114,6 +114,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         setupAsignedHoursToOrderElementController(comp);
         setupManageOrderElementAdvancesController(comp);
         setupAssignedLabelsToOrderElementController(comp);
+        setupAssignedCriterionRequirementsToOrderElementController(comp);
     }
 
     private void setupOrderElementTreeController(Component comp,
@@ -161,6 +162,16 @@ public class OrderCRUDController extends GenericForwardComposer {
             orderElementLabels.getVariable("assignedLabelsController", true);
     }
 
+    private AssignedCriterionRequirementToOrderElementController assignedCriterionRequirementController;
+
+    private void setupAssignedCriterionRequirementsToOrderElementController(
+            Component comp) throws Exception {
+        Component orderElementCriterionRequirements = editWindow
+                .getFellowIfAny("orderElementCriterionRequirements");
+        assignedCriterionRequirementController = (AssignedCriterionRequirementToOrderElementController) orderElementCriterionRequirements
+                .getVariable("assignedCriterionRequirementController", true);
+    }
+
     public List<Order> getOrders() {
         return orderModel.getOrders();
     }
@@ -193,6 +204,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     private boolean save() {
         if (!manageOrderElementAdvancesController.save()) {
             selectTab("tabAdvances");
+        }
+        if (!assignedCriterionRequirementController.close()) {
+            selectTab("tabRequirements");
         }
         try {
             orderModel.save();
@@ -299,6 +313,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         assignedHoursController.openWindow(orderElementModel);
         manageOrderElementAdvancesController.openWindow(orderElementModel);
         assignedLabelsController.openWindow(orderElementModel);
+        assignedCriterionRequirementController.openWindow(orderElementModel);
     }
 
     private void clearEditWindow() {

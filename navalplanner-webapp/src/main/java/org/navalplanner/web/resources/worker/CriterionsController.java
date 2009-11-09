@@ -62,8 +62,6 @@ public class CriterionsController extends GenericForwardComposer {
         }
         messages = new MessagesForUser(messagesContainer);
         comp.setVariable("assignedCriterionsController", this, true);
-        //comboboxFilter = (Combobox) comp.getFellow("comboboxfilter");
-        //listingCriterions = (Grid) comp.getFellow("listingCriterions");
     }
 
     public IAssignedCriterionsModel getModel(){

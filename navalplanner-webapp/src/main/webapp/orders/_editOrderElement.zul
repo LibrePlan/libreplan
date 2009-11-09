@@ -18,23 +18,25 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<?component name="orderElementDetails" inline="true" macroURI="_orderElementDetails.zul"?>
 <?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <?component name="listOrderElementLabels" inline="true" macroURI="_listOrderElementLabels.zul"?>
-<?component name="orderElementDetails" inline="true" macroURI="_orderElementDetails.zul"?>
+<?component name="listOrderElementCriterionRequirements" inline="true" macroURI="_listOrderElementCriterionRequirements.zul"?>
 
 <window id="${arg.top_id}" title="${i18n:_('Edit order element')}"
     width="950px" left="50px" top="50px"
     closable="true" visible="false">
- <tabbox height="620px">
-        <tabs>
+<tabbox height="620px">
+	<tabs>
             <tab id="tabDetails" label="${i18n:_('Details')}"></tab>
             <tab label="${i18n:_('Assigned hours')}"></tab>
-            <tab label="${i18n:_('Advances')}"></tab>
+            <tab id="tabAdvances" label="${i18n:_('Advances')}"></tab>
             <tab label="${i18n:_('Labels')}"></tab>
+            <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"></tab>
         </tabs>
         <tabpanels>
-             <tabpanel>
+            <tabpanel>
                 <orderElementDetails id="orderElementDetails" />
             </tabpanel>
             <tabpanel>
@@ -45,6 +47,9 @@
             </tabpanel>
             <tabpanel>
                 <listOrderElementLabels id="orderElementLabels" />
+            </tabpanel>
+             <tabpanel>
+                <listOrderElementCriterionRequirements id="orderElementCriterionRequirements"/>
             </tabpanel>
         </tabpanels>
   </tabbox>

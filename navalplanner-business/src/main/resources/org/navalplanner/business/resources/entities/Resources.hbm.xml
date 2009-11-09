@@ -66,6 +66,11 @@
         <one-to-many class="Criterion"/>
     </set>
 
+    <set name="criterionRequirements" access="field">
+        <key column="CRITERION_ID" not-null="false"></key>
+        <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement"/>
+    </set>
+
     <properties name="nameAndType" unique="true">
         <property access="field" name="name" insert="false" update="false"/>
         <property access="field" name="typeId" insert="false" update="false"

@@ -33,6 +33,9 @@ import java.util.Set;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
@@ -64,6 +67,10 @@ import org.zkoss.zul.Treerow;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class OrderElementTreeController extends GenericForwardComposer {
+
+    private IMessagesForUser messagesForUser;
+
+    private Component messagesContainer;
 
     private Combobox cbFilterType;
 
@@ -177,12 +184,16 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
     public void addOrderElement() {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
-        if (tree.getSelectedCount() == 1) {
-            getModel().addOrderElementAt(getSelectedNode());
-        } else {
-            getModel().addOrderElement();
+        try{
+            if (tree.getSelectedCount() == 1) {
+                getModel().addOrderElementAt(getSelectedNode());
+            } else {
+                getModel().addOrderElement();
+            }
+            filterByPredicateIfAny();
+        } catch (IllegalStateException e) {
+            messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
-        filterByPredicateIfAny();
     }
 
     private void filterByPredicateIfAny() {
@@ -260,6 +271,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("orderElementTreeController", this, true);
     }
 

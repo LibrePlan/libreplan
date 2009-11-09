@@ -31,20 +31,14 @@ import org.navalplanner.business.orders.entities.OrderElement;
  */
 public class IndirectCriterionRequirement extends CriterionRequirement{
 
-   @NotNull
    private DirectCriterionRequirement parent;
 
    private Boolean isValid = true;
 
-    public static IndirectCriterionRequirement create() {
-        IndirectCriterionRequirement result = new IndirectCriterionRequirement();
-        result.setNewObject(true);
-        return result;
-    }
-
     public static IndirectCriterionRequirement create(DirectCriterionRequirement
             parent,Criterion criterion) {
         IndirectCriterionRequirement result = new IndirectCriterionRequirement(criterion);
+        result.setNewObject(true);
         result.setParent(parent);
         return result;
     }
@@ -54,14 +48,6 @@ public class IndirectCriterionRequirement extends CriterionRequirement{
         IndirectCriterionRequirement result = new IndirectCriterionRequirement(parent,criterion,
                 orderElement,hoursGroup);
         result.setNewObject(true);
-        return result;
-    }
-
-    public static IndirectCriterionRequirement create(DirectCriterionRequirement
-            parent,Boolean isValid) {
-        IndirectCriterionRequirement result = create();
-        result.setParent(parent);
-        result.setIsValid(isValid);
         return result;
     }
 
@@ -81,6 +67,7 @@ public class IndirectCriterionRequirement extends CriterionRequirement{
         super(criterion,orderElement,hoursGroup);
     }
 
+    @NotNull
     public DirectCriterionRequirement getParent() {
         return parent;
     }
@@ -97,5 +84,4 @@ public class IndirectCriterionRequirement extends CriterionRequirement{
     public void setIsValid(boolean isValid) {
         this.isValid = isValid;
     }
-
 }

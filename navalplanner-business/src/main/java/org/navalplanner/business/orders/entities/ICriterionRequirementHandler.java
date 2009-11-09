@@ -18,18 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.resources.entities;
-
-import java.util.Date;
+package org.navalplanner.business.orders.entities;
 
 /**
- * It's a predicate that can be applied on resources <br />
- * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface ICriterion {
-
-    boolean isSatisfiedBy(Resource resource);
-
-    boolean isSatisfiedBy(Resource resource, Date start, Date end);
+public interface ICriterionRequirementHandler {
 
 }

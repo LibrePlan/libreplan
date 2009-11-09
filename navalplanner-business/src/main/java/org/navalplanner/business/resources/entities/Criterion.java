@@ -21,6 +21,7 @@
 package org.navalplanner.business.resources.entities;
 
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,6 +33,7 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.requirements.entities.CriterionRequirement;
 
 /**
  * A criterion stored in the database <br />
@@ -71,6 +73,7 @@ public class Criterion extends BaseEntity implements ICriterion {
 
     private boolean active = true;
 
+    private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
     /*
      * Just for Hibernate mapping in order to have an unique constraint with
      * name and type properties.
@@ -177,9 +180,27 @@ public class Criterion extends BaseEntity implements ICriterion {
                 }
             }
         }
-
         return true;
 
     }
 
+    public Set<CriterionRequirement> getCriterionRequirements() {
+        return Collections.unmodifiableSet(criterionRequirements);
+    }
+
+    public void setCriterionRequirements(
+            Set<CriterionRequirement> criterionRequirements) {
+        this.criterionRequirements = criterionRequirements;
+    }
+
+    public void removeCriterionRequirement(
+            CriterionRequirement criterionRequirement) {
+        this.criterionRequirements.remove(criterionRequirement);
+    }
+
+    public void addCriterionRequirement(
+            CriterionRequirement criterionRequirement) {
+        criterionRequirement.setCriterion(this);
+        this.criterionRequirements.add(criterionRequirement);
+    }
 }

@@ -52,7 +52,7 @@ public class OrderElementController extends GenericForwardComposer {
 
     private Component orderElementHours;
 
-    private AsignedHoursToOrderElementController assignedHoursController;
+    private AsignedHoursToOrderElementController asignedHoursToOrderElementController;
 
     private Component orderElementAdvances;
 
@@ -62,6 +62,10 @@ public class OrderElementController extends GenericForwardComposer {
 
     private AssignedLabelsToOrderElementController assignedLabelsController;
 
+    private Component orderElementCriterionRequirements;
+
+    private AssignedCriterionRequirementToOrderElementController assignedCriterionRequirementController;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -70,6 +74,7 @@ public class OrderElementController extends GenericForwardComposer {
         setupAsignedHoursToOrderElementController(comp);
         setupManageOrderElementAdvancesController(comp);
         setupAssignedLabelsToOrderElementController(comp);
+        setupAssignedCriterionRequirementToOrderElementController(comp);
     }
 
     private void setupDetailsOrderElementController(Component comp) throws Exception{
@@ -78,7 +83,7 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     private void setupAsignedHoursToOrderElementController(Component comp) throws Exception{
-        assignedHoursController = (AsignedHoursToOrderElementController)
+        asignedHoursToOrderElementController = (AsignedHoursToOrderElementController)
         orderElementHours.getVariable("asignedHoursToOrderElementController", true);
     }
 
@@ -91,6 +96,12 @@ public class OrderElementController extends GenericForwardComposer {
     throws Exception {
         assignedLabelsController = (AssignedLabelsToOrderElementController)
         orderElementLabels.getVariable("assignedLabelsController", true);
+    }
+
+    private void setupAssignedCriterionRequirementToOrderElementController(
+            Component comp) throws Exception {
+        assignedCriterionRequirementController = (AssignedCriterionRequirementToOrderElementController) orderElementCriterionRequirements
+                .getVariable("assignedCriterionRequirementController", true);
     }
 
     public OrderElement getOrderElement() {
@@ -108,9 +119,10 @@ public class OrderElementController extends GenericForwardComposer {
         setOrderElementModel(model);
 
         detailsController.openWindow(model);
-        assignedHoursController.openWindow(model);
+        asignedHoursToOrderElementController.openWindow(model);
         manageOrderElementAdvancesController.openWindow(model);
         assignedLabelsController.openWindow(model);
+        assignedCriterionRequirementController.openWindow(model);
 
         try {
             ((Window) self).doModal();
@@ -154,6 +166,10 @@ public class OrderElementController extends GenericForwardComposer {
         detailsController.close();
         if (!manageOrderElementAdvancesController.close()) {
             selectTab("tabAdvances");
+            return;
+        }
+        if (!assignedCriterionRequirementController.close()) {
+            selectTab("tabRequirements");
             return;
         }
         close();

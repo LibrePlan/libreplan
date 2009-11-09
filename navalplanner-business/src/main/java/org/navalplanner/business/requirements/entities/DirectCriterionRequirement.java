@@ -78,5 +78,4 @@ public class DirectCriterionRequirement extends CriterionRequirement{
             children) {
         this.children = children;
     }
-
 }

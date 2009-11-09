@@ -17,7 +17,7 @@
     <many-to-one class="org.navalplanner.business.resources.entities.Criterion" column="CRITERION_ID" name="criterion"/>
 
     <subclass discriminator-value="DIRECT" name="DirectCriterionRequirement">
-      <set access="field" cascade="all,delete-orphan" inverse="true" name="children">
+      <set access="field" name="children" cascade="all,delete-orphan" inverse="true">
         <key column="parent"/>
         <one-to-many class="IndirectCriterionRequirement"/>
       </set>

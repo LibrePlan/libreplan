@@ -19,7 +19,6 @@
  */
 
 package org.navalplanner.business.requirements.entities;
-
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -36,7 +35,6 @@ public class CriterionRequirement extends BaseEntity{
 
     private OrderElement orderElement;
 
-    @NotNull
     private Criterion criterion;
 
     public CriterionRequirement(){
@@ -54,6 +52,7 @@ public class CriterionRequirement extends BaseEntity{
         this.hoursGroup = hoursGroup;
     }
 
+    @NotNull
     public Criterion getCriterion() {
         return criterion;
     }

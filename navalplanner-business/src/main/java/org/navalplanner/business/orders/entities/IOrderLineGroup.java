@@ -39,5 +39,4 @@ public interface IOrderLineGroup {
     public void down(OrderElement orderElement);
 
     public void add(int position, OrderElement orderElement);
-
 }

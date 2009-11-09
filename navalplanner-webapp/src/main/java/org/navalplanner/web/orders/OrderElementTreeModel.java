@@ -67,12 +67,7 @@ public class OrderElementTreeModel {
         for (OrderElement orderElement : orderElements) {
             treeModel.add(orderElement, orderElement.getChildren());
             addChildren(treeModel, orderElement.getChildren());
-            reattach(orderElement);
         }
-    }
-
-    private static void reattach(OrderElement orderElement) {
-        orderElement.getHoursGroups().size();
     }
 
     private MutableTreeModel<OrderElement> tree;
@@ -125,6 +120,8 @@ public class OrderElementTreeModel {
         IOrderLineGroup container = turnIntoContainerIfNeeded(parent);
         container.add(orderElement);
         addToTree(toNode(container), orderElement);
+        updateCriterionRequirementsInHierarchy(parent, orderElement,
+                (OrderElement) container);
     }
 
     private void addOrderElementAt(OrderElement destinationNode,
@@ -132,6 +129,18 @@ public class OrderElementTreeModel {
         IOrderLineGroup container = turnIntoContainerIfNeeded(destinationNode);
         container.add(position, elementToAdd);
         addToTree(toNode(container), position, elementToAdd);
+        updateCriterionRequirementsInHierarchy(destinationNode, elementToAdd,
+                (OrderElement) container);
+    }
+
+    private void updateCriterionRequirementsInHierarchy(
+            OrderElement destination, OrderElement origin,
+            OrderElement container) {
+        if (destination instanceof OrderLine) {
+            container.updateCriterionRequirements();
+        } else {
+            origin.updateCriterionRequirements();
+        }
     }
 
     private OrderElement toNode(IOrderLineGroup container) {

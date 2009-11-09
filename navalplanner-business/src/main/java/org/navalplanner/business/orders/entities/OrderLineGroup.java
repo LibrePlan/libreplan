@@ -159,7 +159,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
         result.setWorkHours(0);
         result.directAdvanceAssignments = new HashSet<DirectAdvanceAssignment>(
                 this.directAdvanceAssignments);
-
+        copyRequirementToOrderElement(result);
         return result;
     }
 
@@ -671,5 +671,9 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
                         this, OrderElement.class);
             }
         }
+    }
+
+    protected void copyRequirementToOrderElement(OrderLine leaf) {
+        criterionRequirementHandler.copyRequirementToOrderElement(this, leaf);
     }
 }

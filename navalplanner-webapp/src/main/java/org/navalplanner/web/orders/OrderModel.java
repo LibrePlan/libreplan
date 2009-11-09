@@ -52,6 +52,7 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -131,6 +132,7 @@ public class OrderModel implements IOrderModel {
         }
     }
 
+    @Override
     public Map<CriterionType, List<Criterion>> getMapCriterions(){
         final Map<CriterionType, List<Criterion>> result =
                 new HashMap<CriterionType, List<Criterion>>();
@@ -147,6 +149,7 @@ public class OrderModel implements IOrderModel {
         this.order = getFromDB(order);
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
         forceLoadAdvanceAssignmentsAndMeasurements(this.order);
+        forceLoadCriterionRequirements(this.order);
     }
 
     private void initializeCacheLabels() {
@@ -167,6 +170,29 @@ public class OrderModel implements IOrderModel {
     private void initializeLabel(Label label) {
         label.getName();
         label.getType().getName();
+    }
+
+    private static void forceLoadCriterionRequirements(OrderElement orderElement) {
+        orderElement.getHoursGroups().size();
+        for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+            attachDirectCriterionRequirement(hoursGroup
+                    .getDirectCriterionRequirement());
+        }
+        attachDirectCriterionRequirement(orderElement
+                .getDirectCriterionRequirement());
+
+        for (OrderElement child : orderElement.getChildren()) {
+            forceLoadCriterionRequirements(child);
+        }
+    }
+
+    private static void attachDirectCriterionRequirement(
+            Set<DirectCriterionRequirement> requirements) {
+        for (DirectCriterionRequirement requirement : requirements) {
+            requirement.getChildren().size();
+            requirement.getCriterion().getName();
+            requirement.getCriterion().getType().getName();
+        }
     }
 
     private void forceLoadAdvanceAssignmentsAndMeasurements(
@@ -215,10 +241,10 @@ public class OrderModel implements IOrderModel {
     public void save() throws ValidationException {
         reattachCriterions();
         this.orderDAO.save(order);
-        deleteOrderElementNotParent();
+        deleteOrderElementWithoutParent();
     }
 
-    private void deleteOrderElementNotParent() throws ValidationException {
+    private void deleteOrderElementWithoutParent() throws ValidationException {
         List<OrderElement> listToBeRemoved = orderElementDAO
                 .findWithoutParent();
         for (OrderElement orderElement : listToBeRemoved) {
@@ -311,6 +337,7 @@ public class OrderModel implements IOrderModel {
         return getFromDB(order).isSomeTaskElementScheduled();
     }
 
+    @Override
     public List<Criterion> getCriterionsFor(CriterionType criterionType) {
         return mapCriterions.get(criterionType);
     }

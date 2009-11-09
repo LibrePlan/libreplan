@@ -29,6 +29,8 @@ import java.util.Set;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.requirements.entities.CriterionRequirement;
+import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 
 public class OrderLine extends OrderElement {
 
@@ -85,11 +87,25 @@ public class OrderLine extends OrderElement {
         result.setInitDate(getInitDate());
         result.setDeadline(getDeadline());
 
+        // copy the criterion requirements to container
+        copyRequirementToOrderElement(result);
+
+        // removed the direct criterion requirements
+        removeAllDirectCriterionRequirement();
+
         this.setName(getName() + " (copy)");
         this.setCode(getCode() + " (copy)");
         result.add(this);
 
         return result;
+    }
+
+    private void removeAllDirectCriterionRequirement() {
+        Set<DirectCriterionRequirement> directRequirements = new HashSet<DirectCriterionRequirement>(
+                getDirectCriterionRequirement());
+        for (DirectCriterionRequirement requirement : directRequirements) {
+            removeDirectCriterionRequirement(requirement);
+        }
     }
 
     @Override
@@ -386,7 +402,6 @@ public class OrderLine extends OrderElement {
     protected Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignments(
             AdvanceType advanceType) {
         Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
-
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if (directAdvanceAssignment.getAdvanceType().getUnitName().equals(
                     advanceType.getUnitName())) {
@@ -394,7 +409,6 @@ public class OrderLine extends OrderElement {
                 return result;
             }
         }
-
         return result;
     }
 
@@ -406,7 +420,6 @@ public class OrderLine extends OrderElement {
     @Override
     protected Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignmentsReportGlobal() {
         Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
-
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if (directAdvanceAssignment.getReportGlobalAdvance()) {
                 result.add(directAdvanceAssignment);
@@ -414,5 +427,17 @@ public class OrderLine extends OrderElement {
             }
         }
         return result;
+    }
+
+    public boolean existSameCriterionRequirement(
+            CriterionRequirement newRequirement) {
+        return criterionRequirementHandler
+                .existSameCriterionRequirementIntoOrderLine(this,
+                newRequirement);
+    }
+
+    protected void copyRequirementToOrderElement(OrderLineGroup container) {
+        criterionRequirementHandler.copyRequirementToOrderElement(this,
+                container);
     }
 }

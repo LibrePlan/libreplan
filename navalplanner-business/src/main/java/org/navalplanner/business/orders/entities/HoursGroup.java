@@ -20,16 +20,16 @@
 package org.navalplanner.business.orders.entities;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 
 
@@ -52,6 +52,9 @@ public class HoursGroup extends BaseEntity implements Cloneable {
 
     @NotNull
     private OrderLine parentOrderLine;
+
+    protected CriterionRequirementHandler criterionRequirementHandler = CriterionRequirementHandler
+            .getInstance();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -113,6 +116,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         this.criterionRequirements = criterionRequirements;
     }
 
+    @Valid
     public Set<CriterionRequirement> getCriterionRequirements() {
         return criterionRequirements;
     }
@@ -133,7 +137,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
             throw new IllegalStateException(
                     " The "
                             + requirement.getCriterion().getName()
-                            + " can not be assigned to this hoursGroup because it already exist in other hoursGroup");
+                            + " can not be assigned to this hoursGroup because it already exist into the hoursGroup");
         }
     }
 
@@ -157,8 +161,16 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         }
     }
 
-    public void removeCriterionRequirement(CriterionRequirement criterionRequirement) {
-        criterionRequirements.remove(criterionRequirement);
+    public void removeCriterionRequirement(CriterionRequirement requirement) {
+        criterionRequirements.remove(requirement);
+        if (requirement instanceof IndirectCriterionRequirement) {
+            ((IndirectCriterionRequirement) requirement).getParent()
+                    .getChildren().remove(
+                            (IndirectCriterionRequirement) requirement);
+        }
+        requirement.setCriterion(null);
+        requirement.setHoursGroup(null);
+        requirement.setOrderElement(null);
     }
 
     /* TO REMOVE */
@@ -198,8 +210,27 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return parentOrderLine;
     }
 
-    private List<DirectCriterionRequirement> getDirectCriterionRequirement() {
-        List<DirectCriterionRequirement> list = new ArrayList<DirectCriterionRequirement>();
+    void updateMyCriterionRequirements() {
+        OrderElement newParent = this.getParentOrderLine();
+        Set<IndirectCriterionRequirement> currentIndirects = criterionRequirementHandler
+                .getCurrentIndirectRequirements(
+                        getIndirectCriterionRequirement(), newParent);
+        criterionRequirementHandler.removeOldIndirects(this, currentIndirects);
+        criterionRequirementHandler.addNewsIndirects(this, currentIndirects);
+    }
+
+    Set<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
+        Set<IndirectCriterionRequirement> list = new HashSet<IndirectCriterionRequirement>();
+        for(CriterionRequirement criterionRequirement : criterionRequirements ){
+            if(criterionRequirement instanceof IndirectCriterionRequirement){
+                list.add((IndirectCriterionRequirement) criterionRequirement);
+            }
+        }
+        return list;
+    }
+
+    public Set<DirectCriterionRequirement> getDirectCriterionRequirement() {
+        Set<DirectCriterionRequirement> list = new HashSet<DirectCriterionRequirement>();
         for(CriterionRequirement criterionRequirement : criterionRequirements ){
             if(criterionRequirement instanceof DirectCriterionRequirement){
                 list.add((DirectCriterionRequirement) criterionRequirement);
@@ -207,4 +238,14 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         }
         return list;
     }
+
+    public boolean existSameCriterionRequirement(CriterionRequirement newRequirement){
+        Criterion criterion = newRequirement.getCriterion();
+        for(CriterionRequirement requirement : getCriterionRequirements()){
+            if(requirement.getCriterion().equals(criterion))
+                return true;
+        }
+        return false;
+    }
+
 }

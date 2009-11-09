@@ -23,7 +23,7 @@
 <?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <?component name="listOrderElementLabels" inline="true" macroURI="_listOrderElementLabels.zul"?>
-
+<?component name="listOrderElementCriterionRequirements" inline="true" macroURI="_listOrderElementCriterionRequirements.zul"?>
 <window id="${arg.top_id}">
     <tabbox>
         <tabs>
@@ -33,6 +33,7 @@
             <tab label="${i18n:_('Assigned hours')}" />
             <tab id="tabAdvances" label="${i18n:_('Advances')}" />
             <tab label="${i18n:_('Label')}" />
+            <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"/>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -93,6 +94,9 @@
             </tabpanel>
             <tabpanel>
                 <listOrderElementLabels id="orderElementLabels" />
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementCriterionRequirements id="orderElementCriterionRequirements"/>
             </tabpanel>
         </tabpanels>
     </tabbox>

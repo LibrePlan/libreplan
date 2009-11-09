@@ -22,6 +22,7 @@ package org.navalplanner.business.test.orders.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
@@ -35,6 +36,8 @@ import java.util.SortedSet;
 
 import javax.annotation.Resource;
 
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,9 +51,14 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.requirements.entities.CriterionRequirement;
+import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,6 +81,9 @@ public class OrderElementTest {
     public void loadRequiredaData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
     }
+
+    private ClassValidator<OrderElement> orderElementValidator =
+            new ClassValidator<OrderElement>(OrderElement.class);
 
     private static OrderLine givenOrderLine(String name, String code,
             Integer hours) {
@@ -164,6 +175,34 @@ public class OrderElementTest {
         AdvanceType advanceType = AdvanceType.create(name, value, true,
                 precision, true, false);
         return advanceType;
+    }
+
+    @Test
+    public void checkValidPropagation()throws ValidationException{
+        OrderElement orderElement = givenOrderLineGroupWithTwoOrderLines(1000,
+                2000);
+        try {
+            InvalidValue[] invalidValues =
+                    orderElementValidator.getInvalidValues(orderElement);
+            if (invalidValues.length > 0)
+                throw new ValidationException(invalidValues);
+        } catch (ValidationException e) {
+             fail("It not should throw an exception");
+        }
+        CriterionType type = CriterionType.create("", "");
+        Criterion criterion = Criterion.create(type);
+        CriterionRequirement requirement = DirectCriterionRequirement
+                .create(criterion);
+        requirement.setOrderElement(orderElement);
+        orderElement.addDirectCriterionRequirement(requirement);
+        try {
+            InvalidValue[] invalidValues =
+                    orderElementValidator.getInvalidValues(orderElement);
+            if (invalidValues.length > 0)
+                throw new ValidationException(invalidValues);
+        } catch (ValidationException e) {
+            fail("It no should throw an exception");
+        }
     }
 
     @Test
