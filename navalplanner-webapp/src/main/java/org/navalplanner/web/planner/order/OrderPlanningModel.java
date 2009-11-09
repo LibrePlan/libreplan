@@ -281,6 +281,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 taskElementAdapter,
                 new TaskElementNavigator(), planningState.getInitial());
         result.setNotBeforeThan(orderReloaded.getInitDate());
+        result.setDependenciesConstraintsHavePriority(orderReloaded
+                .getDependenciesConstraintsHavePriority());
         return result;
     }
 
