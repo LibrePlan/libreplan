@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<XMI xmlns:UML="http://schema.omg.org/spec/UML/1.3" verified="false" timestamp="2009-11-05T21:31:23" xmi.version="1.2" >
+<XMI verified="false" xmi.version="1.2" timestamp="2009-11-09T08:58:29" xmlns:UML="http://schema.omg.org/spec/UML/1.3" >
  <XMI.header>
   <XMI.documentation>
    <XMI.exporter>umbrello uml modeller http://uml.sf.net</XMI.exporter>
@@ -1128,6 +1128,7 @@
         <UML:Generalization xmi.idref="qxvjCBO3js3F" />
        </UML:GeneralizableElement.generalization>
        <UML:Classifier.feature>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
         <UML:Attribute isSpecification="false" visibility="private" xmi.id="pCWqnn3X4Cg1" type="2btmF8kaoYxY" name="description" />
         <UML:Attribute isSpecification="false" visibility="private" xmi.id="Oy5plFJc06dX" type="BxRhMi93e0js" name="defaultUnitPrice" />
         <UML:Attribute isSpecification="false" visibility="private" xmi.id="tKRurLs86uKm" type="6zMANtkSKpsl" name="materialCode" />
@@ -1135,6 +1136,16 @@
        </UML:Classifier.feature>
       </UML:Class>
       <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="Logical View" xmi.id="Kj88Iy3nRzm8" isRoot="false" isAbstract="false" name="MaterialCategory" >
+=======
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="pCWqnn3X4Cg1" type="2btmF8kaoYxY" name="description" />
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="Oy5plFJc06dX" type="BxRhMi93e0js" name="defaultUnitPrice" />
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="tKRurLs86uKm" type="6zMANtkSKpsl" name="materialCode" />
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="7DCwhDhGu9Ej" type="zeZIJDKDPOmx" name="disabled" />
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="5j56B1zW2E4a" type="aLKUHshDOB1E" name="unitType" />
+       </UML:Classifier.feature>
+      </UML:Class>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Kj88Iy3nRzm8" name="MaterialCategory" >
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
        <UML:GeneralizableElement.generalization>
         <UML:Generalization xmi.idref="jhHQcmVMAoTd" />
        </UML:GeneralizableElement.generalization>
@@ -1171,10 +1182,19 @@
         <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="Mz8ezJYjLZEz" aggregation="none" type="byxyj0hGxJuG" name="" />
        </UML:Association.connection>
       </UML:Association>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
       <UML:Association isSpecification="false" visibility="public" namespace="Logical View" xmi.id="BU8OtfasnvpG" name="" >
        <UML:Association.connection>
         <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="false" xmi.id="W6B3cmKiW2ly" aggregation="none" type="tuIzeslDqJW5" name="" />
         <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="Ih6EQBokAvM9" aggregation="none" type="CzdNEBmDsnGX" name="" />
+=======
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical View" child="Kj88Iy3nRzm8" xmi.id="jhHQcmVMAoTd" parent="byxyj0hGxJuG" name="" />
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical View" child="yJlPDdIdL0Bf" xmi.id="qxvjCBO3js3F" parent="byxyj0hGxJuG" name="" />
+      <UML:Association visibility="public" isSpecification="false" namespace="Logical View" xmi.id="RtFuFc3ITvWa" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="false" isSpecification="false" xmi.id="GENd7INMAxYw" type="4trT6VkioirU" name="" aggregation="none" />
+        <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="true" isSpecification="false" xmi.id="FutuKXUkOheb" type="byxyj0hGxJuG" name="" aggregation="none" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
        </UML:Association.connection>
       </UML:Association>
       <UML:Association isSpecification="false" visibility="public" namespace="Logical View" xmi.id="PGYCCNTyF7TI" name="" >
@@ -1204,8 +1224,13 @@
       </UML:Association>
       <UML:Association isSpecification="false" visibility="public" namespace="Logical View" xmi.id="vwyANGEvohUR" name="parent" >
        <UML:Association.connection>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
         <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="false" xmi.id="Se1E9raMcfuF" aggregation="none" type="Kj88Iy3nRzm8" name="" />
         <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="jG8F7UVjxnkD" aggregation="none" type="Kj88Iy3nRzm8" name="" />
+=======
+        <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="true" isSpecification="false" xmi.id="6aaSYdIKtbur" type="Kj88Iy3nRzm8" name="" aggregation="aggregate" />
+        <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="true" isSpecification="false" xmi.id="gVPpIYzRwXDe" type="byxyj0hGxJuG" name="" aggregation="none" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
        </UML:Association.connection>
       </UML:Association>
       <UML:Association isSpecification="false" visibility="public" namespace="Logical View" xmi.id="zLpn2HDx3TTf" name="" >
@@ -1248,7 +1273,11 @@
      </UML:Namespace.ownedElement>
      <XMI.extension xmi.extender="umbrello" >
       <diagrams>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
        <diagram snapgrid="0" showattsig="1" fillcolor="#ffff00" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="1089" snapy="10" showatts="1" xmi.id="2Evn4eNdYwkg" documentation="" type="1" showops="1" showpackage="1" name="Task Planning" localid="" showstereotype="1" showscope="1" snapcsgrid="0" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="835" >
+=======
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="Task Planning" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" canvasheight="797" canvaswidth="1089" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="2Evn4eNdYwkg" documentation="" showscope="1" snapgrid="0" showatts="1" type="1" >
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
         <widgets>
          <classwidget usesdiagramfillcolor="1" width="106" showattsigs="601" x="361" fillcolor="none" y="8" showopsigs="601" linewidth="none" height="56" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="P0toAiR6U083" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
          <classwidget usesdiagramfillcolor="0" width="135" showattsigs="601" x="413" fillcolor="#ffffc0" y="144" showopsigs="601" linewidth="none" height="152" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="tuIzeslDqJW5" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="0" font="Sans Serif,10,-1,5,75,0,0,0,0,0" linecolor="#ff0000" />
@@ -1311,8 +1340,13 @@ An OrderElement not planificable will not have any TaskElement associated" usesd
            <endpoint endx="413" endy="258" />
            <point x="282" y="188" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="32" x="247" fillcolor="none" y="321" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="4KDB5mOKpKUf" text="0..1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="32" x="376" fillcolor="none" y="192" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="0s477axC1wmQ" text="0..1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="32" x="247" y="321" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="wV5vbgTsnziB" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..1" pretext="" />
+          <floatingtext width="32" x="376" y="192" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="Y3ShtJPriprq" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..1" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="aDjWeslUEANx" widgetaid="oRwdH97rBGn9" xmi.id="0fgpKmKdgy1V" type="512" linecolor="none" >
           <linepath>
@@ -1320,9 +1354,15 @@ An OrderElement not planificable will not have any TaskElement associated" usesd
            <endpoint endx="925" endy="270" />
            <point x="969" y="599" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="90" x="796" fillcolor="none" y="627" linewidth="none" posttext="" role="703" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="HyfcAIVCaiMf" text="descompose" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="34" x="534" fillcolor="none" y="569" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="SkzI4Uv2Kz7S" text="1..N" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="31" x="1009" fillcolor="none" y="274" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="X4eWyOxGMaqU" text="0..*" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="90" x="796" y="627" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="703" linecolor="none" xmi.id="wwIJGaCA3H6e" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="descompose" pretext="" />
+          <floatingtext width="34" x="534" y="569" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="vZVjYBs4CIl3" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="1..N" pretext="" />
+          <floatingtext width="31" x="1009" y="274" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="b8uHwj7sgN9u" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..*" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" linewidth="none" widgetbid="rVN4DbRR2AJv" widgetaid="j6nQ2fUEmIW5" roleBdoc="" documentation="" roleAdoc="" type="513" changeabilityA="900" changeabilityB="900" linecolor="none" visibilityA="200" >
           <linepath>
@@ -1349,9 +1389,15 @@ An OrderElement not planificable will not have any TaskElement associated" usesd
            <startpoint startx="489" starty="377" />
            <endpoint endx="353" endy="388" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="45" x="408" fillcolor="none" y="363" linewidth="none" posttext="" role="703" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="tJhTz17Rl4jn" text="origin" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="31" x="457" fillcolor="none" y="358" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="WfprcuJAyvgu" text="0..*" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="32" x="363" fillcolor="none" y="386" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="Hb8bAw61FlSE" text="1..1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="45" x="408" y="363" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="703" linecolor="none" xmi.id="xJ50YBdUk6BG" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="origin" pretext="" />
+          <floatingtext width="31" x="457" y="358" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="F3KRK3UvBND7" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..*" pretext="" />
+          <floatingtext width="32" x="363" y="386" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="4Iykg7fbRkaz" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="1..1" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="3" indexb="2" linewidth="none" widgetbid="9JJu7hjphMwH" widgetaid="rVN4DbRR2AJv" xmi.id="F6WCnsRVBR2k" type="512" linecolor="none" >
           <linepath>
@@ -1359,9 +1405,15 @@ An OrderElement not planificable will not have any TaskElement associated" usesd
            <endpoint endx="353" endy="433" />
            <point x="546" y="428" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="81" x="441" fillcolor="none" y="432" linewidth="none" posttext="" role="703" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="mZeVeNGA031b" text="destination" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="31" x="560" fillcolor="none" y="416" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="xIlvBPnSzw49" text="0..*" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="32" x="366" fillcolor="none" y="426" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="s8A6rcIbCw6o" text="1..1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="81" x="441" y="432" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="703" linecolor="none" xmi.id="tBRbFcrUeBty" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="destination" pretext="" />
+          <floatingtext width="31" x="560" y="416" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="CLrLi2RnLPVz" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..*" pretext="" />
+          <floatingtext width="32" x="366" y="426" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="WAavs8tjJKKY" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="1..1" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="3" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="ntefL6x2Ab2r" widgetaid="9JJu7hjphMwH" xmi.id="lyv5tS6Uncy0" type="512" linecolor="none" >
           <linepath>
@@ -1404,16 +1456,26 @@ An OrderElement not planificable will not have any TaskElement associated" usesd
            <startpoint startx="548" starty="220" />
            <endpoint endx="785" endy="151" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="15" x="550" fillcolor="none" y="124" linewidth="none" posttext="" role="701" height="18" usefillcolor="1" pretext="" isinstance="0" xmi.id="IMyIPytMGcFQ" showstereotype="1" text="1" usesdiagramusefillcolor="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="29" x="754" fillcolor="none" y="124" linewidth="none" posttext="" role="702" height="18" usefillcolor="1" pretext="" isinstance="0" xmi.id="02szwu6n2Gtt" showstereotype="1" text="0..*" usesdiagramusefillcolor="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext linecolor="none" usesdiagramfillcolor="1" linewidth="none" usesdiagramusefillcolor="1" x="550" showstereotype="1" y="124" text="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" pretext="" role="701" width="15" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="vB0XKtVWDKsv" height="18" />
+          <floatingtext linecolor="none" usesdiagramfillcolor="1" linewidth="none" usesdiagramusefillcolor="1" x="754" showstereotype="1" y="124" text="0..*" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" pretext="" role="702" width="29" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="NJgigChAKF6B" height="18" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="pXwBgpXvFPTv" widgetaid="p0MFA2reS51l" xmi.id="PVKQQAmbSJET" type="512" linecolor="none" >
           <linepath>
            <startpoint startx="912" starty="151" />
            <endpoint endx="1012" endy="142" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="29" x="914" fillcolor="none" y="117" linewidth="none" posttext="" role="701" height="18" usefillcolor="1" pretext="" isinstance="0" xmi.id="sBS28YqQsngF" showstereotype="1" text="0..*" usesdiagramusefillcolor="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="29" x="981" fillcolor="none" y="117" linewidth="none" posttext="" role="702" height="18" usefillcolor="1" pretext="" isinstance="0" xmi.id="lYZz8oP8pI5j" showstereotype="1" text="0..*" usesdiagramusefillcolor="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext linecolor="none" usesdiagramfillcolor="1" linewidth="none" usesdiagramusefillcolor="1" x="914" showstereotype="1" y="117" text="0..*" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" pretext="" role="701" width="29" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="OzuhJFECQCjj" height="18" />
+          <floatingtext linecolor="none" usesdiagramfillcolor="1" linewidth="none" usesdiagramusefillcolor="1" x="981" showstereotype="1" y="117" text="0..*" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" pretext="" role="702" width="29" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="4CDHX5CuMra0" height="18" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="aDjWeslUEANx" widgetaid="ngRlWEM6jFtb" xmi.id="4OdWgrxuRQTt" type="501" linecolor="none" >
           <linepath>
@@ -1423,7 +1485,11 @@ An OrderElement not planificable will not have any TaskElement associated" usesd
          </assocwidget>
         </associations>
        </diagram>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
        <diagram snapgrid="0" showattsig="1" fillcolor="#ffff00" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="954" snapy="10" showatts="1" xmi.id="em0PEuZNPWBl" documentation="" type="1" showops="1" showpackage="1" name="Resources Allocation" localid="" showstereotype="1" showscope="1" snapcsgrid="0" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="835" >
+=======
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="Resources Allocation" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" canvasheight="557" canvaswidth="835" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="em0PEuZNPWBl" documentation="" showscope="1" snapgrid="0" showatts="1" type="1" >
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
         <widgets>
          <classwidget usesdiagramfillcolor="0" width="134" showattsigs="601" x="201" fillcolor="#ffffc0" y="181" showopsigs="601" linewidth="none" height="88" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="oRwdH97rBGn9" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="0" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="#ff0000" />
          <classwidget usesdiagramfillcolor="0" width="150" showattsigs="601" x="407" fillcolor="#92ff88" y="206" showopsigs="601" linewidth="none" height="40" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="xC9oqvTbtqno" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="0" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="#ff0000" />
@@ -1549,6 +1615,7 @@ An OrderElement not planificable will not have any TaskElement associated" usesd
          </assocwidget>
         </associations>
        </diagram>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
        <diagram snapgrid="0" showattsig="1" fillcolor="#ffff00" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="1023" snapy="10" showatts="1" xmi.id="etxi1i1F785F" documentation="" type="1" showops="1" showpackage="1" name="Advances" localid="" showstereotype="1" showscope="1" snapcsgrid="0" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="851" >
         <widgets>
          <classwidget usesdiagramfillcolor="1" width="135" showattsigs="601" x="24" fillcolor="none" y="198" showopsigs="601" linewidth="none" height="152" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="tuIzeslDqJW5" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,0,75,0,0,0,0,0" linecolor="none" />
@@ -1561,6 +1628,18 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
          <classwidget usesdiagramfillcolor="0" width="193" showattsigs="601" x="146" fillcolor="#ffffc0" y="367" showopsigs="601" linewidth="none" height="32" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="o5RjRxAkOrU1" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="0" font="Sans Serif,10,-1,5,75,0,0,0,0,0" linecolor="#ff0000" />
          <classwidget usesdiagramfillcolor="1" width="205" showattsigs="601" x="387" fillcolor="none" y="367" showopsigs="601" linewidth="none" height="32" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="KgJE71ZrTa4N" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,0,75,0,0,0,0,0" linecolor="none" />
          <notewidget usesdiagramfillcolor="1" width="292" x="611" fillcolor="none" y="472" linewidth="none" height="189" usefillcolor="1" isinstance="0" xmi.id="zSuD3L47lpuA" text="Hai que crear un novo tipo de avance predefinido: ChildrenAdvanceType. Este tipo de avance se cargara se non existe na base de datos.  Ademais cando se cree un OrderElement de tipo OrderLineGroup haberá sempre que crearlle un IndirectAdvanceAssigment de tipo ChildrenAdvanceType" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,0,50,0,0,0,0,0" linecolor="none" />
+=======
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="Advances" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" canvasheight="665" canvaswidth="1023" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="etxi1i1F785F" documentation="" showscope="1" snapgrid="0" showatts="1" type="1" >
+        <widgets>
+         <classwidget linecolor="none" usesdiagramfillcolor="1" linewidth="none" showoperations="1" usesdiagramusefillcolor="1" showpubliconly="0" showpackage="0" x="24" showattsigs="601" y="198" showattributes="1" font="Sans Serif,10,-1,0,50,0,0,0,0,0" width="135" isinstance="0" usefillcolor="1" fillcolor="none" xmi.id="tuIzeslDqJW5" showscope="1" height="152" showopsigs="601" />
+         <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="297" showattsigs="601" y="245" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="220" isinstance="0" usefillcolor="1" fillcolor="#71ff4a" xmi.id="UwUp5iYgVB85" showscope="1" height="56" showopsigs="601" />
+         <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="655" showattsigs="601" y="223" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="364" isinstance="0" usefillcolor="1" fillcolor="#ffffc0" xmi.id="bmRPNtkrYrn4" showscope="1" height="128" showopsigs="601" />
+         <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="156" showattsigs="601" y="441" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="173" isinstance="0" usefillcolor="1" fillcolor="#ffffc0" xmi.id="QX7KUtq8V8Jy" showscope="1" height="56" showopsigs="601" />
+         <notewidget width="461" x="173" noteType="0" y="19" usesdiagramusefillcolor="1" usesdiagramfillcolor="0" isinstance="0" fillcolor="#b9fff7" height="184" linecolor="none" xmi.id="BRWpZJn9t6Gg" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,0,50,0,0,0,0,0" text="Hai que introducir a regra de negocio de que non pode haber dous obxectos AdvanceAssigment do mesmo AdvanceType sobre o OrderElement&#xa;&#xa;Tamen hai que introducir a restriccion de que non se pode definir un obxecto AdvanceAssigment sobre un OrderElement se existe algun pai deste OrderElement que ten un obxecto AdvanceAssigment do mesmo AdvanceType" />
+         <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="146" showattsigs="601" y="367" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="193" isinstance="0" usefillcolor="1" fillcolor="#ffffc0" xmi.id="o5RjRxAkOrU1" showscope="1" height="32" showopsigs="601" />
+         <classwidget linecolor="none" usesdiagramfillcolor="1" linewidth="none" showoperations="1" usesdiagramusefillcolor="1" showpubliconly="0" showpackage="0" x="387" showattsigs="601" y="367" showattributes="1" font="Sans Serif,10,-1,0,50,0,0,0,0,0" width="205" isinstance="0" usefillcolor="1" fillcolor="none" xmi.id="KgJE71ZrTa4N" showscope="1" height="32" showopsigs="601" />
+         <notewidget width="292" x="611" noteType="0" y="472" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="189" linecolor="none" xmi.id="zSuD3L47lpuA" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,0,50,0,0,0,0,0" text="Hai que crear un novo tipo de avance predefinido: ChildrenAdvanceType. Este tipo de avance se cargara se non existe na base de datos.  Ademais cando se cree un OrderElement de tipo OrderLineGroup haberá sempre que crearlle un IndirectAdvanceAssigment de tipo ChildrenAdvanceType" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
         </widgets>
         <messages/>
         <associations>
@@ -1569,14 +1648,22 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
            <startpoint startx="159" starty="274" />
            <endpoint endx="297" endy="273" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="31" x="259" fillcolor="none" y="264" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="ABWDRP4IZXIf" text="0..*" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="31" x="259" y="264" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="sERYVgki4wRn" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..*" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="bmRPNtkrYrn4" widgetaid="UwUp5iYgVB85" xmi.id="uvVTa3RmuzlY" type="512" linecolor="none" >
           <linepath>
            <startpoint startx="517" starty="273" />
            <endpoint endx="655" endy="287" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="32" x="612" fillcolor="none" y="276" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="393wwj9fFjeO" text="1..1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="32" x="612" y="276" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="ye1F94Q1PHZP" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="1..1" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" linewidth="none" widgetbid="UwUp5iYgVB85" widgetaid="BRWpZJn9t6Gg" roleBdoc="" documentation="" roleAdoc="" type="513" changeabilityA="900" changeabilityB="900" linecolor="none" visibilityA="200" >
           <linepath>
@@ -1610,7 +1697,11 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
          </assocwidget>
         </associations>
        </diagram>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
        <diagram snapgrid="0" showattsig="1" fillcolor="#ffff00" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="944" snapy="10" showatts="1" xmi.id="9fuEBXrUUlIu" documentation="" type="1" showops="1" showpackage="1" name="Labels" localid="" showstereotype="1" showscope="1" snapcsgrid="0" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="851" >
+=======
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="Labels" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" canvasheight="550" canvaswidth="824" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="9fuEBXrUUlIu" documentation="" showscope="1" snapgrid="0" showatts="1" type="1" >
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
         <widgets>
          <classwidget usesdiagramfillcolor="1" width="135" showattsigs="601" x="135" fillcolor="none" y="108" showopsigs="601" linewidth="none" height="152" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="tuIzeslDqJW5" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,75,0,0,0,0,0" linecolor="none" />
          <classwidget usesdiagramfillcolor="0" width="68" showattsigs="601" x="410" fillcolor="#ffffc0" y="167" showopsigs="601" linewidth="none" height="40" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="J8SsPhfYKZmW" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="0" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="#ff0000" />
@@ -1624,16 +1715,26 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
            <startpoint startx="270" starty="184" />
            <endpoint endx="410" endy="187" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="34" x="272" fillcolor="none" y="175" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="X4UKKa4UjahB" text="0..N" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="34" x="375" fillcolor="none" y="175" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="ykRXFjAIqDCm" text="0..N" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="34" x="272" y="175" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="KoYfIpC91dhX" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..N" pretext="" />
+          <floatingtext width="34" x="375" y="175" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="HPFJJe7IG6VP" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..N" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="J8SsPhfYKZmW" widgetaid="4cyZLGRuFuQR" xmi.id="BTXE19fHMeq8" type="501" linecolor="none" >
           <linepath>
            <startpoint startx="605" starty="191" />
            <endpoint endx="478" endy="187" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="34" x="589" fillcolor="none" y="172" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="uMPA54Wa8ytS" text="0..N" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="32" x="462" fillcolor="none" y="184" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="YxwGVcRTKqyZ" text="1..1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="34" x="589" y="172" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="8vOVCxtUlR82" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..N" pretext="" />
+          <floatingtext width="32" x="462" y="184" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="FKBGvqnAF0TW" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="1..1" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" linewidth="none" widgetbid="J8SsPhfYKZmW" widgetaid="4M4dK9M6XlQq" roleBdoc="" documentation="" roleAdoc="" type="513" changeabilityA="900" changeabilityB="900" linecolor="none" visibilityA="200" >
           <linepath>
@@ -1643,7 +1744,11 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
          </assocwidget>
         </associations>
        </diagram>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
        <diagram snapgrid="0" showattsig="1" fillcolor="#ffff00" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="944" snapy="10" showatts="1" xmi.id="C827JMNPgNXZ" documentation="" type="1" showops="1" showpackage="1" name="Orders" localid="" showstereotype="1" showscope="1" snapcsgrid="0" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="851" >
+=======
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="Orders" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" canvasheight="533" canvaswidth="942" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="C827JMNPgNXZ" documentation="" showscope="1" snapgrid="0" showatts="1" type="1" >
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
         <widgets>
          <classwidget usesdiagramfillcolor="1" width="125" showattsigs="601" x="155" fillcolor="none" y="212" showopsigs="601" linewidth="none" height="32" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="9m8Qj7mNVHWt" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
          <classwidget usesdiagramfillcolor="0" width="106" showattsigs="601" x="164" fillcolor="#ffffc0" y="287" showopsigs="601" linewidth="none" height="56" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="P0toAiR6U083" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="0" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="#ff0000" />
@@ -1689,8 +1794,13 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
            <startpoint startx="396" starty="55" />
            <endpoint endx="586" endy="146" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="31" x="402" fillcolor="none" y="41" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="eqzkoqALn4bJ" text="0..*" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="74" x="398" fillcolor="none" y="99" linewidth="none" posttext="" role="709" height="20" usefillcolor="1" pretext="+" isinstance="0" xmi.id="Z8pQL2AEMaMP" text="contains" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="31" x="402" y="41" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="d7sMZ0OoIZ2B" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..*" pretext="" />
+          <floatingtext width="74" x="398" y="99" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="709" linecolor="none" xmi.id="fYovcKJlDfGQ" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="contains" pretext="+" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="pXwBgpXvFPTv" widgetaid="CzdNEBmDsnGX" xmi.id="PGYCCNTyF7TI" type="512" linecolor="none" >
           <linepath>
@@ -1698,8 +1808,13 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
            <endpoint endx="428" endy="302" />
            <point x="428" y="234" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="15" x="500" fillcolor="none" y="212" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="e0kyqjVPrLnB" text="*" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="32" x="428" fillcolor="none" y="281" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="LyNhWj68Z3qN" text="1..1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="15" x="500" y="212" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="NqJcqn7TLvNw" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="*" pretext="" />
+          <floatingtext width="32" x="428" y="281" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="DghRLvpw3hJa" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="1..1" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="3" indexa="2" totalcountb="2" indexb="1" linewidth="none" widgetbid="CzdNEBmDsnGX" widgetaid="tuIzeslDqJW5" xmi.id="Eddd1PYLJZsj" type="503" linecolor="none" >
           <linepath>
@@ -1714,8 +1829,13 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
            <point x="808" y="147" />
            <point x="807" y="234" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="16" x="725" fillcolor="none" y="132" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="u0gf2HwhHhd7" text="1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="15" x="687" fillcolor="none" y="212" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="Q7VFSIOnElSi" text="*" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="16" x="725" y="132" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="ghMwFO6cCPD1" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="1" pretext="" />
+          <floatingtext width="15" x="687" y="212" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="CKUWDrSPV7qp" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="*" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="3" indexb="2" linewidth="none" widgetbid="CzdNEBmDsnGX" widgetaid="WasJ2iNgmUNO" xmi.id="810lqRZuxUkW" type="500" linecolor="none" >
           <linepath>
@@ -1728,8 +1848,13 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
            <startpoint startx="727" starty="417" />
            <endpoint endx="590" endy="418" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="31" x="582" fillcolor="none" y="401" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="LzKagvi62BKU" text="0..*" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="71" x="616" fillcolor="none" y="394" linewidth="none" posttext="" role="710" height="20" usefillcolor="1" pretext="+" isinstance="0" xmi.id="UWq1XeNPc35f" text="children" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="31" x="582" y="401" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="MzVYOiZZ043C" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..*" pretext="" />
+          <floatingtext width="71" x="616" y="394" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="710" linecolor="none" xmi.id="0fl3K2byixvv" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="children" pretext="+" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="3" indexb="1" linewidth="none" widgetbid="CzdNEBmDsnGX" widgetaid="FlXADIefsqnc" xmi.id="3sWbDbUnzm2a" type="500" linecolor="none" >
           <linepath>
@@ -1744,16 +1869,26 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
            <point x="506" y="485" />
            <point x="822" y="485" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="32" x="837" fillcolor="none" y="436" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="pL4QO95h7NIn" text="1..1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="61" x="742" fillcolor="none" y="444" linewidth="none" posttext="" role="710" height="20" usefillcolor="1" pretext="+" isinstance="0" xmi.id="RiFeUfMw9Byh" text="parent" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="32" x="837" y="436" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="wBJe9CZVB43X" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="1..1" pretext="" />
+          <floatingtext width="61" x="742" y="444" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="710" linecolor="none" xmi.id="tTbNYPCY2vaK" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="parent" pretext="+" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="3" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="J8SsPhfYKZmW" widgetaid="tuIzeslDqJW5" xmi.id="5PKYSxAl3acS" type="512" linecolor="none" >
           <linepath>
            <startpoint startx="261" starty="55" />
            <endpoint endx="122" endy="56" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="34" x="226" fillcolor="none" y="54" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="IysL9Cnau3CM" text="0..N" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="34" x="126" fillcolor="none" y="37" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="gZJqiHVVaZvy" text="0..N" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="34" x="226" y="54" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="lb6jd7tUaSr8" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..N" pretext="" />
+          <floatingtext width="34" x="126" y="37" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="r1htvHErSVTZ" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..N" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" linewidth="none" widgetbid="q8B6Zo6eONeB" widgetaid="aDjWeslUEANx" roleBdoc="" documentation="" roleAdoc="" type="513" changeabilityA="900" changeabilityB="900" linecolor="none" visibilityA="200" >
           <linepath>
@@ -1763,7 +1898,11 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
          </assocwidget>
         </associations>
        </diagram>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
        <diagram snapgrid="0" showattsig="1" fillcolor="#ffff00" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="944" snapy="10" showatts="1" xmi.id="S6yQPUlWs49s" documentation="" type="1" showops="1" showpackage="1" name="Resources" localid="" showstereotype="1" showscope="1" snapcsgrid="0" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="851" >
+=======
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="Resources" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" canvasheight="550" canvaswidth="824" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="S6yQPUlWs49s" documentation="" showscope="1" snapgrid="0" showatts="1" type="1" >
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
         <widgets>
          <classwidget usesdiagramfillcolor="1" width="78" showattsigs="601" x="256" fillcolor="none" y="149" showopsigs="601" linewidth="none" height="32" usefillcolor="1" showpubliconly="1" showattributes="1" isinstance="0" xmi.id="QuCpOvJF0Q5L" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,0,50,0,0,0,0,0" linecolor="none" />
          <classwidget usesdiagramfillcolor="0" width="63" showattsigs="601" x="193" fillcolor="#ffffc0" y="254" showopsigs="601" linewidth="none" height="32" usefillcolor="1" showpubliconly="1" showattributes="1" isinstance="0" xmi.id="EuVtTEVBubBT" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="0" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="#ff0000" />
@@ -1848,7 +1987,11 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
          </assocwidget>
         </associations>
        </diagram>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
        <diagram snapgrid="0" showattsig="1" fillcolor="#ffff00" linewidth="0" zoom="100" showgrid="1" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="1075" snapy="10" showatts="1" xmi.id="Al723HW1jXBv" documentation="" type="1" showops="1" showpackage="1" name="Calendars" localid="" showstereotype="1" showscope="1" snapcsgrid="0" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="835" >
+=======
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="Calendars" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" canvasheight="533" canvaswidth="1075" localid="" snapcsgrid="0" showgrid="1" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="Al723HW1jXBv" documentation="" showscope="1" snapgrid="0" showatts="1" type="1" >
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
         <widgets>
          <classwidget usesdiagramfillcolor="1" width="143" showattsigs="601" x="412" fillcolor="none" y="257" showopsigs="601" linewidth="none" height="32" usefillcolor="1" showpubliconly="1" showattributes="1" isinstance="0" xmi.id="pWd0kqSVARYy" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
          <classwidget usesdiagramfillcolor="0" width="496" showattsigs="601" x="255" fillcolor="#ffffc0" y="147" showopsigs="601" linewidth="none" height="80" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="ntefL6x2Ab2r" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="0" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="#ff0000" />
@@ -1876,7 +2019,11 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
            <point x="130" y="91" />
            <point x="361" y="91" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="50" x="130" fillcolor="none" y="125" linewidth="none" posttext="" role="703" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="hygoLybewTx3" text="parent" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="50" x="130" y="125" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="703" linecolor="none" xmi.id="04q26LlfSTIX" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="parent" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="djb5JvjZ9GTh" widgetaid="ntefL6x2Ab2r" xmi.id="3oF4IIw3C3pt" type="501" linecolor="none" >
           <linepath>
@@ -1913,18 +2060,30 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
            <startpoint startx="613" starty="345" />
            <endpoint endx="626" endy="291" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="151" x="648" fillcolor="none" y="312" linewidth="none" posttext="" role="703" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="dkbYlosSLBI1" text="machineTaskCalendar" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="16" x="636" fillcolor="none" y="323" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="QnW0KQx1Odpi" text="1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="29" x="638" fillcolor="none" y="293" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="ZRMTsJUW152n" text="0-1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="151" x="648" y="312" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="703" linecolor="none" xmi.id="Mm8pcEgdtYWA" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="machineTaskCalendar" pretext="" />
+          <floatingtext width="16" x="636" y="323" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="kLbFo8uoDipH" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="1" pretext="" />
+          <floatingtext width="29" x="638" y="293" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="3awT3EzQy7Da" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0-1" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="3" indexa="2" totalcountb="3" indexb="2" linewidth="none" widgetbid="y8PAxnHdWHgm" widgetaid="oRwdH97rBGn9" xmi.id="MwHQnc1Dm9HN" type="512" linecolor="none" >
           <linepath>
            <startpoint startx="627" starty="345" />
            <endpoint endx="662" endy="291" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="140" x="458" fillcolor="none" y="317" linewidth="none" posttext="" role="703" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="ruDA4VBSGgTa" text="workerTaskCalendar" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="16" x="604" fillcolor="none" y="323" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="4OaQzP8YqSzh" text="1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="29" x="567" fillcolor="none" y="296" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="jRDlWFYM9lUB" text="0-1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="140" x="458" y="317" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="703" linecolor="none" xmi.id="LrCDPiL74wMq" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="workerTaskCalendar" pretext="" />
+          <floatingtext width="16" x="604" y="323" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="3EdGuSVw2RN4" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="1" pretext="" />
+          <floatingtext width="29" x="567" y="296" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="dMSZTfAnUKys" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0-1" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="pWd0kqSVARYy" widgetaid="QuCpOvJF0Q5L" xmi.id="KnonRVuLZaF6" type="512" linecolor="none" >
           <linepath>
@@ -1940,7 +2099,11 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
          </assocwidget>
         </associations>
        </diagram>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
        <diagram snapgrid="0" showattsig="1" fillcolor="#ffff00" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="944" snapy="10" showatts="1" xmi.id="lRwZmKnJy6yj" documentation="" type="1" showops="1" showpackage="1" name="Work Reports" localid="" showstereotype="1" showscope="1" snapcsgrid="0" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="851" >
+=======
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="Work Reports" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" canvasheight="550" canvaswidth="824" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="lRwZmKnJy6yj" documentation="" showscope="1" snapgrid="0" showatts="1" type="1" >
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
         <widgets>
          <classwidget usesdiagramfillcolor="0" width="97" showattsigs="601" x="213" fillcolor="#ffffc0" y="245" showopsigs="601" linewidth="none" height="32" usefillcolor="1" showpubliconly="1" showattributes="1" isinstance="0" xmi.id="4xsyjJuI5D3M" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="0" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="#ff0000" />
          <classwidget usesdiagramfillcolor="0" width="130" showattsigs="601" x="23" fillcolor="#ffffc0" y="243" showopsigs="601" linewidth="none" height="32" usefillcolor="1" showpubliconly="1" showattributes="1" isinstance="0" xmi.id="rAYL8dKCYC8F" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="0" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="#ff0000" />
@@ -1983,16 +2146,26 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
            <startpoint startx="604" starty="149" />
            <endpoint endx="451" endy="85" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="34" x="589" fillcolor="none" y="125" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="EgeSK50MTamS" text="0..N" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="34" x="470" fillcolor="none" y="74" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="yvymNvT7Mgqq" text="0..N" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="34" x="589" y="125" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="2Jz4GKtJYWXR" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..N" pretext="" />
+          <floatingtext width="34" x="470" y="74" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="y0NyPk027SZY" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..N" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="J8SsPhfYKZmW" widgetaid="4cyZLGRuFuQR" xmi.id="BTXE19fHMeq8" type="501" linecolor="none" >
           <linepath>
            <startpoint startx="318" starty="85" />
            <endpoint endx="402" endy="85" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="34" x="335" fillcolor="none" y="51" linewidth="none" posttext="" role="701" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="vMC37fEJJqjd" text="0..N" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
           <floatingtext usesdiagramfillcolor="1" width="32" x="347" fillcolor="none" y="45" linewidth="none" posttext="" role="702" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="vhxMGjoEck00" text="1..1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext width="34" x="335" y="51" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="701" linecolor="none" xmi.id="5jJa1HS2bR6p" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="0..N" pretext="" />
+          <floatingtext width="32" x="347" y="45" usesdiagramusefillcolor="1" posttext="" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="20" role="702" linecolor="none" xmi.id="lz6ITbjRb4O0" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="1..1" pretext="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="cCjTVCxVWMoz" widgetaid="rAYL8dKCYC8F" xmi.id="XNWkT3Q27j8q" type="503" linecolor="none" >
           <linepath>
@@ -2020,7 +2193,11 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
          </assocwidget>
         </associations>
        </diagram>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
        <diagram snapgrid="0" showattsig="1" fillcolor="#ffff00" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="944" snapy="10" showatts="1" xmi.id="DcCqLQWgvQ9f" documentation="" type="1" showops="1" showpackage="1" name="Cost Analysis" localid="" showstereotype="1" showscope="1" snapcsgrid="0" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="851" >
+=======
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="Cost Analysis" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" canvasheight="550" canvaswidth="824" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="DcCqLQWgvQ9f" documentation="" showscope="1" snapgrid="0" showatts="1" type="1" >
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
         <widgets>
          <classwidget usesdiagramfillcolor="1" width="119" showattsigs="601" x="431" fillcolor="none" y="281" showopsigs="601" linewidth="none" height="32" usefillcolor="1" showpubliconly="1" showattributes="1" isinstance="0" xmi.id="HRweRDeLQktl" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,0,50,0,0,0,0,0" linecolor="none" />
          <classwidget usesdiagramfillcolor="1" width="78" showattsigs="601" x="47" fillcolor="none" y="128" showopsigs="601" linewidth="none" height="32" usefillcolor="1" showpubliconly="1" showattributes="1" isinstance="0" xmi.id="QuCpOvJF0Q5L" showoperations="1" showpackage="0" showscope="1" usesdiagramusefillcolor="1" font="Sans Serif,10,-1,0,50,0,0,0,0,0" linecolor="none" />
@@ -2056,6 +2233,7 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
          </assocwidget>
         </associations>
        </diagram>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
        <diagram snapgrid="0" showattsig="1" fillcolor="#ffff00" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="999" snapy="10" showatts="1" xmi.id="WGfevf8IyFPY" documentation="" type="1" showops="1" showpackage="1" name="Materials" localid="" showstereotype="1" showscope="1" snapcsgrid="0" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="835" >
         <widgets>
          <classwidget usesdiagramfillcolor="0" width="118" showattsigs="601" x="161" fillcolor="#ffff00" y="70" showopsigs="601" linewidth="none" height="133" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="tuIzeslDqJW5" showoperations="1" showpackage="1" showscope="1" showstereotype="1" usesdiagramusefillcolor="0" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" />
@@ -2063,6 +2241,15 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
          <classwidget usesdiagramfillcolor="1" width="115" showattsigs="601" x="880" fillcolor="none" y="130" showopsigs="601" linewidth="none" height="35" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="Kj88Iy3nRzm8" showoperations="1" showpackage="1" showscope="1" showstereotype="1" usesdiagramusefillcolor="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="none" />
          <classwidget usesdiagramfillcolor="0" width="172" showattsigs="601" x="362" fillcolor="#ffff00" y="102" showopsigs="601" linewidth="none" height="91" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="4trT6VkioirU" showoperations="1" showpackage="1" showscope="1" showstereotype="1" usesdiagramusefillcolor="0" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" />
          <notewidget usesdiagramfillcolor="1" width="209" x="414" fillcolor="none" y="267" linewidth="none" height="121" usefillcolor="1" isinstance="0" xmi.id="U0lbjUxrMtWC" showstereotype="1" text="The status will represent the status of the material assignment regarding it has been received, pending, ordered, or any status subject to the needs of material related to the start of a task" usesdiagramusefillcolor="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+       <diagram showopsig="1" linecolor="#ff0000" snapx="10" showattribassocs="1" snapy="10" linewidth="0" showattsig="1" showpubliconly="1" showpackage="1" showstereotype="1" name="Materials" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" canvasheight="533" canvaswidth="999" localid="" snapcsgrid="0" showgrid="0" showops="1" usefillcolor="1" fillcolor="#ffff00" zoom="100" xmi.id="WGfevf8IyFPY" documentation="" showscope="1" snapgrid="0" showatts="1" type="1" >
+        <widgets>
+         <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="1" x="161" showattsigs="601" showstereotype="1" y="70" showattributes="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" width="118" isinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="tuIzeslDqJW5" showscope="1" height="133" showopsigs="601" />
+         <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="1" x="627" showattsigs="601" showstereotype="1" y="115" showattributes="1" font="DejaVu Sans,8,-1,5,75,0,0,0,0,0" width="182" isinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="yJlPDdIdL0Bf" showscope="1" height="91" showopsigs="601" />
+         <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="1" x="880" showattsigs="601" showstereotype="1" y="130" showattributes="1" font="DejaVu Sans,8,-1,5,75,0,0,0,0,0" width="115" isinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="Kj88Iy3nRzm8" showscope="1" height="35" showopsigs="601" />
+         <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="1" x="362" showattsigs="601" showstereotype="1" y="102" showattributes="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" width="172" isinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="4trT6VkioirU" showscope="1" height="91" showopsigs="601" />
+         <notewidget width="209" showstereotype="1" x="414" noteType="0" y="267" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="121" linecolor="none" xmi.id="U0lbjUxrMtWC" usefillcolor="1" linewidth="none" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" text="The status will represent the status of the material assignment regarding it has been received, pending, ordered, or any status subject to the needs of material related to the start of a task" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
         </widgets>
         <messages/>
         <associations>
@@ -2078,14 +2265,22 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
            <endpoint endx="627" endy="153" />
           </linepath>
          </assocwidget>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
          <assocwidget totalcounta="2" indexa="1" totalcountb="0" indexb="0" linewidth="none" widgetbid="Kj88Iy3nRzm8" widgetaid="Kj88Iy3nRzm8" xmi.id="vwyANGEvohUR" type="512" linecolor="none" >
+=======
+         <assocwidget indexa="1" indexb="0" widgetaid="Kj88Iy3nRzm8" linecolor="none" totalcounta="2" xmi.id="vwyANGEvohUR" widgetbid="Kj88Iy3nRzm8" totalcountb="0" type="512" linewidth="none" >
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
           <linepath>
            <startpoint startx="908" starty="130" />
            <endpoint endx="966" endy="130" />
            <point x="908" y="80" />
            <point x="966" y="80" />
           </linepath>
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
           <floatingtext usesdiagramfillcolor="1" width="45" x="908" fillcolor="none" y="105" linewidth="none" posttext="" role="703" height="18" usefillcolor="1" pretext="" isinstance="0" xmi.id="fU5zAvq4H05M" showstereotype="1" text="parent" usesdiagramusefillcolor="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" linecolor="none" />
+=======
+          <floatingtext linecolor="none" usesdiagramfillcolor="1" linewidth="none" usesdiagramusefillcolor="1" x="908" showstereotype="1" y="105" text="parent" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" pretext="" role="703" width="45" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="mM0rpZOuHhSI" height="18" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
          </assocwidget>
          <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="yJlPDdIdL0Bf" widgetaid="Kj88Iy3nRzm8" xmi.id="zLpn2HDx3TTf" type="501" linecolor="none" >
           <linepath>
@@ -2120,7 +2315,11 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
   </UML:Model>
  </XMI.content>
  <XMI.extensions xmi.extender="umbrello" >
+<<<<<<< HEAD:doc/src/technical/uml-analysis.xmi
   <docsettings viewid="em0PEuZNPWBl" documentation="" uniqueid="eldwxH6Pgo2s" />
+=======
+  <docsettings viewid="WGfevf8IyFPY" uniqueid="5j56B1zW2E4a" documentation="" />
+>>>>>>> ItEr33S02AnaliseItEr32S02: Added Missing attribute unit types in Material:doc/src/technical/uml-analysis.xmi
   <listview>
    <listitem open="1" type="800" label="Views" >
     <listitem open="1" type="801" id="Logical View" >
@@ -2245,6 +2444,7 @@ Tamen hai que introducir a restriccion de que non se pode definir un obxecto Adv
       <listitem open="0" type="814" id="Oy5plFJc06dX" />
       <listitem open="0" type="814" id="tKRurLs86uKm" />
       <listitem open="0" type="814" id="7DCwhDhGu9Ej" />
+      <listitem open="0" type="814" id="5j56B1zW2E4a" />
      </listitem>
      <listitem open="1" type="813" id="4trT6VkioirU" >
       <listitem open="0" type="814" id="57lb10WsuoNN" />
