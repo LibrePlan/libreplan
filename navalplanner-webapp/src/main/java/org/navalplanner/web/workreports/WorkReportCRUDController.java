@@ -98,11 +98,24 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private WorkReportListRenderer workReportListRenderer = new WorkReportListRenderer();
 
-    public final static String ID_WORK_REPORT_LINES = "workReportLines";
+    private Listbox listWorkReportLines;
 
     private final static String MOLD = "paging";
 
     private final static int PAGING = 10;
+
+
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        listWorkReportLines = (Listbox) createWindow.getFellowIfAny("listWorkReportLines");
+        messagesForUser = new MessagesForUser(messagesContainer);
+        comp.setVariable("controller", this, true);
+        final URLHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
+                .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
+        handler.registerListener(this, page);
+        getVisibility().showOnly(listWindow);
+    }
 
     /**
      * Show confirm window for deleting {@link WorkReport}
@@ -131,17 +144,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     public List<WorkReport> getWorkReports() {
         return workReportModel.getWorkReports();
-    }
-
-    @Override
-    public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp);
-        messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("controller", this, true);
-        final URLHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
-                .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
-        handler.registerListener(this, page);
-        getVisibility().showOnly(listWindow);
     }
 
     private OnlyOneVisible getVisibility() {
@@ -217,11 +219,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @param invalidValue
      */
     private void validateWorkReportLine(InvalidValue invalidValue) {
-        Listbox listBox = (Listbox) createWindow
-                .getFellowIfAny(ID_WORK_REPORT_LINES);
-        if (listBox != null) {
+        if (listWorkReportLines != null) {
             // Find which listItem contains workReportLine inside listBox
-            Listitem listItem = findWorkReportLine(listBox.getItems(),
+            Listitem listItem = findWorkReportLine(listWorkReportLines.getItems(),
                     (WorkReportLine) invalidValue.getBean());
 
             if (listItem != null) {
@@ -325,31 +325,24 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      *
      */
     private void prepareWorkReportList() {
-        Listbox listbox = (Listbox) createWindow
-                .getFellow(ID_WORK_REPORT_LINES);
-
         // The only way to clean the listhead, is to clean all its attributes
         // and children
         // The paging component cannot be removed manually. It is removed automatically when changing the mold
-        listbox.setMold(null);
-        listbox.getChildren().clear();
+        listWorkReportLines.setMold(null);
+        listWorkReportLines.getChildren().clear();
 
         // Set ListModel
-        Set<WorkReportLine> setWorkReportLines = getWorkReportLines();
-        WorkReportLine workReportLines[] = setWorkReportLines
-                .toArray(new WorkReportLine[setWorkReportLines.size()]);
-        ListModel listModel = new SimpleListModel(workReportLines);
-        listbox.setModel(listModel);
+        // listWorkReportLines.setModel(new SimpleListModel(getWorkReportLines()));
 
         // Set Renderer
         // listbox.setItemRenderer((ListitemRenderer) null);
-        listbox.setItemRenderer(getRenderer());
+        listWorkReportLines.setItemRenderer(getRenderer());
 
         // Set mold and pagesize
-        listbox.setMold(MOLD);
-        listbox.setPageSize(PAGING);
+        listWorkReportLines.setMold(MOLD);
+        listWorkReportLines.setPageSize(PAGING);
 
-        appendListHead(listbox);
+        appendListHead(listWorkReportLines);
     }
 
     /**
@@ -422,9 +415,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      *
      * @param rows
      */
-    public void addWorkReportLine(Listbox listBox) {
+    public void addWorkReportLine() {
         WorkReportLine workReportLine = workReportModel.addWorkReportLine();
-        listBox.appendChild(createListItem(workReportLine));
+        listWorkReportLines.appendChild(createListItem(workReportLine));
     }
 
     /**
@@ -432,16 +425,18 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      *
      * @param listBox
      */
-    public void deleteWorkReportLine(Listbox listBox) {
-        Listitem listItem = listBox.getSelectedItem();
-        WorkReportLine workReportLine = (WorkReportLine) listItem.getValue();
-        getWorkReportLines().remove(workReportLine);
-        listBox.removeItemAt(listItem.getIndex());
+    public void removeWorkReportLine() {
+        final Listitem listItem = listWorkReportLines.getSelectedItem();
+        removeWorkReportLine((WorkReportLine) listItem.getValue());
     }
 
-    public Set<WorkReportLine> getWorkReportLines() {
-        return (getWorkReport() != null) ? getWorkReport().getWorkReportLines()
-                : new HashSet<WorkReportLine>();
+    private void removeWorkReportLine(WorkReportLine workReportLine) {
+        workReportModel.removeWorkReportLine(workReportLine);
+        Util.reloadBindings(listWorkReportLines);
+    }
+
+    public List<WorkReportLine> getWorkReportLines() {
+        return workReportModel.getWorkReportLines();
     }
 
     /**
@@ -601,10 +596,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         delete.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                WorkReportLine workReportLine = (WorkReportLine) li
-                        .getValue();
-                getWorkReportLines().remove(workReportLine);
-                /* Pending to update component */
+                WorkReportLine workReportLine = (WorkReportLine) li.getValue();
+                removeWorkReportLine(workReportLine);
             }
         });
 

@@ -34,7 +34,7 @@
 
     <many-to-one name="workReportType" class="WorkReportType" column="WORK_REPORT_TYPE_ID" not-null="true"/>
 
-    <set name="workReportLines" cascade="all-delete-orphan" inverse="false">
+    <set name="workReportLines" cascade="all-delete-orphan" inverse="true">
         <key column="WORK_REPORT_ID"/>
         <one-to-many class="WorkReportLine"/>
     </set>

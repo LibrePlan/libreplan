@@ -21,6 +21,7 @@
 package org.navalplanner.web.workreports;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -194,7 +195,7 @@ public class WorkReportModel implements IWorkReportModel {
     @Override
     public WorkReportLine addWorkReportLine() {
         WorkReportLine workReportLine = WorkReportLine.create();
-        workReport.getWorkReportLines().add(workReportLine);
+        workReport.addWorkReportLine(workReportLine);
         return workReportLine;
     }
 
@@ -205,5 +206,19 @@ public class WorkReportModel implements IWorkReportModel {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void removeWorkReportLine(WorkReportLine workReportLine) {
+        workReport.removeWorkReportLine(workReportLine);
+    }
+
+    @Override
+    public List<WorkReportLine> getWorkReportLines() {
+        List<WorkReportLine> result = new ArrayList<WorkReportLine>();
+        if (getWorkReport() != null) {
+            result.addAll(workReport.getWorkReportLines());
+        }
+        return result;
     }
 }

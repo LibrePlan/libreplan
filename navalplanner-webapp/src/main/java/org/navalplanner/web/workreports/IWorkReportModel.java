@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.workreports;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -128,4 +129,18 @@ public interface IWorkReportModel {
      * @param workReport
      */
     void remove(WorkReport workReport);
+
+    /**
+     * Removes {@link WorkReportLine}
+     *
+     * @param workReportLine
+     */
+    void removeWorkReportLine(WorkReportLine workReportLine);
+
+    /**
+     * Return all {@link WorkReportLine} associated with current {@link WorkReport}
+     *
+     * @return
+     */
+    List<WorkReportLine> getWorkReportLines();
 }

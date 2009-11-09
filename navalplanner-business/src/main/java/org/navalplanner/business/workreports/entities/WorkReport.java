@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.workreports.entities;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -113,10 +114,15 @@ public class WorkReport extends BaseEntity {
     }
 
     public Set<WorkReportLine> getWorkReportLines() {
-        return workReportLines;
+        return Collections.unmodifiableSet(workReportLines);
     }
 
-    public void setWorkReportLines(Set<WorkReportLine> workReportLines) {
-        this.workReportLines = workReportLines;
+    public void addWorkReportLine(WorkReportLine workReportLine) {
+        workReportLines.add(workReportLine);
+        workReportLine.setWorkReport(this);
+    }
+
+    public void removeWorkReportLine(WorkReportLine workReportLine) {
+        workReportLines.remove(workReportLine);
     }
 }

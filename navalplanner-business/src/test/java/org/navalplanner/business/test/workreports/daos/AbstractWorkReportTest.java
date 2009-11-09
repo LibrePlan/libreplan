@@ -115,8 +115,6 @@ public abstract class AbstractWorkReportTest {
         workReportTypeDAO.save(workReportType);
         workReport.setWorkReportType(workReportType);
 
-        workReport.setWorkReportLines(new HashSet<WorkReportLine>());
-
         return workReport;
     }
 }

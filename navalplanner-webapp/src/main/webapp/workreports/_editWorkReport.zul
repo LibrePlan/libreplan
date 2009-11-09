@@ -57,12 +57,12 @@
 
                     <hbox>
                         <button label="${i18n:_('Add new row')}"
-                            onClick="controller.addWorkReportLine(workReportLines);" />
+                            onClick="controller.addWorkReportLine()" />
                         <button label="${i18n:_('Delete')}"
-                            onClick="controller.deleteWorkReportLine(workReportLines);" />
+                            onClick="controller.removeWorkReportLine()" />
                     </hbox>
 
-                    <listbox id="workReportLines" />
+                    <listbox id="listWorkReportLines" model="@{controller.workReportLines}" />
 
                 </vbox>
             </tabpanel>
