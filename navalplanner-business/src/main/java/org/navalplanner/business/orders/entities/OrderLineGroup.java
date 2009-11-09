@@ -175,8 +175,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
 
     @Override
     public void add(int position, OrderElement orderElement) {
-        children.add(position, orderElement);
-
+        getManipulator().add(position, orderElement);
         addIndirectAdvanceAssignments(orderElement);
     }
 
