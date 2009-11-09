@@ -60,6 +60,8 @@ public class Order extends OrderLineGroup {
     // TODO turn into a many to one relationship when Customer entity is defined
     private String customer;
 
+    private Boolean dependenciesConstraintsHavePriority;
+
     public String getResponsible() {
         return responsible;
     }
@@ -162,6 +164,16 @@ public class Order extends OrderLineGroup {
     @Override
     protected void applyStartConstraintTo(Task task) {
         // the initDate of order don't imply a start constraint at a task
+    }
+
+    public boolean getDependenciesConstraintsHavePriority() {
+        return dependenciesConstraintsHavePriority != null
+                && dependenciesConstraintsHavePriority;
+    }
+
+    public void setDependenciesConstraintsHavePriority(
+            boolean dependenciesConstraintsHavePriority) {
+        this.dependenciesConstraintsHavePriority = dependenciesConstraintsHavePriority;
     }
 
 }

@@ -55,6 +55,7 @@
 
                 <property name="responsible" access="field"></property>
                 <property name="customer" access="field"></property>
+                <property name="dependenciesConstraintsHavePriority" access="field"></property>
             </joined-subclass>
 
         </joined-subclass>

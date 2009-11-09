@@ -77,6 +77,11 @@
                                 value="@{controller.order.description}"
                                 rows="6" width="500px" />
                         </row>
+                        <row>
+                            <label value="${i18n:_('Dependencies have priority')}" />
+                            <checkbox
+                                checked="@{controller.order.dependenciesConstraintsHavePriority}" />
+                        </row>
                     </rows>
                 </grid>
             </tabpanel>
