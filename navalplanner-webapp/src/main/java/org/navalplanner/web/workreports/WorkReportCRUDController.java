@@ -560,7 +560,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private void appendDeleteButton(Row row) {
         final Row li = row;
         Button delete = new Button("", "/common/img/ico_borrar1.png");
-        delete.setHoverImage("/common/img/ico_delete.png");
+        delete.setHoverImage("/common/img/ico_borrar.png");
         delete.setSclass("icono");
         delete.setTooltiptext(_("Delete"));
         delete.addEventListener(Events.ON_CLICK, new EventListener() {
