@@ -48,9 +48,14 @@ public class ConstraintViolationNotificator<T> {
 
     public List<Constraint<T>> withListener(List<Constraint<T>> constraints) {
         for (Constraint<T> each : constraints) {
-            each.addConstraintViolationListener(bridge);
+            withListener(each);
         }
         return constraints;
+    }
+
+    public Constraint<T> withListener(Constraint<T> constraint) {
+        constraint.addConstraintViolationListener(bridge);
+        return constraint;
     }
 
     private void fireConstraintViolated(final Constraint<T> constraint,
@@ -70,5 +75,6 @@ public class ConstraintViolationNotificator<T> {
             IConstraintViolationListener<T> listener) {
         constraintViolationListeners.addListener(listener);
     }
+
 
 }

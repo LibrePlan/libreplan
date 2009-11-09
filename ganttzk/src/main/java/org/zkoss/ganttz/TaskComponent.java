@@ -22,6 +22,7 @@ package org.zkoss.ganttz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -33,6 +34,8 @@ import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
+import org.zkoss.ganttz.data.constraint.Constraint;
+import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.lang.Objects;
 import org.zkoss.xml.HTMLs;
 import org.zkoss.zk.au.AuRequest;
@@ -176,6 +179,15 @@ public class TaskComponent extends Div implements AfterCompose {
         setColor(STANDARD_TASK_COLOR);
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
+        taskViolationListener = new IConstraintViolationListener<Date>() {
+
+            @Override
+            public void constraintViolated(Constraint<Date> constraint,
+                    Date value) {
+                // TODO mark graphically task as violated
+            }
+        };
+        this.task.addConstraintViolationListener(taskViolationListener);
     }
 
     protected String calculateClass() {
@@ -211,6 +223,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private final Task task;
     private transient PropertyChangeListener propertiesListener;
+
+    private IConstraintViolationListener<Date> taskViolationListener;
 
     public Task getTask() {
         return task;

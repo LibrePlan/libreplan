@@ -28,6 +28,8 @@ import java.util.List;
 
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.DateConstraint;
+import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
+import org.zkoss.ganttz.util.ConstraintViolationNotificator;
 
 /**
  * This class contains the information of a task. It can be modified and
@@ -46,6 +48,9 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     private boolean visible = true;
 
+    private ConstraintViolationNotificator<Date> violationNotificator = ConstraintViolationNotificator
+            .create();
+
     public Task(ITaskFundamentalProperties fundamentalProperties) {
         this.fundamentalProperties = fundamentalProperties;
     }
@@ -56,7 +61,8 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     @Override
     public List<Constraint<Date>> getStartConstraints() {
-        return fundamentalProperties.getStartConstraints();
+        return violationNotificator.withListener(fundamentalProperties
+                .getStartConstraints());
     }
 
     public Task(String name, Date beginDate, long lengthMilliseconds) {
@@ -164,11 +170,13 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public Constraint<Date> getCurrentLengthConstraint() {
-        return DateConstraint.biggerOrEqualThan(getEndDate());
+        return violationNotificator.withListener(DateConstraint
+                .biggerOrEqualThan(getEndDate()));
     }
 
     public Constraint<Date> getEndDateBiggerThanStartDate() {
-        return DateConstraint.biggerOrEqualThan(getBeginDate());
+        return violationNotificator.withListener(DateConstraint
+                .biggerOrEqualThan(getBeginDate()));
     }
 
     public String getNotes() {
@@ -227,6 +235,11 @@ public abstract class Task implements ITaskFundamentalProperties {
     @Override
     public Date getDeadline() {
         return fundamentalProperties.getDeadline();
+    }
+
+    public void addConstraintViolationListener(
+            IConstraintViolationListener<Date> listener) {
+        violationNotificator.addConstraintViolationListener(listener);
     }
 
 }
