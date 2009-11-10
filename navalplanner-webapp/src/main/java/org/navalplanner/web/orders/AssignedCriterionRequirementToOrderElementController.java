@@ -24,8 +24,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
-import org.hibernate.validator.InvalidValue;
-import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
@@ -33,7 +31,6 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
-import org.navalplanner.web.resources.worker.CriterionSatisfactionDTO;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -92,138 +89,115 @@ public class AssignedCriterionRequirementToOrderElementController extends
     }
 
     public boolean close() {
-        try{
-            assignedCriterionRequirementToOrderElementModel.confirm();
-            return true;
-        }catch (ValidationException e) {
-            showInvalidValues(e);
+        if (showInvalidValues()) {
+            return false;
         }
-        return false;
+        assignedCriterionRequirementToOrderElementModel.confirm();
+        return true;
     }
 
-    public List<CriterionRequirementDTO> criterionRequirementDTOs(){
+    public List<CriterionRequirementWrapper> criterionRequirementWrappers() {
          return assignedCriterionRequirementToOrderElementModel.
-                 getCriterionRequirementDTOs();
+getCriterionRequirementWrappers();
     }
 
     public List<CriterionWithItsType> getCriterionWithItsTypes(){
         return assignedCriterionRequirementToOrderElementModel.getCriterionWithItsTypes();
     }
 
-    public void addCriterionRequirementDTO(){
-        assignedCriterionRequirementToOrderElementModel.assignCriterionRequirementDTO();
+    public void addCriterionRequirementWrapper() {
+        assignedCriterionRequirementToOrderElementModel
+                .assignCriterionRequirementWrapper();
         reload();
     }
 
-    public void remove(CriterionRequirementDTO requirement){
+    public void remove(CriterionRequirementWrapper requirement){
         assignedCriterionRequirementToOrderElementModel.
-                deleteCriterionRequirementDTO(requirement);
+deleteCriterionRequirementWrapper(requirement);
         reload();
     }
 
-    public void invalidate(CriterionRequirementDTO requirement){
+    public void invalidate(CriterionRequirementWrapper requirement){
         assignedCriterionRequirementToOrderElementModel.
-                setValidCriterionRequirementDTO(requirement,false);
+setValidCriterionRequirementWrapper(requirement, false);
         reload();
     }
 
-    public void validate(CriterionRequirementDTO requirement){
+    public void validate(CriterionRequirementWrapper requirement){
         assignedCriterionRequirementToOrderElementModel.
-                setValidCriterionRequirementDTO(requirement,true);
+setValidCriterionRequirementWrapper(requirement, true);
         reload();
     }
 
     public void selectCriterionAndType(Listitem item,Bandbox bandbox,
-        CriterionRequirementDTO criterionRequirementDTO){
+            CriterionRequirementWrapper criterionRequirementWrapper) {
         if(item != null){
-            try{
-                criterionRequirementDTO = updateRetrievedCriterionRequirement(criterionRequirementDTO);
-                CriterionWithItsType criterionAndType =
-                        (CriterionWithItsType)item.getValue();
-                bandbox.close();
-                validateCriterionWithItsType(bandbox,
-                        criterionAndType,criterionRequirementDTO);
-                bandbox.setValue(criterionAndType.getNameAndType());
-                criterionRequirementDTO.setCriterionWithItsType(criterionAndType);
-            }catch(WrongValueException e){
+            CriterionWithItsType criterionAndType = (CriterionWithItsType) item
+                    .getValue();
+            bandbox.close();
+            bandbox.setValue(criterionAndType.getNameAndType());
+            if (!assignedCriterionRequirementToOrderElementModel
+                    .canSetCriterionWithItsType(criterionRequirementWrapper,
+                            criterionAndType)) {
                 bandbox.setValue("");
-                criterionRequirementDTO.setCriterionWithItsType(null);
-                throw e;
+                criterionRequirementWrapper.setCriterionWithItsType(null);
+                throw new WrongValueException(
+                        bandbox,
+                        _("The criterion "
+                                + criterionAndType.getNameAndType()
+                                + " is not valid,"
+                                + " exist the same criterion into the order element or into its children."));
             }
         }else{
             bandbox.setValue("");
         }
     }
 
-    private CriterionRequirementDTO updateRetrievedCriterionRequirement(
-            CriterionRequirementDTO requirementDTO){
-            return assignedCriterionRequirementToOrderElementModel.
-                    updateRetrievedCriterionRequirement(requirementDTO);
-
-    }
-
-    private void validateCriterionWithItsType(Bandbox bandbox,
-            CriterionWithItsType criterionAndType,
-            CriterionRequirementDTO requirementDTO)throws WrongValueException{
-            if(!assignedCriterionRequirementToOrderElementModel.
-                    canAddCriterionRequirement(requirementDTO,criterionAndType)){
-                throw new WrongValueException(bandbox,
-                _("The criterion " + criterionAndType.getNameAndType() + " is not valid," +
-                        " exist the same criterion into the order element or into its children."));
-            }
-    }
-
     private void reload() {
         Util.reloadBindings(listingRequirements);
     }
 
-    private void showInvalidValues(ValidationException e) {
-        for (InvalidValue invalidValue : e.getInvalidValues()) {
-            Object value = invalidValue.getBean();
-            if(value instanceof CriterionRequirementDTO){
-                validateCriterionRequirementDTO(invalidValue,
-                        (CriterionRequirementDTO)value);
-            }
+    private boolean showInvalidValues() {
+        CriterionRequirementWrapper invalidWrapper = this.assignedCriterionRequirementToOrderElementModel
+                .validateWrappers();
+        if (invalidWrapper != null) {
+            showInvalidValues(invalidWrapper);
+            return true;
         }
+        return false;
     }
 
     /**
-     * Validates {@link CriterionSatisfactionDTO} data constraints
-     *
+     * Validates {@link CriterionRequirementWrapper} data constraints
      * @param invalidValue
      */
-    private void validateCriterionRequirementDTO(InvalidValue invalidValue,
-            CriterionRequirementDTO requirementDTO) {
+    private void showInvalidValues(
+            CriterionRequirementWrapper requirementWrapper) {
         if(listingRequirements != null){
             // Find which listItem contains CriterionSatisfaction inside listBox
-            Row row = findRowOfCriterionSatisfactionDTO(listingRequirements.getRows(),
-                    requirementDTO);
+            Row row = findRowOfCriterionRequirementWrapper(listingRequirements
+                    .getRows(),
+ requirementWrapper);
             if (row != null) {
-                String propertyName = invalidValue.getPropertyName();
-
-                if (CriterionRequirementDTO.CRITERION_WITH_ITS_TYPE.equals(propertyName)) {
                     Bandbox bandType = getBandType(row);
                     bandType.setValue(null);
                     throw new WrongValueException(bandType,
                             _("The criterion and its type cannot be null"));
-                }
             }
         }
     }
 
     /**
-     * Locates which {@link row} is bound to {@link WorkReportLine} in
-     * rows
-     *
+     * Locates which {@link row} is bound to {@link WorkReportLine} in rows
      * @param Rows
-     * @param CriterionSatisfactionDTO
+     * @param CriterionRequirementWrapper
      * @return
      */
-    private Row findRowOfCriterionSatisfactionDTO(Rows rows,
-            CriterionRequirementDTO requirementDTO) {
+    private Row findRowOfCriterionRequirementWrapper(Rows rows,
+            CriterionRequirementWrapper requirementWrapper) {
         List<Row> listRows = (List<Row>) rows.getChildren();
         for (Row row : listRows) {
-            if (requirementDTO.equals(row.getValue())) {
+            if (requirementWrapper.equals(row.getValue())) {
                 return row;
             }
         }

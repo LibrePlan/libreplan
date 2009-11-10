@@ -25,23 +25,23 @@
         <hbox align="center">
                 <separator bar="false" spacing="40px" orient="horizontal"/>
                 <separator bar="false" spacing="20px" orient="vertical"/>
-                <button onClick="assignedCriterionRequirementController.addCriterionRequirementDTO();"
+                <button onClick="assignedCriterionRequirementController.addCriterionRequirementWrapper();"
                     label="${i18n:_('Add criterion requirement')}" />
                 <separator bar="false" spacing="40px" orient="vertical"/>
         </hbox>
         <newdatasortablegrid id="listingRequirements" mold="paging" pageSize="10" fixedLayout="true"
-            model="@{assignedCriterionRequirementController.criterionRequirementDTOs}">
+            model="@{assignedCriterionRequirementController.criterionRequirementWrappers}">
             <columns>
                 <newdatasortablecolumn label="${i18n:_('Criterion name')}" sort="auto(criterionAndType)" sortDirection="ascending"/>
                 <newdatasortablecolumn label="${i18n:_('Type')}" sort="auto(type)" width="70px" align="center"/>
                 <newdatasortablecolumn label="${i18n:_('Operations')}" width="70px" align="center"/>
             </columns>
             <rows>
-                <row self="@{each='criterionRequirementDTO'}" value="@{criterionRequirementDTO}">
+                <row self="@{each='criterionRequirementWrapper'}" value="@{criterionRequirementWrapper}">
                     <hbox>
                     <bandbox width="500px"
-                        visible ="@{criterionRequirementDTO.updatable}"
-                        value = "@{criterionRequirementDTO.criterionAndType}">
+                        visible ="@{criterionRequirementWrapper.updatable}"
+                        value = "@{criterionRequirementWrapper.criterionAndType}">
                         <bandpopup>
                                 <listbox width="500px" height="150px" fixedLayout="true"
                                 model="@{assignedCriterionRequirementController.criterionWithItsTypes}"
@@ -58,23 +58,23 @@
                              </listbox>
                         </bandpopup>
                     </bandbox>
-                    <label visible="@{criterionRequirementDTO.unmodifiable}"
-                     value="@{criterionRequirementDTO.criterionAndType}"/>
+                    <label visible="@{criterionRequirementWrapper.unmodifiable}"
+                     value="@{criterionRequirementWrapper.criterionAndType}"/>
                     </hbox>
 
-                    <label value="@{criterionRequirementDTO.type}"/>
+                    <label value="@{criterionRequirementWrapper.type}"/>
                     <hbox>
-                        <button visible = "@{criterionRequirementDTO.direct}"
+                        <button visible = "@{criterionRequirementWrapper.direct}"
                             sclass="icono" image="/common/img/ico_borrar1.png"
                             hoverImage="/common/img/ico_borrar.png"
                             tooltiptext="${i18n:_('Delete')}"
                             onClick="assignedCriterionRequirementController.remove(self.parent.parent.value);">
                         </button>
-                        <button visible = "@{criterionRequirementDTO.indirectInvalid}"
+                        <button visible = "@{criterionRequirementWrapper.indirectInvalid}"
                             label = "${i18n:_('Validate')}"
                             onClick = "assignedCriterionRequirementController.validate(self.parent.parent.value);">
                         </button>
-                        <button visible = "@{criterionRequirementDTO.indirectValid}"
+                        <button visible = "@{criterionRequirementWrapper.indirectValid}"
                             label = "${i18n:_('Invalidate')}"
                             onClick = "assignedCriterionRequirementController.invalidate(self.parent.parent.value);">
                         </button>

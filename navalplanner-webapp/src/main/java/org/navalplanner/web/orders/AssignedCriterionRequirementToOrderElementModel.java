@@ -21,13 +21,10 @@
 package org.navalplanner.web.orders;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -35,12 +32,9 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
-import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
-import org.navalplanner.web.orders.CriterionRequirementDTO.FlagState;
-import org.navalplanner.web.orders.CriterionRequirementDTO.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -63,14 +57,11 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
 
     IOrderModel orderModel;
 
-    private ClassValidator<CriterionRequirementDTO> requirementDTOValidator = new ClassValidator<CriterionRequirementDTO>(
-            CriterionRequirementDTO.class);
-
     private List<CriterionWithItsType> criterionWithItsTypes =
             new ArrayList<CriterionWithItsType>();
 
-    private List<CriterionRequirementDTO> criterionRequirementDTOs =
-            new ArrayList<CriterionRequirementDTO>();
+    private List<CriterionRequirementWrapper> criterionRequirementWrappers =
+            new ArrayList<CriterionRequirementWrapper>();
 
     @Override
     public OrderElement getOrderElement() {
@@ -88,7 +79,7 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         this.orderElement = orderElement;
         if(orderElement != null){
             reattachOrderElement();
-            initializeDTOs();
+            initializeWrappers();
             initializeCriterionWithItsType();
         }
     }
@@ -114,13 +105,14 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         }
     }
 
-    private void initializeDTOs() {
-        criterionRequirementDTOs = new ArrayList<CriterionRequirementDTO>();
+    private void initializeWrappers() {
+        criterionRequirementWrappers = new ArrayList<CriterionRequirementWrapper>();
         for(CriterionRequirement requirement :
             orderElement.getCriterionRequirements()){
-                    CriterionRequirementDTO dto =
-                            new CriterionRequirementDTO(requirement);
-                    criterionRequirementDTOs.add(dto);
+            CriterionRequirementWrapper Wrapper =
+ new CriterionRequirementWrapper(
+                    requirement, false);
+            criterionRequirementWrappers.add(Wrapper);
         }
     }
 
@@ -154,28 +146,47 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
 
     @Override
     @Transactional(readOnly = true)
-    public void assignCriterionRequirementDTO() {
+    public void assignCriterionRequirementWrapper() {
         if((orderModel != null) && (orderElement != null)){
-            CriterionRequirementDTO requirement = new CriterionRequirementDTO(Type.DIRECT);
-            criterionRequirementDTOs.add(requirement);
+            CriterionRequirement newRequirement = DirectCriterionRequirement
+                    .create();
+            CriterionRequirementWrapper requirement = new CriterionRequirementWrapper(
+                    newRequirement, true);
+            criterionRequirementWrappers.add(requirement);
         }
     }
 
-    @Override
-    public void deleteCriterionRequirementDTO(CriterionRequirementDTO requirement) {
-        if(requirement.isOldObject()){
-            requirement.setFlagState(FlagState.REMOVED);
-        }else{
-            criterionRequirementDTOs.remove(requirement);
+    public boolean canSetCriterionWithItsType(
+            CriterionRequirementWrapper requirementWrapper,
+            CriterionWithItsType criterionAndType) {
+        requirementWrapper.setCriterionWithItsType(criterionAndType);
+        return canAddNewCriterionRequirement(requirementWrapper);
+    }
+
+    private boolean canAddNewCriterionRequirement(
+            CriterionRequirementWrapper requirementWrapper) {
+        DirectCriterionRequirement requirement = (DirectCriterionRequirement) requirementWrapper
+                .getCriterionRequirement();
+        if (orderElement.canAddCriterionRequirement(requirement)) {
+            orderElement.addDirectCriterionRequirement(requirement);
+            return true;
         }
+        return false;
+    }
+
+    @Override
+    public void deleteCriterionRequirementWrapper(
+            CriterionRequirementWrapper requirementWrapper) {
+        DirectCriterionRequirement requirement = (DirectCriterionRequirement) requirementWrapper
+                .getCriterionRequirement();
+        orderElement.removeDirectCriterionRequirement(requirement);
+        criterionRequirementWrappers.remove(requirementWrapper);
     }
 
     @Override
     @Transactional(readOnly = true)
     public void confirm() throws ValidationException{
         reattachOrderElement();
-        validateDTOs();
-        saveDTOs();
     }
 
     @Override
@@ -184,124 +195,25 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
     }
 
     @Override
-    public List<CriterionRequirementDTO> getCriterionRequirementDTOs() {
-        List<CriterionRequirementDTO> requirementDTOs =
-                new ArrayList<CriterionRequirementDTO>();
+    public List<CriterionRequirementWrapper> getCriterionRequirementWrappers() {
         if((orderModel != null)&&(getOrderElement() != null)){
-            for(CriterionRequirementDTO requirementDTO : criterionRequirementDTOs){
-                if(!requirementDTO.getFlagState().equals(FlagState.REMOVED)){
-                    requirementDTOs.add(requirementDTO);
-                }
-            }
+            return criterionRequirementWrappers;
         }
-        return requirementDTOs;
+        return new ArrayList<CriterionRequirementWrapper>();
     }
 
     @Override
-    public CriterionRequirementDTO updateRetrievedCriterionRequirement(
-            CriterionRequirementDTO requirementDTO){
-        if(requirementDTO.getFlagState().equals(FlagState.RETRIEVED)){
-            CriterionRequirementDTO newRequirement = new CriterionRequirementDTO(Type.DIRECT);
-            criterionRequirementDTOs.add(newRequirement);
-            requirementDTO.setFlagState(FlagState.REMOVED);
-            return newRequirement;
-        }
-        return requirementDTO;
+    public void setValidCriterionRequirementWrapper(
+            CriterionRequirementWrapper requirementWrapper, boolean valid) {
+        requirementWrapper.setValid(valid);
     }
 
-    @Override
-    public boolean canAddCriterionRequirement(CriterionRequirementDTO requirementDTO,
-            CriterionWithItsType criterionAndType){
-        CriterionRequirementDTO removedDTO = findRemovedRequirementDTOWithSameCriterion(
-                criterionAndType.getCriterion());
-        if(removedDTO != null){
-            deleteCriterionRequirementDTO(requirementDTO);
-            removedDTO.setFlagState(FlagState.RETRIEVED);
-            return true;
-        }else{
-            return canAddCriterionRequirement(criterionAndType);
-        }
-    }
-
-    private CriterionRequirementDTO findRemovedRequirementDTOWithSameCriterion(
-            Criterion criterion){
-        for(CriterionRequirementDTO removedDTO : this.criterionRequirementDTOs){
-            if(removedDTO.getFlagState().equals(FlagState.REMOVED)){
-                Criterion removedCriterion = removedDTO.
-                        getCriterionWithItsType().getCriterion();
-                if(criterion.getId().equals(removedCriterion.getId()))
-                    return removedDTO;
+    public CriterionRequirementWrapper validateWrappers() {
+        for (CriterionRequirementWrapper requirementWrapper : criterionRequirementWrappers) {
+            if (requirementWrapper.getCriterionWithItsType() == null) {
+                return requirementWrapper;
             }
         }
         return null;
-    }
-
-    private boolean canAddCriterionRequirement(CriterionWithItsType criterionAndType){
-        if(orderElement != null){
-            return (!existSameCriterionRequirementInDTOs(criterionAndType) &&
-                    (canAddCriterionRequirementInOrderElement(criterionAndType)));
-        }
-        return true;
-    }
-
-    private boolean existSameCriterionRequirementInDTOs(
-            CriterionWithItsType newCriterionAndType){
-        for(CriterionRequirementDTO requirementDTO : criterionRequirementDTOs){
-            CriterionWithItsType criterionAndType = requirementDTO.getCriterionWithItsType();
-            if((criterionAndType != null) &&
-                    (criterionAndType.getCriterion().equals(newCriterionAndType.getCriterion()))){
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean canAddCriterionRequirementInOrderElement(
-            CriterionWithItsType newCriterionAndType){
-        return orderElement.canAddCriterionRequirement(DirectCriterionRequirement.
-                create(newCriterionAndType.getCriterion()));
-    }
-
-    @Override
-    public void setValidCriterionRequirementDTO(
-            CriterionRequirementDTO requirement,boolean valid){
-        requirement.setValid(valid);
-    }
-
-    private void validateDTOs() throws ValidationException{
-        Set<CriterionRequirementDTO> listDTOs =
-                new HashSet<CriterionRequirementDTO>(criterionRequirementDTOs);
-        for(CriterionRequirementDTO requirementDTO : listDTOs){
-            InvalidValue[] invalidValues;
-            invalidValues = requirementDTOValidator.getInvalidValues(requirementDTO);
-            if (invalidValues.length > 0){
-                throw new ValidationException(invalidValues);
-            }
-        }
-    }
-
-    private void saveDTOs(){
-        updateRemoved();
-        for(CriterionRequirementDTO requirementDTO : this.criterionRequirementDTOs){
-            if(requirementDTO.isNewObject()){
-                Criterion criterion = requirementDTO.getCriterionWithItsType().getCriterion();
-                CriterionRequirement requirement = DirectCriterionRequirement.create(criterion);
-                orderElement.addDirectCriterionRequirement(requirement);
-            }else if(requirementDTO._getType().equals(Type.INDIRECT)){
-                boolean valid = requirementDTO.isValid();
-                CriterionRequirement requirement = requirementDTO.getCriterionRequirement();
-                orderElement.setValidCriterionRequirement((IndirectCriterionRequirement)requirement,valid);
-            }
-        }
-
-    }
-
-    private void updateRemoved(){
-        for(CriterionRequirementDTO requirementDTO : criterionRequirementDTOs){
-            if(requirementDTO.getFlagState().equals(FlagState.REMOVED)){
-                orderElement.removeDirectCriterionRequirement(
-                    (DirectCriterionRequirement)requirementDTO.getCriterionRequirement());
-            }
-        }
     }
 }

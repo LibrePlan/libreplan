@@ -6,7 +6,6 @@
 package org.navalplanner.web.orders;
 import static org.navalplanner.web.I18nHelper._;
 
-import org.hibernate.validator.NotNull;
 import org.navalplanner.business.INewObject;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
@@ -20,21 +19,11 @@ import org.navalplanner.business.resources.entities.CriterionWithItsType;
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class CriterionRequirementDTO  implements INewObject {
-
-    public static enum Type {
-        DIRECT, INDIRECT;
-    }
-
-    public static enum FlagState {
-        NORMAL, REMOVED, RETRIEVED;
-    }
+public class CriterionRequirementWrapper  implements INewObject {
 
     private static final String DIRECT = _("Direct");
 
     private static final String INDIRECT = _("Indirect");
-
-    public static final String CRITERION_WITH_ITS_TYPE = "criterionWithItsType";
 
     private String type;
 
@@ -46,27 +35,21 @@ public class CriterionRequirementDTO  implements INewObject {
 
     private Boolean valid = true;
 
-    private FlagState flagState = FlagState.NORMAL;
-
-    @NotNull
     private CriterionWithItsType criterionWithItsType;
 
-    public CriterionRequirementDTO(Type type){
-        this.setNewObject(true);
-        this.setType(type);
-        this.setValid(true);
-        this.criterionAndType = "";
-    }
-
-    public CriterionRequirementDTO(CriterionRequirement criterionRequirement) {
+    public CriterionRequirementWrapper(CriterionRequirement criterionRequirement,
+            boolean isNewObject) {
         this.criterionAndType = "";
         this.setCriterionRequirement(criterionRequirement);
-        this.setType(criterionRequirement);
-        this.setValid(criterionRequirement);
+        this.initType(criterionRequirement);
+        this.initValid(criterionRequirement);
+        this.setNewObject(isNewObject);
 
-        Criterion criterion = criterionRequirement.getCriterion();
-        CriterionType type = criterion.getType();
-        setCriterionWithItsType(new CriterionWithItsType(type, criterion));
+        if (!isNewObject) {
+            Criterion criterion = criterionRequirement.getCriterion();
+            CriterionType type = criterion.getType();
+            setCriterionWithItsType(new CriterionWithItsType(type, criterion));
+        }
     }
 
     public CriterionWithItsType getCriterionWithItsType() {
@@ -75,6 +58,12 @@ public class CriterionRequirementDTO  implements INewObject {
 
     public void setCriterionWithItsType(CriterionWithItsType criterionWithItsType) {
         this.criterionWithItsType = criterionWithItsType;
+        if (criterionWithItsType != null) {
+            criterionRequirement.setCriterion(criterionWithItsType
+                    .getCriterion());
+        } else {
+            criterionRequirement.setCriterion(null);
+        }
     }
 
     public void setCriterionAndType(String criterionAndType) {
@@ -115,27 +104,11 @@ public class CriterionRequirementDTO  implements INewObject {
         return type;
     }
 
-    public Type _getType() {
-        if(type.equals(DIRECT)){
-            return Type.DIRECT;
-        }else{
-            return Type.INDIRECT;
-        }
-    }
-
-    private void setType(CriterionRequirement criterionRequirement){
+    private void initType(CriterionRequirement criterionRequirement) {
         if(criterionRequirement instanceof DirectCriterionRequirement){
             type = DIRECT;
         }else if(criterionRequirement instanceof IndirectCriterionRequirement){
             type = INDIRECT;
-        }
-    }
-
-    private void setType(Type type){
-        if(type.equals(Type.DIRECT)){
-            this.type = DIRECT;
-        }else{
-            this.type = INDIRECT;
         }
     }
 
@@ -153,9 +126,10 @@ public class CriterionRequirementDTO  implements INewObject {
 
     public void setValid(Boolean valid) {
         this.valid = valid;
+        ((IndirectCriterionRequirement) criterionRequirement).setIsValid(valid);
     }
 
-    public void setValid(CriterionRequirement requirement) {
+    private void initValid(CriterionRequirement requirement) {
         this.valid = true;
         if(criterionRequirement instanceof IndirectCriterionRequirement){
             this.valid = ((IndirectCriterionRequirement)criterionRequirement).isIsValid();
@@ -178,16 +152,8 @@ public class CriterionRequirementDTO  implements INewObject {
         }
     }
 
-    public void setFlagState(FlagState flagState) {
-        this.flagState = flagState;
-    }
-
-    public FlagState getFlagState() {
-        return flagState;
-    }
-
     public boolean isUpdatable(){
-        return (isNewObject() || getFlagState().equals(FlagState.RETRIEVED));
+        return isNewObject();
     }
 
     public boolean isUnmodifiable(){
