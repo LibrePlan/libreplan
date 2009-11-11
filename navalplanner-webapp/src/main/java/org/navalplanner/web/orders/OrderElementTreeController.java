@@ -524,115 +524,138 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
         private void addOperationsCell(final Treeitem item,
                 final OrderElement currentOrderElement) {
-            Button editbutton = new Button("", "/common/img/ico_editar1.png");
-            editbutton.setHoverImage("/common/img/ico_editar.png");
-            editbutton.setSclass("icono");
-            editbutton.setTooltiptext(_("Edit"));
-            editbutton.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    IOrderElementModel model = orderModel
-                            .getOrderElementModel(currentOrderElement);
-                    orderElementController.openWindow(model);
-                }
-            });
+            addCell(createEditButton(currentOrderElement),
+                    createUpButton(item,currentOrderElement),
+                    createDownListener(item,currentOrderElement),
+                    createUnindentButton(item, currentOrderElement),
+                    createIndentButton(item, currentOrderElement),
+                    createRemoveButton(currentOrderElement));
+        }
 
-            Button upbutton = new Button("");
-            if (isFirstLevelElement(item) && isPredicateApplied()) {
-                upbutton.setDisabled(true);
-                upbutton.setImage("/common/img/ico_bajar_out.png");
-                upbutton.setHoverImage("/common/img/ico_bajar_out.png");
-                upbutton.setTooltiptext("");
-            } else {
-                upbutton.setDisabled(false);
-                upbutton.setImage("/common/img/ico_bajar1.png");
-                upbutton.setHoverImage("/common/img/ico_bajar.png");
-                upbutton.setTooltiptext(_("Move down"));
-            }
-            upbutton.setSclass("icono");
-            upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
+        private Button createEditButton(final OrderElement currentOrderElement) {
+            Button editbutton = createButton("/common/img/ico_editar1.png",
+                    _("Edit"), "/common/img/ico_editar.png", "icono",
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            IOrderElementModel model = orderModel
+                                    .getOrderElementModel(currentOrderElement);
+                            orderElementController.openWindow(model);
+                        }
+                    });
+            return editbutton;
+        }
+
+        private Button createUpButton(final Treeitem item,
+                final OrderElement currentOrderElement) {
+            EventListener upButtonListener = new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     down(currentOrderElement);
                 }
-            });
-
-            Button downbutton = new Button("");
+            };
+            Button result;
             if (isFirstLevelElement(item) && isPredicateApplied()) {
-                downbutton.setDisabled(true);
-                downbutton.setImage("/common/img/ico_subir_out.png");
-                downbutton.setHoverImage("/common/img/ico_subir_out.png");
-                downbutton.setTooltiptext("");
+                result = createButton("/common/img/ico_bajar_out.png", "",
+                        "/common/img/ico_bajar_out.png", "icono",
+                        upButtonListener);
+                result.setDisabled(true);
             } else {
-                downbutton.setDisabled(false);
-                downbutton.setImage("/common/img/ico_subir1.png");
-                downbutton.setHoverImage("/common/img/ico_subir.png");
-                downbutton.setTooltiptext(_("Move up"));
+                result = createButton("/common/img/ico_bajar1.png",
+                        _("Move down"), "/common/img/ico_bajar.png", "icono",
+                        upButtonListener);
             }
-            downbutton.setSclass("icono");
-            downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
+            return result;
+        }
+
+        private Button createDownListener(final Treeitem item,
+                final OrderElement currentOrderElement) {
+            EventListener downButtonListener = new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     up(currentOrderElement);
                 }
-            });
+            };
+            Button result;
+            if (isFirstLevelElement(item) && isPredicateApplied()) {
+                result = createButton("/common/img/ico_subir_out.png", "",
+                        "/common/img/ico_subir_out.png", "icono",
+                        downButtonListener);
+                result.setDisabled(true);
+            } else {
+                result = createButton("/common/img/ico_subir1.png",
+                        _("Move up"), "/common/img/ico_subir.png", "icono",
+                        downButtonListener);
+            }
+            return result;
+        }
 
-            final Button unindentbutton = new Button("");
+        private Button createUnindentButton(final Treeitem item,
+                final OrderElement currentOrderElement) {
+            EventListener unindentListener = new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    unindent(currentOrderElement);
+                }
+            };
+            final Button result;
             if ((isFirstLevelElement(item) || isSecondLevelElement(item))
                     && isPredicateApplied()) {
-                unindentbutton.setDisabled(true);
-                unindentbutton.setImage("/common/img/ico_izq_out.png");
-                unindentbutton.setHoverImage("/common/img/ico_izq_out.png");
-                unindentbutton.setTooltiptext("");
+                result = createButton("/common/img/ico_izq_out.png",
+                        "", "/common/img/ico_izq_out.png", "icono",
+                        unindentListener);
+                result.setDisabled(true);
             } else {
-                unindentbutton.setDisabled(false);
-                unindentbutton.setImage("/common/img/ico_izq1.png");
-                unindentbutton.setHoverImage("/common/img/ico_izq.png");
-                unindentbutton.setTooltiptext(_("Unindent"));
+                result = createButton("/common/img/ico_izq1.png",
+                        _("Unindent"), "/common/img/ico_izq.png", "icono",
+                        unindentListener);
             }
-            unindentbutton.setSclass("icono");
-            unindentbutton.addEventListener(Events.ON_CLICK,
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            unindent(currentOrderElement);
-                        }
-                    });
+            return result;
+        }
 
-            Button indentbutton = new Button("");
-            if (isFirstLevelElement(item) && isPredicateApplied()) {
-                indentbutton.setDisabled(true);
-                indentbutton.setImage("/common/img/ico_derecha_out.png");
-                indentbutton.setHoverImage("/common/img/ico_derecha_out.png");
-                indentbutton.setTooltiptext("");
-            } else {
-                indentbutton.setDisabled(false);
-                indentbutton.setImage("/common/img/ico_derecha1.png");
-                indentbutton.setHoverImage("/common/img/ico_derecha.png");
-                indentbutton.setTooltiptext(_("Indent"));
-            }
-            indentbutton.setSclass("icono");
-            indentbutton.setTooltiptext(_("Indent"));
-            indentbutton.addEventListener(Events.ON_CLICK, new EventListener() {
+        private Button createIndentButton(final Treeitem item,
+                final OrderElement currentOrderElement) {
+            EventListener indentListener = new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     indent(currentOrderElement);
                 }
-            });
+            };
+            final Button result;
+            if (isFirstLevelElement(item) && isPredicateApplied()) {
+                result = createButton("/common/img/ico_derecha_out.png",
+                        "", "/common/img/ico_derecha_out.png", "icono",
+                        indentListener);
+            } else {
+                result = createButton("/common/img/ico_derecha1.png",
+                        _("Indent"), "/common/img/ico_derecha.png", "icono",
+                        indentListener);
+            }
+            return result;
+        }
 
-            Button removebutton = new Button("", "/common/img/ico_borrar1.png");
-            removebutton.setHoverImage("/common/img/ico_borrar.png");
-            removebutton.setSclass("icono");
-            removebutton.setTooltiptext(_("Delete"));
-            removebutton.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    remove(currentOrderElement);
-                    filterByPredicateIfAny();
-                }
-            });
-            addCell(editbutton, upbutton, downbutton, unindentbutton,
-                    indentbutton, removebutton);
+        private Button createRemoveButton(final OrderElement currentOrderElement) {
+            final Button result = createButton(
+                    "/common/img/ico_borrar1.png", _("Delete"),
+                    "/common/img/ico_borrar.png", "icono", new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            remove(currentOrderElement);
+                            filterByPredicateIfAny();
+                        }
+                    });
+            return result;
+        }
+
+        private Button createButton(String image, String tooltip,
+                String hoverImage, String styleClass,
+                EventListener eventListener) {
+            Button result = new Button("", image);
+            result.setHoverImage(hoverImage);
+            result.setSclass(styleClass);
+            result.setTooltiptext(tooltip);
+            result.addEventListener(Events.ON_CLICK, eventListener);
+            return result;
         }
 
         @Override
