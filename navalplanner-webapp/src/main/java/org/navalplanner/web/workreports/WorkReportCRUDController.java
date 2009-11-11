@@ -33,6 +33,7 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Worker;
@@ -103,6 +104,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private final static int PAGING = 10;
 
+    private static final String ITEM = "item";
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -586,9 +588,13 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     private String getWorkReportLineName(WorkReportLine workReportLine) {
-        final String resourceName = ((Worker) workReportLine.getResource()).getName();
-        final String code = workReportLine.getOrderElement().getCode();
-        return resourceName + " - " + code;
+        final Worker resource = (Worker) workReportLine.getResource();
+        final OrderElement orderElement = workReportLine.getOrderElement();
+
+        if (resource == null || orderElement == null) {
+            return ITEM;
+        }
+        return resource.getName() + " - " + orderElement.getCode();
     }
 
     /**
