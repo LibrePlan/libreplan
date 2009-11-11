@@ -281,7 +281,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
             RendererCtrl {
 
         private Map<OrderElement, Intbox> hoursIntBoxByOrderElement = new HashMap<OrderElement, Intbox>();
-        private Map<OrderElement, Textbox> mapC = new HashMap<OrderElement, Textbox>();
         private Treerow currentTreeRow;
 
         public OrderElementTreeitemRenderer() {
@@ -400,7 +399,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
         private void addCodeCell(final OrderElement orderElement) {
             Textbox textBoxCode = new Textbox();
-            mapC.put(orderElement, textBoxCode);
             Util.bind(textBoxCode, new Util.Getter<String>() {
                 @Override
                 public String get() {
