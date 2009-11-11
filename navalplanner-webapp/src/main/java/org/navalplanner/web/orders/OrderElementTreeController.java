@@ -280,7 +280,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public class OrderElementTreeitemRenderer implements TreeitemRenderer,
             RendererCtrl {
 
-        private Map<OrderElement, Intbox> map = new HashMap<OrderElement, Intbox>();
+        private Map<OrderElement, Intbox> hoursIntBoxByOrderElement = new HashMap<OrderElement, Intbox>();
         private Map<OrderElement, Textbox> mapC = new HashMap<OrderElement, Textbox>();
         private Treerow currentTreeRow;
 
@@ -461,7 +461,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
         private void addHoursCell(final OrderElement currentOrderElement) {
             Intbox intboxHours = buildHoursIntboxFor(currentOrderElement);
-            map.put(currentOrderElement, intboxHours);
+            hoursIntBoxByOrderElement.put(currentOrderElement, intboxHours);
             addCell(intboxHours);
         }
 
@@ -515,7 +515,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
                     // Order node, not an OrderElement
                     parentNodes.remove(parentNodes.size() - 1);
                     for (OrderElement node : parentNodes) {
-                        Intbox intbox = map.get(node);
+                        Intbox intbox = hoursIntBoxByOrderElement.get(node);
                         intbox.setValue(node.getWorkHours());
                     }
                 }
