@@ -40,6 +40,7 @@ import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentFo
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
@@ -77,6 +78,9 @@ public abstract class OrderElement extends BaseEntity {
 
     protected CriterionRequirementHandler criterionRequirementHandler = CriterionRequirementHandler
             .getInstance();
+
+    private SchedulingState.Type schedulingStateType = Type.NO_SCHEDULED;
+
 
     public OrderLineGroup getParent() {
         return parent;
