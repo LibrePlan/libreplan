@@ -37,6 +37,8 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.Util.Getter;
+import org.navalplanner.web.common.Util.Setter;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -184,7 +186,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
     public void addOrderElement() {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
-        try{
+        try {
             if (tree.getSelectedCount() == 1) {
                 getModel().addOrderElementAt(getSelectedNode());
             } else {
@@ -280,306 +282,42 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
         private Map<OrderElement, Intbox> map = new HashMap<OrderElement, Intbox>();
         private Map<OrderElement, Textbox> mapC = new HashMap<OrderElement, Textbox>();
+        private Treerow currentTreeRow;
 
         public OrderElementTreeitemRenderer() {
         }
 
+        private void addCell(Component... components) {
+            addCell(null, components);
+        }
+
+        private void addCell(String cssClass, Component... components) {
+            Treecell cell = new Treecell();
+            if (cssClass != null) {
+                cell.setSclass(cssClass);
+            }
+            for (Component component : components) {
+                cell.appendChild(component);
+            }
+            currentTreeRow.appendChild(cell);
+        }
+
         @Override
         public void render(final Treeitem item, Object data) throws Exception {
-            final OrderElement orderElementForThisRow = (OrderElement) data;
             item.setValue(data);
             if (snapshotOfOpenedNodes != null) {
                 snapshotOfOpenedNodes.openIfRequired(item);
             }
-            final Treerow treeRow = getTreeRowWithoutChildrenFor(item);
-            // Construct treecells
-            int[] path = getModel().getPath(
-                    orderElementForThisRow);
-            String cssClass = "depth_" + path.length;
+            currentTreeRow = getTreeRowWithoutChildrenFor(item);
+            final OrderElement currentOrderElement = (OrderElement) data;
+            addTaskNumberCell(currentOrderElement);
+            addCodeCell(currentOrderElement);
+            addInitDateCell(currentOrderElement);
+            addEndDateCell(currentOrderElement);
+            addHoursCell(currentOrderElement);
+            addOperationsCell(item, currentOrderElement);
 
-            Treecell cellForName = new Treecell();
-            Label tasknumber = new Label(pathAsString(path));
-            tasknumber.setSclass("tasknumber");
-            tasknumber.addEventListener(Events.ON_DOUBLE_CLICK,
-                    new EventListener() {
-
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            IOrderElementModel model = orderModel
-                                    .getOrderElementModel(orderElementForThisRow);
-                            orderElementController.openWindow(model);
-                            // Util.reloadBindings(tree);
-                        }
-
-                    });
-
-            cellForName.appendChild(tasknumber);
-            cellForName.setSclass(cssClass);
-            // It would be needed to expand the width for the numbers
-            // to make it ready for 2 and 3 digit numbers
-            cellForName.appendChild(Util.bind(new Textbox(),
-                    new Util.Getter<String>() {
-
-                        @Override
-                        public String get() {
-                            return orderElementForThisRow.getName();
-                        }
-                    }, new Util.Setter<String>() {
-
-                        @Override
-                        public void set(String value) {
-                            orderElementForThisRow.setName(value);
-                        }
-                    }));
-            Textbox textBoxCode = new Textbox();
-            mapC.put(orderElementForThisRow, textBoxCode);
-            Treecell cellForCode = new Treecell();
-            cellForCode.appendChild(Util.bind(textBoxCode,
-                    new Util.Getter<String>() {
-
-                        @Override
-                        public String get() {
-                            return orderElementForThisRow.getCode();
-                        }
-                    }, new Util.Setter<String>() {
-
-                        @Override
-                        public void set(String value) {
-                            orderElementForThisRow.setCode(value);
-                        }
-                    }));
-
-            textBoxCode.setConstraint(new Constraint() {
-
-                @Override
-                public void validate(Component comp, Object value)
-                        throws WrongValueException {
-                    if (!orderElementForThisRow
-                            .isFormatCodeValid((String) value)) {
-                        throw new WrongValueException(
-                                comp,
-                                _("Value is not valid.\n Code cannot contain chars like '_' \n and should not be empty"));
-                    }
-                }
-            });
-
-            Treecell cellForHours = new Treecell();
-            Intbox intboxHours = new Intbox();
-            map.put(orderElementForThisRow, intboxHours);
-            if (orderElementForThisRow instanceof OrderLine) {
-                // If it's a leaf hours cell is editable
-                Intbox intbox = Util.bind(intboxHours,
-                        new Util.Getter<Integer>() {
-
-                            @Override
-                            public Integer get() {
-                                return orderElementForThisRow.getWorkHours();
-                            }
-                        }, new Util.Setter<Integer>() {
-
-                            @Override
-                            public void set(Integer value) {
-                                ((OrderLine) orderElementForThisRow)
-                                        .setWorkHours(value);
-
-                                List<OrderElement> parentNodes = getModel()
-                                        .getParents(orderElementForThisRow);
-                                // Remove the last element becuase it's an
-                                // Order node, not an OrderElement
-                                parentNodes.remove(parentNodes.size() - 1);
-
-                                for (OrderElement node : parentNodes) {
-                                    Intbox intbox = map.get(node);
-                                    intbox.setValue(node.getWorkHours());
-                                }
-                            }
-                        });
-                // Checking hours value
-                intbox.setConstraint(new Constraint() {
-
-                    @Override
-                    public void validate(Component comp, Object value)
-                            throws WrongValueException {
-                        if (!((OrderLine) orderElementForThisRow)
-                                .isTotalHoursValid((Integer) value)) {
-                            throw new WrongValueException(
-                                    comp,
-                                    _("Value is not valid, taking into account the current list of HoursGroup"));
-                        }
-                    }
-                });
-
-                cellForHours.appendChild(intbox);
-            } else {
-                // If it's a container hours cell is not editable
-                cellForHours.appendChild(Util.bind(intboxHours,
-                        new Util.Getter<Integer>() {
-
-                            @Override
-                            public Integer get() {
-                                return orderElementForThisRow.getWorkHours();
-                            }
-                        }));
-            }
-
-            Treecell tcDateStart = new Treecell();
-            tcDateStart.appendChild(Util.bind(new Datebox(),
-                    new Util.Getter<Date>() {
-
-                        @Override
-                        public Date get() {
-                            return orderElementForThisRow.getInitDate();
-                        }
-                    }, new Util.Setter<Date>() {
-
-                        @Override
-                        public void set(Date value) {
-                            orderElementForThisRow.setInitDate(value);
-                        }
-                    }));
-            Treecell tcDateEnd = new Treecell();
-            tcDateEnd.appendChild(Util.bind(new Datebox(),
-                    new Util.Getter<Date>() {
-
-                        @Override
-                        public Date get() {
-                            return orderElementForThisRow.getDeadline();
-                        }
-                    }, new Util.Setter<Date>() {
-
-                        @Override
-                        public void set(Date value) {
-                            orderElementForThisRow.setDeadline(value);
-                        }
-                    }));
-
-            cellForName.setParent(treeRow);
-            cellForCode.setParent(treeRow);
-            tcDateStart.setParent(treeRow);
-            tcDateEnd.setParent(treeRow);
-            cellForHours.setParent(treeRow);
-
-            Treecell tcOperations = new Treecell();
-            tcOperations.setParent(treeRow);
-
-            Button editbutton = new Button("", "/common/img/ico_editar1.png");
-            editbutton.setHoverImage("/common/img/ico_editar.png");
-            editbutton.setParent(tcOperations);
-            editbutton.setSclass("icono");
-            editbutton.setTooltiptext(_("Edit"));
-            editbutton.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    IOrderElementModel model = orderModel
-                            .getOrderElementModel(orderElementForThisRow);
-                    orderElementController.openWindow(model);
-                }
-            });
-
-            Button upbutton = new Button("");
-            if (isFirstLevelElement(item)
-                    && isPredicateApplied()) {
-                upbutton.setDisabled(true);
-                upbutton.setImage("/common/img/ico_bajar_out.png");
-                upbutton.setHoverImage("/common/img/ico_bajar_out.png");
-                upbutton.setTooltiptext("");
-            } else {
-                upbutton.setDisabled(false);
-                upbutton.setImage("/common/img/ico_bajar1.png");
-                upbutton.setHoverImage("/common/img/ico_bajar.png");
-                upbutton.setTooltiptext(_("Move down"));
-            }
-            upbutton.setParent(tcOperations);
-            upbutton.setSclass("icono");
-            upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    down(orderElementForThisRow);
-                }
-            });
-
-            Button downbutton = new Button("");
-            if (isFirstLevelElement(item)
-                    && isPredicateApplied()) {
-                downbutton.setDisabled(true);
-                downbutton.setImage("/common/img/ico_subir_out.png");
-                downbutton.setHoverImage("/common/img/ico_subir_out.png");
-                downbutton.setTooltiptext("");
-            } else {
-                downbutton.setDisabled(false);
-                downbutton.setImage("/common/img/ico_subir1.png");
-                downbutton.setHoverImage("/common/img/ico_subir.png");
-                downbutton.setTooltiptext(_("Move up"));
-            }
-            downbutton.setParent(tcOperations);
-            downbutton.setSclass("icono");
-            downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    up(orderElementForThisRow);
-                }
-            });
-
-            final Button unindentbutton = new Button("");
-            if ((isFirstLevelElement(item) || isSecondLevelElement(item))
-                    && isPredicateApplied()) {
-                unindentbutton.setDisabled(true);
-                unindentbutton.setImage("/common/img/ico_izq_out.png");
-                unindentbutton.setHoverImage("/common/img/ico_izq_out.png");
-                unindentbutton.setTooltiptext("");
-            } else {
-                unindentbutton.setDisabled(false);
-                unindentbutton.setImage("/common/img/ico_izq1.png");
-                unindentbutton.setHoverImage("/common/img/ico_izq.png");
-                unindentbutton.setTooltiptext(_("Unindent"));
-            }
-            unindentbutton.setParent(tcOperations);
-            unindentbutton.setSclass("icono");
-            unindentbutton.addEventListener(Events.ON_CLICK,
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            unindent(orderElementForThisRow);
-                        }
-                    });
-
-            Button indentbutton = new Button("");
-            if (isFirstLevelElement(item)
-                    && isPredicateApplied()) {
-                indentbutton.setDisabled(true);
-                indentbutton.setImage("/common/img/ico_derecha_out.png");
-                indentbutton.setHoverImage("/common/img/ico_derecha_out.png");
-                indentbutton.setTooltiptext("");
-            } else {
-                indentbutton.setDisabled(false);
-                indentbutton.setImage("/common/img/ico_derecha1.png");
-                indentbutton.setHoverImage("/common/img/ico_derecha.png");
-                indentbutton.setTooltiptext(_("Indent"));
-            }
-            indentbutton.setParent(tcOperations);
-            indentbutton.setSclass("icono");
-            indentbutton.setTooltiptext(_("Indent"));
-            indentbutton.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    indent(orderElementForThisRow);
-                }
-            });
-
-            Button removebutton = new Button("", "/common/img/ico_borrar1.png");
-            removebutton.setHoverImage("/common/img/ico_borrar.png");
-            removebutton.setParent(tcOperations);
-            removebutton.setSclass("icono");
-            removebutton.setTooltiptext(_("Delete"));
-            removebutton.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    remove(orderElementForThisRow);
-                    filterByPredicateIfAny();
-                }
-            });
-
-            treeRow.addEventListener("onDrop", new EventListener() {
+            currentTreeRow.addEventListener("onDrop", new EventListener() {
 
                 @Override
                 public void onEvent(org.zkoss.zk.ui.event.Event arg0)
@@ -600,14 +338,43 @@ public class OrderElementTreeController extends GenericForwardComposer {
             return result;
         }
 
-        private Treerow createOrRetrieveFor(final Treeitem item) {
-            if (item.getTreerow() == null) {
-                Treerow result = new Treerow();
-                result.setParent(item);
-                return result;
-            } else {
-                return item.getTreerow();
-            }
+        private void addTaskNumberCell(final OrderElement orderElementForThisRow) {
+            int[] path = getModel().getPath(orderElementForThisRow);
+            String cssClass = "depth_" + path.length;
+
+            Label taskNumber = new Label(pathAsString(path));
+            taskNumber.setSclass("tasknumber");
+            taskNumber.addEventListener(Events.ON_DOUBLE_CLICK,
+                    new EventListener() {
+
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            IOrderElementModel model = orderModel
+                                    .getOrderElementModel(orderElementForThisRow);
+                            orderElementController.openWindow(model);
+                            // Util.reloadBindings(tree);
+                        }
+
+                    });
+
+            // It would be needed to expand the width for the numbers
+            // to make it ready for 2 and 3 digit numbers
+            Textbox textBox = Util.bind(new Textbox(),
+                    new Util.Getter<String>() {
+
+                        @Override
+                        public String get() {
+                            return orderElementForThisRow.getName();
+                        }
+                    }, new Util.Setter<String>() {
+
+                        @Override
+                        public void set(String value) {
+                            orderElementForThisRow.setName(value);
+                        }
+                    });
+
+            addCell(cssClass, taskNumber, textBox);
         }
 
         private String pathAsString(int[] path) {
@@ -619,6 +386,253 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 result.append(path[i] + 1);
             }
             return result.toString();
+        }
+
+        private Treerow createOrRetrieveFor(final Treeitem item) {
+            if (item.getTreerow() == null) {
+                Treerow result = new Treerow();
+                result.setParent(item);
+                return result;
+            } else {
+                return item.getTreerow();
+            }
+        }
+
+        private void addCodeCell(final OrderElement orderElement) {
+            Textbox textBoxCode = new Textbox();
+            mapC.put(orderElement, textBoxCode);
+            Util.bind(textBoxCode, new Util.Getter<String>() {
+                @Override
+                public String get() {
+                    return orderElement.getCode();
+                }
+            }, new Util.Setter<String>() {
+
+                @Override
+                public void set(String value) {
+                    orderElement.setCode(value);
+                }
+            });
+            textBoxCode.setConstraint(new Constraint() {
+                @Override
+                public void validate(Component comp, Object value)
+                        throws WrongValueException {
+                    if (!orderElement.isFormatCodeValid((String) value)) {
+                        throw new WrongValueException(
+                                comp,
+                                _("Value is not valid.\n Code cannot contain chars like '_' \n and should not be empty"));
+                    }
+                }
+            });
+            addCell(textBoxCode);
+        }
+
+        private void addInitDateCell(final OrderElement currentOrderElement) {
+            addCell(Util.bind(new Datebox(), new Util.Getter<Date>() {
+
+                @Override
+                public Date get() {
+                    return currentOrderElement.getInitDate();
+                }
+            }, new Util.Setter<Date>() {
+
+                @Override
+                public void set(Date value) {
+                    currentOrderElement.setInitDate(value);
+                }
+            }));
+        }
+
+        private void addEndDateCell(final OrderElement currentOrderElement) {
+            addCell(Util.bind(new Datebox(), new Util.Getter<Date>() {
+
+                @Override
+                public Date get() {
+                    return currentOrderElement.getDeadline();
+                }
+            }, new Util.Setter<Date>() {
+
+                @Override
+                public void set(Date value) {
+                    currentOrderElement.setDeadline(value);
+                }
+            }));
+        }
+
+        private void addHoursCell(final OrderElement currentOrderElement) {
+            Intbox intboxHours = buildHoursIntboxFor(currentOrderElement);
+            map.put(currentOrderElement, intboxHours);
+            addCell(intboxHours);
+        }
+
+        private Intbox buildHoursIntboxFor(
+                final OrderElement currentOrderElement) {
+            Intbox result = new Intbox();
+            if (currentOrderElement instanceof OrderLine) {
+                OrderLine orderLine = (OrderLine) currentOrderElement;
+                Util.bind(result, getHoursGetterFor(currentOrderElement),
+                        getHoursSetterFor(orderLine));
+                result.setConstraint(getHoursConstraintFor(orderLine));
+            } else {
+                // If it's a container hours cell is not editable
+                Util.bind(result, getHoursGetterFor(currentOrderElement));
+            }
+            return result;
+        }
+
+        private Getter<Integer> getHoursGetterFor(
+                final OrderElement currentOrderElement) {
+            return new Util.Getter<Integer>() {
+                @Override
+                public Integer get() {
+                    return currentOrderElement.getWorkHours();
+                }
+            };
+        }
+
+        private Constraint getHoursConstraintFor(final OrderLine orderLine) {
+            return new Constraint() {
+                @Override
+                public void validate(Component comp, Object value)
+                        throws WrongValueException {
+                    if (!orderLine.isTotalHoursValid((Integer) value)) {
+                        throw new WrongValueException(
+                                comp,
+                                _("Value is not valid, taking into account the current list of HoursGroup"));
+                    }
+                }
+            };
+        }
+
+        private Setter<Integer> getHoursSetterFor(final OrderLine orderLine) {
+            return new Util.Setter<Integer>() {
+                @Override
+                public void set(Integer value) {
+                    orderLine.setWorkHours(value);
+                    List<OrderElement> parentNodes = getModel().getParents(
+                            orderLine);
+                    // Remove the last element because it's an
+                    // Order node, not an OrderElement
+                    parentNodes.remove(parentNodes.size() - 1);
+                    for (OrderElement node : parentNodes) {
+                        Intbox intbox = map.get(node);
+                        intbox.setValue(node.getWorkHours());
+                    }
+                }
+            };
+        }
+
+        private void addOperationsCell(final Treeitem item,
+                final OrderElement currentOrderElement) {
+            Button editbutton = new Button("", "/common/img/ico_editar1.png");
+            editbutton.setHoverImage("/common/img/ico_editar.png");
+            editbutton.setSclass("icono");
+            editbutton.setTooltiptext(_("Edit"));
+            editbutton.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    IOrderElementModel model = orderModel
+                            .getOrderElementModel(currentOrderElement);
+                    orderElementController.openWindow(model);
+                }
+            });
+
+            Button upbutton = new Button("");
+            if (isFirstLevelElement(item) && isPredicateApplied()) {
+                upbutton.setDisabled(true);
+                upbutton.setImage("/common/img/ico_bajar_out.png");
+                upbutton.setHoverImage("/common/img/ico_bajar_out.png");
+                upbutton.setTooltiptext("");
+            } else {
+                upbutton.setDisabled(false);
+                upbutton.setImage("/common/img/ico_bajar1.png");
+                upbutton.setHoverImage("/common/img/ico_bajar.png");
+                upbutton.setTooltiptext(_("Move down"));
+            }
+            upbutton.setSclass("icono");
+            upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    down(currentOrderElement);
+                }
+            });
+
+            Button downbutton = new Button("");
+            if (isFirstLevelElement(item) && isPredicateApplied()) {
+                downbutton.setDisabled(true);
+                downbutton.setImage("/common/img/ico_subir_out.png");
+                downbutton.setHoverImage("/common/img/ico_subir_out.png");
+                downbutton.setTooltiptext("");
+            } else {
+                downbutton.setDisabled(false);
+                downbutton.setImage("/common/img/ico_subir1.png");
+                downbutton.setHoverImage("/common/img/ico_subir.png");
+                downbutton.setTooltiptext(_("Move up"));
+            }
+            downbutton.setSclass("icono");
+            downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    up(currentOrderElement);
+                }
+            });
+
+            final Button unindentbutton = new Button("");
+            if ((isFirstLevelElement(item) || isSecondLevelElement(item))
+                    && isPredicateApplied()) {
+                unindentbutton.setDisabled(true);
+                unindentbutton.setImage("/common/img/ico_izq_out.png");
+                unindentbutton.setHoverImage("/common/img/ico_izq_out.png");
+                unindentbutton.setTooltiptext("");
+            } else {
+                unindentbutton.setDisabled(false);
+                unindentbutton.setImage("/common/img/ico_izq1.png");
+                unindentbutton.setHoverImage("/common/img/ico_izq.png");
+                unindentbutton.setTooltiptext(_("Unindent"));
+            }
+            unindentbutton.setSclass("icono");
+            unindentbutton.addEventListener(Events.ON_CLICK,
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            unindent(currentOrderElement);
+                        }
+                    });
+
+            Button indentbutton = new Button("");
+            if (isFirstLevelElement(item) && isPredicateApplied()) {
+                indentbutton.setDisabled(true);
+                indentbutton.setImage("/common/img/ico_derecha_out.png");
+                indentbutton.setHoverImage("/common/img/ico_derecha_out.png");
+                indentbutton.setTooltiptext("");
+            } else {
+                indentbutton.setDisabled(false);
+                indentbutton.setImage("/common/img/ico_derecha1.png");
+                indentbutton.setHoverImage("/common/img/ico_derecha.png");
+                indentbutton.setTooltiptext(_("Indent"));
+            }
+            indentbutton.setSclass("icono");
+            indentbutton.setTooltiptext(_("Indent"));
+            indentbutton.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    indent(currentOrderElement);
+                }
+            });
+
+            Button removebutton = new Button("", "/common/img/ico_borrar1.png");
+            removebutton.setHoverImage("/common/img/ico_borrar.png");
+            removebutton.setSclass("icono");
+            removebutton.setTooltiptext(_("Delete"));
+            removebutton.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    remove(currentOrderElement);
+                    filterByPredicateIfAny();
+                }
+            });
+            addCell(editbutton, upbutton, downbutton, unindentbutton,
+                    indentbutton, removebutton);
         }
 
         @Override
@@ -653,7 +667,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
     /**
      * Show all order elements in current order
-     *
      * @param event
      */
     public void onShowAll(Event event) {
@@ -675,7 +688,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
     /**
      * Apply filter to order elements in current order
-     *
      * @param event
      */
     public void onApplyFilter(Event event) {
@@ -729,7 +741,8 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public void updateControlButtons(Tree tree) {
         final Treeitem item = tree.getSelectedItem();
 
-        boolean disabledLevel1 = isPredicateApplied() && isFirstLevelElement(item);
+        boolean disabledLevel1 = isPredicateApplied()
+                && isFirstLevelElement(item);
         boolean disabledLevel2 = isPredicateApplied()
                 && (isFirstLevelElement(item) || isSecondLevelElement(item));
 
@@ -747,8 +760,8 @@ public class OrderElementTreeController extends GenericForwardComposer {
      */
     public void clear() {
         selectDefaultTab();
-        cbFilterType.setSelectedIndex(0);	// Select show all option
-        bdFilter.setDisabled(true);			// Disable when show all option is selected
+        cbFilterType.setSelectedIndex(0); // Select show all option
+        bdFilter.setDisabled(true); // Disable when show all option is selected
         bdFilter.clear();
         predicate = null;
     }
@@ -758,6 +771,5 @@ public class OrderElementTreeController extends GenericForwardComposer {
     private void selectDefaultTab() {
         tabGeneralData.setSelected(true);
     }
-
 
 }
