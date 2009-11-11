@@ -35,7 +35,7 @@
 			<many-to-many column="LABEL_ID" class="org.navalplanner.business.labels.entities.Label" />
 		</set>
 
-        <set name="criterionRequirements" access="field" cascade="save-update,delete-orphan" inverse="true">
+        <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true">
             <key column="ORDER_ELEMENT_ID" not-null="false"></key>
             <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement"/>
         </set>
