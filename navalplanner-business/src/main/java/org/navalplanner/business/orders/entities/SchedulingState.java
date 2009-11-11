@@ -185,6 +185,14 @@ public class SchedulingState {
         }
         this.type = type;
         notifyParentOfTypeChange();
+        typeChanged(this.type);
+    }
+
+    /**
+     * Hook for notifying that there is a new type
+     * @param newType
+     */
+    protected void typeChanged(Type newType) {
     }
 
     private void notifyParentOfTypeChange() {

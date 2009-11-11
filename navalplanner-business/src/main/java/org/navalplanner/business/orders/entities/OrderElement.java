@@ -50,6 +50,22 @@ import org.navalplanner.business.resources.entities.Criterion;
 
 public abstract class OrderElement extends BaseEntity {
 
+    private final class SchedulingStateOnOrderElement extends SchedulingState {
+
+        private SchedulingStateOnOrderElement(List<SchedulingState> children) {
+            super(children);
+        }
+
+        private SchedulingStateOnOrderElement(Type type) {
+            super(type);
+        }
+
+        @Override
+        protected void typeChanged(Type newType) {
+            schedulingStateType = newType;
+        }
+    }
+
     @NotEmpty
     private String name;
 
@@ -81,7 +97,31 @@ public abstract class OrderElement extends BaseEntity {
 
     private SchedulingState.Type schedulingStateType = Type.NO_SCHEDULED;
 
+    /**
+     * This field is transient
+     */
+    private SchedulingState schedulingState = null;
 
+    public SchedulingState getSchedulingState() {
+        if (schedulingState == null) {
+            schedulingState = createSchedulingState();
+        }
+        return schedulingState;
+    }
+
+    private SchedulingStateOnOrderElement createSchedulingState() {
+        List<SchedulingState> childrenStates = getChildrenStates();
+        return childrenStates.isEmpty() ? new SchedulingStateOnOrderElement(
+                schedulingStateType) : new SchedulingStateOnOrderElement(
+                childrenStates);
+    }
+    private List<SchedulingState> getChildrenStates() {
+        List<SchedulingState> result = new ArrayList<SchedulingState>();
+        for (OrderElement each : getChildren()) {
+            result.add(each.getSchedulingState());
+        }
+        return result;
+    }
     public OrderLineGroup getParent() {
         return parent;
     }
