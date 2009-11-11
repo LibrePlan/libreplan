@@ -291,6 +291,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             if (snapshotOfOpenedNodes != null) {
                 snapshotOfOpenedNodes.openIfRequired(item);
             }
+            final Treerow treeRow = getTreeRowWithoutChildrenFor(item);
             // Construct treecells
             int[] path = getModel().getPath(
                     orderElementForThisRow);
@@ -330,7 +331,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
                             orderElementForThisRow.setName(value);
                         }
                     }));
-
             Textbox textBoxCode = new Textbox();
             mapC.put(orderElementForThisRow, textBoxCode);
             Treecell cellForCode = new Treecell();
@@ -453,31 +453,14 @@ public class OrderElementTreeController extends GenericForwardComposer {
                         }
                     }));
 
-            Treerow tr = null;
-            /*
-             * Since only one treerow is allowed, if treerow is not null, append
-             * treecells to it. If treerow is null, contruct a new treerow and
-             * attach it to item.
-             */
-            if (item.getTreerow() == null) {
-                tr = new Treerow();
-                tr.setParent(item);
-            } else {
-                tr = item.getTreerow();
-                tr.getChildren().clear();
-            }
-            // Attach treecells to treerow
-            tr.setDraggable("true");
-            tr.setDroppable("true");
-
-            cellForName.setParent(tr);
-            cellForCode.setParent(tr);
-            tcDateStart.setParent(tr);
-            tcDateEnd.setParent(tr);
-            cellForHours.setParent(tr);
+            cellForName.setParent(treeRow);
+            cellForCode.setParent(treeRow);
+            tcDateStart.setParent(treeRow);
+            tcDateEnd.setParent(treeRow);
+            cellForHours.setParent(treeRow);
 
             Treecell tcOperations = new Treecell();
-            tcOperations.setParent(tr);
+            tcOperations.setParent(treeRow);
 
             Button editbutton = new Button("", "/common/img/ico_editar1.png");
             editbutton.setHoverImage("/common/img/ico_editar.png");
@@ -596,7 +579,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 }
             });
 
-            tr.addEventListener("onDrop", new EventListener() {
+            treeRow.addEventListener("onDrop", new EventListener() {
 
                 @Override
                 public void onEvent(org.zkoss.zk.ui.event.Event arg0)
@@ -606,6 +589,25 @@ public class OrderElementTreeController extends GenericForwardComposer {
                             (Component) dropEvent.getDragged());
                 }
             });
+        }
+
+        private Treerow getTreeRowWithoutChildrenFor(final Treeitem item) {
+            Treerow result = createOrRetrieveFor(item);
+            // Attach treecells to treerow
+            result.setDraggable("true");
+            result.setDroppable("true");
+            result.getChildren().clear();
+            return result;
+        }
+
+        private Treerow createOrRetrieveFor(final Treeitem item) {
+            if (item.getTreerow() == null) {
+                Treerow result = new Treerow();
+                result.setParent(item);
+                return result;
+            } else {
+                return item.getTreerow();
+            }
         }
 
         private String pathAsString(int[] path) {
