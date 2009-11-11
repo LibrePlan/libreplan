@@ -304,11 +304,10 @@ public class OrderElementTreeController extends GenericForwardComposer {
         @Override
         public void render(final Treeitem item, Object data) throws Exception {
             item.setValue(data);
-            if (snapshotOfOpenedNodes != null) {
-                snapshotOfOpenedNodes.openIfRequired(item);
-            }
+            applySnapshot(item);
             currentTreeRow = getTreeRowWithoutChildrenFor(item);
             final OrderElement currentOrderElement = (OrderElement) data;
+
             addTaskNumberCell(currentOrderElement);
             addCodeCell(currentOrderElement);
             addInitDateCell(currentOrderElement);
@@ -316,16 +315,13 @@ public class OrderElementTreeController extends GenericForwardComposer {
             addHoursCell(currentOrderElement);
             addOperationsCell(item, currentOrderElement);
 
-            currentTreeRow.addEventListener("onDrop", new EventListener() {
+            onDropMoveFromDraggedToTarget();
+        }
 
-                @Override
-                public void onEvent(org.zkoss.zk.ui.event.Event arg0)
-                        throws Exception {
-                    DropEvent dropEvent = (DropEvent) arg0;
-                    move((Component) dropEvent.getTarget(),
-                            (Component) dropEvent.getDragged());
-                }
-            });
+        private void applySnapshot(final Treeitem item) {
+            if (snapshotOfOpenedNodes != null) {
+                snapshotOfOpenedNodes.openIfRequired(item);
+            }
         }
 
         private Treerow getTreeRowWithoutChildrenFor(final Treeitem item) {
@@ -654,6 +650,18 @@ public class OrderElementTreeController extends GenericForwardComposer {
             result.setTooltiptext(tooltip);
             result.addEventListener(Events.ON_CLICK, eventListener);
             return result;
+        }
+
+        private void onDropMoveFromDraggedToTarget() {
+            currentTreeRow.addEventListener("onDrop", new EventListener() {
+                @Override
+                public void onEvent(org.zkoss.zk.ui.event.Event event)
+                        throws Exception {
+                    DropEvent dropEvent = (DropEvent) event;
+                    move((Component) dropEvent.getTarget(),
+                            (Component) dropEvent.getDragged());
+                }
+            });
         }
 
         @Override
