@@ -356,7 +356,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
 
                     });
 
-            // It would be needed to expand the width for the numbers
+            // TODO It would be needed to expand the width for the numbers
             // to make it ready for 2 and 3 digit numbers
             Textbox textBox = Util.bind(new Textbox(),
                     new Util.Getter<String>() {
