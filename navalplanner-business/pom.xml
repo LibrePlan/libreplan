@@ -12,6 +12,11 @@
     <name>Naval Planner Business Module</name>
 
     <dependencies>
+        <!-- Gettext commons -->
+        <dependency>
+            <groupId>org.xnap.commons</groupId>
+            <artifactId>gettext-commons</artifactId>
+        </dependency>
         <!-- JDBC driver -->
         <dependency>
             <groupId>${jdbcDriver.groupId}</groupId>
