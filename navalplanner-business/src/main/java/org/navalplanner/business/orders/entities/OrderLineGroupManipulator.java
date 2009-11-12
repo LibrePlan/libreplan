@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Implementation of {@link OrderElement}. <br />
+ * Implementation of {@link IOrderLineGroup}. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class OrderLineGroupManipulator implements IOrderLineGroup {
@@ -57,12 +57,28 @@ public class OrderLineGroupManipulator implements IOrderLineGroup {
     private void setParentIfRequired(OrderElement orderElement) {
         if (this.parent != null) {
             orderElement.setParent(this.parent);
+            addSchedulingStateToParent(orderElement);
+        }
+    }
+
+    private void addSchedulingStateToParent(OrderElement orderElement) {
+        SchedulingState schedulingState = orderElement.getSchedulingState();
+        removeSchedulingStateFromParent(orderElement);
+        this.parent.getSchedulingState().add(
+                schedulingState);
+    }
+
+    private void removeSchedulingStateFromParent(OrderElement orderElement) {
+        SchedulingState schedulingState = orderElement.getSchedulingState();
+        if (!schedulingState.isRoot()) {
+            schedulingState.getParent().removeChild(schedulingState);
         }
     }
 
     @Override
     public void remove(OrderElement orderElement) {
         orderElements.remove(orderElement);
+        removeSchedulingStateFromParent(orderElement);
     }
 
     @Override
