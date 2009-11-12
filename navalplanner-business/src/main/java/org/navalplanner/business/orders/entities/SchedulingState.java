@@ -124,10 +124,16 @@ public class SchedulingState {
         }
     }
 
+    public interface ITypeChangedListener {
+        public void typeChanged(Type newType);
+    }
+
     private Type type = Type.NO_SCHEDULED;
     private SchedulingState parent;
 
     private List<SchedulingState> children = new ArrayList<SchedulingState>();
+
+    private List<ITypeChangedListener> listeners = new ArrayList<ITypeChangedListener>();
 
     public SchedulingState() {
     }
@@ -185,6 +191,7 @@ public class SchedulingState {
         }
         this.type = type;
         notifyParentOfTypeChange();
+        fireTypeChanged();
         typeChanged(this.type);
     }
 
@@ -266,5 +273,19 @@ public class SchedulingState {
         return new ToStringBuilder(this).append(type).toString();
     }
 
+    private void fireTypeChanged() {
+        for (ITypeChangedListener listener : listeners) {
+            listener.typeChanged(type);
+        }
+    }
+
+    public void addTypeChangeListener(ITypeChangedListener listener) {
+        Validate.notNull(listener);
+        listeners.add(listener);
+    }
+
+    public void removeTypeChangeListener(ITypeChangedListener listener) {
+        listeners.remove(listener);
+    }
 
 }

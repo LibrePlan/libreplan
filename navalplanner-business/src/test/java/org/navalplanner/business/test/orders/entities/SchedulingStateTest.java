@@ -38,6 +38,7 @@ import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.SchedulingState;
+import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 
 /**
@@ -112,6 +113,34 @@ public class SchedulingStateTest {
     public void whenSchedulingAElementItTursIntoASchedulingPoint() {
         grandChildA1.schedule();
         assertThat(grandChildA1.getType(), equalTo(Type.SCHEDULING_POINT));
+    }
+
+    @Test
+    public void whenChangingTheTypeItsNotified() {
+        final boolean typeChanged[] = { false };
+        childA.addTypeChangeListener(new ITypeChangedListener() {
+
+            @Override
+            public void typeChanged(Type newType) {
+                typeChanged[0] = true;
+            }
+        });
+        childA.schedule();
+        assertTrue(typeChanged[0]);
+    }
+
+    @Test
+    public void afterRemovingTheListenerItsNotNotified() {
+        ITypeChangedListener listener = new ITypeChangedListener() {
+
+            @Override
+            public void typeChanged(Type newType) {
+                fail("the listener shouldn't be called since it's removed");
+            }
+        };
+        childA.addTypeChangeListener(listener);
+        childA.removeTypeChangeListener(listener);
+        childA.schedule();
     }
 
     @Test
