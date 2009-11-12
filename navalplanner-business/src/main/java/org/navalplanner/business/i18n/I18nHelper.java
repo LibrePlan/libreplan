@@ -20,53 +20,44 @@
 
 package org.navalplanner.business.i18n;
 
-import java.util.HashMap;
 import java.util.Locale;
 
-import com.sun.org.apache.xml.internal.security.utils.I18n;
+import org.xnap.commons.i18n.I18n;
+import org.xnap.commons.i18n.I18nFactory;
 
 public class I18nHelper {
 
-//    private I18nHelper() {
-//    }
-//
-//    private static HashMap<Locale, I18n> localesCache = new HashMap<Locale, I18n>();
-//
-//    public static I18n getI18n() {
-//        if (localesCache.keySet().contains(Locales.getCurrent())) {
-//            return localesCache.get(Locales.getCurrent());
-//        }
-//
-//        I18n i18n = I18nFactory.getI18n(I18nHelper.class, Locales
-//                .getCurrent(),
-//                org.xnap.commons.i18n.I18nFactory.FALLBACK);
-//        localesCache.put(Locales.getCurrent(), i18n);
-//
-//        return i18n;
-//    }
-//
-//    public static String _(String text) {
-//        return getI18n().tr(text);
-//    }
-//
-//    public static String _(String text, Object o1) {
-//        return getI18n().tr(text, o1);
-//    }
-//
-//    public static String _(String text, Object o1, Object o2) {
-//        return getI18n().tr(text, o1, o2);
-//    }
-//
-//    public static String _(String text, Object o1, Object o2, Object o3) {
-//        return getI18n().tr(text, o1, o2, o3);
-//    }
-//
-//    public static String _(String text, Object o1, Object o2, Object o3,
-//            Object o4) {
-//        return getI18n().tr(text, o1, o2, o3, o4);
-//    }
-//
-//    public static String _(String text, Object[] objects) {
-//        return getI18n().tr(text, objects);
-//    }
+    private I18nHelper() {
+
+    }
+
+    public static I18n getI18n() {
+        return I18nFactory.getI18n(I18nHelper.class, Locale.getDefault(),
+                org.xnap.commons.i18n.I18nFactory.FALLBACK);
+    }
+
+    public static String _(String text) {
+        return getI18n().tr(text);
+    }
+
+    public static String _(String text, Object o1) {
+        return getI18n().tr(text, o1);
+    }
+
+    public static String _(String text, Object o1, Object o2) {
+        return getI18n().tr(text, o1, o2);
+    }
+
+    public static String _(String text, Object o1, Object o2, Object o3) {
+        return getI18n().tr(text, o1, o2, o3);
+    }
+
+    public static String _(String text, Object o1, Object o2, Object o3,
+            Object o4) {
+        return getI18n().tr(text, o1, o2, o3, o4);
+    }
+
+    public static String _(String text, Object[] objects) {
+        return getI18n().tr(text, objects);
+    }
 }
