@@ -1,0 +1,33 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-11-10 19:41 +0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: /home/igalia/workspace/navalplanner/scripts/../ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:104
+msgid "100%"
+msgstr ""
+
+#: /home/igalia/workspace/navalplanner/scripts/../ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:99
+msgid "0% - 100%"
+msgstr ""
+
+#: /home/igalia/workspace/navalplanner/scripts/../ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:94
+msgid "Assignation percentage"
+msgstr ""
+
+#: /home/igalia/workspace/navalplanner/scripts/../ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:109
+msgid "+ 100%"
+msgstr ""
