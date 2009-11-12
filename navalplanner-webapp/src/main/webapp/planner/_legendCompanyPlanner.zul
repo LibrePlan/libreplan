@@ -33,6 +33,11 @@
     </hbox>
 
     <hbox pack="center" sclass="legend-row">
+        <n:div class="overload"/>
+        <n:label>${i18n:_('Overload')}</n:label>
+    </hbox>
+
+    <hbox pack="center" sclass="legend-row">
         <n:div class="load" />
         <n:label>${i18n:_('Assigned load')}</n:label>
     </hbox>
