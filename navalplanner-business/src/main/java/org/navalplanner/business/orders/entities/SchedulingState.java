@@ -185,6 +185,30 @@ public class SchedulingState {
         }
     }
 
+    public boolean canBeUnscheduled() {
+        return getType() == Type.SCHEDULING_POINT;
+    }
+
+    public void unschedule() {
+        if (!canBeUnscheduled()) {
+            throw new IllegalStateException("it can't be unscheduled");
+        }
+        setType(Type.NO_SCHEDULED);
+        markDescendantsAsNoScheduled();
+    }
+
+    private void markDescendantsAsNoScheduled() {
+        for (SchedulingState each : children) {
+            each.ancestorUnscheduled();
+            each.markDescendantsAsNoScheduled();
+        }
+    }
+
+    private void ancestorUnscheduled() {
+        Validate.isTrue(type == Type.SCHEDULED_SUBELEMENT);
+        setType(Type.NO_SCHEDULED);
+    }
+
     private void setType(Type type) {
         if (this.type == type) {
             return;

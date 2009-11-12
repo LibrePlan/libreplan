@@ -242,6 +242,63 @@ public class SchedulingStateTest {
         assertThat(childB.getParent(), nullValue());
     }
 
+    @Test
+    public void aNotScheduledElementCantBeUnScheduled(){
+        assertFalse(root.canBeUnscheduled());
+    }
+
+    @Test
+    public void aCompletelyScheduledElementCanBeUnScheduled() {
+        root.schedule();
+        assertTrue(root.canBeUnscheduled());
+    }
+
+    @Test
+    public void callingUnscheduleIfYouCantScheduleThrowsException() {
+        for (SchedulingState each : all()) {
+            try {
+                each.unschedule();
+                fail("unscheduling " + each + " must send exception");
+            } catch (IllegalStateException e) {
+                // ok
+            }
+        }
+    }
+
+    @Test
+    public void scheduledSubelementsCantBeUnScheduled() {
+        root.schedule();
+        assertThat(allRootDescendants(), each(not(canBeUnsheduled())));
+    }
+
+    @Test
+    public void afterUnschedulingAllDescendantsAreNoScheduled() {
+        root.schedule();
+        root.unschedule();
+        assertThat(allRootDescendants(), each(hasType(Type.NO_SCHEDULED)));
+    }
+
+    @Test
+    public void afterUnSchedulingItsNotScheduled() {
+        root.schedule();
+        root.unschedule();
+        assertThat(root, hasType(Type.NO_SCHEDULED));
+    }
+
+    @Test
+    public void theChangeOfTypeIsNotified() {
+        root.schedule();
+        final boolean[] typeChanged = { false };
+        childA.addTypeChangeListener(new ITypeChangedListener() {
+            @Override
+            public void typeChanged(Type newType) {
+                typeChanged[0] = true;
+            }
+        });
+        root.unschedule();
+        assertTrue(typeChanged[0]);
+    }
+
     abstract static class SchedulingStateMatcher extends
             BaseMatcher<SchedulingState> {
         @Override
@@ -299,6 +356,21 @@ public class SchedulingStateTest {
             @Override
             public void describeTo(Description description) {
                 description.appendText("can be scheduled");
+            }
+        };
+    }
+
+    private Matcher<SchedulingState> canBeUnsheduled() {
+        return new SchedulingStateMatcher() {
+
+            @Override
+            protected boolean matches(SchedulingState schedulingState) {
+                return schedulingState.canBeUnscheduled();
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("cannot be scheduled");
             }
         };
     }
