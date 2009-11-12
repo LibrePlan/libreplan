@@ -30,9 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -68,6 +71,7 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Div;
+
 
 /**
  * Model for company planning view.
@@ -275,18 +279,28 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             Plotinfo plotInfoMax = getCalendarMaximumAvailabilityPlotInfo(
                     interval.getStart(), interval.getFinish());
             plotInfoMax.setLineColor("FF0000");
+            plotInfoMax.setLineWidth(1);
+
+            Plotinfo plotInfoOverload = getOverloadPlotInfo(
+                    interval.getStart(), interval.getFinish());
+            plotInfoOverload.setLineColor("00FF00");
+            plotInfoOverload.setLineWidth(1);
 
             ValueGeometry valueGeometry = getValueGeometry(getMaximunValueForChart());
+            valueGeometry.setGridType("short");
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
             plotInfoLoad.setValueGeometry(valueGeometry);
             plotInfoMax.setValueGeometry(valueGeometry);
+            plotInfoOverload.setValueGeometry(valueGeometry);
 
             plotInfoLoad.setTimeGeometry(timeGeometry);
             plotInfoMax.setTimeGeometry(timeGeometry);
+            plotInfoOverload.setTimeGeometry(timeGeometry);
 
             chart.appendChild(plotInfoMax);
             chart.appendChild(plotInfoLoad);
+            chart.appendChild(plotInfoOverload);
 
             size = size + (16 * 2);
             chart.setWidth(size + "px");
@@ -296,10 +310,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         private Plotinfo getLoadPlotInfo(Date start, Date finish) {
             List<DayAssignment> dayAssignments = dayAssignmentDAO
                     .list(DayAssignment.class);
-            SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
 
-            String uri = getServletUri(mapDayAssignments,
-                    start, finish);
+            SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
+            SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
+
+            String uri = getServletUri(mapDayAssignments, start, finish);
 
             PlotDataSource pds = new PlotDataSource();
             pds.setDataSourceUri(uri);
@@ -309,6 +324,122 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             plotInfo.setPlotDataSource(pds);
 
             return plotInfo;
+        }
+
+        private Plotinfo getOverloadPlotInfo(Date start, Date finish) {
+            List<DayAssignment> dayAssignments = dayAssignmentDAO
+                    .list(DayAssignment.class);
+
+            SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
+            SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
+            SortedMap<LocalDate, Integer> mapMaxAvailability = calculateHoursAdditionByDay(
+                    resourceDAO.list(Resource.class), start, finish);
+
+            for (LocalDate day : mapDayAssignments.keySet()) {
+                Integer overloadHours = mapDayAssignments.get(day);
+                Integer maxHours = mapMaxAvailability.get(day);
+                mapDayAssignments.put(day, overloadHours + maxHours);
+            }
+
+            String uri = getServletUri(mapDayAssignments, start, finish);
+
+            PlotDataSource pds = new PlotDataSource();
+            pds.setDataSourceUri(uri);
+            pds.setSeparator(" ");
+
+            Plotinfo plotInfo = new Plotinfo();
+            plotInfo.setPlotDataSource(pds);
+
+            return plotInfo;
+        }
+
+        private SortedMap<LocalDate, Integer> calculateHoursAdditionByDayWithoutOverload(
+                SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped) {
+            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
+
+            for (LocalDate day : dayAssignmentGrouped.keySet()) {
+                int result = 0;
+
+                for (Resource resource : dayAssignmentGrouped.get(day).keySet()) {
+                    BaseCalendar calendar = resource.getCalendar();
+
+                    int workableHours = SameWorkHoursEveryDay
+                            .getDefaultWorkingDay().getWorkableHours(day);
+                    if (calendar != null) {
+                        workableHours = calendar.getWorkableHours(day);
+                    }
+
+                    int assignedHours = dayAssignmentGrouped.get(day).get(
+                            resource);
+
+                    if (assignedHours <= workableHours) {
+                        result += assignedHours;
+                    } else {
+                        result += workableHours;
+                    }
+                }
+
+                map.put(day, result);
+            }
+
+            return convertAsNeededByZoom(map);
+        }
+
+        private SortedMap<LocalDate, Integer> calculateHoursAdditionByDayJustOverload(
+                SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped) {
+            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
+
+            for (LocalDate day : dayAssignmentGrouped.keySet()) {
+                int result = 0;
+
+                for (Resource resource : dayAssignmentGrouped.get(day).keySet()) {
+                    BaseCalendar calendar = resource.getCalendar();
+
+                    int workableHours = SameWorkHoursEveryDay
+                            .getDefaultWorkingDay().getWorkableHours(day);
+                    if (calendar != null) {
+                        workableHours = calendar.getWorkableHours(day);
+                    }
+
+                    int assignedHours = dayAssignmentGrouped.get(day).get(
+                            resource);
+
+                    if (assignedHours > workableHours) {
+                        result += assignedHours - workableHours;
+                    }
+                }
+
+                map.put(day, result);
+            }
+
+            return convertAsNeededByZoom(map);
+        }
+
+        private SortedMap<LocalDate, Map<Resource, Integer>> groupDayAssignmentsByDayAndResource(
+                List<DayAssignment> dayAssignments) {
+            SortedMap<LocalDate, Map<Resource, Integer>> map = new TreeMap<LocalDate, Map<Resource, Integer>>();
+
+            for (DayAssignment dayAssignment : dayAssignments) {
+                LocalDate day = dayAssignment.getDay();
+                if (map.get(day) == null) {
+                    HashMap<Resource, Integer> resourcesMap = new HashMap<Resource, Integer>();
+                    resourcesMap.put(dayAssignment.getResource(), dayAssignment
+                            .getHours());
+                    map.put(day, resourcesMap);
+                } else {
+                    if (map.get(day).get(dayAssignment.getResource()) == null) {
+                        map.get(day).put(dayAssignment.getResource(),
+                                dayAssignment.getHours());
+                    } else {
+                        Integer hours = map.get(day).get(
+                                dayAssignment.getResource());
+                        hours += dayAssignment.getHours();
+                        map.get(day).put(dayAssignment.getResource(), hours);
+                    }
+                }
+            }
+
+            return map;
         }
 
         private Plotinfo getCalendarMaximumAvailabilityPlotInfo(Date start,
@@ -362,17 +493,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             return result.entrySet();
         }
 
-        /**
-         * Calculate the hours by day for all the {@link DayAssignment} in the list.
-         * @param dayAssignments
-         *            The list of {@link DayAssignment}
-         * @return A map { day => hours } sorted by date
-         */
-        private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
-                List<DayAssignment> dayAssignments) {
-            return new DefaultDayAssignmentCalculator()
-                    .calculate(dayAssignments);
-        }
     }
 
 }
