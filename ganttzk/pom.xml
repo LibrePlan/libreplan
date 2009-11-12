@@ -18,7 +18,7 @@
                 <groupId>org.xnap.commons</groupId>
                 <artifactId>maven-gettext-plugin</artifactId>
                 <configuration>
-                    <targetBundle>i18n.Messages</targetBundle>
+                    <targetBundle>app.i18n.Messages</targetBundle>
                     <poDirectory>${project.build.sourceDirectory}/../resources/i18n</poDirectory>
                     <keywords>-k_</keywords>
                 </configuration>

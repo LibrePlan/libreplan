@@ -2192,15 +2192,3 @@ msgstr "Borrar"
 msgid ""
 "The date is not valid, the date must be unique for this advanced assignment"
 msgstr "La fecha no es válida, debe ser única para esta asignación de avance"
-
-#~ msgid ""
-#~ "The Spread values are not valid, there are several true spread values"
-#~ msgstr ""
-#~ "Los valores de propagación no son válidos, hay varios valores activados"
-
-#, fuzzy
-#~ msgid "Filters:"
-#~ msgstr "Filtro"
-
-#~ msgid "Planification"
-#~ msgstr "Planificación"

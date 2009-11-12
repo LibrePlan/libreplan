@@ -18,6 +18,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<?xel-method prefix="i18n" name="_" class="org.zkoss.ganttz.i18n.I18nHelper"
+    signature="java.lang.String _(java.lang.String name)" ?>
+
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 <zscript><![CDATA[
 resourcesLoadPanel = self;
