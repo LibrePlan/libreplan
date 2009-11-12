@@ -415,33 +415,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             return convertAsNeededByZoom(map);
         }
 
-        private SortedMap<LocalDate, Map<Resource, Integer>> groupDayAssignmentsByDayAndResource(
-                List<DayAssignment> dayAssignments) {
-            SortedMap<LocalDate, Map<Resource, Integer>> map = new TreeMap<LocalDate, Map<Resource, Integer>>();
-
-            for (DayAssignment dayAssignment : dayAssignments) {
-                LocalDate day = dayAssignment.getDay();
-                if (map.get(day) == null) {
-                    HashMap<Resource, Integer> resourcesMap = new HashMap<Resource, Integer>();
-                    resourcesMap.put(dayAssignment.getResource(), dayAssignment
-                            .getHours());
-                    map.put(day, resourcesMap);
-                } else {
-                    if (map.get(day).get(dayAssignment.getResource()) == null) {
-                        map.get(day).put(dayAssignment.getResource(),
-                                dayAssignment.getHours());
-                    } else {
-                        Integer hours = map.get(day).get(
-                                dayAssignment.getResource());
-                        hours += dayAssignment.getHours();
-                        map.get(day).put(dayAssignment.getResource(), hours);
-                    }
-                }
-            }
-
-            return map;
-        }
-
         private Plotinfo getCalendarMaximumAvailabilityPlotInfo(Date start,
                 Date finish) {
             SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(

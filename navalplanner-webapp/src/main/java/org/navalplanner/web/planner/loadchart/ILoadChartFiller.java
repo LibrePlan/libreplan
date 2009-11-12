@@ -20,6 +20,13 @@
 
 package org.navalplanner.web.planner.loadchart;
 
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+
+import org.joda.time.LocalDate;
+import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.resources.entities.Resource;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
@@ -40,5 +47,8 @@ public interface ILoadChartFiller {
     TimeGeometry getTimeGeometry(Interval interval);
 
     ValueGeometry getValueGeometry(Integer maximum);
+
+    SortedMap<LocalDate, Map<Resource, Integer>> groupDayAssignmentsByDayAndResource(
+            List<DayAssignment> dayAssignments);
 
 }
