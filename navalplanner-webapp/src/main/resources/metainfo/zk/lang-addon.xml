@@ -42,6 +42,12 @@
     </component>
     
     <component>
+        <component-name>schedulingStateToggler</component-name>
+        <component-class>org.navalplanner.web.orders.SchedulingStateToggler</component-class>
+        <macro-uri>/common/components/schedulingStateToggler.zul</macro-uri>
+    </component>
+
+    <component>
         <component-name>newdatasortablegrid</component-name>
         <component-class>org.navalplanner.web.common.components.NewDataSortableGrid</component-class>
         <extends>grid</extends>
