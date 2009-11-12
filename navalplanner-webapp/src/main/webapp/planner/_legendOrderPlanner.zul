@@ -33,6 +33,16 @@
     </hbox>
 
     <hbox pack="center" sclass="legend-row">
+        <n:div class="overload-other"/>
+        <n:label>${i18n:_('Overload due to other')}</n:label>
+    </hbox>
+
+    <hbox pack="center" sclass="legend-row">
+        <n:div class="overload-order"/>
+        <n:label>${i18n:_('Overload due to order')}</n:label>
+    </hbox>
+
+    <hbox pack="center" sclass="legend-row">
         <n:div class="other"/>
         <n:label>${i18n:_('Other assignments')}</n:label>
     </hbox>

@@ -556,6 +556,20 @@ div.z-grid {
     margin-right:5px;
 }
 
+.legend .overload-order {
+    border-top:solid 1px #00FFFF;
+    height:7px;
+    width:25px;
+    margin-right:5px;
+}
+
+.legend .overload-other {
+    border-top:solid 1px #FFFF00;
+    height:7px;
+    width:25px;
+    margin-right:5px;
+}
+
 .legend .other {
     background-color:#00FF00;
     height:10px;
