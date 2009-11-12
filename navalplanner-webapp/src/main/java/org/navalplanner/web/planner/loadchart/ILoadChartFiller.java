@@ -30,7 +30,6 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
-import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 
 /**
@@ -41,8 +40,6 @@ import org.zkoss.ganttz.util.Interval;
 public interface ILoadChartFiller {
 
     void fillChart(Timeplot chart, Interval interval, Integer size);
-
-    void setZoomLevel(ZoomLevel zoomLevel);
 
     TimeGeometry getTimeGeometry(Interval interval);
 

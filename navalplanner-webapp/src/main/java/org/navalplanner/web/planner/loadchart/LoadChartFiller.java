@@ -276,11 +276,6 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         return zoomLevel.equals(ZoomLevel.DETAIL_FIVE);
     }
 
-    @Override
-    public void setZoomLevel(ZoomLevel zoomLevel) {
-        this.zoomLevel = zoomLevel;
-    }
-
     protected void resetMaximunValueForChart() {
         this.maximunValueForChart = 0;
     }
