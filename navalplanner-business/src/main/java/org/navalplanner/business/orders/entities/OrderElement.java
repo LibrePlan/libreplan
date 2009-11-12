@@ -40,6 +40,7 @@ import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentFo
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -49,22 +50,6 @@ import org.navalplanner.business.requirements.entities.IndirectCriterionRequirem
 import org.navalplanner.business.resources.entities.Criterion;
 
 public abstract class OrderElement extends BaseEntity {
-
-    private final class SchedulingStateOnOrderElement extends SchedulingState {
-
-        private SchedulingStateOnOrderElement(List<SchedulingState> children) {
-            super(children);
-        }
-
-        private SchedulingStateOnOrderElement(Type type) {
-            super(type);
-        }
-
-        @Override
-        protected void typeChanged(Type newType) {
-            schedulingStateType = newType;
-        }
-    }
 
     @NotEmpty
     private String name;
@@ -109,11 +94,18 @@ public abstract class OrderElement extends BaseEntity {
         return schedulingState;
     }
 
-    private SchedulingStateOnOrderElement createSchedulingState() {
+    private SchedulingState createSchedulingState() {
         List<SchedulingState> childrenStates = getChildrenStates();
-        return childrenStates.isEmpty() ? new SchedulingStateOnOrderElement(
-                schedulingStateType) : new SchedulingStateOnOrderElement(
-                childrenStates);
+        SchedulingState result = childrenStates.isEmpty() ? new SchedulingState(
+                getSchedulingStateType())
+                : new SchedulingState(childrenStates);
+        result.addTypeChangeListener(new ITypeChangedListener() {
+            @Override
+            public void typeChanged(Type newType) {
+                schedulingStateType = newType;
+            }
+        });
+        return result;
     }
     private List<SchedulingState> getChildrenStates() {
         List<SchedulingState> result = new ArrayList<SchedulingState>();
@@ -499,6 +491,13 @@ public abstract class OrderElement extends BaseEntity {
             }
         }
         return list;
+    }
+
+    public SchedulingState.Type getSchedulingStateType() {
+        if (schedulingStateType == null) {
+            schedulingStateType = Type.NO_SCHEDULED;
+        }
+        return schedulingStateType;
     }
 
 }
