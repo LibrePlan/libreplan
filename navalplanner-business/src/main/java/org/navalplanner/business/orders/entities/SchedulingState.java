@@ -170,7 +170,7 @@ public class SchedulingState {
     }
 
     public void schedule() {
-        if (type.isSomewhatScheduled()) {
+        if (!canBeScheduled()) {
             throw new IllegalStateException("it's already somewhat scheduled");
         }
         setType(Type.SCHEDULING_POINT);
