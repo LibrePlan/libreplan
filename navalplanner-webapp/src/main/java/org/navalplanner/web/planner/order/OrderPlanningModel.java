@@ -25,16 +25,14 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -97,10 +95,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private IResourceDAO resourceDAO;
 
     private IZoomLevelChangedListener zoomListener;
-
-    private LocalDate minDate;
-
-    private LocalDate maxDate;
 
     private ITaskElementAdapter taskElementAdapter;
 
@@ -364,6 +358,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         private final Order order;
 
+        private SortedMap<LocalDate, Integer> mapOrderLoad = new TreeMap<LocalDate, Integer>();
+        private SortedMap<LocalDate, Integer> mapOrderOverload = new TreeMap<LocalDate, Integer>();
+        private SortedMap<LocalDate, Integer> mapMaxCapacity = new TreeMap<LocalDate, Integer>();
+        private SortedMap<LocalDate, Integer> mapOtherLoad = new TreeMap<LocalDate, Integer>();
+        private SortedMap<LocalDate, Integer> mapOtherOverload = new TreeMap<LocalDate, Integer>();
+
         public OrderLoadChartFiller(Order orderReloaded) {
             this.order = orderReloaded;
         }
@@ -373,76 +373,74 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             chart.getChildren().clear();
             chart.invalidate();
             resetMaximunValueForChart();
-            Plotinfo plotInfoOrder = getLoadPlotInfo(order,
-                    interval.getStart(), interval.getFinish());
-            plotInfoOrder.setFillColor("0000FF");
 
-            Plotinfo plotInfoCompany = getResourcesLoadPlotInfo(order, interval
+            List<DayAssignment> orderDayAssignments = order.getDayAssignments();
+            SortedMap<LocalDate, Map<Resource, Integer>> orderDayAssignmentsGrouped = groupDayAssignmentsByDayAndResource(orderDayAssignments);
+
+            List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
+            for (Resource resource : order.getResources()) {
+                resourcesDayAssignments.addAll(resource.getAssignments());
+            }
+            SortedMap<LocalDate, Map<Resource, Integer>> resourceDayAssignmentsGrouped = groupDayAssignmentsByDayAndResource(resourcesDayAssignments);
+
+            fillMaps(orderDayAssignmentsGrouped, resourceDayAssignmentsGrouped);
+            groupByWeekMaps();
+
+            Plotinfo plotOrderLoad = getPlotinfo(mapOrderLoad, interval
                     .getStart(), interval.getFinish());
-            plotInfoCompany.setFillColor("00FF00");
+            Plotinfo plotOrderOverload = getPlotinfo(mapOrderOverload, interval
+                    .getStart(), interval.getFinish());
+            Plotinfo plotMaxCapacity = getPlotinfo(mapMaxCapacity, interval
+                    .getStart(), interval.getFinish());
+            Plotinfo plotOtherLoad = getPlotinfo(mapOtherLoad, interval
+                    .getStart(), interval.getFinish());
+            Plotinfo plotOtherOverload = getPlotinfo(mapOtherOverload, interval
+                    .getStart(), interval.getFinish());
 
-            Plotinfo plotInfoMax = getCalendarMaximumAvailabilityPlotInfo(
-                    order, interval.getStart(), interval.getFinish());
-            plotInfoMax.setLineColor("FF0000");
+            plotOrderLoad.setFillColor("0000FF");
+            plotOrderOverload.setLineColor("00FFFF");
+            plotMaxCapacity.setLineColor("FF0000");
+            plotMaxCapacity.setLineWidth(2);
+            plotOtherLoad.setFillColor("00FF00");
+            plotOtherOverload.setLineColor("FFFF00");
 
             ValueGeometry valueGeometry = getValueGeometry(getMaximunValueForChart());
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
-            plotInfoOrder.setValueGeometry(valueGeometry);
-            plotInfoCompany.setValueGeometry(valueGeometry);
-            plotInfoMax.setValueGeometry(valueGeometry);
+            plotOrderLoad.setValueGeometry(valueGeometry);
+            plotOrderOverload.setValueGeometry(valueGeometry);
+            plotMaxCapacity.setValueGeometry(valueGeometry);
+            plotOtherLoad.setValueGeometry(valueGeometry);
+            plotOtherOverload.setValueGeometry(valueGeometry);
 
-            plotInfoOrder.setTimeGeometry(timeGeometry);
-            plotInfoCompany.setTimeGeometry(timeGeometry);
-            plotInfoMax.setTimeGeometry(timeGeometry);
+            plotOrderLoad.setTimeGeometry(timeGeometry);
+            plotOrderOverload.setTimeGeometry(timeGeometry);
+            plotMaxCapacity.setTimeGeometry(timeGeometry);
+            plotOtherLoad.setTimeGeometry(timeGeometry);
+            plotOtherOverload.setTimeGeometry(timeGeometry);
 
-            chart.appendChild(plotInfoMax);
-            chart.appendChild(plotInfoOrder);
-            chart.appendChild(plotInfoCompany);
+            chart.appendChild(plotOrderLoad);
+            chart.appendChild(plotOrderOverload);
+            chart.appendChild(plotMaxCapacity);
+            chart.appendChild(plotOtherLoad);
+            chart.appendChild(plotOtherOverload);
 
             size = size + (16 * 2);
             chart.setWidth(size + "px");
             chart.setHeight("100px");
         }
 
-        private Plotinfo getLoadPlotInfo(Order order, Date start, Date finish) {
-            List<DayAssignment> dayAssignments = order.getDayAssignments();
-            SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(dayAssignments);
-
-            if (mapDayAssignments.isEmpty()) {
-                minDate = new LocalDate();
-                maxDate = new LocalDate();
-            } else {
-                SortedSet<LocalDate> keys = (SortedSet<LocalDate>) mapDayAssignments
-                        .keySet();
-                minDate = keys.first();
-                maxDate = keys.last();
-            }
-
-            String uri = getServletUri(mapDayAssignments, start, finish);
-
-            PlotDataSource pds = new PlotDataSource();
-            pds.setDataSourceUri(uri);
-            pds.setSeparator(" ");
-
-            Plotinfo plotInfo = new Plotinfo();
-            plotInfo.setPlotDataSource(pds);
-
-            return plotInfo;
+        private void groupByWeekMaps() {
+            mapOrderLoad = groupByWeek(mapOrderLoad);
+            mapOrderOverload = groupByWeek(mapOrderOverload);
+            mapMaxCapacity = groupByWeek(mapMaxCapacity);
+            mapOtherLoad = groupByWeek(mapOtherLoad);
+            mapOtherOverload = groupByWeek(mapOtherOverload);
         }
 
-        private Plotinfo getResourcesLoadPlotInfo(Order order, Date start,
+        private Plotinfo getPlotinfo(
+                SortedMap<LocalDate, Integer> mapDayAssignments, Date start,
                 Date finish) {
-            List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
-
-            Set<Resource> resources = order.getResources();
-            for (Resource resource : resources) {
-                dayAssignments.addAll(resource.getAssignments());
-            }
-
-            SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(
-                    dayAssignments, minDate, maxDate);
-
             String uri = getServletUri(mapDayAssignments, start, finish);
 
             PlotDataSource pds = new PlotDataSource();
@@ -455,70 +453,82 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             return plotInfo;
         }
 
-        private Plotinfo getCalendarMaximumAvailabilityPlotInfo(Order order,
-                Date start, Date finish) {
-            SortedMap<LocalDate, Integer> mapDayAssignments = calculateCapacity(order.getDayAssignments());
+        private void fillMaps(
+                SortedMap<LocalDate, Map<Resource, Integer>> orderDayAssignmentsGrouped,
+                SortedMap<LocalDate, Map<Resource, Integer>> resourceDayAssignmentsGrouped) {
 
-            String uri = getServletUri(mapDayAssignments, start, finish);
+            for (LocalDate day : orderDayAssignmentsGrouped.keySet()) {
+                int maxCapacity = getMaxCapcity(orderDayAssignmentsGrouped, day);
+                mapMaxCapacity.put(day, maxCapacity);
 
-            PlotDataSource pds = new PlotDataSource();
-            pds.setDataSourceUri(uri);
-            pds.setSeparator(" ");
+                Integer orderLoad = 0;
+                Integer orderOverload = 0;
+                Integer otherLoad = 0;
+                Integer otherOverload = 0;
 
-            Plotinfo plotInfo = new Plotinfo();
-            plotInfo.setPlotDataSource(pds);
+                for (Resource resource : orderDayAssignmentsGrouped.get(day)
+                        .keySet()) {
+                    int workableHours = getWorkableHours(resource, day);
 
-            return plotInfo;
-        }
+                    Integer hoursOrder = orderDayAssignmentsGrouped.get(day).get(
+                            resource);
 
-        private SortedMap<LocalDate, Integer> calculateCapacity(
-                List<DayAssignment> dayAssignments) {
-            return new HoursByDayCalculator<Entry<LocalDate, Collection<Resource>>>() {
+                    Integer hoursOther = resourceDayAssignmentsGrouped.get(day)
+                            .get(resource)
+                            - hoursOrder;
 
-                @Override
-                protected LocalDate getDayFor(
-                        Entry<LocalDate, Collection<Resource>> element) {
-                    return element.getKey();
+                    if (hoursOrder <= workableHours) {
+                        orderLoad += hoursOrder;
+                        orderOverload += 0;
+                    } else {
+                        orderLoad += workableHours;
+                        orderOverload += hoursOrder - workableHours;
+                    }
+
+                    if ((hoursOrder + hoursOther) <= workableHours) {
+                        otherLoad += hoursOther;
+                        otherOverload += 0;
+                    } else {
+                        if (hoursOrder <= workableHours) {
+                            otherLoad += (workableHours - hoursOrder);
+                            otherOverload += hoursOrder + hoursOther
+                                    - workableHours;
+                        } else {
+                            otherLoad += 0;
+                            otherOverload += hoursOrder;
+                        }
+                    }
                 }
 
-                @Override
-                protected int getHoursFor(
-                        Entry<LocalDate, Collection<Resource>> element) {
-                    Collection<Resource> resources = element.getValue();
-                    LocalDate day = element.getKey();
-                    return sumHoursForDay(resources, day);
-                }
-
-            }.calculate(resourcesByDate(dayAssignments));
-        }
-
-        private Collection<Entry<LocalDate, Collection<Resource>>> resourcesByDate(
-                List<DayAssignment> dayAssignments) {
-            Map<LocalDate, Collection<Resource>> result = new HashMap<LocalDate, Collection<Resource>>();
-            for (DayAssignment dayAssignment : dayAssignments) {
-                LocalDate day = dayAssignment.getDay();
-                if (!result.containsKey(day)) {
-                    result.put(day, new HashSet<Resource>());
-                }
-                result.get(day).add(dayAssignment.getResource());
+                mapOrderLoad.put(day, orderLoad);
+                mapOrderOverload.put(day, orderOverload + maxCapacity);
+                mapOtherLoad.put(day, otherLoad + orderLoad);
+                mapOtherOverload.put(day, otherOverload + orderOverload
+                        + maxCapacity);
             }
-            return result.entrySet();
         }
 
-        private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
-                List<DayAssignment> dayAssignments) {
-            return new DefaultDayAssignmentCalculator()
-                    .calculate(dayAssignments);
+        private int getMaxCapcity(
+                SortedMap<LocalDate, Map<Resource, Integer>> orderDayAssignmentsGrouped,
+                LocalDate day) {
+            int maxCapacity = 0;
+            for (Resource resource : orderDayAssignmentsGrouped.get(day)
+                    .keySet()) {
+                maxCapacity += getWorkableHours(resource, day);
+            }
+            return maxCapacity;
         }
 
-        private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
-                List<DayAssignment> dayAssignments, final LocalDate minDate,
-                final LocalDate maxDate) {
-            return new DefaultDayAssignmentCalculator() {
-                protected boolean included(DayAssignment each) {
-                    return each.includedIn(minDate, maxDate);
-                };
-            }.calculate(dayAssignments);
+        private int getWorkableHours(Resource resource, LocalDate day) {
+            BaseCalendar calendar = resource.getCalendar();
+
+            int workableHours = SameWorkHoursEveryDay.getDefaultWorkingDay()
+                    .getWorkableHours(day);
+            if (calendar != null) {
+                workableHours = calendar.getWorkableHours(day);
+            }
+
+            return workableHours;
         }
 
     }
