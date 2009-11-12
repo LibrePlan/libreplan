@@ -61,6 +61,7 @@
             treeitemRenderer="@{orderElementTreeController.renderer}" pageSize="10"
             sclass="orderTree">
             <treecols sizable="false">
+                <treecol label="${i18n:_('Scheduling state')}" class="scheduling_state"/>
                 <treecol label="${i18n:_('Name and description')}" class="name"/>
                 <treecol label="${i18n:_('Code')}" class="code"/>
                 <treecol label="${i18n:_('Must start after')}" class="estimated_init"/>

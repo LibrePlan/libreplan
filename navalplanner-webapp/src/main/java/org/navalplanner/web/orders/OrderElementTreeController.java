@@ -307,7 +307,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
             applySnapshot(item);
             currentTreeRow = getTreeRowWithoutChildrenFor(item);
             final OrderElement currentOrderElement = (OrderElement) data;
-
+            addSchedulingStateCell(currentOrderElement);
             addTaskNumberCell(currentOrderElement);
             addCodeCell(currentOrderElement);
             addInitDateCell(currentOrderElement);
@@ -391,6 +391,13 @@ public class OrderElementTreeController extends GenericForwardComposer {
             } else {
                 return item.getTreerow();
             }
+        }
+
+        private void addSchedulingStateCell(OrderElement currentOrderElement) {
+            SchedulingStateToggler schedulingStateToggler = new SchedulingStateToggler(currentOrderElement
+                    .getSchedulingState());
+            addCell(schedulingStateToggler);
+            schedulingStateToggler.afterCompose();
         }
 
         private void addCodeCell(final OrderElement orderElement) {
