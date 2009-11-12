@@ -226,14 +226,16 @@ public class SchedulingState {
     }
 
     private void typeChangedOnChild(SchedulingState child) {
-        if (getType().belongsToSchedulingPoint()) {
-            return;
-        }
         setType(calculateTypeFromChildren());
     }
 
     private Type calculateTypeFromChildren() {
-        Validate.isTrue(!children.isEmpty());
+        if (getType().belongsToSchedulingPoint()) {
+            return getType();
+        }
+        if (children.isEmpty()) {
+            return Type.NO_SCHEDULED;
+        }
         boolean allScheduled = true;
         boolean someScheduled = false;
         for (SchedulingState each : children) {

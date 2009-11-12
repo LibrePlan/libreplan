@@ -299,6 +299,15 @@ public class SchedulingStateTest {
         assertTrue(typeChanged[0]);
     }
 
+    @Test
+    public void removingAllTheChildrenOfACompletelyScheduledSuperelementMakesItNoScheduled() {
+        childA.schedule();
+        childB.schedule();
+        root.removeChild(childA);
+        root.removeChild(childB);
+        assertThat(root, hasType(Type.NO_SCHEDULED));
+    }
+
     abstract static class SchedulingStateMatcher extends
             BaseMatcher<SchedulingState> {
         @Override
