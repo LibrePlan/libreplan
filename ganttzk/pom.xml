@@ -12,7 +12,34 @@
     <packaging>jar</packaging>
     <name>Naval Planner ZK Components Module</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.xnap.commons</groupId>
+                <artifactId>maven-gettext-plugin</artifactId>
+                <configuration>
+                    <targetBundle>i18n.Messages</targetBundle>
+                    <poDirectory>${project.build.sourceDirectory}/../resources/i18n</poDirectory>
+                    <keywords>-k_</keywords>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>dist</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
+        <!-- Gettext commons -->
+        <dependency>
+            <groupId>org.xnap.commons</groupId>
+            <artifactId>gettext-commons</artifactId>
+        </dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
