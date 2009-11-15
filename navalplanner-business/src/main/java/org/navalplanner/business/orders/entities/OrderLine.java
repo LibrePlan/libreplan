@@ -22,6 +22,7 @@ package org.navalplanner.business.orders.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -117,11 +118,13 @@ public class OrderLine extends OrderElement {
         hoursGroup.setParentOrderLine(this);
         hoursGroups.add(hoursGroup);
         recalculateHoursGroups();
+        hoursGroupAdded(hoursGroup);
     }
 
     public void deleteHoursGroup(HoursGroup hoursGroup) {
         hoursGroups.remove(hoursGroup);
         recalculateHoursGroups();
+        hoursGroupDeleted(hoursGroup);
     }
 
     /**
@@ -145,7 +148,7 @@ public class OrderLine extends OrderElement {
             hoursGroup.setWorkingHours(workHours);
             hoursGroup.setPercentage((new BigDecimal(1).setScale(2)));
 
-            hoursGroups.add(hoursGroup);
+            addHoursGroup(hoursGroup);
         } else {
 
             if (!isTotalHoursValid(workHours)) {
@@ -235,10 +238,26 @@ public class OrderLine extends OrderElement {
         }
 
         // Set the attribute with the new hours group calculated
-        hoursGroups = newHoursGroups;
+        deleteHoursGroups(hoursGroups);
+        addHoursGroups(newHoursGroups);
 
         // Re-calculate percentages
         recalculateHoursGroups();
+    }
+
+    private void addHoursGroups(Collection<? extends HoursGroup> newHoursGroups) {
+        hoursGroups.addAll(newHoursGroups);
+        for (HoursGroup each : newHoursGroups) {
+            hoursGroupAdded(each);
+        }
+    }
+
+    private void deleteHoursGroups(
+            Collection<? extends HoursGroup> oldHoursGroups) {
+        hoursGroups.removeAll(oldHoursGroups);
+        for (HoursGroup each : oldHoursGroups) {
+            hoursGroupDeleted(each);
+        }
     }
 
     /**

@@ -112,6 +112,7 @@ public abstract class OrderElement extends BaseEntity {
         });
         return result;
     }
+
     private List<SchedulingState> getChildrenStates() {
         List<SchedulingState> result = new ArrayList<SchedulingState>();
         for (OrderElement each : getChildren()) {
@@ -125,6 +126,30 @@ public abstract class OrderElement extends BaseEntity {
 
     protected void setParent(OrderLineGroup parent) {
         this.parent = parent;
+    }
+
+    protected void hoursGroupAdded(HoursGroup hoursGroup) {
+        if (isSchedulingPoint()) {
+            taskSource.added(hoursGroup);
+        } else if (belongsToSchedulingPoint()) {
+            getParent().hoursGroupAdded(hoursGroup);
+        }
+    }
+
+    protected void hoursGroupDeleted(HoursGroup hoursGroup) {
+        if (isSchedulingPoint()) {
+            taskSource.removed(hoursGroup);
+        } else if (belongsToSchedulingPoint()) {
+            getParent().hoursGroupDeleted(hoursGroup);
+        }
+    }
+
+    private boolean isSchedulingPoint() {
+        return schedulingStateType == Type.SCHEDULING_POINT;
+    }
+
+    private boolean belongsToSchedulingPoint() {
+        return schedulingStateType.belongsToSchedulingPoint();
     }
 
     public abstract Integer getWorkHours();

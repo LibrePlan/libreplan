@@ -50,4 +50,12 @@ public class TaskSource extends BaseEntity {
                 .getHoursGroups());
     }
 
+    public void added(HoursGroup hoursGroup) {
+        hoursGroups.add(hoursGroup);
+    }
+
+    public void removed(HoursGroup hoursGroup) {
+        hoursGroups.remove(hoursGroup);
+    }
+
 }
