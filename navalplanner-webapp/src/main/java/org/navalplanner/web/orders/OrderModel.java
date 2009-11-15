@@ -367,7 +367,7 @@ public class OrderModel implements IOrderModel {
             result.setDeadline(new LocalDate(order.getDeadline()));
         }
         if (result instanceof Task) {
-            order.updateStartConstraintIfNeeded(((Task) result));
+            order.applyStartConstraintIfNeededTo((Task) result);
         }
         return result;
     }

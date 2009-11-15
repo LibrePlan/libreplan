@@ -498,14 +498,14 @@ public abstract class OrderElement extends BaseEntity {
         return list;
     }
 
-    public void updateStartConstraintIfNeeded(Task task) {
+    public void applyStartConstraintIfNeededTo(Task task) {
         if (getInitDate() != null) {
             applyStartConstraintTo(task);
             return;
         }
         OrderLineGroup parent = getParent();
         if (parent != null) {
-            parent.updateStartConstraintIfNeeded(task);
+            parent.applyStartConstraintIfNeededTo(task);
         }
     }
 
