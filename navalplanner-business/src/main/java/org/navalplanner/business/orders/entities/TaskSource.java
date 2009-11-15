@@ -22,6 +22,7 @@ package org.navalplanner.business.orders.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 
@@ -30,12 +31,23 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class TaskSource extends BaseEntity {
 
+    public static TaskSource withHoursGroupOf(OrderElement orderElement) {
+        return create(new TaskSource(orderElement));
+    }
+
     @NotNull
     private OrderElement orderElement;
 
     private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
 
     public TaskSource() {
+    }
+
+    public TaskSource(OrderElement orderElement) {
+        Validate.notNull(orderElement);
+        this.orderElement = orderElement;
+        this.hoursGroups = new HashSet<HoursGroup>(orderElement
+                .getHoursGroups());
     }
 
 }

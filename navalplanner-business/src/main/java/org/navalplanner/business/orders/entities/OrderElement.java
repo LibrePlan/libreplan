@@ -105,6 +105,9 @@ public abstract class OrderElement extends BaseEntity {
             @Override
             public void typeChanged(Type newType) {
                 schedulingStateType = newType;
+                if (newType == Type.SCHEDULING_POINT) {
+                    taskSource = TaskSource.withHoursGroupOf(OrderElement.this);
+                }
             }
         });
         return result;
@@ -501,5 +504,4 @@ public abstract class OrderElement extends BaseEntity {
         }
         return schedulingStateType;
     }
-
 }
