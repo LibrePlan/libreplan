@@ -45,7 +45,7 @@ public class MachineWorkerAssignment extends BaseEntity {
 
     public static MachineWorkerAssignment create(
             MachineWorkersConfigurationUnit configurationUnit, Worker worker) {
-        return (MachineWorkerAssignment) create(new MachineWorkerAssignment(
+        return create(new MachineWorkerAssignment(
                 configurationUnit, worker));
     }
 

@@ -52,7 +52,7 @@ public class Label extends BaseEntity {
     }
 
     public static Label create(String name) {
-        return (Label) create(new Label(name));
+        return create(new Label(name));
     }
 
     protected Label(String name) {

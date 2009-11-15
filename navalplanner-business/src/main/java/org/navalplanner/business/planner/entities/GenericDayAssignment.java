@@ -39,7 +39,7 @@ public class GenericDayAssignment extends DayAssignment {
 
     public static GenericDayAssignment create(LocalDate day, int hours,
             Resource resource) {
-        return (GenericDayAssignment) create(new GenericDayAssignment(day, hours,
+        return create(new GenericDayAssignment(day, hours,
                 resource));
     }
 

@@ -30,7 +30,7 @@ import org.navalplanner.business.common.BaseEntity;
 public class AssignmentFunction extends BaseEntity {
 
     public static AssignmentFunction create() {
-        return (AssignmentFunction) create(new AssignmentFunction());
+        return create(new AssignmentFunction());
     }
 
     public AssignmentFunction() {

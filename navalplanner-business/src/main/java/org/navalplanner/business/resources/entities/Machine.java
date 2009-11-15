@@ -45,7 +45,7 @@ public class Machine extends Resource {
     }
 
     public static Machine create() {
-        return (Machine) create(new Machine());
+        return create(new Machine());
     }
 
     public String getCode() {

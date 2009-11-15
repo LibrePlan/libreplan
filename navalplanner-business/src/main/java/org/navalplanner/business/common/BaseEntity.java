@@ -70,7 +70,7 @@ public abstract class BaseEntity implements INewObject {
         return newObject;
     }
 
-    protected static BaseEntity create(BaseEntity baseEntity) {
+    protected static <T extends BaseEntity> T create(T baseEntity) {
         baseEntity.newObject = true;
         return baseEntity;
     }

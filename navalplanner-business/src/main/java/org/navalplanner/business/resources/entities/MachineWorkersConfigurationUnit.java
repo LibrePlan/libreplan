@@ -46,7 +46,7 @@ public class MachineWorkersConfigurationUnit extends BaseEntity {
     public static MachineWorkersConfigurationUnit create(Machine machine,
             String name,
             BigDecimal alpha) {
-        return (MachineWorkersConfigurationUnit) create(new MachineWorkersConfigurationUnit(
+        return create(new MachineWorkersConfigurationUnit(
                 machine,
                 name, alpha));
     }

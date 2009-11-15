@@ -44,12 +44,12 @@ public class GenericResourceAllocation extends
         ResourceAllocation<GenericDayAssignment> {
 
     public static GenericResourceAllocation create() {
-        return (GenericResourceAllocation) create(new GenericResourceAllocation());
+        return create(new GenericResourceAllocation());
     }
 
     public static GenericResourceAllocation createForTesting(
             ResourcesPerDay resourcesPerDay, Task task) {
-        return (GenericResourceAllocation) create(new GenericResourceAllocation(
+        return create(new GenericResourceAllocation(
                 resourcesPerDay, task));
     }
 
@@ -81,7 +81,7 @@ public class GenericResourceAllocation extends
     }
 
     public static GenericResourceAllocation create(Task task) {
-        return (GenericResourceAllocation) create(new GenericResourceAllocation(
+        return create(new GenericResourceAllocation(
                 task));
     }
 

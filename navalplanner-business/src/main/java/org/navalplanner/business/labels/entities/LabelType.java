@@ -48,7 +48,7 @@ public class LabelType extends BaseEntity {
     }
 
     public static LabelType create(String name) {
-        return (LabelType) create(new LabelType(name));
+        return create(new LabelType(name));
     }
 
     protected LabelType(String name) {

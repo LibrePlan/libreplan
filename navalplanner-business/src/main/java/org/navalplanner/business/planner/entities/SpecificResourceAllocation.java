@@ -43,7 +43,7 @@ public class SpecificResourceAllocation extends
         ResourceAllocation<SpecificDayAssignment> implements IAllocatable {
 
     public static SpecificResourceAllocation create(Task task) {
-        return (SpecificResourceAllocation) create(new SpecificResourceAllocation(
+        return create(new SpecificResourceAllocation(
                 task));
     }
 
@@ -54,7 +54,7 @@ public class SpecificResourceAllocation extends
 
     public static SpecificResourceAllocation createForTesting(
             ResourcesPerDay resourcesPerDay, Task task) {
-        return (SpecificResourceAllocation) create(new SpecificResourceAllocation(
+        return create(new SpecificResourceAllocation(
                 resourcesPerDay, task));
     }
 

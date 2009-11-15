@@ -54,7 +54,7 @@ public class SpecificDayAssignment extends DayAssignment {
 
     public static SpecificDayAssignment create(LocalDate day, int hours,
             Resource resource) {
-        return (SpecificDayAssignment) create(new SpecificDayAssignment(day,
+        return create(new SpecificDayAssignment(day,
                 hours, resource));
     }
 
