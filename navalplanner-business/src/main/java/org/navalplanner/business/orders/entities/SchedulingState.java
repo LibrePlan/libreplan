@@ -138,7 +138,8 @@ public class SchedulingState {
     public SchedulingState() {
     }
 
-    public SchedulingState(List<SchedulingState> children) {
+    public SchedulingState(Type type, List<SchedulingState> children) {
+        this(type);
         for (SchedulingState each : children) {
             if (!each.isRoot()) {
                 throw new IllegalArgumentException(each

@@ -91,7 +91,7 @@ public class SchedulingStateTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void cannotCreateASchedulingStateWithChildrenAlreadyAssigned() {
-        new SchedulingState(Arrays.asList(childA));
+        new SchedulingState(Type.NO_SCHEDULED, Arrays.asList(childA));
     }
 
     @Test

@@ -98,7 +98,7 @@ public abstract class OrderElement extends BaseEntity {
         List<SchedulingState> childrenStates = getChildrenStates();
         SchedulingState result = childrenStates.isEmpty() ? new SchedulingState(
                 getSchedulingStateType())
-                : new SchedulingState(childrenStates);
+                : new SchedulingState(schedulingStateType, childrenStates);
         result.addTypeChangeListener(new ITypeChangedListener() {
             @Override
             public void typeChanged(Type newType) {
