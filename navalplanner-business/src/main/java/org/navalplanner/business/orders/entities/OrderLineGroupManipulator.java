@@ -23,6 +23,7 @@ package org.navalplanner.business.orders.entities;
 import java.util.Collections;
 import java.util.List;
 
+
 /**
  * Implementation of {@link IOrderLineGroup}. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -52,20 +53,21 @@ public class OrderLineGroupManipulator implements IOrderLineGroup {
     public void add(OrderElement orderElement) {
         setParentIfRequired(orderElement);
         orderElements.add(orderElement);
+        addSchedulingStateToParent(orderElement);
     }
 
     private void setParentIfRequired(OrderElement orderElement) {
         if (this.parent != null) {
             orderElement.setParent(this.parent);
-            addSchedulingStateToParent(orderElement);
         }
     }
 
     private void addSchedulingStateToParent(OrderElement orderElement) {
-        SchedulingState schedulingState = orderElement.getSchedulingState();
-        removeSchedulingStateFromParent(orderElement);
-        this.parent.getSchedulingState().add(
-                schedulingState);
+        if (this.parent != null) {
+            SchedulingState schedulingState = orderElement.getSchedulingState();
+            removeSchedulingStateFromParent(orderElement);
+            this.parent.getSchedulingState().add(schedulingState);
+        }
     }
 
     private void removeSchedulingStateFromParent(OrderElement orderElement) {
@@ -85,6 +87,7 @@ public class OrderLineGroupManipulator implements IOrderLineGroup {
     public void replace(OrderElement oldOrderElement, OrderElement orderElement) {
         setParentIfRequired(orderElement);
         Collections.replaceAll(orderElements, oldOrderElement, orderElement);
+        addSchedulingStateToParent(orderElement);
     }
 
     @Override
@@ -109,6 +112,7 @@ public class OrderLineGroupManipulator implements IOrderLineGroup {
     public void add(int position, OrderElement orderElement) {
         setParentIfRequired(orderElement);
         orderElements.add(position, orderElement);
+        addSchedulingStateToParent(orderElement);
     }
 
 }
