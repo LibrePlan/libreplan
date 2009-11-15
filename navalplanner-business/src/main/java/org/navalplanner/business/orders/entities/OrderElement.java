@@ -87,6 +87,8 @@ public abstract class OrderElement extends BaseEntity {
      */
     private SchedulingState schedulingState = null;
 
+    private TaskSource taskSource;
+
     public SchedulingState getSchedulingState() {
         if (schedulingState == null) {
             schedulingState = createSchedulingState();
