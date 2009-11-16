@@ -51,6 +51,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class StretchesFunctionModel implements IStretchesFunctionModel {
 
+    public static StretchesFunction createDefaultStretchesFunction(Date endDate) {
+        StretchesFunction stretchesFunction = StretchesFunction.create();
+
+        Stretch stretch = new Stretch();
+        stretch.setDate(new LocalDate(endDate));
+        stretch.setLengthPercentage(BigDecimal.ONE);
+        stretch.setAmountWorkPercentage(BigDecimal.ONE);
+        stretchesFunction.addStretch(stretch);
+
+        return stretchesFunction;
+    }
+
     /**
      * Conversation state
      */
@@ -65,28 +77,14 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void initCreate(Task task) {
-        stretchesFunction = StretchesFunction.create();
+    public void init(StretchesFunction stretchesFunction, Task task) {
+        if (stretchesFunction != null) {
+            this.originalStretchesFunction = stretchesFunction;
+            this.stretchesFunction = copy(stretchesFunction);
 
-        Stretch stretch = new Stretch();
-        stretch.setDate(new LocalDate(task.getEndDate()));
-        stretch.setLengthPercentage(BigDecimal.ONE);
-        stretch.setAmountWorkPercentage(BigDecimal.ONE);
-        stretchesFunction.addStretch(stretch);
-
-        this.task = task;
-        forceLoadTask();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public void initEdit(StretchesFunction stretchesFunction,
-            Task task) {
-        this.originalStretchesFunction = stretchesFunction;
-        this.stretchesFunction = copy(stretchesFunction);
-
-        this.task = task;
-        forceLoadTask();
+            this.task = task;
+            forceLoadTask();
+        }
     }
 
     private void forceLoadTask() {

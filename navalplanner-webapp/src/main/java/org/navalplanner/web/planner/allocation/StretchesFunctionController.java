@@ -77,16 +77,8 @@ public class StretchesFunctionController extends GenericForwardComposer {
         AssignmentFunction assignmentFunction = resourceAllocation
                 .getAssignmentFunction();
         Task task = resourceAllocation.getTask();
-        if (assignmentFunction == null) {
-            stretchesFunctionModel.initCreate(task);
-        } else {
-            if (assignmentFunction instanceof StretchesFunction) {
-                stretchesFunctionModel.initEdit(
-                        (StretchesFunction) assignmentFunction, task);
-            } else {
-                stretchesFunctionModel.initCreate(task);
-            }
-        }
+        stretchesFunctionModel.init((StretchesFunction) assignmentFunction,
+                task);
         reloadStretchesListAndCharts();
     }
 

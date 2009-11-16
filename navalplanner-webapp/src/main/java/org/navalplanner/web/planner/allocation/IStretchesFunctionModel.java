@@ -45,9 +45,7 @@ public interface IStretchesFunctionModel {
      * Initial conversation steps
      */
 
-    void initCreate(Task task);
-
-    void initEdit(StretchesFunction stretchesFunction, Task task);
+    void init(StretchesFunction stretchesFunction, Task task);
 
     /*
      * Intermediate conversation steps

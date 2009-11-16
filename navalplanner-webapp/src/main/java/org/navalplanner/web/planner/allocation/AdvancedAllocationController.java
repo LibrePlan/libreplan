@@ -753,11 +753,14 @@ class Row {
 
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        AssignmentFunction assignmentFunction = getAllocation()
+                        ResourceAllocation<?> resourceAllocation = getAllocation();
+                        AssignmentFunction assignmentFunction = resourceAllocation
                                 .getAssignmentFunction();
+                        Class<?> selectedAssignmentFunction = (Class<?>) assignmentFunctionsCombo
+                                .getSelectedItem().getValue();
+                        boolean modifyAssignmentFunction = false;
+
                         if (assignmentFunction != null) {
-                            Class<?> selectedAssignmentFunction = (Class<?>) assignmentFunctionsCombo
-                                    .getSelectedItem().getValue();
                             if (selectedAssignmentFunction == null
                                     || !assignmentFunction.getClass().equals(
                                             selectedAssignmentFunction)) {
@@ -768,8 +771,21 @@ class Row {
                                                 Messagebox.YES | Messagebox.NO,
                                                 Messagebox.QUESTION);
                                 if (Messagebox.YES == status) {
-                                    getAllocation().setAssignmentFunction(null);
+                                    modifyAssignmentFunction = true;
                                 }
+                            }
+                        }
+
+                        if (assignmentFunction == null || modifyAssignmentFunction) {
+                            if (selectedAssignmentFunction == null) {
+                                resourceAllocation.setAssignmentFunction(null);
+                            } else if (selectedAssignmentFunction
+                                    .equals(StretchesFunction.class)) {
+                                StretchesFunction stretchesFunction = StretchesFunctionModel
+                                        .createDefaultStretchesFunction(resourceAllocation
+                                                .getTask().getEndDate());
+                                resourceAllocation
+                                        .setAssignmentFunction(stretchesFunction);
                             }
                         }
                     }
