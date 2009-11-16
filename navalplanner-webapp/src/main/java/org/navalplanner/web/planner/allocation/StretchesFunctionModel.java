@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
@@ -63,6 +64,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     private ITaskElementDAO taskElementDAO;
 
     @Override
+    @Transactional(readOnly = true)
     public void initCreate(Task task) {
         stretchesFunction = StretchesFunction.create();
 
@@ -73,15 +75,24 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         stretchesFunction.addStretch(stretch);
 
         this.task = task;
+        forceLoadTask();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void initEdit(StretchesFunction stretchesFunction,
             Task task) {
         this.originalStretchesFunction = stretchesFunction;
         this.stretchesFunction = copy(stretchesFunction);
 
         this.task = task;
+        forceLoadTask();
+    }
+
+    private void forceLoadTask() {
+        taskElementDAO.reattach(task);
+        task.getHoursSpecifiedAtOrder();
+        task.getCalendar();
     }
 
     private static StretchesFunction copy(StretchesFunction stretchesFunction) {
@@ -206,15 +217,22 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         return new LocalDate(task.getStartDate());
     }
 
-    @Transactional(readOnly = true)
     @Override
     public Integer getTaskHours() {
         if (task == null) {
             return null;
         }
 
-        taskElementDAO.reattach(task);
         return task.getHoursSpecifiedAtOrder();
+    }
+
+    @Override
+    public BaseCalendar getTaskCalendar() {
+        if (task == null) {
+            return null;
+        }
+
+        return task.getCalendar();
     }
 
 }

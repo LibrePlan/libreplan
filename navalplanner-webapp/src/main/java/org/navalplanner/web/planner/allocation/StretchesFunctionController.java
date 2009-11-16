@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -268,6 +269,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
 
         BigDecimal taskHours = new BigDecimal(stretchesFunctionModel
                 .getTaskHours());
+        BaseCalendar calendar = stretchesFunctionModel.getTaskCalendar();
 
         xymodel.addValue(title, previousDate.toDateTimeAtStartOfDay()
                 .getMillis(), 0);
@@ -277,7 +279,11 @@ public class StretchesFunctionController extends GenericForwardComposer {
                     previousPercentage).multiply(taskHours);
             Integer days = Days.daysBetween(previousDate, stretch.getDate())
                     .getDays();
-            // TODO subtract bank holidays
+
+            if (calendar != null) {
+                days -= calendar.getNonWorkableDays(previousDate, stretch
+                        .getDate()).size();
+            }
 
             BigDecimal hoursPerDay = BigDecimal.ZERO;
             if (days > 0) {

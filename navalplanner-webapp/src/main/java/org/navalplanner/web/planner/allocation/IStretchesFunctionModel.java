@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.Stretch;
@@ -68,6 +69,8 @@ public interface IStretchesFunctionModel {
     LocalDate getTaskStartDate();
 
     Integer getTaskHours();
+
+    BaseCalendar getTaskCalendar();
 
     /*
      * Final conversation steps
