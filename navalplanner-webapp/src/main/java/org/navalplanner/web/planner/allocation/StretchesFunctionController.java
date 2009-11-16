@@ -279,10 +279,10 @@ public class StretchesFunctionController extends GenericForwardComposer {
                     .getDays();
             // TODO subtract bank holidays
 
-            int hoursPerDay = 0;
+            BigDecimal hoursPerDay = BigDecimal.ZERO;
             if (days > 0) {
                 hoursPerDay = amountWork.divide(new BigDecimal(days),
-                        RoundingMode.DOWN).intValue();
+                        RoundingMode.DOWN);
             }
 
             xymodel.addValue(title, previousDate.toDateTimeAtStartOfDay()
@@ -322,7 +322,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
                     taskHours);
 
             xymodel.addValue(title, stretch.getDate().toDateTimeAtStartOfDay()
-                    .getMillis(), amountWork.intValue());
+                    .getMillis(), amountWork);
         }
 
         return xymodel;
