@@ -139,7 +139,6 @@ public class OrderElementController extends GenericForwardComposer {
 
     private void clearAll() {
         clear();
-        detailsController.clear();
         assignedLabelsController.clear();
     }
 
@@ -163,7 +162,6 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     private void closeAll() {
-        detailsController.close();
         if (!manageOrderElementAdvancesController.close()) {
             selectTab("tabAdvances");
             return;

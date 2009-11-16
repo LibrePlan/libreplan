@@ -48,7 +48,7 @@
             <tabpanel>
                 <listOrderElementLabels id="orderElementLabels" />
             </tabpanel>
-             <tabpanel>
+             <tabpanel style="overflow:auto">
                 <listOrderElementCriterionRequirements id="orderElementCriterionRequirements"/>
             </tabpanel>
         </tabpanels>

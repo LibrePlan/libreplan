@@ -21,7 +21,8 @@
 <?component name="listHoursGroupCriterionRequirements" inline="true" macroURI="_listHoursGroupCriterionRequirement.zul"?>
 <vbox id="${arg.id}"
     apply="org.navalplanner.web.orders.AssignedCriterionRequirementToOrderElementController">
-<panel title="${i18n:_('Assigned Criterions Requirement')}" border="normal">
+<panel title="${i18n:_('Assigned Criterions Requirement')}" border="normal"
+    style="overflow:auto" width="99%">
     <panelchildren>
         <hbox align="center">
                 <separator bar="false" spacing="40px" orient="horizontal"/>
@@ -30,17 +31,18 @@
                     label="${i18n:_('Add criterion requirement')}" />
                 <separator bar="false" spacing="40px" orient="vertical"/>
         </hbox>
-        <newdatasortablegrid id="listingRequirements" mold="paging" pageSize="10" fixedLayout="true"
+        <newdatasortablegrid id="listingRequirements" mold="paging"
+            pageSize="4" fixedLayout="true"
             model="@{assignedCriterionRequirementController.criterionRequirementWrappers}">
             <columns>
                 <newdatasortablecolumn label="${i18n:_('Criterion name')}" sort="auto(criterionAndType)" sortDirection="ascending"/>
-                <newdatasortablecolumn label="${i18n:_('Type')}" sort="auto(type)" width="70px" align="center"/>
-                <newdatasortablecolumn label="${i18n:_('Operations')}" width="70px" align="center"/>
+                <newdatasortablecolumn label="${i18n:_('Type')}" sort="auto(type)" width="100px" align="center"/>
+                <newdatasortablecolumn label="${i18n:_('Operations')}" width="150px" align="center"/>
             </columns>
             <rows>
                 <row self="@{each='criterionRequirementWrapper'}" value="@{criterionRequirementWrapper}">
                     <hbox>
-                    <bandbox width="500px"
+                    <bandbox  width="500px"
                         visible ="@{criterionRequirementWrapper.updatable}"
                         value = "@{criterionRequirementWrapper.criterionAndType}">
                         <bandpopup>
@@ -84,32 +86,49 @@
                 </row>
             </rows>
         </newdatasortablegrid>
-        <separator bar="false" spacing="40px" orient="vertical"/>
     </panelchildren>
 </panel>
 <separator bar="false" spacing="80px" orient="vertical"/>
 
-<vbox id= "containerHoursGroup">
-</vbox>
-<!--Manage Hours Groups-->
-<panel title="${i18n:_('Hours Group')}" border="normal">
+<panel title="${i18n:_('Total Hours OrderElement')}" border="normal"
+    width="200px">
     <panelchildren>
-    <hbox visible = "@{assignedCriterionRequirementController.editableHoursGroup}">
+        <hbox align="center">
+                <separator bar="false" spacing="40px" orient="horizontal"/>
+                <separator bar="false" spacing="20px" orient="vertical"/>
+                <intbox id="orderElementTotalHours"
+                    value = "@{assignedCriterionRequirementController.orderElement.workHours}"
+                    onChange="assignedCriterionRequirementController.changeTotalHours();"
+                    readonly = "@{assignedCriterionRequirementController.readOnly}"
+                    constraint = "@{assignedCriterionRequirementController.validateTotalHours}"/>
+                <separator bar="false" spacing="20px" orient="vertical"/>
+        </hbox>
+        </panelchildren>
+</panel>
+
+<separator bar="false" spacing="80px" orient="vertical"/>
+
+<!--Manage Hours Groups-->
+<panel title="${i18n:_('Hours Group')}" border="normal" width="99%">
+    <panelchildren>
+    <hbox align="center"
+        visible = "@{assignedCriterionRequirementController.editableHoursGroup}">
         <separator bar="false" spacing="40px" orient="horizontal"/>
         <separator bar="false" spacing="20px" orient="vertical"/>
         <button id="buttonAddHoursGroup"
             label="${i18n:_('Add new hours group')}"
             onClick="assignedCriterionRequirementController.addHoursGroup()" />
-        <separator bar="false" spacing="40px" orient="vertical"/>
+        <separator bar="false" spacing="20px" orient="vertical"/>
     </hbox>
-    <grid id = "listHoursGroups" fixedLayout="true"
+    <grid id = "listHoursGroups" mold="paging" pageSize="4" fixedLayout="true"
         model="@{assignedCriterionRequirementController.hoursGroupWrappers}">
         <columns>
             <column width="25px" />
-            <column label="Hours"/>
-            <column label="%"/>
-            <column label="Fixed %"/>
-            <column label="Operations" visible = "@{assignedCriterionRequirementController.editableHoursGroup}"/>
+            <column label="Hours" width="200px" align="center"/>
+            <column label="%" width="200px" align="center"/>
+            <column label="Fixed %" width="100px" align="center"/>
+            <column label="Operations" align="center"
+                visible = "@{assignedCriterionRequirementController.editableHoursGroup}"/>
         </columns>
         <rows>
             <row self="@{each='hoursGroupWrapper'}" value="@{hoursGroupWrapper}">
@@ -117,12 +136,15 @@
                     <listHoursGroupCriterionRequirements/>
                 </detail>
                 <intbox value="@{hoursGroupWrapper.workingHours}"
-                    readonly ="@{assignedCriterionRequirementController.readOnly}"/>
+                    readonly ="@{hoursGroupWrapper.workingHoursReadOnly}"
+                    onChange = "assignedCriterionRequirementController.recalculateHoursGroup()"/>
                 <decimalbox scale = "2" value="@{hoursGroupWrapper.percentage}"
                     constraint = "@{assignedCriterionRequirementController.validatePercentage}"
-                    readonly ="@{assignedCriterionRequirementController.readOnly}"/>
+                    readonly ="@{hoursGroupWrapper.percentageReadOnly}"
+                    onChange = "assignedCriterionRequirementController.recalculateHoursGroup()"/>
                 <checkbox checked="@{hoursGroupWrapper.fixedPercentage}"
-                    disabled ="@{assignedCriterionRequirementController.readOnly}"/>
+                    disabled ="@{assignedCriterionRequirementController.readOnly}"
+                    onCheck = "assignedCriterionRequirementController.recalculateHoursGroup()"/>
                 <hbox
                 visible = "@{assignedCriterionRequirementController.editableHoursGroup}">
                     <button id="buttonDeleteHoursGroup"

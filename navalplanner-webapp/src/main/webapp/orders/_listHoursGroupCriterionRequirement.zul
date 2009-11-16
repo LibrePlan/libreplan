@@ -20,12 +20,12 @@
 
 <panel title="${i18n:_('Criterions Requirement')}" border="normal">
 <panelchildren >
-    <newdatasortablegrid mold="paging" pageSize="10" fixedLayout="true"
+    <newdatasortablegrid mold="paging" pageSize="5" fixedLayout="true"
             model="@{hoursGroupWrapper.criterionRequirementWrappersView}">
             <columns>
                 <newdatasortablecolumn label="${i18n:_('Criterion name')}" sort="auto(criterionAndType)" sortDirection="ascending"/>
-                <newdatasortablecolumn label="${i18n:_('Type')}" sort="auto(type)" width="70px" align="center"/>
-                <newdatasortablecolumn label="${i18n:_('Operations')}" width="70px" align="center"/>
+                <newdatasortablecolumn label="${i18n:_('Type')}" sort="auto(type)" width="120px" align="center"/>
+                <newdatasortablecolumn label="${i18n:_('Operations')}" width="90px" align="center"/>
             </columns>
             <rows>
                 <row self="@{each='criterionRequirementWrapper'}" value="@{criterionRequirementWrapper}">

@@ -89,8 +89,12 @@ public class HoursGroup extends BaseEntity implements Cloneable {
      */
     public void setPercentage(BigDecimal proportion)
             throws IllegalArgumentException {
-        if (proportion.compareTo(new BigDecimal(1).setScale(2)) > 0) {
-            this.percentage = new BigDecimal(0).setScale(2);
+        BigDecimal oldPercentage = this.percentage;
+
+        this.percentage = proportion;
+
+        if (!parentOrderLine.isPercentageValid()) {
+            this.percentage = oldPercentage;
             throw new IllegalArgumentException(
                     "Total percentage should be less than 100%");
         }

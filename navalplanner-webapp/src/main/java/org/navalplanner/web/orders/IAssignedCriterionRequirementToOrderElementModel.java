@@ -32,13 +32,17 @@ public interface IAssignedCriterionRequirementToOrderElementModel {
     void setOrderModel(IOrderModel orderModel);
 
     List<CriterionRequirementWrapper> getCriterionRequirementWrappers();
+
     List<CriterionWithItsType> getCriterionWithItsTypes();
 
     boolean canSetCriterionWithItsType(
             CriterionRequirementWrapper requirementWrapper,
             CriterionWithItsType criterionAndType);
 
-    CriterionRequirementWrapper validateWrappers();
+    CriterionRequirementWrapper validateWrappers(
+            List<CriterionRequirementWrapper> list);
+
+    CriterionRequirementWrapper validateHoursGroupWrappers();
 
     void setValidCriterionRequirementWrapper(
             CriterionRequirementWrapper requirement, boolean valid);
@@ -64,5 +68,6 @@ public interface IAssignedCriterionRequirementToOrderElementModel {
     void deleteCriterionToHoursGroup(HoursGroupWrapper hoursGroupWrapper,
             CriterionRequirementWrapper requirementWrapper);
 
-    boolean isPercentageValid();
+    void updateHoursGroup();
+
 }

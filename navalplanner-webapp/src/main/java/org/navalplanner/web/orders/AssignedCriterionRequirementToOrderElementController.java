@@ -30,8 +30,6 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
-import org.navalplanner.web.common.IMessagesForUser;
-import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.zkoss.zk.ui.Component;
@@ -39,9 +37,9 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Detail;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Panel;
@@ -67,18 +65,11 @@ public class AssignedCriterionRequirementToOrderElementController extends
 
     private Grid listHoursGroups;
 
-    private IMessagesForUser messages;
-
-    private Component messagesContainer;
-
-    private Detail detail;
+    private Intbox orderElementTotalHours;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        if (containerHoursGroup == null)
-            throw new RuntimeException(_("MessagesContainer is needed"));
-        messages = new MessagesForUser(containerHoursGroup);
         comp.setVariable("assignedCriterionRequirementController", this, true);
         vbox = (Vbox) comp;
     }
@@ -164,19 +155,41 @@ setValidCriterionRequirementWrapper(requirement, true);
 
     private void reload() {
         Util.reloadBindings(listingRequirements);
+        Util.reloadBindings(orderElementTotalHours);
         Util.reloadBindings(listHoursGroups);
     }
 
     private boolean showInvalidValues() {
-        CriterionRequirementWrapper invalidWrapper = this.assignedCriterionRequirementToOrderElementModel
-                .validateWrappers();
+        CriterionRequirementWrapper invalidWrapper = assignedCriterionRequirementToOrderElementModel
+                .validateWrappers(criterionRequirementWrappers());
         if (invalidWrapper != null) {
             showInvalidValues(invalidWrapper);
+            return true;
+        }
+
+        CriterionRequirementWrapper invalidHoursGroupWrapper = assignedCriterionRequirementToOrderElementModel
+                .validateHoursGroupWrappers();
+        if (invalidHoursGroupWrapper != null) {
+            showInvalidValuesInHoursGroups(invalidHoursGroupWrapper);
             return true;
         }
         return false;
     }
 
+    // Show invalid values inside listhoursGroup.
+    private void showInvalidValuesInHoursGroups(
+            CriterionRequirementWrapper requirementWrapper) {
+        if (listHoursGroups != null) {
+            List<Row> listRows = (List<Row>) ((Rows) listHoursGroups.getRows())
+                    .getChildren();
+            for (Row row : listRows) {
+                Rows listRequirementRows = getRequirementRows(row);
+                Row requirementRow = findRowOfCriterionRequirementWrapper(
+                        listRequirementRows, requirementWrapper);
+                showInvalidValue(requirementRow, requirementWrapper);
+            }
+        }
+    }
     /**
      * Validates {@link CriterionRequirementWrapper} data constraints
      * @param invalidValue
@@ -187,12 +200,17 @@ setValidCriterionRequirementWrapper(requirement, true);
             // Find which listItem contains CriterionSatisfaction inside listBox
             Row row = findRowOfCriterionRequirementWrapper(listingRequirements
                     .getRows(), requirementWrapper);
-            if (row != null) {
-                Bandbox bandType = getBandType(requirementWrapper, row);
-                    bandType.setValue(null);
-                    throw new WrongValueException(bandType,
-                            _("The criterion and its type cannot be null"));
-            }
+            showInvalidValue(row, requirementWrapper);
+        }
+    }
+
+    private void showInvalidValue(Row row,
+            CriterionRequirementWrapper requirementWrapper) {
+        if (row != null) {
+            Bandbox bandType = getBandType(requirementWrapper, row);
+            bandType.setValue(null);
+            throw new WrongValueException(bandType,
+                    _("The criterion and its type cannot be null"));
         }
     }
 
@@ -316,7 +334,6 @@ setValidCriterionRequirementWrapper(requirement, true);
 
     public void removeCriterionToHoursGroup(Component self){
         try {
-            System.out.println("remove in Controller");
             Row row = (Row) self.getParent().getParent();
             CriterionRequirementWrapper requirementWrapper = (CriterionRequirementWrapper) row.getValue();
             HoursGroupWrapper hoursGroupWrapper = getHoursGroupOfRequirementWrapper(row);
@@ -378,6 +395,31 @@ setValidCriterionRequirementWrapper(requirement, true);
      * percentage and its number of hours or set the fixed percentage
      */
 
+    public void changeTotalHours() {
+        recalculateHoursGroup();
+    }
+
+    public Constraint validateTotalHours() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                if (value == null) {
+                    value = new Integer(0);
+                    orderElementTotalHours.setValue((Integer) value);
+                }
+                try {
+                    if (getOrderElement() instanceof OrderLine) {
+                        ((OrderLine) getOrderElement())
+                            .setWorkHours((Integer) value);
+                    }
+                } catch (IllegalArgumentException e) {
+                    throw new WrongValueException(comp, _(e.getMessage()));
+                }
+            }
+        };
+    }
+
     public Constraint validatePercentage() {
         return new Constraint() {
             @Override
@@ -385,12 +427,21 @@ setValidCriterionRequirementWrapper(requirement, true);
                     throws WrongValueException {
                 HoursGroupWrapper hoursGroupWrapper = (HoursGroupWrapper) ((Row) comp
                         .getParent()).getValue();
-                hoursGroupWrapper.setPercentage((BigDecimal) value);
-                if (!assignedCriterionRequirementToOrderElementModel.isPercentageValid()) {
-                    throw new WrongValueException(
-                            comp,_("Total percentage should be less than 100%"));
+                try {
+                    hoursGroupWrapper.setPercentage((BigDecimal) value);
+                } catch (IllegalArgumentException e) {
+                    throw new WrongValueException(comp, _(e.getMessage()));
                 }
             }
         };
     }
+
+    public void recalculateHoursGroup() {
+        ((OrderLine) assignedCriterionRequirementToOrderElementModel
+                .getOrderElement()).recalculateHoursGroups();
+        assignedCriterionRequirementToOrderElementModel.updateHoursGroup();
+        Util.reloadBindings(listHoursGroups);
+        Util.reloadBindings(orderElementTotalHours);
+    }
+
 }

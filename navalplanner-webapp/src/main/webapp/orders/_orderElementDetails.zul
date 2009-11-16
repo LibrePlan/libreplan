@@ -40,11 +40,6 @@
                 </hbox>
             </row>
             <row>
-                <label value="${i18n:_('Total hours')}" />
-                <intbox id="totalHours"
-                    value="@{detailsController.orderElement.workHours}" />
-            </row>
-            <row>
                 <label value="${i18n:_('Description')}" />
                 <textbox id="description" rows="3"
                     value="@{detailsController.orderElement.description}"
@@ -52,39 +47,4 @@
             </row>
         </rows>
     </grid>
-
-    <!--  Hours group -->
-    <panel title="${i18n:_('Hours group')}">
-        <panelchildren>
-            <hbox>
-                <button id="btnAddHoursGroup"
-                    label="${i18n:_('Add new hours group')}"
-                    onClick="detailsController.addHoursGroup()" />
-                <button id="btnDeleteHoursGroup"
-                    label="${i18n:_('Delete hours group')}"
-                    onClick="detailsController.deleteHoursGroups()" />
-            </hbox>
-            <listbox id="hoursGroupsListbox" multiple="true"
-                model="@{detailsController.hoursGroups}"
-                itemRenderer="@{detailsController.renderer}" rows="3">
-                <listhead sizable="false">
-                    <listheader label="${i18n:_('Hours')}" />
-                    <listheader label="${i18n:_('%')}" />
-                </listhead>
-            </listbox>
-        </panelchildren>
-    </panel>
-
-    <!--  Manage criteria -->
-    <panel id="panelCriterions" title="${i18n:_('Manage criteria')}">
-        <panelchildren>
-            <vbox id="selectCriterions">
-                <twowayselector
-                    assignedObjects="@{detailsController.selectedCriterionTypes, access='both'}"
-                    assignedTitle="Selected types"
-                    unassignedObjects="@{detailsController.criterionTypes}"
-                    unassignedTitle="Criterion types" columns="name" />
-            </vbox>
-        </panelchildren>
-    </panel>
 </vbox>

@@ -20,7 +20,6 @@
 
 package org.navalplanner.web.orders;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -149,6 +148,13 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         return criterionWithItsTypes;
     }
 
+    public Integer getTotalHours() {
+        if (getOrderElement() != null) {
+            return getOrderElement().getWorkHours();
+        }
+        return 0;
+    }
+
     @Override
     @Transactional(readOnly = true)
     public void assignCriterionRequirementWrapper() {
@@ -225,8 +231,9 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         }
     }
 
-    public CriterionRequirementWrapper validateWrappers() {
-        for (CriterionRequirementWrapper requirementWrapper : criterionRequirementWrappers) {
+    public CriterionRequirementWrapper validateWrappers(
+            List<CriterionRequirementWrapper> list) {
+        for (CriterionRequirementWrapper requirementWrapper : list) {
             if (requirementWrapper.getCriterionWithItsType() == null) {
                 return requirementWrapper;
             }
@@ -234,6 +241,16 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         return null;
     }
 
+    public CriterionRequirementWrapper validateHoursGroupWrappers() {
+        for (HoursGroupWrapper hoursGroupWrapper : hoursGroupsWrappers) {
+            CriterionRequirementWrapper requirementWrapper = validateWrappers(hoursGroupWrapper
+                    .getCriterionRequirementWrappersView());
+            if (requirementWrapper != null) {
+                return requirementWrapper;
+            }
+        }
+        return null;
+    }
 
     /*
      * Operations to manage the hours groups (add new hours group, delete a
@@ -245,7 +262,7 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         if (getOrderElement() instanceof OrderLine) {
             return (OrderLine) getOrderElement();
         } else {
-            return new OrderLine();
+            return null;
         }
     }
 
@@ -270,10 +287,12 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
     }
 
     private HoursGroup createNewHoursGroup() {
-        HoursGroup newHoursGroup = HoursGroup
-.create(asOrderLine());
-        (asOrderLine()).addHoursGroup(newHoursGroup);
-        return newHoursGroup;
+        if (asOrderLine() != null) {
+            HoursGroup newHoursGroup = HoursGroup.create(asOrderLine());
+            (asOrderLine()).addHoursGroup(newHoursGroup);
+            return newHoursGroup;
+        }
+        return null;
     }
 
     public List<HoursGroupWrapper> getHoursGroupsWrappers() {
@@ -284,9 +303,11 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
     }
 
     public void deleteHoursGroupWrapper(HoursGroupWrapper hoursGroupWrapper) {
-        HoursGroup hoursGroup = hoursGroupWrapper.getHoursGroup();
-        asOrderLine().deleteHoursGroup(hoursGroup);
-        hoursGroupsWrappers.remove(hoursGroupWrapper);
+        if (asOrderLine() != null) {
+            HoursGroup hoursGroup = hoursGroupWrapper.getHoursGroup();
+            asOrderLine().deleteHoursGroup(hoursGroup);
+            hoursGroupsWrappers.remove(hoursGroupWrapper);
+        }
     }
 
     /*
@@ -407,21 +428,22 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         exception.setValid(false);
     }
 
-    /* Operations to control the data hoursGroup */
-    public boolean isPercentageValid() {
-        BigDecimal newPercentage = new BigDecimal(0).setScale(2);
-        for (HoursGroupWrapper hoursGroupWrapper : hoursGroupsWrappers) {
-            if (hoursGroupWrapper.getFixedPercentage()) {
-                BigDecimal percentage = hoursGroupWrapper.getPercentage();
-                percentage = percentage.divide(new BigDecimal(100),
-                        BigDecimal.ROUND_DOWN);
-                newPercentage = newPercentage.add(percentage);
+    /* Operations to control and validate the data hoursGroup */
+
+    public void updateHoursGroup() {
+        for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+            if (!existIntohoursGroupsWrappers(hoursGroup)) {
+                addNewHoursGroupWrapper(hoursGroup);
             }
         }
-        if (newPercentage.compareTo(new BigDecimal(1).setScale(2)) > 0) {
-            return false;
-        }
-        return true;
     }
 
+    private boolean existIntohoursGroupsWrappers(HoursGroup hoursGroup) {
+        for (HoursGroupWrapper hoursGroupWrapper : hoursGroupsWrappers) {
+            if (hoursGroupWrapper.getHoursGroup().equals(hoursGroup)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -139,6 +139,10 @@ public class OrderLine extends OrderElement {
      */
     public void setWorkHours(Integer workHours) throws IllegalArgumentException {
 
+        if (workHours == null) {
+            workHours = new Integer(0);
+        }
+
         if (workHours < 0) {
             throw new IllegalArgumentException(
                     "workHours should be greater or equals to 0");
@@ -270,6 +274,10 @@ public class OrderLine extends OrderElement {
      */
     public boolean isTotalHoursValid(Integer total) {
 
+        if (total == null) {
+            return false;
+        }
+
         Integer newTotal = 0;
 
         for (HoursGroup hoursGroup : hoursGroups) {
@@ -384,6 +392,7 @@ public class OrderLine extends OrderElement {
         if (newTotal.compareTo(total) < 0) {
             // Add a new HourGroup with the remaining hours
             HoursGroup hoursGroup = HoursGroup.create(this);
+            hoursGroup.updateMyCriterionRequirements();
             hoursGroup.setWorkingHours(total - newTotal);
             hoursGroups.add(hoursGroup);
         }

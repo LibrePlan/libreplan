@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.validator.NotNull;
 import org.navalplanner.business.INewObject;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -44,16 +43,15 @@ public class HoursGroupWrapper implements INewObject {
 
     private Boolean newObject = false;
 
+    private Integer workingHours = 0;
+
+    private BigDecimal percentage = new BigDecimal(0);
+
+    private Boolean fixedPercentage = false;
+
     private List<CriterionRequirementWrapper> directRequirementWrappers = new ArrayList<CriterionRequirementWrapper>();
 
     private List<CriterionRequirementWrapper> exceptionRequirementWrappers = new ArrayList<CriterionRequirementWrapper>();
-
-    @NotNull
-    private Integer workingHours = 0;
-
-    private BigDecimal percentage = new BigDecimal(0).setScale(2);
-
-    private Boolean fixedPercentage = false;
 
     private OrderElement orderElement;
 
@@ -67,14 +65,6 @@ public class HoursGroupWrapper implements INewObject {
         this.hoursGroup = hoursGroup;
         initRequirementWrappers(hoursGroup);
     }
-
-    // public HoursGroupWrapper(OrderElement orderElement,
-    // List<CriterionRequirementWrapper> list) {
-    // this.orderElement = orderElement;
-    // this.newObject = true;
-    // initRequirementWrappers(list);
-    // initExceptions();
-    // }
 
     private void initRequirementWrappers(HoursGroup hoursGroup) {
         directRequirementWrappers = new ArrayList<CriterionRequirementWrapper>();
@@ -115,18 +105,18 @@ public class HoursGroupWrapper implements INewObject {
     }
 
     public Integer getWorkingHours() {
-        return workingHours;
+        return hoursGroup.getWorkingHours();
     }
 
     public void setWorkingHours(Integer workingHours) {
-        this.workingHours = workingHours;
+        hoursGroup.setWorkingHours(workingHours);
     }
 
     public BigDecimal getPercentage() {
         if (orderElement instanceof OrderLineGroup) {
             return getPercentageInOrderLineGroup();
         }
-        return percentage.scaleByPowerOfTen(2);
+        return hoursGroup.getPercentage().scaleByPowerOfTen(2);
     }
 
     private BigDecimal getPercentageInOrderLineGroup() {
@@ -143,20 +133,21 @@ public class HoursGroupWrapper implements INewObject {
 
     public void setPercentage(BigDecimal percentage) {
         if (percentage != null) {
-            this.percentage = percentage.divide(new BigDecimal(100),
-                BigDecimal.ROUND_DOWN);
+            BigDecimal proportion = percentage.divide(
+                    new BigDecimal(100), BigDecimal.ROUND_DOWN);
+            hoursGroup.setPercentage(proportion);
         } else {
-            this.percentage = new BigDecimal(0).setScale(2);
+            hoursGroup.setPercentage(new BigDecimal(0).setScale(2));
         }
 
     }
 
     public Boolean getFixedPercentage() {
-        return fixedPercentage;
+        return hoursGroup.isFixedPercentage();
     }
 
     public void setFixedPercentage(Boolean fixedPercentage) {
-        this.fixedPercentage = fixedPercentage;
+        hoursGroup.setFixedPercentage(fixedPercentage);
     }
 
     public HoursGroup getHoursGroup() {
@@ -165,6 +156,16 @@ public class HoursGroupWrapper implements INewObject {
 
     public void setHoursGroup(HoursGroup hoursGroup) {
         this.hoursGroup = hoursGroup;
+    }
+
+    public boolean isPercentageReadOnly() {
+        return (!hoursGroup.isFixedPercentage())
+                || ((orderElement instanceof OrderLineGroup));
+    }
+
+    public boolean isWorkingHoursReadOnly() {
+        return (hoursGroup.isFixedPercentage())
+                || ((orderElement instanceof OrderLineGroup));
     }
 
     /* Operations to manage the criterions requirements */
