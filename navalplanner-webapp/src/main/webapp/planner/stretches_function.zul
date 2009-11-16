@@ -32,12 +32,18 @@
 
 <hbox>
     <vbox>
-        <label>${i18n:_('Stretches')}</label>
+
+        <panel title="${i18n:_('Stretches list')}">
+
+        <panelchildren>
+
+        <button label="${i18n:_('Add stretch')}" onClick="stretchesFunctionController.addStretch()" />
 
         <listbox id="stretchesList"
             model="@{stretchesFunctionController.stretches}"
             itemRenderer="@{stretchesFunctionController.stretchesRenderer}"
-            style="margin-bottom: 5px" fixedLayout="true" rows="4">
+            style="margin-bottom: 5px" fixedLayout="true" rows="15"
+            width="500px" >
             <listhead>
                 <listheader label="${i18n:_('Date')}" />
                 <listheader label="${i18n:_('Length percentage')}" />
@@ -46,16 +52,10 @@
             </listhead>
         </listbox>
 
-        <hbox>
-            <button label="${i18n:_('Add stretch')}" onClick="stretchesFunctionController.addStretch()" />
-        </hbox>
+        </panelchildren>
 
-        <hbox>
-            <button label="${i18n:_('Accept')}"
-                onClick="stretchesFunctionController.confirm()" />
-            <button label="${i18n:_('Cancel')}"
-                onClick="stretchesFunctionController.cancel()" />
-        </hbox>
+        </panel>
+
     </vbox>
 
     <vbox id="charts">
@@ -73,6 +73,13 @@
             showLegend="false" />
     </vbox>
 
+</hbox>
+
+<hbox>
+    <button label="${i18n:_('Accept')}"
+        onClick="stretchesFunctionController.confirm()" />
+    <button label="${i18n:_('Cancel')}"
+        onClick="stretchesFunctionController.cancel()" />
 </hbox>
 
 </window>
