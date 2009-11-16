@@ -39,6 +39,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
+import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -744,17 +745,28 @@ class Row {
     }
 
     private Combobox getAssignmentFunctionsCombo() {
+        AssignmentFunction assignmentFunction = getAllocation()
+                .getAssignmentFunction();
+
         Combobox combobox = new Combobox();
         combobox.setId("assigment_functions_combo");
 
         Comboitem comboitem = new Comboitem(_("None"));
         comboitem.setValue(null);
         combobox.appendChild(comboitem);
-        combobox.setSelectedItem(comboitem);
+        if (assignmentFunction == null) {
+            combobox.setSelectedItem(comboitem);
+        }
 
         comboitem = new Comboitem(_("Stretches"));
         comboitem.setValue(StretchesFunction.class);
         combobox.appendChild(comboitem);
+
+        if (assignmentFunction != null
+                && assignmentFunction.getClass()
+                        .equals(StretchesFunction.class)) {
+            combobox.setSelectedItem(comboitem);
+        }
 
         return combobox;
     }
