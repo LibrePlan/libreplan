@@ -169,6 +169,7 @@ public class SpecificResourceAllocation extends
         Validate.isTrue(modifications instanceof SpecificResourceAllocation);
         mergeAssignments((SpecificResourceAllocation) modifications);
         setResourcesPerDay(modifications.getResourcesPerDay());
+        setAssignmentFunction(modifications.getAssignmentFunction());
     }
 
     private void mergeAssignments(SpecificResourceAllocation modifications) {

@@ -16,7 +16,9 @@
 
         <many-to-one class="Task" name="task" column="TASK" />
 
-        <many-to-one class="AssignmentFunction" name="assignmentFunction" column="ASSIGNMENT_FUNCTION" not-null="false"/>
+        <many-to-one class="AssignmentFunction" name="assignmentFunction"
+            column="ASSIGNMENT_FUNCTION" not-null="false"
+            cascade="all" />
 
         <joined-subclass name="SpecificResourceAllocation" table="specific_resource_allocation">
             <key column="RESOURCE_ALLOCATION_ID" />

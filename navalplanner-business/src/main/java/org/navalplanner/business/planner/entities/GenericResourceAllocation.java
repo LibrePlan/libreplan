@@ -233,6 +233,7 @@ public class GenericResourceAllocation extends
         Validate.isTrue(modifications instanceof GenericResourceAllocation);
         mergeAssignments((GenericResourceAllocation) modifications);
         setResourcesPerDay(modifications.getResourcesPerDay());
+        setAssignmentFunction(modifications.getAssignmentFunction());
     }
 
     private void mergeAssignments(GenericResourceAllocation modifications) {
