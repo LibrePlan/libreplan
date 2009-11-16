@@ -28,6 +28,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Set;
+
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -666,6 +668,21 @@ public class BaseCalendarTest {
 
         LocalDate currentDate = new LocalDate();
         calendar.setValidFrom(currentDate, currentDate);
+    }
+
+    @Test
+    public void testGetNonWorkableDays() {
+        BaseCalendar calendar = createBasicCalendar();
+
+        Set<LocalDate> nonWorkableDays = calendar.getNonWorkableDays(
+                MONDAY_LOCAL_DATE, WEDNESDAY_LOCAL_DATE);
+        assertTrue(nonWorkableDays.isEmpty());
+
+        nonWorkableDays = calendar.getNonWorkableDays(MONDAY_LOCAL_DATE,
+                SUNDAY_LOCAL_DATE);
+        assertFalse(nonWorkableDays.isEmpty());
+        assertTrue(nonWorkableDays.contains(SATURDAY_LOCAL_DATE));
+        assertTrue(nonWorkableDays.contains(SUNDAY_LOCAL_DATE));
     }
 
 }

@@ -619,4 +619,28 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return (index == (calendarDataVersions.size() - 1));
     }
 
+    /**
+     * Returns a set of non workable days (0 hours) for a specific period
+     * depending on the calendar restrictions.
+     */
+    public Set<LocalDate> getNonWorkableDays(Date initDate, Date endDate) {
+        return getNonWorkableDays(new LocalDate(initDate),
+                new LocalDate(endDate));
+    }
+
+    /**
+     * Returns a set of non workable days (0 hours) for a specific period
+     * depending on the calendar restrictions.
+     */
+    public Set<LocalDate> getNonWorkableDays(LocalDate init, LocalDate end) {
+        Set<LocalDate> result = new HashSet<LocalDate>();
+        for (LocalDate current = init; current.compareTo(end) <= 0; current = current
+                .plusDays(1)) {
+            if (getWorkableHours(current) == 0) {
+                result.add(current);
+            }
+        }
+        return result;
+    }
+
 }
