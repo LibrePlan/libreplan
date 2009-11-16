@@ -23,7 +23,11 @@ package org.navalplanner.business.orders.daos;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -37,9 +41,22 @@ import org.springframework.stereotype.Repository;
 public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
         IOrderDAO {
 
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
+
     @Override
     public List<Order> getOrders() {
         return list(Order.class);
+    }
+
+    @Override
+    public void remove(Long id) throws InstanceNotFoundException {
+        Order order = find(id);
+        List<TaskSource> sources = order.getTaskSourcesFromBottomToTop();
+        for (TaskSource each : sources) {
+            taskSourceDAO.remove(each.getId());
+        }
+        super.remove(id);
     }
 
 }

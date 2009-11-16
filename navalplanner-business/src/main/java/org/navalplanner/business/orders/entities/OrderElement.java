@@ -44,6 +44,7 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
+import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
@@ -70,8 +71,6 @@ public abstract class OrderElement extends BaseEntity {
     private Set<Label> labels = new HashSet<Label>();
 
     private String code;
-
-    private Set<TaskElement> taskElements = new HashSet<TaskElement>();
 
     private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
 
@@ -105,9 +104,6 @@ public abstract class OrderElement extends BaseEntity {
             @Override
             public void typeChanged(Type newType) {
                 schedulingStateType = newType;
-                if (newType == Type.SCHEDULING_POINT) {
-                    taskSource = TaskSource.withHoursGroupOf(OrderElement.this);
-                }
             }
         });
         return result;
@@ -120,36 +116,117 @@ public abstract class OrderElement extends BaseEntity {
         }
         return result;
     }
+
+    public List<TaskSourceSynchronization> calculateSynchronizationsNeeded() {
+        List<TaskSourceSynchronization> result = new ArrayList<TaskSourceSynchronization>();
+        if (isSchedulingPoint()) {
+            result.add(synchronizationForSchedulingPoint());
+        } else if (isSuperElementPartialOrCompletelyScheduled()) {
+            removeUnscheduled(result);
+            result.add(synchronizationForSuperelement());
+        } else if (schedulingState.isNoScheduled()) {
+            removeTaskSource(result);
+        }
+        return result;
+    }
+
+    private TaskSourceSynchronization synchronizationForSuperelement() {
+        List<TaskSourceSynchronization> childrenSynchronizations = childrenSynchronizations();
+        if (thereIsNoTaskSource()) {
+            taskSource = TaskSource.createForGroup(this);
+            return TaskSource
+                    .mustAddGroup(taskSource,
+                    childrenSynchronizations);
+        } else {
+            return taskSource.modifyGroup(childrenSynchronizations);
+        }
+    }
+
+    private List<TaskSourceSynchronization> childrenSynchronizations() {
+        List<TaskSourceSynchronization> childrenOfGroup = new ArrayList<TaskSourceSynchronization>();
+        for (OrderElement orderElement : getSomewhatScheduledOrderElements()) {
+            childrenOfGroup.addAll(orderElement
+                    .calculateSynchronizationsNeeded());
+        }
+        return childrenOfGroup;
+    }
+
+    private void removeUnscheduled(List<TaskSourceSynchronization> result) {
+        for (OrderElement orderElement : getNoScheduledOrderElements()) {
+            orderElement.removeTaskSource(result);
+        }
+    }
+
+    private TaskSourceSynchronization synchronizationForSchedulingPoint() {
+        if (thereIsNoTaskSource()) {
+            taskSource = TaskSource.create(this, getHoursGroups());
+            return TaskSource.mustAdd(taskSource);
+        } else {
+            return taskSource.withCurrentHoursGroup(getHoursGroups());
+        }
+    }
+
+    private boolean thereIsNoTaskSource() {
+        return taskSource == null;
+    }
+
+    private List<OrderElement> getSomewhatScheduledOrderElements() {
+        List<OrderElement> result = new ArrayList<OrderElement>();
+        for (OrderElement orderElement : getChildren()) {
+            if (orderElement.getSchedulingStateType().isSomewhatScheduled()) {
+                result.add(orderElement);
+            }
+        }
+        return result;
+    }
+
+    private List<OrderElement> getNoScheduledOrderElements() {
+        List<OrderElement> result = new ArrayList<OrderElement>();
+        for (OrderElement orderElement : getChildren()) {
+            if (orderElement.getSchedulingState().isNoScheduled()) {
+                result.add(orderElement);
+            }
+        }
+        return result;
+    }
+
+    private void removeTaskSource(List<TaskSourceSynchronization> result) {
+        removeChildrenTaskSource(result);
+        if (taskSource != null) {
+            result.add(TaskSource.mustRemove(taskSource));
+            taskSource = null;
+        }
+    }
+
+    private void removeChildrenTaskSource(List<TaskSourceSynchronization> result) {
+        List<OrderElement> children = getChildren();
+        for (OrderElement each : children) {
+            each.removeTaskSource(result);
+        }
+    }
+
+    private boolean isSuperElementPartialOrCompletelyScheduled() {
+        return getSchedulingState().isSomewhatScheduled();
+    }
+
+    private boolean isSchedulingPoint() {
+        return getSchedulingState().getType() == Type.SCHEDULING_POINT;
+    }
+
     public OrderLineGroup getParent() {
         return parent;
     }
 
+    public TaskElement getAssociatedTaskElement() {
+        if (taskSource == null) {
+            return null;
+        } else {
+            return taskSource.getTask();
+        }
+    }
+
     protected void setParent(OrderLineGroup parent) {
         this.parent = parent;
-    }
-
-    protected void hoursGroupAdded(HoursGroup hoursGroup) {
-        if (isSchedulingPoint()) {
-            taskSource.added(hoursGroup);
-        } else if (belongsToSchedulingPoint()) {
-            getParent().hoursGroupAdded(hoursGroup);
-        }
-    }
-
-    protected void hoursGroupDeleted(HoursGroup hoursGroup) {
-        if (isSchedulingPoint()) {
-            taskSource.removed(hoursGroup);
-        } else if (belongsToSchedulingPoint()) {
-            getParent().hoursGroupDeleted(hoursGroup);
-        }
-    }
-
-    private boolean isSchedulingPoint() {
-        return schedulingStateType == Type.SCHEDULING_POINT;
-    }
-
-    private boolean belongsToSchedulingPoint() {
-        return schedulingStateType.belongsToSchedulingPoint();
     }
 
     public abstract Integer getWorkHours();
@@ -217,12 +294,8 @@ public abstract class OrderElement extends BaseEntity {
 
     public abstract OrderLineGroup toContainer();
 
-    public Set<TaskElement> getTaskElements() {
-        return Collections.unmodifiableSet(taskElements);
-    }
-
     public boolean isScheduled() {
-        return !taskElements.isEmpty();
+        return schedulingStateType.isSomewhatScheduled();
     }
 
     public boolean checkAtLeastOneHoursGroup() {
@@ -536,5 +609,39 @@ public abstract class OrderElement extends BaseEntity {
             schedulingStateType = Type.NO_SCHEDULED;
         }
         return schedulingStateType;
+    }
+
+    public TaskSource getTaskSource() {
+        return taskSource;
+    }
+
+    public Set<TaskElement> getTaskElements() {
+        if (taskSource == null) {
+            return Collections.emptySet();
+        }
+        return Collections.singleton(taskSource.getTask());
+    }
+
+    public List<TaskSource> getTaskSourcesFromBottomToTop() {
+        List<TaskSource> result = new ArrayList<TaskSource>();
+        taskSourcesFromBottomToTop(result);
+        return result;
+    }
+
+    private void taskSourcesFromBottomToTop(List<TaskSource> result) {
+        if (isSchedulingPoint()) {
+            // checking taskSource is not null because the OrderElement might
+            // have not yet been saved, and the taskSources are created on save
+            if (taskSource != null) {
+                result.add(taskSource);
+            }
+        } else if (isSuperElementPartialOrCompletelyScheduled()) {
+            for (OrderElement each : getSomewhatScheduledOrderElements()) {
+                each.taskSourcesFromBottomToTop(result);
+            }
+            if (taskSource != null) {
+                result.add(taskSource);
+            }
+        }
     }
 }

@@ -413,10 +413,4 @@ public class OrderModelTest {
         orderModel.save();
     }
 
-    private HoursGroup createHoursGroup(int hours) {
-        HoursGroup result = new HoursGroup();
-        result.setWorkingHours(hours);
-        return result;
-    }
-
 }

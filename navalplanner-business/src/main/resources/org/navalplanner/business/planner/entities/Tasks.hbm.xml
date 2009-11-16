@@ -16,9 +16,9 @@
         <property name="endDate" type="timestamp" />
         <property name="deadline" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
 
-        <many-to-one name="orderElement" cascade="none" column="ORDER_ELEMENT_ID" not-null="false" />
-
         <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"/>
+
+        <one-to-one name="taskSource" cascade="none"/>
 
         <set name="dependenciesWithThisOrigin" cascade="all">
             <key column="ORIGIN"></key>

@@ -46,6 +46,10 @@ import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -91,7 +95,13 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
+
     private Set<Label> cacheLabels = new HashSet<Label>();
+
+    @Autowired
+    private ITaskElementDAO taskElementDAO;
 
     @Override
     public List<Label> getLabels() {
@@ -231,8 +241,23 @@ public class OrderModel implements IOrderModel {
     @Transactional
     public void save() throws ValidationException {
         reattachCriterions();
+        reattachTasksForTasksSources();
         this.orderDAO.save(order);
+        synchronizeWithSchedule(order);
         deleteOrderElementWithoutParent();
+    }
+
+    private void reattachTasksForTasksSources() {
+        for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
+            each.reloadTask(taskElementDAO);
+        }
+    }
+
+    private void synchronizeWithSchedule(OrderElement orderElement) {
+        for (TaskSourceSynchronization each : order
+                .calculateSynchronizationsNeeded()) {
+            each.apply(taskSourceDAO);
+        }
     }
 
     private void deleteOrderElementWithoutParent() throws ValidationException {

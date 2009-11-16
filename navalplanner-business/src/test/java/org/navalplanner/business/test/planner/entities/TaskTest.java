@@ -28,8 +28,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -46,7 +50,9 @@ public class TaskTest {
     public TaskTest() {
         hoursGroup = new HoursGroup();
         hoursGroup.setWorkingHours(3);
-        task = Task.createTask(hoursGroup);
+        TaskSource taskSource = TaskSource.create(OrderLine.create(), Arrays
+                .asList(hoursGroup));
+        task = Task.createTask(taskSource);
     }
 
     @Test
@@ -65,10 +71,12 @@ public class TaskTest {
         assertNotNull(hoursGroup);
     }
 
-    public static TaskElement createValidTask() {
-        HoursGroup hours = new HoursGroup();
-        hours.setWorkingHours(20);
-        return Task.createTask(hours);
+    public static Task createValidTask() {
+        HoursGroup hoursGroup = new HoursGroup();
+        hoursGroup.setWorkingHours(3);
+        TaskSource taskSource = TaskSource.create(OrderLine.create(), Arrays
+                .asList(hoursGroup));
+        return Task.createTask(taskSource);
     }
 
     @Test

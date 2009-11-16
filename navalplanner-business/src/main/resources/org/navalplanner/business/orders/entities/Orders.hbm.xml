@@ -21,10 +21,6 @@
                 <param name="enumClass">org.navalplanner.business.orders.entities.SchedulingState$Type</param>
             </type>
         </property>
-        <set name="taskElements" access="field" cascade="delete">
-            <key column="ORDER_ELEMENT_ID" />
-            <one-to-many class="org.navalplanner.business.planner.entities.TaskElement"></one-to-many>
-        </set>
         <set name="directAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
             <key column="DIRECT_ORDER_ELEMENT_ID" />
             <one-to-many class="org.navalplanner.business.advance.entities.DirectAdvanceAssignment" />
@@ -43,7 +39,7 @@
         <!-- Inverse navigation from OrderElement to OrderLineGroup -->
         <many-to-one name="parent" access="field" cascade="all"/>
 
-        <one-to-one name="taskSource" class="TaskSource" access="field" cascade="all"/>
+        <one-to-one name="taskSource" class="TaskSource" access="field" property-ref="orderElement"/>
 
         <joined-subclass name="OrderLineGroup">
             <key column="ORDERELEMENTID"></key>
@@ -104,15 +100,17 @@
     <class name="TaskSource">
         <id name="id" access="property" type="long">
 	        <generator class="foreign">
-	            <param name="property">orderElement</param>
+	            <param name="property">task</param>
 	        </generator>
         </id>
         <version name="version" access="property" type="long" />
-        <one-to-one name="orderElement"
+        <many-to-one name="orderElement"
 	        class="OrderElement" cascade="none"
-	        constrained="true" access="field"/>
+	        unique="true" access="field"/>
 
-        <set name="hoursGroups" table="task_source_hours_groups" lazy="false" cascade="none" inverse="false" access="field">
+        <one-to-one name="task" class="org.navalplanner.business.planner.entities.TaskElement"
+            constrained="true" cascade="all" access="field" lazy="false"/>
+        <set name="hoursGroups" table="task_source_hours_groups" cascade="none" inverse="false" access="field">
             <key column="TASK_SOURCE_ID"></key>
             <many-to-many class="HoursGroup" column="HOURS_GROUP_ID"/>
         </set>

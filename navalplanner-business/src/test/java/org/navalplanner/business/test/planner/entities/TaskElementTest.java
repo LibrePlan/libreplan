@@ -20,28 +20,40 @@
 
 package org.navalplanner.business.test.planner.entities;
 
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
+import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -66,32 +78,11 @@ public class TaskElementTest {
 
     private TaskElement task = new Task();
 
-    private TaskElement taskWithOrderLine;
-
     private Dependency exampleDependency;
 
     public TaskElementTest() {
-        this.taskWithOrderLine = new Task();
-        this.taskWithOrderLine.setOrderElement(OrderLine.create());
-        this.exampleDependency = Dependency.create(new Task(),
-                new Task(), Type.END_START);
-    }
-
-    @Test
-    public void taskElementHasAOneToOneRelationshipWithOrderElement() {
-        OrderLine order = OrderLine.create();
-        task.setOrderElement(order);
-        assertSame(order, task.getOrderElement());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void orderElementCannotBeSetToNull() {
-        task.setOrderElement(null);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void onceSetOrderElementCannotBeChanged() {
-        taskWithOrderLine.setOrderElement(OrderLine.create());
+        this.exampleDependency = Dependency.create(new Task(), new Task(),
+                Type.END_START);
     }
 
     @Test
@@ -124,8 +115,7 @@ public class TaskElementTest {
         Task origin = new Task();
         Task destination = new Task();
         Type type = Type.START_END;
-        Dependency.create(origin,
-                destination, type);
+        Dependency.create(origin, destination, type);
         assertThat(origin.getDependenciesWithThisOrigin().size(), equalTo(1));
         assertThat(destination.getDependenciesWithThisDestination().size(),
                 equalTo(1));
@@ -135,50 +125,19 @@ public class TaskElementTest {
                 equalTo(0));
     }
 
-    private void checkPopertiesAreKept(TaskElement original, TaskElement result) {
-        assertThat(result.getName(), equalTo(original.getName()));
-        assertThat(result.getNotes(), equalTo(original.getNotes()));
-        assertThat(result.getStartDate(), equalTo(original.getStartDate()));
-        assertThat(result.getOrderElement(),
-                equalTo(original.getOrderElement()));
-    }
-
-    private void checkDependenciesAreKept(
-            TaskElement taskResultOfTransformation, Task sourceDependencyTask,
-            Task destinationDependencyTask) {
-        assertThat(taskResultOfTransformation
-                .getDependenciesWithThisDestination().size(), equalTo(1));
-        Dependency withTaskResultOfSplitDestination = taskResultOfTransformation
-                .getDependenciesWithThisDestination().iterator().next();
-        assertThat(withTaskResultOfSplitDestination.getDestination(),
-                equalTo((TaskElement) taskResultOfTransformation));
-        assertThat(withTaskResultOfSplitDestination.getOrigin(),
-                equalTo((TaskElement) sourceDependencyTask));
-
-        assertThat(taskResultOfTransformation.getDependenciesWithThisOrigin()
-                .size(), equalTo(1));
-        Dependency withTaskResultOfSplitSource = taskResultOfTransformation
-                .getDependenciesWithThisOrigin().iterator().next();
-        assertThat(withTaskResultOfSplitSource.getDestination(),
-                equalTo((TaskElement) destinationDependencyTask));
-        assertThat(withTaskResultOfSplitSource.getOrigin(),
-                equalTo((TaskElement) taskResultOfTransformation));
-    }
-
     private void addDependenciesForChecking(TaskElement taskBeingTransformed,
             TaskElement sourceDependencyTask,
             TaskElement destinationDependencyTask) {
         Dependency.create(sourceDependencyTask, taskBeingTransformed,
                 Type.END_START);
-        Dependency.create(taskBeingTransformed,
-                destinationDependencyTask, Type.END_START);
+        Dependency.create(taskBeingTransformed, destinationDependencyTask,
+                Type.END_START);
     }
 
     public void detachRemovesDependenciesFromRelatedTasks() {
-        HoursGroup hoursGroup = new HoursGroup();
-        Task taskToDetach = Task.createTask(hoursGroup);
-        Task sourceDependencyTask = Task.createTask(new HoursGroup());
-        Task destinationDependencyTask = Task.createTask(new HoursGroup());
+        Task taskToDetach = (Task) TaskTest.createValidTask();
+        Task sourceDependencyTask = (Task) TaskTest.createValidTask();
+        Task destinationDependencyTask = (Task) TaskTest.createValidTask();
         taskToDetach.setName("prueba");
         taskToDetach.setNotes("blabla");
         taskToDetach.setStartDate(new Date());
@@ -193,10 +152,9 @@ public class TaskElementTest {
 
     @Test
     public void detachRemovesTaskFromParent() {
-        TaskGroup parent = TaskGroup.create();
-        HoursGroup hoursGroup = new HoursGroup();
-        Task child = Task.createTask(hoursGroup);
-        Task anotherChild = Task.createTask(hoursGroup);
+        TaskGroup parent = TaskGroupTest.createValidTaskGroup();
+        Task child = (Task) TaskTest.createValidTask();
+        Task anotherChild = (Task) TaskTest.createValidTask();
         parent.addTaskElement(child);
         parent.addTaskElement(anotherChild);
         child.detach();
@@ -205,14 +163,124 @@ public class TaskElementTest {
 
     @Test
     public void MilestoneOrderElementIsNull() {
-        TaskMilestone milestone = new TaskMilestone();
-        OrderLine orderLine = OrderLine.create();
-        try {
-            milestone.setOrderElement(orderLine);
-        } catch (IllegalStateException e) {
-            // Ok Exception expected
-        } finally {
-            assertTrue(milestone.getOrderElement() == null);
-        }
+        TaskMilestone milestone = TaskMilestone.create();
+        assertThat(milestone.getOrderElement(), nullValue());
     }
+
+    @Test
+    public void theDeadlineOfTheOrderElementIsCopied() {
+        OrderLine orderLine = OrderLine.create();
+        LocalDate deadline = new LocalDate(2007, 4, 4);
+        orderLine.setDeadline(asDate(deadline));
+        TaskSource taskSource = asTaskSource(orderLine);
+        Task task = Task.createTask(taskSource);
+        assertThat(task.getDeadline(), equalTo(deadline));
+    }
+
+    private TaskSource asTaskSource(OrderLine orderLine) {
+        List<HoursGroup> hoursGroups = orderLine.getHoursGroups();
+        if (hoursGroups.isEmpty()) {
+            hoursGroups = Collections.singletonList(createHoursGroup(100));
+        }
+        return TaskSource.create(orderLine, hoursGroups);
+    }
+
+    private static Date asDate(LocalDate localDate) {
+        return localDate.toDateTimeAtStartOfDay().toDate();
+    }
+
+    private static HoursGroup createHoursGroup(int hours) {
+        HoursGroup result = new HoursGroup();
+        result.setWorkingHours(hours);
+        return result;
+    }
+
+    @Test
+    public void ifNoParentWithStartDateTheStartConstraintIsSoonAsPossible() {
+        OrderLine orderLine = OrderLine.create();
+        LocalDate deadline = new LocalDate(2007, 4, 4);
+        orderLine.setDeadline(asDate(deadline));
+        TaskSource taskSource = asTaskSource(orderLine);
+        Task task = Task.createTask(taskSource);
+        assertThat(task.getStartConstraint(),
+                isOfType(StartConstraintType.AS_SOON_AS_POSSIBLE));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void ifSomeParentHasInitDateTheStartConstraintIsNotEarlierThan() {
+        Date initDate = asDate(new LocalDate(2005, 10, 5));
+        OrderLineGroup group = OrderLineGroup.create();
+        group.setInitDate(initDate);
+        OrderLine orderLine = OrderLine.create();
+        group.add(orderLine);
+        LocalDate deadline = new LocalDate(2007, 4, 4);
+        orderLine.setDeadline(asDate(deadline));
+        TaskSource taskSource = asTaskSource(orderLine);
+        Task task = Task.createTask(taskSource);
+        assertThat(task.getStartConstraint(), allOf(
+                isOfType(StartConstraintType.START_NOT_EARLIER_THAN),
+                hasValue(initDate)));
+    }
+
+    @Test
+    public void unlessTheOnlyParentWithInitDateNotNullIsTheOrder() {
+        Date initDate = asDate(new LocalDate(2005, 10, 5));
+        Order order = Order.create();
+        order.setInitDate(initDate);
+        OrderLine orderLine = OrderLine.create();
+        order.add(orderLine);
+        LocalDate deadline = new LocalDate(2007, 4, 4);
+        orderLine.setDeadline(asDate(deadline));
+        TaskSource taskSource = asTaskSource(orderLine);
+        Task task = Task.createTask(taskSource);
+        assertThat(task.getStartConstraint(),
+                isOfType(StartConstraintType.AS_SOON_AS_POSSIBLE));
+    }
+
+    private static Matcher<TaskStartConstraint> isOfType(
+            final StartConstraintType type) {
+        return new BaseMatcher<TaskStartConstraint>() {
+
+            @Override
+            public boolean matches(Object object) {
+                if (object instanceof TaskStartConstraint) {
+                    TaskStartConstraint startConstraint = (TaskStartConstraint) object;
+                    return startConstraint.getStartConstraintType() == type;
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("the start constraint must be of type "
+                        + type);
+            }
+        };
+    }
+
+    private static Matcher<TaskStartConstraint> hasValue(final Date value) {
+        return new BaseMatcher<TaskStartConstraint>() {
+
+            @Override
+            public boolean matches(Object object) {
+                if (object instanceof TaskStartConstraint) {
+                    TaskStartConstraint startConstraint = (TaskStartConstraint) object;
+                    Date constraintDate = startConstraint.getConstraintDate();
+                    boolean bothNotNull = value != null
+                                                && constraintDate != null;
+                    return value == constraintDate || bothNotNull
+                            && constraintDate.equals(value);
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("the start constraint must have date "
+                        + value);
+            }
+        };
+    }
+
 }

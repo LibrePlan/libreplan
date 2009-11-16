@@ -29,17 +29,30 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public abstract class TaskElement extends BaseEntity {
+
+    protected static <T extends TaskElement> T create(T taskElement,
+            TaskSource taskSource) {
+        taskElement.taskSource = taskSource;
+        taskElement.setDeadline(new LocalDate(taskSource.getOrderElement()
+                .getDeadline()));
+        return create(taskElement);
+    }
+
+    protected static <T extends TaskElement> T createWithoutTaskSource(
+            T taskElement) {
+        return create(taskElement);
+    }
 
     private Date startDate;
 
@@ -55,13 +68,13 @@ public abstract class TaskElement extends BaseEntity {
 
     protected Integer shareOfHours;
 
-    private OrderElement orderElement;
-
     private Set<Dependency> dependenciesWithThisOrigin = new HashSet<Dependency>();
 
     private Set<Dependency> dependenciesWithThisDestination = new HashSet<Dependency>();
 
     private BaseCalendar calendar;
+
+    private TaskSource taskSource;
 
     public Integer getWorkHours() {
         if (shareOfHours != null) {
@@ -76,7 +89,12 @@ public abstract class TaskElement extends BaseEntity {
         this.name = task.getName();
         this.notes = task.getNotes();
         this.startDate = task.getStartDate();
-        this.orderElement = task.getOrderElement();
+        this.taskSource = task.getTaskSource();
+    }
+
+
+    public TaskSource getTaskSource() {
+        return taskSource;
     }
 
     protected void copyDependenciesTo(TaskElement result) {
@@ -116,18 +134,11 @@ public abstract class TaskElement extends BaseEntity {
         this.notes = notes;
     }
 
-    public void setOrderElement(OrderElement orderElement)
-            throws IllegalArgumentException, IllegalStateException {
-        Validate.notNull(orderElement, "orderElement must be not null");
-        if (this.orderElement != null) {
-            throw new IllegalStateException(
-                    "once a orderElement is set, it cannot be changed");
-        }
-        this.orderElement = orderElement;
-    }
-
     public OrderElement getOrderElement() {
-        return orderElement;
+        if (getTaskSource() == null) {
+            return null;
+        }
+        return getTaskSource().getOrderElement();
     }
 
     public Set<Dependency> getDependenciesWithThisOrigin() {

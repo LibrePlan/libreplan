@@ -87,12 +87,7 @@ public class Order extends OrderLineGroup {
     }
 
     public TaskGroup getAssociatedTaskElement() {
-        Set<TaskElement> taskElements = this.getTaskElements();
-        if (!taskElements.isEmpty()) {
-            return (TaskGroup) taskElements.iterator().next();
-        } else {
-            return null;
-        }
+        return (TaskGroup) super.getAssociatedTaskElement();
     }
 
     public List<TaskElement> getAssociatedTasks() {

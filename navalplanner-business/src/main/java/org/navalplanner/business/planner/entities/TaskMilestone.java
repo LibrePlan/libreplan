@@ -29,7 +29,6 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
@@ -38,8 +37,7 @@ public class TaskMilestone extends TaskElement {
 
     public static TaskMilestone create() {
         TaskMilestone milestone = new TaskMilestone();
-        milestone.setNewObject(true);
-        return milestone;
+        return createWithoutTaskSource(milestone);
     }
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
@@ -96,14 +94,6 @@ public class TaskMilestone extends TaskElement {
 
     private DateTime toDateTime(Date startDate) {
         return new DateTime(startDate.getTime());
-    }
-
-
-    @Override
-    public void setOrderElement(OrderElement orderElement)
-            throws IllegalStateException {
-        throw new IllegalStateException(
-                "milestones can't have orderElements associated");
     }
 
     @Override

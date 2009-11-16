@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,8 +38,11 @@ import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
@@ -78,6 +82,9 @@ public class ResourceAllocationDAOTest {
     private IWorkerDAO workerDAO;
 
     @Autowired
+    private ITaskSourceDAO taskSourceDAO;
+
+    @Autowired
     IResourceDAO resourceDAO;
 
     enum ResourceAllocationType {
@@ -104,18 +111,22 @@ public class ResourceAllocationDAOTest {
     private ResourceAllocation<?> createValidResourceAllocation(
             ResourceAllocationType type) {
         OrderLine orderLine = createValidOrderLine();
+        orderLine.getSchedulingState().schedule();
         orderElementDAO.save(orderLine);
 
         HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroupDAO.save(hoursGroup);
 
-        Task task = Task.createTask(hoursGroup);
-        task.setOrderElement(orderLine);
-        taskElementDAO.save(task);
-
+        List<HoursGroup> hoursGroups = Arrays.asList(hoursGroup);
+        TaskSource taskSource = TaskSource.create(orderLine, hoursGroups);
+        TaskSourceSynchronization synchronization = TaskSource
+                .mustAdd(taskSource);
+        synchronization.apply(taskSourceDAO);
+        Task task = (Task) taskSource.getTask();
         if (ResourceAllocationType.SPECIFIC_RESOURCE_ALLOCATION.equals(type)) {
             SpecificResourceAllocation specificResourceAllocation = SpecificResourceAllocation
-                    .createForTesting(ResourcesPerDay.amount(1), task);
+                    .createForTesting(ResourcesPerDay.amount(1),
+                            task);
             Worker worker = (Worker) createValidWorker();
             resourceDAO.save(worker);
             specificResourceAllocation.setResource(worker);
@@ -125,10 +136,8 @@ public class ResourceAllocationDAOTest {
         if (ResourceAllocationType.GENERIC_RESOURCE_ALLOCATION.equals(type)) {
             GenericResourceAllocation specificResourceAllocation = GenericResourceAllocation
                     .createForTesting(ResourcesPerDay.amount(1), task);
-
             return specificResourceAllocation;
         }
-
         return null;
     }
 

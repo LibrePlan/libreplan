@@ -277,6 +277,10 @@ public class SchedulingState {
         return type.isPartiallyScheduled();
     }
 
+    public boolean isNoScheduled() {
+        return type == Type.NO_SCHEDULED;
+    }
+
     public boolean isSomewhatScheduled() {
         return type.isSomewhatScheduled();
     }

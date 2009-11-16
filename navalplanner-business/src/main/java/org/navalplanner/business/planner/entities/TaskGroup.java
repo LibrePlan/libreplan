@@ -28,16 +28,16 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
+import org.navalplanner.business.orders.entities.TaskSource;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class TaskGroup extends TaskElement {
 
-    public static TaskGroup create() {
+    public static TaskGroup create(TaskSource taskSource) {
         TaskGroup taskGroup = new TaskGroup();
-        taskGroup.setNewObject(true);
-        return taskGroup;
+        return create(taskGroup, taskSource);
     }
 
     private List<TaskElement> taskElements = new ArrayList<TaskElement>();
@@ -99,5 +99,22 @@ public class TaskGroup extends TaskElement {
     @Override
     protected void moveAllocations() {
         // do nothing
+    }
+
+    public void addChildren(List<TaskElement> children) {
+        List<TaskElement> toRemove = new ArrayList<TaskElement>();
+        for (TaskElement each : taskElements) {
+            if (!children.contains(each)) {
+                toRemove.add(each);
+            }
+        }
+        taskElements.removeAll(toRemove);
+        for (TaskElement each : children) {
+            each.setParent(this);
+            if (!taskElements.contains(each)) {
+                taskElements.add(each);
+            }
+        }
+
     }
 }

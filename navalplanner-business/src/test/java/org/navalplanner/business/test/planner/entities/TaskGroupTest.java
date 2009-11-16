@@ -29,6 +29,8 @@ import java.util.List;
 
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -37,7 +39,7 @@ import org.navalplanner.business.planner.entities.TaskGroup;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class TaskGroupTest {
-    private TaskGroup taskGroup = TaskGroup.create();
+    private TaskGroup taskGroup = createValidTaskGroup();
 
     @Test
     public void taskGroupIsAnInstanceOfTaskElement() {
@@ -51,7 +53,7 @@ public class TaskGroupTest {
                 .isEmpty());
         TaskElement child1 = new Task();
         taskGroup.addTaskElement(child1);
-        TaskGroup child2 = TaskGroup.create();
+        TaskGroup child2 = createValidTaskGroup();
         taskGroup.addTaskElement(child2);
         List<TaskElement> taskElements = taskGroup.getChildren();
         assertThat(taskElements.size(), equalTo(2));
@@ -61,7 +63,7 @@ public class TaskGroupTest {
 
     @Test
     public void addingTaskElementToTaskGroupSetsTheParentProperty() {
-        Task child = Task.createTask(new HoursGroup());
+        Task child = TaskTest.createValidTask();
         taskGroup.addTaskElement(child);
         assertThat(child.getParent(), equalTo(taskGroup));
     }
@@ -75,4 +77,13 @@ public class TaskGroupTest {
     public void taskElementsCollectionCannotBeModified() {
         taskGroup.getChildren().set(0, null);
     }
+
+    public static TaskGroup createValidTaskGroup() {
+        HoursGroup hoursGroup = new HoursGroup();
+        hoursGroup.setWorkingHours(3);
+        TaskSource taskSource = TaskSource.create(OrderLine.create(), Arrays
+                .asList(hoursGroup));
+        return TaskGroup.create(taskSource);
+    }
+
 }
