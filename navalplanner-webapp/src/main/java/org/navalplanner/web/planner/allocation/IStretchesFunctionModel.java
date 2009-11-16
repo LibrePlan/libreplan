@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
+import org.navalplanner.business.planner.entities.Task;
 
 
 
@@ -41,9 +43,9 @@ public interface IStretchesFunctionModel {
      * Initial conversation steps
      */
 
-    void initCreate(Date taskEndDate);
+    void initCreate(Task task);
 
-    void initEdit(StretchesFunction stretchesFunction);
+    void initEdit(StretchesFunction stretchesFunction, Task task);
 
     /*
      * Intermediate conversation steps
@@ -56,6 +58,11 @@ public interface IStretchesFunctionModel {
     void removeStretch(Stretch stretch);
 
     AssignmentFunction getStretchesFunction();
+
+    void setStretchDate(Stretch stretch, Date date) throws IllegalArgumentException;
+
+    void setStretchLengthPercentage(Stretch stretch, BigDecimal lengthPercentage)
+            throws IllegalArgumentException;
 
     /*
      * Final conversation steps

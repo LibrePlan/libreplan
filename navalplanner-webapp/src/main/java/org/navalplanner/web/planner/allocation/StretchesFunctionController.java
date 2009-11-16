@@ -27,12 +27,12 @@ import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
-import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -71,16 +71,15 @@ public class StretchesFunctionController extends GenericForwardComposer {
     public void setResourceAllocation(ResourceAllocation<?> resourceAllocation) {
         AssignmentFunction assignmentFunction = resourceAllocation
                 .getAssignmentFunction();
+        Task task = resourceAllocation.getTask();
         if (assignmentFunction == null) {
-            stretchesFunctionModel.initCreate(resourceAllocation.getTask()
-                    .getEndDate());
+            stretchesFunctionModel.initCreate(task);
         } else {
             if (assignmentFunction instanceof StretchesFunction) {
-                stretchesFunctionModel
-                        .initEdit((StretchesFunction) assignmentFunction);
+                stretchesFunctionModel.initEdit(
+                        (StretchesFunction) assignmentFunction, task);
             } else {
-                stretchesFunctionModel.initCreate(resourceAllocation.getTask()
-                        .getEndDate());
+                stretchesFunctionModel.initCreate(task);
             }
         }
         reloadStretchesList();
@@ -145,7 +144,8 @@ public class StretchesFunctionController extends GenericForwardComposer {
         }
 
         private void appendDate(Listitem item, final Stretch stretch) {
-            Datebox datebox = Util.bind(new Datebox(), new Util.Getter<Date>() {
+            final Datebox tempDatebox = new Datebox();
+            Datebox datebox = Util.bind(tempDatebox, new Util.Getter<Date>() {
                 @Override
                 public Date get() {
                     return stretch.getDate().toDateTimeAtStartOfDay().toDate();
@@ -153,7 +153,13 @@ public class StretchesFunctionController extends GenericForwardComposer {
             }, new Util.Setter<Date>() {
                 @Override
                 public void set(Date value) {
-                    stretch.setDate(new LocalDate(value));
+                    try {
+                        stretchesFunctionModel.setStretchDate(stretch, value);
+                        reloadStretchesList();
+                    } catch (IllegalArgumentException e) {
+                        throw new WrongValueException(tempDatebox, e
+                                .getMessage());
+                    }
                 }
             });
             appendChild(item, datebox);
@@ -174,11 +180,13 @@ public class StretchesFunctionController extends GenericForwardComposer {
                             value = value.setScale(2).divide(
                                     new BigDecimal(100), RoundingMode.DOWN);
                             try {
-                                stretch.setLengthPercentage(value);
+                                stretchesFunctionModel
+                                        .setStretchLengthPercentage(stretch,
+                                                value);
+                                reloadStretchesList();
                             } catch (IllegalArgumentException e) {
-                                throw new WrongValueException(
-                                        tempDecimalbox,
-                                        _("Length percentage should be between 0 and 100"));
+                                throw new WrongValueException(tempDecimalbox, e
+                                        .getMessage());
                             }
                         }
                     });

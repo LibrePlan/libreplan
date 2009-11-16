@@ -23,6 +23,7 @@ package org.navalplanner.web.planner.allocation;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
+import org.navalplanner.business.planner.entities.Task;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -49,24 +51,30 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
      * Conversation state
      */
     private StretchesFunction stretchesFunction;
+    private Task task;
 
     private StretchesFunction originalStretchesFunction;
 
     @Override
-    public void initCreate(Date taskEndDate) {
+    public void initCreate(Task task) {
         stretchesFunction = StretchesFunction.create();
 
         Stretch stretch = new Stretch();
-        stretch.setDate(new LocalDate(taskEndDate));
+        stretch.setDate(new LocalDate(task.getEndDate()));
         stretch.setLengthPercentage(BigDecimal.ONE);
         stretch.setAmountWorkPercentage(BigDecimal.ONE);
         stretchesFunction.addStretch(stretch);
+
+        this.task = task;
     }
 
     @Override
-    public void initEdit(StretchesFunction stretchesFunction) {
+    public void initEdit(StretchesFunction stretchesFunction,
+            Task task) {
         this.originalStretchesFunction = stretchesFunction;
         this.stretchesFunction = copy(stretchesFunction);
+
+        this.task = task;
     }
 
     private static StretchesFunction copy(StretchesFunction stretchesFunction) {
@@ -129,7 +137,9 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     @Override
     public void addStretch() {
         if (stretchesFunction != null) {
-            stretchesFunction.addStretch(new Stretch());
+            Stretch stretch = new Stretch();
+            stretch.setDate(new LocalDate(task.getStartDate()));
+            stretchesFunction.addStretch(stretch);
         }
     }
 
@@ -143,6 +153,42 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     @Override
     public AssignmentFunction getStretchesFunction() {
         return stretchesFunction;
+    }
+
+    @Override
+    public void setStretchDate(Stretch stretch, Date date)
+            throws IllegalArgumentException {
+        if ((date.compareTo(task.getStartDate()) < 0)
+                || (date.compareTo(task.getEndDate()) > 0)) {
+            throw new IllegalArgumentException(
+                    _("Stretch date should be between task dates"));
+        }
+
+        stretch.setDate(new LocalDate(date));
+
+        long stretchDate = date.getTime();
+        long startDate = task.getStartDate().getTime();
+        long endDate = task.getEndDate().getTime();
+
+        // (stretchDate - startDate) / (endDate - startDate)
+        BigDecimal lengthPercenage = (new BigDecimal(stretchDate - startDate)
+                .setScale(2)).divide(new BigDecimal(endDate - startDate),
+                RoundingMode.DOWN);
+        stretch.setLengthPercentage(lengthPercenage);
+    }
+
+    @Override
+    public void setStretchLengthPercentage(Stretch stretch,
+            BigDecimal lengthPercentage) throws IllegalArgumentException {
+        stretch.setLengthPercentage(lengthPercentage);
+
+        long startDate = task.getStartDate().getTime();
+        long endDate = task.getEndDate().getTime();
+
+        // startDate + (percentage * (endDate - startDate))
+        long stretchDate = startDate + lengthPercentage.multiply(
+                new BigDecimal(endDate - startDate)).longValue();
+        stretch.setDate(new LocalDate(stretchDate));
     }
 
 }
