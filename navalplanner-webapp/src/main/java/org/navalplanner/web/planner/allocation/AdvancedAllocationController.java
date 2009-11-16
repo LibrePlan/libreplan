@@ -737,11 +737,43 @@ class Row {
         } else {
             Hbox hbox = new Hbox();
 
-            hbox.appendChild(getAssignmentFunctionsCombo());
+            Combobox assignmentFunctionsCombo = getAssignmentFunctionsCombo();
+            appendListener(assignmentFunctionsCombo);
+
+            hbox.appendChild(assignmentFunctionsCombo);
             hbox.appendChild(getAssignmentFunctionsConfigureButton());
 
             return hbox;
         }
+    }
+
+    private void appendListener(final Combobox assignmentFunctionsCombo) {
+        assignmentFunctionsCombo.addEventListener(Events.ON_CHANGE,
+                new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        AssignmentFunction assignmentFunction = getAllocation()
+                                .getAssignmentFunction();
+                        if (assignmentFunction != null) {
+                            Class<?> selectedAssignmentFunction = (Class<?>) assignmentFunctionsCombo
+                                    .getSelectedItem().getValue();
+                            if (selectedAssignmentFunction == null
+                                    || !assignmentFunction.getClass().equals(
+                                            selectedAssignmentFunction)) {
+                                int status = Messagebox
+                                        .show(
+                                                _("You are going to change the assignment function. Are you sure?"),
+                                                _("Confirm change"),
+                                                Messagebox.YES | Messagebox.NO,
+                                                Messagebox.QUESTION);
+                                if (Messagebox.YES == status) {
+                                    getAllocation().setAssignmentFunction(null);
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     private Combobox getAssignmentFunctionsCombo() {
