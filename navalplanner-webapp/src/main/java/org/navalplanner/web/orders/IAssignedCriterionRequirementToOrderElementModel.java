@@ -17,14 +17,18 @@ import org.navalplanner.business.resources.entities.CriterionWithItsType;
  */
 public interface IAssignedCriterionRequirementToOrderElementModel {
     OrderElement getOrderElement();
+
     void setOrderElement(OrderElement orderElement);
+
     void init(OrderElement orderElement);
 
     void assignCriterionRequirementWrapper();
 
     void deleteCriterionRequirementWrapper(
             CriterionRequirementWrapper requirement);
+
     void confirm()throws ValidationException;
+
     void setOrderModel(IOrderModel orderModel);
 
     List<CriterionRequirementWrapper> getCriterionRequirementWrappers();
@@ -38,4 +42,27 @@ public interface IAssignedCriterionRequirementToOrderElementModel {
 
     void setValidCriterionRequirementWrapper(
             CriterionRequirementWrapper requirement, boolean valid);
+
+    // Operations to manage the hours Groups
+    public void addNewHoursGroupWrapper();
+
+    List<HoursGroupWrapper> getHoursGroupsWrappers();
+
+    void deleteHoursGroupWrapper(HoursGroupWrapper hoursGroupWrapper);
+
+    void addCriterionToHoursGroupWrapper(
+            HoursGroupWrapper hoursGroupWrapper);
+
+    CriterionRequirementWrapper addExceptionToHoursGroupWrapper(
+            HoursGroupWrapper hoursGroupWrapper);
+
+    boolean selectCriterionToHoursGroup(
+            HoursGroupWrapper hoursGroupWrapper,
+            CriterionRequirementWrapper exception,
+            CriterionWithItsType criterionAndType);
+
+    void deleteCriterionToHoursGroup(HoursGroupWrapper hoursGroupWrapper,
+            CriterionRequirementWrapper requirementWrapper);
+
+    boolean isPercentageValid();
 }

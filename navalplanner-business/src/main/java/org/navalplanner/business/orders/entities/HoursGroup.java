@@ -89,12 +89,8 @@ public class HoursGroup extends BaseEntity implements Cloneable {
      */
     public void setPercentage(BigDecimal proportion)
             throws IllegalArgumentException {
-        BigDecimal oldPercentage = this.percentage;
-
-        this.percentage = proportion;
-
-        if (!parentOrderLine.isPercentageValid()) {
-            this.percentage = oldPercentage;
+        if (proportion.compareTo(new BigDecimal(1).setScale(2)) > 0) {
+            this.percentage = new BigDecimal(0).setScale(2);
             throw new IllegalArgumentException(
                     "Total percentage should be less than 100%");
         }
@@ -141,7 +137,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         }
     }
 
-    private boolean canAddCriterionRequirement(
+    public boolean canAddCriterionRequirement(
             CriterionRequirement newRequirement) {
         for (CriterionRequirement requirement : criterionRequirements) {
             if (requirement.getCriterion()
@@ -153,9 +149,8 @@ public class HoursGroup extends BaseEntity implements Cloneable {
     }
 
     /* TO REMOVE */
-    public void removeDirectCriterionRequirement(Criterion criterion){
-        CriterionRequirement oldCriterionRequirement =
- getDirectCriterionRequirementByCriterion(criterion);
+    public void removeDirectCriterionRequirement(Criterion criterion) {
+        CriterionRequirement oldCriterionRequirement = getDirectCriterionRequirementByCriterion(criterion);
         if (oldCriterionRequirement != null) {
             removeCriterionRequirement(oldCriterionRequirement);
         }
@@ -173,23 +168,23 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         requirement.setOrderElement(null);
     }
 
-    /* TO REMOVE */
+    // /* TO REMOVE */
     public CriterionRequirement getDirectCriterionRequirementByCriterion(
             Criterion criterion) {
         for (CriterionRequirement requirement : getDirectCriterionRequirement()) {
-                Criterion oldCriterion = requirement.getCriterion();
+            Criterion oldCriterion = requirement.getCriterion();
             if ((oldCriterion != null)
                     && (criterion.getId().equals(oldCriterion.getId()))) {
-                    return requirement;
-                }
+                return requirement;
+            }
         }
         return null;
     }
 
     /* TO REMOVE */
     public void addDirectRequirementCriterion(Criterion criterion) {
-        CriterionRequirement newCriterionRequirement =
-                DirectCriterionRequirement.create(criterion);
+        CriterionRequirement newCriterionRequirement = DirectCriterionRequirement
+                .create(criterion);
         addCriterionRequirement(newCriterionRequirement);
     }
 
@@ -219,7 +214,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         criterionRequirementHandler.addNewsIndirects(this, currentIndirects);
     }
 
-    Set<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
+    public Set<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
         Set<IndirectCriterionRequirement> list = new HashSet<IndirectCriterionRequirement>();
         for(CriterionRequirement criterionRequirement : criterionRequirements ){
             if(criterionRequirement instanceof IndirectCriterionRequirement){

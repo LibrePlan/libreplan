@@ -319,18 +319,22 @@ public class CriterionRequirementHandler implements
     IndirectCriterionRequirement getCurrentIndirectRequirement(
             Set<IndirectCriterionRequirement> oldIndirects,
             CriterionRequirement requirement) {
+
         IndirectCriterionRequirement indirect;
         DirectCriterionRequirement parent;
+        boolean valid = true;
         if (requirement instanceof DirectCriterionRequirement) {
             parent = (DirectCriterionRequirement) requirement;
             indirect = findIndirectRequirementByParent(oldIndirects, parent);
         } else {
             parent = ((IndirectCriterionRequirement) requirement).getParent();
             indirect = findIndirectRequirementByParent(oldIndirects, parent);
+            valid = ((IndirectCriterionRequirement) requirement).isIsValid();
         }
         if (indirect == null) {
             indirect = IndirectCriterionRequirement.create(parent, requirement
                     .getCriterion());
+            indirect.setIsValid(valid);
         }
         return (IndirectCriterionRequirement) indirect;
     }

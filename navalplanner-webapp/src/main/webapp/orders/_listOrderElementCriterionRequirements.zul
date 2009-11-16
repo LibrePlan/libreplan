@@ -18,6 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<?component name="listHoursGroupCriterionRequirements" inline="true" macroURI="_listHoursGroupCriterionRequirement.zul"?>
 <vbox id="${arg.id}"
     apply="org.navalplanner.web.orders.AssignedCriterionRequirementToOrderElementController">
 <panel title="${i18n:_('Assigned Criterions Requirement')}" border="normal">
@@ -86,5 +87,63 @@
         <separator bar="false" spacing="40px" orient="vertical"/>
     </panelchildren>
 </panel>
-<separator bar="false" spacing="40px" orient="vertical"/>
+<separator bar="false" spacing="80px" orient="vertical"/>
+
+<vbox id= "containerHoursGroup">
+</vbox>
+<!--Manage Hours Groups-->
+<panel title="${i18n:_('Hours Group')}" border="normal">
+    <panelchildren>
+    <hbox visible = "@{assignedCriterionRequirementController.editableHoursGroup}">
+        <separator bar="false" spacing="40px" orient="horizontal"/>
+        <separator bar="false" spacing="20px" orient="vertical"/>
+        <button id="buttonAddHoursGroup"
+            label="${i18n:_('Add new hours group')}"
+            onClick="assignedCriterionRequirementController.addHoursGroup()" />
+        <separator bar="false" spacing="40px" orient="vertical"/>
+    </hbox>
+    <grid id = "listHoursGroups" fixedLayout="true"
+        model="@{assignedCriterionRequirementController.hoursGroupWrappers}">
+        <columns>
+            <column width="25px" />
+            <column label="Hours"/>
+            <column label="%"/>
+            <column label="Fixed %"/>
+            <column label="Operations" visible = "@{assignedCriterionRequirementController.editableHoursGroup}"/>
+        </columns>
+        <rows>
+            <row self="@{each='hoursGroupWrapper'}" value="@{hoursGroupWrapper}">
+                <detail open="true">
+                    <listHoursGroupCriterionRequirements/>
+                </detail>
+                <intbox value="@{hoursGroupWrapper.workingHours}"
+                    readonly ="@{assignedCriterionRequirementController.readOnly}"/>
+                <decimalbox scale = "2" value="@{hoursGroupWrapper.percentage}"
+                    constraint = "@{assignedCriterionRequirementController.validatePercentage}"
+                    readonly ="@{assignedCriterionRequirementController.readOnly}"/>
+                <checkbox checked="@{hoursGroupWrapper.fixedPercentage}"
+                    disabled ="@{assignedCriterionRequirementController.readOnly}"/>
+                <hbox
+                visible = "@{assignedCriterionRequirementController.editableHoursGroup}">
+                    <button id="buttonDeleteHoursGroup"
+                        visible = "@{assignedCriterionRequirementController.editableHoursGroup}"
+                        sclass="icono" image="/common/img/ico_borrar1.png"
+                        hoverImage="/common/img/ico_borrar.png"
+                        tooltiptext="${i18n:_('Delete')}"
+                        onClick="assignedCriterionRequirementController.deleteHoursGroups(self)" />
+                    <button id="buttonAddCriterion"
+                        visible = "@{assignedCriterionRequirementController.editableHoursGroup}"
+                        label="${i18n:_('Add Criterion')}"
+                        onClick="assignedCriterionRequirementController.addCriterionToHoursGroup(self)" />
+                    <button id="buttonAddException"
+                        disabled = "@{hoursGroupWrapper.dontExistValidCriterions}"
+                        visible = "@{assignedCriterionRequirementController.editableHoursGroup}"
+                        label="${i18n:_('Add Exception')}"
+                        onClick="assignedCriterionRequirementController.addExceptionToHoursGroups(self)" />
+                </hbox>
+            </row>
+        </rows>
+    </grid>
+    </panelchildren>
+</panel>
 </vbox>

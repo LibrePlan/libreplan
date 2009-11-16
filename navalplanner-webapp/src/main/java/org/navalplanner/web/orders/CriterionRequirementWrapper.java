@@ -21,9 +21,9 @@ import org.navalplanner.business.resources.entities.CriterionWithItsType;
  */
 public class CriterionRequirementWrapper  implements INewObject {
 
-    private static final String DIRECT = _("Direct");
+    public static final String DIRECT = _("Direct");
 
-    private static final String INDIRECT = _("Indirect");
+    public static final String INDIRECT = _("Indirect");
 
     private String type;
 
@@ -35,12 +35,19 @@ public class CriterionRequirementWrapper  implements INewObject {
 
     private Boolean valid = true;
 
+    private Boolean newException = false;
+
     private CriterionWithItsType criterionWithItsType;
+
+    public CriterionRequirementWrapper(String type) {
+        this.newObject = true;
+        this.type = type;
+    }
 
     public CriterionRequirementWrapper(CriterionRequirement criterionRequirement,
             boolean isNewObject) {
         this.criterionAndType = "";
-        this.setCriterionRequirement(criterionRequirement);
+        this.criterionRequirement = criterionRequirement;
         this.initType(criterionRequirement);
         this.initValid(criterionRequirement);
         this.setNewObject(isNewObject);
@@ -58,11 +65,13 @@ public class CriterionRequirementWrapper  implements INewObject {
 
     public void setCriterionWithItsType(CriterionWithItsType criterionWithItsType) {
         this.criterionWithItsType = criterionWithItsType;
-        if (criterionWithItsType != null) {
-            criterionRequirement.setCriterion(criterionWithItsType
+        if (criterionRequirement != null) {
+            if (criterionWithItsType != null) {
+                criterionRequirement.setCriterion(criterionWithItsType
                     .getCriterion());
-        } else {
-            criterionRequirement.setCriterion(null);
+            } else {
+                criterionRequirement.setCriterion(null);
+            }
         }
     }
 
@@ -90,6 +99,7 @@ public class CriterionRequirementWrapper  implements INewObject {
 
     public void setCriterionRequirement(CriterionRequirement criterionRequirement) {
         this.criterionRequirement = criterionRequirement;
+        this.initValid(criterionRequirement);
     }
 
     public CriterionRequirement getCriterionRequirement() {
@@ -105,11 +115,18 @@ public class CriterionRequirementWrapper  implements INewObject {
     }
 
     private void initType(CriterionRequirement criterionRequirement) {
-        if(criterionRequirement instanceof DirectCriterionRequirement){
+        if (criterionRequirement instanceof DirectCriterionRequirement) {
             type = DIRECT;
-        }else if(criterionRequirement instanceof IndirectCriterionRequirement){
+        } else if (criterionRequirement instanceof IndirectCriterionRequirement) {
             type = INDIRECT;
         }
+    }
+
+    public String getTypeToHoursGroup() {
+        if (isDirect()) {
+            return type;
+        }
+        return "Exception " + type;
     }
 
     public boolean isDirect(){
@@ -126,7 +143,11 @@ public class CriterionRequirementWrapper  implements INewObject {
 
     public void setValid(Boolean valid) {
         this.valid = valid;
-        ((IndirectCriterionRequirement) criterionRequirement).setIsValid(valid);
+        if ((criterionRequirement != null)
+                && (criterionRequirement instanceof IndirectCriterionRequirement)) {
+            ((IndirectCriterionRequirement) criterionRequirement)
+                    .setIsValid(valid);
+        }
     }
 
     private void initValid(CriterionRequirement requirement) {
@@ -137,6 +158,11 @@ public class CriterionRequirementWrapper  implements INewObject {
     }
 
     public boolean isValid() {
+        if ((criterionRequirement != null)
+                && (criterionRequirement instanceof IndirectCriterionRequirement)) {
+            return ((IndirectCriterionRequirement) criterionRequirement)
+                    .isIsValid();
+        }
         return valid == null ? false : valid;
     }
 
@@ -156,7 +182,23 @@ public class CriterionRequirementWrapper  implements INewObject {
         return isNewObject();
     }
 
-    public boolean isUnmodifiable(){
+    public boolean isUnmodifiable() {
         return !isUpdatable();
+    }
+
+    public boolean isNewDirect() {
+        return (isNewObject() && isDirect());
+    }
+
+    public void setNewException(boolean newException) {
+        this.newException = newException;
+    }
+
+    public boolean isNewException() {
+        return newException;
+    }
+
+    public boolean isOldDirectOrException() {
+        return (!isNewDirect() && !isNewException());
     }
 }

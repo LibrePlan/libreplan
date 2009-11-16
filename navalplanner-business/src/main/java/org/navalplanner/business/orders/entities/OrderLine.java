@@ -116,6 +116,7 @@ public class OrderLine extends OrderElement {
 
     public void addHoursGroup(HoursGroup hoursGroup) {
         hoursGroup.setParentOrderLine(this);
+        hoursGroup.updateMyCriterionRequirements();
         hoursGroups.add(hoursGroup);
         recalculateHoursGroups();
         hoursGroupAdded(hoursGroup);

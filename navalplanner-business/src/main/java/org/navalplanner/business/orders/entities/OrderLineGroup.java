@@ -102,7 +102,6 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     @Override
     public void add(OrderElement orderElement) {
         getManipulator().add(orderElement);
-
         addIndirectAdvanceAssignments(orderElement);
     }
 

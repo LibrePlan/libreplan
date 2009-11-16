@@ -89,7 +89,7 @@
         <property name="percentage" access="field" />
         <property name="fixedPercentage" access="field" />
 
-        <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true">
+        <set name="criterionRequirements" access="field" cascade="save-update,delete-orphan" inverse="true">
             <key column="HOURS_GROUP_ID" not-null="false"></key>
             <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement"/>
         </set>

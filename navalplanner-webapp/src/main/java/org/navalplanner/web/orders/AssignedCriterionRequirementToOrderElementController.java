@@ -22,9 +22,12 @@ package org.navalplanner.web.orders;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -35,8 +38,13 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Detail;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Panel;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Vbox;
@@ -53,18 +61,24 @@ public class AssignedCriterionRequirementToOrderElementController extends
 
     private Vbox vbox;
 
+    private Vbox containerHoursGroup;
+
     private NewDataSortableGrid listingRequirements;
+
+    private Grid listHoursGroups;
 
     private IMessagesForUser messages;
 
     private Component messagesContainer;
 
+    private Detail detail;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        if (messagesContainer == null)
+        if (containerHoursGroup == null)
             throw new RuntimeException(_("MessagesContainer is needed"));
-        messages = new MessagesForUser(messagesContainer);
+        messages = new MessagesForUser(containerHoursGroup);
         comp.setVariable("assignedCriterionRequirementController", this, true);
         vbox = (Vbox) comp;
     }
@@ -139,15 +153,10 @@ setValidCriterionRequirementWrapper(requirement, true);
             if (!assignedCriterionRequirementToOrderElementModel
                     .canSetCriterionWithItsType(criterionRequirementWrapper,
                             criterionAndType)) {
-                bandbox.setValue("");
                 criterionRequirementWrapper.setCriterionWithItsType(null);
-                throw new WrongValueException(
-                        bandbox,
-                        _("The criterion "
-                                + criterionAndType.getNameAndType()
-                                + " is not valid,"
-                                + " exist the same criterion into the order element or into its children."));
+                showInvalidConstraint(bandbox, criterionAndType);
             }
+            Util.reloadBindings(listHoursGroups);
         }else{
             bandbox.setValue("");
         }
@@ -155,6 +164,7 @@ setValidCriterionRequirementWrapper(requirement, true);
 
     private void reload() {
         Util.reloadBindings(listingRequirements);
+        Util.reloadBindings(listHoursGroups);
     }
 
     private boolean showInvalidValues() {
@@ -176,10 +186,9 @@ setValidCriterionRequirementWrapper(requirement, true);
         if(listingRequirements != null){
             // Find which listItem contains CriterionSatisfaction inside listBox
             Row row = findRowOfCriterionRequirementWrapper(listingRequirements
-                    .getRows(),
- requirementWrapper);
+                    .getRows(), requirementWrapper);
             if (row != null) {
-                    Bandbox bandType = getBandType(row);
+                Bandbox bandType = getBandType(requirementWrapper, row);
                     bandType.setValue(null);
                     throw new WrongValueException(bandType,
                             _("The criterion and its type cannot be null"));
@@ -193,6 +202,7 @@ setValidCriterionRequirementWrapper(requirement, true);
      * @param CriterionRequirementWrapper
      * @return
      */
+
     private Row findRowOfCriterionRequirementWrapper(Rows rows,
             CriterionRequirementWrapper requirementWrapper) {
         List<Row> listRows = (List<Row>) rows.getChildren();
@@ -210,8 +220,177 @@ setValidCriterionRequirementWrapper(requirement, true);
      * @param row
      * @return Bandbox
      */
-    private Bandbox getBandType(Row row) {
+    private Bandbox getBandType(CriterionRequirementWrapper wrapper, Row row) {
+        if (wrapper.isNewException()) {
+            return (Bandbox) ((Hbox) row.getChildren().get(0)).getChildren()
+                    .get(1);
+        }
         return (Bandbox)((Hbox) row.getChildren().get(0))
                 .getChildren().get(0);
+    }
+
+    private Rows getRequirementRows(Row row) {
+        Panel panel = (Panel) row.getFirstChild().getFirstChild();
+        NewDataSortableGrid grid = (NewDataSortableGrid) panel.getFirstChild()
+                .getFirstChild();
+        return grid.getRows();
+    }
+
+    private HoursGroupWrapper getHoursGroupOfRequirementWrapper(
+            Row rowRequirement) {
+        NewDataSortableGrid grid = (NewDataSortableGrid) rowRequirement
+                .getParent().getParent();
+        Panel panel = (Panel) grid.getParent().getParent();
+        return (HoursGroupWrapper) ((Row) panel.getParent().getParent())
+                .getValue();
+    }
+    /*
+     * Operations to manage OrderElement's hoursGroups and to assign criterion
+     * requirements to this hoursGroups.
+     */
+
+    public boolean isReadOnly() {
+        return !isEditableHoursGroup();
+    }
+
+    public boolean isEditableHoursGroup() {
+        if (getOrderElement() != null) {
+            if (getOrderElement() instanceof OrderLine)
+                return true;
+        }
+        return false;
+    }
+
+    public List<HoursGroupWrapper> getHoursGroupWrappers() {
+            return assignedCriterionRequirementToOrderElementModel
+                .getHoursGroupsWrappers();
+    }
+
+    /**
+     * Adds a new {@link HoursGroup} to the current {@link OrderElement} The
+     * {@link OrderElement} should be a {@link OrderLine}
+     */
+    public void addHoursGroup() {
+        assignedCriterionRequirementToOrderElementModel
+                .addNewHoursGroupWrapper();
+        Util.reloadBindings(listHoursGroups);
+    }
+
+    /**
+     * Deletes the selected {@link HoursGroup} for the current
+     * {@link OrderElement} The {@link OrderElement} should be a
+     * {@link OrderLine}
+     */
+    public void deleteHoursGroups(Component self) throws InterruptedException {
+        if (getHoursGroupWrappers().size() < 2) {
+            Messagebox.show(_("At least one HoursGroup is needed"), _("Error"), Messagebox.OK,
+                    Messagebox.ERROR);
+            return;
+        }else{
+            HoursGroupWrapper hoursGroupWrapper = getHoursGroupWrapper(self);
+            if (hoursGroupWrapper != null) {
+                assignedCriterionRequirementToOrderElementModel
+                        .deleteHoursGroupWrapper(hoursGroupWrapper);
+                Util.reloadBindings(listHoursGroups);
+            }
+        }
+    }
+
+    public void addCriterionToHoursGroup(Component self) {
+        HoursGroupWrapper hoursGroupWrapper = getHoursGroupWrapper(self);
+        if (hoursGroupWrapper != null) {
+            assignedCriterionRequirementToOrderElementModel
+                    .addCriterionToHoursGroupWrapper(hoursGroupWrapper);
+            Util.reloadBindings(listHoursGroups);
+        }
+    }
+
+    public void addExceptionToHoursGroups(Component self) {
+        HoursGroupWrapper hoursGroupWrapper = getHoursGroupWrapper(self);
+        if (hoursGroupWrapper != null) {
+            assignedCriterionRequirementToOrderElementModel
+                    .addExceptionToHoursGroupWrapper(hoursGroupWrapper);
+            Util.reloadBindings(listHoursGroups);
+        }
+    }
+
+    public void removeCriterionToHoursGroup(Component self){
+        try {
+            System.out.println("remove in Controller");
+            Row row = (Row) self.getParent().getParent();
+            CriterionRequirementWrapper requirementWrapper = (CriterionRequirementWrapper) row.getValue();
+            HoursGroupWrapper hoursGroupWrapper = getHoursGroupOfRequirementWrapper(row);
+
+            assignedCriterionRequirementToOrderElementModel
+                    .deleteCriterionToHoursGroup(hoursGroupWrapper,
+                            requirementWrapper);
+            Util.reloadBindings(listHoursGroups);
+        } catch (Exception e) {
+        }
+    }
+
+    public void selectCriterionToHoursGroup(Listitem item, Bandbox bandbox,
+            CriterionRequirementWrapper requirementWrapper) {
+        if (item != null) {
+
+            Row row = (Row) bandbox.getParent().getParent();
+            CriterionWithItsType criterionAndType = (CriterionWithItsType) item
+                    .getValue();
+            HoursGroupWrapper hoursGroupWrapper = getHoursGroupOfRequirementWrapper(row);
+
+            bandbox.close();
+            bandbox.setValue(criterionAndType.getNameAndType());
+
+            if (!assignedCriterionRequirementToOrderElementModel
+                    .selectCriterionToHoursGroup(hoursGroupWrapper,
+                            requirementWrapper, criterionAndType)) {
+                requirementWrapper.setCriterionWithItsType(null);
+                showInvalidConstraint(bandbox, criterionAndType);
+            }
+            Util.reloadBindings(listHoursGroups);
+        } else {
+            bandbox.setValue("");
+        }
+    }
+
+    private void showInvalidConstraint(Bandbox bandbox,
+            CriterionWithItsType criterionAndType) {
+        bandbox.setValue("");
+        throw new WrongValueException(
+                bandbox,
+                _("The criterion "
+                        + criterionAndType.getNameAndType()
+                        + " is not valid,"
+                        + " exist the same criterion into the order element or into its children."));
+    }
+
+    private HoursGroupWrapper getHoursGroupWrapper(Component self) {
+        try {
+            return ((HoursGroupWrapper) (((Row) (self.getParent().getParent()))
+                    .getValue()));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /*
+     * Operations to manage the data hoursGroup, for example validate the
+     * percentage and its number of hours or set the fixed percentage
+     */
+
+    public Constraint validatePercentage() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                HoursGroupWrapper hoursGroupWrapper = (HoursGroupWrapper) ((Row) comp
+                        .getParent()).getValue();
+                hoursGroupWrapper.setPercentage((BigDecimal) value);
+                if (!assignedCriterionRequirementToOrderElementModel.isPercentageValid()) {
+                    throw new WrongValueException(
+                            comp,_("Total percentage should be less than 100%"));
+                }
+            }
+        };
     }
 }
