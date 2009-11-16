@@ -52,7 +52,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
@@ -290,28 +289,44 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        @Transactional(readOnly = true)
         public String getTooltipText() {
+            return transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<String>() {
 
+                        @Override
+                        public String execute() {
+                            orderElementDAO
+                                    .reattachUnmodifiedEntity(taskElement
+                                    .getOrderElement());
+                            return buildTooltipText();
+                        }
+                    });
+        }
+
+        private String buildTooltipText() {
             StringBuilder result = new StringBuilder();
-            result.append("Advance: ")
-                  .append(getAdvancePercentage().multiply(new BigDecimal(100)))
-                  .append("% , ");
+            result.append("Advance: ").append(
+                    getAdvancePercentage().multiply(
+                            new BigDecimal(100)))
+                    .append("% , ");
 
-            result.append("Hours invested: ")
-                  .append(getHoursAdvancePercentage()
-                            .multiply(new BigDecimal(100)))
-                  .append("% <br/>");
+            result.append("Hours invested: ").append(
+                    getHoursAdvancePercentage().multiply(
+                            new BigDecimal(100))).append(
+                    "% <br/>");
 
             if (taskElement.getOrderElement() != null) {
-                Set<Label> labels = taskElement.getOrderElement().getLabels();
+                Set<Label> labels = taskElement
+                        .getOrderElement().getLabels();
 
                 if (!labels.isEmpty()) {
                     result.append("Labels: ");
                     for (Label label : labels) {
-                        result.append(label.getName()).append(", ");
+                        result.append(label.getName()).append(
+                                ", ");
                     }
-                    result.delete(result.length() - 2, result.length());
+                    result.delete(result.length() - 2, result
+                            .length());
                 }
             }
             return result.toString();
