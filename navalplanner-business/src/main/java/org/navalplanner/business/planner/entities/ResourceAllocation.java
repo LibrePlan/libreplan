@@ -578,7 +578,17 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return sum;
     }
 
-    public abstract void mergeAssignmentsAndResourcesPerDay(ResourceAllocation<?> modifications);
+    public void mergeAssignmentsAndResourcesPerDay(
+            ResourceAllocation<?> modifications) {
+        if (modifications == this) {
+            return;
+        }
+        mergeAssignments(modifications);
+        setResourcesPerDay(modifications.getResourcesPerDay());
+        setAssignmentFunction(modifications.getAssignmentFunction());
+    }
+
+    protected abstract void mergeAssignments(ResourceAllocation<?> modifications);
 
     void detachAssignments() {
         for (DayAssignment dayAssignment : getAssignments()) {
