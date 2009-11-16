@@ -48,6 +48,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
@@ -61,6 +62,7 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -77,6 +79,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Column;
+import org.zkoss.zul.api.Window;
 
 public class AdvancedAllocationController extends GenericForwardComposer {
 
@@ -334,7 +337,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     public AdvancedAllocationController(IBack back,
             List<AllocationInput> allocationInputs) {
         setInputData(back, allocationInputs);
-
     }
 
     private void setInputData(IBack back, List<AllocationInput> allocationInputs) {
@@ -776,17 +778,32 @@ class Row {
                                     Messagebox.EXCLAMATION);
                 } else {
                     if (assignmentFunction.equals(StretchesFunction.class)) {
-                        // TODO
-                        Messagebox.show(
-                                "TODO: Stretches Function Configuration",
-                                "WIP",
-                                Messagebox.OK, Messagebox.INFORMATION);
+                        goToStretchesFunctionConfiguration();
                     } else {
                         Messagebox.show(_("Unknown assignment function: ",
-                                assignmentFunction.getName()), "WIP",
-                                Messagebox.OK, Messagebox.EXCLAMATION);
+                                assignmentFunction.getName()), _("Error"),
+                                Messagebox.OK, Messagebox.ERROR);
                     }
                 }
+            }
+
+            private void goToStretchesFunctionConfiguration()
+                    throws Exception {
+                StretchesFunctionController stretchesFunctionController = new StretchesFunctionController();
+
+                HashMap<String, Object> args = new HashMap<String, Object>();
+                args.put("stretchesFunctionController",
+                        stretchesFunctionController);
+                Window window = (Window) Executions.createComponents(
+                        "/planner/stretches_function.zul", allHoursInput
+                                .getParent(), args);
+                Util.createBindingsFor(window);
+
+                stretchesFunctionController
+                        .setResourceAllocation(getAllocation());
+                stretchesFunctionController.showWindow();
+                getAllocation().setAssignmentFunction(
+                        stretchesFunctionController.getAssignmentFunction());
             }
 
         });

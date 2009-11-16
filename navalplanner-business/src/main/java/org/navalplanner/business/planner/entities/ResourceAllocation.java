@@ -480,6 +480,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return assignmentFunction;
     }
 
+    public void setAssignmentFunction(AssignmentFunction assignmentFunction) {
+        this.assignmentFunction = assignmentFunction;
+    }
+
     public int getAssignedHours() {
         int total = 0;
         for (DayAssignment dayAssignment : getAssignments()) {
