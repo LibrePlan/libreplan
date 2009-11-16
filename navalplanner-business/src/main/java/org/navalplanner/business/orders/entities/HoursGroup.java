@@ -31,6 +31,7 @@ import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 
 
 public class HoursGroup extends BaseEntity implements Cloneable {
@@ -40,6 +41,10 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         result.setNewObject(true);
         return result;
     }
+
+    private String name;
+
+    private ResourceEnum resourceType;
 
     @NotNull
     private Integer workingHours = 0;
@@ -64,6 +69,26 @@ public class HoursGroup extends BaseEntity implements Cloneable {
 
     private HoursGroup(OrderLine parentOrderLine) {
         this.parentOrderLine = parentOrderLine;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ResourceEnum getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(ResourceEnum resource) {
+        if ((resource != null) && (resource.equals(ResourceEnum.getDefault()))) {
+            throw new IllegalArgumentException(
+                    "the resource type should be Worker or Machine");
+        }
+        this.resourceType = resource;
     }
 
     public void setWorkingHours(Integer workingHours)

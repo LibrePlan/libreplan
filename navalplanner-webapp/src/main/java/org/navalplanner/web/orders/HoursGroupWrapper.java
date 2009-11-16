@@ -33,6 +33,7 @@ import org.navalplanner.business.requirements.entities.IndirectCriterionRequirem
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 
 /**
  * Wrapper represents the handled data in the form of assigning criterion
@@ -43,12 +44,6 @@ public class HoursGroupWrapper implements INewObject {
 
     private Boolean newObject = false;
 
-    private Integer workingHours = 0;
-
-    private BigDecimal percentage = new BigDecimal(0);
-
-    private Boolean fixedPercentage = false;
-
     private List<CriterionRequirementWrapper> directRequirementWrappers = new ArrayList<CriterionRequirementWrapper>();
 
     private List<CriterionRequirementWrapper> exceptionRequirementWrappers = new ArrayList<CriterionRequirementWrapper>();
@@ -57,10 +52,9 @@ public class HoursGroupWrapper implements INewObject {
 
     private HoursGroup hoursGroup;
 
-    public HoursGroupWrapper(HoursGroup hoursGroup, OrderElement orderElement) {
-        this.workingHours = hoursGroup.getWorkingHours();
-        this.percentage = hoursGroup.getPercentage();
-        this.fixedPercentage = hoursGroup.isFixedPercentage();
+    public HoursGroupWrapper(HoursGroup hoursGroup, OrderElement orderElement,
+            boolean newObject) {
+        this.newObject = newObject;
         this.orderElement = orderElement;
         this.hoursGroup = hoursGroup;
         initRequirementWrappers(hoursGroup);
@@ -80,6 +74,30 @@ public class HoursGroupWrapper implements INewObject {
             CriterionRequirementWrapper wrapper = new CriterionRequirementWrapper(
                     requirement, false);
             exceptionRequirementWrappers.add(wrapper);
+        }
+    }
+
+    public String getName() {
+        return this.hoursGroup.getName();
+    }
+
+    public void setName(String name) {
+        this.hoursGroup.setName(name);
+    }
+
+    public ResourceEnum getResourceType() {
+        return hoursGroup.getResourceType();
+    }
+
+    public void setResourceType(String resource) {
+        if (resource != null) {
+            if (ResourceEnum.WORKER.toString().equals(resource)) {
+                hoursGroup.setResourceType(ResourceEnum.WORKER);
+            } else {
+                hoursGroup.setResourceType(ResourceEnum.MACHINE);
+            }
+        } else {
+            hoursGroup.setResourceType(null);
         }
     }
 

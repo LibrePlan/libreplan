@@ -23,12 +23,14 @@ package org.navalplanner.web.orders;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
@@ -59,7 +61,7 @@ public class AssignedCriterionRequirementToOrderElementController extends
 
     private Vbox vbox;
 
-    private Vbox containerHoursGroup;
+    List<ResourceEnum> listResourceTypes = new ArrayList<ResourceEnum>();
 
     private NewDataSortableGrid listingRequirements;
 
@@ -72,6 +74,10 @@ public class AssignedCriterionRequirementToOrderElementController extends
         super.doAfterCompose(comp);
         comp.setVariable("assignedCriterionRequirementController", this, true);
         vbox = (Vbox) comp;
+
+        // init the resorcesType
+        listResourceTypes.add(ResourceEnum.MACHINE);
+        listResourceTypes.add(ResourceEnum.WORKER);
     }
 
     public OrderElement getOrderElement() {
@@ -108,6 +114,10 @@ getCriterionRequirementWrappers();
 
     public List<CriterionWithItsType> getCriterionWithItsTypes(){
         return assignedCriterionRequirementToOrderElementModel.getCriterionWithItsTypes();
+    }
+
+    public List<ResourceEnum> getResourceTypes() {
+        return listResourceTypes;
     }
 
     public void addCriterionRequirementWrapper() {

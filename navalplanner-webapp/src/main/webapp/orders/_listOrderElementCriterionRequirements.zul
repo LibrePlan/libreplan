@@ -124,9 +124,11 @@
         model="@{assignedCriterionRequirementController.hoursGroupWrappers}">
         <columns>
             <column width="25px" />
-            <column label="Hours" width="200px" align="center"/>
-            <column label="%" width="200px" align="center"/>
-            <column label="Fixed %" width="100px" align="center"/>
+            <column label="Name" width="160px" align="center"/>
+            <column label="Type" width="130px" align="center"/>
+            <column label="Hours" width="120px" align="center"/>
+            <column label="%" width="100px" align="center"/>
+            <column label="Fixed %" width="50px" align="center"/>
             <column label="Operations" align="center"
                 visible = "@{assignedCriterionRequirementController.editableHoursGroup}"/>
         </columns>
@@ -135,6 +137,17 @@
                 <detail open="true">
                     <listHoursGroupCriterionRequirements/>
                 </detail>
+                <textbox value="@{hoursGroupWrapper.name}"
+                    readonly = "@{assignedCriterionRequirementController.readOnly}"/>
+                <hbox>
+                    <combobox id="comboboxTypeHoursGroup" width="80px"
+                        visible ="@{hoursGroupWrapper.newObject}"
+                        value = "@{hoursGroupWrapper.resourceType}"
+                        model = "@{assignedCriterionRequirementController.resourceTypes}">
+                    </combobox>
+                    <label value = "@{hoursGroupWrapper.resourceType}"
+                        visible ="@{hoursGroupWrapper.oldObject}"/>
+                </hbox>
                 <intbox value="@{hoursGroupWrapper.workingHours}"
                     readonly ="@{hoursGroupWrapper.workingHoursReadOnly}"
                     onChange = "assignedCriterionRequirementController.recalculateHoursGroup()"/>
@@ -143,7 +156,7 @@
                     readonly ="@{hoursGroupWrapper.percentageReadOnly}"
                     onChange = "assignedCriterionRequirementController.recalculateHoursGroup()"/>
                 <checkbox checked="@{hoursGroupWrapper.fixedPercentage}"
-                    disabled ="@{assignedCriterionRequirementController.readOnly}"
+                    disabled = "@{assignedCriterionRequirementController.readOnly}"
                     onCheck = "assignedCriterionRequirementController.recalculateHoursGroup()"/>
                 <hbox
                 visible = "@{assignedCriterionRequirementController.editableHoursGroup}">

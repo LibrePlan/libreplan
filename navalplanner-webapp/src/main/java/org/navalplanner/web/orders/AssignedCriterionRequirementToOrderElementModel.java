@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.orders;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +43,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 /**
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -269,20 +270,21 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
     private void initializeHoursGroupWrappers() {
         hoursGroupsWrappers = new ArrayList<HoursGroupWrapper>();
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
-            addNewHoursGroupWrapper(hoursGroup);
+            addNewHoursGroupWrapper(hoursGroup, false);
         }
     }
 
     public void addNewHoursGroupWrapper() {
         if ((orderModel != null) && (getOrderElement() != null)) {
             HoursGroup newHoursGroup = createNewHoursGroup();
-            addNewHoursGroupWrapper(newHoursGroup);
+            addNewHoursGroupWrapper(newHoursGroup, true);
         }
     }
 
-    private void addNewHoursGroupWrapper(HoursGroup newHoursGroup) {
+    private void addNewHoursGroupWrapper(HoursGroup newHoursGroup,
+            boolean newObject) {
         HoursGroupWrapper newHoursGroupWrapper = new HoursGroupWrapper(
-                newHoursGroup, getOrderElement());
+                newHoursGroup, getOrderElement(), newObject);
         hoursGroupsWrappers.add(newHoursGroupWrapper);
     }
 
@@ -290,6 +292,11 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         if (asOrderLine() != null) {
             HoursGroup newHoursGroup = HoursGroup.create(asOrderLine());
             (asOrderLine()).addHoursGroup(newHoursGroup);
+
+            // Set generated name
+            int number = (asOrderLine()).getHoursGroups().size();
+            newHoursGroup.setName(_("New hours group ") + number);
+
             return newHoursGroup;
         }
         return null;
@@ -433,7 +440,7 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
     public void updateHoursGroup() {
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
             if (!existIntohoursGroupsWrappers(hoursGroup)) {
-                addNewHoursGroupWrapper(hoursGroup);
+                addNewHoursGroupWrapper(hoursGroup, true);
             }
         }
     }
