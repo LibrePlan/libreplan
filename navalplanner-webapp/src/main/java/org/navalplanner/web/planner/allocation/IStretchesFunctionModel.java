@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.Stretch;
@@ -63,6 +64,10 @@ public interface IStretchesFunctionModel {
 
     void setStretchLengthPercentage(Stretch stretch, BigDecimal lengthPercentage)
             throws IllegalArgumentException;
+
+    LocalDate getTaskStartDate();
+
+    Integer getTaskHours();
 
     /*
      * Final conversation steps

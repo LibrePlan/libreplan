@@ -30,6 +30,7 @@
 <window border="normal" title="${i18n:_('Stretches function configuration')}"
     apply="${stretchesFunctionController}">
 
+<hbox>
     <vbox>
         <label>${i18n:_('Stretches')}</label>
 
@@ -56,6 +57,16 @@
                 onClick="stretchesFunctionController.cancel()" />
         </hbox>
     </vbox>
+
+    <vbox>
+        <chart id="dedicationChart" title="${i18n:_('Dedication chart')}"
+            type="time_series" threeD="false"
+            model="@{stretchesFunctionController.getDedicationChartData}"
+            yAxis= "${i18n:_('Hours')}" paneColor="#FFFFFF"
+            showLegend="false" />
+    </vbox>
+
+</hbox>
 
 </window>
 

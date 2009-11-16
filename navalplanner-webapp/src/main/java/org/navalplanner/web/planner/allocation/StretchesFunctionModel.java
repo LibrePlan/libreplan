@@ -30,13 +30,16 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.Task;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for UI operations related to {@link StretchesFunction} configuration.
@@ -51,9 +54,13 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
      * Conversation state
      */
     private StretchesFunction stretchesFunction;
+
     private Task task;
 
     private StretchesFunction originalStretchesFunction;
+
+    @Autowired
+    private ITaskElementDAO taskElementDAO;
 
     @Override
     public void initCreate(Task task) {
@@ -189,6 +196,25 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         long stretchDate = startDate + lengthPercentage.multiply(
                 new BigDecimal(endDate - startDate)).longValue();
         stretch.setDate(new LocalDate(stretchDate));
+    }
+
+    @Override
+    public LocalDate getTaskStartDate() {
+        if (task == null) {
+            return null;
+        }
+        return new LocalDate(task.getStartDate());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Integer getTaskHours() {
+        if (task == null) {
+            return null;
+        }
+
+        taskElementDAO.reattach(task);
+        return task.getHoursSpecifiedAtOrder();
     }
 
 }
