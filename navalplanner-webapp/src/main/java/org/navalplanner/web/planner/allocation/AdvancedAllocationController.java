@@ -43,6 +43,7 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -66,11 +67,15 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Column;
 
 public class AdvancedAllocationController extends GenericForwardComposer {
@@ -727,9 +732,66 @@ class Row {
         if (isGroupingRow()) {
             return new Label();
         } else {
-            Combobox combobox = new Combobox();
-            return combobox;
+            Hbox hbox = new Hbox();
+
+            hbox.appendChild(getAssignmentFunctionsCombo());
+            hbox.appendChild(getAssignmentFunctionsConfigureButton());
+
+            return hbox;
         }
+    }
+
+    private Combobox getAssignmentFunctionsCombo() {
+        Combobox combobox = new Combobox();
+        combobox.setId("assigment_functions_combo");
+
+        Comboitem comboitem = new Comboitem(_("None"));
+        comboitem.setValue(null);
+        combobox.appendChild(comboitem);
+        combobox.setSelectedItem(comboitem);
+
+        comboitem = new Comboitem(_("Stretches"));
+        comboitem.setValue(StretchesFunction.class);
+        combobox.appendChild(comboitem);
+
+        return combobox;
+    }
+
+    private Button getAssignmentFunctionsConfigureButton() {
+        final Button button = new Button(_("Configure"));
+
+        button.addEventListener(Events.ON_CLICK, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Combobox combobox = (Combobox) button
+                        .getFellow("assigment_functions_combo");
+                Class assignmentFunction = (Class) combobox.getSelectedItem()
+                        .getValue();
+                if (assignmentFunction == null) {
+                    Messagebox
+                            .show(
+                                    _("You need to select some function to configure"),
+                                    _("Warning"), Messagebox.OK,
+                                    Messagebox.EXCLAMATION);
+                } else {
+                    if (assignmentFunction.equals(StretchesFunction.class)) {
+                        // TODO
+                        Messagebox.show(
+                                "TODO: Stretches Function Configuration",
+                                "WIP",
+                                Messagebox.OK, Messagebox.INFORMATION);
+                    } else {
+                        Messagebox.show(_("Unknown assignment function: ",
+                                assignmentFunction.getName()), "WIP",
+                                Messagebox.OK, Messagebox.EXCLAMATION);
+                    }
+                }
+            }
+
+        });
+
+        return button;
     }
 
     Component getNameLabel() {
