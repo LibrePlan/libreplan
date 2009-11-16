@@ -152,14 +152,6 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return true;
     }
 
-    /* TO REMOVE */
-    public void removeDirectCriterionRequirement(Criterion criterion) {
-        CriterionRequirement oldCriterionRequirement = getDirectCriterionRequirementByCriterion(criterion);
-        if (oldCriterionRequirement != null) {
-            removeCriterionRequirement(oldCriterionRequirement);
-        }
-    }
-
     public void removeCriterionRequirement(CriterionRequirement requirement) {
         criterionRequirements.remove(requirement);
         if (requirement instanceof IndirectCriterionRequirement) {
@@ -170,35 +162,6 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         requirement.setCriterion(null);
         requirement.setHoursGroup(null);
         requirement.setOrderElement(null);
-    }
-
-    // /* TO REMOVE */
-    public CriterionRequirement getDirectCriterionRequirementByCriterion(
-            Criterion criterion) {
-        for (CriterionRequirement requirement : getDirectCriterionRequirement()) {
-            Criterion oldCriterion = requirement.getCriterion();
-            if ((oldCriterion != null)
-                    && (criterion.getId().equals(oldCriterion.getId()))) {
-                return requirement;
-            }
-        }
-        return null;
-    }
-
-    /* TO REMOVE */
-    public void addDirectRequirementCriterion(Criterion criterion) {
-        CriterionRequirement newCriterionRequirement = DirectCriterionRequirement
-                .create(criterion);
-        addCriterionRequirement(newCriterionRequirement);
-    }
-
-    /* TO REMOVE */
-    public Criterion getDirectCriterion(Criterion criterion) {
-        CriterionRequirement requirement = getDirectCriterionRequirementByCriterion(criterion);
-        if (requirement != null) {
-            return requirement.getCriterion();
-        }
-        return null;
     }
 
     public void setParentOrderLine(OrderLine parentOrderLine) {
