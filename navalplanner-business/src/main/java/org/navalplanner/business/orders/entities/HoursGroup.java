@@ -155,27 +155,32 @@ public class HoursGroup extends BaseEntity implements Cloneable {
     }
 
     public void addCriterionRequirement(CriterionRequirement requirement) {
-        if (canAddCriterionRequirement(requirement)) {
-            requirement.setHoursGroup(this);
-            criterionRequirements.add(requirement);
-        } else {
+        if (!isValidResourceType(requirement)) {
             throw new IllegalStateException(
-                    " The "
+                    " The criterion "
+                            + requirement.getCriterion().getName()
+                            + " can not be assigned to this hoursGroup because its resource type is diferent.");
+        }
+        if (existSameCriterionRequirement(requirement)) {
+            throw new IllegalStateException(
+                    " The criterion "
                             + requirement.getCriterion().getName()
                             + " can not be assigned to this hoursGroup because it already exist into the hoursGroup");
+
         }
+        requirement.setHoursGroup(this);
+        criterionRequirements.add(requirement);
     }
 
     public boolean canAddCriterionRequirement(
             CriterionRequirement newRequirement) {
-        for (CriterionRequirement requirement : criterionRequirements) {
-            if (requirement.getCriterion()
-                    .equals(newRequirement.getCriterion())) {
-                return false;
-            }
+        if ((isValidResourceType(newRequirement))
+                && (!existSameCriterionRequirement(newRequirement))) {
+            return false;
         }
         return true;
     }
+
 
     public void removeCriterionRequirement(CriterionRequirement requirement) {
         criterionRequirements.remove(requirement);
@@ -197,11 +202,14 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return parentOrderLine;
     }
 
-    void updateMyCriterionRequirements() {
+    public void updateMyCriterionRequirements() {
         OrderElement newParent = this.getParentOrderLine();
+        Set<CriterionRequirement> requirementsParent = criterionRequirementHandler
+                .getRequirementWithSameResourType(newParent
+                        .getCriterionRequirements(), resourceType);
         Set<IndirectCriterionRequirement> currentIndirects = criterionRequirementHandler
                 .getCurrentIndirectRequirements(
-                        getIndirectCriterionRequirement(), newParent);
+                        getIndirectCriterionRequirement(), requirementsParent);
         criterionRequirementHandler.removeOldIndirects(this, currentIndirects);
         criterionRequirementHandler.addNewsIndirects(this, currentIndirects);
     }
@@ -226,10 +234,20 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return list;
     }
 
-    public boolean existSameCriterionRequirement(CriterionRequirement newRequirement){
+    public boolean isValidResourceType(CriterionRequirement newRequirement) {
+        ResourceEnum resourceTypeRequirement = newRequirement.getCriterion()
+                .getType().getResource();
+        if (resourceType != null) {
+            return resourceType.equals(resourceTypeRequirement);
+        }
+        return true;
+    }
+
+    boolean existSameCriterionRequirement(
+            CriterionRequirement newRequirement) {
         Criterion criterion = newRequirement.getCriterion();
         for(CriterionRequirement requirement : getCriterionRequirements()){
-            if(requirement.getCriterion().equals(criterion))
+            if (requirement.getCriterion().equals(criterion))
                 return true;
         }
         return false;

@@ -473,9 +473,11 @@ public abstract class OrderElement extends BaseEntity {
 
     void updateMyCriterionRequirements() {
         OrderElement newParent = this.getParent();
+        Set<CriterionRequirement> requirementsParent = newParent
+                .getCriterionRequirements();
         Set<IndirectCriterionRequirement> currentIndirects = criterionRequirementHandler
                 .getCurrentIndirectRequirements(
-                        getIndirectCriterionRequirement(), newParent);
+                        getIndirectCriterionRequirement(), requirementsParent);
         criterionRequirementHandler.transformDirectToIndirectIfNeeded(this,
                 currentIndirects);
         criterionRequirementHandler.removeOldIndirects(this, currentIndirects);

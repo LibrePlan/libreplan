@@ -90,15 +90,10 @@ public class HoursGroupWrapper implements INewObject {
     }
 
     public void setResourceType(String resource) {
-        if (resource != null) {
-            if (ResourceEnum.WORKER.toString().equals(resource)) {
-                hoursGroup.setResourceType(ResourceEnum.WORKER);
-            } else {
-                hoursGroup.setResourceType(ResourceEnum.MACHINE);
-            }
-        } else {
-            hoursGroup.setResourceType(null);
-        }
+    }
+
+    public void assignResourceType(ResourceEnum resource) {
+        hoursGroup.setResourceType(resource);
     }
 
     public void setNewObject(Boolean isNewObject) {
@@ -237,6 +232,51 @@ public class HoursGroupWrapper implements INewObject {
         getExceptionRequirementWrappers().remove(exception);
     }
 
+    public void updateListExceptionCriterionRequirementWrapper() {
+        // removes the old exception into list ExceptionRequirementWrappers
+        List<CriterionRequirementWrapper> list = new ArrayList<CriterionRequirementWrapper>(
+                getExceptionRequirementWrappers());
+        for (CriterionRequirementWrapper exception : list) {
+            if ((exception.getCriterionWithItsType() != null)
+                    && (exceptionWasRemoved(exception))) {
+                getExceptionRequirementWrappers().remove(exception);
+            }
+        }
+        // Add new exception into list ExceptionRequirementWrappers
+        for (CriterionRequirement requirement : getInvalidIndirectCriterionRequirement()) {
+            CriterionRequirementWrapper exception = findRequirementWrapperByRequirement(requirement);
+            if (exception == null) {
+                exception = new CriterionRequirementWrapper(requirement, false);
+                exceptionRequirementWrappers.add(exception);
+            }
+        }
+    }
+
+    private boolean exceptionWasRemoved(CriterionRequirementWrapper exception) {
+        CriterionRequirement requirement = exception.getCriterionRequirement();
+        if (hoursGroup.getCriterionRequirements().contains(requirement)) {
+            return false;
+        }
+        return true;
+    }
+
+    public void removeDirectCriterionsWithDiferentResourceType() {
+        for (CriterionRequirement requirement : hoursGroup
+                .getDirectCriterionRequirement()) {
+            if(!hoursGroup.isValidResourceType(requirement)){
+                removeCriterionRequirementWrapper(requirement);
+            }
+        }
+    }
+
+    private void removeCriterionRequirementWrapper(
+            CriterionRequirement requirement) {
+        CriterionRequirementWrapper requirementWrapper = findRequirementWrapperByRequirement(requirement);
+        if (requirementWrapper != null) {
+            this.removeDirectCriterionRequirementWrapper(requirementWrapper);
+        }
+    }
+
     public List<CriterionRequirementWrapper> getCriterionRequirementWrappersView() {
         List<CriterionRequirementWrapper> list = new ArrayList<CriterionRequirementWrapper>();
         list.addAll(getDirectRequirementWrappers());
@@ -268,8 +308,21 @@ public class HoursGroupWrapper implements INewObject {
         return null;
     }
 
-    private List<CriterionRequirement> getInvalidIndirectCriterionRequirement() {
-        List<CriterionRequirement> result = new ArrayList<CriterionRequirement>();
+    private CriterionRequirementWrapper findRequirementWrapperByRequirement(
+            CriterionRequirement requirement) {
+        for (CriterionRequirementWrapper requirementWrapper : this
+                .getCriterionRequirementWrappersView()) {
+            if ((requirementWrapper.getCriterionRequirement() != null)
+                    && (requirementWrapper.getCriterionRequirement())
+                    .equals(requirement)) {
+                return requirementWrapper;
+            }
+        }
+        return null;
+    }
+
+    private List<IndirectCriterionRequirement> getInvalidIndirectCriterionRequirement() {
+        List<IndirectCriterionRequirement> result = new ArrayList<IndirectCriterionRequirement>();
         for (IndirectCriterionRequirement requirement : hoursGroup
                 .getIndirectCriterionRequirement()) {
             if (!requirement.isIsValid()) {

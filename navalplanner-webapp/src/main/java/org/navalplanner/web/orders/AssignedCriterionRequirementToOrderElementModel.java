@@ -44,7 +44,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 /**
- *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Service
@@ -85,7 +84,7 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
             reattachOrderElement();
             initializeWrappers();
             initializeCriterionWithItsType();
-            initializeHoursGroupWrappers();
+            reloadHoursGroupWrappers();
         }
     }
 
@@ -173,31 +172,47 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         return newRequirementWrapper;
     }
 
-    public boolean canSetCriterionWithItsType(
+    public void changeCriterionAndType(
             CriterionRequirementWrapper requirementWrapper,
-            CriterionWithItsType criterionAndType) {
-        requirementWrapper.setCriterionWithItsType(criterionAndType);
-        return canAddNewCriterionRequirement(requirementWrapper);
+            CriterionWithItsType newCriterionAndType) {
+        CriterionWithItsType oldCriterionAndType = requirementWrapper
+                .getCriterionWithItsType();
+        if ((oldCriterionAndType == null)
+                || (!oldCriterionAndType.equals(newCriterionAndType))) {
+            removeOldCriterionAndType(requirementWrapper);
+            requirementWrapper.setCriterionWithItsType(newCriterionAndType);
+            addNewCriterionAndType(requirementWrapper);
+            updateExceptionInHoursGroups();
+        }
     }
 
-    private boolean canAddNewCriterionRequirement(
+    private void removeOldCriterionAndType(
+            CriterionRequirementWrapper requirementWrapper) {
+        if (requirementWrapper.getCriterionWithItsType() != null) {
+            removeCriterionRequirement(requirementWrapper);
+        }
+    }
+
+    private void addNewCriterionAndType(
             CriterionRequirementWrapper requirementWrapper) {
         DirectCriterionRequirement requirement = (DirectCriterionRequirement) requirementWrapper
                 .getCriterionRequirement();
-        if (orderElement.canAddCriterionRequirement(requirement)) {
-            orderElement.addDirectCriterionRequirement(requirement);
-            return true;
-        }
-        return false;
+        orderElement.addDirectCriterionRequirement(requirement);
     }
 
     @Override
     public void deleteCriterionRequirementWrapper(
             CriterionRequirementWrapper requirementWrapper) {
+        removeCriterionRequirement(requirementWrapper);
+        criterionRequirementWrappers.remove(requirementWrapper);
+        updateExceptionInHoursGroups();
+    }
+
+    private void removeCriterionRequirement(
+            CriterionRequirementWrapper requirementWrapper) {
         DirectCriterionRequirement requirement = (DirectCriterionRequirement) requirementWrapper
                 .getCriterionRequirement();
         orderElement.removeDirectCriterionRequirement(requirement);
-        criterionRequirementWrappers.remove(requirementWrapper);
     }
 
     @Override
@@ -227,8 +242,7 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
                 .getCriterionRequirement();
         getOrderElement().setValidCriterionRequirement(requirement, valid);
         if (requirementWrapper.getCriterionWithItsType() != null) {
-            updateExceptionInHoursGroups(requirementWrapper
-                    .getCriterionWithItsType(), valid);
+            updateExceptionInHoursGroups();
         }
     }
 
@@ -267,10 +281,12 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         }
     }
 
-    private void initializeHoursGroupWrappers() {
+    private void reloadHoursGroupWrappers() {
         hoursGroupsWrappers = new ArrayList<HoursGroupWrapper>();
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+            if (!existIntohoursGroupsWrappers(hoursGroup)) {
             addNewHoursGroupWrapper(hoursGroup, false);
+            }
         }
     }
 
@@ -317,6 +333,15 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         }
     }
 
+    private boolean existIntohoursGroupsWrappers(HoursGroup hoursGroup) {
+        for (HoursGroupWrapper hoursGroupWrapper : hoursGroupsWrappers) {
+            if (hoursGroupWrapper.getHoursGroup().equals(hoursGroup)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /*
      * Operation to manage the criterion Requirements for the hoursGroups. The
      * operations is add new direct criterion requirement, delete criterion
@@ -330,28 +355,25 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         }
     }
 
-    public boolean selectCriterionToHoursGroup(HoursGroupWrapper hoursGroupWrapper,
+    public void selectCriterionToHoursGroup(
+            HoursGroupWrapper hoursGroupWrapper,
             CriterionRequirementWrapper requirementWrapper,
             CriterionWithItsType criterionAndType){
         if (requirementWrapper.isDirect()) {
-            return selectCriterionToDirectRequirementWrapper(hoursGroupWrapper,
+            selectCriterionToDirectRequirementWrapper(hoursGroupWrapper,
                     requirementWrapper, criterionAndType);
         } else {
-            return selectCriterionToExceptionRequirementWrapper(
+            selectCriterionToExceptionRequirementWrapper(
                     hoursGroupWrapper, requirementWrapper, criterionAndType);
         }
     }
 
-    private boolean selectCriterionToDirectRequirementWrapper(
+    private void selectCriterionToDirectRequirementWrapper(
             HoursGroupWrapper hoursGroupWrapper,
             CriterionRequirementWrapper direct,
             CriterionWithItsType criterionAndType) {
         direct.setCriterionWithItsType(criterionAndType);
-        if (hoursGroupWrapper.canSelectCriterion(direct)) {
-            hoursGroupWrapper.selectCriterionToDirectRequirementWrapper(direct);
-            return true;
-        }
-        return false;
+        hoursGroupWrapper.selectCriterionToDirectRequirementWrapper(direct);
     }
 
     public CriterionRequirementWrapper addExceptionToHoursGroupWrapper(
@@ -366,14 +388,13 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         return null;
     }
 
-    private boolean selectCriterionToExceptionRequirementWrapper(
+    private void selectCriterionToExceptionRequirementWrapper(
             HoursGroupWrapper hoursGroupWrapper,
             CriterionRequirementWrapper exception,
             CriterionWithItsType criterionAndType) {
         hoursGroupWrapper
 .selectCriterionToExceptionRequirementWrapper(
                 exception, criterionAndType);
-        return true;
     }
 
     public void deleteCriterionToHoursGroup(
@@ -397,60 +418,19 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         hoursGroupWrapper.removeExceptionCriterionRequirementWrapper(exception);
     }
 
-    private void updateExceptionInHoursGroups(
-            CriterionWithItsType criterionAndType, boolean valid) {
-        Criterion criterion = criterionAndType.getCriterion();
+    private void updateExceptionInHoursGroups() {
         for (HoursGroupWrapper hoursGroupWrapper : hoursGroupsWrappers) {
-            CriterionRequirementWrapper exception = findExceptionByCriterion(
-                    hoursGroupWrapper, criterion);
-            if ((exception == null) && (!valid)) {
-                addOldException(hoursGroupWrapper, criterionAndType);
-            }
-            if ((exception != null) && (valid)) {
-                hoursGroupWrapper
-                        .removeExceptionCriterionRequirementWrapper(exception);
-            }
+            hoursGroupWrapper.updateListExceptionCriterionRequirementWrapper();
         }
-    }
-
-    private CriterionRequirementWrapper findExceptionByCriterion(
-            HoursGroupWrapper hoursGroupWrapper,
-            Criterion criterion) {
-        for (CriterionRequirementWrapper requirement : hoursGroupWrapper
-                .getExceptionRequirementWrappers()) {
-            if ((requirement.getCriterionWithItsType() != null)
-                    && (requirement.getCriterionWithItsType().getCriterion()
-                            .equals(criterion))) {
-                return requirement;
-            }
-        }
-        return null;
-    }
-
-    private void addOldException(HoursGroupWrapper hoursGroupWrapper,
-            CriterionWithItsType criterionAndType) {
-        CriterionRequirementWrapper exception = addExceptionToHoursGroupWrapper(hoursGroupWrapper);
-        exception.setNewException(false);
-        exception.setCriterionWithItsType(criterionAndType);
-        exception.setValid(false);
     }
 
     /* Operations to control and validate the data hoursGroup */
 
-    public void updateHoursGroup() {
-        for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
-            if (!existIntohoursGroupsWrappers(hoursGroup)) {
-                addNewHoursGroupWrapper(hoursGroup, true);
-            }
-        }
+    public void updateCriterionsWithDiferentResourceType(
+            HoursGroupWrapper hoursGroupWrapper) {
+        hoursGroupWrapper.removeDirectCriterionsWithDiferentResourceType();
+        hoursGroupWrapper.getHoursGroup().updateMyCriterionRequirements();
+        hoursGroupWrapper.updateListExceptionCriterionRequirementWrapper();
     }
 
-    private boolean existIntohoursGroupsWrappers(HoursGroup hoursGroup) {
-        for (HoursGroupWrapper hoursGroupWrapper : hoursGroupsWrappers) {
-            if (hoursGroupWrapper.getHoursGroup().equals(hoursGroup)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

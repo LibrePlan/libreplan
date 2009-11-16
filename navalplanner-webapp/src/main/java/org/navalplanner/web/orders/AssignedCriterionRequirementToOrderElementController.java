@@ -38,6 +38,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
@@ -145,22 +146,45 @@ setValidCriterionRequirementWrapper(requirement, true);
     }
 
     public void selectCriterionAndType(Listitem item,Bandbox bandbox,
-            CriterionRequirementWrapper criterionRequirementWrapper) {
+            CriterionRequirementWrapper requirementWrapper) {
         if(item != null){
-            CriterionWithItsType criterionAndType = (CriterionWithItsType) item
+            CriterionWithItsType newCriterionAndType = (CriterionWithItsType) item
                     .getValue();
-            bandbox.close();
-            bandbox.setValue(criterionAndType.getNameAndType());
-            if (!assignedCriterionRequirementToOrderElementModel
-                    .canSetCriterionWithItsType(criterionRequirementWrapper,
-                            criterionAndType)) {
-                criterionRequirementWrapper.setCriterionWithItsType(null);
-                showInvalidConstraint(bandbox, criterionAndType);
+            try {
+                bandbox.close();
+                bandbox.setValue(newCriterionAndType.getNameAndType());
+                assignedCriterionRequirementToOrderElementModel
+                        .changeCriterionAndType(requirementWrapper,
+                                newCriterionAndType);
+            } catch (IllegalStateException e) {
+                showInvalidConstraint(bandbox, e);
+                requirementWrapper.setCriterionWithItsType(null);
             }
             Util.reloadBindings(listHoursGroups);
         }else{
             bandbox.setValue("");
         }
+    }
+
+    public void selectResorceType(Combobox combobox)
+            throws InterruptedException {
+        HoursGroupWrapper hoursGroupWrapper = (HoursGroupWrapper) ((Row) combobox
+                .getParent()).getValue();
+
+        int result = Messagebox
+                .show(
+                        _("You are sure of change the resource type. You will lose the criterions with different resource type."),
+                        "Question", Messagebox.OK | Messagebox.CANCEL,
+                        Messagebox.QUESTION);
+
+        if (result == 1) {
+            ResourceEnum resource = (ResourceEnum) combobox.getSelectedItem()
+                    .getValue();
+            hoursGroupWrapper.assignResourceType(resource);
+            assignedCriterionRequirementToOrderElementModel
+                    .updateCriterionsWithDiferentResourceType(hoursGroupWrapper);
+        }
+        Util.reloadBindings(listHoursGroups);
     }
 
     private void reload() {
@@ -368,11 +392,12 @@ setValidCriterionRequirementWrapper(requirement, true);
             bandbox.close();
             bandbox.setValue(criterionAndType.getNameAndType());
 
-            if (!assignedCriterionRequirementToOrderElementModel
-                    .selectCriterionToHoursGroup(hoursGroupWrapper,
-                            requirementWrapper, criterionAndType)) {
+            try{
+                assignedCriterionRequirementToOrderElementModel.selectCriterionToHoursGroup(hoursGroupWrapper,
+                            requirementWrapper, criterionAndType);
+            }catch(IllegalStateException e){
                 requirementWrapper.setCriterionWithItsType(null);
-                showInvalidConstraint(bandbox, criterionAndType);
+                showInvalidConstraint(bandbox, e);
             }
             Util.reloadBindings(listHoursGroups);
         } else {
@@ -380,15 +405,9 @@ setValidCriterionRequirementWrapper(requirement, true);
         }
     }
 
-    private void showInvalidConstraint(Bandbox bandbox,
-            CriterionWithItsType criterionAndType) {
+    private void showInvalidConstraint(Bandbox bandbox, IllegalStateException e) {
         bandbox.setValue("");
-        throw new WrongValueException(
-                bandbox,
-                _("The criterion "
-                        + criterionAndType.getNameAndType()
-                        + " is not valid,"
-                        + " exist the same criterion into the order element or into its children."));
+        throw new WrongValueException(bandbox, _(e.getMessage()));
     }
 
     private HoursGroupWrapper getHoursGroupWrapper(Component self) {
@@ -449,7 +468,6 @@ setValidCriterionRequirementWrapper(requirement, true);
     public void recalculateHoursGroup() {
         ((OrderLine) assignedCriterionRequirementToOrderElementModel
                 .getOrderElement()).recalculateHoursGroups();
-        assignedCriterionRequirementToOrderElementModel.updateHoursGroup();
         Util.reloadBindings(listHoursGroups);
         Util.reloadBindings(orderElementTotalHours);
     }

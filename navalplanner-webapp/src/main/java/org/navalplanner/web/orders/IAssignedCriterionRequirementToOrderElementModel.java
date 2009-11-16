@@ -35,9 +35,9 @@ public interface IAssignedCriterionRequirementToOrderElementModel {
 
     List<CriterionWithItsType> getCriterionWithItsTypes();
 
-    boolean canSetCriterionWithItsType(
-            CriterionRequirementWrapper requirementWrapper,
-            CriterionWithItsType criterionAndType);
+    void changeCriterionAndType(
+            CriterionRequirementWrapper criterionRequirementWrapper,
+            CriterionWithItsType newCriterionAndType);
 
     CriterionRequirementWrapper validateWrappers(
             List<CriterionRequirementWrapper> list);
@@ -60,7 +60,7 @@ public interface IAssignedCriterionRequirementToOrderElementModel {
     CriterionRequirementWrapper addExceptionToHoursGroupWrapper(
             HoursGroupWrapper hoursGroupWrapper);
 
-    boolean selectCriterionToHoursGroup(
+    void selectCriterionToHoursGroup(
             HoursGroupWrapper hoursGroupWrapper,
             CriterionRequirementWrapper exception,
             CriterionWithItsType criterionAndType);
@@ -68,6 +68,9 @@ public interface IAssignedCriterionRequirementToOrderElementModel {
     void deleteCriterionToHoursGroup(HoursGroupWrapper hoursGroupWrapper,
             CriterionRequirementWrapper requirementWrapper);
 
-    void updateHoursGroup();
+    void updateCriterionsWithDiferentResourceType(
+            HoursGroupWrapper hoursGroupWrapper);
+
+    // void updateHoursGroup();
 
 }

@@ -28,6 +28,7 @@ import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -81,9 +82,7 @@ public class CriterionRequirementHandler implements
             DirectCriterionRequirement parent) {
         Criterion criterion = parent.getCriterion();
         for (HoursGroup hoursGroup : orderLine.getHoursGroups()) {
-            CriterionRequirement indirect = IndirectCriterionRequirement
-                    .create(parent, criterion);
-            hoursGroup.addCriterionRequirement(indirect);
+            hoursGroup.updateMyCriterionRequirements();
         }
     }
 
@@ -305,10 +304,10 @@ public class CriterionRequirementHandler implements
     }
 
     Set<IndirectCriterionRequirement> getCurrentIndirectRequirements(
-            Set<IndirectCriterionRequirement> oldIndirects, OrderElement parent) {
+            Set<IndirectCriterionRequirement> oldIndirects,
+            Set<CriterionRequirement> requirementsParent) {
         Set<IndirectCriterionRequirement> currentIndirects = new HashSet<IndirectCriterionRequirement>();
-        for (CriterionRequirement requirement : parent
-                .getCriterionRequirements()) {
+        for (CriterionRequirement requirement : requirementsParent) {
             IndirectCriterionRequirement indirect = getCurrentIndirectRequirement(
                     oldIndirects, requirement);
             currentIndirects.add(indirect);
@@ -325,12 +324,12 @@ public class CriterionRequirementHandler implements
         boolean valid = true;
         if (requirement instanceof DirectCriterionRequirement) {
             parent = (DirectCriterionRequirement) requirement;
-            indirect = findIndirectRequirementByParent(oldIndirects, parent);
         } else {
             parent = ((IndirectCriterionRequirement) requirement).getParent();
-            indirect = findIndirectRequirementByParent(oldIndirects, parent);
             valid = ((IndirectCriterionRequirement) requirement).isIsValid();
         }
+
+        indirect = findIndirectRequirementByParent(oldIndirects, parent);
         if (indirect == null) {
             indirect = IndirectCriterionRequirement.create(parent, requirement
                     .getCriterion());
@@ -415,4 +414,17 @@ public class CriterionRequirementHandler implements
         return result;
     }
 
+    Set<CriterionRequirement> getRequirementWithSameResourType(
+            Set<CriterionRequirement> requirements,
+            ResourceEnum resourceType) {
+        Set<CriterionRequirement> result = new HashSet<CriterionRequirement>();
+        for (CriterionRequirement requirement : requirements) {
+            ResourceEnum resourceTypeParent = requirement.getCriterion()
+                    .getType().getResource();
+            if ((resourceTypeParent.equals(resourceType))
+                    || (resourceTypeParent.equals(ResourceEnum.RESOURCE)))
+                result.add(requirement);
+        }
+        return result;
+    }
 }
