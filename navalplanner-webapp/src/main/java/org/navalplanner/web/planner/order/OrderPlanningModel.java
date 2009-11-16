@@ -495,7 +495,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                                     - workableHours;
                         } else {
                             otherLoad += 0;
-                            otherOverload += hoursOrder;
+                            otherOverload += hoursOther;
                         }
                     }
                 }
