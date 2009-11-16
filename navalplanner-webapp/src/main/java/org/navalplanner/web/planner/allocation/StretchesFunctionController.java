@@ -250,7 +250,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
 
     private void reloadStretchesListAndCharts() {
         Util.reloadBindings(window.getFellow("stretchesList"));
-        Util.reloadBindings(window.getFellow("dedicationChart"));
+        Util.reloadBindings(window.getFellow("charts"));
     }
 
     public XYModel getDedicationChartData() {
@@ -296,6 +296,34 @@ public class StretchesFunctionController extends GenericForwardComposer {
 
         xymodel.addValue(title, previousDate.toDateTimeAtStartOfDay()
                 .getMillis() + 1, 0);
+
+        return xymodel;
+    }
+
+    public XYModel getAccumulatedHoursChartData() {
+        XYModel xymodel = new SimpleXYModel();
+
+        List<Stretch> stretches = stretchesFunctionModel.getStretches();
+        if (stretches.isEmpty()) {
+            return xymodel;
+        }
+
+        String title = "percentage";
+
+        LocalDate startDate = stretchesFunctionModel.getTaskStartDate();
+        xymodel.addValue(title, startDate.toDateTimeAtStartOfDay().getMillis(),
+                0);
+
+        BigDecimal taskHours = new BigDecimal(stretchesFunctionModel
+                .getTaskHours());
+
+        for (Stretch stretch : stretches) {
+            BigDecimal amountWork = stretch.getAmountWorkPercentage().multiply(
+                    taskHours);
+
+            xymodel.addValue(title, stretch.getDate().toDateTimeAtStartOfDay()
+                    .getMillis(), amountWork.intValue());
+        }
 
         return xymodel;
     }

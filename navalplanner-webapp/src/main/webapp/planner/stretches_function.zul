@@ -52,16 +52,23 @@
 
         <hbox>
             <button label="${i18n:_('Accept')}"
-            onClick="stretchesFunctionController.confirm()" />
+                onClick="stretchesFunctionController.confirm()" />
             <button label="${i18n:_('Cancel')}"
                 onClick="stretchesFunctionController.cancel()" />
         </hbox>
     </vbox>
 
-    <vbox>
+    <vbox id="charts">
         <chart id="dedicationChart" title="${i18n:_('Dedication chart')}"
             type="time_series" threeD="false"
             model="@{stretchesFunctionController.getDedicationChartData}"
+            yAxis= "${i18n:_('Hours')}" paneColor="#FFFFFF"
+            showLegend="false" />
+
+        <chart id="accumulatedHoursChart"
+            title="${i18n:_('Accumulated hours chart')}"
+            type="time_series" threeD="false"
+            model="@{stretchesFunctionController.getAccumulatedHoursChartData}"
             yAxis= "${i18n:_('Hours')}" paneColor="#FFFFFF"
             showLegend="false" />
     </vbox>
