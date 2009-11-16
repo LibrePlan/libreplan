@@ -741,7 +741,8 @@ class Row {
             appendListener(assignmentFunctionsCombo);
 
             hbox.appendChild(assignmentFunctionsCombo);
-            hbox.appendChild(getAssignmentFunctionsConfigureButton());
+            hbox
+                    .appendChild(getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo));
 
             return hbox;
         }
@@ -797,7 +798,6 @@ class Row {
                 .getAssignmentFunction();
 
         Combobox combobox = new Combobox();
-        combobox.setId("assigment_functions_combo");
 
         Comboitem comboitem = new Comboitem(_("None"));
         comboitem.setValue(null);
@@ -819,17 +819,16 @@ class Row {
         return combobox;
     }
 
-    private Button getAssignmentFunctionsConfigureButton() {
+    private Button getAssignmentFunctionsConfigureButton(
+            final Combobox assignmentFunctionsCombo) {
         final Button button = new Button(_("Configure"));
 
         button.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                Combobox combobox = (Combobox) button
-                        .getFellow("assigment_functions_combo");
-                Class assignmentFunction = (Class) combobox.getSelectedItem()
-                        .getValue();
+                Class assignmentFunction = (Class) assignmentFunctionsCombo
+                        .getSelectedItem().getValue();
                 if (assignmentFunction == null) {
                     Messagebox
                             .show(
