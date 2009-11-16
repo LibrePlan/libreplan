@@ -42,10 +42,19 @@ import org.navalplanner.business.requirements.entities.CriterionRequirement;
  */
 public class Criterion extends BaseEntity implements ICriterion {
 
-    public static Criterion create() {
+    public static Criterion createUnvalidated(String name, CriterionType type,
+        Criterion parent, boolean active) {
+
         Criterion criterion = new Criterion();
+
+        criterion.name = name;
+        criterion.type = type;
+        criterion.parent = parent;
+        criterion.active = active;
         criterion.setNewObject(true);
+
         return criterion;
+
     }
 
     public static Criterion create(CriterionType type) {
@@ -168,9 +177,7 @@ public class Criterion extends BaseEntity implements ICriterion {
         return false;
     }
 
-// FIXME: Internationalization must be provided.
-    @AssertTrue(message="un recurso deshabilitado tiene subrecursos " +
-        "habilitados")
+    @AssertTrue(message="a disabled resource has enabled subresources")
     public boolean checkConstraintActive() {
 
         if (!active) {

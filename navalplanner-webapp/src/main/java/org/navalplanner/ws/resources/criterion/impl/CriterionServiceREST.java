@@ -69,14 +69,6 @@ public class CriterionServiceREST implements ICriterionService {
     public InstanceConstraintViolationsListDTO addCriterionTypes(
         CriterionTypeListDTO criterionTypes) {
 
-        // FIXME: now validations are executed twice: when calling
-        // CriterionType::validate and when Hibernate runs automatically
-        // validations. Not running validations explicitly
-        // (CriterionType::validate) makes more difficult/obscure to catch
-        // validation errors (a basic usage of IGeneriDAO::flush and
-        // InvalidStateException is not enough; furthermore, take into account
-        // that CriterionType::validate resolves an issue with our current
-        // usage of Hibernate).
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
             new ArrayList<InstanceConstraintViolationsDTO>();
         int instanceNumber = 1;

@@ -30,5 +30,6 @@ import javax.xml.bind.annotation.XmlEnum;
 @XmlEnum
 public enum ResourceEnumDTO {
     RESOURCE,
-    WORKER
+    WORKER,
+    MACHINE
 }

@@ -20,6 +20,8 @@
 
 package org.navalplanner.ws.resources.criterion.impl;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,14 +54,19 @@ public final class CriterionConverter {
     static {
 
         resourceEnumToDTO.put(ResourceEnum.RESOURCE,
-                ResourceEnumDTO.RESOURCE);
+            ResourceEnumDTO.RESOURCE);
         resourceEnumFromDTO.put(ResourceEnumDTO.RESOURCE,
-                ResourceEnum.RESOURCE);
+            ResourceEnum.RESOURCE);
 
         resourceEnumToDTO.put(ResourceEnum.WORKER,
             ResourceEnumDTO.WORKER);
         resourceEnumFromDTO.put(ResourceEnumDTO.WORKER,
-                ResourceEnum.WORKER);
+            ResourceEnum.WORKER);
+
+        resourceEnumToDTO.put(ResourceEnum.MACHINE,
+                ResourceEnumDTO.MACHINE);
+        resourceEnumFromDTO.put(ResourceEnumDTO.MACHINE,
+            ResourceEnum.MACHINE);
 
     }
 
@@ -127,8 +134,9 @@ public final class CriterionConverter {
         ResourceEnumDTO value = resourceEnumToDTO.get(resource);
 
         if (value == null) {
-            throw new RuntimeException("Unable to convert '" +
-                resource.toString() + "' value to ResourceEnumDTO");
+            throw new RuntimeException(_("Unable to convert {0} " +
+                 " value to {1} type", resource.toString(),
+                 ResourceEnumDTO.class.getName()));
         } else {
             return value;
         }
@@ -138,15 +146,11 @@ public final class CriterionConverter {
     public final static CriterionType toEntity(
         CriterionTypeDTO criterionTypeDTO) {
 
-        CriterionType criterionType = CriterionType.create();
-
-        criterionType.setName(criterionTypeDTO.name);
-        criterionType.setDescription(criterionTypeDTO.description);
-        criterionType.setAllowHierarchy(criterionTypeDTO.allowHierarchy);
-        criterionType.setAllowSimultaneousCriterionsPerResource(
-            criterionTypeDTO.allowSimultaneousCriterionsPerResource);
-        criterionType.setEnabled(criterionTypeDTO.enabled);
-        criterionType.setResource(
+        CriterionType criterionType = CriterionType.createUnvalidated(
+            criterionTypeDTO.name, criterionTypeDTO.description,
+            criterionTypeDTO.allowHierarchy,
+            criterionTypeDTO.allowSimultaneousCriterionsPerResource,
+            criterionTypeDTO.enabled,
             CriterionConverter.fromDTO(criterionTypeDTO.resource));
 
         for (CriterionDTO criterionDTO : criterionTypeDTO.criterions) {
@@ -162,8 +166,8 @@ public final class CriterionConverter {
         ResourceEnum value = resourceEnumFromDTO.get(resource);
 
         if (value == null) {
-            throw new RuntimeException("Unable to convert '" +
-                resource.toString() + "' value to ResourceEnum");
+            throw new RuntimeException(_("Unable to convert value to {0} type",
+                ResourceEnum.class.getName()));
         } else {
             return value;
         }
@@ -190,12 +194,8 @@ public final class CriterionConverter {
         CriterionDTO childDTO, CriterionType criterionType,
         Criterion criterionParent) {
 
-        Criterion criterion = Criterion.create();
-
-        criterion.setName(childDTO.name);
-        criterion.setType(criterionType);
-        criterion.setActive(childDTO.active);
-        criterion.setParent(criterionParent);
+        Criterion criterion = Criterion.createUnvalidated(childDTO.name,
+            criterionType, criterionParent, childDTO.active);
 
         return criterion;
 

@@ -49,6 +49,27 @@ public class CriterionType extends BaseEntity implements
         return criterionType;
     }
 
+
+    public static CriterionType createUnvalidated(String name,
+        String description, Boolean allowHierarchy,
+        Boolean allowSimultaneousCriterionsPerResource, Boolean enabled,
+        ResourceEnum resource) {
+
+        CriterionType criterionType = new CriterionType();
+
+        criterionType.name = name;
+        criterionType.description = description;
+        criterionType.allowHierarchy = allowHierarchy;
+        criterionType.allowSimultaneousCriterionsPerResource =
+            allowSimultaneousCriterionsPerResource;
+        criterionType.enabled = enabled;
+        criterionType.resource = resource;
+        criterionType.setNewObject(true);
+
+        return criterionType;
+
+    }
+
     public static CriterionType create(String name,String description) {
         CriterionType criterionType = new CriterionType(name,description);
         criterionType.setNewObject(true);
@@ -263,9 +284,8 @@ public class CriterionType extends BaseEntity implements
         return criterions.size();
     }
 
-// FIXME: Internationalization must be provided.
-    @AssertTrue(message="los nombres de los criterios deben ser únicos "
-        + "dentro de un tipo de criterio")
+    @AssertTrue(message="criterion names must be unique inside a criterion " +
+        "type")
     public boolean checkConstraintNonRepeatedCriterionNames() {
 
         Set<String> criterionNames = new HashSet<String>();
@@ -281,7 +301,7 @@ public class CriterionType extends BaseEntity implements
 
     }
 
-    @AssertTrue(message="el nombre del tipo de criterion ya se está usando")
+    @AssertTrue(message="criterion type name is already being used")
     public boolean checkConstraintUniqueCriterionTypeName() {
 
         ICriterionTypeDAO criterionTypeDAO = Registry.getCriterionTypeDAO();
@@ -300,8 +320,7 @@ public class CriterionType extends BaseEntity implements
 
     }
 
-// FIXME: Internationalization must be provided.
-    @AssertTrue(message="el tipo de recurso no permite jerarquía de recursos")
+    @AssertTrue(message="criterion type does not allow resource hierarchy")
     public boolean checkConstraintAllowHierarchy() {
 
         if (!allowHierarchy) {
@@ -316,8 +335,7 @@ public class CriterionType extends BaseEntity implements
 
     }
 
-// FIXME: Internationalization must be provided.
-    @AssertTrue(message="el tipo de recurso no permite criterios habilitados")
+    @AssertTrue(message="resource type does not allow enabled criteria")
     public boolean checkConstraintEnabled() {
 
         if (!enabled) {
