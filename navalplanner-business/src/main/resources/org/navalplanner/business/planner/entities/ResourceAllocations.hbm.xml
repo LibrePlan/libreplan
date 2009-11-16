@@ -86,6 +86,23 @@
         </generator>
         </id>
         <version name="version" access="property" type="long" />
+
+        <joined-subclass name="StretchesFunction">
+            <key column="ASSIGNMENT_FUNCTION_ID" />
+
+            <list name="stretches">
+                <key column="ASSIGNMENT_FUNCTION_ID" />
+                <list-index column="STRETCH_POSITION" />
+
+                <composite-element class="Stretch">
+                    <property name="date" not-null="true"
+                        type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+                    <property name="lengthPercentage" not-null="true" />
+                    <property name="amountWorkPercentage" not-null="true" />
+                </composite-element>
+            </list>
+        </joined-subclass>
+
     </class>
 
 </hibernate-mapping>
