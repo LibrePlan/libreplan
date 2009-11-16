@@ -18,7 +18,7 @@
 
         <many-to-one class="AssignmentFunction" name="assignmentFunction"
             column="ASSIGNMENT_FUNCTION" not-null="false"
-            cascade="all" />
+            cascade="all" lazy="false" />
 
         <joined-subclass name="SpecificResourceAllocation" table="specific_resource_allocation">
             <key column="RESOURCE_ALLOCATION_ID" />
