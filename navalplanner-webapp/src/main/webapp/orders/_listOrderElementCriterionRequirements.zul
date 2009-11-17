@@ -106,6 +106,8 @@
 </panel>
 
 <separator bar="false" spacing="80px" orient="vertical"/>
+<div id= "messagesContainer">
+</div>
 
 <!--Manage Hours Groups-->
 <panel title="${i18n:_('Hours Group')}" border="normal" width="99%">
@@ -140,7 +142,7 @@
                     readonly = "@{assignedCriterionRequirementController.readOnly}"/>
                 <combobox id="comboboxTypeHoursGroup" width="80px"
                         value = "@{hoursGroupWrapper.resourceType}"
-                        onSelect = "assignedCriterionRequirementController.selectResourceType(self);"
+                        onChange = "assignedCriterionRequirementController.selectResourceType(self);"
                         model = "@{assignedCriterionRequirementController.resourceTypes}"
                         disabled = "@{assignedCriterionRequirementController.readOnly}">
                 </combobox>

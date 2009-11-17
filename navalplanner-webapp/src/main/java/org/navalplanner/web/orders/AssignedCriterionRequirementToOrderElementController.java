@@ -26,12 +26,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.zkoss.zk.ui.Component;
@@ -58,6 +62,13 @@ import org.zkoss.zul.Vbox;
 public class AssignedCriterionRequirementToOrderElementController extends
         GenericForwardComposer {
 
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(OrderCRUDController.class);
+
+    private IMessagesForUser messagesForUser;
+
+    private Component messagesContainer;
+
     private IAssignedCriterionRequirementToOrderElementModel assignedCriterionRequirementToOrderElementModel;
 
     private Vbox vbox;
@@ -73,6 +84,7 @@ public class AssignedCriterionRequirementToOrderElementController extends
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("assignedCriterionRequirementController", this, true);
         vbox = (Vbox) comp;
 
@@ -194,14 +206,15 @@ setValidCriterionRequirementWrapper(requirement, true);
             throws InterruptedException {
         HoursGroupWrapper hoursGroupWrapper = (HoursGroupWrapper) ((Row) combobox
                 .getParent()).getValue();
-        int result = 2;
+
         try {
-            result = Messagebox
-                .show(
-                        _("You are sure of change the resource type. You will lose the criterions with different resource type."),
+            int status = Messagebox
+                    .show(
+                            _("You are sure of change the resource type. You will lose the criterions with different resource type."),
                             "Question", Messagebox.OK | Messagebox.CANCEL,
-                        Messagebox.QUESTION);
-            if (result == Messagebox.OK) {
+                            Messagebox.QUESTION);
+
+            if (Messagebox.OK == status) {
                 ResourceEnum resource = (ResourceEnum) combobox
                         .getSelectedItem().getValue();
                 hoursGroupWrapper.assignResourceType(resource);
@@ -209,7 +222,9 @@ setValidCriterionRequirementWrapper(requirement, true);
                         .updateCriterionsWithDiferentResourceType(hoursGroupWrapper);
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            messagesForUser.showMessage(Level.ERROR, e.getMessage());
+            LOG.error(_("Error on showing removing element: ",
+                    hoursGroupWrapper.getHoursGroup().getId()), e);
         }
         Util.reloadBindings(listHoursGroups);
     }
