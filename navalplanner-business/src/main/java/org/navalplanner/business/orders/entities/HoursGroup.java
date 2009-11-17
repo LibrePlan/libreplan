@@ -44,7 +44,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
 
     private String name;
 
-    private ResourceEnum resourceType;
+    private ResourceEnum resourceType = ResourceEnum.WORKER;
 
     @NotNull
     private Integer workingHours = 0;
@@ -247,8 +247,9 @@ public class HoursGroup extends BaseEntity implements Cloneable {
             CriterionRequirement newRequirement) {
         Criterion criterion = newRequirement.getCriterion();
         for(CriterionRequirement requirement : getCriterionRequirements()){
-            if (requirement.getCriterion().equals(criterion))
+            if (requirement.getCriterion().equals(criterion)) {
                 return true;
+            }
         }
         return false;
     }

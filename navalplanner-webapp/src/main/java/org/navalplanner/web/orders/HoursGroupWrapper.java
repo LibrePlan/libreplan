@@ -65,14 +65,14 @@ public class HoursGroupWrapper implements INewObject {
         for (CriterionRequirement requirement : hoursGroup
                 .getDirectCriterionRequirement()) {
             CriterionRequirementWrapper wrapper = new CriterionRequirementWrapper(
-                    requirement, false);
+                    requirement, this, false);
             directRequirementWrappers.add(wrapper);
         }
 
         exceptionRequirementWrappers = new ArrayList<CriterionRequirementWrapper>();
         for (CriterionRequirement requirement : getInvalidIndirectCriterionRequirement()) {
             CriterionRequirementWrapper wrapper = new CriterionRequirementWrapper(
-                    requirement, false);
+                    requirement, this, false);
             exceptionRequirementWrappers.add(wrapper);
         }
     }
@@ -193,7 +193,7 @@ public class HoursGroupWrapper implements INewObject {
                 .getCriterionRequirement());
     }
 
-    public void selectCriterionToDirectRequirementWrapper(
+    public void addDirectCriterionToHoursGroup(
             CriterionRequirementWrapper requirementWrapper) {
         hoursGroup.addCriterionRequirement(requirementWrapper
                 .getCriterionRequirement());
@@ -216,12 +216,17 @@ public class HoursGroupWrapper implements INewObject {
 
     public void removeDirectCriterionRequirementWrapper(
             CriterionRequirementWrapper directWrapper) {
+        removeDirectCriterionRequirement(directWrapper);
+        getDirectRequirementWrappers().remove(directWrapper);
+    }
+
+    public void removeDirectCriterionRequirement(
+            CriterionRequirementWrapper directWrapper) {
         if (directWrapper.getCriterionWithItsType() != null) {
             CriterionRequirement direct = directWrapper
                     .getCriterionRequirement();
             hoursGroup.removeCriterionRequirement(direct);
         }
-        getDirectRequirementWrappers().remove(directWrapper);
     }
 
     public void removeExceptionCriterionRequirementWrapper(
@@ -246,7 +251,8 @@ public class HoursGroupWrapper implements INewObject {
         for (CriterionRequirement requirement : getInvalidIndirectCriterionRequirement()) {
             CriterionRequirementWrapper exception = findRequirementWrapperByRequirement(requirement);
             if (exception == null) {
-                exception = new CriterionRequirementWrapper(requirement, false);
+                exception = new CriterionRequirementWrapper(requirement, this,
+                        false);
                 exceptionRequirementWrappers.add(exception);
             }
         }

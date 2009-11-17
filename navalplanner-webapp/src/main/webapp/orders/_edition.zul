@@ -33,7 +33,8 @@
             <tab label="${i18n:_('Assigned hours')}" />
             <tab id="tabAdvances" label="${i18n:_('Advances')}" />
             <tab label="${i18n:_('Label')}" />
-            <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"/>
+            <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
+                 onClick = "controller.reloadHoursGroupOrder();"/>
         </tabs>
         <tabpanels>
             <tabpanel>

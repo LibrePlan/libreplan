@@ -117,6 +117,30 @@ getCriterionRequirementWrappers();
         return assignedCriterionRequirementToOrderElementModel.getCriterionWithItsTypes();
     }
 
+    public List<CriterionWithItsType> getCriterionWithItsTypesWorker() {
+        List<CriterionWithItsType> result = new ArrayList<CriterionWithItsType>();
+        for (CriterionWithItsType criterionAndType : assignedCriterionRequirementToOrderElementModel
+                .getCriterionWithItsTypes()) {
+            if (!criterionAndType.getCriterion().getType().getResource()
+                    .equals(ResourceEnum.MACHINE)) {
+                result.add(criterionAndType);
+            }
+        }
+        return result;
+    }
+
+    public List<CriterionWithItsType> getCriterionWithItsTypesMachine() {
+        List<CriterionWithItsType> result = new ArrayList<CriterionWithItsType>();
+        for (CriterionWithItsType criterionAndType : assignedCriterionRequirementToOrderElementModel
+                .getCriterionWithItsTypes()) {
+            if (!criterionAndType.getCriterion().getType().getResource()
+                    .equals(ResourceEnum.WORKER)) {
+                result.add(criterionAndType);
+            }
+        }
+        return result;
+    }
+
     public List<ResourceEnum> getResourceTypes() {
         return listResourceTypes;
     }
@@ -166,16 +190,20 @@ setValidCriterionRequirementWrapper(requirement, true);
         }
     }
 
-    public void selectResorceType(Combobox combobox)
+    public void selectResourceType(Combobox combobox)
             throws InterruptedException {
         HoursGroupWrapper hoursGroupWrapper = (HoursGroupWrapper) ((Row) combobox
                 .getParent()).getValue();
-
-        int result = Messagebox
+        int result = 2;
+        try {
+            result = Messagebox
                 .show(
                         _("You are sure of change the resource type. You will lose the criterions with different resource type."),
-                        "Question", Messagebox.OK | Messagebox.CANCEL,
+                            "Question", Messagebox.OK | Messagebox.CANCEL,
                         Messagebox.QUESTION);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         if (result == 1) {
             ResourceEnum resource = (ResourceEnum) combobox.getSelectedItem()

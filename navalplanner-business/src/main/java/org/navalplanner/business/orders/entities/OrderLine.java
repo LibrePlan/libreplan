@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.orders.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,6 +47,7 @@ public class OrderLine extends OrderElement {
         OrderLine result = create();
         HoursGroup hoursGroup = HoursGroup.create(result);
         result.addHoursGroup(hoursGroup);
+        hoursGroup.setName(_("New hours group 0"));
         hoursGroup.setFixedPercentage(false);
         hoursGroup.setPercentage(new BigDecimal(1));
         hoursGroup.setWorkingHours(hours);

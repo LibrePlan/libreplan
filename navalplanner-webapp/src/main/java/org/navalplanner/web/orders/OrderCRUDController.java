@@ -229,6 +229,12 @@ public class OrderCRUDController extends GenericForwardComposer {
         showWindow(listWindow);
     }
 
+    public void reloadHoursGroupOrder() {
+        assignedCriterionRequirementController
+                .openWindow(getOrderElementModel());
+        Util.reloadBindings(editWindow);
+    }
+
     private void showWindow(Window window) {
         getVisibility().showOnly(window);
         Util.reloadBindings(window);

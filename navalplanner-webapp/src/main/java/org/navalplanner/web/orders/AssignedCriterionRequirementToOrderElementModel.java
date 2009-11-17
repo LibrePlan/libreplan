@@ -113,9 +113,8 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         criterionRequirementWrappers = new ArrayList<CriterionRequirementWrapper>();
         for(CriterionRequirement requirement :
             orderElement.getCriterionRequirements()){
-            CriterionRequirementWrapper Wrapper =
- new CriterionRequirementWrapper(
-                    requirement, false);
+            CriterionRequirementWrapper Wrapper = new CriterionRequirementWrapper(
+                    requirement, null, false);
             criterionRequirementWrappers.add(Wrapper);
         }
     }
@@ -159,16 +158,17 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
     @Transactional(readOnly = true)
     public void assignCriterionRequirementWrapper() {
         if((orderModel != null) && (orderElement != null)){
-            CriterionRequirementWrapper newRequirementWrapper = createCriterionRequirementWreapper();
+            CriterionRequirementWrapper newRequirementWrapper = createCriterionRequirementWreapper(null);
             criterionRequirementWrappers.add(newRequirementWrapper);
         }
     }
 
-    private CriterionRequirementWrapper createCriterionRequirementWreapper() {
+    private CriterionRequirementWrapper createCriterionRequirementWreapper(
+            HoursGroupWrapper hoursGroupWrapper) {
         CriterionRequirement newRequirement = DirectCriterionRequirement
                 .create();
         CriterionRequirementWrapper newRequirementWrapper = new CriterionRequirementWrapper(
-                newRequirement, true);
+                newRequirement, hoursGroupWrapper, true);
         return newRequirementWrapper;
     }
 
@@ -350,7 +350,7 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
     public void addCriterionToHoursGroupWrapper(
             HoursGroupWrapper hoursGroupWrapper) {
         if ((orderModel != null) && (orderElement != null)) {
-            CriterionRequirementWrapper requirement = createCriterionRequirementWreapper();
+            CriterionRequirementWrapper requirement = createCriterionRequirementWreapper(hoursGroupWrapper);
             hoursGroupWrapper.assignCriterionRequirementWrapper(requirement);
         }
     }
@@ -371,9 +371,16 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
     private void selectCriterionToDirectRequirementWrapper(
             HoursGroupWrapper hoursGroupWrapper,
             CriterionRequirementWrapper direct,
-            CriterionWithItsType criterionAndType) {
-        direct.setCriterionWithItsType(criterionAndType);
-        hoursGroupWrapper.selectCriterionToDirectRequirementWrapper(direct);
+            CriterionWithItsType newCriterionAndType) {
+
+        CriterionWithItsType oldCriterionAndType = direct
+                .getCriterionWithItsType();
+        if ((oldCriterionAndType == null)
+                || (!oldCriterionAndType.equals(newCriterionAndType))) {
+            hoursGroupWrapper.removeDirectCriterionRequirement(direct);
+            direct.setCriterionWithItsType(newCriterionAndType);
+            hoursGroupWrapper.addDirectCriterionToHoursGroup(direct);
+        }
     }
 
     public CriterionRequirementWrapper addExceptionToHoursGroupWrapper(

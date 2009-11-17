@@ -13,6 +13,7 @@ import org.navalplanner.business.requirements.entities.IndirectCriterionRequirem
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 
 /**
  * DTO represents the handled data in the form of assigning criterion requirement.
@@ -39,15 +40,20 @@ public class CriterionRequirementWrapper  implements INewObject {
 
     private CriterionWithItsType criterionWithItsType;
 
+    private HoursGroupWrapper hoursGroupWrapper;
+
     public CriterionRequirementWrapper(String type) {
         this.newObject = true;
         this.type = type;
     }
 
-    public CriterionRequirementWrapper(CriterionRequirement criterionRequirement,
+    public CriterionRequirementWrapper(
+            CriterionRequirement criterionRequirement,
+            HoursGroupWrapper hoursGroupWrapper,
             boolean isNewObject) {
         this.criterionAndType = "";
         this.criterionRequirement = criterionRequirement;
+        this.hoursGroupWrapper = hoursGroupWrapper;
         this.initType(criterionRequirement);
         this.initValid(criterionRequirement);
         this.setNewObject(isNewObject);
@@ -131,6 +137,23 @@ public class CriterionRequirementWrapper  implements INewObject {
 
     public boolean isDirect(){
         return (type.equals(DIRECT)) ? true : false;
+    }
+
+    public ResourceEnum getResourceTypeHoursGroup() {
+        if (hoursGroupWrapper != null) {
+            return hoursGroupWrapper.getResourceType();
+        }
+        return null;
+    }
+
+    public boolean isNewDirectAndItsHoursGroupIsWorker() {
+        return ((isNewDirect()) && (getResourceTypeHoursGroup() != null) && (getResourceTypeHoursGroup()
+                .equals(ResourceEnum.WORKER)));
+    }
+
+    public boolean isNewDirectAndItsHoursGroupIsMachine() {
+        return ((isNewDirect()) && (getResourceTypeHoursGroup() != null) && (getResourceTypeHoursGroup()
+                .equals(ResourceEnum.MACHINE)));
     }
 
     public boolean isIndirectValid(){

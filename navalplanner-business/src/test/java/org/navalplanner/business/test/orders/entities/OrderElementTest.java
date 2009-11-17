@@ -59,6 +59,7 @@ import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -190,6 +191,7 @@ public class OrderElementTest {
              fail("It not should throw an exception");
         }
         CriterionType type = CriterionType.create("", "");
+        type.setResource(ResourceEnum.WORKER);
         Criterion criterion = Criterion.create(type);
         CriterionRequirement requirement = DirectCriterionRequirement
                 .create(criterion);

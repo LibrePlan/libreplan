@@ -67,6 +67,7 @@ import org.navalplanner.business.requirements.entities.DirectCriterionRequiremen
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.resources.criterion.ICriterionsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
@@ -437,6 +438,7 @@ public class OrderModelTest {
                     public Criterion execute() {
                         CriterionType criterionType = CriterionType.create(
                                 "test" + UUID.randomUUID(), "");
+                        criterionType.setResource(ResourceEnum.WORKER);
                         criterionTypeDAO.save(criterionType);
                         Criterion criterion = Criterion.create("Test"
                                 + UUID.randomUUID(), criterionType);

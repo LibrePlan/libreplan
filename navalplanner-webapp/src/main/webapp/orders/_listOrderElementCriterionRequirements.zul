@@ -81,7 +81,6 @@
                             label = "${i18n:_('Invalidate')}"
                             onClick = "assignedCriterionRequirementController.invalidate(self.parent.parent.value);">
                         </button>
-
                     </hbox>
                 </row>
             </rows>
@@ -141,7 +140,7 @@
                     readonly = "@{assignedCriterionRequirementController.readOnly}"/>
                 <combobox id="comboboxTypeHoursGroup" width="80px"
                         value = "@{hoursGroupWrapper.resourceType}"
-                        onSelect = "assignedCriterionRequirementController.selectResorceType(self);"
+                        onSelect = "assignedCriterionRequirementController.selectResourceType(self);"
                         model = "@{assignedCriterionRequirementController.resourceTypes}"
                         disabled = "@{assignedCriterionRequirementController.readOnly}">
                 </combobox>

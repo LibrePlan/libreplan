@@ -31,11 +31,30 @@
                 <row self="@{each='criterionRequirementWrapper'}" value="@{criterionRequirementWrapper}">
                     <hbox>
                     <bandbox width="500px"
-                        visible ="@{criterionRequirementWrapper.newDirect}"
+                        visible ="@{criterionRequirementWrapper.newDirectAndItsHoursGroupIsWorker}"
                         value = "@{criterionRequirementWrapper.criterionAndType}">
                         <bandpopup>
                                 <listbox width="500px" height="150px" fixedLayout="true"
-                                model="@{assignedCriterionRequirementController.criterionWithItsTypes}"
+                                model="@{assignedCriterionRequirementController.criterionWithItsTypesWorker}"
+                                onSelect="assignedCriterionRequirementController.selectCriterionToHoursGroup(self.selectedItem,
+                                    self.parent.parent,self.parent.parent.parent.parent.value);">
+                                <listhead>
+                                    <listheader label="Type" />
+                                    <listheader label="Criterion" />
+                                </listhead>
+                                <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}">
+                                    <listcell label="@{criterionWithItsType.type.name}" />
+                                    <listcell label="@{criterionWithItsType.nameHierarchy}" />
+                                </listitem>
+                             </listbox>
+                        </bandpopup>
+                    </bandbox>
+                    <bandbox width="500px"
+                        visible ="@{criterionRequirementWrapper.newDirectAndItsHoursGroupIsMachine}"
+                        value = "@{criterionRequirementWrapper.criterionAndType}">
+                        <bandpopup>
+                                <listbox width="500px" height="150px" fixedLayout="true"
+                                model="@{assignedCriterionRequirementController.criterionWithItsTypesMachine}"
                                 onSelect="assignedCriterionRequirementController.selectCriterionToHoursGroup(self.selectedItem,
                                     self.parent.parent,self.parent.parent.parent.parent.value);">
                                 <listhead>
