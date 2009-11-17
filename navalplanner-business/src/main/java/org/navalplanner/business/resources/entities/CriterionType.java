@@ -307,7 +307,7 @@ public class CriterionType extends BaseEntity implements
         ICriterionTypeDAO criterionTypeDAO = Registry.getCriterionTypeDAO();
 
         if (isNewObject()) {
-            return !criterionTypeDAO.existsByName(this);
+            return !criterionTypeDAO.existsByNameAnotherTransaction(this);
         } else {
             try {
                 CriterionType c = criterionTypeDAO.findUniqueByName(name);

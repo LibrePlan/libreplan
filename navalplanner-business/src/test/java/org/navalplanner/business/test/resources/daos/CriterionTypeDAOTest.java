@@ -32,12 +32,15 @@ import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,6 +62,9 @@ public class CriterionTypeDAOTest {
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     public static final String DEFAULT_CRITERION_TYPE = "TEST_DEFAULT";
 
@@ -89,12 +95,20 @@ public class CriterionTypeDAOTest {
     }
 
     @Test(expected = ValidationException.class)
-    public void testCannotSaveTwoDifferentCriterionTypesWithTheSameName()
-            throws ValidationException {
-        CriterionType criterionType = createValidCriterionType("bla", "");
-        criterionTypeDAO.save(criterionType);
-        criterionType = createValidCriterionType("bla", "");
-        criterionTypeDAO.save(criterionType);
+    @NotTransactional
+    public void testCannotSaveTwoDifferentCriterionTypesWithTheSameName() {
+        IOnTransaction<Void> createTypeWithRepeatedName = new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                CriterionType criterionType = createValidCriterionType("bla",
+                        "");
+                criterionTypeDAO.save(criterionType);
+                return null;
+            }
+        };
+        transactionService.runOnTransaction(createTypeWithRepeatedName);
+        transactionService.runOnTransaction(createTypeWithRepeatedName);
     }
 
     @Test
@@ -153,6 +167,5 @@ public class CriterionTypeDAOTest {
 
         assertTrue(numberOfCriterionsOfTypeResourceAndWorker >= numberOfCriterionsOfTypeResource);
     }
-
 
 }

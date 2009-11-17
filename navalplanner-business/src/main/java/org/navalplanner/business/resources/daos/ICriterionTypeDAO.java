@@ -44,10 +44,13 @@ public interface ICriterionTypeDAO extends IGenericDAO<CriterionType, Long> {
 
     public boolean existsByName(CriterionType criterionType);
 
+    boolean existsByNameAnotherTransaction(CriterionType criterionType);
+
     public void removeByName(CriterionType criterionType);
 
     List<CriterionType> getCriterionTypes();
 
     List<CriterionType> getCriterionTypesByResources(
             Collection<ResourceEnum> resources);
+
 }

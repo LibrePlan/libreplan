@@ -31,6 +31,8 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO implementation for Criterion. <br />
@@ -76,6 +78,12 @@ public class CriterionTypeDAO extends GenericDAOHibernate<CriterionType, Long>
         } catch (InstanceNotFoundException e) {
             return false;
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByNameAnotherTransaction(CriterionType criterionType) {
+        return existsByName(criterionType);
     }
 
     @Override
