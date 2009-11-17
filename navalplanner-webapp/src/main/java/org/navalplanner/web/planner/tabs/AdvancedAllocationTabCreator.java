@@ -154,6 +154,7 @@ public class AdvancedAllocationTabCreator {
         private void applyChanges() {
             taskElementDAO.save(task);
             allocationResult.applyTo(task);
+            taskElementDAO.removeOrphanedDayAssignments();
         }
     }
 
