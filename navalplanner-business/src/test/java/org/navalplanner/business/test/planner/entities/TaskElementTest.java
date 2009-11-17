@@ -21,15 +21,12 @@
 package org.navalplanner.business.test.planner.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -39,9 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.orders.entities.HoursGroup;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
-import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -255,135 +250,6 @@ public class TaskElementTest {
                 destinationDependencyTask, Type.END_START);
     }
 
-    @Test
-    public void theSplitMustBeEqualToTheWorkingHours() {
-        HoursGroup hoursGroup = new HoursGroup();
-        hoursGroup.setWorkingHours(10);
-        Task taskBeingSplitted = Task.createTask(hoursGroup);
-        int[][] listOfWrongShares = { { 20, 10, 3 }, { 50, 80, 10 },
-                { 90, 30, 10 }, { 10, 20 }, { 10, 110 }, { 101 }, {} };
-        for (int[] shares : listOfWrongShares) {
-            try {
-                taskBeingSplitted.split(shares);
-                fail("it should have sent an IllegalArgumentException for "
-                        + Arrays.toString(shares));
-            } catch (IllegalArgumentException e) {
-                // Ok
-            }
-        }
-    }
-
-    @Test
-    public void aTaskGroupThatIsAssociatedToAnOrderLineGroupCannotBeMerged() {
-        TaskGroup taskGroup = TaskGroup.create();
-        taskGroup.setOrderElement(OrderLineGroup.create());
-        assertFalse(taskGroup.canBeMerged());
-    }
-
-    @Test
-    public void aTaskGroupWithChildrenAssociatedWithDifferentHourGroups() {
-        TaskGroup taskGroup = TaskGroup.create();
-        taskGroup.setOrderElement(OrderLine.create());
-        taskGroup.addTaskElement(Task.createTask(new HoursGroup()));
-        taskGroup.addTaskElement(Task.createTask(new HoursGroup()));
-        assertFalse(taskGroup.canBeMerged());
-    }
-
-    @Test
-    public void aTaskGroupWithoutChildrenCannotBeMerged() {
-        TaskGroup taskGroup = TaskGroup.create();
-        taskGroup.setOrderElement(OrderLine.create());
-        assertFalse(taskGroup.canBeMerged());
-    }
-
-    @Test
-    public void aTaskGroupWithTasksThatExceedHoursCannotBeMerged() {
-        TaskGroup taskGroup = TaskGroup.create();
-        taskGroup.setOrderElement(OrderLine.create());
-        HoursGroup hoursGroup = new HoursGroup();
-        hoursGroup.setWorkingHours(10);
-        taskGroup.addTaskElement(Task.createTask(hoursGroup));
-        taskGroup.addTaskElement(Task.createTask(hoursGroup));
-        assertFalse(taskGroup.canBeMerged());
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void mergingATaskThatCannotBeMergedFails() {
-        TaskGroup taskGroup = TaskGroup.create();
-        taskGroup.setOrderElement(OrderLineGroup.create());
-        taskGroup.merge();
-    }
-
-    @Test
-    public void mergingATaskGroupSumsTheHoursOfTheChildren() {
-        HoursGroup hoursGroup = new HoursGroup();
-        Task taskBeingSplitted = Task.createTask(hoursGroup);
-        taskBeingSplitted.setName("prueba");
-        taskBeingSplitted.setNotes("blabla");
-        taskBeingSplitted.setStartDate(new Date());
-        OrderLine orderLine = OrderLine.create();
-        hoursGroup.setWorkingHours(100);
-        orderLine.addHoursGroup(hoursGroup);
-        taskBeingSplitted.setOrderElement(orderLine);
-        int[] shares = { 20, 30, 50 };
-        TaskGroup taskGroup = taskBeingSplitted.split(shares);
-        Task task = taskGroup.merge();
-        checkPopertiesAreKept(taskGroup, task);
-        assertThat(task.getHoursGroup(), equalTo(hoursGroup));
-        assertThat(task.getOrderElement(), equalTo((OrderElement) orderLine));
-        assertThat(task.getWorkHours(), equalTo(100));
-    }
-
-    @Test
-    public void mergingATaskCanResultInATaskWithAShareOfHours() {
-        HoursGroup hoursGroup = new HoursGroup();
-        Task taskBeingSplitted = Task.createTask(hoursGroup);
-        OrderLine orderLine = OrderLine.create();
-        hoursGroup.setWorkingHours(100);
-        orderLine.addHoursGroup(hoursGroup);
-        taskBeingSplitted.setOrderElement(orderLine);
-        int[] shares = { 20, 30, 50 };
-        TaskGroup taskGroup = taskBeingSplitted.split(shares);
-        Task subTask = (Task) taskGroup.getChildren().get(0);
-        TaskGroup group = subTask.split(new int[] { 10, 10 });
-        Task merged = group.merge();
-        assertThat(merged.getWorkHours(), equalTo(20));
-    }
-
-    @Test
-    public void mergingATaskKeepsDependencies() {
-        HoursGroup hoursGroup = new HoursGroup();
-        Task taskBeingSplitted = Task.createTask(hoursGroup);
-        OrderLine orderLine = OrderLine.create();
-        hoursGroup.setWorkingHours(100);
-        orderLine.addHoursGroup(hoursGroup);
-        taskBeingSplitted.setOrderElement(orderLine);
-        int[] shares = { 20, 30, 50 };
-        TaskGroup taskGroup = taskBeingSplitted.split(shares);
-        Task source = Task.createTask(new HoursGroup());
-        Task destination = Task.createTask(new HoursGroup());
-        addDependenciesForChecking(taskGroup, source, destination);
-        Task transformed = taskGroup.merge();
-        checkDependenciesAreKept(transformed, source, destination);
-    }
-
-    @Test
-    public void theMergedEntityHasTheSameParent() {
-        HoursGroup hoursGroup = new HoursGroup();
-        Task taskBeingSplitted = Task.createTask(hoursGroup);
-        OrderLine orderLine = OrderLine.create();
-        hoursGroup.setWorkingHours(100);
-        orderLine.addHoursGroup(hoursGroup);
-        taskBeingSplitted.setOrderElement(orderLine);
-        int[] shares = { 20, 30, 50 };
-        TaskGroup parent = taskBeingSplitted.split(shares);
-        Task subTask = (Task) parent.getChildren().get(0);
-        TaskGroup group = subTask.split(new int[] { 10, 10 });
-        Task merged = group.merge();
-        assertThat(merged.getParent(), equalTo(parent));
-    }
-
-    @Test
     public void detachRemovesDependenciesFromRelatedTasks() {
         HoursGroup hoursGroup = new HoursGroup();
         Task taskToDetach = Task.createTask(hoursGroup);

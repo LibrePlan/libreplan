@@ -28,8 +28,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
-import org.navalplanner.business.orders.entities.HoursGroup;
-import org.navalplanner.business.orders.entities.OrderLine;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -84,87 +82,6 @@ public class TaskGroup extends TaskElement {
 
     public void remove(TaskElement taskElement) {
         taskElements.remove(taskElement);
-    }
-
-    public boolean canBeMerged() {
-        return isAssociatedWithAnOrderLine() && !taskElements.isEmpty()
-                && allSubTaskGroupsCanBeMerged()
-                && allChildrenHaveTheSameHoursGroup()
-                && sumOfHoursIsEqualToWorkingHours();
-    }
-
-    private boolean allSubTaskGroupsCanBeMerged() {
-        for (TaskElement t : taskElements) {
-            if (t instanceof TaskGroup) {
-                TaskGroup group = (TaskGroup) t;
-                if (!group.canBeMerged()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private boolean sumOfHoursIsEqualToWorkingHours() {
-        int sum = 0;
-        for (TaskElement taskElement : taskElements) {
-            sum += taskElement.getWorkHours();
-        }
-        return sum == getWorkHours();
-    }
-
-    private boolean allChildrenHaveTheSameHoursGroup() {
-        HoursGroup hoursGroup = null;
-        for (TaskElement taskElement : taskElements) {
-            HoursGroup current = getHoursGroupFor(taskElement);
-            if (current == null) {
-                return false;
-            }
-            if (hoursGroup == null) {
-                hoursGroup = current;
-            }
-            if (!current.equals(hoursGroup)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private HoursGroup getHoursGroupFor(TaskElement taskElement) {
-        if (taskElement instanceof Task) {
-            Task t = (Task) taskElement;
-            return t.getHoursGroup();
-        }
-        return ((TaskGroup) taskElement).inferHoursGroupFromChildren();
-    }
-
-    private boolean isAssociatedWithAnOrderLine() {
-        return getOrderElement() instanceof OrderLine;
-    }
-
-    public Task merge() {
-        if (!canBeMerged()) {
-            throw new IllegalStateException(
-                    "merge must not be called on a TaskGroup such canBeMerged returns false");
-        }
-        HoursGroup hoursGroup = inferHoursGroupFromChildren();
-        Task result = Task.createTask(hoursGroup);
-        result.copyPropertiesFrom(this);
-        result.shareOfHours = this.shareOfHours;
-        copyDependenciesTo(result);
-        copyParenTo(result);
-        return result;
-    }
-
-    private HoursGroup inferHoursGroupFromChildren() {
-        TaskElement taskElement = getChildren().get(0);
-        if (taskElement instanceof Task) {
-            Task t = (Task) taskElement;
-            return t.getHoursGroup();
-        } else {
-            TaskGroup group = (TaskGroup) taskElement;
-            return group.inferHoursGroupFromChildren();
-        }
     }
 
     @Override

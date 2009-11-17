@@ -53,7 +53,6 @@ import org.navalplanner.web.planner.loadchart.LoadChart;
 import org.navalplanner.web.planner.loadchart.LoadChartFiller;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
-import org.navalplanner.web.planner.splitting.IMergeTaskCommand;
 import org.navalplanner.web.planner.splitting.ISplitTaskCommand;
 import org.navalplanner.web.planner.splitting.SplittingController;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
@@ -140,7 +139,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         configuration.addCommandOnTask(buildResourceAllocationCommand(resourceAllocationController));
         configuration.addCommandOnTask(buildSplitCommand(splittingController));
-        configuration.addCommandOnTask(buildMergeTaskCommand());
         configuration.addCommandOnTask(buildMilestoneCommand());
         configuration
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
@@ -197,12 +195,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         IAddMilestoneCommand addMilestoneCommand = getAddMilestoneCommand();
         addMilestoneCommand.setState(planningState);
         return addMilestoneCommand;
-    }
-
-    private IMergeTaskCommand buildMergeTaskCommand() {
-        IMergeTaskCommand mergeCommand = getMergeTaskCommand();
-        mergeCommand.setState(planningState);
-        return mergeCommand;
     }
 
     private ISplitTaskCommand buildSplitCommand(
@@ -328,8 +320,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract IResourceAllocationCommand getResourceAllocationCommand();
 
     protected abstract ISplitTaskCommand getSplitCommand();
-
-    protected abstract IMergeTaskCommand getMergeTaskCommand();
 
     protected abstract IAddMilestoneCommand getAddMilestoneCommand();
 
