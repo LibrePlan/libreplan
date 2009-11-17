@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
@@ -46,12 +45,7 @@ import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -90,9 +84,6 @@ public class OrderModel implements IOrderModel {
 
     @Autowired
     private ICriterionDAO criterionDAO;
-
-    @Autowired
-    private ITaskElementDAO taskElementDAO;
 
     @Autowired
     private ILabelDAO labelDAO;
@@ -326,18 +317,6 @@ public class OrderModel implements IOrderModel {
     }
 
     @Override
-    @Transactional
-    public void schedule(Order order) {
-        convertToScheduleAndSave(getFromDB(order));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public boolean isAlreadyScheduled(Order order) {
-        return getFromDB(order).isSomeTaskElementScheduled();
-    }
-
-    @Override
     public List<Criterion> getCriterionsFor(CriterionType criterionType) {
         return mapCriterions.get(criterionType);
     }
@@ -345,66 +324,6 @@ public class OrderModel implements IOrderModel {
     @Override
     public void setOrder(Order order) {
         this.order = order;
-    }
-
-    @Override
-    public TaskElement convertToInitialSchedule(OrderElement order) {
-        TaskElement result;
-        if (order instanceof OrderLineGroup) {
-            OrderLineGroup group = (OrderLineGroup) order;
-            result = convertToTaskGroup(group);
-        } else {
-            OrderLine line = (OrderLine) order;
-            if (line.getHoursGroups().isEmpty()) {
-                throw new IllegalArgumentException(_(
-                        "The line must have at least one {0} associated",
-                        HoursGroup.class.getSimpleName()));
-            }
-            result = line.getHoursGroups().size() > 1 ? convertToTaskGroup(line)
-                    : convertToTask(line);
-        }
-        if (order.getDeadline() != null) {
-            result.setDeadline(new LocalDate(order.getDeadline()));
-        }
-        if (result instanceof Task) {
-            order.applyStartConstraintIfNeededTo((Task) result);
-        }
-        return result;
-    }
-
-    private TaskGroup convertToTaskGroup(OrderLine line) {
-        TaskGroup result = TaskGroup.create();
-        result.setOrderElement(line);
-        for (HoursGroup hoursGroup : line.getHoursGroups()) {
-            result.addTaskElement(taskFrom(line, hoursGroup));
-        }
-        return result;
-    }
-
-    private Task convertToTask(OrderLine line) {
-        HoursGroup hoursGroup = line.getHoursGroups().get(0);
-        return taskFrom(line, hoursGroup);
-    }
-
-    private Task taskFrom(OrderLine line, HoursGroup hoursGroup) {
-        Task result = Task.createTask(hoursGroup);
-        result.setOrderElement(line);
-        return result;
-    }
-
-    private TaskGroup convertToTaskGroup(OrderLineGroup group) {
-        TaskGroup result = TaskGroup.create();
-        result.setOrderElement(group);
-        for (OrderElement orderElement : group.getChildren()) {
-            result.addTaskElement(convertToInitialSchedule(orderElement));
-        }
-        return result;
-    }
-
-    @Override
-    @Transactional
-    public void convertToScheduleAndSave(Order order) {
-        taskElementDAO.save(convertToInitialSchedule(order));
     }
 
 }

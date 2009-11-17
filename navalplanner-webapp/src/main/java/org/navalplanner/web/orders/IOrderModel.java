@@ -22,12 +22,12 @@ package org.navalplanner.web.orders;
 
 import java.util.List;
 import java.util.Map;
+
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 
@@ -45,10 +45,6 @@ public interface IOrderModel {
      * @param label
      */
     void addLabel(Label label);
-
-    TaskElement convertToInitialSchedule(OrderElement order);
-
-    void convertToScheduleAndSave(Order order);
 
     /**
      * Returns a list of {@link Label}
@@ -78,8 +74,6 @@ public interface IOrderModel {
 
     List<Order> getOrders();
 
-    boolean isAlreadyScheduled(Order order);
-
     void initEdit(Order order);
 
     void prepareForCreate();
@@ -87,8 +81,6 @@ public interface IOrderModel {
     void remove(Order order);
 
     void save() throws ValidationException;
-
-    void schedule(Order order);
 
     void setOrder(Order order);
 

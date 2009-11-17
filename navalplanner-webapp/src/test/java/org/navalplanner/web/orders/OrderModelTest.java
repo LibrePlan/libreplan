@@ -21,10 +21,7 @@
 package org.navalplanner.web.orders;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -42,10 +39,8 @@ import javax.annotation.Resource;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -58,10 +53,6 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
-import org.navalplanner.business.planner.entities.StartConstraintType;
-import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -173,51 +164,6 @@ public class OrderModelTest {
         assertTrue(orderDAO.exists(order.getId()));
         orderModel.remove(order);
         assertFalse(orderDAO.exists(order.getId()));
-    }
-
-    @Test
-    @NotTransactional
-    public void removingOrderWithAssociatedTasksDeletesThem()
-            throws ValidationException, InstanceNotFoundException {
-        final Long orderId = adHocTransaction
-                .runOnTransaction(new IOnTransaction<Long>() {
-
-                    @Override
-                    public Long execute() {
-                        Order order = createValidOrder();
-                        OrderLine orderLine = OrderLine.create();
-                        orderLine.setName("bla");
-                        orderLine.setCode("00000000");
-                        orderLine.setWorkHours(10);
-                        order.add(orderLine);
-                        orderModel.setOrder(order);
-                        try {
-                            orderModel.save();
-                        } catch (ValidationException e) {
-                            throw new RuntimeException(e);
-                        }
-                        orderModel.convertToScheduleAndSave(order);
-                        getSession().flush();
-                        return order.getId();
-                    }
-                });
-        adHocTransaction.runOnTransaction(new IOnTransaction<Void>() {
-
-            @Override
-            public Void execute() {
-                try {
-                    Order reloaded = orderDAO.find(orderId);
-                    OrderElement e = reloaded.getOrderElements().iterator()
-                            .next();
-                    assertThat(e.getTaskElements().size(), equalTo(1));
-                    orderModel.remove(reloaded);
-                    assertFalse(orderDAO.exists(orderId));
-                    return null;
-                } catch (InstanceNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
     }
 
     @Test(expected = ValidationException.class)
@@ -467,179 +413,10 @@ public class OrderModelTest {
         orderModel.save();
     }
 
-    @Test
-    public void aOrderLineGroupIsConvertedToATaskGroup() {
-        OrderLineGroup orderLineGroup = OrderLineGroup.create();
-        orderLineGroup.setName("foo");
-        orderLineGroup.setCode("000000000");
-        TaskElement task = orderModel.convertToInitialSchedule(orderLineGroup);
-        assertThat(task, is(TaskGroup.class));
-
-        TaskGroup group = (TaskGroup) task;
-        assertThat(group.getOrderElement(),
-                equalTo((OrderElement) orderLineGroup));
-    }
-
-    @Test
-    public void aOrderLineWithOneHourGroupIsConvertedToATask() {
-        OrderLine orderLine = OrderLine.create();
-        orderLine.setName("bla");
-        orderLine.setCode("000000000");
-        final int hours = 30;
-        HoursGroup hoursGroup = createHoursGroup(hours);
-        orderLine.addHoursGroup(hoursGroup);
-        TaskElement taskElement = orderModel
-                .convertToInitialSchedule(orderLine);
-        assertThat(taskElement, is(Task.class));
-
-        Task group = (Task) taskElement;
-        assertThat(group.getOrderElement(), equalTo((OrderElement) orderLine));
-        assertThat(group.getHoursGroup(), equalTo(hoursGroup));
-        assertThat(taskElement.getWorkHours(), equalTo(hours));
-    }
-
-    @Test
-    public void theDeadlineIsCopied() {
-        OrderLine orderLine = OrderLine.create();
-        orderLine.setName("bla");
-        orderLine.setCode("000000000");
-        final int hours = 30;
-        HoursGroup hoursGroup = createHoursGroup(hours);
-        orderLine.addHoursGroup(hoursGroup);
-        orderLine.setDeadline(year(2007));
-        TaskElement task = orderModel.convertToInitialSchedule(orderLine);
-        assertThat(task.getDeadline(), equalTo(new LocalDate(year(2007))));
-    }
-
-    @Test
-    public void ifNoParentWithStartDateTheStartConstraintIsSoonAsPossible() {
-        OrderLine orderLine = OrderLine.create();
-        orderLine.setName("bla");
-        orderLine.setCode("000000000");
-        HoursGroup hoursGroup = createHoursGroup(30);
-        orderLine.addHoursGroup(hoursGroup);
-        Task task = (Task) orderModel
-                .convertToInitialSchedule(orderLine);
-        assertThat(task.getStartConstraint().getStartConstraintType(),
-                equalTo(StartConstraintType.AS_SOON_AS_POSSIBLE));
-        assertThat(task.getStartConstraint().getConstraintDate(), nullValue());
-    }
-
-    @Test
-    public void ifSomeParentHasInitDateTheStartConstraintIsNotEarlierThan() {
-        OrderLine orderLine = OrderLine.create();
-        orderLine.setName("bla");
-        orderLine.setCode("000000000");
-        final Date initDate = year(2008);
-        orderLine.setInitDate(initDate);
-        HoursGroup hoursGroup = createHoursGroup(30);
-        orderLine.addHoursGroup(hoursGroup);
-        Task task = (Task) orderModel
-                .convertToInitialSchedule(orderLine);
-        assertThat(task.getStartConstraint().getStartConstraintType(),
-                equalTo(StartConstraintType.START_NOT_EARLIER_THAN));
-        assertThat(task.getStartConstraint().getConstraintDate(),
-                equalTo(initDate));
-    }
-
-    @Test
-    public void unlessTheOnlyParentWithInitDateNotNullIsTheOrder() {
-        Order order = Order.create();
-        final Date initDate = year(2008);
-        order.setInitDate(initDate);
-        OrderLine orderLine = OrderLine.create();
-        order.add(orderLine);
-        orderLine.setName("bla");
-        orderLine.setCode("000000000");
-        HoursGroup hoursGroup = createHoursGroup(30);
-        orderLine.addHoursGroup(hoursGroup);
-        Task task = (Task) orderModel.convertToInitialSchedule(orderLine);
-        assertThat(task.getStartConstraint().getStartConstraintType(),
-                equalTo(StartConstraintType.AS_SOON_AS_POSSIBLE));
-        assertThat(task.getStartConstraint().getConstraintDate(), nullValue());
-    }
-
-    @Test
-    public void theSublinesOfAnOrderLineGroupAreConverted() {
-        OrderLineGroup orderLineGroup = OrderLineGroup.create();
-        orderLineGroup.setName("foo");
-        orderLineGroup.setCode("000000000");
-        OrderLine orderLine = OrderLine.create();
-        orderLine.setName("bla");
-        orderLine.setCode("000000000");
-        HoursGroup hoursGroup = createHoursGroup(30);
-        orderLine.addHoursGroup(hoursGroup);
-        orderLineGroup.add(orderLine);
-        TaskElement task = orderModel.convertToInitialSchedule(orderLineGroup);
-        assertThat(task, is(TaskGroup.class));
-
-        TaskGroup group = (TaskGroup) task;
-
-        assertThat(group.getOrderElement(),
-                equalTo((OrderElement) orderLineGroup));
-        assertThat(group.getChildren().size(), equalTo(1));
-        assertThat(group.getChildren().get(0).getOrderElement(),
-                equalTo((OrderElement) orderLine));
-    }
-
-    @Test
-    public void theWorkHoursOfATaskGroupAreTheSameThanTheTaskElement() {
-        OrderLineGroup orderLineGroup = OrderLineGroup.create();
-        orderLineGroup.setName("foo");
-        orderLineGroup.setCode("000000000");
-        OrderLine orderLine = OrderLine.create();
-        orderLine.setName("bla");
-        orderLine.setCode("000000000");
-        orderLine.addHoursGroup(createHoursGroup(20));
-        orderLine.addHoursGroup(createHoursGroup(30));
-        orderLineGroup.add(orderLine);
-        TaskElement task = orderModel.convertToInitialSchedule(orderLineGroup);
-        assertThat(task.getWorkHours(), equalTo(orderLineGroup.getWorkHours()));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void aOrderLineWithNoHoursIsRejected() {
-        OrderLine orderLine = OrderLine.create();
-        orderLine.setName("bla");
-        orderLine.setCode("000000000");
-        orderModel.convertToInitialSchedule(orderLine);
-    }
-
     private HoursGroup createHoursGroup(int hours) {
         HoursGroup result = new HoursGroup();
         result.setWorkingHours(hours);
         return result;
-    }
-
-    @Test
-    public void aOrderLineWithMoreThanOneHourIsConvertedToATaskGroup() {
-        OrderLine orderLine = OrderLine.create();
-        orderLine.setName("bla");
-        orderLine.setCode("000000000");
-        HoursGroup hours1 = createHoursGroup(30);
-        orderLine.addHoursGroup(hours1);
-        HoursGroup hours2 = createHoursGroup(10);
-        orderLine.addHoursGroup(hours2);
-        TaskElement taskElement = orderModel
-                .convertToInitialSchedule(orderLine);
-        assertThat(taskElement, is(TaskGroup.class));
-
-        TaskGroup group = (TaskGroup) taskElement;
-        assertThat(group.getOrderElement(), equalTo((OrderElement) orderLine));
-        assertThat(group.getChildren().size(), equalTo(2));
-
-        Task child1 = (Task) group.getChildren().get(0);
-        Task child2 = (Task) group.getChildren().get(1);
-
-        assertThat(child1.getOrderElement(), equalTo((OrderElement) orderLine));
-        assertThat(child2.getOrderElement(), equalTo((OrderElement) orderLine));
-
-        assertThat(child1.getHoursGroup(), not(equalTo(child2.getHoursGroup())));
-
-        assertThat(child1.getHoursGroup(), JUnitMatchers
-                .either(equalTo(hours1)).or(equalTo(hours2)));
-        assertThat(child2.getHoursGroup(), JUnitMatchers
-                .either(equalTo(hours1)).or(equalTo(hours2)));
     }
 
 }

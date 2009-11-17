@@ -272,29 +272,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         messagesForUser.showMessage(Level.INFO, _("Removed {0}", order.getName()));
     }
 
-    public void confirmSchedule(Order order) {
-        if (orderModel.isAlreadyScheduled(order)) {
-            goToShedulingView(order);
-            return;
-        }
-
-        try {
-            int status = Messagebox.show(_("Confirm scheduling {0}. Are you sure?", order.getName()), "Schedule",
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                schedule(order);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void schedule(Order order) {
-        orderModel.schedule(order);
-        goToShedulingView(order);
-    }
-
-    private void goToShedulingView(Order order) {
         planningControllerEntryPoints.goToScheduleOf(order);
     }
 
