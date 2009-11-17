@@ -584,3 +584,26 @@ div.z-grid {
     margin-bottom:2px;
     margin-right:5px;
 }
+
+
+/* Graphical improvements */
+
+.z-panel-header {
+    background:none;
+    border: 0px;
+    margin:0px 0px 0 10px
+}
+
+.z-panel-body {
+    background:none;
+    border: 1px solid #B1CBD5;
+    margin:0 10px 0px 10px;
+}
+
+.z-panel-children {
+    border-style: none none none;
+}
+
+div.z-grid-pgi-b {
+    border-top:none;
+}
