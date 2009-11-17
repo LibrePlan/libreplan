@@ -308,11 +308,11 @@ public class OrderElementTreeController extends GenericForwardComposer {
             currentTreeRow = getTreeRowWithoutChildrenFor(item);
             final OrderElement currentOrderElement = (OrderElement) data;
             addSchedulingStateCell(currentOrderElement);
-            addTaskNumberCell(currentOrderElement);
             addCodeCell(currentOrderElement);
+            addHoursCell(currentOrderElement);
+            addTaskNumberCell(currentOrderElement);
             addInitDateCell(currentOrderElement);
             addEndDateCell(currentOrderElement);
-            addHoursCell(currentOrderElement);
             addOperationsCell(item, currentOrderElement);
 
             onDropMoveFromDraggedToTarget();
@@ -396,7 +396,15 @@ public class OrderElementTreeController extends GenericForwardComposer {
         private void addSchedulingStateCell(OrderElement currentOrderElement) {
             SchedulingStateToggler schedulingStateToggler = new SchedulingStateToggler(currentOrderElement
                     .getSchedulingState());
-            addCell(schedulingStateToggler);
+            if (currentOrderElement.getSchedulingState()
+                    .isCompletelyScheduled()) {
+                addCell("completely-scheduled", schedulingStateToggler);
+            } else if (currentOrderElement.getSchedulingState()
+                    .isPartiallyScheduled()) {
+                addCell("partially-scheduled", schedulingStateToggler);
+            } else {
+                addCell("not-scheduled", schedulingStateToggler);
+            }
             schedulingStateToggler.afterCompose();
         }
 

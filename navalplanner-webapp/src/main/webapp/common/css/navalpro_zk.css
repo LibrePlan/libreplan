@@ -101,58 +101,15 @@ table {
 }
 
 /* These constants may be reviewed when testing with 3 digit tasknumbers */
-.orderTree .depth_1 input {
+.orderTree .depth_1 input,
+.orderTree .depth_2 input,
+.orderTree .depth_3 input,
+.orderTree .depth_4 input,
+.orderTree .depth_5 input,
+.orderTree .depth_6 input
+{
     width: 460px !important;
     border-right: 0px;
-}
-
-.orderTree .depth_2 input {
-    width: 430px !important; /* prev - 30 px */
-    border-right: 0px;
-}
-
-.orderTree .depth_3 input {
-    width: 400px !important; /* prev - 30 px */
-    border-right: 0px;
-}
-
-.orderTree .depth_4 input {
-    width: 370px !important; /* prev - 30 px */
-    border-right: 0px;
-}
-
-.orderTree .depth_5 input {
-    width: 340px !important; /* prev - 30 px */
-    border-right: 0px;
-}
-
-.orderTree .depth_6 input {
-    width: 310px !important; /* prev - 30 px */
-    border-right: 0px;
-}
-
-.orderTree .depth_1 .tasknumber {
-    width: 25px;
-}
-
-.orderTree .depth_2 .tasknumber {
-    width: 37px; /* prev + 12 px */
-}
-
-.orderTree .depth_3 .tasknumber {
-    width: 49px; /* prev + 12 px */
-}
-
-.orderTree .depth_4 .tasknumber {
-    width: 61px; /* prev + 12 px */
-}
-
-.orderTree .depth_5 .tasknumber {
-    width: 73px; /* prev + 12 px */
-}
-
-.orderTree .depth_6 .tasknumber {
-    width: 85px; /* prev + 12 px */
 }
 
 /* Cleaning window borders */
@@ -435,18 +392,25 @@ div.z-grid {
 }
 
 .orderTree .operations {
-    min-width:130px;
+    min-width:150px;
 }
 
 .orderTree .name {
-    min-width:515px;
+    min-width:140px;
 }
 
 .orderTree .hours {
     min-width:50px;
 }
 .orderTree .code {
-    min-width:50px;
+    min-width:100px;
+}
+.orderTree .scheduling_state {
+    min-width:260px;
+}
+
+.orderTree .tasknumber {
+    display:none;
 }
 
 
@@ -604,6 +568,37 @@ div.z-grid {
     border-style: none none none;
 }
 
-div.z-grid-pgi-b {
+div.z-grid-pgi-b,
+div.z-listbox-pgi-b {
     border-top:none;
+}
+
+.z-dottree-body .tasknumber {
+    /* Pending removal from the code */
+    display:none;
+}
+
+.z-dottree-body .not-scheduled span,
+.z-dottree-body .partially-scheduled span,
+.z-dottree-body .completely-scheduled span {
+    float:left;
+    padding-right:2px;
+}
+
+.z-dottree-body .not-scheduled,
+.z-dottree-body .partially-scheduled,
+.z-dottree-body .completely-scheduled {
+    border-bottom:dotted #EEEEEE 1px;
+}
+
+.partially-scheduled {
+    background-color: #fddf9b;
+}
+
+.completely-scheduled {
+    background-color: #bee5a9;
+}
+
+span.z-dottree-ico, span.z-dottree-line {
+    min-height:22px;
 }
