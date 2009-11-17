@@ -79,9 +79,15 @@ public class GenericDAOHibernate<E extends BaseEntity,
         return sessionFactory.getCurrentSession();
     }
 
+    /**
+     * It's necessary to save and validate later.
+     *
+     * Validate may retrieve the entity from DB and put it into the Session, which can eventually lead to
+     * a NonUniqueObject exception. Save works here to reattach the object as well as saving.
+     */
     public void save(E entity) throws ValidationException {
-        entity.validate();
         getSession().saveOrUpdate(entity);
+        entity.validate();
     }
 
     public void reattachUnmodifiedEntity(E entity) {
