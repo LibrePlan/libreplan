@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.orders.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -42,7 +44,6 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
-
 public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
 
     public static OrderLineGroup create() {
@@ -666,7 +667,7 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
         for (AdvanceAssignment advanceAssignment : advanceAssignments) {
             if (advanceAssignment.getReportGlobalAdvance()) {
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
-                        "Duplicate Value True ReportGlobalAdvance For Order Element",
+                        _("Duplicate Value True ReportGlobalAdvance For Order Element"),
                         this, OrderElement.class);
             }
         }

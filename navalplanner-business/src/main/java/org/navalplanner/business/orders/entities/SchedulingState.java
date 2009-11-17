@@ -19,12 +19,13 @@
  */
 package org.navalplanner.business.orders.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
@@ -142,9 +143,9 @@ public class SchedulingState {
         this(type);
         for (SchedulingState each : children) {
             if (!each.isRoot()) {
-                throw new IllegalArgumentException(each
-                        + " is already child of another "
-                        + SchedulingState.class.getSimpleName());
+                throw new IllegalArgumentException(_(
+                        "{0} is already child of another {1}", each,
+                        SchedulingState.class.getSimpleName()));
             }
             add(each);
         }
@@ -178,7 +179,8 @@ public class SchedulingState {
 
     public void schedule() {
         if (!canBeScheduled()) {
-            throw new IllegalStateException("it's already somewhat scheduled");
+            throw new IllegalStateException(
+                    _("it's already somewhat scheduled"));
         }
         setType(Type.SCHEDULING_POINT);
         for (SchedulingState schedulingState : getDescendants()) {
@@ -192,7 +194,7 @@ public class SchedulingState {
 
     public void unschedule() {
         if (!canBeUnscheduled()) {
-            throw new IllegalStateException("it can't be unscheduled");
+            throw new IllegalStateException(_("it can't be unscheduled"));
         }
         setType(Type.NO_SCHEDULED);
         markDescendantsAsNoScheduled();

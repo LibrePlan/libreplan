@@ -19,6 +19,8 @@
  */
 package org.navalplanner.business.orders.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,7 +34,6 @@ import org.navalplanner.business.requirements.entities.DirectCriterionRequiremen
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ResourceEnum;
-
 
 public class HoursGroup extends BaseEntity implements Cloneable {
 
@@ -86,7 +87,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
     public void setResourceType(ResourceEnum resource) {
         if ((resource != null) && (resource.equals(ResourceEnum.getDefault()))) {
             throw new IllegalArgumentException(
-                    "the resource type should be Worker or Machine");
+                    _("the resource type should be Worker or Machine"));
         }
         this.resourceType = resource;
     }
@@ -95,7 +96,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
             throws IllegalArgumentException {
         if (workingHours < 0) {
             throw new IllegalArgumentException(
-                    "Working hours shouldn't be neagtive");
+                    _("Working hours shouldn't be neagtive"));
         }
 
         this.workingHours = workingHours;
@@ -121,7 +122,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         if (!parentOrderLine.isPercentageValid()) {
             this.percentage = oldPercentage;
             throw new IllegalArgumentException(
-                    "Total percentage should be less than 100%");
+                    _("Total percentage should be less than 100%"));
         }
     }
 
@@ -157,15 +158,15 @@ public class HoursGroup extends BaseEntity implements Cloneable {
     public void addCriterionRequirement(CriterionRequirement requirement) {
         if (!isValidResourceType(requirement)) {
             throw new IllegalStateException(
-                    " The criterion "
-                            + requirement.getCriterion().getName()
-                            + " can not be assigned to this hoursGroup because its resource type is diferent.");
+                    _(
+                            " The criterion {0} can not be assigned to this hoursGroup because its resource type is diferent.",
+                            requirement.getCriterion().getName()));
         }
         if (existSameCriterionRequirement(requirement)) {
             throw new IllegalStateException(
-                    " The criterion "
-                            + requirement.getCriterion().getName()
-                            + " can not be assigned to this hoursGroup because it already exist into the hoursGroup");
+                    _(
+                            " The criterion  {0} can not be assigned to this hoursGroup because it already exist into the hoursGroup.",
+                            requirement.getCriterion().getName()));
 
         }
         requirement.setHoursGroup(this);

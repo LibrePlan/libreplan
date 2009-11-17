@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.orders.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +50,6 @@ import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
-
 public abstract class OrderElement extends BaseEntity {
 
     @NotEmpty
@@ -324,7 +325,7 @@ public abstract class OrderElement extends BaseEntity {
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if (directAdvanceAssignment.getReportGlobalAdvance()) {
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
-                        "Duplicate Value True ReportGlobalAdvance For Order Element",
+                        _("Duplicate Value True ReportGlobalAdvance For Order Element"),
                         this, OrderElement.class);
             }
         }
@@ -346,7 +347,8 @@ public abstract class OrderElement extends BaseEntity {
             if (AdvanceType.equivalentInDB(directAdvanceAssignment
                     .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
-                        "Duplicate Advance Assignment For Order Element", this,
+                        _("Duplicate Advance Assignment For Order Element"),
+                        this,
                         OrderElement.class);
             }
         }
@@ -371,7 +373,8 @@ public abstract class OrderElement extends BaseEntity {
             if (AdvanceType.equivalentInDB(directAdvanceAssignment
                     .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
-                        "Duplicate Advance Assignment For Order Element", this,
+                        _("Duplicate Advance Assignment For Order Element"),
+                        this,
                         OrderElement.class);
             }
         }
@@ -450,8 +453,10 @@ public abstract class OrderElement extends BaseEntity {
                             newRequirement);
         } else {
             Criterion criterion = newRequirement.getCriterion();
-            throw new IllegalStateException(" The " + criterion.getName()
-                    + " already exist into other order element");
+            throw new IllegalStateException(_(
+                    " The {0} already exist into other order element",
+                    criterion
+                            .getName()));
         }
     }
 

@@ -201,16 +201,15 @@ setValidCriterionRequirementWrapper(requirement, true);
                         _("You are sure of change the resource type. You will lose the criterions with different resource type."),
                             "Question", Messagebox.OK | Messagebox.CANCEL,
                         Messagebox.QUESTION);
+            if (result == Messagebox.OK) {
+                ResourceEnum resource = (ResourceEnum) combobox
+                        .getSelectedItem().getValue();
+                hoursGroupWrapper.assignResourceType(resource);
+                assignedCriterionRequirementToOrderElementModel
+                        .updateCriterionsWithDiferentResourceType(hoursGroupWrapper);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-
-        if (result == 1) {
-            ResourceEnum resource = (ResourceEnum) combobox.getSelectedItem()
-                    .getValue();
-            hoursGroupWrapper.assignResourceType(resource);
-            assignedCriterionRequirementToOrderElementModel
-                    .updateCriterionsWithDiferentResourceType(hoursGroupWrapper);
         }
         Util.reloadBindings(listHoursGroups);
     }

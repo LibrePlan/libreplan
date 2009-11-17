@@ -148,7 +148,7 @@ public class OrderLine extends OrderElement {
 
         if (workHours < 0) {
             throw new IllegalArgumentException(
-                    "workHours should be greater or equals to 0");
+                    _("workHours should be greater or equals to 0"));
         }
 
         if (hoursGroups.isEmpty()) {
@@ -161,8 +161,8 @@ public class OrderLine extends OrderElement {
 
             if (!isTotalHoursValid(workHours)) {
                 throw new IllegalArgumentException(
-                        "\"workHours\" value is not valid, taking into "
-                                + "account the current list of HoursGroup");
+                        _("\"workHours\" value is not valid, taking into "
+                                + "account the current list of HoursGroup"));
             }
 
             updateHoursGroups(workHours);
