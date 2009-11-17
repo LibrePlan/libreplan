@@ -80,7 +80,13 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     private void forceLoad(Configuration configuration) {
-        configuration.getDefaultCalendar().getName();
+        forceLoad(configuration.getDefaultCalendar());
+    }
+
+    private void forceLoad(BaseCalendar calendar) {
+        if (calendar != null) {
+            calendar.getName();
+        }
     }
 
     @Override
