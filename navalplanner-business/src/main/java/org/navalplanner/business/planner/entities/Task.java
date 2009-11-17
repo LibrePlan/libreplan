@@ -184,34 +184,6 @@ public class Task extends TaskElement {
         return hoursGroup.getWorkingHours();
     }
 
-    public TaskGroup split(int... shares) {
-        int totalSumOfHours = sum(shares);
-        if (totalSumOfHours != getWorkHours()) {
-            throw new IllegalArgumentException(
-                    "the shares don't sum up the work hours");
-        }
-        TaskGroup result = TaskGroup.create();
-        result.copyPropertiesFrom(this);
-        result.shareOfHours = this.shareOfHours;
-        copyParenTo(result);
-        for (int i = 0; i < shares.length; i++) {
-            Task task = Task.createTask(hoursGroup);
-            task.copyPropertiesFrom(this);
-            result.addTaskElement(task);
-            task.shareOfHours = shares[i];
-        }
-        copyDependenciesTo(result);
-        return result;
-    }
-
-    private int sum(int[] shares) {
-        int result = 0;
-        for (int share : shares) {
-            result += share;
-        }
-        return result;
-    }
-
     public Set<GenericResourceAllocation> getGenericResourceAllocations() {
         return new HashSet<GenericResourceAllocation>(ResourceAllocation
                 .getOfType(GenericResourceAllocation.class,

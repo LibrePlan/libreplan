@@ -53,8 +53,6 @@ import org.navalplanner.web.planner.loadchart.LoadChart;
 import org.navalplanner.web.planner.loadchart.LoadChartFiller;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
-import org.navalplanner.web.planner.splitting.ISplitTaskCommand;
-import org.navalplanner.web.planner.splitting.SplittingController;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.navalplanner.web.planner.taskedition.IEditTaskCommand;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,7 +122,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             ViewSwitcher switcher,
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
-            SplittingController splittingController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
         Order orderReloaded = reload(order);
@@ -138,7 +135,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration.addGlobalCommand(saveCommand);
 
         configuration.addCommandOnTask(buildResourceAllocationCommand(resourceAllocationController));
-        configuration.addCommandOnTask(buildSplitCommand(splittingController));
         configuration.addCommandOnTask(buildMilestoneCommand());
         configuration
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
@@ -195,14 +191,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         IAddMilestoneCommand addMilestoneCommand = getAddMilestoneCommand();
         addMilestoneCommand.setState(planningState);
         return addMilestoneCommand;
-    }
-
-    private ISplitTaskCommand buildSplitCommand(
-            SplittingController splittingController) {
-        ISplitTaskCommand splitCommand = getSplitCommand();
-        splitCommand.setState(planningState);
-        splitCommand.setSplitWindowController(splittingController);
-        return splitCommand;
     }
 
     private IResourceAllocationCommand buildResourceAllocationCommand(
@@ -318,8 +306,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract ISaveCommand getSaveCommand();
 
     protected abstract IResourceAllocationCommand getResourceAllocationCommand();
-
-    protected abstract ISplitTaskCommand getSplitCommand();
 
     protected abstract IAddMilestoneCommand getAddMilestoneCommand();
 

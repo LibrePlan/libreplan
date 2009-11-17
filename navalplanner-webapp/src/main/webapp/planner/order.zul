@@ -29,7 +29,6 @@
     <zscript><![CDATA[
         planningController = arg.get("orderPlanningController");
         allocationController = planningController.resourceAllocationController;
-        splittingTaskController = planningController.splittingController;
         calendarController = planningController.calendarAllocationController;
         switcher = planningController.viewSwitcher;
         allocationController.switcher = switcher;
@@ -185,30 +184,6 @@
         <button label="${i18n:_('Advance allocation')}"
             onClick="allocationController.advanceAllocation();" />
     </hbox>
-    </window>
-
-    <window id="splittingWindow" visible="false" apply="${splittingTaskController}" minwidth="${400}" >
-        <vbox>
-            <hbox>
-            <label value="${i18n:_('Total hours')}:" /> <label id="totalHoursLabel"/>
-            </hbox>
-            <grid id="sharesListing" fixedLayout="true">
-                <columns sizable="true">
-                    <column label="${i18n:_('Name')}" />
-                    <column label="${i18n:_('Hours')}" />
-                </columns>
-                <rows>
-                    <row self="@{each='share'}">
-                        <textbox value="@{share.name}" constraint="no empty"/>
-                        <intbox value="@{share.hours}" constraint="no negative,no zero"/>
-                    </row>
-                </rows>
-            </grid>
-            <hbox>
-                <button label="${i18n:_('Accept')}" id="splitOk" />
-                <button label="${i18n:_('Cancel')}" id="splitCancel" />
-            </hbox>
-        </vbox>
     </window>
 
     <window id="calendarAllocationWindow"

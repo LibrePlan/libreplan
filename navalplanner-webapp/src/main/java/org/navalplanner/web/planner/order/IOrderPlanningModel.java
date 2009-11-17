@@ -27,7 +27,6 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
-import org.navalplanner.web.planner.splitting.SplittingController;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommand;
@@ -41,7 +40,6 @@ public interface IOrderPlanningModel {
             ViewSwitcher viewSwitcher,
             ResourceAllocationController resourceAllocationController,
             EditTaskController editTaskController,
-            SplittingController splittingController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional);
 

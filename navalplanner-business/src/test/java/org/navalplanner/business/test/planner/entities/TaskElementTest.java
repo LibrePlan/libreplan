@@ -135,88 +135,12 @@ public class TaskElementTest {
                 equalTo(0));
     }
 
-    @Test
-    public void splittingATaskIntoSeveral() {
-        HoursGroup hoursGroup = new HoursGroup();
-        Task taskBeingSplitted = Task.createTask(hoursGroup);
-        taskBeingSplitted.setName("prueba");
-        taskBeingSplitted.setNotes("blabla");
-        taskBeingSplitted.setStartDate(new Date());
-        OrderLine orderLine = OrderLine.create();
-        hoursGroup.setWorkingHours(100);
-        orderLine.addHoursGroup(hoursGroup);
-        taskBeingSplitted.setOrderElement(orderLine);
-        int[] shares = { 20, 30, 50 };
-        TaskGroup taskGroup = taskBeingSplitted.split(shares);
-        assertThat(taskGroup.getChildren().size(), equalTo(3));
-
-        checkPopertiesAreKept(taskBeingSplitted, taskGroup);
-        for (TaskElement taskElement : taskGroup.getChildren()) {
-            assertThat(taskElement.getOrderElement(), equalTo(taskBeingSplitted
-                    .getOrderElement()));
-        }
-        TaskElement first = taskGroup.getChildren().get(0);
-        checkPopertiesAreKept(taskBeingSplitted, first);
-        TaskElement second = taskGroup.getChildren().get(1);
-        checkPopertiesAreKept(taskBeingSplitted, second);
-        TaskElement third = taskGroup.getChildren().get(2);
-        checkPopertiesAreKept(taskBeingSplitted, third);
-        assertThat(first.getWorkHours(), equalTo(20));
-        assertThat(second.getWorkHours(), equalTo(30));
-        assertThat(third.getWorkHours(), equalTo(50));
-    }
-
-    @Test
-    public void splittingATaskKeepsItsShareOfHoursIfPresent() {
-        HoursGroup hoursGroup = new HoursGroup();
-        Task initial = Task.createTask(hoursGroup);
-        initial.setName("prueba");
-        initial.setNotes("blabla");
-        initial.setStartDate(new Date());
-        OrderLine orderLine = OrderLine.create();
-        hoursGroup.setWorkingHours(100);
-        orderLine.addHoursGroup(hoursGroup);
-        initial.setOrderElement(orderLine);
-        int[] shares = { 50, 50 };
-        TaskGroup group = initial.split(shares);
-        Task t = (Task) group.getChildren().get(0);
-        TaskGroup childSplittedGroup = t.split(new int[] { 25, 25 });
-        assertThat("the work hours must be the same that it had",
-                childSplittedGroup.getWorkHours(), equalTo(50));
-    }
-
     private void checkPopertiesAreKept(TaskElement original, TaskElement result) {
         assertThat(result.getName(), equalTo(original.getName()));
         assertThat(result.getNotes(), equalTo(original.getNotes()));
         assertThat(result.getStartDate(), equalTo(original.getStartDate()));
         assertThat(result.getOrderElement(),
                 equalTo(original.getOrderElement()));
-    }
-
-    @Test
-    public void splittingATaskIntoSeveralKeepsDependencies() {
-        HoursGroup hoursGroup = new HoursGroup();
-        TaskGroup root = TaskGroup.create();
-        Task taskBeingSplitted = Task.createTask(hoursGroup);
-        root.addTaskElement(taskBeingSplitted);
-        taskBeingSplitted.setName("prueba");
-        taskBeingSplitted.setNotes("blabla");
-        taskBeingSplitted.setStartDate(new Date());
-        Task sourceDependencyTask = Task.createTask(new HoursGroup());
-        Task destinationDependencyTask = Task.createTask(new HoursGroup());
-        addDependenciesForChecking(taskBeingSplitted, sourceDependencyTask,
-                destinationDependencyTask);
-        OrderLine orderLine = OrderLine.create();
-        hoursGroup.setWorkingHours(100);
-        orderLine.addHoursGroup(hoursGroup);
-        taskBeingSplitted.setOrderElement(orderLine);
-
-        int[] shares = { 50, 50 };
-        TaskGroup taskResultOfSplit = taskBeingSplitted.split(shares);
-        assertThat(taskResultOfSplit.getParent(), equalTo(root));
-
-        checkDependenciesAreKept(taskResultOfSplit, sourceDependencyTask,
-                destinationDependencyTask);
     }
 
     private void checkDependenciesAreKept(

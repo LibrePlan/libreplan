@@ -30,7 +30,6 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
-import org.navalplanner.web.planner.splitting.SplittingController;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -55,9 +54,6 @@ public class OrderPlanningController implements Composer {
 
     @Autowired
     private ResourceAllocationController resourceAllocationController;
-
-    @Autowired
-    private SplittingController splittingController;
 
     public ResourceAllocationController getResourceAllocationController() {
         return resourceAllocationController;
@@ -104,10 +100,6 @@ public class OrderPlanningController implements Composer {
         }
     }
 
-    public SplittingController getSplittingController() {
-        return splittingController;
-    }
-
     public CalendarAllocationController getCalendarAllocationController() {
         return calendarAllocationController;
     }
@@ -128,7 +120,7 @@ public class OrderPlanningController implements Composer {
     private void updateConfiguration() {
         model.setConfigurationToPlanner(planner, order, viewSwitcher,
                 resourceAllocationController, editTaskController,
-                splittingController, calendarAllocationController, additional);
+                calendarAllocationController, additional);
     }
 
 }

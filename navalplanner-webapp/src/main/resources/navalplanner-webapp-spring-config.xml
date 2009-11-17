@@ -27,7 +27,6 @@
       <lookup-method name="getTaskElementAdapter" bean="taskElementAdapter"/>
       <lookup-method name="getSaveCommand" bean="saveCommand"/>
       <lookup-method name="getResourceAllocationCommand" bean="resourceAllocationCommand"/>
-      <lookup-method name="getSplitCommand" bean="splitTaskCommand"/>
       <lookup-method name="getEditTaskCommand" bean="editTaskCommand"/>
       <lookup-method name="getCalendarAllocationCommand" bean="calendarAllocationCommand"/>
       <lookup-method name="getAddMilestoneCommand" bean="addMilestoneCommand"/>
