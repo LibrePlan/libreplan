@@ -31,6 +31,7 @@ import java.util.List;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.planner.daos.IAssignmentFunctionDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.Stretch;
@@ -75,10 +76,14 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     @Autowired
     private ITaskElementDAO taskElementDAO;
 
+    @Autowired
+    private IAssignmentFunctionDAO assignmentFunctionDAO;
+
     @Override
     @Transactional(readOnly = true)
     public void init(StretchesFunction stretchesFunction, Task task) {
         if (stretchesFunction != null) {
+            assignmentFunctionDAO.reattach(stretchesFunction);
             this.originalStretchesFunction = stretchesFunction;
             this.stretchesFunction = copy(stretchesFunction);
 

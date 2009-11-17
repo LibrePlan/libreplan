@@ -147,7 +147,7 @@ public class AdvancedAllocationTabCreator {
 
         private void reattachResources() {
             for (Resource each : associatedResources) {
-                resourceDAO.save(each);
+                resourceDAO.reattach(each);
             }
         }
 
