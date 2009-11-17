@@ -79,12 +79,21 @@ public class CriterionTypeDAOTest {
         assertTrue(criterionTypeDAO.exists(criterionType.getId()));
     }
 
-    @Test(expected=ValidationException.class)
+    @Test
+    public void testCriterionTypeCanBeSavedTwice() throws ValidationException {
+        CriterionType criterionType = createValidCriterionType();
+        criterionTypeDAO.save(criterionType);
+        criterionTypeDAO.save(criterionType);
+        assertTrue(criterionTypeDAO.exists(criterionType.getId())
+                || criterionTypeDAO.existsByName(criterionType));
+    }
+
+    @Test(expected = ValidationException.class)
     public void testCannotSaveTwoDifferentCriterionTypesWithTheSameName()
             throws ValidationException {
-        CriterionType criterionType = createValidCriterionType("bla","");
+        CriterionType criterionType = createValidCriterionType("bla", "");
         criterionTypeDAO.save(criterionType);
-        criterionType = createValidCriterionType("bla","");
+        criterionType = createValidCriterionType("bla", "");
         criterionTypeDAO.save(criterionType);
     }
 
@@ -144,5 +153,6 @@ public class CriterionTypeDAOTest {
 
         assertTrue(numberOfCriterionsOfTypeResourceAndWorker >= numberOfCriterionsOfTypeResource);
     }
+
 
 }

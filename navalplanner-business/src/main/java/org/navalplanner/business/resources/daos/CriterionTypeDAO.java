@@ -71,7 +71,8 @@ public class CriterionTypeDAO extends GenericDAOHibernate<CriterionType, Long>
     @Override
     public boolean existsByName(CriterionType criterionType) {
         try {
-            return findUniqueByName(criterionType) != null;
+            CriterionType t = findUniqueByName(criterionType);
+            return t != null && t != criterionType;
         } catch (InstanceNotFoundException e) {
             return false;
         }
