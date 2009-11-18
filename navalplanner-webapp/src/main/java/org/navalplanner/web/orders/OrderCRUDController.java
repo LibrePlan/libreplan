@@ -232,7 +232,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void reloadHoursGroupOrder() {
         assignedCriterionRequirementController
                 .openWindow(getOrderElementModel());
-        Util.reloadBindings(editWindow);
+        assignedCriterionRequirementController.reload();
     }
 
     private void showWindow(Window window) {

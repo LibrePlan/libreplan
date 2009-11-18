@@ -67,6 +67,11 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
     private List<HoursGroupWrapper> hoursGroupsWrappers = new ArrayList<HoursGroupWrapper>();
 
     @Override
+    public IOrderModel getOrderModel() {
+        return orderModel;
+    }
+
+    @Override
     public OrderElement getOrderElement() {
         return orderElement;
     }
@@ -134,7 +139,8 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
         }
     }
 
-    private Set<CriterionType> getTypes(){
+    @Override
+    public Set<CriterionType> getTypes() {
         return getMapCriterions().keySet();
     }
 

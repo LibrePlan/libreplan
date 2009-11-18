@@ -109,11 +109,27 @@
 <div id= "messagesContainer">
 </div>
 
-<!--Manage Hours Groups-->
-<panel title="${i18n:_('Hours Group')}" border="normal" width="99%">
+<!-- List Hours Groups in OrdeLineGroup -->
+<panel title="${i18n:_('Hours group')}"
+    visible = "@{assignedCriterionRequirementController.readOnly}">
+        <panelchildren>
+            <listbox id="hoursGroupsInOrderLineGroup" multiple="true"
+                model="@{assignedCriterionRequirementController.hoursGroups}"
+                itemRenderer="@{assignedCriterionRequirementController.renderer}">
+                <listhead>
+                    <listheader label="${i18n:_('Criterion Requirements')}"/>
+                    <listheader label="${i18n:_('Type')}" align="center"/>
+                    <listheader label="${i18n:_('Hours')}" align="center"/>
+                </listhead>
+            </listbox>
+        </panelchildren>
+</panel>
+
+<!--Manage Hours Groups in OrdeLine-->
+<panel title="${i18n:_('Hours Group')}" border="normal" width="99%"
+    visible = "@{assignedCriterionRequirementController.editableHoursGroup}">
     <panelchildren>
-    <hbox align="center"
-        visible = "@{assignedCriterionRequirementController.editableHoursGroup}">
+    <hbox align="center">
         <separator bar="false" spacing="40px" orient="horizontal"/>
         <separator bar="false" spacing="20px" orient="vertical"/>
         <button id="buttonAddHoursGroup"
@@ -130,8 +146,7 @@
             <column label="Hours" width="120px" align="center"/>
             <column label="%" width="100px" align="center"/>
             <column label="Fixed %" width="50px" align="center"/>
-            <column label="Operations" align="center"
-                visible = "@{assignedCriterionRequirementController.editableHoursGroup}"/>
+            <column label="Operations" align="center"/>
         </columns>
         <rows>
             <row self="@{each='hoursGroupWrapper'}" value="@{hoursGroupWrapper}">
@@ -154,23 +169,18 @@
                     readonly ="@{hoursGroupWrapper.percentageReadOnly}"
                     onChange = "assignedCriterionRequirementController.recalculateHoursGroup()"/>
                 <checkbox checked="@{hoursGroupWrapper.fixedPercentage}"
-                    disabled = "@{assignedCriterionRequirementController.readOnly}"
                     onCheck = "assignedCriterionRequirementController.recalculateHoursGroup()"/>
-                <hbox
-                visible = "@{assignedCriterionRequirementController.editableHoursGroup}">
+                <hbox>
                     <button id="buttonDeleteHoursGroup"
-                        visible = "@{assignedCriterionRequirementController.editableHoursGroup}"
                         sclass="icono" image="/common/img/ico_borrar1.png"
                         hoverImage="/common/img/ico_borrar.png"
                         tooltiptext="${i18n:_('Delete')}"
                         onClick="assignedCriterionRequirementController.deleteHoursGroups(self)" />
                     <button id="buttonAddCriterion"
-                        visible = "@{assignedCriterionRequirementController.editableHoursGroup}"
                         label="${i18n:_('Add Criterion')}"
                         onClick="assignedCriterionRequirementController.addCriterionToHoursGroup(self)" />
                     <button id="buttonAddException"
                         disabled = "@{hoursGroupWrapper.dontExistValidCriterions}"
-                        visible = "@{assignedCriterionRequirementController.editableHoursGroup}"
                         label="${i18n:_('Add Exception')}"
                         onClick="assignedCriterionRequirementController.addExceptionToHoursGroups(self)" />
                 </hbox>

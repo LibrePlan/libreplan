@@ -24,12 +24,18 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
@@ -47,11 +53,15 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -71,7 +81,9 @@ public class AssignedCriterionRequirementToOrderElementController extends
 
     private IAssignedCriterionRequirementToOrderElementModel assignedCriterionRequirementToOrderElementModel;
 
-    private Vbox vbox;
+    private Vbox vboxCriterionRequirementsAndHoursGroups;
+
+    private Listbox hoursGroupsInOrderLineGroup;
 
     List<ResourceEnum> listResourceTypes = new ArrayList<ResourceEnum>();
 
@@ -86,7 +98,7 @@ public class AssignedCriterionRequirementToOrderElementController extends
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("assignedCriterionRequirementController", this, true);
-        vbox = (Vbox) comp;
+        vboxCriterionRequirementsAndHoursGroups = (Vbox) comp;
 
         // init the resorcesType
         listResourceTypes.add(ResourceEnum.MACHINE);
@@ -95,6 +107,14 @@ public class AssignedCriterionRequirementToOrderElementController extends
 
     public OrderElement getOrderElement() {
         return assignedCriterionRequirementToOrderElementModel.getOrderElement();
+    }
+
+    public IOrderModel getOrderModel() {
+        return assignedCriterionRequirementToOrderElementModel.getOrderModel();
+    }
+
+    public Set<CriterionType> getCriterionTypes() {
+        return assignedCriterionRequirementToOrderElementModel.getTypes();
     }
 
     public void setOrderElement(OrderElement orderElement) {
@@ -109,7 +129,7 @@ public class AssignedCriterionRequirementToOrderElementController extends
 
     public void openWindow(OrderElement orderElement) {
         assignedCriterionRequirementToOrderElementModel.init(orderElement);
-        Util.reloadBindings(vbox);
+        Util.reloadBindings(vboxCriterionRequirementsAndHoursGroups);
     }
 
     public boolean close() {
@@ -229,10 +249,14 @@ setValidCriterionRequirementWrapper(requirement, true);
         Util.reloadBindings(listHoursGroups);
     }
 
-    private void reload() {
+    public void reload() {
         Util.reloadBindings(listingRequirements);
         Util.reloadBindings(orderElementTotalHours);
-        Util.reloadBindings(listHoursGroups);
+        if (isReadOnly()) {
+            Util.reloadBindings(hoursGroupsInOrderLineGroup);
+        } else {
+            Util.reloadBindings(listHoursGroups);
+        }
     }
 
     private boolean showInvalidValues() {
@@ -359,7 +383,6 @@ setValidCriterionRequirementWrapper(requirement, true);
             return assignedCriterionRequirementToOrderElementModel
                 .getHoursGroupsWrappers();
     }
-
     /**
      * Adds a new {@link HoursGroup} to the current {@link OrderElement} The
      * {@link OrderElement} should be a {@link OrderLine}
@@ -514,4 +537,161 @@ setValidCriterionRequirementWrapper(requirement, true);
         Util.reloadBindings(orderElementTotalHours);
     }
 
+/*Operations to return the agrouped list of hours Group */
+
+    /**
+     * Returns a {@link List} of {@link HoursGroup}. If the current element is
+     * an {@link OrderLine} this method just returns the {@link HoursGroup} of
+     * this {@link OrderLine}. Otherwise, this method gets all the
+     * {@link HoursGroup} of all the children {@link OrderElement}, and
+     * aggregates them if they have the same {@link Criterion}.
+     * @return The {@link HoursGroup} list of the current {@link OrderElement}
+     */
+    public List<HoursGroup> getHoursGroups() {
+
+        if ((getOrderElement() == null)
+                || (assignedCriterionRequirementToOrderElementModel == null)) {
+            return new ArrayList<HoursGroup>();
+        }
+
+        // Creates a map in order to join HoursGroup with the same
+        // Criterions.
+        Map<Map<ResourceEnum, Set<Criterion>>, HoursGroup> map = new HashMap<Map<ResourceEnum, Set<Criterion>>, HoursGroup>();
+
+        List<HoursGroup> hoursGroups = getOrderElement().getHoursGroups();
+        for (HoursGroup hoursGroup : hoursGroups) {
+            Map<ResourceEnum, Set<Criterion>> key = getKeyFor(hoursGroup);
+
+            HoursGroup hoursGroupAggregation = map.get(key);
+            if (hoursGroupAggregation == null) {
+                // This is not a real HoursGroup element, it's just an
+                // aggregation that join HoursGroup with the same Criterions
+                hoursGroupAggregation = new HoursGroup();
+                hoursGroupAggregation.setWorkingHours(hoursGroup
+                        .getWorkingHours());
+                hoursGroupAggregation.setCriterionRequirements(hoursGroup
+                        .getCriterionRequirements());
+                hoursGroupAggregation.setResourceType(hoursGroup
+                        .getResourceType());
+            } else {
+                Integer newHours = hoursGroupAggregation.getWorkingHours()
+                        + hoursGroup.getWorkingHours();
+                hoursGroupAggregation.setWorkingHours(newHours);
+            }
+
+            map.put(key, hoursGroupAggregation);
+        }
+        return new ArrayList<HoursGroup>(map.values());
+    }
+
+    private Map<ResourceEnum, Set<Criterion>> getKeyFor(HoursGroup hoursGroup) {
+        Map<ResourceEnum, Set<Criterion>> keys = new HashMap<ResourceEnum, Set<Criterion>>();
+        ResourceEnum resourceType = hoursGroup.getResourceType();
+        Set<Criterion> criterions = getKeyCriterionsFor(hoursGroup);
+        keys.put(resourceType, criterions);
+        return keys;
+    }
+
+    private Set<Criterion> getKeyCriterionsFor(HoursGroup hoursGroup) {
+        Set<Criterion> key = new HashSet<Criterion>();
+        for (Criterion criterion : hoursGroup.getCriterions()) {
+            if (criterion != null) {
+                key.add(criterion);
+            }
+        }
+        return key;
+    }
+
+    private transient ListitemRenderer renderer = new HoursGroupListitemRender();
+
+    public ListitemRenderer getRenderer() {
+            return renderer;
+    }
+
+   public class HoursGroupListitemRender implements ListitemRenderer{
+
+        @Override
+        public void render(Listitem item, Object data) throws Exception {
+            final HoursGroup hoursGroup = (HoursGroup) data;
+
+            // Criterion Requirements hours Group
+            Listcell cellCriterionRequirements = new Listcell();
+            cellCriterionRequirements.setParent(item);
+            cellCriterionRequirements.appendChild( appendRequirements(hoursGroup));
+
+            // Type hours Group
+            Listcell cellType = new Listcell();
+            cellType.setParent(item);
+            cellType.appendChild(appendType(hoursGroup));
+
+            // Working hours
+            Listcell cellWorkingHours = new Listcell();
+            cellWorkingHours.setParent(item);
+            cellWorkingHours.appendChild(appendWorkingHours(hoursGroup));
+        }
+    }
+
+    private Textbox appendRequirements(final HoursGroup hoursGroup) {
+        Textbox requirementsTextbox = new Textbox();
+        requirementsTextbox.setReadonly(true);
+        requirementsTextbox.setRows(2);
+        requirementsTextbox.setWidth("550px");
+        return Util.bind(requirementsTextbox, new Util.Getter<String>() {
+            @Override
+            public String get() {
+                return getLabelRequirements(hoursGroup);
+            }
+        }, new Util.Setter<String>() {
+            @Override
+            public void set(String value) {
+            }
+        });
+    }
+
+    private Textbox appendType(final HoursGroup hoursGroup) {
+        Textbox type = new Textbox();
+        type.setHeight("15px");
+        type.setReadonly(true);
+        return Util.bind(type, new Util.Getter<String>() {
+            @Override
+            public String get() {
+                return hoursGroup.getResourceType().toString();
+            }
+        }, new Util.Setter<String>() {
+            @Override
+            public void set(String value) {
+            }
+        });
+    }
+
+    private Intbox appendWorkingHours(final HoursGroup hoursGroup) {
+        Intbox workingHoursBox = new Intbox();
+        workingHoursBox.setReadonly(true);
+        workingHoursBox.setHeight("15px");
+        workingHoursBox.setWidth("150px");
+        return Util.bind(workingHoursBox, new Util.Getter<Integer>() {
+            @Override
+            public Integer get() {
+                return hoursGroup.getWorkingHours();
+            }
+        }, new Util.Setter<Integer>() {
+            @Override
+            public void set(Integer value) {
+            }
+        });
+    }
+
+    private String getLabelRequirements(HoursGroup hoursGroup) {
+        String label = "";
+        for (Criterion criterion : hoursGroup.getCriterions()) {
+            if (!label.equals("")) {
+                label = label.concat(", ");
+            }
+            label = label.concat(criterion.getName());
+        }
+        if (!label.equals("")) {
+            label = label.concat(".");
+        }
+        return label;
+    }
 }
