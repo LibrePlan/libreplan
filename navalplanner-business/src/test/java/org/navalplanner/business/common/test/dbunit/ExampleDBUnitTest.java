@@ -2,6 +2,7 @@ package org.navalplanner.business.common.test.dbunit;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.advance.entities.AdvanceType;
@@ -13,6 +14,7 @@ public class ExampleDBUnitTest extends AbstractDBUnitTest {
     private IAdvanceTypeDAO advanceDAO;
 
     @Test
+    @Ignore
     public void percentageInsertedInDB() {
         AdvanceType advance = advanceDAO.findByName("percentage");
         assertEquals("percentage",advance.getUnitName());
