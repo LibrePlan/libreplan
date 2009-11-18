@@ -22,15 +22,17 @@ package org.navalplanner.web.common;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.List;
-
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.Configuration;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.api.Bandbox;
+import org.zkoss.zul.api.Listitem;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -41,7 +43,7 @@ import org.zkoss.zul.api.Window;
 public class ConfigurationController extends GenericForwardComposer {
 
     private Window configurationWindow;
-    private Bandbox defaultCalendarBandbox;
+    private BandboxSearch defaultCalendarBandboxSearch;
 
     private IConfigurationModel configurationModel;
 
@@ -50,22 +52,26 @@ public class ConfigurationController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         comp.setVariable("configurationController", this, true);
         configurationModel.init();
+
+        defaultCalendarBandboxSearch.setListboxEventListener(Events.ON_SELECT,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        Listitem selectedItem = (Listitem) ((SelectEvent) event)
+                                .getSelectedItems()
+                                .iterator().next();
+                        setDefaultCalendar((BaseCalendar) selectedItem
+                                .getValue());
+                    }
+                });
     }
 
     public BaseCalendar getDefaultCalendar() {
         return configurationModel.getDefaultCalendar();
     }
 
-    public List<BaseCalendar> getCalendars() {
-        return configurationModel.getCalendars();
-    }
-
-    public void setDefaultCalendar(Listitem item) {
-        BaseCalendar calendar = (BaseCalendar) item.getValue();
+    public void setDefaultCalendar(BaseCalendar calendar) {
         configurationModel.setDefaultCalendar(calendar);
-
-        Util.reloadBindings(defaultCalendarBandbox);
-        defaultCalendarBandbox.closeDropdown();
     }
 
     public void save() throws InterruptedException {

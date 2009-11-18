@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.common;
 
-import java.util.List;
-
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 
 /**
@@ -30,11 +28,6 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public interface IConfigurationModel {
-
-    /*
-     * Non conversational steps
-     */
-    List<BaseCalendar> getCalendars();
 
     /*
      * Initial conversation steps

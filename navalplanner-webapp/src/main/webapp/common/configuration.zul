@@ -34,21 +34,9 @@
 
         <hbox>
             <label value="${i18n:_('Defautl calendar')}" />
-            <bandbox id="defaultCalendarBandbox"
-                value="@{configurationController.defaultCalendar.name}">
-                <bandpopup>
-                    <listbox width="200px"
-                        model="@{configurationController.calendars}"
-                        onSelect="configurationController.setDefaultCalendar(self.selectedItem);">
-                        <listhead>
-                            <listheader label="Name" />
-                        </listhead>
-                        <listitem self="@{each='calendar'}" value="@{calendar}">
-                            <listcell label="@{calendar.name}" />
-                        </listitem>
-                     </listbox>
-                </bandpopup>
-            </bandbox>
+            <bandboxSearch id="defaultCalendarBandboxSearch"
+                finder="BaseCalendarBandboxFinder"
+                selectedElement="@{configurationController.defaultCalendar}" />
         </hbox>
 
         <hbox>
