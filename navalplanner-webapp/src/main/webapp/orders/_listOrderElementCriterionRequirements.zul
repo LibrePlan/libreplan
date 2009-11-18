@@ -152,6 +152,7 @@
             <row self="@{each='hoursGroupWrapper'}" value="@{hoursGroupWrapper}">
                 <detail open="true">
                     <listHoursGroupCriterionRequirements/>
+                    <separator bar="false" spacing="40px" orient="vertical"/>
                 </detail>
                 <textbox value="@{hoursGroupWrapper.name}"
                     readonly = "@{assignedCriterionRequirementController.readOnly}"/>
