@@ -107,8 +107,11 @@ public class BandboxSearch extends HtmlMacroComponent {
         setSelectedElement(null);
     }
 
-    private void setSelectedElement(Object obj) {
+    public void setSelectedElement(Object obj) {
         bandbox.setVariable("selectedElement", obj, true);
+        if (obj != null) {
+            bandbox.setValue(finder.objectToString(obj));
+        }
     }
 
     public Object getSelectedElement() {
@@ -224,6 +227,11 @@ public class BandboxSearch extends HtmlMacroComponent {
             result.add(model.getElementAt(i));
         }
         return result;
+    }
+
+    public void setListboxEventListener(String event,
+            EventListener listener) {
+        listbox.addEventListener(event, listener);
     }
 
 }
