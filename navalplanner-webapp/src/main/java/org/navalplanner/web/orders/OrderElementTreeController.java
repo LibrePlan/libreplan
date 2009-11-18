@@ -33,6 +33,9 @@ import java.util.Set;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.SchedulingState;
+import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
+import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -286,11 +289,11 @@ public class OrderElementTreeController extends GenericForwardComposer {
         public OrderElementTreeitemRenderer() {
         }
 
-        private void addCell(Component... components) {
-            addCell(null, components);
+        private Treecell addCell(Component... components) {
+            return addCell(null, components);
         }
 
-        private void addCell(String cssClass, Component... components) {
+        private Treecell addCell(String cssClass, Component... components) {
             Treecell cell = new Treecell();
             if (cssClass != null) {
                 cell.setSclass(cssClass);
@@ -299,6 +302,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
                 cell.appendChild(component);
             }
             currentTreeRow.appendChild(cell);
+            return cell;
         }
 
         @Override
@@ -393,18 +397,33 @@ public class OrderElementTreeController extends GenericForwardComposer {
             }
         }
 
-        private void addSchedulingStateCell(OrderElement currentOrderElement) {
+        private String getDecorationFromState(SchedulingState state) {
+            String cssclass = "not-scheduled";
+            if (state.isCompletelyScheduled()) {
+                cssclass = "completely-scheduled";
+            } else if (state.isPartiallyScheduled()) {
+                cssclass = "partially-scheduled";
+            }
+            return cssclass;
+        }
+
+        private void addSchedulingStateCell(
+                final OrderElement currentOrderElement) {
             SchedulingStateToggler schedulingStateToggler = new SchedulingStateToggler(currentOrderElement
                     .getSchedulingState());
-            if (currentOrderElement.getSchedulingState()
-                    .isCompletelyScheduled()) {
-                addCell("completely-scheduled", schedulingStateToggler);
-            } else if (currentOrderElement.getSchedulingState()
-                    .isPartiallyScheduled()) {
-                addCell("partially-scheduled", schedulingStateToggler);
-            } else {
-                addCell("not-scheduled", schedulingStateToggler);
-            }
+            final Treecell cell = addCell(
+                    getDecorationFromState(currentOrderElement
+                            .getSchedulingState()), schedulingStateToggler);
+            currentOrderElement.getSchedulingState().addTypeChangeListener(
+                    new ITypeChangedListener() {
+
+                        @Override
+                        public void typeChanged(Type newType) {
+                            cell
+                                    .setSclass(getDecorationFromState(currentOrderElement
+                                            .getSchedulingState()));
+                        }
+                    });
             schedulingStateToggler.afterCompose();
         }
 
