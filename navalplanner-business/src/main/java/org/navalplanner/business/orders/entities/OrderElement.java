@@ -295,7 +295,7 @@ public abstract class OrderElement extends BaseEntity {
     public abstract OrderLineGroup toContainer();
 
     public boolean isScheduled() {
-        return schedulingStateType.isSomewhatScheduled();
+        return taskSource != null;
     }
 
     public boolean checkAtLeastOneHoursGroup() {

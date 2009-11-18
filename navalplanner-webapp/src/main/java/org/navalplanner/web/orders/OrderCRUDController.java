@@ -273,7 +273,18 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void schedule(Order order) {
-        planningControllerEntryPoints.goToScheduleOf(order);
+        if (order.isScheduled()) {
+            planningControllerEntryPoints.goToScheduleOf(order);
+        }else{
+            try {
+                Messagebox
+                        .show(_("The order has no scheduled elements"),
+                                _("Information"), Messagebox.OK,
+                        Messagebox.INFORMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private Runnable onUp;
