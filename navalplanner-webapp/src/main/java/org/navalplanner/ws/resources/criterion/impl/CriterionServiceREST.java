@@ -20,8 +20,12 @@
 
 package org.navalplanner.ws.resources.criterion.impl;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -32,6 +36,7 @@ import javax.ws.rs.Produces;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
@@ -72,21 +77,79 @@ public class CriterionServiceREST implements ICriterionService {
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
             new ArrayList<InstanceConstraintViolationsDTO>();
         int instanceNumber = 1;
+        Set<String> criterionTypeNames = new HashSet<String>();
 
         for (CriterionTypeDTO criterionTypeDTO :
             criterionTypes.criterionTypes) {
 
             CriterionType criterionType =
                 CriterionConverter.toEntity(criterionTypeDTO);
+            InstanceConstraintViolationsDTO instanceConstraintViolationsDTO =
+                null;
+            boolean criterionTypeNameRepeated =
+                criterionTypeNames.contains(criterionType.getName());
 
             try {
-                criterionTypeDAO.save(criterionType);
+                /*
+                 * "validate" is executed before "save", since "save" first
+                 * adds the object to the underlying ORM session and then
+                 * validates. So, if "validate" method is not called
+                 * explicitly before "save", an invalid criterion type
+                 * would be added to the underlying ORM session, causing
+                 * the invalid criterion type to be added to the database
+                 * when the ORM commits the transaction. As a side effect,
+                 * validations are executed twice. Note also, that
+                 * "CriterionType::checkConstraintUniqueCriterionTypeName"
+                 * only checks if a criterion type with the same name already
+                 * exists in the *database*, and that the criterion types
+                 * being imported are inserted in the database when the
+                 * transaction is committed. In consequence, we can only call
+                 * "save" if the criterion type is valid according to "validate"
+                 * method and its name is not used by another previously
+                 * *imported* (not in the database yet) criterion type.
+                 */
+                criterionType.validate();
+                if (!criterionTypeNameRepeated) {
+                    criterionTypeDAO.save(criterionType);
+                }
             } catch (ValidationException e) {
-                instanceConstraintViolationsList.add(
+                instanceConstraintViolationsDTO =
                     ConstraintViolationConverter.toDTO(
                         generateInstanceId(instanceNumber,
                             criterionTypeDTO.name),
-                        e.getInvalidValues()));
+                        e.getInvalidValues());
+            }
+
+            /*
+             * If criterion type name is repeated, add it to the list of
+             * constraint violations.
+             */
+            if (criterionTypeNameRepeated) {
+                if (instanceConstraintViolationsDTO == null) {
+                    instanceConstraintViolationsDTO =
+                        new InstanceConstraintViolationsDTO(
+                            generateInstanceId(instanceNumber,
+                                criterionTypeDTO.name),
+                            new ArrayList<ConstraintViolationDTO>());
+                }
+                instanceConstraintViolationsDTO.constraintViolations.add(
+                    new ConstraintViolationDTO(
+                        CriterionType.class.getSimpleName() + ":name",
+                        _("criterion type name is used by another criterion " +
+                            "type being imported")));
+            } else {
+                if (criterionType.getName() != null) {
+                    criterionTypeNames.add(criterionType.getName());
+                }
+            }
+
+            /*
+             * Add constraint violations of this criterion type to the returned
+             * list of constraint violations.
+             */
+            if (instanceConstraintViolationsDTO != null) {
+                instanceConstraintViolationsList.add(
+                    instanceConstraintViolationsDTO);
             }
 
             instanceNumber++;

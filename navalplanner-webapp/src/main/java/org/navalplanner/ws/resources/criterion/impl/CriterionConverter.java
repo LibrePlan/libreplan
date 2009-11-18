@@ -147,7 +147,7 @@ public final class CriterionConverter {
         CriterionTypeDTO criterionTypeDTO) {
 
         CriterionType criterionType = CriterionType.createUnvalidated(
-            criterionTypeDTO.name, criterionTypeDTO.description,
+            trim(criterionTypeDTO.name), trim(criterionTypeDTO.description),
             criterionTypeDTO.allowHierarchy,
             criterionTypeDTO.allowSimultaneousCriterionsPerResource,
             criterionTypeDTO.enabled,
@@ -194,11 +194,15 @@ public final class CriterionConverter {
         CriterionDTO childDTO, CriterionType criterionType,
         Criterion criterionParent) {
 
-        Criterion criterion = Criterion.createUnvalidated(childDTO.name,
+        Criterion criterion = Criterion.createUnvalidated(trim(childDTO.name),
             criterionType, criterionParent, childDTO.active);
 
         return criterion;
 
+    }
+
+    private static String trim(String s) {
+        return s == null ? null : s.trim();
     }
 
 }
