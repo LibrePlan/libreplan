@@ -24,7 +24,7 @@
 <div xmlns:n="http://www.zkoss.org/2005/zk/native">
 <n:table width="850" border="0" align="center" cellpadding="0" cellspacing="0">
   <n:tr>
-    <n:td background="img/flechitas.gif"></n:td>
+    <n:td background="/navalplanner-webapp/common/img/flechitas.gif"></n:td>
   </n:tr>
 </n:table>
 <n:table width="850" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
@@ -37,6 +37,17 @@
     <n:td class="identificacion">${i18n:_('AUTHENTICATE')}</n:td>
   </n:tr>
 </n:table>
+
+<html if="${not empty param.login_error}">
+  <![CDATA[
+  <div class="message_ERROR">
+    ${i18n:_('Incorrect authentication')}
+  </div>
+  ]]>
+</html>
+
+<n:form action="/navalplanner-webapp/j_spring_security_check" method="POST">
+
 <n:table width="850" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="fondo_identificacion">
   <n:tr>
     <n:td height="165" valign="top"><n:table width="450" border="0" align="center" cellpadding="0" cellspacing="0">
@@ -49,7 +60,7 @@
         <n:tr>
           <n:td><n:label> </n:label>
               <n:div align="center">
-                <n:input name="textfield" type="text" class="campotexto" id="textfield" size="30" />
+                <n:input name="j_username" type="text" class="campotexto" id="textfield" size="30" />
             </n:div></n:td>
         </n:tr>
         <n:tr>
@@ -57,7 +68,7 @@
         </n:tr>
         <n:tr>
           <n:td><n:div align="center">
-              <n:input name="textfield2" type="password" class="campotexto" id="textfield2" size="30" />
+              <n:input name="j_password" type="password" class="campotexto" id="textfield2" size="30" />
           </n:div></n:td>
         </n:tr>
         <n:tr>
@@ -72,9 +83,12 @@
     </n:table></n:td>
   </n:tr>
 </n:table>
+
+</n:form>
+
 <n:table width="850" border="0" align="center" cellpadding="0" cellspacing="0" class="tabla_inferior">
   <n:tr>
-    <n:td height="40" background="img/linea_pie_login.gif"></n:td>
+    <n:td height="40" background="/navalplanner-webapp/common/img/linea_pie_login.gif"></n:td>
   </n:tr>
   <n:tr>
     <n:td></n:td>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
+
+    <global-method-security secured-annotations="enabled"/>
+
+    <http auto-config="true" >
+
+        <!-- Web services -->
+        <intercept-url pattern="/ws/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+
+        <!--  Web application -->
+        <intercept-url pattern="/common/img/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/common/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/zkau/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/common/layout/login_v01.zul" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/advance/**" access="ROLE_ADMIN" />
+        <intercept-url pattern="/resources/criterions/**" access="ROLE_ADMIN" />
+        <intercept-url pattern="/calendars/**" access="ROLE_ADMIN" />
+        <intercept-url pattern="/labels/**" access="ROLE_ADMIN" />
+        <intercept-url pattern="/common/configuration.zul" access="ROLE_ADMIN" />
+        <intercept-url pattern="/**" access="IS_AUTHENTICATED_REMEMBERED" />
+        <form-login login-page="/common/layout/login_v01.zul" authentication-failure-url="/common/layout/login_v01.zul?login_error=x"/>
+
+    </http>
+
+    <authentication-provider>
+        <user-service>
+            <user name="user" password="user" authorities="ROLE_BASIC_USER" />
+            <user name="admin" password="admin" authorities="ROLE_ADMIN, ROLE_BASIC_USER" />
+        </user-service>
+    </authentication-provider>
+
+</beans:beans>
