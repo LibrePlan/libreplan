@@ -244,7 +244,8 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         ResourceEnum resourceTypeRequirement = newRequirement.getCriterion()
                 .getType().getResource();
         if (resourceType != null) {
-            return resourceType.equals(resourceTypeRequirement);
+            return (resourceType.equals(resourceTypeRequirement) || (resourceTypeRequirement
+                    .equals(ResourceEnum.getDefault())));
         }
         return true;
     }
