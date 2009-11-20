@@ -364,7 +364,7 @@ public class OrderModelTest {
                     assertThat(criterionRequirements.size(), equalTo(1));
 
                     Set<Criterion> criterions = hoursGroups.get(0)
-                            .getCriterions();
+                            .getValidCriterions();
                     assertThat(criterions.size(), equalTo(1));
 
                 } catch (InstanceNotFoundException e) {

@@ -22,7 +22,6 @@ package org.navalplanner.web.orders;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,7 +74,7 @@ public class OrderElementModel implements IOrderElementModel {
 
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
             hoursGroup.getCriterionRequirements().size();
-            hoursGroup.getCriterions().size();
+            hoursGroup.getValidCriterions().size();
         }
 
         this.orderElement = orderElement;
@@ -120,7 +119,7 @@ public class OrderElementModel implements IOrderElementModel {
     @Override
     @Transactional(readOnly = true)
     public Set<Criterion> getCriterionsHoursGroup(HoursGroup hoursGroup) {
-        return hoursGroup.getCriterions();
+        return hoursGroup.getValidCriterions();
     }
 
     @Override

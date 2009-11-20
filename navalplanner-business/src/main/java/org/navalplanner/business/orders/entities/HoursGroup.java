@@ -147,7 +147,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return criterionRequirements;
     }
 
-    public Set<Criterion> getCriterions() {
+    public Set<Criterion> getValidCriterions() {
         Set<Criterion> criterions = new HashSet<Criterion>();
         for (CriterionRequirement criterionRequirement : getDirectCriterionRequirement()) {
             criterions.add(criterionRequirement.getCriterion());

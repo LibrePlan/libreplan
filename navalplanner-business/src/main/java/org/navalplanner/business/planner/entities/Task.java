@@ -86,7 +86,8 @@ public class Task extends TaskElement {
     }
 
     public Set<Criterion> getCriterions() {
-        return Collections.unmodifiableSet(this.hoursGroup.getCriterions());
+        return Collections
+                .unmodifiableSet(this.hoursGroup.getValidCriterions());
     }
 
     public Integer getHoursSpecifiedAtOrder() {

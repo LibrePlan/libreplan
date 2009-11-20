@@ -53,15 +53,16 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -280,9 +281,10 @@ setValidCriterionRequirementWrapper(requirement, true);
     private void showInvalidValuesInHoursGroups(
             CriterionRequirementWrapper requirementWrapper) {
         if (listHoursGroups != null) {
-            List<Row> listRows = (List<Row>) ((Rows) listHoursGroups.getRows())
+            List<Row> listRowsHoursGroup = (List<Row>) ((Rows) listHoursGroups
+                    .getRows())
                     .getChildren();
-            for (Row row : listRows) {
+            for (Row row : listRowsHoursGroup) {
                 Rows listRequirementRows = getRequirementRows(row);
                 Row requirementRow = findRowOfCriterionRequirementWrapper(
                         listRequirementRows, requirementWrapper);
@@ -339,9 +341,13 @@ setValidCriterionRequirementWrapper(requirement, true);
      * @return Bandbox
      */
     private Bandbox getBandType(CriterionRequirementWrapper wrapper, Row row) {
-        if (wrapper.isNewException()) {
+        if (wrapper.isNewDirectAndItsHoursGroupIsMachine()) {
             return (Bandbox) ((Hbox) row.getChildren().get(0)).getChildren()
                     .get(1);
+        }
+        if (wrapper.isNewException()) {
+            return (Bandbox) ((Hbox) row.getChildren().get(0)).getChildren()
+                    .get(2);
         }
         return (Bandbox)((Hbox) row.getChildren().get(0))
                 .getChildren().get(0);
@@ -594,7 +600,7 @@ setValidCriterionRequirementWrapper(requirement, true);
 
     private Set<Criterion> getKeyCriterionsFor(HoursGroup hoursGroup) {
         Set<Criterion> key = new HashSet<Criterion>();
-        for (Criterion criterion : hoursGroup.getCriterions()) {
+        for (Criterion criterion : hoursGroup.getValidCriterions()) {
             if (criterion != null) {
                 key.add(criterion);
             }
@@ -631,59 +637,30 @@ setValidCriterionRequirementWrapper(requirement, true);
         }
     }
 
-    private Textbox appendRequirements(final HoursGroup hoursGroup) {
-        Textbox requirementsTextbox = new Textbox();
-        requirementsTextbox.setReadonly(true);
-        requirementsTextbox.setRows(2);
-        requirementsTextbox.setWidth("550px");
-        return Util.bind(requirementsTextbox, new Util.Getter<String>() {
-            @Override
-            public String get() {
-                return getLabelRequirements(hoursGroup);
-            }
-        }, new Util.Setter<String>() {
-            @Override
-            public void set(String value) {
-            }
-        });
-    }
+   private Label appendRequirements(final HoursGroup hoursGroup) {
+       Label requirementsLabel = new Label();
+       requirementsLabel.setMultiline(true);
+       requirementsLabel.setValue(getLabelRequirements(hoursGroup));
+       return requirementsLabel;
+   }
 
-    private Textbox appendType(final HoursGroup hoursGroup) {
-        Textbox type = new Textbox();
-        type.setHeight("15px");
-        type.setReadonly(true);
-        return Util.bind(type, new Util.Getter<String>() {
-            @Override
-            public String get() {
-                return hoursGroup.getResourceType().toString();
-            }
-        }, new Util.Setter<String>() {
-            @Override
-            public void set(String value) {
-            }
-        });
-    }
+   private Label appendType(final HoursGroup hoursGroup) {
+       Label type = new Label();
+       type.setValue(hoursGroup.getResourceType().toString());
+       return type;
+   }
 
-    private Intbox appendWorkingHours(final HoursGroup hoursGroup) {
-        Intbox workingHoursBox = new Intbox();
-        workingHoursBox.setReadonly(true);
-        workingHoursBox.setHeight("15px");
-        workingHoursBox.setWidth("150px");
-        return Util.bind(workingHoursBox, new Util.Getter<Integer>() {
-            @Override
-            public Integer get() {
-                return hoursGroup.getWorkingHours();
-            }
-        }, new Util.Setter<Integer>() {
-            @Override
-            public void set(Integer value) {
-            }
-        });
-    }
+   private Label appendWorkingHours(final HoursGroup hoursGroup) {
+        Listheader list = new Listheader();
+       Label workingHoursLabel = new Label();
+       workingHoursLabel
+               .setValue(String.valueOf(hoursGroup.getWorkingHours()));
+       return workingHoursLabel;
+   }
 
     private String getLabelRequirements(HoursGroup hoursGroup) {
         String label = "";
-        for (Criterion criterion : hoursGroup.getCriterions()) {
+        for (Criterion criterion : hoursGroup.getValidCriterions()) {
             if (!label.equals("")) {
                 label = label.concat(", ");
             }

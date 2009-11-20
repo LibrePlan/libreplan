@@ -90,16 +90,19 @@
 <separator bar="false" spacing="80px" orient="vertical"/>
 
 <panel title="${i18n:_('Total Hours OrderElement')}" border="normal"
-    width="200px">
+    width="180px" >
     <panelchildren>
         <hbox align="center">
                 <separator bar="false" spacing="40px" orient="horizontal"/>
                 <separator bar="false" spacing="20px" orient="vertical"/>
                 <intbox id="orderElementTotalHours"
+                    visible = "@{assignedCriterionRequirementController.editableHoursGroup}"
                     value = "@{assignedCriterionRequirementController.orderElement.workHours}"
                     onChange="assignedCriterionRequirementController.changeTotalHours();"
                     readonly = "@{assignedCriterionRequirementController.readOnly}"
                     constraint = "@{assignedCriterionRequirementController.validateTotalHours}"/>
+                <label value = "@{assignedCriterionRequirementController.orderElement.workHours}"
+                       visible = "@{assignedCriterionRequirementController.readOnly}" />
                 <separator bar="false" spacing="20px" orient="vertical"/>
         </hbox>
         </panelchildren>
@@ -117,9 +120,9 @@
                 model="@{assignedCriterionRequirementController.hoursGroups}"
                 itemRenderer="@{assignedCriterionRequirementController.renderer}">
                 <listhead>
-                    <listheader label="${i18n:_('Criterion Requirements')}"/>
-                    <listheader label="${i18n:_('Type')}" align="center"/>
-                    <listheader label="${i18n:_('Hours')}" align="center"/>
+                    <listheader label="${i18n:_('Criterion Requirements')}" width = "500px"/>
+                    <listheader label="${i18n:_('Type')}" align="center" width = "150px" />
+                    <listheader label="${i18n:_('Hours')}" align="center" width = "150px" />
                 </listhead>
             </listbox>
         </panelchildren>

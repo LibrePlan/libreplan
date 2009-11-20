@@ -90,7 +90,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     public Set<Criterion> getCriterions() {
-        return (task != null) ? task.getHoursGroup().getCriterions()
+        return (task != null) ? task.getHoursGroup().getValidCriterions()
                 : new HashSet<Criterion>();
     }
 
@@ -151,7 +151,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         hoursGroupDAO.reattach(this.task.getHoursGroup());
         loadCriterionsOfGenericAllocations();
         reattachHoursGroup(this.task.getHoursGroup());
-        reattachCriterions(this.task.getHoursGroup().getCriterions());
+        reattachCriterions(this.task.getHoursGroup().getValidCriterions());
         List<AllocationDTO> currentAllocations = addDefaultGenericIfNeeded(AllocationDTO.toDTOs(this.task
                 .getResourceAllocations()));
         resourceAllocationsBeingEdited = ResourceAllocationsBeingEdited
