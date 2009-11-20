@@ -19,25 +19,39 @@
  */
 package org.navalplanner.web.resources.machine;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.MachineWorkerAssignment;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.Autocomplete;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.api.Bandbox;
 
 
 /**
@@ -119,21 +133,103 @@ public class MachineConfigurationController extends GenericForwardComposer {
 
     public void addWorkerAssignment(MachineWorkersConfigurationUnit unit,
             Component c) {
-        machineModel.addWorkerAssigmentToConfigurationUnit(unit);
-        Util.reloadBindings(c.getNextSibling());
+        Autocomplete a = (Autocomplete) c.getPreviousSibling();
+        Worker worker = (Worker) a.getItemByText(a.getValue());
+        if (worker == null) {
+            messages.showMessage(Level.ERROR, _("No worker selected"));
+        } else {
+            machineModel.addWorkerAssigmentToConfigurationUnit(unit, worker);
+            Util.reloadBindings(c.getNextSibling());
+        }
     }
 
-    public void addCriterionRequirement(MachineWorkersConfigurationUnit unit,
-            Component c) {
-        machineModel.addCriterionRequirementToConfigurationUnit(unit);
-        Util.reloadBindings(c.getNextSibling());
+    public boolean checkExistingCriterion(MachineWorkersConfigurationUnit unit,
+            Criterion criterion) {
+        boolean repeated = false;
+        for (Criterion each : unit.getRequiredCriterions()) {
+            if (each.getId().equals(criterion.getId())) {
+                repeated = true;
+            }
+        }
+        return repeated;
     }
 
-    public void deleteWorkerAssignment(MachineWorkerAssignment assignment) {
+    public void addCriterionRequirement(Listitem item, Bandbox bandbox) {
+        MachineWorkersConfigurationUnit unit = null;
+        String unitString = ((Textbox) bandbox.getPreviousSibling()).getValue();
+        try {
+            unit = machineModel.getConfigurationUnitById(Long
+                    .valueOf(unitString));
+        } catch (InstanceNotFoundException e) {
+            LOG.error("Configuration unit not found", e);
+        }
+        if (item != null) {
+            CriterionWithItsType criterionAndType = (CriterionWithItsType) item
+                    .getValue();
+            bandbox.setValue(criterionAndType.getNameAndType());
+
+            if (checkExistingCriterion(unit, criterionAndType.getCriterion())) {
+                messages.showMessage(Level.ERROR,
+                        _("Criterion previously selected"));
+            } else {
+                machineModel.addCriterionRequirementToConfigurationUnit(unit,
+                        criterionAndType.getCriterion());
+            }
+        } else {
+            bandbox.setValue("");
+        }
+        bandbox.close();
+        Util.reloadBindings(bandbox.getNextSibling().getNextSibling());
+    }
+
+    public void deleteConfigurationUnit(MachineWorkersConfigurationUnit unit) {
+        machineModel.removeConfigurationUnit(unit);
+        Util.reloadBindings(configurationUnitsGrid);
+    }
+
+
+    public void deleteWorkerAssignment(Component component) {
+        MachineWorkerAssignment assignment = (MachineWorkerAssignment) ((Row) component)
+                .getValue();
         MachineWorkersConfigurationUnit conf = assignment
                 .getMachineWorkersConfigurationUnit();
         conf.removeMachineWorkersConfigurationUnit(assignment);
-
+        Util.reloadBindings(component.getParent().getParent());
     }
 
+
+    public void deleteRequiredCriterion(Criterion criterion, Rows component) {
+        String unitString = ((Textbox) component.getParent()
+                .getPreviousSibling()).getValue();
+        try {
+            MachineWorkersConfigurationUnit unit = machineModel
+                    .getConfigurationUnitById(Long.valueOf(unitString));
+            unit.removeRequiredCriterion(criterion);
+        } catch (InstanceNotFoundException e) {
+            LOG.error("Configuration unit not found", e);
+        }
+        Util.reloadBindings(component.getParent().getParent());
+    }
+
+    public Constraint validateEndDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                validateEndDate(comp, value);
+            }
+        };
+    }
+
+    private void validateEndDate(Component comp, Object value) {
+        Datebox startDateBox = (Datebox) comp.getPreviousSibling();
+        if (startDateBox != null) {
+            if ((startDateBox.getValue() != null)
+                    && (startDateBox.getValue().compareTo((Date) value) > 0)) {
+            throw new WrongValueException(
+                    comp,
+                    _("End date is not valid, the new end date must be greater than the start date"));
+            }
+        }
+    }
 }

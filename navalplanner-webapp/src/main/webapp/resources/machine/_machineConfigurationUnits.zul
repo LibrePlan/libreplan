@@ -32,28 +32,27 @@
                 width="400px" sort="auto(name)" />
             <column label="${i18n:_('Alpha')}"
                 tooltiptext="${i18n:_('Human hours per machine working hour within configuration unit')}" />
+            <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>
             <!-- To iterate on workersConfiguration Units -->
             <row self="@{each='configurationUnit'}" value="@{configurationUnit}">
-                <!--
-                    detail open="false"
-                    fulfill="onOpen=_workersConfigurationUnit.zul" /
-                -->
                 <detail>
                     <!-- Assigned resources -->
-                    <button label="${i18n:_('Add new worker assignment')}"
-                        onClick="configurationController.addWorkerAssignment(self.parent.parent.value,self)" />
+                    <autocomplete finder="WorkerFinder" buttonVisible="true" value="" width="300px" style="margin-left:10px;margin-top:10px;"/>
 
-                    <panel title="${i18n:_('Worker assignments')}">
+                    <button label="${i18n:_('Add new worker assignment')}"
+                        onClick="configurationController.addWorkerAssignment(self.parent.parent.value,self)"/>
+
+                    <panel title="${i18n:_('Worker assignments')}" border="normal">
                         <panelchildren>
                             <grid fixedLayout="true"
                                 model="@{configurationUnit.workerAssignments}">
                                 <columns sizable="true">
-                                    <column label="Name" sort="auto" />
-                                    <column label="Start date" />
-                                    <column label="End date" />
-                                    <column label="Operations" />
+                                    <column label="${i18n:_('Name')}" sort="auto" />
+                                    <column label="${i18n:_('Start date')}" />
+                                    <column label="${i18n:_('End date')}" />
+                                    <column label="${i18n:_('Operations')}" />
                                 </columns>
                                 <rows>
                                     <row self="@{each='workerAssignment'}"
@@ -61,14 +60,14 @@
                                         <label
                                             value="@{workerAssignment.worker.name}" />
                                         <datebox
-                                            value="@{workerAssignment.startDate}" />
+                                            value="@{workerAssignment.startDate}" constraint="no empty"/>
                                         <datebox
-                                            value="@{workerAssignment.finishDate}" />
+                                            value="@{workerAssignment.finishDate}" constraint="@{configurationController.validateEndDate}" />
                                         <button sclass="icono"
                                             image="/common/img/ico_borrar1.png"
                                             hoverImage="/common/img/ico_borrar.png"
                                             tooltiptext="${i18n:_('Delete')}"
-                                            onClick="configurationController.deleteWorkerAssignment(self.parent.value)">
+                                            onClick="configurationController.deleteWorkerAssignment(self.parent)">
                                         </button>
 
                                     </row>
@@ -76,26 +75,48 @@
                             </grid>
                         </panelchildren>
                     </panel>
-                    <!-- Assigned criterions -->
-                    <button label="${i18n:_('Add new criterion requirement')}"
-                        onClick="configurationController.addCriterionRequirement(self.parent.parent.value,self)" />
-                    <panel title="${i18n:_('Criterion requirements')}">
+
+                    <!-- Assigned criteria -->
+                    <textbox value="@{configurationUnit.id}" visible="false" />
+                    <bandbox value = "@{criterionSatisfactionDTO.criterionAndType}" width="300px" style="margin-left:10px;margin-top:100px;">
+                        <bandpopup>
+                                <listbox width="500px" height="150px" fixedLayout="true"
+                                model="@{assignedCriterionsController.criterionWithItsTypes}"
+                                onSelect="configurationController.addCriterionRequirement(self.selectedItem,self.parent.parent)">
+                                <listhead>
+                                    <listheader label="Type" />
+                                    <listheader label="Criterion" />
+                                </listhead>
+                                <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}">
+                                    <listcell label="@{criterionWithItsType.type.name}" />
+                                    <listcell label="@{criterionWithItsType.nameHierarchy}" />
+                                </listitem>
+                             </listbox>
+                        </bandpopup>
+                    </bandbox>
+
+                        <button label="${i18n:_('Add new criterion requirement')}"
+                            onClick="configurationController.addCriterionRequirement(self.parent.parent.value,self)" disabled="true" />
+
+                    <panel title="${i18n:_('Criterion requirements')}" border="normal">
                         <panelchildren>
+                            <textbox value="@{configurationUnit.id}" visible="false" />
                             <grid fixedLayout="true"
                                 model="@{configurationUnit.requiredCriterions}">
                                 <columns sizable="true">
-                                    <column label="Name" sort="auto" />
-                                    <column label="Operations" />
+                                    <column label="${i18n:_('Name')}" sort="auto" />
+                                    <column label="${i18n:_('Operations')}" />
                                 </columns>
                                 <rows>
                                     <row self="@{each='requirement'}"
                                         value="@{requirement}">
-                                        <textbox value="@{requirement.name}" />
+                                        <textbox value="@{requirement.completeName}" width="300px"/>
                                         <button sclass="icono"
                                             image="/common/img/ico_borrar1.png"
                                             hoverImage="/common/img/ico_borrar.png"
                                             tooltiptext="${i18n:_('Delete')}"
-                                            onClick="configurationController.deleteCriterion(self.parent.value)"></button>
+                                            onClick="configurationController.deleteRequiredCriterion(self.parent.value, self.parent.parent)">
+                                        </button>
                                     </row>
                                 </rows>
                             </grid>
@@ -107,6 +128,10 @@
                     constraint="no empty:${i18n:_('cannot be null or empty')}" />
                 <textbox value="@{configurationUnit.alpha}"
                     constraint="no negative,no zero,no empty:${i18n:_('cannot be null or empty')}" />
+                <button sclass="icono" image="/common/img/ico_borrar1.png"
+                    hoverImage="/common/img/ico_borrar.png" tooltiptext="${i18n:_('Delete')}"
+                    onClick="configurationController.deleteConfigurationUnit(self.parent.value)">
+                </button>
             </row>
         </rows>
     </grid>

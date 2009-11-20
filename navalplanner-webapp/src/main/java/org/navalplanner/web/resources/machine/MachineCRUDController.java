@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -193,9 +194,17 @@ public class MachineCRUDController extends GenericForwardComposer {
             goToList();
             messagesForUser.showMessage(Level.INFO, _("Machine saved"));
         } catch (ValidationException e) {
-            messagesForUser.showMessage(Level.ERROR, _("Could not save Machine"));
+            messagesForUser.showMessage(Level.ERROR,
+                    _("Could not save Machine") + " " + showInvalidValues(e));
             LOG.error(e);
         }
+    }
+
+    private String showInvalidValues(ValidationException e) {
+        String result = "";
+        for (InvalidValue each : e.getInvalidValues())
+            result = result + each.getMessage();
+        return result;
     }
 
     private void saveCalendar() throws ValidationException {

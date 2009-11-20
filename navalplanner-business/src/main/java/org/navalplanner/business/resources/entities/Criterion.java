@@ -144,6 +144,10 @@ public class Criterion extends BaseEntity implements ICriterion {
         this.type = type;
     }
 
+    public String getCompleteName() {
+        return type.getName() + " :: " + name;
+    }
+
     public boolean isActive() {
         return active;
     }

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.Valid;
 
 public class Machine extends Resource {
 
@@ -20,6 +21,7 @@ public class Machine extends Resource {
 
     private Set<MachineWorkersConfigurationUnit> configurationUnits = new HashSet<MachineWorkersConfigurationUnit>();
 
+    @Valid
     public Set<MachineWorkersConfigurationUnit> getConfigurationUnits() {
         return Collections.unmodifiableSet(configurationUnits);
     }

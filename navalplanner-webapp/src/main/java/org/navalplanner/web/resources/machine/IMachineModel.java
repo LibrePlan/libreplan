@@ -21,12 +21,15 @@
 package org.navalplanner.web.resources.machine;
 
 import java.util.List;
+
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
+import org.navalplanner.business.resources.entities.Worker;
 
 /*
  * This interface contains the operations to create/edit a machine.
@@ -69,9 +72,13 @@ public interface IMachineModel {
     List<MachineWorkersConfigurationUnit> getConfigurationUnitsOfMachine();
     void setCalendarOfMachine(ResourceCalendar resourceCalendar);
     void addWorkerAssigmentToConfigurationUnit(MachineWorkersConfigurationUnit
-            machineWorkersConfigurationUnit);
+ machineWorkersConfigurationUnit,
+            Worker worker);
     void addCriterionRequirementToConfigurationUnit(
-            MachineWorkersConfigurationUnit criterion);
+            MachineWorkersConfigurationUnit unit, Criterion criterion);
+
+    MachineWorkersConfigurationUnit getConfigurationUnitById(Long id)
+            throws InstanceNotFoundException;
 
     // Final conversational step
     void confirmSave() throws ValidationException;
@@ -79,4 +86,6 @@ public interface IMachineModel {
     // Non conversational methods
     List<Machine> getMachines();
     List<BaseCalendar> getBaseCalendars();
+
+    void removeConfigurationUnit(MachineWorkersConfigurationUnit unit);
 }

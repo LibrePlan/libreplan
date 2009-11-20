@@ -22,9 +22,11 @@ package org.navalplanner.business.resources.entities;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.validator.AssertTrue;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -96,6 +98,7 @@ public class MachineWorkersConfigurationUnit extends BaseEntity {
     public void addNewWorkerAssignment(Worker worker) {
         MachineWorkerAssignment assigment = MachineWorkerAssignment.create(
                 this, worker);
+        assigment.setStartDate(new Date());
         workerAssignments.add(assigment);
     }
 
@@ -118,6 +121,78 @@ public class MachineWorkersConfigurationUnit extends BaseEntity {
 
     public void removeRequiredCriterion(Criterion criterion) {
         requiredCriterions.remove(criterion);
+    }
+
+    public boolean existsWorkerAssignmentWithSameWorker(
+            MachineWorkerAssignment assignment) {
+        boolean assigned = false;
+        for (MachineWorkerAssignment each : workerAssignments) {
+            if (!(each.getId().equals(assignment.getId()))
+                    && ((each.getWorker().getId().equals(assignment.getWorker()
+                            .getId())))) {
+                assigned = true;
+            }
+        }
+        return assigned;
+    }
+
+    public boolean existsWorkerAssignmentWithSameWorker(
+            MachineWorkerAssignment assignment,
+            Interval interval) {
+        boolean assigned = false;
+        Worker worker = assignment.getWorker();
+        Interval range = null;
+        for (MachineWorkerAssignment each : workerAssignments) {
+            if ((each.getWorker().getId().equals(worker.getId()))
+                    && (each.getId() != assignment.getId())) {
+                if (each.getFinishDate() != null) {
+                    range = Interval.range(each.getStartDate(), each
+                            .getFinishDate());
+                } else {
+                    range = Interval.from(each.getStartDate());
+                }
+                if ((range == null) || (interval.overlapsWith(range))) {
+                    assigned = true;
+                }
+            }
+        }
+        return assigned;
+    }
+
+    @AssertTrue(message = "All Machine worker assignments must have a start date earlier than the finish date")
+    public boolean checkWorkerAssignmentsIntervalsProperlyDefined() {
+        boolean correctIntervals = true;
+        for (MachineWorkerAssignment each : workerAssignments) {
+            if (each.getStartDate() == null) {
+                correctIntervals = false;
+            } else if ((each.getFinishDate() != null)
+                    && (each.getStartDate().compareTo(each.getFinishDate()) > 0)) {
+                correctIntervals = false;
+            }
+        }
+        return correctIntervals;
+    }
+
+    @AssertTrue(message = "The same resource is assigned twice inside an interval")
+    public boolean checkConstraintUniqueWorkerAssignmentInInterval() {
+        boolean unique = true;
+        Interval range = null;
+        for (MachineWorkerAssignment each : workerAssignments) {
+            if (each.getStartDate() != null) {
+                if (each.getFinishDate() != null) {
+                    range = Interval.range(each.getStartDate(), each
+                            .getFinishDate());
+                } else {
+                    range = Interval.from(each.getStartDate());
+                }
+                if (((range == null)
+                        && existsWorkerAssignmentWithSameWorker(each) || (existsWorkerAssignmentWithSameWorker(
+                        each, range)))) {
+                    unique = false;
+                }
+            }
+        }
+        return unique;
     }
 
 }
