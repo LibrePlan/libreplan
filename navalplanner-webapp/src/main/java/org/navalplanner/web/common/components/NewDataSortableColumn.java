@@ -126,11 +126,9 @@ public class NewDataSortableColumn extends Column implements AfterCompose {
         parentGrid.setSortedColumn(this);
 
         if ("ascending".equals(getSortDirection())) {
-            System.out.println("Ascending order");
             parentGrid.setLastSortedColumnAscending(
                     Boolean.TRUE.booleanValue());
         } else if ("descending".equals(getSortDirection())) {
-            System.out.println("Descending order");
             parentGrid.setLastSortedColumnAscending(
                     Boolean.FALSE.booleanValue());
         }
