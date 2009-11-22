@@ -66,8 +66,6 @@ public abstract class TaskElement extends BaseEntity {
 
     private TaskGroup parent;
 
-    protected Integer shareOfHours;
-
     private Set<Dependency> dependenciesWithThisOrigin = new HashSet<Dependency>();
 
     private Set<Dependency> dependenciesWithThisDestination = new HashSet<Dependency>();
@@ -77,13 +75,11 @@ public abstract class TaskElement extends BaseEntity {
     private TaskSource taskSource;
 
     public Integer getWorkHours() {
-        if (shareOfHours != null) {
-            return shareOfHours;
+        if (taskSource == null) {
+            return 0;
         }
-        return defaultWorkHours();
+        return taskSource.getTotalHours();
     }
-
-    protected abstract Integer defaultWorkHours();
 
     protected void copyPropertiesFrom(TaskElement task) {
         this.name = task.getName();

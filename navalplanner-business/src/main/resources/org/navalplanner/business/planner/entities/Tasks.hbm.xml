@@ -9,7 +9,6 @@
             </generator>
         </id>
         <version name="version" access="property" type="long" />
-        <property name="shareOfHours"></property>
         <property name="name" />
         <property name="notes"/>
         <property name="startDate" type="timestamp" />

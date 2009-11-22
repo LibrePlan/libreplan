@@ -265,4 +265,12 @@ public class TaskSource extends BaseEntity {
     public void reloadTask(ITaskElementDAO taskElementDAO) {
         taskElementDAO.save(task);
     }
+
+    public int getTotalHours() {
+        int result = 0;
+        for (HoursGroup each : hoursGroups) {
+            result += each.getWorkingHours();
+        }
+        return result;
+    }
 }

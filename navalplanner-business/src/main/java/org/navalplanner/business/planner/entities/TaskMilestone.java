@@ -96,11 +96,6 @@ public class TaskMilestone extends TaskElement {
         return new DateTime(startDate.getTime());
     }
 
-    @Override
-    public Integer defaultWorkHours() {
-        return Integer.valueOf(0);
-    }
-
     @SuppressWarnings("unused")
     @AssertTrue(message = "order element associated to a milestone must be null")
     private boolean theOrderElementMustBeNull() {

@@ -75,11 +75,6 @@ public class TaskGroup extends TaskElement {
         return false;
     }
 
-    @Override
-    public Integer defaultWorkHours() {
-        return getOrderElement().getWorkHours();
-    }
-
     public void remove(TaskElement taskElement) {
         taskElements.remove(taskElement);
     }

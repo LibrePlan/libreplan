@@ -184,11 +184,6 @@ public class Task extends TaskElement {
         return true;
     }
 
-    @Override
-    public Integer defaultWorkHours() {
-        return hoursGroup.getWorkingHours();
-    }
-
     public Set<GenericResourceAllocation> getGenericResourceAllocations() {
         return new HashSet<GenericResourceAllocation>(ResourceAllocation
                 .getOfType(GenericResourceAllocation.class,
