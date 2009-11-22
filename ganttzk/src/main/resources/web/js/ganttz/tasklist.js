@@ -358,6 +358,14 @@ zkTask.addDependency = function(cmp) {
 	zkTask.createArrow(cmp);
 };
 
+zkTask.next = function(elem) {
+    do {
+        elem = elem.nextSibling;
+    } while (elem && elem.nodeType != 1);
+    return elem;
+}
+
+
 zkTask.setAttr = function(cmp, name, value) {
 	// Obsolete as far as tasks will not show name inside
 	// if ("name" == name) {
@@ -515,6 +523,11 @@ zkTask.getElementsByAttribute = function(oElm, strTagName, strAttributeName,
 		}
 	}
 	return arrReturnElements;
+}
+
+zkTask.moveDeadline = function(cmp, width) {
+	var deadlineDiv = zkTask.next(cmp);
+	deadlineDiv["style"].left = width;
 }
 
 zkTask.resizeCompletionAdvance = function(cmp, width) {

@@ -14,4 +14,5 @@
         <div class="completion2"></div>
 		<div id="tasktooltip${self.uuid}" class="task_tooltip">${self.tooltipText}</div>
     </div>
+		<div id="deadline${self.uuid}" class="deadline"></div>
 </div>

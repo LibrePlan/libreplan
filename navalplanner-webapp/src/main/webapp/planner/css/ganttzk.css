@@ -666,3 +666,15 @@ div.z-tree {
     padding-left: 3px;
     padding-right: 3px;
 }
+
+.deadline {
+    position:absolute;
+    /* border-right: solid 2px red; */
+    margin-top: -5px;
+    float:left;
+    left:-100px; /* Hide when it has't been set */
+    width:10px;
+    height:22px;
+    background-image:
+        url("/navalplanner-webapp/zkau/web/ganttz/img/deadline2.png");
+}

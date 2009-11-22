@@ -349,7 +349,15 @@ public class TaskComponent extends Div implements AfterCompose {
         if (dependencyList != null) {
             dependencyList.redrawDependenciesConnectedTo(this);
         }
+        updateDeadline();
         updateCompletionIfPossible();
+    }
+
+    private void updateDeadline() {
+        if (task.getDeadline() != null) {
+            String position = getMapper().toPixels(task.getDeadline()) + "px";
+            response(null, new AuInvoke(this, "moveDeadline", position));
+        }
     }
 
     private void updateCompletionIfPossible() {
