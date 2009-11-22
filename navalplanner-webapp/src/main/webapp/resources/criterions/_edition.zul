@@ -27,8 +27,8 @@
   </checkbox>
  </hbox>
  <hbox>
-  <button onClick="controller.save();" label="${arg.save_button_label}" />
+  <button onClick="controller.save();" label="${arg.save_button_label}" sclass="main-button"/>
   <button onClick="controller.cancel();"
-   label="${arg.cancel_button_label}" />
+   label="${arg.cancel_button_label}" sclass="main-button"/>
  </hbox>
 </vbox>

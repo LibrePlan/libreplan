@@ -41,7 +41,7 @@
         </rows>
       </grid>
     <button onClick="workRelationship.saveCriterionSatisfaction();"
-        label="${i18n:_('Save')}" />
+        label="${i18n:_('Save')}" sclass="main-button"/>
     <button onClick="controller.goToEditForm()"
-        label="${i18n:_('Cancel and return')}"/>
+        label="${i18n:_('Cancel and return')}" sclass="main-button" />
 </window>
