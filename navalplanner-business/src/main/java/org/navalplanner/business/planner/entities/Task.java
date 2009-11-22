@@ -30,7 +30,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -49,14 +48,11 @@ import org.navalplanner.business.resources.entities.Worker;
 public class Task extends TaskElement {
 
     public static Task createTask(TaskSource taskSource) {
-        Task task = new Task(taskSource.getHoursGroups().iterator().next());
+        Task task = new Task();
         OrderElement orderElement = taskSource.getOrderElement();
         orderElement.applyStartConstraintIfNeededTo(task);
         return create(task, taskSource);
     }
-
-    @NotNull
-    private HoursGroup hoursGroup;
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
 
@@ -77,22 +73,18 @@ public class Task extends TaskElement {
         return getOrderElement() != null;
     }
 
-    private Task(HoursGroup hoursGroup) {
-        Validate.notNull(hoursGroup);
-        this.hoursGroup = hoursGroup;
-    }
 
     public HoursGroup getHoursGroup() {
-        return this.hoursGroup;
+        return getTaskSource().getHoursGroups().iterator().next();
     }
 
     public Set<Criterion> getCriterions() {
         return Collections
-                .unmodifiableSet(this.hoursGroup.getValidCriterions());
+                .unmodifiableSet(getHoursGroup().getValidCriterions());
     }
 
     public Integer getHoursSpecifiedAtOrder() {
-        return hoursGroup.getWorkingHours();
+        return getWorkHours();
     }
 
     public int getAssignedHours() {

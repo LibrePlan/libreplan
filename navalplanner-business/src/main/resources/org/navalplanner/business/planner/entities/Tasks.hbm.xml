@@ -34,7 +34,6 @@
 
         <joined-subclass name="Task">
             <key column="TASK_ELEMENT_ID"></key>
-            <many-to-one name="hoursGroup" cascade="none"/>
             <property name="calculatedValue">
                 <type name="org.hibernate.type.EnumType">
                     <param name="enumClass">org.navalplanner.business.planner.entities.CalculatedValue</param>
