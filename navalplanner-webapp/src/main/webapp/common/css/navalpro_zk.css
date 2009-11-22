@@ -188,6 +188,8 @@ button.z-button {
 
 
 .message_ERROR, .message_INFO {
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
     padding: 15px;
     margin: 10px;
     width: 300px;
@@ -220,6 +222,14 @@ button.z-button {
     position: relative;
     top: -10px;
     left: 10px;
+}
+
+div.z-errbox {
+    background-color: #EECCCC;
+    color:red;
+    border:solid 1px red;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
 }
 
 .advancedallocationlayout .message_WARNING {
@@ -626,3 +636,4 @@ div.z-listbox-pgi-b {
 span.z-dottree-ico, span.z-dottree-line {
     min-height:22px;
 }
+
