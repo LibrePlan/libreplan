@@ -258,6 +258,10 @@ public class TaskSource extends BaseEntity {
         return hoursGroups;
     }
 
+    public List<AggregatedHoursGroup> getAggregatedByCriterions() {
+        return AggregatedHoursGroup.aggregate(hoursGroups);
+    }
+
     public void reloadTask(ITaskElementDAO taskElementDAO) {
         taskElementDAO.save(task);
     }

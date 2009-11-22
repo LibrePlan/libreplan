@@ -34,6 +34,7 @@ import org.hibernate.validator.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
@@ -325,6 +326,10 @@ public class Task extends TaskElement {
 
     private LocalDate asLocalDate(Date date) {
         return new LocalDate(date.getTime());
+    }
+
+    public List<AggregatedHoursGroup> getAggregatedByCriterions() {
+        return getTaskSource().getAggregatedByCriterions();
     }
 
 }
