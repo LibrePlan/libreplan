@@ -44,8 +44,9 @@ public abstract class TaskElement extends BaseEntity {
     protected static <T extends TaskElement> T create(T taskElement,
             TaskSource taskSource) {
         taskElement.taskSource = taskSource;
-        taskElement.setDeadline(new LocalDate(taskSource.getOrderElement()
-                .getDeadline()));
+        Date orderElementDeadline = taskSource.getOrderElement().getDeadline();
+        taskElement.setDeadline(orderElementDeadline == null ? null
+                : new LocalDate(orderElementDeadline));
         return create(taskElement);
     }
 
