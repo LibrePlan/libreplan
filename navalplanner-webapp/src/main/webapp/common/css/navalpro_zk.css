@@ -45,6 +45,11 @@ table {
     display: none;
 }
 
+.z-button .perspective td,
+.resourcesloadlayout .z-button td {
+    background-image: none;
+}
+
 .z-button .z-button-tm, .z-button .z-button-bm {
     background-image:url("../img/btn-x.gif");
 }

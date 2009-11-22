@@ -242,11 +242,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     private void setSelectClass(final Button button) {
-        button.setSclass("sub_menu_active");
+        button.setSclass("perspective sub_menu_active");
     }
 
     private void setDeselectedClass(Button button) {
-        button.setSclass("sub_menu");
+        button.setSclass("perspective sub_menu");
     }
 
     private EventListener doNotCallTwice(final Button button,
