@@ -32,14 +32,16 @@ table {
     border: solid 1px red;
 }
 
-/* Forms */
-.z-button-tl,.z-button-tm,.z-button-tr,.z-button-cl,.z-button-cr,.z-button-bl,.z-button-bm, .z-button-br, .z-button-br, .z-button-tr
-{
-/*    display: none; */
+/* --- START -- Button styles -- */
+.z-button-tl, .z-button-tm, .z-button-tr,
+.z-button-cl, .z-button-cr,
+.z-button-bl, .z-button-bm, .z-button-br {
+    display: auto;
 }
 
-.icono .z-button-tl,.icono .z-button-tm,.icono .z-button-tr,.icono .z-button-cl,.icono .z-button-cr,.icono .z-button-bl,.icono .z-button-bm,.icono .z-button-br,.icono .z-button-br,.icono .z-button-tr
-{
+.icono .z-button-tl, .icono .z-button-tm, .icono .z-button-tr,
+.icono .z-button-cl, .icono .z-button-cr,
+.icono .z-button-bl, .icono .z-button-bm, .icono .z-button-br {
     display: none;
 }
 
@@ -51,7 +53,8 @@ table {
     background-image:url("../img/btn-y.gif");
 }
 
-.z-button .z-button-tl, .z-button .z-button-tr, .z-button .z-button-bl, .z-button .z-button-br {
+.z-button .z-button-tl, .z-button .z-button-tr,
+.z-button .z-button-bl, .z-button .z-button-br {
     background-image:url("../img/btn-corner.gif");
 }
 
@@ -62,7 +65,6 @@ table {
     border: 2px solid #007bbe;
 }
 
-
 .sub_menu .z-button-cm {
     background-color: transparent !important;
     border: 0px;
@@ -72,6 +74,51 @@ table {
 .sub_menu .z-button-cm:hover {
     text-decoration: underline;
 }
+
+.z-button {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.z-window-embedded .z-button-cm,
+.z-window-modal .z-button-cm {
+    background-color: #58A758;
+    background-image: none;
+    border: 0; /* 1px solid #006700; Enable borders in 2D appearance */
+    color: #FFFFFF;
+    padding: 2px 18px;
+}
+
+.z-window-embedded .icono .z-button-cm,
+.z-window-modal .icono .z-button-cm {
+    color: #007bbe;
+    background-color: transparent;
+    background-image: none;
+    border: 0px solid #007bbe;
+    padding: 0px;
+}
+
+table.z-button {
+    table-layout: auto;
+}
+
+button.z-button {
+    position: relative;
+    top: -5px;
+}
+
+.plannerlayout .z-button-tl, .plannerlayout .z-button-tm, .plannerlayout .z-button-tr,
+.plannerlayout .z-button-cl, .plannerlayout .z-button-cr,
+.plannerlayout .z-button-bl, .plannerlayout .z-button-bm, .plannerlayout .z-button-br {
+    display: none;
+}
+
+    display: none;
+}
+
+/* --- END -- Button styles -- */
+
 
 .vertical_separator {
     width: 14px;
@@ -85,6 +132,8 @@ table {
     margin: 20px;
     font-size: 12px;
 }
+
+
 
 /* ------------- order element tree  -------------  */
 .orderTree input {
@@ -272,38 +321,6 @@ table {
     font-weight: normal;
 }
 
-.z-button {
-    font-family: Tahoma, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-}
-
-.z-window-embedded .z-button-cm,.z-window-modal .z-button-cm {
-    background-color: #58A758;
-    background-image: none;
-    /* border: 1px solid #006700; */
-    border: 0;
-    color: #FFFFFF;
-    padding: 2px 18px;
-}
-
-.z-window-embedded .icono .z-button-cm,.z-window-modal .icono .z-button-cm
-    {
-    color: #007bbe;
-    background-color: transparent;
-    background-image: none;
-    border: 0px solid #007bbe;
-    padding: 0px;
-}
-
-table.z-button {
-    table-layout: auto;
-}
-
-button.z-button {
-    position: relative;
-    top: -5px;
-}
 
 .z-tabs-scroll .z-tabs-cnt {
     background: #FAFDFE none repeat scroll 0 0;
@@ -580,29 +597,29 @@ div.z-listbox-pgi-b {
     border-top:none;
 }
 
-.z-dottree-body .tasknumber {
+.orderTree .tasknumber {
     /* Pending removal from the code */
     display:none;
 }
 
-.z-dottree-body .not-scheduled span,
-.z-dottree-body .partially-scheduled span,
-.z-dottree-body .completely-scheduled span {
+.orderTree .not-scheduled span,
+.orderTree .partially-scheduled span,
+.orderTree .completely-scheduled span {
     float:left;
     padding-right:2px;
 }
 
-.z-dottree-body .not-scheduled,
-.z-dottree-body .partially-scheduled,
-.z-dottree-body .completely-scheduled {
+.orderTree .not-scheduled,
+.orderTree .partially-scheduled,
+.orderTree .completely-scheduled {
     border-bottom:dotted #EEEEEE 1px;
 }
 
-.partially-scheduled {
+.orderTree .partially-scheduled {
     background-color: #fddf9b;
 }
 
-.completely-scheduled {
+.orderTree .completely-scheduled {
     background-color: #bee5a9;
 }
 
