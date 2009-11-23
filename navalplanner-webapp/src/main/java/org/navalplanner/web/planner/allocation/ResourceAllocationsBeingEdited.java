@@ -36,9 +36,7 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
-import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -61,7 +59,7 @@ public class ResourceAllocationsBeingEdited {
             Collection<ResourceAllocation<?>> resourceAllocations) {
         Map<AllocationBeingModified, ResourceAllocation<?>> result = new HashMap<AllocationBeingModified, ResourceAllocation<?>>();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            result.put(resourceAllocation.copyWithCurrentResourcesPerDay(),
+            result.put(resourceAllocation.copy().asAllocationBeingModified(),
                     resourceAllocation);
         }
         return result;

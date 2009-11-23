@@ -32,6 +32,7 @@ import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 
@@ -193,5 +194,16 @@ public class SpecificResourceAllocation extends
                 this.specificDaysAssignment);
         result.resource = getResource();
         return result;
+    }
+
+    @Override
+    public AllocationBeingModified asAllocationBeingModified() {
+        return AllocationBeingModified.create(this, getResourcesPerDay());
+    }
+
+    @Override
+    public AllocationBeingModified withDesiredResourcesPerDay(
+            ResourcesPerDay resourcesPerDay) {
+        return AllocationBeingModified.create(this, resourcesPerDay);
     }
 }

@@ -124,7 +124,7 @@ public abstract class AllocationBeingModified {
             ResourcesPerDay perDay = resourceAllocation
                     .getResourcesPerDay();
             Validate.notNull(perDay);
-            result.add(create(resourceAllocation, perDay, resourceAllocation.getAssociatedResources()));
+            result.add(resourceAllocation.asAllocationBeingModified());
         }
         return result;
     }

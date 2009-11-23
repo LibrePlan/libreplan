@@ -33,6 +33,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -261,6 +262,19 @@ public class GenericResourceAllocation extends
         allocation.genericDayAssignments = new HashSet<GenericDayAssignment>(
                 this.genericDayAssignments);
         return allocation;
+    }
+
+    @Override
+    public AllocationBeingModified asAllocationBeingModified() {
+        return AllocationBeingModified.create(this,
+                getResourcesPerDay(), getAssociatedResources());
+    }
+
+    @Override
+    public AllocationBeingModified withDesiredResourcesPerDay(
+            ResourcesPerDay resourcesPerDay) {
+        return AllocationBeingModified.create(this, resourcesPerDay,
+                getAssociatedResources());
     }
 
 }
