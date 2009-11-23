@@ -40,17 +40,13 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
 
     private final Task task;
 
-    private List<Resource> resources;
-
     private List<AllocationBeingModified> allocations;
 
     private Map<AllocationBeingModified, List<DayAssignment>> resultAssignments = new HashMap<AllocationBeingModified, List<DayAssignment>>();
 
     public AllocatorForSpecifiedResourcesPerDayAndHours(Task task,
-            List<Resource> resources,
             List<AllocationBeingModified> allocations) {
         this.task = task;
-        this.resources = resources;
         this.allocations = allocations;
         initializeResultsMap();
     }
@@ -105,7 +101,8 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
             ResourcesPerDay resourcesPerDay = withResourcesPerDay
                     .getGoal();
             List<DayAssignment> assignments = createAssignmentsAtDay(
-                    resourceAllocation, resources, day,
+                    resourceAllocation, withResourcesPerDay.getResources(),
+                    day,
                     resourcesPerDay, maxPerAllocations.get(i));
             resultAssignments.get(withResourcesPerDay).addAll(assignments);
             total += DayAssignment.sum(assignments);

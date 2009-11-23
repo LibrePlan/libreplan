@@ -75,15 +75,14 @@ public class AllocationUntilFillingHoursTest {
     public void theNewEndDateIsWhenAllTheHoursAreAllocated() {
         givenSpecificAllocations(ResourcesPerDay.amount(2));
         LocalDate endDate = ResourceAllocation.allocating(allocations)
-                .withResources(resources).untilAllocating(32);
+                .untilAllocating(32);
         assertThat(endDate, equalTo(startDate.plusDays(2)));
     }
 
     @Test
     public void allTheRequestedHoursAreAssignedFor() {
         givenSpecificAllocations(ResourcesPerDay.amount(2));
-        ResourceAllocation.allocating(allocations).withResources(resources)
-                .untilAllocating(32);
+        ResourceAllocation.allocating(allocations).untilAllocating(32);
         ResourceAllocation<?> allocation = allocations.get(0)
                 .getBeingModified();
         assertThat(allocation.getAssignments(), haveHours(16, 16));
@@ -93,8 +92,7 @@ public class AllocationUntilFillingHoursTest {
     public void worksWellForSeveralSpecificAllocations() {
         givenSpecificAllocations(ResourcesPerDay.amount(1), ResourcesPerDay
                 .amount(1));
-        ResourceAllocation.allocating(allocations).withResources(resources)
-                .untilAllocating(32);
+        ResourceAllocation.allocating(allocations).untilAllocating(32);
         ResourceAllocation<?> first = allocations.get(0)
                 .getBeingModified();
         ResourceAllocation<?> second = allocations.get(1)
@@ -107,8 +105,7 @@ public class AllocationUntilFillingHoursTest {
     public void theRemainderIsProportinallyDistributed() {
         givenSpecificAllocations(ResourcesPerDay.amount(2), ResourcesPerDay
                 .amount(1));
-        ResourceAllocation.allocating(allocations).withResources(resources)
-                .untilAllocating(60);
+        ResourceAllocation.allocating(allocations).untilAllocating(60);
         ResourceAllocation<?> first = allocations.get(0)
                 .getBeingModified();
         ResourceAllocation<?> second = allocations.get(1)
@@ -121,8 +118,7 @@ public class AllocationUntilFillingHoursTest {
     public void withUnequalRatioWorksOk() {
         givenSpecificAllocations(ResourcesPerDay.amount(1), ResourcesPerDay
                 .amount(new BigDecimal(0.5)));
-        ResourceAllocation.allocating(allocations).withResources(resources)
-                .untilAllocating(36);
+        ResourceAllocation.allocating(allocations).untilAllocating(36);
         ResourceAllocation<?> first = allocations.get(0)
                 .getBeingModified();
         ResourceAllocation<?> second = allocations.get(1)
@@ -137,8 +133,7 @@ public class AllocationUntilFillingHoursTest {
         givenGenericAllocation(ResourcesPerDay.amount(2));
         givenSpecificAllocations(ResourcesPerDay.amount(1), ResourcesPerDay
                 .amount(1));
-        ResourceAllocation.allocating(allocations).withResources(resources)
-                .untilAllocating(64);
+        ResourceAllocation.allocating(allocations).untilAllocating(64);
         ResourceAllocation<?> generic = allocations.get(0)
                 .getBeingModified();
         ResourceAllocation<?> firstSpecific = allocations.get(1)
@@ -154,26 +149,21 @@ public class AllocationUntilFillingHoursTest {
     public void withGenericAllocationWithNoResourcesPerDay() {
         givenWorkers(1);
         givenGenericAllocation(ResourcesPerDay.amount(0));
-        ResourceAllocation.allocating(allocations).withResources(resources)
-                .untilAllocating(100);
+        ResourceAllocation.allocating(allocations).untilAllocating(100);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void cannotDoAGenericAllocationWithoutWorkers() {
         givenWorkers(0);
         givenGenericAllocation(ResourcesPerDay.amount(2));
-        ResourceAllocation.allocating(allocations)
-                .withResources(resources)
-                .untilAllocating(100);
-
+        ResourceAllocation.allocating(allocations).untilAllocating(100);
     }
 
     @Test
     public void withoutWorkersYouCanDoSpecificAllocation() {
         givenWorkers(0);
         givenSpecificAllocations(ResourcesPerDay.amount(2));
-        ResourceAllocation.allocating(allocations).withResources(resources)
-                .untilAllocating(100);
+        ResourceAllocation.allocating(allocations).untilAllocating(100);
     }
 
     private void givenGenericAllocation(ResourcesPerDay resourcesPerDay) {

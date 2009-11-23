@@ -207,14 +207,11 @@ public class ResourceAllocationsBeingEdited {
         List<AllocationBeingModified> allocations = asList(fromDetachedToAttached);
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
-            ResourceAllocation.allocating(allocations)
-                    .withResources(
-                    resourcesMatchingCriterions).allocateOnTaskLength();
+            ResourceAllocation.allocating(allocations).allocateOnTaskLength();
             daysDuration = task.getDaysDuration();
             break;
         case END_DATE:
             LocalDate end = ResourceAllocation.allocating(allocations)
-                    .withResources(resourcesMatchingCriterions)
                     .untilAllocating(formBinder.getAssignedHours());
             daysDuration = from(task.getStartDate(), end);
             break;

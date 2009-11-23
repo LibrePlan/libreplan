@@ -32,27 +32,25 @@ public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
 
     private List<AllocationBeingModified> allocations;
 
-    private List<Resource> resources;
-
     public AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
-            List<AllocationBeingModified> allocations,
-            List<Resource> resources) {
+            List<AllocationBeingModified> allocations) {
         this.allocations = allocations;
-        this.resources = resources;
     }
 
     public void allocateOnTaskLength() {
         for (AllocationBeingModified allocation : allocations) {
-            doAllocationForFixedTask(allocation.getBeingModified(),
-                    allocation.getGoal());
+            doAllocationForFixedTask(allocation);
         }
     }
 
-    private void doAllocationForFixedTask(ResourceAllocation<?> allocation,
-            ResourcesPerDay resourcesPerDay) {
+    private void doAllocationForFixedTask(
+            AllocationBeingModified allocationBeingModified) {
+        ResourceAllocation<?> allocation = allocationBeingModified
+                .getBeingModified();
+        ResourcesPerDay resourcesPerDay = allocationBeingModified.getGoal();
         if (allocation instanceof GenericResourceAllocation) {
             doAllocation((GenericResourceAllocation) allocation,
-                    resourcesPerDay);
+                    resourcesPerDay, allocationBeingModified.getResources());
         } else {
             SpecificResourceAllocation specific = (SpecificResourceAllocation) allocation;
             doAllocation(specific, resourcesPerDay);
@@ -65,7 +63,7 @@ public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
     }
 
     private void doAllocation(GenericResourceAllocation generic,
-            ResourcesPerDay resourcesPerDay) {
+            ResourcesPerDay resourcesPerDay, List<Resource> resources) {
         generic.forResources(resources).allocate(resourcesPerDay);
     }
 

@@ -26,10 +26,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
@@ -109,7 +107,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public static class AllocationsCurried {
 
-        private final List<AllocationBeingModified> resourceAllocations;
+        private final List<AllocationBeingModified> allocations;
 
         private final Task task;
 
@@ -121,7 +119,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             checkNoOneHasNullTask(resourceAllocations);
             checkAllHaveSameTask(resourceAllocations);
             checkNoAllocationWithZeroResourcesPerDay(resourceAllocations);
-            this.resourceAllocations = resourceAllocations;
+            this.allocations = resourceAllocations;
             this.task = resourceAllocations.get(0).getBeingModified()
                     .getTask();
         }
@@ -165,51 +163,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
         }
 
-        public AllocationsAndResourcesCurried withResources(
-                List<Resource> resources) {
-            Validate.noNullElements(resources);
-            return new AllocationsAndResourcesCurried(task, resources,
-                    resourceAllocations);
-        }
-
-        public AllocationsAndResourcesCurried withExistentResources() {
-            return new AllocationsAndResourcesCurried(task,
-                    getResourcesFrom(AllocationBeingModified
-                            .stripResourcesPerDay(resourceAllocations)),
-                    resourceAllocations);
-        }
-
-        private List<Resource> getResourcesFrom(
-                List<ResourceAllocation<?>> allocations) {
-            Set<Resource> resources = new HashSet<Resource>();
-            for (ResourceAllocation<?> resourceAllocation : allocations) {
-                resources.addAll(resourceAllocation.getAssociatedResources());
-            }
-            return new ArrayList<Resource>(resources);
-        }
-    }
-
-    public static class AllocationsAndResourcesCurried {
-        private List<Resource> resources;
-
-        private List<AllocationBeingModified> allocations;
-
-        private final Task task;
-
-        public AllocationsAndResourcesCurried(Task task,
-                List<Resource> resources,
-                List<AllocationBeingModified> allocations) {
-            this.task = task;
-            this.resources = resources;
-            this.allocations = allocations;
-        }
-
         public LocalDate untilAllocating(int hoursToAllocate) {
-            if (thereIsGenericAllocation()) {
-                Validate.notEmpty(resources, "there must exist workers");
-            }
             AllocatorForSpecifiedResourcesPerDayAndHours allocator = new AllocatorForSpecifiedResourcesPerDayAndHours(
-                    task, resources, allocations) {
+                    task, allocations) {
 
                 @Override
                 protected List<DayAssignment> createAssignmentsAtDay(
@@ -232,18 +188,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return allocator.untilAllocating(hoursToAllocate);
         }
 
-        private boolean thereIsGenericAllocation() {
-            for (AllocationBeingModified r : allocations) {
-                if (r.getBeingModified() instanceof GenericResourceAllocation) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         public void allocateOnTaskLength() {
             AllocatorForTaskDurationAndSpecifiedResourcesPerDay allocator = new AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
-                    allocations, resources);
+                    allocations);
             allocator.allocateOnTaskLength();
         }
     }

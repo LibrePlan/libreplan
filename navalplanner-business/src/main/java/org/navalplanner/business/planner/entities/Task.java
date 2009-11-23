@@ -293,12 +293,10 @@ public class Task extends TaskElement {
         }
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
-            ResourceAllocation.allocating(allocations).withExistentResources()
-                    .allocateOnTaskLength();
+            ResourceAllocation.allocating(allocations).allocateOnTaskLength();
             break;
         case END_DATE:
             LocalDate end = ResourceAllocation.allocating(allocations)
-                    .withExistentResources()
                     .untilAllocating(getAssignedHours());
             setEndDate(end.toDateTimeAtStartOfDay().toDate());
             break;

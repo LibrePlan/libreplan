@@ -28,6 +28,7 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Resource;
 
 public class AllocationBeingModified {
@@ -55,6 +56,10 @@ public class AllocationBeingModified {
             ResourceAllocation<?> resourceAllocation,
             ResourcesPerDay resourcesPerDay,
             Collection<? extends Resource> resources) {
+        Validate.noNullElements(resources);
+        Validate
+                .isTrue(resourceAllocation instanceof SpecificResourceAllocation
+                || !resources.isEmpty());
         this.beingModified = resourceAllocation;
         this.goal = resourcesPerDay;
         this.resourcesOnWhichApplyAllocation = Collections
@@ -77,5 +82,9 @@ public class AllocationBeingModified {
             result.add(r.getBeingModified());
         }
         return result;
+    }
+
+    public List<Resource> getResources() {
+        return resourcesOnWhichApplyAllocation;
     }
 }
