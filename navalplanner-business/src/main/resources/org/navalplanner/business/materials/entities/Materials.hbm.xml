@@ -42,7 +42,7 @@
     <many-to-one name="parent" class="MaterialCategory" column="PARENT_ID" />
 
     <set name="materials" inverse="false" cascade="all">
-        <key column="ID"/>
+        <key column="CATEGORY_ID"/>
         <one-to-many class="Material"/>
     </set>
 
