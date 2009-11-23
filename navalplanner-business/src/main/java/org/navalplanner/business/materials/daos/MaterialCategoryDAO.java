@@ -20,6 +20,9 @@
 
 package org.navalplanner.business.materials.daos;
 
+import java.util.List;
+
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -35,5 +38,16 @@ import org.springframework.stereotype.Repository;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class MaterialCategoryDAO extends GenericDAOHibernate<MaterialCategory, Long> implements
         IMaterialCategoryDAO {
+
+    @Override
+    public List<MaterialCategory> getAll() {
+        return list(MaterialCategory.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<MaterialCategory> getAllRootMaterialCategories() {
+        return getSession().createCriteria(MaterialCategory.class).add(Restrictions.isNull("parent")).list();
+    }
 
 }

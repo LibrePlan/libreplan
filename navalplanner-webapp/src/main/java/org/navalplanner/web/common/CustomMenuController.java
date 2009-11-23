@@ -185,6 +185,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     "/resources/criterions/criterions-V2.zul"),
                 subItem(_("Calendars"), "/calendars/calendars.zul"),
                 subItem(_("Label types"), "/labels/labelTypes.zul"),
+                subItem(_("Materials"), "/materials/materials.zul"),
                 subItem(_("Configuration"), "/common/configuration.zul"));
 
         topItem(_("Quality management"), "/", true);

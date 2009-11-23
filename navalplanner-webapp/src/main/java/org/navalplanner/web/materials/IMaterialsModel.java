@@ -18,22 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.materials.daos;
+package org.navalplanner.web.materials;
 
-import java.util.List;
-
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.zkoss.ganttz.util.MutableTreeModel;
 
 /**
- * Interface MaterialDAO
  *
- * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
+ *
  */
-public interface IMaterialCategoryDAO extends IGenericDAO<MaterialCategory, Long> {
+public interface IMaterialsModel {
 
-    List<MaterialCategory> getAll();
+    void addMaterialCategory(MaterialCategory parent, MaterialCategory child) throws ValidationException;
 
-    List<MaterialCategory> getAllRootMaterialCategories();
+    MutableTreeModel<MaterialCategory> getMaterialCategories();
+
+    void removeMaterialCategory(MaterialCategory materialCategory);
 
 }

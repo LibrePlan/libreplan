@@ -320,4 +320,8 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         }
     }
 
+    public boolean isEmpty() {
+        return getChildCount(getRoot()) == 0;
+    }
+
 }
