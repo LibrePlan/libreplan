@@ -26,33 +26,65 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Resource;
 
-public class AllocationBeingModified {
+public abstract class AllocationBeingModified {
 
     private static class GenericAllocationBeingModified extends
             AllocationBeingModified {
+        private final GenericResourceAllocation genericAllocation;
+
         GenericAllocationBeingModified(
-                ResourceAllocation<?> resourceAllocation,
+                GenericResourceAllocation resourceAllocation,
                 ResourcesPerDay resourcesPerDay,
                 Collection<? extends Resource> resources) {
             super(resourceAllocation, resourcesPerDay, resources);
             Validate.isTrue(!resources.isEmpty());
+            this.genericAllocation = resourceAllocation;
+        }
+
+        @Override
+        public void applyOnTaskDuration() {
+            genericAllocation.forResources(getResources()).allocate(getGoal());
+        }
+
+        @Override
+        public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
+                int limit) {
+            return genericAllocation.createAssignmentsAtDay(getResources(),
+                    day, getGoal(), limit);
         }
     }
 
     private static class SpecificAllocationBeingModified extends
             AllocationBeingModified {
 
+        private final SpecificResourceAllocation resourceAllocation;
+
         SpecificAllocationBeingModified(
-                ResourceAllocation<?> resourceAllocation,
+                SpecificResourceAllocation resourceAllocation,
                 ResourcesPerDay resourcesPerDay,
                 Collection<? extends Resource> resources) {
             super(resourceAllocation, resourcesPerDay, resources);
+            this.resourceAllocation = resourceAllocation;
+        }
+
+        @Override
+        public void applyOnTaskDuration() {
+            resourceAllocation.allocate(getGoal());
+        }
+
+        @Override
+        public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
+                int limit) {
+            return resourceAllocation.createAssignmentsAtDay(day, getGoal(),
+                    limit);
         }
     }
 
@@ -134,4 +166,9 @@ public class AllocationBeingModified {
     public List<Resource> getResources() {
         return resourcesOnWhichApplyAllocation;
     }
+
+    public abstract void applyOnTaskDuration();
+
+    public abstract List<DayAssignment> createAssignmentsAtDay(LocalDate day,
+            int limit);
 }

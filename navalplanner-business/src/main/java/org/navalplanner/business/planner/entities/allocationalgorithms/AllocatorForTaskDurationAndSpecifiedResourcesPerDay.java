@@ -22,12 +22,6 @@ package org.navalplanner.business.planner.entities.allocationalgorithms;
 
 import java.util.List;
 
-import org.navalplanner.business.planner.entities.GenericResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
-import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.resources.entities.Resource;
-
 public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
 
     private List<AllocationBeingModified> allocations;
@@ -39,32 +33,7 @@ public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
 
     public void allocateOnTaskLength() {
         for (AllocationBeingModified allocation : allocations) {
-            doAllocationForFixedTask(allocation);
+            allocation.applyOnTaskDuration();
         }
     }
-
-    private void doAllocationForFixedTask(
-            AllocationBeingModified allocationBeingModified) {
-        ResourceAllocation<?> allocation = allocationBeingModified
-                .getBeingModified();
-        ResourcesPerDay resourcesPerDay = allocationBeingModified.getGoal();
-        if (allocation instanceof GenericResourceAllocation) {
-            doAllocation((GenericResourceAllocation) allocation,
-                    resourcesPerDay, allocationBeingModified.getResources());
-        } else {
-            SpecificResourceAllocation specific = (SpecificResourceAllocation) allocation;
-            doAllocation(specific, resourcesPerDay);
-        }
-    }
-
-    private void doAllocation(SpecificResourceAllocation specific,
-            ResourcesPerDay resourcesPerDay) {
-        specific.allocate(resourcesPerDay);
-    }
-
-    private void doAllocation(GenericResourceAllocation generic,
-            ResourcesPerDay resourcesPerDay, List<Resource> resources) {
-        generic.forResources(resources).allocate(resourcesPerDay);
-    }
-
 }

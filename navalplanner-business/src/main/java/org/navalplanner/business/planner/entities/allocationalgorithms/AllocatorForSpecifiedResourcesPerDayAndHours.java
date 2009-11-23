@@ -34,7 +34,6 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.resources.entities.Resource;
 
 public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
 
@@ -88,23 +87,16 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
             List<DayAssignment> dayAssignments);
 
     protected abstract List<DayAssignment> createAssignmentsAtDay(
-            ResourceAllocation<?> resourceAllocation, List<Resource> resources,
-            LocalDate day, ResourcesPerDay resourcesPerDay, Integer limit);
+            AllocationBeingModified allocation, LocalDate day, Integer limit);
 
     private int assignForDay(LocalDate day, int toBeAssigned) {
         int i = 0;
         int total = 0;
         List<Integer> maxPerAllocations = calculateLimits(toBeAssigned);
-        for (AllocationBeingModified withResourcesPerDay : allocations) {
-            ResourceAllocation<?> resourceAllocation = withResourcesPerDay
-                    .getBeingModified();
-            ResourcesPerDay resourcesPerDay = withResourcesPerDay
-                    .getGoal();
-            List<DayAssignment> assignments = createAssignmentsAtDay(
-                    resourceAllocation, withResourcesPerDay.getResources(),
-                    day,
-                    resourcesPerDay, maxPerAllocations.get(i));
-            resultAssignments.get(withResourcesPerDay).addAll(assignments);
+        for (AllocationBeingModified each : allocations) {
+            List<DayAssignment> assignments = createAssignmentsAtDay(each, day,
+                    maxPerAllocations.get(i));
+            resultAssignments.get(each).addAll(assignments);
             total += DayAssignment.sum(assignments);
             i++;
         }

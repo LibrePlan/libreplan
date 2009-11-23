@@ -149,9 +149,7 @@ public class SpecificResourceAllocation extends
         return SpecificDayAssignment.class;
     }
 
-    @Override
-    protected List<DayAssignment> createAssignmentsAtDay(
-            List<Resource> resources, LocalDate day,
+    public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
             ResourcesPerDay resourcesPerDay, int limit) {
         int hours = calculateTotalToDistribute(day, resourcesPerDay);
         SpecificDayAssignment specific = SpecificDayAssignment.create(day, Math

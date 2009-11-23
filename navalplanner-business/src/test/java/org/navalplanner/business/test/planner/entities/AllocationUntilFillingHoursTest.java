@@ -203,19 +203,26 @@ public class AllocationUntilFillingHoursTest {
     }
 
     private void givenAllocationsWithoutTask() {
-        allocations.add(AllocationBeingModified.create(createStubAllocationReturning(null), ResourcesPerDay.amount(2), resources));
-        allocations.add(AllocationBeingModified.create(createStubAllocationReturning(null), ResourcesPerDay.amount(2), resources));
+        allocations.add(AllocationBeingModified.create(
+                createStubAllocationReturning(SpecificResourceAllocation.class,
+                        null), ResourcesPerDay.amount(2), resources));
+        allocations.add(AllocationBeingModified.create(
+                createStubAllocationReturning(SpecificResourceAllocation.class,
+                        null), ResourcesPerDay.amount(2), resources));
     }
 
     private void givenAllocationsBelongingToDifferentTasks() {
         Task task = createStubTask();
-        allocations
-                .add(AllocationBeingModified.create(createStubAllocationReturning(task), ResourcesPerDay.amount(2), resources));
-        allocations
-                .add(AllocationBeingModified.create(createStubAllocationReturning(task), ResourcesPerDay.amount(2), resources));
+        allocations.add(AllocationBeingModified.create(
+                createStubAllocationReturning(SpecificResourceAllocation.class,
+                        task), ResourcesPerDay.amount(2), resources));
+        allocations.add(AllocationBeingModified.create(
+                createStubAllocationReturning(SpecificResourceAllocation.class,
+                        task), ResourcesPerDay.amount(2), resources));
         Task other = createStubTask();
-        allocations
-                .add(AllocationBeingModified.create(createStubAllocationReturning(other), ResourcesPerDay.amount(2), resources));
+        allocations.add(AllocationBeingModified.create(
+                createStubAllocationReturning(SpecificResourceAllocation.class,
+                        other), ResourcesPerDay.amount(2), resources));
     }
 
     private Task createStubTask() {
@@ -238,8 +245,9 @@ public class AllocationUntilFillingHoursTest {
         return result;
     }
 
-    private ResourceAllocation<?> createStubAllocationReturning(Task task) {
-        ResourceAllocation<?> resourceAllocation = createNiceMock(ResourceAllocation.class);
+    private ResourceAllocation<?> createStubAllocationReturning(
+            Class<? extends ResourceAllocation<?>> allocationClass, Task task) {
+        ResourceAllocation<?> resourceAllocation = createNiceMock(allocationClass);
         expect(resourceAllocation.getTask()).andReturn(task).anyTimes();
         replay(resourceAllocation);
         return resourceAllocation;

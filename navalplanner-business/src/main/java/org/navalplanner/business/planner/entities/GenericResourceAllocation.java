@@ -214,8 +214,7 @@ public class GenericResourceAllocation extends
         return GenericDayAssignment.class;
     }
 
-    @Override
-    protected List<DayAssignment> createAssignmentsAtDay(
+    public List<DayAssignment> createAssignmentsAtDay(
             List<Resource> resources, LocalDate day,
             ResourcesPerDay resourcesPerDay, final int maxLimit) {
         final int hours = Math.min(calculateTotalToDistribute(day,

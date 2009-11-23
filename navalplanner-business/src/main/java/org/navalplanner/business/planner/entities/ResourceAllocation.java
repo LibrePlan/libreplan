@@ -169,11 +169,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 protected List<DayAssignment> createAssignmentsAtDay(
-                        ResourceAllocation<?> resourceAllocation,
-                        List<Resource> resources, LocalDate day,
-                        ResourcesPerDay resourcesPerDay, Integer limit) {
-                    return resourceAllocation.createAssignmentsAtDay(resources,
-                            day, resourcesPerDay, limit);
+                        AllocationBeingModified allocation, LocalDate day,
+                        Integer limit) {
+                    return allocation.createAssignmentsAtDay(day, limit);
                 }
 
                 @Override
@@ -211,10 +209,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public abstract List<Resource> getAssociatedResources();
-
-    protected abstract List<DayAssignment> createAssignmentsAtDay(
-            List<Resource> resources, LocalDate day,
-            ResourcesPerDay resourcesPerDay, int limit);
 
     protected void setResourcesPerDay(ResourcesPerDay resourcesPerDay) {
         Validate.notNull(resourcesPerDay);
