@@ -23,6 +23,7 @@ package org.navalplanner.web.planner.taskedition;
 import static org.navalplanner.web.I18nHelper._;
 
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +45,18 @@ public class EditTaskCommand implements IEditTaskCommand {
     @Autowired
     private ITaskElementDAO taskElementDAO;
 
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
+
     private EditTaskController editTaskController;
 
     @Override
     @Transactional(readOnly = true)
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement) {
-
+        if (taskElement.getTaskSource() != null) {
+            taskSourceDAO.reattach(taskElement.getTaskSource());
+        }
         taskElementDAO.reattach(taskElement);
         if (taskElement instanceof Task) {
             forceLoadHoursGroup((Task) taskElement);
