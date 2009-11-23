@@ -21,9 +21,9 @@
 <?page title="${i18n:_('Navalpro: Scheduling')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
-<?component name="workerSearch"
-    class="org.navalplanner.web.common.components.WorkerSearch"
-    macroURI="/resources/search/worker_search.zul" ?>
+<?component name="newAllocationSelector"
+    class="org.navalplanner.web.common.components.NewAllocationSelector"
+    macroURI="/resources/search/allocation_selector.zul" ?>
 
 <zk>
     <zscript><![CDATA[
@@ -169,7 +169,7 @@
 
             <!-- Worker search -->
             <tabpanel>
-                <workerSearch id="workerSearch"/>
+                <newAllocationSelector id="newAllocationSelector"/>
                 <!--  Select worker -->
                 <hbox>
                     <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(event)" />

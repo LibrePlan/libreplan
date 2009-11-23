@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<vbox apply="org.navalplanner.web.resources.search.WorkerSearchController">
+<vbox apply="org.navalplanner.web.resources.search.NewAllocationSelectorController">
 
     <hbox>
         <vbox style="margin-right: 3px">

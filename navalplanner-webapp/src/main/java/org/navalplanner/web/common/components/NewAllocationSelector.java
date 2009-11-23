@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
-import org.navalplanner.web.resources.search.WorkerSearchController;
+import org.navalplanner.web.resources.search.NewAllocationSelectorController;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 /**
@@ -33,18 +33,18 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
  * @author Diego Pino García <dpino@igalia.com>
  */
 @SuppressWarnings("serial")
-public class WorkerSearch extends HtmlMacroComponent {
+public class NewAllocationSelector extends HtmlMacroComponent {
 
     private INewAllocationsAdder allocationsAdder;
 
     private List<Worker> getWorkers() {
-        WorkerSearchController controller = (WorkerSearchController) this
+        NewAllocationSelectorController controller = (NewAllocationSelectorController) this
                 .getVariable("controller", true);
         return controller.getSelectedWorkers();
     }
 
     public void clearAll() {
-        WorkerSearchController controller = (WorkerSearchController) this
+        NewAllocationSelectorController controller = (NewAllocationSelectorController) this
                 .getVariable("controller", true);
         controller.clearAll();
     }

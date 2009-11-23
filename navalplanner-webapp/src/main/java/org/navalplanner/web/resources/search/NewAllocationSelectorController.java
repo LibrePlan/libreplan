@@ -58,7 +58,7 @@ import org.zkoss.zul.Treerow;
  * @author Diego Pino Garcia <dpino@igalia.com>
  *
  */
-public class WorkerSearchController extends GenericForwardComposer {
+public class NewAllocationSelectorController extends GenericForwardComposer {
 
     @Autowired
     private IWorkerSearchModel workerSearchModel;
@@ -73,7 +73,7 @@ public class WorkerSearchController extends GenericForwardComposer {
 
     private CriterionRenderer criterionRenderer = new CriterionRenderer();
 
-    public WorkerSearchController() {
+    public NewAllocationSelectorController() {
 
     }
 

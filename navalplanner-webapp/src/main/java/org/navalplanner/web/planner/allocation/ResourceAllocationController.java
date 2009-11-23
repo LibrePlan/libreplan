@@ -43,7 +43,7 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.ViewSwitcher;
-import org.navalplanner.web.common.components.WorkerSearch;
+import org.navalplanner.web.common.components.NewAllocationSelector;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
@@ -116,7 +116,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Button applyButton;
 
-    private WorkerSearch workerSearch;
+    private NewAllocationSelector newAllocationSelector;
 
     private Tab tbResourceAllocation;
 
@@ -163,7 +163,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         orderElementHoursGrid.setModel(new ListModelList(
                 resourceAllocationModel.getHoursAggregatedByCriterions()));
         orderElementHoursGrid.setRowRenderer(createOrderElementHoursRenderer());
-        workerSearch
+        newAllocationSelector
                 .setAllocationsAdder(modifyApplyButtonIfNeeded(resourceAllocationModel));
         showWindow();
     }
@@ -232,13 +232,13 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     /**
-     * Pick resources selected from {@link WorkerSearch} and add them to
+     * Pick resources selected from {@link NewAllocationSelector} and add them to
      * resource allocation list
      *
      * @param e
      */
     public void onSelectWorkers(Event e) {
-        workerSearch.addChoosen();
+        newAllocationSelector.addChoosen();
         tbResourceAllocation.setSelected(true);
         Util.reloadBindings(allocationsList);
     }
@@ -250,7 +250,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
      */
     public void onCloseSelectWorkers() {
         tbResourceAllocation.setSelected(true);
-        workerSearch.clearAll();
+        newAllocationSelector.clearAll();
     }
 
     private final class AdvanceAllocationResultReceiver implements
@@ -395,7 +395,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     private void clear() {
-        workerSearch.clearAll();
+        newAllocationSelector.clearAll();
         allocationsList.getItems().clear();
     }
 
