@@ -116,20 +116,6 @@ public class MaterialCategoryDAOTest {
     }
 
     @Test
-    public void testRemoveParentMaterialCategory() {
-        MaterialCategory category = createValidMaterialCategory();
-        MaterialCategory subcategory = createValidMaterialCategory();
-        category.addSubcategory(subcategory);
-        materialCategoryDAO.save(category);
-        int previous = category.getSubcategories().size();
-
-        subcategory.removeParent();
-        materialCategoryDAO.save(category);
-        Set<MaterialCategory> childrenList = category.getSubcategories();
-        assertEquals(previous - 1, childrenList.size());
-    }
-
-    @Test
     public void testSaveMaterialSubcategoryTopDown() {
         MaterialCategory category = createValidMaterialCategory();
         MaterialCategory subcategory = createValidMaterialCategory();
@@ -148,22 +134,4 @@ public class MaterialCategoryDAOTest {
         }
     }
 
-    @Test
-    public void testSaveMaterialSubcategoryBottomUp() {
-        MaterialCategory category = createValidMaterialCategory();
-        MaterialCategory subcategory = createValidMaterialCategory();
-        subcategory.setParent(category);
-        //materialCategoryDAO.save(subcategory); //unnecessary due to cascade=all
-        materialCategoryDAO.save(category);
-        List<MaterialCategory> list = materialCategoryDAO.list(MaterialCategory.class);
-        for(MaterialCategory listCategory:list) {
-            if(listCategory.getId()==category.getId()) {
-                assertEquals(1, listCategory.getSubcategories().size());
-            }
-            if(listCategory.getId()==subcategory.getId()) {
-                assertNotNull(listCategory.getParent());
-                assertEquals(category.getId(), listCategory.getParent().getId());
-            }
-        }
-    }
 }

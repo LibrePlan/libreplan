@@ -72,10 +72,7 @@ public class Material extends BaseEntity {
     }
 
     public void setCategory(MaterialCategory category) {
-        if(this.category!=null)
-            this.category.removeMaterial(this);
         this.category = category;
-        category.addMaterial(this);
     }
 
     public String getDescription() {

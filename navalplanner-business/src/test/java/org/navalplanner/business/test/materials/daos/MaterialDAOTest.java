@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.log4j.Category;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -43,9 +44,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
+
 /**
  * Test for {@MaterialDAO}
  *
@@ -64,6 +67,11 @@ public class MaterialDAOTest {
     @Test
     public void testInSpringContainer() {
         assertNotNull(materialDAO);
+    }
+
+    private MaterialCategory createValidMaterialCategory() {
+        MaterialCategory materialCategory = MaterialCategory.create(UUID.randomUUID().toString());
+        return materialCategory;
     }
 
     private Material createValidMaterial() {
@@ -85,7 +93,6 @@ public class MaterialDAOTest {
     public void testRemoveMaterial() throws InstanceNotFoundException {
         Material material = createValidMaterial();
         materialDAO.save(material);
-        //material.getCategory().removeMaterial(material);
         materialDAO.remove(material.getId());
         assertFalse(materialDAO.exists(material.getId()));
     }
@@ -101,14 +108,18 @@ public class MaterialDAOTest {
 
     @Test
     public void testListMaterialsFromCategory() {
-        Material material1 = createValidMaterial();
-        int previous = material1.getCategory().getMaterials().size();
-        Material material2 = createValidMaterial();
-        material2.setCategory(material1.getCategory());
-        materialDAO.save(material1);
-        materialDAO.save(material2);
+        MaterialCategory category = createValidMaterialCategory();
+        int previous = category.getMaterials().size();
+        Material material = createValidMaterial();
+        category.addMaterial(material);
 
-        Set<Material> list = material1.getCategory().getMaterials();
-        assertEquals(previous + 1, list.size());
+        materialCategoryDAO.save(category);
+        try {
+            category = materialCategoryDAO.find(category.getId());
+            assertEquals(previous + 1, category.getMaterials().size());
+        } catch (InstanceNotFoundException e) {
+
+        }
     }
+
 }

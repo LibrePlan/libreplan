@@ -20,9 +20,12 @@
 
 package org.navalplanner.business.materials.entities;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.collections.Unmodifiable;
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.BaseEntity;
 
@@ -68,44 +71,31 @@ public class MaterialCategory extends BaseEntity {
         return parent;
     }
 
-    /* WARNING: do not use this method to set parent to null.
-     * It must be done using removeParent().
-     */
     public void setParent(MaterialCategory parent) {
+        Validate.notNull(parent);
         this.parent = parent;
-        parent.addSubcategory(this);
-    }
-
-    public void removeParent() {
-        MaterialCategory category = parent;
-        parent = null;
-        category.removeSubcategory(this);
     }
 
     public Set<MaterialCategory> getSubcategories() {
-        return subcategories;
+        return Collections.unmodifiableSet(subcategories);
     }
 
     public void addSubcategory (MaterialCategory subcategory) {
         subcategories.add(subcategory);
-        if(subcategory.getParent()==null)
-            subcategory.setParent(this);
+        subcategory.setParent(this);
     }
 
     public void removeSubcategory (MaterialCategory subcategory) {
         subcategories.remove(subcategory);
-        if(subcategory.getParent()!=null)
-            subcategory.removeParent();
     }
 
     public Set<Material> getMaterials() {
-        return materials;
+        return Collections.unmodifiableSet(materials);
     }
 
     public void addMaterial(Material material) {
         materials.add(material);
-        if(material.getCategory()!=this)
-            material.setCategory(this);
+        material.setCategory(this);
     }
     public void removeMaterial(Material material) {
         materials.remove(material);

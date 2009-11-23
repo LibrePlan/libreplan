@@ -34,14 +34,14 @@
 
     <property name="name" />
 
-    <set name="subcategories" inverse="false" cascade="all">
+    <set name="subcategories" inverse="true" cascade="all">
         <key column="PARENT_ID"/>
         <one-to-many class="MaterialCategory"/>
     </set>
 
     <many-to-one name="parent" class="MaterialCategory" column="PARENT_ID" />
 
-    <set name="materials" inverse="false" cascade="all">
+    <set name="materials" inverse="true" cascade="all">
         <key column="CATEGORY_ID"/>
         <one-to-many class="Material"/>
     </set>
