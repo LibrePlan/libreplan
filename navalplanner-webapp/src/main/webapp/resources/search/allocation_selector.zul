@@ -18,20 +18,33 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<vbox apply="org.navalplanner.web.resources.search.NewAllocationSelectorController">
+<zk>
+    <zscript><![CDATA[
+       selectorController = new org.navalplanner.web.resources.search.NewAllocationSelectorController();
+    ]]>
+    </zscript>
 
+
+<vbox apply="${selectorController}">
+    <hbox>
+        <label value="${i18n:_('Assignment Type')}" />
+        <radiogroup id="allocationTypeSelector" orient="vertical">
+            <radio forEach="${selectorController.allocationTypes}"
+                label="${each.name}" value="${each}" />
+        </radiogroup>
+    </hbox>
     <hbox>
         <vbox style="margin-right: 3px">
             <!-- Name  -->
             <label value="${i18n:_('Name/NIF')}" />
             <textbox id="txtName" width="200px" style="margin-bottom: 5px"
-                onChanging="controller.searchWorkers(event)" />
+                onChanging="selectorController.searchWorkers(event)" />
 
             <!--Matchings -->
             <label value="${i18n:_('Found workers')}"/>
             <listbox id="listBoxWorkers" width="250px" rows="10"
                 vflex="true" multiple="true"
-                itemRenderer="@{controller.listitemRenderer}">
+                itemRenderer="@{selectorController.listitemRenderer}">
                 <listhead>
                     <listheader label="${i18n:_('Name')}" sort="auto" />
                     <listheader label="${i18n:_('NIF')}" sort="auto" />
@@ -44,7 +57,7 @@
             <label value="${i18n:_('Criteria')}" />
             <tree id="criterionsTree" width="280px"
                 rows="10" vflex="true" multiple="true"
-                model="@{controller.criterions}">
+                model="@{selectorController.criterions}">
                 <treecols>
                     <treecol label="Name" />
                 </treecols>
@@ -52,3 +65,4 @@
         </vbox>
     </hbox>
 </vbox>
+</zk>

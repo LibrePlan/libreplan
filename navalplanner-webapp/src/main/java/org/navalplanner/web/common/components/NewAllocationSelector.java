@@ -20,12 +20,16 @@
 
 package org.navalplanner.web.common.components;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.List;
 
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.navalplanner.web.resources.search.NewAllocationSelectorController;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zul.api.Radio;
+import org.zkoss.zul.api.Radiogroup;
 
 /**
  * ZK macro component for searching {@link Worker} entities
@@ -35,18 +39,53 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 @SuppressWarnings("serial")
 public class NewAllocationSelector extends HtmlMacroComponent {
 
+    public enum AllocationType {
+        SPECIFIC("specific allocation"), GENERIC("generic allocation");
+
+        private final String name;
+
+        private AllocationType(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return _(name);
+        }
+
+        public static AllocationType getSelected(Radiogroup radioGroup) {
+            Radio selectedItemApi = radioGroup.getSelectedItemApi();
+            if (selectedItemApi == null) {
+                return null;
+            }
+            String name = selectedItemApi.getValue();
+            return AllocationType.valueOf(name);
+        }
+
+        public void doTheSelectionOn(Radiogroup radioGroup) {
+            for (int i = 0; i < radioGroup.getItemCount(); i++) {
+                Radio radio = radioGroup.getItemAtIndexApi(i);
+                if (name().equals(radio.getValue())) {
+                    radioGroup.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+    }
+
     private INewAllocationsAdder allocationsAdder;
 
     private List<Worker> getWorkers() {
-        NewAllocationSelectorController controller = (NewAllocationSelectorController) this
-                .getVariable("controller", true);
+        NewAllocationSelectorController controller = getController();
         return controller.getSelectedWorkers();
     }
 
     public void clearAll() {
-        NewAllocationSelectorController controller = (NewAllocationSelectorController) this
+        getController().clearAll();
+    }
+
+    private NewAllocationSelectorController getController() {
+        return (NewAllocationSelectorController) this
                 .getVariable("controller", true);
-        controller.clearAll();
     }
 
     public void addChoosen() {
@@ -55,6 +94,10 @@ public class NewAllocationSelector extends HtmlMacroComponent {
 
     public void setAllocationsAdder(INewAllocationsAdder allocationsAdder) {
         this.allocationsAdder = allocationsAdder;
+        if (getController() != null) {
+            getController().clearAll();
+        }
+
     }
 
 }

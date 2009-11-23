@@ -21,6 +21,8 @@
 package org.navalplanner.web.resources.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,11 +31,13 @@ import java.util.Map.Entry;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Label;
@@ -41,6 +45,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.SimpleTreeModel;
 import org.zkoss.zul.SimpleTreeNode;
@@ -67,11 +72,15 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
 
     private Textbox txtName;
 
+    private Radiogroup allocationTypeSelector;
+
     private Tree criterionsTree;
 
     private Listbox listBoxWorkers;
 
     private CriterionRenderer criterionRenderer = new CriterionRenderer();
+
+    private AllocationType currentAllocationType;
 
     public NewAllocationSelectorController() {
 
@@ -89,9 +98,8 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
      */
     private void initController() {
         // Add event listener onSelect to criterionsTree widget
-        Tree tree = (Tree) self.getFellowIfAny("criterionsTree");
-        if (tree != null) {
-            tree.addEventListener("onSelect", new EventListener() {
+        if (criterionsTree != null) {
+            criterionsTree.addEventListener("onSelect", new EventListener() {
 
                 // Whenever an element of the tree is selected, a search query
                 // is executed, refreshing the results into the workers listbox
@@ -108,6 +116,50 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
 
         // Show all workers
         refreshListBoxWorkers(workerSearchModel.getAllWorkers());
+
+        allocationTypeSelector.addEventListener(Events.ON_CHECK,
+                new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        AllocationType type = AllocationType
+                                .getSelected(allocationTypeSelector);
+                        onType(type);
+                    }
+                });
+        listBoxWorkers.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (currentAllocationType == AllocationType.GENERIC) {
+                    clearSelection(listBoxWorkers);
+                }
+            }
+        });
+        doInitialSelection();
+    }
+
+    private void doInitialSelection() {
+        currentAllocationType = AllocationType.SPECIFIC;
+        AllocationType.SPECIFIC.doTheSelectionOn(allocationTypeSelector);
+        onType(currentAllocationType);
+    }
+
+    private void onType(AllocationType type) {
+        listBoxWorkers.setDisabled(AllocationType.GENERIC == type);
+        if (AllocationType.GENERIC == type) {
+            clearSelection(listBoxWorkers);
+        }
+        currentAllocationType = type;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void clearSelection(Listbox listBox) {
+        Set<Listitem> selectedItems = new HashSet<Listitem>(listBox
+                .getSelectedItems());
+        for (Listitem each : selectedItems) {
+            listBox.removeItemFromSelection(each);
+        }
     }
 
     /**
@@ -167,6 +219,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
         txtName.setValue("");
         refreshListBoxWorkers(workerSearchModel.getAllWorkers());
         criterionsTree.setModel(getCriterions());
+        doInitialSelection();
     }
 
     public List<Worker> getSelectedWorkers() {
@@ -188,7 +241,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
      */
     private class CriterionTreeNode extends SimpleTreeNode {
 
-        public CriterionTreeNode(Object data, List children) {
+        public CriterionTreeNode(Object data, List<CriterionTreeNode> children) {
             super(data, children);
         }
 
@@ -228,6 +281,10 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
         return new SimpleTreeModel(root);
     }
 
+    public List<AllocationType> getAllocationTypes() {
+        return Arrays.asList(AllocationType.values());
+    }
+
     /**
      * Converts {@link CriterionType} to {@link CriterionTreeNode}
      *
@@ -262,7 +319,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
      * @return
      */
     private CriterionTreeNode asNode(Criterion criterion) {
-        return new CriterionTreeNode(criterion, new ArrayList());
+        return new CriterionTreeNode(criterion, new ArrayList<CriterionTreeNode>());
     }
 
     /**
