@@ -48,4 +48,28 @@ public class MaterialCategory extends BaseEntity {
     protected MaterialCategory() {
 
     }
+
+    public static MaterialCategory create(String name) {
+        return (MaterialCategory) create(new MaterialCategory(name));
+    }
+
+    protected MaterialCategory(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public MaterialCategory getParent() {
+        return parent;
+    }
+
+    public void setParent(MaterialCategory parentId) {
+        this.parent = parentId;
+    }
 }
