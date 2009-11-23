@@ -32,7 +32,7 @@ import org.navalplanner.business.common.BaseEntity;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-public class Material extends BaseEntity {
+public class Material extends BaseEntity implements Comparable {
 
     @NotNull
     @NotEmpty
@@ -108,6 +108,13 @@ public class Material extends BaseEntity {
 
     public void setUnitType(UnitTypeEnum unitType) {
         this.unitType = unitType;
+    }
+
+    @Override
+    public int compareTo(Object arg0) {
+      final Material material = (Material) arg0;
+
+      return code.compareTo(material.getCode());
     }
 
 }

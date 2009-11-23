@@ -73,16 +73,16 @@
                                 <panelchildren>
                                     <button label="${i18n:_('Add')}"
                                         onClick="materialsController.addMaterialToMaterialCategory(categoriesTree.selectedItem)" />
-                                    <grid id="gridMaterials"
+                                    <newdatasortablegrid id="gridMaterials"
                                         fixedLayout="true"
                                         model="@{materialsController.materials}">
                                         <columns>
-                                            <column label="${i18n:_('Code')}" />
-                                            <column label="${i18n:_('Description')}" />
-                                            <column label="${i18n:_('Unit price')}" />
-                                            <column label="${i18n:_('Unit type')}" />
-                                            <column label="${i18n:_('Disabled')}" />
-                                            <column label="" />
+                                            <newdatasortablecolumn label="${i18n:_('Code')}" />
+                                            <newdatasortablecolumn label="${i18n:_('Description')}" />
+                                            <newdatasortablecolumn label="${i18n:_('Unit price')}" />
+                                            <newdatasortablecolumn label="${i18n:_('Unit type')}" />
+                                            <newdatasortablecolumn label="${i18n:_('Disabled')}" />
+                                            <newdatasortablecolumn label="" />
                                         </columns>
                                         <rows>
                                             <row self="@{each='material'}" value="@{material}">
@@ -101,7 +101,7 @@
                                                 </button>
                                             </row>
                                         </rows>
-                                    </grid>
+                                    </newdatasortablegrid>
 
                                 </panelchildren>
                             </panel>
