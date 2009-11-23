@@ -36,12 +36,14 @@ public interface IMaterialsModel {
 
     void addMaterialCategory(MaterialCategory parent, MaterialCategory child) throws ValidationException;
 
+    void addMaterialToMaterialCategory(MaterialCategory materialCategory);
+
+    void confirmSave() throws ValidationException;
+
     MutableTreeModel<MaterialCategory> getMaterialCategories();
 
+    List<Material> getMaterials(MaterialCategory materialCategory);
+
     void removeMaterialCategory(MaterialCategory materialCategory);
-
-	void addMaterialToMaterialCategory(MaterialCategory materialCategory);
-
-	List<Material> getMaterials();
 
 }

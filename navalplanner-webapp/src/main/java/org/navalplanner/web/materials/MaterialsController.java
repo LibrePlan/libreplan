@@ -22,6 +22,7 @@ package org.navalplanner.web.materials;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
@@ -43,6 +45,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
@@ -68,7 +71,7 @@ public class MaterialsController extends
 
     private Tree categoriesTree;
 
-    private Grid materials;
+    private Grid gridMaterials;
 
     private Textbox txtCategory;
 
@@ -81,6 +84,7 @@ public class MaterialsController extends
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("materialsController", this, true);
+        messagesForUser = new MessagesForUser(messagesContainer);
     }
 
     public TreeModel getMaterialCategories() {
@@ -233,11 +237,52 @@ public class MaterialsController extends
         }
         final MaterialCategory materialCategory = (MaterialCategory) treeitem.getValue();
         materialsModel.addMaterialToMaterialCategory(materialCategory);
-        Util.reloadBindings(materials);
+        Util.reloadBindings(gridMaterials);
+    }
+
+    public void saveAndExit() {
+        save();
+        messagesForUser.showMessage(Level.INFO, _("Materials saved"));
+    }
+
+    private void save() {
+        validate();
+        try {
+            materialsModel.confirmSave();
+        } catch (ValidationException e) {
+            messagesForUser.showInvalidValues(e);
+        }
+    }
+
+    private void validate() {
+        ConstraintChecker.
+    }
+
+    public void saveAndContinue() {
+
+    }
+
+    public void cancel() {
+
+    }
+
+    public void refreshMaterials() {
+        final List<Material> materials = getMaterials();
+        gridMaterials.setModel(new SimpleListModel(materials));
+        Util.reloadBindings(gridMaterials);
     }
 
     public List<Material> getMaterials() {
-        return materialsModel.getMaterials();
+        return getMaterials(categoriesTree.getSelectedItem());
+    }
+
+    private List<Material> getMaterials(Treeitem treeitem) {
+        final List<Material> result = new ArrayList<Material>();
+        if (treeitem != null) {
+            final MaterialCategory materialCategory = (MaterialCategory) treeitem.getValue();
+            result.addAll(materialsModel.getMaterials(materialCategory));
+        }
+        return result;
     }
 
 }

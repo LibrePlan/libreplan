@@ -11,7 +11,7 @@
     </id>
     <version name="version" access="property" type="long" />
 
-    <property name="code" unique="true"/>
+    <property name="code" unique="true" not-null="true"/>
 
     <property name="description"/>
 

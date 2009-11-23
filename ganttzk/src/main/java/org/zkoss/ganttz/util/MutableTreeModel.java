@@ -324,4 +324,8 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         return getChildCount(getRoot()) == 0;
     }
 
+    public boolean hasChildren(T node) {
+        return getChildCount(node) > 0;
+    }
+
 }

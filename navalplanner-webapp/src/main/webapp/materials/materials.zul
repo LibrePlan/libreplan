@@ -1,21 +1,21 @@
 <!--
-  This file is part of ###PROJECT_NAME###
+    This file is part of ###PROJECT_NAME###
 
-  Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
-                     Desenvolvemento Tecnolóxico de Galicia
+    Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+    Desenvolvemento Tecnolóxico de Galicia
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <?page  id="labelTypesList"?>
@@ -29,57 +29,93 @@
 
 <zk>
     <window self="@{define(content)}"
-        apply="org.navalplanner.web.materials.MaterialsController" >
-
-        <hbox>
-
+        apply="org.navalplanner.web.materials.MaterialsController">
         <vbox id="messagesContainer" />
+        <tabbox>
+            <tabs>
+                <tab label="${i18n:_('Materials')}"></tab>
+            </tabs>
+            <tabpanels>
+                <tabpanel>
+                    <hbox>
+                        <!-- Categories  -->
+                        <vbox>
+                            <panel title="${i18n:_('Categories')}"
+                                border="normal">
+                                <panelchildren>
+                                    <textbox id="txtCategory"
+                                        style="margin-bottom: 4px;" />
+                                    <button label="${i18n:_('Add')}"
+                                        onClick="materialsController.addMaterialCategory()" />
+                                    <tree id="categoriesTree"
+                                        width="280px" rows="10" vflex="true" multiple="true"
+                                        model="@{materialsController.materialCategories}"
+                                        treeitemRenderer="@{materialsController.materialCategoryRenderer}"
+                                        onSelect="materialsController.refreshMaterials()">
+                                        <treecols>
+                                            <treecol label="Name" />
+                                            <treecol label="" />
+                                        </treecols>
+                                    </tree>
+                                </panelchildren>
+                            </panel>
+                        </vbox>
 
-        <vbox>
-            <panel title="${i18n:_('Categories')}" border="normal">
-                <panelchildren>
-                    <textbox id="txtCategory" style="margin-bottom: 4px;" />
-                    <button label="${i18n:_('Add')}" onClick="materialsController.addMaterialCategory()"/>
-                    <tree id="categoriesTree" width="280px" rows="10"
-                        vflex="true" multiple="true"
-                        model="@{materialsController.materialCategories}"
-                        treeitemRenderer="@{materialsController.materialCategoryRenderer}">
-                        <treecols>
-                            <treecol label="Name" />
-                            <treecol label="" />
-                        </treecols>
-                    </tree>
-                </panelchildren>
-            </panel>
-        </vbox>
+                        <!-- Materials -->
+                        <vbox>
+                            <panel title="${i18n:_('Materials')}"
+                                border="normal">
+                                <panelchildren>
+                                    <button label="${i18n:_('Add')}"
+                                        onClick="materialsController.addMaterialToMaterialCategory(categoriesTree.selectedItem)" />
+                                    <grid id="gridMaterials"
+                                        fixedLayout="true"
+                                        model="@{materialsController.materials}">
+                                        <columns>
+                                            <column
+                                                label="${i18n:_('Code')}" />
+                                            <column
+                                                label="${i18n:_('Description')}" />
+                                            <column
+                                                label="${i18n:_('Unit price')}" />
+                                            <column
+                                                label="${i18n:_('Unit type')}" />
+                                            <column
+                                                label="${i18n:_('Disabled')}" />
+                                        </columns>
+                                        <rows>
+                                            <row
+                                                self="@{each='material'}" value="@{material}">
+                                                <textbox
+                                                    value="@{material.code}" constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                                                <textbox
+                                                    value="@{material.description}" />
+                                                <intbox
+                                                    value="@{material.defaultUnitPrice}" constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                                                <textbox
+                                                    value="@{material.unitType}" constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                                                <checkbox
+                                                    checked="@{material.disabled}" />
+                                            </row>
+                                        </rows>
+                                    </grid>
 
-        <vbox>
-            <panel title="${i18n:_('Materials')}" border="normal">
-                <panelchildren>
-                    <button label="${i18n:_('Add')}" onClick="materialsController.addMaterialToMaterialCategory(categoriesTree.selectedItem)"/>
-                    <grid id="materials" model="@{materialsController.materials}">
-                        <columns>
-                            <column label="${i18n:_('Code')}"/>
-                            <column label="${i18n:_('Description')}"/>
-                            <column label="${i18n:_('Unit price')}"/>
-                            <column label="${i18n:_('Unit type')}"/>
-                            <column label="${i18n:_('Disabled')}"/>
-                        </columns>
-                        <rows>
-                            <row self="@{each='material'}" value="@{material}">
-                                <textbox value="@{material.code}" />
-                                <textbox value="@{material.description}" />
-                                <textbox value="@{material.defaultUnitPrice}" />
-                                <textbox value="@{material.unitType}" />
-                                <checkbox checked="@{material.disabled}" />
-                            </row>
-                        </rows>
-                    </grid>
-                </panelchildren>
-            </panel>
-        </vbox>
+                                </panelchildren>
+                            </panel>
+                        </vbox>
 
-        </hbox>
+                    </hbox>
+                </tabpanel>
+            </tabpanels>
+        </tabbox>
+
+        <button onClick="materialsController.saveAndExit()"
+            label="${i18n:_('Save')}" />
+        <button onClick="materialsController.saveAndContinue()"
+            label="${i18n:_('Save &amp; Continue')}" />
+        <button onClick="materialsController.cancel()"
+            label="${i18n:_('Cancel')}" />
 
     </window>
+
 </zk>

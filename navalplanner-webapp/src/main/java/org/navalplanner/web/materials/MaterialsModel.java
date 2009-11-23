@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.Hibernate;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
@@ -32,31 +33,7 @@ public class MaterialsModel implements IMaterialsModel {
 
     MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel.create(MaterialCategory.class);
 
-    List<Material> materials = new ArrayList<Material>();
-
-    private void initializeMaterialCategories() {
-        final List<MaterialCategory> categories = categoryDAO.getAllRootMaterialCategories();
-        for (MaterialCategory materialCategory: categories) {
-            materialCategories.addToRoot(materialCategory);
-            addCategories(materialCategory, materialCategory.getSubcategories());
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void initializeMaterials() {
-        materials = new ArrayList(materialDAO.getAll());
-    }
-
-    private void addCategories(MaterialCategory materialCategory, Set<MaterialCategory> categories) {
-        for (MaterialCategory category: categories) {
-            materialCategories.add(materialCategory, category);
-            final Set<MaterialCategory> subcategories = category.getSubcategories();
-            if (subcategories != null) {
-                addCategories(category, subcategories);
-            }
-        }
-    }
-
+    @Override
     @Transactional(readOnly=true)
     public MutableTreeModel<MaterialCategory> getMaterialCategories() {
         if (materialCategories.isEmpty()) {
@@ -65,13 +42,38 @@ public class MaterialsModel implements IMaterialsModel {
         return materialCategories;
     }
 
+    private void initializeMaterialCategories() {
+        final List<MaterialCategory> categories = categoryDAO.getAllRootMaterialCategories();
+        for (MaterialCategory materialCategory: categories) {
+            initializeMaterials(materialCategory.getMaterials());
+            materialCategories.addToRoot(materialCategory);
+            addCategories(materialCategory, materialCategory.getSubcategories());
+        }
+    }
+
+    private void initializeMaterials(Set<Material> materials) {
+        for (Material each: materials) {
+            each.getDescription();
+        }
+    }
+
+    private void addCategories(MaterialCategory materialCategory, Set<MaterialCategory> categories) {
+        for (MaterialCategory category: categories) {
+            initializeMaterials(category.getMaterials());
+            materialCategories.add(materialCategory, category);
+            final Set<MaterialCategory> subcategories = category.getSubcategories();
+            if (subcategories != null) {
+                addCategories(category, subcategories);
+            }
+        }
+    }
+
     @Override
     @Transactional(readOnly=true)
-    public List<Material> getMaterials() {
-        if (materials.isEmpty()) {
-            initializeMaterials();
-        }
-        return materials;
+    public List<Material> getMaterials(MaterialCategory materialCategory) {
+        List<Material> result = new ArrayList<Material>();
+        result.addAll(materialCategory.getMaterials());
+        return result;
     }
 
     @Override
@@ -115,7 +117,30 @@ public class MaterialsModel implements IMaterialsModel {
     public void addMaterialToMaterialCategory(MaterialCategory materialCategory) {
         Material material = Material.create("");
         material.setCategory(materialCategory);
-        materials.add(material);
+        materialCategory.addMaterial(material);
+    }
+
+    @Override
+    @Transactional
+    public void confirmSave() throws ValidationException {
+        List<MaterialCategory> categories = new ArrayList<MaterialCategory>();
+        asList(materialCategories.getRoot(), categories);
+        for (MaterialCategory each: categories) {
+            categoryDAO.save(each);
+        }
+    }
+
+    private void asList(MaterialCategory root, List<MaterialCategory> result) {
+        List<MaterialCategory> list = new ArrayList<MaterialCategory>();
+        for (int i = 0; i < materialCategories.getChildCount(root); i++) {
+            final MaterialCategory materialCategory = materialCategories.getChild(root, i);
+            list.add(materialCategory);
+            result.add(materialCategory);
+        }
+
+        for (MaterialCategory each: list) {
+            asList(each, result);
+        }
     }
 
 }
