@@ -23,6 +23,7 @@ package org.navalplanner.business.materials.entities;
 import java.math.BigDecimal;
 
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -42,10 +43,59 @@ public class Material extends BaseEntity {
 
     private boolean disabled;
 
+    @NotNull
     private MaterialCategory category;
 
     // Default constructor, needed by Hibernate
     protected Material() {
 
+    }
+
+    public static Material create(String materialCode) {
+        return (Material) create(new Material(materialCode));
+    }
+
+    protected Material(String materialCode) {
+        this.materialCode = materialCode;
+    }
+
+    public String getMaterialCode() {
+        return materialCode;
+    }
+
+    public void setMaterialCode(String materialCode) {
+        this.materialCode = materialCode;
+    }
+
+    public MaterialCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(MaterialCategory category) {
+        this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public BigDecimal getDefaultUnitPrice() {
+        return defaultUnitPrice;
+    }
+
+    public void setDefaultUnitPrice(BigDecimal defaultUnitPrice) {
+        this.defaultUnitPrice = defaultUnitPrice;
     }
 }
