@@ -404,7 +404,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         close();
     }
 
-    public void advanceAllocation() {
+    public void goToAdvancedAllocation() {
         AllocationResult allocationResult = formBinder.getLastAllocation();
         if (allocationResult.getAggregate().isEmpty()) {
             formBinder.doApply();

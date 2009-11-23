@@ -186,8 +186,8 @@
         <button label="${i18n:_('Apply')}" id="applyButton" />
         <button label="${i18n:_('Cancel')}"
             onClick="allocationController.cancel()" />
-        <button label="${i18n:_('Advance allocation')}"
-            onClick="allocationController.advanceAllocation();" />
+        <button label="${i18n:_('Advanced Allocation')}"
+            onClick="allocationController.goToAdvancedAllocation();" />
     </hbox>
     </window>
 
