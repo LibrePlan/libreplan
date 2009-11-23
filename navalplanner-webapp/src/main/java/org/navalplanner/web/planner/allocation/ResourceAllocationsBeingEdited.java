@@ -249,9 +249,8 @@ public class ResourceAllocationsBeingEdited {
 
     private AllocationBeingModified instantiate(
             AllocationDTO key) {
-        return new AllocationBeingModified(
-                createAllocation(key), key
-                .getResourcesPerDay(), resourcesMatchingCriterions);
+        return AllocationBeingModified.create(createAllocation(key), key
+        .getResourcesPerDay(), resourcesMatchingCriterions);
     }
 
     private Integer from(Date startDate, LocalDate end) {

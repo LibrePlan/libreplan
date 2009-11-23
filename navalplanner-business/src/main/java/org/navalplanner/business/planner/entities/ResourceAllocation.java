@@ -243,13 +243,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public AllocationBeingModified withDesiredResourcesPerDay(
             ResourcesPerDay resourcesPerDay) {
-        return new AllocationBeingModified(this, resourcesPerDay,
-                getAssociatedResources());
+        return AllocationBeingModified.create(this, resourcesPerDay, getAssociatedResources());
     }
 
     public AllocationBeingModified copyWithCurrentResourcesPerDay() {
-        return new AllocationBeingModified(this.copy(), getResourcesPerDay(),
-                getAssociatedResources());
+        return AllocationBeingModified.create(this.copy(), getResourcesPerDay(), getAssociatedResources());
     }
 
     public abstract IAllocatable withPreviousAssociatedResources();

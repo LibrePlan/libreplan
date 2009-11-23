@@ -26,12 +26,64 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Resource;
 
 public class AllocationBeingModified {
+
+    private static class GenericAllocationBeingModified extends
+            AllocationBeingModified {
+        GenericAllocationBeingModified(
+                ResourceAllocation<?> resourceAllocation,
+                ResourcesPerDay resourcesPerDay,
+                Collection<? extends Resource> resources) {
+            super(resourceAllocation, resourcesPerDay, resources);
+            Validate.isTrue(!resources.isEmpty());
+        }
+    }
+
+    private static class SpecificAllocationBeingModified extends
+            AllocationBeingModified {
+
+        SpecificAllocationBeingModified(
+                ResourceAllocation<?> resourceAllocation,
+                ResourcesPerDay resourcesPerDay,
+                Collection<? extends Resource> resources) {
+            super(resourceAllocation, resourcesPerDay, resources);
+        }
+    }
+
+    public static AllocationBeingModified create(
+            ResourceAllocation<?> resourceAllocation,
+            ResourcesPerDay resourcesPerDay,
+            Collection<? extends Resource> resources) {
+        if (resourceAllocation instanceof GenericResourceAllocation) {
+            GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
+            return create(generic, resourcesPerDay, resources);
+
+        } else {
+            SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
+            return create(specific, resourcesPerDay);
+        }
+    }
+
+    public static AllocationBeingModified create(
+            GenericResourceAllocation resourceAllocation,
+            ResourcesPerDay resourcesPerDay, List<Resource> resources) {
+        return new GenericAllocationBeingModified(resourceAllocation,
+                resourcesPerDay, resources);
+    }
+
+    public static AllocationBeingModified create(
+            SpecificResourceAllocation resourceAllocation,
+            ResourcesPerDay resourcesPerDay) {
+        return new SpecificAllocationBeingModified(resourceAllocation,
+                resourcesPerDay, Collections.singletonList(resourceAllocation
+                        .getResource()));
+    }
 
     public static List<AllocationBeingModified> fromExistent(
             Collection<? extends ResourceAllocation<?>> allocations) {
@@ -40,8 +92,7 @@ public class AllocationBeingModified {
             ResourcesPerDay perDay = resourceAllocation
                     .getResourcesPerDay();
             Validate.notNull(perDay);
-            result.add(new AllocationBeingModified(resourceAllocation, perDay,
-                    resourceAllocation.getAssociatedResources()));
+            result.add(create(resourceAllocation, perDay, resourceAllocation.getAssociatedResources()));
         }
         return result;
     }
@@ -52,14 +103,10 @@ public class AllocationBeingModified {
 
     private final List<Resource> resourcesOnWhichApplyAllocation;
 
-    public AllocationBeingModified(
+    private AllocationBeingModified(
             ResourceAllocation<?> resourceAllocation,
             ResourcesPerDay resourcesPerDay,
             Collection<? extends Resource> resources) {
-        Validate.noNullElements(resources);
-        Validate
-                .isTrue(resourceAllocation instanceof SpecificResourceAllocation
-                || !resources.isEmpty());
         this.beingModified = resourceAllocation;
         this.goal = resourcesPerDay;
         this.resourcesOnWhichApplyAllocation = Collections
