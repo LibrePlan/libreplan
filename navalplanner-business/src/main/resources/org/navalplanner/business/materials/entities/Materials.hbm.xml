@@ -11,11 +11,13 @@
     </id>
     <version name="version" access="property" type="long" />
 
+    <property name="code" unique="true"/>
+
     <property name="description"/>
 
-    <property name="defaultUnitPrice"/>
+    <property name="defaultUnitPrice" column="default_unit_price" />
 
-    <property name="materialCode" unique="true"/>
+    <property name="unitType" column="unit_type" />
 
     <property name="disabled"/>
 
@@ -49,4 +51,3 @@
 </class>
 
 </hibernate-mapping>
-

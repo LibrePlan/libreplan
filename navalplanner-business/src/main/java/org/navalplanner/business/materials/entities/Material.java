@@ -34,12 +34,14 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class Material extends BaseEntity {
 
+    @NotEmpty
+    private String code;
+
     private String description;
 
     private BigDecimal defaultUnitPrice;
 
-    @NotEmpty
-    private String materialCode;
+    private Integer unitType;
 
     private boolean disabled;
 
@@ -51,20 +53,12 @@ public class Material extends BaseEntity {
 
     }
 
-    public static Material create(String materialCode) {
-        return (Material) create(new Material(materialCode));
+    public static Material create(String code) {
+        return (Material) create(new Material(code));
     }
 
-    protected Material(String materialCode) {
-        this.materialCode = materialCode;
-    }
-
-    public String getMaterialCode() {
-        return materialCode;
-    }
-
-    public void setMaterialCode(String materialCode) {
-        this.materialCode = materialCode;
+    protected Material(String code) {
+        this.code = code;
     }
 
     public MaterialCategory getCategory() {
@@ -73,6 +67,14 @@ public class Material extends BaseEntity {
 
     public void setCategory(MaterialCategory category) {
         this.category = category;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getDescription() {
@@ -98,4 +100,13 @@ public class Material extends BaseEntity {
     public void setDefaultUnitPrice(BigDecimal defaultUnitPrice) {
         this.defaultUnitPrice = defaultUnitPrice;
     }
+
+    public Integer getUnitType() {
+        return unitType;
+    }
+
+    public void setUnitType(Integer unitType) {
+        this.unitType = unitType;
+    }
+
 }
