@@ -24,9 +24,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.collections.Unmodifiable;
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -42,8 +43,10 @@ public class MaterialCategory extends BaseEntity {
 
     private MaterialCategory parent = null;
 
+    @Valid
     private Set<MaterialCategory> subcategories = new HashSet<MaterialCategory>();
 
+    @Valid
     private Set<Material> materials = new HashSet<Material>();
 
     // Default constructor, needed by Hibernate
@@ -97,7 +100,21 @@ public class MaterialCategory extends BaseEntity {
         materials.add(material);
         material.setCategory(this);
     }
+
     public void removeMaterial(Material material) {
         materials.remove(material);
+    }
+
+    @AssertTrue(message="material code must be unique within a category")
+    public boolean checkConstraintNonRepeatedMaterialCodes() {
+        Set<String> materialCodes = new HashSet<String>();
+        for (Material each: materials) {
+            final String code = each.getCode();
+            if (materialCodes.contains(code)) {
+                return false;
+            }
+            materialCodes.add(code);
+        }
+        return true;
     }
 }

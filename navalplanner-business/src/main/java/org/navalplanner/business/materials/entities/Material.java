@@ -34,6 +34,7 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class Material extends BaseEntity {
 
+    @NotNull
     @NotEmpty
     private String code;
 

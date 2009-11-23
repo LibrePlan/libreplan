@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
@@ -31,6 +32,7 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -211,6 +213,13 @@ public class MaterialsController extends
         }
     }
 
+    /**
+     * Finds which element in categoryTree has the same name as {@link MaterialCategory},
+     * and returns name {@link Textbox} component
+     *
+     * @param materialCategory
+     * @return
+     */
     private Component findInMaterialCategoryTree(MaterialCategory materialCategory) {
         final Treechildren children = categoriesTree.getTreechildren();
         for(Treeitem each: (Collection<Treeitem>) children.getItems()) {
@@ -241,21 +250,64 @@ public class MaterialsController extends
     }
 
     public void saveAndExit() {
-        save();
-        messagesForUser.showMessage(Level.INFO, _("Materials saved"));
-    }
-
-    private void save() {
-        validate();
-        try {
-            materialsModel.confirmSave();
-        } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
+        if (save()) {
+            messagesForUser.showMessage(Level.INFO, _("Materials saved"));
         }
     }
 
-    private void validate() {
-        ConstraintChecker.
+    private boolean save() {
+        try {
+            materialsModel.confirmSave();
+            return true;
+        } catch (ValidationException e) {
+            showInvalidValues(e);
+        }
+        return false;
+    }
+
+    private void showInvalidValues(ValidationException validationException) {
+        final InvalidValue[] invalidValues = validationException.getInvalidValues();
+        for (InvalidValue each: invalidValues) {
+            if (each.getBean() instanceof Material) {
+                final Material material = (Material) each.getBean();
+                showConstraintErrorsFor(material.getCategory());
+            }
+        }
+    }
+
+    private void showConstraintErrorsFor(MaterialCategory materialCategory) {
+        Treeitem treeitem = findTreeItemByMaterialCategory(categoriesTree.getRoot(), materialCategory);
+        if (treeitem != null) {
+            treeitem.setSelected(true);
+
+            // Load materials for category
+            final List<Material> materials = getMaterials(materialCategory);
+            gridMaterials.setModel(new SimpleListModel(materials));
+            gridMaterials.renderAll();
+
+            // Show errors
+            ConstraintChecker.isValid(gridMaterials);
+        }
+    }
+
+    private Treeitem findTreeItemByMaterialCategory(Component node, MaterialCategory materialCategory) {
+        if (node instanceof Treeitem) {
+            final Treeitem treeitem = (Treeitem) node;
+            final MaterialCategory _materialCategory = (MaterialCategory) treeitem.getValue();
+            if (_materialCategory.equals(materialCategory)) {
+                return treeitem;
+            }
+        }
+        for (Iterator i = node.getChildren().iterator(); i.hasNext(); ) {
+            Object obj = i.next();
+            if (obj instanceof Component) {
+                Treeitem treeitem =  findTreeItemByMaterialCategory((Component) obj, materialCategory);
+                if (treeitem != null) {
+                    return treeitem;
+                }
+            }
+        }
+        return null;
     }
 
     public void saveAndContinue() {
@@ -279,10 +331,13 @@ public class MaterialsController extends
     private List<Material> getMaterials(Treeitem treeitem) {
         final List<Material> result = new ArrayList<Material>();
         if (treeitem != null) {
-            final MaterialCategory materialCategory = (MaterialCategory) treeitem.getValue();
-            result.addAll(materialsModel.getMaterials(materialCategory));
+            result.addAll(getMaterials((MaterialCategory) treeitem.getValue()));
         }
         return result;
+    }
+
+    private List<Material> getMaterials(MaterialCategory materialCategory) {
+        return materialsModel.getMaterials(materialCategory);
     }
 
 }
