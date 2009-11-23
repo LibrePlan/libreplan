@@ -41,6 +41,13 @@ public class MaterialsModel implements IMaterialsModel {
         return materialCategories;
     }
 
+    @Override
+    @Transactional(readOnly=true)
+    public void reloadMaterialCategories() {
+        materialCategories = MutableTreeModel.create(MaterialCategory.class);
+        initializeMaterialCategories();
+    }
+
     private void initializeMaterialCategories() {
         final List<MaterialCategory> categories = categoryDAO.getAllRootMaterialCategories();
         for (MaterialCategory materialCategory: categories) {

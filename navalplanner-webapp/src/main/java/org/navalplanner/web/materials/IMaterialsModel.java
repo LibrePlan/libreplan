@@ -44,8 +44,10 @@ public interface IMaterialsModel {
 
     List<Material> getMaterials(MaterialCategory materialCategory);
 
-    void removeMaterialCategory(MaterialCategory materialCategory);
+    void reloadMaterialCategories();
 
-	void removeMaterial(Material material);
+    void removeMaterial(Material material);
+
+    void removeMaterialCategory(MaterialCategory materialCategory);
 
 }

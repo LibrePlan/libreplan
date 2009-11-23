@@ -112,12 +112,9 @@
             </tabpanels>
         </tabbox>
 
-        <button onClick="materialsController.saveAndExit()"
-            label="${i18n:_('Save')}" />
+        <!-- Save button -->
         <button onClick="materialsController.saveAndContinue()"
-            label="${i18n:_('Save &amp; Continue')}" />
-        <button onClick="materialsController.cancel()"
-            label="${i18n:_('Cancel')}" />
+            label="${i18n:_('Save')}" />
 
     </window>
 

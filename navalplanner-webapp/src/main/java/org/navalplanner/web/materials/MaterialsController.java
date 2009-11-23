@@ -268,9 +268,14 @@ public class MaterialsController extends
         Util.reloadBindings(gridMaterials);
     }
 
-    public void saveAndExit() {
+    public void saveAndContinue() {
         if (save()) {
             messagesForUser.showMessage(Level.INFO, _("Materials saved"));
+            // Reload materials and categories, keep track of category currently being selected
+            final Treeitem treeitem = categoriesTree.getSelectedItem();
+            materialsModel.reloadMaterialCategories();
+            categoriesTree.setSelectedItem(treeitem);
+            Util.reloadBindings(gridMaterials);
         }
     }
 
@@ -327,14 +332,6 @@ public class MaterialsController extends
             }
         }
         return null;
-    }
-
-    public void saveAndContinue() {
-
-    }
-
-    public void cancel() {
-
     }
 
     public void refreshMaterials() {
