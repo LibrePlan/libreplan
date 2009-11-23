@@ -28,6 +28,11 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 
 <zk>
+    <zscript>
+        Object[] unitTypes = org.navalplanner.business.materials.entities.UnitTypeEnum
+            .values();
+    </zscript>
+
     <window self="@{define(content)}"
         apply="org.navalplanner.web.materials.MaterialsController">
         <vbox id="messagesContainer" />
@@ -85,7 +90,8 @@
                                                     constraint="no empty:${i18n:_('cannot be null or empty')}" />
                                                 <textbox value="@{material.description}" />
                                                 <intbox value="@{material.defaultUnitPrice}" />
-                                                <textbox value="@{material.unitType}" />
+                                                <listbox mold="select" model="@{unitTypes}"
+                                                    selectedItem="@{material.unitType}"/>
                                                 <checkbox checked="@{material.disabled}" />
                                                 <button sclass="icono"
                                                     image="/common/img/ico_borrar1.png"

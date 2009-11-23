@@ -17,7 +17,11 @@
 
     <property name="defaultUnitPrice" column="default_unit_price" />
 
-    <property name="unitType" column="unit_type" />
+    <property name="unitType" column="unit_type" >
+        <type name="org.hibernate.type.EnumType">
+            <param name="enumClass">org.navalplanner.business.materials.entities.UnitTypeEnum</param>
+        </type>
+    </property>
 
     <property name="disabled"/>
 

@@ -42,7 +42,7 @@ public class Material extends BaseEntity {
 
     private BigDecimal defaultUnitPrice;
 
-    private Integer unitType;
+    private UnitTypeEnum unitType;
 
     private boolean disabled;
 
@@ -102,11 +102,11 @@ public class Material extends BaseEntity {
         this.defaultUnitPrice = defaultUnitPrice;
     }
 
-    public Integer getUnitType() {
+    public UnitTypeEnum getUnitType() {
         return unitType;
     }
 
-    public void setUnitType(Integer unitType) {
+    public void setUnitType(UnitTypeEnum unitType) {
         this.unitType = unitType;
     }
 
