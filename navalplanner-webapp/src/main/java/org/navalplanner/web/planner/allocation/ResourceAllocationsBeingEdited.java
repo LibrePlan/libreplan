@@ -249,30 +249,12 @@ public class ResourceAllocationsBeingEdited {
 
     private AllocationBeingModified instantiate(
             AllocationDTO key) {
-        return AllocationBeingModified.create(createAllocation(key), key
-        .getResourcesPerDay(), resourcesMatchingCriterions);
+        return key.toAllocationBeingModified(task, resourcesMatchingCriterions);
     }
 
     private Integer from(Date startDate, LocalDate end) {
         LocalDate start = new LocalDate(startDate.getTime());
         return Days.daysBetween(start, end).getDays();
-    }
-
-    private ResourceAllocation<?> createAllocation(AllocationDTO allocation) {
-        if (allocation instanceof SpecificAllocationDTO) {
-            SpecificAllocationDTO specific = (SpecificAllocationDTO) allocation;
-            return createSpecific(specific.getResource());
-        } else {
-            return GenericResourceAllocation.create(task);
-        }
-    }
-
-    private ResourceAllocation<?> createSpecific(Resource resource) {
-
-        SpecificResourceAllocation result = SpecificResourceAllocation
-                .create(task);
-        result.setResource(resource);
-        return result;
     }
 
     public FormBinder createFormBinder() {

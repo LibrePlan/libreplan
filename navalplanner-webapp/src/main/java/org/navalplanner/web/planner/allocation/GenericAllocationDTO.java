@@ -24,10 +24,14 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * The information required for creating a {@link GenericResourceAllocation}
@@ -64,5 +68,12 @@ public class GenericAllocationDTO extends AllocationDTO {
             }
         }
         return result;
+    }
+
+    @Override
+    public AllocationBeingModified toAllocationBeingModified(Task task,
+            List<Resource> resources) {
+        return AllocationBeingModified.create(GenericResourceAllocation
+                .create(task), getResourcesPerDay(), resources);
     }
 }

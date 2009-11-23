@@ -27,6 +27,8 @@ import java.util.List;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -95,6 +97,15 @@ public class SpecificAllocationDTO extends AllocationDTO {
     }
 
     private Resource resource;
+
+    @Override
+    public AllocationBeingModified toAllocationBeingModified(Task task,
+            List<Resource> resources) {
+        SpecificResourceAllocation specific = SpecificResourceAllocation
+                .create(task);
+        specific.setResource(resource);
+        return AllocationBeingModified.create(specific, getResourcesPerDay());
+    }
 
     public Resource getResource() {
         return resource;
