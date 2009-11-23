@@ -35,6 +35,18 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public class SpecificAllocationDTO extends AllocationDTO {
 
+    public static List<SpecificAllocationDTO> toSpecificAllocations(
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
+        List<SpecificAllocationDTO> result = new ArrayList<SpecificAllocationDTO>();
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+            if (resourceAllocation instanceof SpecificResourceAllocation) {
+                SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
+                result.add(from(specific));
+            }
+        }
+        return result;
+    }
+
     public static List<SpecificAllocationDTO> withResource(
             List<SpecificAllocationDTO> specific, Resource resource) {
         List<SpecificAllocationDTO> result = new ArrayList<SpecificAllocationDTO>();
@@ -95,18 +107,6 @@ public class SpecificAllocationDTO extends AllocationDTO {
     @Override
     public boolean isGeneric() {
         return false;
-    }
-
-    public static List<SpecificAllocationDTO> toSpecificAllocations(
-            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
-        List<SpecificAllocationDTO> result = new ArrayList<SpecificAllocationDTO>();
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            if (resourceAllocation instanceof SpecificResourceAllocation) {
-                SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
-                result.add(from(specific));
-            }
-        }
-        return result;
     }
 
 }

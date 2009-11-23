@@ -45,6 +45,16 @@ public abstract class AllocationDTO {
         return result;
     }
 
+    public static List<AllocationDTO> toDTOs(
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
+        List<AllocationDTO> result = new ArrayList<AllocationDTO>();
+        result.addAll(GenericAllocationDTO
+                .toGenericAllocations(resourceAllocations));
+        result.addAll(SpecificAllocationDTO
+                .toSpecificAllocations(resourceAllocations));
+        return result;
+    }
+
     private ResourceAllocation<?> origin;
 
     private String name;
@@ -87,14 +97,6 @@ public abstract class AllocationDTO {
 
     public boolean isEmptyResourcesPerDay() {
         return getResourcesPerDay().isZero();
-    }
-
-    public static List<AllocationDTO> toDTOs(
-            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
-        List<AllocationDTO> result = new ArrayList<AllocationDTO>();
-        result.addAll(GenericAllocationDTO.toGenericAllocations(resourceAllocations));
-        result.addAll(SpecificAllocationDTO.toSpecificAllocations(resourceAllocations));
-        return result;
     }
 
 }
