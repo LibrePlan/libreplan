@@ -28,13 +28,13 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
-import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -67,14 +67,14 @@ public class MaterialCategoryDAOTest {
     }
 
     @Test
-    public void testSaveLabel() {
+    public void testSaveMaterialCategory() {
         MaterialCategory materialCategory = createValidMaterialCategory();
         materialCategoryDAO.save(materialCategory);
         assertTrue(materialCategory.getId() != null);
     }
 
     @Test
-    public void testRemoveLabel() throws InstanceNotFoundException {
+    public void testRemoveMaterialCategory() throws InstanceNotFoundException {
         MaterialCategory materialCategory = createValidMaterialCategory();
         materialCategoryDAO.save(materialCategory);
         materialCategoryDAO.remove(materialCategory.getId());
@@ -82,11 +82,88 @@ public class MaterialCategoryDAOTest {
     }
 
     @Test
-    public void testListLabels() {
+    public void testListMaterialCategories() {
         int previous = materialCategoryDAO.list(MaterialCategory.class).size();
         MaterialCategory materialCategory = createValidMaterialCategory();
         materialCategoryDAO.save(materialCategory);
         List<MaterialCategory> list = materialCategoryDAO.list(MaterialCategory.class);
         assertEquals(previous + 1, list.size());
+    }
+
+    @Test
+    public void testListChildrenMaterialCategories() {
+        MaterialCategory category = createValidMaterialCategory();
+        MaterialCategory subcategory = createValidMaterialCategory();
+        int previous = category.getSubcategories().size();
+        category.addSubcategory(subcategory);
+        materialCategoryDAO.save(category);
+        Set<MaterialCategory> childrenList = category.getSubcategories();
+        assertEquals(previous + 1, childrenList.size());
+    }
+
+    @Test
+    public void testRemoveChildrenMaterialCategories() {
+        MaterialCategory category = createValidMaterialCategory();
+        MaterialCategory subcategory = createValidMaterialCategory();
+        category.addSubcategory(subcategory);
+        materialCategoryDAO.save(category);
+        int previous = category.getSubcategories().size();
+
+        category.removeSubcategory(subcategory);
+        materialCategoryDAO.save(category);
+        Set<MaterialCategory> childrenList = category.getSubcategories();
+        assertEquals(previous - 1, childrenList.size());
+    }
+
+    @Test
+    public void testRemoveParentMaterialCategory() {
+        MaterialCategory category = createValidMaterialCategory();
+        MaterialCategory subcategory = createValidMaterialCategory();
+        category.addSubcategory(subcategory);
+        materialCategoryDAO.save(category);
+        int previous = category.getSubcategories().size();
+
+        subcategory.removeParent();
+        materialCategoryDAO.save(category);
+        Set<MaterialCategory> childrenList = category.getSubcategories();
+        assertEquals(previous - 1, childrenList.size());
+    }
+
+    @Test
+    public void testSaveMaterialSubcategoryTopDown() {
+        MaterialCategory category = createValidMaterialCategory();
+        MaterialCategory subcategory = createValidMaterialCategory();
+        category.addSubcategory(subcategory);
+        //materialCategoryDAO.save(subcategory); //unnecessary due to cascade=all
+        materialCategoryDAO.save(category);
+        List<MaterialCategory> list = materialCategoryDAO.list(MaterialCategory.class);
+        for(MaterialCategory listCategory:list) {
+            if(listCategory.getId()==category.getId()) {
+                assertEquals(1, listCategory.getSubcategories().size());
+            }
+            if(listCategory.getId()==subcategory.getId()) {
+                assertNotNull(listCategory.getParent());
+                assertEquals(category.getId(), listCategory.getParent().getId());
+            }
+        }
+    }
+
+    @Test
+    public void testSaveMaterialSubcategoryBottomUp() {
+        MaterialCategory category = createValidMaterialCategory();
+        MaterialCategory subcategory = createValidMaterialCategory();
+        subcategory.setParent(category);
+        //materialCategoryDAO.save(subcategory); //unnecessary due to cascade=all
+        materialCategoryDAO.save(category);
+        List<MaterialCategory> list = materialCategoryDAO.list(MaterialCategory.class);
+        for(MaterialCategory listCategory:list) {
+            if(listCategory.getId()==category.getId()) {
+                assertEquals(1, listCategory.getSubcategories().size());
+            }
+            if(listCategory.getId()==subcategory.getId()) {
+                assertNotNull(listCategory.getParent());
+                assertEquals(category.getId(), listCategory.getParent().getId());
+            }
+        }
     }
 }

@@ -20,7 +20,6 @@
 
 package org.navalplanner.business.materials.entities;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,7 +37,7 @@ public class MaterialCategory extends BaseEntity {
     @NotEmpty
     private String name;
 
-    private MaterialCategory parent;
+    private MaterialCategory parent = null;
 
     private Set<MaterialCategory> subcategories = new HashSet<MaterialCategory>();
 
@@ -69,7 +68,33 @@ public class MaterialCategory extends BaseEntity {
         return parent;
     }
 
-    public void setParent(MaterialCategory parentId) {
-        this.parent = parentId;
+    /* WARNING: do not use this method to set parent to null.
+     * It must be done using removeParent().
+     */
+    public void setParent(MaterialCategory parent) {
+        this.parent = parent;
+        parent.addSubcategory(this);
+    }
+
+    public void removeParent() {
+        MaterialCategory category = parent;
+        parent = null;
+        category.removeSubcategory(this);
+    }
+
+    public Set<MaterialCategory> getSubcategories() {
+        return subcategories;
+    }
+
+    public void addSubcategory (MaterialCategory subcategory) {
+        subcategories.add(subcategory);
+        if(subcategory.getParent()==null)
+            subcategory.setParent(this);
+    }
+
+    public void removeSubcategory (MaterialCategory subcategory) {
+        subcategories.remove(subcategory);
+        if(subcategory.getParent()!=null)
+            subcategory.removeParent();
     }
 }
