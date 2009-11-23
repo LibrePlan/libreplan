@@ -89,20 +89,6 @@ public abstract class AllocationBeingModified {
     }
 
     public static AllocationBeingModified create(
-            ResourceAllocation<?> resourceAllocation,
-            ResourcesPerDay resourcesPerDay,
-            Collection<? extends Resource> resources) {
-        if (resourceAllocation instanceof GenericResourceAllocation) {
-            GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
-            return create(generic, resourcesPerDay, resources);
-
-        } else {
-            SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
-            return create(specific, resourcesPerDay);
-        }
-    }
-
-    public static AllocationBeingModified create(
             GenericResourceAllocation resourceAllocation,
             ResourcesPerDay resourcesPerDay, List<Resource> resources) {
         return new GenericAllocationBeingModified(resourceAllocation,

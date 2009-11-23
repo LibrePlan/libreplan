@@ -29,7 +29,6 @@ import static org.navalplanner.business.test.planner.entities.DayAssignmentMatch
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -179,7 +178,8 @@ public class AllocationUntilFillingHoursTest {
         for (ResourcesPerDay resourcesPerDay : specifiedResourcesPerDay) {
             SpecificResourceAllocation allocation = createSpecificResourceAllocationFor(
                     task, worker);
-            allocations.add(AllocationBeingModified.create(allocation, resourcesPerDay, Arrays.asList(worker)));
+            allocations.add(AllocationBeingModified.create(allocation,
+                    resourcesPerDay));
         }
     }
 
@@ -204,25 +204,27 @@ public class AllocationUntilFillingHoursTest {
 
     private void givenAllocationsWithoutTask() {
         allocations.add(AllocationBeingModified.create(
-                createStubAllocationReturning(SpecificResourceAllocation.class,
-                        null), ResourcesPerDay.amount(2), resources));
+                (SpecificResourceAllocation)
+ createStubAllocationReturning(
+                        SpecificResourceAllocation.class, null),
+                ResourcesPerDay.amount(2)));
         allocations.add(AllocationBeingModified.create(
                 createStubAllocationReturning(SpecificResourceAllocation.class,
-                        null), ResourcesPerDay.amount(2), resources));
+                        null), ResourcesPerDay.amount(2)));
     }
 
     private void givenAllocationsBelongingToDifferentTasks() {
         Task task = createStubTask();
         allocations.add(AllocationBeingModified.create(
                 createStubAllocationReturning(SpecificResourceAllocation.class,
-                        task), ResourcesPerDay.amount(2), resources));
+                        task), ResourcesPerDay.amount(2)));
         allocations.add(AllocationBeingModified.create(
                 createStubAllocationReturning(SpecificResourceAllocation.class,
-                        task), ResourcesPerDay.amount(2), resources));
+                        task), ResourcesPerDay.amount(2)));
         Task other = createStubTask();
         allocations.add(AllocationBeingModified.create(
                 createStubAllocationReturning(SpecificResourceAllocation.class,
-                        other), ResourcesPerDay.amount(2), resources));
+                        other), ResourcesPerDay.amount(2)));
     }
 
     private Task createStubTask() {
@@ -245,9 +247,9 @@ public class AllocationUntilFillingHoursTest {
         return result;
     }
 
-    private ResourceAllocation<?> createStubAllocationReturning(
-            Class<? extends ResourceAllocation<?>> allocationClass, Task task) {
-        ResourceAllocation<?> resourceAllocation = createNiceMock(allocationClass);
+    private <T extends ResourceAllocation<?>> T createStubAllocationReturning(
+            Class<T> allocationClass, Task task) {
+        T resourceAllocation = createNiceMock(allocationClass);
         expect(resourceAllocation.getTask()).andReturn(task).anyTimes();
         replay(resourceAllocation);
         return resourceAllocation;
