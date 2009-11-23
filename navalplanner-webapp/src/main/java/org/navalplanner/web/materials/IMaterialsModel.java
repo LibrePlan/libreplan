@@ -20,7 +20,10 @@
 
 package org.navalplanner.web.materials;
 
+import java.util.List;
+
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.zkoss.ganttz.util.MutableTreeModel;
 
@@ -36,5 +39,9 @@ public interface IMaterialsModel {
     MutableTreeModel<MaterialCategory> getMaterialCategories();
 
     void removeMaterialCategory(MaterialCategory materialCategory);
+
+	void addMaterialToMaterialCategory(MaterialCategory materialCategory);
+
+	List<Material> getMaterials();
 
 }

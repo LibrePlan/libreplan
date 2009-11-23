@@ -23,6 +23,7 @@ package org.navalplanner.web.materials;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
@@ -31,6 +32,7 @@ import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -39,6 +41,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
@@ -64,6 +67,8 @@ public class MaterialsController extends
     private IMaterialsModel materialsModel;
 
     private Tree categoriesTree;
+
+    private Grid materials;
 
     private Textbox txtCategory;
 
@@ -220,6 +225,19 @@ public class MaterialsController extends
         final Treerow tr = treeitem.getTreerow();
         final Treecell tc = (Treecell) tr.getChildren().get(0);
         return (Textbox) tc.getChildren().get(0);
+    }
+
+    public void addMaterialToMaterialCategory(Treeitem treeitem) {
+        if (treeitem == null) {
+            return;
+        }
+        final MaterialCategory materialCategory = (MaterialCategory) treeitem.getValue();
+        materialsModel.addMaterialToMaterialCategory(materialCategory);
+        Util.reloadBindings(materials);
+    }
+
+    public List<Material> getMaterials() {
+        return materialsModel.getMaterials();
     }
 
 }

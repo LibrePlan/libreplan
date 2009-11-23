@@ -2,6 +2,7 @@ package org.navalplanner.web.materials;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -9,6 +10,8 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
+import org.navalplanner.business.materials.daos.IMaterialDAO;
+import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -24,7 +27,12 @@ public class MaterialsModel implements IMaterialsModel {
     @Autowired
     IMaterialCategoryDAO categoryDAO;
 
+    @Autowired
+    IMaterialDAO materialDAO;
+
     MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel.create(MaterialCategory.class);
+
+    List<Material> materials = new ArrayList<Material>();
 
     private void initializeMaterialCategories() {
         final List<MaterialCategory> categories = categoryDAO.getAllRootMaterialCategories();
@@ -32,6 +40,11 @@ public class MaterialsModel implements IMaterialsModel {
             materialCategories.addToRoot(materialCategory);
             addCategories(materialCategory, materialCategory.getSubcategories());
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initializeMaterials() {
+        materials = new ArrayList(materialDAO.getAll());
     }
 
     private void addCategories(MaterialCategory materialCategory, Set<MaterialCategory> categories) {
@@ -50,6 +63,15 @@ public class MaterialsModel implements IMaterialsModel {
             initializeMaterialCategories();
         }
         return materialCategories;
+    }
+
+    @Override
+    @Transactional(readOnly=true)
+    public List<Material> getMaterials() {
+        if (materials.isEmpty()) {
+            initializeMaterials();
+        }
+        return materials;
     }
 
     @Override
@@ -84,9 +106,16 @@ public class MaterialsModel implements IMaterialsModel {
         return obj1.getName().equals(obj2.getName());
     }
 
-	@Override
-	public void removeMaterialCategory(MaterialCategory materialCategory) {
-		materialCategories.remove(materialCategory);
-	}
+    @Override
+    public void removeMaterialCategory(MaterialCategory materialCategory) {
+        materialCategories.remove(materialCategory);
+    }
+
+    @Override
+    public void addMaterialToMaterialCategory(MaterialCategory materialCategory) {
+        Material material = Material.create("");
+        material.setCategory(materialCategory);
+        materials.add(material);
+    }
 
 }

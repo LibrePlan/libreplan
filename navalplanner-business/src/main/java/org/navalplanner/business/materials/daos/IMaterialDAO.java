@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.materials.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.materials.entities.Material;
 
@@ -29,5 +31,7 @@ import org.navalplanner.business.materials.entities.Material;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 public interface IMaterialDAO extends IGenericDAO<Material, Long> {
+
+    List<Material> getAll();
 
 }

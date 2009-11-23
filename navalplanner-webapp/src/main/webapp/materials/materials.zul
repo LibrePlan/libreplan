@@ -56,14 +56,14 @@
         <vbox>
             <panel title="${i18n:_('Materials')}" border="normal">
                 <panelchildren>
-                    <button label="${i18n:_('Add')}" onClick="materialsController.addMaterial(categoriesTree.selected)"/>
-                    <newdatasortablegrid>
+                    <button label="${i18n:_('Add')}" onClick="materialsController.addMaterialToMaterialCategory(categoriesTree.selectedItem)"/>
+                    <grid id="materials" model="@{materialsController.materials}">
                         <columns>
-                            <newdatasortablecolumn label="${i18n:_('Code')}"/>
-                            <newdatasortablecolumn label="${i18n:_('Description')}"/>
-                            <newdatasortablecolumn label="${i18n:_('Unit price')}"/>
-                            <newdatasortablecolumn label="${i18n:_('Unit type')}"/>
-                            <newdatasortablecolumn label="${i18n:_('Disabled')}"/>
+                            <column label="${i18n:_('Code')}"/>
+                            <column label="${i18n:_('Description')}"/>
+                            <column label="${i18n:_('Unit price')}"/>
+                            <column label="${i18n:_('Unit type')}"/>
+                            <column label="${i18n:_('Disabled')}"/>
                         </columns>
                         <rows>
                             <row self="@{each='material'}" value="@{material}">
@@ -71,9 +71,10 @@
                                 <textbox value="@{material.description}" />
                                 <textbox value="@{material.defaultUnitPrice}" />
                                 <textbox value="@{material.unitType}" />
+                                <checkbox checked="@{material.disabled}" />
                             </row>
                         </rows>
-                    </newdatasortablegrid>
+                    </grid>
                 </panelchildren>
             </panel>
         </vbox>

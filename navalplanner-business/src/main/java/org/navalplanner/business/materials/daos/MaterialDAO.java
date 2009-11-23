@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.materials.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.materials.entities.Material;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -35,5 +37,10 @@ import org.springframework.stereotype.Repository;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class MaterialDAO extends GenericDAOHibernate<Material, Long> implements
         IMaterialDAO {
+
+    @Override
+    public List<Material> getAll() {
+        return list(Material.class);
+    }
 
 }
