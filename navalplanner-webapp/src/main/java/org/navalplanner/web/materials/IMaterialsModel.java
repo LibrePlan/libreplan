@@ -46,4 +46,6 @@ public interface IMaterialsModel {
 
     void removeMaterialCategory(MaterialCategory materialCategory);
 
+	void removeMaterial(Material material);
+
 }

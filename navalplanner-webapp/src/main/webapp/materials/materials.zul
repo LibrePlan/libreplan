@@ -77,6 +77,7 @@
                                             <column label="${i18n:_('Unit price')}" />
                                             <column label="${i18n:_('Unit type')}" />
                                             <column label="${i18n:_('Disabled')}" />
+                                            <column label="" />
                                         </columns>
                                         <rows>
                                             <row self="@{each='material'}" value="@{material}">
@@ -86,6 +87,12 @@
                                                 <intbox value="@{material.defaultUnitPrice}" />
                                                 <textbox value="@{material.unitType}" />
                                                 <checkbox checked="@{material.disabled}" />
+                                                <button sclass="icono"
+                                                    image="/common/img/ico_borrar1.png"
+                                                    hoverImage="/common/img/ico_borrar.png"
+                                                    tooltiptext="${i18n:_('Delete')}"
+                                                    onClick="materialsController.remove(self.parent.value)">
+                                                </button>
                                             </row>
                                         </rows>
                                     </grid>

@@ -47,6 +47,8 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
@@ -87,6 +89,23 @@ public class MaterialsController extends
         super.doAfterCompose(comp);
         comp.setVariable("materialsController", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
+
+        // Renders grid and enables delete button is material is new
+        gridMaterials.addEventListener("onInitRender", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                gridMaterials.renderAll();
+
+                final Rows rows = gridMaterials.getRows();
+                for (Iterator i = rows.getChildren().iterator(); i.hasNext(); ) {
+                    final Row row = (Row) i.next();
+                    final Material material = (Material) row.getValue();
+                    Button btnDelete = (Button) row.getChildren().get(5);
+                    btnDelete.setDisabled(!material.isNewObject());
+                }
+            }
+        });
     }
 
     public TreeModel getMaterialCategories() {
@@ -338,6 +357,11 @@ public class MaterialsController extends
 
     private List<Material> getMaterials(MaterialCategory materialCategory) {
         return materialsModel.getMaterials(materialCategory);
+    }
+
+    public void remove(Material material) {
+        materialsModel.removeMaterial(material);
+        Util.reloadBindings(gridMaterials);
     }
 
 }

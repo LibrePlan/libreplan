@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.Hibernate;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
@@ -141,6 +140,11 @@ public class MaterialsModel implements IMaterialsModel {
         for (MaterialCategory each: list) {
             asList(each, result);
         }
+    }
+
+    @Override
+    public void removeMaterial(Material material) {
+        material.getCategory().removeMaterial(material);
     }
 
 }
