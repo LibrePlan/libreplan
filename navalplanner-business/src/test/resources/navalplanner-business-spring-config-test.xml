@@ -60,7 +60,10 @@
                 <value>
                     org/navalplanner/business/common/entities/Configuration.hbm.xml
                 </value>
-                 <value>
+                <value>
+                    org/navalplanner/business/materials/entities/Materials.hbm.xml
+                </value>
+                <value>
                     TestEntities.hbm.xml
                 </value>
             </list>

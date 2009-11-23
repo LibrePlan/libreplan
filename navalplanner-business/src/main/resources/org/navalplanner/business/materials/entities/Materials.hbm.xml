@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.materials.entities" default-access="field">
+
+<!-- Material -->
+<class name="Material" table="MATERIAL">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="description"/>
+
+    <property name="defaultUnitPrice"/>
+
+    <property name="materialCode" unique="true"/>
+
+    <property name="disabled"/>
+
+    <many-to-one name="category" class="MaterialCategory" column="CATEGORY_ID" />
+
+</class>
+
+<!-- MaterialCategory -->
+<class name="MaterialCategory" table="MATERIAL_CATEGORY">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="name" />
+
+    <set name="subcategories" inverse="false" cascade="all">
+        <key column="PARENT_ID"/>
+        <one-to-many class="MaterialCategory"/>
+    </set>
+
+    <many-to-one name="parent" class="MaterialCategory" column="PARENT_ID" />
+
+    <set name="materials" inverse="false" cascade="all">
+        <key column="ID"/>
+        <one-to-many class="Material"/>
+    </set>
+
+</class>
+
+</hibernate-mapping>
+
