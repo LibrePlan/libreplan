@@ -23,6 +23,7 @@ package org.navalplanner.web.common.components;
 import java.util.List;
 
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.navalplanner.web.resources.search.WorkerSearchController;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
@@ -34,7 +35,9 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 @SuppressWarnings("serial")
 public class WorkerSearch extends HtmlMacroComponent {
 
-    public List<Worker> getWorkers() {
+    private INewAllocationsAdder allocationsAdder;
+
+    private List<Worker> getWorkers() {
         WorkerSearchController controller = (WorkerSearchController) this
                 .getVariable("controller", true);
         return controller.getSelectedWorkers();
@@ -44,6 +47,14 @@ public class WorkerSearch extends HtmlMacroComponent {
         WorkerSearchController controller = (WorkerSearchController) this
                 .getVariable("controller", true);
         controller.clearAll();
+    }
+
+    public void addChoosen() {
+        allocationsAdder.addSpecific(getWorkers());
+    }
+
+    public void setAllocationsAdder(INewAllocationsAdder allocationsAdder) {
+        this.allocationsAdder = allocationsAdder;
     }
 
 }

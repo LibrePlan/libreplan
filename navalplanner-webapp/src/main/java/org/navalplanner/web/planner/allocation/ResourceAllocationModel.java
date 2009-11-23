@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +43,6 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -86,12 +86,14 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void addSpecificResourceAllocation(Worker worker) throws Exception {
+    public void addSpecific(Collection<? extends Resource> resources) {
         planningState.reassociateResourcesWithSession(resourceDAO);
-        Resource reloaded = resourceDAO.findExistingEntity(worker.getId());
-        reattachResource(reloaded);
-        resourceAllocationsBeingEdited
-                .addSpecificResourceAllocationFor(reloaded);
+        for (Resource each : resources) {
+            Resource reloaded = resourceDAO.findExistingEntity(each.getId());
+            reattachResource(reloaded);
+            resourceAllocationsBeingEdited
+                    .addSpecificResourceAllocationFor(reloaded);
+        }
     }
 
     @Override

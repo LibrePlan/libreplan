@@ -24,12 +24,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
-import org.navalplanner.business.planner.entities.GenericResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.order.PlanningState;
 
 /**
@@ -38,18 +34,7 @@ import org.navalplanner.web.planner.order.PlanningState;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  */
-public interface IResourceAllocationModel {
-
-    /**
-     * Adds {@link SpecificResourceAllocation} to {@link Task}
-     * {@link ResourceAllocation} list
-     *
-     * If a {@link SpecificResourceAllocation} satisfies {@link Task} criterions
-     * one of the {@link GenericResourceAllocation} assigned to
-     * {@link ResourceAllocation} is removed (in case any exists)
-     *
-     */
-    void addSpecificResourceAllocation(Worker worker) throws Exception;
+public interface IResourceAllocationModel extends INewAllocationsAdder {
 
     /**
      * Returns {@link Set} of {@link Criterion} of the current {@link Task}

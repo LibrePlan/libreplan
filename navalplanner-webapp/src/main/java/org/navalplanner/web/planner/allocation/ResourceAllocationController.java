@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,7 +40,6 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
-import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.ViewSwitcher;
@@ -163,7 +163,22 @@ public class ResourceAllocationController extends GenericForwardComposer {
         orderElementHoursGrid.setModel(new ListModelList(
                 resourceAllocationModel.getHoursAggregatedByCriterions()));
         orderElementHoursGrid.setRowRenderer(createOrderElementHoursRenderer());
+        workerSearch
+                .setAllocationsAdder(modifyApplyButtonIfNeeded(resourceAllocationModel));
         showWindow();
+    }
+
+    private INewAllocationsAdder modifyApplyButtonIfNeeded(
+            final INewAllocationsAdder decorated) {
+        return new INewAllocationsAdder() {
+            @Override
+            public void addSpecific(Collection<? extends Resource> resources) {
+                decorated.addSpecific(resources);
+                if (!resources.isEmpty()) {
+                    formBinder.newSpecificAllocation();
+                }
+            }
+        };
     }
 
     public enum HoursRendererColumn {
@@ -223,7 +238,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
      * @param e
      */
     public void onSelectWorkers(Event e) {
-        addSpecificResourceAllocations(workerSearch.getWorkers());
+        workerSearch.addChoosen();
         tbResourceAllocation.setSelected(true);
         Util.reloadBindings(allocationsList);
     }
@@ -236,25 +251,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     public void onCloseSelectWorkers() {
         tbResourceAllocation.setSelected(true);
         workerSearch.clearAll();
-    }
-
-    /**
-     * Adds a list of {@link Worker} to {@link ResourceAllocation} list
-     * @param workers
-     */
-    private void addSpecificResourceAllocations(List<Worker> workers) {
-        for (Worker worker : workers) {
-            addSpecificResourceAllocation(worker);
-        }
-    }
-
-    private void addSpecificResourceAllocation(Worker worker) {
-        try {
-            resourceAllocationModel.addSpecificResourceAllocation(worker);
-            formBinder.newSpecificAllocation();
-        } catch (Exception e1) {
-            messagesForUser.showMessage(Level.ERROR, e1.getMessage());
-        }
     }
 
     private final class AdvanceAllocationResultReceiver implements
