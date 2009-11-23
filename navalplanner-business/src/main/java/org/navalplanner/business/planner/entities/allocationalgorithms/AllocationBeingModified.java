@@ -22,11 +22,13 @@ package org.navalplanner.business.planner.entities.allocationalgorithms;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.resources.entities.Resource;
 
 public class AllocationBeingModified {
 
@@ -37,8 +39,8 @@ public class AllocationBeingModified {
             ResourcesPerDay perDay = resourceAllocation
                     .getResourcesPerDay();
             Validate.notNull(perDay);
-            result.add(new AllocationBeingModified(
-                    resourceAllocation, perDay));
+            result.add(new AllocationBeingModified(resourceAllocation, perDay,
+                    resourceAllocation.getAssociatedResources()));
         }
         return result;
     }
@@ -47,11 +49,17 @@ public class AllocationBeingModified {
 
     private final ResourcesPerDay goal;
 
+    private final List<Resource> resourcesOnWhichApplyAllocation;
+
     public AllocationBeingModified(
             ResourceAllocation<?> resourceAllocation,
-            ResourcesPerDay resourcesPerDay) {
+            ResourcesPerDay resourcesPerDay,
+            Collection<? extends Resource> resources) {
         this.beingModified = resourceAllocation;
         this.goal = resourcesPerDay;
+        this.resourcesOnWhichApplyAllocation = Collections
+                .unmodifiableList(new ArrayList<Resource>(
+                resources));
     }
 
     public ResourceAllocation<?> getBeingModified() {

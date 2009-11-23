@@ -254,7 +254,7 @@ public class ResourceAllocationsBeingEdited {
             AllocationDTO key) {
         return new AllocationBeingModified(
                 createAllocation(key), key
-                        .getResourcesPerDay());
+                .getResourcesPerDay(), resourcesMatchingCriterions);
     }
 
     private Integer from(Date startDate, LocalDate end) {
