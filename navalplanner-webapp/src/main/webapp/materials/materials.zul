@@ -31,6 +31,8 @@
     <window self="@{define(content)}"
         apply="org.navalplanner.web.materials.MaterialsController" >
 
+        <hbox>
+
         <vbox id="messagesContainer" />
 
         <vbox>
@@ -50,5 +52,33 @@
                 </panelchildren>
             </panel>
         </vbox>
+
+        <vbox>
+            <panel title="${i18n:_('Materials')}" border="normal">
+                <panelchildren>
+                    <button label="${i18n:_('Add')}" onClick="materialsController.addMaterial(categoriesTree.selected)"/>
+                    <newdatasortablegrid>
+                        <columns>
+                            <newdatasortablecolumn label="${i18n:_('Code')}"/>
+                            <newdatasortablecolumn label="${i18n:_('Description')}"/>
+                            <newdatasortablecolumn label="${i18n:_('Unit price')}"/>
+                            <newdatasortablecolumn label="${i18n:_('Unit type')}"/>
+                            <newdatasortablecolumn label="${i18n:_('Disabled')}"/>
+                        </columns>
+                        <rows>
+                            <row self="@{each='material'}" value="@{material}">
+                                <textbox value="@{material.code}" />
+                                <textbox value="@{material.description}" />
+                                <textbox value="@{material.defaultUnitPrice}" />
+                                <textbox value="@{material.unitType}" />
+                            </row>
+                        </rows>
+                    </newdatasortablegrid>
+                </panelchildren>
+            </panel>
+        </vbox>
+
+        </hbox>
+
     </window>
 </zk>
