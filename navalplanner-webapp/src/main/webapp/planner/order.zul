@@ -92,12 +92,42 @@
         </tabs>
         <tabpanels>
             <tabpanel>
+                <grid id="orderElementHoursGrid">
+                    <columns>
+                          <column  width="200px" label="${i18n:_('Criteria')}"/>
+                          <column label="${i18n:_('Hours')}" />
+                    </columns>
+                </grid>
                 <grid>
                       <columns>
                           <column width="200px" />
                           <column />
                       </columns>
                       <rows>
+                        <row>
+                            <label value="${i18n:_('Total Estimated hours')}:" />
+                            <intbox value="@{allocationController.orderHours}" disabled="${true}" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Start')}" />
+                            <datebox id="taskStartDateBox" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Elapsed Days')}" />
+                            <intbox id="taskElapsedDays" width="300px" />
+                        </row>
+                      </rows>
+                </grid>
+                <grid>
+                      <columns>
+                          <column width="200px" />
+                          <column />
+                      </columns>
+                      <rows>
+                        <row>
+                            <label value="${i18n:_('Assigned hours')}:"    />
+                            <intbox id="assignedHoursComponent" width="300px" />
+                        </row>
                         <!--  Calculation type -->
                         <row>
                             <label value="${i18n:_('Calculation type')}:" />
@@ -113,31 +143,6 @@
                                     </rows>
                                 </grid>
                             </radiogroup>
-                        </row>
-                        <!-- Duration -->
-                        <row>
-                            <label value="${i18n:_('Duration')}:" />
-                            <vbox>
-                                <label value="${i18n:_('Start')}" />
-                                <datebox id="taskStartDateBox" />
-                                <label value="${i18n:_('Elapsed Days')}" />
-                                <intbox id="taskElapsedDays" width="300px" />
-                            </vbox>
-                        </row>
-                        <!--  Required criteria -->
-                        <row>
-                            <label value="${i18n:_('Required criteria')}:" />
-                            <label value="@{allocationController.taskCriterions}" />
-                        </row>
-                        <!--  Total order hours -->
-                        <row>
-                                <label value="${i18n:_('Total order hours')}:" />
-                                <label value="@{allocationController.orderHours}" />
-                        </row>
-                        <!--  Assigned hours -->
-                        <row>
-                                <label value="${i18n:_('Assigned hours')}:"    />
-                                <intbox id="assignedHoursComponent" width="300px" />
                         </row>
                     </rows>
                 </grid>

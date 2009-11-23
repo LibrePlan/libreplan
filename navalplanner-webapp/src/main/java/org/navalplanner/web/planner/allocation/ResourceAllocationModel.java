@@ -28,8 +28,11 @@ import java.util.Set;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
+import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -64,6 +67,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Autowired
     private IHoursGroupDAO hoursGroupDAO;
+
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
 
     private Task task;
 
@@ -148,6 +154,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         this.planningState = planningState;
         planningState.reassociateResourcesWithSession(resourceDAO);
         taskElementDAO.reattach(this.task);
+        reattachTaskSource();
         hoursGroupDAO.reattach(this.task.getHoursGroup());
         loadCriterionsOfGenericAllocations();
         reattachHoursGroup(this.task.getHoursGroup());
@@ -172,12 +179,25 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void reattachHoursGroup(HoursGroup hoursGroup) {
+        hoursGroupDAO.reattachUnmodifiedEntity(hoursGroup);
         hoursGroup.getPercentage();
     }
 
     private void reattachCriterions(Set<Criterion> criterions) {
         for (Criterion criterion : criterions) {
             reattachCriterion(criterion);
+        }
+    }
+
+    private void reattachTaskSource() {
+        TaskSource taskSource = task.getTaskSource();
+        taskSourceDAO.reattach(taskSource);
+        Set<HoursGroup> hoursGroups = taskSource.getHoursGroups();
+        for (HoursGroup hoursGroup : hoursGroups) {
+            reattachHoursGroup(hoursGroup);
+        }
+        for (AggregatedHoursGroup each : taskSource.getAggregatedByCriterions()) {
+            Hibernate.initialize(each);
         }
     }
 
@@ -225,6 +245,19 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             dtos.add(0, GenericAllocationDTO.createDefault());
         }
         return dtos;
+    }
+
+    @Override
+    public List<AggregatedHoursGroup> getHoursAggregatedByCriterions() {
+        return task.getAggregatedByCriterions();
+    }
+
+    @Override
+    public Integer getOrderHours() {
+        if (task == null) {
+            return 0;
+        }
+        return AggregatedHoursGroup.sum(task.getAggregatedByCriterions());
     }
 
 }

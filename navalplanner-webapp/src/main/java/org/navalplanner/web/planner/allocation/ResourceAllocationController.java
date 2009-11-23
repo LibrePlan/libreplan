@@ -25,20 +25,17 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -53,6 +50,8 @@ import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Rest
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
+import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
@@ -63,14 +62,17 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.api.Window;
@@ -87,6 +89,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private ViewSwitcher switcher;
 
     private IResourceAllocationModel resourceAllocationModel;
+
+    private Grid orderElementHoursGrid;
 
     private ResourceAllocationRenderer resourceAllocationRenderer = new ResourceAllocationRenderer();
 
@@ -156,7 +160,49 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 .from(formBinder.getCalculatedValue());
         calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
         tbResourceAllocation.setSelected(true);
+        orderElementHoursGrid.setModel(new ListModelList(
+                resourceAllocationModel.getHoursAggregatedByCriterions()));
+        orderElementHoursGrid.setRowRenderer(createOrderElementHoursRenderer());
         showWindow();
+    }
+
+    public enum HoursRendererColumn {
+
+        CRITERIONS {
+            @Override
+            public Component cell(HoursRendererColumn column,
+                    AggregatedHoursGroup data) {
+                return new Label(data.getCriterionsJoinedByComma());
+            }
+        },
+        HOURS {
+            @Override
+            public Component cell(HoursRendererColumn column,
+                    AggregatedHoursGroup data) {
+                Intbox result = new Intbox(data.getHours());
+                result.setDisabled(true);
+                return result;
+            }
+        };
+
+        public abstract Component cell(HoursRendererColumn column,
+                AggregatedHoursGroup data);
+    }
+
+    private static final ICellForDetailItemRenderer<HoursRendererColumn, AggregatedHoursGroup> hoursCellRenderer = new ICellForDetailItemRenderer<HoursRendererColumn, AggregatedHoursGroup>() {
+
+        @Override
+        public Component cellFor(
+                HoursRendererColumn column,
+                AggregatedHoursGroup data) {
+            return column.cell(column, data);
+        }
+    };
+
+    private RowRenderer createOrderElementHoursRenderer() {
+        return OnColumnsRowRenderer
+                .create(
+                        hoursCellRenderer, Arrays.asList(HoursRendererColumn.values()));
     }
 
     private void showWindow() {
@@ -321,25 +367,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 .setCalculatedValue(calculationTypeRadio.getCalculatedValue());
     }
 
-    /**
-     * Returns list of {@link Criterion} separated by comma
-     * @return
-     */
-    public String getTaskCriterions() {
-        Set<String> criterionNames = new HashSet<String>();
-
-        Set<Criterion> criterions = resourceAllocationModel.getCriterions();
-        for (Criterion criterion : criterions) {
-            criterionNames.add(criterion.getName());
-        }
-
-        return StringUtils.join(criterionNames, ",");
-    }
-
-    public String getOrderHours() {
-        Task task = resourceAllocationModel.getTask();
-        return (task != null && task.getHoursSpecifiedAtOrder() != null) ? task
-                .getHoursSpecifiedAtOrder().toString() : "";
+    public Integer getOrderHours() {
+        return resourceAllocationModel.getOrderHours();
     }
 
     public List<AllocationDTO> getResourceAllocations() {

@@ -20,8 +20,10 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import java.util.List;
 import java.util.Set;
 
+import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -84,5 +86,9 @@ public interface IResourceAllocationModel {
             PlanningState planningState);
 
     void accept(AllocationResult modifiedAllocationResult);
+
+    List<AggregatedHoursGroup> getHoursAggregatedByCriterions();
+
+    Integer getOrderHours();
 
 }
