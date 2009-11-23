@@ -48,13 +48,11 @@ public class AggregatedHoursGroupTest {
 
     private Criterion criterion1;
     private Criterion criterion2;
-    private Criterion criterion3;
 
     @Before
     public void setUpCriterions() {
         criterion1 = createNiceMock(Criterion.class);
         criterion2 = createNiceMock(Criterion.class);
-        criterion3 = createNiceMock(Criterion.class);
     }
 
     @Test
@@ -74,6 +72,27 @@ public class AggregatedHoursGroupTest {
                 withHours(h2))));
         assertThat(aggregates, hasItem(allOf(withCriterions(criterion2),
                 withHours(h4, h5))));
+    }
+
+    @Test
+    public void getHoursReturnTheSumOfAllHours() {
+        HoursGroup h1 = createHoursGroupWithCriterions(criterion1, criterion2);
+        h1.setWorkingHours(10);
+        HoursGroup h2 = createHoursGroupWithCriterions(criterion1, criterion2);
+        h2.setWorkingHours(5);
+        AggregatedHoursGroup aggregate = AggregatedHoursGroup.aggregate(h1, h2)
+                .get(0);
+        assertThat(aggregate.getHours(), equalTo(15));
+    }
+
+    @Test
+    public void sumAllAggregatedHours() {
+        HoursGroup h1 = createHoursGroupWithCriterions(criterion1, criterion2);
+        h1.setWorkingHours(10);
+        HoursGroup h2 = createHoursGroupWithCriterions(criterion1);
+        h2.setWorkingHours(5);
+        List<AggregatedHoursGroup> list = AggregatedHoursGroup.aggregate(h1, h2);
+        assertThat(AggregatedHoursGroup.sum(list), equalTo(15));
     }
 
     private static abstract class AggregatedHoursGroupMatcher extends

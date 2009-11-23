@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.resources.entities.Criterion;
 
 /**
@@ -48,6 +49,14 @@ public class AggregatedHoursGroup {
                 .entrySet()) {
             result.add(new AggregatedHoursGroup(entry.getKey(), entry
                     .getValue()));
+        }
+        return result;
+    }
+
+    public static int sum(Collection<? extends AggregatedHoursGroup> aggregated) {
+        int result = 0;
+        for (AggregatedHoursGroup each : aggregated) {
+            result += each.getHours();
         }
         return result;
     }
@@ -81,6 +90,28 @@ public class AggregatedHoursGroup {
 
     public List<HoursGroup> getHoursGroup() {
         return hoursGroup;
+    }
+
+    public int getHours() {
+        int result = 0;
+        for (HoursGroup each : hoursGroup) {
+            result += each.getWorkingHours();
+        }
+        return result;
+    }
+
+    public String getCriterionsJoinedByComma() {
+        List<String> criterionNames = asNames(criterions);
+        Collections.sort(criterionNames);
+        return StringUtils.join(criterionNames, ", ");
+    }
+
+    private List<String> asNames(Set<Criterion> criterions) {
+        List<String> result = new ArrayList<String>();
+        for (Criterion each : criterions) {
+            result.add(each.getName());
+        }
+        return result;
     }
 
 }
