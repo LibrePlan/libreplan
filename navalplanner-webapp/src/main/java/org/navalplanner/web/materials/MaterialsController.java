@@ -292,17 +292,33 @@ public class MaterialsController extends
     private void showInvalidValues(ValidationException validationException) {
         final InvalidValue[] invalidValues = validationException.getInvalidValues();
         for (InvalidValue each: invalidValues) {
-            if (each.getBean() instanceof Material) {
-                final Material material = (Material) each.getBean();
+            final Object bean = each.getBean();
+            // Errors related with contraints in Material (not null, etc)
+            if (bean instanceof Material) {
+                final Material material = (Material) bean;
                 showConstraintErrorsFor(material.getCategory());
+            }
+            // Unique material in materialCategory
+            if (bean instanceof MaterialCategory) {
+                final MaterialCategory materialCategory = (MaterialCategory) bean;
+                if (locateAndSelectMaterialCategory(materialCategory)) {
+                    messagesForUser.showMessage(Level.ERROR, each.getMessage());
+                }
             }
         }
     }
 
-    private void showConstraintErrorsFor(MaterialCategory materialCategory) {
+    private boolean locateAndSelectMaterialCategory(MaterialCategory materialCategory) {
         Treeitem treeitem = findTreeItemByMaterialCategory(categoriesTree.getRoot(), materialCategory);
         if (treeitem != null) {
             treeitem.setSelected(true);
+            return true;
+        }
+        return false;
+    }
+
+    private void showConstraintErrorsFor(MaterialCategory materialCategory) {
+        if (locateAndSelectMaterialCategory(materialCategory)) {
 
             // Load materials for category
             final List<Material> materials = getMaterials(materialCategory);
