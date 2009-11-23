@@ -97,4 +97,17 @@ public class MaterialCategory extends BaseEntity {
         if(subcategory.getParent()!=null)
             subcategory.removeParent();
     }
+
+    public Set<Material> getMaterials() {
+        return materials;
+    }
+
+    public void addMaterial(Material material) {
+        materials.add(material);
+        if(material.getCategory()!=this)
+            material.setCategory(this);
+    }
+    public void removeMaterial(Material material) {
+        materials.remove(material);
+    }
 }

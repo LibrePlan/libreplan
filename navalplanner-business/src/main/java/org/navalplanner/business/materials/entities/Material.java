@@ -44,7 +44,7 @@ public class Material extends BaseEntity {
     private boolean disabled;
 
     @NotNull
-    private MaterialCategory category;
+    private MaterialCategory category = null;
 
     // Default constructor, needed by Hibernate
     protected Material() {
@@ -72,7 +72,10 @@ public class Material extends BaseEntity {
     }
 
     public void setCategory(MaterialCategory category) {
+        if(this.category!=null)
+            this.category.removeMaterial(this);
         this.category = category;
+        category.addMaterial(this);
     }
 
     public String getDescription() {

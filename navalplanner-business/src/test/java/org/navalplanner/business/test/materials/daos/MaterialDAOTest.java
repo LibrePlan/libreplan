@@ -28,6 +28,7 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -84,6 +85,7 @@ public class MaterialDAOTest {
     public void testRemoveMaterial() throws InstanceNotFoundException {
         Material material = createValidMaterial();
         materialDAO.save(material);
+        //material.getCategory().removeMaterial(material);
         materialDAO.remove(material.getId());
         assertFalse(materialDAO.exists(material.getId()));
     }
@@ -94,6 +96,19 @@ public class MaterialDAOTest {
         Material material = createValidMaterial();
         materialDAO.save(material);
         List<Material> list = materialDAO.list(Material.class);
+        assertEquals(previous + 1, list.size());
+    }
+
+    @Test
+    public void testListMaterialsFromCategory() {
+        Material material1 = createValidMaterial();
+        int previous = material1.getCategory().getMaterials().size();
+        Material material2 = createValidMaterial();
+        material2.setCategory(material1.getCategory());
+        materialDAO.save(material1);
+        materialDAO.save(material2);
+
+        Set<Material> list = material1.getCategory().getMaterials();
         assertEquals(previous + 1, list.size());
     }
 }
