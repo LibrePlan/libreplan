@@ -86,6 +86,13 @@ public class GenericResourceAllocation extends
                 task));
     }
 
+    public static GenericResourceAllocation create(Task task,
+            Collection<? extends Criterion> criterions) {
+        GenericResourceAllocation result = new GenericResourceAllocation(task);
+        result.criterions = new HashSet<Criterion>(criterions);
+        return create(result);
+    }
+
     private GenericResourceAllocation(Task task) {
         super(task);
         this.criterions = task.getCriterions();

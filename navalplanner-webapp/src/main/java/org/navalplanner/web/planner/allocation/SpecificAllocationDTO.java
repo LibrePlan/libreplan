@@ -99,8 +99,7 @@ public class SpecificAllocationDTO extends AllocationDTO {
     private Resource resource;
 
     @Override
-    public AllocationBeingModified toAllocationBeingModified(Task task,
-            List<Resource> resources) {
+    public AllocationBeingModified toAllocationBeingModified(Task task) {
         SpecificResourceAllocation specific = SpecificResourceAllocation
                 .create(task);
         specific.setResource(resource);

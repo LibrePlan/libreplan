@@ -66,10 +66,8 @@ public class ResourceAllocationsBeingEdited {
     }
 
     public static ResourceAllocationsBeingEdited create(Task task,
-            List<AllocationDTO> initialAllocations, IResourceDAO resourceDAO,
-            List<Resource> resourcesBeingEdited) {
-        return new ResourceAllocationsBeingEdited(task, initialAllocations,
-                resourcesBeingEdited);
+            List<AllocationDTO> initialAllocations, IResourceDAO resourceDAO) {
+        return new ResourceAllocationsBeingEdited(task, initialAllocations);
     }
 
     private final List<AllocationDTO> currentAllocations;
@@ -84,12 +82,9 @@ public class ResourceAllocationsBeingEdited {
 
     private Integer daysDuration;
 
-    private final List<Resource> resourcesMatchingCriterions;
-
     private ResourceAllocationsBeingEdited(Task task,
-            List<AllocationDTO> initialAllocations, List<Resource> resourcesMatchingCriterions) {
+            List<AllocationDTO> initialAllocations) {
         this.task = task;
-        this.resourcesMatchingCriterions = resourcesMatchingCriterions;
         this.currentAllocations = new ArrayList<AllocationDTO>(
                 initialAllocations);
         this.calculatedValue = task.getCalculatedValue();
@@ -154,34 +149,13 @@ public class ResourceAllocationsBeingEdited {
     }
 
     public void checkInvalidValues() {
-        if (thereIsNoEmptyGenericResourceAllocation()
-                && noWorkersForCriterion()) {
-            formBinder.markNoWorkersMatchedByCriterion(getGenericAllocation());
-        }
-        if (thereIsJustOneEmptyGenericResourceAllocation()) {
-            formBinder
-                    .markGenericAllocationMustBeNoZeroOrMoreAllocations(getGenericAllocation());
-        }
         if (formBinder.getCalculatedValue() != CalculatedValue.NUMBER_OF_HOURS
-                && formBinder.getAssignedHours() == 0) {
+                && formBinder.getAssignedHours() <= 0) {
             formBinder.markAssignedHoursMustBePositive();
         }
         if (!thereIsLeastOneNoEmptyAllocation()) {
             formBinder.markThereMustBeAtLeastOneNoEmptyAllocation();
         }
-    }
-
-    private boolean noWorkersForCriterion() {
-        return resourcesMatchingCriterions.isEmpty();
-    }
-
-    private boolean thereIsNoEmptyGenericResourceAllocation() {
-        return !getGenericAllocation().isEmptyResourcesPerDay();
-    }
-
-    private GenericAllocationDTO getGenericAllocation() {
-        return (GenericAllocationDTO) currentAllocations
-                .get(0);
     }
 
     private boolean thereIsLeastOneNoEmptyAllocation() {
@@ -191,12 +165,6 @@ public class ResourceAllocationsBeingEdited {
             }
         }
         return false;
-    }
-
-    private boolean thereIsJustOneEmptyGenericResourceAllocation() {
-        return currentAllocations.size() == 1
-                && getGenericAllocation().isGeneric()
-                && getGenericAllocation().isEmptyResourcesPerDay();
     }
 
     public AllocationResult doAllocation() {
@@ -247,7 +215,7 @@ public class ResourceAllocationsBeingEdited {
 
     private AllocationBeingModified instantiate(
             AllocationDTO key) {
-        return key.toAllocationBeingModified(task, resourcesMatchingCriterions);
+        return key.toAllocationBeingModified(task);
     }
 
     private Integer from(Date startDate, LocalDate end) {

@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -88,12 +89,21 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
         planningState.reassociateResourcesWithSession(resourceDAO);
+        for (Resource each : reloadResources(resources)) {
+            resourceAllocationsBeingEdited
+                    .addSpecificResourceAllocationFor(each);
+        }
+    }
+
+    private List<Resource> reloadResources(
+            Collection<? extends Resource> resources) {
+        List<Resource> result = new ArrayList<Resource>();
         for (Resource each : resources) {
             Resource reloaded = resourceDAO.findExistingEntity(each.getId());
             reattachResource(reloaded);
-            resourceAllocationsBeingEdited
-                    .addSpecificResourceAllocationFor(reloaded);
+            result.add(reloaded);
         }
+        return result;
     }
 
     @Override
@@ -143,10 +153,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 previousLength);
     }
 
-    private List<Resource> getResourcesMatchingCriterions() {
-        return resourceDAO.getAllByCriterions(getCriterions());
-    }
-
     @Override
     @Transactional(readOnly = true)
     public ResourceAllocationsBeingEdited initAllocationsFor(Task task,
@@ -161,11 +167,10 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         loadCriterionsOfGenericAllocations();
         reattachHoursGroup(this.task.getHoursGroup());
         reattachCriterions(this.task.getHoursGroup().getValidCriterions());
-        List<AllocationDTO> currentAllocations = addDefaultGenericIfNeeded(AllocationDTO.toDTOs(this.task
-                .getResourceAllocations()));
+        List<AllocationDTO> currentAllocations = AllocationDTO.toDTOs(this.task
+                .getResourceAllocations());
         resourceAllocationsBeingEdited = ResourceAllocationsBeingEdited
-                .create(task, currentAllocations, resourceDAO,
-                        reattachResources(getResourcesMatchingCriterions()));
+                .create(task, currentAllocations, resourceDAO);
         return resourceAllocationsBeingEdited;
     }
 
@@ -212,14 +217,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         criterionType.getName();
     }
 
-    private List<Resource> reattachResources(
-            List<Resource> resourcesMatchingCriterions) {
-        for (Resource resource : resourcesMatchingCriterions) {
-            reattachResource(resource);
-        }
-        return resourcesMatchingCriterions;
-    }
-
     private void reattachResource(Resource resource) {
         resourceDAO.reattach(resource);
         reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
@@ -237,16 +234,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             criterionSatisfaction.getStartDate();
             reattachCriterion(criterionSatisfaction.getCriterion());
         }
-    }
-
-    private List<AllocationDTO> addDefaultGenericIfNeeded(
-            List<AllocationDTO> dtos) {
-        List<GenericAllocationDTO> currentGeneric = AllocationDTO
-                .getGeneric(dtos);
-        if (currentGeneric.isEmpty()) {
-            dtos.add(0, GenericAllocationDTO.createDefault());
-        }
-        return dtos;
     }
 
     @Override

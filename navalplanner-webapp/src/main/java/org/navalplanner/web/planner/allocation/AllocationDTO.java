@@ -28,7 +28,6 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
-import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * The information that must be introduced to create a
@@ -65,7 +64,7 @@ public abstract class AllocationDTO {
     private ResourcesPerDay resourcesPerDay;
 
     public abstract AllocationBeingModified toAllocationBeingModified(
-            Task task, List<Resource> resourcesMatchingCriterions);
+            Task task);
 
     public boolean isCreating() {
         return origin == null;

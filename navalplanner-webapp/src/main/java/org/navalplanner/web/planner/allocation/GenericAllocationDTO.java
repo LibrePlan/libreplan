@@ -25,13 +25,17 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.resourceload.ResourceLoadModel;
 
 /**
  * The information required for creating a {@link GenericResourceAllocation}
@@ -39,10 +43,21 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public class GenericAllocationDTO extends AllocationDTO {
 
-    public static GenericAllocationDTO createDefault() {
+    private static GenericAllocationDTO createDefault() {
         GenericAllocationDTO result = new GenericAllocationDTO();
         result.setName(_("Generic"));
         result.setResourcesPerDay(ResourcesPerDay.amount(0));
+        return result;
+    }
+
+    public static GenericAllocationDTO create(Set<Criterion> criterions,
+            Collection<? extends Resource> resources) {
+        Validate.isTrue(!resources.isEmpty());
+        Validate.notNull(criterions);
+        GenericAllocationDTO result = createDefault();
+        result.criterions = criterions;
+        result.resources = new ArrayList<Resource>(resources);
+        result.setName(ResourceLoadModel.getName(criterions));
         return result;
     }
 
@@ -51,8 +66,14 @@ public class GenericAllocationDTO extends AllocationDTO {
         GenericAllocationDTO result = createDefault();
         result.setResourcesPerDay(resourceAllocation.getResourcesPerDay());
         result.setOrigin(resourceAllocation);
+        result.criterions = resourceAllocation.getCriterions();
+        result.resources = resourceAllocation.getAssociatedResources();
+        result.setName(ResourceLoadModel.getName(result.criterions));
         return result;
     }
+
+    private Set<Criterion> criterions;
+    private List<Resource> resources;
 
     @Override
     public boolean isGeneric() {
@@ -71,9 +92,10 @@ public class GenericAllocationDTO extends AllocationDTO {
     }
 
     @Override
-    public AllocationBeingModified toAllocationBeingModified(Task task,
-            List<Resource> resources) {
-        return AllocationBeingModified.create(GenericResourceAllocation
-                .create(task), getResourcesPerDay(), resources);
+    public AllocationBeingModified toAllocationBeingModified(Task task) {
+        GenericResourceAllocation genericResourceAllocation = GenericResourceAllocation
+                .create(task, criterions);
+        return AllocationBeingModified.create(genericResourceAllocation,
+                getResourcesPerDay(), this.resources);
     }
 }
