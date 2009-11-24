@@ -22,8 +22,9 @@ package org.navalplanner.web.common.components;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.List;
+import java.util.HashSet;
 
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.navalplanner.web.resources.search.NewAllocationSelectorController;
@@ -40,7 +41,23 @@ import org.zkoss.zul.api.Radiogroup;
 public class NewAllocationSelector extends HtmlMacroComponent {
 
     public enum AllocationType {
-        SPECIFIC("specific allocation"), GENERIC("generic allocation");
+        SPECIFIC("specific allocation") {
+            @Override
+            public void addTo(NewAllocationSelectorController controller,
+                    INewAllocationsAdder allocationsAdder) {
+                allocationsAdder.addSpecific(controller.getSelectedWorkers());
+            }
+        },
+        GENERIC("generic allocation") {
+            @Override
+            public void addTo(
+                    NewAllocationSelectorController controller,
+                    INewAllocationsAdder allocationsAdder) {
+                allocationsAdder.addGeneric(new HashSet<Criterion>(controller
+                        .getSelectedCriterions()), controller
+                        .getSelectedWorkers());
+            }
+        };
 
         private final String name;
 
@@ -70,14 +87,13 @@ public class NewAllocationSelector extends HtmlMacroComponent {
                 }
             }
         }
+
+        public abstract void addTo(
+                NewAllocationSelectorController newAllocationSelectorController,
+                INewAllocationsAdder allocationsAdder);
     }
 
     private INewAllocationsAdder allocationsAdder;
-
-    private List<Worker> getWorkers() {
-        NewAllocationSelectorController controller = getController();
-        return controller.getSelectedWorkers();
-    }
 
     public void clearAll() {
         getController().clearAll();
@@ -89,7 +105,8 @@ public class NewAllocationSelector extends HtmlMacroComponent {
     }
 
     public void addChoosen() {
-        allocationsAdder.addSpecific(getWorkers());
+
+        getController().addTo(allocationsAdder);
     }
 
     public void setAllocationsAdder(INewAllocationsAdder allocationsAdder) {

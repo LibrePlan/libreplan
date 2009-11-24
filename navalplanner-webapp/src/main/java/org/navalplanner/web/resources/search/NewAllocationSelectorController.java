@@ -32,6 +32,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
+import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.Component;
@@ -189,7 +190,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
      *
      * @return
      */
-    private List<Criterion> getSelectedCriterions() {
+    public List<Criterion> getSelectedCriterions() {
         List<Criterion> result = new ArrayList<Criterion>();
 
         Set<Treeitem> selectedItems = criterionsTree.getSelectedItems();
@@ -223,8 +224,27 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
     }
 
     public List<Worker> getSelectedWorkers() {
-        List<Worker> result = new ArrayList<Worker>();
+        if(currentAllocationType== AllocationType.GENERIC){
+            return allWorkersShown();
+        } else {
+            return getSelectedWorkersOnListbox();
+        }
+    }
 
+    @SuppressWarnings("unchecked")
+    private List<Worker> allWorkersShown() {
+        List<Worker> result = new ArrayList<Worker>();
+        List<Listitem> selectedItems = listBoxWorkers.getItems();
+        for (Listitem item : selectedItems) {
+            Worker worker = (Worker) item.getValue();
+            result.add(worker);
+        }
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Worker> getSelectedWorkersOnListbox() {
+        List<Worker> result = new ArrayList<Worker>();
         Set<Listitem> selectedItems = listBoxWorkers.getSelectedItems();
         for (Listitem item : selectedItems) {
             Worker worker = (Worker) item.getValue();
@@ -392,6 +412,10 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
             tc.setParent(tr);
         }
 
+    }
+
+    public void addTo(INewAllocationsAdder allocationsAdder) {
+        currentAllocationType.addTo(this, allocationsAdder);
     }
 
 }
