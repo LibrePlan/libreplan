@@ -163,6 +163,14 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private void clearSelection(Tree tree) {
+        Set<Treeitem> selectedItems = new HashSet<Treeitem>(tree.getSelectedItems());
+        for (Treeitem each : selectedItems) {
+            tree.removeItemFromSelection(each);
+        }
+    }
+
     /**
      * Get input text, and search for workers
      *
@@ -220,6 +228,8 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
         txtName.setValue("");
         refreshListBoxWorkers(workerSearchModel.getAllWorkers());
         criterionsTree.setModel(getCriterions());
+        clearSelection(listBoxWorkers);
+        clearSelection(criterionsTree);
         doInitialSelection();
     }
 
