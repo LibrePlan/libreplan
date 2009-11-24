@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
@@ -41,6 +42,9 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
@@ -98,6 +102,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     private OnlyOneVisible cachedOnlyOneVisible;
 
     private IOrderPlanningGate planningControllerEntryPoints;
+
+    private BaseCalendarsComboitemRenderer baseCalendarsComboitemRenderer = new BaseCalendarsComboitemRenderer();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -328,6 +334,35 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void setActionOnUp(Runnable onUp) {
         this.onUp = onUp;
+    }
+
+    public List<BaseCalendar> getBaseCalendars() {
+        return orderModel.getBaseCalendars();
+    }
+
+    public BaseCalendarsComboitemRenderer getBaseCalendarsComboitemRenderer() {
+        return baseCalendarsComboitemRenderer;
+    }
+
+    private class BaseCalendarsComboitemRenderer implements ComboitemRenderer {
+
+        @Override
+        public void render(Comboitem item, Object data) throws Exception {
+            BaseCalendar calendar = (BaseCalendar) data;
+            item.setLabel(calendar.getName());
+            item.setValue(calendar);
+
+            BaseCalendar current = orderModel.getCalendar();
+            if ((current != null) && calendar.getId().equals(current.getId())) {
+                Combobox combobox = (Combobox) item.getParent();
+                combobox.setSelectedItem(item);
+            }
+        }
+
+    }
+
+    public void setBaseCalendar(BaseCalendar calendar) {
+        orderModel.setCalendar(calendar);
     }
 
 }

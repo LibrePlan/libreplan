@@ -21,6 +21,7 @@
                 <param name="enumClass">org.navalplanner.business.orders.entities.SchedulingState$Type</param>
             </type>
         </property>
+
         <set name="directAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
             <key column="DIRECT_ORDER_ELEMENT_ID" />
             <one-to-many class="org.navalplanner.business.advance.entities.DirectAdvanceAssignment" />
@@ -59,6 +60,10 @@
                 <property name="responsible" access="field"></property>
                 <property name="customer" access="field"></property>
                 <property name="dependenciesConstraintsHavePriority" access="field"></property>
+
+                <many-to-one name="calendar" column="BASE_CALENDAR_ID" cascade="none"
+                    class="org.navalplanner.business.calendars.entities.BaseCalendar"/>
+
             </joined-subclass>
 
         </joined-subclass>

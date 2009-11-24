@@ -23,6 +23,7 @@ package org.navalplanner.web.orders;
 import java.util.List;
 import java.util.Map;
 
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
@@ -83,5 +84,13 @@ public interface IOrderModel {
     void save() throws ValidationException;
 
     void setOrder(Order order);
+
+    List<BaseCalendar> getBaseCalendars();
+
+    BaseCalendar getDefaultCalendar();
+
+    BaseCalendar getCalendar();
+
+    void setCalendar(BaseCalendar calendar);
 
 }

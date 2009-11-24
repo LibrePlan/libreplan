@@ -83,6 +83,13 @@
                             <checkbox
                                 checked="@{controller.order.dependenciesConstraintsHavePriority}" />
                         </row>
+                        <row>
+                            <label value="${i18n:_('Calendar')}" />
+                            <combobox id="calendarCombobox"
+                                model="@{controller.baseCalendars}"
+                                itemRenderer="@{controller.baseCalendarsComboitemRenderer}"
+                                onSelect="controller.setBaseCalendar(self.selectedItem.value);" />
+                        </row>
                     </rows>
                 </grid>
             </tabpanel>

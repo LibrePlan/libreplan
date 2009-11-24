@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.NotNull;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -61,6 +63,9 @@ public class Order extends OrderLineGroup {
     private String customer;
 
     private Boolean dependenciesConstraintsHavePriority;
+
+    @NotNull
+    private BaseCalendar calendar;
 
     public String getResponsible() {
         return responsible;
@@ -169,6 +174,14 @@ public class Order extends OrderLineGroup {
     public void setDependenciesConstraintsHavePriority(
             boolean dependenciesConstraintsHavePriority) {
         this.dependenciesConstraintsHavePriority = dependenciesConstraintsHavePriority;
+    }
+
+    public void setCalendar(BaseCalendar calendar) {
+        this.calendar = calendar;
+    }
+
+    public BaseCalendar getCalendar() {
+        return calendar;
     }
 
 }

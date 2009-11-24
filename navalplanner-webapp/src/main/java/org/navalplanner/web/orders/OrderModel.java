@@ -35,6 +35,9 @@ import org.apache.commons.lang.Validate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.daos.ILabelDAO;
@@ -103,6 +106,12 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private ITaskElementDAO taskElementDAO;
 
+    @Autowired
+    private IBaseCalendarDAO baseCalendarDAO;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     @Override
     public List<Label> getLabels() {
         final List<Label> result = new ArrayList<Label>();
@@ -151,6 +160,7 @@ public class OrderModel implements IOrderModel {
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
         forceLoadAdvanceAssignmentsAndMeasurements(this.order);
         forceLoadCriterionRequirements(this.order);
+        forceLoadCalendar(this.getCalendar());
     }
 
     private void initializeCacheLabels() {
@@ -235,6 +245,7 @@ public class OrderModel implements IOrderModel {
         this.order = Order.create();
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
         this.order.setInitDate(new Date());
+        this.order.setCalendar(getDefaultCalendar());
     }
 
     @Override
@@ -349,6 +360,40 @@ public class OrderModel implements IOrderModel {
     @Override
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BaseCalendar> getBaseCalendars() {
+        return baseCalendarDAO.getBaseCalendars();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BaseCalendar getDefaultCalendar() {
+        BaseCalendar defaultCalendar = configurationDAO.getConfiguration()
+                .getDefaultCalendar();
+        forceLoadCalendar(defaultCalendar);
+        return defaultCalendar;
+    }
+
+    private void forceLoadCalendar(BaseCalendar calendar) {
+        calendar.getName();
+    }
+
+    @Override
+    public BaseCalendar getCalendar() {
+        if (order == null) {
+            return null;
+        }
+        return order.getCalendar();
+    }
+
+    @Override
+    public void setCalendar(BaseCalendar calendar) {
+        if (order != null) {
+            order.setCalendar(calendar);
+        }
     }
 
 }
