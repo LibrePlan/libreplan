@@ -88,4 +88,11 @@ public interface IMachineModel {
     List<BaseCalendar> getBaseCalendars();
 
     void removeConfigurationUnit(MachineWorkersConfigurationUnit unit);
+
+    void setCalendar(ResourceCalendar resourceCalendar);
+
+    ResourceCalendar getCalendar();
+
+    BaseCalendar getDefaultCalendar();
+
 }

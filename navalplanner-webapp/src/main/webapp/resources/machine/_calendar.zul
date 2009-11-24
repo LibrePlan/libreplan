@@ -25,46 +25,13 @@
 
 <div visible="@{controller.isCalendarNull}">
 
-<radiogroup id="createCalendarOptions"
-    onCheck="controller.calendarChecked(self.selectedItem)">
-    <grid fixedLayout="false">
-        <columns>
-            <column width="200px"/>
-            <column/>
-        </columns>
-        <rows>
-            <row>
-                <!-- Brand new calendar -->
-                <radio id="createFromScratch"
-                   label="${i18n:_('Create calendar from scratch')}"
-                   checked="true" />
-                <label value=""/>
-            </row>
-            <row>
-                <!-- Create derived calendar -->
-                <radio id="createDerived" label="${i18n:_('Create derived calendar')}" />
-                <combobox id="createDerivedCalendar" disabled="true"
-                    model="@{controller.baseCalendars}">
-                    <comboitem self="@{each='baseCalendar'}" value="@{baseCalendar}"
-                            label="@{baseCalendar.name}" />
-                </combobox>
-            </row>
-            <row>
-                <!-- Create calendar copy -->
-                <radio id="createCopy" label="${i18n:_('Create copy of calendar')}" />
-                <combobox id="createCopyCalendar" disabled="true"
-                    model="@{controller.baseCalendars}">
-                    <comboitem self="@{each='baseCalendar'}" value="@{baseCalendar}"
-                        label="@{baseCalendar.name}" />
-                </combobox>
-            </row>
-        </rows>
-    </grid>
-</radiogroup>
+<hbox>
+    <label value="${i18n:_('Select parent calendar')}" />
+    <combobox id="createDerivedCalendar"
+        model="@{controller.baseCalendars}"
+        itemRenderer="@{controller.baseCalendarsComboitemRenderer}" />
+</hbox>
 
-<!-- Create new calendar -->
-<button label="${i18n:_('Create')}"
-    onClick="controller.createCalendar(createCalendarOptions.selectedItem.id);" />
 </div>
 
 <!-- Control buttons calendar -->

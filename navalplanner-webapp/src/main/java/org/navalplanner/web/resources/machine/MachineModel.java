@@ -30,9 +30,12 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -90,6 +93,8 @@ public class MachineModel implements IMachineModel {
     private ICriterionTypeDAO criterionTypeDAO;
     @Autowired
     private IWorkerDAO workerDAO;
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     private ClassValidator<Machine> validator = new ClassValidator<Machine>(
             Machine.class);
@@ -146,6 +151,13 @@ public class MachineModel implements IMachineModel {
         reattachWorkersCache();
         loadCriterionSatisfactions();
         loadConfigurationUnits();
+        loadCalendar();
+    }
+
+    private void loadCalendar() {
+        if (machine.getCalendar() != null) {
+            forceLoadCalendar(machine.getCalendar());
+        }
     }
 
     private void loadCriterionSatisfactions() {
@@ -268,4 +280,39 @@ public class MachineModel implements IMachineModel {
     public void removeConfigurationUnit(MachineWorkersConfigurationUnit unit) {
         machine.removeMachineWorkersConfigurationUnit(unit);
     }
+
+    @Override
+    public void setCalendar(ResourceCalendar resourceCalendar) {
+        if (machine != null) {
+            machine.setCalendar(resourceCalendar);
+        }
+    }
+
+    @Override
+    public ResourceCalendar getCalendar() {
+        if (machine != null) {
+            return machine.getCalendar();
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BaseCalendar getDefaultCalendar() {
+        BaseCalendar defaultCalendar = configurationDAO.getConfiguration()
+                .getDefaultCalendar();
+        forceLoadCalendar(defaultCalendar);
+        return defaultCalendar;
+    }
+
+    private void forceLoadCalendar(BaseCalendar baseCalendar) {
+        for (CalendarData calendarData : baseCalendar.getCalendarDataVersions()) {
+            calendarData.getHoursPerDay().size();
+            if (calendarData.getParent() != null) {
+                forceLoadCalendar(calendarData.getParent());
+            }
+        }
+        baseCalendar.getExceptions().size();
+    }
+
 }

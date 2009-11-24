@@ -47,7 +47,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Radio;
+import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.api.Window;
 
@@ -84,6 +84,8 @@ public class MachineCRUDController extends GenericForwardComposer {
     public MachineCRUDController() {
 
     }
+
+    private BaseCalendarsComboitemRenderer baseCalendarsComboitemRenderer = new BaseCalendarsComboitemRenderer();
 
     public List<Machine> getMachines() {
         return machineModel.getMachines();
@@ -211,6 +213,9 @@ public class MachineCRUDController extends GenericForwardComposer {
         if (baseCalendarEditionController != null) {
             baseCalendarEditionController.save();
         }
+        if (machineModel.getCalendar() == null) {
+            createCalendar();
+        }
     }
 
     private void saveCriterions() throws ValidationException {
@@ -229,73 +234,30 @@ public class MachineCRUDController extends GenericForwardComposer {
         goToList();
     }
 
-    public void calendarChecked(Radio radio) {
-        Combobox comboboxDerived = (Combobox) radio
-                .getFellow("createDerivedCalendar");
-        Combobox comboboxCopy = (Combobox) radio
-                .getFellow("createCopyCalendar");
-
-        String selectedId = radio.getId();
-        if (selectedId.equals("createFromScratch")) {
-            comboboxDerived.setDisabled(true);
-            comboboxCopy.setDisabled(true);
-        } else if (selectedId.equals("createDerived")) {
-            comboboxDerived.setDisabled(false);
-            comboboxCopy.setDisabled(true);
-        } else if (selectedId.equals("createCopy")) {
-            comboboxDerived.setDisabled(true);
-            comboboxCopy.setDisabled(false);
-        }
-    }
-
     public List<BaseCalendar> getBaseCalendars() {
         return machineModel.getBaseCalendars();
     }
 
     private IBaseCalendarModel resourceCalendarModel;
 
-    public void createCalendar(String optionId) {
-        if (optionId.equals("createFromScratch")) {
-            resourceCalendarModel.initCreate();
-        } else if (optionId.equals("createDerived")) {
-            Combobox combobox = (Combobox) editWindow
-                    .getFellow("createDerivedCalendar");
-            Comboitem selectedItem = combobox.getSelectedItem();
-            if (selectedItem == null) {
-                throw new WrongValueException(combobox,
-                        _("Please, select a calendar"));
-            }
-            BaseCalendar parentCalendar = (BaseCalendar) combobox
-                    .getSelectedItem().getValue();
-            resourceCalendarModel.initCreateDerived(parentCalendar);
-        } else if (optionId.equals("createCopy")) {
-            Combobox combobox = (Combobox) editWindow
-                    .getFellow("createCopyCalendar");
-            Comboitem selectedItem = combobox.getSelectedItem();
-            if (selectedItem == null) {
-                throw new WrongValueException(combobox,
-                        _("Please, select a calendar"));
-            }
-            BaseCalendar origCalendar = (BaseCalendar) combobox
-                    .getSelectedItem().getValue();
-            resourceCalendarModel.initCreateCopy(origCalendar);
-        } else {
-            throw new RuntimeException(_("Unknow option {0} to create a resource calendar", optionId));
+    private void createCalendar() {
+        Combobox combobox = (Combobox) editWindow
+                .getFellow("createDerivedCalendar");
+        Comboitem selectedItem = combobox.getSelectedItem();
+        if (selectedItem == null) {
+            throw new WrongValueException(combobox,
+                    _("Please, select a calendar"));
         }
 
-        updateCalendarController();
-        machineModel.setCalendarOfMachine((ResourceCalendar) resourceCalendarModel
+        BaseCalendar parentCalendar = (BaseCalendar) combobox.getSelectedItem()
+                .getValue();
+        if (parentCalendar == null) {
+            parentCalendar = machineModel.getDefaultCalendar();
+        }
+        resourceCalendarModel.initCreateDerived(parentCalendar);
+
+        machineModel.setCalendar((ResourceCalendar) resourceCalendarModel
                 .getBaseCalendar());
-        try {
-            baseCalendarEditionController.doAfterCompose(editCalendarWindow);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        baseCalendarEditionController.setSelectedDay(new Date());
-        Util.reloadBindings(editCalendarWindow);
-        Util.reloadBindings(createNewVersionWindow);
-        reloadWindow();
     }
 
     private Window editCalendarWindow;
@@ -371,6 +333,31 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     public MachineConfigurationController getConfigurationController() {
         return configurationController;
+    }
+
+    public BaseCalendarsComboitemRenderer getBaseCalendarsComboitemRenderer() {
+        return baseCalendarsComboitemRenderer;
+    }
+
+    private class BaseCalendarsComboitemRenderer implements ComboitemRenderer {
+
+        @Override
+        public void render(Comboitem item, Object data) throws Exception {
+            BaseCalendar calendar = (BaseCalendar) data;
+            item.setLabel(calendar.getName());
+            item.setValue(calendar);
+
+            if (isDefaultCalendar(calendar)) {
+                Combobox combobox = (Combobox) item.getParent();
+                combobox.setSelectedItem(item);
+            }
+        }
+
+        private boolean isDefaultCalendar(BaseCalendar calendar) {
+            BaseCalendar defaultCalendar = machineModel.getDefaultCalendar();
+            return defaultCalendar.getId().equals(calendar.getId());
+        }
+
     }
 
 }
