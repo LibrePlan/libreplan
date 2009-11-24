@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.common;
 
+import java.util.List;
+
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -47,6 +49,12 @@ public class ConfigurationModel implements IConfigurationModel {
 
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BaseCalendar> getCalendars() {
+        return baseCalendarDAO.getBaseCalendars();
+    }
 
     @Override
     public BaseCalendar getDefaultCalendar() {

@@ -36,6 +36,7 @@
             <label value="${i18n:_('Defautl calendar')}" />
             <bandboxSearch id="defaultCalendarBandboxSearch"
                 finder="BaseCalendarBandboxFinder"
+                model="@{configurationController.calendars}"
                 selectedElement="@{configurationController.defaultCalendar}" />
         </hbox>
 

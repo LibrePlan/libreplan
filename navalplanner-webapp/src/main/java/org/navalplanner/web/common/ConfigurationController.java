@@ -22,6 +22,8 @@ package org.navalplanner.web.common;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.List;
+
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
@@ -64,6 +66,10 @@ public class ConfigurationController extends GenericForwardComposer {
                                 .getValue());
                     }
                 });
+    }
+
+    public List<BaseCalendar> getCalendars() {
+        return configurationModel.getCalendars();
     }
 
     public BaseCalendar getDefaultCalendar() {
