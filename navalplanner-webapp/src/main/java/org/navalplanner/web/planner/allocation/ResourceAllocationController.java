@@ -24,7 +24,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,8 +36,6 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
@@ -163,22 +160,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
         orderElementHoursGrid.setModel(new ListModelList(
                 resourceAllocationModel.getHoursAggregatedByCriterions()));
         orderElementHoursGrid.setRowRenderer(createOrderElementHoursRenderer());
-        newAllocationSelector
-                .setAllocationsAdder(modifyApplyButtonIfNeeded(resourceAllocationModel));
+        newAllocationSelector.setAllocationsAdder(resourceAllocationModel);
         showWindow();
-    }
-
-    private INewAllocationsAdder modifyApplyButtonIfNeeded(
-            final INewAllocationsAdder decorated) {
-        return new INewAllocationsAdder() {
-            @Override
-            public void addSpecific(Collection<? extends Resource> resources) {
-                decorated.addSpecific(resources);
-                if (!resources.isEmpty()) {
-                    formBinder.newSpecificAllocation();
-                }
-            }
-        };
     }
 
     public enum HoursRendererColumn {
@@ -238,9 +221,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
      * @param e
      */
     public void onSelectWorkers(Event e) {
-        newAllocationSelector.addChoosen();
-        tbResourceAllocation.setSelected(true);
-        Util.reloadBindings(allocationsList);
+        try {
+            newAllocationSelector.addChoosen();
+        } finally {
+            tbResourceAllocation.setSelected(true);
+            Util.reloadBindings(allocationsList);
+        }
     }
 
     /**
@@ -428,21 +414,15 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         @Override
         public void render(Listitem item, Object data) throws Exception {
-            if (data instanceof SpecificAllocationDTO) {
-                renderSpecificResourceAllocation(item,
-                        (SpecificAllocationDTO) data);
-            } else if (data instanceof GenericAllocationDTO) {
-                renderGenericResourceAllocation(item,
-                        (GenericAllocationDTO) data);
-            }
+            renderResourceAllocation(item, (AllocationDTO) data);
         }
 
-        private void renderSpecificResourceAllocation(Listitem item,
-                final SpecificAllocationDTO data) throws Exception {
+        private void renderResourceAllocation(Listitem item,
+                final AllocationDTO data) throws Exception {
             item.setValue(data);
 
             // Label fields are fixed, can only be viewed
-            appendLabel(item, getName(data.getResource()));
+            appendLabel(item, data.getName());
 
             bindResourcesPerDay(appendDecimalbox(item), data);
             // On click delete button
@@ -452,32 +432,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    removeSpecificResourceAllocation(data);
+                    removeAllocation(data);
                 }
             });
         }
 
-        private String getName(Resource resource) {
-            if (resource instanceof Worker) {
-                Worker worker = (Worker) resource;
-                return worker.getName();
-            }
-            return resource.getDescription();
-        }
-
-        private void removeSpecificResourceAllocation(SpecificAllocationDTO data) {
+        private void removeAllocation(AllocationDTO data) {
             allocationsBeingEdited.remove(data);
             Util.reloadBindings(allocationsList);
-        }
-
-        private void renderGenericResourceAllocation(Listitem item,
-                final GenericAllocationDTO data) throws Exception {
-            item.setValue(data);
-            // Set name
-            appendLabel(item, _("Generic"));
-            bindResourcesPerDay(appendDecimalbox(item), data);
-            // No buttons
-            appendLabel(item, "");
         }
 
         /**

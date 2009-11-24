@@ -89,10 +89,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
         planningState.reassociateResourcesWithSession(resourceDAO);
-        for (Resource each : reloadResources(resources)) {
-            resourceAllocationsBeingEdited
-                    .addSpecificResourceAllocationFor(each);
-        }
+        resourceAllocationsBeingEdited
+                .addSpecificResourceAllocationFor(reloadResources(resources));
     }
 
     private List<Resource> reloadResources(
@@ -104,6 +102,18 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             result.add(reloaded);
         }
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void addGeneric(Set<Criterion> criterions,
+            Collection<? extends Resource> resourcesMatched) {
+        if (resourcesMatched.isEmpty() || criterions.isEmpty()) {
+            return;
+        }
+        planningState.reassociateResourcesWithSession(resourceDAO);
+        List<Resource> reloadResources = reloadResources(resourcesMatched);
+        resourceAllocationsBeingEdited.addGeneric(criterions, reloadResources);
     }
 
     @Override
@@ -167,6 +177,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         loadCriterionsOfGenericAllocations();
         reattachHoursGroup(this.task.getHoursGroup());
         reattachCriterions(this.task.getHoursGroup().getValidCriterions());
+        loadResources(this.task.getResourceAllocations());
         List<AllocationDTO> currentAllocations = AllocationDTO.toDTOs(this.task
                 .getResourceAllocations());
         resourceAllocationsBeingEdited = ResourceAllocationsBeingEdited
@@ -193,6 +204,12 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void reattachCriterions(Set<Criterion> criterions) {
         for (Criterion criterion : criterions) {
             reattachCriterion(criterion);
+        }
+    }
+
+    private void loadResources(Set<ResourceAllocation<?>> resourceAllocations) {
+        for (ResourceAllocation<?> each : resourceAllocations) {
+            each.getAssociatedResources();
         }
     }
 

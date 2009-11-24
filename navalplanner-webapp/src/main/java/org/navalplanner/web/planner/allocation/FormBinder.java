@@ -23,12 +23,18 @@ package org.navalplanner.web.planner.allocation;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -209,7 +215,7 @@ class FormBinder {
         return result;
     }
 
-    public void setDeleteButtonFor(SpecificAllocationDTO data,
+    public void setDeleteButtonFor(AllocationDTO data,
             Button deleteButton) {
         deleteButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
@@ -220,13 +226,36 @@ class FormBinder {
         });
     }
 
-    public void newSpecificAllocation() {
+    public void newAllocationAdded() {
         applyButton.setDisabled(false);
     }
 
     public void markAssignedHoursMustBePositive() {
         throw new WrongValueException(assignedHoursComponent,
                 _("it must be greater than zero"));
+    }
+
+    public void markRepeatedResource(List<Resource> resources) {
+        throw new WrongValueException(allocationsList, _(
+                "{0} already assigned to resource allocation list", StringUtils
+                        .join(getResourcesDescriptions(resources), ", ")));
+    }
+
+    private List<String> getResourcesDescriptions(List<Resource> resources) {
+        List<String> resourcesDescriptions = new ArrayList<String>();
+        for (Resource each : resources) {
+            resourcesDescriptions.add(each.getDescription());
+        }
+        return resourcesDescriptions;
+    }
+
+    public void markNoWorkersMatchedByCriterions(
+            Collection<? extends Criterion> criterions) {
+        throw new WrongValueException(
+                allocationsList,
+                _(
+                        "there are no workers for required criteria: {0}. So the generic allocation can't be added",
+                        ResourceLoadModel.getName(criterions)));
     }
 
     public void markThereMustBeAtLeastOneNoEmptyAllocation() {
@@ -245,6 +274,11 @@ class FormBinder {
             inputElement.removeEventListener(Events.ON_CHANGE,
                     onChangeEnableApply);
         }
+    }
+
+    public void markThereisAlreadyAssignmentWith(Set<Criterion> criterions) {
+        throw new WrongValueException(allocationsList,
+                _("for criterions {0} already exists an allocation"));
     }
 
 }

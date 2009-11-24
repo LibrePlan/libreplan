@@ -98,4 +98,8 @@ public class GenericAllocationDTO extends AllocationDTO {
         return AllocationBeingModified.create(genericResourceAllocation,
                 getResourcesPerDay(), this.resources);
     }
+
+    public boolean hasSameCriterions(Set<Criterion> criterions) {
+        return this.criterions.equals(criterions);
+    }
 }

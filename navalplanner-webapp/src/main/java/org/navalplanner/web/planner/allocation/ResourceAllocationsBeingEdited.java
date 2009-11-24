@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.planner.allocation;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -40,6 +38,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 
 public class ResourceAllocationsBeingEdited {
@@ -91,15 +90,35 @@ public class ResourceAllocationsBeingEdited {
         this.daysDuration = task.getDaysDuration();
     }
 
-    public void addSpecificResourceAllocationFor(Resource resource) {
-        if (alreadyExistsAllocationFor(resource)) {
-            throw new IllegalArgumentException(_(
-                    "{0} already assigned to resource allocation list",
-                    resource.getDescription()));
+    public void addSpecificResourceAllocationFor(List<Resource> resource) {
+        List<Resource> alreadyPresent = new ArrayList<Resource>();
+        for (Resource each : resource) {
+            if (alreadyExistsAllocationFor(each)) {
+                alreadyPresent.add(each);
+            } else {
+                currentAllocations.add(SpecificAllocationDTO.forResource(each));
+                formBinder.newAllocationAdded();
+            }
         }
-        SpecificAllocationDTO allocation = SpecificAllocationDTO
-                .forResource(resource);
-        currentAllocations.add(allocation);
+        if (!alreadyPresent.isEmpty()) {
+            formBinder.markRepeatedResource(alreadyPresent);
+        }
+    }
+
+    public void addGeneric(Set<Criterion> criterions,
+            Collection<? extends Resource> resourcesMatched) {
+        if (resourcesMatched.isEmpty()) {
+            formBinder.markNoWorkersMatchedByCriterions(criterions);
+        } else {
+            GenericAllocationDTO genericAllocationDTO = GenericAllocationDTO
+                    .create(criterions, resourcesMatched);
+            if (alreadyExistsAllocationFor(criterions)) {
+                formBinder.markThereisAlreadyAssignmentWith(criterions);
+            } else {
+                currentAllocations.add(genericAllocationDTO);
+                formBinder.newAllocationAdded();
+            }
+        }
     }
 
     public List<AllocationDTO> getCurrentAllocations() {
@@ -110,6 +129,17 @@ public class ResourceAllocationsBeingEdited {
         return !getAllocationsFor(resource).isEmpty();
     }
 
+    private boolean alreadyExistsAllocationFor(Set<Criterion> criterions) {
+        List<GenericAllocationDTO> generic = AllocationDTO
+                .getGeneric(getCurrentAllocations());
+        for (GenericAllocationDTO each : generic) {
+            if (each.hasSameCriterions(criterions)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private List<SpecificAllocationDTO> getAllocationsFor(Resource resource) {
         List<SpecificAllocationDTO> found = SpecificAllocationDTO
                 .withResource(SpecificAllocationDTO
@@ -117,7 +147,7 @@ public class ResourceAllocationsBeingEdited {
         return found;
     }
 
-    public void remove(SpecificAllocationDTO allocation) {
+    public void remove(AllocationDTO allocation) {
         currentAllocations.remove(allocation);
         if (allocation.isModifying()) {
             requestedToRemove.add(allocation.getOrigin());
