@@ -34,6 +34,8 @@ import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -87,6 +89,8 @@ class FormBinder {
     private EventListener applyButtonListener;
 
     private List<InputElement> inputsAssociatedWithOnChangeEnableApply = new ArrayList<InputElement>();
+
+    private IMessagesForUser messagesForUser;
 
     public FormBinder(
             ResourceAllocationsBeingEdited resourceAllocationsBeingEdited) {
@@ -235,8 +239,8 @@ class FormBinder {
                 _("it must be greater than zero"));
     }
 
-    public void markRepeatedResource(List<Resource> resources) {
-        throw new WrongValueException(allocationsList, _(
+    public void markRepeatedResources(List<Resource> resources) {
+        messagesForUser.showMessage(Level.ERROR, _(
                 "{0} already assigned to resource allocation list", StringUtils
                         .join(getResourcesDescriptions(resources), ", ")));
     }
@@ -251,11 +255,17 @@ class FormBinder {
 
     public void markNoWorkersMatchedByCriterions(
             Collection<? extends Criterion> criterions) {
-        throw new WrongValueException(
-                allocationsList,
-                _(
+        messagesForUser
+                .showMessage(
+                        Level.ERROR,
+                        _(
                         "there are no workers for required criteria: {0}. So the generic allocation can't be added",
                         ResourceLoadModel.getName(criterions)));
+    }
+
+    public void markThereisAlreadyAssignmentWith(Set<Criterion> criterions) {
+        messagesForUser.showMessage(Level.ERROR,
+                _("for criterions {0} already exists an allocation"));
     }
 
     public void markThereMustBeAtLeastOneNoEmptyAllocation() {
@@ -267,6 +277,10 @@ class FormBinder {
         this.allocationsList = allocationsList;
     }
 
+    public void setMessagesForUser(IMessagesForUser messages) {
+        this.messagesForUser = messages;
+    }
+
     public void detach() {
         this.applyButton.removeEventListener(Events.ON_CLICK,
                 applyButtonListener);
@@ -274,11 +288,6 @@ class FormBinder {
             inputElement.removeEventListener(Events.ON_CHANGE,
                     onChangeEnableApply);
         }
-    }
-
-    public void markThereisAlreadyAssignmentWith(Set<Criterion> criterions) {
-        throw new WrongValueException(allocationsList,
-                _("for criterions {0} already exists an allocation"));
     }
 
 }

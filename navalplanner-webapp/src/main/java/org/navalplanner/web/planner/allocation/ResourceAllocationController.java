@@ -153,6 +153,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         formBinder.setTaskElapsedDays(taskElapsedDays);
         formBinder.setApplyButton(applyButton);
         formBinder.setAllocationsList(allocationsList);
+        formBinder.setMessagesForUser(messagesForUser);
         CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                 .from(formBinder.getCalculatedValue());
         calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);

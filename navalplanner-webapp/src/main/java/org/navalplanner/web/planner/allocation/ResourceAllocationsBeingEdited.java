@@ -101,7 +101,7 @@ public class ResourceAllocationsBeingEdited {
             }
         }
         if (!alreadyPresent.isEmpty()) {
-            formBinder.markRepeatedResource(alreadyPresent);
+            formBinder.markRepeatedResources(alreadyPresent);
         }
     }
 
