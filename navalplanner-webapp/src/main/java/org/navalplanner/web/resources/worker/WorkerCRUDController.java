@@ -22,6 +22,7 @@ package org.navalplanner.web.resources.worker;
 
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.common.ConcurrentModificationDetector.addAutomaticHandlingOfConcurrentModification;
+
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +46,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Radio;
+import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -95,6 +96,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private Window createNewVersionWindow;
 
+    private BaseCalendarsComboitemRenderer baseCalendarsComboitemRenderer = new BaseCalendarsComboitemRenderer();
+
     public WorkerCRUDController() {
     }
 
@@ -135,6 +138,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         try {
             if (baseCalendarEditionController != null) {
                 baseCalendarEditionController.save();
+            }
+            if (workerModel.getCalendar() == null) {
+                createCalendar();
             }
             if(criterionsController != null){
                 if(!criterionsController.validate()){
@@ -310,25 +316,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         return workerModel.getBaseCalendars();
     }
 
-    public void calendarChecked(Radio radio) {
-        Combobox comboboxDerived = (Combobox) radio
-                .getFellow("createDerivedCalendar");
-        Combobox comboboxCopy = (Combobox) radio
-                .getFellow("createCopyCalendar");
-
-        String selectedId = radio.getId();
-        if (selectedId.equals("createFromScratch")) {
-            comboboxDerived.setDisabled(true);
-            comboboxCopy.setDisabled(true);
-        } else if (selectedId.equals("createDerived")) {
-            comboboxDerived.setDisabled(false);
-            comboboxCopy.setDisabled(true);
-        } else if (selectedId.equals("createCopy")) {
-            comboboxDerived.setDisabled(true);
-            comboboxCopy.setDisabled(false);
-        }
-    }
-
     public boolean isCalendarNull() {
         if (workerModel.getCalendar() != null) {
             return false;
@@ -340,50 +327,23 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         return !isCalendarNull();
     }
 
-    public void createCalendar(String optionId) {
-        if (optionId.equals("createFromScratch")) {
-            resourceCalendarModel.initCreate();
-        } else if (optionId.equals("createDerived")) {
-            Combobox combobox = (Combobox) getCurrentWindow().getFellow(
-                    "createDerivedCalendar");
-            Comboitem selectedItem = combobox.getSelectedItem();
-            if (selectedItem == null) {
-                throw new WrongValueException(combobox,
-                        "You should select one calendar");
-            }
-            BaseCalendar parentCalendar = (BaseCalendar) combobox
-                    .getSelectedItem().getValue();
-            resourceCalendarModel.initCreateDerived(parentCalendar);
-        } else if (optionId.equals("createCopy")) {
-            Combobox combobox = (Combobox) getCurrentWindow().getFellow(
-                    "createCopyCalendar");
-            Comboitem selectedItem = combobox.getSelectedItem();
-            if (selectedItem == null) {
-                throw new WrongValueException(combobox,
-                        "You should select one calendar");
-            }
-            BaseCalendar origCalendar = (BaseCalendar) combobox
-                    .getSelectedItem().getValue();
-            resourceCalendarModel.initCreateCopy(origCalendar);
-        } else {
-            throw new RuntimeException(
-                    "Unknow option '" + optionId
-                    + "' to create a resource calendar");
+    private void createCalendar() {
+        Combobox combobox = (Combobox) getCurrentWindow().getFellow(
+                "createDerivedCalendar");
+        Comboitem selectedItem = combobox.getSelectedItem();
+        if (selectedItem == null) {
+            throw new WrongValueException(combobox,
+                    "You should select one calendar");
         }
+        BaseCalendar parentCalendar = (BaseCalendar) combobox.getSelectedItem()
+                .getValue();
+        if (parentCalendar == null) {
+            parentCalendar = workerModel.getDefaultCalendar();
+        }
+        resourceCalendarModel.initCreateDerived(parentCalendar);
 
-        updateCalendarController();
         workerModel.setCalendar((ResourceCalendar) resourceCalendarModel
                 .getBaseCalendar());
-        try {
-            baseCalendarEditionController.doAfterCompose(editCalendarWindow);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        baseCalendarEditionController.setSelectedDay(new Date());
-        Util.reloadBindings(editCalendarWindow);
-        Util.reloadBindings(createNewVersionWindow);
-        reloadCurrentWindow();
     }
 
     public void editCalendar() {
@@ -453,4 +413,30 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         editCalendarWindow.setVariable("calendarController", this, true);
         createNewVersionWindow.setVariable("calendarController", this, true);
     }
+
+    public BaseCalendarsComboitemRenderer getBaseCalendarsComboitemRenderer() {
+        return baseCalendarsComboitemRenderer;
+    }
+
+    private class BaseCalendarsComboitemRenderer implements ComboitemRenderer {
+
+        @Override
+        public void render(Comboitem item, Object data) throws Exception {
+            BaseCalendar calendar = (BaseCalendar) data;
+            item.setLabel(calendar.getName());
+            item.setValue(calendar);
+
+            if (isDefaultCalendar(calendar)) {
+                Combobox combobox = (Combobox) item.getParent();
+                combobox.setSelectedItem(item);
+            }
+        }
+
+        private boolean isDefaultCalendar(BaseCalendar calendar) {
+            BaseCalendar defaultCalendar = workerModel.getDefaultCalendar();
+            return defaultCalendar.getId().equals(calendar.getId());
+        }
+
+    }
+
 }

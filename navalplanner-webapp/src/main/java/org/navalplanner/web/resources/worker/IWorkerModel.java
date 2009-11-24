@@ -124,4 +124,7 @@ public interface IWorkerModel {
     ResourceCalendar getCalendar();
 
     IAssignedCriterionsModel getAssignedCriterionsModel();
+
+    BaseCalendar getDefaultCalendar();
+
 }

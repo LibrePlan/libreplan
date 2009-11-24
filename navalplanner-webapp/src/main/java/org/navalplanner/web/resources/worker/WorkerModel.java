@@ -37,6 +37,7 @@ import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -88,6 +89,9 @@ public class WorkerModel implements IWorkerModel {
 
     @Autowired
     private IAssignedCriterionsModel assignedCriterionsModel;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     @Autowired
     public WorkerModel(IResourceDAO resourceDAO,
@@ -478,6 +482,14 @@ public class WorkerModel implements IWorkerModel {
 
     public IAssignedCriterionsModel getAssignedCriterionsModel() {
         return assignedCriterionsModel;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BaseCalendar getDefaultCalendar() {
+        BaseCalendar defaultCalendar = configurationDAO.getConfiguration().getDefaultCalendar();
+        forceLoadCalendar(defaultCalendar);
+        return defaultCalendar;
     }
 
 }
