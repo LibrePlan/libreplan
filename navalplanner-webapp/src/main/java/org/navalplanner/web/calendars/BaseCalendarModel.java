@@ -35,6 +35,7 @@ import org.navalplanner.business.calendars.entities.ExceptionDay;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -461,8 +462,19 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Override
     @Transactional(readOnly = true)
     public boolean isDefaultCalendar(BaseCalendar baseCalendar) {
+        Configuration configuration = configurationDAO.getConfiguration();
+        if (configuration == null) {
+            return false;
+        }
+        BaseCalendar defaultCalendar = configuration.getDefaultCalendar();
+        if (defaultCalendar == null) {
+            return false;
+        }
+        if (baseCalendar == null) {
+            return false;
+        }
         return baseCalendar.getId().equals(
-                configurationDAO.getConfiguration().getDefaultCalendar()
+                defaultCalendar
                         .getId());
     }
 

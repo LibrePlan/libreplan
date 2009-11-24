@@ -30,12 +30,12 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -299,7 +299,11 @@ public class MachineModel implements IMachineModel {
     @Override
     @Transactional(readOnly = true)
     public BaseCalendar getDefaultCalendar() {
-        BaseCalendar defaultCalendar = configurationDAO.getConfiguration()
+        Configuration configuration = configurationDAO.getConfiguration();
+        if (configuration == null) {
+            return null;
+        }
+        BaseCalendar defaultCalendar = configuration
                 .getDefaultCalendar();
         forceLoadCalendar(defaultCalendar);
         return defaultCalendar;

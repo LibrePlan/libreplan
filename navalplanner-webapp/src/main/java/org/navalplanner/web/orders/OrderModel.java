@@ -38,6 +38,7 @@ import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.daos.ILabelDAO;
@@ -371,7 +372,11 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public BaseCalendar getDefaultCalendar() {
-        BaseCalendar defaultCalendar = configurationDAO.getConfiguration()
+        Configuration configuration = configurationDAO.getConfiguration();
+        if (configuration == null) {
+            return null;
+        }
+        BaseCalendar defaultCalendar = configuration
                 .getDefaultCalendar();
         forceLoadCalendar(defaultCalendar);
         return defaultCalendar;
