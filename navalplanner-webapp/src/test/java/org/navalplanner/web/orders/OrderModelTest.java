@@ -45,6 +45,7 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -80,9 +81,13 @@ public class OrderModelTest {
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
 
+    @Resource
+    private IDataBootstrap configurationBootstrap;
+
     @Before
     public void loadRequiredaData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
+        configurationBootstrap.loadRequiredData();
     }
 
     public static Date year(int year) {
@@ -90,17 +95,6 @@ public class OrderModelTest {
         calendar.clear();
         calendar.set(Calendar.YEAR, year);
         return calendar.getTime();
-    }
-
-    private static Order createValidOrder() {
-        Order order = Order.create();
-        order.setDescription("description");
-        order.setCustomer("blabla");
-        order.setInitDate(year(2000));
-        order.setName("name");
-        order.setResponsible("responsible");
-        order.setCode("code");
-        return order;
     }
 
     @Autowired
@@ -121,10 +115,26 @@ public class OrderModelTest {
     @Autowired
     private ICriterionsModel criterionModel;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     private Criterion criterion;
 
     private Session getSession() {
         return sessionFactory.getCurrentSession();
+    }
+
+    private Order createValidOrder() {
+        Order order = Order.create();
+        order.setDescription("description");
+        order.setCustomer("blabla");
+        order.setInitDate(year(2000));
+        order.setName("name");
+        order.setResponsible("responsible");
+        order.setCode("code");
+        order.setCalendar(configurationDAO.getConfiguration()
+                .getDefaultCalendar());
+        return order;
     }
 
     @Test
@@ -187,7 +197,12 @@ public class OrderModelTest {
     @NotTransactional
     public void testOrderPreserved() throws ValidationException,
             InstanceNotFoundException {
-        final Order order = createValidOrder();
+        final Order order = adHocTransaction.runOnReadOnlyTransaction(new IOnTransaction<Order>() {
+            @Override
+            public Order execute() {
+                return createValidOrder();
+            }
+        });
         final OrderElement[] containers = new OrderLineGroup[10];
         for (int i = 0; i < containers.length; i++) {
             containers[i] = adHocTransaction
@@ -272,7 +287,13 @@ public class OrderModelTest {
     @Test
     @NotTransactional
     public void testAddingOrderElement() throws Exception {
-        final Order order = createValidOrder();
+        final Order order = adHocTransaction
+                .runOnReadOnlyTransaction(new IOnTransaction<Order>() {
+                    @Override
+                    public Order execute() {
+                        return createValidOrder();
+                    }
+                });
         OrderLineGroup container = adHocTransaction
                 .runOnTransaction(new IOnTransaction<OrderLineGroup>() {
                     @Override
@@ -321,7 +342,13 @@ public class OrderModelTest {
     @NotTransactional
     public void testManyToManyHoursGroupCriterionMapping() throws Exception {
         givenCriterion();
-        final Order order = createValidOrder();
+        final Order order = adHocTransaction
+                .runOnReadOnlyTransaction(new IOnTransaction<Order>() {
+                    @Override
+                    public Order execute() {
+                        return createValidOrder();
+                    }
+                });
 
         OrderLine orderLine = OrderLine.create();
         orderLine.setName("Order element");

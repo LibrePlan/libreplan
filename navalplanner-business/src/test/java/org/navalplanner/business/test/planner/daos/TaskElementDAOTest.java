@@ -43,6 +43,7 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -81,9 +82,13 @@ public class TaskElementDAOTest {
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
 
+    @Resource
+    private IDataBootstrap configurationBootstrap;
+
     @Before
     public void loadRequiredaData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
+        configurationBootstrap.loadRequiredData();
     }
 
     @Autowired
@@ -100,6 +105,9 @@ public class TaskElementDAOTest {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     private HoursGroup associatedHoursGroup;
 
@@ -126,6 +134,8 @@ public class TaskElementDAOTest {
         order.setInitDate(new Date());
         order.setCode("code");
         order.add(orderLine);
+        order.setCalendar(configurationDAO.getConfiguration()
+                .getDefaultCalendar());
         try {
             orderDAO.save(order);
             sessionFactory.getCurrentSession().flush();

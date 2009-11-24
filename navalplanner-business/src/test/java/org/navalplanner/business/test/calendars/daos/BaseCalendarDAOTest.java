@@ -21,7 +21,6 @@
 package org.navalplanner.business.test.calendars.daos;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -259,6 +258,9 @@ public class BaseCalendarDAOTest {
 
     @Test
     public void getBaseCalendarsAndNotResourceCalendars() {
+        List<BaseCalendar> baseCalendars = baseCalendarDAO.getBaseCalendars();
+        int previous = baseCalendars.size();
+
         BaseCalendar calendar1 = BaseCalendarTest.createBasicCalendar();
         calendar1.setName("Test1");
         BaseCalendar calendar2 = BaseCalendarTest.createBasicCalendar();
@@ -273,10 +275,8 @@ public class BaseCalendarDAOTest {
         baseCalendarDAO.save(resourceCalendar);
         baseCalendarDAO.flush();
 
-        List<BaseCalendar> baseCalendars = baseCalendarDAO.getBaseCalendars();
-        assertThat(baseCalendars.size(), equalTo(2));
-        assertThat(baseCalendars.get(0).getId(), not(resourceCalendar.getId()));
-        assertThat(baseCalendars.get(1).getId(), not(resourceCalendar.getId()));
+        baseCalendars = baseCalendarDAO.getBaseCalendars();
+        assertThat(baseCalendars.size(), equalTo(previous + 2));
     }
 
 }

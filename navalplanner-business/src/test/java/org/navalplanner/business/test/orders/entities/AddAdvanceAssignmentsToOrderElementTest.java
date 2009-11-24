@@ -47,6 +47,7 @@ import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
@@ -74,9 +75,13 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
 
+    @Resource
+    private IDataBootstrap configurationBootstrap;
+
     @Before
     public void loadRequiredaData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
+        configurationBootstrap.loadRequiredData();
     }
 
     @Autowired
@@ -94,11 +99,14 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     @Autowired
     private IAdvanceTypeDAO advanceTypeDao;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     private Session getSession() {
         return sessionFactory.getCurrentSession();
     }
 
-    private static Order createValidOrder() {
+    private Order createValidOrder() {
         Order order = Order.create();
         order.setDescription("description");
         order.setCustomer("blabla");
@@ -106,6 +114,8 @@ public class AddAdvanceAssignmentsToOrderElementTest {
         order.setName("name");
         order.setResponsible("responsible");
         order.setCode("code");
+        order.setCalendar(configurationDAO.getConfiguration()
+                .getDefaultCalendar());
         return order;
     }
 

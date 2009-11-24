@@ -57,6 +57,9 @@
                 <value>
                     org/navalplanner/business/requirements/entities/Requirements.hbm.xml
                 </value>
+                <value>
+                    org/navalplanner/business/common/entities/Configuration.hbm.xml
+                </value>
             </list>
         </property>
 
