@@ -171,6 +171,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                     .showMessage(Level.ERROR,
                             _("The calendar was not removed because it still has children. "
                                     + "Some other calendar is derived from this one."));
+        } else if (baseCalendarModel.isDefaultCalendar(baseCalendarModel
+                .getBaseCalendar())) {
+            hideConfirmingWindow();
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("The default calendar can not be removed. "
+                                    + "Please, change the default calendar in the Configuration window before."));
         } else {
             baseCalendarModel.confirmRemove();
             hideConfirmingWindow();
@@ -369,6 +377,9 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                 }
 
             });
+            if (baseCalendarModel.isDefaultCalendar(baseCalendar)) {
+                removeButton.setDisabled(true);
+            }
             operationsTreecell.appendChild(removeButton);
 
             treerow.appendChild(operationsTreecell);

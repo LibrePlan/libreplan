@@ -69,6 +69,8 @@ public interface IBaseCalendarModel {
     void checkInvalidValuesCalendar(BaseCalendar entity)
             throws ValidationException;
 
+    boolean isDefaultCalendar(BaseCalendar baseCalendar);
+
     /*
      * Initial conversation steps
      */
@@ -154,7 +156,5 @@ public interface IBaseCalendarModel {
     void confirmRemove();
 
     void cancel();
-
-
 
 }
