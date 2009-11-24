@@ -173,7 +173,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         planningState.reassociateResourcesWithSession(resourceDAO);
         taskElementDAO.reattach(this.task);
         reattachTaskSource();
-        hoursGroupDAO.reattach(this.task.getHoursGroup());
         loadCriterionsOfGenericAllocations();
         reattachHoursGroup(this.task.getHoursGroup());
         reattachCriterions(this.task.getHoursGroup().getValidCriterions());
