@@ -639,8 +639,7 @@ div.z-tree {
     display:none;
 }
 
-.taskheaderscontainer, .leftpanelgap, .plannergraph div,
-.resourcesloadgraph div {
+.taskheaderscontainer, .leftpanelgap, .resourcesloadgraph div {
     position:relative;
 }
 
