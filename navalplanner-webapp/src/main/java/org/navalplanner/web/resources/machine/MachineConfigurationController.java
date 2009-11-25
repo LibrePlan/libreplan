@@ -28,8 +28,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.MachineWorkerAssignment;
@@ -40,13 +38,14 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
@@ -59,12 +58,6 @@ import org.zkoss.zul.api.Bandbox;
  * @author Lorenzo Tilve <ltilve@igalia.com>
  */
 public class MachineConfigurationController extends GenericForwardComposer {
-
-    @Autowired
-    private IWorkerDAO workerDAO;
-
-    @Autowired
-    private ICriterionDAO criterionDAO;
 
     private IMachineModel machineModel;
 
@@ -118,14 +111,12 @@ public class MachineConfigurationController extends GenericForwardComposer {
     }
 
     public List<MachineWorkerAssignment> getWorkerAssignments() {
-        // Need to specify concrete unit
         MachineWorkersConfigurationUnit unit = (MachineWorkersConfigurationUnit) this.machineModel
                 .getConfigurationUnitsOfMachine().iterator().next();
         return (List<MachineWorkerAssignment>) unit.getWorkerAssignments();
     }
 
     public List<Criterion> getRequiredCriterions() {
-        // Need to specify concrete unit
         MachineWorkersConfigurationUnit unit = (MachineWorkersConfigurationUnit) this.machineModel
                 .getConfigurationUnitsOfMachine().iterator().next();
         return (List<Criterion>) unit.getRequiredCriterions();
@@ -154,7 +145,10 @@ public class MachineConfigurationController extends GenericForwardComposer {
         return repeated;
     }
 
-    public void addCriterionRequirement(Listitem item, Bandbox bandbox) {
+    public void addCriterionRequirement(Button button) {
+        Bandbox bandbox = (Bandbox) button.getPreviousSibling();
+        Listitem item = ((Listbox) bandbox.getFirstChild().getFirstChild())
+                .getSelectedItem();
         MachineWorkersConfigurationUnit unit = null;
         String unitString = ((Textbox) bandbox.getPreviousSibling()).getValue();
         try {
@@ -167,20 +161,30 @@ public class MachineConfigurationController extends GenericForwardComposer {
             CriterionWithItsType criterionAndType = (CriterionWithItsType) item
                     .getValue();
             bandbox.setValue(criterionAndType.getNameAndType());
-
             if (checkExistingCriterion(unit, criterionAndType.getCriterion())) {
                 messages.showMessage(Level.ERROR,
                         _("Criterion previously selected"));
             } else {
                 machineModel.addCriterionRequirementToConfigurationUnit(unit,
                         criterionAndType.getCriterion());
+                bandbox.setValue("");
             }
+        }
+        Util.reloadBindings(bandbox.getNextSibling().getNextSibling());
+    }
+
+    public void selectCriterionRequirement(Listitem item, Bandbox bandbox) {
+        if (item != null) {
+            CriterionWithItsType criterionAndType = (CriterionWithItsType) item
+                    .getValue();
+            bandbox.setValue(criterionAndType.getNameAndType());
         } else {
             bandbox.setValue("");
         }
         bandbox.close();
         Util.reloadBindings(bandbox.getNextSibling().getNextSibling());
     }
+
 
     public void deleteConfigurationUnit(MachineWorkersConfigurationUnit unit) {
         machineModel.removeConfigurationUnit(unit);

@@ -49,7 +49,7 @@
                             <grid fixedLayout="true"
                                 model="@{configurationUnit.workerAssignments}">
                                 <columns sizable="true">
-                                    <column label="${i18n:_('Name')}" sort="auto" />
+                                    <column label="${i18n:_('Name')}" />
                                     <column label="${i18n:_('Start date')}" />
                                     <column label="${i18n:_('End date')}" />
                                     <column label="${i18n:_('Operations')}" />
@@ -82,7 +82,7 @@
                         <bandpopup>
                                 <listbox width="500px" height="150px" fixedLayout="true"
                                 model="@{assignedCriterionsController.criterionWithItsTypes}"
-                                onSelect="configurationController.addCriterionRequirement(self.selectedItem,self.parent.parent)">
+                                    onSelect="configurationController.selectCriterionRequirement(self.selectedItem,self.parent.parent)">
                                 <listhead>
                                     <listheader label="Type" />
                                     <listheader label="Criterion" />
@@ -96,7 +96,7 @@
                     </bandbox>
 
                         <button label="${i18n:_('Add new criterion requirement')}"
-                            onClick="configurationController.addCriterionRequirement(self.parent.parent.value,self)" disabled="true" />
+                            onClick="configurationController.addCriterionRequirement(self)" />
 
                     <panel title="${i18n:_('Criterion requirements')}" border="normal">
                         <panelchildren>
@@ -104,7 +104,7 @@
                             <grid fixedLayout="true"
                                 model="@{configurationUnit.requiredCriterions}">
                                 <columns sizable="true">
-                                    <column label="${i18n:_('Name')}" sort="auto" />
+                                    <column label="${i18n:_('Name')}" />
                                     <column label="${i18n:_('Operations')}" />
                                 </columns>
                                 <rows>
