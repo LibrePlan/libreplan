@@ -362,8 +362,8 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return derivedCalendar;
     }
 
-    public BaseCalendar newDerivedResourceCalendar() {
-        BaseCalendar derivedCalendar = ResourceCalendar.create();
+    public ResourceCalendar newDerivedResourceCalendar() {
+        ResourceCalendar derivedCalendar = ResourceCalendar.create();
         derivedCalendar.setParent(this);
         return derivedCalendar;
     }

@@ -340,10 +340,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         if (parentCalendar == null) {
             parentCalendar = workerModel.getDefaultCalendar();
         }
-        resourceCalendarModel.initCreateDerived(parentCalendar);
 
-        workerModel.setCalendar((ResourceCalendar) resourceCalendarModel
-                .getBaseCalendar());
+        workerModel.setCalendar(parentCalendar.newDerivedResourceCalendar());
     }
 
     public void editCalendar() {
