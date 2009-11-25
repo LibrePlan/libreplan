@@ -210,6 +210,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void reattachHoursGroup(HoursGroup hoursGroup) {
         hoursGroupDAO.reattachUnmodifiedEntity(hoursGroup);
         hoursGroup.getPercentage();
+        reattachCriterions(hoursGroup.getValidCriterions());
     }
 
     private void reattachCriterions(Set<Criterion> criterions) {
@@ -267,9 +268,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public List<AggregatedHoursGroup> getHoursAggregatedByCriterions() {
-        TaskSource taskSource = task.getTaskSource();
-        taskSourceDAO.reattach(taskSource);
-        List<AggregatedHoursGroup> result = taskSource
+        reattachTaskSource();
+        List<AggregatedHoursGroup> result = task.getTaskSource()
                 .getAggregatedByCriterions();
         ensuringAccesedPropertiesAreLoaded(result);
         return result;
