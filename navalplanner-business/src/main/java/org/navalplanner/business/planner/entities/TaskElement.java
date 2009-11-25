@@ -164,11 +164,15 @@ public abstract class TaskElement extends BaseEntity {
         if (newStartDate == null) {
             return;
         }
+        boolean sameDay = new LocalDate(newStartDate).equals(new LocalDate(
+                startDate));
         long durationMilliseconds = this.endDate.getTime()
                 - this.startDate.getTime();
         this.startDate = newStartDate;
         this.endDate = new Date(this.startDate.getTime() + durationMilliseconds);
-        moveAllocations();
+        if (!sameDay) {
+            moveAllocations();
+        }
     }
 
     protected abstract void moveAllocations();
