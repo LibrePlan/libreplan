@@ -18,11 +18,11 @@
         <intercept-url pattern="/common/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/zkau/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/common/layout/login_v01.zul" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/advance/**" access="ROLE_ADMIN" />
-        <intercept-url pattern="/resources/criterions/**" access="ROLE_ADMIN" />
-        <intercept-url pattern="/calendars/**" access="ROLE_ADMIN" />
-        <intercept-url pattern="/labels/**" access="ROLE_ADMIN" />
-        <intercept-url pattern="/common/configuration.zul" access="ROLE_ADMIN" />
+        <intercept-url pattern="/advance/**" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/resources/criterions/**" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/calendars/**" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/labels/**" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/common/configuration.zul" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_REMEMBERED" />
         <form-login login-page="/common/layout/login_v01.zul" authentication-failure-url="/common/layout/login_v01.zul?login_error=x"/>
 
@@ -31,7 +31,7 @@
     <authentication-provider>
         <user-service>
             <user name="user" password="user" authorities="ROLE_BASIC_USER" />
-            <user name="admin" password="admin" authorities="ROLE_ADMIN, ROLE_BASIC_USER" />
+            <user name="admin" password="admin" authorities="ROLE_ADMINISTRATION, ROLE_BASIC_USER" />
         </user-service>
     </authentication-provider>
 

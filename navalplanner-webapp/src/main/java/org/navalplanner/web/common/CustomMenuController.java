@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.security.SecurityUtils;
 import org.zkoss.ganttz.util.IMenuItemsRegister;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.zk.ui.Component;
@@ -40,6 +42,7 @@ import org.zkoss.zul.Hbox;
 /**
  * Controller for customMenu <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class CustomMenuController extends Div implements IMenuItemsRegister {
 
@@ -178,15 +181,17 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Work report list"),
                     "/workreports/workReport.zul"));
 
-        topItem(_("Administration"), "/advance/advanceTypes.zul",
-                subItem(_("Manage advance types"),
-                    "/advance/advanceTypes.zul"),
-                subItem(_("Manage criteria"),
-                    "/resources/criterions/criterions-V2.zul"),
-                subItem(_("Calendars"), "/calendars/calendars.zul"),
-                subItem(_("Label types"), "/labels/labelTypes.zul"),
-                subItem(_("Materials"), "/materials/materials.zul"),
-                subItem(_("Configuration"), "/common/configuration.zul"));
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
+            topItem(_("Administration"), "/advance/advanceTypes.zul",
+                    subItem(_("Manage advance types"),
+                        "/advance/advanceTypes.zul"),
+                    subItem(_("Manage criteria"),
+                        "/resources/criterions/criterions-V2.zul"),
+                    subItem(_("Calendars"), "/calendars/calendars.zul"),
+                    subItem(_("Label types"), "/labels/labelTypes.zul"),
+                    subItem(_("Materials"), "/materials/materials.zul"),
+                    subItem(_("Configuration"), "/common/configuration.zul"));
+        }
 
         topItem(_("Quality management"), "/", true);
     }
