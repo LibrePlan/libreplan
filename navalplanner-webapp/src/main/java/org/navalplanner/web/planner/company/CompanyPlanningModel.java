@@ -336,9 +336,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     resourceDAO.list(Resource.class), start, finish);
 
             for (LocalDate day : mapDayAssignments.keySet()) {
-                Integer overloadHours = mapDayAssignments.get(day);
-                Integer maxHours = mapMaxAvailability.get(day);
-                mapDayAssignments.put(day, overloadHours + maxHours);
+                if ((day.compareTo(new LocalDate(start)) >= 0)
+                        && (day.compareTo(new LocalDate(finish)) <= 0)) {
+                    Integer overloadHours = mapDayAssignments.get(day);
+                    Integer maxHours = mapMaxAvailability.get(day);
+                    mapDayAssignments.put(day, overloadHours + maxHours);
+                }
             }
 
             String uri = getServletUri(mapDayAssignments, start, finish);
