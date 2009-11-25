@@ -183,36 +183,27 @@ public class ResourceAllocationsBeingEdited {
                 && formBinder.getAssignedHours() <= 0) {
             formBinder.markAssignedHoursMustBePositive();
         }
-        if (!thereIsLeastOneNoEmptyAllocation()) {
-            formBinder.markThereMustBeAtLeastOneNoEmptyAllocation();
-        }
-    }
-
-    private boolean thereIsLeastOneNoEmptyAllocation() {
-        for (AllocationDTO allocationDTO : currentAllocations) {
-            if (!allocationDTO.isEmptyResourcesPerDay()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public AllocationResult doAllocation() {
         checkInvalidValues();
         Map<AllocationBeingModified, ResourceAllocation<?>> fromDetachedToAttached = getAllocationsWithRelationshipsToOriginal();
         List<AllocationBeingModified> allocations = asList(fromDetachedToAttached);
-        switch (calculatedValue) {
-        case NUMBER_OF_HOURS:
-            ResourceAllocation.allocating(allocations).allocateOnTaskLength();
-            daysDuration = task.getDaysDuration();
-            break;
-        case END_DATE:
-            LocalDate end = ResourceAllocation.allocating(allocations)
-                    .untilAllocating(formBinder.getAssignedHours());
-            daysDuration = from(task.getStartDate(), end);
-            break;
-        default:
-            throw new RuntimeException("cant handle: " + calculatedValue);
+        if (!allocations.isEmpty()) {
+            switch (calculatedValue) {
+            case NUMBER_OF_HOURS:
+                ResourceAllocation.allocating(allocations)
+                        .allocateOnTaskLength();
+                daysDuration = task.getDaysDuration();
+                break;
+            case END_DATE:
+                LocalDate end = ResourceAllocation.allocating(allocations)
+                        .untilAllocating(formBinder.getAssignedHours());
+                daysDuration = from(task.getStartDate(), end);
+                break;
+            default:
+                throw new RuntimeException("cant handle: " + calculatedValue);
+            }
         }
         return new AllocationResult(task, calculatedValue,
                 new AggregateOfResourceAllocations(

@@ -236,6 +236,9 @@ public class Task extends TaskElement {
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
             Collection<? extends ResourceAllocation<?>> toRemove) {
+        if (aggregate.isEmpty()) {
+            return;
+        }
         final LocalDate start = aggregate.getStart();
         final LocalDate end = aggregate.getEnd();
         mergeAllocation(start, end, calculatedValue, newAllocations,
