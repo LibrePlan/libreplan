@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Hibernate;
-import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -75,6 +75,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private Task task;
 
     private org.zkoss.ganttz.data.Task ganttTask;
+
+    @Autowired
+    private IBaseCalendarDAO calendarDAO;
 
     private PlanningState planningState;
 
@@ -146,12 +149,23 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional(readOnly = true)
     public <T> T onAllocationContext(
             IResourceAllocationContext<T> resourceAllocationContext) {
-        reassociateResourcesWithSession();
+        ensureResourcesAreReadyForDoingAllocation();
         return resourceAllocationContext.doInsideTransaction();
     }
 
+    private void ensureResourcesAreReadyForDoingAllocation() {
+        Set<Resource> resources = resourceAllocationsBeingEdited
+                .getAllocationResources();
+        for (Resource each : resources) {
+            reattachResource(each);
+        }
+    }
+
     private void stepsBeforeDoingAllocation() {
-        reassociateResourcesWithSession();
+        ensureResourcesAreReadyForDoingAllocation();
+        if (task.getCalendar() != null) {
+            calendarDAO.reattachUnmodifiedEntity(task.getCalendar());
+        }
         removeDeletedAllocations();
     }
 
@@ -249,9 +263,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void reattachResource(Resource resource) {
         resourceDAO.reattach(resource);
         reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
-        if (resource.getCalendar() != null) {
-            resource.getCalendar().getWorkableHours(new LocalDate());
-        }
+        calendarDAO.reattachUnmodifiedEntity(resource.getCalendar());
         for (DayAssignment dayAssignment : resource.getAssignments()) {
             Hibernate.initialize(dayAssignment);
         }

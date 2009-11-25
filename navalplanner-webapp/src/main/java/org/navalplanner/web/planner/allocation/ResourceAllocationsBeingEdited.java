@@ -276,4 +276,12 @@ public class ResourceAllocationsBeingEdited {
         return daysDuration;
     }
 
+    public Set<Resource> getAllocationResources() {
+        Set<Resource> result = new HashSet<Resource>();
+        for (AllocationDTO each : currentAllocations) {
+            result.addAll(each.getAssociatedResources());
+        }
+        return result;
+    }
+
 }

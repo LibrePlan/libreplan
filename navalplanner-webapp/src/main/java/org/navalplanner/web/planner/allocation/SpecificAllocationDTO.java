@@ -22,6 +22,7 @@ package org.navalplanner.web.planner.allocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -117,6 +118,11 @@ public class SpecificAllocationDTO extends AllocationDTO {
     @Override
     public boolean isGeneric() {
         return false;
+    }
+
+    @Override
+    public List<Resource> getAssociatedResources() {
+        return Collections.singletonList(resource);
     }
 
 }

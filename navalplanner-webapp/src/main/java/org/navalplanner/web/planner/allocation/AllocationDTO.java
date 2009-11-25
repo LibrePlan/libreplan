@@ -28,6 +28,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * The information that must be introduced to create a
@@ -103,5 +104,7 @@ public abstract class AllocationDTO {
     public boolean isEmptyResourcesPerDay() {
         return getResourcesPerDay().isZero();
     }
+
+    public abstract List<Resource> getAssociatedResources();
 
 }

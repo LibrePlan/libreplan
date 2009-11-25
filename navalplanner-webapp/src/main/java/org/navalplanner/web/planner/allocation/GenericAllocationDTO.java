@@ -102,4 +102,9 @@ public class GenericAllocationDTO extends AllocationDTO {
     public boolean hasSameCriterions(Set<Criterion> criterions) {
         return this.criterions.equals(criterions);
     }
+
+    @Override
+    public List<Resource> getAssociatedResources() {
+        return resources;
+    }
 }
