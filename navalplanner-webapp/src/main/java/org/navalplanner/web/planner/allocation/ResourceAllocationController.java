@@ -226,7 +226,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             newAllocationSelector.addChoosen();
         } finally {
             tbResourceAllocation.setSelected(true);
-            clear();
+            newAllocationSelector.clearAll();
             Util.reloadBindings(allocationsList);
         }
     }
