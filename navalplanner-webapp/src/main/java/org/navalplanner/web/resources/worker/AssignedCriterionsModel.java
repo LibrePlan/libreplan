@@ -333,7 +333,9 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
                     satisfaction.setIsDeleted(true);
                 } else {
                     satisfaction.setStartDate(satisfactionDTO.getStartDate());
-                    satisfaction.finish(satisfactionDTO.getEndDate());
+                    if (satisfactionDTO.getEndDate() != null) {
+                        satisfaction.finish(satisfactionDTO.getEndDate());
+                    }
                 }
             }
             newList.add(satisfaction);

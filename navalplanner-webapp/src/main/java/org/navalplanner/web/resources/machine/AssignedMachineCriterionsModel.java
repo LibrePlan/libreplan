@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -377,7 +376,9 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
                     satisfaction.setIsDeleted(true);
                 } else {
                     satisfaction.setStartDate(satisfactionDTO.getStartDate());
-                    satisfaction.finish(satisfactionDTO.getEndDate());
+                    if (satisfactionDTO.getEndDate() != null) {
+                        satisfaction.finish(satisfactionDTO.getEndDate());
+                    }
                 }
             }
             newList.add(satisfaction);
