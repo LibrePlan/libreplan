@@ -127,7 +127,7 @@
                 <textbox value="@{configurationUnit.name}"
                     constraint="no empty:${i18n:_('cannot be null or empty')}" />
                 <textbox value="@{configurationUnit.alpha}"
-                    constraint="no negative,no zero,no empty:${i18n:_('cannot be null or empty')}" />
+                    constraint="no zero,no empty,/[1-9][0-9]*(\.[0-9][0-9]?)?/:${i18n:_('must be a real positive number')}" />
                 <button sclass="icono" image="/common/img/ico_borrar1.png"
                     hoverImage="/common/img/ico_borrar.png" tooltiptext="${i18n:_('Delete')}"
                     onClick="configurationController.deleteConfigurationUnit(self.parent.value)">

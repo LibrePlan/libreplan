@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -75,6 +76,7 @@ public class MachineWorkersConfigurationUnit extends BaseEntity {
         this.alpha = alpha;
     }
 
+    @Valid
     public BigDecimal getAlpha() {
         return alpha;
     }
@@ -157,6 +159,11 @@ public class MachineWorkersConfigurationUnit extends BaseEntity {
             }
         }
         return assigned;
+    }
+
+    @AssertTrue(message = "Alpha must be greater than 0")
+    public boolean checkAlpha() {
+        return (this.alpha.compareTo(new BigDecimal(0)) > 0);
     }
 
     @AssertTrue(message = "All Machine worker assignments must have a start date earlier than the finish date")
