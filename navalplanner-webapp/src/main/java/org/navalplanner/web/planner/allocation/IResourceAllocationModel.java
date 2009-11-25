@@ -36,6 +36,10 @@ import org.navalplanner.web.planner.order.PlanningState;
  */
 public interface IResourceAllocationModel extends INewAllocationsAdder {
 
+    public interface IResourceAllocationContext<T> {
+        public T doInsideTransaction();
+    }
+
     /**
      * Returns {@link Set} of {@link Criterion} of the current {@link Task}
      *
@@ -75,5 +79,8 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
     List<AggregatedHoursGroup> getHoursAggregatedByCriterions();
 
     Integer getOrderHours();
+
+    <T> T onAllocationContext(
+            IResourceAllocationContext<T> resourceAllocationContext);
 
 }

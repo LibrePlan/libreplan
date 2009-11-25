@@ -147,7 +147,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
         allocationsBeingEdited = resourceAllocationModel.initAllocationsFor(
                 task, ganttTask, planningState);
-        formBinder = allocationsBeingEdited.createFormBinder();
+        formBinder = allocationsBeingEdited
+                .createFormBinder(resourceAllocationModel);
         formBinder.setAssignedHoursComponent(assignedHoursComponent);
         formBinder.setTaskStartDateBox(taskStartDateBox);
         formBinder.setTaskElapsedDays(taskElapsedDays);

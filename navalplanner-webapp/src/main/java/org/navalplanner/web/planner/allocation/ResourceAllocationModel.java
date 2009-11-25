@@ -88,7 +88,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
-        planningState.reassociateResourcesWithSession(resourceDAO);
+        reassociateResourcesWithSession();
         resourceAllocationsBeingEdited
                 .addSpecificResourceAllocationFor(reloadResources(resources));
     }
@@ -111,7 +111,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         if (criterions.isEmpty()) {
             return;
         }
-        planningState.reassociateResourcesWithSession(resourceDAO);
+        reassociateResourcesWithSession();
         List<Resource> reloadResources = reloadResources(resourcesMatched);
         resourceAllocationsBeingEdited.addGeneric(criterions, reloadResources);
     }
@@ -142,9 +142,21 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         doTheAllocation(modifiedAllocationResult);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public <T> T onAllocationContext(
+            IResourceAllocationContext<T> resourceAllocationContext) {
+        reassociateResourcesWithSession();
+        return resourceAllocationContext.doInsideTransaction();
+    }
+
     private void stepsBeforeDoingAllocation() {
-        planningState.reassociateResourcesWithSession(resourceDAO);
+        reassociateResourcesWithSession();
         removeDeletedAllocations();
+    }
+
+    private void reassociateResourcesWithSession() {
+        planningState.reassociateResourcesWithSession(resourceDAO);
     }
 
     private void removeDeletedAllocations() {

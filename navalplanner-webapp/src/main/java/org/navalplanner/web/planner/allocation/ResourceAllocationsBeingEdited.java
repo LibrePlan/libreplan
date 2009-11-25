@@ -244,12 +244,13 @@ public class ResourceAllocationsBeingEdited {
         return Days.daysBetween(start, end).getDays();
     }
 
-    public FormBinder createFormBinder() {
+    public FormBinder createFormBinder(
+            IResourceAllocationModel resourceAllocationModel) {
         if (formBinder != null) {
             throw new IllegalStateException(
                     "there is already a binder associated with this object");
         }
-        formBinder = new FormBinder(this);
+        formBinder = new FormBinder(this, resourceAllocationModel);
         return formBinder;
     }
 

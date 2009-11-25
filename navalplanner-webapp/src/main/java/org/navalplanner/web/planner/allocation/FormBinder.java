@@ -36,6 +36,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
+import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -92,9 +93,13 @@ class FormBinder {
 
     private IMessagesForUser messagesForUser;
 
+    private final IResourceAllocationModel resourceAllocationModel;
+
     public FormBinder(
-            ResourceAllocationsBeingEdited resourceAllocationsBeingEdited) {
+            ResourceAllocationsBeingEdited resourceAllocationsBeingEdited,
+            IResourceAllocationModel resourceAllocationModel) {
         this.resourceAllocationsBeingEdited = resourceAllocationsBeingEdited;
+        this.resourceAllocationModel = resourceAllocationModel;
         this.lastAllocation = this.resourceAllocationsBeingEdited
             .getInitialAllocation();
         this.aggregate = this.lastAllocation.getAggregate();
@@ -180,7 +185,14 @@ class FormBinder {
     }
 
     void doApply() {
-        lastAllocation = resourceAllocationsBeingEdited.doAllocation();
+        lastAllocation = resourceAllocationModel
+                .onAllocationContext(new IResourceAllocationContext<AllocationResult>() {
+
+                    @Override
+                    public AllocationResult doInsideTransaction() {
+                        return resourceAllocationsBeingEdited.doAllocation();
+                    }
+                });
         aggregate = lastAllocation.getAggregate();
         reloadValues();
     }
