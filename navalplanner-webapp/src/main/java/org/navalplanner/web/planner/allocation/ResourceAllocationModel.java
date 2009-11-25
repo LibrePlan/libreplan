@@ -265,8 +265,22 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AggregatedHoursGroup> getHoursAggregatedByCriterions() {
-        return task.getAggregatedByCriterions();
+        TaskSource taskSource = task.getTaskSource();
+        taskSourceDAO.reattach(taskSource);
+        List<AggregatedHoursGroup> result = taskSource
+                .getAggregatedByCriterions();
+        ensuringAccesedPropertiesAreLoaded(result);
+        return result;
+    }
+
+    private void ensuringAccesedPropertiesAreLoaded(
+            List<AggregatedHoursGroup> result) {
+        for (AggregatedHoursGroup each : result) {
+            each.getCriterionsJoinedByComma();
+            each.getHours();
+        }
     }
 
     @Override
