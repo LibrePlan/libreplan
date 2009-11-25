@@ -145,18 +145,11 @@ public class MachineConfigurationController extends GenericForwardComposer {
         return repeated;
     }
 
-    public void addCriterionRequirement(Button button) {
+    public void addCriterionRequirement(MachineWorkersConfigurationUnit unit,
+            Button button) {
         Bandbox bandbox = (Bandbox) button.getPreviousSibling();
         Listitem item = ((Listbox) bandbox.getFirstChild().getFirstChild())
                 .getSelectedItem();
-        MachineWorkersConfigurationUnit unit = null;
-        String unitString = ((Textbox) bandbox.getPreviousSibling()).getValue();
-        try {
-            unit = machineModel.getConfigurationUnitById(Long
-                    .valueOf(unitString));
-        } catch (InstanceNotFoundException e) {
-            LOG.error("Configuration unit not found", e);
-        }
         if (item != null) {
             CriterionWithItsType criterionAndType = (CriterionWithItsType) item
                     .getValue();

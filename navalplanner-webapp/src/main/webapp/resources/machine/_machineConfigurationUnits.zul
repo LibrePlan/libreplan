@@ -95,8 +95,8 @@
                         </bandpopup>
                     </bandbox>
 
-                        <button label="${i18n:_('Add new criterion requirement')}"
-                            onClick="configurationController.addCriterionRequirement(self)" />
+                    <button label="${i18n:_('Add new criterion requirement')}"
+                        onClick="configurationController.addCriterionRequirement(self.parent.parent.value,self)" />
 
                     <panel title="${i18n:_('Criterion requirements')}" border="normal">
                         <panelchildren>
