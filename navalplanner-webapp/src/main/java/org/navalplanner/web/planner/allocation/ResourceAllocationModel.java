@@ -108,7 +108,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional(readOnly = true)
     public void addGeneric(Set<Criterion> criterions,
             Collection<? extends Resource> resourcesMatched) {
-        if (resourcesMatched.isEmpty() || criterions.isEmpty()) {
+        if (criterions.isEmpty()) {
             return;
         }
         planningState.reassociateResourcesWithSession(resourceDAO);
