@@ -44,7 +44,7 @@ public interface ILoadChartFiller {
 
     TimeGeometry getTimeGeometry(Interval interval);
 
-    ValueGeometry getValueGeometry(Integer maximum);
+    ValueGeometry getValueGeometry(BigDecimal maximum);
 
     SortedMap<LocalDate, Map<Resource, Integer>> groupDayAssignmentsByDayAndResource(
             List<DayAssignment> dayAssignments);
@@ -54,5 +54,8 @@ public interface ILoadChartFiller {
 
     SortedMap<LocalDate, BigDecimal> accumulateResult(
             SortedMap<LocalDate, BigDecimal> map);
+
+    SortedMap<LocalDate, BigDecimal> convertToBigDecimal(
+            SortedMap<LocalDate, Integer> map);
 
 }

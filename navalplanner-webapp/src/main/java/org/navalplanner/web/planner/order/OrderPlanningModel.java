@@ -461,7 +461,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         private Plotinfo getPlotinfo(
                 SortedMap<LocalDate, Integer> mapDayAssignments, Date start,
                 Date finish) {
-            String uri = getServletUri(mapDayAssignments, start, finish);
+            String uri = getServletUri(convertToBigDecimal(mapDayAssignments),
+                    start, finish);
 
             PlotDataSource pds = new PlotDataSource();
             pds.setDataSourceUri(uri);

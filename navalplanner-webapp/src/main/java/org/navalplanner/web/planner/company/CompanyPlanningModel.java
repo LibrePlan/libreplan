@@ -361,7 +361,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
 
-            String uri = getServletUri(mapDayAssignments, start, finish);
+            String uri = getServletUri(convertToBigDecimal(mapDayAssignments),
+                    start, finish);
 
             PlotDataSource pds = new PlotDataSource();
             pds.setDataSourceUri(uri);
@@ -391,7 +392,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 }
             }
 
-            String uri = getServletUri(mapDayAssignments, start, finish);
+            String uri = getServletUri(convertToBigDecimal(mapDayAssignments),
+                    start, finish);
 
             PlotDataSource pds = new PlotDataSource();
             pds.setDataSourceUri(uri);
@@ -470,7 +472,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(
                     resourceDAO.list(Resource.class), start, finish);
 
-            String uri = getServletUri(mapDayAssignments,
+            String uri = getServletUri(convertToBigDecimal(mapDayAssignments),
                     start, finish);
 
             PlotDataSource pds = new PlotDataSource();

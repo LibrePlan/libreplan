@@ -130,11 +130,11 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
             IServletRequestHandler {
 
         private final LocalDate finish;
-        private final SortedMap<LocalDate, Integer> mapDayAssignments;
+        private final SortedMap<LocalDate, BigDecimal> mapDayAssignments;
         private final LocalDate start;
 
         private GraphicSpecificationCreator(Date finish,
-                SortedMap<LocalDate, Integer> mapDayAssignments, Date start) {
+                SortedMap<LocalDate, BigDecimal> mapDayAssignments, Date start) {
             this.finish = new LocalDate(finish);
             this.mapDayAssignments = mapDayAssignments;
             this.start = new LocalDate(start);
@@ -158,7 +158,7 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         private void fillInnerValues(PrintWriter writer, LocalDate firstDay,
                 LocalDate lastDay) {
             for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = nextDay(day)) {
-                Integer hours = getHoursForDay(day);
+                BigDecimal hours = getHoursForDay(day);
                 printLine(writer, day, hours);
             }
         }
@@ -189,19 +189,21 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
             }
         }
 
-        private int getHoursForDay(LocalDate day) {
+        private BigDecimal getHoursForDay(LocalDate day) {
             return mapDayAssignments.get(day) != null ? mapDayAssignments
-                    .get(day) : 0;
+                    .get(day) : BigDecimal.ZERO;
         }
 
-        private void printLine(PrintWriter writer, LocalDate day, Integer hours) {
+        private void printLine(PrintWriter writer, LocalDate day,
+                BigDecimal hours) {
             writer.println(day.toString("yyyyMMdd") + " " + hours);
         }
 
         private void fillZeroValueFromStart(PrintWriter writer) {
-            printLine(writer, start, 0);
+            printLine(writer, start, BigDecimal.ZERO);
             if (startIsPreviousToPreviousDayToFirstAssignment()) {
-                printLine(writer, previousDayToFirstAssignment(), 0);
+                printLine(writer, previousDayToFirstAssignment(),
+                        BigDecimal.ZERO);
             }
         }
 
@@ -216,9 +218,9 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
 
         private void fillZeroValueToFinish(PrintWriter writer) {
             if (finishIsPosteriorToNextDayToLastAssignment()) {
-                printLine(writer, nextDayToLastAssignment(), 0);
+                printLine(writer, nextDayToLastAssignment(), BigDecimal.ZERO);
             }
-            printLine(writer, finish, 0);
+            printLine(writer, finish, BigDecimal.ZERO);
         }
 
         private boolean finishIsPosteriorToNextDayToLastAssignment() {
@@ -239,14 +241,14 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
 
     private ZoomLevel zoomLevel = ZoomLevel.DETAIL_ONE;
 
-    private Integer maximunValueForChart = 0;
+    private BigDecimal maximunValueForChart = BigDecimal.ZERO;
 
     @Override
     public abstract void fillChart(Timeplot chart, Interval interval,
             Integer size);
 
     protected String getServletUri(
-            final SortedMap<LocalDate, Integer> mapDayAssignments,
+            final SortedMap<LocalDate, BigDecimal> mapDayAssignments,
             final Date start, final Date finish) {
         if (mapDayAssignments.isEmpty()) {
             return "";
@@ -263,8 +265,8 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         return uri;
     }
 
-    private void setMaximunValueForChartIfGreater(Integer max) {
-        if (maximunValueForChart < max) {
+    private void setMaximunValueForChartIfGreater(BigDecimal max) {
+        if (maximunValueForChart.compareTo(max) < 0) {
             maximunValueForChart = max;
         }
     }
@@ -278,10 +280,10 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
     }
 
     protected void resetMaximunValueForChart() {
-        this.maximunValueForChart = 0;
+        this.maximunValueForChart = BigDecimal.ZERO;
     }
 
-    protected Integer getMaximunValueForChart() {
+    protected BigDecimal getMaximunValueForChart() {
         return maximunValueForChart;
     }
 
@@ -336,10 +338,10 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
     }
 
     @Override
-    public ValueGeometry getValueGeometry(Integer maximum) {
+    public ValueGeometry getValueGeometry(BigDecimal maximum) {
         DefaultValueGeometry valueGeometry = new DefaultValueGeometry();
         valueGeometry.setMin(0);
-        valueGeometry.setMax(maximum);
+        valueGeometry.setMax(maximum.intValue());
         valueGeometry.setGridColor("#000000");
         valueGeometry.setAxisLabelsPlacement("left");
 
@@ -399,6 +401,19 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
             BigDecimal value = map.get(day);
             accumulatedResult = accumulatedResult.add(value);
             result.put(day, accumulatedResult);
+        }
+
+        return result;
+    }
+
+    @Override
+    public SortedMap<LocalDate, BigDecimal> convertToBigDecimal(
+            SortedMap<LocalDate, Integer> map) {
+        SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+
+        for (LocalDate day : map.keySet()) {
+            BigDecimal value = new BigDecimal(map.get(day));
+            result.put(day, value);
         }
 
         return result;
