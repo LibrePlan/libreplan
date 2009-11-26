@@ -377,6 +377,11 @@ tr.z-vbox-sep {
     display: none;
 }
 
+.scheduling-graphics .z-tabpanels-ver, .scheduling-graphics .z-tabpanel-ver,
+.scheduling-graphics .z-tabpanel, .scheduling-graphics .z-tabbox-ver .z-tabpanels-ver {
+    padding:0px;
+}
+
 /*  ----------- Advanced resources assignment ------------ */
 .timetrackedTableWithLeftPane {
     width: 1000px;
