@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.navalplanner.business.users.entities"
+    default-access="field">
+
+    <!--
+        IMPORTANT: The default name for User's table ("User") is not valid
+        for some databases (e.g. PostgreSQL).
+    -->
+    <class name="User" table="NAVAL_USER">
+        <!--
+            IMPORTANT: type="long" must be specified (otherwise,
+            Hibernate infers type="integer".
+        -->
+        <id name="id" access="property" type="long">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <property name="loginName" not-null="true" unique="true"/>
+        <property name="password" not-null="true"/>
+        <set name="roles" table="USER_ROLES">
+            <key column="userId"/>
+            <element>
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">org.navalplanner.business.users.entities.UserRole</param>
+                    <!-- 12 is java.sql.Types.VARCHAR -->
+                    <param name="type">12</param>
+                </type>
+            </element>
+        </set>
+    </class>
+
+</hibernate-mapping>

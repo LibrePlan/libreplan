@@ -22,6 +22,7 @@ package org.navalplanner.business.common;
 
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
+import org.navalplanner.business.users.daos.IUserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -43,6 +44,9 @@ public class Registry {
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
 
+    @Autowired
+    private IUserDAO userDAO;
+
     private Registry() {
     }
 
@@ -56,6 +60,10 @@ public class Registry {
 
     public static ICriterionTypeDAO getCriterionTypeDAO() {
         return getInstance().criterionTypeDAO;
+    }
+
+    public static IUserDAO getUserDAO() {
+        return getInstance().userDAO;
     }
 
 }

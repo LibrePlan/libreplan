@@ -55,6 +55,9 @@
                 <value>
                     org/navalplanner/business/materials/entities/Materials.hbm.xml
                 </value>
+                <value>
+                    org/navalplanner/business/users/entities/Users.hbm.xml
+                </value>
                 </list>
         </property>
     </bean>

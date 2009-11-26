@@ -29,19 +29,13 @@ import static org.navalplanner.business.i18n.I18nHelper._;
  */
 public enum UserRole {
 
-    ROLE_ADMINISTRATION("ROLE_ADMINISTRATION", _("Administration")),
-    ROLE_BASIC_USER("ROLE_BASIC_USER", _("Basic user"));
+    ROLE_BASIC_USER(_("Basic user")),
+    ROLE_ADMINISTRATION(_("Administration"));
 
-    private final String name;
     private final String displayName;
 
-    private UserRole(String name, String displayName) {
-        this.name = name;
+    private UserRole(String displayName) {
         this.displayName = displayName;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getDisplayName() {

@@ -18,22 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.security;
+package org.navalplanner.business.users.daos;
 
-import org.navalplanner.business.users.entities.UserRole;
-import org.zkoss.zk.ui.Executions;
+import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.users.entities.User;
 
 /**
- * Utility methods for security tasks.
+ * DAO interface for the <code>User</code> entity.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public final class SecurityUtils {
+public interface IUserDAO extends IGenericDAO<User, Long>{
 
-    private SecurityUtils() {}
+    public User findByLoginName(String loginName)
+        throws InstanceNotFoundException;
 
-    public final static boolean isUserInRole(UserRole role) {
-        return Executions.getCurrent().isUserInRole(role.name());
-    }
+    public boolean exists(String loginName);
 
 }
