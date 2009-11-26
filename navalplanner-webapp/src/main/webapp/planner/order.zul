@@ -112,10 +112,6 @@
                             <label value="${i18n:_('Start')}" />
                             <datebox id="taskStartDateBox" />
                         </row>
-                        <row>
-                            <label value="${i18n:_('Elapsed Days')}" />
-                            <intbox id="taskElapsedDays" width="300px" />
-                        </row>
                       </rows>
                 </grid>
                 <grid>
@@ -124,16 +120,16 @@
                           <column />
                       </columns>
                       <rows>
-                        <row>
-                            <label value="${i18n:_('Assigned hours')}:"    />
-                            <intbox id="assignedHoursComponent" width="300px" />
-                        </row>
                         <!--  Calculation type -->
                         <row>
                             <label value="${i18n:_('Calculation type')}:" />
                             <radiogroup id="calculationTypeSelector"
                                 onCheck="allocationController.calculationTypeSelected = self.selectedItem.value;">
-                                <grid>
+                                <grid id="calculationTypesGrid">
+                                    <columns>
+                                      <column width="200px" />
+                                      <column />
+                                    </columns>
                                     <rows>
                                         <row
                                             forEach="${allocationController.calculationTypes}">

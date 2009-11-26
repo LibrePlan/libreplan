@@ -107,6 +107,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Datebox taskStartDateBox;
 
+    private Grid calculationTypesGrid;
+
     private Radiogroup calculationTypeSelector;
 
     private Intbox taskElapsedDays;
@@ -132,6 +134,37 @@ public class ResourceAllocationController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         this.window = (Window) comp;
         messagesForUser = new MessagesForUser(messagesContainer);
+        taskElapsedDays = new Intbox();
+        makeReadyInputsForCalculationTypes();
+        prepareCalculationTypesGrid();
+    }
+
+    private void makeReadyInputsForCalculationTypes() {
+        final String width = "300px";
+        taskElapsedDays.setWidth(width);
+        assignedHoursComponent = new Intbox();
+        assignedHoursComponent.setWidth(width);
+    }
+
+    private void prepareCalculationTypesGrid() {
+        calculationTypesGrid.setModel(new ListModelList(Arrays
+                .asList(CalculationTypeRadio.values())));
+        calculationTypesGrid.setRowRenderer(OnColumnsRowRenderer.create(
+                calculationTypesRenderer(), Arrays.asList(0, 1)));
+    }
+
+    private ICellForDetailItemRenderer<Integer, CalculationTypeRadio> calculationTypesRenderer() {
+        return new ICellForDetailItemRenderer<Integer, CalculationTypeRadio>() {
+
+            @Override
+            public Component cellFor(Integer column, CalculationTypeRadio data) {
+                if (column == 0) {
+                    return data.createRadio();
+                } else {
+                    return data.input(ResourceAllocationController.this);
+                }
+            }
+        };
     }
 
     /**
@@ -296,11 +329,23 @@ public class ResourceAllocationController extends GenericForwardComposer {
             public String getName() {
                 return _("Calculate Number of Hours");
             }
+
+            @Override
+            public Component input(
+                    ResourceAllocationController resourceAllocationController) {
+                return resourceAllocationController.assignedHoursComponent;
+            }
         },
         END_DATE(CalculatedValue.END_DATE) {
             @Override
             public String getName() {
                 return _("Calculate End Date");
+            }
+
+            @Override
+            public Component input(
+                    ResourceAllocationController resourceAllocationController) {
+                return resourceAllocationController.taskElapsedDays;
             }
         };
 
@@ -315,6 +360,16 @@ public class ResourceAllocationController extends GenericForwardComposer {
             throw new RuntimeException("not found "
                     + CalculationTypeRadio.class.getSimpleName() + " for "
                     + calculatedValue);
+        }
+
+        public abstract Component input(
+                ResourceAllocationController resourceAllocationController);
+
+        public Radio createRadio() {
+            Radio result = new Radio();
+            result.setLabel(getName());
+            result.setValue(toString());
+            return result;
         }
 
         public void doTheSelectionOn(Radiogroup radiogroup) {
