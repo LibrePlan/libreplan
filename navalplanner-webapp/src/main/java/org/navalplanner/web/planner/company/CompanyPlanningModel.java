@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.planner.company;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -69,6 +71,12 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabbox;
+import org.zkoss.zul.Tabpanel;
+import org.zkoss.zul.Tabpanels;
+import org.zkoss.zul.Tabs;
 
 
 /**
@@ -120,15 +128,45 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     public void setConfigurationToPlanner(Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional) {
         PlannerConfiguration<TaskElement> configuration = createConfiguration();
-        Timeplot chartComponent = new Timeplot();
+
+        Tabbox chartComponent = new Tabbox();
+        chartComponent.setOrient("vertical");
+        appendTabs(chartComponent);
+
+        Timeplot chartLoadTimeplot = new Timeplot();
+        appendTabpanels(chartComponent, chartLoadTimeplot);
+
         configuration.setChartComponent(chartComponent);
         addAdditionalCommands(additional, configuration);
-
         disableSomeFeatures(configuration);
 
         planner.setConfiguration(configuration);
 
-        setupChart(chartComponent, planner.getTimeTracker());
+        setupChart(chartLoadTimeplot, planner.getTimeTracker());
+    }
+
+    private void appendTabs(Tabbox chartComponent) {
+        Tabs chartTabs = new Tabs();
+        chartTabs.appendChild(new Tab(_("Load")));
+        chartTabs.appendChild(new Tab(_("Earned value")));
+
+        chartComponent.appendChild(chartTabs);
+        chartTabs.setWidth("100px");
+    }
+
+    private void appendTabpanels(Tabbox chartComponent, Timeplot loadChart) {
+        Tabpanels chartTabpanels = new Tabpanels();
+
+        Tabpanel loadChartPannel = new Tabpanel();
+        chartTabpanels.appendChild(loadChartPannel);
+        loadChartPannel.appendChild(loadChart);
+
+        Tabpanel earnedValueChartPannel = new Tabpanel();
+        chartTabpanels.appendChild(earnedValueChartPannel);
+        earnedValueChartPannel
+                .appendChild(new Label("TODO: Earned value chart"));
+
+        chartComponent.appendChild(chartTabpanels);
     }
 
     private void disableSomeFeatures(

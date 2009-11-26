@@ -64,14 +64,8 @@ planner = self;
                 </center>
             </borderlayout>
         </center>
-        <south height="150px" collapsible="true" title="Resources load graph">
-            <borderlayout>
-                <center sclass="plannergraph">
-                    <vbox>
-                        <div id="insertionPointChart" />
-                    </vbox>
-                </center>
-            </borderlayout>
+        <south height="150px" collapsible="true" title="Graphics">
+            <div id="insertionPointChart" />
         </south>
     </borderlayout>
 </zk>

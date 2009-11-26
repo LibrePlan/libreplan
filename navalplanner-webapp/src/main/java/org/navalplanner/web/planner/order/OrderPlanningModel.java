@@ -73,6 +73,12 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabbox;
+import org.zkoss.zul.Tabpanel;
+import org.zkoss.zul.Tabpanels;
+import org.zkoss.zul.Tabs;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -139,14 +145,43 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         configuration.setEditTaskCommand(buildEditTaskCommand(editTaskController));
 
-        Timeplot chartComponent = new Timeplot();
-        configuration.setChartComponent(chartComponent);
+        Tabbox chartComponent = new Tabbox();
+        chartComponent.setOrient("vertical");
+        appendTabs(chartComponent);
 
+        Timeplot chartLoadTimeplot = new Timeplot();
+        appendTabpanels(chartComponent, chartLoadTimeplot);
+
+        configuration.setChartComponent(chartComponent);
         planner.setConfiguration(configuration);
 
-        LoadChart loadChart = setupChart(orderReloaded, chartComponent, planner
-                .getTimeTracker());
+        LoadChart loadChart = setupChart(orderReloaded, chartLoadTimeplot,
+                planner.getTimeTracker());
         refillLoadChartWhenNeeded(planner, saveCommand, loadChart);
+    }
+
+    private void appendTabs(Tabbox chartComponent) {
+        Tabs chartTabs = new Tabs();
+        chartTabs.appendChild(new Tab(_("Load")));
+        chartTabs.appendChild(new Tab(_("Earned value")));
+
+        chartComponent.appendChild(chartTabs);
+        chartTabs.setWidth("100px");
+    }
+
+    private void appendTabpanels(Tabbox chartComponent, Timeplot loadChart) {
+        Tabpanels chartTabpanels = new Tabpanels();
+
+        Tabpanel loadChartPannel = new Tabpanel();
+        chartTabpanels.appendChild(loadChartPannel);
+        loadChartPannel.appendChild(loadChart);
+
+        Tabpanel earnedValueChartPannel = new Tabpanel();
+        chartTabpanels.appendChild(earnedValueChartPannel);
+        earnedValueChartPannel
+                .appendChild(new Label("TODO: Earned value chart"));
+
+        chartComponent.appendChild(chartTabpanels);
     }
 
     private void refillLoadChartWhenNeeded(Planner planner,
