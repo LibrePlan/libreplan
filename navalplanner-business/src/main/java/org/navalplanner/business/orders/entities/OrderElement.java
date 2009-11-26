@@ -322,6 +322,8 @@ public abstract class OrderElement extends BaseEntity {
         return code;
     }
 
+    public abstract DirectAdvanceAssignment getReportGlobalAdvanceAssignment();
+
     public Set<DirectAdvanceAssignment> getDirectAdvanceAssignments() {
         return Collections.unmodifiableSet(directAdvanceAssignments);
     }

@@ -453,4 +453,15 @@ public class OrderLine extends OrderElement {
         criterionRequirementHandler.copyRequirementToOrderElement(this,
                 container);
     }
+
+    @Override
+    public DirectAdvanceAssignment getReportGlobalAdvanceAssignment() {
+        for (DirectAdvanceAssignment directAdvanceAssignment : getDirectAdvanceAssignments()) {
+            if (directAdvanceAssignment.getReportGlobalAdvance()) {
+                return directAdvanceAssignment;
+            }
+        }
+        return null;
+    }
+
 }

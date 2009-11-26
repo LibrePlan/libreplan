@@ -676,4 +676,21 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
     protected void copyRequirementToOrderElement(OrderLine leaf) {
         criterionRequirementHandler.copyRequirementToOrderElement(this, leaf);
     }
+
+    @Override
+    public DirectAdvanceAssignment getReportGlobalAdvanceAssignment() {
+        for (DirectAdvanceAssignment directAdvanceAssignment : getDirectAdvanceAssignments()) {
+            if (directAdvanceAssignment.getReportGlobalAdvance()) {
+                return directAdvanceAssignment;
+            }
+        }
+
+        for (IndirectAdvanceAssignment indirectAdvanceAssignment : getIndirectAdvanceAssignments()) {
+            if (indirectAdvanceAssignment.getReportGlobalAdvance()) {
+                return calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
+            }
+        }
+        return null;
+    }
+
 }
