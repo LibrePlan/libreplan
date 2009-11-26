@@ -199,7 +199,7 @@ public class ResourceAllocationsBeingEdited {
             case END_DATE:
                 LocalDate end = ResourceAllocation.allocating(allocations)
                         .untilAllocating(formBinder.getAssignedHours());
-                daysDuration = from(task.getStartDate(), end);
+                daysDuration = from(getStartDate(), end);
                 break;
             default:
                 throw new RuntimeException("cant handle: " + calculatedValue);
@@ -282,6 +282,19 @@ public class ResourceAllocationsBeingEdited {
             result.addAll(each.getAssociatedResources());
         }
         return result;
+    }
+
+    public Date getEnd() {
+        LocalDate start = new LocalDate(getStartDate());
+        return toDate(start.plusDays(getDaysDuration()));
+    }
+
+    public Date getStartDate() {
+        return task.getStartDate();
+    }
+
+    private Date toDate(LocalDate date) {
+        return date.toDateTimeAtStartOfDay().toDate();
     }
 
 }

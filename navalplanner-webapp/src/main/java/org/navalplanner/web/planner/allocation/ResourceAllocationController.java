@@ -111,7 +111,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Radiogroup calculationTypeSelector;
 
-    private Intbox taskElapsedDays;
+    private Datebox taskEndDate;
 
     private Button applyButton;
 
@@ -134,14 +134,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         this.window = (Window) comp;
         messagesForUser = new MessagesForUser(messagesContainer);
-        taskElapsedDays = new Intbox();
+        taskEndDate = new Datebox();
         makeReadyInputsForCalculationTypes();
         prepareCalculationTypesGrid();
     }
 
     private void makeReadyInputsForCalculationTypes() {
         final String width = "300px";
-        taskElapsedDays.setWidth(width);
+        taskEndDate.setWidth(width);
         assignedHoursComponent = new Intbox();
         assignedHoursComponent.setWidth(width);
     }
@@ -184,7 +184,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 .createFormBinder(resourceAllocationModel);
         formBinder.setAssignedHoursComponent(assignedHoursComponent);
         formBinder.setTaskStartDateBox(taskStartDateBox);
-        formBinder.setTaskElapsedDays(taskElapsedDays);
+        formBinder.setEndDate(taskEndDate);
         formBinder.setApplyButton(applyButton);
         formBinder.setAllocationsList(allocationsList);
         formBinder.setMessagesForUser(messagesForUser);
@@ -345,7 +345,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             @Override
             public Component input(
                     ResourceAllocationController resourceAllocationController) {
-                return resourceAllocationController.taskElapsedDays;
+                return resourceAllocationController.taskEndDate;
             }
         };
 

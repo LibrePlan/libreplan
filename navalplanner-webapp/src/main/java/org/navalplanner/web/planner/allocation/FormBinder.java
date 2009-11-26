@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
@@ -63,7 +65,7 @@ class FormBinder {
 
     private Datebox taskStartDateBox;
 
-    private Intbox taskElapsedDays;
+    private Datebox endDate;
 
     private Button applyButton;
 
@@ -138,13 +140,13 @@ class FormBinder {
         }
         resourceAllocationsBeingEdited.setCalculatedValue(calculatedValue);
         applyDisabledRules();
-        loadValuesForElapsedDays();
+        loadValueForEndDate();
         applyButton.setDisabled(false);
     }
 
     private void applyDisabledRules() {
         assignedHoursComponentDisabilityRule();
-        taskElapsedDaysDisabilityRule();
+        endDateDisabilityRule();
     }
 
     public CalculatedValue getCalculatedValue() {
@@ -168,20 +170,35 @@ class FormBinder {
 
     }
 
-    public void setTaskElapsedDays(Intbox taskElapsedDays) {
-        this.taskElapsedDays = taskElapsedDays;
-        taskElapsedDaysDisabilityRule();
-        loadValuesForElapsedDays();
-        onChangeEnableApply(taskElapsedDays);
+    public void setEndDate(Datebox endDate) {
+        this.endDate = endDate;
+        this.endDate.setConstraint(datePosteriorToStartDate());
+        endDateDisabilityRule();
+        loadValueForEndDate();
+        onChangeEnableApply(endDate);
     }
 
-    private void loadValuesForElapsedDays() {
-        this.taskElapsedDays.setValue(resourceAllocationsBeingEdited
-                .getDaysDuration());
+    private Constraint datePosteriorToStartDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date date = (Date) value;
+                Date startDate = resourceAllocationsBeingEdited.getStartDate();
+                if (!date.after(startDate)) {
+                    throw new WrongValueException(comp, _(
+                            "{0} must be after {1}", date, startDate));
+                }
+            }
+        };
     }
 
-    private void taskElapsedDaysDisabilityRule() {
-        this.taskElapsedDays.setDisabled(true);
+    private void loadValueForEndDate() {
+        this.endDate.setValue(resourceAllocationsBeingEdited.getEnd());
+    }
+
+    private void endDateDisabilityRule() {
+        this.endDate.setDisabled(true);
     }
 
     void doApply() {
@@ -200,7 +217,7 @@ class FormBinder {
     private void reloadValues() {
         loadValueForAssignedHoursComponent();
         loadValueForTaskStartDateBox();
-        loadValuesForElapsedDays();
+        loadValueForEndDate();
     }
 
     public void setApplyButton(Button applyButton) {
