@@ -199,8 +199,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         chartTabpanels.appendChild(loadChartPannel);
 
         Tabpanel earnedValueChartPannel = new Tabpanel();
+        appendEarnedValueChartAndLegend(earnedValueChartPannel,
+                chartEarnedValueTimeplot);
         chartTabpanels.appendChild(earnedValueChartPannel);
-        earnedValueChartPannel.appendChild(chartEarnedValueTimeplot);
 
         chartComponent.appendChild(chartTabpanels);
     }
@@ -222,6 +223,26 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         Div div = new Div();
         Executions.createComponents("/planner/_legendLoadChartOrder.zul", div,
                 null);
+        return div;
+    }
+
+    private void appendEarnedValueChartAndLegend(
+            Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot) {
+        Hbox hbox = new Hbox();
+        hbox.appendChild(getEarnedValueChartLegend());
+
+        Div div = new Div();
+        div.appendChild(chartEarnedValueTimeplot);
+        div.setSclass("plannergraph");
+        hbox.appendChild(div);
+
+        earnedValueChartPannel.appendChild(hbox);
+    }
+
+    private org.zkoss.zk.ui.Component getEarnedValueChartLegend() {
+        Div div = new Div();
+        Executions.createComponents("/planner/_legendEarnedValueChart.zul",
+                div, null);
         return div;
     }
 
