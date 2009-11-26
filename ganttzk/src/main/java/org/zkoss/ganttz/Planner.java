@@ -175,10 +175,6 @@ public class Planner extends HtmlMacroComponent  {
             setAt("insertionPointChart", chartComponent);
         }
 
-        Component chartLegend = configuration.getChartLegend();
-        if (chartLegend != null) {
-            setAt("insertionPointChartLegend", chartLegend);
-        }
     }
 
     private void setAt(String insertionPointId, Component component) {

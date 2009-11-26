@@ -69,8 +69,6 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zul.Div;
 
 
 /**
@@ -127,8 +125,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         addAdditionalCommands(additional, configuration);
 
         disableSomeFeatures(configuration);
-
-        configuration.setChartLegend(getChartLegend());
 
         planner.setConfiguration(configuration);
 
@@ -254,15 +250,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     // spring method injection
     protected abstract ITaskElementAdapter getTaskElementAdapter();
-
-    private org.zkoss.zk.ui.Component getChartLegend() {
-        Div div = new Div();
-
-        Executions.createComponents("/planner/_legendCompanyPlanner.zul", div,
-                null);
-
-        return div;
-    }
 
     private class CompanyLoadChartFiller extends LoadChartFiller {
 

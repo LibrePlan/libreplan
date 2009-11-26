@@ -84,8 +84,6 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private Component chartComponent;
 
-    private Component chartLegend;
-
     private boolean addingDependenciesEnabled = true;
 
     private boolean movingTasksEnabled = true;
@@ -164,14 +162,6 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public Component getChartComponent() {
         return chartComponent;
-    }
-
-    public void setChartLegend(Component chartLegend) {
-        this.chartLegend = chartLegend;
-    }
-
-    public Component getChartLegend() {
-        return chartLegend;
     }
 
     public void setAddingDependenciesEnabled(boolean addingDependenciesEnabled) {

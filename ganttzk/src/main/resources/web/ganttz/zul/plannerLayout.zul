@@ -66,12 +66,6 @@ planner = self;
         </center>
         <south height="150px" collapsible="true" title="Resources load graph">
             <borderlayout>
-                <west width="284px" flex="true" collapsible="true"
-                    splittable="true" sclass="legend-gap">
-                    <vbox pack="center" align="center">
-                        <div id="insertionPointChartLegend" />
-                    </vbox>
-                </west>
                 <center sclass="plannergraph">
                     <vbox>
                         <div id="insertionPointChart" />
