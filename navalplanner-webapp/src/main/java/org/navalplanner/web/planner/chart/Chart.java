@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.navalplanner.web.planner.loadchart;
+package org.navalplanner.web.planner.chart;
 
 import org.apache.commons.lang.Validate;
 import org.zkforge.timeplot.Timeplot;
@@ -27,13 +27,13 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
-public class LoadChart {
+public class Chart {
 
     private final Timeplot timeplot;
-    private final ILoadChartFiller filler;
+    private final IChartFiller filler;
     private final TimeTracker timeTracker;
 
-    public LoadChart(Timeplot timeplot, ILoadChartFiller filler,
+    public Chart(Timeplot timeplot, IChartFiller filler,
             TimeTracker timeTracker) {
         Validate.notNull(filler);
         Validate.notNull(timeTracker);

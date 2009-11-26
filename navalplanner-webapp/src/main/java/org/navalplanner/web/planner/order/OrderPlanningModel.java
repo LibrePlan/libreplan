@@ -54,9 +54,9 @@ import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
-import org.navalplanner.web.planner.loadchart.ILoadChartFiller;
-import org.navalplanner.web.planner.loadchart.LoadChart;
-import org.navalplanner.web.planner.loadchart.LoadChartFiller;
+import org.navalplanner.web.planner.chart.ChartFiller;
+import org.navalplanner.web.planner.chart.IChartFiller;
+import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
@@ -171,11 +171,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration.setChartComponent(chartComponent);
         planner.setConfiguration(configuration);
 
-        LoadChart loadChart = setupChart(orderReloaded,
+        Chart loadChart = setupChart(orderReloaded,
                 new OrderLoadChartFiller(orderReloaded), chartLoadTimeplot,
                 planner.getTimeTracker());
         refillLoadChartWhenNeeded(planner, saveCommand, loadChart);
-        LoadChart earnedValueChart = setupChart(orderReloaded,
+        Chart earnedValueChart = setupChart(orderReloaded,
                 new CompanyEarnedValueChartFiller(orderReloaded),
                 chartEarnedValueTimeplot, planner.getTimeTracker());
         refillLoadChartWhenNeeded(planner, saveCommand, earnedValueChart);
@@ -247,7 +247,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private void refillLoadChartWhenNeeded(Planner planner,
-            ISaveCommand saveCommand, final LoadChart loadChart) {
+            ISaveCommand saveCommand, final Chart loadChart) {
         planner.getTimeTracker().addZoomListener(fillOnZoomChange(loadChart));
         saveCommand.addListener(fillChartOnSave(loadChart));
         taskElementAdapter.addListener(new IOnMoveListener() {
@@ -300,16 +300,16 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return saveCommand;
     }
 
-    private LoadChart setupChart(Order orderReloaded,
-            ILoadChartFiller loadChartFiller, Timeplot chartComponent,
+    private Chart setupChart(Order orderReloaded,
+            IChartFiller loadChartFiller, Timeplot chartComponent,
             TimeTracker timeTracker) {
-        LoadChart result = new LoadChart(chartComponent, loadChartFiller,
+        Chart result = new Chart(chartComponent, loadChartFiller,
                 timeTracker);
         result.fillChart();
         return result;
     }
 
-    private IZoomLevelChangedListener fillOnZoomChange(final LoadChart loadChart) {
+    private IZoomLevelChangedListener fillOnZoomChange(final Chart loadChart) {
         IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
 
             @Override
@@ -323,7 +323,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return zoomListener;
     }
 
-    private IAfterSaveListener fillChartOnSave(final LoadChart loadChart) {
+    private IAfterSaveListener fillChartOnSave(final Chart loadChart) {
         IAfterSaveListener result = new IAfterSaveListener() {
 
                     @Override
@@ -416,7 +416,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
-    private class OrderLoadChartFiller extends LoadChartFiller {
+    private class OrderLoadChartFiller extends ChartFiller {
 
         private final Order order;
 
@@ -595,7 +595,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     }
 
-    private class CompanyEarnedValueChartFiller extends LoadChartFiller {
+    private class CompanyEarnedValueChartFiller extends ChartFiller {
 
         private Order order;
 

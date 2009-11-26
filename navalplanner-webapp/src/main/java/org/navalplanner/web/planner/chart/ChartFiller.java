@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner.loadchart;
+package org.navalplanner.web.planner.chart;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -58,7 +58,7 @@ import org.zkoss.zk.ui.Executions;
  * Abstract class with the basic functionality to fill the chart.
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public abstract class LoadChartFiller implements ILoadChartFiller {
+public abstract class ChartFiller implements IChartFiller {
 
     protected abstract class HoursByDayCalculator<T> {
         public SortedMap<LocalDate, Integer> calculate(
@@ -131,18 +131,18 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
             IServletRequestHandler {
 
         private final LocalDate finish;
-        private final SortedMap<LocalDate, BigDecimal> mapDayAssignments;
+        private final SortedMap<LocalDate, BigDecimal> map;
         private final LocalDate start;
 
         protected GraphicSpecificationCreator(Date finish,
-                SortedMap<LocalDate, BigDecimal> mapDayAssignments, Date start) {
+                SortedMap<LocalDate, BigDecimal> map, Date start) {
             this.finish = new LocalDate(finish);
-            this.mapDayAssignments = mapDayAssignments;
+            this.map = map;
             this.start = new LocalDate(start);
         }
 
         protected Set<LocalDate> getDays() {
-            return mapDayAssignments.keySet();
+            return map.keySet();
         }
 
         @Override
@@ -172,12 +172,12 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         }
 
         private LocalDate firstDay() {
-            LocalDate date = mapDayAssignments.firstKey();
+            LocalDate date = map.firstKey();
             return convertAsNeededByZoom(date);
         }
 
         private LocalDate lastDay() {
-            LocalDate date = mapDayAssignments.lastKey();
+            LocalDate date = map.lastKey();
             return convertAsNeededByZoom(date);
         }
 
@@ -190,7 +190,7 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         }
 
         protected BigDecimal getHoursForDay(LocalDate day) {
-            return mapDayAssignments.get(day) != null ? mapDayAssignments
+            return map.get(day) != null ? map
                     .get(day) : BigDecimal.ZERO;
         }
 
@@ -208,12 +208,12 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         }
 
         private boolean startIsPreviousToPreviousDayToFirstAssignment() {
-            return !mapDayAssignments.isEmpty()
+            return !map.isEmpty()
                     && start.compareTo(previousDayToFirstAssignment()) < 0;
         }
 
         private LocalDate previousDayToFirstAssignment() {
-            return mapDayAssignments.firstKey().minusDays(1);
+            return map.firstKey().minusDays(1);
         }
 
         private void fillZeroValueToFinish(PrintWriter writer) {
@@ -224,12 +224,12 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         }
 
         private boolean finishIsPosteriorToNextDayToLastAssignment() {
-            return !mapDayAssignments.isEmpty()
+            return !map.isEmpty()
                     && finish.compareTo(nextDayToLastAssignment()) > 0;
         }
 
         private LocalDate nextDayToLastAssignment() {
-            return mapDayAssignments.lastKey().plusDays(1);
+            return map.lastKey().plusDays(1);
         }
     }
 

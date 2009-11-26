@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner.loadchart;
+package org.navalplanner.web.planner.chart;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,11 +34,11 @@ import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.util.Interval;
 
 /**
- * Contract for {@link LoadChartFiller}.
+ * Contract for {@link ChartFiller}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ILoadChartFiller {
+public interface IChartFiller {
 
     void fillChart(Timeplot chart, Interval interval, Integer size);
 

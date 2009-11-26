@@ -57,9 +57,9 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.planner.ITaskElementAdapter;
-import org.navalplanner.web.planner.loadchart.ILoadChartFiller;
-import org.navalplanner.web.planner.loadchart.LoadChart;
-import org.navalplanner.web.planner.loadchart.LoadChartFiller;
+import org.navalplanner.web.planner.chart.ChartFiller;
+import org.navalplanner.web.planner.chart.IChartFiller;
+import org.navalplanner.web.planner.chart.Chart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -249,15 +249,15 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private void setupChart(Timeplot chartComponent,
-            ILoadChartFiller loadChartFiller, TimeTracker timeTracker) {
-        LoadChart loadChart = new LoadChart(chartComponent, loadChartFiller,
+            IChartFiller loadChartFiller, TimeTracker timeTracker) {
+        Chart loadChart = new Chart(chartComponent, loadChartFiller,
                 timeTracker);
         loadChart.fillChart();
         timeTracker.addZoomListener(fillOnZoomChange(loadChart));
     }
 
     private IZoomLevelChangedListener fillOnZoomChange(
-            final LoadChart loadChart) {
+            final Chart loadChart) {
 
         IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
 
@@ -357,7 +357,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     // spring method injection
     protected abstract ITaskElementAdapter getTaskElementAdapter();
 
-    private class CompanyLoadChartFiller extends LoadChartFiller {
+    private class CompanyLoadChartFiller extends ChartFiller {
 
         @Override
         public void fillChart(Timeplot chart, Interval interval, Integer size) {
@@ -565,7 +565,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     }
 
-    private class CompanyEarnedValueChartFiller extends LoadChartFiller {
+    private class CompanyEarnedValueChartFiller extends ChartFiller {
 
         @Override
         public void fillChart(Timeplot chart, Interval interval, Integer size) {
