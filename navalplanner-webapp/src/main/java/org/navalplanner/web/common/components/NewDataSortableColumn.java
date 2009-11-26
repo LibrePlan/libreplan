@@ -22,6 +22,7 @@ package org.navalplanner.web.common.components;
 
 import java.util.Comparator;
 
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.INewObject;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Column;
@@ -47,10 +48,12 @@ import org.zkoss.zul.api.Grid;
 
 public class NewDataSortableColumn extends Column implements AfterCompose {
 
-    private static class NewObjectDecoratorComparator implements Comparator {
-        private Comparator decoratedComparator;
+    private static class NewObjectDecoratorComparator implements
+            Comparator<Object> {
+        private Comparator<Object> decoratedComparator;
 
-        public NewObjectDecoratorComparator(Comparator c) {
+        public NewObjectDecoratorComparator(Comparator<Object> c) {
+            Validate.notNull(c);
             this.decoratedComparator = c;
         }
 
@@ -64,11 +67,7 @@ public class NewDataSortableColumn extends Column implements AfterCompose {
         }
 
         private boolean doComparingObjectsSupportInterface(Object o1, Object o2) {
-            if ((o1 instanceof INewObject) && (o2 instanceof INewObject)) {
-                return true;
-            } else {
-                return false;
-            }
+            return (o1 instanceof INewObject) && (o2 instanceof INewObject);
         }
 
         private int decorateBehaviour(INewObject o1, INewObject o2) {
@@ -89,7 +88,7 @@ public class NewDataSortableColumn extends Column implements AfterCompose {
     }
 
     @Override
-    public void setSortAscending(Comparator c) {
+    public void setSortAscending(Comparator<?> c) {
         super.setSortAscending(new NewObjectDecoratorComparator(c));
     }
 
@@ -112,7 +111,7 @@ public class NewDataSortableColumn extends Column implements AfterCompose {
     public void afterCompose() {
         Grid g = getGrid();
 
-        if ((g instanceof NewDataSortableGrid)) {
+        if (g instanceof NewDataSortableGrid) {
             NewDataSortableGrid castedGrid = (NewDataSortableGrid) g;
 
             // The first registered column is responsible for ordering
