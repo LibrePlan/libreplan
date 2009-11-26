@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.loadchart;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -47,5 +48,8 @@ public interface ILoadChartFiller {
 
     SortedMap<LocalDate, Map<Resource, Integer>> groupDayAssignmentsByDayAndResource(
             List<DayAssignment> dayAssignments);
+
+    void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
+            SortedMap<LocalDate, BigDecimal> additionalCost);
 
 }

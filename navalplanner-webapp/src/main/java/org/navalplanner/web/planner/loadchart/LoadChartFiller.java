@@ -22,6 +22,7 @@ package org.navalplanner.web.planner.loadchart;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -371,6 +372,18 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         }
 
         return map;
+    }
+
+    @Override
+    public void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
+            SortedMap<LocalDate, BigDecimal> additionalCost) {
+        for (LocalDate day : additionalCost.keySet()) {
+            if (!currentCost.containsKey(day)) {
+                currentCost.put(day, BigDecimal.ZERO);
+            }
+            currentCost.put(day, currentCost.get(day).add(
+                    additionalCost.get(day)));
+        }
     }
 
 }
