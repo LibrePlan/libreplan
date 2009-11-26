@@ -69,6 +69,6 @@
             </tabpanel>
         </tabpanels>
     </tabbox>
-    <button label="${i18n:_('Save')}" onClick="controller.save();" />
-    <button label="${i18n:_('Cancel')}" onClick="controller.cancel();" />
+    <button label="${i18n:_('Save')}" onClick="controller.save();" sclass="save-button global-action"/>
+    <button label="${i18n:_('Cancel')}" onClick="controller.cancel();" sclass="cancel-button global-action"/>
 </window>
