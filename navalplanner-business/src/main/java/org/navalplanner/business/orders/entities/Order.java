@@ -94,6 +94,17 @@ public class Order extends OrderLineGroup {
         return (TaskGroup) super.getAssociatedTaskElement();
     }
 
+    public List<TaskElement> getAllChildrenAssociatedTaskElements() {
+        List<TaskElement> result = new ArrayList<TaskElement>();
+
+        List<OrderElement> children = getAllChildren();
+        for (OrderElement orderElement : children) {
+            result.add(orderElement.getAssociatedTaskElement());
+        }
+
+        return result;
+    }
+
     public List<TaskElement> getAssociatedTasks() {
         ArrayList<TaskElement> result = new ArrayList<TaskElement>();
         TaskGroup taskGroup = getAssociatedTaskElement();
