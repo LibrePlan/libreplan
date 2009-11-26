@@ -36,7 +36,7 @@ table {
 .z-button-tl, .z-button-tm, .z-button-tr,
 .z-button-cl, .z-button-cr,
 .z-button-bl, .z-button-bm, .z-button-br {
-    display: auto;
+    display: none;
 }
 
 .icono .z-button-tl, .icono .z-button-tm, .icono .z-button-tr,
@@ -64,10 +64,6 @@ table {
 }
 
 .zk .z-button-cm,.z-button-cm {
-    color: #007bbe;
-    background-color: #FFFFFF;
-    background-image: none;
-    border: 2px solid #007bbe;
 }
 
 .sub_menu .z-button-cm {
@@ -88,12 +84,36 @@ table {
 
 .z-window-embedded .z-button-cm,
 .z-window-modal .z-button-cm {
-    background-color: #58A758;
+    background-color: #E6EFC2;
+    color: green;
     background-image: none;
-    border: 0; /* 1px solid #006700; Enable borders in 2D appearance */
+    border: 1px solid #006700; /* 1px solid #006700; Enable borders in 2D appearance */
+    padding: 2px 18px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+.z-window-embedded .z-button-cm:hover,
+.z-window-modal .z-button-cm:hover {
+    background-color: #58A758;
     color: #FFFFFF;
+    background-image: none;
+    border: 1px solid #58A758; /* 1px solid #006700; Enable borders in 2D appearance */
+    padding: 2px 18px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+-webkit-transition-property: color, background-color; -webkit-transition-duration: 1s, .75s ;
+}
+
+.z-window-embedded .z-button-cm:active,
+.z-window-modal .z-button-cm:active {
+    background-color: red;
+    color: #FFFFFF;
+    border: 1px solid #58A758; /* 1px solid #006700; Enable borders in 2D appearance */
     padding: 2px 18px;
 }
+
+
 
 .z-window-embedded .icono .z-button-cm,
 .z-window-modal .icono .z-button-cm {
