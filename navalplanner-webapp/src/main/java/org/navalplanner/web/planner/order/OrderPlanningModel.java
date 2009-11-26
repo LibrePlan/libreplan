@@ -73,6 +73,9 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
@@ -173,8 +176,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         Tabpanels chartTabpanels = new Tabpanels();
 
         Tabpanel loadChartPannel = new Tabpanel();
+        appendLoadChartAndLegend(loadChartPannel, loadChart);
         chartTabpanels.appendChild(loadChartPannel);
-        loadChartPannel.appendChild(loadChart);
 
         Tabpanel earnedValueChartPannel = new Tabpanel();
         chartTabpanels.appendChild(earnedValueChartPannel);
@@ -182,6 +185,26 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 .appendChild(new Label("TODO: Earned value chart"));
 
         chartComponent.appendChild(chartTabpanels);
+    }
+
+    private void appendLoadChartAndLegend(Tabpanel loadChartPannel,
+            Timeplot loadChart) {
+        Hbox hbox = new Hbox();
+        hbox.appendChild(getLoadChartLegend());
+
+        Div div = new Div();
+        div.appendChild(loadChart);
+        div.setSclass("plannergraph");
+        hbox.appendChild(div);
+
+        loadChartPannel.appendChild(hbox);
+    }
+
+    private org.zkoss.zk.ui.Component getLoadChartLegend() {
+        Div div = new Div();
+        Executions.createComponents("/planner/_legendLoadChartOrder.zul", div,
+                null);
+        return div;
     }
 
     private void refillLoadChartWhenNeeded(Planner planner,
