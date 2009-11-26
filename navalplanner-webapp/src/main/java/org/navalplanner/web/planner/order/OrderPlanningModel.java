@@ -22,6 +22,7 @@ package org.navalplanner.web.planner.order;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -38,10 +39,14 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.ICostCalculator;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
+import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.ITaskElementAdapter.IOnMoveListener;
@@ -49,6 +54,7 @@ import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
+import org.navalplanner.web.planner.loadchart.ILoadChartFiller;
 import org.navalplanner.web.planner.loadchart.LoadChart;
 import org.navalplanner.web.planner.loadchart.LoadChartFiller;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
@@ -76,7 +82,6 @@ import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
@@ -98,9 +103,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     @Autowired
     private IResourceDAO resourceDAO;
 
-    private IZoomLevelChangedListener zoomListener;
+    @Autowired
+    private IWorkReportLineDAO workReportLineDAO;
+
+    private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
 
     private ITaskElementAdapter taskElementAdapter;
+
+    @Autowired
+    private ICostCalculator hoursCostCalculator;
 
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
@@ -153,14 +164,21 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         appendTabs(chartComponent);
 
         Timeplot chartLoadTimeplot = new Timeplot();
-        appendTabpanels(chartComponent, chartLoadTimeplot);
+        Timeplot chartEarnedValueTimeplot = new Timeplot();
+        appendTabpanels(chartComponent, chartLoadTimeplot,
+                chartEarnedValueTimeplot);
 
         configuration.setChartComponent(chartComponent);
         planner.setConfiguration(configuration);
 
-        LoadChart loadChart = setupChart(orderReloaded, chartLoadTimeplot,
+        LoadChart loadChart = setupChart(orderReloaded,
+                new OrderLoadChartFiller(orderReloaded), chartLoadTimeplot,
                 planner.getTimeTracker());
         refillLoadChartWhenNeeded(planner, saveCommand, loadChart);
+        LoadChart earnedValueChart = setupChart(orderReloaded,
+                new CompanyEarnedValueChartFiller(orderReloaded),
+                chartEarnedValueTimeplot, planner.getTimeTracker());
+        refillLoadChartWhenNeeded(planner, saveCommand, earnedValueChart);
     }
 
     private void appendTabs(Tabbox chartComponent) {
@@ -172,7 +190,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         chartTabs.setWidth("100px");
     }
 
-    private void appendTabpanels(Tabbox chartComponent, Timeplot loadChart) {
+    private void appendTabpanels(Tabbox chartComponent, Timeplot loadChart,
+            Timeplot chartEarnedValueTimeplot) {
         Tabpanels chartTabpanels = new Tabpanels();
 
         Tabpanel loadChartPannel = new Tabpanel();
@@ -181,8 +200,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         Tabpanel earnedValueChartPannel = new Tabpanel();
         chartTabpanels.appendChild(earnedValueChartPannel);
-        earnedValueChartPannel
-                .appendChild(new Label("TODO: Earned value chart"));
+        earnedValueChartPannel.appendChild(chartEarnedValueTimeplot);
 
         chartComponent.appendChild(chartTabpanels);
     }
@@ -261,10 +279,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return saveCommand;
     }
 
-    private LoadChart setupChart(Order orderReloaded, Timeplot chartComponent,
+    private LoadChart setupChart(Order orderReloaded,
+            ILoadChartFiller loadChartFiller, Timeplot chartComponent,
             TimeTracker timeTracker) {
-        OrderLoadChartFiller loadChartFiller = new OrderLoadChartFiller(
-                orderReloaded);
         LoadChart result = new LoadChart(chartComponent, loadChartFiller,
                 timeTracker);
         result.fillChart();
@@ -272,13 +289,16 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private IZoomLevelChangedListener fillOnZoomChange(final LoadChart loadChart) {
-        zoomListener = new IZoomLevelChangedListener() {
+        IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
                 loadChart.fillChart();
             }
         };
+
+        keepAliveZoomListeners.add(zoomListener);
+
         return zoomListener;
     }
 
@@ -550,6 +570,159 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
 
             return workableHours;
+        }
+
+    }
+
+    private class CompanyEarnedValueChartFiller extends LoadChartFiller {
+
+        private Order order;
+
+        public CompanyEarnedValueChartFiller(Order orderReloaded) {
+            this.order = orderReloaded;
+        }
+
+        @Override
+        public void fillChart(Timeplot chart, Interval interval, Integer size) {
+            chart.getChildren().clear();
+            chart.invalidate();
+            resetMaximunValueForChart();
+
+            Plotinfo assignmentsPlotinfo = getAssignmentsPlotinfo(interval);
+            assignmentsPlotinfo.setLineColor("0000FF");
+            assignmentsPlotinfo.setLineWidth(1);
+
+            Plotinfo workReportsPlotinfo = getWorkReportsPlotinfo(interval);
+            workReportsPlotinfo.setLineColor("FF0000");
+            workReportsPlotinfo.setLineWidth(1);
+
+            Plotinfo advancePlotinfo = getAdvancePlotinfo(interval);
+            advancePlotinfo.setLineColor("00FF00");
+            advancePlotinfo.setLineWidth(1);
+
+            ValueGeometry valueGeometry = getValueGeometry(getMaximunValueForChart());
+            TimeGeometry timeGeometry = getTimeGeometry(interval);
+
+            assignmentsPlotinfo.setValueGeometry(valueGeometry);
+            workReportsPlotinfo.setValueGeometry(valueGeometry);
+            advancePlotinfo.setValueGeometry(valueGeometry);
+
+            assignmentsPlotinfo.setTimeGeometry(timeGeometry);
+            workReportsPlotinfo.setTimeGeometry(timeGeometry);
+            advancePlotinfo.setTimeGeometry(timeGeometry);
+
+            chart.appendChild(assignmentsPlotinfo);
+            chart.appendChild(workReportsPlotinfo);
+            chart.appendChild(advancePlotinfo);
+
+            chart.setWidth(size + "px");
+            chart.setHeight("100px");
+        }
+
+        private Plotinfo getAssignmentsPlotinfo(Interval interval) {
+            List<TaskElement> list = order
+                    .getAllChildrenAssociatedTaskElements();
+            list.add(order.getAssociatedTaskElement());
+
+            SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
+
+            for (TaskElement taskElement : list) {
+                if (taskElement instanceof Task) {
+                    addCost(estimatedCost, hoursCostCalculator
+                            .getEstimatedCost((Task) taskElement));
+                }
+            }
+
+            estimatedCost = accumulateResult(estimatedCost);
+
+            String uri = getServletUri(estimatedCost, interval.getStart(),
+                    interval.getFinish(),
+                    new JustDaysWithInformationGraphicSpecificationCreator(
+                            interval.getFinish(), estimatedCost, interval
+                                    .getStart()));
+
+            PlotDataSource pds = new PlotDataSource();
+            pds.setDataSourceUri(uri);
+            pds.setSeparator(" ");
+
+            Plotinfo plotInfo = new Plotinfo();
+            plotInfo.setPlotDataSource(pds);
+            return plotInfo;
+        }
+
+        private Plotinfo getWorkReportsPlotinfo(Interval interval) {
+            SortedMap<LocalDate, BigDecimal> workReportCost = getWorkReportCost();
+
+            workReportCost = accumulateResult(workReportCost);
+
+            String uri = getServletUri(workReportCost, interval.getStart(),
+                    interval.getFinish(),
+                    new JustDaysWithInformationGraphicSpecificationCreator(
+                            interval.getFinish(), workReportCost, interval
+                                    .getStart()));
+
+            PlotDataSource pds = new PlotDataSource();
+            pds.setDataSourceUri(uri);
+            pds.setSeparator(" ");
+
+            Plotinfo plotInfo = new Plotinfo();
+            plotInfo.setPlotDataSource(pds);
+            return plotInfo;
+        }
+
+        public SortedMap<LocalDate, BigDecimal> getWorkReportCost() {
+            SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+
+            List<WorkReportLine> workReportLines = workReportLineDAO
+                    .findByOrderElementAndChildren(order);
+
+            if (workReportLines.isEmpty()) {
+                return result;
+            }
+
+            for (WorkReportLine workReportLine : workReportLines) {
+                LocalDate day = new LocalDate(workReportLine.getWorkReport()
+                        .getDate());
+                BigDecimal cost = new BigDecimal(workReportLine.getNumHours());
+
+                if (!result.containsKey(day)) {
+                    result.put(day, BigDecimal.ZERO);
+                }
+                result.put(day, result.get(day).add(cost));
+            }
+
+            return result;
+        }
+
+        private Plotinfo getAdvancePlotinfo(Interval interval) {
+            List<TaskElement> list = order
+                    .getAllChildrenAssociatedTaskElements();
+            list.add(order.getAssociatedTaskElement());
+
+            SortedMap<LocalDate, BigDecimal> advanceCost = new TreeMap<LocalDate, BigDecimal>();
+
+            for (TaskElement taskElement : list) {
+                if (taskElement instanceof Task) {
+                    addCost(advanceCost, hoursCostCalculator
+                            .getAdvanceCost((Task) taskElement));
+                }
+            }
+
+            advanceCost = accumulateResult(advanceCost);
+
+            String uri = getServletUri(advanceCost, interval.getStart(),
+                    interval.getFinish(),
+                    new JustDaysWithInformationGraphicSpecificationCreator(
+                            interval.getFinish(), advanceCost, interval
+                                    .getStart()));
+
+            PlotDataSource pds = new PlotDataSource();
+            pds.setDataSourceUri(uri);
+            pds.setSeparator(" ");
+
+            Plotinfo plotInfo = new Plotinfo();
+            plotInfo.setPlotDataSource(pds);
+            return plotInfo;
         }
 
     }
