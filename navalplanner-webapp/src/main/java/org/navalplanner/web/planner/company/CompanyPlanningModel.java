@@ -350,7 +350,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             chart.appendChild(plotInfoLoad);
             chart.appendChild(plotInfoOverload);
 
-            size = size + (16 * 2);
             chart.setWidth(size + "px");
             chart.setHeight("100px");
         }
