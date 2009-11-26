@@ -386,4 +386,22 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         }
     }
 
+    @Override
+    public SortedMap<LocalDate, BigDecimal> accumulateResult(
+            SortedMap<LocalDate, BigDecimal> map) {
+        SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+        if (map.isEmpty()) {
+            return result;
+        }
+
+        BigDecimal accumulatedResult = BigDecimal.ZERO;
+        for (LocalDate day : map.keySet()) {
+            BigDecimal value = map.get(day);
+            accumulatedResult = accumulatedResult.add(value);
+            result.put(day, accumulatedResult);
+        }
+
+        return result;
+    }
+
 }

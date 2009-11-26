@@ -52,4 +52,7 @@ public interface ILoadChartFiller {
     void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
             SortedMap<LocalDate, BigDecimal> additionalCost);
 
+    SortedMap<LocalDate, BigDecimal> accumulateResult(
+            SortedMap<LocalDate, BigDecimal> map);
+
 }
