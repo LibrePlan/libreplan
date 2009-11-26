@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -126,18 +127,22 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         return result;
     }
 
-    private final class GraphicSpecificationCreator implements
+    protected abstract class GraphicSpecificationCreator implements
             IServletRequestHandler {
 
         private final LocalDate finish;
         private final SortedMap<LocalDate, BigDecimal> mapDayAssignments;
         private final LocalDate start;
 
-        private GraphicSpecificationCreator(Date finish,
+        protected GraphicSpecificationCreator(Date finish,
                 SortedMap<LocalDate, BigDecimal> mapDayAssignments, Date start) {
             this.finish = new LocalDate(finish);
             this.mapDayAssignments = mapDayAssignments;
             this.start = new LocalDate(start);
+        }
+
+        protected Set<LocalDate> getDays() {
+            return mapDayAssignments.keySet();
         }
 
         @Override
@@ -155,15 +160,10 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
             fillZeroValueToFinish(writer);
         }
 
-        private void fillInnerValues(PrintWriter writer, LocalDate firstDay,
-                LocalDate lastDay) {
-            for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = nextDay(day)) {
-                BigDecimal hours = getHoursForDay(day);
-                printLine(writer, day, hours);
-            }
-        }
+        protected abstract void fillInnerValues(PrintWriter writer,
+                LocalDate firstDay, LocalDate lastDay);
 
-        private LocalDate nextDay(LocalDate date) {
+        protected LocalDate nextDay(LocalDate date) {
             if (isZoomByDay()) {
                 return date.plusDays(1);
             } else {
@@ -189,12 +189,12 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
             }
         }
 
-        private BigDecimal getHoursForDay(LocalDate day) {
+        protected BigDecimal getHoursForDay(LocalDate day) {
             return mapDayAssignments.get(day) != null ? mapDayAssignments
                     .get(day) : BigDecimal.ZERO;
         }
 
-        private void printLine(PrintWriter writer, LocalDate day,
+        protected void printLine(PrintWriter writer, LocalDate day,
                 BigDecimal hours) {
             writer.println(day.toString("yyyyMMdd") + " " + hours);
         }
@@ -233,6 +233,44 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         }
     }
 
+    protected class DefaultGraphicSpecificationCreator extends
+            GraphicSpecificationCreator {
+
+        private DefaultGraphicSpecificationCreator(Date finish,
+                SortedMap<LocalDate, BigDecimal> map, Date start) {
+            super(finish, map, start);
+        }
+
+        @Override
+        protected void fillInnerValues(PrintWriter writer, LocalDate firstDay,
+                LocalDate lastDay) {
+            for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = nextDay(day)) {
+                BigDecimal hours = getHoursForDay(day);
+                printLine(writer, day, hours);
+            }
+        }
+
+    }
+
+    protected class JustDaysWithInformationGraphicSpecificationCreator extends
+            GraphicSpecificationCreator {
+
+        public JustDaysWithInformationGraphicSpecificationCreator(Date finish,
+                SortedMap<LocalDate, BigDecimal> map, Date start) {
+            super(finish, map, start);
+        }
+
+        @Override
+        protected void fillInnerValues(PrintWriter writer, LocalDate firstDay,
+                LocalDate lastDay) {
+            for (LocalDate day : getDays()) {
+                BigDecimal hours = getHoursForDay(day);
+                printLine(writer, day, hours);
+            }
+        }
+
+    }
+
     /**
      * Number of days to Thursday since the beginning of the week. In order to
      * calculate the middle of a week.
@@ -250,6 +288,16 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
     protected String getServletUri(
             final SortedMap<LocalDate, BigDecimal> mapDayAssignments,
             final Date start, final Date finish) {
+        GraphicSpecificationCreator graphicSpecificationCreator = new DefaultGraphicSpecificationCreator(
+                finish, mapDayAssignments, start);
+        return getServletUri(mapDayAssignments, start, finish,
+                graphicSpecificationCreator);
+    }
+
+    protected String getServletUri(
+            final SortedMap<LocalDate, BigDecimal> mapDayAssignments,
+            final Date start, final Date finish,
+            final GraphicSpecificationCreator graphicSpecificationCreator) {
         if (mapDayAssignments.isEmpty()) {
             return "";
         }
@@ -260,8 +308,7 @@ public abstract class LoadChartFiller implements ILoadChartFiller {
         HttpServletRequest request = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
         String uri = CallbackServlet.registerAndCreateURLFor(request,
-                new GraphicSpecificationCreator(finish, mapDayAssignments,
-                        start));
+                graphicSpecificationCreator);
         return uri;
     }
 
