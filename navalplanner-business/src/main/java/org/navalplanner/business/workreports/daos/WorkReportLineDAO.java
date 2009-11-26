@@ -49,4 +49,18 @@ public class WorkReportLineDAO extends
         c.add(Restrictions.idEq(orderElement.getId()));
         return (List<WorkReportLine>) c.list();
     }
+
+    @Override
+    public List<WorkReportLine> findByOrderElementAndChildren(
+            OrderElement orderElement) {
+        Criteria c = getSession().createCriteria(WorkReportLine.class);
+
+        List<OrderElement> orderElements = orderElement.getAllChildren();
+        orderElements.add(orderElement);
+
+        c.add(Restrictions.in("orderElement", orderElements));
+
+        return (List<WorkReportLine>) c.list();
+    }
+
 }

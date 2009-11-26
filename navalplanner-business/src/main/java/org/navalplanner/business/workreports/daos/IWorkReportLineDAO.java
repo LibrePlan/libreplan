@@ -34,4 +34,7 @@ import org.navalplanner.business.workreports.entities.WorkReportLine;
  */
 public interface IWorkReportLineDAO extends IGenericDAO<WorkReportLine, Long>{
     public List<WorkReportLine> findByOrderElement(OrderElement orderElement);
+
+    List<WorkReportLine> findByOrderElementAndChildren(OrderElement orderElement);
+
 }
