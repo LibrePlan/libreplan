@@ -326,4 +326,13 @@ public abstract class TaskElement extends BaseEntity {
         result.put(date, current + hours);
     }
 
+    public List<DayAssignment> getDayAssignments() {
+        List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
+        Set<ResourceAllocation<?>> resourceAllocations = getResourceAllocations();
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+            dayAssignments.addAll(resourceAllocation.getAssignments());
+        }
+        return dayAssignments;
+    }
+
 }

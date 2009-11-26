@@ -29,7 +29,6 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.planner.entities.DayAssignment;
-import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -134,10 +133,7 @@ public class Order extends OrderLineGroup {
         for (OrderElement orderElement : getAllOrderElements()) {
             Set<TaskElement> taskElements = orderElement.getTaskElements();
             for (TaskElement taskElement : taskElements) {
-                Set<ResourceAllocation<?>> resourceAllocations = taskElement.getResourceAllocations();
-                for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-                    dayAssignments.addAll(resourceAllocation.getAssignments());
-                }
+                dayAssignments.addAll(taskElement.getDayAssignments());
             }
         }
         return dayAssignments;
