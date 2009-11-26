@@ -22,6 +22,7 @@ package org.navalplanner.web.common.components;
 
 import java.util.Comparator;
 
+import org.apache.commons.collections.comparators.BooleanComparator;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.INewObject;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -71,24 +72,16 @@ public class NewDataSortableColumn extends Column implements AfterCompose {
         }
 
         private int decorateBehaviour(INewObject o1, INewObject o2) {
-            int result;
-
-            if ((o1.isNewObject()) && (o2.isNewObject())) {
-                result = 0;
-            } else if ((o1.isNewObject()) && (!o2.isNewObject())) {
-                result = -1;
-            } else if ((!o1.isNewObject()) && (o2.isNewObject())) {
-                result = 1;
-            } else {
-                result = decoratedComparator.compare(o1, o2);
+            if (o1.isNewObject() == o2.isNewObject()) {
+                return decoratedComparator.compare(o1, o2);
             }
-
-            return result;
+            return BooleanComparator.getTrueFirstComparator().compare(
+                    o1.isNewObject(), o2.isNewObject());
         }
     }
 
     @Override
-    public void setSortAscending(Comparator<?> c) {
+    public void setSortAscending(Comparator c) {
         super.setSortAscending(new NewObjectDecoratorComparator(c));
     }
 
