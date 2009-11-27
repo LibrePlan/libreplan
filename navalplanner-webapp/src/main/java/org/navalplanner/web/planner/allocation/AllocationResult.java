@@ -70,16 +70,15 @@ public class AllocationResult {
             Task task,
             CalculatedValue calculatedValue,
             AggregateOfResourceAllocations aggregate,
-            Integer daysDuration,
             Map<AllocationBeingModified, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
-        Validate.notNull(daysDuration);
         Validate.notNull(aggregate);
         Validate.notNull(calculatedValue);
         Validate.notNull(task);
         this.task = task;
         this.calculatedValue = calculatedValue;
         this.aggregate = aggregate;
-        this.daysDuration = daysDuration;
+        this.daysDuration = aggregate.isEmpty() ? task.getDaysDuration()
+                : aggregate.getDaysDuration();
         this.fromDetachedAllocationToAttached = translation(fromDetachedAllocationToAttached);
     }
 

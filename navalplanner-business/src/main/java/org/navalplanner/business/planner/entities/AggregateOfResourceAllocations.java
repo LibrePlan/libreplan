@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 /**
@@ -97,6 +98,10 @@ public class AggregateOfResourceAllocations {
             result = bigger(allocation.getEndDate(), result);
         }
         return result;
+    }
+
+    public Integer getDaysDuration() {
+        return Days.daysBetween(getStart(), getEnd()).getDays();
     }
 
     private LocalDate bigger(LocalDate one, LocalDate other) {

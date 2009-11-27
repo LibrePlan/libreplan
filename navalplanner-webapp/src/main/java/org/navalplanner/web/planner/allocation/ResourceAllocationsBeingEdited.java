@@ -51,7 +51,7 @@ public class ResourceAllocationsBeingEdited {
                 AllocationBeingModified.stripResourcesPerDay(forModification
                         .keySet()));
         return new AllocationResult(task, task.getCalculatedValue(), aggregate,
-                task.getDaysDuration(), forModification);
+                forModification);
     }
 
     private static Map<AllocationBeingModified, ResourceAllocation<?>> forModification(
@@ -194,21 +194,21 @@ public class ResourceAllocationsBeingEdited {
             case NUMBER_OF_HOURS:
                 ResourceAllocation.allocating(allocations)
                         .allocateOnTaskLength();
-                daysDuration = task.getDaysDuration();
                 break;
             case END_DATE:
-                LocalDate end = ResourceAllocation.allocating(allocations)
-                        .untilAllocating(formBinder.getAssignedHours());
-                daysDuration = from(getStartDate(), end);
+                ResourceAllocation.allocating(allocations).untilAllocating(
+                        formBinder.getAssignedHours());
                 break;
             default:
                 throw new RuntimeException("cant handle: " + calculatedValue);
             }
         }
-        return new AllocationResult(task, calculatedValue,
-                new AggregateOfResourceAllocations(
-                AllocationBeingModified.stripResourcesPerDay(allocations)), daysDuration,
+        AllocationResult result = new AllocationResult(task, calculatedValue,
+                new AggregateOfResourceAllocations(AllocationBeingModified
+                        .stripResourcesPerDay(allocations)),
                 fromDetachedToAttached);
+        daysDuration = result.getDaysDuration();
+        return result;
     }
 
     private Map<AllocationBeingModified, ResourceAllocation<?>> getAllocationsWithRelationshipsToOriginal() {
