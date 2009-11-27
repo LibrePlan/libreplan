@@ -292,10 +292,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     "the end must be equal or posterior than start");
             List<LocalDate> result = new ArrayList<LocalDate>();
             LocalDate current = startInclusive;
-            do {
+            while (current.compareTo(endExclusive) < 0) {
                 result.add(current);
                 current = current.plusDays(1);
-            } while (current.compareTo(endExclusive) < 0);
+            }
             return result;
         }
 

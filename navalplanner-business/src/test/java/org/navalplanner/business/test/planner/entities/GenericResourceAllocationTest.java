@@ -279,6 +279,22 @@ public class GenericResourceAllocationTest {
     }
 
     @Test
+    public void allocatingUntilEndDateEqualToStartImpliesNoAssignmentsAndZeroResourcesPerDay() {
+        LocalDate start = new LocalDate(2006, 10, 5);
+        givenTaskWithStartAndEnd(toInterval(start, Period.days(4)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithoutLoadAndWithoutCalendar();
+        ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
+
+        genericResourceAllocation.forResources(Arrays.asList(worker1)).until(
+                start).allocate(resourcesPerDay);
+        assertThat(genericResourceAllocation.getResourcesPerDay(),
+                equalTo(ResourcesPerDay.amount(0)));
+        assertTrue(genericResourceAllocation.getOrderedAssignmentsFor(worker1)
+                .isEmpty());
+    }
+
+    @Test
     public void theResourcesPerDayAreChangedWhenTheAllocationIsDone() {
         givenTaskWithStartAndEnd(toInterval(new LocalDate(2006, 10, 5), Period
                 .days(2)));
