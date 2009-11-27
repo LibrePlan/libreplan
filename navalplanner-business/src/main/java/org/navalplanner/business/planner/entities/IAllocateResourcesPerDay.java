@@ -17,19 +17,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.navalplanner.business.planner.entities;
 
-import org.joda.time.LocalDate;
-
 /**
- * This interface represents an object on which an allocation can be done
+ * Represents an object in which can be allocated some {@link ResourcesPerDay} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public interface IAllocatable extends IAllocateResourcesPerDay {
+public interface IAllocateResourcesPerDay {
 
-    public IAllocateResourcesPerDay until(LocalDate endExclusive);
-
-    public IAllocateHoursOnInterval onInterval(LocalDate start, LocalDate end);
+    public void allocate(ResourcesPerDay resourcesPerDay);
 
 }

@@ -212,6 +212,73 @@ public class GenericResourceAllocationTest {
     }
 
     @Test
+    public void canAllocateSomeResourcesPerDayUntilSomeEndDate() {
+        final int TASK_DURATION_DAYS = 4;
+        givenBaseCalendarWithoutExceptions(8);
+        LocalDate start = new LocalDate(2006, 10, 5);
+        givenTaskWithStartAndEnd(toInterval(start, Period
+                .days(TASK_DURATION_DAYS)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithoutLoadAndWithoutCalendar();
+        ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
+
+        genericResourceAllocation.forResources(Arrays.asList(worker1))
+                                 .until(start.plusDays(2))
+                                 .allocate(resourcesPerDay);
+
+        List<GenericDayAssignment> orderedAssignmentsFor = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker1);
+        int hoursPerDay = resourcesPerDay.asHoursGivenResourceWorkingDayOf(8);
+        assertThat(orderedAssignmentsFor, haveHours(hoursPerDay, hoursPerDay));
+    }
+
+    @Test
+    public void allocatingUntilSomeEndDateDeletesAssignmentsAfterThatDate() {
+        final int TASK_DURATION_DAYS = 4;
+        givenBaseCalendarWithoutExceptions(8);
+        LocalDate start = new LocalDate(2006, 10, 5);
+        givenTaskWithStartAndEnd(toInterval(start, Period
+                .days(TASK_DURATION_DAYS)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithoutLoadAndWithoutCalendar();
+        ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
+
+        genericResourceAllocation.forResources(Arrays.asList(worker1))
+                .allocate(resourcesPerDay);
+        genericResourceAllocation.forResources(Arrays.asList(worker1)).until(
+                start.plusDays(2)).allocate(resourcesPerDay);
+
+        List<GenericDayAssignment> orderedAssignmentsFor = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker1);
+        int hoursPerDay = resourcesPerDay.asHoursGivenResourceWorkingDayOf(8);
+        assertThat(orderedAssignmentsFor, haveHours(hoursPerDay, hoursPerDay));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void whenAllocatingUntilSomeEndDateTheEndDateMustNotBeBeforeTaskStart() {
+        LocalDate start = new LocalDate(2006, 10, 5);
+        givenTaskWithStartAndEnd(toInterval(start, Period.days(4)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithoutLoadAndWithoutCalendar();
+        ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
+
+        genericResourceAllocation.forResources(Arrays.asList(worker1)).until(
+                start.minusDays(1)).allocate(resourcesPerDay);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void whenAllocatingUntilSomeEndDateTheEndDateMustNotBeNull() {
+        LocalDate start = new LocalDate(2006, 10, 5);
+        givenTaskWithStartAndEnd(toInterval(start, Period.days(4)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithoutLoadAndWithoutCalendar();
+        ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
+
+        genericResourceAllocation.forResources(Arrays.asList(worker1)).until(
+                null).allocate(resourcesPerDay);
+    }
+
+    @Test
     public void theResourcesPerDayAreChangedWhenTheAllocationIsDone() {
         givenTaskWithStartAndEnd(toInterval(new LocalDate(2006, 10, 5), Period
                 .days(2)));

@@ -248,19 +248,48 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         public final void allocate(ResourcesPerDay resourcesPerDay) {
             Task currentTask = getTask();
             LocalDate startInclusive = new LocalDate(currentTask.getStartDate());
-            List<T> assignmentsCreated = new ArrayList<T>();
             LocalDate endExclusive = new LocalDate(currentTask.getEndDate());
+            List<T> assignmentsCreated = createAssignments(resourcesPerDay,
+                    startInclusive, endExclusive);
+            setResourcesPerDay(resourcesPerDay);
+            resetAssignmentsTo(assignmentsCreated);
+        }
+
+        private List<T> createAssignments(ResourcesPerDay resourcesPerDay,
+                LocalDate startInclusive, LocalDate endExclusive) {
+            List<T> assignmentsCreated = new ArrayList<T>();
             for (LocalDate day : getDays(startInclusive, endExclusive)) {
                 int totalForDay = calculateTotalToDistribute(day,
                         resourcesPerDay);
                 assignmentsCreated.addAll(distributeForDay(day, totalForDay));
             }
-            setResourcesPerDay(resourcesPerDay);
-            resetAssignmentsTo(assignmentsCreated);
+            return assignmentsCreated;
+        }
+
+        @Override
+        public IAllocateResourcesPerDay until(final LocalDate endExclusive) {
+            return new IAllocateResourcesPerDay() {
+
+                @Override
+                public void allocate(ResourcesPerDay resourcesPerDay) {
+                    Task currentTask = getTask();
+                    LocalDate startInclusive = new LocalDate(currentTask
+                            .getStartDate());
+                    List<T> assignmentsCreated = createAssignments(
+                            resourcesPerDay, startInclusive,
+                            endExclusive);
+                    resetAssignmentsTo(assignmentsCreated);
+                    setResourcesPerDay(calculateResourcesPerDayFromAssignments());
+                }
+            };
         }
 
         private List<LocalDate> getDays(LocalDate startInclusive,
                 LocalDate endExclusive) {
+            Validate.notNull(startInclusive);
+            Validate.notNull(endExclusive);
+            Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0,
+                    "the end must be equal or posterior than start");
             List<LocalDate> result = new ArrayList<LocalDate>();
             LocalDate current = startInclusive;
             do {
@@ -297,8 +326,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         private void allocate(LocalDate startInclusive, LocalDate endExclusive,
                 int hours) {
             Validate.isTrue(hours >= 0);
-            Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0,
-                    "the end must be equal or posterior than start");
             List<T> assignmentsCreated = new ArrayList<T>();
             if (hours > 0) {
                 List<LocalDate> days = getDays(startInclusive, endExclusive);

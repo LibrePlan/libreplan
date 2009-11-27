@@ -166,6 +166,17 @@ public class SpecificResourceAllocationTest {
     }
 
     @Test
+    public void canAllocateUntilSomeEndDate() {
+        givenAssignedHours(4);
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.until(start.plusDays(3)).allocate(
+                ResourcesPerDay.amount(1));
+        assertThat(specificResourceAllocation.getAssignments(), haveHours(8, 8,
+                8));
+    }
+
+    @Test
     public void theResourcesPerDayAreConvertedTakingIntoAccountTheWorkerCalendar() {
         givenResourceCalendarAlwaysReturning(4);
         LocalDate start = new LocalDate(2000, 2, 4);

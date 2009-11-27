@@ -121,6 +121,11 @@ public class SpecificResourceAllocation extends
         new SpecificAssignmentsAllocation().allocate(resourcesPerDay);
     }
 
+    @Override
+    public IAllocateResourcesPerDay until(LocalDate endExclusive) {
+        return new SpecificAssignmentsAllocation().until(endExclusive);
+    }
+
     private final class SpecificAssignmentsAllocation extends
             AssignmentsAllocation {
         @Override
@@ -206,4 +211,5 @@ public class SpecificResourceAllocation extends
             ResourcesPerDay resourcesPerDay) {
         return AllocationBeingModified.create(this, resourcesPerDay);
     }
+
 }
