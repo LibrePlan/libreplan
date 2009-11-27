@@ -35,13 +35,13 @@ public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
 
     public void allocateOnTaskLength() {
         for (AllocationBeingModified allocation : allocations) {
-            allocation.applyOnTaskDuration();
+            allocation.applyAllocationOnAllTaskLength();
         }
     }
 
     public void allocateUntil(LocalDate endExclusive) {
         for (AllocationBeingModified allocation : allocations) {
-            allocation.applyUntil(endExclusive);
+            allocation.applyAllocationUntil(endExclusive);
         }
     }
 }

@@ -50,12 +50,12 @@ public abstract class AllocationBeingModified {
         }
 
         @Override
-        public void applyOnTaskDuration() {
+        public void applyAllocationOnAllTaskLength() {
             genericAllocation.forResources(getResources()).allocate(getGoal());
         }
 
         @Override
-        public void applyUntil(LocalDate endExclusive) {
+        public void applyAllocationUntil(LocalDate endExclusive) {
             genericAllocation.forResources(getResources()).until(endExclusive)
                     .allocate(getGoal());
         }
@@ -82,12 +82,12 @@ public abstract class AllocationBeingModified {
         }
 
         @Override
-        public void applyOnTaskDuration() {
+        public void applyAllocationOnAllTaskLength() {
             resourceAllocation.allocate(getGoal());
         }
 
         @Override
-        public void applyUntil(LocalDate endExclusive) {
+        public void applyAllocationUntil(LocalDate endExclusive) {
             resourceAllocation.until(endExclusive).allocate(getGoal());
         }
 
@@ -164,9 +164,9 @@ public abstract class AllocationBeingModified {
         return resourcesOnWhichApplyAllocation;
     }
 
-    public abstract void applyOnTaskDuration();
+    public abstract void applyAllocationOnAllTaskLength();
 
-    public abstract void applyUntil(LocalDate endExclusive);
+    public abstract void applyAllocationUntil(LocalDate endExclusive);
 
     public abstract List<DayAssignment> createAssignmentsAtDay(LocalDate day,
             int limit);
