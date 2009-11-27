@@ -34,6 +34,8 @@ import java.util.TreeMap;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -54,9 +56,9 @@ import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
+import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
-import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
@@ -105,6 +107,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
 
@@ -314,7 +319,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                loadChart.fillChart();
+                transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                            @Override
+                            public Void execute() {
+                                loadChart.fillChart();
+                                return null;
+                            }
+                        });
             }
         };
 
@@ -328,7 +340,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
                     @Override
             public void onAfterSave() {
-                loadChart.fillChart();
+                    transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                            @Override
+                            public Void execute() {
+                                loadChart.fillChart();
+                                return null;
+                            }
+                        });
             }
         };
         return result;
