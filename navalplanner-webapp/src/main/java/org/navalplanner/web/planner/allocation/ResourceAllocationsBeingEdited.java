@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
@@ -237,11 +236,6 @@ public class ResourceAllocationsBeingEdited {
     private AllocationBeingModified instantiate(
             AllocationDTO key) {
         return key.toAllocationBeingModified(task);
-    }
-
-    private Integer from(Date startDate, LocalDate end) {
-        LocalDate start = new LocalDate(startDate.getTime());
-        return Days.daysBetween(start, end).getDays();
     }
 
     public FormBinder createFormBinder(

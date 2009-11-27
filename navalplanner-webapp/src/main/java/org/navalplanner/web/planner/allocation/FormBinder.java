@@ -297,11 +297,6 @@ class FormBinder {
                 _("for criterions {0} already exists an allocation"));
     }
 
-    public void markThereMustBeAtLeastOneNoEmptyAllocation() {
-        throw new WrongValueException(allocationsList,
-                _("at least one no empty allocation is needed"));
-    }
-
     public void setAllocationsList(Listbox allocationsList) {
         this.allocationsList = allocationsList;
     }
