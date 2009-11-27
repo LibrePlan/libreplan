@@ -22,6 +22,8 @@ package org.navalplanner.business.planner.entities.allocationalgorithms;
 
 import java.util.List;
 
+import org.joda.time.LocalDate;
+
 public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
 
     private List<AllocationBeingModified> allocations;
@@ -34,6 +36,12 @@ public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
     public void allocateOnTaskLength() {
         for (AllocationBeingModified allocation : allocations) {
             allocation.applyOnTaskDuration();
+        }
+    }
+
+    public void allocateUntil(LocalDate endExclusive) {
+        for (AllocationBeingModified allocation : allocations) {
+            allocation.applyUntil(endExclusive);
         }
     }
 }

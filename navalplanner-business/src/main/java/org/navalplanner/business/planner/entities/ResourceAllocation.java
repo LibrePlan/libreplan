@@ -191,6 +191,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     allocations);
             allocator.allocateOnTaskLength();
         }
+
+        public void allocateUntil(LocalDate endExclusive) {
+            AllocatorForTaskDurationAndSpecifiedResourcesPerDay allocator = new AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
+                    allocations);
+            allocator.allocateUntil(endExclusive);
+        }
     }
 
     @NotNull
