@@ -182,6 +182,10 @@ public class ResourceAllocationsBeingEdited {
                 && formBinder.getAssignedHours() <= 0) {
             formBinder.markAssignedHoursMustBePositive();
         }
+        if (formBinder.getAllocationEnd().isBefore(
+                new LocalDate(task.getStartDate()))) {
+            formBinder.markEndDateMustBeAfterStartDate();
+        }
     }
 
     public AllocationResult doAllocation() {
@@ -191,8 +195,8 @@ public class ResourceAllocationsBeingEdited {
         if (!allocations.isEmpty()) {
             switch (calculatedValue) {
             case NUMBER_OF_HOURS:
-                ResourceAllocation.allocating(allocations)
-                        .allocateOnTaskLength();
+                ResourceAllocation.allocating(allocations).allocateUntil(
+                        formBinder.getAllocationEnd());
                 break;
             case END_DATE:
                 ResourceAllocation.allocating(allocations).untilAllocating(

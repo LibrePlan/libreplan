@@ -31,6 +31,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -39,6 +42,7 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -198,7 +202,8 @@ class FormBinder {
     }
 
     private void endDateDisabilityRule() {
-        this.endDate.setDisabled(true);
+        this.endDate.setDisabled(resourceAllocationsBeingEdited
+                .getCalculatedValue() == CalculatedValue.END_DATE);
     }
 
     void doApply() {
@@ -248,6 +253,10 @@ class FormBinder {
         return result;
     }
 
+    public LocalDate getAllocationEnd() {
+        return new LocalDate(endDate.getValue());
+    }
+
     public void setDeleteButtonFor(AllocationDTO data,
             Button deleteButton) {
         deleteButton.addEventListener(Events.ON_CLICK, new EventListener() {
@@ -295,6 +304,17 @@ class FormBinder {
     public void markThereisAlreadyAssignmentWith(Set<Criterion> criterions) {
         messagesForUser.showMessage(Level.ERROR,
                 _("for criterions {0} already exists an allocation"));
+    }
+
+    public void markEndDateMustBeAfterStartDate() {
+        DateTimeFormatter formatter = ISODateTimeFormat.basicDate().withLocale(
+                Locales.getCurrent());
+        LocalDate start = new LocalDate(resourceAllocationsBeingEdited
+                .getStartDate());
+        throw new WrongValueException(endDate, _(
+                "end date: {0} must be after start date: {1}",
+                getAllocationEnd().toString(formatter), start
+                        .toString(formatter)));
     }
 
     public void setAllocationsList(Listbox allocationsList) {
