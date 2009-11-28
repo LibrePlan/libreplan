@@ -300,6 +300,12 @@ public class SchedulingStateTest {
     }
 
     @Test
+    public void addingAChildrenThatAlreadyHasBeenAddedIsIgnored() {
+        childA.add(grandChildA1);
+        assertThat(childA.getChildrenNumber(), equalTo(2));
+    }
+
+    @Test
     public void removingAllTheChildrenOfACompletelyScheduledSuperelementMakesItNoScheduled() {
         childA.schedule();
         childB.schedule();

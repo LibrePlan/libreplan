@@ -22,7 +22,9 @@ package org.navalplanner.business.orders.entities;
 import static org.navalplanner.business.i18n.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -132,7 +134,7 @@ public class SchedulingState {
     private Type type = Type.NO_SCHEDULED;
     private SchedulingState parent;
 
-    private List<SchedulingState> children = new ArrayList<SchedulingState>();
+    private Set<SchedulingState> children = new LinkedHashSet<SchedulingState>();
 
     private List<ITypeChangedListener> listeners = new ArrayList<ITypeChangedListener>();
 
@@ -319,6 +321,10 @@ public class SchedulingState {
 
     public void removeTypeChangeListener(ITypeChangedListener listener) {
         listeners.remove(listener);
+    }
+
+    public int getChildrenNumber() {
+        return children.size();
     }
 
 }
