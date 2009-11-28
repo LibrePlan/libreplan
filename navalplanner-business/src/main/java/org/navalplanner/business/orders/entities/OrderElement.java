@@ -631,19 +631,11 @@ public abstract class OrderElement extends BaseEntity {
     }
 
     private void taskSourcesFromBottomToTop(List<TaskSource> result) {
-        if (isSchedulingPoint()) {
-            // checking taskSource is not null because the OrderElement might
-            // have not yet been saved, and the taskSources are created on save
-            if (taskSource != null) {
-                result.add(taskSource);
-            }
-        } else if (isSuperElementPartialOrCompletelyScheduled()) {
-            for (OrderElement each : getSomewhatScheduledOrderElements()) {
-                each.taskSourcesFromBottomToTop(result);
-            }
-            if (taskSource != null) {
-                result.add(taskSource);
-            }
+        for (OrderElement each : getChildren()) {
+            each.taskSourcesFromBottomToTop(result);
+        }
+        if (taskSource != null) {
+            result.add(taskSource);
         }
     }
 }
