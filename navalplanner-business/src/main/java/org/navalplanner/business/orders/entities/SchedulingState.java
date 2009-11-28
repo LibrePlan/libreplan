@@ -209,7 +209,7 @@ public class SchedulingState {
 
     private void ancestorUnscheduled() {
         Validate.isTrue(type == Type.SCHEDULED_SUBELEMENT);
-        setType(Type.NO_SCHEDULED);
+        setTypeWithoutNotifyingParent(Type.NO_SCHEDULED);
     }
 
     private void setType(Type type) {
@@ -218,6 +218,14 @@ public class SchedulingState {
         }
         this.type = type;
         notifyParentOfTypeChange();
+        fireTypeChanged();
+    }
+
+    private void setTypeWithoutNotifyingParent(Type type) {
+        if (this.type == type) {
+            return;
+        }
+        this.type = type;
         fireTypeChanged();
     }
 
