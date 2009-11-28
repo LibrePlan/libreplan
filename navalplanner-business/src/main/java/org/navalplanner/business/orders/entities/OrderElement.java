@@ -162,7 +162,13 @@ public abstract class OrderElement extends BaseEntity {
             taskSource = TaskSource.create(this, getHoursGroups());
             return TaskSource.mustAdd(taskSource);
         } else {
-            return taskSource.withCurrentHoursGroup(getHoursGroups());
+            if (taskSource.getTask().isLeaf()) {
+                return taskSource.withCurrentHoursGroup(getHoursGroups());
+            } else {
+                List<TaskSource> toBeRemoved = getTaskSourcesFromBottomToTop();
+                taskSource = TaskSource.create(this, getHoursGroups());
+                return TaskSource.mustReplace(toBeRemoved, taskSource);
+            }
         }
     }
 

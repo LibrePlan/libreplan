@@ -101,6 +101,40 @@ public class TaskSource extends BaseEntity {
         }
     }
 
+    static class TaskGroupMustBeReplacedByTask extends
+            TaskSourceSynchronization {
+        private final List<TaskSource> toBeRemovedFromBottomToTop;
+
+        private final TaskSource taskSource;
+
+        private TaskGroupMustBeReplacedByTask(
+                List<TaskSource> toBeRemovedFromBottomToTop,
+                TaskSource taskSource) {
+            this.toBeRemovedFromBottomToTop = toBeRemovedFromBottomToTop;
+            this.taskSource = taskSource;
+        }
+
+        @Override
+        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
+            for (TaskSource each : toBeRemovedFromBottomToTop) {
+                remove(taskSourceDAO, each);
+            }
+            taskSourceDAO.flush();
+            // flush must be done to avoid ERROR: duplicate key value
+            // violates unique constraint "tasksource_orderelement_key"
+            return new TaskSourceMustBeAdded(taskSource)
+                    .apply(taskSourceDAO);
+        }
+
+        private void remove(ITaskSourceDAO taskSourceDAO, TaskSource each) {
+            try {
+                taskSourceDAO.remove(each.getId());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     static abstract class TaskGroupSynchronization extends
             TaskSourceSynchronization {
 
@@ -203,6 +237,13 @@ public class TaskSource extends BaseEntity {
 
     public static TaskSource createForGroup(OrderElement orderElement) {
         return create(new TaskSource(orderElement));
+    }
+
+    public static TaskSourceSynchronization mustReplace(
+            final List<TaskSource> toBeRemovedFromBottomToTop,
+            final TaskSource taskSource) {
+        return new TaskGroupMustBeReplacedByTask(toBeRemovedFromBottomToTop,
+                taskSource);
     }
 
     @NotNull
