@@ -93,5 +93,5 @@ public interface IMachineDAO extends IGenericDAO<Machine, Long> {
      * Check in a new transaction if there is a machine with the same
      * code as the one passed as parameter
      */
-    boolean existsMachineWithCode(String code);
+    boolean existsMachineWithCodeInAnotherTransaction(String code);
 }

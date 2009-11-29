@@ -103,7 +103,7 @@ public class Machine extends Resource {
 
     private boolean existsMachineWithTheCode() {
         IMachineDAO machineDAO = Registry.getMachineDAO();
-        return machineDAO.existsMachineWithCode(code);
+        return machineDAO.existsMachineWithCodeInAnotherTransaction(code);
     }
 
     private boolean isIfExistsTheExistentMachineThisOne() {

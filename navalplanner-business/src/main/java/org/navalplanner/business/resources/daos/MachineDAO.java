@@ -104,7 +104,7 @@ public class MachineDAO extends GenericDAOHibernate<Machine, Long>
 
     @Override
     @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
-    public boolean existsMachineWithCode(String code) {
+    public boolean existsMachineWithCodeInAnotherTransaction(String code) {
         try {
             findUniqueByCode(code);
             return true;
