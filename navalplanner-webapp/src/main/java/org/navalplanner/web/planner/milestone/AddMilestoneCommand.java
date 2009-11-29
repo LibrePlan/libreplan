@@ -22,6 +22,7 @@ package org.navalplanner.web.planner.milestone;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
@@ -58,21 +60,38 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
             TaskElement task) {
         TaskMilestone milestone = TaskMilestone.create();
         milestone.setName("new milestone");
-
         taskElementDAO.reattach(task);
-        getRoot(task).addTaskElement(getRoot(task).getChildren().indexOf(task),
+        InsertionPoint insertionPoint = getInsertionPoint(task);
+        insertionPoint.root.addTaskElement(insertionPoint.insertionPosition,
                 milestone);
-
-        context.add(context.getMapper().findPositionFor(task), milestone);
+        context.add(Position
+                .createAtTopPosition(insertionPoint.insertionPosition),
+                milestone);
         planningState.added(milestone.getParent());
     }
 
-    private TaskGroup getRoot(TaskElement task) {
-        if (task.getParent() == null) {
-            return (TaskGroup) task;
-        }
+    private static class InsertionPoint {
+        final TaskGroup root;
 
-        return getRoot(task.getParent());
+        final int insertionPosition;
+
+        private InsertionPoint(TaskGroup root, int position) {
+            this.root = root;
+            this.insertionPosition = position;
+        }
+    }
+
+    private InsertionPoint getInsertionPoint(TaskElement task) {
+        Validate.isTrue(task.getParent() != null,
+                "the task parent is not null "
+                        + "since all shown tasks are children "
+                        + "of the root TaskGroup");
+        TaskGroup taskParent = task.getParent();
+        if (taskParent.getParent() == null) {
+            return new InsertionPoint(taskParent, taskParent.getChildren()
+                    .indexOf(task));
+        }
+        return getInsertionPoint(taskParent);
     }
 
     @Override
