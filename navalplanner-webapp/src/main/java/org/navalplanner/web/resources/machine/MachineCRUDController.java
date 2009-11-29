@@ -202,6 +202,19 @@ public class MachineCRUDController extends GenericForwardComposer {
         }
     }
 
+    public void saveAndContinue() {
+        try {
+            saveCalendar();
+            saveCriterions();
+            machineModel.confirmSave();
+            goToEditForm(machineModel.getMachine());
+            messagesForUser.showMessage(Level.INFO,_("Machine saved"));
+        } catch (ValidationException e) {
+            messagesForUser.showMessage(Level.ERROR,
+                    _("Could not save machine") + " " + showInvalidValues(e));
+        }
+    }
+
     private String showInvalidValues(ValidationException e) {
         String result = "";
         for (InvalidValue each : e.getInvalidValues())
