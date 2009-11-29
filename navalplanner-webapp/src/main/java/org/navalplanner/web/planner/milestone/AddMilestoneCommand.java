@@ -77,7 +77,7 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
 
         private InsertionPoint(TaskGroup root, int position) {
             this.root = root;
-            this.insertionPosition = position;
+            this.insertionPosition = position + 1;
         }
     }
 
