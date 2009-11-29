@@ -33,11 +33,14 @@ import org.navalplanner.business.resources.entities.Machine;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate DAO for the <code>Machine</code> entity.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -97,6 +100,24 @@ public class MachineDAO extends GenericDAOHibernate<Machine, Long>
             throw new InstanceNotFoundException(code, Machine.class.getName());
         }
         return list.get(0);
+    }
+
+    @Override
+    @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsMachineWithCode(String code) {
+        try {
+            findUniqueByCode(code);
+            return true;
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
+    public Machine findUniqueByCodeInAnotherTransaction(String code)
+            throws InstanceNotFoundException {
+        return findUniqueByCode(code);
     }
 
 }

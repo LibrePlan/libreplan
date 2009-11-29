@@ -22,6 +22,7 @@ package org.navalplanner.business.common;
 
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
+import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * registry as needed.
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public class Registry {
 
@@ -46,6 +48,9 @@ public class Registry {
 
     @Autowired
     private IUserDAO userDAO;
+
+    @Autowired
+    private IMachineDAO machineDAO;
 
     private Registry() {
     }
@@ -64,6 +69,10 @@ public class Registry {
 
     public static IUserDAO getUserDAO() {
         return getInstance().userDAO;
+    }
+
+    public static IMachineDAO getMachineDAO() {
+        return getInstance().machineDAO;
     }
 
 }

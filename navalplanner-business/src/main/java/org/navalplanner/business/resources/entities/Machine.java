@@ -5,9 +5,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.daos.IMachineDAO;
 
+/**
+* Entity
+*
+* @author Javier Moran Rua <jmoran@igalia.com>
+*/
 public class Machine extends Resource {
 
     @NotEmpty
@@ -81,4 +90,30 @@ public class Machine extends Resource {
         return compositedCriterion.isSatisfiedBy(this);
     }
 
+    @AssertTrue(message="machine code has to be unique. It is already used")
+    public boolean checkConstraintUniqueCode() {
+        boolean result;
+        if (isNewObject()) {
+            result = !existsMachineWithTheCode();
+        } else {
+            result = isIfExistsTheExistentMachineThisOne();
+        }
+        return result;
+    }
+
+    private boolean existsMachineWithTheCode() {
+        IMachineDAO machineDAO = Registry.getMachineDAO();
+        return machineDAO.existsMachineWithCode(code);
+    }
+
+    private boolean isIfExistsTheExistentMachineThisOne() {
+        IMachineDAO machineDAO = Registry.getMachineDAO();
+        try {
+            Machine machine =
+                machineDAO.findUniqueByCodeInAnotherTransaction(code);
+            return machine.getId().equals(getId());
+        } catch (InstanceNotFoundException e) {
+            return true;
+        }
+    }
 }

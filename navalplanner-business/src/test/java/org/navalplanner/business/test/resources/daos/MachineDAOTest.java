@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
@@ -33,7 +34,10 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -41,6 +45,7 @@ import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,10 +57,13 @@ import org.springframework.transaction.annotation.Transactional;
  * Test for {@MachineDAO}
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @Transactional
 public class MachineDAOTest {
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     @Autowired
     IMachineDAO machineDAO;
@@ -124,5 +132,26 @@ public class MachineDAOTest {
                 .getRequiredCriterions().size() != 0);
     }
 
+    @Test
+    @NotTransactional
+    public void testSaveTwoMachinesWithSameCodeForbidden() {
+        final Machine machine = createValidMachine();
+        saveMachineInTransaction(machine);
+        try {
+            saveMachineInTransaction(machine);
+            fail("Expected ValidationException");
+        } catch (ValidationException e) {}
+    }
 
+    private void saveMachineInTransaction(final Machine machine) {
+        IOnTransaction<Void> createMachineTransaction =
+            new IOnTransaction<Void>() {
+
+            @Override public Void execute() {
+                machineDAO.save(machine);
+                return null;
+            }
+        };
+        transactionService.runOnTransaction(createMachineTransaction);
+    }
 }

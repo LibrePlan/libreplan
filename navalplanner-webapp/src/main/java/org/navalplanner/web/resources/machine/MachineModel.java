@@ -243,10 +243,12 @@ public class MachineModel implements IMachineModel {
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
-        if (machine.getCalendar() != null) {
+        /*if (machine.getCalendar() != null) {
             baseCalendarModel.checkInvalidValuesCalendar(machine.getCalendar());
-        }
+        }*/
+        System.out.println("Version antes:"+ machine.getVersion());
         resourceDAO.save(machine);
+        System.out.println("Version:" + machine.getVersion());
     }
 
     @Override

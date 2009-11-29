@@ -31,7 +31,7 @@ import org.navalplanner.business.resources.entities.Machine;
  * DAO interface for the <code>Machine</code> entity.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public interface IMachineDAO extends IGenericDAO<Machine, Long> {
 
@@ -60,7 +60,7 @@ public interface IMachineDAO extends IGenericDAO<Machine, Long> {
     /**
      * Finds a {@link Machine} with the Code param that should be unique.
      *
-     * @param nif
+     * @param code
      *            The Code to search the {@link Machine}
      * @return The {@link Machine} with this Code
      * @throws InstanceNotFoundException
@@ -70,9 +70,28 @@ public interface IMachineDAO extends IGenericDAO<Machine, Long> {
     Machine findUniqueByCode(String code) throws InstanceNotFoundException;
 
     /**
+     * Finds a {@link Machine} with the Code param that should be unique
+     * and opens a new transaction to do it.
+     *
+     * @param code
+     *            The Code to search the {@link Machine}
+     * @return The {@link Machine} with this Code
+     * @throws InstanceNotFoundException
+     *             If there're more than one {@link Machine} with this Code or
+     *             there isn't any {@link Machine} with this Code
+     */
+    Machine findUniqueByCodeInAnotherTransaction(String code) throws InstanceNotFoundException;
+
+    /**
      * Return list of machines
      *
      * @return
      */
     List<Machine> getAll();
+
+    /**
+     * Check in a new transaction if there is a machine with the same
+     * code as the one passed as parameter
+     */
+    boolean existsMachineWithCode(String code);
 }
