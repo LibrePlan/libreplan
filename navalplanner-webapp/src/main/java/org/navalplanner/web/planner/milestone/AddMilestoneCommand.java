@@ -56,7 +56,7 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
     @Transactional(readOnly = true)
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement task) {
-        TaskMilestone milestone = new TaskMilestone();
+        TaskMilestone milestone = TaskMilestone.create();
         milestone.setName("new milestone");
 
         taskElementDAO.reattach(task);
