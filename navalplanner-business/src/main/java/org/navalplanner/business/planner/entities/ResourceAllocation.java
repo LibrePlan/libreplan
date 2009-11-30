@@ -452,7 +452,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public void setAssignmentFunction(AssignmentFunction assignmentFunction) {
         this.assignmentFunction = assignmentFunction;
-        this.assignmentFunction.applyTo(this);
+        if (this.assignmentFunction != null) {
+            this.assignmentFunction.applyTo(this);
+        }
     }
 
     public int getAssignedHours() {
