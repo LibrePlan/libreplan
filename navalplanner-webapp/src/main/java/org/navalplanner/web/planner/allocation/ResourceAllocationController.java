@@ -481,7 +481,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             // Label fields are fixed, can only be viewed
             appendLabel(item, data.getName());
-
+            bindHours(appendIntbox(item), data);
             bindResourcesPerDay(appendDecimalbox(item), data);
             // On click delete button
             Button deleteButton = appendDeleteButton(item);
@@ -550,6 +550,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
             return decimalbox;
         }
 
+        private Intbox appendIntbox(Listitem item) {
+            Intbox result = new Intbox();
+            Listcell listcell = new Listcell();
+            listcell.appendChild(result);
+            item.appendChild(listcell);
+            return result;
+        }
+
         private void bindResourcesPerDay(final Decimalbox decimalbox,
                 final AllocationDTO data) {
             decimalbox.setConstraint(new SimpleConstraint(
@@ -572,6 +580,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 }
             });
         }
+
+        private void bindHours(Intbox hoursIntbox, AllocationDTO data) {
+            hoursIntbox.setDisabled(true);
+            formBinder.setHoursIntboxFor(data, hoursIntbox);
+        }
+
     }
 
     public ViewSwitcher getSwitcher() {

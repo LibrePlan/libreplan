@@ -155,6 +155,8 @@
                             <listhead>
                                 <listheader label="${i18n:_('Name')}" />
                                 <listheader
+                                    label="${i18n:_('Hours')}" />
+                                <listheader
                                     label="${i18n:_('Resources Per Day')}" />
                                 <listheader />
                             </listhead>

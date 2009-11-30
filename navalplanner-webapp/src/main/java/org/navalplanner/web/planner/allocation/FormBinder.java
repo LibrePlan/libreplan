@@ -75,6 +75,8 @@ class FormBinder {
 
     private Map<AllocationDTO, Decimalbox> resourcesPerDayInputsByAllocationDTO = new HashMap<AllocationDTO, Decimalbox>();
 
+    private Map<AllocationDTO, Intbox> hoursIntboxesByAllocationDTO = new HashMap<AllocationDTO, Intbox>();
+
     private EventListener onChangeEnableApply = new EventListener() {
 
         @Override
@@ -243,6 +245,10 @@ class FormBinder {
             Decimalbox decimalbox) {
         resourcesPerDayInputsByAllocationDTO.put(data, decimalbox);
         onChangeEnableApply(decimalbox);
+    }
+
+    public void setHoursIntboxFor(AllocationDTO data, Intbox hours) {
+        hoursIntboxesByAllocationDTO.put(data, hours);
     }
 
     public int getAssignedHours() {
