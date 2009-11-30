@@ -89,7 +89,7 @@ public class CriterionSatisfactionDAOTest {
 
     private void saveCriterionType(Criterion criterion) {
         CriterionType criterionType = criterion.getType();
-        if (criterionTypeDAO.existsByName(criterionType)) {
+        if (criterionTypeDAO.existsOtherCriterionTypeByName(criterionType)) {
             try {
                 criterionType = criterionTypeDAO.findUniqueByName(criterionType);
             } catch (InstanceNotFoundException ex) {

@@ -91,7 +91,8 @@ public class CriterionTypeDAOTest {
         criterionTypeDAO.save(criterionType);
         criterionTypeDAO.save(criterionType);
         assertTrue(criterionTypeDAO.exists(criterionType.getId())
-                || criterionTypeDAO.existsByName(criterionType));
+                || criterionTypeDAO
+                        .existsOtherCriterionTypeByName(criterionType));
     }
 
     @Test(expected = ValidationException.class)

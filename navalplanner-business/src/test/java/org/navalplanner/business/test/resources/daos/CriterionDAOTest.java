@@ -88,7 +88,7 @@ public class CriterionDAOTest {
     }
 
     private CriterionType ensureTypeExists(CriterionType criterionType) {
-        if (criterionTypeDAO.existsByName(criterionType)) {
+        if (criterionTypeDAO.existsOtherCriterionTypeByName(criterionType)) {
             try {
                 return criterionType = criterionTypeDAO
                         .findUniqueByName(criterionType);

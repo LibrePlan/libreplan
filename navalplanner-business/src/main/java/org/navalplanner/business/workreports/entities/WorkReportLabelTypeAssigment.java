@@ -21,6 +21,7 @@
 package org.navalplanner.business.workreports.entities;
 
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.INewObject;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
@@ -28,34 +29,29 @@ import org.navalplanner.business.labels.entities.LabelType;
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class WorkReportLabelTypeAssigment extends BaseEntity {
+public class WorkReportLabelTypeAssigment extends BaseEntity implements
+        INewObject {
 
-    public static WorkReportLabelTypeAssigment create(boolean newObject) {
-        WorkReportLabelTypeAssigment workReportLabelTypeAssigment = new WorkReportLabelTypeAssigment(
-                newObject);
+    public static WorkReportLabelTypeAssigment create() {
+        WorkReportLabelTypeAssigment workReportLabelTypeAssigment = new WorkReportLabelTypeAssigment();
         workReportLabelTypeAssigment.setNewObject(true);
         return workReportLabelTypeAssigment;
     }
 
     public static WorkReportLabelTypeAssigment create(
-            boolean labelsSharedByLines, boolean newObject) {
+            boolean labelsSharedByLines) {
         WorkReportLabelTypeAssigment workReportLabelTypeAssigment = new WorkReportLabelTypeAssigment(
-                labelsSharedByLines, newObject);
+                labelsSharedByLines);
         workReportLabelTypeAssigment.setNewObject(true);
         return workReportLabelTypeAssigment;
     }
 
     public WorkReportLabelTypeAssigment() {
+
     }
 
-    public WorkReportLabelTypeAssigment(boolean labelsSharedByLines,
-            boolean newObject) {
+    public WorkReportLabelTypeAssigment(boolean labelsSharedByLines) {
         this.labelsSharedByLines = labelsSharedByLines;
-        this.newObject = newObject;
-    }
-
-    public WorkReportLabelTypeAssigment(boolean newObject) {
-        this.newObject = newObject;
     }
 
     public boolean isNewObject() {
@@ -71,16 +67,6 @@ public class WorkReportLabelTypeAssigment extends BaseEntity {
 
     @NotNull
     private Label defaultLabel;
-
-    private PositionInWorkReportEnum position = PositionInWorkReportEnum.LINE;
-
-    public PositionInWorkReportEnum getPosition() {
-        return position;
-    }
-
-    public void setPosition(PositionInWorkReportEnum position) {
-        this.position = position;
-    }
 
     public LabelType getLabelType() {
         return labelType;
@@ -105,4 +91,5 @@ public class WorkReportLabelTypeAssigment extends BaseEntity {
     public void setLabelsSharedByLines(boolean labelsSharedByLines) {
         this.labelsSharedByLines = labelsSharedByLines;
     }
+
 }

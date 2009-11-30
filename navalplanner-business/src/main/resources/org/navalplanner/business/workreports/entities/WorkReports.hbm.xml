@@ -11,8 +11,8 @@
     </id>
     <version name="version" access="property" type="long" />
 
-    <property name="name" access="field" />
-    <property name="code" access="field" />
+    <property name="name" access="field" unique="true"/>
+    <property name="code" access="field" unique="true"/>
     <property name="dateIsSharedByLines" access="field" />
     <property name="resourceIsSharedInLines" access="field" />
     <property name="orderElementIsSharedInLines" access="field" />
@@ -23,11 +23,16 @@
       </type>
     </property>
 
+    <set name="workReportLabelTypeAssigments" cascade="all-delete-orphan">
+        <key column="WORK_REPORT_TYPE_ID"/>
+        <one-to-many class="WorkReportLabelTypeAssigment"/>
+    </set>
+
     <set name="headingFields" table="HEADING_FIELD">
         <key column="HEADING_ID"/>
         <composite-element class="org.navalplanner.business.workreports.ValueObjects.DescriptionField">
                 <property name="fieldName"/>
-                <property name="lenght"/>
+                <property name="length"/>
         </composite-element>
     </set>
 
@@ -35,7 +40,7 @@
         <key column="HEADING_ID"/>
         <composite-element class="org.navalplanner.business.workreports.ValueObjects.DescriptionField">
                 <property name="fieldName"/>
-                <property name="lenght"/>
+                <property name="length"/>
         </composite-element>
     </set>
 
@@ -64,7 +69,7 @@
     <set name="descriptionValues" table="DESCRIPTION_VALUES">
         <key column="DESCRIPTION_VALUE_ID"/>
         <composite-element class="org.navalplanner.business.workreports.ValueObjects.DescriptionValue">
-                <property name="fieldName"/>
+                <property name="fieldName" unique="true" />
                 <property name="value"/>
         </composite-element>
     </set>
@@ -98,12 +103,6 @@
     <version name="version" access="property" type="long" />
 
     <property name="labelsSharedByLines"/>
-
-    <property name="position">
-      <type name="org.hibernate.type.EnumType">
-        <param name="enumClass">org.navalplanner.business.workreports.entities.PositionInWorkReportEnum</param>
-      </type>
-    </property>
 
     <many-to-one name="labelType" class="org.navalplanner.business.labels.entities.LabelType" column="LABEL_TYPE_ID" />
 

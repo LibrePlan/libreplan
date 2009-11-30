@@ -20,11 +20,20 @@
 
 package org.navalplanner.business.workreports.daos;
 
+import java.util.List;
+
+import org.apache.commons.lang.Validate;
+import org.hibernate.Criteria;
+import org.hibernate.NonUniqueResultException;
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Dao for {@link WorkReportTypeDAO}
@@ -35,5 +44,85 @@ import org.springframework.stereotype.Repository;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class WorkReportTypeDAO extends
         GenericDAOHibernate<WorkReportType, Long> implements IWorkReportTypeDAO {
+
+    @Override
+    public WorkReportType findUniqueByName(WorkReportType workReportType)
+            throws InstanceNotFoundException {
+        Validate.notNull(workReportType);
+
+        return findUniqueByName(workReportType.getName());
+    }
+
+    @Override
+    public WorkReportType findUniqueByName(String name)
+            throws InstanceNotFoundException, NonUniqueResultException {
+        Criteria c = getSession().createCriteria(WorkReportType.class);
+        c.add(Restrictions.eq("name", name));
+        WorkReportType workReportType = (WorkReportType) c.uniqueResult();
+
+        if (workReportType == null) {
+            throw new InstanceNotFoundException(null, "WorkReportType");
+        }
+        return workReportType;
+    }
+
+    @Override
+    public boolean existsOtherWorkReportTypeByName(WorkReportType workReportType) {
+        try {
+            WorkReportType t = findUniqueByName(workReportType);
+            return (t != null && t != workReportType);
+        } catch (InstanceNotFoundException e) {
+            System.out.println("Intancia not found");
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByNameAnotherTransaction(WorkReportType workReportType) {
+        return existsOtherWorkReportTypeByName(workReportType);
+    }
+
+    @Override
+    public WorkReportType findUniqueByCode(WorkReportType workReportType)
+            throws InstanceNotFoundException {
+        Validate.notNull(workReportType);
+
+        return findUniqueByName(workReportType.getCode());
+    }
+
+    @Override
+    public WorkReportType findUniqueByCode(String code)
+            throws InstanceNotFoundException, NonUniqueResultException {
+        Criteria c = getSession().createCriteria(WorkReportType.class);
+        c.add(Restrictions.eq("code", code));
+        WorkReportType workReportType = (WorkReportType) c.uniqueResult();
+
+        if (workReportType == null) {
+            throw new InstanceNotFoundException(null, "WorkReportType");
+        }
+        return workReportType;
+    }
+
+    @Override
+    public boolean existsOtherWorkReportTypeByCode(WorkReportType workReportType) {
+        try {
+            WorkReportType t = findUniqueByCode(workReportType);
+            return (t != null && t != workReportType);
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByCodeAnotherTransaction(WorkReportType workReportType) {
+        return existsOtherWorkReportTypeByCode(workReportType);
+    }
+
+    @Override
+    public List<WorkReportType> getWorkReportTypes() {
+        return list(WorkReportType.class);
+    }
 
 }

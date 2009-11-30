@@ -27,25 +27,142 @@
         <tabpanels>
             <tabpanel>
 
-                <grid fixedLayout="true">
+                 <!-- Name and Code -->
+                 <separator bar="false" spacing="5px" orient="vertical"/>
+                <hbox>
+                    <space bar="false" spacing="5px" />
+                    <label class="subtitulo" value="${i18n:_('Name')}:" />
+                    <textbox visible = "@{controller.editable}"
+                         id="name" value="@{controller.workReportType.name}" width="300px"
+                        constraint = "@{controller.validateWorkReportTypeName}" />
+                    <label visible = "@{controller.readOnly}"
+                        value="@{controller.workReportType.name}" width="300px"/>
+                </hbox>
+                <hbox>
+                    <space bar="false" spacing="5px" />
+                    <label class="subtitulo" value="${i18n:_('Code')}:" />
+                    <textbox visible = "@{controller.editable}"
+                        id="code" value="@{controller.workReportType.code}" width="300px"
+                        constraint = "@{controller.validateWorkReportTypeCode}"/>
+                    <label visible = "@{controller.readOnly}"
+                        value="@{controller.workReportType.name}" width="300px"/>
+                </hbox>
+                <separator bar="false" spacing="20px" orient="vertical"/>
+
+                <!-- Description fields -->
+                <panel title="${i18n:_('Descripiton Fields')}" border="normal"
+                    style="overflow:auto">
+                <panelchildren>
+                <hbox align="center" visible = "@{controller.editable}">
+                    <separator bar="false" spacing="40px" orient="horizontal"/>
+                    <separator bar="false" spacing="20px" orient="vertical"/>
+                    <button onClick="controller.addNewDescriptionField();"
+                        label="${i18n:_('Add New Description Field')}" />
+                    <separator bar="false" spacing="40px" orient="vertical"/>
+                </hbox>
+                <newdatasortablegrid id="listDescriptionFields" mold="paging" pageSize="4" fixedLayout="true"
+                    model="@{controller.descriptionFields}" rowRenderer= "@{controller.descriptionFieldsRowRender}">
                     <columns>
-                        <column width="200px" />
-                        <column  />
+                      <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(fieldName)" sortDirection="ascending"/>
+                      <newdatasortablecolumn label="${i18n:_('Length')}" width="200px" align="center"/>
+                      <newdatasortablecolumn label="${i18n:_('Position')}" width="200px" align="center"/>
+                      <newdatasortablecolumn visible = "@{controller.editable}" label="${i18n:_('Operations')}" width="150px" align="center"/>
                     </columns>
-                    <rows>
-                        <row>
-                            <label value="${i18n:_('Name')}" />
-                            <textbox
-                                value="@{controller.workReportType.name}" width="300px"/>
-                        </row>
-                    </rows>
-                </grid>
+                </newdatasortablegrid>
+                </panelchildren>
+                </panel>
+                <separator bar="false" spacing="80px" orient="vertical"/>
+
+                <!-- WorkReportLabelTypeAssigments -->
+                <panel title="${i18n:_('Assignment Label Types')}" border="normal"
+                    style="overflow:auto">
+                <panelchildren>
+                <hbox align="center" visible = "@{controller.editable}">
+                    <separator bar="false" spacing="40px" orient="horizontal"/>
+                    <separator bar="false" spacing="20px" orient="vertical"/>
+                    <button onClick="controller.addNewWorkReportLabelTypeAssigment();"
+                        label="${i18n:_('Add New Label Type')}" />
+                    <separator bar="false" spacing="40px" orient="vertical"/>
+                </hbox>
+                <newdatasortablegrid id="listWorkReportLabelTypeAssigments" mold="paging" pageSize="4" fixedLayout="true"
+                    model="@{controller.workReportLabelTypeAssigments}" rowRenderer= "@{controller.workReportLabelTypeAssigmentRowRender}">
+                    <columns>
+                      <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(labelType.name)" sortDirection="ascending"/>
+                      <newdatasortablecolumn label="${i18n:_('Position')}" width="200px" align="center"/>
+                      <newdatasortablecolumn label="${i18n:_('Default Label')}" width="200px" align="center"/>
+                      <newdatasortablecolumn visible = "@{controller.editable}" label="${i18n:_('Operations')}" width="150px" align="center"/>
+                    </columns>
+                </newdatasortablegrid>
+                </panelchildren>
+                </panel>
+                <separator bar="false" spacing="80px" orient="vertical"/>
+
+                <!-- Requirements Fields -->
+                <panel title="${i18n:_('Requirements Fields')}" border="normal"
+                    style="overflow:auto">
+                <panelchildren>
+                    <separator bar="false" spacing="10px" orient="vertical"/>
+                    <hbox align="center">
+
+                         <space bar="false" spacing="25px" />
+                         <label class="subtitulo" value="${i18n:_('Data')}:" />
+                         <space bar="false" spacing="5px" />
+                         <listbox visible = "@{controller.editable}"
+                            id="listDatePosition" mold="select" rows="1"
+                            model="@{controller.positionInWorkReportEnums}"
+                            selectedItem="@{controller.datePosition}"/>
+                         <label visible = "@{controller.readOnly}"
+                            value="@{controller.datePosition}" width="300px"/>
+
+                         <space bar="false" spacing="25px" />
+                         <label class="subtitulo" value="${i18n:_('Resource')}:" />
+                         <space bar="false" spacing="5px" />
+                         <listbox visible = "@{controller.editable}"
+                            id="listResourcePosition" mold="select"
+                            model="@{controller.positionInWorkReportEnums}"
+                            selectedItem="@{controller.resourcePosition}"/>
+                         <label visible = "@{controller.readOnly}"
+                            value="@{controller.resourcePosition}" width="300px"/>
+
+                         <space bar="false" spacing="25px" />
+                         <label class="subtitulo" value="${i18n:_('Order Element')}:" />
+                         <space bar="false" spacing="5px" />
+                         <listbox visible = "@{controller.editable}"
+                            id="listOrderElementPosition" mold="select"
+                            model="@{controller.positionInWorkReportEnums}"
+                            selectedItem="@{controller.orderElementPosition}"/>
+                         <label visible = "@{controller.readOnly}"
+                            value="@{controller.orderElementPosition}" width="300px"/>
+
+                         <space bar="false" spacing="25px" />
+                         <label class="subtitulo" value="${i18n:_('Hours Management')}:" />
+                         <space bar="false" spacing="5px" />
+                         <listbox visible = "@{controller.editable}"
+                            id="listHoursManagement" mold="select"
+                            model="@{controller.hoursManagementEnums}"
+                            selectedItem="@{controller.workReportType.hoursManagement}"/>
+                         <label visible = "@{controller.readOnly}"
+                            value="@{controller.workReportType.hoursManagement}" width="300px"/>
+                    </hbox>
+                    <separator bar="false" spacing="10px" orient="vertical"/>
+                </panelchildren>
+                </panel>
+                <separator bar="false" spacing="80px" orient="vertical"/>
+
             </tabpanel>
         </tabpanels>
     </tabbox>
-            <button onClick="controller.save();"
+            <button visible = "@{controller.editable}"
+                onClick="controller.saveAndExit();"
                 label="${arg.save_button_label}" />
-            <button onClick="controller.cancel();"
+            <button visible = "@{controller.editable}"
+                onClick="controller.saveAndContinue();"
+                label="${arg.saveAndContinue_button_label}" />
+            <button visible = "@{controller.editable}"
+                 onClick="controller.cancel();"
                 label="${arg.cancel_button_label}" />
+            <button visible = "@{controller.readOnly}"
+                onClick="controller.cancel();"
+                label="${i18n:_('Close')}" />
 
 </window>

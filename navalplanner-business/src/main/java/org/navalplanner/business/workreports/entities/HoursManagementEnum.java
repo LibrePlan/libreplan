@@ -24,13 +24,14 @@
 package org.navalplanner.business.workreports.entities;
 
 public enum HoursManagementEnum {
-    NumberOfHours, NumberOfHoursCalculatedByClock, NumberOfHoursAndClock;
 
-    public static HoursManagementEnum getDefault() {
-        return NumberOfHours;
-    }
+    NUMBER_OF_HOURS, HOURS_CALCULATED_BY_CLOCK, NUMBER_OF_HOURS_AND_CLOCK;
 
     public String toString() {
-        return this.toString().toUpperCase();
+        return name().toLowerCase();
+    }
+
+    public static HoursManagementEnum getDefault() {
+        return NUMBER_OF_HOURS;
     }
 }

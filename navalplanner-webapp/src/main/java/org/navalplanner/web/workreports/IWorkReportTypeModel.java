@@ -21,9 +21,17 @@
 package org.navalplanner.web.workreports;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.labels.entities.LabelType;
+import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.workreports.ValueObjects.DescriptionField;
+import org.navalplanner.business.workreports.entities.PositionInWorkReportEnum;
 import org.navalplanner.business.workreports.entities.WorkReport;
+import org.navalplanner.business.workreports.entities.WorkReportLabelTypeAssigment;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 
 /**
@@ -98,5 +106,192 @@ public interface IWorkReportTypeModel {
      * @return
      */
     boolean thereAreWorkReportsFor(WorkReportType workReportType);
+
+    /**
+     * Check if there is any {@link WorkReport} bound to {@link WorkReportType}
+     * which have been edited.
+     * @param workReportType
+     * @return
+     */
+    boolean thereAreWorkReportsFor();
+
+    /**
+     * Gets the current list of assigned {@link DescripitonField} to the edited
+     * {@link WorkReportType}.
+     * @return A List {@link DescripitonField}
+     */
+    public List<DescriptionField> getDescriptionFields();
+
+    /**
+     * Gets the current list of {@link LabelType}
+     * @return A List {@link LabelType}
+     */
+    Map<LabelType, List<Label>> getMapLabelTypes();
+
+    /**
+     * Add a new {@link DescriptionField} to {@link WorkReportType} For default
+     * to the LineFields collection.
+     * @param
+     * @return
+     */
+    public void addNewDescriptionField();
+
+    /**
+     * Delete a {@link DescriptionField} from {@link WorkReportType}
+     * @param DescriptionField
+     * @return
+     */
+    public void removeDescriptionField(DescriptionField descriptionField);
+
+    /**
+     * Change the @{PositionInWorkReportEnum} of a {@link DescriptionField} to
+     * other collection of {@link WorkReportType}
+     * @param @{PositionInWorkReportEnum} ,@{DescriptionField}
+     * @return
+     */
+    void changePositionDescriptionField(
+            PositionInWorkReportEnum newPosition,
+            DescriptionField descriptionField);
+
+    /**
+     * return the @{PositionInWorkReportEnum} of a {@link DescriptionField}.
+     * @param @{DescriptionField}
+     * @return @{PositionInWorkReportEnum}
+     */
+    PositionInWorkReportEnum getPosition(
+            DescriptionField descriptionField);
+
+    /**
+     * Check if a @{DescriptionField} is into the
+     * @{PositionInWorkReportEnum.HEADING}
+     * @return true if it's is into the @{PositionInWorkReportEnum.HEADING}
+     */
+    boolean isHeadingDescriptionField(DescriptionField descriptionField);
+
+    /**
+     * Gets the {@link List} of {@link WorkReportLabelTypeAssigment}.
+     * @return A {@link List} of {@link WorkReportLabelTypeAssigment}
+     */
+    Set<WorkReportLabelTypeAssigment> getWorkReportLabelTypeAssigments();
+
+    /**
+     * Add a new {@link WorkReportLabelTypeAssigment} to {@link WorkReportType}.
+     * @param
+     * @return
+     */
+    void addNewWorkReportLabelTypeAssigment();
+
+    /**
+     * Delete a {@link WorkReportLabelTypeAssigment} from {@link WorkReportType}
+     * @param {@link WorkReportLabelTypeAssigment}
+     * @return
+     */
+    void removeWorkReportLabelTypeAssigment(
+            WorkReportLabelTypeAssigment workReportLabelTypeAssigment);
+
+    /**
+     * Check if a {@link WorkReportLabelTypeAssigment} is shared by lines
+     * @return a @{PositionInWorkReportEnum.HEADING} if it's is shared by lines.
+     */
+    PositionInWorkReportEnum getLabelAssigmentPosition(
+            WorkReportLabelTypeAssigment workReportLabelTypeAssigment);
+
+    /**
+     * Set weather the {@link WorkReportLabelTypeAssigment} is shared by lines
+     * @return
+     */
+    void setLabelAssigmentPosition(
+            WorkReportLabelTypeAssigment workReportLabelTypeAssigment,
+            PositionInWorkReportEnum position);
+
+    /* Operation to assign the requirements fields */
+
+    /**
+     * Check if a {@link Date} is shared by lines
+     * @return a @{PositionInWorkReportEnum.HEADING} if it's is shared by lines.
+     */
+    PositionInWorkReportEnum getDatePosition();
+
+    /**
+     * Check if a {@link Resource} is shared by lines
+     * @return a @{PositionInWorkReportEnum.HEADING} if it's is shared by lines.
+     */
+    PositionInWorkReportEnum getResourcePosition();
+
+    /**
+     * Check if a {@link OrderElement} is shared by lines
+     * @return a @{PositionInWorkReportEnum.HEADING} if it's is shared by lines.
+     */
+    PositionInWorkReportEnum getOrderElementPosition();
+
+    /**
+     * Set weather the {@link Date} is shared by lines
+     * @return
+     */
+    void setDatePosition(PositionInWorkReportEnum position);
+
+    /**
+     * Set weather the {@link Resource} is shared by lines
+     * @return
+     */
+    void setResourcePosition(PositionInWorkReportEnum position);
+
+    /**
+     * Set weather the {@link OrderElement} is shared by lines
+     * @return
+     */
+    void setOrderElementPosition(PositionInWorkReportEnum position);
+
+    /* Operations to validate the data workReportType */
+
+    /**
+     * Check if the name of a {@link WorkReportType} is valid.
+     * @throw @{IllegalArgumentException} if it's is null, empty or not unique.
+     */
+    public void validateWorkReportTypeName(String name)
+            throws IllegalArgumentException;
+
+    /**
+     * Check if the code of a {@link WorkReportType} is valid.
+     * @throw @{IllegalArgumentException} if it's is null, empty or not unique.
+     */
+    void validateWorkReportTypeCode(String code)
+            throws IllegalArgumentException;
+
+    /**
+     * Check if the leghts of the collection of {@link DescriptionField} are
+     * valids.
+     * @return the @{DescriptionField} with the length negative or zero.
+     */
+    DescriptionField validateLengthLineFields() throws IllegalArgumentException;
+
+    /**
+     * Check if the fieldNames of the collection of {@link DescriptionField} are
+     * valids.
+     * @return the @{DescriptionField} with the fieldName null, empty or not
+     *         unique.
+     */
+    DescriptionField validateFieldNameLineFields()
+            throws IllegalArgumentException;
+
+    // /**
+    // * Check if the fieldName of a {@link DescriptionField} is equal to the
+    // * fieldName of another {@link DescriptionField}.
+    // * @return true if exist other {@link DescriptionField} with the same
+    // * fieldName.
+    // */
+    // boolean existSameFieldName(DescriptionField descriptionField);
+
+    /**
+     * Check if the collection of @{LabelType} are valids.
+     * @return the @{WorkReportLabelTypeAssigment} with the LabelType null.
+     */
+    WorkReportLabelTypeAssigment validateLabelTypes();
+
+    /**
+     * Check if the collection of @{Label} are valids.
+     * @return the @{WorkReportLabelTypeAssigment} with the Label null.
+     */
+    WorkReportLabelTypeAssigment validateLabels();
 
 }

@@ -23,6 +23,9 @@
  */
 package org.navalplanner.business.workreports.entities;
 
+/**
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ */
 public enum PositionInWorkReportEnum {
 
     HEADING, LINE;
@@ -34,4 +37,5 @@ public enum PositionInWorkReportEnum {
     public String toString() {
         return name().toLowerCase();
     }
+
 }

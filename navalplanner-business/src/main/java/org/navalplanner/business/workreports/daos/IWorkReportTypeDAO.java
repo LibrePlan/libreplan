@@ -20,7 +20,11 @@
 
 package org.navalplanner.business.workreports.daos;
 
+import java.util.List;
+
+import org.hibernate.NonUniqueResultException;
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -34,5 +38,27 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public interface IWorkReportTypeDAO extends IGenericDAO<WorkReportType, Long> {
+
+    public WorkReportType findUniqueByName(WorkReportType workReportType)
+            throws InstanceNotFoundException, NonUniqueResultException;
+
+    public WorkReportType findUniqueByName(String name)
+            throws InstanceNotFoundException, NonUniqueResultException;
+
+    public boolean existsOtherWorkReportTypeByName(WorkReportType WorkReportType);
+
+    public boolean existsByNameAnotherTransaction(WorkReportType WorkReportType);
+
+    public WorkReportType findUniqueByCode(WorkReportType workReportType)
+            throws InstanceNotFoundException, NonUniqueResultException;
+
+    public WorkReportType findUniqueByCode(String code)
+            throws InstanceNotFoundException, NonUniqueResultException;
+
+    public boolean existsOtherWorkReportTypeByCode(WorkReportType WorkReportType);
+
+    public boolean existsByCodeAnotherTransaction(WorkReportType WorkReportType);
+
+    public List<WorkReportType> getWorkReportTypes();
 
 }

@@ -22,6 +22,7 @@ package org.navalplanner.business.labels.daos;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.labels.entities.Label;
@@ -50,5 +51,12 @@ public class LabelDAO extends GenericDAOHibernate<Label, Long> implements
         return (Label) getSession().createCriteria(Label.class).add(
                 Restrictions.eq("name", labelName)).add(
                 Restrictions.eq("type", labelType)).uniqueResult();
+    }
+
+    @Override
+    public List<Label> findByType(LabelType labelType) {
+        Criteria c = getSession().createCriteria(Label.class).add(
+                Restrictions.eq("type", labelType));
+        return ((List<Label>) c.list());
     }
 }

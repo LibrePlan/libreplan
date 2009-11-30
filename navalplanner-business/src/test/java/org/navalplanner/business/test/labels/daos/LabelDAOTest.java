@@ -65,7 +65,7 @@ public class LabelDAOTest {
         assertNotNull(labelDAO);
     }
 
-    private Label createValidLabel() {
+    public Label createValidLabel() {
         LabelType labelType = LabelType.create(UUID.randomUUID().toString());
         labelTypeDAO.save(labelType);
         Label label = Label.create(UUID.randomUUID().toString());

@@ -34,4 +34,6 @@ public interface ILabelDAO extends IGenericDAO<Label, Long> {
     List<Label> getAll();
 
     Label findByNameAndType(String labelName, LabelType labelType);
+
+    List<Label> findByType(LabelType labelType);
 }

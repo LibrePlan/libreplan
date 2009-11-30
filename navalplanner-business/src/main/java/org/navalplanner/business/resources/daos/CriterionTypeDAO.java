@@ -71,7 +71,7 @@ public class CriterionTypeDAO extends GenericDAOHibernate<CriterionType, Long>
     }
 
     @Override
-    public boolean existsByName(CriterionType criterionType) {
+    public boolean existsOtherCriterionTypeByName(CriterionType criterionType) {
         try {
             CriterionType t = findUniqueByName(criterionType);
             return t != null && t != criterionType;
@@ -83,7 +83,7 @@ public class CriterionTypeDAO extends GenericDAOHibernate<CriterionType, Long>
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public boolean existsByNameAnotherTransaction(CriterionType criterionType) {
-        return existsByName(criterionType);
+        return existsOtherCriterionTypeByName(criterionType);
     }
 
     @Override

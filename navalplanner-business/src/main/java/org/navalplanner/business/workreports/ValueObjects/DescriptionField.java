@@ -20,26 +20,54 @@
 
 package org.navalplanner.business.workreports.ValueObjects;
 
+import org.hibernate.validator.Min;
+import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
+import org.navalplanner.business.INewObject;
+
 /**
  * Value Object <br />
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-public class DescriptionField {
+public class DescriptionField implements INewObject {
 
-    public DescriptionField() {
-
+    public static DescriptionField create() {
+        DescriptionField descriptionField = new DescriptionField();
+        descriptionField.setNewObject(true);
+        return descriptionField;
     }
 
-    public DescriptionField(String fieldName, Integer lenght) {
+    public static DescriptionField create(String fieldName, Integer lenght) {
+        DescriptionField descriptionField = new DescriptionField(fieldName,
+                lenght);
+        descriptionField.setNewObject(true);
+        return descriptionField;
+    }
+
+    private DescriptionField() {
+    }
+
+    private DescriptionField(String fieldName, Integer lenght) {
         this.fieldName = fieldName;
-        this.lenght = lenght;
+        this.length = lenght;
     }
 
     private String fieldName;
 
-    private Integer lenght;
+    private Integer length;
 
+    private boolean newObject = false;
+
+    public boolean isNewObject() {
+        return newObject;
+    }
+
+    public boolean setNewObject(boolean newObject) {
+        return this.newObject = newObject;
+    }
+
+    @NotEmpty
     public String getFieldName() {
         return fieldName;
     }
@@ -48,12 +76,14 @@ public class DescriptionField {
         this.fieldName = fieldName;
     }
 
-    public Integer getLenght() {
-        return lenght;
+    @Min(value = 1)
+    @NotNull
+    public Integer getLength() {
+        return length;
     }
 
-    public void setLenght(Integer lenght) {
-        this.lenght = lenght;
+    public void setLength(Integer lenght) {
+        this.length = lenght;
     }
 
 }

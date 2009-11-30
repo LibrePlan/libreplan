@@ -88,7 +88,8 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
 
     private CriterionType retrieveOrCreate(CriterionType criterionType) {
         if (!criterionTypeDAO.exists(criterionType.getId())
-                && !criterionTypeDAO.existsByName(criterionType)) {
+                && !criterionTypeDAO
+                        .existsOtherCriterionTypeByName(criterionType)) {
             criterionTypeDAO.save(criterionType);
             return criterionType;
         } else {

@@ -42,7 +42,7 @@ public interface ICriterionTypeDAO extends IGenericDAO<CriterionType, Long> {
 
     List<CriterionType> findByName(CriterionType criterionType);
 
-    public boolean existsByName(CriterionType criterionType);
+    public boolean existsOtherCriterionTypeByName(CriterionType criterionType);
 
     boolean existsByNameAnotherTransaction(CriterionType criterionType);
 

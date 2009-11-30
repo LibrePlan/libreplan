@@ -39,7 +39,7 @@
                         <row>
                             <label value="${i18n:_('Type')}" />
                             <zscript>Object[] resourceTypes = org.navalplanner.business.resources.entities.ResourceEnum.values();</zscript>
-                            <listbox id="lbResource" mold="select" model="@{resourceTypes}" selectedItem="@{controller.criterionType.resource}"/>
+                            <listbox id="lbResource" mold="select" model="@{resourceTypes}" selectedItem="@{controller.datePosition}"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Multiple values per resource')}"/>

@@ -25,14 +25,20 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.navalplanner.business.labels.daos.ILabelDAO;
+import org.navalplanner.business.labels.daos.ILabelTypeDAO;
+import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workreports.ValueObjects.DescriptionField;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
+import org.navalplanner.business.workreports.entities.WorkReportLabelTypeAssigment;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +53,12 @@ public abstract class AbstractWorkReportTest {
 
     @Autowired
     IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    ILabelDAO labelDAO;
+
+    @Autowired
+    ILabelTypeDAO labelTypeDAO;
 
     public WorkReportType createValidWorkReportType() {
         return WorkReportType.create(UUID.randomUUID().toString(), UUID
@@ -100,4 +112,23 @@ public abstract class AbstractWorkReportTest {
 
         return workReport;
     }
+
+    public DescriptionField createValidDescriptionField() {
+        return DescriptionField.create(UUID.randomUUID().toString(), 1);
+    }
+
+    public WorkReportLabelTypeAssigment createValidWorkReportLabelTypeAssigment() {
+        LabelType labelType = LabelType.create(UUID.randomUUID().toString());
+        labelTypeDAO.save(labelType);
+        Label label = Label.create(UUID.randomUUID().toString());
+        label.setType(labelType);
+        labelDAO.save(label);
+
+        WorkReportLabelTypeAssigment labelAssigment = WorkReportLabelTypeAssigment
+                .create();
+        labelAssigment.setDefaultLabel(label);
+        labelAssigment.setLabelType(labelType);
+        return labelAssigment;
+    }
+
 }
