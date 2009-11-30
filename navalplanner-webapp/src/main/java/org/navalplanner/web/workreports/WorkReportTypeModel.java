@@ -20,15 +20,11 @@
 
 package org.navalplanner.web.workreports;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
-import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
@@ -48,9 +44,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class WorkReportTypeModel implements IWorkReportTypeModel {
-
-    @Autowired
-    private ICriterionTypeDAO criterionTypeDAO;
 
     @Autowired
     private IWorkReportTypeDAO workReportTypeDAO;
@@ -103,16 +96,9 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     private WorkReportType getFromDB(Long id) {
         try {
             WorkReportType result = workReportTypeDAO.find(id);
-            reattachCriterionTypes(result);
             return result;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void reattachCriterionTypes(WorkReportType workReportType) {
-        for (CriterionType criterionType : workReportType.getCriterionTypes()) {
-            criterionType.getName();
         }
     }
 
@@ -135,17 +121,6 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Set<CriterionType> getCriterionTypes() {
-        return new HashSet<CriterionType>(criterionTypeDAO.getCriterionTypes());
-    }
-
-    @Override
-    public void setCriterionTypes(Set<CriterionType> criterionTypes) {
-        workReportType.setCriterionTypes(criterionTypes);
     }
 
     @Override

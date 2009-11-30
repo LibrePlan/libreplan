@@ -23,18 +23,14 @@ package org.navalplanner.web.workreports;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.entities.WorkReport;
@@ -61,9 +57,6 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listhead;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -361,38 +354,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         columns.appendChild(columnCode);
         Column columnNumHours = new Column(_("Hours"));
         columns.appendChild(columnNumHours);
-
-        // Add dynamic headers
-        appendCriterionTypesToColumns(getCriterionTypes(), columns);
-
         Column columnOperations = new Column(_("Operations"));
         columns.appendChild(columnOperations);
 
         columns.setParent(grid);
-    }
-
-    /**
-     * Appends a set of {@link CriterionType} to {@link Listhead}
-     */
-    private void appendCriterionTypesToColumns(
-            Set<CriterionType> criterionTypes, Columns columns) {
-        for (CriterionType criterionType : criterionTypes) {
-            appendCriterionTypeToListHead(criterionType, columns);
-        }
-    }
-
-    /**
-     * Appends a {@link CriterionType} to {@link Listhead}
-     */
-    private void appendCriterionTypeToListHead(CriterionType criterionType,
-            Columns columns) {
-        Column column= new Column(StringUtils
-                .capitalize(criterionType.getName().toLowerCase()));
-        column.setParent(columns);
-    }
-
-    private Set<CriterionType> getCriterionTypes() {
-        return getWorkReportType().getCriterionTypes();
     }
 
     private WorkReportType getWorkReportType() {
@@ -441,11 +406,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         appendAutocompleteResource(row);
         appendTextboxOrder(row);
         appendIntboxNumHours(row);
-
-        for (CriterionType criterionType : getCriterionTypes()) {
-            appendListboxCriterionType(criterionType, row);
-        }
-
         appendDeleteButton(row);
 
         return row;
@@ -620,107 +580,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         });
     }
 
-    /**
-     * Appends a {@link CriterionType} listbox to row
-     *
-     * @param criterionType
-     * @param row
-     */
-    private void appendListboxCriterionType(final CriterionType criterionType,
-            Row row) {
-        WorkReportLine workReportLine = (WorkReportLine) row.getValue();
-        Listbox listBox = createListboxCriterionType(criterionType,
-                getSelectedCriterion(workReportLine, criterionType));
-        bindGridCriterionType(criterionType, listBox, workReportLine);
-        row.appendChild(listBox);
-    }
-
-    /**
-     * Determines which {@link Criterion} of @{link CriterionType} is selected
-     * in a @{link WorkReportLine}
-     *
-     * Notice that in a list of {@link Criterion} belonging to a @{link
-     * WorkReportLine}, only one {@link Criterion} for each
-     * {@link CriterionType} is possible
-     *
-     * @param workReportLine
-     * @param criterionType
-     */
-    private Criterion getSelectedCriterion(WorkReportLine workReportLine,
-            CriterionType criterionType) {
-        for (Criterion criterion : workReportLine.getCriterions()) {
-            if (criterionType.equals(criterion.getType())) {
-                return criterion;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Create a listbox of {@link Criterion} for a {@link CriterionType}
-     *
-     * @param criterionType
-     * @param workReportLine
-     *            needed to determine which {@link Criterion} should be set to
-     *            selected
-     * @return
-     */
-    private Listbox createListboxCriterionType(CriterionType criterionType,
-            Criterion selectedCriterion) {
-        Listbox listBox = new Listbox();
-        listBox.setRows(1);
-        listBox.setMold("select");
-
-        // Add empty option to list
-        List<Criterion> criterions = new ArrayList<Criterion>(criterionType
-                .getCriterions());
-        criterions.add(0, Criterion.create(" ", criterionType));
-
-        // Adds a new item to list for each criterion
-        for (Criterion criterion : criterions) {
-            Listitem listitem = new Listitem();
-            listitem.setLabel(criterion.getName());
-            listitem.setValue(criterion);
-            listitem.setParent(listBox);
-
-            if (criterion.equals(selectedCriterion)) {
-                listBox.setSelectedItem(listitem);
-            }
-        }
-
-        return listBox;
-    }
-
-    /**
-     * Updates the list of {@link Criterion} of a {@link WorkReportLine} when a
-     * new @{link Criterion} is selected
-     *
-     * @param criterionType
-     *            needed to determine which {@link Criterion} inside the list
-     *            should be updated
-     * @param listBox
-     * @param workReportLine
-     */
-    private void bindGridCriterionType(final CriterionType criterionType,
-            final Listbox listBox, final WorkReportLine workReportLine) {
-        listBox.addEventListener("onSelect", new EventListener() {
-
-            @Override
-            public void onEvent(Event arg0) throws Exception {
-                Listitem listitem = listBox.getSelectedItem();
-
-                // There only can be one criterion for each criterion type
-                for (Criterion criterion : workReportLine.getCriterions()) {
-                    if (criterionType.equals(criterion.getType())) {
-                        workReportLine.removeCriterion(criterion);
-                    }
-                }
-                workReportLine.addCriterion((Criterion) listitem.getValue());
-            }
-        });
-    }
-
     public WorkReportListRenderer getRenderer() {
         return workReportListRenderer;
     }
@@ -746,13 +605,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             appendAutocompleteResource(row);
             appendTextboxOrder(row);
             appendIntboxNumHours(row);
-
-            // Get criterion types for each row and append to it
-            // CriterionTypes
-            for (CriterionType criterionType : getCriterionTypes()) {
-                appendListboxCriterionType(criterionType, row);
-            }
-
             appendDeleteButton(row);
         }
     }

@@ -21,10 +21,8 @@
 package org.navalplanner.web.workreports;
 
 import java.util.List;
-import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 
@@ -85,22 +83,6 @@ public interface IWorkReportTypeModel {
      *            The object to be removed
      */
     void prepareForRemove(WorkReportType workReportType);
-
-    /**
-     * Gets the {@link Set} of all {@link CriterionType}
-     *
-     * @return A {@link Set} of {@link CriterionType}
-     */
-    Set<CriterionType> getCriterionTypes();
-
-    /**
-     * Sets the {@link Set} of {@link CriterionType} for the current
-     * {@link WorkReportType}.
-     *
-     * @param criterionTypes
-     *            A {@link Set} of {@link CriterionType}
-     */
-    void setCriterionTypes(Set<CriterionType> criterionTypes);
 
     /**
      * Check if it's or not editing a {@link WorkReportType}

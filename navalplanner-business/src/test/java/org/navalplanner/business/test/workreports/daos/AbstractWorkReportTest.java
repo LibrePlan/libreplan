@@ -28,9 +28,7 @@ import java.util.UUID;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
-import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
-import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
@@ -42,9 +40,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractWorkReportTest {
 
     @Autowired
-    ICriterionTypeDAO criterionTypeDAO;
-
-    @Autowired
     IWorkReportTypeDAO workReportTypeDAO;
 
     @Autowired
@@ -53,21 +48,8 @@ public abstract class AbstractWorkReportTest {
     @Autowired
     IOrderElementDAO orderElementDAO;
 
-    // Create a Set of CriterionType
-    public Set<CriterionType> createValidCriterionTypes() {
-        Set<CriterionType> criterionTypes = new HashSet<CriterionType>();
-
-        CriterionType criterionType = CriterionType.create(UUID.randomUUID()
-                .toString(),"");
-        criterionTypeDAO.save(criterionType);
-        criterionTypes.add(criterionType);
-
-        return criterionTypes;
-    }
-
     public WorkReportType createValidWorkReportType() {
-        Set<CriterionType> criterionTypes = createValidCriterionTypes();
-        return WorkReportType.create(UUID.randomUUID().toString(), criterionTypes);
+        return WorkReportType.create(UUID.randomUUID().toString());
     }
 
     public WorkReportLine createValidWorkReportLine() {

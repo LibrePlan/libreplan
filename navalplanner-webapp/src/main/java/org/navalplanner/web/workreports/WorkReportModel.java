@@ -21,7 +21,6 @@
 package org.navalplanner.web.workreports;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -30,8 +29,6 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
-import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
@@ -112,26 +109,12 @@ public class WorkReportModel implements IWorkReportModel {
         // Load WorkReportType
         workReport.getWorkReportType().getName();
 
-        // Load CriterionTypes
-        for (CriterionType criterionType : workReport.getWorkReportType()
-                .getCriterionTypes()) {
-            criterionType.getName();
-            // Load Criterions
-            for (Criterion criterion : criterionType.getCriterions()) {
-                criterion.getName();
-            }
-        }
-
         // Load WorkReportLines
         for (WorkReportLine workReportLine : workReport.getWorkReportLines()) {
             workReportLine.getNumHours();
             workReportLine.getResource().getDescription();
             workReportLine.getOrderElement().getName();
 
-            // Load Criterions
-            for (Criterion criterion : workReportLine.getCriterions()) {
-                criterion.getName();
-            }
         }
     }
 

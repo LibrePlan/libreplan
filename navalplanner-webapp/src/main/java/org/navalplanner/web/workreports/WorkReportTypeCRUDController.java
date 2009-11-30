@@ -22,20 +22,16 @@ package org.navalplanner.web.workreports;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.TwoWaySelector;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.zk.ui.Component;
@@ -81,30 +77,6 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         return workReportTypeModel.getWorkReportType();
     }
 
-    public Set<CriterionType> getAssignedCriterionTypes() {
-        WorkReportType workReportType = getWorkReportType();
-        if (workReportType == null) {
-            return new HashSet<CriterionType>();
-        }
-
-        Set<CriterionType> criterionTypes = workReportType.getCriterionTypes();
-        if (criterionTypes == null) {
-            return new HashSet<CriterionType>();
-        }
-
-        return criterionTypes;
-    }
-
-    public Set<CriterionType> getUnassignedCriterionTypes() {
-        Set<CriterionType> criterionTypes = workReportTypeModel
-                .getCriterionTypes();
-        Set<CriterionType> assignedCriterionTypes = getAssignedCriterionTypes();
-        if (assignedCriterionTypes != null) {
-            criterionTypes.removeAll(assignedCriterionTypes);
-        }
-        return criterionTypes;
-    }
-
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -133,25 +105,11 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
     public void save() {
         try {
-            Set<CriterionType> criterionTypes = getCriterionTypesSelector()
-                    .getAssignedObjects();
-
-            workReportTypeModel.setCriterionTypes(criterionTypes);
             workReportTypeModel.save();
             messagesForUser.showMessage(Level.INFO, _("Work report type saved"));
             goToList();
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
-        }
-    }
-
-    private TwoWaySelector getCriterionTypesSelector() {
-        if (workReportTypeModel.isEditing()) {
-            return (TwoWaySelector) editWindow
-                    .getFellow("criterionTypesSelector");
-        } else {
-            return (TwoWaySelector) createWindow
-                    .getFellow("criterionTypesSelector");
         }
     }
 

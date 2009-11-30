@@ -20,14 +20,9 @@
 
 package org.navalplanner.business.workreports.entities;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -47,9 +42,9 @@ public class WorkReportLine extends BaseEntity {
     }
 
     public static WorkReportLine create(Integer numHours, Resource resource,
-            OrderElement orderElement, Set<Criterion> criterions) {
+            OrderElement orderElement) {
         WorkReportLine workReportLine = new WorkReportLine(numHours, resource,
-                orderElement, criterions);
+                orderElement);
         workReportLine.setNewObject(true);
         return workReportLine;
     }
@@ -63,8 +58,6 @@ public class WorkReportLine extends BaseEntity {
 
     private WorkReport workReport;
 
-    private Set<Criterion> criterions = new HashSet<Criterion>();
-
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -73,11 +66,10 @@ public class WorkReportLine extends BaseEntity {
     }
 
     private WorkReportLine(Integer numHours, Resource resource,
-            OrderElement orderElement, Set<Criterion> criterions) {
+            OrderElement orderElement) {
         this.numHours = numHours;
         this.resource = resource;
         this.orderElement = orderElement;
-        this.criterions = criterions;
     }
 
     public Integer getNumHours() {
@@ -104,22 +96,6 @@ public class WorkReportLine extends BaseEntity {
 
     public void setOrderElement(OrderElement orderElement) {
         this.orderElement = orderElement;
-    }
-
-    public Set<Criterion> getCriterions() {
-        return Collections.unmodifiableSet(criterions);
-    }
-
-    public void addCriterion(Criterion criterion) {
-        criterions.add(criterion);
-    }
-
-    public void removeCriterion(Criterion criterion) {
-        criterions.remove(criterion);
-    }
-
-    public void setCriterions(Set<Criterion> criterions) {
-        this.criterions = criterions;
     }
 
     public WorkReport getWorkReport() {

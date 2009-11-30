@@ -21,8 +21,6 @@
 package org.navalplanner.web.common.converters;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +42,6 @@ public class WorkReportTypeConverter implements IConverter<WorkReportType> {
         long id = Long.parseLong(stringRepresentation);
         try {
             WorkReportType workReportType = workReportTypeDAO.find(id);
-            forceLoadCriterionTypes(workReportType);
             return workReportType;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
@@ -64,22 +61,6 @@ public class WorkReportTypeConverter implements IConverter<WorkReportType> {
     @Override
     public Class<WorkReportType> getType() {
         return WorkReportType.class;
-    }
-
-    /**
-     * Load @{link CriterionType} and its @{link Criterion}
-     *
-     * @param workReportType
-     */
-    private void forceLoadCriterionTypes(WorkReportType workReportType) {
-        // Load CriterionType
-        for (CriterionType criterionType : workReportType.getCriterionTypes()) {
-            criterionType.getName();
-            // Load Criterion
-            for (Criterion criterion : criterionType.getCriterions()) {
-                criterion.getName();
-            }
-        }
     }
 
 }

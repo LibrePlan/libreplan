@@ -34,28 +34,13 @@
                     </columns>
                     <rows>
                         <row>
-            <label value="${i18n:_('Name')}" />
-            <textbox
-                value="@{controller.workReportType.name}" width="300px"/>
-</row>
-<row>
-
-        <label value="${i18n:_('Criterion types')}" />
-
-        <twowayselector
-            id="criterionTypesSelector"
-            assignedObjects="@{controller.assignedCriterionTypes}"
-            assignedTitle="Assigned criterion types"
-            unassignedObjects="@{controller.unassignedCriterionTypes}"
-            unassignedTitle="Unassigned criterion types"
-            columns="name"
-        />
-
-</row>
+                            <label value="${i18n:_('Name')}" />
+                            <textbox
+                                value="@{controller.workReportType.name}" width="300px"/>
+                        </row>
                     </rows>
                 </grid>
-
-                </tabpanel>
+            </tabpanel>
         </tabpanels>
     </tabbox>
             <button onClick="controller.save();"
