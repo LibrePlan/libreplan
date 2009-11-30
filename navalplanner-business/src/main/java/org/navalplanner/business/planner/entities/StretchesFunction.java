@@ -21,21 +21,63 @@
 package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
+import org.joda.time.LocalDate;
 
 /**
  * Assignment function by stretches.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class StretchesFunction extends AssignmentFunction {
+
+    public static class Interval {
+
+        private LocalDate start;
+
+        private LocalDate end;
+
+        private final BigDecimal loadProportion;
+
+        private Interval(BigDecimal loadProportion, LocalDate start,
+                LocalDate end) {
+            Validate.notNull(loadProportion);
+            Validate.isTrue(loadProportion.signum() >= 0);
+            this.loadProportion = loadProportion.setScale(2,
+                    RoundingMode.HALF_UP);
+            this.start = start;
+            this.end = end;
+        }
+
+        public LocalDate getEnd() {
+            return end;
+        }
+
+        public BigDecimal getLoadProportion() {
+            return loadProportion;
+        }
+
+        public boolean hasNoStart() {
+            return start == null;
+        }
+
+        public LocalDate getStart() {
+            return start;
+        }
+
+        public boolean hasNoEnd() {
+            return end == null;
+        }
+
+    }
 
     public static StretchesFunction create() {
         return (StretchesFunction) create(new StretchesFunction());
@@ -136,6 +178,32 @@ public class StretchesFunction extends AssignmentFunction {
     @Override
     public void applyTo(ResourceAllocation<?> resourceAllocation) {
         // TODO implement application of streches function to resourceAllocation
+    }
+
+    public List<Interval> getIntervalsDefinedByStreches() {
+        if (stretches.isEmpty()) {
+            return Collections.emptyList();
+        }
+        ArrayList<Interval> result = new ArrayList<Interval>();
+        LocalDate previous = null;
+        BigDecimal sumOfProportions = new BigDecimal(0);
+        for (Stretch each : stretches) {
+            LocalDate strechDate = each.getDate();
+            result.add(new Interval(each.getAmountWorkPercentage().subtract(
+                    sumOfProportions), previous,
+                    strechDate));
+            sumOfProportions = each.getAmountWorkPercentage();
+            previous = strechDate;
+        }
+        BigDecimal left = calculateLeftFor(sumOfProportions);
+        result.add(new Interval(left, previous, null));
+        return result;
+    }
+
+    private BigDecimal calculateLeftFor(BigDecimal sumOfProportions) {
+        BigDecimal left = BigDecimal.ONE.subtract(sumOfProportions);
+        left = left.signum() < 0 ? BigDecimal.ZERO : left;
+        return left;
     }
 
 }

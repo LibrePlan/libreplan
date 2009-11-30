@@ -20,15 +20,19 @@
 
 package org.navalplanner.business.test.planner.entities;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
+import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
 
 /**
  * Tests for {@link StretchesFunction} entity.
@@ -57,6 +61,11 @@ public class StretchesFunctionTest {
         stretch.setLengthPercentage(lengthPercentage);
         stretch.setAmountWorkPercentage(amountWorkPercentage);
         return stretch;
+    }
+
+    private Stretch givenStretchAsChild(LocalDate date,
+            BigDecimal amountWorkPercentage) {
+        return givenStretchAsChild(date, BigDecimal.ZERO, amountWorkPercentage);
     }
 
     @Test
@@ -161,5 +170,94 @@ public class StretchesFunctionTest {
                 BigDecimal.ONE);
         assertTrue(stretchesFunction.checkStretchesOrder());
     }
+
+    @Test
+    public void ifNoStrechesNoIntervalDefinedByStreches() {
+        givenStretchesFunction();
+        assertTrue(stretchesFunction.getIntervalsDefinedByStreches().isEmpty());
+    }
+
+    @Test
+    public void oneStrechImpliesTwoIntervals() {
+        givenStretchesFunction();
+        givenStretchAsChild(new LocalDate().plusMonths(1), new BigDecimal(0.5));
+        assertThat(stretchesFunction.getIntervalsDefinedByStreches().size(),
+                equalTo(2));
+    }
+
+    @Test
+    public void oneStrechImpliesOneIntervalUntilDateWithLoadSpecifiedByStrech() {
+        givenStretchesFunction();
+        LocalDate strechDate = new LocalDate().plusMonths(1);
+        BigDecimal amountOfWorkProportion = new BigDecimal(0.5).setScale(2);
+        givenStretchAsChild(strechDate, amountOfWorkProportion);
+        Interval firstInterval = stretchesFunction
+                .getIntervalsDefinedByStreches().get(0);
+        assertThat(firstInterval.getEnd(), equalTo(strechDate));
+        assertTrue(firstInterval.hasNoStart());
+        assertThat(firstInterval.getLoadProportion(),
+                equalTo(amountOfWorkProportion));
+    }
+
+    @Test
+    public void theLastIntervalHasStart() {
+        givenStretchesFunction();
+        LocalDate strechDate = new LocalDate().plusMonths(1);
+        givenStretchAsChild(strechDate, new BigDecimal(0.5));
+        Interval lastInterval = stretchesFunction
+                .getIntervalsDefinedByStreches().get(1);
+        assertThat(lastInterval.getStart(), equalTo(strechDate));
+    }
+
+    @Test
+    public void aIntervalInTheMiddleHasStartAndEnd() {
+        givenStretchesFunction();
+        LocalDate start = new LocalDate().plusMonths(1);
+        givenStretchAsChild(start, new BigDecimal(0.5));
+        LocalDate middleEnd = start.plusMonths(2);
+        givenStretchAsChild(middleEnd, new BigDecimal(0.6));
+        Interval middle = stretchesFunction.getIntervalsDefinedByStreches().get(
+                1);
+        assertFalse(middle.hasNoStart());
+        assertFalse(middle.hasNoEnd());
+        assertThat(middle.getStart(), equalTo(start));
+        assertThat(middle.getEnd(), equalTo(middleEnd));
+    }
+
+    @Test
+    public void eachIntervalAccumulatesAllTheLoads() {
+        givenStretchesFunction();
+        LocalDate start = new LocalDate().plusMonths(1);
+        givenStretchAsChild(start, new BigDecimal(0.5));
+        LocalDate middleEnd = start.plusMonths(2);
+        givenStretchAsChild(middleEnd, new BigDecimal(0.8));
+        Interval first = stretchesFunction.getIntervalsDefinedByStreches().get(
+                0);
+        Interval middle = stretchesFunction.getIntervalsDefinedByStreches()
+                .get(1);
+        Interval last = stretchesFunction.getIntervalsDefinedByStreches()
+                .get(2);
+        assertThat(first.getLoadProportion(), equalTo(new BigDecimal(0.5)
+                .setScale(2)));
+        assertThat(middle.getLoadProportion(), equalTo(new BigDecimal(0.3)
+                .setScale(2, RoundingMode.HALF_EVEN)));
+        assertThat(last.getLoadProportion(), equalTo(new BigDecimal(0.2)
+                .setScale(2, RoundingMode.HALF_EVEN)));
+    }
+
+    @Test
+    public void theLastIntervalHasTheRemainingLoad() {
+        givenStretchesFunction();
+        LocalDate start = new LocalDate().plusMonths(1);
+        givenStretchAsChild(start, new BigDecimal(0.3));
+        givenStretchAsChild(start.plusMonths(2), new BigDecimal(0.5));
+        givenStretchAsChild(start.plusMonths(3), new BigDecimal(0.7));
+        Interval lastInterval = stretchesFunction
+                .getIntervalsDefinedByStreches().get(3);
+        BigDecimal expectedRemaining = new BigDecimal(0.3).setScale(2,
+                RoundingMode.HALF_UP);
+        assertThat(lastInterval.getLoadProportion(), equalTo(expectedRemaining));
+    }
+
 
 }
