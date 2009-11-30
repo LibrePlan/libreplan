@@ -863,6 +863,9 @@ class Row {
                 stretchesFunctionController.showWindow();
                 getAllocation().setAssignmentFunction(
                         stretchesFunctionController.getAssignmentFunction());
+                reloadHoursSameRowForDetailItems();
+                reloadAllHours();
+                fireCellChanged();
             }
 
         });
