@@ -257,6 +257,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         private LocalDate calculateLimitDate(Integer hours) {
+            if (hours == null || hours == 0) {
+                return null;
+            }
             boolean limitReached = false;
 
             Integer count = 0;
