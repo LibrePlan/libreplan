@@ -47,10 +47,11 @@ public class StretchesFunction extends AssignmentFunction {
 
         private final BigDecimal loadProportion;
 
-        private Interval(BigDecimal loadProportion, LocalDate start,
+        public Interval(BigDecimal loadProportion, LocalDate start,
                 LocalDate end) {
             Validate.notNull(loadProportion);
             Validate.isTrue(loadProportion.signum() >= 0);
+            Validate.isTrue(start != null || end != null);
             this.loadProportion = loadProportion.setScale(2,
                     RoundingMode.HALF_UP);
             this.start = start;
@@ -75,6 +76,31 @@ public class StretchesFunction extends AssignmentFunction {
 
         public boolean hasNoEnd() {
             return end == null;
+        }
+
+        public int getHoursFor(int totalHours) {
+            return loadProportion.multiply(new BigDecimal(totalHours))
+                    .intValue();
+        }
+
+        public LocalDate getStartFor(LocalDate allocationStart) {
+            return hasNoStart() ? allocationStart : start;
+        }
+
+        public LocalDate getEndFor(LocalDate allocationEnd) {
+            return hasNoEnd() ? allocationEnd : end;
+        }
+
+        public void apply(ResourceAllocation<?> resourceAllocation,
+                LocalDate allocationStart, LocalDate allocationEnd,
+                int totalHours) {
+            if (loadProportion.signum() == 0) {
+                return;
+            }
+            resourceAllocation.withPreviousAssociatedResources()
+                              .onInterval(getStartFor(allocationStart),
+                                      getEndFor(allocationEnd))
+                              .allocateHours(getHoursFor(totalHours));
         }
 
     }
@@ -177,7 +203,16 @@ public class StretchesFunction extends AssignmentFunction {
 
     @Override
     public void applyTo(ResourceAllocation<?> resourceAllocation) {
-        // TODO implement application of streches function to resourceAllocation
+        if (!resourceAllocation.hasAssignments()) {
+            return;
+        }
+        List<Interval> intervalsDefinedByStreches = getIntervalsDefinedByStreches();
+        int totalHours = resourceAllocation.getAssignedHours();
+        LocalDate start = resourceAllocation.getStartDate();
+        LocalDate end = resourceAllocation.getEndDate();
+        for (Interval each : intervalsDefinedByStreches) {
+            each.apply(resourceAllocation, start, end, totalHours);
+        }
     }
 
     public List<Interval> getIntervalsDefinedByStreches() {

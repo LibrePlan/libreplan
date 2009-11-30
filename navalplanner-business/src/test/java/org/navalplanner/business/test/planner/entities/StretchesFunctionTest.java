@@ -259,5 +259,35 @@ public class StretchesFunctionTest {
         assertThat(lastInterval.getLoadProportion(), equalTo(expectedRemaining));
     }
 
+    @Test
+    public void ifTheIntervalStartIsNullReturnsThePassedStartDate() {
+        LocalDate end = new LocalDate().plusMonths(1);
+        Interval interval = new Interval(new BigDecimal(0.3), null, end);
+        LocalDate now = new LocalDate();
+        assertThat(interval.getStartFor(now), equalTo(now));
+    }
+
+    @Test
+    public void ifTheIntervalEndIsNullReturnsThePassedStartDate() {
+        LocalDate start = new LocalDate().plusMonths(1);
+        Interval interval = new Interval(new BigDecimal(0.3), start, null);
+        LocalDate now = new LocalDate();
+        assertThat(interval.getEndFor(now), equalTo(now));
+    }
+
+    @Test
+    public void ifTheIntervalStartIsNotNullReturnsItsStartDate() {
+        LocalDate start = new LocalDate().plusMonths(1);
+        Interval interval = new Interval(new BigDecimal(0.3), start, null);
+        assertThat(interval.getStartFor(new LocalDate()), equalTo(start));
+    }
+
+    @Test
+    public void ifTheIntervalEndIsNotNullReturnsItsEndDate() {
+        LocalDate start = new LocalDate().plusMonths(1);
+        LocalDate end = new LocalDate().plusMonths(2);
+        Interval interval = new Interval(new BigDecimal(0.3), start, end);
+        assertThat(interval.getEndFor(new LocalDate()), equalTo(end));
+    }
 
 }
