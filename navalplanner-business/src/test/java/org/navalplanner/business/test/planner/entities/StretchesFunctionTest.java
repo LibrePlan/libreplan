@@ -36,19 +36,23 @@ import org.navalplanner.business.planner.entities.StretchesFunction;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class StretchesFunctionTest {
+    private StretchesFunction stretchesFunction;
 
     private StretchesFunction givenStretchesFunction() {
-        StretchesFunction stretchesFunction = StretchesFunction.create();
+        stretchesFunction = StretchesFunction.create();
         return stretchesFunction;
     }
 
-    private Stretch givenStretch() {
-        return new Stretch();
+    private Stretch givenStretchAsChild() {
+        Stretch result = new Stretch();
+        stretchesFunction.addStretch(result);
+        return result;
     }
 
-    private Stretch givenStretch(LocalDate date, BigDecimal lengthPercentage,
+    private Stretch givenStretchAsChild(LocalDate date,
+            BigDecimal lengthPercentage,
             BigDecimal amountWorkPercentage) {
-        Stretch stretch = givenStretch();
+        Stretch stretch = givenStretchAsChild();
         stretch.setDate(date);
         stretch.setLengthPercentage(lengthPercentage);
         stretch.setAmountWorkPercentage(amountWorkPercentage);
@@ -57,109 +61,104 @@ public class StretchesFunctionTest {
 
     @Test
     public void stretchesFunctionCheckNoEmpty1() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
+        givenStretchesFunction();
         assertFalse(stretchesFunction.checkNoEmpty());
     }
 
     @Test
     public void stretchesFunctionCheckNoEmpty2() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
-        stretchesFunction.addStretch(givenStretch());
+        givenStretchesFunction();
+        givenStretchAsChild();
         assertTrue(stretchesFunction.checkNoEmpty());
     }
 
     @Test
     public void stretchesFunctionCheckOneHundredPercent1() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
+        givenStretchesFunction();
         assertFalse(stretchesFunction.checkOneHundredPercent());
     }
 
     @Test
     public void stretchesFunctionCheckOneHundredPercent2() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
-        stretchesFunction.addStretch(givenStretch());
+        givenStretchesFunction();
+        givenStretchAsChild();
         assertFalse(stretchesFunction.checkOneHundredPercent());
     }
 
     @Test
     public void stretchesFunctionCheckOneHundredPercent3() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
-        stretchesFunction.addStretch(givenStretch(new LocalDate(),
-                BigDecimal.ONE, BigDecimal.ZERO));
+        givenStretchesFunction();
+        givenStretchAsChild(new LocalDate(), BigDecimal.ONE, BigDecimal.ZERO);
         assertFalse(stretchesFunction.checkOneHundredPercent());
     }
 
     @Test
     public void stretchesFunctionCheckOneHundredPercent4() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
-        stretchesFunction.addStretch(givenStretch(new LocalDate(),
-                BigDecimal.ZERO, BigDecimal.ONE));
+        givenStretchesFunction();
+        givenStretchAsChild(new LocalDate(), BigDecimal.ZERO, BigDecimal.ONE);
         assertFalse(stretchesFunction.checkOneHundredPercent());
     }
 
     @Test
     public void stretchesFunctionCheckOneHundredPercent5() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
-        stretchesFunction.addStretch(givenStretch(new LocalDate(),
-                BigDecimal.ONE, BigDecimal.ONE));
+        givenStretchesFunction();
+        givenStretchAsChild(new LocalDate(), BigDecimal.ONE, BigDecimal.ONE);
         assertTrue(stretchesFunction.checkOneHundredPercent());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder1() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
+        givenStretchesFunction();
         assertFalse(stretchesFunction.checkStretchesOrder());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder2() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
-        stretchesFunction.addStretch(givenStretch());
+        givenStretchesFunction();
+        givenStretchAsChild();
         assertTrue(stretchesFunction.checkStretchesOrder());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder3() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
-        stretchesFunction.addStretch(givenStretch());
-        stretchesFunction.addStretch(givenStretch());
+        givenStretchesFunction();
+        givenStretchAsChild();
+        givenStretchAsChild();
         assertFalse(stretchesFunction.checkStretchesOrder());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder4() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
-        stretchesFunction.addStretch(givenStretch());
-        stretchesFunction.addStretch(givenStretch(new LocalDate(),
-                BigDecimal.ONE, BigDecimal.ONE));
+        givenStretchesFunction();
+        givenStretchAsChild();
+        givenStretchAsChild(new LocalDate(), BigDecimal.ONE, BigDecimal.ONE);
         assertFalse(stretchesFunction.checkStretchesOrder());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder5() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
-        stretchesFunction.addStretch(givenStretch());
-        stretchesFunction
-                .addStretch(givenStretch(new LocalDate().plusMonths(1),
-                        BigDecimal.ZERO, BigDecimal.ZERO));
+        givenStretchesFunction();
+        givenStretchAsChild();
+        givenStretchAsChild(new LocalDate().plusMonths(1), BigDecimal.ZERO,
+                BigDecimal.ZERO);
         assertFalse(stretchesFunction.checkStretchesOrder());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder7() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
-        stretchesFunction.addStretch(givenStretch());
-        stretchesFunction.addStretch(givenStretch(new LocalDate()
-                .minusMonths(1), BigDecimal.ONE, BigDecimal.ONE));
+        givenStretchesFunction();
+        givenStretchAsChild();
+        givenStretchAsChild(new LocalDate().minusMonths(1), BigDecimal.ONE,
+                BigDecimal.ONE);
         assertFalse(stretchesFunction.checkStretchesOrder());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder6() {
-        StretchesFunction stretchesFunction = givenStretchesFunction();
-        stretchesFunction.addStretch(givenStretch());
-        stretchesFunction.addStretch(givenStretch(
-                new LocalDate().plusMonths(1), BigDecimal.ONE, BigDecimal.ONE));
+        givenStretchesFunction();
+        givenStretchAsChild();
+        givenStretchAsChild(new LocalDate().plusMonths(1), BigDecimal.ONE,
+                BigDecimal.ONE);
         assertTrue(stretchesFunction.checkStretchesOrder());
     }
 
