@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
@@ -222,9 +223,18 @@ class FormBinder {
     }
 
     private void reloadValues() {
+        loadHoursValues();
         loadValueForAssignedHoursComponent();
         loadValueForTaskStartDateBox();
         loadValueForEndDate();
+    }
+
+    private void loadHoursValues() {
+        for (Entry<AllocationDTO, Intbox> entry : hoursIntboxesByAllocationDTO.entrySet()) {
+            Integer hours = resourceAllocationsBeingEdited.getHoursFor(entry
+                    .getKey());
+            entry.getValue().setValue(hours);
+        }
     }
 
     public void setApplyButton(Button applyButton) {
@@ -249,6 +259,7 @@ class FormBinder {
 
     public void setHoursIntboxFor(AllocationDTO data, Intbox hours) {
         hoursIntboxesByAllocationDTO.put(data, hours);
+        hours.setValue(resourceAllocationsBeingEdited.getHoursFor(data));
     }
 
     public int getAssignedHours() {

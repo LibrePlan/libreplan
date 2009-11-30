@@ -80,6 +80,8 @@ public class ResourceAllocationsBeingEdited {
 
     private Integer daysDuration;
 
+    private Map<AllocationDTO, ResourceAllocation<?>> fromDTOToCurrentAllocation = new HashMap<AllocationDTO, ResourceAllocation<?>>();
+
     private ResourceAllocationsBeingEdited(Task task,
             List<AllocationDTO> initialAllocations) {
         this.task = task;
@@ -122,6 +124,15 @@ public class ResourceAllocationsBeingEdited {
 
     public List<AllocationDTO> getCurrentAllocations() {
         return new ArrayList<AllocationDTO>(currentAllocations);
+    }
+
+    public Integer getHoursFor(AllocationDTO allocationDTO) {
+        ResourceAllocation<?> origin = allocationDTO.getOrigin();
+        if (fromDTOToCurrentAllocation.containsKey(allocationDTO)) {
+            return fromDTOToCurrentAllocation.get(allocationDTO)
+                    .getAssignedHours();
+        }
+        return origin != null ? origin.getAssignedHours() : null;
     }
 
     private boolean alreadyExistsAllocationFor(Resource resource) {
@@ -232,7 +243,10 @@ public class ResourceAllocationsBeingEdited {
         for (Entry<AllocationDTO, ResourceAllocation<?>> entry : allocationsWithTheirRelatedAllocationsOnTask
                 .entrySet()) {
             AllocationDTO key = entry.getKey();
-            result.put(instantiate(key), entry.getValue());
+            AllocationBeingModified instantiated = instantiate(key);
+            result.put(instantiated, entry.getValue());
+            fromDTOToCurrentAllocation
+                    .put(key, instantiated.getBeingModified());
         }
         return result;
     }
