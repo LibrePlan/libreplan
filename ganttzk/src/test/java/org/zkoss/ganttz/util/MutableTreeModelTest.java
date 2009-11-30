@@ -440,6 +440,29 @@ public class MutableTreeModelTest {
         assertThat(model.getChild(model.getRoot(), 1), equalTo(prueba2));
     }
 
+    @Test
+    public void treeParentContainsChild() {
+        final MutableTreeModel<Prueba> model = MutableTreeModel
+            .create(Prueba.class);
+
+        Prueba parent = new Prueba();
+        model.addToRoot(parent);
+        Prueba child = new Prueba();
+        model.add(parent, child);
+        assertTrue(model.contains(parent, child));
+    }
+
+    @Test
+    public void treeParentDoesNotContainChild() {
+        final MutableTreeModel<Prueba> model = MutableTreeModel
+            .create(Prueba.class);
+
+        Prueba parent = new Prueba();
+        model.addToRoot(parent);
+        Prueba child = new Prueba();
+        assertFalse(model.contains(parent, child));
+    }
+
     private void checkIsValid(TreeDataEvent event, int type,
             Prueba expectedParent, int expectedPosition) {
         checkIsValid(event, type, expectedParent, expectedPosition,
@@ -461,4 +484,5 @@ public class MutableTreeModelTest {
         }
         return list.get(list.size() - 1);
     }
+
 }

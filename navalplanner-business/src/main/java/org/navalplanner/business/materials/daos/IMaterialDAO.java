@@ -21,17 +21,50 @@
 package org.navalplanner.business.materials.daos;
 
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.materials.entities.Material;
+import org.navalplanner.business.materials.entities.MaterialCategory;
 
 /**
  * Interface IMaterialDAO
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public interface IMaterialDAO extends IGenericDAO<Material, Long> {
 
+    /**
+     * Searches {@link Material} by code and description (ilike matching) within
+     * categories
+     *
+     * @param text
+     * @param categories
+     * @return
+     */
+    List<Material> findMaterialsInCategories(String text,
+            Set<MaterialCategory> categories);
+
+    /**
+     * Searches {@link Material} by code and description (ilike matching) within
+     * category and its subcategories
+     *
+     * @param text
+     * @param materialCategory
+     * @return
+     */
+    List<Material> findMaterialsInCategoryAndSubCategories(String text,
+            MaterialCategory materialCategory);
+
     List<Material> getAll();
+
+    /**
+     * Returns all subcategories for materialCategory
+     *
+     * @param materialCategory
+     * @return
+     */
+    Set<MaterialCategory> getAllSubcategories(MaterialCategory materialCategory);
 
 }

@@ -24,6 +24,8 @@
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <?component name="listOrderElementLabels" inline="true" macroURI="_listOrderElementLabels.zul"?>
 <?component name="listOrderElementCriterionRequirements" inline="true" macroURI="_listOrderElementCriterionRequirements.zul"?>
+<?component name="listOrderElementMaterials" inline="true" macroURI="_listOrderElementMaterials.zul"?>
+
 <window id="${arg.top_id}">
     <tabbox>
         <tabs>
@@ -35,6 +37,7 @@
             <tab label="${i18n:_('Label')}" />
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
                  onClick = "controller.reloadHoursGroupOrder();"/>
+            <tab label="${i18n:_('Materials')}" />
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -110,6 +113,9 @@
             </tabpanel>
             <tabpanel>
                 <listOrderElementCriterionRequirements id="orderElementCriterionRequirements"/>
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementMaterials id="orderElementMaterials"/>
             </tabpanel>
         </tabpanels>
     </tabbox>

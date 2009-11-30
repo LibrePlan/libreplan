@@ -42,6 +42,7 @@ import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentFo
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
@@ -67,6 +68,8 @@ public abstract class OrderElement extends BaseEntity {
     private String description;
 
     protected Set<DirectAdvanceAssignment> directAdvanceAssignments = new HashSet<DirectAdvanceAssignment>();
+
+    protected Set<MaterialAssignment> materialAssignments = new HashSet<MaterialAssignment>();
 
     private Set<Label> labels = new HashSet<Label>();
 
@@ -262,6 +265,13 @@ public abstract class OrderElement extends BaseEntity {
 
     public void setInitDate(Date initDate) {
         this.initDate = initDate;
+        updateMaterialAssigmentsEstimatedAvailability(this.initDate);
+    }
+
+    private void updateMaterialAssigmentsEstimatedAvailability(Date estimatedAvailability) {
+        for (MaterialAssignment each: materialAssignments) {
+            each.setEstimatedAvailability(estimatedAvailability);
+        }
     }
 
     public Date getDeadline() {
@@ -644,4 +654,38 @@ public abstract class OrderElement extends BaseEntity {
             result.add(taskSource);
         }
     }
+
+    public Set<MaterialAssignment> getMaterialAssignments() {
+        return Collections.unmodifiableSet(materialAssignments);
+    }
+
+    public void addMaterialAssignment(MaterialAssignment materialAssignment) {
+        materialAssignments.add(materialAssignment);
+        materialAssignment.setOrderElement(this);
+    }
+
+    public void removeMaterialAssignment(MaterialAssignment materialAssignment) {
+        materialAssignments.remove(materialAssignment);
+    }
+
+    public double getTotalMaterialAssigmentUnits() {
+        double result = 0;
+
+        final Set<MaterialAssignment> materialAssigments = getMaterialAssignments();
+        for (MaterialAssignment each: materialAssigments) {
+            result += each.getUnits();
+        }
+        return result;
+    }
+
+    public BigDecimal getTotalMaterialAssigmentPrice() {
+        BigDecimal result = new BigDecimal(0);
+
+        final Set<MaterialAssignment> materialAssigments = getMaterialAssignments();
+        for (MaterialAssignment each: materialAssigments) {
+            result = result.add(each.getTotalPrice());
+        }
+        return result;
+    }
+
 }

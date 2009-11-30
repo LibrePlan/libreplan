@@ -40,7 +40,7 @@
         <component-class>org.navalplanner.web.common.components.NewDataSortableColumn</component-class>
         <extends>column</extends>
     </component>
-    
+
     <component>
         <component-name>schedulingStateToggler</component-name>
         <component-class>org.navalplanner.web.orders.SchedulingStateToggler</component-class>
@@ -59,6 +59,15 @@
                 <attribute-value>org.zkoss.zkplus.databind.ListModelConverter</attribute-value>
             </attribute>
         </annotation>
+    </component>
+
+    <component>
+        <component-name>doublebox</component-name>
+            <extends>doublebox</extends>
+            <property>
+                <property-name>format</property-name>
+                <property-value>###,##0.00####</property-value>
+            </property>
     </component>
 
 </language-addon>

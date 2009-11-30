@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="org.navalplanner.business.orders.entities">
+<hibernate-mapping package="org.navalplanner.business.orders.entities" default-access="field">
     <class name="OrderElement" abstract="true">
         <id name="id" access="property" type="long">
             <generator class="hilo" >
@@ -35,6 +35,11 @@
         <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true">
             <key column="ORDER_ELEMENT_ID" not-null="false"></key>
             <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement"/>
+        </set>
+
+        <set name="materialAssignments" cascade="all-delete-orphan" inverse="true">
+            <key column="ORDER_ELEMENT_ID" not-null="true" />
+            <one-to-many class="org.navalplanner.business.materials.entities.MaterialAssignment" />
         </set>
 
         <!-- Inverse navigation from OrderElement to OrderLineGroup -->

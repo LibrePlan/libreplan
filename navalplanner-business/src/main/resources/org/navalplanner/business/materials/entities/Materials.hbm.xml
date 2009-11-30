@@ -54,4 +54,31 @@
 
 </class>
 
+<!-- MaterialAssignment -->
+<class name="MaterialAssignment" table="MATERIAL_ASSIGMENT">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+        <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="units" />
+
+    <property name="unitPrice" column="UNIT_PRICE" />
+
+    <property name="estimatedAvailability" column="ESTIMATED_AVAILABILITY" />
+
+    <property name="status">
+        <type name="org.hibernate.type.EnumType">
+            <param name="enumClass">org.navalplanner.business.materials.entities.MaterialStatusEnum</param>
+        </type>
+    </property>
+
+    <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID" />
+
+    <many-to-one name="material" class="Material" column="MATERIAL_ID" />
+
+</class>
+
 </hibernate-mapping>

@@ -40,7 +40,7 @@ public class Material extends BaseEntity implements Comparable {
 
     private String description;
 
-    private BigDecimal defaultUnitPrice;
+    private BigDecimal defaultUnitPrice = new BigDecimal(0);
 
     private UnitTypeEnum unitType;
 
@@ -113,7 +113,6 @@ public class Material extends BaseEntity implements Comparable {
     @Override
     public int compareTo(Object arg0) {
       final Material material = (Material) arg0;
-
       return code.compareTo(material.getCode());
     }
 

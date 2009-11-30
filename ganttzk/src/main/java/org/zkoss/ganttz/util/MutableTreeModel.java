@@ -328,4 +328,33 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         return getChildCount(node) > 0;
     }
 
+    public boolean contains(T parent, T child) {
+        Node<T> parentNode = find(parent);
+        Node<T> childNode = find(child);
+
+        if (parentNode != null && (childNode != null && childNode.getParent() != null)) {
+            return childNode.getParent().equals(parentNode);
+        }
+        return false;
+    }
+
+    public List<T> asList() {
+        List<T> result = new ArrayList<T>();
+        asList(getRoot(), result);
+        return result;
+    }
+
+    private void asList(T root, List<T> result) {
+        List<T> list = new ArrayList<T>();
+        for (int i = 0; i < getChildCount(root); i++) {
+            final T child = getChild(root, i);
+            list.add(child);
+            result.add(child);
+        }
+
+        for (T each: list) {
+            asList(each, result);
+        }
+    }
+
 }

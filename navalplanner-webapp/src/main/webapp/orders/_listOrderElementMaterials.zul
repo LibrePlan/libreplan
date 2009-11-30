@@ -1,0 +1,180 @@
+<!--
+  This file is part of ###PROJECT_NAME###
+
+  Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+                     Desenvolvemento Tecnolóxico de Galicia
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<vbox id="${arg.id}"
+    apply="org.navalplanner.web.orders.AssignedMaterialsToOrderElementController" >
+
+    <zscript>
+        Object[] unitTypes = org.navalplanner.business.materials.entities.UnitTypeEnum
+            .values();
+        Object[] materialStatus = org.navalplanner.business.materials.entities.MaterialStatusEnum
+            .values();
+    </zscript>
+
+    <tabbox mold="accordion-lite">
+        <tabs>
+            <tab id="tbAssignedMaterials" label="${i18n:_('Materials')}" image="common/img/ico_bajar.png"/>
+            <tab label="${i18n:_('Material search')}" image="common/img/ico_bajar.png"/>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <hbox>
+                    <!-- Categories  -->
+                    <vbox>
+                        <panel title="${i18n:_('Categories')}" border="normal">
+                            <panelchildren>
+                                <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}" onClick="categoriesTree.clearSelection()" />
+                                <tree id="categoriesTree"
+                                        fixedLayout="false"
+                                        width="280px" rows="10" vflex="true" multiple="false"
+                                        onSelect="assignedMaterialsController.refreshMaterialAssigments()">
+                                    <treecols>
+                                        <treecol label="Name" />
+                                        <treecol label="Units" width="50px" />
+                                        <treecol label="Price" width="50px" />
+                                    </treecols>
+                                </tree>
+                            </panelchildren>
+                        </panel>
+                    </vbox>
+
+                    <!-- Materials -->
+                    <vbox>
+                        <panel title="${i18n:_('Materials')}"
+                            border="normal">
+                            <panelchildren>
+                                <newdatasortablegrid id="gridMaterials"
+                                    fixedLayout="false"
+                                    model="@{assignedMaterialsController.assignedMaterials}">
+                                    <columns>
+                                        <newdatasortablecolumn label="${i18n:_('Code')}" />
+                                        <newdatasortablecolumn label="${i18n:_('Date')}" />
+                                        <newdatasortablecolumn label="${i18n:_('Units')}" />
+                                        <newdatasortablecolumn label="${i18n:_('Unit type')}" />
+                                        <newdatasortablecolumn label="${i18n:_('Unit price')}" />
+                                        <newdatasortablecolumn label="${i18n:_('Total price')}" />
+                                        <newdatasortablecolumn label="${i18n:_('Category')}" />
+                                        <newdatasortablecolumn label="${i18n:_('Status')}" />
+                                        <newdatasortablecolumn label="" />
+                                    </columns>
+                                    <rows>
+                                        <row self="@{each='assignedMaterial'}" value="@{assignedMaterial}">
+                                            <textbox value="@{assignedMaterial.material.code}"
+                                                constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                                readonly="true" />
+                                            <datebox value="@{assignedMaterial.estimatedAvailability}" />
+                                            <doublebox value="@{assignedMaterial.units}"
+                                                onChange="assignedMaterialsController.updateTotalPrice(self.parent)" />
+                                            <listbox mold="select" model="@{unitTypes}"
+                                                selectedItem="@{assignedMaterial.material.unitType}" disabled="true" />
+                                            <doublebox value="@{assignedMaterial.unitPrice}"
+                                                onChange="assignedMaterialsController.updateTotalPrice(self.parent)" />
+                                            <doublebox value="@{assignedMaterial.totalPrice}"
+                                                onChange="assignedMaterialsController.updateUnitPrice(self.parent)" />
+                                            <listbox mold="select" model="@{materialStatus}"
+                                                selectedItem="@{assignedMaterial.status}"/>
+                                            <label value="@{assignedMaterial.material.category.name}" width="150px" />
+                                            <hbox>
+                                                <button sclass="icono"
+                                                    image="/common/img/ico_borrar1.png"
+                                                    hoverImage="/common/img/ico_borrar.png"
+                                                    tooltiptext="${i18n:_('Delete')}"
+                                                    onClick="assignedMaterialsController.showRemoveMaterialAssignmentDlg(self.parent.parent.value)">
+                                                </button>
+                                                <button label="${i18n:_('Split')}"
+                                                    tooltiptext="${i18n:_('Split assignment')}"
+                                                    onClick="assignedMaterialsController.showSplitMaterialAssignmentDlg(self.parent.parent.value)">
+                                                </button>
+                                            </hbox>
+                                        </row>
+                                    </rows>
+                                </newdatasortablegrid>
+                            </panelchildren>
+                        </panel>
+                    </vbox>
+                </hbox>
+            </tabpanel>
+
+            <tabpanel>
+                <!-- Material search -->
+                <hbox>
+                    <!-- Categories  -->
+                    <vbox>
+                        <panel title="${i18n:_('Categories')}" border="normal">
+                            <panelchildren>
+                                <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}" onClick="allCategoriesTree.clearSelection()" />
+                                <tree id="allCategoriesTree"
+                                        width="280px" rows="10" vflex="true" multiple="false">
+                                    <treecols>
+                                        <treecol label="Name" />
+                                    </treecols>
+                                </tree>
+                            </panelchildren>
+                        </panel>
+                    </vbox>
+
+                    <vbox>
+
+                        <!-- Found materials -->
+                        <panel title="${i18n:_('Materials')}" border="normal">
+                            <panelchildren>
+
+                                <!-- Search textbox -->
+                                <hbox>
+                                    <textbox id="txtSearchMaterial" width="250px" style="margin-top: 5px" />
+                                    <button label="${i18n:_('Search')}" style="margin-bottom: 5px"
+                                        onClick="assignedMaterialsController.searchMaterials()"/>
+                                    <button label="${i18n:_('Assign')}"
+                                        onClick="assignedMaterialsController.assignSelectedMaterials()" />
+                                </hbox>
+
+                                <listbox id="lbFoundMaterials"
+                                    fixedLayout="true"
+                                    model="@{assignedMaterialsController.matchingMaterials}">
+                                    <listhead sizable="true">
+                                        <listheader label="${i18n:_('Code')}" />
+                                        <listheader label="${i18n:_('Name')}" />
+                                        <listheader label="${i18n:_('Unit type')}" />
+                                        <listheader label="${i18n:_('Unit price')}" />
+                                        <listheader label="${i18n:_('Category')}" />
+                                    </listhead>
+                                    <listitem self="@{each='material'}" value="@{material}">
+                                        <listcell label="@{material.code}" />
+                                        <listcell label="@{material.description}" />
+                                        <listcell>
+                                            <listbox mold="select"
+                                                model="@{unitTypes}"
+                                                selectedItem="@{material.unitType}"
+                                                disabled="true" />
+                                        </listcell>
+                                        <listcell label="@{material.defaultUnitPrice}" />
+                                        <listcell label="@{material.category.name}" />
+                                    </listitem>
+                                </listbox>
+                            </panelchildren>
+                        </panel>
+                    </vbox>
+
+                </hbox>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+</vbox>

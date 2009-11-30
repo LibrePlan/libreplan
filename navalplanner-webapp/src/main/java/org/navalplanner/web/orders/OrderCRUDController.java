@@ -115,12 +115,14 @@ public class OrderCRUDController extends GenericForwardComposer {
         OrderElementController orderElementController = new OrderElementController();
         orderElementController.doAfterCompose(comp
                 .getFellow("editOrderElement"));
+
         setupOrderElementTreeController(comp, orderElementController);
         setupDetailsOrderElementController(comp);
         setupAsignedHoursToOrderElementController(comp);
         setupManageOrderElementAdvancesController(comp);
         setupAssignedLabelsToOrderElementController(comp);
         setupAssignedCriterionRequirementsToOrderElementController(comp);
+        setupAssignedMaterialsToOrderElementController(comp);
     }
 
     private void setupOrderElementTreeController(Component comp,
@@ -176,6 +178,16 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellowIfAny("orderElementCriterionRequirements");
         assignedCriterionRequirementController = (AssignedCriterionRequirementToOrderElementController) orderElementCriterionRequirements
                 .getVariable("assignedCriterionRequirementController", true);
+    }
+
+    private AssignedMaterialsToOrderElementController assignedMaterialsController;
+
+    private void setupAssignedMaterialsToOrderElementController(
+            Component comp) throws Exception {
+        Component orderElementMaterials = editWindow
+                .getFellowIfAny("orderElementMaterials");
+        assignedMaterialsController = (AssignedMaterialsToOrderElementController) orderElementMaterials
+                .getVariable("assignedMaterialsController", true);
     }
 
     public List<Order> getOrders() {
@@ -315,6 +327,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         manageOrderElementAdvancesController.openWindow(orderElementModel);
         assignedLabelsController.openWindow(orderElementModel);
         assignedCriterionRequirementController.openWindow(orderElementModel);
+        assignedMaterialsController.openWindow(orderElementModel);
     }
 
     private void clearEditWindow() {
