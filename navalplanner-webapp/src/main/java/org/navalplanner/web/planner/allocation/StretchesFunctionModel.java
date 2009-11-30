@@ -33,6 +33,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.daos.IAssignmentFunctionDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
@@ -79,6 +80,9 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     @Autowired
     private IAssignmentFunctionDAO assignmentFunctionDAO;
 
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
+
     @Override
     @Transactional(readOnly = true)
     public void init(StretchesFunction stretchesFunction, Task task) {
@@ -93,6 +97,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     }
 
     private void forceLoadTask() {
+        taskSourceDAO.reattach(task.getTaskSource());
         taskElementDAO.reattach(task);
         task.getHoursSpecifiedAtOrder();
         task.getCalendar();
