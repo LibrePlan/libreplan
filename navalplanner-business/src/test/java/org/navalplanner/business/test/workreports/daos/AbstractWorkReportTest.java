@@ -49,7 +49,8 @@ public abstract class AbstractWorkReportTest {
     IOrderElementDAO orderElementDAO;
 
     public WorkReportType createValidWorkReportType() {
-        return WorkReportType.create(UUID.randomUUID().toString());
+        return WorkReportType.create(UUID.randomUUID().toString(), UUID
+                .randomUUID().toString());
     }
 
     public WorkReportLine createValidWorkReportLine() {

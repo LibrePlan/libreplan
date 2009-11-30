@@ -29,6 +29,7 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.workreports.ValueObjects.DescriptionValue;
 
 /**
  * @author Diego Pino García <dpino@igalia.com>
@@ -65,6 +66,8 @@ public class WorkReport extends BaseEntity {
 
     @Valid
     private Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
+
+    private Set<DescriptionValue> descriptionValues = new HashSet<DescriptionValue>();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -124,5 +127,13 @@ public class WorkReport extends BaseEntity {
 
     public void removeWorkReportLine(WorkReportLine workReportLine) {
         workReportLines.remove(workReportLine);
+    }
+
+    public Set<DescriptionValue> getDescriptionValues() {
+        return descriptionValues;
+    }
+
+    public void setDescriptionValues(Set<DescriptionValue> descriptionValues) {
+        this.descriptionValues = descriptionValues;
     }
 }
