@@ -36,4 +36,13 @@ public class AssignmentFunction extends BaseEntity {
     public AssignmentFunction() {
 
     }
+
+    /**
+     * This method applies the function to the received resourceAllocation
+     * <i>This method is intended to be overrided by subclasses</i>
+     * @param resourceAllocation
+     */
+    public void applyTo(ResourceAllocation<?> resourceAllocation) {
+        // override at subclasses
+    }
 }

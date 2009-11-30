@@ -133,4 +133,9 @@ public class StretchesFunction extends AssignmentFunction {
         return true;
     }
 
+    @Override
+    public void applyTo(ResourceAllocation<?> resourceAllocation) {
+        // TODO implement application of streches function to resourceAllocation
+    }
+
 }
