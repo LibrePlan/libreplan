@@ -55,4 +55,26 @@
 
 </class>
 
+<class name="WorkReportLabelTypeAssigment" table="WORK_REPORT_LABEL_TYPE_ASSIGMENT">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="labelsSharedByLines"/>
+
+    <property name="position">
+      <type name="org.hibernate.type.EnumType">
+        <param name="enumClass">org.navalplanner.business.workreports.entities.PositionInWorkReportEnum</param>
+      </type>
+    </property>
+
+    <many-to-one name="labelType" class="org.navalplanner.business.labels.entities.LabelType" column="LABEL_TYPE_ID" />
+
+    <many-to-one name="defaultLabel" class="org.navalplanner.business.labels.entities.Label" column="LABEL_ID" />
+
+</class>
+
 </hibernate-mapping>
