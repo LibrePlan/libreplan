@@ -478,11 +478,10 @@ public class ResourceAllocationController extends GenericForwardComposer {
         private void renderResourceAllocation(Listitem item,
                 final AllocationRow row) throws Exception {
             item.setValue(row);
-
             // Label fields are fixed, can only be viewed
-            appendLabel(item, row.getName());
-            bindHours(appendIntbox(item), row);
-            bindResourcesPerDay(appendDecimalbox(item), row);
+            append(item, new Label(row.getName()));
+            bindHours(append(item, new Intbox()), row);
+            bindResourcesPerDay(append(item, new Decimalbox()), row);
             // On click delete button
             Button deleteButton = appendDeleteButton(item);
             formBinder.setDeleteButtonFor(row, deleteButton);
@@ -501,20 +500,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
 
         /**
-         * Appends {@link Label} to {@link Listitem}
-         * @param listitem
-         * @param name
-         *            value for {@link Label}
-         */
-        private void appendLabel(Listitem listitem, String name) {
-            Label label = new Label(name);
-
-            Listcell listCell = new Listcell();
-            listCell.appendChild(label);
-            listitem.appendChild(listCell);
-        }
-
-        /**
          * Appends delete {@link Button} to {@link Listitem}
          * @param listitem
          *            value for {@link Button}
@@ -526,36 +511,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
             button.setImage("/common/img/ico_borrar1.png");
             button.setHoverImage("/common/img/ico_borrar.png");
             button.setTooltiptext(_("Delete"));
-
-            Listcell listCell = new Listcell();
-            listCell.appendChild(button);
-            listitem.appendChild(listCell);
-
-            return button;
+            return append(listitem, button);
         }
 
-        /**
-         * Append a Textbox @{link Percentage} to listItem
-         *
-         * @param listItem
-         */
-        private Decimalbox appendDecimalbox(Listitem item) {
-            Decimalbox decimalbox = new Decimalbox();
-
-            // Insert textbox in listcell and append to listItem
-            Listcell listCell = new Listcell();
-            listCell.appendChild(decimalbox);
-            item.appendChild(listCell);
-
-            return decimalbox;
-        }
-
-        private Intbox appendIntbox(Listitem item) {
-            Intbox result = new Intbox();
+        private <T extends Component> T append(Listitem item, T component) {
             Listcell listcell = new Listcell();
-            listcell.appendChild(result);
+            listcell.appendChild(component);
             item.appendChild(listcell);
-            return result;
+            return component;
         }
 
         private void bindResourcesPerDay(final Decimalbox decimalbox,
