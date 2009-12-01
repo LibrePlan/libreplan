@@ -21,12 +21,9 @@ package org.navalplanner.web.planner.allocation;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -37,60 +34,12 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
-import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
 public class AllocationResult {
-
-    private static Map<ResourceAllocation<?>, ResourceAllocation<?>> translation(
-            Map<? extends AllocationModification, ResourceAllocation<?>> fromDetachedToAttached) {
-        Map<ResourceAllocation<?>, ResourceAllocation<?>> result = new HashMap<ResourceAllocation<?>, ResourceAllocation<?>>();
-        for (Entry<? extends AllocationModification, ResourceAllocation<?>> entry : fromDetachedToAttached
-                .entrySet()) {
-            result
-                    .put(entry.getKey().getBeingModified(), entry
-                            .getValue());
-        }
-        return result;
-    }
-
-    private static List<Task.ModifiedAllocation> calculateModified(
-            Map<ResourceAllocation<?>, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
-        List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
-        for (Entry<ResourceAllocation<?>, ResourceAllocation<?>> entry : fromDetachedAllocationToAttached
-                .entrySet()) {
-            if (entry.getValue() != null) {
-                result.add(new ModifiedAllocation(entry.getValue(), entry
-                        .getKey()));
-            }
-        }
-        return result;
-    }
-
-    private static List<ResourceAllocation<?>> calculateNew(
-            Map<ResourceAllocation<?>, ResourceAllocation<?>> fromDetachedToAttached) {
-        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
-        for (Entry<ResourceAllocation<?>, ResourceAllocation<?>> entry : fromDetachedToAttached
-                .entrySet()) {
-            if (entry.getValue() == null) {
-                result.add(entry.getKey());
-            }
-        }
-        return result;
-    }
-
-    public static AllocationResult create(
-            Task task,
-            CalculatedValue calculatedValue,
-            AggregateOfResourceAllocations aggregate,
-            Map<? extends AllocationModification, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
-        Map<ResourceAllocation<?>, ResourceAllocation<?>> translation = translation(fromDetachedAllocationToAttached);
-        return new AllocationResult(task, calculatedValue, aggregate,
-                calculateNew(translation), calculateModified(translation));
-    }
 
     public static AllocationResult create(Task task,
             CalculatedValue calculatedValue, List<AllocationRow> rows) {
