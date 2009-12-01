@@ -24,14 +24,20 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
 import org.zkforge.timeplot.Plotinfo;
+import org.zkforge.timeplot.Timeplot;
+import org.zkforge.timeplot.geometry.TimeGeometry;
+import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.util.Interval;
 
 
@@ -251,6 +257,40 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         }
 
         indicators.put(EarnedValueType.SPI, spi);
+    }
+
+    protected abstract Set<EarnedValueType> getSelectedIndicators();
+
+    @Override
+    public void fillChart(Timeplot chart, Interval interval, Integer size) {
+        chart.getChildren().clear();
+        chart.invalidate();
+        resetMinimumAndMaximumValueForChart();
+
+        calculateValues(interval);
+
+        List<Plotinfo> plotinfos = new ArrayList<Plotinfo>();
+        for (EarnedValueType indicator : getSelectedIndicators()) {
+            Plotinfo plotinfo = createPlotInfo(indicators.get(indicator),
+                    interval, indicator.getColor());
+            plotinfos.add(plotinfo);
+        }
+
+        if (plotinfos.isEmpty()) {
+            // If user doesn't select any indicator, it is needed to create
+            // a default Plotinfo in order to avoid errors on Timemplot
+            plotinfos.add(new Plotinfo());
+        }
+
+        ValueGeometry valueGeometry = getValueGeometry();
+        TimeGeometry timeGeometry = getTimeGeometry(interval);
+
+        for (Plotinfo plotinfo : plotinfos) {
+            appendPlotinfo(chart, plotinfo, valueGeometry, timeGeometry);
+        }
+
+        chart.setWidth(size + "px");
+        chart.setHeight("100px");
     }
 
 }

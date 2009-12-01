@@ -307,7 +307,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
     }
 
-    private Set<EarnedValueType> getSelectedIndicators() {
+    private Set<EarnedValueType> getEarnedValueSelectedIndicators() {
         Set<EarnedValueType> result = new HashSet<EarnedValueType>();
         for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
             if (checkbox.isChecked()) {
@@ -638,38 +638,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private class CompanyEarnedValueChartFiller extends EarnedValueChartFiller {
 
-        @Override
-        public void fillChart(Timeplot chart, Interval interval, Integer size) {
-            chart.getChildren().clear();
-            chart.invalidate();
-            resetMinimumAndMaximumValueForChart();
-
-            calculateValues(interval);
-
-            List<Plotinfo> plotinfos = new ArrayList<Plotinfo>();
-            for (EarnedValueType indicator : getSelectedIndicators()) {
-                Plotinfo plotinfo = createPlotInfo(indicators.get(indicator),
-                        interval, indicator.getColor());
-                plotinfos.add(plotinfo);
-            }
-
-            if (plotinfos.isEmpty()) {
-                // If user doesn't select any indicator, it is needed to create
-                // a default Plotinfo in order to avoid errors on Timemplot
-                plotinfos.add(new Plotinfo());
-            }
-
-            ValueGeometry valueGeometry = getValueGeometry();
-            TimeGeometry timeGeometry = getTimeGeometry(interval);
-
-            for (Plotinfo plotinfo : plotinfos) {
-                appendPlotinfo(chart, plotinfo, valueGeometry, timeGeometry);
-            }
-
-            chart.setWidth(size + "px");
-            chart.setHeight("100px");
-        }
-
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
             List<TaskElement> list = taskElementDAO.list(TaskElement.class);
 
@@ -736,6 +704,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     advanceCost, interval.getStart(), interval.getFinish()));
         }
 
+        @Override
+        protected Set<EarnedValueType> getSelectedIndicators() {
+            return getEarnedValueSelectedIndicators();
+        }
     }
 
 }
