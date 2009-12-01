@@ -363,7 +363,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         public void fillChart(Timeplot chart, Interval interval, Integer size) {
             chart.getChildren().clear();
             chart.invalidate();
-            resetMaximunValueForChart();
+            resetMinimumAndMaximumValueForChart();
 
             Plotinfo plotInfoLoad = getLoadPlotInfo(interval.getStart(),
                     interval.getFinish());
@@ -379,7 +379,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             plotInfoOverload.setLineColor("00FF00");
             plotInfoOverload.setLineWidth(1);
 
-            ValueGeometry valueGeometry = getValueGeometry(getMaximunValueForChart());
+            ValueGeometry valueGeometry = getValueGeometry();
             valueGeometry.setGridType("short");
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
@@ -571,7 +571,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         public void fillChart(Timeplot chart, Interval interval, Integer size) {
             chart.getChildren().clear();
             chart.invalidate();
-            resetMaximunValueForChart();
+            resetMinimumAndMaximumValueForChart();
 
             Plotinfo assignmentsPlotinfo = getAssignmentsPlotinfo(interval);
             assignmentsPlotinfo.setLineColor("0000FF");
@@ -585,7 +585,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             advancePlotinfo.setLineColor("00FF00");
             advancePlotinfo.setLineWidth(1);
 
-            ValueGeometry valueGeometry = getValueGeometry(getMaximunValueForChart());
+            ValueGeometry valueGeometry = getValueGeometry();
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
             assignmentsPlotinfo.setValueGeometry(valueGeometry);

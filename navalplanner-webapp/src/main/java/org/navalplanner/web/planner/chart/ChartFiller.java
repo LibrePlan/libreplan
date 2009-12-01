@@ -279,7 +279,8 @@ public abstract class ChartFiller implements IChartFiller {
 
     private ZoomLevel zoomLevel = ZoomLevel.DETAIL_ONE;
 
-    private BigDecimal maximunValueForChart = BigDecimal.ZERO;
+    private BigDecimal minimumValueForChart = BigDecimal.ZERO;
+    private BigDecimal maximumValueForChart = BigDecimal.ZERO;
 
     @Override
     public abstract void fillChart(Timeplot chart, Interval interval,
@@ -302,7 +303,9 @@ public abstract class ChartFiller implements IChartFiller {
             return "";
         }
 
-        setMaximunValueForChartIfGreater(Collections.max(mapDayAssignments
+        setMinimumValueForChartIfLess(Collections.min(mapDayAssignments
+                .values()));
+        setMaximumValueForChartIfGreater(Collections.max(mapDayAssignments
                 .values()));
 
         HttpServletRequest request = (HttpServletRequest) Executions
@@ -312,9 +315,15 @@ public abstract class ChartFiller implements IChartFiller {
         return uri;
     }
 
-    private void setMaximunValueForChartIfGreater(BigDecimal max) {
-        if (maximunValueForChart.compareTo(max) < 0) {
-            maximunValueForChart = max;
+    private void setMinimumValueForChartIfLess(BigDecimal min) {
+        if (minimumValueForChart.compareTo(min) > 0) {
+            minimumValueForChart = min;
+        }
+    }
+
+    private void setMaximumValueForChartIfGreater(BigDecimal max) {
+        if (maximumValueForChart.compareTo(max) < 0) {
+            maximumValueForChart = max;
         }
     }
 
@@ -326,12 +335,17 @@ public abstract class ChartFiller implements IChartFiller {
         return zoomLevel.equals(ZoomLevel.DETAIL_FIVE);
     }
 
-    protected void resetMaximunValueForChart() {
-        this.maximunValueForChart = BigDecimal.ZERO;
+    protected void resetMinimumAndMaximumValueForChart() {
+        this.minimumValueForChart = BigDecimal.ZERO;
+        this.maximumValueForChart = BigDecimal.ZERO;
     }
 
-    protected BigDecimal getMaximunValueForChart() {
-        return maximunValueForChart;
+    protected BigDecimal getMinimumValueForChart() {
+        return minimumValueForChart;
+    }
+
+    protected BigDecimal getMaximumValueForChart() {
+        return maximumValueForChart;
     }
 
     protected SortedMap<LocalDate, Integer> groupByWeek(
@@ -385,10 +399,10 @@ public abstract class ChartFiller implements IChartFiller {
     }
 
     @Override
-    public ValueGeometry getValueGeometry(BigDecimal maximum) {
+    public ValueGeometry getValueGeometry() {
         DefaultValueGeometry valueGeometry = new DefaultValueGeometry();
-        valueGeometry.setMin(0);
-        valueGeometry.setMax(maximum.intValue());
+        valueGeometry.setMin(getMinimumValueForChart().intValue());
+        valueGeometry.setMax(getMaximumValueForChart().intValue());
         valueGeometry.setGridColor("#000000");
         valueGeometry.setAxisLabelsPlacement("left");
 

@@ -453,7 +453,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         public void fillChart(Timeplot chart, Interval interval, Integer size) {
             chart.getChildren().clear();
             chart.invalidate();
-            resetMaximunValueForChart();
+            resetMinimumAndMaximumValueForChart();
 
             List<DayAssignment> orderDayAssignments = order.getDayAssignments();
             SortedMap<LocalDate, Map<Resource, Integer>> orderDayAssignmentsGrouped = groupDayAssignmentsByDayAndResource(orderDayAssignments);
@@ -485,7 +485,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             plotOtherLoad.setFillColor("00FF00");
             plotOtherOverload.setLineColor("FFFF00");
 
-            ValueGeometry valueGeometry = getValueGeometry(getMaximunValueForChart());
+            ValueGeometry valueGeometry = getValueGeometry();
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
             plotOrderLoad.setValueGeometry(valueGeometry);
@@ -626,7 +626,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         public void fillChart(Timeplot chart, Interval interval, Integer size) {
             chart.getChildren().clear();
             chart.invalidate();
-            resetMaximunValueForChart();
+            resetMinimumAndMaximumValueForChart();
 
             Plotinfo assignmentsPlotinfo = getAssignmentsPlotinfo(interval);
             assignmentsPlotinfo.setLineColor("0000FF");
@@ -640,7 +640,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             advancePlotinfo.setLineColor("00FF00");
             advancePlotinfo.setLineWidth(1);
 
-            ValueGeometry valueGeometry = getValueGeometry(getMaximunValueForChart());
+            ValueGeometry valueGeometry = getValueGeometry();
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
             assignmentsPlotinfo.setValueGeometry(valueGeometry);

@@ -44,7 +44,7 @@ public interface IChartFiller {
 
     TimeGeometry getTimeGeometry(Interval interval);
 
-    ValueGeometry getValueGeometry(BigDecimal maximum);
+    ValueGeometry getValueGeometry();
 
     SortedMap<LocalDate, Map<Resource, Integer>> groupDayAssignmentsByDayAndResource(
             List<DayAssignment> dayAssignments);
