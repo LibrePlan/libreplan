@@ -34,13 +34,13 @@ import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Resource;
 
-public abstract class AllocationBeingModified {
+public abstract class ResourcesPerDayModification {
 
-    private static class GenericAllocationBeingModified extends
-            AllocationBeingModified {
+    private static class OnGenericAllocation extends
+            ResourcesPerDayModification {
         private final GenericResourceAllocation genericAllocation;
 
-        GenericAllocationBeingModified(
+        OnGenericAllocation(
                 GenericResourceAllocation resourceAllocation,
                 ResourcesPerDay resourcesPerDay,
                 Collection<? extends Resource> resources) {
@@ -68,12 +68,12 @@ public abstract class AllocationBeingModified {
         }
     }
 
-    private static class SpecificAllocationBeingModified extends
-            AllocationBeingModified {
+    private static class OnSpecificAllocation extends
+            ResourcesPerDayModification {
 
         private final SpecificResourceAllocation resourceAllocation;
 
-        SpecificAllocationBeingModified(
+        OnSpecificAllocation(
                 SpecificResourceAllocation resourceAllocation,
                 ResourcesPerDay resourcesPerDay,
                 Collection<? extends Resource> resources) {
@@ -99,29 +99,29 @@ public abstract class AllocationBeingModified {
         }
     }
 
-    public static AllocationBeingModified create(
+    public static ResourcesPerDayModification create(
             GenericResourceAllocation resourceAllocation,
             ResourcesPerDay resourcesPerDay, List<Resource> resources) {
-        return new GenericAllocationBeingModified(resourceAllocation,
+        return new OnGenericAllocation(resourceAllocation,
                 resourcesPerDay, resources);
     }
 
-    public static AllocationBeingModified create(
+    public static ResourcesPerDayModification create(
             SpecificResourceAllocation resourceAllocation,
             ResourcesPerDay resourcesPerDay) {
-        return new SpecificAllocationBeingModified(resourceAllocation,
+        return new OnSpecificAllocation(resourceAllocation,
                 resourcesPerDay, Collections.singletonList(resourceAllocation
                         .getResource()));
     }
 
-    public static List<AllocationBeingModified> fromExistent(
+    public static List<ResourcesPerDayModification> fromExistent(
             Collection<? extends ResourceAllocation<?>> allocations) {
-        List<AllocationBeingModified> result = new ArrayList<AllocationBeingModified>();
+        List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
             ResourcesPerDay perDay = resourceAllocation
                     .getResourcesPerDay();
             Validate.notNull(perDay);
-            result.add(resourceAllocation.asAllocationBeingModified());
+            result.add(resourceAllocation.asResourcesPerDayModification());
         }
         return result;
     }
@@ -132,7 +132,7 @@ public abstract class AllocationBeingModified {
 
     private final List<Resource> resourcesOnWhichApplyAllocation;
 
-    private AllocationBeingModified(
+    private ResourcesPerDayModification(
             ResourceAllocation<?> resourceAllocation,
             ResourcesPerDay resourcesPerDay,
             Collection<? extends Resource> resources) {
@@ -152,9 +152,9 @@ public abstract class AllocationBeingModified {
     }
 
     public static List<ResourceAllocation<?>> stripResourcesPerDay(
-            Collection<AllocationBeingModified> withResourcesPerDay) {
+            Collection<ResourcesPerDayModification> withResourcesPerDay) {
         List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
-        for (AllocationBeingModified r : withResourcesPerDay) {
+        for (ResourcesPerDayModification r : withResourcesPerDay) {
             result.add(r.getBeingModified());
         }
         return result;

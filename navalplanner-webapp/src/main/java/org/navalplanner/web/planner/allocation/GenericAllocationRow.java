@@ -32,7 +32,7 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
@@ -92,10 +92,10 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     @Override
-    public AllocationBeingModified toAllocationBeingModified(Task task) {
+    public ResourcesPerDayModification toResourcesPerDayModification(Task task) {
         GenericResourceAllocation genericResourceAllocation = GenericResourceAllocation
                 .create(task, criterions);
-        return AllocationBeingModified.create(genericResourceAllocation,
+        return ResourcesPerDayModification.create(genericResourceAllocation,
                 getResourcesPerDay(), this.resources);
     }
 

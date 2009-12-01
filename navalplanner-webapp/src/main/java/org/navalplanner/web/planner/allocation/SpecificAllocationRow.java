@@ -29,7 +29,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -100,11 +100,11 @@ public class SpecificAllocationRow extends AllocationRow {
     private Resource resource;
 
     @Override
-    public AllocationBeingModified toAllocationBeingModified(Task task) {
+    public ResourcesPerDayModification toResourcesPerDayModification(Task task) {
         SpecificResourceAllocation specific = SpecificResourceAllocation
                 .create(task);
         specific.setResource(resource);
-        return AllocationBeingModified.create(specific, getResourcesPerDay());
+        return ResourcesPerDayModification.create(specific, getResourcesPerDay());
     }
 
     public Resource getResource() {

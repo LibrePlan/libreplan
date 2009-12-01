@@ -30,7 +30,7 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.event.EventListener;
@@ -107,7 +107,7 @@ public abstract class AllocationRow {
                 SimpleConstraint.NO_NEGATIVE));
     }
 
-    public abstract AllocationBeingModified toAllocationBeingModified(
+    public abstract ResourcesPerDayModification toResourcesPerDayModification(
             Task task);
 
     public boolean isCreating() {

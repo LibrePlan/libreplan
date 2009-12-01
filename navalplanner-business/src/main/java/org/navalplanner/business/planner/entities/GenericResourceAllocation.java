@@ -33,7 +33,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
-import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -272,15 +272,15 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    public AllocationBeingModified asAllocationBeingModified() {
-        return AllocationBeingModified.create(this,
+    public ResourcesPerDayModification asResourcesPerDayModification() {
+        return ResourcesPerDayModification.create(this,
                 getResourcesPerDay(), getAssociatedResources());
     }
 
     @Override
-    public AllocationBeingModified withDesiredResourcesPerDay(
+    public ResourcesPerDayModification withDesiredResourcesPerDay(
             ResourcesPerDay resourcesPerDay) {
-        return AllocationBeingModified.create(this, resourcesPerDay,
+        return ResourcesPerDayModification.create(this, resourcesPerDay,
                 getAssociatedResources());
     }
 

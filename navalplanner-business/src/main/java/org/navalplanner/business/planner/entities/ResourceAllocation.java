@@ -37,7 +37,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForSpecifiedResourcesPerDayAndHours;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
 import org.navalplanner.business.resources.entities.Resource;
@@ -101,18 +101,18 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public static AllocationsCurried allocating(
-            List<AllocationBeingModified> resourceAllocations) {
+            List<ResourcesPerDayModification> resourceAllocations) {
         return new AllocationsCurried(resourceAllocations);
     }
 
     public static class AllocationsCurried {
 
-        private final List<AllocationBeingModified> allocations;
+        private final List<ResourcesPerDayModification> allocations;
 
         private final Task task;
 
         public AllocationsCurried(
-                List<AllocationBeingModified> resourceAllocations) {
+                List<ResourcesPerDayModification> resourceAllocations) {
             Validate.notNull(resourceAllocations);
             Validate.notEmpty(resourceAllocations);
             Validate.noNullElements(resourceAllocations);
@@ -125,8 +125,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         private static void checkNoAllocationWithZeroResourcesPerDay(
-                List<AllocationBeingModified> allocations) {
-            for (AllocationBeingModified r : allocations) {
+                List<ResourcesPerDayModification> allocations) {
+            for (ResourcesPerDayModification r : allocations) {
                 if (isZero(r.getGoal().getAmount())) {
                     throw new IllegalArgumentException(
                             "all resources per day must be no zero");
@@ -139,9 +139,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         private static void checkNoOneHasNullTask(
-                List<AllocationBeingModified> allocations) {
-            for (AllocationBeingModified allocationBeingModified : allocations) {
-                if (allocationBeingModified
+                List<ResourcesPerDayModification> allocations) {
+            for (ResourcesPerDayModification resourcesPerDayModification : allocations) {
+                if (resourcesPerDayModification
                         .getBeingModified().getTask() == null) {
                     throw new IllegalArgumentException(
                             "all allocations must have task");
@@ -150,9 +150,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         private static void checkAllHaveSameTask(
-                List<AllocationBeingModified> resourceAllocations) {
+                List<ResourcesPerDayModification> resourceAllocations) {
             Task task = null;
-            for (AllocationBeingModified r : resourceAllocations) {
+            for (ResourcesPerDayModification r : resourceAllocations) {
                 if (task == null) {
                     task = r.getBeingModified().getTask();
                 }
@@ -169,7 +169,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 protected List<DayAssignment> createAssignmentsAtDay(
-                        AllocationBeingModified allocation, LocalDate day,
+                        ResourcesPerDayModification allocation, LocalDate day,
                         Integer limit) {
                     return allocation.createAssignmentsAtDay(day, limit);
                 }
@@ -241,10 +241,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return task;
     }
 
-    public abstract AllocationBeingModified withDesiredResourcesPerDay(
+    public abstract ResourcesPerDayModification withDesiredResourcesPerDay(
             ResourcesPerDay resourcesPerDay);
 
-    public abstract AllocationBeingModified asAllocationBeingModified();
+    public abstract ResourcesPerDayModification asResourcesPerDayModification();
 
     public abstract IAllocatable withPreviousAssociatedResources();
 

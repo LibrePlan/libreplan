@@ -35,7 +35,7 @@ import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -45,19 +45,19 @@ public class ResourceAllocationsBeingEdited {
     public static AllocationResult createInitialAllocation(Task task) {
         Set<ResourceAllocation<?>> resourceAllocations = task
                 .getResourceAllocations();
-        Map<AllocationBeingModified, ResourceAllocation<?>> forModification = forModification(resourceAllocations);
+        Map<ResourcesPerDayModification, ResourceAllocation<?>> forModification = forModification(resourceAllocations);
         AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
-                AllocationBeingModified.stripResourcesPerDay(forModification
+                ResourcesPerDayModification.stripResourcesPerDay(forModification
                         .keySet()));
         return new AllocationResult(task, task.getCalculatedValue(), aggregate,
                 forModification);
     }
 
-    private static Map<AllocationBeingModified, ResourceAllocation<?>> forModification(
+    private static Map<ResourcesPerDayModification, ResourceAllocation<?>> forModification(
             Collection<ResourceAllocation<?>> resourceAllocations) {
-        Map<AllocationBeingModified, ResourceAllocation<?>> result = new HashMap<AllocationBeingModified, ResourceAllocation<?>>();
+        Map<ResourcesPerDayModification, ResourceAllocation<?>> result = new HashMap<ResourcesPerDayModification, ResourceAllocation<?>>();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            result.put(resourceAllocation.copy().asAllocationBeingModified(),
+            result.put(resourceAllocation.copy().asResourcesPerDayModification(),
                     resourceAllocation);
         }
         return result;
@@ -188,8 +188,8 @@ public class ResourceAllocationsBeingEdited {
 
     public AllocationResult doAllocation() {
         checkInvalidValues();
-        Map<AllocationBeingModified, ResourceAllocation<?>> fromDetachedToAttached = getAllocationsWithRelationshipsToOriginal();
-        List<AllocationBeingModified> allocations = asList(fromDetachedToAttached);
+        Map<ResourcesPerDayModification, ResourceAllocation<?>> fromDetachedToAttached = getAllocationsWithRelationshipsToOriginal();
+        List<ResourcesPerDayModification> allocations = asList(fromDetachedToAttached);
         if (!allocations.isEmpty()) {
             switch (calculatedValue) {
             case NUMBER_OF_HOURS:
@@ -205,40 +205,40 @@ public class ResourceAllocationsBeingEdited {
             }
         }
         AllocationResult result = new AllocationResult(task, calculatedValue,
-                new AggregateOfResourceAllocations(AllocationBeingModified
+                new AggregateOfResourceAllocations(ResourcesPerDayModification
                         .stripResourcesPerDay(allocations)),
                 fromDetachedToAttached);
         daysDuration = result.getDaysDuration();
         return result;
     }
 
-    private Map<AllocationBeingModified, ResourceAllocation<?>> getAllocationsWithRelationshipsToOriginal() {
+    private Map<ResourcesPerDayModification, ResourceAllocation<?>> getAllocationsWithRelationshipsToOriginal() {
         Map<AllocationRow, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask = allocationsWithTheirRelatedAllocationsOnTask();
-        Map<AllocationBeingModified, ResourceAllocation<?>> fromDetachedToAttached = instantiate(allocationsWithTheirRelatedAllocationsOnTask);
+        Map<ResourcesPerDayModification, ResourceAllocation<?>> fromDetachedToAttached = instantiate(allocationsWithTheirRelatedAllocationsOnTask);
         return fromDetachedToAttached;
     }
 
-    private List<AllocationBeingModified> asList(
-            Map<AllocationBeingModified, ResourceAllocation<?>> map) {
-        return new ArrayList<AllocationBeingModified>(
+    private List<ResourcesPerDayModification> asList(
+            Map<ResourcesPerDayModification, ResourceAllocation<?>> map) {
+        return new ArrayList<ResourcesPerDayModification>(
                 map.keySet());
     }
 
-    private Map<AllocationBeingModified, ResourceAllocation<?>> instantiate(
+    private Map<ResourcesPerDayModification, ResourceAllocation<?>> instantiate(
             Map<AllocationRow, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask) {
-        Map<AllocationBeingModified, ResourceAllocation<?>> result = new HashMap<AllocationBeingModified, ResourceAllocation<?>>();
+        Map<ResourcesPerDayModification, ResourceAllocation<?>> result = new HashMap<ResourcesPerDayModification, ResourceAllocation<?>>();
         for (Entry<AllocationRow, ResourceAllocation<?>> entry : allocationsWithTheirRelatedAllocationsOnTask
                 .entrySet()) {
             AllocationRow key = entry.getKey();
-            AllocationBeingModified instantiated = instantiate(key);
+            ResourcesPerDayModification instantiated = instantiate(key);
             result.put(instantiated, entry.getValue());
             key.setLast(instantiated.getBeingModified());
         }
         return result;
     }
 
-    private AllocationBeingModified instantiate(AllocationRow row) {
-        return row.toAllocationBeingModified(task);
+    private ResourcesPerDayModification instantiate(AllocationRow row) {
+        return row.toResourcesPerDayModification(task);
     }
 
     public FormBinder createFormBinder(

@@ -26,21 +26,21 @@ import org.joda.time.LocalDate;
 
 public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
 
-    private List<AllocationBeingModified> allocations;
+    private List<ResourcesPerDayModification> allocations;
 
     public AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
-            List<AllocationBeingModified> allocations) {
+            List<ResourcesPerDayModification> allocations) {
         this.allocations = allocations;
     }
 
     public void allocateOnTaskLength() {
-        for (AllocationBeingModified allocation : allocations) {
+        for (ResourcesPerDayModification allocation : allocations) {
             allocation.applyAllocationOnAllTaskLength();
         }
     }
 
     public void allocateUntil(LocalDate endExclusive) {
-        for (AllocationBeingModified allocation : allocations) {
+        for (ResourcesPerDayModification allocation : allocations) {
             allocation.applyAllocationUntil(endExclusive);
         }
     }

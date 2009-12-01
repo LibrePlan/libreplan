@@ -36,7 +36,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
-import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -45,9 +45,9 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Allocatio
 public class AllocationResult {
 
     private static Map<ResourceAllocation<?>, ResourceAllocation<?>> translation(
-            Map<AllocationBeingModified, ResourceAllocation<?>> fromDetachedToAttached) {
+            Map<ResourcesPerDayModification, ResourceAllocation<?>> fromDetachedToAttached) {
         Map<ResourceAllocation<?>, ResourceAllocation<?>> result = new HashMap<ResourceAllocation<?>, ResourceAllocation<?>>();
-        for (Entry<AllocationBeingModified, ResourceAllocation<?>> entry : fromDetachedToAttached
+        for (Entry<ResourcesPerDayModification, ResourceAllocation<?>> entry : fromDetachedToAttached
                 .entrySet()) {
             result
                     .put(entry.getKey().getBeingModified(), entry
@@ -70,7 +70,7 @@ public class AllocationResult {
             Task task,
             CalculatedValue calculatedValue,
             AggregateOfResourceAllocations aggregate,
-            Map<AllocationBeingModified, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
+            Map<ResourcesPerDayModification, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
         Validate.notNull(aggregate);
         Validate.notNull(calculatedValue);
         Validate.notNull(task);

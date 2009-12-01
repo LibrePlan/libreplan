@@ -37,7 +37,7 @@ import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
-import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -289,7 +289,7 @@ public class Task extends TaskElement {
     protected void moveAllocations() {
         List<ModifiedAllocation> copied = ModifiedAllocation
                 .copy(resourceAllocations);
-        List<AllocationBeingModified> allocations = AllocationBeingModified
+        List<ResourcesPerDayModification> allocations = ResourcesPerDayModification
                 .fromExistent(ModifiedAllocation.modified(copied));
         if (allocations.isEmpty()) {
             return;
