@@ -74,9 +74,9 @@ class FormBinder {
 
     private Button applyButton;
 
-    private Map<AllocationDTO, Decimalbox> resourcesPerDayInputsByAllocationDTO = new HashMap<AllocationDTO, Decimalbox>();
+    private Map<AllocationRow, Decimalbox> resourcesPerDayInputsByAllocationRow = new HashMap<AllocationRow, Decimalbox>();
 
-    private Map<AllocationDTO, Intbox> hoursIntboxesByAllocationDTO = new HashMap<AllocationDTO, Intbox>();
+    private Map<AllocationRow, Intbox> hoursIntboxesByAllocationRow = new HashMap<AllocationRow, Intbox>();
 
     private EventListener onChangeEnableApply = new EventListener() {
 
@@ -230,7 +230,7 @@ class FormBinder {
     }
 
     private void loadHoursValues() {
-        for (Entry<AllocationDTO, Intbox> entry : hoursIntboxesByAllocationDTO.entrySet()) {
+        for (Entry<AllocationRow, Intbox> entry : hoursIntboxesByAllocationRow.entrySet()) {
             Integer hours = resourceAllocationsBeingEdited.getHoursFor(entry
                     .getKey());
             entry.getValue().setValue(hours);
@@ -251,15 +251,15 @@ class FormBinder {
         this.applyButton.addEventListener(Events.ON_CLICK, applyButtonListener);
     }
 
-    public void setResourcesPerDayBoxFor(AllocationDTO data,
+    public void setResourcesPerDayBoxFor(AllocationRow row,
             Decimalbox decimalbox) {
-        resourcesPerDayInputsByAllocationDTO.put(data, decimalbox);
+        resourcesPerDayInputsByAllocationRow.put(row, decimalbox);
         onChangeEnableApply(decimalbox);
     }
 
-    public void setHoursIntboxFor(AllocationDTO data, Intbox hours) {
-        hoursIntboxesByAllocationDTO.put(data, hours);
-        hours.setValue(resourceAllocationsBeingEdited.getHoursFor(data));
+    public void setHoursIntboxFor(AllocationRow row, Intbox hours) {
+        hoursIntboxesByAllocationRow.put(row, hours);
+        hours.setValue(resourceAllocationsBeingEdited.getHoursFor(row));
     }
 
     public int getAssignedHours() {
@@ -274,7 +274,7 @@ class FormBinder {
         return new LocalDate(endDate.getValue());
     }
 
-    public void setDeleteButtonFor(AllocationDTO data,
+    public void setDeleteButtonFor(AllocationRow row,
             Button deleteButton) {
         deleteButton.addEventListener(Events.ON_CLICK, new EventListener() {
 

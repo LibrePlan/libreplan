@@ -64,11 +64,11 @@ public class ResourceAllocationsBeingEdited {
     }
 
     public static ResourceAllocationsBeingEdited create(Task task,
-            List<AllocationDTO> initialAllocations, IResourceDAO resourceDAO) {
+            List<AllocationRow> initialAllocations, IResourceDAO resourceDAO) {
         return new ResourceAllocationsBeingEdited(task, initialAllocations);
     }
 
-    private final List<AllocationDTO> currentAllocations;
+    private final List<AllocationRow> currentRows;
 
     private final Set<ResourceAllocation<?>> requestedToRemove = new HashSet<ResourceAllocation<?>>();
 
@@ -80,13 +80,12 @@ public class ResourceAllocationsBeingEdited {
 
     private Integer daysDuration;
 
-    private Map<AllocationDTO, ResourceAllocation<?>> fromDTOToCurrentAllocation = new HashMap<AllocationDTO, ResourceAllocation<?>>();
+    private Map<AllocationRow, ResourceAllocation<?>> fromRowToCurrentAllocation = new HashMap<AllocationRow, ResourceAllocation<?>>();
 
     private ResourceAllocationsBeingEdited(Task task,
-            List<AllocationDTO> initialAllocations) {
+            List<AllocationRow> initialRows) {
         this.task = task;
-        this.currentAllocations = new ArrayList<AllocationDTO>(
-                initialAllocations);
+        this.currentRows = new ArrayList<AllocationRow>(initialRows);
         this.calculatedValue = task.getCalculatedValue();
         this.daysDuration = task.getDaysDuration();
     }
@@ -97,7 +96,7 @@ public class ResourceAllocationsBeingEdited {
             if (alreadyExistsAllocationFor(each)) {
                 alreadyPresent.add(each);
             } else {
-                currentAllocations.add(SpecificAllocationDTO.forResource(each));
+                currentRows.add(SpecificAllocationRow.forResource(each));
                 formBinder.newAllocationAdded();
             }
         }
@@ -111,25 +110,25 @@ public class ResourceAllocationsBeingEdited {
         if (resourcesMatched.isEmpty()) {
             formBinder.markNoWorkersMatchedByCriterions(criterions);
         } else {
-            GenericAllocationDTO genericAllocationDTO = GenericAllocationDTO
+            GenericAllocationRow genericAllocationRow = GenericAllocationRow
                     .create(criterions, resourcesMatched);
             if (alreadyExistsAllocationFor(criterions)) {
                 formBinder.markThereisAlreadyAssignmentWith(criterions);
             } else {
-                currentAllocations.add(genericAllocationDTO);
+                currentRows.add(genericAllocationRow);
                 formBinder.newAllocationAdded();
             }
         }
     }
 
-    public List<AllocationDTO> getCurrentAllocations() {
-        return new ArrayList<AllocationDTO>(currentAllocations);
+    public List<AllocationRow> getCurrentRows() {
+        return new ArrayList<AllocationRow>(currentRows);
     }
 
-    public Integer getHoursFor(AllocationDTO allocationDTO) {
-        ResourceAllocation<?> origin = allocationDTO.getOrigin();
-        if (fromDTOToCurrentAllocation.containsKey(allocationDTO)) {
-            return fromDTOToCurrentAllocation.get(allocationDTO)
+    public Integer getHoursFor(AllocationRow row) {
+        ResourceAllocation<?> origin = row.getOrigin();
+        if (fromRowToCurrentAllocation.containsKey(row)) {
+            return fromRowToCurrentAllocation.get(row)
                     .getAssignedHours();
         }
         return origin != null ? origin.getAssignedHours() : null;
@@ -140,9 +139,9 @@ public class ResourceAllocationsBeingEdited {
     }
 
     private boolean alreadyExistsAllocationFor(Set<Criterion> criterions) {
-        List<GenericAllocationDTO> generic = AllocationDTO
-                .getGeneric(getCurrentAllocations());
-        for (GenericAllocationDTO each : generic) {
+        List<GenericAllocationRow> generic = AllocationRow
+                .getGeneric(getCurrentRows());
+        for (GenericAllocationRow each : generic) {
             if (each.hasSameCriterions(criterions)) {
                 return true;
             }
@@ -150,17 +149,16 @@ public class ResourceAllocationsBeingEdited {
         return false;
     }
 
-    private List<SpecificAllocationDTO> getAllocationsFor(Resource resource) {
-        List<SpecificAllocationDTO> found = SpecificAllocationDTO
-                .withResource(SpecificAllocationDTO
-                        .getSpecific(currentAllocations), resource);
+    private List<SpecificAllocationRow> getAllocationsFor(Resource resource) {
+        List<SpecificAllocationRow> found = SpecificAllocationRow.withResource(
+                SpecificAllocationRow.getSpecific(currentRows), resource);
         return found;
     }
 
-    public void remove(AllocationDTO allocation) {
-        currentAllocations.remove(allocation);
-        if (allocation.isModifying()) {
-            requestedToRemove.add(allocation.getOrigin());
+    public void remove(AllocationRow row) {
+        currentRows.remove(row);
+        if (row.isModifying()) {
+            requestedToRemove.add(row.getOrigin());
         }
     }
 
@@ -168,21 +166,21 @@ public class ResourceAllocationsBeingEdited {
         return requestedToRemove;
     }
 
-    private Map<AllocationDTO, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask() {
-        Map<AllocationDTO, ResourceAllocation<?>> result = new HashMap<AllocationDTO, ResourceAllocation<?>>();
-        for (AllocationDTO dto : withoutZeroResourcesPerDayAllocations(currentAllocations)) {
-            result.put(dto, dto.getOrigin());
+    private Map<AllocationRow, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask() {
+        Map<AllocationRow, ResourceAllocation<?>> result = new HashMap<AllocationRow, ResourceAllocation<?>>();
+        for (AllocationRow row : withoutZeroResourcesPerDayAllocations(currentRows)) {
+            result.put(row, row.getOrigin());
         }
         return result;
     }
 
 
-    private List<AllocationDTO> withoutZeroResourcesPerDayAllocations(
-            List<AllocationDTO> allocations) {
-        List<AllocationDTO> result = new ArrayList<AllocationDTO>();
-        for (AllocationDTO allocationDTO : allocations) {
-            if (!allocationDTO.isEmptyResourcesPerDay()) {
-                result.add(allocationDTO);
+    private List<AllocationRow> withoutZeroResourcesPerDayAllocations(
+            List<AllocationRow> rows) {
+        List<AllocationRow> result = new ArrayList<AllocationRow>();
+        for (AllocationRow each : rows) {
+            if (!each.isEmptyResourcesPerDay()) {
+                result.add(each);
             }
         }
         return result;
@@ -226,7 +224,7 @@ public class ResourceAllocationsBeingEdited {
     }
 
     private Map<AllocationBeingModified, ResourceAllocation<?>> getAllocationsWithRelationshipsToOriginal() {
-        Map<AllocationDTO, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask = allocationsWithTheirRelatedAllocationsOnTask();
+        Map<AllocationRow, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask = allocationsWithTheirRelatedAllocationsOnTask();
         Map<AllocationBeingModified, ResourceAllocation<?>> fromDetachedToAttached = instantiate(allocationsWithTheirRelatedAllocationsOnTask);
         return fromDetachedToAttached;
     }
@@ -238,22 +236,21 @@ public class ResourceAllocationsBeingEdited {
     }
 
     private Map<AllocationBeingModified, ResourceAllocation<?>> instantiate(
-            Map<AllocationDTO, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask) {
+            Map<AllocationRow, ResourceAllocation<?>> allocationsWithTheirRelatedAllocationsOnTask) {
         Map<AllocationBeingModified, ResourceAllocation<?>> result = new HashMap<AllocationBeingModified, ResourceAllocation<?>>();
-        for (Entry<AllocationDTO, ResourceAllocation<?>> entry : allocationsWithTheirRelatedAllocationsOnTask
+        for (Entry<AllocationRow, ResourceAllocation<?>> entry : allocationsWithTheirRelatedAllocationsOnTask
                 .entrySet()) {
-            AllocationDTO key = entry.getKey();
+            AllocationRow key = entry.getKey();
             AllocationBeingModified instantiated = instantiate(key);
             result.put(instantiated, entry.getValue());
-            fromDTOToCurrentAllocation
+            fromRowToCurrentAllocation
                     .put(key, instantiated.getBeingModified());
         }
         return result;
     }
 
-    private AllocationBeingModified instantiate(
-            AllocationDTO key) {
-        return key.toAllocationBeingModified(task);
+    private AllocationBeingModified instantiate(AllocationRow row) {
+        return row.toAllocationBeingModified(task);
     }
 
     public FormBinder createFormBinder(
@@ -290,7 +287,7 @@ public class ResourceAllocationsBeingEdited {
 
     public Set<Resource> getAllocationResources() {
         Set<Resource> result = new HashSet<Resource>();
-        for (AllocationDTO each : currentAllocations) {
+        for (AllocationRow each : currentRows) {
             result.addAll(each.getAssociatedResources());
         }
         return result;

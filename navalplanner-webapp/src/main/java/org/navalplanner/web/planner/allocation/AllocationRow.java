@@ -35,25 +35,25 @@ import org.navalplanner.business.resources.entities.Resource;
  * {@link ResourceAllocation}
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public abstract class AllocationDTO {
+public abstract class AllocationRow {
 
-    public static List<GenericAllocationDTO> getGeneric(
-            Collection<? extends AllocationDTO> all) {
-        List<GenericAllocationDTO> result = new ArrayList<GenericAllocationDTO>();
-        for (AllocationDTO dto : all) {
-            if (dto.isGeneric()) {
-                result.add((GenericAllocationDTO) dto);
+    public static List<GenericAllocationRow> getGeneric(
+            Collection<? extends AllocationRow> all) {
+        List<GenericAllocationRow> result = new ArrayList<GenericAllocationRow>();
+        for (AllocationRow each : all) {
+            if (each.isGeneric()) {
+                result.add((GenericAllocationRow) each);
             }
         }
         return result;
     }
 
-    public static List<AllocationDTO> toDTOs(
+    public static List<AllocationRow> toRows(
             Collection<? extends ResourceAllocation<?>> resourceAllocations) {
-        List<AllocationDTO> result = new ArrayList<AllocationDTO>();
-        result.addAll(GenericAllocationDTO
+        List<AllocationRow> result = new ArrayList<AllocationRow>();
+        result.addAll(GenericAllocationRow
                 .toGenericAllocations(resourceAllocations));
-        result.addAll(SpecificAllocationDTO
+        result.addAll(SpecificAllocationRow
                 .toSpecificAllocations(resourceAllocations));
         return result;
     }

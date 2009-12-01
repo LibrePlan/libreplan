@@ -36,11 +36,11 @@ import org.navalplanner.business.resources.entities.Resource;
  * The information required for creating a {@link SpecificResourceAllocation}
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class SpecificAllocationDTO extends AllocationDTO {
+public class SpecificAllocationRow extends AllocationRow {
 
-    public static List<SpecificAllocationDTO> toSpecificAllocations(
+    public static List<SpecificAllocationRow> toSpecificAllocations(
             Collection<? extends ResourceAllocation<?>> resourceAllocations) {
-        List<SpecificAllocationDTO> result = new ArrayList<SpecificAllocationDTO>();
+        List<SpecificAllocationRow> result = new ArrayList<SpecificAllocationRow>();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof SpecificResourceAllocation) {
                 SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
@@ -50,12 +50,12 @@ public class SpecificAllocationDTO extends AllocationDTO {
         return result;
     }
 
-    public static List<SpecificAllocationDTO> withResource(
-            List<SpecificAllocationDTO> specific, Resource resource) {
-        List<SpecificAllocationDTO> result = new ArrayList<SpecificAllocationDTO>();
-        for (SpecificAllocationDTO specificAllocationDTO : specific) {
-            if (areEquals(specificAllocationDTO.getResource(), resource)) {
-                result.add(specificAllocationDTO);
+    public static List<SpecificAllocationRow> withResource(
+            List<SpecificAllocationRow> specific, Resource resource) {
+        List<SpecificAllocationRow> result = new ArrayList<SpecificAllocationRow>();
+        for (SpecificAllocationRow specificAllocationRow : specific) {
+            if (areEquals(specificAllocationRow.getResource(), resource)) {
+                result.add(specificAllocationRow);
             }
         }
         return result;
@@ -71,26 +71,26 @@ public class SpecificAllocationDTO extends AllocationDTO {
         return one.equals(other);
     }
 
-    public static List<SpecificAllocationDTO> getSpecific(
-            Collection<? extends AllocationDTO> currentAllocations) {
-        List<SpecificAllocationDTO> result = new ArrayList<SpecificAllocationDTO>();
-        for (AllocationDTO allocationDTO : currentAllocations) {
-            if (allocationDTO instanceof SpecificAllocationDTO) {
-                result.add((SpecificAllocationDTO) allocationDTO);
+    public static List<SpecificAllocationRow> getSpecific(
+            Collection<? extends AllocationRow> currentAllocations) {
+        List<SpecificAllocationRow> result = new ArrayList<SpecificAllocationRow>();
+        for (AllocationRow each : currentAllocations) {
+            if (each instanceof SpecificAllocationRow) {
+                result.add((SpecificAllocationRow) each);
             }
         }
         return result;
     }
 
-    public static SpecificAllocationDTO from(SpecificResourceAllocation specific) {
-        SpecificAllocationDTO result = forResource(specific.getResource());
+    public static SpecificAllocationRow from(SpecificResourceAllocation specific) {
+        SpecificAllocationRow result = forResource(specific.getResource());
         result.setResourcesPerDay(specific.getResourcesPerDay());
         result.setOrigin(specific);
         return result;
     }
 
-    public static SpecificAllocationDTO forResource(Resource resource) {
-        SpecificAllocationDTO result = new SpecificAllocationDTO();
+    public static SpecificAllocationRow forResource(Resource resource) {
+        SpecificAllocationRow result = new SpecificAllocationRow();
         result.setName(resource.getDescription());
         result.setResource(resource);
         result.setResourcesPerDay(ResourcesPerDay.amount(1));

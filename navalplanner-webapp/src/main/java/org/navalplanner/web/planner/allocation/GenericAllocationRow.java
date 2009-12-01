@@ -41,29 +41,29 @@ import org.navalplanner.web.resourceload.ResourceLoadModel;
  * The information required for creating a {@link GenericResourceAllocation}
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class GenericAllocationDTO extends AllocationDTO {
+public class GenericAllocationRow extends AllocationRow {
 
-    private static GenericAllocationDTO createDefault() {
-        GenericAllocationDTO result = new GenericAllocationDTO();
+    private static GenericAllocationRow createDefault() {
+        GenericAllocationRow result = new GenericAllocationRow();
         result.setName(_("Generic"));
         result.setResourcesPerDay(ResourcesPerDay.amount(0));
         return result;
     }
 
-    public static GenericAllocationDTO create(Set<Criterion> criterions,
+    public static GenericAllocationRow create(Set<Criterion> criterions,
             Collection<? extends Resource> resources) {
         Validate.isTrue(!resources.isEmpty());
         Validate.notNull(criterions);
-        GenericAllocationDTO result = createDefault();
+        GenericAllocationRow result = createDefault();
         result.criterions = criterions;
         result.resources = new ArrayList<Resource>(resources);
         result.setName(ResourceLoadModel.getName(criterions));
         return result;
     }
 
-    public static GenericAllocationDTO from(
+    public static GenericAllocationRow from(
             GenericResourceAllocation resourceAllocation) {
-        GenericAllocationDTO result = createDefault();
+        GenericAllocationRow result = createDefault();
         result.setResourcesPerDay(resourceAllocation.getResourcesPerDay());
         result.setOrigin(resourceAllocation);
         result.criterions = resourceAllocation.getCriterions();
@@ -80,9 +80,9 @@ public class GenericAllocationDTO extends AllocationDTO {
         return true;
     }
 
-    public static Collection<GenericAllocationDTO> toGenericAllocations(
+    public static Collection<GenericAllocationRow> toGenericAllocations(
             Collection<? extends ResourceAllocation<?>> resourceAllocations) {
-        ArrayList<GenericAllocationDTO> result = new ArrayList<GenericAllocationDTO>();
+        ArrayList<GenericAllocationRow> result = new ArrayList<GenericAllocationRow>();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof GenericResourceAllocation) {
                 result.add(from((GenericResourceAllocation) resourceAllocation));

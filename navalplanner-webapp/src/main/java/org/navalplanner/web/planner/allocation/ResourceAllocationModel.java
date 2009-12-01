@@ -203,10 +203,10 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         reattachHoursGroup(this.task.getHoursGroup());
         reattachCriterions(this.task.getHoursGroup().getValidCriterions());
         loadResources(this.task.getResourceAllocations());
-        List<AllocationDTO> currentAllocations = AllocationDTO.toDTOs(this.task
+        List<AllocationRow> initialRows = AllocationRow.toRows(this.task
                 .getResourceAllocations());
-        resourceAllocationsBeingEdited = ResourceAllocationsBeingEdited
-                .create(task, currentAllocations, resourceDAO);
+        resourceAllocationsBeingEdited = ResourceAllocationsBeingEdited.create(
+                task, initialRows, resourceDAO);
         return resourceAllocationsBeingEdited;
     }
 

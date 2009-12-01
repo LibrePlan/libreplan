@@ -411,10 +411,10 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return resourceAllocationModel.getOrderHours();
     }
 
-    public List<AllocationDTO> getResourceAllocations() {
+    public List<AllocationRow> getResourceAllocations() {
         return allocationsBeingEdited != null ? allocationsBeingEdited
-                .getCurrentAllocations() : Collections
-                .<AllocationDTO> emptyList();
+                .getCurrentRows() : Collections
+                .<AllocationRow> emptyList();
     }
 
     public ResourceAllocationRenderer getResourceAllocationRenderer() {
@@ -472,31 +472,31 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         @Override
         public void render(Listitem item, Object data) throws Exception {
-            renderResourceAllocation(item, (AllocationDTO) data);
+            renderResourceAllocation(item, (AllocationRow) data);
         }
 
         private void renderResourceAllocation(Listitem item,
-                final AllocationDTO data) throws Exception {
-            item.setValue(data);
+                final AllocationRow row) throws Exception {
+            item.setValue(row);
 
             // Label fields are fixed, can only be viewed
-            appendLabel(item, data.getName());
-            bindHours(appendIntbox(item), data);
-            bindResourcesPerDay(appendDecimalbox(item), data);
+            appendLabel(item, row.getName());
+            bindHours(appendIntbox(item), row);
+            bindResourcesPerDay(appendDecimalbox(item), row);
             // On click delete button
             Button deleteButton = appendDeleteButton(item);
-            formBinder.setDeleteButtonFor(data, deleteButton);
+            formBinder.setDeleteButtonFor(row, deleteButton);
             deleteButton.addEventListener("onClick", new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    removeAllocation(data);
+                    removeAllocation(row);
                 }
             });
         }
 
-        private void removeAllocation(AllocationDTO data) {
-            allocationsBeingEdited.remove(data);
+        private void removeAllocation(AllocationRow row) {
+            allocationsBeingEdited.remove(row);
             Util.reloadBindings(allocationsList);
         }
 
@@ -559,7 +559,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
 
         private void bindResourcesPerDay(final Decimalbox decimalbox,
-                final AllocationDTO data) {
+                final AllocationRow data) {
             decimalbox.setConstraint(new SimpleConstraint(
                     SimpleConstraint.NO_NEGATIVE));
             formBinder.setResourcesPerDayBoxFor(data, decimalbox);
@@ -581,7 +581,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             });
         }
 
-        private void bindHours(Intbox hoursIntbox, AllocationDTO data) {
+        private void bindHours(Intbox hoursIntbox, AllocationRow data) {
             hoursIntbox.setDisabled(true);
             formBinder.setHoursIntboxFor(data, hoursIntbox);
         }
