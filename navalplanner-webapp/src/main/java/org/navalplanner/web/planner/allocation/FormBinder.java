@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -122,8 +123,11 @@ class FormBinder {
     }
 
     private void assignedHoursComponentDisabilityRule() {
-        this.assignedHoursComponent.setDisabled(resourceAllocationsBeingEdited
-                .getCalculatedValue() == CalculatedValue.NUMBER_OF_HOURS);
+        EnumSet<CalculatedValue> set = EnumSet.of(
+                CalculatedValue.NUMBER_OF_HOURS,
+                CalculatedValue.RESOURCES_PER_DAY);
+        this.assignedHoursComponent.setDisabled(set
+                .contains(resourceAllocationsBeingEdited.getCalculatedValue()));
     }
 
     public AllocationResult getLastAllocation() {
