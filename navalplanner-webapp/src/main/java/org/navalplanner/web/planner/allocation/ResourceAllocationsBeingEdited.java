@@ -35,6 +35,7 @@ import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -47,7 +48,7 @@ public class ResourceAllocationsBeingEdited {
                 .getResourceAllocations();
         Map<ResourcesPerDayModification, ResourceAllocation<?>> forModification = forModification(resourceAllocations);
         AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
-                ResourcesPerDayModification.stripResourcesPerDay(forModification
+                AllocationModification.getBeingModified(forModification
                         .keySet()));
         return new AllocationResult(task, task.getCalculatedValue(), aggregate,
                 forModification);
@@ -205,8 +206,8 @@ public class ResourceAllocationsBeingEdited {
             }
         }
         AllocationResult result = new AllocationResult(task, calculatedValue,
-                new AggregateOfResourceAllocations(ResourcesPerDayModification
-                        .stripResourcesPerDay(allocations)),
+                new AggregateOfResourceAllocations(AllocationModification
+                        .getBeingModified(allocations)),
                 fromDetachedToAttached);
         daysDuration = result.getDaysDuration();
         return result;

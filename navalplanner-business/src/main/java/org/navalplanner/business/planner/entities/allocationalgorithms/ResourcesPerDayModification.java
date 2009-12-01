@@ -141,15 +141,6 @@ public abstract class ResourcesPerDayModification extends
         return goal;
     }
 
-    public static List<ResourceAllocation<?>> stripResourcesPerDay(
-            Collection<ResourcesPerDayModification> withResourcesPerDay) {
-        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
-        for (ResourcesPerDayModification r : withResourcesPerDay) {
-            result.add(r.getBeingModified());
-        }
-        return result;
-    }
-
     public abstract void applyAllocationOnAllTaskLength();
 
     public abstract void applyAllocationUntil(LocalDate endExclusive);

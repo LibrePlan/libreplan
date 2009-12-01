@@ -32,6 +32,15 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public abstract class AllocationModification {
 
+    public static List<ResourceAllocation<?>> getBeingModified(
+            Collection<? extends AllocationModification> allocationModifications) {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        for (AllocationModification each : allocationModifications) {
+            result.add(each.getBeingModified());
+        }
+        return result;
+    }
+
     private final ResourceAllocation<?> beingModified;
 
     private final List<Resource> resourcesOnWhichApplyAllocation;
@@ -49,4 +58,5 @@ public abstract class AllocationModification {
     public List<Resource> getResources() {
         return resourcesOnWhichApplyAllocation;
     }
+
 }
