@@ -25,7 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -467,16 +466,16 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             fillMaps(orderDayAssignmentsGrouped, resourceDayAssignmentsGrouped);
             groupByWeekMaps();
 
-            Plotinfo plotOrderLoad = getPlotinfo(mapOrderLoad, interval
-                    .getStart(), interval.getFinish());
-            Plotinfo plotOrderOverload = getPlotinfo(mapOrderOverload, interval
-                    .getStart(), interval.getFinish());
-            Plotinfo plotMaxCapacity = getPlotinfo(mapMaxCapacity, interval
-                    .getStart(), interval.getFinish());
-            Plotinfo plotOtherLoad = getPlotinfo(mapOtherLoad, interval
-                    .getStart(), interval.getFinish());
-            Plotinfo plotOtherOverload = getPlotinfo(mapOtherOverload, interval
-                    .getStart(), interval.getFinish());
+            Plotinfo plotOrderLoad = createPlotinfo(
+                    convertToBigDecimal(mapOrderLoad), interval);
+            Plotinfo plotOrderOverload = createPlotinfo(
+                    convertToBigDecimal(mapOrderOverload), interval);
+            Plotinfo plotMaxCapacity = createPlotinfo(
+                    convertToBigDecimal(mapMaxCapacity), interval);
+            Plotinfo plotOtherLoad = createPlotinfo(
+                    convertToBigDecimal(mapOtherLoad), interval);
+            Plotinfo plotOtherOverload = createPlotinfo(
+                    convertToBigDecimal(mapOtherOverload), interval);
 
             plotOrderLoad.setFillColor("0000FF");
             plotOrderOverload.setLineColor("00FFFF");
@@ -488,23 +487,13 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             ValueGeometry valueGeometry = getValueGeometry();
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
-            plotOrderLoad.setValueGeometry(valueGeometry);
-            plotOrderOverload.setValueGeometry(valueGeometry);
-            plotMaxCapacity.setValueGeometry(valueGeometry);
-            plotOtherLoad.setValueGeometry(valueGeometry);
-            plotOtherOverload.setValueGeometry(valueGeometry);
-
-            plotOrderLoad.setTimeGeometry(timeGeometry);
-            plotOrderOverload.setTimeGeometry(timeGeometry);
-            plotMaxCapacity.setTimeGeometry(timeGeometry);
-            plotOtherLoad.setTimeGeometry(timeGeometry);
-            plotOtherOverload.setTimeGeometry(timeGeometry);
-
-            chart.appendChild(plotOrderLoad);
-            chart.appendChild(plotOrderOverload);
-            chart.appendChild(plotMaxCapacity);
-            chart.appendChild(plotOtherLoad);
-            chart.appendChild(plotOtherOverload);
+            appendPlotinfo(chart, plotOrderLoad, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotOrderOverload, valueGeometry,
+                    timeGeometry);
+            appendPlotinfo(chart, plotMaxCapacity, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotOtherLoad, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotOtherOverload, valueGeometry,
+                    timeGeometry);
 
             chart.setWidth(size + "px");
             chart.setHeight("100px");
@@ -516,22 +505,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             mapMaxCapacity = groupByWeek(mapMaxCapacity);
             mapOtherLoad = groupByWeek(mapOtherLoad);
             mapOtherOverload = groupByWeek(mapOtherOverload);
-        }
-
-        private Plotinfo getPlotinfo(
-                SortedMap<LocalDate, Integer> mapDayAssignments, Date start,
-                Date finish) {
-            String uri = getServletUri(convertToBigDecimal(mapDayAssignments),
-                    start, finish);
-
-            PlotDataSource pds = new PlotDataSource();
-            pds.setDataSourceUri(uri);
-            pds.setSeparator(" ");
-
-            Plotinfo plotInfo = new Plotinfo();
-            plotInfo.setPlotDataSource(pds);
-
-            return plotInfo;
         }
 
         private void fillMaps(
