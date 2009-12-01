@@ -40,7 +40,7 @@
 
     <property name="name" />
 
-    <set name="subcategories" inverse="true" cascade="all">
+    <set name="subcategories" inverse="true" cascade="all-delete-orphan">
         <key column="PARENT_ID"/>
         <one-to-many class="MaterialCategory"/>
     </set>

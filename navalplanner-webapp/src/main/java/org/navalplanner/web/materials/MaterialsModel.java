@@ -120,16 +120,30 @@ public class MaterialsModel implements IMaterialsModel {
     @Override
     @Transactional
     public void confirmRemoveMaterialCategory(MaterialCategory materialCategory) {
-        try {
-            final Long idMaterialCategory = materialCategory.getId();
-            if (idMaterialCategory == null) {
-                materialCategories.remove(materialCategory);
+        // Remove from list of material categories
+        materialCategories.remove(materialCategory);
+
+        // Remove from its parent
+        final MaterialCategory parent = materialCategory.getParent();
+        if (parent != null) {
+            materialCategory.getParent().removeSubcategory(materialCategory);
+        }
+
+        final Long idMaterialCategory = materialCategory.getId();
+        // It's not a yet-to-save element
+        if (idMaterialCategory != null) {
+            // It has a parent, in this case is enough with saving parent (all-delete-orphan)
+            if (parent != null) {
+                categoryDAO.save(materialCategory.getParent());
             } else {
-                categoryDAO.remove(idMaterialCategory);
-                reloadMaterialCategories();
+                // It was a root element, should be deleted from DB
+                try {
+                    categoryDAO.remove(idMaterialCategory);
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException();
+                }
             }
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException();
+            reloadMaterialCategories();
         }
     }
 
@@ -143,23 +157,9 @@ public class MaterialsModel implements IMaterialsModel {
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
-        List<MaterialCategory> categories = new ArrayList<MaterialCategory>();
-        asList(materialCategories.getRoot(), categories);
+        final List<MaterialCategory> categories = materialCategories.asList();
         for (MaterialCategory each: categories) {
             categoryDAO.save(each);
-        }
-    }
-
-    private void asList(MaterialCategory root, List<MaterialCategory> result) {
-        List<MaterialCategory> list = new ArrayList<MaterialCategory>();
-        for (int i = 0; i < materialCategories.getChildCount(root); i++) {
-            final MaterialCategory materialCategory = materialCategories.getChild(root, i);
-            list.add(materialCategory);
-            result.add(materialCategory);
-        }
-
-        for (MaterialCategory each: list) {
-            asList(each, result);
         }
     }
 
