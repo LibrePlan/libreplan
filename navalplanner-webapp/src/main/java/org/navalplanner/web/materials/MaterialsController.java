@@ -103,7 +103,11 @@ public class MaterialsController extends
                     final Row row = (Row) i.next();
                     final Material material = (Material) row.getValue();
                     Button btnDelete = (Button) row.getChildren().get(5);
-                    btnDelete.setDisabled(!material.isNewObject());
+                    if (!material.isNewObject()) {
+                        btnDelete.setDisabled(true);
+                        btnDelete.setImage("/common/img/ico_borrar_out.png");
+                        btnDelete.setHoverImage("/common/img/ico_borrar_out.png");
+                    }
                 }
             }
         });
