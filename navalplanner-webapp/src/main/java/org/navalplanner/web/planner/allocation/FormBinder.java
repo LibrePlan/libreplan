@@ -74,8 +74,6 @@ class FormBinder {
 
     private Button applyButton;
 
-    private Map<AllocationRow, Decimalbox> resourcesPerDayInputsByAllocationRow = new HashMap<AllocationRow, Decimalbox>();
-
     private Map<AllocationRow, Intbox> hoursIntboxesByAllocationRow = new HashMap<AllocationRow, Intbox>();
 
     private EventListener onChangeEnableApply = new EventListener() {
@@ -253,7 +251,6 @@ class FormBinder {
 
     public void setResourcesPerDayBoxFor(AllocationRow row,
             Decimalbox decimalbox) {
-        resourcesPerDayInputsByAllocationRow.put(row, decimalbox);
         onChangeEnableApply(decimalbox);
     }
 
