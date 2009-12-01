@@ -44,24 +44,27 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
     public enum EarnedValueType {
 
-        BCWS(_("BCWS"), _("Budgeted Cost Work Scheduled")), ACWP(_("ACWP"),
-                _("Actual Cost Work Performed")), BCWP(_("BCWP"),
-                _("Budgeted Cost Work Performed")), CV(_("CV"),
-                _("Cost Variance")), SV(_("SV"), _("Schedule Variance")), BAC(
-                _("BAC"), _("Budget At Completion")), EAC(_("EAC"),
-                _("Estimate At Completion")), VAC(_("VAC"),
-                _("Variance At Completion")), ETC(_("ETC"),
-                _("Estimate To Complete")), CPI(_("CPI"),
-                _("Cost Performance Index")), SPI(_("SPI"),
-                _("Schedule Performance Index"))
+        BCWS(_("BCWS"), _("Budgeted Cost Work Scheduled"), "#0000FF"), ACWP(
+                _("ACWP"), _("Actual Cost Work Performed"), "#FF0000"), BCWP(
+                _("BCWP"), _("Budgeted Cost Work Performed"), "#00FF00"), CV(
+                _("CV"), _("Cost Variance"), "#FF8800"), SV(_("SV"),
+                _("Schedule Variance"), "#00FFFF"), BAC(_("BAC"),
+                _("Budget At Completion"), "#FF00FF"), EAC(_("EAC"),
+                _("Estimate At Completion"), "#880000"), VAC(_("VAC"),
+                _("Variance At Completion"), "#000088"), ETC(_("ETC"),
+                _("Estimate To Complete"), "#008800"), CPI(_("CPI"),
+                _("Cost Performance Index"), "#888800"), SPI(_("SPI"),
+                _("Schedule Performance Index"), "#008888")
         ;
 
         private String acronym;
         private String name;
+        private String color;
 
-        private EarnedValueType(String acronym, String name) {
+        private EarnedValueType(String acronym, String name, String color) {
             this.acronym = acronym;
             this.name = name;
+            this.color = color;
         }
 
         public String getAcronym() {
@@ -70,6 +73,10 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
         public String getName() {
             return name;
+        }
+
+        public String getColor() {
+            return color;
         }
     }
 
