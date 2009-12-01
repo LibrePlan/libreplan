@@ -23,6 +23,7 @@ package org.navalplanner.web.planner.chart;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -38,6 +39,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
@@ -478,6 +480,55 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         return result;
+    }
+
+    protected SortedMap<LocalDate, BigDecimal> calculatedValueForEveryDay(
+            SortedMap<LocalDate, BigDecimal> map, Date start, Date finish) {
+        return calculatedValueForEveryDay(map, new LocalDate(start),
+                new LocalDate(finish));
+    }
+
+    protected SortedMap<LocalDate, BigDecimal> calculatedValueForEveryDay(
+            SortedMap<LocalDate, BigDecimal> map, LocalDate start,
+            LocalDate finish) {
+        SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+
+        LocalDate previousDay = start;
+        BigDecimal previousValue = BigDecimal.ZERO;
+
+        for (LocalDate day : map.keySet()) {
+            BigDecimal value = map.get(day);
+            fillValues(result, previousDay, day, previousValue, value);
+
+            previousDay = day;
+            previousValue = value;
+        }
+
+        if (previousDay.compareTo(finish) < 0) {
+            fillValues(result, previousDay, finish, previousValue,
+                    previousValue);
+        }
+
+        return result;
+    }
+
+    private void fillValues(SortedMap<LocalDate, BigDecimal> map,
+            LocalDate firstDay, LocalDate lastDay, BigDecimal firstValue,
+            BigDecimal lastValue) {
+
+        Integer days = Days.daysBetween(firstDay, lastDay).getDays();
+        if (days > 0) {
+            BigDecimal ammount = lastValue.subtract(firstValue);
+            BigDecimal ammountPerDay = ammount.setScale(2).divide(
+                    new BigDecimal(days), RoundingMode.DOWN);
+
+            BigDecimal value = firstValue.setScale(2);
+            for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = day
+                    .plusDays(1)) {
+                map.put(day, value);
+                value = value.add(ammountPerDay);
+            }
+        }
     }
 
 }
