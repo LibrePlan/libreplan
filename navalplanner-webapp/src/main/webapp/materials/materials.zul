@@ -91,7 +91,7 @@
                                                 <textbox id="code" value="@{material.code}"
                                                     constraint="no empty:${i18n:_('cannot be null or empty')}" />
                                                 <textbox value="@{material.description}" />
-                                                <intbox value="@{material.defaultUnitPrice}" />
+                                                <doublebox value="@{material.defaultUnitPrice}" />
                                                 <listbox mold="select" model="@{unitTypes}"
                                                     selectedItem="@{material.unitType}"/>
                                                 <checkbox checked="@{material.disabled}" />
