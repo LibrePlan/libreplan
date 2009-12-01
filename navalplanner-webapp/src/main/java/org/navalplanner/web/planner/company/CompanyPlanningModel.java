@@ -67,7 +67,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
-import org.zkforge.timeplot.data.PlotDataSource;
 import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.Planner;
@@ -365,61 +364,44 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             chart.invalidate();
             resetMinimumAndMaximumValueForChart();
 
-            Plotinfo plotInfoLoad = getLoadPlotInfo(interval.getStart(),
-                    interval.getFinish());
+            Plotinfo plotInfoLoad = createPlotinfo(getLoad(interval.getStart(),
+                    interval.getFinish()), interval);
             plotInfoLoad.setFillColor("0000FF");
 
-            Plotinfo plotInfoMax = getCalendarMaximumAvailabilityPlotInfo(
-                    interval.getStart(), interval.getFinish());
+            Plotinfo plotInfoMax = createPlotinfo(
+                    getCalendarMaximumAvailability(interval.getStart(),
+                            interval.getFinish()), interval);
             plotInfoMax.setLineColor("FF0000");
             plotInfoMax.setLineWidth(1);
 
-            Plotinfo plotInfoOverload = getOverloadPlotInfo(
-                    interval.getStart(), interval.getFinish());
+            Plotinfo plotInfoOverload = createPlotinfo(getOverload(interval
+                    .getStart(), interval.getFinish()), interval);
             plotInfoOverload.setLineColor("00FF00");
             plotInfoOverload.setLineWidth(1);
 
             ValueGeometry valueGeometry = getValueGeometry();
-            valueGeometry.setGridType("short");
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
-            plotInfoLoad.setValueGeometry(valueGeometry);
-            plotInfoMax.setValueGeometry(valueGeometry);
-            plotInfoOverload.setValueGeometry(valueGeometry);
-
-            plotInfoLoad.setTimeGeometry(timeGeometry);
-            plotInfoMax.setTimeGeometry(timeGeometry);
-            plotInfoOverload.setTimeGeometry(timeGeometry);
-
-            chart.appendChild(plotInfoMax);
-            chart.appendChild(plotInfoLoad);
-            chart.appendChild(plotInfoOverload);
+            appendPlotinfo(chart, plotInfoLoad, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotInfoMax, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotInfoOverload, valueGeometry, timeGeometry);
 
             chart.setWidth(size + "px");
             chart.setHeight("100px");
         }
 
-        private Plotinfo getLoadPlotInfo(Date start, Date finish) {
+        private SortedMap<LocalDate, BigDecimal> getLoad(Date start, Date finish) {
             List<DayAssignment> dayAssignments = dayAssignmentDAO
                     .list(DayAssignment.class);
 
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
 
-            String uri = getServletUri(convertToBigDecimal(mapDayAssignments),
-                    start, finish);
-
-            PlotDataSource pds = new PlotDataSource();
-            pds.setDataSourceUri(uri);
-            pds.setSeparator(" ");
-
-            Plotinfo plotInfo = new Plotinfo();
-            plotInfo.setPlotDataSource(pds);
-
-            return plotInfo;
+            return convertToBigDecimal(mapDayAssignments);
         }
 
-        private Plotinfo getOverloadPlotInfo(Date start, Date finish) {
+        private SortedMap<LocalDate, BigDecimal> getOverload(Date start,
+                Date finish) {
             List<DayAssignment> dayAssignments = dayAssignmentDAO
                     .list(DayAssignment.class);
 
@@ -437,17 +419,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 }
             }
 
-            String uri = getServletUri(convertToBigDecimal(mapDayAssignments),
-                    start, finish);
-
-            PlotDataSource pds = new PlotDataSource();
-            pds.setDataSourceUri(uri);
-            pds.setSeparator(" ");
-
-            Plotinfo plotInfo = new Plotinfo();
-            plotInfo.setPlotDataSource(pds);
-
-            return plotInfo;
+            return convertToBigDecimal(mapDayAssignments);
         }
 
         private SortedMap<LocalDate, Integer> calculateHoursAdditionByDayWithoutOverload(
@@ -512,22 +484,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             return convertAsNeededByZoom(map);
         }
 
-        private Plotinfo getCalendarMaximumAvailabilityPlotInfo(Date start,
-                Date finish) {
+        private SortedMap<LocalDate, BigDecimal> getCalendarMaximumAvailability(
+                Date start, Date finish) {
             SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(
                     resourceDAO.list(Resource.class), start, finish);
 
-            String uri = getServletUri(convertToBigDecimal(mapDayAssignments),
-                    start, finish);
-
-            PlotDataSource pds = new PlotDataSource();
-            pds.setDataSourceUri(uri);
-            pds.setSeparator(" ");
-
-            Plotinfo plotInfo = new Plotinfo();
-            plotInfo.setPlotDataSource(pds);
-
-            return plotInfo;
+            return convertToBigDecimal(mapDayAssignments);
         }
 
         private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
