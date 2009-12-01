@@ -48,7 +48,7 @@
                             <panel title="${i18n:_('Categories')}"
                                 border="normal">
                                 <panelchildren>
-                                    <textbox id="txtCategory"
+                                    <textbox id="txtCategory" onOK="materialsController.addMaterialCategory()"
                                         style="margin-bottom: 4px;" />
                                     <button label="${i18n:_('Add')}"
                                         onClick="materialsController.addMaterialCategory()" />
