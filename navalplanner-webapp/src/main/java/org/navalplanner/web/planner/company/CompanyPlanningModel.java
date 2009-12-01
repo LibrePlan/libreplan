@@ -23,7 +23,6 @@ package org.navalplanner.web.planner.company;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -60,6 +59,7 @@ import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
+import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -528,19 +528,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     }
 
-    private class CompanyEarnedValueChartFiller extends ChartFiller {
-
-        private SortedMap<LocalDate, BigDecimal> bcws;
-        private SortedMap<LocalDate, BigDecimal> acwp;
-        private SortedMap<LocalDate, BigDecimal> bcwp;
-        private TreeMap<LocalDate, BigDecimal> cv;
-        private TreeMap<LocalDate, BigDecimal> sv;
-        private TreeMap<LocalDate, BigDecimal> bac;
-        private TreeMap<LocalDate, BigDecimal> eac;
-        private TreeMap<LocalDate, BigDecimal> vac;
-        private TreeMap<LocalDate, BigDecimal> etc;
-        private TreeMap<LocalDate, BigDecimal> cpi;
-        private TreeMap<LocalDate, BigDecimal> spi;
+    private class CompanyEarnedValueChartFiller extends EarnedValueChartFiller {
 
         @Override
         public void fillChart(Timeplot chart, Interval interval, Integer size) {
@@ -569,40 +557,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             chart.setHeight("100px");
         }
 
-        private Plotinfo createPlotInfo(SortedMap<LocalDate, BigDecimal> map,
-                Interval interval, String lineColor) {
-            Plotinfo plotInfo = createPlotinfo(map, interval);
-            plotInfo.setLineColor(lineColor);
-            return plotInfo;
-        }
-
-        private void calculateValues(Interval interval) {
-            // BCWS
-            calculateBudgetedCostWorkScheduled(interval);
-            // ACWP
-            calculateActualCostWorkPerformed(interval);
-            // BCWP
-            calculateBudgetedCostWorkPerformed(interval);
-
-            // CV
-            calculateCostVariance();
-            // SV
-            calculateScheduleVariance();
-            // BAC
-            calculateBudgetAtCompletion();
-            // EAC
-            calculateEstimateAtCompletion();
-            // VAC
-            calculateVarianceAtCompletion();
-            // ETC
-            calculateEstimatedToComplete();
-            // CPI
-            calculateCostPerformanceIndex();
-            // SPI
-            calculateSchedulePerformanceIndex();
-        }
-
-        private void calculateBudgetedCostWorkScheduled(Interval interval) {
+        protected void calculateBudgetedCostWorkScheduled(Interval interval) {
             List<TaskElement> list = taskElementDAO.list(TaskElement.class);
 
             SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
@@ -619,7 +574,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     .getStart(), interval.getFinish());
         }
 
-        private void calculateActualCostWorkPerformed(Interval interval) {
+        protected void calculateActualCostWorkPerformed(Interval interval) {
             SortedMap<LocalDate, BigDecimal> workReportCost = getWorkReportCost();
 
             workReportCost = accumulateResult(workReportCost);
@@ -651,7 +606,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             return result;
         }
 
-        private void calculateBudgetedCostWorkPerformed(Interval interval) {
+        protected void calculateBudgetedCostWorkPerformed(Interval interval) {
             List<TaskElement> list = taskElementDAO.list(TaskElement.class);
 
             SortedMap<LocalDate, BigDecimal> advanceCost = new TreeMap<LocalDate, BigDecimal>();
@@ -666,86 +621,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             advanceCost = accumulateResult(advanceCost);
             bcwp = calculatedValueForEveryDay(advanceCost, interval.getStart(),
                     interval.getFinish());
-        }
-
-        private void calculateCostVariance() {
-            // CV = BCWP - ACWP
-            cv = new TreeMap<LocalDate, BigDecimal>();
-            for (LocalDate day : bcwp.keySet()) {
-                cv.put(day, bcwp.get(day).subtract(acwp.get(day)));
-            }
-        }
-
-        private void calculateScheduleVariance() {
-            // SV = BCWP - BCWS
-            sv = new TreeMap<LocalDate, BigDecimal>();
-            for (LocalDate day : bcwp.keySet()) {
-                sv.put(day, bcwp.get(day).subtract(bcws.get(day)));
-            }
-        }
-
-        private void calculateBudgetAtCompletion() {
-            // BAC = max (BCWS)
-            bac = new TreeMap<LocalDate, BigDecimal>();
-            BigDecimal value = Collections.max(bcws.values());
-            for (LocalDate day : bcws.keySet()) {
-                bac.put(day, value);
-            }
-        }
-
-        private void calculateEstimateAtCompletion() {
-            // EAC = (ACWP/BCWP) * BAC
-            eac = new TreeMap<LocalDate, BigDecimal>();
-            for (LocalDate day : acwp.keySet()) {
-                BigDecimal value = BigDecimal.ZERO;
-                if (bcwp.get(day).compareTo(BigDecimal.ZERO) != 0) {
-                    value = acwp.get(day).divide(bcwp.get(day),
-                            RoundingMode.DOWN).multiply(bac.get(day));
-                }
-                eac.put(day, value);
-            }
-        }
-
-        private void calculateVarianceAtCompletion() {
-            // VAC = BAC - EAC
-            vac = new TreeMap<LocalDate, BigDecimal>();
-            for (LocalDate day : bac.keySet()) {
-                vac.put(day, bac.get(day).subtract(eac.get(day)));
-            }
-        }
-
-        private void calculateEstimatedToComplete() {
-            // ETC = EAC - ACWP
-            etc = new TreeMap<LocalDate, BigDecimal>();
-            for (LocalDate day : eac.keySet()) {
-                etc.put(day, eac.get(day).subtract(acwp.get(day)));
-            }
-        }
-
-        private void calculateCostPerformanceIndex() {
-            // CPI = BCWP / ACWP
-            cpi = new TreeMap<LocalDate, BigDecimal>();
-            for (LocalDate day : bcwp.keySet()) {
-                BigDecimal value = BigDecimal.ZERO;
-                if (acwp.get(day).compareTo(BigDecimal.ZERO) != 0) {
-                    value = bcwp.get(day).divide(acwp.get(day),
-                            RoundingMode.DOWN);
-                }
-                cpi.put(day, value);
-            }
-        }
-
-        private void calculateSchedulePerformanceIndex() {
-            // SPI = BCWP / BCWS
-            spi = new TreeMap<LocalDate, BigDecimal>();
-            for (LocalDate day : bcwp.keySet()) {
-                BigDecimal value = BigDecimal.ZERO;
-                if (bcws.get(day).compareTo(BigDecimal.ZERO) != 0) {
-                    value = bcwp.get(day).divide(bcws.get(day),
-                            RoundingMode.DOWN);
-                }
-                spi.put(day, value);
-            }
         }
 
     }
