@@ -220,6 +220,7 @@ public class MaterialsController extends
         try {
             materialsModel.addMaterialCategory(parent, category);
             txtCategory.setValue("");
+            Util.reloadBindings(categoriesTree);
         } catch (ValidationException e) {
             for (InvalidValue invalidValue : e.getInvalidValues()) {
                  Object value = invalidValue.getBean();
@@ -305,7 +306,7 @@ public class MaterialsController extends
             if (bean instanceof MaterialCategory) {
                 final MaterialCategory materialCategory = (MaterialCategory) bean;
                 if (locateAndSelectMaterialCategory(materialCategory)) {
-                    messagesForUser.showMessage(Level.ERROR, each.getMessage());
+                    messagesForUser.showMessage(Level.ERROR, each.getPropertyName() + ": " + each.getMessage());
                 }
             }
         }
