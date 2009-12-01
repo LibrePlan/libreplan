@@ -25,8 +25,10 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -59,6 +61,7 @@ import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
+import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
@@ -81,13 +84,19 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Tabs;
+import org.zkoss.zul.Vbox;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -116,6 +125,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     @Autowired
     private ICostCalculator hoursCostCalculator;
+
+    private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
@@ -165,6 +176,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
+        chartComponent.setHeight("200px");
         appendTabs(chartComponent);
 
         Timeplot chartLoadTimeplot = new Timeplot();
@@ -183,6 +195,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 new CompanyEarnedValueChartFiller(orderReloaded),
                 chartEarnedValueTimeplot, planner.getTimeTracker());
         refillLoadChartWhenNeeded(planner, saveCommand, earnedValueChart);
+        setEventListenerConfigurationCheckboxes(earnedValueChart);
     }
 
     private void appendTabs(Tabbox chartComponent) {
@@ -233,7 +246,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private void appendEarnedValueChartAndLegend(
             Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot) {
         Hbox hbox = new Hbox();
-        hbox.appendChild(getEarnedValueChartLegend());
+        hbox.appendChild(getEarnedValueChartConfigurableLegend());
 
         Div div = new Div();
         div.appendChild(chartEarnedValueTimeplot);
@@ -243,11 +256,104 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         earnedValueChartPannel.appendChild(hbox);
     }
 
-    private org.zkoss.zk.ui.Component getEarnedValueChartLegend() {
-        Div div = new Div();
-        Executions.createComponents("/planner/_legendEarnedValueChart.zul",
-                div, null);
-        return div;
+    private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend() {
+        Vbox vbox = new Vbox();
+        vbox.setId("earnedValueChartConfiguration");
+        vbox.setClass("legend");
+
+        Hbox hboxTitle = new Hbox();
+        hboxTitle.setClass("legend-title");
+        hboxTitle.setPack("center");
+
+        Label labelTitle = new Label(_("Chart legend"));
+        labelTitle.setClass("title");
+        hboxTitle.appendChild(labelTitle);
+
+        vbox.appendChild(hboxTitle);
+
+        Vbox column1 = new Vbox();
+        Vbox column2 = new Vbox();
+        column1.setWidth("75px");
+        column2.setWidth("75px");
+
+        boolean odd = true;
+
+        for (EarnedValueType type : EarnedValueType.values()) {
+            Checkbox checkbox = new Checkbox(type.getAcronym());
+            checkbox.setTooltiptext(type.getName());
+            checkbox.setAttribute("indicator", type);
+            checkbox.setStyle("color: " + type.getColor());
+
+            if (odd) {
+                column1.appendChild(checkbox);
+            } else {
+                column2.appendChild(checkbox);
+            }
+
+            earnedValueChartConfigurationCheckboxes.add(checkbox);
+            odd = !odd;
+        }
+
+        Hbox hbox = new Hbox();
+        hbox.appendChild(column1);
+        hbox.appendChild(column2);
+
+        vbox.appendChild(hbox);
+
+        markAsSelectedDefaultIndicators();
+
+        return vbox;
+    }
+
+    private void markAsSelectedDefaultIndicators() {
+        for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
+            EarnedValueType type = (EarnedValueType) checkbox
+                    .getAttribute("indicator");
+            switch (type) {
+            case BCWS:
+            case ACWP:
+            case BCWP:
+                checkbox.setChecked(true);
+                break;
+
+            default:
+                checkbox.setChecked(false);
+                break;
+            }
+        }
+    }
+
+    private Set<EarnedValueType> getSelectedIndicators() {
+        Set<EarnedValueType> result = new HashSet<EarnedValueType>();
+        for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
+            if (checkbox.isChecked()) {
+                EarnedValueType type = (EarnedValueType) checkbox
+                        .getAttribute("indicator");
+                result.add(type);
+            }
+        }
+        return result;
+    }
+
+    private void setEventListenerConfigurationCheckboxes(
+            final Chart earnedValueChart) {
+        for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
+            checkbox.addEventListener(Events.ON_CHECK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    transactionService
+                            .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                                @Override
+                                public Void execute() {
+                                    earnedValueChart.fillChart();
+                                    return null;
+                                }
+                            });
+                }
+
+            });
+        }
     }
 
     private void refillLoadChartWhenNeeded(Planner planner,
@@ -603,25 +709,25 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
             calculateValues(interval);
 
-            Plotinfo bcws = createPlotInfo(
-                    indicators.get(EarnedValueType.BCWS), interval, "0000FF");
-            Plotinfo acwp = createPlotInfo(
-                    indicators.get(EarnedValueType.ACWP), interval, "FF0000");
-            Plotinfo bcwp = createPlotInfo(
-                    indicators.get(EarnedValueType.BCWP), interval, "00FF00");
-            Plotinfo cv = createPlotInfo(indicators.get(EarnedValueType.CV),
-                    interval, "FFFF00");
-            Plotinfo sv = createPlotInfo(indicators.get(EarnedValueType.SV),
-                    interval, "00FFFF");
+            List<Plotinfo> plotinfos = new ArrayList<Plotinfo>();
+            for (EarnedValueType indicator : getSelectedIndicators()) {
+                Plotinfo plotinfo = createPlotInfo(indicators.get(indicator),
+                        interval, indicator.getColor());
+                plotinfos.add(plotinfo);
+            }
+
+            if (plotinfos.isEmpty()) {
+                // If user doesn't select any indicator, it is needed to create
+                // a default Plotinfo in order to avoid errors on Timemplot
+                plotinfos.add(new Plotinfo());
+            }
 
             ValueGeometry valueGeometry = getValueGeometry();
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
-            appendPlotinfo(chart, bcws, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, acwp, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, bcwp, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, cv, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, sv, valueGeometry, timeGeometry);
+            for (Plotinfo plotinfo : plotinfos) {
+                appendPlotinfo(chart, plotinfo, valueGeometry, timeGeometry);
+            }
 
             chart.setWidth(size + "px");
             chart.setHeight("100px");

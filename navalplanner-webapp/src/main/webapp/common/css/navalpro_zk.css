@@ -725,27 +725,6 @@ div.z-grid {
     margin-right:5px;
 }
 
-.legend .bcws {
-    border-top:solid 1px #0000FF;
-    height:7px;
-    width:25px;
-    margin-right:5px;
-}
-
-.legend .acwp {
-    border-top:solid 1px #FF0000;
-    height:7px;
-    width:25px;
-    margin-right:5px;
-}
-
-.legend .bcwp {
-    border-top:solid 1px #00FF00;
-    height:7px;
-    width:25px;
-    margin-right:5px;
-}
-
 
 /* Graphical improvements */
 
