@@ -3,6 +3,7 @@ package org.navalplanner.web.materials;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -166,6 +167,12 @@ public class MaterialsModel implements IMaterialsModel {
     @Override
     public void removeMaterial(Material material) {
         material.getCategory().removeMaterial(material);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<? extends Material> getMaterials() {
+        return materialDAO.getAll();
     }
 
 }

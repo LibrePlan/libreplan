@@ -378,6 +378,8 @@ public class MaterialsController extends
         final List<Material> result = new ArrayList<Material>();
         if (treeitem != null) {
             result.addAll(getMaterials((MaterialCategory) treeitem.getValue()));
+        } else {
+            result.addAll(materialsModel.getMaterials());
         }
         return result;
     }

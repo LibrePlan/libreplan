@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.materials;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -38,16 +39,18 @@ public interface IMaterialsModel {
 
     void addMaterialToMaterialCategory(MaterialCategory materialCategory);
 
+    void confirmRemoveMaterialCategory(MaterialCategory materialCategory);
+
     void confirmSave() throws ValidationException;
 
     MutableTreeModel<MaterialCategory> getMaterialCategories();
+
+    Collection<? extends Material> getMaterials();
 
     List<Material> getMaterials(MaterialCategory materialCategory);
 
     void reloadMaterialCategories();
 
     void removeMaterial(Material material);
-
-    void confirmRemoveMaterialCategory(MaterialCategory materialCategory);
 
 }
