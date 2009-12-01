@@ -74,8 +74,7 @@ public class AdvancedAllocationTabCreator {
         public ResultReceiver(Order order, Task task) {
             TaskElementAdapter.doTaskInitialization(order, task);
             this.calculatedValue = task.getCalculatedValue();
-            this.allocationResult = ResourceAllocationsBeingEdited
-                    .createInitialAllocation(task);
+            this.allocationResult = AllocationResult.createCurrent(task);
             this.aggregate = this.allocationResult.getAggregate();
             this.task = task;
             this.associatedResources = getAssociatedResources(task);

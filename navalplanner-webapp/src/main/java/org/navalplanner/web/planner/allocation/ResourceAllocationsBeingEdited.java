@@ -43,26 +43,6 @@ import org.navalplanner.business.resources.entities.Resource;
 
 public class ResourceAllocationsBeingEdited {
 
-    public static AllocationResult createInitialAllocation(Task task) {
-        Set<ResourceAllocation<?>> resourceAllocations = task
-                .getResourceAllocations();
-        Map<ResourcesPerDayModification, ResourceAllocation<?>> forModification = forModification(resourceAllocations);
-        AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
-                AllocationModification.getBeingModified(forModification
-                        .keySet()));
-        return AllocationResult.create(task, task.getCalculatedValue(), aggregate, forModification);
-    }
-
-    private static Map<ResourcesPerDayModification, ResourceAllocation<?>> forModification(
-            Collection<ResourceAllocation<?>> resourceAllocations) {
-        Map<ResourcesPerDayModification, ResourceAllocation<?>> result = new HashMap<ResourcesPerDayModification, ResourceAllocation<?>>();
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            result.put(resourceAllocation.copy().asResourcesPerDayModification(),
-                    resourceAllocation);
-        }
-        return result;
-    }
-
     public static ResourceAllocationsBeingEdited create(Task task,
             List<AllocationRow> initialAllocations, IResourceDAO resourceDAO) {
         return new ResourceAllocationsBeingEdited(task, initialAllocations);
@@ -259,7 +239,7 @@ public class ResourceAllocationsBeingEdited {
     }
 
     public AllocationResult getInitialAllocation() {
-        return createInitialAllocation(task);
+        return AllocationResult.createCurrent(task);
     }
 
 

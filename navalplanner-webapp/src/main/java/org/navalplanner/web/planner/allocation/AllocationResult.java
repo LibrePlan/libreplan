@@ -20,6 +20,7 @@
 package org.navalplanner.web.planner.allocation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -89,6 +90,19 @@ public class AllocationResult {
         Map<ResourceAllocation<?>, ResourceAllocation<?>> translation = translation(fromDetachedAllocationToAttached);
         return new AllocationResult(task, calculatedValue, aggregate,
                 calculateNew(translation), calculateModified(translation));
+    }
+
+    public static AllocationResult createCurrent(Task task) {
+        Set<ResourceAllocation<?>> resourceAllocations = task
+                .getResourceAllocations();
+        List<ModifiedAllocation> modifiedAllocations = ModifiedAllocation
+                .copy(resourceAllocations);
+        AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
+                ModifiedAllocation.modified(modifiedAllocations));
+        return new AllocationResult(task, task.getCalculatedValue(), aggregate,
+                Collections.<ResourceAllocation<?>> emptyList(),
+                modifiedAllocations);
+
     }
 
     private final AggregateOfResourceAllocations aggregate;
