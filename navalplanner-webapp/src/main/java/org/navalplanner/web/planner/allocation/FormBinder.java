@@ -131,10 +131,6 @@ class FormBinder {
     }
 
     public void setCalculatedValue(CalculatedValue calculatedValue) {
-        if (calculatedValue == CalculatedValue.RESOURCES_PER_DAY) {
-            throw new RuntimeException(CalculatedValue.RESOURCES_PER_DAY
-                    + " not implemented yet");
-        }
         if (calculatedValue == resourceAllocationsBeingEdited
                 .getCalculatedValue()) {
             return;
@@ -148,6 +144,13 @@ class FormBinder {
     private void applyDisabledRules() {
         assignedHoursComponentDisabilityRule();
         endDateDisabilityRule();
+        applyDisabledRulesOnRows();
+    }
+
+    private void applyDisabledRulesOnRows() {
+        for (AllocationRow each : rows) {
+            each.applyDisabledRules(getCalculatedValue());
+        }
     }
 
     public CalculatedValue getCalculatedValue() {
@@ -204,8 +207,11 @@ class FormBinder {
     }
 
     public List<AllocationRow> getCurrentRows() {
-        return rows = addListeners(resourceAllocationsBeingEdited
+        List<AllocationRow> result = addListeners(resourceAllocationsBeingEdited
                 .getCurrentRows());
+        rows = result;
+        applyDisabledRulesOnRows();
+        return result;
     }
 
     private List<AllocationRow> addListeners(List<AllocationRow> list) {

@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
@@ -184,4 +185,10 @@ public abstract class AllocationRow {
         return null;
     }
 
+    public void applyDisabledRules(CalculatedValue calculatedValue) {
+        hoursInput
+                .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY);
+        resourcesPerDayInput
+                .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY);
+    }
 }
