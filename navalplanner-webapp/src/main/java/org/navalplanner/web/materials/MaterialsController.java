@@ -202,7 +202,7 @@ public class MaterialsController extends
 
     private void removeMaterialCategory(MaterialCategory materialCategory) {
         materialsModel.confirmRemoveMaterialCategory(materialCategory);
-        Util.reloadBindings(categoriesTree);
+        reloadCategoriesTree(categoriesTree.getSelectedItem());
     }
 
     public void addMaterialCategory() {
@@ -220,7 +220,7 @@ public class MaterialsController extends
         try {
             materialsModel.addMaterialCategory(parent, category);
             txtCategory.setValue("");
-            Util.reloadBindings(categoriesTree);
+            reloadCategoriesTree(treeitem);
         } catch (ValidationException e) {
             for (InvalidValue invalidValue : e.getInvalidValues()) {
                  Object value = invalidValue.getBean();
@@ -278,7 +278,17 @@ public class MaterialsController extends
             final Treeitem treeitem = categoriesTree.getSelectedItem();
             materialsModel.reloadMaterialCategories();
             categoriesTree.setSelectedItem(treeitem);
+            reloadCategoriesTree(categoriesTree.getSelectedItem());
             Util.reloadBindings(gridMaterials);
+        }
+    }
+
+    private void reloadCategoriesTree(Treeitem treeitem) {
+        if (treeitem != null) {
+            final MaterialCategory materialCategory = (MaterialCategory) treeitem.getValue();
+            Util.reloadBindings(categoriesTree);
+            locateAndSelectMaterialCategory(materialCategory);
+        } else {
             Util.reloadBindings(categoriesTree);
         }
     }
@@ -321,24 +331,11 @@ public class MaterialsController extends
         return false;
     }
 
-    private void showConstraintErrorsFor(MaterialCategory materialCategory) {
-        if (locateAndSelectMaterialCategory(materialCategory)) {
-
-            // Load materials for category
-            final List<Material> materials = getMaterials(materialCategory);
-            gridMaterials.setModel(new SimpleListModel(materials));
-            gridMaterials.renderAll();
-
-            // Show errors
-            ConstraintChecker.isValid(gridMaterials);
-        }
-    }
-
     private Treeitem findTreeItemByMaterialCategory(Component node, MaterialCategory materialCategory) {
         if (node instanceof Treeitem) {
             final Treeitem treeitem = (Treeitem) node;
             final MaterialCategory _materialCategory = (MaterialCategory) treeitem.getValue();
-            if (_materialCategory.equals(materialCategory)) {
+            if (_materialCategory.getId().equals(materialCategory.getId())) {
                 return treeitem;
             }
         }
@@ -352,6 +349,19 @@ public class MaterialsController extends
             }
         }
         return null;
+    }
+
+    private void showConstraintErrorsFor(MaterialCategory materialCategory) {
+        if (locateAndSelectMaterialCategory(materialCategory)) {
+
+            // Load materials for category
+            final List<Material> materials = getMaterials(materialCategory);
+            gridMaterials.setModel(new SimpleListModel(materials));
+            gridMaterials.renderAll();
+
+            // Show errors
+            ConstraintChecker.isValid(gridMaterials);
+        }
     }
 
     public void refreshMaterials() {
