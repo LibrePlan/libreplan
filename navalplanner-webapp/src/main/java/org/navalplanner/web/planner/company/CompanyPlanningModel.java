@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,6 +62,7 @@ import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
+import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -79,6 +81,10 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Tab;
@@ -86,6 +92,7 @@ import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Tabs;
+import org.zkoss.zul.Vbox;
 
 
 /**
@@ -120,6 +127,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     @Autowired
     private ICostCalculator hoursCostCalculator;
 
+    private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
+
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
         @Override
@@ -149,6 +158,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
+        chartComponent.setHeight("200px");
         appendTabs(chartComponent);
 
         Timeplot chartLoadTimeplot = new Timeplot();
@@ -164,8 +174,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         setupChart(chartLoadTimeplot, new CompanyLoadChartFiller(), planner
                 .getTimeTracker());
-        setupChart(chartEarnedValueTimeplot,
+        Chart earnedValueChart = setupChart(chartEarnedValueTimeplot,
                 new CompanyEarnedValueChartFiller(), planner.getTimeTracker());
+        setEventListenerConfigurationCheckboxes(earnedValueChart);
     }
 
     private void appendTabs(Tabbox chartComponent) {
@@ -216,14 +227,90 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private void appendEarnedValueChartAndLegend(
             Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot) {
         Hbox hbox = new Hbox();
+
         hbox.appendChild(getEarnedValueChartLegend());
+
+        Vbox vbox = new Vbox();
 
         Div div = new Div();
         div.appendChild(chartEarnedValueTimeplot);
         div.setSclass("plannergraph");
-        hbox.appendChild(div);
+        vbox.appendChild(div);
+
+        vbox.appendChild(getEarnedValueChartConfiguration());
+
+        hbox.appendChild(vbox);
 
         earnedValueChartPannel.appendChild(hbox);
+    }
+
+    private org.zkoss.zk.ui.Component getEarnedValueChartConfiguration() {
+        Div div = new Div();
+        div.setId("earnedValueChartConfiguration");
+
+        for (EarnedValueType type : EarnedValueType.values()) {
+            Checkbox checkbox = new Checkbox(type.getAcronym());
+            checkbox.setTooltiptext(type.getName());
+            checkbox.setAttribute("indicator", type);
+            div.appendChild(checkbox);
+
+            earnedValueChartConfigurationCheckboxes.add(checkbox);
+        }
+
+        markAsSelectedDefaultIndicators();
+
+        return div;
+    }
+
+    private void markAsSelectedDefaultIndicators() {
+        for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
+            EarnedValueType type = (EarnedValueType) checkbox
+                    .getAttribute("indicator");
+            switch (type) {
+            case BCWS:
+            case ACWP:
+            case BCWP:
+                checkbox.setChecked(true);
+                break;
+
+            default:
+                checkbox.setChecked(false);
+                break;
+            }
+        }
+    }
+
+    private Set<EarnedValueType> getSelectedIndicators() {
+        Set<EarnedValueType> result = new HashSet<EarnedValueType>();
+        for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
+            if (checkbox.isChecked()) {
+                EarnedValueType type = (EarnedValueType) checkbox
+                        .getAttribute("indicator");
+                result.add(type);
+            }
+        }
+        return result;
+    }
+
+    private void setEventListenerConfigurationCheckboxes(
+            final Chart earnedValueChart) {
+        for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
+            checkbox.addEventListener(Events.ON_CHECK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    transactionService
+                            .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                                @Override
+                                public Void execute() {
+                                    earnedValueChart.fillChart();
+                                    return null;
+                                }
+                            });
+                }
+
+            });
+        }
     }
 
     private org.zkoss.zk.ui.Component getEarnedValueChartLegend() {
@@ -248,12 +335,13 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
     }
 
-    private void setupChart(Timeplot chartComponent,
+    private Chart setupChart(Timeplot chartComponent,
             IChartFiller loadChartFiller, TimeTracker timeTracker) {
         Chart loadChart = new Chart(chartComponent, loadChartFiller,
                 timeTracker);
         loadChart.fillChart();
         timeTracker.addZoomListener(fillOnZoomChange(loadChart));
+        return loadChart;
     }
 
     private IZoomLevelChangedListener fillOnZoomChange(
@@ -538,25 +626,25 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
             calculateValues(interval);
 
-            Plotinfo bcws = createPlotInfo(
-                    indicators.get(EarnedValueType.BCWS), interval, "0000FF");
-            Plotinfo acwp = createPlotInfo(
-                    indicators.get(EarnedValueType.ACWP), interval, "FF0000");
-            Plotinfo bcwp = createPlotInfo(
-                    indicators.get(EarnedValueType.BCWP), interval, "00FF00");
-            Plotinfo cv = createPlotInfo(indicators.get(EarnedValueType.CV),
-                    interval, "FFFF00");
-            Plotinfo sv = createPlotInfo(indicators.get(EarnedValueType.SV),
-                    interval, "00FFFF");
+            List<Plotinfo> plotinfos = new ArrayList<Plotinfo>();
+            for (EarnedValueType indicator : getSelectedIndicators()) {
+                Plotinfo plotinfo = createPlotInfo(indicators.get(indicator),
+                        interval, indicator.getColor());
+                plotinfos.add(plotinfo);
+            }
+
+            if (plotinfos.isEmpty()) {
+                // If user doesn't select any indicator, it is needed to create
+                // a default Plotinfo in order to avoid errors on Timemplot
+                plotinfos.add(new Plotinfo());
+            }
 
             ValueGeometry valueGeometry = getValueGeometry();
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
-            appendPlotinfo(chart, bcws, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, acwp, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, bcwp, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, cv, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, sv, valueGeometry, timeGeometry);
+            for (Plotinfo plotinfo : plotinfos) {
+                appendPlotinfo(chart, plotinfo, valueGeometry, timeGeometry);
+            }
 
             chart.setWidth(size + "px");
             chart.setHeight("100px");
