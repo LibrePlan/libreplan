@@ -28,6 +28,7 @@ import java.util.SortedMap;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.entities.Resource;
+import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
@@ -57,5 +58,11 @@ public interface IChartFiller {
 
     SortedMap<LocalDate, BigDecimal> convertToBigDecimal(
             SortedMap<LocalDate, Integer> map);
+
+    Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
+            Interval interval);
+
+    void appendPlotinfo(Timeplot chart, Plotinfo plotinfo, ValueGeometry valueGeometry,
+            TimeGeometry timeGeometry);
 
 }

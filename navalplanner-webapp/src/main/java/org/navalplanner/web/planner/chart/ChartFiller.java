@@ -47,7 +47,9 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.servlets.CallbackServlet;
 import org.navalplanner.web.servlets.CallbackServlet.IServletRequestHandler;
+import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
+import org.zkforge.timeplot.data.PlotDataSource;
 import org.zkforge.timeplot.geometry.DefaultTimeGeometry;
 import org.zkforge.timeplot.geometry.DefaultValueGeometry;
 import org.zkforge.timeplot.geometry.TimeGeometry;
@@ -529,6 +531,31 @@ public abstract class ChartFiller implements IChartFiller {
                 value = value.add(ammountPerDay);
             }
         }
+    }
+
+    @Override
+    public Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
+            Interval interval) {
+        String uri = getServletUri(map, interval.getStart(), interval
+                .getFinish(),
+                new JustDaysWithInformationGraphicSpecificationCreator(interval
+                        .getFinish(), map, interval.getStart()));
+
+        PlotDataSource pds = new PlotDataSource();
+        pds.setDataSourceUri(uri);
+        pds.setSeparator(" ");
+
+        Plotinfo plotinfo = new Plotinfo();
+        plotinfo.setPlotDataSource(pds);
+        return plotinfo;
+    }
+
+    @Override
+    public void appendPlotinfo(Timeplot chart, Plotinfo plotinfo,
+            ValueGeometry valueGeometry, TimeGeometry timeGeometry) {
+        plotinfo.setValueGeometry(valueGeometry);
+        plotinfo.setTimeGeometry(timeGeometry);
+        chart.appendChild(plotinfo);
     }
 
 }
