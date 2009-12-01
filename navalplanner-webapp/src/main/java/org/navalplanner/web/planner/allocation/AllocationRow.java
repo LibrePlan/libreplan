@@ -47,6 +47,18 @@ import org.zkoss.zul.SimpleConstraint;
  */
 public abstract class AllocationRow {
 
+    public static List<ResourcesPerDayModification> createAndAssociate(
+            Task task, Collection<? extends AllocationRow> rows) {
+        List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
+        for (AllocationRow each : rows) {
+            ResourcesPerDayModification modification = each
+                    .toResourcesPerDayModification(task);
+            result.add(modification);
+            each.setLast(modification.getBeingModified());
+        }
+        return result;
+    }
+
     public static List<ModifiedAllocation> getModifiedFrom(
             Collection<? extends AllocationRow> rows) {
         List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
