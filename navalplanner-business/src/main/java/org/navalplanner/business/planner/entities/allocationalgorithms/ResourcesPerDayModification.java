@@ -34,7 +34,8 @@ import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Resource;
 
-public abstract class ResourcesPerDayModification {
+public abstract class ResourcesPerDayModification extends
+        AllocationModification {
 
     private static class OnGenericAllocation extends
             ResourcesPerDayModification {
@@ -126,25 +127,14 @@ public abstract class ResourcesPerDayModification {
         return result;
     }
 
-    private final ResourceAllocation<?> beingModified;
-
     private final ResourcesPerDay goal;
-
-    private final List<Resource> resourcesOnWhichApplyAllocation;
 
     private ResourcesPerDayModification(
             ResourceAllocation<?> resourceAllocation,
             ResourcesPerDay resourcesPerDay,
             Collection<? extends Resource> resources) {
-        this.beingModified = resourceAllocation;
+        super(resourceAllocation, resources);
         this.goal = resourcesPerDay;
-        this.resourcesOnWhichApplyAllocation = Collections
-                .unmodifiableList(new ArrayList<Resource>(
-                resources));
-    }
-
-    public ResourceAllocation<?> getBeingModified() {
-        return beingModified;
     }
 
     public ResourcesPerDay getGoal() {
@@ -158,10 +148,6 @@ public abstract class ResourcesPerDayModification {
             result.add(r.getBeingModified());
         }
         return result;
-    }
-
-    public List<Resource> getResources() {
-        return resourcesOnWhichApplyAllocation;
     }
 
     public abstract void applyAllocationOnAllTaskLength();
