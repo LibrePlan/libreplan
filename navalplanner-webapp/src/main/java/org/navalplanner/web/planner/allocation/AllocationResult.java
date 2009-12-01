@@ -36,7 +36,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
-import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -45,9 +45,9 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Resources
 public class AllocationResult {
 
     private static Map<ResourceAllocation<?>, ResourceAllocation<?>> translation(
-            Map<ResourcesPerDayModification, ResourceAllocation<?>> fromDetachedToAttached) {
+            Map<? extends AllocationModification, ResourceAllocation<?>> fromDetachedToAttached) {
         Map<ResourceAllocation<?>, ResourceAllocation<?>> result = new HashMap<ResourceAllocation<?>, ResourceAllocation<?>>();
-        for (Entry<ResourcesPerDayModification, ResourceAllocation<?>> entry : fromDetachedToAttached
+        for (Entry<? extends AllocationModification, ResourceAllocation<?>> entry : fromDetachedToAttached
                 .entrySet()) {
             result
                     .put(entry.getKey().getBeingModified(), entry
@@ -81,6 +81,16 @@ public class AllocationResult {
         return result;
     }
 
+    public static AllocationResult create(
+            Task task,
+            CalculatedValue calculatedValue,
+            AggregateOfResourceAllocations aggregate,
+            Map<? extends AllocationModification, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
+        Map<ResourceAllocation<?>, ResourceAllocation<?>> translation = translation(fromDetachedAllocationToAttached);
+        return new AllocationResult(task, calculatedValue, aggregate,
+                calculateNew(translation), calculateModified(translation));
+    }
+
     private final AggregateOfResourceAllocations aggregate;
 
     private final Integer daysDuration;
@@ -93,11 +103,12 @@ public class AllocationResult {
 
     private final List<Task.ModifiedAllocation> modified;
 
-    AllocationResult(
+    private AllocationResult(
             Task task,
             CalculatedValue calculatedValue,
             AggregateOfResourceAllocations aggregate,
-            Map<ResourcesPerDayModification, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
+            List<ResourceAllocation<?>> newAllocations,
+            List<Task.ModifiedAllocation> modified) {
         Validate.notNull(aggregate);
         Validate.notNull(calculatedValue);
         Validate.notNull(task);
@@ -106,9 +117,8 @@ public class AllocationResult {
         this.aggregate = aggregate;
         this.daysDuration = aggregate.isEmpty() ? task.getDaysDuration()
                 : aggregate.getDaysDuration();
-        Map<ResourceAllocation<?>, ResourceAllocation<?>> fromDetachedToAttached = translation(fromDetachedAllocationToAttached);
-        this.newAllocations = calculateNew(fromDetachedToAttached);
-        this.modified = calculateModified(fromDetachedToAttached);
+        this.newAllocations = newAllocations;
+        this.modified = modified;
     }
 
     public AggregateOfResourceAllocations getAggregate() {

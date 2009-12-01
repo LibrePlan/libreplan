@@ -50,8 +50,7 @@ public class ResourceAllocationsBeingEdited {
         AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
                 AllocationModification.getBeingModified(forModification
                         .keySet()));
-        return new AllocationResult(task, task.getCalculatedValue(), aggregate,
-                forModification);
+        return AllocationResult.create(task, task.getCalculatedValue(), aggregate, forModification);
     }
 
     private static Map<ResourcesPerDayModification, ResourceAllocation<?>> forModification(
@@ -205,10 +204,8 @@ public class ResourceAllocationsBeingEdited {
                 throw new RuntimeException("cant handle: " + calculatedValue);
             }
         }
-        AllocationResult result = new AllocationResult(task, calculatedValue,
-                new AggregateOfResourceAllocations(AllocationModification
-                        .getBeingModified(allocations)),
-                fromDetachedToAttached);
+        AllocationResult result = AllocationResult.create(task, calculatedValue, new AggregateOfResourceAllocations(AllocationModification
+                .getBeingModified(allocations)), fromDetachedToAttached);
         daysDuration = result.getDaysDuration();
         return result;
     }
