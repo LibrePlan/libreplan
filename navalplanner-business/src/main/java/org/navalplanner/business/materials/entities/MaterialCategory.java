@@ -75,7 +75,6 @@ public class MaterialCategory extends BaseEntity {
     }
 
     public void setParent(MaterialCategory parent) {
-        Validate.notNull(parent);
         this.parent = parent;
     }
 

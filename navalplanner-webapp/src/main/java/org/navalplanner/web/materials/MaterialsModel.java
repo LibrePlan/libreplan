@@ -95,6 +95,7 @@ public class MaterialsModel implements IMaterialsModel {
             throw new ValidationException(invalidValue);
         }
 
+        child.setParent(parent);
         if (parent == null) {
             materialCategories.addToRoot(child);
         } else {
