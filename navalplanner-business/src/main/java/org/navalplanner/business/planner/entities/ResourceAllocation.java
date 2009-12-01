@@ -37,9 +37,10 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForSpecifiedResourcesPerDayAndHours;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
+import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -197,6 +198,39 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     allocations);
             allocator.allocateUntil(endExclusive);
         }
+    }
+
+    public static HoursAllocationCurried allocatingHours(
+            List<HoursModification> hoursModifications) {
+        return new HoursAllocationCurried(hoursModifications);
+    }
+
+    public static class HoursAllocationCurried {
+
+        private final List<HoursModification> hoursModifications;
+
+        private Task task;
+
+        public HoursAllocationCurried(List<HoursModification> hoursModifications) {
+            Validate.noNullElements(hoursModifications);
+            Validate.isTrue(!hoursModifications.isEmpty());
+            this.hoursModifications = hoursModifications;
+            this.task = hoursModifications.get(0).getBeingModified().getTask();
+            Validate.notNull(task);
+        }
+
+        public void allocate() {
+            allocateUntil(new LocalDate(task.getEndDate()));
+        }
+
+        public void allocateUntil(LocalDate end) {
+            Validate.notNull(end);
+            Validate.isTrue(end.isAfter(new LocalDate(task.getStartDate())));
+            for (HoursModification each : hoursModifications) {
+                each.allocateUntil(end);
+            }
+        }
+
     }
 
     @NotNull
