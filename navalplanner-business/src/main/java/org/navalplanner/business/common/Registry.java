@@ -54,6 +54,7 @@ public class Registry {
     @Autowired
     private IMachineDAO machineDAO;
 
+    @Autowired
     private IWorkReportTypeDAO workReportTypeDAO;
 
     private Registry() {

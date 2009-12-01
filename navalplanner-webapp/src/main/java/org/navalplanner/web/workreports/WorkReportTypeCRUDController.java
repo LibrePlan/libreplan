@@ -54,6 +54,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -62,7 +63,9 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -90,6 +93,16 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
     private Textbox code;
 
+    private Vbox orderedListFieldsAndLabels;
+
+    private Tab tabSortedLabelsAndFields;
+
+    private Tab tabReportStructure;
+
+    private Component containerMessageSortedLabelsAndFields;
+
+    private IMessagesForUser messagesForUserSortedLabelsAndFields;
+
     private IWorkReportTypeModel workReportTypeModel;
 
     private OnlyOneVisible visibility;
@@ -105,6 +118,8 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     private DescriptionFieldRowRenderer descriptionFieldRowRenderer = new DescriptionFieldRowRenderer();
 
     private WorkReportLabelTypeAssigmentRowRenderer workReportLabelTypeAssigmentRowRenderer = new WorkReportLabelTypeAssigmentRowRenderer();
+
+    private OrderedFieldsAndLabelsRowRenderer orderedFieldsAndLabesRowRenderer = new OrderedFieldsAndLabelsRowRenderer();
 
     public List<WorkReportType> getWorkReportTypes() {
         return workReportTypeModel.getWorkReportTypes();
@@ -238,6 +253,15 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
                     .getFellow("listDescriptionFields");
             listWorkReportLabelTypeAssigments = (NewDataSortableGrid) window
                     .getFellow("listWorkReportLabelTypeAssigments");
+            orderedListFieldsAndLabels = (Vbox) window
+                    .getFellow("orderedListFieldsAndLabels");
+            containerMessageSortedLabelsAndFields = (Vbox) window
+                    .getFellow("containerMessageSortedLabelsAndFields");
+            messagesForUserSortedLabelsAndFields = new MessagesForUser(
+                    containerMessageSortedLabelsAndFields);
+            tabSortedLabelsAndFields = (Tab) window
+                    .getFellow("SortedLabelsAndFields");
+            tabReportStructure = (Tab) window.getFellow("ReportStructure");
         }
     }
 
@@ -739,7 +763,10 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         }
 
         // validate the descriptionFields and the WorkReportLabelTypeAssigments
-        return (validateDescriptionFields() && validateWorkReportLabelTypeAssigments());
+        if (!((validateDescriptionFields()) && (validateWorkReportLabelTypeAssigments()))) {
+            return false;
+        }
+        return validateIndexLabelsAndFields();
     }
 
     private boolean validateDescriptionFields() {
@@ -779,10 +806,19 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         return true;
     }
 
+    private boolean validateIndexLabelsAndFields() {
+        if (!workReportTypeModel.validateTheIndexFieldsAndLabels()) {
+            showMessageSortedLabelsAndFields();
+            return false;
+        }
+        return true;
+    }
+
     private void showInvalidWorkReportTypeName() {
         try {
             workReportTypeModel.validateWorkReportTypeName(name.getValue());
         } catch (IllegalArgumentException e) {
+            selectTab(tabReportStructure);
             throw new WrongValueException(name, _(e.getMessage()));
         }
     }
@@ -791,11 +827,13 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         try {
             workReportTypeModel.validateWorkReportTypeCode(code.getValue());
         } catch (IllegalArgumentException e) {
+            selectTab(tabReportStructure);
             throw new WrongValueException(code, _(e.getMessage()));
         }
     }
 
     private void showInvalidDescriptionFieldName(DescriptionField field) {
+        selectTab(tabReportStructure);
             // Find which row contains the description field inside grid
         Row row = findRowByValue(listDescriptionFields.getRows(), field);
             Textbox fieldName = (Textbox) row.getFirstChild();
@@ -804,6 +842,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     }
 
     private void showInvalidDescriptionFieldLength(DescriptionField field) {
+        selectTab(tabReportStructure);
         // Find which row contains the description field inside grid
         Row row = findRowByValue(listDescriptionFields.getRows(), field);
         Intbox fieldName = (Intbox) row.getChildren().get(1);
@@ -814,6 +853,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     private void showInvalidWorkReportLabelTypeAssigment(int combo,
             String message,
             WorkReportLabelTypeAssigment labelType) {
+        selectTab(tabReportStructure);
         Row row = findRowByValue(listWorkReportLabelTypeAssigments.getRows(),
                 labelType);
         Combobox comboLabelType = (Combobox) row.getChildren().get(combo);
@@ -830,4 +870,119 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         return null;
     }
 
+    /* Operations to manage the ordered list of fields and labels */
+
+    public void reloadOrderedListFieldsAndLabels() {
+        Util.reloadBindings(orderedListFieldsAndLabels);
+    }
+
+    public List<Object> headingFieldsAndLabels(){
+        return workReportTypeModel.getOrderedListHeading();
+    }
+
+    public List<Object> linesFieldsAndLabels() {
+        return workReportTypeModel.getOrderedListLines();
+    }
+
+    public OrderedFieldsAndLabelsRowRenderer getOrderedFieldsAndLabelsRowRenderer() {
+        return orderedFieldsAndLabesRowRenderer;
+    }
+
+    public class OrderedFieldsAndLabelsRowRenderer implements RowRenderer {
+
+        @Override
+        public void render(Row row, Object data) throws Exception {
+            row.setValue(data);
+
+            String name = _("Unallocated name");
+            String type;
+            if (data instanceof DescriptionField) {
+                if ((((DescriptionField) data).getFieldName() != null)
+                        || (((DescriptionField) data).getFieldName().isEmpty())) {
+                    name = ((DescriptionField) data).getFieldName();
+                }
+                type = _("Text field");
+            } else {
+                if((((WorkReportLabelTypeAssigment) data)
+.getLabelType() != null)
+                        && (((WorkReportLabelTypeAssigment) data)
+                                .getDefaultLabel() != null)) {
+                    String labelType = ((WorkReportLabelTypeAssigment) data)
+                        .getLabelType().getName();
+                    String label = ((WorkReportLabelTypeAssigment) data)
+                        .getDefaultLabel().getName();
+                    name = labelType + " :: " + label;
+                }
+                type = _("Label");
+            }
+
+            appendNewLabel(row, name);
+            appendNewLabel(row, type);
+            appendOperationsFieldOrLabel(row);
+        }
+    }
+
+    private void appendNewLabel(Row row, String label) {
+        org.zkoss.zul.Label labelName = new org.zkoss.zul.Label();
+        labelName.setParent(row);
+        labelName.setValue(label);
+    }
+
+    private void appendOperationsFieldOrLabel(final Row row) {
+        Hbox hbox = new Hbox();
+        hbox.setParent(row);
+
+        Button downbutton = new Button("", "/common/img/ico_subir1.png");
+        downbutton.setHoverImage("/common/img/ico_subir.png");
+        downbutton.setParent(hbox);
+        downbutton.setSclass("icono");
+        downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                boolean intoHeading = intoHeading(row.getGrid());
+                workReportTypeModel.upFieldOrLabel(row.getValue(), intoHeading);
+                Util.reloadBindings(row.getGrid());
+            }
+        });
+
+        Button upbutton = new Button("", "/common/img/ico_bajar1.png");
+        upbutton.setHoverImage("/common/img/ico_bajar.png");
+        upbutton.setParent(hbox);
+        upbutton.setSclass("icono");
+        upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                boolean intoHeading = intoHeading(row.getGrid());
+                workReportTypeModel.downFieldOrLabel(row.getValue(),
+                        intoHeading);
+                Util.reloadBindings(row.getGrid());
+            }
+        });
+
+    }
+
+    private boolean intoHeading(Grid grid) {
+        if (grid.getId().equals("linesFieldsAndLabels")) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void showMessageSortedLabelsAndFields() {
+        selectTab(tabSortedLabelsAndFields);
+        reloadOrderedListFieldsAndLabels();
+        if (messagesForUserSortedLabelsAndFields != null) {
+            messagesForUserSortedLabelsAndFields
+                    .showMessage(
+                            Level.INFO,
+                            _("The index fields and labels must be uniques and consecutives"));
+        }
+    }
+
+    private void selectTab(Tab tab) {
+        if (tab != null) {
+            tab.setSelected(true);
+        }
+    }
 }

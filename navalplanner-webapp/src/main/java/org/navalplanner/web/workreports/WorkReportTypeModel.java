@@ -125,7 +125,9 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
         editing = true;
         Validate.notNull(workReportType);
         loadLabels();
+
         this.workReportType = getFromDB(workReportType);
+        loadCollections(this.workReportType);
     }
 
     private WorkReportType getFromDB(WorkReportType workReportType) {
@@ -136,7 +138,6 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     private WorkReportType getFromDB(Long id) {
         try {
             WorkReportType result = workReportTypeDAO.find(id);
-            loadCollections(result);
             return result;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
@@ -209,25 +210,20 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
 
     public void addNewDescriptionField() {
         DescriptionField descriptionField = DescriptionField.create();
-        workReportType.getLineFields().add(descriptionField);
+        getWorkReportType().addDescriptionFieldToEndLine(descriptionField);
     }
 
     public void removeDescriptionField(DescriptionField descriptionField) {
-        if (isHeadingDescriptionField(descriptionField)) {
-            workReportType.getHeadingFields().remove(descriptionField);
-        } else {
-            workReportType.getLineFields().remove(descriptionField);
-        }
+        getWorkReportType().removeDescriptionField(descriptionField);
     }
 
     public void changePositionDescriptionField(
             PositionInWorkReportEnum newPosition,
             DescriptionField descriptionField) {
-        removeDescriptionField(descriptionField);
         if (newPosition.equals(PositionInWorkReportEnum.HEADING)) {
-            workReportType.getHeadingFields().add(descriptionField);
+            getWorkReportType().moveDescriptionFieldToEndHead(descriptionField);
         } else {
-            workReportType.getLineFields().add(descriptionField);
+            getWorkReportType().moveDescriptionFieldToEndLine(descriptionField);
         }
     }
 
@@ -257,15 +253,14 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
         if (getWorkReportType() != null) {
             WorkReportLabelTypeAssigment newWorkReportLabelTypeAssigment = WorkReportLabelTypeAssigment
                     .create();
-            getWorkReportType().getWorkReportLabelTypeAssigments().add(
-                newWorkReportLabelTypeAssigment);
+            getWorkReportType().addLabelAssigmentToEndLine(
+                    newWorkReportLabelTypeAssigment);
         }
     }
 
     public void removeWorkReportLabelTypeAssigment(
             WorkReportLabelTypeAssigment workReportLabelTypeAssigment) {
-        workReportType.getWorkReportLabelTypeAssigments().remove(
-                workReportLabelTypeAssigment);
+        getWorkReportType().removeLabel(workReportLabelTypeAssigment);
     }
 
     public PositionInWorkReportEnum getLabelAssigmentPosition(
@@ -280,8 +275,13 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     public void setLabelAssigmentPosition(
             WorkReportLabelTypeAssigment workReportLabelTypeAssigment,
             PositionInWorkReportEnum position) {
-        workReportLabelTypeAssigment
-                .setLabelsSharedByLines(isSharedByLines(position));
+        if (isSharedByLines(position)) {
+            getWorkReportType()
+                    .moveLabelToEndHead(workReportLabelTypeAssigment);
+        } else {
+            getWorkReportType()
+                    .moveLabelToEndLine(workReportLabelTypeAssigment);
+        }
     }
 
     /* Operation to manage the requirements fields */
@@ -353,13 +353,6 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
             throw new IllegalArgumentException(
                     _("Exist other workReportType with the same name."));
         }
-        // for (WorkReportType workReportType : getWorkReportTypes()) {
-        // if ((!workReportType.getId().equals(getWorkReportType().getId()))
-        // && (workReportType.getName().equals(name))) {
-        // throw new IllegalArgumentException(
-        // _("Exist other workReportType with the same name."));
-        // }
-        // }
     }
 
     @Transactional(readOnly = true)
@@ -379,13 +372,6 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
             throw new IllegalArgumentException(
                     _("Exist other workReportType with the same code."));
         }
-        // for (WorkReportType workReportType : getWorkReportTypes()) {
-        // if ((!workReportType.getId().equals(getWorkReportType().getId()))
-        // && (workReportType.getCode().equals(code))) {
-        // throw new IllegalArgumentException(
-        // _("Exist other workReportType with the same code."));
-        // }
-        // }
     }
 
     public DescriptionField validateLengthLineFields() {
@@ -424,6 +410,93 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
             }
         }
         return null;
+    }
+
+    /* Operations to calculated the index position of the fields into workReport */
+
+    public boolean validateTheIndexFieldsAndLabels() {
+        return ((getWorkReportType().validateTheIndexHeadingFieldsAndLabel()) && (getWorkReportType()
+                .validateTheIndexLineFieldsAndLabel()));
+    }
+
+    public List<Object> getOrderedListHeading() {
+        if (getWorkReportType() != null) {
+            return sort(getWorkReportType().getHeadingFieldsAndLabels());
+        }
+        return new ArrayList<Object>();
+    }
+
+    public List<Object> getOrderedListLines() {
+        if (getWorkReportType() != null) {
+            return sort(getWorkReportType().getLineFieldsAndLabels());
+        }
+        return new ArrayList<Object>();
+    }
+
+    private List<Object> sort(List<Object> list) {
+        List<Object> result = new ArrayList<Object>(list);
+        for (Object object : list) {
+            if ((getIndex(object) >= 0) && (getIndex(object) < list.size())) {
+                result.set(getIndex(object), object);
+            }
+        }
+        return result;
+    }
+
+    private int getIndex(Object object) {
+        if (object instanceof DescriptionField) {
+            return ((DescriptionField) object).getIndex();
+        } else {
+            return ((WorkReportLabelTypeAssigment) object).getIndex();
+        }
+    }
+
+    public void upFieldOrLabel(Object objectToUp, boolean intoHeading) {
+        if (objectToUp instanceof DescriptionField) {
+            int newPosition = ((DescriptionField) objectToUp).getIndex() - 1;
+            moveDescriptionField((DescriptionField) objectToUp, intoHeading, newPosition);
+        } else {
+            int newPosition = ((WorkReportLabelTypeAssigment) objectToUp).getIndex()-1;
+            moveWorkReportLabelTypeAssigment(
+                    (WorkReportLabelTypeAssigment) objectToUp, intoHeading, newPosition);
+        }
+    }
+
+    public void downFieldOrLabel(Object objectToDown, boolean intoHeading) {
+        if (objectToDown instanceof DescriptionField) {
+            int newPosition = ((DescriptionField) objectToDown).getIndex() + 1;
+            moveDescriptionField((DescriptionField) objectToDown, intoHeading,
+                    newPosition);
+        } else {
+            int newPosition = ((WorkReportLabelTypeAssigment) objectToDown)
+                    .getIndex() + 1;
+            moveWorkReportLabelTypeAssigment(
+                    (WorkReportLabelTypeAssigment) objectToDown, intoHeading,
+                    newPosition);
+        }
+    }
+
+    private void moveDescriptionField(DescriptionField descriptionField,
+            boolean intoHeading, int newPosition) {
+        if (intoHeading) {
+            getWorkReportType().moveDescriptionFieldToHead(descriptionField,
+                    newPosition);
+        } else {
+            getWorkReportType().moveDescriptionFieldToLine(descriptionField,
+                    newPosition);
+        }
+    }
+
+    private void moveWorkReportLabelTypeAssigment(
+            WorkReportLabelTypeAssigment workReportLabelTypeAssigment,
+            boolean intoHeading, int newPosition) {
+        if (intoHeading) {
+            getWorkReportType().moveLabelToHead(workReportLabelTypeAssigment,
+                    newPosition);
+        } else {
+            getWorkReportType().moveLabelToLine(workReportLabelTypeAssigment,
+                    newPosition);
+        }
     }
 
 }

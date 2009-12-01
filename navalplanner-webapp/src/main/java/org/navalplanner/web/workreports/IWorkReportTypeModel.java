@@ -294,4 +294,14 @@ public interface IWorkReportTypeModel {
      */
     WorkReportLabelTypeAssigment validateLabels();
 
+    /* Operation to manage the ordered list of fields and labels */
+    boolean validateTheIndexFieldsAndLabels();
+
+    List<Object> getOrderedListHeading();
+
+    List<Object> getOrderedListLines();
+
+    void upFieldOrLabel(Object objectToUp, boolean intoHeading);
+
+    void downFieldOrLabel(Object objectToDown, boolean intoHeading);
 }

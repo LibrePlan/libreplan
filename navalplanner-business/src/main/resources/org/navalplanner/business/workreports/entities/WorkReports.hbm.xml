@@ -33,6 +33,7 @@
         <composite-element class="org.navalplanner.business.workreports.ValueObjects.DescriptionField">
                 <property name="fieldName"/>
                 <property name="length"/>
+                <property name="index"/>
         </composite-element>
     </set>
 
@@ -41,6 +42,7 @@
         <composite-element class="org.navalplanner.business.workreports.ValueObjects.DescriptionField">
                 <property name="fieldName"/>
                 <property name="length"/>
+                <property name="index"/>
         </composite-element>
     </set>
 
@@ -103,6 +105,7 @@
     <version name="version" access="property" type="long" />
 
     <property name="labelsSharedByLines"/>
+    <property name="index"/>
 
     <many-to-one name="labelType" class="org.navalplanner.business.labels.entities.LabelType" column="LABEL_TYPE_ID" />
 

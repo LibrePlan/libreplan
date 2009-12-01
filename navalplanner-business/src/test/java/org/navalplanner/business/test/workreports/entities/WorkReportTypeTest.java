@@ -153,10 +153,10 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         WorkReportType workReportType = createValidWorkReportType();
 
         DescriptionField descriptionFieldHead = createValidDescriptionField();
-        workReportType.getHeadingFields().add(descriptionFieldHead);
+        workReportType.addDescriptionFieldToEndHead(descriptionFieldHead);
 
         DescriptionField descriptionFieldLine = createValidDescriptionField();
-        workReportType.getLineFields().add(descriptionFieldLine);
+        workReportType.addDescriptionFieldToEndLine(descriptionFieldLine);
 
         try {
             workReportTypeDAO.save(workReportType);
@@ -171,11 +171,11 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
 
         DescriptionField descriptionFieldHead = createValidDescriptionField();
         descriptionFieldHead.setFieldName("A");
-        workReportType.getHeadingFields().add(descriptionFieldHead);
+        workReportType.addDescriptionFieldToEndHead(descriptionFieldHead);
 
         DescriptionField descriptionFieldLine = createValidDescriptionField();
         descriptionFieldLine.setFieldName("A");
-        workReportType.getLineFields().add(descriptionFieldLine);
+        workReportType.addDescriptionFieldToEndLine(descriptionFieldLine);
 
         try {
             workReportTypeDAO.save(workReportType);
@@ -190,7 +190,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
 
         DescriptionField descriptionFieldHead = createValidDescriptionField();
         descriptionFieldHead.setFieldName("");
-        workReportType.getHeadingFields().add(descriptionFieldHead);
+        workReportType.addDescriptionFieldToEndHead(descriptionFieldHead);
 
         try {
             workReportTypeDAO.save(workReportType);
@@ -219,7 +219,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
 
         DescriptionField descriptionFieldHead = createValidDescriptionField();
         descriptionFieldHead.setLength(null);
-        workReportType.getHeadingFields().add(descriptionFieldHead);
+        workReportType.addDescriptionFieldToEndHead(descriptionFieldHead);
 
         try {
             workReportTypeDAO.save(workReportType);
@@ -247,14 +247,10 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         WorkReportType workReportType = createValidWorkReportType();
 
         WorkReportLabelTypeAssigment labelAssigmentHead = createValidWorkReportLabelTypeAssigment();
-        labelAssigmentHead.setLabelsSharedByLines(true);
-        workReportType.getWorkReportLabelTypeAssigments().add(
-                labelAssigmentHead);
+        workReportType.addLabelAssigmentToEndHead(labelAssigmentHead);
 
         WorkReportLabelTypeAssigment labelAssigmentLine = createValidWorkReportLabelTypeAssigment();
-        labelAssigmentLine.setLabelsSharedByLines(false);
-        workReportType.getWorkReportLabelTypeAssigments().add(
-                labelAssigmentHead);
+        workReportType.addLabelAssigmentToEndLine(labelAssigmentLine);
 
         try {
             workReportTypeDAO.save(workReportType);
@@ -268,7 +264,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         WorkReportType workReportType = createValidWorkReportType();
         WorkReportLabelTypeAssigment labelAssigment = createValidWorkReportLabelTypeAssigment();
         labelAssigment.setLabelType(null);
-        workReportType.getWorkReportLabelTypeAssigments().add(labelAssigment);
+        workReportType.addLabelAssigmentToEndLine(labelAssigment);
 
         try {
             workReportTypeDAO.save(workReportType);
@@ -282,7 +278,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         WorkReportType workReportType = createValidWorkReportType();
         WorkReportLabelTypeAssigment labelAssigment = createValidWorkReportLabelTypeAssigment();
         labelAssigment.setDefaultLabel(null);
-        workReportType.getWorkReportLabelTypeAssigments().add(labelAssigment);
+        workReportType.addLabelAssigmentToEndLine(labelAssigment);
 
         try {
             workReportTypeDAO.save(workReportType);
@@ -291,4 +287,78 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         }
     }
 
+    @Test
+    public void checkIfIndexLabelsAndFieldsAreConsecutive() {
+        WorkReportType workReportType = createValidWorkReportType();
+
+        WorkReportLabelTypeAssigment labelAssigment_1 = createValidWorkReportLabelTypeAssigment();
+        workReportType.addLabelAssigmentToEndLine(labelAssigment_1);
+
+        WorkReportLabelTypeAssigment labelAssigment_2 = createValidWorkReportLabelTypeAssigment();
+        workReportType.addLabelAssigmentToEndLine(labelAssigment_2);
+
+        WorkReportLabelTypeAssigment labelAssigment_3 = createValidWorkReportLabelTypeAssigment();
+        workReportType.addLabelAssigmentToEndLine(labelAssigment_3);
+
+        // Set repeat indes labels
+        labelAssigment_1.setIndex(3);
+        labelAssigment_2.setIndex(0);
+        labelAssigment_3.setIndex(2);
+
+        try {
+            workReportTypeDAO.save(workReportType);
+            fail("It should throw an exception");
+        } catch (ValidationException e) {
+        }
+    }
+
+    @Test
+    public void checkIfIndexLabelsAndFieldsInitInZero() {
+        WorkReportType workReportType = createValidWorkReportType();
+
+        WorkReportLabelTypeAssigment labelAssigment_1 = createValidWorkReportLabelTypeAssigment();
+        workReportType.addLabelAssigmentToEndLine(labelAssigment_1);
+
+        WorkReportLabelTypeAssigment labelAssigment_2 = createValidWorkReportLabelTypeAssigment();
+        workReportType.addLabelAssigmentToEndLine(labelAssigment_2);
+
+        WorkReportLabelTypeAssigment labelAssigment_3 = createValidWorkReportLabelTypeAssigment();
+        workReportType.addLabelAssigmentToEndLine(labelAssigment_3);
+
+        // Set repeat indes labels
+        labelAssigment_1.setIndex(1);
+        labelAssigment_2.setIndex(2);
+        labelAssigment_3.setIndex(3);
+
+        try {
+            workReportTypeDAO.save(workReportType);
+            fail("It should throw an exception");
+        } catch (ValidationException e) {
+        }
+    }
+
+    @Test
+    public void checkIfIndexLabelsAndFieldsAreUniques() {
+        WorkReportType workReportType = createValidWorkReportType();
+
+        WorkReportLabelTypeAssigment labelAssigment_1 = createValidWorkReportLabelTypeAssigment();
+        workReportType.addLabelAssigmentToEndLine(labelAssigment_1);
+
+        WorkReportLabelTypeAssigment labelAssigment_2 = createValidWorkReportLabelTypeAssigment();
+        workReportType.addLabelAssigmentToEndLine(labelAssigment_2);
+
+        WorkReportLabelTypeAssigment labelAssigment_3 = createValidWorkReportLabelTypeAssigment();
+        workReportType.addLabelAssigmentToEndLine(labelAssigment_3);
+
+        // Set repeat indes labels
+        labelAssigment_1.setIndex(1);
+        labelAssigment_2.setIndex(0);
+        labelAssigment_3.setIndex(1);
+
+        try {
+            workReportTypeDAO.save(workReportType);
+            fail("It should throw an exception");
+        } catch (ValidationException e) {
+        }
+    }
 }

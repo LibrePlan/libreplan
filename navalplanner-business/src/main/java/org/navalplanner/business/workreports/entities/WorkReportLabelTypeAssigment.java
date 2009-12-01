@@ -88,8 +88,20 @@ public class WorkReportLabelTypeAssigment extends BaseEntity implements
         return labelsSharedByLines == null ? false : labelsSharedByLines;
     }
 
-    public void setLabelsSharedByLines(boolean labelsSharedByLines) {
+    void setLabelsSharedByLines(boolean labelsSharedByLines) {
         this.labelsSharedByLines = labelsSharedByLines;
+    }
+
+    /* Methos for the index */
+
+    private Integer index;
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
 }

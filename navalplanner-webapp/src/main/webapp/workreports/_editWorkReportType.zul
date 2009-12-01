@@ -18,11 +18,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<?component name="sortFieldsAndLabels" inline="true" macroURI="_sortFieldsAndLabels.zul"?>
 <window id="${arg.top_id}" title="${arg.title}" >
 
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('Report structure')}"></tab>
+            <tab id="ReportStructure" label="${i18n:_('Report structure')}"/>
+            <tab id="SortedLabelsAndFields" label="${i18n:_('Managing fields and labels')}"
+                onClick = "controller.reloadOrderedListFieldsAndLabels();"/>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -150,6 +153,11 @@
                 <separator bar="false" spacing="80px" orient="vertical"/>
 
             </tabpanel>
+
+            <tabpanel>
+                <sortFieldsAndLabels/>
+            </tabpanel>
+
         </tabpanels>
     </tabbox>
             <button visible = "@{controller.editable}"
