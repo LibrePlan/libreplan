@@ -20,9 +20,13 @@
 
 package org.navalplanner.web.planner.chart;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -38,17 +42,38 @@ import org.zkoss.ganttz.util.Interval;
  */
 public abstract class EarnedValueChartFiller extends ChartFiller {
 
-    protected SortedMap<LocalDate, BigDecimal> bcws;
-    protected SortedMap<LocalDate, BigDecimal> acwp;
-    protected SortedMap<LocalDate, BigDecimal> bcwp;
-    protected SortedMap<LocalDate, BigDecimal> cv;
-    protected SortedMap<LocalDate, BigDecimal> sv;
-    protected SortedMap<LocalDate, BigDecimal> bac;
-    protected SortedMap<LocalDate, BigDecimal> eac;
-    protected SortedMap<LocalDate, BigDecimal> vac;
-    protected SortedMap<LocalDate, BigDecimal> etc;
-    protected SortedMap<LocalDate, BigDecimal> cpi;
-    protected SortedMap<LocalDate, BigDecimal> spi;
+    public enum EarnedValueType {
+
+        BCWS(_("BCWS"), _("Budgeted Cost Work Scheduled")), ACWP(_("ACWP"),
+                _("Actual Cost Work Performed")), BCWP(_("BCWP"),
+                _("Budgeted Cost Work Performed")), CV(_("CV"),
+                _("Cost Variance")), SV(_("SV"), _("Schedule Variance")), BAC(
+                _("BAC"), _("Budget At Completion")), EAC(_("EAC"),
+                _("Estimate At Completion")), VAC(_("VAC"),
+                _("Variance At Completion")), ETC(_("ETC"),
+                _("Estimate To Complete")), CPI(_("CPI"),
+                _("Cost Performance Index")), SPI(_("SPI"),
+                _("Schedule Performance Index"))
+        ;
+
+        private String acronym;
+        private String name;
+
+        private EarnedValueType(String acronym, String name) {
+            this.acronym = acronym;
+            this.name = name;
+        }
+
+        public String getAcronym() {
+            return acronym;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    protected Map<EarnedValueType, SortedMap<LocalDate, BigDecimal>> indicators = new HashMap<EarnedValueType, SortedMap<LocalDate, BigDecimal>>();
 
     protected abstract void calculateBudgetedCostWorkScheduled(Interval interval);
     protected abstract void calculateActualCostWorkPerformed(Interval interval);
@@ -89,32 +114,58 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
     private void calculateCostVariance() {
         // CV = BCWP - ACWP
-        cv = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> cv = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> bcwp = indicators
+                .get(EarnedValueType.BCWP);
+        SortedMap<LocalDate, BigDecimal> acwp = indicators
+                .get(EarnedValueType.ACWP);
+
         for (LocalDate day : bcwp.keySet()) {
             cv.put(day, bcwp.get(day).subtract(acwp.get(day)));
         }
+
+        indicators.put(EarnedValueType.CV, cv);
     }
 
     private void calculateScheduleVariance() {
         // SV = BCWP - BCWS
-        sv = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> sv = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> bcwp = indicators
+                .get(EarnedValueType.BCWP);
+        SortedMap<LocalDate, BigDecimal> bcws = indicators
+                .get(EarnedValueType.BCWS);
+
         for (LocalDate day : bcwp.keySet()) {
             sv.put(day, bcwp.get(day).subtract(bcws.get(day)));
         }
+
+        indicators.put(EarnedValueType.SV, sv);
     }
 
     private void calculateBudgetAtCompletion() {
         // BAC = max (BCWS)
-        bac = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> bac = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> bcws = indicators
+                .get(EarnedValueType.BCWS);
+
         BigDecimal value = Collections.max(bcws.values());
         for (LocalDate day : bcws.keySet()) {
             bac.put(day, value);
         }
+
+        indicators.put(EarnedValueType.BAC, bac);
     }
 
     private void calculateEstimateAtCompletion() {
         // EAC = (ACWP/BCWP) * BAC
-        eac = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> eac = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> acwp = indicators
+                .get(EarnedValueType.ACWP);
+        SortedMap<LocalDate, BigDecimal> bcwp = indicators
+                .get(EarnedValueType.BCWP);
+        SortedMap<LocalDate, BigDecimal> bac = indicators
+                .get(EarnedValueType.BAC);
+
         for (LocalDate day : acwp.keySet()) {
             BigDecimal value = BigDecimal.ZERO;
             if (bcwp.get(day).compareTo(BigDecimal.ZERO) != 0) {
@@ -123,27 +174,48 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
             }
             eac.put(day, value);
         }
+
+        indicators.put(EarnedValueType.EAC, eac);
     }
 
     private void calculateVarianceAtCompletion() {
         // VAC = BAC - EAC
-        vac = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> vac = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> bac = indicators
+                .get(EarnedValueType.BAC);
+        SortedMap<LocalDate, BigDecimal> eac = indicators
+                .get(EarnedValueType.EAC);
+
         for (LocalDate day : bac.keySet()) {
             vac.put(day, bac.get(day).subtract(eac.get(day)));
         }
+
+        indicators.put(EarnedValueType.VAC, vac);
     }
 
     private void calculateEstimatedToComplete() {
         // ETC = EAC - ACWP
-        etc = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> etc = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> eac = indicators
+                .get(EarnedValueType.EAC);
+        SortedMap<LocalDate, BigDecimal> acwp = indicators
+                .get(EarnedValueType.ACWP);
+
         for (LocalDate day : eac.keySet()) {
             etc.put(day, eac.get(day).subtract(acwp.get(day)));
         }
+
+        indicators.put(EarnedValueType.ETC, etc);
     }
 
     private void calculateCostPerformanceIndex() {
         // CPI = BCWP / ACWP
-        cpi = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> cpi = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> bcwp = indicators
+                .get(EarnedValueType.BCWP);
+        SortedMap<LocalDate, BigDecimal> acwp = indicators
+                .get(EarnedValueType.ACWP);
+
         for (LocalDate day : bcwp.keySet()) {
             BigDecimal value = BigDecimal.ZERO;
             if (acwp.get(day).compareTo(BigDecimal.ZERO) != 0) {
@@ -151,11 +223,18 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
             }
             cpi.put(day, value);
         }
+
+        indicators.put(EarnedValueType.CPI, cpi);
     }
 
     private void calculateSchedulePerformanceIndex() {
         // SPI = BCWP / BCWS
-        spi = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> spi = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> bcwp = indicators
+                .get(EarnedValueType.BCWP);
+        SortedMap<LocalDate, BigDecimal> bcws = indicators
+                .get(EarnedValueType.BCWS);
+
         for (LocalDate day : bcwp.keySet()) {
             BigDecimal value = BigDecimal.ZERO;
             if (bcws.get(day).compareTo(BigDecimal.ZERO) != 0) {
@@ -163,6 +242,8 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
             }
             spi.put(day, value);
         }
+
+        indicators.put(EarnedValueType.SPI, spi);
     }
 
 }

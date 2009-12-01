@@ -603,11 +603,16 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
             calculateValues(interval);
 
-            Plotinfo bcws = createPlotInfo(this.bcws, interval, "0000FF");
-            Plotinfo acwp = createPlotInfo(this.acwp, interval, "FF0000");
-            Plotinfo bcwp = createPlotInfo(this.bcwp, interval, "00FF00");
-            Plotinfo cv = createPlotInfo(this.cv, interval, "FFFF00");
-            Plotinfo sv = createPlotInfo(this.sv, interval, "00FFFF");
+            Plotinfo bcws = createPlotInfo(
+                    indicators.get(EarnedValueType.BCWS), interval, "0000FF");
+            Plotinfo acwp = createPlotInfo(
+                    indicators.get(EarnedValueType.ACWP), interval, "FF0000");
+            Plotinfo bcwp = createPlotInfo(
+                    indicators.get(EarnedValueType.BCWP), interval, "00FF00");
+            Plotinfo cv = createPlotInfo(indicators.get(EarnedValueType.CV),
+                    interval, "FFFF00");
+            Plotinfo sv = createPlotInfo(indicators.get(EarnedValueType.SV),
+                    interval, "00FFFF");
 
             ValueGeometry valueGeometry = getValueGeometry();
             TimeGeometry timeGeometry = getTimeGeometry(interval);
@@ -637,16 +642,16 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
 
             estimatedCost = accumulateResult(estimatedCost);
-            bcws = calculatedValueForEveryDay(estimatedCost, interval
-                    .getStart(), interval.getFinish());
+            indicators.put(EarnedValueType.BCWS, calculatedValueForEveryDay(
+                    estimatedCost, interval.getStart(), interval.getFinish()));
         }
 
         protected void calculateActualCostWorkPerformed(Interval interval) {
             SortedMap<LocalDate, BigDecimal> workReportCost = getWorkReportCost();
 
             workReportCost = accumulateResult(workReportCost);
-            acwp = calculatedValueForEveryDay(workReportCost, interval
-                    .getStart(), interval.getFinish());
+            indicators.put(EarnedValueType.ACWP, calculatedValueForEveryDay(
+                    workReportCost, interval.getStart(), interval.getFinish()));
         }
 
         public SortedMap<LocalDate, BigDecimal> getWorkReportCost() {
@@ -688,8 +693,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
 
             advanceCost = accumulateResult(advanceCost);
-            bcwp = calculatedValueForEveryDay(advanceCost, interval.getStart(),
-                    interval.getFinish());
+            indicators.put(EarnedValueType.BCWP, calculatedValueForEveryDay(
+                    advanceCost, interval.getStart(), interval.getFinish()));
         }
 
     }
