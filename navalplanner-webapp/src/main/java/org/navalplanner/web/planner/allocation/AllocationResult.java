@@ -56,15 +56,42 @@ public class AllocationResult {
         return result;
     }
 
+    private static List<Task.ModifiedAllocation> calculateModified(
+            Map<ResourceAllocation<?>, ResourceAllocation<?>> fromDetachedAllocationToAttached) {
+        List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
+        for (Entry<ResourceAllocation<?>, ResourceAllocation<?>> entry : fromDetachedAllocationToAttached
+                .entrySet()) {
+            if (entry.getValue() != null) {
+                result.add(new ModifiedAllocation(entry.getValue(), entry
+                        .getKey()));
+            }
+        }
+        return result;
+    }
+
+    private static List<ResourceAllocation<?>> calculateNew(
+            Map<ResourceAllocation<?>, ResourceAllocation<?>> fromDetachedToAttached) {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        for (Entry<ResourceAllocation<?>, ResourceAllocation<?>> entry : fromDetachedToAttached
+                .entrySet()) {
+            if (entry.getValue() == null) {
+                result.add(entry.getKey());
+            }
+        }
+        return result;
+    }
+
     private final AggregateOfResourceAllocations aggregate;
 
     private final Integer daysDuration;
 
-    private final Map<ResourceAllocation<?>, ResourceAllocation<?>> fromDetachedAllocationToAttached;
-
     private final CalculatedValue calculatedValue;
 
     private final Task task;
+
+    private final List<ResourceAllocation<?>> newAllocations;
+
+    private final List<Task.ModifiedAllocation> modified;
 
     AllocationResult(
             Task task,
@@ -79,7 +106,9 @@ public class AllocationResult {
         this.aggregate = aggregate;
         this.daysDuration = aggregate.isEmpty() ? task.getDaysDuration()
                 : aggregate.getDaysDuration();
-        this.fromDetachedAllocationToAttached = translation(fromDetachedAllocationToAttached);
+        Map<ResourceAllocation<?>, ResourceAllocation<?>> fromDetachedToAttached = translation(fromDetachedAllocationToAttached);
+        this.newAllocations = calculateNew(fromDetachedToAttached);
+        this.modified = calculateModified(fromDetachedToAttached);
     }
 
     public AggregateOfResourceAllocations getAggregate() {
@@ -91,26 +120,11 @@ public class AllocationResult {
     }
 
     public List<ResourceAllocation<?>> getNew() {
-        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
-        for (Entry<ResourceAllocation<?>, ResourceAllocation<?>> entry : fromDetachedAllocationToAttached
-                .entrySet()) {
-            if (entry.getValue() == null) {
-                result.add(entry.getKey());
-            }
-        }
-        return result;
+        return newAllocations;
     }
 
     public List<Task.ModifiedAllocation> getModified() {
-        List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
-        for (Entry<ResourceAllocation<?>, ResourceAllocation<?>> entry : fromDetachedAllocationToAttached
-                .entrySet()) {
-            if (entry.getValue() != null) {
-                result.add(new ModifiedAllocation(entry.getValue(), entry
-                        .getKey()));
-            }
-        }
-        return result;
+        return modified;
     }
 
     public CalculatedValue getCalculatedValue() {
