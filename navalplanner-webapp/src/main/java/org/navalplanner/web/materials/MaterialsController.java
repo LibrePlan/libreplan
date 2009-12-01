@@ -182,7 +182,7 @@ public class MaterialsController extends
     }
 
     private boolean hasSubcategoriesOrMaterials(MaterialCategory materialCategory) {
-        return materialCategory.getSubcategories() == null || !materialCategory.getSubcategories().isEmpty();
+        return !materialCategory.getSubcategories().isEmpty() || !materialCategory.getMaterials().isEmpty();
     }
 
     public void confirmRemove(MaterialCategory materialCategory) {
@@ -278,6 +278,7 @@ public class MaterialsController extends
             materialsModel.reloadMaterialCategories();
             categoriesTree.setSelectedItem(treeitem);
             Util.reloadBindings(gridMaterials);
+            Util.reloadBindings(categoriesTree);
         }
     }
 
