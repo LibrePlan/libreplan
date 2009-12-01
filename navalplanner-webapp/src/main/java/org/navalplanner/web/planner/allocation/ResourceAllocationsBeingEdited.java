@@ -143,17 +143,13 @@ public class ResourceAllocationsBeingEdited {
 
     public AllocationResult doAllocation() {
         checkInvalidValues();
-        List<ResourcesPerDayModification> allocations = AllocationRow
-                .createAndAssociate(task, currentRows);
-        if (!allocations.isEmpty()) {
+        if (!currentRows.isEmpty()) {
             switch (calculatedValue) {
             case NUMBER_OF_HOURS:
-                ResourceAllocation.allocating(allocations).allocateUntil(
-                        formBinder.getAllocationEnd());
+                calculateNumberOfHoursAllocation();
                 break;
             case END_DATE:
-                ResourceAllocation.allocating(allocations).untilAllocating(
-                        formBinder.getAssignedHours());
+                calculateEndDateAllocation();
                 break;
             default:
                 throw new RuntimeException("cant handle: " + calculatedValue);
@@ -163,6 +159,20 @@ public class ResourceAllocationsBeingEdited {
                 calculatedValue, currentRows);
         daysDuration = result.getDaysDuration();
         return result;
+    }
+
+    private void calculateNumberOfHoursAllocation() {
+        List<ResourcesPerDayModification> allocations = AllocationRow
+                .createAndAssociate(task, currentRows);
+        ResourceAllocation.allocating(allocations).allocateUntil(
+                formBinder.getAllocationEnd());
+    }
+
+    private void calculateEndDateAllocation() {
+        List<ResourcesPerDayModification> allocations = AllocationRow
+                .createAndAssociate(task, currentRows);
+        ResourceAllocation.allocating(allocations).untilAllocating(
+                formBinder.getAssignedHours());
     }
 
     public FormBinder createFormBinder(
