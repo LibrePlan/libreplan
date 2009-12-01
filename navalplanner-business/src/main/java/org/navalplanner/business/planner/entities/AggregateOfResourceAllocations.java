@@ -65,7 +65,16 @@ public class AggregateOfResourceAllocations {
     }
 
     public boolean isEmpty() {
-        return resourceAllocations.isEmpty();
+        return resourceAllocations.isEmpty() || allEmpty();
+    }
+
+    private boolean allEmpty() {
+        for (ResourceAllocation<?> each : resourceAllocations) {
+            if (each.hasAssignments()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public List<ResourceAllocation<?>> getAllocationsSortedByStartDate() {
