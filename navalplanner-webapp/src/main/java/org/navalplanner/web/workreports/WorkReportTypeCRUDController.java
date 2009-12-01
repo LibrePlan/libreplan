@@ -898,7 +898,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
             String type;
             if (data instanceof DescriptionField) {
                 if ((((DescriptionField) data).getFieldName() != null)
-                        || (((DescriptionField) data).getFieldName().isEmpty())) {
+                        || (!((DescriptionField) data).getFieldName().isEmpty())) {
                     name = ((DescriptionField) data).getFieldName();
                 }
                 type = _("Text field");
@@ -975,7 +975,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         if (messagesForUserSortedLabelsAndFields != null) {
             messagesForUserSortedLabelsAndFields
                     .showMessage(
-                            Level.INFO,
+                            Level.ERROR,
                             _("The index fields and labels must be uniques and consecutives"));
         }
     }

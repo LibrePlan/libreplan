@@ -25,10 +25,18 @@ package org.navalplanner.business.workreports.entities;
 
 public enum HoursManagementEnum {
 
-    NUMBER_OF_HOURS, HOURS_CALCULATED_BY_CLOCK, NUMBER_OF_HOURS_AND_CLOCK;
+    NUMBER_OF_HOURS("Number of assigned hours."), HOURS_CALCULATED_BY_CLOCK(
+            "Number of hours caculated by clock."), NUMBER_OF_HOURS_AND_CLOCK(
+            "Number of assigned hours and the time.");
+
+    private String description;
+
+    private HoursManagementEnum(String description) {
+        this.description = description;
+    }
 
     public String toString() {
-        return name().toLowerCase();
+        return this.description;
     }
 
     public static HoursManagementEnum getDefault() {

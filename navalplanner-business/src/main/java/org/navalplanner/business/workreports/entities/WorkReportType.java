@@ -276,34 +276,44 @@ public class WorkReportType extends BaseEntity {
 
     public void addDescriptionFieldToLine(DescriptionField descriptionField,
             int position) {
-        updateIndexFromPosition(getLineFieldsAndLabels(), position, 1);
-        descriptionField.setIndex(position);
-        getLineFields().add(descriptionField);
+        if (isValidIndexToAdd(position, getLineFieldsAndLabels())) {
+            updateIndexFromPosition(getLineFieldsAndLabels(), position, 1);
+            descriptionField.setIndex(position);
+            getLineFields().add(descriptionField);
+        }
     }
 
     public void addDescriptionFieldToHead(DescriptionField descriptionField,
             int position) {
-        updateIndexFromPosition(getHeadingFieldsAndLabels(), position, 1);
-        descriptionField.setIndex(position);
-        getHeadingFields().add(descriptionField);
+        if (isValidIndexToAdd(position, getHeadingFieldsAndLabels())) {
+            updateIndexFromPosition(getHeadingFieldsAndLabels(), position, 1);
+            descriptionField.setIndex(position);
+            getHeadingFields().add(descriptionField);
+        }
     }
 
     public void addLabelAssigmentToHead(
             WorkReportLabelTypeAssigment workReportLabelTypeAssigment,
             int position) {
-        updateIndexFromPosition(getHeadingFieldsAndLabels(), position, 1);
-        workReportLabelTypeAssigment.setLabelsSharedByLines(true);
-        workReportLabelTypeAssigment.setIndex(position);
-        getWorkReportLabelTypeAssigments().add(workReportLabelTypeAssigment);
+        if (isValidIndexToAdd(position, getHeadingFieldsAndLabels())) {
+            updateIndexFromPosition(getHeadingFieldsAndLabels(), position, 1);
+            workReportLabelTypeAssigment.setLabelsSharedByLines(true);
+            workReportLabelTypeAssigment.setIndex(position);
+            getWorkReportLabelTypeAssigments()
+                    .add(workReportLabelTypeAssigment);
+        }
     }
 
     public void addLabelAssigmentToLine(
             WorkReportLabelTypeAssigment workReportLabelTypeAssigment,
             int position) {
-        updateIndexFromPosition(getLineFieldsAndLabels(), position, 1);
-        workReportLabelTypeAssigment.setLabelsSharedByLines(false);
-        workReportLabelTypeAssigment.setIndex(position);
-        getWorkReportLabelTypeAssigments().add(workReportLabelTypeAssigment);
+        if (isValidIndexToAdd(position, getLineFieldsAndLabels())) {
+            updateIndexFromPosition(getLineFieldsAndLabels(), position, 1);
+            workReportLabelTypeAssigment.setLabelsSharedByLines(false);
+            workReportLabelTypeAssigment.setIndex(position);
+            getWorkReportLabelTypeAssigments()
+                    .add(workReportLabelTypeAssigment);
+        }
     }
 
     public void moveLabelToEndHead(
@@ -331,27 +341,35 @@ public class WorkReportType extends BaseEntity {
     public void moveLabelToHead(
             WorkReportLabelTypeAssigment workReportLabelTypeAssigment,
             int position) {
-        removeLabel(workReportLabelTypeAssigment);
-        addLabelAssigmentToHead(workReportLabelTypeAssigment, position);
+        if (isValidIndexToMove(position, getHeadingFieldsAndLabels())) {
+            removeLabel(workReportLabelTypeAssigment);
+            addLabelAssigmentToHead(workReportLabelTypeAssigment, position);
+        }
     }
 
     public void moveLabelToLine(
             WorkReportLabelTypeAssigment workReportLabelTypeAssigment,
             int position) {
-        removeLabel(workReportLabelTypeAssigment);
-        addLabelAssigmentToLine(workReportLabelTypeAssigment, position);
+        if (isValidIndexToMove(position, getLineFieldsAndLabels())) {
+            removeLabel(workReportLabelTypeAssigment);
+            addLabelAssigmentToLine(workReportLabelTypeAssigment, position);
+        }
     }
 
     public void moveDescriptionFieldToHead(DescriptionField descriptionField,
             int position) {
-        removeDescriptionField(descriptionField);
-        addDescriptionFieldToHead(descriptionField, position);
+        if (isValidIndexToMove(position, getHeadingFieldsAndLabels())) {
+            removeDescriptionField(descriptionField);
+            addDescriptionFieldToHead(descriptionField, position);
+        }
     }
 
     public void moveDescriptionFieldToLine(DescriptionField descriptionField,
             int position) {
-        removeDescriptionField(descriptionField);
-        addDescriptionFieldToLine(descriptionField, position);
+        if (isValidIndexToMove(position, getLineFieldsAndLabels())) {
+            removeDescriptionField(descriptionField);
+            addDescriptionFieldToLine(descriptionField, position);
+        }
     }
 
     public void removeDescriptionField(DescriptionField descriptionField){
@@ -481,5 +499,14 @@ public class WorkReportType extends BaseEntity {
             result.add(null);
         }
         return result;
+    }
+
+    private boolean isValidIndexToMove(Integer position, List<Object> list) {
+        return ((position.compareTo(0) >= 0) && (position.compareTo(list.size()) < 0));
+    }
+
+    private boolean isValidIndexToAdd(Integer position, List<Object> list) {
+        return ((position.compareTo(0) >= 0) && (position
+                .compareTo(list.size()) <= 0));
     }
 }

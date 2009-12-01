@@ -40,7 +40,7 @@
                 <separator bar="false" spacing="40px" orient="vertical"/>
 
         <!-- Ordered List Line Fields and Labels -->
-        <panel title="${i18n:_('Heading')}" border="normal" style="overflow:auto">
+        <panel title="${i18n:_('Lines')}" border="normal" style="overflow:auto">
             <panelchildren>
                 <grid id="linesFieldsAndLabels" mold="paging" pageSize="5" fixedLayout="true"
                     model="@{controller.linesFieldsAndLabels}"
