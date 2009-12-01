@@ -92,6 +92,25 @@ public class AllocationResult {
                 calculateNew(translation), calculateModified(translation));
     }
 
+    public static AllocationResult create(Task task,
+            CalculatedValue calculatedValue, List<AllocationRow> rows) {
+        List<ResourceAllocation<?>> newAllocations = AllocationRow
+                .getNewFrom(rows);
+        List<ModifiedAllocation> modified = AllocationRow.getModifiedFrom(rows);
+        return new AllocationResult(task, calculatedValue, createAggregate(
+                newAllocations, modified),
+                newAllocations, modified);
+    }
+
+    private static AggregateOfResourceAllocations createAggregate(
+            List<ResourceAllocation<?>> newAllocations,
+            List<ModifiedAllocation> modified) {
+        List<ResourceAllocation<?>> all = new ArrayList<ResourceAllocation<?>>();
+        all.addAll(newAllocations);
+        all.addAll(ModifiedAllocation.modified(modified));
+        return new AggregateOfResourceAllocations(all);
+    }
+
     public static AllocationResult createCurrent(Task task) {
         Set<ResourceAllocation<?>> resourceAllocations = task
                 .getResourceAllocations();

@@ -30,6 +30,7 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.Util;
@@ -45,6 +46,30 @@ import org.zkoss.zul.SimpleConstraint;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public abstract class AllocationRow {
+
+    public static List<ModifiedAllocation> getModifiedFrom(
+            Collection<? extends AllocationRow> rows) {
+        List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
+        for (AllocationRow each : rows) {
+            Validate.notNull(each.last);
+            if (each.origin != null) {
+                result.add(new ModifiedAllocation(each.origin, each.last));
+            }
+        }
+        return result;
+    }
+
+    public static List<ResourceAllocation<?>> getNewFrom(
+            List<AllocationRow> rows) {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        for (AllocationRow each : rows) {
+            Validate.notNull(each.last);
+            if (each.origin == null) {
+                result.add(each.last);
+            }
+        }
+        return result;
+    }
 
     public static List<GenericAllocationRow> getGeneric(
             Collection<? extends AllocationRow> all) {
