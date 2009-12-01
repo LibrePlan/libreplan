@@ -25,11 +25,8 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
@@ -73,8 +70,6 @@ class FormBinder {
 
     private Button applyButton;
 
-    private Map<AllocationRow, Intbox> hoursIntboxesByAllocationRow = new HashMap<AllocationRow, Intbox>();
-
     private EventListener onChangeEnableApply = new EventListener() {
 
         @Override
@@ -100,6 +95,8 @@ class FormBinder {
     private IMessagesForUser messagesForUser;
 
     private final IResourceAllocationModel resourceAllocationModel;
+
+    private List<AllocationRow> rows;
 
     public FormBinder(
             ResourceAllocationsBeingEdited resourceAllocationsBeingEdited,
@@ -207,7 +204,8 @@ class FormBinder {
     }
 
     public List<AllocationRow> getCurrentRows() {
-        return addListeners(resourceAllocationsBeingEdited.getCurrentRows());
+        return rows = addListeners(resourceAllocationsBeingEdited
+                .getCurrentRows());
     }
 
     private List<AllocationRow> addListeners(List<AllocationRow> list) {
@@ -238,10 +236,8 @@ class FormBinder {
     }
 
     private void loadHoursValues() {
-        for (Entry<AllocationRow, Intbox> entry : hoursIntboxesByAllocationRow.entrySet()) {
-            Integer hours = resourceAllocationsBeingEdited.getHoursFor(entry
-                    .getKey());
-            entry.getValue().setValue(hours);
+        for (AllocationRow each : rows) {
+            each.loadHours();
         }
     }
 
@@ -257,11 +253,6 @@ class FormBinder {
             }
         };
         this.applyButton.addEventListener(Events.ON_CLICK, applyButtonListener);
-    }
-
-    public void setHoursIntboxFor(AllocationRow row, Intbox hours) {
-        hoursIntboxesByAllocationRow.put(row, hours);
-        hours.setValue(resourceAllocationsBeingEdited.getHoursFor(row));
     }
 
     public int getAssignedHours() {

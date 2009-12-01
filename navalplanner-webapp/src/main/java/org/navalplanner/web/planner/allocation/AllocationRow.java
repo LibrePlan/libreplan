@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
@@ -66,6 +67,8 @@ public abstract class AllocationRow {
     }
 
     private ResourceAllocation<?> origin;
+
+    private ResourceAllocation<?> last;
 
     private String name;
 
@@ -120,6 +123,7 @@ public abstract class AllocationRow {
 
     protected void setOrigin(ResourceAllocation<?> allocation) {
         this.origin = allocation;
+        loadHours();
     }
 
     public String getName() {
@@ -137,6 +141,11 @@ public abstract class AllocationRow {
     public void setResourcesPerDay(ResourcesPerDay resourcesPerDay) {
         this.resourcesPerDay = resourcesPerDay;
         resourcesPerDayInput.setValue(this.resourcesPerDay.getAmount());
+    }
+
+    public void setLast(ResourceAllocation<?> last) {
+        Validate.notNull(last);
+        this.last = last;
     }
 
     public abstract boolean isGeneric();
@@ -159,6 +168,20 @@ public abstract class AllocationRow {
         getHoursInput().addEventListener(Events.ON_CHANGE, onChangeListener);
         getResourcesPerDayInput().addEventListener(Events.ON_CHANGE,
                 onChangeListener);
+    }
+
+    public void loadHours() {
+        hoursInput.setValue(getHours());
+    }
+
+    private Integer getHours() {
+        if (last != null) {
+            return last.getAssignedHours();
+        }
+        if (origin != null) {
+            return origin.getAssignedHours();
+        }
+        return null;
     }
 
 }

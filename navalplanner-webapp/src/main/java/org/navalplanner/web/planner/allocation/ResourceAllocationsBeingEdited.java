@@ -80,8 +80,6 @@ public class ResourceAllocationsBeingEdited {
 
     private Integer daysDuration;
 
-    private Map<AllocationRow, ResourceAllocation<?>> fromRowToCurrentAllocation = new HashMap<AllocationRow, ResourceAllocation<?>>();
-
     private ResourceAllocationsBeingEdited(Task task,
             List<AllocationRow> initialRows) {
         this.task = task;
@@ -123,15 +121,6 @@ public class ResourceAllocationsBeingEdited {
 
     public List<AllocationRow> getCurrentRows() {
         return new ArrayList<AllocationRow>(currentRows);
-    }
-
-    public Integer getHoursFor(AllocationRow row) {
-        ResourceAllocation<?> origin = row.getOrigin();
-        if (fromRowToCurrentAllocation.containsKey(row)) {
-            return fromRowToCurrentAllocation.get(row)
-                    .getAssignedHours();
-        }
-        return origin != null ? origin.getAssignedHours() : null;
     }
 
     private boolean alreadyExistsAllocationFor(Resource resource) {
@@ -243,8 +232,7 @@ public class ResourceAllocationsBeingEdited {
             AllocationRow key = entry.getKey();
             AllocationBeingModified instantiated = instantiate(key);
             result.put(instantiated, entry.getValue());
-            fromRowToCurrentAllocation
-                    .put(key, instantiated.getBeingModified());
+            key.setLast(instantiated.getBeingModified());
         }
         return result;
     }

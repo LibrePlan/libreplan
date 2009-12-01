@@ -476,7 +476,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             item.setValue(row);
             // Label fields are fixed, can only be viewed
             append(item, new Label(row.getName()));
-            bindHours(append(item, row.getHoursInput()), row);
+            append(item, row.getHoursInput());
             append(item, row.getResourcesPerDayInput());
             // On click delete button
             Button deleteButton = appendDeleteButton(item);
@@ -516,11 +516,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
             item.appendChild(listcell);
             return component;
         }
-
-        private void bindHours(Intbox hoursIntbox, AllocationRow data) {
-            formBinder.setHoursIntboxFor(data, hoursIntbox);
-        }
-
     }
 
     public ViewSwitcher getSwitcher() {
