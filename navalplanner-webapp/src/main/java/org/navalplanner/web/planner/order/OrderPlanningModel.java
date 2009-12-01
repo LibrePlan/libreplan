@@ -57,6 +57,7 @@ import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
+import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
@@ -69,7 +70,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
-import org.zkforge.timeplot.data.PlotDataSource;
 import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.Planner;
@@ -587,7 +587,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     }
 
-    private class CompanyEarnedValueChartFiller extends ChartFiller {
+    private class CompanyEarnedValueChartFiller extends EarnedValueChartFiller {
 
         private Order order;
 
@@ -601,38 +601,28 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             chart.invalidate();
             resetMinimumAndMaximumValueForChart();
 
-            Plotinfo assignmentsPlotinfo = getAssignmentsPlotinfo(interval);
-            assignmentsPlotinfo.setLineColor("0000FF");
-            assignmentsPlotinfo.setLineWidth(1);
+            calculateValues(interval);
 
-            Plotinfo workReportsPlotinfo = getWorkReportsPlotinfo(interval);
-            workReportsPlotinfo.setLineColor("FF0000");
-            workReportsPlotinfo.setLineWidth(1);
-
-            Plotinfo advancePlotinfo = getAdvancePlotinfo(interval);
-            advancePlotinfo.setLineColor("00FF00");
-            advancePlotinfo.setLineWidth(1);
+            Plotinfo bcws = createPlotInfo(this.bcws, interval, "0000FF");
+            Plotinfo acwp = createPlotInfo(this.acwp, interval, "FF0000");
+            Plotinfo bcwp = createPlotInfo(this.bcwp, interval, "00FF00");
+            Plotinfo cv = createPlotInfo(this.cv, interval, "FFFF00");
+            Plotinfo sv = createPlotInfo(this.sv, interval, "00FFFF");
 
             ValueGeometry valueGeometry = getValueGeometry();
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
-            assignmentsPlotinfo.setValueGeometry(valueGeometry);
-            workReportsPlotinfo.setValueGeometry(valueGeometry);
-            advancePlotinfo.setValueGeometry(valueGeometry);
-
-            assignmentsPlotinfo.setTimeGeometry(timeGeometry);
-            workReportsPlotinfo.setTimeGeometry(timeGeometry);
-            advancePlotinfo.setTimeGeometry(timeGeometry);
-
-            chart.appendChild(assignmentsPlotinfo);
-            chart.appendChild(workReportsPlotinfo);
-            chart.appendChild(advancePlotinfo);
+            appendPlotinfo(chart, bcws, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, acwp, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, bcwp, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, cv, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, sv, valueGeometry, timeGeometry);
 
             chart.setWidth(size + "px");
             chart.setHeight("100px");
         }
 
-        private Plotinfo getAssignmentsPlotinfo(Interval interval) {
+        protected void calculateBudgetedCostWorkScheduled(Interval interval) {
             List<TaskElement> list = order
                     .getAllChildrenAssociatedTaskElements();
             list.add(order.getAssociatedTaskElement());
@@ -647,40 +637,16 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
 
             estimatedCost = accumulateResult(estimatedCost);
-
-            String uri = getServletUri(estimatedCost, interval.getStart(),
-                    interval.getFinish(),
-                    new JustDaysWithInformationGraphicSpecificationCreator(
-                            interval.getFinish(), estimatedCost, interval
-                                    .getStart()));
-
-            PlotDataSource pds = new PlotDataSource();
-            pds.setDataSourceUri(uri);
-            pds.setSeparator(" ");
-
-            Plotinfo plotInfo = new Plotinfo();
-            plotInfo.setPlotDataSource(pds);
-            return plotInfo;
+            bcws = calculatedValueForEveryDay(estimatedCost, interval
+                    .getStart(), interval.getFinish());
         }
 
-        private Plotinfo getWorkReportsPlotinfo(Interval interval) {
+        protected void calculateActualCostWorkPerformed(Interval interval) {
             SortedMap<LocalDate, BigDecimal> workReportCost = getWorkReportCost();
 
             workReportCost = accumulateResult(workReportCost);
-
-            String uri = getServletUri(workReportCost, interval.getStart(),
-                    interval.getFinish(),
-                    new JustDaysWithInformationGraphicSpecificationCreator(
-                            interval.getFinish(), workReportCost, interval
-                                    .getStart()));
-
-            PlotDataSource pds = new PlotDataSource();
-            pds.setDataSourceUri(uri);
-            pds.setSeparator(" ");
-
-            Plotinfo plotInfo = new Plotinfo();
-            plotInfo.setPlotDataSource(pds);
-            return plotInfo;
+            acwp = calculatedValueForEveryDay(workReportCost, interval
+                    .getStart(), interval.getFinish());
         }
 
         public SortedMap<LocalDate, BigDecimal> getWorkReportCost() {
@@ -707,7 +673,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             return result;
         }
 
-        private Plotinfo getAdvancePlotinfo(Interval interval) {
+        protected void calculateBudgetedCostWorkPerformed(Interval interval) {
             List<TaskElement> list = order
                     .getAllChildrenAssociatedTaskElements();
             list.add(order.getAssociatedTaskElement());
@@ -722,20 +688,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
 
             advanceCost = accumulateResult(advanceCost);
-
-            String uri = getServletUri(advanceCost, interval.getStart(),
-                    interval.getFinish(),
-                    new JustDaysWithInformationGraphicSpecificationCreator(
-                            interval.getFinish(), advanceCost, interval
-                                    .getStart()));
-
-            PlotDataSource pds = new PlotDataSource();
-            pds.setDataSourceUri(uri);
-            pds.setSeparator(" ");
-
-            Plotinfo plotInfo = new Plotinfo();
-            plotInfo.setPlotDataSource(pds);
-            return plotInfo;
+            bcwp = calculatedValueForEveryDay(advanceCost, interval.getStart(),
+                    interval.getFinish());
         }
 
     }
