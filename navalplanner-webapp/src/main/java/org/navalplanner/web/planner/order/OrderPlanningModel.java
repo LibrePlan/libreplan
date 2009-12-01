@@ -716,6 +716,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
 
             estimatedCost = accumulateResult(estimatedCost);
+            addZeroBeforeTheFirstValue(estimatedCost);
             indicators.put(EarnedValueType.BCWS, calculatedValueForEveryDay(
                     estimatedCost, interval.getStart(), interval.getFinish()));
         }
@@ -724,6 +725,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             SortedMap<LocalDate, BigDecimal> workReportCost = getWorkReportCost();
 
             workReportCost = accumulateResult(workReportCost);
+            addZeroBeforeTheFirstValue(workReportCost);
             indicators.put(EarnedValueType.ACWP, calculatedValueForEveryDay(
                     workReportCost, interval.getStart(), interval.getFinish()));
         }
@@ -767,6 +769,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
 
             advanceCost = accumulateResult(advanceCost);
+            addZeroBeforeTheFirstValue(advanceCost);
             indicators.put(EarnedValueType.BCWP, calculatedValueForEveryDay(
                     advanceCost, interval.getStart(), interval.getFinish()));
         }

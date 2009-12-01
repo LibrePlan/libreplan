@@ -293,4 +293,11 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         chart.setHeight("100px");
     }
 
+    protected void addZeroBeforeTheFirstValue(
+            SortedMap<LocalDate, BigDecimal> map) {
+        if (!map.isEmpty()) {
+            map.put(map.firstKey().minusDays(1), BigDecimal.ZERO);
+        }
+    }
+
 }
