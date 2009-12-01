@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
@@ -200,7 +201,8 @@ public class MaterialsController extends
     }
 
     private void removeMaterialCategory(MaterialCategory materialCategory) {
-        materialsModel.removeMaterialCategory(materialCategory);
+        materialsModel.confirmRemoveMaterialCategory(materialCategory);
+        Util.reloadBindings(categoriesTree);
     }
 
     public void addMaterialCategory() {

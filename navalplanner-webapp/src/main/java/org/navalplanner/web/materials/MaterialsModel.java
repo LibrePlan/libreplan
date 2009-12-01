@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
@@ -30,7 +31,8 @@ public class MaterialsModel implements IMaterialsModel {
     @Autowired
     IMaterialDAO materialDAO;
 
-    MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel.create(MaterialCategory.class);
+    MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel
+            .create(MaterialCategory.class);
 
     @Override
     @Transactional(readOnly=true)
@@ -115,8 +117,19 @@ public class MaterialsModel implements IMaterialsModel {
     }
 
     @Override
-    public void removeMaterialCategory(MaterialCategory materialCategory) {
-        materialCategories.remove(materialCategory);
+    @Transactional
+    public void confirmRemoveMaterialCategory(MaterialCategory materialCategory) {
+        try {
+            final Long idMaterialCategory = materialCategory.getId();
+            if (idMaterialCategory == null) {
+                materialCategories.remove(materialCategory);
+            } else {
+                categoryDAO.remove(idMaterialCategory);
+                reloadMaterialCategories();
+            }
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException();
+        }
     }
 
     @Override
