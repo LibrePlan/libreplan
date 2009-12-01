@@ -74,6 +74,7 @@
                                 <panelchildren>
                                     <button label="${i18n:_('Add')}"
                                         onClick="materialsController.addMaterialToMaterialCategory(categoriesTree.selectedItem)" />
+                                    <separator spacing="15px" orient="horizontal" />
                                     <newdatasortablegrid id="gridMaterials"
                                         fixedLayout="true"
                                         model="@{materialsController.materials}">
