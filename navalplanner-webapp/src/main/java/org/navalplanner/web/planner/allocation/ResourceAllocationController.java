@@ -22,7 +22,6 @@ package org.navalplanner.web.planner.allocation;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +32,6 @@ import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -70,7 +68,6 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.api.Window;
 
@@ -480,8 +477,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
             item.setValue(row);
             // Label fields are fixed, can only be viewed
             append(item, new Label(row.getName()));
-            bindHours(append(item, new Intbox()), row);
-            bindResourcesPerDay(append(item, new Decimalbox()), row);
+            bindHours(append(item, row.getHoursInput()), row);
+            bindResourcesPerDay(append(item, row.getResourcesPerDayInput()),
+                    row);
             // On click delete button
             Button deleteButton = appendDeleteButton(item);
             formBinder.setDeleteButtonFor(row, deleteButton);
@@ -523,29 +521,10 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         private void bindResourcesPerDay(final Decimalbox decimalbox,
                 final AllocationRow data) {
-            decimalbox.setConstraint(new SimpleConstraint(
-                    SimpleConstraint.NO_NEGATIVE));
             formBinder.setResourcesPerDayBoxFor(data, decimalbox);
-            Util.bind(decimalbox, new Util.Getter<BigDecimal>() {
-
-                @Override
-                public BigDecimal get() {
-                    return data.getResourcesPerDay().getAmount();
-                }
-
-            }, new Util.Setter<BigDecimal>() {
-
-                @Override
-                public void set(BigDecimal value) {
-                    BigDecimal amount = value == null ? new BigDecimal(0)
-                            : value;
-                    data.setResourcesPerDay(ResourcesPerDay.amount(amount));
-                }
-            });
         }
 
         private void bindHours(Intbox hoursIntbox, AllocationRow data) {
-            hoursIntbox.setDisabled(true);
             formBinder.setHoursIntboxFor(data, hoursIntbox);
         }
 

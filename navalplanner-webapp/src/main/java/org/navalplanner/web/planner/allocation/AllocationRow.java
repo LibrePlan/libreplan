@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +30,10 @@ import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.Util;
+import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Intbox;
+import org.zkoss.zul.SimpleConstraint;
 
 /**
  * The information that must be introduced to create a
@@ -64,6 +69,38 @@ public abstract class AllocationRow {
 
     private ResourcesPerDay resourcesPerDay;
 
+    private Intbox hoursInput = new Intbox();
+
+    private final Decimalbox resourcesPerDayInput = new Decimalbox();
+
+    private void initializeResourcesPerDayInput() {
+        resourcesPerDayInput.setConstraint(new SimpleConstraint(
+                SimpleConstraint.NO_NEGATIVE));
+        Util.bind(resourcesPerDayInput, new Util.Getter<BigDecimal>() {
+
+            @Override
+            public BigDecimal get() {
+                return getResourcesPerDay().getAmount();
+            }
+
+        }, new Util.Setter<BigDecimal>() {
+
+            @Override
+            public void set(BigDecimal value) {
+                BigDecimal amount = value == null ? new BigDecimal(0) : value;
+                resourcesPerDay = ResourcesPerDay.amount(amount);
+            }
+        });
+    }
+
+    public AllocationRow() {
+        resourcesPerDay = ResourcesPerDay.amount(0);
+        initializeResourcesPerDayInput();
+        hoursInput.setDisabled(true);
+        hoursInput.setConstraint(new SimpleConstraint(
+                SimpleConstraint.NO_NEGATIVE));
+    }
+
     public abstract AllocationBeingModified toAllocationBeingModified(
             Task task);
 
@@ -97,6 +134,7 @@ public abstract class AllocationRow {
 
     public void setResourcesPerDay(ResourcesPerDay resourcesPerDay) {
         this.resourcesPerDay = resourcesPerDay;
+        resourcesPerDayInput.setValue(this.resourcesPerDay.getAmount());
     }
 
     public abstract boolean isGeneric();
@@ -106,5 +144,13 @@ public abstract class AllocationRow {
     }
 
     public abstract List<Resource> getAssociatedResources();
+
+    public Intbox getHoursInput() {
+        return hoursInput;
+    }
+
+    public Decimalbox getResourcesPerDayInput() {
+        return resourcesPerDayInput;
+    }
 
 }
