@@ -31,6 +31,8 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationBeingModified;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.Util;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.SimpleConstraint;
@@ -151,6 +153,12 @@ public abstract class AllocationRow {
 
     public Decimalbox getResourcesPerDayInput() {
         return resourcesPerDayInput;
+    }
+
+    public void addListenerForInputChange(EventListener onChangeListener) {
+        getHoursInput().addEventListener(Events.ON_CHANGE, onChangeListener);
+        getResourcesPerDayInput().addEventListener(Events.ON_CHANGE,
+                onChangeListener);
     }
 
 }

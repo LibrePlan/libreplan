@@ -56,7 +56,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
@@ -409,7 +408,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public List<AllocationRow> getResourceAllocations() {
-        return allocationsBeingEdited != null ? allocationsBeingEdited
+        return formBinder != null ? formBinder
                 .getCurrentRows() : Collections
                 .<AllocationRow> emptyList();
     }
@@ -478,8 +477,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             // Label fields are fixed, can only be viewed
             append(item, new Label(row.getName()));
             bindHours(append(item, row.getHoursInput()), row);
-            bindResourcesPerDay(append(item, row.getResourcesPerDayInput()),
-                    row);
+            append(item, row.getResourcesPerDayInput());
             // On click delete button
             Button deleteButton = appendDeleteButton(item);
             formBinder.setDeleteButtonFor(row, deleteButton);
@@ -517,11 +515,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
             listcell.appendChild(component);
             item.appendChild(listcell);
             return component;
-        }
-
-        private void bindResourcesPerDay(final Decimalbox decimalbox,
-                final AllocationRow data) {
-            formBinder.setResourcesPerDayBoxFor(data, decimalbox);
         }
 
         private void bindHours(Intbox hoursIntbox, AllocationRow data) {

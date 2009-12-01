@@ -53,7 +53,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.impl.api.InputElement;
@@ -207,6 +206,17 @@ class FormBinder {
                 .getCalculatedValue() == CalculatedValue.END_DATE);
     }
 
+    public List<AllocationRow> getCurrentRows() {
+        return addListeners(resourceAllocationsBeingEdited.getCurrentRows());
+    }
+
+    private List<AllocationRow> addListeners(List<AllocationRow> list) {
+        for (AllocationRow each : list) {
+            each.addListenerForInputChange(onChangeEnableApply);
+        }
+        return list;
+    }
+
     void doApply() {
         lastAllocation = resourceAllocationModel
                 .onAllocationContext(new IResourceAllocationContext<AllocationResult>() {
@@ -247,11 +257,6 @@ class FormBinder {
             }
         };
         this.applyButton.addEventListener(Events.ON_CLICK, applyButtonListener);
-    }
-
-    public void setResourcesPerDayBoxFor(AllocationRow row,
-            Decimalbox decimalbox) {
-        onChangeEnableApply(decimalbox);
     }
 
     public void setHoursIntboxFor(AllocationRow row, Intbox hours) {
