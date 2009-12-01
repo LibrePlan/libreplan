@@ -87,6 +87,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
@@ -228,38 +229,64 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot) {
         Hbox hbox = new Hbox();
 
-        hbox.appendChild(getEarnedValueChartLegend());
-
-        Vbox vbox = new Vbox();
+        hbox.appendChild(getEarnedValueChartConfigurableLegend());
 
         Div div = new Div();
         div.appendChild(chartEarnedValueTimeplot);
         div.setSclass("plannergraph");
-        vbox.appendChild(div);
 
-        vbox.appendChild(getEarnedValueChartConfiguration());
-
-        hbox.appendChild(vbox);
+        hbox.appendChild(div);
 
         earnedValueChartPannel.appendChild(hbox);
     }
 
-    private org.zkoss.zk.ui.Component getEarnedValueChartConfiguration() {
-        Div div = new Div();
-        div.setId("earnedValueChartConfiguration");
+    private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend() {
+        Vbox vbox = new Vbox();
+        vbox.setId("earnedValueChartConfiguration");
+        vbox.setClass("legend");
+
+        Hbox hboxTitle = new Hbox();
+        hboxTitle.setClass("legend-title");
+        hboxTitle.setPack("center");
+
+        Label labelTitle = new Label(_("Chart legend"));
+        labelTitle.setClass("title");
+        hboxTitle.appendChild(labelTitle);
+
+        vbox.appendChild(hboxTitle);
+
+        Vbox column1 = new Vbox();
+        Vbox column2 = new Vbox();
+        column1.setWidth("75px");
+        column2.setWidth("75px");
+
+        boolean odd = true;
 
         for (EarnedValueType type : EarnedValueType.values()) {
             Checkbox checkbox = new Checkbox(type.getAcronym());
             checkbox.setTooltiptext(type.getName());
             checkbox.setAttribute("indicator", type);
-            div.appendChild(checkbox);
+            checkbox.setStyle("color: " + type.getColor());
+
+            if (odd) {
+                column1.appendChild(checkbox);
+            } else {
+                column2.appendChild(checkbox);
+            }
 
             earnedValueChartConfigurationCheckboxes.add(checkbox);
+            odd = !odd;
         }
+
+        Hbox hbox = new Hbox();
+        hbox.appendChild(column1);
+        hbox.appendChild(column2);
+
+        vbox.appendChild(hbox);
 
         markAsSelectedDefaultIndicators();
 
-        return div;
+        return vbox;
     }
 
     private void markAsSelectedDefaultIndicators() {
@@ -311,13 +338,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
             });
         }
-    }
-
-    private org.zkoss.zk.ui.Component getEarnedValueChartLegend() {
-        Div div = new Div();
-        Executions.createComponents("/planner/_legendEarnedValueChart.zul",
-                div, null);
-        return div;
     }
 
     private void disableSomeFeatures(
