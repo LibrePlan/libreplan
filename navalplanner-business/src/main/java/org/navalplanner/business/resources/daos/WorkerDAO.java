@@ -21,14 +21,14 @@
 package org.navalplanner.business.resources.daos;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -69,7 +69,7 @@ public class WorkerDAO extends GenericDAOHibernate<Worker, Long>
     @SuppressWarnings("unchecked")
     @Override
     public List<Worker> findByNameAndCriterions(String name,
-            List<Criterion> criterions) {
+            Collection<? extends ICriterion> criterions) {
 
         // Find workers by name
         List<Worker> workers;
@@ -87,7 +87,7 @@ public class WorkerDAO extends GenericDAOHibernate<Worker, Long>
         // Filter by criterion
         final List<Worker> result = new ArrayList<Worker>();
         for (Worker worker : workers) {
-            if (worker.satisfiesCriterions(new HashSet(criterions))) {
+            if (worker.satisfiesCriterions(criterions)) {
                 result.add(worker);
             }
         }

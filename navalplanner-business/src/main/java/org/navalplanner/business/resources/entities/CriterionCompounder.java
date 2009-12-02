@@ -36,7 +36,8 @@ public class CriterionCompounder {
         return new CriterionCompounder();
     }
 
-    public static CriterionCompounder buildAnd(List<ICriterion> criterions) {
+    public static CriterionCompounder buildAnd(
+            Collection<? extends ICriterion> criterions) {
         CriterionCompounder compounder = new CriterionCompounder();
         for (ICriterion criterion : criterions) {
             compounder = compounder.and(criterion);

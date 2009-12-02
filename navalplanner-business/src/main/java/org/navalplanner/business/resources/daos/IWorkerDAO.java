@@ -20,11 +20,12 @@
 
 package org.navalplanner.business.resources.daos;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +50,7 @@ public interface IWorkerDAO extends IGenericDAO<Worker, Long> {
      * @return
      */
     @SuppressWarnings("unchecked")
-    List<Worker> findByNameAndCriterions(String name, List<Criterion> criterions);
+    List<Worker> findByNameAndCriterions(String name, Collection<? extends ICriterion> criterions);
 
     /**
      * Returns workers which name/NIF partially matches with name
