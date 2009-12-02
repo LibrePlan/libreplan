@@ -721,4 +721,10 @@ public abstract class Resource extends BaseEntity{
         return canAddSatisfaction(type, satisfaction, satisfactions);
     }
 
+    public boolean satisfiesCriterions(Collection<? extends ICriterion> criterions) {
+        ICriterion compositedCriterion = CriterionCompounder.buildAnd(
+                criterions).getResult();
+        return compositedCriterion.isSatisfiedBy(this);
+    }
+
 }

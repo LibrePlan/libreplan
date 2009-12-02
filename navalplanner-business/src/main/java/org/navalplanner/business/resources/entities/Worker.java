@@ -20,8 +20,6 @@
 
 package org.navalplanner.business.resources.entities;
 
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -99,13 +97,6 @@ public class Worker extends Resource {
 
     public void setNif(String nif) {
         this.nif = nif;
-    }
-
-    public boolean satisfiesCriterions(
-            Collection<? extends ICriterion> criterions) {
-        ICriterion compositedCriterion = CriterionCompounder.buildAnd(
-                new ArrayList<ICriterion>(criterions)).getResult();
-        return compositedCriterion.isSatisfiedBy(this);
     }
 
 }
