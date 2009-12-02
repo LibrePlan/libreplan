@@ -110,7 +110,7 @@ public class HourCost extends BaseEntity {
     }
 
     @AssertTrue(message="The end date cannot be before the init date")
-    public boolean PositiveTimeInterval() {
+    public boolean checkPositiveTimeInterval() {
         if (endDate == null) {
             return true;
         }

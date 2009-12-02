@@ -20,10 +20,12 @@
 
 package org.navalplanner.business.costcategories.entities;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.AssertFalse;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
@@ -86,19 +88,35 @@ public class CostCategory extends BaseEntity {
         LocalDate initDate = hourCost.getInitDate();
         LocalDate endDate = hourCost.getEndDate();
         for(HourCost listElement:hourCosts) {
-            if((listElement.getEndDate().compareTo(initDate)>=0 &&
-                    listElement.getEndDate().compareTo(endDate)<=0) ||
+            if(listElement.getType().equals(hourCost.getType()) &&
+                    ((listElement.getEndDate().compareTo(initDate)>=0 &&
+                        listElement.getEndDate().compareTo(endDate)<=0) ||
                     (listElement.getInitDate().compareTo(initDate)>=0 &&
-                        listElement.getInitDate().compareTo(endDate)<=0))
+                        listElement.getInitDate().compareTo(endDate)<=0))) {
                 overlap = true;
+            }
         }
         return !overlap;
     }
 
-    @AssertTrue
-    public boolean HourCostNotOverlapping() {
-        //TODO: implement a method to validate HourCost time intervals
-        //complementary with canAddHourCost(), this method is run when calling DAO.save()
-        return true;
+    @AssertFalse(message="Two hour costs with the same type overlap in time")
+    public boolean checkHourCostsOverlap() {
+        List<HourCost> listHourCosts = new ArrayList<HourCost>();
+        listHourCosts.addAll(hourCosts);
+        for(int i=0; i<listHourCosts.size(); i++) {
+            LocalDate initDate = listHourCosts.get(i).getInitDate();
+            LocalDate endDate = listHourCosts.get(i).getEndDate();
+            for(int j=i+1; j<listHourCosts.size(); j++) {
+                HourCost listElement = listHourCosts.get(j);
+                if(listElement.getType().getId().equals(listHourCosts.get(i).getType().getId()) &&
+                        ((listElement.getEndDate().compareTo(initDate)>=0 &&
+                            listElement.getEndDate().compareTo(endDate)<=0) ||
+                        (listElement.getInitDate().compareTo(initDate)>=0 &&
+                            listElement.getInitDate().compareTo(endDate)<=0))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

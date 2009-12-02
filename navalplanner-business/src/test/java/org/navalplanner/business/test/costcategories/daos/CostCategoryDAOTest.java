@@ -36,6 +36,7 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
@@ -97,11 +98,15 @@ public class CostCategoryDAOTest {
     @Test
     public void testCanAddHourCost() {
         CostCategory costCategory = createValidCostCategory();
+        TypeOfWorkHours type1 = TypeOfWorkHours.create(UUID.randomUUID().toString(),
+                UUID.randomUUID().toString());
         HourCost hourCost1 = HourCost.create(BigDecimal.ONE, new LocalDate(2009, 11,1));
+        hourCost1.setType(type1);
         hourCost1.setEndDate(new LocalDate(2009, 11,10));
         costCategory.addHourCost(hourCost1);
 
         HourCost hourCost2 = HourCost.create(BigDecimal.ONE, new LocalDate(2009, 11,1));
+        hourCost2.setType(type1);
         hourCost2.setEndDate(new LocalDate(2009, 11,10));
         assertFalse(costCategory.canAddHourCost(hourCost2));
 
@@ -115,6 +120,13 @@ public class CostCategoryDAOTest {
 
         hourCost2.setInitDate(new LocalDate(2009,10,15));
         hourCost2.setEndDate(new LocalDate(2009,10,20));
+        assertTrue(costCategory.canAddHourCost(hourCost2));
+
+        TypeOfWorkHours type2 = TypeOfWorkHours.create(UUID.randomUUID().toString(),
+                UUID.randomUUID().toString());
+        hourCost2.setType(type2);
+        hourCost2.setInitDate(new LocalDate(2009,10,15));
+        hourCost2.setEndDate(new LocalDate(2009,11,1));
         assertTrue(costCategory.canAddHourCost(hourCost2));
     }
 
@@ -135,5 +147,31 @@ public class CostCategoryDAOTest {
         costCategoryDAO.save(costCategory);
         assertEquals(previous, costCategory.getHourCosts().size());
         assertNull(hourCost.getCategory());
+    }
+
+    @Test(expected=ValidationException.class)
+    public void testHourCostsOverlap() {
+        CostCategory costCategory = createValidCostCategory();
+        TypeOfWorkHours type1 = TypeOfWorkHours.create(UUID.randomUUID().toString(),
+                UUID.randomUUID().toString());
+        TypeOfWorkHours type2 = TypeOfWorkHours.create(UUID.randomUUID().toString(),
+                UUID.randomUUID().toString());
+
+        HourCost hourCost1 = HourCost.create(BigDecimal.ONE, new LocalDate(2009, 11,1));
+        hourCost1.setType(type1);
+        hourCost1.setEndDate(new LocalDate(2009, 11,10));
+        costCategory.addHourCost(hourCost1);
+
+        HourCost hourCost2 = HourCost.create(BigDecimal.ONE, new LocalDate(2009, 11,1));
+        hourCost2.setType(type2);
+        hourCost2.setEndDate(new LocalDate(2009, 11,10));
+        costCategory.addHourCost(hourCost2);
+
+        //this save is correct
+        costCategoryDAO.save(costCategory);
+
+        hourCost2.setType(type1);
+        //this save should throw a exception
+        costCategoryDAO.save(costCategory);
     }
 }
