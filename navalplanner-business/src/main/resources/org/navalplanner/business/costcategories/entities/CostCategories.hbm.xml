@@ -30,6 +30,8 @@
 
     <property name="endDate"/>
 
+    <many-to-one name="type" class="TypeOfWorkHours" column="TYPE_OF_WORK_HOURS_ID" />
+
 </class>
 
 <!-- TypeOfWorkHours -->

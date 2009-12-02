@@ -30,12 +30,15 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.IHourCostDAO;
+import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.HourCost;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -56,6 +59,9 @@ public class HourCostDAOTest {
     @Autowired
     IHourCostDAO hourCostDAO;
 
+    @Autowired
+    ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
+
     @Test
     public void testInSpringContainer() {
         assertNotNull(hourCostDAO);
@@ -63,6 +69,10 @@ public class HourCostDAOTest {
 
     private HourCost createValidHourCost() {
         HourCost hourCost = HourCost.create(BigDecimal.ONE, new Date());
+        TypeOfWorkHours type =
+                TypeOfWorkHours.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        hourCost.setType(type);
+        typeOfWorkHoursDAO.save(type);
         return hourCost;
     }
 

@@ -31,13 +31,16 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class HourCost extends BaseEntity {
 
-	@NotNull
+    @NotNull
     private BigDecimal priceCost;
 
-	@NotNull
+    @NotNull
     private Date initDate;
 
     private Date endDate;
+
+    @NotNull
+    private TypeOfWorkHours type;
 
     // Default constructor, needed by Hibernate
     protected HourCost() {
@@ -75,5 +78,13 @@ public class HourCost extends BaseEntity {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public TypeOfWorkHours getType() {
+        return type;
+    }
+
+    public void setType(TypeOfWorkHours type) {
+        this.type = type;
     }
 }
