@@ -18,34 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.users.daos;
+package org.navalplanner.business.users.bootstrap;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.IDataBootstrap;
 
 /**
- * DAO interface for the <code>User</code> entity.
+ * It creates necessary users initially.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public interface IUserDAO extends IGenericDAO<User, Long>{
-
-    /**
-     * NOTE: Login name comparison is case-insensitive.
-     */
-    public User findByLoginName(String loginName)
-        throws InstanceNotFoundException;
-
-    /**
-     * NOTE: Login name comparison is case-insensitive.
-     */
-    public boolean existsByLoginName(String loginName);
-
-    /**
-     * NOTE: Login name comparison is case-insensitive, and the method is
-     * executed in another transaction.
-     */
-    public boolean existsByLoginNameAnotherTransaction(String loginName);
-
-}
+public interface IUsersBootstrap extends IDataBootstrap {}

@@ -21,6 +21,7 @@
 package org.navalplanner.business.test.users.daos;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
@@ -75,6 +76,30 @@ public class UserDAOTest {
 
     @Test
     @NotTransactional
+    public void testExistsByLoginNameAnotherTransaction() {
+
+        final String loginName = getUniqueName();
+
+        IOnTransaction<Void> createUser = new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                userDAO.save(createUser(loginName));
+                return null;
+            }
+        };
+
+        transactionService.runOnTransaction(createUser);
+
+        assertTrue(userDAO.existsByLoginNameAnotherTransaction(loginName));
+        assertTrue(userDAO.existsByLoginNameAnotherTransaction(
+            loginName.toUpperCase()));
+        assertTrue(userDAO.existsByLoginNameAnotherTransaction(
+            loginName.toLowerCase()));
+
+    }
+
+    @Test
+    @NotTransactional
     public void testSaveWithExistingLoginName() {
 
         final String loginName = getUniqueName();
@@ -107,7 +132,7 @@ public class UserDAOTest {
         roles.add(UserRole.ROLE_BASIC_USER);
         roles.add(UserRole.ROLE_ADMINISTRATION);
 
-        return User.create(loginName, "XXX", roles);
+        return User.create(loginName, loginName, roles);
 
     }
 

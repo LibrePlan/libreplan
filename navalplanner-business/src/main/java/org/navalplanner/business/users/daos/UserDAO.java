@@ -43,7 +43,7 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
         throws InstanceNotFoundException {
 
         Criteria c = getSession().createCriteria(User.class);
-        c.add(Restrictions.eq("loginName", loginName));
+        c.add(Restrictions.eq("loginName", loginName).ignoreCase());
         User user = (User) c.uniqueResult();
 
         if (user == null) {
@@ -55,15 +55,21 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
 
     }
 
+
     @Override
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public boolean exists(String loginName) {
+    public boolean existsByLoginName(String loginName) {
         try {
             findByLoginName(loginName);
             return true;
         } catch (InstanceNotFoundException e) {
             return false;
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByLoginNameAnotherTransaction(String loginName) {
+        return existsByLoginName(loginName);
     }
 
 }

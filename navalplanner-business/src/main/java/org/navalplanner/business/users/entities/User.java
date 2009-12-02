@@ -94,7 +94,7 @@ public class User extends BaseEntity {
         IUserDAO userDAO = Registry.getUserDAO();
 
         if (isNewObject()) {
-            return !userDAO.exists(loginName);
+            return !userDAO.existsByLoginNameAnotherTransaction(loginName);
         } else {
             try {
                 User u = userDAO.findByLoginName(loginName);
