@@ -31,6 +31,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -151,6 +152,9 @@ public class ResourceAllocationsBeingEdited {
             case END_DATE:
                 calculateEndDateAllocation();
                 break;
+            case RESOURCES_PER_DAY:
+                calculateResourcesPerDayAllocation();
+                break;
             default:
                 throw new RuntimeException("cant handle: " + calculatedValue);
             }
@@ -158,6 +162,7 @@ public class ResourceAllocationsBeingEdited {
         AllocationResult result = AllocationResult.create(task,
                 calculatedValue, currentRows);
         daysDuration = result.getDaysDuration();
+        AllocationRow.loadDataFromLast(currentRows);
         return result;
     }
 
@@ -173,6 +178,13 @@ public class ResourceAllocationsBeingEdited {
                 .createAndAssociate(task, currentRows);
         ResourceAllocation.allocating(allocations).untilAllocating(
                 formBinder.getAssignedHours());
+    }
+
+    private void calculateResourcesPerDayAllocation() {
+        List<HoursModification> hours = AllocationRow
+                .createHoursModificationsAndAssociate(task, currentRows);
+        ResourceAllocation.allocatingHours(hours).allocateUntil(
+                formBinder.getAllocationEnd());
     }
 
     public FormBinder createFormBinder(

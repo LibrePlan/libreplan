@@ -48,6 +48,12 @@ import org.zkoss.zul.SimpleConstraint;
  */
 public abstract class AllocationRow {
 
+    public static void loadDataFromLast(Collection<? extends AllocationRow> rows) {
+        for (AllocationRow each : rows) {
+            each.loadDataFromLast();
+        }
+    }
+
     public static List<ResourcesPerDayModification> createAndAssociate(
             Task task, Collection<? extends AllocationRow> rows) {
         List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
@@ -246,5 +252,10 @@ public abstract class AllocationRow {
                 .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY);
         resourcesPerDayInput
                 .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY);
+    }
+
+    public void loadDataFromLast() {
+        hoursInput.setValue(last.getAssignedHours());
+        resourcesPerDayInput.setValue(last.getResourcesPerDay().getAmount());
     }
 }
