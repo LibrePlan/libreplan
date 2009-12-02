@@ -45,6 +45,10 @@ public class TypeOfWorkHours extends BaseEntity {
 
     }
 
+    public static TypeOfWorkHours create() {
+        return (TypeOfWorkHours) create(new TypeOfWorkHours());
+    }
+
     public static TypeOfWorkHours create(String code, String name) {
         return (TypeOfWorkHours) create(new TypeOfWorkHours(code, name));
     }
