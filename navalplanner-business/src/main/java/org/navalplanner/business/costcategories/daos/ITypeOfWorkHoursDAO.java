@@ -21,6 +21,7 @@
 package org.navalplanner.business.costcategories.daos;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 
 /**
@@ -28,4 +29,11 @@ import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
  */
 public interface ITypeOfWorkHoursDAO extends IGenericDAO<TypeOfWorkHours, Long> {
 
+    TypeOfWorkHours findUniqueByCode(TypeOfWorkHours typeOfWorkHours)
+        throws InstanceNotFoundException;
+
+    TypeOfWorkHours findUniqueByCode(String code)
+        throws InstanceNotFoundException;
+
+    boolean existsByCode(TypeOfWorkHours typeOfWorkHours);
 }

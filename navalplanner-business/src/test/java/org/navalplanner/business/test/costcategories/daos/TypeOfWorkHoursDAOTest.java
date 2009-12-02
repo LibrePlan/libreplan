@@ -89,4 +89,29 @@ public class TypeOfWorkHoursDAOTest {
         List<TypeOfWorkHours> list = typeOfWorkHoursDAO.list(TypeOfWorkHours.class);
         assertEquals(previous + 1, list.size());
     }
+
+    @Test
+    public void testFindTypesOfWorkHoursByCode() {
+        TypeOfWorkHours typeOfWorkHours = createValidTypeOfWorkHours();
+        typeOfWorkHoursDAO.save(typeOfWorkHours);
+        try {
+            TypeOfWorkHours found = typeOfWorkHoursDAO.findUniqueByCode(typeOfWorkHours.getCode());
+            assertNotNull(found);
+            assertTrue(found.equals(typeOfWorkHours));
+        }
+        catch (InstanceNotFoundException e) {
+
+        }
+    }
+
+    @Test(expected=InstanceNotFoundException.class)
+    public void testFindTypesOfWorkHoursByCodeException() throws InstanceNotFoundException{
+        TypeOfWorkHours typeOfWorkHours = createValidTypeOfWorkHours();
+        typeOfWorkHoursDAO.save(typeOfWorkHours);
+
+        typeOfWorkHoursDAO.remove(typeOfWorkHours.getId());
+
+        //this call should throw the exception
+        typeOfWorkHoursDAO.findUniqueByCode(typeOfWorkHours.getCode());
+    }
 }

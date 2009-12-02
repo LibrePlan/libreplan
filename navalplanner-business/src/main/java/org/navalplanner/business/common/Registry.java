@@ -21,6 +21,7 @@
 package org.navalplanner.business.common;
 
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
+import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -57,6 +58,9 @@ public class Registry {
     @Autowired
     private IWorkReportTypeDAO workReportTypeDAO;
 
+    @Autowired
+    private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
+
     private Registry() {
     }
 
@@ -83,4 +87,9 @@ public class Registry {
     public static IWorkReportTypeDAO getWorkReportTypeDAO() {
         return getInstance().workReportTypeDAO;
     }
+
+    public static ITypeOfWorkHoursDAO getTypeOfWorkHoursDAO() {
+        return getInstance().typeOfWorkHoursDAO;
+    }
+
 }

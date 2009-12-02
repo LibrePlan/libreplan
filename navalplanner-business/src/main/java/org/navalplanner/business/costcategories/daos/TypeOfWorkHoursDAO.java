@@ -20,7 +20,13 @@
 
 package org.navalplanner.business.costcategories.daos;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
+import org.apache.commons.lang.Validate;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -32,6 +38,36 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class TypeOfWorkHoursDAO extends GenericDAOHibernate<TypeOfWorkHours, Long> implements
-		ITypeOfWorkHoursDAO {
+        ITypeOfWorkHoursDAO {
 
+    @Override
+    public TypeOfWorkHours findUniqueByCode(TypeOfWorkHours typeOfWorkHours)
+                throws InstanceNotFoundException {
+
+        Validate.notNull(typeOfWorkHours);
+        return findUniqueByCode(typeOfWorkHours.getCode());
+    }
+
+    @Override
+    public TypeOfWorkHours findUniqueByCode(String code)
+            throws InstanceNotFoundException {
+
+        Criteria c = getSession().createCriteria(TypeOfWorkHours.class);
+        c.add(Restrictions.eq("code", code));
+
+        TypeOfWorkHours found = (TypeOfWorkHours) c.uniqueResult();
+        if (found==null)
+            throw new InstanceNotFoundException(found,
+                    _("Can't find a TypeOfWorkHours with code {0}", code));
+        return found;
+    }
+
+    @Override
+    public boolean existsByCode(TypeOfWorkHours typeOfWorkHours) {
+        try {
+            return findUniqueByCode(typeOfWorkHours) != null;
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
 }
