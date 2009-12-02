@@ -226,14 +226,15 @@ public class CostCategoryCRUDController extends GenericForwardComposer
             @Override
             public void onEvent(Event event) throws Exception {
                 final Comboitem comboitem = autocomplete.getSelectedItem();
-                if (comboitem == null) {
-                    throw new WrongValueException(autocomplete,
-                            _("Please, select an item"));
-                }
+
                 // Update hourCost
                 HourCost hourCost = (HourCost) row.getValue();
                 hourCost.setType((TypeOfWorkHours) comboitem.getValue());
                 row.setValue(hourCost);
+
+                // Update the hourPrice in the hourCost
+                hourCost.setPriceCost(((TypeOfWorkHours) comboitem.getValue()).getDefaultPrice());
+                Util.reloadBindings(listHourCosts);
             }
         });
         row.appendChild(autocomplete);
