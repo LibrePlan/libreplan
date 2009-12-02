@@ -303,11 +303,25 @@ public class CostCategoryCRUDController extends GenericForwardComposer
      *
      * @param row
      */
-    private void appendDateboxInitDate(Row row) {
+    private void appendDateboxInitDate(final Row row) {
         Datebox initDateBox = new Datebox();
         initDateBox.setConstraint("no empty:" + _("The init date cannot be empty"));
         bindDateboxInitDate(initDateBox, (HourCost) row.getValue());
         row.appendChild(initDateBox);
+
+        initDateBox.addEventListener("onChange", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                // Updates the constraint of the endDate box with the new date
+                LocalDate initDate = ((HourCost)row.getValue()).getInitDate();
+                Datebox endDateBox = (Datebox) row.getChildren().get(3);
+                endDateBox.setConstraint("after " + initDate.getYear() +
+                        initDate.getMonthOfYear() + initDate.getDayOfMonth());
+
+                Util.reloadBindings(listHourCosts);
+            }
+        });
     }
 
     /**
@@ -352,6 +366,9 @@ public class CostCategoryCRUDController extends GenericForwardComposer
      */
     private void appendDateboxEndDate(Row row) {
         Datebox endDateBox = new Datebox();
+        LocalDate initDate = ((HourCost)row.getValue()).getInitDate();
+        endDateBox.setConstraint("after " + initDate.getYear() +
+                initDate.getMonthOfYear() + initDate.getDayOfMonth());
         bindDateboxEndDate(endDateBox, (HourCost) row.getValue());
         row.appendChild(endDateBox);
     }

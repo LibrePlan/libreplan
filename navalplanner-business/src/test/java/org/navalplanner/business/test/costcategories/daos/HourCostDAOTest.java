@@ -35,6 +35,7 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.IHourCostDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
@@ -136,5 +137,14 @@ public class HourCostDAOTest {
 
         assertFalse(costCategory1.getHourCosts().contains(hourCost));
         assertTrue(costCategory2.getHourCosts().contains(hourCost));
+    }
+
+    @Test(expected=ValidationException.class)
+    public void testPositiveTimeInterval() {
+        HourCost hourCost = createValidHourCost();
+        hourCost.setInitDate(new LocalDate(2000,12,31));
+        hourCost.setEndDate(new LocalDate(2000,12,1));
+
+        hourCostDAO.save(hourCost);
     }
 }

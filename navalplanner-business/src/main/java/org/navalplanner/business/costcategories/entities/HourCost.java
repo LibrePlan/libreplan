@@ -22,6 +22,7 @@ package org.navalplanner.business.costcategories.entities;
 
 import java.math.BigDecimal;
 
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
@@ -106,5 +107,13 @@ public class HourCost extends BaseEntity {
             oldCategory.removeHourCost(this);
         if(category!=null && !category.getHourCosts().contains(this))
             category.addHourCost(this);
+    }
+
+    @AssertTrue(message="The end date cannot be before the init date")
+    public boolean PositiveTimeInterval() {
+        if (endDate == null) {
+            return true;
+        }
+        return (endDate.isAfter(initDate) || initDate.equals(endDate));
     }
 }
