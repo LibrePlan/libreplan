@@ -21,8 +21,11 @@
 package org.navalplanner.web.costcategories;
 
 import java.util.List;
+import java.util.Set;
 
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
+import org.navalplanner.business.costcategories.entities.HourCost;
 
 /**
  * Model for UI operations related to {@link CostCategory}
@@ -38,4 +41,13 @@ public interface ICostCategoryModel {
      */
     List<CostCategory> getCostCategories();
 
+    Set<HourCost> getHourCosts();
+
+    CostCategory getCostCategory();
+
+    void initCreate();
+
+    void initEdit(CostCategory costCategory);
+
+    void confirmSave() throws ValidationException;
 }

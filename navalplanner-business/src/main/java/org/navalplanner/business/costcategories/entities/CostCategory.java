@@ -43,6 +43,10 @@ public class CostCategory extends BaseEntity {
 
     }
 
+    public static CostCategory create() {
+        return (CostCategory) create(new CostCategory());
+    }
+
     public static CostCategory create(String name) {
         return (CostCategory) create(new CostCategory(name));
     }

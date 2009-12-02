@@ -21,5 +21,40 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
 <window id="${arg.top_id}" title="${i18n:_('Edit cost category')}">
+    <tabbox>
+        <tabs>
+            <tab label="${i18n:_('Category data')}"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <vbox>
+                    <!-- CostCategory details  -->
+                    <grid fixedLayout="false">
+                        <columns>
+                            <column width="200px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Name')}:" />
+                                <textbox id="name"
+                                    value="@{controller.costCategory.name}" width="300px"
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                            </row>
+                        </rows>
+                    </grid>
+
+                    <!-- TODO: Hour costs list -->
+                </vbox>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+    <button onClick="controller.saveAndExit();"
+        label="${i18n:_('Save')}" />
+    <button onClick="controller.saveAndContinue();"
+        label="${i18n:_('Save &amp; Continue')}" />
+    <button onClick="controller.cancel();"
+        label="${i18n:_('Cancel')}" />
 
 </window>

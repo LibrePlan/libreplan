@@ -26,7 +26,7 @@
             <newdatasortablecolumn label="${i18n:_('Actions')}" />
         </columns>
         <rows>
-            <row self="@{each='costCategory'}" value="@{costCategories}">
+            <row self="@{each='costCategory'}" value="@{costCategory}">
                 <label value="@{costCategory.name}" />
                 <hbox>
                     <button sclass="icono" image="/common/img/ico_editar1.png"

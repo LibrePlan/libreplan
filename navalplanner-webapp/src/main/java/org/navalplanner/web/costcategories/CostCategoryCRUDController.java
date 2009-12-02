@@ -20,10 +20,17 @@
 
 package org.navalplanner.web.costcategories;
 
-import java.util.List;
+import static org.navalplanner.web.I18nHelper._;
 
+import java.util.List;
+import java.util.Set;
+
+import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
+import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
@@ -62,12 +69,16 @@ public class CostCategoryCRUDController extends GenericForwardComposer
 
     @Override
     public void goToCreateForm() {
-        //TODO
+        costCategoryModel.initCreate();
+        getVisibility().showOnly(createWindow);
+        Util.reloadBindings(createWindow);
     }
 
     @Override
     public void goToEditForm(CostCategory costCategory) {
-        //TODO
+        costCategoryModel.initEdit(costCategory);
+        getVisibility().showOnly(createWindow);
+        Util.reloadBindings(createWindow);
     }
 
     @Override
@@ -76,8 +87,49 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         Util.reloadBindings(listWindow);
     }
 
+    public void cancel() {
+        goToList();
+    }
+
+
+    public void saveAndExit() {
+        if (save()) {
+            goToList();
+        }
+    }
+
+    public void saveAndContinue() {
+        if (save()) {
+            goToEditForm(getCostCategory());
+        }
+    }
+
+    public boolean save() {
+        try {
+            costCategoryModel.confirmSave();
+            messagesForUser.showMessage(Level.INFO,
+                    _("Type of work hours saved"));
+            return true;
+        } catch (ValidationException e) {
+            String message = _("The following errors were found: ");
+            for(InvalidValue each: e.getInvalidValues()) {
+                message += each.getMessage();
+            }
+            messagesForUser.showMessage(Level.ERROR, message);
+        }
+        return false;
+    }
+
+    public CostCategory getCostCategory() {
+        return costCategoryModel.getCostCategory();
+    }
+
     public List<CostCategory> getCostCategories() {
         return costCategoryModel.getCostCategories();
+    }
+
+    public Set<HourCost> getHourCosts() {
+        return costCategoryModel.getHourCosts();
     }
 
     private OnlyOneVisible getVisibility() {

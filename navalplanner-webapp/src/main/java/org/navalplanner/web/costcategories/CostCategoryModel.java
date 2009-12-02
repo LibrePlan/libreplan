@@ -21,13 +21,17 @@
 package org.navalplanner.web.costcategories;
 
 import java.util.List;
+import java.util.Set;
 
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
+import org.navalplanner.business.costcategories.entities.HourCost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for UI operations related to {@link CostCategory}
@@ -38,11 +42,41 @@ import org.springframework.stereotype.Service;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class CostCategoryModel implements ICostCategoryModel {
 
+    private CostCategory costCategory;
+
     @Autowired
     private ICostCategoryDAO costCategoryDAO;
 
     @Override
     public List<CostCategory> getCostCategories() {
         return costCategoryDAO.list(CostCategory.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void initCreate() {
+        costCategory = CostCategory.create();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void initEdit(CostCategory costCategory) {
+        this.costCategory = costCategory;
+    }
+
+    @Override
+    public Set<HourCost> getHourCosts() {
+        return costCategory.getHourCosts();
+    }
+
+    @Override
+    public CostCategory getCostCategory() {
+        return costCategory;
+    }
+
+    @Override
+    @Transactional
+    public void confirmSave() throws ValidationException {
+        costCategoryDAO.save(costCategory);
     }
 }
