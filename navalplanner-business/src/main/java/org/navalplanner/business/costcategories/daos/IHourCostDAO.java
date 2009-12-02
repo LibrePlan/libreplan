@@ -21,6 +21,7 @@
 package org.navalplanner.business.costcategories.daos;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.entities.HourCost;
 
 /**
@@ -28,4 +29,6 @@ import org.navalplanner.business.costcategories.entities.HourCost;
  */
 public interface IHourCostDAO extends IGenericDAO<HourCost, Long> {
 
+    @Override
+    public void remove(Long id) throws InstanceNotFoundException;
 }

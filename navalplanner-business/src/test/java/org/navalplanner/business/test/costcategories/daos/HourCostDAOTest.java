@@ -35,8 +35,10 @@ import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.IHourCostDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,9 @@ public class HourCostDAOTest {
     @Autowired
     ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
+    @Autowired
+    ICostCategoryDAO costCategoryDAO;
+
     @Test
     public void testInSpringContainer() {
         assertNotNull(hourCostDAO);
@@ -73,6 +78,11 @@ public class HourCostDAOTest {
                 TypeOfWorkHours.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
         hourCost.setType(type);
         typeOfWorkHoursDAO.save(type);
+
+        CostCategory costCategory = CostCategory.create(UUID.randomUUID().toString());
+        hourCost.setCategory(costCategory);
+        costCategoryDAO.save(costCategory);
+
         return hourCost;
     }
 
@@ -98,5 +108,32 @@ public class HourCostDAOTest {
         hourCostDAO.save(hourCost);
         List<HourCost> list = hourCostDAO.list(HourCost.class);
         assertEquals(previous + 1, list.size());
+    }
+
+    @Test
+    public void testCategoryNavigation() {
+        HourCost hourCost = createValidHourCost();
+        assertTrue(hourCost.getCategory().getHourCosts().contains(hourCost));
+    }
+
+    @Test
+    public void testHourCostNotInTwoCategories() {
+        HourCost hourCost = createValidHourCost();
+        CostCategory costCategory1 = CostCategory.create(UUID.randomUUID().toString());
+        CostCategory costCategory2 = CostCategory.create(UUID.randomUUID().toString());
+
+        hourCost.setCategory(costCategory1);
+        hourCost.setCategory(costCategory2);
+        hourCostDAO.save(hourCost);
+
+        assertFalse(costCategory1.getHourCosts().contains(hourCost));
+        assertTrue(costCategory2.getHourCosts().contains(hourCost));
+
+        costCategory1.addHourCost(hourCost);
+        costCategory2.addHourCost(hourCost);
+        hourCostDAO.save(hourCost);
+
+        assertFalse(costCategory1.getHourCosts().contains(hourCost));
+        assertTrue(costCategory2.getHourCosts().contains(hourCost));
     }
 }

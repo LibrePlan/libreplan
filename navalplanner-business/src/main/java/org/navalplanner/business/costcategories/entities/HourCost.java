@@ -42,6 +42,9 @@ public class HourCost extends BaseEntity {
     @NotNull
     private TypeOfWorkHours type;
 
+    @NotNull
+    private CostCategory category;
+
     // Default constructor, needed by Hibernate
     protected HourCost() {
 
@@ -86,5 +89,18 @@ public class HourCost extends BaseEntity {
 
     public void setType(TypeOfWorkHours type) {
         this.type = type;
+    }
+
+    public CostCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(CostCategory category) {
+        CostCategory oldCategory = this.category;
+        this.category = category;
+        if(oldCategory!=null)
+            oldCategory.removeHourCost(this);
+        if(category!=null && !category.getHourCosts().contains(this))
+            category.addHourCost(this);
     }
 }

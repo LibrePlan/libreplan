@@ -20,6 +20,11 @@
 
 package org.navalplanner.business.costcategories.entities;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.BaseEntity;
 
@@ -30,6 +35,8 @@ public class CostCategory extends BaseEntity {
 
 	@NotEmpty
     private String name;
+
+	private Set<HourCost> hourCosts = new HashSet<HourCost>();
 
     // Default constructor, needed by Hibernate
     protected CostCategory() {
@@ -50,5 +57,40 @@ public class CostCategory extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<HourCost> getHourCosts() {
+        return hourCosts;
+    }
+
+    public void addHourCost(HourCost hourCost) {
+        hourCosts.add(hourCost);
+        if(hourCost.getCategory()!=this)
+            hourCost.setCategory(this);
+    }
+
+    public void removeHourCost(HourCost hourCost) {
+        hourCosts.remove(hourCost);
+        if(hourCost.getCategory()==this)
+            hourCost.setCategory(null);
+    }
+
+    public boolean canAddHourCost(HourCost hourCost) {
+        boolean overlap = false;
+        Date initDate = hourCost.getInitDate();
+        Date endDate = hourCost.getEndDate();
+        for(HourCost listElement:hourCosts) {
+            if((listElement.getEndDate().compareTo(initDate)>=0 && listElement.getEndDate().compareTo(endDate)<=0) ||
+               (listElement.getInitDate().compareTo(initDate)>=0 && listElement.getInitDate().compareTo(endDate)<=0))
+                overlap = true;
+        }
+        return !overlap;
+    }
+
+    @AssertTrue
+    public boolean HourCostNotOverlapping() {
+        //TODO: implement a method to validate HourCost time intervals
+        //complementary with canAddHourCost(), this method is run when calling DAO.save()
+        return true;
     }
 }

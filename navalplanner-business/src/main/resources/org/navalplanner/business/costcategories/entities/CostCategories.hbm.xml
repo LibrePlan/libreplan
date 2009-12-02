@@ -13,6 +13,10 @@
 
     <property name="name" unique="true"/>
 
+    <set name="hourCosts" inverse="true" cascade="all">
+        <key column="COST_CATEGORY_ID"/>
+        <one-to-many class="HourCost"/>
+    </set>
 </class>
 
 <!--  HourCost -->
@@ -31,6 +35,8 @@
     <property name="endDate"/>
 
     <many-to-one name="type" class="TypeOfWorkHours" column="TYPE_OF_WORK_HOURS_ID" />
+
+    <many-to-one name="category" class="CostCategory" column="COST_CATEGORY_ID"/>
 
 </class>
 
