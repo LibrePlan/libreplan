@@ -98,7 +98,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private FormBinder formBinder;
 
-    private AllocationRowsHandler allocationsBeingEdited;
+    private AllocationRowsHandler allocationRows;
 
     private Intbox assignedHoursComponent;
 
@@ -177,9 +177,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
         if (formBinder != null) {
             formBinder.detach();
         }
-        allocationsBeingEdited = resourceAllocationModel.initAllocationsFor(
+        allocationRows = resourceAllocationModel.initAllocationsFor(
                 task, ganttTask, planningState);
-        formBinder = allocationsBeingEdited
+        formBinder = allocationRows
                 .createFormBinder(resourceAllocationModel);
         formBinder.setAssignedHoursComponent(assignedHoursComponent);
         formBinder.setTaskStartDateBox(taskStartDateBox);
@@ -508,7 +508,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
 
         private void removeAllocation(AllocationRow row) {
-            allocationsBeingEdited.remove(row);
+            allocationRows.remove(row);
             Util.reloadBindings(allocationsList);
         }
 
