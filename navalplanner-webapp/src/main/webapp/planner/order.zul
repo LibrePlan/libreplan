@@ -142,12 +142,10 @@
                         </row>
                     </rows>
                 </grid>
-
                 <!-- Assigned resources -->
-                <panel title="${i18n:_('Assigned resources')}" border="normal" style="margin-top: 5px" sclass="assignedresources">
+                <panel title="${i18n:_('Allocations')}" border="normal" style="margin-top: 5px" sclass="assignedresources">
                     <panelchildren>
                         <vbox id="messagesContainer"></vbox>
-
                         <listbox id="allocationsList"
                             model="@{allocationController.resourceAllocations}"
                             itemRenderer="@{allocationController.resourceAllocationRenderer}"
