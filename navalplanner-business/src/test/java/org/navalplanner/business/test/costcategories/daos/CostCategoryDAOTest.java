@@ -39,6 +39,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -121,6 +122,9 @@ public class CostCategoryDAOTest {
     public void testListHourCosts() {
         CostCategory costCategory = createValidCostCategory();
         HourCost hourCost = HourCost.create(BigDecimal.ONE, new LocalDate(2009,11,1));
+        TypeOfWorkHours type =
+            TypeOfWorkHours.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        hourCost.setType(type);
         int previous = costCategory.getHourCosts().size();
 
         costCategory.addHourCost(hourCost);
