@@ -22,12 +22,8 @@ package org.navalplanner.business.costcategories.entities;
 
 import java.math.BigDecimal;
 
-import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
@@ -92,5 +88,30 @@ public class TypeOfWorkHours extends BaseEntity {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((code == null) ? 0 : code.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof TypeOfWorkHours))
+            return false;
+        TypeOfWorkHours other = (TypeOfWorkHours) obj;
+        if (code == null) {
+            if (other.code != null)
+                return false;
+        } else if (!code.equals(other.code))
+            return false;
+        return true;
     }
 }

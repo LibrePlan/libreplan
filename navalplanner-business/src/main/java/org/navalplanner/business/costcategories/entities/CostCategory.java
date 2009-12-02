@@ -108,7 +108,7 @@ public class CostCategory extends BaseEntity {
             LocalDate endDate = listHourCosts.get(i).getEndDate();
             for(int j=i+1; j<listHourCosts.size(); j++) {
                 HourCost listElement = listHourCosts.get(j);
-                if(listElement.getType().getId().equals(listHourCosts.get(i).getType().getId()) &&
+                if(listElement.getType().equals(listHourCosts.get(i).getType()) &&
                         ((listElement.getEndDate().compareTo(initDate)>=0 &&
                             listElement.getEndDate().compareTo(endDate)<=0) ||
                         (listElement.getInitDate().compareTo(initDate)>=0 &&
