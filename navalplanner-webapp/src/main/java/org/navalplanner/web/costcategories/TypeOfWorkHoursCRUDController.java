@@ -20,9 +20,15 @@
 
 package org.navalplanner.web.costcategories;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.List;
 
+import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
@@ -61,8 +67,9 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
 
     @Override
     public void goToEditForm(TypeOfWorkHours typeOfWorkHours) {
-        // TODO Auto-generated method stub
-
+        typeOfWorkHoursModel.initEdit(typeOfWorkHours);
+        getVisibility().showOnly(createWindow);
+        Util.reloadBindings(createWindow);
     }
 
     @Override
@@ -71,8 +78,39 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
         Util.reloadBindings(listWindow);
     }
 
+    public void cancel() {
+        goToList();
+    }
+
+    public void saveAndExit() {
+        if (save()) {
+            goToList();
+        }
+    }
+
+    public void saveAndContinue() {
+        if (save()) {
+            goToEditForm(getTypeOfWorkHours());
+        }
+    }
+
+    public boolean save() {
+        try {
+            typeOfWorkHoursModel.confirmSave();
+            //TODO: implement confirmation message
+            return true;
+        } catch (ValidationException e) {
+            //TODO: implement validation errors
+        }
+        return false;
+    }
+
     public List<TypeOfWorkHours> getTypesOfWorkHours() {
         return typeOfWorkHoursModel.getTypesOfWorkHours();
+    }
+
+    public TypeOfWorkHours getTypeOfWorkHours() {
+        return typeOfWorkHoursModel.getTypeOfWorkHours();
     }
 
     private OnlyOneVisible getVisibility() {
