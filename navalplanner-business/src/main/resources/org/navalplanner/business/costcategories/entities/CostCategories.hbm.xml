@@ -61,4 +61,17 @@
 
 </class>
 
+<!--  ResourcesCostCategoryAssignment -->
+<class name="ResourcesCostCategoryAssignment" table="RESOURCES_COST_CATEGORY_ASSIGNMENT">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="initDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+
+    <property name="endDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+</class>
 </hibernate-mapping>
