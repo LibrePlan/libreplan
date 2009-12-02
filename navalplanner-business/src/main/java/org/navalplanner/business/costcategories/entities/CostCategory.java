@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 
@@ -36,6 +37,7 @@ public class CostCategory extends BaseEntity {
     @NotEmpty
     private String name;
 
+    @Valid
     private Set<HourCost> hourCosts = new HashSet<HourCost>();
 
     // Default constructor, needed by Hibernate
