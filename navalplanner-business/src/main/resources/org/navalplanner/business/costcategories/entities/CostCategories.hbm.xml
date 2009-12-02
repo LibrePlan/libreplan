@@ -30,9 +30,9 @@
 
     <property name="priceCost" unique="true"/>
 
-    <property name="initDate"/>
+    <property name="initDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
 
-    <property name="endDate"/>
+    <property name="endDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
 
     <many-to-one name="type" class="TypeOfWorkHours" column="TYPE_OF_WORK_HOURS_ID" />
 

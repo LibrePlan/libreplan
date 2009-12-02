@@ -21,9 +21,9 @@
 package org.navalplanner.business.costcategories.entities;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import org.hibernate.validator.NotNull;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -35,9 +35,9 @@ public class HourCost extends BaseEntity {
     private BigDecimal priceCost;
 
     @NotNull
-    private Date initDate;
+    private LocalDate initDate;
 
-    private Date endDate;
+    private LocalDate endDate;
 
     @NotNull
     private TypeOfWorkHours type;
@@ -50,11 +50,11 @@ public class HourCost extends BaseEntity {
 
     }
 
-    public static HourCost create(BigDecimal priceCost, Date initDate) {
+    public static HourCost create(BigDecimal priceCost, LocalDate initDate) {
         return (HourCost) create(new HourCost(priceCost, initDate));
     }
 
-    protected HourCost(BigDecimal priceCost, Date initDate) {
+    protected HourCost(BigDecimal priceCost, LocalDate initDate) {
         this.priceCost = priceCost;
         this.initDate = initDate;
     }
@@ -67,19 +67,19 @@ public class HourCost extends BaseEntity {
         this.priceCost = priceCost;
     }
 
-    public Date getInitDate() {
+    public LocalDate getInitDate() {
         return initDate;
     }
 
-    public void setInitDate(Date initDate) {
+    public void setInitDate(LocalDate initDate) {
         this.initDate = initDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 

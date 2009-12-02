@@ -20,12 +20,12 @@
 
 package org.navalplanner.business.costcategories.entities;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -77,8 +77,8 @@ public class CostCategory extends BaseEntity {
 
     public boolean canAddHourCost(HourCost hourCost) {
         boolean overlap = false;
-        Date initDate = hourCost.getInitDate();
-        Date endDate = hourCost.getEndDate();
+        LocalDate initDate = hourCost.getInitDate();
+        LocalDate endDate = hourCost.getEndDate();
         for(HourCost listElement:hourCosts) {
             if((listElement.getEndDate().compareTo(initDate)>=0 && listElement.getEndDate().compareTo(endDate)<=0) ||
                (listElement.getInitDate().compareTo(initDate)>=0 && listElement.getInitDate().compareTo(endDate)<=0))

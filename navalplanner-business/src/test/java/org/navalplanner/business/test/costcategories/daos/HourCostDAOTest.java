@@ -28,10 +28,10 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -73,7 +73,8 @@ public class HourCostDAOTest {
     }
 
     private HourCost createValidHourCost() {
-        HourCost hourCost = HourCost.create(BigDecimal.ONE, new Date());
+        HourCost hourCost = HourCost.create(BigDecimal.ONE, new LocalDate());
+
         TypeOfWorkHours type =
                 TypeOfWorkHours.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
         hourCost.setType(type);

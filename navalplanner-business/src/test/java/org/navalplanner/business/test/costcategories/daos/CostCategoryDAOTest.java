@@ -29,10 +29,10 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -96,31 +96,31 @@ public class CostCategoryDAOTest {
     @Test
     public void testCanAddHourCost() {
         CostCategory costCategory = createValidCostCategory();
-        HourCost hourCost1 = HourCost.create(BigDecimal.ONE, new Date(2009, 11,1));
-        hourCost1.setEndDate(new Date(2009, 11,10));
+        HourCost hourCost1 = HourCost.create(BigDecimal.ONE, new LocalDate(2009, 11,1));
+        hourCost1.setEndDate(new LocalDate(2009, 11,10));
         costCategory.addHourCost(hourCost1);
 
-        HourCost hourCost2 = HourCost.create(BigDecimal.ONE, new Date(2009, 11,1));
-        hourCost2.setEndDate(new Date(2009, 11,10));
+        HourCost hourCost2 = HourCost.create(BigDecimal.ONE, new LocalDate(2009, 11,1));
+        hourCost2.setEndDate(new LocalDate(2009, 11,10));
         assertFalse(costCategory.canAddHourCost(hourCost2));
 
-        hourCost2.setInitDate(new Date(2009,10,15));
-        hourCost2.setEndDate(new Date(2009,11,1));
+        hourCost2.setInitDate(new LocalDate(2009,10,15));
+        hourCost2.setEndDate(new LocalDate(2009,11,1));
         assertFalse(costCategory.canAddHourCost(hourCost2));
 
-        hourCost2.setInitDate(new Date(2009,11,10));
-        hourCost2.setEndDate(new Date(2009,11,10));
+        hourCost2.setInitDate(new LocalDate(2009,11,10));
+        hourCost2.setEndDate(new LocalDate(2009,11,10));
         assertFalse(costCategory.canAddHourCost(hourCost2));
 
-        hourCost2.setInitDate(new Date(2009,10,15));
-        hourCost2.setEndDate(new Date(2009,10,20));
+        hourCost2.setInitDate(new LocalDate(2009,10,15));
+        hourCost2.setEndDate(new LocalDate(2009,10,20));
         assertTrue(costCategory.canAddHourCost(hourCost2));
     }
 
     @Test
     public void testListHourCosts() {
         CostCategory costCategory = createValidCostCategory();
-        HourCost hourCost = HourCost.create(BigDecimal.ONE, new Date(2009,11,1));
+        HourCost hourCost = HourCost.create(BigDecimal.ONE, new LocalDate(2009,11,1));
         int previous = costCategory.getHourCosts().size();
 
         costCategory.addHourCost(hourCost);
