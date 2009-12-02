@@ -51,4 +51,7 @@
             </row>
         </rows>
     </newdatasortablegrid>
+    <button id="show_create_form" onClick="controller.goToCreateForm();"
+        label="${i18n:_('Create')}">
+    </button>
 </window>

@@ -31,7 +31,7 @@ public interface ITypeOfWorkHoursCRUDController {
     public abstract void goToEditForm(TypeOfWorkHours typeOfWorkHours);
 
     @EntryPoint("create")
-    public abstract void goToCreateForm(TypeOfWorkHours typeOfWorkHours);
+    public abstract void goToCreateForm();
 
     @EntryPoint("list")
     public abstract void goToList();

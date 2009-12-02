@@ -77,9 +77,10 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
     }
 
     @Override
-    public void goToCreateForm(TypeOfWorkHours typeOfWorkHours) {
-        // TODO Auto-generated method stub
-
+    public void goToCreateForm() {
+        typeOfWorkHoursModel.initCreate();
+        getVisibility().showOnly(createWindow);
+        Util.reloadBindings(createWindow);
     }
 
     @Override
