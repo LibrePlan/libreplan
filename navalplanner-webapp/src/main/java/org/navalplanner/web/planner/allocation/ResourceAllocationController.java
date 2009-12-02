@@ -55,6 +55,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
@@ -106,6 +107,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Grid calculationTypesGrid;
 
     private Radiogroup calculationTypeSelector;
+
+    private Checkbox recommendedAllocationCheckbox;
 
     private Datebox taskEndDate;
 
