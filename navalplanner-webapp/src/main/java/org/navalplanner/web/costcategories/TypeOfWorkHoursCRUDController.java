@@ -29,6 +29,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
@@ -51,11 +52,15 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
 
     private OnlyOneVisible visibility;
 
+    private IMessagesForUser messagesForUser;
+
+    private Component messagesContainer;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
-        // messagesForUser = new MessagesForUser(messagesContainer);
+        messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
     }
 
@@ -97,7 +102,8 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
     public boolean save() {
         try {
             typeOfWorkHoursModel.confirmSave();
-            //TODO: implement confirmation message
+            messagesForUser.showMessage(Level.INFO,
+                    _("Type of work hours saved"));
             return true;
         } catch (ValidationException e) {
             //TODO: implement validation errors
