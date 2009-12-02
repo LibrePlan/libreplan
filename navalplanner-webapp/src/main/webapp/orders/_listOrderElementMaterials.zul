@@ -146,6 +146,7 @@
                                 </hbox>
 
                                 <listbox id="lbFoundMaterials"
+                                    multiple="true"
                                     fixedLayout="true"
                                     model="@{assignedMaterialsController.matchingMaterials}">
                                     <listhead sizable="true">
