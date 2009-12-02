@@ -21,6 +21,7 @@
 package org.navalplanner.business.resources.daos;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,18 +48,28 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ResourceDAO extends GenericDAOHibernate<Resource, Long> implements
         IResourceDAO {
+
     @Override
     public List<Worker> getWorkers() {
         return list(Worker.class);
     }
 
     @Override
-    public List<Resource> getAllByCriterions(Set<Criterion> criterions) {
+    public List<Resource> findAllSatisfyingCriterions(
+            Collection<? extends Criterion> criterions) {
         Validate.notNull(criterions);
+        Validate.noNullElements(criterions);
         if (criterions.isEmpty()) {
             return list(Resource.class);
         }
-        String strQuery = "SELECT resource "
+        return selectSatisfiyingAllCriterions(
+                findRelatedWithSomeOfTheCriterions(criterions), criterions);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Resource> findRelatedWithSomeOfTheCriterions(
+            Collection<? extends Criterion> criterions) {
+        String strQuery = "SELECT DISTINCT resource "
                 + "FROM Resource resource "
                 + "LEFT OUTER JOIN resource.criterionSatisfactions criterionSatisfactions "
                 + "LEFT OUTER JOIN criterionSatisfactions.criterion criterion "
@@ -67,6 +78,19 @@ public class ResourceDAO extends GenericDAOHibernate<Resource, Long> implements
         query.setParameterList("criterions", criterions);
         return (List<Resource>) query.list();
     }
+
+    private List<Resource> selectSatisfiyingAllCriterions(
+            List<Resource> resources,
+            Collection<? extends Criterion> criterions) {
+        List<Resource> result = new ArrayList<Resource>();
+        for (Resource each : resources) {
+            if (each.satisfiesCriterions(criterions)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
 
     @Override
     public List<Resource> findResourcesRelatedTo(List<Task> taskElements) {
