@@ -103,6 +103,18 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     @Transactional(readOnly = true)
+    public void addDefaultAllocations() {
+        reassociateResourcesWithSession();
+        for (AggregatedHoursGroup each : task.getAggregatedByCriterions()) {
+            List<Resource> resourcesFound = resourceDAO
+                    .findAllSatisfyingCriterions(each.getCriterions());
+            allocationRowsHandler.addGeneric(each.getCriterions(),
+                    reloadResources(resourcesFound));
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public void addGeneric(Set<Criterion> criterions,
             Collection<? extends Resource> resourcesMatched) {
         if (criterions.isEmpty()) {

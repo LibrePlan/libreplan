@@ -383,6 +383,7 @@ class FormBinder {
 
     private void activatingRecommendedAllocation() {
         allocationRowsHandler.removeAll();
+        resourceAllocationModel.addDefaultAllocations();
         Util.reloadBindings(allocationsList);
     }
 

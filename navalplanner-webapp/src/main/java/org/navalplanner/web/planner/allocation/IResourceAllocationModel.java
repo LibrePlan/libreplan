@@ -67,4 +67,6 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
     <T> T onAllocationContext(
             IResourceAllocationContext<T> resourceAllocationContext);
 
+    void addDefaultAllocations();
+
 }
