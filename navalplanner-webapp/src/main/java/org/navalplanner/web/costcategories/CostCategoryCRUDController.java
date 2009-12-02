@@ -140,7 +140,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         try {
             costCategoryModel.confirmSave();
             messagesForUser.showMessage(Level.INFO,
-                    _("Type of work hours saved"));
+                    _("Cost category saved"));
             return true;
         } catch (ValidationException e) {
             String message = _("The following errors were found: ");
@@ -266,8 +266,8 @@ public class CostCategoryCRUDController extends GenericForwardComposer
      */
     private void appendTextboxCost(Row row) {
         Textbox txtCost = new Textbox();
-        txtCost.setConstraint("no empty:" + _("cannot be null or empty"));
         bindTextboxCost(txtCost, (HourCost) row.getValue());
+        txtCost.setConstraint("no empty:" + _("cannot be null or empty"));
         row.appendChild(txtCost);
     }
 
@@ -305,8 +305,8 @@ public class CostCategoryCRUDController extends GenericForwardComposer
      */
     private void appendDateboxInitDate(final Row row) {
         Datebox initDateBox = new Datebox();
-        initDateBox.setConstraint("no empty:" + _("The init date cannot be empty"));
         bindDateboxInitDate(initDateBox, (HourCost) row.getValue());
+        initDateBox.setConstraint("no empty:" + _("The init date cannot be empty"));
         row.appendChild(initDateBox);
 
         initDateBox.addEventListener("onChange", new EventListener() {
@@ -318,8 +318,6 @@ public class CostCategoryCRUDController extends GenericForwardComposer
                 Datebox endDateBox = (Datebox) row.getChildren().get(3);
                 endDateBox.setConstraint("after " + initDate.getYear() +
                         initDate.getMonthOfYear() + initDate.getDayOfMonth());
-
-                Util.reloadBindings(listHourCosts);
             }
         });
     }
@@ -366,10 +364,12 @@ public class CostCategoryCRUDController extends GenericForwardComposer
      */
     private void appendDateboxEndDate(Row row) {
         Datebox endDateBox = new Datebox();
-        LocalDate initDate = ((HourCost)row.getValue()).getInitDate();
-        endDateBox.setConstraint("after " + initDate.getYear() +
-                initDate.getMonthOfYear() + initDate.getDayOfMonth());
         bindDateboxEndDate(endDateBox, (HourCost) row.getValue());
+        LocalDate initDate = ((HourCost)row.getValue()).getInitDate();
+        if (initDate != null) {
+            endDateBox.setConstraint("after " + initDate.getYear() +
+                    initDate.getMonthOfYear() + initDate.getDayOfMonth());
+        }
         row.appendChild(endDateBox);
     }
 
