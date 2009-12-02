@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@Service("usersBootstrap")
+@Service
 @Transactional
 public class UsersBootstrap implements IUsersBootstrap {
 
