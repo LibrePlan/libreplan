@@ -82,12 +82,15 @@ public class CostCategoryCRUDController extends GenericForwardComposer
 
     private Grid listHourCosts;
 
+    private Textbox name;
+
     private HourCostListRenderer hourCostListRenderer = new HourCostListRenderer();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         listHourCosts = (Grid) createWindow.getFellowIfAny("listHourCosts");
+        name = (Textbox) createWindow.getFellowIfAny("name");
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
@@ -131,6 +134,9 @@ public class CostCategoryCRUDController extends GenericForwardComposer
     }
 
     public boolean save() {
+        if(!validate()) {
+            return false;
+        }
         try {
             costCategoryModel.confirmSave();
             messagesForUser.showMessage(Level.INFO,
@@ -158,6 +164,34 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         return costCategoryModel.getHourCosts();
     }
 
+    /* validates the constraints of the elements in ZK */
+    private boolean validate() {
+        try {
+            //we 'touch' the attributes in the interface
+            //if any of their constraints is active, they
+            //will throw an exception
+            name.getValue();
+            for (Object eachRow : listHourCosts.getRows().getChildren()) {
+
+                for (Object each: ((Row)eachRow).getChildren()) {
+                    if (each instanceof Textbox) {
+                        ((Textbox) each).getValue();
+                    }
+                    if (each instanceof Autocomplete) {
+                        ((Autocomplete) each).getValue();
+                    }
+                    if (each instanceof Datebox) {
+                        ((Datebox) each).getValue();
+                    }
+                }
+            }
+            return true;
+        }
+        catch (WrongValueException e) {
+            return false;
+        }
+    }
+
     private OnlyOneVisible getVisibility() {
         return (visibility == null) ? new OnlyOneVisible(createWindow,
                 listWindow)
@@ -179,6 +213,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         autocomplete.setAutodrop(true);
         autocomplete.applyProperties();
         autocomplete.setFinder("TypeOfWorkHoursFinder");
+        autocomplete.setConstraint("no empty:" + _("A type must be selected"));
 
         // Getter, show type selected
         if (getTypeOfWorkHours(row) != null) {
@@ -230,6 +265,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
      */
     private void appendTextboxCost(Row row) {
         Textbox txtCost = new Textbox();
+        txtCost.setConstraint("no empty:" + _("cannot be null or empty"));
         bindTextboxCost(txtCost, (HourCost) row.getValue());
         row.appendChild(txtCost);
     }
@@ -268,6 +304,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
      */
     private void appendDateboxInitDate(Row row) {
         Datebox initDateBox = new Datebox();
+        initDateBox.setConstraint("no empty:" + _("The init date cannot be empty"));
         bindDateboxInitDate(initDateBox, (HourCost) row.getValue());
         row.appendChild(initDateBox);
     }
@@ -289,15 +326,20 @@ public class CostCategoryCRUDController extends GenericForwardComposer
                     return new Date(dateTime.getYear()-1900,
                             dateTime.getMonthOfYear()-1,dateTime.getDayOfMonth());
                 }
-                return new Date();
+                return null;
             }
 
         }, new Util.Setter<Date>() {
 
             @Override
             public void set(Date value) {
-                hourCost.setInitDate(new LocalDate(value.getYear()+1900,
-                        value.getMonth()+1,value.getDate()));
+                if (value != null) {
+                    hourCost.setInitDate(new LocalDate(value.getYear()+1900,
+                            value.getMonth()+1,value.getDate()));
+                }
+                else {
+                    hourCost.setInitDate(null);
+                }
             }
         });
     }
@@ -330,15 +372,20 @@ public class CostCategoryCRUDController extends GenericForwardComposer
                     return new Date(dateTime.getYear()-1900,
                             dateTime.getMonthOfYear()-1,dateTime.getDayOfMonth());
                 }
-                return new Date();
+                return null;
             }
 
         }, new Util.Setter<Date>() {
 
             @Override
             public void set(Date value) {
-                hourCost.setEndDate(new LocalDate(value.getYear()+1900,
-                        value.getMonth()+1,value.getDate()));
+                if (value != null) {
+                    hourCost.setEndDate(new LocalDate(value.getYear()+1900,
+                            value.getMonth()+1,value.getDate()));
+                }
+                else {
+                    hourCost.setEndDate(null);
+                }
             }
         });
     }
