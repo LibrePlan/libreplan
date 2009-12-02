@@ -234,9 +234,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         for (HoursGroup hoursGroup : hoursGroups) {
             reattachHoursGroup(hoursGroup);
         }
-        for (AggregatedHoursGroup each : taskSource.getAggregatedByCriterions()) {
-            Hibernate.initialize(each);
-        }
     }
 
     private void reattachCriterion(Criterion criterion) {
