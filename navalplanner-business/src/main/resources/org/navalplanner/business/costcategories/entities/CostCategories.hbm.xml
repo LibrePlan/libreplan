@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.costcategories.entities" default-access="field">
+
+<!-- CostCategory -->
+<class name="CostCategory" table="COST_CATEGORY">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="name" unique="true"/>
+
+</class>
+
+<!--  HourCost -->
+<class name="HourCost" table="HOUR_COST">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="priceCost" unique="true"/>
+
+    <property name="initDate"/>
+
+    <property name="endDate"/>
+
+</class>
+
+<!-- TypeOfWorkHours -->
+<class name="TypeOfWorkHours" table="TYPE_OF_WORK_HOURS">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="name" unique="true"/>
+
+    <property name="code" unique="true"/>
+
+    <property name="defaultPrice"/>
+
+    <property name="enabled"/>
+
+</class>
+
+</hibernate-mapping>
