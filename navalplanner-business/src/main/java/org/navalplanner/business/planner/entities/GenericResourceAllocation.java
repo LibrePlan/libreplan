@@ -268,6 +268,7 @@ public class GenericResourceAllocation extends
         GenericResourceAllocation allocation = create();
         allocation.genericDayAssignments = new HashSet<GenericDayAssignment>(
                 this.genericDayAssignments);
+        allocation.criterions = new HashSet<Criterion>(criterions);
         return allocation;
     }
 

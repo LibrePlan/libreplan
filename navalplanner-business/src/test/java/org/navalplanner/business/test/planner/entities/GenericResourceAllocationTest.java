@@ -160,6 +160,14 @@ public class GenericResourceAllocationTest {
     }
 
     @Test
+    public void theCriterionsAreCopied() {
+        givenGenericResourceAllocation();
+        GenericResourceAllocation copied = (GenericResourceAllocation) genericResourceAllocation
+                .copy();
+        assertThat(copied.getCriterions(), equalTo(criterions));
+    }
+
+    @Test
     public void hasTheCriterionsOfTheTask() {
         givenGenericResourceAllocation();
         assertThat(genericResourceAllocation.getCriterions(),
