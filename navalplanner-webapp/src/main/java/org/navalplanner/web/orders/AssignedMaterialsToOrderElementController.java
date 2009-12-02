@@ -288,6 +288,11 @@ public class AssignedMaterialsToOrderElementController extends
         return result;
     }
 
+    public void clearSelection(Tree tree) {
+        tree.clearSelection();
+        Util.reloadBindings(gridMaterials);
+    }
+
     public MaterialCategoryRenderer getMaterialCategoryRenderer() {
         return new MaterialCategoryRenderer();
     }

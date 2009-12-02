@@ -40,7 +40,8 @@
                     <vbox>
                         <panel title="${i18n:_('Categories')}" border="normal">
                             <panelchildren>
-                                <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}" onClick="categoriesTree.clearSelection()" />
+                                <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}"
+                                    onClick="assignedMaterialsController.clearSelection(categoriesTree)" />
                                 <tree id="categoriesTree"
                                         fixedLayout="false"
                                         width="280px" rows="10" vflex="true" multiple="false"
