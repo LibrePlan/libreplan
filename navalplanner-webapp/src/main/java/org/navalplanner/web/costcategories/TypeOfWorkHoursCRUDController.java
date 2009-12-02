@@ -33,7 +33,10 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.api.Checkbox;
+import org.zkoss.zul.api.Textbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -56,11 +59,20 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
 
     private Component messagesContainer;
 
+    private Textbox code;
+    private Textbox name;
+    private Textbox defaultPrice;
+    private Checkbox enabled;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
+        code = (Textbox) createWindow.getFellowIfAny("code");
+        name = (Textbox) createWindow.getFellowIfAny("name");
+        defaultPrice = (Textbox) createWindow.getFellowIfAny("defaultPrice");
+        enabled = (Checkbox) createWindow.getFellowIfAny("enabled");
         getVisibility().showOnly(listWindow);
     }
 
@@ -100,15 +112,35 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
     }
 
     public boolean save() {
+        if(!validate()) {
+            return false;
+        }
         try {
             typeOfWorkHoursModel.confirmSave();
             messagesForUser.showMessage(Level.INFO,
                     _("Type of work hours saved"));
             return true;
         } catch (ValidationException e) {
-            //TODO: implement validation errors
+            messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
         return false;
+    }
+
+    /* validates the constraints of the elements in ZK */
+    private boolean validate() {
+        try {
+            //we 'touch' the attributes in the interface
+            //if any of their constraints is active, they
+            //will throw an exception
+            code.getValue();
+            name.getValue();
+            defaultPrice.getValue();
+            enabled.isChecked();
+            return true;
+        }
+        catch (WrongValueException e) {
+            return false;
+        }
     }
 
     public List<TypeOfWorkHours> getTypesOfWorkHours() {

@@ -39,21 +39,23 @@
                                 <label
                                     value="${i18n:_('Code')}:" />
                                 <textbox id="code"
-                                    value="@{controller.typeOfWorkHours.code}" width="300px" />
+                                    value="@{controller.typeOfWorkHours.code}" width="300px"
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Name')}:" />
-                                <textbox
-                                    value="@{controller.typeOfWorkHours.name}" width="300px" />
+                                <textbox id="name"
+                                    value="@{controller.typeOfWorkHours.name}" width="300px"
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}"/>
                             </row>
-                           <row>
+                            <row>
                                 <label value="${i18n:_('Default price')}:" />
-                                <textbox
+                                <textbox id="defaultPrice"
                                     value="@{controller.typeOfWorkHours.defaultPrice}" width="300px" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Enabled')}:" />
-                                <checkbox
+                                <checkbox id="enabled"
                                     checked="@{controller.typeOfWorkHours.Enabled}" width="300px" />
                             </row>
                         </rows>
