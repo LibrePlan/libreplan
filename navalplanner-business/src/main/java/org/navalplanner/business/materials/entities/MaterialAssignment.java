@@ -34,17 +34,17 @@ import org.navalplanner.business.orders.entities.OrderElement;
  */
 public class MaterialAssignment extends BaseEntity implements Comparable {
 
-    Material material;
+    private Material material;
 
-    double units = 0;
+    private double units = 0;
 
-    BigDecimal unitPrice = new BigDecimal(0);
+    private BigDecimal unitPrice = new BigDecimal(0);
 
-    Date estimatedAvailability;
+    private Date estimatedAvailability;
 
-    MaterialStatusEnum status = MaterialStatusEnum.PENDING;
+    private MaterialStatusEnum status = MaterialStatusEnum.PENDING;
 
-    OrderElement orderElement;
+    private OrderElement orderElement;
 
     public static MaterialAssignment create() {
         return BaseEntity.create(new MaterialAssignment());
