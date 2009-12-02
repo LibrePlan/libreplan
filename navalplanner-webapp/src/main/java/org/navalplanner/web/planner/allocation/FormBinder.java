@@ -328,8 +328,9 @@ class FormBinder {
     }
 
     public void markThereisAlreadyAssignmentWith(Set<Criterion> criterions) {
-        messagesForUser.showMessage(Level.ERROR,
-                _("for criterions {0} already exists an allocation"));
+        messagesForUser.showMessage(Level.ERROR, _(
+                "for criterions {0} already exists an allocation",
+                ResourceLoadModel.getName(criterions)));
     }
 
     public void markEndDateMustBeAfterStartDate() {
