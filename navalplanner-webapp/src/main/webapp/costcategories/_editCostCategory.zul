@@ -41,6 +41,11 @@
                                     value="@{controller.costCategory.name}" width="300px"
                                     constraint="no empty:${i18n:_('cannot be null or empty')}"/>
                             </row>
+                            <row>
+                                <label value="${i18n:_('Enabled')}:" />
+                                <checkbox id="enabled"
+                                    checked="@{controller.costCategory.enabled}" width="300px" />
+                            </row>
                         </rows>
                     </grid>
 

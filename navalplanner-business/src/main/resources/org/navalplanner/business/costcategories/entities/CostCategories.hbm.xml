@@ -13,6 +13,8 @@
 
     <property name="name" unique="true"/>
 
+    <property name="enabled"/>
+
     <set name="hourCosts" inverse="true" cascade="all-delete-orphan">
         <key column="COST_CATEGORY_ID"/>
         <one-to-many class="HourCost"/>

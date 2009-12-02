@@ -39,6 +39,8 @@ public class CostCategory extends BaseEntity {
     @NotEmpty
     private String name;
 
+    private boolean enabled = true;
+
     @Valid
     private Set<HourCost> hourCosts = new HashSet<HourCost>();
 
@@ -65,6 +67,14 @@ public class CostCategory extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public Set<HourCost> getHourCosts() {
