@@ -96,7 +96,7 @@ public class AllocationRowsHandler {
     }
 
     public List<AllocationRow> getCurrentRows() {
-        return new ArrayList<AllocationRow>(currentRows);
+        return currentRows;
     }
 
     private boolean alreadyExistsAllocationFor(Resource resource) {
@@ -240,4 +240,13 @@ public class AllocationRowsHandler {
         return date.toDateTimeAtStartOfDay().toDate();
     }
 
+    public void removeAll() {
+        for (AllocationRow each : copyOfCurrentRowsToAvoidConcurrentModification()) {
+            remove(each);
+        }
+    }
+
+    private ArrayList<AllocationRow> copyOfCurrentRowsToAvoidConcurrentModification() {
+        return new ArrayList<AllocationRow>(currentRows);
+    }
 }

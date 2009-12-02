@@ -39,6 +39,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.util.Locales;
@@ -380,6 +381,8 @@ class FormBinder {
     }
 
     private void activatingRecommendedAllocation() {
+        allocationRowsHandler.removeAll();
+        Util.reloadBindings(allocationsList);
     }
 
     private void deactivatingRecommendedAllocation() {
