@@ -244,7 +244,7 @@ public abstract class AllocationRow {
         if (origin != null) {
             return origin.getAssignedHours();
         }
-        return null;
+        return 0;
     }
 
     public void applyDisabledRules(CalculatedValue calculatedValue) {
@@ -257,5 +257,9 @@ public abstract class AllocationRow {
     public void loadDataFromLast() {
         hoursInput.setValue(last.getAssignedHours());
         resourcesPerDayInput.setValue(last.getResourcesPerDay().getAmount());
+    }
+
+    public void addListenerForHoursInputChange(EventListener listener) {
+        hoursInput.addEventListener(Events.ON_CHANGE, listener);
     }
 }

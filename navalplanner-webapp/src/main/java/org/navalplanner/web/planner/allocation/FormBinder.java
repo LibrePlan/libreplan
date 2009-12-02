@@ -105,6 +105,16 @@ class FormBinder {
 
     private EventListener recommendedCheckboxListener;
 
+    private EventListener hoursInputChange = new EventListener() {
+
+        @Override
+        public void onEvent(Event event) throws Exception {
+            if (assignedHoursComponent.isDisabled()) {
+                assignedHoursComponent.setValue(sumAllHoursFromHoursInputs());
+            }
+        }
+    };
+
     public FormBinder(
             AllocationRowsHandler allocationRowsHandler,
             IResourceAllocationModel resourceAllocationModel) {
@@ -161,6 +171,20 @@ class FormBinder {
         for (AllocationRow each : rows) {
             each.applyDisabledRules(getCalculatedValue());
         }
+    }
+
+    private void bindTotalHoursToHoursInputs() {
+        for (AllocationRow each : rows) {
+            each.addListenerForHoursInputChange(hoursInputChange);
+        }
+    }
+
+    private int sumAllHoursFromHoursInputs() {
+        int result = 0;
+        for (AllocationRow each : rows) {
+            result += each.getHoursFromInput();
+        }
+        return result;
     }
 
     public CalculatedValue getCalculatedValue() {
@@ -221,6 +245,7 @@ class FormBinder {
                 .getCurrentRows());
         rows = result;
         applyDisabledRulesOnRows();
+        bindTotalHoursToHoursInputs();
         return result;
     }
 
