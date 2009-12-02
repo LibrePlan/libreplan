@@ -23,7 +23,7 @@ package org.navalplanner.business.costcategories.entities;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -31,10 +31,10 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class HourCost extends BaseEntity {
 
-	@NotEmpty
+	@NotNull
     private BigDecimal priceCost;
 
-	@NotEmpty
+	@NotNull
     private Date initDate;
 
     private Date endDate;
