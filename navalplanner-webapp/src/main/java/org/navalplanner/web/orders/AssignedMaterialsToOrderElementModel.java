@@ -191,7 +191,7 @@ public class AssignedMaterialsToOrderElementModel implements
                     .getMaterialAssignments()) {
                 final Material material = materialAssigment.getMaterial();
                 if (materialCategory == null
-                        || materialCategory.equals(material.getCategory())) {
+                        || materialCategory.getId().equals(material.getCategory().getId())) {
                     result.add(materialAssigment);
                 }
             }
@@ -231,8 +231,24 @@ public class AssignedMaterialsToOrderElementModel implements
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void removeMaterialAssignment(MaterialAssignment materialAssignment) {
         orderElement.removeMaterialAssignment(materialAssignment);
+        // Remove material category from materialCategories tree
+        final MaterialCategory materialCategory = materialAssignment.getMaterial().getCategory();
+        removeCategory(materialCategories, materialCategory);
+    }
+
+    private void removeCategory(
+            MutableTreeModel<MaterialCategory> materialCategories,
+            MaterialCategory materialCategory) {
+
+        categoryDAO.reattach(materialCategory);
+        final boolean canDelete = materialCategory.getSubcategories().isEmpty() &&  getAssignedMaterials(materialCategory).isEmpty();
+        if (canDelete) {
+            materialCategories.remove(materialCategory);
+            removeCategory(materialCategories, materialCategory.getParent());
+        }
     }
 
     @Override

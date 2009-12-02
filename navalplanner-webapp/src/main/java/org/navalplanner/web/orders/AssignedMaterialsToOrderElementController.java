@@ -394,8 +394,50 @@ public class AssignedMaterialsToOrderElementController extends
     private void removeMaterialAssignment(MaterialAssignment materialAssignment) {
         assignedMaterialsToOrderElementModel.removeMaterialAssignment(materialAssignment);
         Util.reloadBindings(gridMaterials);
-        // Reload categoriesTree
-        categoriesTree.setModel(getMaterialCategories());
+        reloadTree(categoriesTree);
+    }
+
+    private void reloadTree(Tree tree) {
+        final Treeitem treeitem = tree.getSelectedItem();
+
+        if (treeitem != null) {
+            final MaterialCategory materialCategory = (MaterialCategory) treeitem.getValue();
+            tree.setModel(getMaterialCategories());
+            locateAndSelectMaterialCategory(tree, materialCategory);
+        } else {
+            tree.setModel(getMaterialCategories());
+            Util.reloadBindings(gridMaterials);
+        }
+    }
+
+    private boolean locateAndSelectMaterialCategory(Tree tree, MaterialCategory materialCategory) {
+        Treeitem treeitem = findTreeItemByMaterialCategory(tree.getRoot(), materialCategory);
+        if (treeitem != null) {
+            treeitem.setSelected(true);
+            return true;
+        }
+        return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Treeitem findTreeItemByMaterialCategory(Component node, MaterialCategory materialCategory) {
+        if (node instanceof Treeitem) {
+            final Treeitem treeitem = (Treeitem) node;
+            final MaterialCategory _materialCategory = (MaterialCategory) treeitem.getValue();
+            if (_materialCategory.getId().equals(materialCategory.getId())) {
+                return treeitem;
+            }
+        }
+        for (Iterator i = node.getChildren().iterator(); i.hasNext(); ) {
+            Object obj = i.next();
+            if (obj instanceof Component) {
+                Treeitem treeitem =  findTreeItemByMaterialCategory((Component) obj, materialCategory);
+                if (treeitem != null) {
+                    return treeitem;
+                }
+            }
+        }
+        return null;
     }
 
     /**
