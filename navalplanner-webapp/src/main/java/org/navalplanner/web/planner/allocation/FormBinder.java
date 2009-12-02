@@ -49,6 +49,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
@@ -98,6 +99,10 @@ class FormBinder {
     private final IResourceAllocationModel resourceAllocationModel;
 
     private List<AllocationRow> rows;
+
+    private Checkbox recommendedAllocationCheckbox;
+
+    private EventListener recommendedCheckboxListener;
 
     public FormBinder(
             AllocationRowsHandler allocationRowsHandler,
@@ -348,10 +353,36 @@ class FormBinder {
     public void detach() {
         this.applyButton.removeEventListener(Events.ON_CLICK,
                 applyButtonListener);
+        this.recommendedAllocationCheckbox.removeEventListener(Events.ON_CHECK,
+                recommendedCheckboxListener);
         for (InputElement inputElement : inputsAssociatedWithOnChangeEnableApply) {
             inputElement.removeEventListener(Events.ON_CHANGE,
                     onChangeEnableApply);
         }
+    }
+
+    public void setCheckbox(Checkbox recommendedAllocation) {
+        this.recommendedAllocationCheckbox = recommendedAllocation;
+        recommendedCheckboxListener = new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (recommendedAllocationCheckbox.isChecked()) {
+                    activatingRecommendedAllocation();
+                } else {
+                    deactivatingRecommendedAllocation();
+                }
+            }
+
+        };
+        this.recommendedAllocationCheckbox.addEventListener(Events.ON_CHECK,
+                recommendedCheckboxListener);
+    }
+
+    private void activatingRecommendedAllocation() {
+    }
+
+    private void deactivatingRecommendedAllocation() {
     }
 
 }

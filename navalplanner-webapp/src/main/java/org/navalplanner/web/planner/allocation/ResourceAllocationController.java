@@ -187,6 +187,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         formBinder.setApplyButton(applyButton);
         formBinder.setAllocationsList(allocationsList);
         formBinder.setMessagesForUser(messagesForUser);
+        formBinder.setCheckbox(recommendedAllocationCheckbox);
         CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                 .from(formBinder.getCalculatedValue());
         calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
