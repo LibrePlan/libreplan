@@ -54,6 +54,10 @@ public class HourCost extends BaseEntity {
         return (HourCost) create(new HourCost(priceCost, initDate));
     }
 
+    public static HourCost create() {
+        return (HourCost) create(new HourCost());
+    }
+
     protected HourCost(BigDecimal priceCost, LocalDate initDate) {
         this.priceCost = priceCost;
         this.initDate = initDate;

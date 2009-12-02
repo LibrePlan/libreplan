@@ -20,9 +20,12 @@
 
 package org.navalplanner.web.costcategories;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
@@ -53,7 +56,6 @@ public class CostCategoryModel implements ICostCategoryModel {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public void initCreate() {
         costCategory = CostCategory.create();
     }
@@ -61,12 +63,47 @@ public class CostCategoryModel implements ICostCategoryModel {
     @Override
     @Transactional(readOnly = true)
     public void initEdit(CostCategory costCategory) {
-        this.costCategory = costCategory;
+        Validate.notNull(costCategory);
+        this.costCategory = getFromDB(costCategory);
+    }
+
+    @Transactional(readOnly = true)
+    private CostCategory getFromDB(CostCategory costCategory) {
+        return getFromDB(costCategory.getId());
+    }
+
+    @Transactional(readOnly = true)
+    private CostCategory getFromDB(Long id) {
+        try {
+            CostCategory result = costCategoryDAO.find(id);
+            forceLoadEntities(result);
+            return result;
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Load entities that will be needed in the conversation
+     *
+     * @param costCategory
+     */
+    private void forceLoadEntities(CostCategory costCategory) {
+        for (HourCost each : costCategory.getHourCosts()) {
+            each.getInitDate();
+            each.getCategory().getName();
+            each.getType().getName();
+        }
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Set<HourCost> getHourCosts() {
-        return costCategory.getHourCosts();
+        Set<HourCost> hourCosts = new HashSet<HourCost>();
+        if (costCategory != null) {
+            hourCosts.addAll(costCategory.getHourCosts());
+        }
+        return hourCosts;
     }
 
     @Override
@@ -78,5 +115,15 @@ public class CostCategoryModel implements ICostCategoryModel {
     @Transactional
     public void confirmSave() throws ValidationException {
         costCategoryDAO.save(costCategory);
+    }
+
+    @Override
+    public void addHourCost() {
+        costCategory.addHourCost(HourCost.create());
+    }
+
+    @Override
+    public void removeHourCost(HourCost hourCost) {
+        costCategory.removeHourCost(hourCost);
     }
 }

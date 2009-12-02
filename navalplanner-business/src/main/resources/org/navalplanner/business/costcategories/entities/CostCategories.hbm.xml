@@ -13,7 +13,7 @@
 
     <property name="name" unique="true"/>
 
-    <set name="hourCosts" inverse="true" cascade="all">
+    <set name="hourCosts" inverse="true" cascade="all-delete-orphan">
         <key column="COST_CATEGORY_ID"/>
         <one-to-many class="HourCost"/>
     </set>
@@ -28,7 +28,7 @@
     </id>
     <version name="version" access="property" type="long" />
 
-    <property name="priceCost" unique="true"/>
+    <property name="priceCost"/>
 
     <property name="initDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
 

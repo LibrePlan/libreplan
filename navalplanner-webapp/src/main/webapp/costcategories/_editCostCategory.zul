@@ -44,7 +44,20 @@
                         </rows>
                     </grid>
 
-                    <!-- TODO: Hour costs list -->
+                    <!-- Hour costs list -->
+                    <panel title="${i18n:_('Hour costs')}"
+                        border="normal">
+                        <panelchildren>
+                            <hbox>
+                                <button label="${i18n:_('Add new row')}"
+                                    onClick="controller.addHourCost()" />
+                            </hbox>
+
+                            <grid id="listHourCosts"
+                                model="@{controller.hourCosts}"
+                                rowRenderer="@{controller.renderer}" />
+                        </panelchildren>
+                    </panel>
                 </vbox>
             </tabpanel>
         </tabpanels>

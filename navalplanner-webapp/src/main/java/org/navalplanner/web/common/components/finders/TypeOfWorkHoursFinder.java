@@ -18,40 +18,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.costcategories;
+package org.navalplanner.web.common.components.finders;
 
 import java.util.List;
-import java.util.Set;
 
-import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.costcategories.entities.CostCategory;
-import org.navalplanner.business.costcategories.entities.HourCost;
+import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Model for UI operations related to {@link CostCategory}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ *
+ * Implements a {@link IFinder} class for providing {@link TypeOfWorkHours}
+ * elements
+ *
  */
-public interface ICostCategoryModel {
+@Repository
+public class TypeOfWorkHoursFinder extends Finder implements IFinder {
 
-    /**
-     * Get all {@link CostCategory} elements
-     *
-     * @return
-     */
-    List<CostCategory> getCostCategories();
+    @Autowired
+    private ITypeOfWorkHoursDAO dao;
 
-    Set<HourCost> getHourCosts();
+    @Transactional(readOnly = true)
+    public List<TypeOfWorkHours> getAll() {
+        return dao.list(TypeOfWorkHours.class);
+    }
 
-    CostCategory getCostCategory();
+    @Override
+    public String _toString(Object value) {
+        final TypeOfWorkHours type = (TypeOfWorkHours) value;
+        return (type != null) ? type.getName() : "";
+    }
 
-    void initCreate();
-
-    void initEdit(CostCategory costCategory);
-
-    void confirmSave() throws ValidationException;
-
-    void addHourCost();
-
-    void removeHourCost(HourCost hourCost);
 }
