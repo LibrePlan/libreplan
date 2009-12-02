@@ -20,12 +20,8 @@
 
 package org.navalplanner.business.users.bootstrap;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
-import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,25 +39,17 @@ public class UsersBootstrap implements IUsersBootstrap {
     @Override
     public void loadRequiredData() {
 
-        createUserIfNotExists(MandatoryUser.USER.name(),
-            new UserRole[] {UserRole.ROLE_BASIC_USER});
-        createUserIfNotExists(MandatoryUser.ADMIN.name(),
-            new UserRole[] {UserRole.ROLE_BASIC_USER,
-                UserRole.ROLE_ADMINISTRATION});
+        for (MandatoryUser u : MandatoryUser.values()) {
+            createUserIfNotExists(u);
+        }
 
     }
 
-    private void createUserIfNotExists(String loginName, UserRole[] roles) {
+    private void createUserIfNotExists(MandatoryUser u) {
 
-        if (!userDAO.existsByLoginName(loginName)) {
+        if (!userDAO.existsByLoginName(u.name())) {
 
-            Set<UserRole> rolSet = new HashSet<UserRole>();
-
-            for (UserRole r : roles) {
-                rolSet.add(r);
-            }
-
-            userDAO.save(User.create(loginName, loginName, rolSet));
+            userDAO.save(User.create(u.name(), u.name(), u.getInitialRoles()));
 
         }
 
