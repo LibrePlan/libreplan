@@ -21,11 +21,9 @@
 package org.navalplanner.web.planner.allocation;
 
 import java.util.List;
-import java.util.Set;
 
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.web.planner.order.PlanningState;
 
 /**
@@ -39,20 +37,6 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
     public interface IResourceAllocationContext<T> {
         public T doInsideTransaction();
     }
-
-    /**
-     * Returns {@link Set} of {@link Criterion} of the current {@link Task}
-     *
-     * @return
-     */
-    Set<Criterion> getCriterions();
-
-    /**
-     * Gets the current {@link Task} object.
-     *
-     * @return A {@link Task}
-     */
-    Task getTask();
 
     /**
      * Cancel operation

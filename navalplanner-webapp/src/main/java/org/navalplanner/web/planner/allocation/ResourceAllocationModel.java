@@ -23,7 +23,6 @@ package org.navalplanner.web.planner.allocation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -84,11 +83,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private AllocationRowsHandler allocationRowsHandler;
 
     @Override
-    public Task getTask() {
-        return task;
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
         reassociateResourcesWithSession();
@@ -117,12 +111,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         reassociateResourcesWithSession();
         List<Resource> reloadResources = reloadResources(resourcesMatched);
         allocationRowsHandler.addGeneric(criterions, reloadResources);
-    }
-
-    @Override
-    public Set<Criterion> getCriterions() {
-        return (task != null) ? task.getHoursGroup().getValidCriterions()
-                : new HashSet<Criterion>();
     }
 
     @Override
