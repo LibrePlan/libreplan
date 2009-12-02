@@ -32,6 +32,7 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -93,10 +94,19 @@ public class GenericAllocationRow extends AllocationRow {
 
     @Override
     public ResourcesPerDayModification toResourcesPerDayModification(Task task) {
-        GenericResourceAllocation genericResourceAllocation = GenericResourceAllocation
-                .create(task, criterions);
-        return ResourcesPerDayModification.create(genericResourceAllocation,
+        return ResourcesPerDayModification.create(createGenericAllocation(task),
                 getResourcesPerDay(), this.resources);
+    }
+
+    private GenericResourceAllocation createGenericAllocation(Task task) {
+        return GenericResourceAllocation
+                .create(task, criterions);
+    }
+
+    @Override
+    public HoursModification toHoursModification(Task task) {
+        return HoursModification.create(createGenericAllocation(task),
+                getHoursFromInput(), resources);
     }
 
     public boolean hasSameCriterions(Set<Criterion> criterions) {
@@ -107,4 +117,5 @@ public class GenericAllocationRow extends AllocationRow {
     public List<Resource> getAssociatedResources() {
         return resources;
     }
+
 }

@@ -31,6 +31,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
+import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.Util;
@@ -55,6 +56,18 @@ public abstract class AllocationRow {
                     .toResourcesPerDayModification(task);
             result.add(modification);
             each.setLast(modification.getBeingModified());
+        }
+        return result;
+    }
+
+    public static List<HoursModification> createHoursModificationsAndAssociate(
+            Task task, List<AllocationRow> currentRows) {
+        List<HoursModification> result = new ArrayList<HoursModification>();
+        for (AllocationRow each : currentRows) {
+            HoursModification hoursModification = each
+                    .toHoursModification(task);
+            result.add(hoursModification);
+            each.setLast(hoursModification.getBeingModified());
         }
         return result;
     }
@@ -147,6 +160,8 @@ public abstract class AllocationRow {
     public abstract ResourcesPerDayModification toResourcesPerDayModification(
             Task task);
 
+    public abstract HoursModification toHoursModification(Task task);
+
     public boolean isCreating() {
         return origin == null;
     }
@@ -210,6 +225,10 @@ public abstract class AllocationRow {
 
     public void loadHours() {
         hoursInput.setValue(getHours());
+    }
+
+    protected int getHoursFromInput() {
+        return hoursInput.getValue() != null ? hoursInput.getValue() : 0;
     }
 
     private Integer getHours() {
