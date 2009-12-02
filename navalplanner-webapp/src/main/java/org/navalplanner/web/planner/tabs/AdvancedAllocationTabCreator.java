@@ -46,7 +46,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AllocationResult;
-import org.navalplanner.web.planner.allocation.ResourceAllocationsBeingEdited;
+import org.navalplanner.web.planner.allocation.AllocationRowsHandler;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;

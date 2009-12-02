@@ -37,11 +37,11 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 
-public class ResourceAllocationsBeingEdited {
+public class AllocationRowsHandler {
 
-    public static ResourceAllocationsBeingEdited create(Task task,
+    public static AllocationRowsHandler create(Task task,
             List<AllocationRow> initialAllocations, IResourceDAO resourceDAO) {
-        return new ResourceAllocationsBeingEdited(task, initialAllocations);
+        return new AllocationRowsHandler(task, initialAllocations);
     }
 
     private final List<AllocationRow> currentRows;
@@ -56,7 +56,7 @@ public class ResourceAllocationsBeingEdited {
 
     private Integer daysDuration;
 
-    private ResourceAllocationsBeingEdited(Task task,
+    private AllocationRowsHandler(Task task,
             List<AllocationRow> initialRows) {
         this.task = task;
         this.currentRows = new ArrayList<AllocationRow>(initialRows);

@@ -81,7 +81,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     private PlanningState planningState;
 
-    private ResourceAllocationsBeingEdited resourceAllocationsBeingEdited;
+    private AllocationRowsHandler allocationRowsHandler;
 
     @Override
     public Task getTask() {
@@ -92,7 +92,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
         reassociateResourcesWithSession();
-        resourceAllocationsBeingEdited
+        allocationRowsHandler
                 .addSpecificResourceAllocationFor(reloadResources(resources));
     }
 
@@ -116,7 +116,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
         reassociateResourcesWithSession();
         List<Resource> reloadResources = reloadResources(resourcesMatched);
-        resourceAllocationsBeingEdited.addGeneric(criterions, reloadResources);
+        allocationRowsHandler.addGeneric(criterions, reloadResources);
     }
 
     @Override
@@ -127,14 +127,14 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     public void cancel() {
-        resourceAllocationsBeingEdited = null;
+        allocationRowsHandler = null;
     }
 
     @Override
     @Transactional(readOnly = true)
     public void accept() {
         stepsBeforeDoingAllocation();
-        doTheAllocation(resourceAllocationsBeingEdited
+        doTheAllocation(allocationRowsHandler
                 .doAllocation());
     }
 
@@ -154,7 +154,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void ensureResourcesAreReadyForDoingAllocation() {
-        Set<Resource> resources = resourceAllocationsBeingEdited
+        Set<Resource> resources = allocationRowsHandler
                 .getAllocationResources();
         for (Resource each : resources) {
             reattachResource(each);
@@ -174,7 +174,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void removeDeletedAllocations() {
-        Set<ResourceAllocation<?>> allocationsRequestedToRemove = resourceAllocationsBeingEdited
+        Set<ResourceAllocation<?>> allocationsRequestedToRemove = allocationRowsHandler
                 .getAllocationsRequestedToRemove();
         for (ResourceAllocation<?> resourceAllocation : allocationsRequestedToRemove) {
             task.removeResourceAllocation(resourceAllocation);
@@ -191,7 +191,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     @Transactional(readOnly = true)
-    public ResourceAllocationsBeingEdited initAllocationsFor(Task task,
+    public AllocationRowsHandler initAllocationsFor(Task task,
             org.zkoss.ganttz.data.Task ganttTask, PlanningState planningState) {
         this.ganttTask = ganttTask;
         this.task = task;
@@ -205,9 +205,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         loadResources(this.task.getResourceAllocations());
         List<AllocationRow> initialRows = AllocationRow.toRows(this.task
                 .getResourceAllocations());
-        resourceAllocationsBeingEdited = ResourceAllocationsBeingEdited.create(
+        allocationRowsHandler = AllocationRowsHandler.create(
                 task, initialRows, resourceDAO);
-        return resourceAllocationsBeingEdited;
+        return allocationRowsHandler;
     }
 
     private void loadCriterionsOfGenericAllocations() {

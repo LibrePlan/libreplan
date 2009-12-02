@@ -70,7 +70,7 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
      * @param ganttTask
      * @param planningState
      */
-    ResourceAllocationsBeingEdited initAllocationsFor(Task task,
+    AllocationRowsHandler initAllocationsFor(Task task,
             org.zkoss.ganttz.data.Task ganttTask,
             PlanningState planningState);
 

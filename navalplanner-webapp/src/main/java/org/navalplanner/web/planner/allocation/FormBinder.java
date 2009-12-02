@@ -59,7 +59,7 @@ class FormBinder {
 
     private Intbox assignedHoursComponent;
 
-    private final ResourceAllocationsBeingEdited resourceAllocationsBeingEdited;
+    private final AllocationRowsHandler allocationRowsHandler;
 
     private AggregateOfResourceAllocations aggregate;
 
@@ -100,11 +100,11 @@ class FormBinder {
     private List<AllocationRow> rows;
 
     public FormBinder(
-            ResourceAllocationsBeingEdited resourceAllocationsBeingEdited,
+            AllocationRowsHandler allocationRowsHandler,
             IResourceAllocationModel resourceAllocationModel) {
-        this.resourceAllocationsBeingEdited = resourceAllocationsBeingEdited;
+        this.allocationRowsHandler = allocationRowsHandler;
         this.resourceAllocationModel = resourceAllocationModel;
-        this.lastAllocation = this.resourceAllocationsBeingEdited
+        this.lastAllocation = this.allocationRowsHandler
             .getInitialAllocation();
         this.aggregate = this.lastAllocation.getAggregate();
     }
@@ -118,7 +118,7 @@ class FormBinder {
 
     private void loadValueForAssignedHoursComponent() {
         this.assignedHoursComponent
-                .setValue(aggregate.isEmpty() ? resourceAllocationsBeingEdited
+                .setValue(aggregate.isEmpty() ? allocationRowsHandler
                         .getTask().getWorkHours() : aggregate.getTotalHours());
     }
 
@@ -127,7 +127,7 @@ class FormBinder {
                 CalculatedValue.NUMBER_OF_HOURS,
                 CalculatedValue.RESOURCES_PER_DAY);
         this.assignedHoursComponent.setDisabled(set
-                .contains(resourceAllocationsBeingEdited.getCalculatedValue()));
+                .contains(allocationRowsHandler.getCalculatedValue()));
     }
 
     public AllocationResult getLastAllocation() {
@@ -135,11 +135,11 @@ class FormBinder {
     }
 
     public void setCalculatedValue(CalculatedValue calculatedValue) {
-        if (calculatedValue == resourceAllocationsBeingEdited
+        if (calculatedValue == allocationRowsHandler
                 .getCalculatedValue()) {
             return;
         }
-        resourceAllocationsBeingEdited.setCalculatedValue(calculatedValue);
+        allocationRowsHandler.setCalculatedValue(calculatedValue);
         applyDisabledRules();
         loadValueForEndDate();
         applyButton.setDisabled(false);
@@ -158,7 +158,7 @@ class FormBinder {
     }
 
     public CalculatedValue getCalculatedValue() {
-        return resourceAllocationsBeingEdited.getCalculatedValue();
+        return allocationRowsHandler.getCalculatedValue();
     }
 
     public void setTaskStartDateBox(Datebox taskStartDateBox) {
@@ -169,7 +169,7 @@ class FormBinder {
     }
 
     private void loadValueForTaskStartDateBox() {
-        this.taskStartDateBox.setValue(resourceAllocationsBeingEdited.getTask()
+        this.taskStartDateBox.setValue(allocationRowsHandler.getTask()
                 .getStartDate());
     }
 
@@ -192,7 +192,7 @@ class FormBinder {
             public void validate(Component comp, Object value)
                     throws WrongValueException {
                 Date date = (Date) value;
-                Date startDate = resourceAllocationsBeingEdited.getStartDate();
+                Date startDate = allocationRowsHandler.getStartDate();
                 if (!date.after(startDate)) {
                     throw new WrongValueException(comp, _(
                             "{0} must be after {1}", date, startDate));
@@ -202,16 +202,16 @@ class FormBinder {
     }
 
     private void loadValueForEndDate() {
-        this.endDate.setValue(resourceAllocationsBeingEdited.getEnd());
+        this.endDate.setValue(allocationRowsHandler.getEnd());
     }
 
     private void endDateDisabilityRule() {
-        this.endDate.setDisabled(resourceAllocationsBeingEdited
+        this.endDate.setDisabled(allocationRowsHandler
                 .getCalculatedValue() == CalculatedValue.END_DATE);
     }
 
     public List<AllocationRow> getCurrentRows() {
-        List<AllocationRow> result = addListeners(resourceAllocationsBeingEdited
+        List<AllocationRow> result = addListeners(allocationRowsHandler
                 .getCurrentRows());
         rows = result;
         applyDisabledRulesOnRows();
@@ -231,7 +231,7 @@ class FormBinder {
 
                     @Override
                     public AllocationResult doInsideTransaction() {
-                        return resourceAllocationsBeingEdited.doAllocation();
+                        return allocationRowsHandler.doAllocation();
                     }
                 });
         aggregate = lastAllocation.getAggregate();
@@ -329,7 +329,7 @@ class FormBinder {
     public void markEndDateMustBeAfterStartDate() {
         DateTimeFormatter formatter = ISODateTimeFormat.basicDate().withLocale(
                 Locales.getCurrent());
-        LocalDate start = new LocalDate(resourceAllocationsBeingEdited
+        LocalDate start = new LocalDate(allocationRowsHandler
                 .getStartDate());
         throw new WrongValueException(endDate, _(
                 "end date: {0} must be after start date: {1}",

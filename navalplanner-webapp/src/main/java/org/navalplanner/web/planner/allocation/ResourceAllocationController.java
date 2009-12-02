@@ -97,7 +97,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private FormBinder formBinder;
 
-    private ResourceAllocationsBeingEdited allocationsBeingEdited;
+    private AllocationRowsHandler allocationsBeingEdited;
 
     private Intbox assignedHoursComponent;
 
