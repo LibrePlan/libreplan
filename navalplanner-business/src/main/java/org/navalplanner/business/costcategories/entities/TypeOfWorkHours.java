@@ -42,7 +42,7 @@ public class TypeOfWorkHours extends BaseEntity {
 
     private BigDecimal defaultPrice;
 
-	boolean enabled = true;
+    boolean enabled = true;
 
     // Default constructor, needed by Hibernate
     protected TypeOfWorkHours() {

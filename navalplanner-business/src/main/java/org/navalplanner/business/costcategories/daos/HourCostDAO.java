@@ -33,7 +33,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class HourCostDAO extends GenericDAOHibernate<HourCost, Long> implements
-		IHourCostDAO {
+        IHourCostDAO {
 
     @Override
     public void remove(Long id) throws InstanceNotFoundException {

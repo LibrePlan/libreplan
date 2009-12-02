@@ -33,10 +33,10 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class CostCategory extends BaseEntity {
 
-	@NotEmpty
+    @NotEmpty
     private String name;
 
-	private Set<HourCost> hourCosts = new HashSet<HourCost>();
+    private Set<HourCost> hourCosts = new HashSet<HourCost>();
 
     // Default constructor, needed by Hibernate
     protected CostCategory() {
@@ -80,8 +80,10 @@ public class CostCategory extends BaseEntity {
         LocalDate initDate = hourCost.getInitDate();
         LocalDate endDate = hourCost.getEndDate();
         for(HourCost listElement:hourCosts) {
-            if((listElement.getEndDate().compareTo(initDate)>=0 && listElement.getEndDate().compareTo(endDate)<=0) ||
-               (listElement.getInitDate().compareTo(initDate)>=0 && listElement.getInitDate().compareTo(endDate)<=0))
+            if((listElement.getEndDate().compareTo(initDate)>=0 &&
+                    listElement.getEndDate().compareTo(endDate)<=0) ||
+                    (listElement.getInitDate().compareTo(initDate)>=0 &&
+                        listElement.getInitDate().compareTo(endDate)<=0))
                 overlap = true;
         }
         return !overlap;

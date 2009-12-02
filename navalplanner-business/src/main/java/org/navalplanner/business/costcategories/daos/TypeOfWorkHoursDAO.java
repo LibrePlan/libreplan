@@ -42,7 +42,7 @@ public class TypeOfWorkHoursDAO extends GenericDAOHibernate<TypeOfWorkHours, Lon
 
     @Override
     public TypeOfWorkHours findUniqueByCode(TypeOfWorkHours typeOfWorkHours)
-                throws InstanceNotFoundException {
+            throws InstanceNotFoundException {
 
         Validate.notNull(typeOfWorkHours);
         return findUniqueByCode(typeOfWorkHours.getCode());

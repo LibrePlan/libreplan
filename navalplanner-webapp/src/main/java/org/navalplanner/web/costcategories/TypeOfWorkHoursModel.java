@@ -22,8 +22,6 @@ package org.navalplanner.web.costcategories;
 
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;

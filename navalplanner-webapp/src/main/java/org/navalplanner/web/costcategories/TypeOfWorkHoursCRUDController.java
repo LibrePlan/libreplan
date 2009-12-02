@@ -24,7 +24,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -44,6 +43,7 @@ import org.zkoss.zul.api.Window;
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
+@SuppressWarnings("serial")
 public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implements
         ITypeOfWorkHoursCRUDController {
 
