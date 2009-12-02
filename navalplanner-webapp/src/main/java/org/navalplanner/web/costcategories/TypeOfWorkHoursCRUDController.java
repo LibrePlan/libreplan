@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
+import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -122,7 +123,11 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
                     _("Type of work hours saved"));
             return true;
         } catch (ValidationException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
+            String message = _("The following errors were found: ");
+            for(InvalidValue each: e.getInvalidValues()) {
+                message += each.getMessage();
+            }
+            messagesForUser.showMessage(Level.ERROR, message);
         }
         return false;
     }

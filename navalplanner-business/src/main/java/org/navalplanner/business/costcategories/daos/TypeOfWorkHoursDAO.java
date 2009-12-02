@@ -20,8 +20,6 @@
 
 package org.navalplanner.business.costcategories.daos;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
-
 import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -57,8 +55,7 @@ public class TypeOfWorkHoursDAO extends GenericDAOHibernate<TypeOfWorkHours, Lon
 
         TypeOfWorkHours found = (TypeOfWorkHours) c.uniqueResult();
         if (found==null)
-            throw new InstanceNotFoundException(found,
-                    _("Can't find a TypeOfWorkHours with code {0}", code));
+            throw new InstanceNotFoundException(code, TypeOfWorkHours.class.getName());
         return found;
     }
 
