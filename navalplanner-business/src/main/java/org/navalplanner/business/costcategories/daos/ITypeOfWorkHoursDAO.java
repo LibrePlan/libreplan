@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.costcategories.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
@@ -36,4 +38,6 @@ public interface ITypeOfWorkHoursDAO extends IGenericDAO<TypeOfWorkHours, Long> 
         throws InstanceNotFoundException;
 
     boolean existsByCode(TypeOfWorkHours typeOfWorkHours);
+
+    List<TypeOfWorkHours> findActive();
 }

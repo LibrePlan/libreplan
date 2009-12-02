@@ -44,7 +44,7 @@ public class TypeOfWorkHoursFinder extends Finder implements IFinder {
 
     @Transactional(readOnly = true)
     public List<TypeOfWorkHours> getAll() {
-        return dao.list(TypeOfWorkHours.class);
+        return dao.findActive();
     }
 
     @Override

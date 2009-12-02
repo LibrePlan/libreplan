@@ -20,6 +20,9 @@
 
 package org.navalplanner.business.costcategories.daos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -57,6 +60,17 @@ public class TypeOfWorkHoursDAO extends GenericDAOHibernate<TypeOfWorkHours, Lon
         if (found==null)
             throw new InstanceNotFoundException(code, TypeOfWorkHours.class.getName());
         return found;
+    }
+
+    @Override
+    public List<TypeOfWorkHours> findActive() {
+
+        Criteria c = getSession().createCriteria(TypeOfWorkHours.class);
+        c.add(Restrictions.eq("enabled", true));
+
+        List<TypeOfWorkHours> list = new ArrayList<TypeOfWorkHours>();
+        list.addAll(c.list());
+        return list;
     }
 
     @Override
