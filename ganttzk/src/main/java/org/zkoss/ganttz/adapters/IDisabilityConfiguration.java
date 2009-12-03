@@ -33,4 +33,6 @@ public interface IDisabilityConfiguration {
 
     public boolean isEditingDatesEnabled();
 
+    public boolean isCriticalPathEnabled();
+
 }

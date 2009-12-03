@@ -96,6 +96,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean dependenciesConstraintsHavePriority = false;
 
+    private boolean criticalPathEnabled = true;
+
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
         this.adapter = adapter;
@@ -219,6 +221,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public void setDependenciesConstraintsHavePriority(boolean haveDependenciesPriority) {
         this.dependenciesConstraintsHavePriority = haveDependenciesPriority;
+    }
+
+    public void setCriticalPathEnabled(boolean criticalPathEnabled) {
+        this.criticalPathEnabled = criticalPathEnabled;
+    }
+
+    @Override
+    public boolean isCriticalPathEnabled() {
+        return criticalPathEnabled;
     }
 
 }

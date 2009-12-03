@@ -175,7 +175,9 @@ public class Planner extends HtmlMacroComponent  {
             setAt("insertionPointChart", chartComponent);
         }
 
-        this.context.showCriticalPath();
+        if (configuration.isCriticalPathEnabled()) {
+            this.context.showCriticalPath();
+        }
     }
 
     private void setAt(String insertionPointId, Component component) {
