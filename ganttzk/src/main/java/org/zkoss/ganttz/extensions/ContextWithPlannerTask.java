@@ -95,4 +95,9 @@ public class ContextWithPlannerTask<T> implements IContextWithPlannerTask<T> {
         context.recalculatePosition(domainObject);
     }
 
+    @Override
+    public void showCriticalPath() {
+        context.showCriticalPath();
+    }
+
 }

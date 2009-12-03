@@ -92,4 +92,9 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
         context.recalculatePosition(domainObject);
     }
 
+    @Override
+    public void showCriticalPath() {
+        context.showCriticalPath();
+    }
+
 }

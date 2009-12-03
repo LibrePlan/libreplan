@@ -44,9 +44,14 @@ public abstract class Task implements ITaskFundamentalProperties {
     private PropertyChangeSupport visibilityProperties = new PropertyChangeSupport(
             this);
 
+    private PropertyChangeSupport criticalPathProperty = new PropertyChangeSupport(
+            this);
+
     private ITaskFundamentalProperties fundamentalProperties;
 
     private boolean visible = true;
+
+    private boolean inCriticalPath = false;
 
     private ConstraintViolationNotificator<Date> violationNotificator = ConstraintViolationNotificator
             .create();
@@ -103,6 +108,17 @@ public abstract class Task implements ITaskFundamentalProperties {
                 this.visible);
     }
 
+    public boolean isInCriticalPath() {
+        return inCriticalPath;
+    }
+
+    public void setInCriticalPath(boolean inCriticalPath) {
+        boolean previousValue = this.inCriticalPath;
+        this.inCriticalPath = inCriticalPath;
+        criticalPathProperty.firePropertyChange("inCriticalPath",
+                previousValue, this.inCriticalPath);
+    }
+
     public String getName() {
         return fundamentalProperties.getName();
     }
@@ -153,6 +169,11 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void addVisibilityPropertiesChangeListener(
             PropertyChangeListener listener) {
         this.visibilityProperties.addPropertyChangeListener(listener);
+    }
+
+    public void addCriticalPathPropertyChangeListener(
+            PropertyChangeListener listener) {
+        this.criticalPathProperty.addPropertyChangeListener(listener);
     }
 
     public void addFundamentalPropertiesChangeListener(

@@ -132,6 +132,12 @@ min-width:200px;
     width: 100%;
 }
 
+/* Task in critical path */
+.row .critical {
+    border: 3px solid #EE6666;
+    margin-top: -3px;
+}
+
 /* -------------- Dependencies -------------- */
 #listdependencies {
     position: relative;

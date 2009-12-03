@@ -105,4 +105,9 @@ public interface IContext<T> {
      */
     void recalculatePosition(T domainObject);
 
+    /**
+     * Shows the critical path in the planner.
+     */
+    void showCriticalPath();
+
 }

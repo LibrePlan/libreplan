@@ -41,6 +41,7 @@ import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
+import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
@@ -329,6 +330,15 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     public void recalculatePosition(T domainObject) {
         Task associatedTask = mapper.findAssociatedBean(domainObject);
         diagramGraph.enforceRestrictions(associatedTask);
+    }
+
+    @Override
+    public void showCriticalPath() {
+        List<Task> criticalPath = new CriticalPathCalculator<Task>()
+                .calculateCriticalPath(diagramGraph);
+        for (Task task : criticalPath) {
+            task.setInCriticalPath(true);
+        }
     }
 
 }

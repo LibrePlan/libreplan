@@ -51,7 +51,9 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Div;
 
 /**
- * @author javi
+ * Graphical component which represents a {@link Task}.
+ *
+ * @author Javier Morán Rúa <jmoran@igalia.com>
  */
 public class TaskComponent extends Div implements AfterCompose {
 
@@ -150,6 +152,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private final IDisabilityConfiguration disabilityConfiguration;
 
+    private PropertyChangeListener criticalPathPropertyListener;
+
     public static TaskComponent asTaskComponent(Task task, TaskList taskList,
             boolean isTopLevel) {
         final TaskComponent result;
@@ -191,7 +195,11 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     protected String calculateClass() {
-        return "box";
+        String classText = "box";
+        if (task.isInCriticalPath()) {
+            classText += " critical";
+        }
+        return classText;
     }
 
     protected void updateClass() {
@@ -214,6 +222,22 @@ public class TaskComponent extends Div implements AfterCompose {
         }
         this.task
                 .addFundamentalPropertiesChangeListener(propertiesListener);
+
+        if (criticalPathPropertyListener == null) {
+            criticalPathPropertyListener = new PropertyChangeListener() {
+
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (task.isInCriticalPath()) {
+                        updateClass();
+                    }
+                }
+
+            };
+        }
+        this.task
+                .addCriticalPathPropertyChangeListener(criticalPathPropertyListener);
+
         updateClass();
     }
 
