@@ -57,6 +57,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
@@ -112,6 +113,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Datebox taskEndDate;
 
+    private Decimalbox allResourcesPerDay;
+
     private Button applyButton;
 
     private NewAllocationSelector newAllocationSelector;
@@ -136,6 +139,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
         this.window = (Window) comp;
         messagesForUser = new MessagesForUser(messagesContainer);
         taskEndDate = new Datebox();
+        allResourcesPerDay = new Decimalbox();
+        allResourcesPerDay.setVisible(false);
         makeReadyInputsForCalculationTypes();
         prepareCalculationTypesGrid();
     }
@@ -361,7 +366,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             @Override
             public Component input(
                     ResourceAllocationController resourceAllocationController) {
-                return new Label("");
+                return resourceAllocationController.allResourcesPerDay;
             }
         };
 
