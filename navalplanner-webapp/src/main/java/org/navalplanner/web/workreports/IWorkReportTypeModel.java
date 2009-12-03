@@ -28,11 +28,11 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.workreports.ValueObjects.DescriptionField;
 import org.navalplanner.business.workreports.entities.PositionInWorkReportEnum;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLabelTypeAssigment;
 import org.navalplanner.business.workreports.entities.WorkReportType;
+import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 
 /**
  * Contract for {@link WorkRerportType}

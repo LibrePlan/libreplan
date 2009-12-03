@@ -32,8 +32,8 @@ import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.workreports.ValueObjects.DescriptionField;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
+import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 /**
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>

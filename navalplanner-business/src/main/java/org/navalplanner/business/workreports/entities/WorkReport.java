@@ -29,7 +29,7 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.workreports.ValueObjects.DescriptionValue;
+import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 
 /**
  * @author Diego Pino García <dpino@igalia.com>

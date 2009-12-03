@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.workreports.ValueObjects;
+package org.navalplanner.business.workreports.valueobjects;
 
 import org.hibernate.validator.Min;
 import org.hibernate.validator.NotEmpty;

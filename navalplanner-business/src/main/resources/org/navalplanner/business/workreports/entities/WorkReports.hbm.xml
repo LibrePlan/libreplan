@@ -30,7 +30,7 @@
 
     <set name="headingFields" table="HEADING_FIELD">
         <key column="HEADING_ID"/>
-        <composite-element class="org.navalplanner.business.workreports.ValueObjects.DescriptionField">
+        <composite-element class="org.navalplanner.business.workreports.valueobjects.DescriptionField">
                 <property name="fieldName"/>
                 <property name="length"/>
                 <property name="index"/>
@@ -39,7 +39,7 @@
 
     <set name="lineFields" table="LINE_FIELD">
         <key column="HEADING_ID"/>
-        <composite-element class="org.navalplanner.business.workreports.ValueObjects.DescriptionField">
+        <composite-element class="org.navalplanner.business.workreports.valueobjects.DescriptionField">
                 <property name="fieldName"/>
                 <property name="length"/>
                 <property name="index"/>
@@ -70,7 +70,7 @@
 
     <set name="descriptionValues" table="DESCRIPTION_VALUES">
         <key column="DESCRIPTION_VALUE_ID"/>
-        <composite-element class="org.navalplanner.business.workreports.ValueObjects.DescriptionValue">
+        <composite-element class="org.navalplanner.business.workreports.valueobjects.DescriptionValue">
                 <property name="fieldName" unique="true" />
                 <property name="value"/>
         </composite-element>

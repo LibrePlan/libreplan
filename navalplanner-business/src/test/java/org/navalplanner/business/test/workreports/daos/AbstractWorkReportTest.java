@@ -35,12 +35,12 @@ import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.workreports.ValueObjects.DescriptionField;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLabelTypeAssigment;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
+import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractWorkReportTest {
