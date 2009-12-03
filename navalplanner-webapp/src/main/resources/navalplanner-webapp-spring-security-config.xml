@@ -17,14 +17,14 @@
         <intercept-url pattern="/common/img/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/common/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/zkau/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/common/layout/login_v01.zul" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/common/layout/login.zul" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/advance/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/resources/criterions/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/calendars/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/labels/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/common/configuration.zul" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_REMEMBERED" />
-        <form-login login-page="/common/layout/login_v01.zul" authentication-failure-url="/common/layout/login_v01.zul?login_error=x"/>
+        <form-login login-page="/common/layout/login.zul" authentication-failure-url="/common/layout/login.zul?login_error=x"/>
 
     </http>
 

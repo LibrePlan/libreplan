@@ -17,40 +17,39 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
-<?link rel="stylesheet" type="text/css" href="/common/css/login_v01.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/login.css"?>
 
 <div xmlns:n="http://www.zkoss.org/2005/zk/native">
-<n:table width="850" border="0" align="center" cellpadding="0" cellspacing="0">
+
+<n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0">
   <n:tr>
     <n:td background="/navalplanner-webapp/common/img/flechitas.gif"></n:td>
   </n:tr>
 </n:table>
-<n:table width="850" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+<n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
   <n:tr>
-    <n:td height="100" valign="bottom"><n:img src="/navalplanner-webapp/common/img/logo.gif" alt="Naval Pro" width="238" height="85" /></n:td>
+    <n:td height="100" align="left" valign="middle"><n:img src="/navalplanner-webapp/common/img/logo_login.gif" alt="Naval Pro" width="205" height="70" /></n:td>
   </n:tr>
 </n:table>
-<n:table width="850" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+<n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
   <n:tr>
-    <n:td class="identificacion">${i18n:_('AUTHENTICATE')}</n:td>
+    <n:td width="20" class="identificacion"> </n:td>
+    <n:td class="identificacion">${i18n:_('Access to the system')}</n:td>
+    <n:td align="right" valign="bottom">
+        <div tooltiptext="${i18n:_('Help on authentication (opens en new window')}">
+            <n:a href="https://naval.igalia.com/fileadmin/templates/doc/index.html" target="_blank" class="ayuda">${i18n:_('Help')}</n:a>
+        </div>
+    </n:td>
   </n:tr>
 </n:table>
-
-<html if="${not empty param.login_error}">
-  <![CDATA[
-  <div class="message_ERROR">
-    ${i18n:_('Incorrect authentication')}
-  </div>
-  ]]>
-</html>
 
 <n:form action="/navalplanner-webapp/j_spring_security_check" method="POST">
 
-<n:table width="850" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="fondo_identificacion">
+<n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="fondo_identificacion">
   <n:tr>
-    <n:td height="165" valign="top"><n:table width="450" border="0" align="center" cellpadding="0" cellspacing="0">
+    <n:td width="20" height="165" valign="top"></n:td>
+    <n:td valign="top" class="authentication"><n:table border="0" cellpadding="0" cellspacing="0">
         <n:tr>
           <n:td></n:td>
         </n:tr>
@@ -58,35 +57,44 @@
           <n:td class="usuario_clave">${i18n:_('User')}</n:td>
         </n:tr>
         <n:tr>
-          <n:td><n:label> </n:label>
-              <n:div align="center">
+          <n:td><label> </label>
+              <div align="center">
                 <n:input name="j_username" type="text" class="campotexto" id="textfield" size="30" />
-            </n:div></n:td>
+            </div></n:td>
         </n:tr>
         <n:tr>
           <n:td class="usuario_clave">${i18n:_('Password')}</n:td>
         </n:tr>
         <n:tr>
-          <n:td><n:div align="center">
+          <n:td><div align="center">
               <n:input name="j_password" type="password" class="campotexto" id="textfield2" size="30" />
-          </n:div></n:td>
+          </div></n:td>
         </n:tr>
         <n:tr>
           <n:td></n:td>
         </n:tr>
         <n:tr>
-          <n:td><n:label> </n:label>
-              <n:div align="center">
+          <n:td>
+              <n:div align="left">
                 <n:input name="button" type="submit" class="entrar" id="button" value="${i18n:_('Sign in')}" />
             </n:div></n:td>
         </n:tr>
     </n:table></n:td>
+    <n:td width="450" height="165" valign="top">
+        <html if="${not empty param.login_error}">
+          <![CDATA[
+            <div class="login_ERROR">
+                ${i18n:_('Incorrect authentication')}
+            </div>
+            ]]>
+        </html>
+    </n:td>
   </n:tr>
 </n:table>
 
 </n:form>
 
-<n:table width="850" border="0" align="center" cellpadding="0" cellspacing="0" class="tabla_inferior">
+<n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="tabla_inferior">
   <n:tr>
     <n:td height="40" background="/navalplanner-webapp/common/img/linea_pie_login.gif"></n:td>
   </n:tr>
@@ -94,7 +102,12 @@
     <n:td></n:td>
   </n:tr>
   <n:tr>
-    <n:td><n:div align="center"><n:img src="/navalplanner-webapp/common/img/logos_login.gif" width="500" height="91" /></n:div></n:td>
+    <n:td height="100"><div align="right"><n:img src="/navalplanner-webapp/common/img/logos_login.gif" width="403" height="50" /></div></n:td>
+  </n:tr>
+</n:table>
+<n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0">
+  <n:tr>
+    <n:td background="/navalplanner-webapp/common/img/flechitas.gif"></n:td>
   </n:tr>
 </n:table>
 </div>
