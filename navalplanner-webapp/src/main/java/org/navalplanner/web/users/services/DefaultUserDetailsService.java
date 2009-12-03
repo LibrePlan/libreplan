@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.security;
+package org.navalplanner.web.users.services;
 
 import static org.navalplanner.web.I18nHelper._;
 
@@ -33,6 +33,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.userdetails.UserDetailsService;
 import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,14 +45,13 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@Service
-// FIXME public class DefaultUserDetailsService implements UserDetailsService {
-public class DefaultUserDetailsService {
+@Service("defaultUserDetailsService")
+public class DefaultUserDetailsService implements UserDetailsService {
 
     @Autowired
     private IUserDAO userDAO;
 
-    // FIXME @Override
+    @Override
     @Transactional(readOnly=true)
     public UserDetails loadUserByUsername(String loginName)
         throws UsernameNotFoundException, DataAccessException {

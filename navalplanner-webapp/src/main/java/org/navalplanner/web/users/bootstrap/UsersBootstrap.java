@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.users.bootstrap;
+package org.navalplanner.web.users.bootstrap;
 
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
@@ -47,9 +47,10 @@ public class UsersBootstrap implements IUsersBootstrap {
 
     private void createUserIfNotExists(MandatoryUser u) {
 
-        if (!userDAO.existsByLoginName(u.name())) {
+        if (!userDAO.existsByLoginName(u.getLoginName())) {
 
-            userDAO.save(User.create(u.name(), u.name(), u.getInitialRoles()));
+            userDAO.save(User.create(u.getLoginName(), u.getClearPassword(),
+                u.getInitialRoles()));
 
         }
 

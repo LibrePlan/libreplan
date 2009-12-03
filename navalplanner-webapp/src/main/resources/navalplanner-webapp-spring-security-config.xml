@@ -28,11 +28,12 @@
 
     </http>
 
-    <authentication-provider>
-        <user-service>
-            <user name="user" password="user" authorities="ROLE_BASIC_USER" />
-            <user name="admin" password="admin" authorities="ROLE_ADMINISTRATION, ROLE_BASIC_USER" />
-        </user-service>
+    <authentication-provider user-service-ref="defaultUserDetailsService">
+        <password-encoder hash="md5">
+            <!-- NOTE: see IPasswordEncoderService's JavaDoc for restrictions
+                 on "user-property". -->
+            <salt-source user-property="username"/>
+        </password-encoder>
     </authentication-provider>
 
 </beans:beans>

@@ -18,13 +18,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.users.bootstrap;
+package org.navalplanner.web.users.bootstrap;
 
-import org.navalplanner.business.IDataBootstrap;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.navalplanner.business.users.entities.UserRole;
 
 /**
- * It creates necessary users initially.
+ * It enumerates the mandatory users (login names) for running the application.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public interface IUsersBootstrap extends IDataBootstrap {}
+public enum MandatoryUser {
+
+    USER(Arrays.asList(UserRole.ROLE_BASIC_USER)),
+    ADMIN(Arrays.asList(UserRole.ROLE_BASIC_USER,
+        UserRole.ROLE_ADMINISTRATION));
+
+    private Set<UserRole> initialRoles;
+
+    private MandatoryUser(Collection<UserRole> initialUserRoles) {
+        this.initialRoles = new HashSet<UserRole>(initialUserRoles);
+    }
+
+    public String getLoginName() {
+        return this.name().toLowerCase();
+    }
+
+    public String getClearPassword() {
+        return getLoginName();
+    }
+
+    public Set<UserRole> getInitialRoles() {
+        return initialRoles;
+    }
+
+}

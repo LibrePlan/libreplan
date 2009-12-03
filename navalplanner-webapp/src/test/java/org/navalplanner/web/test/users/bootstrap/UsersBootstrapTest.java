@@ -18,19 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.test.users.bootstrap;
+package org.navalplanner.web.test.users.bootstrap;
 
 import static org.junit.Assert.assertEquals;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
-import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
+import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.users.bootstrap.IUsersBootstrap;
-import org.navalplanner.business.users.bootstrap.MandatoryUser;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.web.users.bootstrap.IUsersBootstrap;
+import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -43,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-    BUSINESS_SPRING_CONFIG_TEST_FILE })
+    WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE })
 @Transactional
 public class UsersBootstrapTest {
 
@@ -72,9 +73,9 @@ public class UsersBootstrapTest {
 
         for (MandatoryUser u : MandatoryUser.values()) {
 
-            User user = userDAO.findByLoginName(u.name());
+            User user = userDAO.findByLoginName(u.getLoginName());
 
-            assertEquals(u.name(), user.getLoginName());
+            assertEquals(u.getLoginName(), user.getLoginName());
             assertEquals(u.getInitialRoles(), user.getRoles());
 
         }

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.test.security;
+package org.navalplanner.web.test.users.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
@@ -30,13 +30,13 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.navalplanner.business.users.bootstrap.IUsersBootstrap;
-import org.navalplanner.business.users.bootstrap.MandatoryUser;
 import org.navalplanner.business.users.entities.UserRole;
-import org.navalplanner.web.security.DefaultUserDetailsService;
+import org.navalplanner.web.users.bootstrap.IUsersBootstrap;
+import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.userdetails.UserDetailsService;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,8 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDetailsServiceTest {
 
     @Autowired
-    // FIXME private UserDetailsService userDetailsService;
-    private DefaultUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private IUsersBootstrap usersBootstrap;
@@ -68,9 +67,9 @@ public class UserDetailsServiceTest {
         for (MandatoryUser u : MandatoryUser.values()) {
 
             UserDetails userDetails =
-                userDetailsService.loadUserByUsername(u.name());
+                userDetailsService.loadUserByUsername(u.getLoginName());
 
-            assertEquals(u.name(), userDetails.getUsername());
+            assertEquals(u.getLoginName(), userDetails.getUsername());
 
             assertEquals(u.getInitialRoles(), getUserRoles(userDetails));
 
