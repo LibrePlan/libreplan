@@ -762,17 +762,13 @@ span.z-dottree-ico, span.z-dottree-line {
 =================================================== */
 
 .z-menubar-hor, .z-menubar-ver {
-background: none;
-/*border-bottom:1px solid #B1CBD5;
-display:block;
-padding:2px 0;
-position:relative; */
+    background: none;
 }
 
 .z-menu-body {
    background-color: #d4e1ef;
-   -moz-border-radius: 10px 10px 0 0; /* Enable 3px for 2D mode */
-   -webkit-border-radius: 10px 10px 0 0; /* Enable 3px for 2D mode */
+   -moz-border-radius: 10px 10px 0 0;
+   -webkit-border-radius: 10px 10px 0 0;
 }
 
 .z-menu-inner-m .z-menu-btn {
@@ -781,17 +777,14 @@ position:relative; */
 }
 
 .z-menu-body-over .z-menu-inner-m .z-menu-btn,
-.z-menu-body-seld .z-menu-inner-m .z-menu-btn
- {
+.z-menu-body-seld .z-menu-inner-m .z-menu-btn,
+.current-section .z-menu-body .z-menu-inner-m .z-menu-btn {
    color: #FFFFFF;
 }
 
-.z-menu-body-over, .z-menu-body-seld {
+.z-menu-body-over, .z-menu-body-seld, .current-section .z-menu-body {
     background-color: #2a83b4;
-    color: #000000;
     font-weight: normal;
-   -moz-border-radius: 10px 10px 0 0;
-   -moz-border-radius: 10px 10px 0 0;
 }
 
 .z-menu-body-over .z-menu-inner-l,
