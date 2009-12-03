@@ -51,7 +51,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     public static class CustomMenuItem {
 
         private final String name;
-        private final String encodedURL;
         private final String unencodedURL;
         private final List<CustomMenuItem> children;
         private boolean activeParent;
@@ -62,7 +61,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
 
         public String getUrl() {
-            return encodedURL;
+            return unencodedURL;
         }
 
         public List<CustomMenuItem> getChildren() {
@@ -81,7 +80,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         public CustomMenuItem(String name, String url,
                 List<CustomMenuItem> children) {
             this.name = name;
-            this.encodedURL = Executions.getCurrent().encodeURL(url);
             this.unencodedURL = url;
             this.children = children;
             this.disabled = false;
