@@ -86,10 +86,13 @@
     <!-- Control buttons -->
     <hbox>
         <button label="${i18n:_('Save')}"
-            onClick="controller.save()" />
+            onClick="controller.save()"
+            sclass="save-button global-action"/>
         <button label="${i18n:_('Save &amp; Continue')}"
-            onClick="controller.saveAndContinue()" />
+            onClick="controller.saveAndContinue()"
+            sclass="saveandcontinue-button global-action"/>
         <button label="${i18n:_('Close')}"
-            onClick="controller.close()" />
+            onClick="controller.close()"
+            sclass="close-button global-action"/>
     </hbox>
 </window>

@@ -161,15 +161,19 @@
     </tabbox>
             <button visible = "@{controller.editable}"
                 onClick="controller.saveAndExit();"
-                label="${arg.save_button_label}" />
+                label="${arg.save_button_label}"
+                sclass="save-button global-action"/>
             <button visible = "@{controller.editable}"
                 onClick="controller.saveAndContinue();"
-                label="${arg.saveAndContinue_button_label}" />
+                label="${arg.saveAndContinue_button_label}"
+                sclass="saveandcontinue-button global-action" />
             <button visible = "@{controller.editable}"
                  onClick="controller.cancel();"
-                label="${arg.cancel_button_label}" />
+                label="${arg.cancel_button_label}"
+                sclass="cancel-button global-action"/>
             <button visible = "@{controller.readOnly}"
                 onClick="controller.cancel();"
-                label="${i18n:_('Close')}" />
+                label="${i18n:_('Close')}"
+                sclass="cancel-button global-action"/>
 
 </window>

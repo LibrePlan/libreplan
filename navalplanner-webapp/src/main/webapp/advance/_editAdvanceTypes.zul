@@ -65,7 +65,9 @@
     </tabbox>
 
     <button onClick="controller.save();"
-        label="${arg.save_button_label}" />
+        label="${arg.save_button_label}"
+        sclass="save-button global-action"/>
     <button onClick="controller.cancel();"
-        label="${arg.cancel_button_label}" />
+        label="${arg.cancel_button_label}"
+        sclass="cancel-button global-action" />
 </window>

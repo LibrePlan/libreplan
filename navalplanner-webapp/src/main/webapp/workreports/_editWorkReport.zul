@@ -74,10 +74,10 @@
     </tabbox>
 
     <button onClick="controller.saveAndExit();"
-        label="${arg.save_button_label}" />
+        label="${arg.save_button_label}" sclass="save-button global-action"/>
     <button onClick="controller.saveAndContinue();"
-        label="Save &amp; Continue" />
+        label="Save &amp; Continue" sclass="saveandcontinue-button global-action"/>
     <button onClick="controller.cancel();"
-        label="${arg.cancel_button_label}" />
+        label="${arg.cancel_button_label}" sclass="cancel-button global-action"/>
 
 </window>
