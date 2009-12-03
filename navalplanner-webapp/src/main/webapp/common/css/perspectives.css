@@ -1,0 +1,18 @@
+/*
+ * perspectives.css Layout for scheduling perspectives
+ *
+ * The purpose of this stylesheet is to declare common classes and objects
+ * for all the pages managed by the scheduling layout.
+ * It might contain references to ZK Style Guides [http://www.zkoss.org/doc/styleguide]
+ * if needed within the scheduler.
+ */
+
+.main-layout {
+    margin-top: 3px;
+    height: 550px;
+    border-top:solid 1px red;
+}
+
+perspectives-column {
+    width: 90px;
+}
