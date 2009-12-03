@@ -904,3 +904,8 @@ span.z-dottree-ico, span.z-dottree-line {
 .orderslayout-area {
     overflow-y: auto;
 }
+
+tr.z-tree-row-seld, tr.z-list-item-seld {
+    background-color: #2a83b4;
+    color: #FFFFFF;
+}
