@@ -49,6 +49,13 @@ import org.zkoss.zul.SimpleConstraint;
  */
 public abstract class AllocationRow {
 
+    public static void assignHours(List<AllocationRow> rows, int[] hours) {
+        int i = 0;
+        for (AllocationRow each : rows) {
+            each.hoursInput.setValue(hours[i++]);
+        }
+    }
+
     public static void loadDataFromLast(Collection<? extends AllocationRow> rows) {
         for (AllocationRow each : rows) {
             each.loadDataFromLast();
@@ -248,9 +255,11 @@ public abstract class AllocationRow {
         return 0;
     }
 
-    public void applyDisabledRules(CalculatedValue calculatedValue) {
+    public void applyDisabledRules(CalculatedValue calculatedValue,
+            boolean recommendedAllocation) {
         hoursInput
-                .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY);
+                .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY
+                        || recommendedAllocation);
         if (!hoursInput.isDisabled()) {
             hoursInput.setConstraint(new SimpleConstraint(
                     SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE));
@@ -269,4 +278,5 @@ public abstract class AllocationRow {
     public void addListenerForHoursInputChange(EventListener listener) {
         hoursInput.addEventListener(Events.ON_CHANGE, listener);
     }
+
 }

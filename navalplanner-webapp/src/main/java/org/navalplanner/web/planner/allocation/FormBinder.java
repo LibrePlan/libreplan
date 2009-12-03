@@ -25,7 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,6 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -55,12 +55,13 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.impl.api.InputElement;
 
 class FormBinder {
 
-    private Intbox assignedHoursComponent;
+    private Intbox allHoursInput;
 
     private final AllocationRowsHandler allocationRowsHandler;
 
@@ -106,12 +107,24 @@ class FormBinder {
 
     private EventListener recommendedCheckboxListener;
 
-    private EventListener hoursInputChange = new EventListener() {
+    private ProportionalDistributor hoursDistributorForRecommendedAllocation;
+
+    private EventListener hoursRowInputChange = new EventListener() {
 
         @Override
         public void onEvent(Event event) throws Exception {
-            if (assignedHoursComponent.isDisabled()) {
-                assignedHoursComponent.setValue(sumAllHoursFromHoursInputs());
+            if (allHoursInput.isDisabled()) {
+                allHoursInput.setValue(sumAllHoursFromHoursInputs());
+            }
+        }
+    };
+
+    private EventListener allHoursInputChange = new EventListener() {
+
+        @Override
+        public void onEvent(Event event) throws Exception {
+            if (!allHoursInput.isDisabled()) {
+                distributeHoursFromTotalToRows();
             }
         }
     };
@@ -131,24 +144,25 @@ class FormBinder {
     }
 
     public void setAssignedHoursComponent(Intbox assignedHoursComponent) {
-        this.assignedHoursComponent = assignedHoursComponent;
+        this.allHoursInput = assignedHoursComponent;
+        this.allHoursInput.setConstraint(new SimpleConstraint(
+                SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE));
         assignedHoursComponentDisabilityRule();
         loadValueForAssignedHoursComponent();
         onChangeEnableApply(assignedHoursComponent);
     }
 
     private void loadValueForAssignedHoursComponent() {
-        this.assignedHoursComponent
+        this.allHoursInput
                 .setValue(aggregate.isEmpty() ? allocationRowsHandler
                         .getTask().getWorkHours() : aggregate.getTotalHours());
     }
 
     private void assignedHoursComponentDisabilityRule() {
-        EnumSet<CalculatedValue> set = EnumSet.of(
-                CalculatedValue.NUMBER_OF_HOURS,
-                CalculatedValue.RESOURCES_PER_DAY);
-        this.assignedHoursComponent.setDisabled(set
-                .contains(allocationRowsHandler.getCalculatedValue()));
+        CalculatedValue c = allocationRowsHandler.getCalculatedValue();
+        boolean disabled = (CalculatedValue.NUMBER_OF_HOURS == c)
+                || (c == CalculatedValue.RESOURCES_PER_DAY && !recommendedAllocation);
+        this.allHoursInput.setDisabled(disabled);
     }
 
     public AllocationResult getLastAllocation() {
@@ -174,13 +188,15 @@ class FormBinder {
 
     private void applyDisabledRulesOnRows() {
         for (AllocationRow each : rows) {
-            each.applyDisabledRules(getCalculatedValue());
+            each
+                    .applyDisabledRules(getCalculatedValue(),
+                            recommendedAllocation);
         }
     }
 
     private void bindTotalHoursToHoursInputs() {
         for (AllocationRow each : rows) {
-            each.addListenerForHoursInputChange(hoursInputChange);
+            each.addListenerForHoursInputChange(hoursRowInputChange);
         }
     }
 
@@ -302,7 +318,7 @@ class FormBinder {
     }
 
     public int getAssignedHours() {
-        Integer result = assignedHoursComponent.getValue();
+        Integer result = allHoursInput.getValue();
         if (result == null) {
             throw new RuntimeException("assignedHoursComponent returns null");
         }
@@ -329,7 +345,7 @@ class FormBinder {
     }
 
     public void markAssignedHoursMustBePositive() {
-        throw new WrongValueException(assignedHoursComponent,
+        throw new WrongValueException(allHoursInput,
                 _("it must be greater than zero"));
     }
 
@@ -416,14 +432,30 @@ class FormBinder {
 
     private void activatingRecommendedAllocation() {
         allocationRowsHandler.removeAll();
-        resourceAllocationModel.addDefaultAllocations();
+        hoursDistributorForRecommendedAllocation = resourceAllocationModel
+                .addDefaultAllocations();
         this.recommendedAllocation = true;
         disableIfNeededWorkerSearchTab();
+        applyDisabledRules();
+        distributeHoursFromTotalToRows();
+        allHoursInput.addEventListener(Events.ON_CHANGE,
+                allHoursInputChange);
         Util.reloadBindings(allocationsList);
+    }
+
+    private void distributeHoursFromTotalToRows() {
+        Integer value = allHoursInput.getValue();
+        value = value != null ? value : 0;
+        int[] hours = hoursDistributorForRecommendedAllocation
+                .distribute(value);
+        AllocationRow.assignHours(rows, hours);
     }
 
     private void deactivatingRecommendedAllocation() {
         this.recommendedAllocation = false;
+        allHoursInput
+                .removeEventListener(Events.ON_CHANGE,
+                allHoursInputChange);
         disableIfNeededWorkerSearchTab();
     }
 
