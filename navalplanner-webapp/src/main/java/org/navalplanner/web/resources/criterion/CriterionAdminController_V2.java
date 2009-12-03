@@ -44,7 +44,6 @@ import org.zkoss.zul.Window;
 
 /**
  * Controller for Criterions <br />
- * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class CriterionAdminController_V2 extends GenericForwardComposer {
 
