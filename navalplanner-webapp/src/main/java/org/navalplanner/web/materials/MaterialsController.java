@@ -327,7 +327,7 @@ public class MaterialsController extends
     }
 
     private boolean locateAndSelectMaterialCategory(MaterialCategory materialCategory) {
-        Treeitem treeitem = findTreeItemByMaterialCategory(categoriesTree.getRoot(), materialCategory);
+        Treeitem treeitem = findTreeItemByMaterialCategory(categoriesTree, materialCategory);
         if (treeitem != null) {
             treeitem.setSelected(true);
             return true;
@@ -335,21 +335,12 @@ public class MaterialsController extends
         return false;
     }
 
-    private Treeitem findTreeItemByMaterialCategory(Component node, MaterialCategory materialCategory) {
-        if (node instanceof Treeitem) {
-            final Treeitem treeitem = (Treeitem) node;
+    private Treeitem findTreeItemByMaterialCategory(Tree tree, MaterialCategory materialCategory) {
+        for (Iterator i = tree.getItems().iterator(); i.hasNext();)  {
+            final Treeitem treeitem = (Treeitem) i.next();
             final MaterialCategory _materialCategory = (MaterialCategory) treeitem.getValue();
-            if (_materialCategory.getId().equals(materialCategory.getId())) {
+            if (_materialCategory.getId() != null && _materialCategory.getId().equals(materialCategory.getId())) {
                 return treeitem;
-            }
-        }
-        for (Iterator i = node.getChildren().iterator(); i.hasNext(); ) {
-            Object obj = i.next();
-            if (obj instanceof Component) {
-                Treeitem treeitem =  findTreeItemByMaterialCategory((Component) obj, materialCategory);
-                if (treeitem != null) {
-                    return treeitem;
-                }
             }
         }
         return null;
