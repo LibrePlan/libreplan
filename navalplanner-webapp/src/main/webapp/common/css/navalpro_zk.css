@@ -363,6 +363,8 @@ div.z-errbox {
     margin: 10px;
 }
 
+
+
 /* Hide inner second level embed window titles */
 .z-window-embedded
 .z-window-embedded
@@ -814,5 +816,47 @@ span.z-dottree-ico, span.z-dottree-line {
 }
 
 .migas_linea {
-    border-top: 0px;
+    border: 0px;
+}
+
+.perspective, .perspective-active {
+    width:84px;
+    height:84px;
+    margin: 0 0 4px 4px;
+    font-weight:normal;
+}
+
+.perspective .z-button-cm {
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    background-image: none;
+    background-color: #d4e1ef;
+    color: #005782;
+}
+
+.perspective-active .z-button-cm {
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    background-image: none;
+    background-color: #2a83b4;
+    color: #FFFFFF;
+}
+
+.z-button.perspective .z-button-cm,
+.z-button.perspective-active .z-button-cm {
+    white-space:normal;
+}
+
+.vertical-separator {
+    display:none;
+}
+
+
+.main-area .z-center-body {
+    height: auto !important;
+    width: auto !important;
+}
+
+.main-area {
+    overflow: auto;
 }

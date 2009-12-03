@@ -37,7 +37,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Vbox;
 
 /**
  * Controller for customMenu <br />
@@ -202,8 +202,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         topItem(_("Quality management"), "/", true);
     }
 
-    private Hbox getRegisteredItemsInsertionPoint() {
-        return (Hbox) getPage().getFellow("registeredItemsInsertionPoint");
+    private Vbox getRegisteredItemsInsertionPoint() {
+        return (Vbox) getPage().getFellow("registeredItemsInsertionPoint");
     }
 
     public List<CustomMenuItem> getCustomMenuItems() {
@@ -224,7 +224,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     @Override
     public Object addMenuItem(String name,
             org.zkoss.zk.ui.event.EventListener eventListener) {
-        Hbox insertionPoint = getRegisteredItemsInsertionPoint();
+        Vbox insertionPoint = getRegisteredItemsInsertionPoint();
         Button button = new Button();
         button.setLabel(_(name));
         setDeselectedClass(button);
@@ -254,11 +254,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     private void setSelectClass(final Button button) {
-        button.setSclass("perspective sub_menu_active");
+        button.setSclass("perspective-active");
     }
 
     private void setDeselectedClass(Button button) {
-        button.setSclass("perspective sub_menu");
+        button.setSclass("perspective");
     }
 
     private EventListener doNotCallTwice(final Button button,
@@ -278,7 +278,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     private Component separator() {
         Div div = new Div();
-        div.setSclass("vertical_separator");
+        div.setSclass("vertical-separator");
         return div;
     }
 

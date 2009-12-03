@@ -57,13 +57,13 @@
   <n:tr>
     <n:td height="400px" valign="top">
 
-    <borderlayout width="auto" class="main-layout" if="true" height="500px">
+    <borderlayout width="auto" class="main-layout" if="true" height="450px">
     <west class="perspectives-column" width="90px">
         <n:div>
-        <hbox id="registeredItemsInsertionPoint" style="background-color:#2A83B4" />
+        <vbox id="registeredItemsInsertionPoint" width="90px"/>
         </n:div>
     </west>
-    <center border="0" style="overflow:scroll">
+    <center class="main-area">
         <div self="@{insert(content)}"/>
     </center>
     </borderlayout>
