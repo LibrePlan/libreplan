@@ -57,9 +57,12 @@
   <n:tr>
     <n:td height="400px" valign="top">
 
-    <borderlayout width="auto" class="main-layout" if="true" height="560px">
+    <borderlayout width="auto" class="main-layout" height="560px">
     <west class="perspectives-column" width="90px">
         <n:div>
+        <vbox pack="center" align="center" width="90px" height="30px">
+            <label class="perspectives-label">${i18n:_('Perspectives')}</label>
+        </vbox>
         <vbox id="registeredItemsInsertionPoint" width="90px"/>
         </n:div>
     </west>
@@ -67,8 +70,6 @@
         <div self="@{insert(content)}"/>
     </center>
     </borderlayout>
-
-    <div self="@{insert(content)}" if="false"/>
 
     </n:td>
   </n:tr>

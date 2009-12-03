@@ -879,6 +879,10 @@ span.z-dottree-ico, span.z-dottree-line {
     color: #FFFFFF;
 }
 
+.perspectives-label {
+    display: none;
+}
+
 .z-button.perspective .z-button-cm,
 .z-button.perspective-active .z-button-cm {
     white-space:normal;
