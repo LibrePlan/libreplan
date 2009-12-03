@@ -23,8 +23,8 @@
 
     <tabbox>
         <tabs>
-            <tab id="ReportStructure" label="${i18n:_('Report structure')}"/>
-            <tab id="SortedLabelsAndFields" label="${i18n:_('Managing fields and labels')}"
+            <tab id="tabReportStructure" label="${i18n:_('Report structure')}"/>
+            <tab id="tabSortedLabelsAndFields" label="${i18n:_('Managing fields and labels')}"
                 onClick = "controller.reloadOrderedListFieldsAndLabels();"/>
         </tabs>
         <tabpanels>

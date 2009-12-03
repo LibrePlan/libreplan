@@ -319,23 +319,23 @@ public class WorkReportType extends BaseEntity {
     public void moveLabelToEndHead(
             WorkReportLabelTypeAssigment workReportLabelTypeAssigment) {
         moveLabelToHead(workReportLabelTypeAssigment,
-                getHeadingFieldsAndLabels().size());
+                getHeadingFieldsAndLabels().size() - 1);
     }
 
     public void moveLabelToEndLine(
             WorkReportLabelTypeAssigment workReportLabelTypeAssigment) {
         moveLabelToLine(workReportLabelTypeAssigment, getLineFieldsAndLabels()
-                .size());
+                .size() - 1);
     }
 
     public void moveDescriptionFieldToEndHead(DescriptionField descriptionField) {
         moveDescriptionFieldToHead(descriptionField,
-                getHeadingFieldsAndLabels().size());
+                getHeadingFieldsAndLabels().size() - 1);
     }
 
     public void moveDescriptionFieldToEndLine(DescriptionField descriptionField) {
         moveDescriptionFieldToLine(descriptionField, getLineFieldsAndLabels()
-                .size());
+                .size() - 1);
     }
 
     public void moveLabelToHead(
@@ -382,6 +382,7 @@ public class WorkReportType extends BaseEntity {
             updateIndexFromPosition(getLineFieldsAndLabels(), descriptionField
                     .getIndex(), -1);
         }
+
     }
 
     public void removeLabel(WorkReportLabelTypeAssigment workReportLabelTypeAssigment) {

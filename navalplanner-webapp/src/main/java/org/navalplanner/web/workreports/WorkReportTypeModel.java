@@ -220,10 +220,11 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     public void changePositionDescriptionField(
             PositionInWorkReportEnum newPosition,
             DescriptionField descriptionField) {
+        getWorkReportType().removeDescriptionField(descriptionField);
         if (newPosition.equals(PositionInWorkReportEnum.HEADING)) {
-            getWorkReportType().moveDescriptionFieldToEndHead(descriptionField);
+            getWorkReportType().addDescriptionFieldToEndHead(descriptionField);
         } else {
-            getWorkReportType().moveDescriptionFieldToEndLine(descriptionField);
+            getWorkReportType().addDescriptionFieldToEndLine(descriptionField);
         }
     }
 
@@ -275,12 +276,14 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     public void setLabelAssigmentPosition(
             WorkReportLabelTypeAssigment workReportLabelTypeAssigment,
             PositionInWorkReportEnum position) {
+        getWorkReportType().removeLabel(workReportLabelTypeAssigment);
         if (isSharedByLines(position)) {
-            getWorkReportType()
-                    .moveLabelToEndHead(workReportLabelTypeAssigment);
+            getWorkReportType().addLabelAssigmentToEndHead(
+                    workReportLabelTypeAssigment);
+
         } else {
-            getWorkReportType()
-                    .moveLabelToEndLine(workReportLabelTypeAssigment);
+            getWorkReportType().addLabelAssigmentToEndLine(
+                    workReportLabelTypeAssigment);
         }
     }
 

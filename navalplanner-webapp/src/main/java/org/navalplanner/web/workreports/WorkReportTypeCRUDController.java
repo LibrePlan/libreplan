@@ -260,8 +260,8 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
             messagesForUserSortedLabelsAndFields = new MessagesForUser(
                     containerMessageSortedLabelsAndFields);
             tabSortedLabelsAndFields = (Tab) window
-                    .getFellow("SortedLabelsAndFields");
-            tabReportStructure = (Tab) window.getFellow("ReportStructure");
+                    .getFellow("tabSortedLabelsAndFields");
+            tabReportStructure = (Tab) window.getFellow("tabReportStructure");
         }
     }
 
@@ -440,6 +440,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
             DescriptionField descriptionField) {
         PositionInWorkReportEnum newPosition = (PositionInWorkReportEnum) selectedItem
                 .getValue();
+        System.out.println("**" + newPosition.name());
         workReportTypeModel.changePositionDescriptionField(newPosition,
                 descriptionField);
     }
@@ -753,11 +754,13 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     private boolean isAllValid() {
         // validate workReportType name
         if (!name.isValid()) {
+            selectTab(tabReportStructure);
             showInvalidWorkReportTypeName();
             return false;
         }
 
         if (!code.isValid()) {
+            selectTab(tabReportStructure);
             showInvalidWorkReportTypeCode();
             return false;
         }
@@ -773,12 +776,14 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         DescriptionField descriptionField = workReportTypeModel
                 .validateFieldNameLineFields();
         if (descriptionField != null) {
+            selectTab(tabReportStructure);
             showInvalidDescriptionFieldName(descriptionField);
             return false;
         }
 
         descriptionField = workReportTypeModel.validateLengthLineFields();
         if (descriptionField != null) {
+            selectTab(tabReportStructure);
             showInvalidDescriptionFieldLength(descriptionField);
             return false;
         }
@@ -789,6 +794,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         WorkReportLabelTypeAssigment labelTypeAssigment = workReportTypeModel
                 .validateLabelTypes();
         if (labelTypeAssigment != null) {
+            selectTab(tabReportStructure);
             String errorMessage = "The label type must not null.";
             showInvalidWorkReportLabelTypeAssigment(0, errorMessage,
                     labelTypeAssigment);
@@ -798,6 +804,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         WorkReportLabelTypeAssigment labelAssigment = workReportTypeModel
                 .validateLabels();
         if (labelAssigment != null) {
+            selectTab(tabReportStructure);
             String errorMessage = "The label must not null.";
             showInvalidWorkReportLabelTypeAssigment(2, errorMessage,
                     labelAssigment);
@@ -808,6 +815,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
     private boolean validateIndexLabelsAndFields() {
         if (!workReportTypeModel.validateTheIndexFieldsAndLabels()) {
+            selectTab(tabSortedLabelsAndFields);
             showMessageSortedLabelsAndFields();
             return false;
         }
@@ -818,7 +826,6 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         try {
             workReportTypeModel.validateWorkReportTypeName(name.getValue());
         } catch (IllegalArgumentException e) {
-            selectTab(tabReportStructure);
             throw new WrongValueException(name, _(e.getMessage()));
         }
     }
@@ -827,14 +834,12 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         try {
             workReportTypeModel.validateWorkReportTypeCode(code.getValue());
         } catch (IllegalArgumentException e) {
-            selectTab(tabReportStructure);
             throw new WrongValueException(code, _(e.getMessage()));
         }
     }
 
     private void showInvalidDescriptionFieldName(DescriptionField field) {
-        selectTab(tabReportStructure);
-            // Find which row contains the description field inside grid
+        // Find which row contains the description field inside grid
         Row row = findRowByValue(listDescriptionFields.getRows(), field);
             Textbox fieldName = (Textbox) row.getFirstChild();
         throw new WrongValueException(fieldName,
@@ -842,7 +847,6 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     }
 
     private void showInvalidDescriptionFieldLength(DescriptionField field) {
-        selectTab(tabReportStructure);
         // Find which row contains the description field inside grid
         Row row = findRowByValue(listDescriptionFields.getRows(), field);
         Intbox fieldName = (Intbox) row.getChildren().get(1);
@@ -851,9 +855,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     }
 
     private void showInvalidWorkReportLabelTypeAssigment(int combo,
-            String message,
-            WorkReportLabelTypeAssigment labelType) {
-        selectTab(tabReportStructure);
+            String message, WorkReportLabelTypeAssigment labelType) {
         Row row = findRowByValue(listWorkReportLabelTypeAssigments.getRows(),
                 labelType);
         Combobox comboLabelType = (Combobox) row.getChildren().get(combo);
@@ -970,7 +972,6 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     }
 
     private void showMessageSortedLabelsAndFields() {
-        selectTab(tabSortedLabelsAndFields);
         reloadOrderedListFieldsAndLabels();
         if (messagesForUserSortedLabelsAndFields != null) {
             messagesForUserSortedLabelsAndFields
