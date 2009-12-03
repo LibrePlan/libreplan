@@ -36,7 +36,7 @@ import org.zkoss.ganttz.util.ConstraintViolationNotificator;
  * It also specifies the type of the relationship. <br/>
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Dependency {
+public class Dependency implements IDependency<Task> {
 
     private enum Calculation {
         START {
@@ -143,14 +143,17 @@ public class Dependency {
                 .append(this.type, other.type).isEquals();
     }
 
+    @Override
     public Task getSource() {
         return source;
     }
 
+    @Override
     public Task getDestination() {
         return destination;
     }
 
+    @Override
     public DependencyType getType() {
         return type;
     }

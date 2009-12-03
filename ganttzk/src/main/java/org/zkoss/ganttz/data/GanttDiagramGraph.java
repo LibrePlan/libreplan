@@ -336,12 +336,26 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         List<Task> tasks = new ArrayList<Task>();
 
         for (Task task : graph.vertexSet()) {
-            if (graph.outDegreeOf(task) == 0) {
+            int dependencies = graph.outDegreeOf(task);
+            if ((dependencies == 0)
+                    || (dependencies == getNumberOfDependenciesByType(task,
+                            DependencyType.START_START))) {
                 tasks.add(task);
             }
         }
 
         return tasks;
+    }
+
+    private int getNumberOfDependenciesByType(Task task,
+            DependencyType dependencyType) {
+        int count = 0;
+        for (Dependency dependency : graph.outgoingEdgesOf(task)) {
+            if (dependency.getType().equals(dependencyType)) {
+                count++;
+            }
+        }
+        return count;
     }
 
 }

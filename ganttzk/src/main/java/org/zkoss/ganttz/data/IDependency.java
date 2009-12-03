@@ -18,34 +18,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.zkoss.ganttz.data.criticalpath;
-
-import java.util.List;
-import java.util.Set;
-
-import org.zkoss.ganttz.data.Dependency;
-import org.zkoss.ganttz.data.IDependency;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
-import org.zkoss.ganttz.data.Task;
+package org.zkoss.ganttz.data;
 
 /**
- * Basic needed methods to calculate the critical path method over a graph of
- * {@link Task} joined by {@link Dependency}.
+ * Contract for {@link Dependency}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ICriticalPathCalculable<T extends ITaskFundamentalProperties> {
+public interface IDependency<T extends ITaskFundamentalProperties> {
 
-    List<T> getTopLevelTasks();
+    T getSource();
 
-    List<T> getBottomLevelTasks();
+    T getDestination();
 
-    Set<T> getIncomingTasksFor(T task);
-
-    Set<T> getOutgoingTasksFor(T task);
-
-    IDependency<T> getDependencyFrom(T from, T to);
-
-    List<T> getTasks();
+    DependencyType getType();
 
 }

@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 
 /**
@@ -84,18 +84,19 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
         T currentTask = currentNode.getTask();
         int earliestStart = currentNode.getEarliestStart();
         int earliestFinish = currentNode.getEarliestFinish();
-        int duration = currentNode.getDuration();
 
         Set<T> nextTasks = currentNode.getNextTasks();
         if (nextTasks.isEmpty()) {
             eop.setEarliestStart(earliestFinish);
         } else {
+            int countStartStart = 0;
+
             for (T task : nextTasks) {
                 Node<T> node = nodes.get(task);
 
                 DependencyType dependencyType = DependencyType.END_START;
                 if (currentTask != null) {
-                    Dependency dependency = graph.getDependencyFrom(
+                    IDependency<T> dependency = graph.getDependencyFrom(
                             currentTask, task);
                     if (dependency != null) {
                         dependencyType = dependency.getType();
@@ -105,9 +106,10 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
                 switch (dependencyType) {
                 case START_START:
                     node.setEarliestStart(earliestStart);
+                    countStartStart++;
                     break;
                 case END_END:
-                    node.setEarliestStart(earliestFinish - duration);
+                    node.setEarliestStart(earliestFinish - node.getDuration());
                     break;
                 case END_START:
                 default:
@@ -117,6 +119,10 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
 
                 forward(node);
             }
+
+            if (nextTasks.size() == countStartStart) {
+                eop.setEarliestStart(earliestFinish);
+            }
         }
     }
 
@@ -124,18 +130,19 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
         T currentTask = currentNode.getTask();
         int latestStart = currentNode.getLatestStart();
         int latestFinish = currentNode.getLatestFinish();
-        int duration = currentNode.getDuration();
 
         Set<T> previousTasks = currentNode.getPreviousTasks();
         if (previousTasks.isEmpty()) {
             bop.setLatestFinish(latestStart);
         } else {
+            int countEndEnd = 0;
+
             for (T task : previousTasks) {
                 Node<T> node = nodes.get(task);
 
                 DependencyType dependencyType = DependencyType.END_START;
                 if (currentTask != null) {
-                    Dependency dependency = graph.getDependencyFrom(task,
+                    IDependency<T> dependency = graph.getDependencyFrom(task,
                             currentTask);
                     if (dependency != null) {
                         dependencyType = dependency.getType();
@@ -144,10 +151,11 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
 
                 switch (dependencyType) {
                 case START_START:
-                    node.setLatestFinish(latestStart + duration);
+                    node.setLatestFinish(latestStart + node.getDuration());
                     break;
                 case END_END:
                     node.setLatestFinish(latestFinish);
+                    countEndEnd++;
                     break;
                 case END_START:
                 default:
@@ -156,6 +164,10 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
                 }
 
                 backward(node);
+            }
+
+            if (previousTasks.size() == countEndEnd) {
+                bop.setLatestFinish(latestStart);
             }
         }
     }
