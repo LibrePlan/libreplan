@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 
@@ -34,6 +35,14 @@ import org.navalplanner.business.materials.entities.MaterialCategory;
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public interface IMaterialDAO extends IGenericDAO<Material, Long> {
+
+    /**
+     * Returns true if {@link Material} exits
+     *
+     * @param code
+     * @return
+     */
+    boolean existsMaterialWithCodeInAnotherTransaction(String code);
 
     /**
      * Searches {@link Material} by code and description (ilike matching) within
@@ -56,6 +65,14 @@ public interface IMaterialDAO extends IGenericDAO<Material, Long> {
      */
     List<Material> findMaterialsInCategoryAndSubCategories(String text,
             MaterialCategory materialCategory);
+
+    /**
+     * Returns {@link Material} by code
+     *
+     * @param code
+     * @return
+     */
+    Material findUniqueByCodeInAnotherTransaction(String code) throws InstanceNotFoundException;
 
     List<Material> getAll();
 

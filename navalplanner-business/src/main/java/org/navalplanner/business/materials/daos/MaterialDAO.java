@@ -27,11 +27,14 @@ import java.util.Set;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO for {@link Material}
@@ -87,6 +90,42 @@ public class MaterialDAO extends GenericDAOHibernate<Material, Long> implements
             criteria.add(Restrictions.in("category", categories));
         }
         return criteria.list();
+    }
+
+    @Override
+    @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsMaterialWithCodeInAnotherTransaction(String code) {
+        try {
+            findUniqueByCode(code);
+            return true;
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    private Material findUniqueByCode(String code)
+            throws InstanceNotFoundException {
+        Criteria criteria = getSession().createCriteria(Material.class);
+        criteria.add(Restrictions.eq("code", code).ignoreCase());
+
+        List<Material> list = criteria.list();
+        if (list.size() != 1) {
+            throw new InstanceNotFoundException(code, Material.class.getName());
+        }
+        return list.get(0);
+    }
+
+    @Override
+    public Material findUniqueByCodeInAnotherTransaction(String code)
+            throws InstanceNotFoundException  {
+        Criteria criteria = getSession().createCriteria(Material.class);
+        criteria.add(Restrictions.eq("code", code).ignoreCase());
+
+        List<Material> list = criteria.list();
+        if (list.size() != 1) {
+            throw new InstanceNotFoundException(code, Material.class.getName());
+        }
+        return list.get(0);
     }
 
 }

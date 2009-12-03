@@ -22,6 +22,7 @@ package org.navalplanner.business.common;
 
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -37,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public class Registry {
 
@@ -60,6 +62,9 @@ public class Registry {
 
     @Autowired
     private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
+
+    @Autowired
+    private IMaterialDAO materialDAO;
 
     private Registry() {
     }
@@ -92,4 +97,7 @@ public class Registry {
         return getInstance().typeOfWorkHoursDAO;
     }
 
+    public static IMaterialDAO getMaterialDAO() {
+        return getInstance().materialDAO;
+    }
 }

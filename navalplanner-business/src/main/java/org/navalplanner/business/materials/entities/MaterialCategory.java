@@ -104,16 +104,16 @@ public class MaterialCategory extends BaseEntity {
         materials.remove(material);
     }
 
-    @AssertTrue(message="material code must be unique within a category")
-    public boolean checkConstraintNonRepeatedMaterialCodes() {
-        Set<String> materialCodes = new HashSet<String>();
-        for (Material each: materials) {
-            final String code = each.getCode();
-            if (materialCodes.contains(code)) {
-                return false;
-            }
-            materialCodes.add(code);
-        }
-        return true;
-    }
+//    @AssertTrue(message="material code must be unique within a category")
+//    public boolean checkConstraintNonRepeatedMaterialCodes() {
+//        Set<String> materialCodes = new HashSet<String>();
+//        for (Material each: materials) {
+//            final String code = each.getCode();
+//            if (materialCodes.contains(code)) {
+//                return false;
+//            }
+//            materialCodes.add(code);
+//        }
+//        return true;
+//    }
 }

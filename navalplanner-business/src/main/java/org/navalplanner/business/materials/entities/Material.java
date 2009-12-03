@@ -22,9 +22,13 @@ package org.navalplanner.business.materials.entities;
 
 import java.math.BigDecimal;
 
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.materials.daos.IMaterialDAO;
 
 /**
  * Material entity
@@ -114,6 +118,33 @@ public class Material extends BaseEntity implements Comparable {
     public int compareTo(Object arg0) {
       final Material material = (Material) arg0;
       return code.compareTo(material.getCode());
+    }
+
+    @AssertTrue(message="machine code has to be unique. It is already used")
+    public boolean checkConstraintUniqueCode() {
+        boolean result;
+        if (isNewObject()) {
+            result = !existsMaterialWithTheCode();
+        } else {
+            result = isIfExistsTheExistentMaterialThisOne();
+        }
+        return result;
+    }
+
+    private boolean existsMaterialWithTheCode() {
+        IMaterialDAO materialDAO = Registry.getMaterialDAO();
+        return materialDAO.existsMaterialWithCodeInAnotherTransaction(code);
+    }
+
+    private boolean isIfExistsTheExistentMaterialThisOne() {
+        IMaterialDAO materialDAO = Registry.getMaterialDAO();
+        try {
+            Material material =
+                materialDAO.findUniqueByCodeInAnotherTransaction(code);
+            return material.getId().equals(getId());
+        } catch (InstanceNotFoundException e) {
+            return true;
+        }
     }
 
 }
