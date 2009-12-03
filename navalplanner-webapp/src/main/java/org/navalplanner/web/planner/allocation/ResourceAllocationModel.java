@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -103,14 +104,20 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void addDefaultAllocations() {
+    public ProportionalDistributor addDefaultAllocations() {
         reassociateResourcesWithSession();
-        for (AggregatedHoursGroup each : task.getAggregatedByCriterions()) {
+        List<AggregatedHoursGroup> hoursGroups = task
+                .getAggregatedByCriterions();
+        int hours[] = new int[hoursGroups.size()];
+        int i = 0;
+        for (AggregatedHoursGroup each : hoursGroups) {
+            hours[i++] = each.getHours();
             List<Resource> resourcesFound = resourceDAO
                     .findAllSatisfyingCriterions(each.getCriterions());
             allocationRowsHandler.addGeneric(each.getCriterions(),
                     reloadResources(resourcesFound));
         }
+        return ProportionalDistributor.create(hours);
     }
 
     @Override

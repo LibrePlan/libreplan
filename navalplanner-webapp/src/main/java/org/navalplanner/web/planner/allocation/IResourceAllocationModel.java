@@ -22,6 +22,7 @@ package org.navalplanner.web.planner.allocation;
 
 import java.util.List;
 
+import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.web.planner.order.PlanningState;
@@ -67,6 +68,6 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
     <T> T onAllocationContext(
             IResourceAllocationContext<T> resourceAllocationContext);
 
-    void addDefaultAllocations();
+    ProportionalDistributor addDefaultAllocations();
 
 }
