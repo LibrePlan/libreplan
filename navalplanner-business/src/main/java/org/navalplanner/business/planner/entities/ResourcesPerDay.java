@@ -24,8 +24,56 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.ProportionalDistributor;
 
 public class ResourcesPerDay {
+
+    public static class ResourcesPerDayDistributor {
+
+        private final ProportionalDistributor distributor;
+
+        private ResourcesPerDayDistributor(ProportionalDistributor distributor) {
+            this.distributor = distributor;
+        }
+
+        public ResourcesPerDay[] distribute(ResourcesPerDay total) {
+            int[] shares = distributor.distribute(toIntFormat(total));
+            ResourcesPerDay[] result = new ResourcesPerDay[shares.length];
+            for (int i = 0; i < result.length; i++) {
+                result[i] = backToResourcePerDay(shares[i]);
+            }
+            return result;
+        }
+
+    }
+
+    public static ResourcesPerDayDistributor distributor(
+            ResourcesPerDay... resourcesPerDay) {
+        ProportionalDistributor distributor = ProportionalDistributor
+                .create(asInts(resourcesPerDay));
+        return new ResourcesPerDayDistributor(distributor);
+    }
+
+    public static ResourcesPerDayDistributor distributor(
+            ProportionalDistributor distributor) {
+        return new ResourcesPerDayDistributor(distributor);
+    }
+
+    private static int[] asInts(ResourcesPerDay[] resourcesPerDay) {
+        int[] result = new int[resourcesPerDay.length];
+        for (int i = 0; i < resourcesPerDay.length; i++) {
+            result[i] = toIntFormat(resourcesPerDay[i]);
+        }
+        return result;
+    }
+
+    private static int toIntFormat(ResourcesPerDay each) {
+        return each.amount.unscaledValue().intValue();
+    }
+
+    private static ResourcesPerDay backToResourcePerDay(int integerFormat) {
+        return amount(new BigDecimal(integerFormat).movePointLeft(2));
+    }
 
     public static ResourcesPerDay calculateFrom(int hoursWorking, int workableHours) {
         return amount(new BigDecimal(hoursWorking).divide(new BigDecimal(
@@ -83,6 +131,5 @@ public class ResourcesPerDay {
     public String toString() {
         return amount.toString();
     }
-
 
 }

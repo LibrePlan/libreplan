@@ -33,6 +33,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.planner.entities.ResourcesPerDay.ResourcesPerDayDistributor;
 
 public class ResourcesPerDayTest {
 
@@ -71,7 +72,7 @@ public class ResourcesPerDayTest {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("must have an integer part of"
+                description.appendText("must have an integer part of "
                         + integerPart + " and ");
                 description.appendText("must have " + decimalPart
                         + " as decimal part");
@@ -161,6 +162,29 @@ public class ResourcesPerDayTest {
             ResourcesPerDay first = (ResourcesPerDay) pair[0];
             Matcher<ResourcesPerDay> matcher = (Matcher<ResourcesPerDay>) pair[1];
             assertThat(first, matcher);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void canDistributeResourcesPerDay() {
+        ResourcesPerDayDistributor distributor = ResourcesPerDay.distributor(
+                ResourcesPerDay.amount(new BigDecimal(0.8)), ResourcesPerDay
+                        .amount(new BigDecimal(0.2)));
+        Object[][] examples = {
+                { ResourcesPerDay.amount(10),
+                    readsAs(8, 0), readsAs(2, 0) },
+                { ResourcesPerDay.amount(1),
+                    readsAs(0, 80), readsAs(0, 20) },
+                { ResourcesPerDay.amount(new BigDecimal(0.5)),
+                    readsAs(0, 40),readsAs(0, 10) } };
+        for (Object[] eachExample : examples) {
+            ResourcesPerDay toDistribute = (ResourcesPerDay) eachExample[0];
+            Matcher<ResourcesPerDay> firstMatcher = (Matcher<ResourcesPerDay>) eachExample[1];
+            Matcher<ResourcesPerDay> secondMatcher = (Matcher<ResourcesPerDay>) eachExample[2];
+            ResourcesPerDay[] distribute = distributor.distribute(toDistribute);
+            assertThat(distribute[0], firstMatcher);
+            assertThat(distribute[1], secondMatcher);
         }
     }
 
