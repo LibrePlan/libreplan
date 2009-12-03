@@ -118,6 +118,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Tab tbResourceAllocation;
 
+    private Tab workerSearchTab;
+
     public static void registerNeededScripts() {
         getScriptsRegister()
                 .register(ScriptsRequiredByAdvancedAllocation.class);
@@ -187,6 +189,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         formBinder.setApplyButton(applyButton);
         formBinder.setAllocationsList(allocationsList);
         formBinder.setMessagesForUser(messagesForUser);
+        formBinder.setWorkerSearchTab(workerSearchTab);
         formBinder.setCheckbox(recommendedAllocationCheckbox);
         CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                 .from(formBinder.getCalculatedValue());

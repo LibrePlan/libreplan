@@ -55,6 +55,7 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.impl.api.InputElement;
 
 class FormBinder {
@@ -114,6 +115,10 @@ class FormBinder {
             }
         }
     };
+
+    private boolean recommendedAllocation = false;
+
+    private Tab workerSearchTab;
 
     public FormBinder(
             AllocationRowsHandler allocationRowsHandler,
@@ -390,6 +395,9 @@ class FormBinder {
 
     public void setCheckbox(Checkbox recommendedAllocation) {
         this.recommendedAllocationCheckbox = recommendedAllocation;
+        this.recommendedAllocationCheckbox
+                .setChecked(this.recommendedAllocation);
+        disableIfNeededWorkerSearchTab();
         recommendedCheckboxListener = new EventListener() {
 
             @Override
@@ -409,10 +417,22 @@ class FormBinder {
     private void activatingRecommendedAllocation() {
         allocationRowsHandler.removeAll();
         resourceAllocationModel.addDefaultAllocations();
+        this.recommendedAllocation = true;
+        disableIfNeededWorkerSearchTab();
         Util.reloadBindings(allocationsList);
     }
 
     private void deactivatingRecommendedAllocation() {
+        this.recommendedAllocation = false;
+        disableIfNeededWorkerSearchTab();
+    }
+
+    private void disableIfNeededWorkerSearchTab() {
+        workerSearchTab.setDisabled(this.recommendedAllocation);
+    }
+
+    public void setWorkerSearchTab(Tab workerSearchTab) {
+        this.workerSearchTab = workerSearchTab;
     }
 
 }
