@@ -29,24 +29,42 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
 
-    <window id="configurationWindow" self="@{define(content)}"
-        apply="org.navalplanner.web.common.ConfigurationController">
+<window id="configurationWindow" self="@{define(content)}"
+    apply="org.navalplanner.web.common.ConfigurationController"
+    title="${i18n:_('Configuration')}">
+    <tabbox>
+        <tabs>
+            <tab label="${i18n:_('Main preferences')}" />
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Default calendar')}" />
+                            <bandboxSearch
+                                id="defaultCalendarBandboxSearch"
+                                finder="BaseCalendarBandboxFinder"
+                                model="@{configurationController.calendars}"
+                                selectedElement="@{configurationController.defaultCalendar}" />
+                        </row>
+                    </rows>
+                </grid>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+    <hbox>
+        <button label="${i18n:_('Save')}" sclass="save-button global-action"
+            onClick="configurationController.save()" />
+        <button label="${i18n:_('Cancel')}"
+            sclass="cancel-button global-action"
+            onClick="configurationController.cancel()" />
+    </hbox>
 
-        <hbox>
-            <label value="${i18n:_('Defautl calendar')}" />
-            <bandboxSearch id="defaultCalendarBandboxSearch"
-                finder="BaseCalendarBandboxFinder"
-                model="@{configurationController.calendars}"
-                selectedElement="@{configurationController.defaultCalendar}" />
-        </hbox>
-
-        <hbox>
-            <button label="${i18n:_('Save')}"
-                onClick="configurationController.save()" />
-            <button label="${i18n:_('Cancel')}"
-                onClick="configurationController.cancel()" />
-        </hbox>
-
-    </window>
+</window>
 
 </zk>
