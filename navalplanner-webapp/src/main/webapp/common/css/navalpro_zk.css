@@ -855,8 +855,7 @@ span.z-dottree-ico, span.z-dottree-line {
     display:none;
 }
 
-
-.main-area .z-center-body {
+.main-area > .z-center-body:first-child {
     height: auto !important;
     width: auto !important;
 }
