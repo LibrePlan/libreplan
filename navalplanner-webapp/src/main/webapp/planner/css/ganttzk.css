@@ -99,6 +99,10 @@ min-width:200px;
     overflow:visible;
 }
 
+.listdetails .taskdetail_grid {
+    height: 23px;
+}
+
 .taskdetail_grid table {
     height: 30px;
     width: 285px; /* Ganntz.ListdetailsWidth */
@@ -635,6 +639,15 @@ div.z-tree {
     top:-18px;
 }
 
+
+.listdetails .z-tree-header {
+    margin-bottom:17px;
+}
+
+.listdetails .z-tree-header table {
+    display:none;
+}
+
 .plannerlayout div.z-tree, .plannerlayout div.z-grid,
 .resourcesload div.z-tree, .resourcesload div.z-grid {
     border: 0;
@@ -686,3 +699,4 @@ div.z-tree {
     background-image:
         url("/navalplanner-webapp/zkau/web/ganttz/img/deadline2.png");
 }
+
