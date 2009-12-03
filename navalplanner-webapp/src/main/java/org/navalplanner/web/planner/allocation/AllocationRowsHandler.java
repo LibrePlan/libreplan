@@ -132,7 +132,7 @@ public class AllocationRowsHandler {
     }
 
     public void checkInvalidValues() {
-        if (formBinder.getCalculatedValue() != CalculatedValue.NUMBER_OF_HOURS
+        if (calculatedValue != CalculatedValue.NUMBER_OF_HOURS
                 && formBinder.getAssignedHours() <= 0) {
             formBinder.markAssignedHoursMustBePositive();
         }
