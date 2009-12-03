@@ -61,11 +61,11 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
     }
 
     private InitialNode<T> createBeginningOfProjectNode() {
-        return new InitialNode<T>(new HashSet<T>(graph.getTopLevelTasks()));
+        return new InitialNode<T>(new HashSet<T>(graph.getInitialTasks()));
     }
 
     private LastNode<T> createEndOfProjectNode() {
-        return new LastNode<T>(new HashSet<T>(graph.getBottomLevelTasks()));
+        return new LastNode<T>(new HashSet<T>(graph.getLatestTasks()));
     }
 
     private Map<T, Node<T>> createGraphNodes() {

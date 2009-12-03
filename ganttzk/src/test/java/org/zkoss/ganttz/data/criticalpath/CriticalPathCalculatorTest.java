@@ -95,9 +95,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(listOfTasks)
+        expect(diagramGraphExample.getInitialTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks())
+        expect(diagramGraphExample.getLatestTasks())
                 .andReturn(listOfTasks).anyTimes();
         expect(
                 diagramGraphExample.getDependencyFrom(
@@ -133,9 +133,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(listOfTasks)
+        expect(diagramGraphExample.getInitialTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks())
+        expect(diagramGraphExample.getLatestTasks())
                 .andReturn(listOfTasks).anyTimes();
         expect(
                 diagramGraphExample.getDependencyFrom(
@@ -173,9 +173,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
                 Arrays.asList(task1)).anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks()).andReturn(
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
                 Arrays.asList(subtask1)).anyTimes();
         expect(
                 diagramGraphExample.getDependencyFrom(
@@ -220,9 +220,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
                 Arrays.asList(task1, task2)).anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks()).andReturn(
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
                 Arrays.asList(subtask1, subtask2)).anyTimes();
         expect(
                 diagramGraphExample.getDependencyFrom(
@@ -277,9 +277,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
                 Arrays.asList(task1, independentTask)).anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks()).andReturn(
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
                 Arrays.asList(task2, independentTask)).anyTimes();
         expect(
                 diagramGraphExample.getDependencyFrom(
@@ -326,9 +326,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
                 Arrays.asList(task)).anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks()).andReturn(
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
                 Arrays.asList(subtask1, subtask2)).anyTimes();
         expect(
                 diagramGraphExample.getDependencyFrom(
@@ -376,9 +376,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
                 Arrays.asList(task1, task2)).anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks()).andReturn(
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
                 Arrays.asList(subtask1)).anyTimes();
         expect(
                 diagramGraphExample.getDependencyFrom(
@@ -430,9 +430,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
                 Arrays.asList(task)).anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks()).andReturn(
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
                 Arrays.asList(finalTask)).anyTimes();
         expect(
                 diagramGraphExample.getDependencyFrom(
@@ -492,9 +492,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
                 Arrays.asList(task1, task2)).anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks()).andReturn(
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
                 Arrays.asList(finalTask1, finalTask2)).anyTimes();
         expect(
                 diagramGraphExample.getDependencyFrom(
@@ -567,9 +567,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
                 Arrays.asList(task4, task6)).anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks()).andReturn(
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
                 Arrays.asList(task10, modifiableTask)).anyTimes();
         expect(
                 diagramGraphExample.getDependencyFrom(
@@ -644,9 +644,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
                 Arrays.asList(task1)).anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks()).andReturn(
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
                 Arrays.asList(task1, task2)).anyTimes();
 
         IDependency<ITaskFundamentalProperties> dependency = createDependency(
@@ -689,9 +689,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
                 Arrays.asList(task1)).anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks()).andReturn(
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
                 Arrays.asList(subtask1, task2)).anyTimes();
 
         IDependency<ITaskFundamentalProperties> dependency = createDependency(
@@ -741,9 +741,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
                 Arrays.asList(task1, task2)).anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks()).andReturn(
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
                 Arrays.asList(subtask1, subtask2)).anyTimes();
 
         IDependency<ITaskFundamentalProperties> dependency = createDependency(
@@ -804,9 +804,9 @@ public class CriticalPathCalculatorTest {
 
         expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
                 .anyTimes();
-        expect(diagramGraphExample.getTopLevelTasks()).andReturn(
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
                 Arrays.asList(task1)).anyTimes();
-        expect(diagramGraphExample.getBottomLevelTasks()).andReturn(
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
                 Arrays.asList(subtask1, subtask2, subtask3)).anyTimes();
 
         IDependency<ITaskFundamentalProperties> dependency = createDependency(

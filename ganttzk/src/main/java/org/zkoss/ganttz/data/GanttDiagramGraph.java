@@ -292,7 +292,6 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         return result;
     }
 
-    @Override
     public List<Task> getTopLevelTasks() {
         return Collections.unmodifiableList(topLevelTasks);
     }
@@ -302,6 +301,22 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
                 .get(task);
         parentShrinkingEnforcer.registerListeners();
         parentShrinkingEnforcer.enforce();
+    }
+
+    @Override
+    public List<Task> getInitialTasks() {
+        List<Task> tasks = new ArrayList<Task>();
+
+        for (Task task : graph.vertexSet()) {
+            int dependencies = graph.inDegreeOf(task);
+            if ((dependencies == 0)
+                    || (dependencies == getNumberOfDependenciesByType(task,
+                            DependencyType.END_END))) {
+                tasks.add(task);
+            }
+        }
+
+        return tasks;
     }
 
     @Override
@@ -332,7 +347,7 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
     }
 
     @Override
-    public List<Task> getBottomLevelTasks() {
+    public List<Task> getLatestTasks() {
         List<Task> tasks = new ArrayList<Task>();
 
         for (Task task : graph.vertexSet()) {

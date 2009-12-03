@@ -36,9 +36,9 @@ import org.zkoss.ganttz.data.Task;
  */
 public interface ICriticalPathCalculable<T extends ITaskFundamentalProperties> {
 
-    List<T> getTopLevelTasks();
+    List<T> getInitialTasks();
 
-    List<T> getBottomLevelTasks();
+    List<T> getLatestTasks();
 
     Set<T> getIncomingTasksFor(T task);
 
