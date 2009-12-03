@@ -68,5 +68,5 @@
         </rows>
     </grid>
     <button id="show_create_form" label="${i18n:_('Create')}"
-         onClick="controller.goToCreateForm()" />
+         onClick="controller.goToCreateForm()" sclass="create-button global-action" />
 </window>
