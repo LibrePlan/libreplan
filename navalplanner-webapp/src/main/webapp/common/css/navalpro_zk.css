@@ -361,6 +361,7 @@ div.z-errbox {
 
 .z-window-embedded {
     margin: 10px;
+    margin-top: 5px;
 }
 
 
@@ -443,16 +444,19 @@ div.z-errbox {
     background-image: none;
 }
 
-.z-window-popup-header,.z-window-highlighted-header,.z-window-overlapped-header,.z-window-embedded-header
-    {
+.z-window-popup-header,.z-window-highlighted-header,
+.z-window-overlapped-header,.z-window-embedded-header {
     background-color: #FFFFFF;
-    color: #48AB48;
-    font-family: Tahoma, Arial, Helvetica, sans-serif;
-    font-size: 20px;
-    padding-bottom: 20px;
+    color: #0081C3;
+    font-family: Georgia, Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    padding-bottom: 10px;
     font-weight: normal;
+    background-image: url(../img/header_bullet.gif);
+    background-repeat: no-repeat;
+    padding-left: 22px;
+    background-position: 0px 3px;
 }
-
 
 .z-tabs-scroll .z-tabs-cnt {
     background: #FAFDFE none repeat scroll 0 0;
