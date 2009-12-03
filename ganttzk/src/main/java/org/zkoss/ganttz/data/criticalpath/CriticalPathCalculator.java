@@ -21,15 +21,20 @@
 package org.zkoss.ganttz.data.criticalpath;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.constraint.Constraint;
+import org.zkoss.ganttz.data.constraint.DateConstraint;
 
 /**
  * Class that calculates the critical path of a Gantt diagram graph.
@@ -40,6 +45,8 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
 
     private ICriticalPathCalculable<T> graph;
 
+    private LocalDate initDate;
+
     private Map<T, Node<T>> nodes;
 
     private InitialNode<T> bop;
@@ -47,6 +54,9 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
 
     public List<T> calculateCriticalPath(ICriticalPathCalculable<T> graph) {
         this.graph = graph;
+
+        initDate = calculateInitDate();
+
         bop = createBeginningOfProjectNode();
         eop = createEndOfProjectNode();
 
@@ -58,6 +68,22 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
         backward(eop);
 
         return getTasksOnCriticalPath();
+    }
+
+    private LocalDate calculateInitDate() {
+        List<T> initialTasks = graph.getInitialTasks();
+        if (initialTasks.isEmpty()) {
+            return null;
+        }
+
+        Date result = initialTasks.get(0).getBeginDate();
+        for (T task : initialTasks) {
+            Date date = task.getBeginDate();
+            if (date.compareTo(result) < 0) {
+                result = date;
+            }
+        }
+        return new LocalDate(result);
     }
 
     private InitialNode<T> createBeginningOfProjectNode() {
@@ -80,6 +106,16 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
         return result;
     }
 
+    private DependencyType getDependencyTypeEndStartByDefault(T from, T to) {
+        if ((from != null) && (to != null)) {
+            IDependency<T> dependency = graph.getDependencyFrom(from, to);
+            if (dependency != null) {
+                return dependency.getType();
+            }
+        }
+        return DependencyType.END_START;
+    }
+
     private void forward(Node<T> currentNode) {
         T currentTask = currentNode.getTask();
         int earliestStart = currentNode.getEarliestStart();
@@ -93,27 +129,22 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
 
             for (T task : nextTasks) {
                 Node<T> node = nodes.get(task);
-
-                DependencyType dependencyType = DependencyType.END_START;
-                if (currentTask != null) {
-                    IDependency<T> dependency = graph.getDependencyFrom(
-                            currentTask, task);
-                    if (dependency != null) {
-                        dependencyType = dependency.getType();
-                    }
-                }
+                DependencyType dependencyType = getDependencyTypeEndStartByDefault(
+                        currentTask, task);
+                DateConstraint constraint = getDateConstraint(task);
 
                 switch (dependencyType) {
                 case START_START:
-                    node.setEarliestStart(earliestStart);
+                    setEarliestStart(node, earliestStart, constraint);
                     countStartStart++;
                     break;
                 case END_END:
-                    node.setEarliestStart(earliestFinish - node.getDuration());
+                    setEarliestStart(node, earliestFinish - node.getDuration(),
+                            constraint);
                     break;
                 case END_START:
                 default:
-                    node.setEarliestStart(earliestFinish);
+                    setEarliestStart(node, earliestFinish, constraint);
                     break;
                 }
 
@@ -124,6 +155,36 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
                 eop.setEarliestStart(earliestFinish);
             }
         }
+    }
+
+    private void setEarliestStart(Node<T> node, int earliestStart,
+            DateConstraint constraint) {
+        if (constraint != null) {
+            Date date = initDate.plusDays(earliestStart)
+                    .toDateTimeAtStartOfDay().toDate();
+            date = constraint.applyTo(date);
+            earliestStart = Days.daysBetween(initDate, new LocalDate(date))
+                    .getDays();
+        }
+        node.setEarliestStart(earliestStart);
+    }
+
+    private DateConstraint getDateConstraint(T task) {
+        if (task == null) {
+            return null;
+        }
+
+        List<Constraint<Date>> constraints = task.getStartConstraints();
+        if (constraints == null) {
+            return null;
+        }
+
+        for (Constraint<Date> constraint : constraints) {
+            if (constraint instanceof DateConstraint) {
+                return (DateConstraint) constraint;
+            }
+        }
+        return null;
     }
 
     private void backward(Node<T> currentNode) {
@@ -139,27 +200,22 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
 
             for (T task : previousTasks) {
                 Node<T> node = nodes.get(task);
-
-                DependencyType dependencyType = DependencyType.END_START;
-                if (currentTask != null) {
-                    IDependency<T> dependency = graph.getDependencyFrom(task,
-                            currentTask);
-                    if (dependency != null) {
-                        dependencyType = dependency.getType();
-                    }
-                }
+                DependencyType dependencyType = getDependencyTypeEndStartByDefault(
+                        task, currentTask);
+                DateConstraint constraint = getDateConstraint(task);
 
                 switch (dependencyType) {
                 case START_START:
-                    node.setLatestFinish(latestStart + node.getDuration());
+                    setLatestFinish(node, latestStart + node.getDuration(),
+                            constraint);
                     break;
                 case END_END:
-                    node.setLatestFinish(latestFinish);
+                    setLatestFinish(node, latestFinish, constraint);
                     countEndEnd++;
                     break;
                 case END_START:
                 default:
-                    node.setLatestFinish(latestStart);
+                    setLatestFinish(node, latestStart, constraint);
                     break;
                 }
 
@@ -170,6 +226,20 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
                 bop.setLatestFinish(latestStart);
             }
         }
+    }
+
+    private void setLatestFinish(Node<T> node, int latestFinish,
+            DateConstraint constraint) {
+        if (constraint != null) {
+            int duration = node.getDuration();
+            Date date = initDate.plusDays(latestFinish - duration)
+                    .toDateTimeAtStartOfDay().toDate();
+            date = constraint.applyTo(date);
+            latestFinish = Days.daysBetween(initDate, new LocalDate(date))
+                    .getDays()
+                    + duration;
+        }
+        node.setLatestFinish(latestFinish);
     }
 
     private List<T> getTasksOnCriticalPath() {
