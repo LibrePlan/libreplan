@@ -20,37 +20,31 @@
 
 <div id="menuContainer" xmlns:n="http://www.zkoss.org/2005/zk/native"
     use="org.navalplanner.web.common.CustomMenuController">
-    <n:table border="0" cellspacing="0" cellpadding="0">
-        <n:tr>
-            <n:td forEach="${menuContainer.customMenuItems}">
 
-                <n:a if="${!(each.disabled)}" href="${each.url}"
-                    class="menuup${(each.activeParent?'_activa':'')}">${i18n:_(each.name)}</n:a>
-                <n:span if="${(each.disabled)}" class="menuup_desactivado">${i18n:_(each.name)}
-                </n:span>
-            </n:td>
-        </n:tr>
-    </n:table>
+    <menubar id="menubar" top="0px" left="0px"
+            ctrlKeys="^k#f2" onCtrlKey="doCtrlKey()" sclass="mainmenu">
+
+                <menu forEach="${menuContainer.customMenuItems}" label="${i18n:_(each.name)}">
+                <menupopup>
+                    <menuitem forEach="${each.children}" label="${i18n:_(each.name)}"
+                        href='${each.url}' />
+                </menupopup>
+            </menu>
+
+  </menubar>
+
     <n:table width="100%" height="30" border="0" cellpadding="0"
         cellspacing="0">
-        <n:tr>
-            <n:td bgcolor="#2A83B4">
-                <n:table border="0" cellspacing="0" cellpadding="0">
-                    <n:tr>
-                        <n:td width="10" />
-                        <n:td
-                            forEach="${menuContainer.customMenuSecondaryItems}">
-                            <n:a if="${!(each.disabled)}" href="${each.url}"
-                                class="sub_menu">${i18n:_(each.name)}</n:a>
-                            <n:span if="${(each.disabled)}"
-                                class="sub_menu_desactivado">${i18n:_(each.name)}</n:span>
-                            <n:td width="14"
-                                background="${menuContainer.contextPath}/common/img/sub_separacion.gif" />
-                        </n:td>
-                        <hbox id="registeredItemsInsertionPoint" />
-                    </n:tr>
-                </n:table>
-            </n:td>
+  <n:tr>
+    <n:td class="migas_linea"><n:table border="0" cellspacing="0" cellpadding="0">
+        <n:tr class="ruta">
+          <n:td width="10" height="25"></n:td>
+          <n:td><n:a href="/navalplanner-webapp/" class="ruta"><n:strong>${i18n:_('START')}</n:strong></n:a></n:td>
+          <n:td width="15"><n:div align="center"><n:img src="/navalplanner-webapp/common/img/migas_separacion.gif" /></n:div></n:td>
+          <n:td><div id="breadcrumbs"></div></n:td>
         </n:tr>
+    </n:table></n:td>
+  </n:tr>
     </n:table>
+
 </div>

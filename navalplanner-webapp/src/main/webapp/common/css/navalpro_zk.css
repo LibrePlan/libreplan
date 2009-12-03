@@ -757,3 +757,51 @@ span.z-dottree-ico, span.z-dottree-line {
     min-height:22px;
 }
 
+
+/* --- START -- menubar --
+=================================================== */
+
+.z-menubar-hor, .z-menubar-ver {
+background: none;
+/*border-bottom:1px solid #B1CBD5;
+display:block;
+padding:2px 0;
+position:relative; */
+}
+
+.z-menu-body {
+   background-color: #d4e1ef;
+   -moz-border-radius: 10px 10px 0 0; /* Enable 3px for 2D mode */
+   -moz-border-radius: 10px 10px 0 0; /* Enable 3px for 2D mode */
+}
+
+.z-menu-inner-m .z-menu-btn {
+   font-weight: bold;
+   color: #005782;
+}
+
+.z-menu-body-over .z-menu-inner-m .z-menu-btn,
+.z-menu-body-seld .z-menu-inner-m .z-menu-btn
+ {
+   color: #FFFFFF;
+}
+
+.z-menu-body-over, .z-menu-body-seld {
+    background-color: #2a83b4;
+    color: #000000;
+    font-weight: bold;
+   -moz-border-radius: 10px 10px 0 0;
+   -moz-border-radius: 10px 10px 0 0;
+}
+
+.z-menu-body-over .z-menu-inner-l,
+.z-menu-body-over .z-menu-inner-m,
+.z-menu-body-over .z-menu-inner-r {
+   background-image:none;
+}
+
+.z-menu-body-seld .z-menu-inner-l,
+.z-menu-body-seld .z-menu-inner-m,
+.z-menu-body-seld .z-menu-inner-r {
+    background-image:none;
+}
