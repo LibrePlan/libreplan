@@ -57,7 +57,7 @@
   <n:tr>
     <n:td height="400px" valign="top">
 
-    <borderlayout width="auto" class="main-layout" if="true" height="450px">
+    <borderlayout width="auto" class="main-layout" if="true" height="560px">
     <west class="perspectives-column" width="90px">
         <n:div>
         <vbox id="registeredItemsInsertionPoint" width="90px"/>

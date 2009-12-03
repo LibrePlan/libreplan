@@ -165,18 +165,25 @@ button.z-button {
 
 /* Perspective and planner buttons
 --------------------------------------------------- */
-.planner-icon .z-button-cm {
-   padding: 2px 2px;
+
+.planner-icon, .planner-command {
+   padding: 2px;
 }
 
+.planner-icon .z-button-cm {
+   padding: 2px;
+}
 .planner-icon .z-button-cm:active {
    padding: 2px 1px 1px 2px;
 }
 
-
-.planner-icon {
-   padding: 2px;
+.planner-command .z-button-cm {
+   padding: 6px 2px;
 }
+.planner-command .z-button-cm:active {
+   padding: 6px 1px 1px 6px;
+}
+
 
 .sub_menu .z-button-cm {
     background-color: transparent !important;
@@ -199,11 +206,12 @@ button.z-button {
     background-image: none;
 }
 
+/*
 .plannerlayout .z-button-tl, .plannerlayout .z-button-tm, .plannerlayout .z-button-tr,
 .plannerlayout .z-button-cl, .plannerlayout .z-button-cr,
 .plannerlayout .z-button-bl, .plannerlayout .z-button-bm, .plannerlayout .z-button-br {
     display: visible;
-}
+}*/
 
 /* Global action button styles
 --------------------------------------------------- */
@@ -887,4 +895,8 @@ span.z-dottree-ico, span.z-dottree-line {
 
 .main-area {
     overflow: auto;
+}
+
+.orderslayout-area {
+    overflow-y: auto;
 }

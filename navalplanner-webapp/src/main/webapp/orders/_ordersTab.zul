@@ -26,10 +26,37 @@
     orderController = arg.get("orderController");
 ]]>
 </zscript>
-    <window apply="${orderController}">
-        <vbox id="messagesContainer" />
-        <list top_id="listWindow" />
-        <edition top_id="editWindow" />
-        <orderElement top_id="editOrderElement" title="${i18n:_('Edit order element')}" />
-    </window>
+    <borderlayout sclass="orderslayout" width="auto" apply="${orderController}">
+       <north height="30px" border="0">
+       <hbox align="center" id="toolbar">
+        <separator/>
+        <button label="Create" tooltiptext="${i18n:_('Create new order')}" class="planner-command"/>
+        <button label="Save" tooltiptext="${i18n:_('Save order')}" class="planner-command" disabled="true"/>
+        <separator/>
+        <hbox align="center" style="margin-left:240px;">
+          <!-- Filter by label -->
+          <label>Filter order elements:</label>
+          <combobox id="cbFilterType" value="${i18n:_('Show all')}"
+                constraint="no empty:${i18n:_('cannot be null or empty')}"
+                readonly="true" >
+              <comboitem label="${i18n:_('Show all')}"
+                    description="${i18n:_('Show all order elements')}" />
+              <comboitem label="${i18n:_('Filter by Label')}"
+                    description="${i18n:_('Filter all order elements by label')}" />
+          </combobox>
+          <bandboxSearch id="bdFilter" finder="LabelBandboxFinder"/>
+          <button label="${i18n:_('Filter')}" class="planner-command"/>
+          </hbox>
+       </hbox>
+       </north>
+
+        <center border="0" class="orderslayout-area">
+        <div>
+            <vbox id="messagesContainer" />
+            <list top_id="listWindow" />
+            <edition top_id="editWindow" />
+            <orderElement top_id="editOrderElement" title="${i18n:_('Edit order element')}" />
+            </div>
+        </center>
+        </borderlayout>
 </zk>

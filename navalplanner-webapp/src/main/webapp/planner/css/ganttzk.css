@@ -545,6 +545,10 @@ div.z-tree {
 .plannerlayout, .resourcesloadlayout, .advancedallocationlayout {
     height:550px;
 }
+.orderslayout {
+    height:550px;
+}
+
 
 .task_tooltip {
     display:none;
