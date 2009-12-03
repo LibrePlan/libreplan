@@ -33,7 +33,7 @@
         <n:img src="/navalplanner-webapp/common/img/logo1.gif" width="180" height="45" /></n:a></n:td>
   <n:td valign="top"><n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
     <n:tr>
-      <n:td><n:table width="98%"  border="0" cellspacing="0" cellpadding="0">
+      <n:td><n:table width="98%"  border="0" cellspacing="0" cellpadding="0" style="float:right;">
         <n:tr>
           <n:td height="20" align="right"><n:table border="0" cellspacing="0" cellpadding="0">
             <n:tr>

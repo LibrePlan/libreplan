@@ -4,6 +4,7 @@ body {
     margin-right: 0px;
     margin-left: 0px;
 }
+
 .menuup {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     text-decoration: none;
@@ -19,6 +20,7 @@ body {
     background-position: -4px 0px;
     padding-bottom: 5px;
 }
+
 a.menuup:hover {
     background-image: url(../img/pestana_sobre.gif);
 }
@@ -48,6 +50,7 @@ a.menuup:hover {
     padding-right: 3px;
     padding-left: 3px;
 }
+
 a.sub_menu:hover {
     color: #FFFFFF;
     text-decoration: underline;
@@ -96,6 +99,7 @@ a.sub_menu:hover {
     background-repeat: no-repeat;
     background-position: -4px 0px;
 }
+
 .usuario {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
@@ -103,6 +107,7 @@ a.sub_menu:hover {
     text-align: right;
     padding-right: 15px;
 }
+
 .cerrar_sesion {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
@@ -112,12 +117,14 @@ a.sub_menu:hover {
     color: #009900;
     display: block;
 }
+
 .ruta {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
     color: #3B89B7;
     text-decoration: none;
 }
+
 .ruta span {
     font-weight:bold;
 }
@@ -127,6 +134,7 @@ a.sub_menu:hover {
     background-position: right top;
     background-repeat: no-repeat;
 }
+
 .migas_linea {
     border-top-width: 1px;
     border-bottom-width: 1px;
@@ -138,4 +146,8 @@ a.sub_menu:hover {
 
 .ruta div {
     padding-bottom:3px;
+}
+
+.mainmenu {
+    margin-top:10px;
 }
