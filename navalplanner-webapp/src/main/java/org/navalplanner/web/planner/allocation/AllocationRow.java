@@ -37,6 +37,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.SimpleConstraint;
@@ -250,6 +251,12 @@ public abstract class AllocationRow {
     public void applyDisabledRules(CalculatedValue calculatedValue) {
         hoursInput
                 .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY);
+        if (!hoursInput.isDisabled()) {
+            hoursInput.setConstraint(new SimpleConstraint(
+                    SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE));
+        } else {
+            hoursInput.setConstraint((Constraint) null);
+        }
         resourcesPerDayInput
                 .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY);
     }
