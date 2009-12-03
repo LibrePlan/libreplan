@@ -22,7 +22,7 @@
     use="org.navalplanner.web.common.CustomMenuController">
 
     <menubar id="menubar" top="0px" left="0px"
-            ctrlKeys="^k#f2" onCtrlKey="doCtrlKey()" sclass="mainmenu">
+            ctrlKeys="^k#f2" onCtrlKey="doCtrlKey()" sclass="mainmenu" autodrop="true">
 
                 <menu forEach="${menuContainer.customMenuItems}" label="${i18n:_(each.name)}">
                 <menupopup>

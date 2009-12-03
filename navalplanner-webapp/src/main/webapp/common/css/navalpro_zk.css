@@ -772,11 +772,11 @@ position:relative; */
 .z-menu-body {
    background-color: #d4e1ef;
    -moz-border-radius: 10px 10px 0 0; /* Enable 3px for 2D mode */
-   -moz-border-radius: 10px 10px 0 0; /* Enable 3px for 2D mode */
+   -webkit-border-radius: 10px 10px 0 0; /* Enable 3px for 2D mode */
 }
 
 .z-menu-inner-m .z-menu-btn {
-   font-weight: bold;
+   font-weight: normal;
    color: #005782;
 }
 
@@ -789,7 +789,7 @@ position:relative; */
 .z-menu-body-over, .z-menu-body-seld {
     background-color: #2a83b4;
     color: #000000;
-    font-weight: bold;
+    font-weight: normal;
    -moz-border-radius: 10px 10px 0 0;
    -moz-border-radius: 10px 10px 0 0;
 }
@@ -807,6 +807,19 @@ position:relative; */
 }
 
 
+.z-menu-body .z-menu-inner-m div {
+    background-image:none;
+}
+
+.z-menubar-hor {
+    border-bottom: 3px solid #2a83b4;
+    padding: 0px;
+}
+
 .user_row .cerrar_sesion {
     display:inline;
+}
+
+.migas_linea {
+    border-top: 0px;
 }
