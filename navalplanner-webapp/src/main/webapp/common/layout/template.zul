@@ -28,9 +28,9 @@
 <n:div xmlns:n="http://www.zkoss.org/2005/zk/native">
 <n:table width="100%" border="0" cellpadding="0" cellspacing="0">
   <n:tr>
-    <n:td width="200" valign="bottom">
+    <n:td width="180" valign="center">
         <n:a href="/navalplanner-webapp/">
-        <n:img src="/navalplanner-webapp/common/img/logo2.gif" width="200" height="59" /></n:a></n:td>
+        <n:img src="/navalplanner-webapp/common/img/logo1.gif" width="180" height="45" /></n:a></n:td>
   <n:td valign="top"><n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
     <n:tr>
       <n:td><n:table width="98%"  border="0" cellspacing="0" cellpadding="0">
