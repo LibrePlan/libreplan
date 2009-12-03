@@ -17,18 +17,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: /home/igalia/workspace/navalplanner/scripts/../ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:104
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:104
 msgid "100%"
 msgstr ""
 
-#: /home/igalia/workspace/navalplanner/scripts/../ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:99
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:99
 msgid "0% - 100%"
 msgstr ""
 
-#: /home/igalia/workspace/navalplanner/scripts/../ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:94
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:94
 msgid "Assignation percentage"
 msgstr "Porcentaxe asignado"
 
-#: /home/igalia/workspace/navalplanner/scripts/../ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:109
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:109
 msgid "+ 100%"
 msgstr ""

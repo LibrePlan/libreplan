@@ -206,11 +206,21 @@ sub parse_ZUL()
 
             if ($msgid ne "") {
                 $msgid = "\"$msgid\"";
-                &addEntry($msgid, $filename.":".$numline);
+                &addEntry($msgid, &to_relative_path($filename).":".$numline);
             }
         }
         $numline++;
     }
+}
+
+sub to_relative_path()
+{
+    my($filename) = @_;
+
+    if ($filename =~ /(.*?)\/(ganttzk|navalplanner-webapp|navalplanner-business)\/(.*)/) {
+        return "./$2/$3";
+    }
+    return $filename;
 }
 
 sub addEntry()
