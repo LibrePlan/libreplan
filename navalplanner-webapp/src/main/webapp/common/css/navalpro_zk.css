@@ -39,7 +39,7 @@ table {
 .z-button-tl, .z-button-tm, .z-button-tr,
 .z-button-cl, .z-button-cr,
 .z-button-bl, .z-button-bm, .z-button-br {
-    display: auto;
+    display: none;
 }
 
 /* Hide icon borders */
@@ -105,34 +105,47 @@ body .z-window-modal .icono .z-button-cm {
     background-image:url("../img/btn-corner.gif");
 }
 
+/*  #E4F3D9; /* green0 (normal background) */
+/*  #C3EAAF; /* green1 (hover background)  */
+/*  #A1D586; /* green2 (active background) */
+/*  #58A758; /* green3 (text color)        */
+/*  #87bd32; /* green4 (border color)      */
+/*  #3F5917; /* green5 (top left shade)    */
+
 .z-window-embedded .z-button-cm,
 .z-window-modal .z-button-cm {
-    background-color: #E6EFC2;
-    color: green;
+    background-color: #E4F3D9; /* green0 (normal background) */
+    color: #58A758; /* green3 (text) */
+    border: 1px solid #439e32; /* green4 (border) */
     background-image: none;
-    border: 0; /* 1px solid #006700; Enable borders in 2D appearance */
     padding: 2px 18px;
-    -moz-border-radius: 0; /* Enable 3px for 2D mode */
-    -webkit-border-radius: 0; /* Enable 3px for 2D mode */
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
 }
 
 .z-window-embedded .z-button-cm:hover,
 .z-window-modal .z-button-cm:hover {
-    background-color: #58A758;
-    color: #FFFFFF;
+    background-color: #C3EAAF; /* green1 (hover background) */
     background-image: none;
-    border: 0; /* 1px solid #58A758, #006700; Enable borders in 2D appearance */
     padding: 2px 18px;
-    -moz-border-radius: 0px; /* Enable for 2D mode */
-    -webkit-border-radius: 0px; /* Enable for 2D mode */
 }
 
 .z-window-embedded .z-button-cm:active,
 .z-window-modal .z-button-cm:active {
-    background-color: #349626;
-    color: #FFFFFF;
-    border: 0; /* 1px solid #58A758; Enable borders in 2D appearance */
-    padding: 3px 16px 1px 20px;
+    background-color: #A1D586; /* green2 (active background)*/
+    padding: 2px 17px 1px 18px;
+    border-top: 2px solid #3f5917;
+    border-right: 1px solid #439e32;
+    border-bottom: 1px solid #439e32;
+    border-left: 2px solid #3f5917;
+}
+
+
+.z-window-embedded .z-button.z-button-disd .z-button-cm,
+.z-window-modal .z-button.z-button-disd .z-button-cm {
+    background-color: #EAEAEA;
+    color: #A0A0A0;
+    border-color: #A0A0A0;
 }
 
 
@@ -181,86 +194,53 @@ button.z-button {
 }
 
 .global-action.z-button .z-button-cm {
-    border: 0;
-    -moz-border-radius: 0px;
-    -webkit-border-radius: 0px;
+    padding: 4px 25px;
+    background-position: 5px;
+}
+
+.global-action.z-button .z-button-cm:active {
+    padding: 4px 21px 3px 28px;
+    background-position: 7px 4px;
 }
 
 .save-button.z-button .z-button-cm {
-        background-color: #F5F5F5;
         background-image: url(../img/bt_ok.png);
-        color: #58A758;
-        padding: 2px 22px;
         background-repeat: no-repeat;
-        background-position: 3px 2px;
 }
 
 .save-button.z-button .z-button-cm:active {
         background-image: url(../img/bt_ok.png);
-        color: #58A758;
-        padding: 3px 20px 1px 24px;
         background-repeat: no-repeat;
-        background-position: 5px 3px;
 }
 
 .create-button.z-button .z-button-cm {
-        background-color: #F5F5F5;
         background-image: url(../img/bt_create.png);
-        color: #58A758;
-        padding: 2px 22px;
         background-repeat: no-repeat;
-        background-position: 3px 2px;
 }
 
 .create-button.z-button .z-button-cm:active {
         background-image: url(../img/bt_create.png);
-        color: #58A758;
-        padding: 3px 20px 1px 24px;
         background-repeat: no-repeat;
-        background-position: 5px 3px;
 }
 
-.saveandcontinue-button.z-button {
-        background-color: #F5F5F5;
+.saveandcontinue-button.z-button .z-button-cm {
         background-image: url(../img/bt_ok_continue.png);
-        color: #58A758;
-        padding: 2px 22px;
         background-repeat: no-repeat;
-        background-position: 3px 2px;
 }
 
 .saveandcontinue-button.z-button .z-button-cm:active {
         background-image: url(../img/bt_ok_continue.png);
-        color: #58A758;
-        padding: 3px 20px 1px 24px;
-        text-decoration: none;
         background-repeat: no-repeat;
-        background-position: 5px 3px;
 }
 
 .cancel-button.z-button .z-button-cm {
-        background-color: #F5F5F5;
         background-image: url(../img/bt_cancel.png);
-        color: #58A758;
-        padding: 2px 22px;
-        text-decoration: none;
         background-repeat: no-repeat;
-        background-position: 3px 2px;
 }
 
-.cancel-button.z-button .z-button-cm:active {
-        background-image: url(../img/bt_cancel.png);
-        border: 0;
-        color: #58A758;
-        padding: 3px 20px 1px 24px;
-        text-decoration: none;
-        background-repeat: no-repeat;
-        background-position: 5px 3px;
-}
 
 /* --- END -- Button styles --
 =================================================== */
-
 
 .vertical_separator {
     width: 14px;
@@ -274,8 +254,6 @@ button.z-button {
     margin: 20px;
     font-size: 12px;
 }
-
-
 
 /* ------------- order element tree  -------------  */
 .orderTree input {
