@@ -105,50 +105,6 @@ body .z-window-modal .icono .z-button-cm {
     background-image:url("../img/btn-corner.gif");
 }
 
-/*  #E4F3D9; /* green0 (normal background) */
-/*  #C3EAAF; /* green1 (hover background)  */
-/*  #A1D586; /* green2 (active background) */
-/*  #58A758; /* green3 (text color)        */
-/*  #87bd32; /* green4 (border color)      */
-/*  #3F5917; /* green5 (top left shade)    */
-
-.z-window-embedded .z-button-cm,
-.z-window-modal .z-button-cm {
-    background-color: #E4F3D9; /* green0 (normal background) */
-    color: #58A758; /* green3 (text) */
-    border: 1px solid #439e32; /* green4 (border) */
-    background-image: none;
-    padding: 2px 18px;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-}
-
-.z-window-embedded .z-button-cm:hover,
-.z-window-modal .z-button-cm:hover {
-    background-color: #C3EAAF; /* green1 (hover background) */
-    background-image: none;
-    padding: 2px 18px;
-}
-
-.z-window-embedded .z-button-cm:active,
-.z-window-modal .z-button-cm:active {
-    background-color: #A1D586; /* green2 (active background)*/
-    padding: 2px 17px 1px 18px;
-    border-top: 2px solid #3f5917;
-    border-right: 1px solid #439e32;
-    border-bottom: 1px solid #439e32;
-    border-left: 2px solid #3f5917;
-}
-
-
-.z-window-embedded .z-button.z-button-disd .z-button-cm,
-.z-window-modal .z-button.z-button-disd .z-button-cm {
-    background-color: #EAEAEA;
-    color: #A0A0A0;
-    border-color: #A0A0A0;
-}
-
-
 table.z-button {
     table-layout: auto;
 }
@@ -158,8 +114,70 @@ button.z-button {
     top: -5px;
 }
 
-/* Perspective buttons
+/* Disable grey degradation */
+.z-button .z-button-cm {
+    background-image: none;
+}
+
+/*  #E4F3D9; /* green0 (normal background) */
+/*  #C3EAAF; /* green1 (hover background)  */
+/*  #A1D586; /* green2 (active background) */
+/*  #58A758; /* green3 (text color)        */
+/*  #87bd32; /* green4 (border color)      */
+/*  #3F5917; /* green5 (top left shade)    */
+
+.z-button-cm {
+    background-color: #E4F3D9; /* green0 (normal background) */
+    color: #58A758; /* green3 (text) */
+    border: 1px solid #439e32; /* green4 (border) */
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+.z-button-cm:hover {
+    background-color: #C3EAAF; /* green1 (hover background) */
+    background-image: none;
+}
+
+.z-button-cm:active {
+    background-color: #A1D586; /* green2 (active background)*/
+    border-right: 1px solid #439e32;
+    border-bottom: 1px solid #439e32;
+    border-top: 2px solid #3f5917;
+    border-left: 2px solid #3f5917;
+}
+
+.z-button.z-button-disd .z-button-cm {
+    background-color: #EAEAEA;
+    color: #A0A0A0;
+    border-color: #A0A0A0;
+}
+
+.z-window-embedded .z-button-cm,
+.z-window-modal .z-button-cm {
+    padding: 2px 18px;
+}
+
+.z-window-embedded .z-button-cm:active,
+.z-window-modal .z-button-cm:active {
+    padding: 2px 17px 1px 18px;
+}
+
+/* Perspective and planner buttons
 --------------------------------------------------- */
+.planner-icon .z-button-cm {
+   padding: 2px 2px;
+}
+
+.planner-icon .z-button-cm:active {
+   padding: 2px 1px 1px 2px;
+}
+
+
+.planner-icon {
+   padding: 2px;
+}
+
 .sub_menu .z-button-cm {
     background-color: transparent !important;
     border: 0px;
@@ -843,6 +861,13 @@ span.z-dottree-ico, span.z-dottree-line {
     -webkit-border-radius: 10px;
     background-image: none;
     background-color: #2a83b4;
+    color: #FFFFFF;
+    border-top: 2px solid #3f5917;
+    border-left: 2px solid #3f5917;
+}
+
+.perspective .z-button-cm:hover {
+    background-color: #399bd4;
     color: #FFFFFF;
 }
 
