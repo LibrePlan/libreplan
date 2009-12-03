@@ -805,3 +805,8 @@ position:relative; */
 .z-menu-body-seld .z-menu-inner-r {
     background-image:none;
 }
+
+
+.user_row .cerrar_sesion {
+    display:inline;
+}

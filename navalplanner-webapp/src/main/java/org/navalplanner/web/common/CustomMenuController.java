@@ -203,7 +203,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     private Hbox getRegisteredItemsInsertionPoint() {
-        return (Hbox) getFellow("registeredItemsInsertionPoint");
+        return (Hbox) getPage().getFellow("registeredItemsInsertionPoint");
     }
 
     public List<CustomMenuItem> getCustomMenuItems() {

@@ -4,6 +4,15 @@ planner = self;
 ]]>
 </zscript>
 
+    <borderlayout width="auto" height="500px">
+    <west width="90px">
+        <n:div>
+         Registered items insertion point
+        <hbox id="registered_ItemsInsertionPoint" style="background-color:#2A83B4" />
+        </n:div>
+    </west>
+    <center>
+
     <borderlayout sclass="plannerlayout" width="auto">
        <north height="30px" border="0">
        <hbox align="center" id="toolbar">
@@ -68,5 +77,7 @@ planner = self;
             sclass="scheduling-graphics">
             <div id="insertionPointChart" />
         </south>
+    </borderlayout>
+    </center>
     </borderlayout>
 </zk>
