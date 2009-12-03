@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +36,7 @@ import java.util.WeakHashMap;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.zkoss.ganttz.data.constraint.Constraint;
+import org.zkoss.ganttz.data.criticalpath.ICriticalPathCalculable;
 
 /**
  * This class contains a graph with the {@link Task tasks} as vertexes and the
@@ -42,7 +44,7 @@ import org.zkoss.ganttz.data.constraint.Constraint;
  * dependencies and in the duration of the tasks using listeners. <br/>
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class GanttDiagramGraph {
+public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
 
     private final DirectedGraph<Task, Dependency> graph = new SimpleDirectedGraph<Task, Dependency>(
             Dependency.class);
@@ -274,6 +276,7 @@ public class GanttDiagramGraph {
         return rulesEnforcersByTask.get(destination);
     }
 
+    @Override
     public List<Task> getTasks() {
         return new ArrayList<Task>(graph.vertexSet());
     }
@@ -289,6 +292,7 @@ public class GanttDiagramGraph {
         return result;
     }
 
+    @Override
     public List<Task> getTopLevelTasks() {
         return Collections.unmodifiableList(topLevelTasks);
     }
@@ -300,8 +304,44 @@ public class GanttDiagramGraph {
         parentShrinkingEnforcer.enforce();
     }
 
+    @Override
     public Dependency getDependencyFrom(Task from, Task to) {
         return graph.getEdge(from, to);
+    }
+
+    @Override
+    public Set<Task> getOutgoingTasksFor(Task task) {
+        Set<Task> tasks = new HashSet<Task>();
+
+        for (Dependency dependency : graph.outgoingEdgesOf(task)) {
+            tasks.add(dependency.getDestination());
+        }
+
+        return tasks;
+    }
+
+    @Override
+    public Set<Task> getIncomingTasksFor(Task task) {
+        Set<Task> tasks = new HashSet<Task>();
+
+        for (Dependency dependency : graph.incomingEdgesOf(task)) {
+            tasks.add(dependency.getSource());
+        }
+
+        return tasks;
+    }
+
+    @Override
+    public List<Task> getBottomLevelTasks() {
+        List<Task> tasks = new ArrayList<Task>();
+
+        for (Task task : graph.vertexSet()) {
+            if (graph.outDegreeOf(task) == 0) {
+                tasks.add(task);
+            }
+        }
+
+        return tasks;
     }
 
 }
