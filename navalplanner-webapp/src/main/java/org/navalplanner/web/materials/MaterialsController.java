@@ -80,6 +80,8 @@ public class MaterialsController extends
 
     private Textbox txtCategory;
 
+    private Button btnAddMaterial;
+
     private IMessagesForUser messagesForUser;
 
     private Component messagesContainer;
@@ -268,7 +270,7 @@ public class MaterialsController extends
 
     public void addMaterialToMaterialCategory(Treeitem treeitem) {
         if (treeitem == null) {
-            return;
+            throw new WrongValueException(btnAddMaterial, _("Cannot insert material in general view. Please, select a category"));
         }
         final MaterialCategory materialCategory = (MaterialCategory) treeitem.getValue();
         materialsModel.addMaterialToMaterialCategory(materialCategory);
