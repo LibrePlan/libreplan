@@ -905,6 +905,10 @@ span.z-dottree-ico, span.z-dottree-line {
     overflow-y: auto;
 }
 
+.orderelements-tab {
+    overflow-x: auto;
+}
+
 tr.z-tree-row-seld, tr.z-list-item-seld {
     background-color: #2a83b4;
     color: #FFFFFF;
