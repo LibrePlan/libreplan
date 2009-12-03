@@ -29,11 +29,15 @@
     </http>
 
     <authentication-provider user-service-ref="defaultUserDetailsService">
+        <!--
         <password-encoder hash="md5">
+        -->
             <!-- NOTE: see IPasswordEncoderService's JavaDoc for restrictions
                  on "user-property". -->
+        <!--
             <salt-source user-property="username"/>
         </password-encoder>
+        -->
     </authentication-provider>
 
 </beans:beans>
