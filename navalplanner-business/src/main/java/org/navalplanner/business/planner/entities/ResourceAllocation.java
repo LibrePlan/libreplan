@@ -365,22 +365,48 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return new AllocateHoursOnInterval(start, end);
         }
 
+        @Override
+        public IAllocateHoursOnInterval fromStartUntil(final LocalDate end) {
+            return new IAllocateHoursOnInterval() {
+
+                @Override
+                public void allocateHours(int hours) {
+                    allocate(end, hours);
+                }
+            };
+        }
+
+        private void allocate(LocalDate end, int hours) {
+            LocalDate startInclusive = new LocalDate(getTask().getStartDate());
+            List<T> assignmentsCreated = createAssignments(startInclusive, end,
+                    hours);
+            resetAssignmentsTo(assignmentsCreated);
+            setResourcesPerDay(calculateResourcesPerDayFromAssignments());
+        }
+
         private void allocate(LocalDate startInclusive, LocalDate endExclusive,
                 int hours) {
+            List<T> assignmentsCreated = createAssignments(startInclusive,
+                    endExclusive, hours);
+            removingAssignments(getAssignments(startInclusive, endExclusive));
+            addingAssignments(assignmentsCreated);
+            setResourcesPerDay(calculateResourcesPerDayFromAssignments());
+        }
+
+        private List<T> createAssignments(LocalDate startInclusive,
+                LocalDate endExclusive, int hours) {
             Validate.isTrue(hours >= 0);
             List<T> assignmentsCreated = new ArrayList<T>();
             if (hours > 0) {
                 List<LocalDate> days = getDays(startInclusive, endExclusive);
                 int[] hoursEachDay = hoursDistribution(days, hours);
                 int i = 0;
-                for (LocalDate day : getDays(startInclusive, endExclusive)) {
+                for (LocalDate day : days) {
                     assignmentsCreated.addAll(distributeForDay(day,
                             hoursEachDay[i++]));
                 }
             }
-            removingAssignments(getAssignments(startInclusive, endExclusive));
-            addingAssignments(assignmentsCreated);
-            setResourcesPerDay(calculateResourcesPerDayFromAssignments());
+            return assignmentsCreated;
         }
 
         private int[] hoursDistribution(List<LocalDate> days, int hoursToSum) {

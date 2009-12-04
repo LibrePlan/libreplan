@@ -32,4 +32,6 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
 
     public IAllocateHoursOnInterval onInterval(LocalDate start, LocalDate end);
 
+    public IAllocateHoursOnInterval fromStartUntil(LocalDate endExclusive);
+
 }

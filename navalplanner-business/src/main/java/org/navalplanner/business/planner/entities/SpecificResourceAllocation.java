@@ -127,6 +127,11 @@ public class SpecificResourceAllocation extends
         return new SpecificAssignmentsAllocation().until(endExclusive);
     }
 
+    @Override
+    public IAllocateHoursOnInterval fromStartUntil(LocalDate endExclusive) {
+        return new SpecificAssignmentsAllocation().fromStartUntil(endExclusive);
+    }
+
     private final class SpecificAssignmentsAllocation extends
             AssignmentsAllocation {
         @Override
