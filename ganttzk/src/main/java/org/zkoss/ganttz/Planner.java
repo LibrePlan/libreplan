@@ -31,6 +31,7 @@ import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
@@ -294,12 +295,22 @@ public class Planner extends HtmlMacroComponent  {
         return ganttPanel.getTimeTracker();
     }
 
+    private IGraphChangeListener showCriticalPathOnChange = new IGraphChangeListener() {
+
+        @Override
+        public void execute() {
+            context.showCriticalPath();
+        }
+    };
+
     public void showCriticalPath() {
         if (disabilityConfiguration.isCriticalPathEnabled()) {
             if (isShowingCriticalPath) {
                 context.hideCriticalPath();
+                diagramGraph.removePostGraphChangeListener(showCriticalPathOnChange);
             } else {
                 context.showCriticalPath();
+                diagramGraph.addPostGraphChangeListener(showCriticalPathOnChange);
             }
             isShowingCriticalPath = !isShowingCriticalPath;
         }
