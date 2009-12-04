@@ -38,6 +38,7 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
+import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
@@ -60,6 +61,9 @@ public class CostCategoryDAOTest {
 
     @Autowired
     ICostCategoryDAO costCategoryDAO;
+
+    @Autowired
+    ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
     @Test
     public void testInSpringContainer() {
@@ -156,6 +160,10 @@ public class CostCategoryDAOTest {
                 UUID.randomUUID().toString());
         TypeOfWorkHours type2 = TypeOfWorkHours.create(UUID.randomUUID().toString(),
                 UUID.randomUUID().toString());
+        //types have to be saved before using them
+        //otherwise, the overlapping validation will fail
+        typeOfWorkHoursDAO.save(type1);
+        typeOfWorkHoursDAO.save(type2);
 
         HourCost hourCost1 = HourCost.create(BigDecimal.ONE, new LocalDate(2009, 11,1));
         hourCost1.setType(type1);
