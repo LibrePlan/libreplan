@@ -40,4 +40,9 @@ public interface ITypeOfWorkHoursDAO extends IGenericDAO<TypeOfWorkHours, Long> 
     boolean existsByCode(TypeOfWorkHours typeOfWorkHours);
 
     List<TypeOfWorkHours> findActive();
+
+    boolean existsTypeWithCodeInAnotherTransaction(String code);
+
+    TypeOfWorkHours findUniqueByCodeInAnotherTransaction(String code)
+            throws InstanceNotFoundException;
 }

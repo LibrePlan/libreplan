@@ -32,6 +32,8 @@ import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
@@ -80,5 +82,23 @@ public class TypeOfWorkHoursDAO extends GenericDAOHibernate<TypeOfWorkHours, Lon
         } catch (InstanceNotFoundException e) {
             return false;
         }
+    }
+
+    @Override
+    @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsTypeWithCodeInAnotherTransaction(String code) {
+        try {
+            findUniqueByCode(code);
+            return true;
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
+    public TypeOfWorkHours findUniqueByCodeInAnotherTransaction(String code)
+            throws InstanceNotFoundException {
+        return findUniqueByCode(code);
     }
 }
