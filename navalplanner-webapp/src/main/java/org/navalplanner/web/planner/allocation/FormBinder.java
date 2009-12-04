@@ -194,6 +194,7 @@ class FormBinder {
         allocationRowsHandler.setCalculatedValue(calculatedValue);
         applyDisabledRules();
         loadValueForEndDate();
+        sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
         applyButton.setDisabled(false);
     }
 
@@ -291,9 +292,9 @@ class FormBinder {
     }
 
     private void allResourcesPerDayVisibilityRule() {
-        this.allResourcesPerDay.setVisible(allocationRowsHandler
-                .getCalculatedValue() != CalculatedValue.RESOURCES_PER_DAY
-                && recommendedAllocation);
+        this.allResourcesPerDay.setVisible(recommendedAllocation);
+        this.allResourcesPerDay.setDisabled(allocationRowsHandler
+                .getCalculatedValue() == CalculatedValue.RESOURCES_PER_DAY);
     }
 
     public List<AllocationRow> getCurrentRows() {
@@ -304,6 +305,7 @@ class FormBinder {
         bindTotalHoursToHoursInputs();
         return result;
     }
+
 
     private List<AllocationRow> addListeners(List<AllocationRow> list) {
         for (AllocationRow each : list) {
@@ -322,6 +324,8 @@ class FormBinder {
                     }
                 });
         aggregate = lastAllocation.getAggregate();
+        allResourcesPerDayVisibilityRule();
+        sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
         reloadValues();
     }
 
@@ -478,6 +482,7 @@ class FormBinder {
                 allHoursInputChange);
         allResourcesPerDay.addEventListener(Events.ON_CHANGE,
                 allResourcesPerDayChange);
+        sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
         Util.reloadBindings(allocationsList);
     }
 
@@ -512,6 +517,20 @@ class FormBinder {
 
     public void setWorkerSearchTab(Tab workerSearchTab) {
         this.workerSearchTab = workerSearchTab;
+    }
+
+    private void sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay() {
+        if (allResourcesPerDay.isDisabled() && allResourcesPerDay.isVisible()) {
+            allResourcesPerDay.setValue(sumResourcesPerDayFromInputs());
+        }
+    }
+
+    private BigDecimal sumResourcesPerDayFromInputs() {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (AllocationRow each : rows) {
+            sum = sum.add(each.getResourcesPerDayFromInput().getAmount());
+        }
+        return sum;
     }
 
 }

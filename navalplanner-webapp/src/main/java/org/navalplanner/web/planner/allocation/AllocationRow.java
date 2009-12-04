@@ -213,6 +213,12 @@ public abstract class AllocationRow {
         return this.resourcesPerDay;
     }
 
+    public ResourcesPerDay getResourcesPerDayFromInput() {
+        BigDecimal value = resourcesPerDayInput.getValue();
+        value = value != null ? value : BigDecimal.ZERO;
+        return ResourcesPerDay.amount(value);
+    }
+
     public void setResourcesPerDay(ResourcesPerDay resourcesPerDay) {
         this.resourcesPerDay = resourcesPerDay;
         resourcesPerDayInput.setValue(this.resourcesPerDay.getAmount());
