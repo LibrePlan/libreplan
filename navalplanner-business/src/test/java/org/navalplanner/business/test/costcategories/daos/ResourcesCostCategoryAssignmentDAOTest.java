@@ -28,12 +28,15 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
+import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -55,15 +58,27 @@ public class ResourcesCostCategoryAssignmentDAOTest {
     @Autowired
     IResourcesCostCategoryAssignmentDAO resourcesCostCategoryAssignmentDAO;
 
+    @Autowired
+    ICostCategoryDAO costCategoryDAO;
+
     @Test
     public void testInSpringContainer() {
         assertNotNull(resourcesCostCategoryAssignmentDAO);
     }
 
     private ResourcesCostCategoryAssignment createValidResourcesCostCategoryAssignment() {
+        CostCategory costCategory = createValidCostCategory();
+        costCategoryDAO.save(costCategory);
+
         ResourcesCostCategoryAssignment assignment = ResourcesCostCategoryAssignment.create();
         assignment.setInitDate(new LocalDate());
+        assignment.setCostCategory(costCategory);
         return assignment;
+    }
+
+    private CostCategory createValidCostCategory() {
+        CostCategory costCategory = CostCategory.create(UUID.randomUUID().toString());
+        return costCategory;
     }
 
     @Test
@@ -88,5 +103,13 @@ public class ResourcesCostCategoryAssignmentDAOTest {
         resourcesCostCategoryAssignmentDAO.save(assignment);
         List<ResourcesCostCategoryAssignment> list = resourcesCostCategoryAssignmentDAO.list(ResourcesCostCategoryAssignment.class);
         assertEquals(previous + 1, list.size());
+    }
+
+    @Test
+    public void testNavigateRelations() {
+        ResourcesCostCategoryAssignment assignment = createValidResourcesCostCategoryAssignment();
+        resourcesCostCategoryAssignmentDAO.save(assignment);
+
+        assertTrue(costCategoryDAO.list(CostCategory.class).contains(assignment.getCostCategory()));
     }
 }

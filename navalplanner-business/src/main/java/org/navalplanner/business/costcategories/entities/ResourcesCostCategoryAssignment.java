@@ -34,6 +34,9 @@ public class ResourcesCostCategoryAssignment extends BaseEntity {
 
     private LocalDate endDate;
 
+    @NotNull
+    private CostCategory costCategory;
+
     // Default constructor, needed by Hibernate
     protected ResourcesCostCategoryAssignment() {
 
@@ -57,5 +60,13 @@ public class ResourcesCostCategoryAssignment extends BaseEntity {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public CostCategory getCostCategory() {
+        return costCategory;
+    }
+
+    public void setCostCategory(CostCategory category) {
+        this.costCategory = category;
     }
 }
