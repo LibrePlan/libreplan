@@ -99,7 +99,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         return plotInfo;
     }
 
-    protected void calculateValues(Interval interval) {
+    public void calculateValues(Interval interval) {
         // BCWS
         calculateBudgetedCostWorkScheduled(interval);
         // ACWP
@@ -123,6 +123,10 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         calculateCostPerformanceIndex();
         // SPI
         calculateSchedulePerformanceIndex();
+    }
+
+    public BigDecimal getIndicator(EarnedValueType indicator, LocalDate date) {
+        return indicators.get(indicator).get(date);
     }
 
     private void calculateCostVariance() {
