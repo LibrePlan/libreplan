@@ -174,6 +174,7 @@ public abstract class AllocationRow {
     public AllocationRow() {
         resourcesPerDay = ResourcesPerDay.amount(0);
         initializeResourcesPerDayInput();
+        hoursInput.setValue(0);
         hoursInput.setDisabled(true);
         hoursInput.setConstraint(new SimpleConstraint(
                 SimpleConstraint.NO_NEGATIVE));

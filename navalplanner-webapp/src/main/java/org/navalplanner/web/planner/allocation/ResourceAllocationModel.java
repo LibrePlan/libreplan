@@ -124,9 +124,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional(readOnly = true)
     public void addGeneric(Set<Criterion> criterions,
             Collection<? extends Resource> resourcesMatched) {
-        if (criterions.isEmpty()) {
-            return;
-        }
         reassociateResourcesWithSession();
         List<Resource> reloadResources = reloadResources(resourcesMatched);
         allocationRowsHandler.addGeneric(criterions, reloadResources);
