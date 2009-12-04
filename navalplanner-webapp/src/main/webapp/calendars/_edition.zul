@@ -18,10 +18,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${arg.title}" border="normal">
+<window id="${arg.top_id}" title="${arg.title}">
 
 
-<tabbox mold="accordion-lite">
+<tabbox>
     <tabs>
         <tab label="${i18n:_('Data')}" id="dataTab" />
         <tab label="${i18n:_('History')}"
@@ -115,17 +115,6 @@
             disabled="@{calendarController.editionController.isLastVersion}" />
     </hbox>
 
-    <hbox>
-        <button onClick="calendarController.editionController.save();"
-            label="${arg.save_button_label}"
-            visible="${arg.save_button_visible}" />
-        <button onClick="calendarController.editionController.cancel();"
-            label="${arg.cancel_button_label}" />
-        <button onClick="calendarController.editionController.createNewVersion();"
-            label="${i18n:_('Create new version')}"
-            visible="@{calendarController.editionController.isEditing}" />
-    </hbox>
-
 </vbox>
 
 </tabpanel>
@@ -148,5 +137,20 @@
 
 </tabpanels>
 </tabbox>
+
+    <hbox>
+        <button onClick="calendarController.editionController.save();"
+            label="${arg.save_button_label}"
+            sclass="save-button global-action"
+            visible="${arg.save_button_visible}" />
+        <button onClick="calendarController.editionController.cancel();"
+            label="${arg.cancel_button_label}"
+            sclass="cancel-button global-action" />
+        <button onClick="calendarController.editionController.createNewVersion();"
+            label="${i18n:_('Create new version')}"
+            visible="@{calendarController.editionController.isEditing}"
+            sclass="create-button global-action" />
+    </hbox>
+
 
 </window>

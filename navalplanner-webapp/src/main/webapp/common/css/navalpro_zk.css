@@ -264,6 +264,12 @@ button.z-button {
         background-repeat: no-repeat;
 }
 
+/* Embed tabbpanels button destyling */
+.z-tabpanel .global-action.z-button .z-button-cm {
+    background-image: none;
+    padding: 2px 18px;
+    margin-left: 5px;
+}
 
 /* --- END -- Button styles --
 =================================================== */

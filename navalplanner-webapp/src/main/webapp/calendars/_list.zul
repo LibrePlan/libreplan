@@ -20,7 +20,8 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Calendars List')}">
     <tree id="tree" model="@{calendarController.baseCalendarsTreeModel}"
-        treeitemRenderer="@{calendarController.baseCalendarsTreeitemRenderer}">
+        treeitemRenderer="@{calendarController.baseCalendarsTreeitemRenderer}"
+        zclass="z-dottree">
         <treecols sizable="true">
             <treecol label="${i18n:_('Name')}" />
             <treecol label="${i18n:_('Operations')}" />

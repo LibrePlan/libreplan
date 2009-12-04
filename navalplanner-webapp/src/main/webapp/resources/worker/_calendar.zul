@@ -24,12 +24,19 @@
 
 <div visible="@{controller.isCalendarNull}">
 
-<hbox>
-    <label value="${i18n:_('Select parent calendar')}" />
-    <combobox id="createDerivedCalendar"
-        model="@{controller.baseCalendars}"
-        itemRenderer="@{controller.baseCalendarsComboitemRenderer}" />
-</hbox>
+    <grid fixedLayout="true">
+        <columns>
+            <column width="200px" />
+            <column />
+        </columns>
+        <rows>
+            <row>
+                <label value="${i18n:_('Select parent calendar')}" />
+                <combobox id="createDerivedCalendar" model="@{controller.baseCalendars}"
+                    itemRenderer="@{controller.baseCalendarsComboitemRenderer}" />
+            </row>
+        </rows>
+    </grid>
 
 </div>
 
