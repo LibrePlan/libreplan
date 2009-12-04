@@ -26,6 +26,11 @@
         class="org.navalplanner.business.calendars.entities.ResourceCalendar"
         unique="true" />
 
+    <set name="resourcesCostCategoryAssignments" inverse="true" cascade="all-delete-orphan">
+        <key column="RESOURCE_ID"/>
+        <one-to-many class="org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment"/>
+    </set>
+
     <joined-subclass name="org.navalplanner.business.resources.entities.Worker">
       <key column="WORKER_ID"/>
       <property name="firstName"/>

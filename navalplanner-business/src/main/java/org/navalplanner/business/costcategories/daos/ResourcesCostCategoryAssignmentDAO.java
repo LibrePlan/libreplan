@@ -21,6 +21,7 @@
 package org.navalplanner.business.costcategories.daos;
 
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -34,4 +35,17 @@ import org.springframework.stereotype.Repository;
 public class ResourcesCostCategoryAssignmentDAO extends
         GenericDAOHibernate<ResourcesCostCategoryAssignment, Long> implements
         IResourcesCostCategoryAssignmentDAO {
+
+    @Override
+    public void remove(Long id) throws InstanceNotFoundException {
+        try {
+            ResourcesCostCategoryAssignment assignment = find(id);
+            assignment.getResource().removeResourcesCostCategoryAssignment(assignment);
+        }
+        catch(InstanceNotFoundException e) {
+            //it was already deleted from its parent
+            //we do nothing
+        }
+        super.remove(id);
+    }
 }

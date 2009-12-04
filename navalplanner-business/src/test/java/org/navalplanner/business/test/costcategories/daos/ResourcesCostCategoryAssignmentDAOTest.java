@@ -38,6 +38,9 @@ import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
+import org.navalplanner.business.resources.daos.IWorkerDAO;
+import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -61,6 +64,9 @@ public class ResourcesCostCategoryAssignmentDAOTest {
     @Autowired
     ICostCategoryDAO costCategoryDAO;
 
+    @Autowired
+    IWorkerDAO workerDAO;
+
     @Test
     public void testInSpringContainer() {
         assertNotNull(resourcesCostCategoryAssignmentDAO);
@@ -69,16 +75,24 @@ public class ResourcesCostCategoryAssignmentDAOTest {
     private ResourcesCostCategoryAssignment createValidResourcesCostCategoryAssignment() {
         CostCategory costCategory = createValidCostCategory();
         costCategoryDAO.save(costCategory);
+        Worker worker = createValidWorker();
+        workerDAO.save(worker);
 
         ResourcesCostCategoryAssignment assignment = ResourcesCostCategoryAssignment.create();
         assignment.setInitDate(new LocalDate());
         assignment.setCostCategory(costCategory);
+        assignment.setResource(worker);
         return assignment;
     }
 
     private CostCategory createValidCostCategory() {
         CostCategory costCategory = CostCategory.create(UUID.randomUUID().toString());
         return costCategory;
+    }
+
+    private Worker createValidWorker() {
+        return Worker.create(UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(), UUID.randomUUID().toString());
     }
 
     @Test
@@ -109,7 +123,12 @@ public class ResourcesCostCategoryAssignmentDAOTest {
     public void testNavigateRelations() {
         ResourcesCostCategoryAssignment assignment = createValidResourcesCostCategoryAssignment();
         resourcesCostCategoryAssignmentDAO.save(assignment);
+        Resource resource = assignment.getResource();
 
         assertTrue(costCategoryDAO.list(CostCategory.class).contains(assignment.getCostCategory()));
+        assertTrue(resource.getResourcesCostCategoryAssignments().contains(assignment));
+
+        assignment.setResource(null);
+        assertFalse(resource.getResourcesCostCategoryAssignments().contains(assignment));
     }
 }

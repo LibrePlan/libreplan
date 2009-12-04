@@ -23,6 +23,7 @@ package org.navalplanner.business.costcategories.entities;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
@@ -36,6 +37,9 @@ public class ResourcesCostCategoryAssignment extends BaseEntity {
 
     @NotNull
     private CostCategory costCategory;
+
+    @NotNull
+    private Resource resource;
 
     // Default constructor, needed by Hibernate
     protected ResourcesCostCategoryAssignment() {
@@ -68,5 +72,20 @@ public class ResourcesCostCategoryAssignment extends BaseEntity {
 
     public void setCostCategory(CostCategory category) {
         this.costCategory = category;
+    }
+
+    public Resource getResource() {
+        return resource;
+    }
+
+    public void setResource(Resource resource) {
+        Resource oldResource = this.resource;
+        this.resource = resource;
+        if(oldResource!=null)
+            oldResource.removeResourcesCostCategoryAssignment(this);
+        if(resource!=null &&
+                !resource.getResourcesCostCategoryAssignments().contains(this)) {
+            resource.addResourcesCostCategoryAssignment(this);
+        }
     }
 }

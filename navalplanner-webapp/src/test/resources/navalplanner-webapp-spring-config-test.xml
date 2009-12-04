@@ -66,6 +66,9 @@
                 <value>
                     org/navalplanner/business/users/entities/Users.hbm.xml
                 </value>
+                <value>
+                    org/navalplanner/business/costcategories/entities/CostCategories.hbm.xml
+                </value>
             </list>
         </property>
 

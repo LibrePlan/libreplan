@@ -40,6 +40,7 @@ import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.planner.entities.DayAssignment;
 
 // FIXME: Alternatively, Resource can be modeled with the style:
@@ -54,6 +55,7 @@ import org.navalplanner.business.planner.entities.DayAssignment;
  * This class acts as the base class for all resources.
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 public abstract class Resource extends BaseEntity{
 
@@ -64,6 +66,9 @@ public abstract class Resource extends BaseEntity{
     private Set<DayAssignment> dayAssignments = new HashSet<DayAssignment>();
 
     private Map<LocalDate, List<DayAssignment>> assignmentsByDayCached = null;
+
+    private Set<ResourcesCostCategoryAssignment> resourcesCostCategoryAssignments =
+        new HashSet<ResourcesCostCategoryAssignment>();
 
     private void clearCachedData() {
         assignmentsByDayCached = null;
@@ -727,4 +732,19 @@ public abstract class Resource extends BaseEntity{
         return compositedCriterion.isSatisfiedBy(this);
     }
 
+    public Set<ResourcesCostCategoryAssignment> getResourcesCostCategoryAssignments() {
+        return resourcesCostCategoryAssignments;
+    }
+
+    public void addResourcesCostCategoryAssignment(ResourcesCostCategoryAssignment assignment) {
+        resourcesCostCategoryAssignments.add(assignment);
+        if(assignment.getResource()!=this)
+            assignment.setResource(this);
+    }
+
+    public void removeResourcesCostCategoryAssignment(ResourcesCostCategoryAssignment assignment) {
+        resourcesCostCategoryAssignments.remove(assignment);
+        if(assignment.getResource()==this)
+            assignment.setResource(null);
+    }
 }
