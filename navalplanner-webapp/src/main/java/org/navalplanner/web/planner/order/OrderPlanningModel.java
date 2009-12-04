@@ -183,7 +183,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         Timeplot chartLoadTimeplot = new Timeplot();
         Timeplot chartEarnedValueTimeplot = new Timeplot();
-        CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller(
+        OrderEarnedValueChartFiller earnedValueChartFiller = new OrderEarnedValueChartFiller(
                 orderReloaded);
         earnedValueChartFiller.calculateValues(planner.getTimeTracker()
                 .getRealInterval());
@@ -213,7 +213,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private void appendTabpanels(Tabbox chartComponent, Timeplot loadChart,
             Timeplot chartEarnedValueTimeplot,
-            CompanyEarnedValueChartFiller earnedValueChartFiller) {
+            OrderEarnedValueChartFiller earnedValueChartFiller) {
         Tabpanels chartTabpanels = new Tabpanels();
 
         Tabpanel loadChartPannel = new Tabpanel();
@@ -233,7 +233,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private void appendIndicators(Tabpanel indicatorsChartPannel,
-            CompanyEarnedValueChartFiller earnedValueChartFiller) {
+            OrderEarnedValueChartFiller earnedValueChartFiller) {
         Vbox vbox = new Vbox();
 
         Hbox dateHbox = new Hbox();
@@ -253,7 +253,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private void appendEventListenerToDateboxIndicators(
-            final CompanyEarnedValueChartFiller earnedValueChartFiller,
+            final OrderEarnedValueChartFiller earnedValueChartFiller,
             final Vbox vbox, final Datebox datebox) {
         datebox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
@@ -271,7 +271,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private org.zkoss.zk.ui.Component getIndicatorsTable(
-            CompanyEarnedValueChartFiller earnedValueChartFiller, LocalDate date) {
+            OrderEarnedValueChartFiller earnedValueChartFiller, LocalDate date) {
         Hbox mainhbox = new Hbox();
         mainhbox.setId("indicatorsTable");
         mainhbox.setAlign("center");
@@ -814,11 +814,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     }
 
-    private class CompanyEarnedValueChartFiller extends EarnedValueChartFiller {
+    private class OrderEarnedValueChartFiller extends EarnedValueChartFiller {
 
         private Order order;
 
-        public CompanyEarnedValueChartFiller(Order orderReloaded) {
+        public OrderEarnedValueChartFiller(Order orderReloaded) {
             this.order = orderReloaded;
         }
 
