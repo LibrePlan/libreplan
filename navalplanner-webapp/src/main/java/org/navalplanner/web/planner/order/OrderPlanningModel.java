@@ -88,8 +88,10 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
@@ -172,26 +174,28 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
 
         configuration.setEditTaskCommand(buildEditTaskCommand(editTaskController));
-
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
-        // chartComponent.setHeight("200px");
         appendTabs(chartComponent);
-
-        Timeplot chartLoadTimeplot = new Timeplot();
-        Timeplot chartEarnedValueTimeplot = new Timeplot();
-        appendTabpanels(chartComponent, chartLoadTimeplot,
-                chartEarnedValueTimeplot);
 
         configuration.setChartComponent(chartComponent);
         planner.setConfiguration(configuration);
+
+        Timeplot chartLoadTimeplot = new Timeplot();
+        Timeplot chartEarnedValueTimeplot = new Timeplot();
+        CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller(
+                orderReloaded);
+        earnedValueChartFiller.calculateValues(planner.getTimeTracker()
+                .getRealInterval());
+        appendTabpanels(chartComponent, chartLoadTimeplot,
+                chartEarnedValueTimeplot, earnedValueChartFiller);
 
         Chart loadChart = setupChart(orderReloaded,
                 new OrderLoadChartFiller(orderReloaded), chartLoadTimeplot,
                 planner.getTimeTracker());
         refillLoadChartWhenNeeded(planner, saveCommand, loadChart);
         Chart earnedValueChart = setupChart(orderReloaded,
-                new CompanyEarnedValueChartFiller(orderReloaded),
+                earnedValueChartFiller,
                 chartEarnedValueTimeplot, planner.getTimeTracker());
         refillLoadChartWhenNeeded(planner, saveCommand, earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
@@ -201,13 +205,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         Tabs chartTabs = new Tabs();
         chartTabs.appendChild(new Tab(_("Load")));
         chartTabs.appendChild(new Tab(_("Earned value")));
+        chartTabs.appendChild(new Tab(_("Indicators")));
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setSclass("charts-tabbox");
     }
 
     private void appendTabpanels(Tabbox chartComponent, Timeplot loadChart,
-            Timeplot chartEarnedValueTimeplot) {
+            Timeplot chartEarnedValueTimeplot,
+            CompanyEarnedValueChartFiller earnedValueChartFiller) {
         Tabpanels chartTabpanels = new Tabpanels();
 
         Tabpanel loadChartPannel = new Tabpanel();
@@ -219,7 +225,113 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 chartEarnedValueTimeplot);
         chartTabpanels.appendChild(earnedValueChartPannel);
 
+        Tabpanel indicatorsChartPannel = new Tabpanel();
+        appendIndicators(indicatorsChartPannel, earnedValueChartFiller);
+        chartTabpanels.appendChild(indicatorsChartPannel);
+
         chartComponent.appendChild(chartTabpanels);
+    }
+
+    private void appendIndicators(Tabpanel indicatorsChartPannel,
+            CompanyEarnedValueChartFiller earnedValueChartFiller) {
+        Vbox vbox = new Vbox();
+
+        Hbox dateHbox = new Hbox();
+        dateHbox.appendChild(new Label(_("Select date:")));
+
+        LocalDate date = new LocalDate();
+        Datebox datebox = new Datebox(date.toDateTimeAtStartOfDay().toDate());
+        dateHbox.appendChild(datebox);
+
+        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox,
+                datebox);
+        vbox.appendChild(dateHbox);
+
+        vbox.appendChild(getIndicatorsTable(earnedValueChartFiller, date));
+
+        indicatorsChartPannel.appendChild(vbox);
+    }
+
+    private void appendEventListenerToDateboxIndicators(
+            final CompanyEarnedValueChartFiller earnedValueChartFiller,
+            final Vbox vbox, final Datebox datebox) {
+        datebox.addEventListener(Events.ON_CHANGE, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                LocalDate date = new LocalDate(datebox.getValue());
+                org.zkoss.zk.ui.Component child = vbox
+                        .getFellow("indicatorsTable");
+                vbox.removeChild(child);
+                vbox.appendChild(getIndicatorsTable(earnedValueChartFiller,
+                        date));
+            }
+
+        });
+    }
+
+    private org.zkoss.zk.ui.Component getIndicatorsTable(
+            CompanyEarnedValueChartFiller earnedValueChartFiller, LocalDate date) {
+        Hbox mainhbox = new Hbox();
+        mainhbox.setId("indicatorsTable");
+        mainhbox.setAlign("center");
+        mainhbox.setPack("center");
+
+        Vbox vbox = new Vbox();
+        vbox.setClass("legend");
+
+        Vbox column1 = new Vbox();
+        Vbox column2 = new Vbox();
+        Vbox column3 = new Vbox();
+        column1.setSclass("earned-indicator-column");
+        column2.setSclass("earned-indicator-column");
+        column3.setSclass("earned-indicator-column");
+
+        int columnNumber = 0;
+
+        for (EarnedValueType indicator : EarnedValueType.values()) {
+            Label indicatorLabel = new Label(indicator.getAcronym());
+            indicatorLabel.setTooltiptext(indicator.getName());
+            indicatorLabel.setStyle("color: " + indicator.getColor());
+
+            BigDecimal value = earnedValueChartFiller.getIndicator(indicator,
+                    date);
+            String units = _("h");
+            if (indicator.equals(EarnedValueType.CPI)
+                    || indicator.equals(EarnedValueType.SPI)) {
+                value = value.multiply(new BigDecimal(100));
+                units = "%";
+            }
+            Label valueLabel = new Label(value.intValue() + " " + units);
+            valueLabel.setStyle("color: " + indicator.getColor());
+
+            Hbox hbox = new Hbox();
+            hbox.appendChild(indicatorLabel);
+            hbox.appendChild(valueLabel);
+
+            columnNumber = columnNumber + 1;
+            switch (columnNumber) {
+            case 1:
+                column1.appendChild(hbox);
+                break;
+            case 2:
+                column2.appendChild(hbox);
+                break;
+            case 3:
+                column3.appendChild(hbox);
+                columnNumber = 0;
+            }
+        }
+
+        Hbox hbox = new Hbox();
+        hbox.appendChild(column1);
+        hbox.appendChild(column2);
+        hbox.appendChild(column3);
+
+        vbox.appendChild(hbox);
+        mainhbox.appendChild(vbox);
+
+        return mainhbox;
     }
 
     private void appendLoadChartAndLegend(Tabpanel loadChartPannel,
