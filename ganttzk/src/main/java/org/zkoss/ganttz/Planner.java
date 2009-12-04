@@ -44,6 +44,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.api.Button;
 
 public class Planner extends HtmlMacroComponent  {
 
@@ -64,6 +65,8 @@ public class Planner extends HtmlMacroComponent  {
     private FunctionalityExposedForExtensions<?> context;
 
     private transient IDisabilityConfiguration disabilityConfiguration;
+
+    private boolean isShowingCriticalPath = false;
 
     public Planner() {
         registerNeededScripts();
@@ -175,8 +178,9 @@ public class Planner extends HtmlMacroComponent  {
             setAt("insertionPointChart", chartComponent);
         }
 
-        if (configuration.isCriticalPathEnabled()) {
-            this.context.showCriticalPath();
+        if (!configuration.isCriticalPathEnabled()) {
+            Button showCriticalPathButton = (Button) getFellow("showCriticalPath");
+            showCriticalPathButton.setVisible(false);
         }
     }
 
@@ -288,6 +292,17 @@ public class Planner extends HtmlMacroComponent  {
 
     public TimeTracker getTimeTracker() {
         return ganttPanel.getTimeTracker();
+    }
+
+    public void showCriticalPath() {
+        if (disabilityConfiguration.isCriticalPathEnabled()) {
+            if (isShowingCriticalPath) {
+                context.hideCriticalPath();
+            } else {
+                context.showCriticalPath();
+            }
+            isShowingCriticalPath = !isShowingCriticalPath;
+        }
     }
 
 }

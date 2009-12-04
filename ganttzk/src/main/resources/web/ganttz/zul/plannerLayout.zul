@@ -28,6 +28,9 @@ planner = self;
             <comboitem label="Critical way" />
         </combobox>
         <textbox/>
+        <separator />
+        <button id="showCriticalPath" onClick="planner.showCriticalPath();"
+            label="${i18n:_('Critical path')}" />
 
        </hbox>
        </north>

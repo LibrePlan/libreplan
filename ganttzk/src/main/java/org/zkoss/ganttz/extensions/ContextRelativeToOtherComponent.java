@@ -97,4 +97,9 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
         context.showCriticalPath();
     }
 
+    @Override
+    public void hideCriticalPath() {
+        context.hideCriticalPath();
+    }
+
 }

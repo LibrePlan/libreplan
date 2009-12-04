@@ -100,4 +100,9 @@ public class ContextWithPlannerTask<T> implements IContextWithPlannerTask<T> {
         context.showCriticalPath();
     }
 
+    @Override
+    public void hideCriticalPath() {
+        context.hideCriticalPath();
+    }
+
 }

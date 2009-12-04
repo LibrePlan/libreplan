@@ -110,4 +110,9 @@ public interface IContext<T> {
      */
     void showCriticalPath();
 
+    /**
+     * Hides the critical path in the planner.
+     */
+    void hideCriticalPath();
+
 }

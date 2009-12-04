@@ -228,9 +228,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (task.isInCriticalPath()) {
-                        updateClass();
-                    }
+                    updateClass();
                 }
 
             };

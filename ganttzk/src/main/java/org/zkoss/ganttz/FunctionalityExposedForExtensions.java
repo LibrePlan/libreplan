@@ -336,8 +336,19 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     public void showCriticalPath() {
         List<Task> criticalPath = new CriticalPathCalculator<Task>()
                 .calculateCriticalPath(diagramGraph);
-        for (Task task : criticalPath) {
-            task.setInCriticalPath(true);
+        for (Task task : diagramGraph.getTasks()) {
+            if (criticalPath.contains(task)) {
+                task.setInCriticalPath(true);
+            } else {
+                task.setInCriticalPath(false);
+            }
+        }
+    }
+
+    @Override
+    public void hideCriticalPath() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setInCriticalPath(false);
         }
     }
 
