@@ -33,10 +33,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.criticalpath.ICriticalPathCalculable;
+import org.zkoss.ganttz.util.PreAndPostNotReentrantActionsWrapper;
+import org.zkoss.ganttz.util.PreAndPostNotReentrantActionsWrapper.IAction;
 
 /**
  * This class contains a graph with the {@link Task tasks} as vertexes and the
@@ -45,6 +49,12 @@ import org.zkoss.ganttz.data.criticalpath.ICriticalPathCalculable;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
+
+    private static final Log LOG = LogFactory.getLog(GanttDiagramGraph.class);
+
+    public interface IGraphChangeListener {
+        public void execute();
+    }
 
     private final DirectedGraph<Task, Dependency> graph = new SimpleDirectedGraph<Task, Dependency>(
             Dependency.class);
@@ -60,6 +70,67 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
     private final List<Constraint<Date>> globalEndConstraints;
 
     private final boolean dependenciesConstraintsHavePriority;
+
+    private final PreAndPostNotReentrantActionsWrapper preAndPostActions = new PreAndPostNotReentrantActionsWrapper() {
+
+        @Override
+        protected void postAction() {
+            executeGraphChangeListeners(new ArrayList<IGraphChangeListener>(
+                    postGraphChangeListeners));
+        }
+
+        @Override
+        protected void preAction() {
+            executeGraphChangeListeners(new ArrayList<IGraphChangeListener>(
+                    preGraphChangeListeners));
+        }
+
+        private void executeGraphChangeListeners(List<IGraphChangeListener> graphChangeListeners) {
+            for (IGraphChangeListener each : graphChangeListeners) {
+                try {
+                    each.execute();
+                } catch (Exception e) {
+                    LOG.error("error executing execution listener", e);
+                }
+            }
+        }
+    };
+
+    private List<IGraphChangeListener> preGraphChangeListeners = new ArrayList<IGraphChangeListener>();
+
+    private List<IGraphChangeListener> postGraphChangeListeners = new ArrayList<IGraphChangeListener>();
+
+    public void addPreGraphChangeListener(IGraphChangeListener preGraphChangeListener) {
+        preGraphChangeListeners.add(preGraphChangeListener);
+    }
+
+    public void removePreGraphChangeListener(IGraphChangeListener preGraphChangeListener) {
+        preGraphChangeListeners.remove(preGraphChangeListener);
+    }
+
+    public void addPostGraphChangeListener(IGraphChangeListener postGraphChangeListener) {
+        postGraphChangeListeners.add(postGraphChangeListener);
+    }
+
+    public void removePostGraphChangeListener(IGraphChangeListener postGraphChangeListener) {
+        postGraphChangeListeners.remove(postGraphChangeListener);
+    }
+
+    private PropertyChangeListener decorateWithPreAndPostActions(
+            final PropertyChangeListener listener) {
+        return new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(final PropertyChangeEvent evt) {
+                preAndPostActions.doAction(new IAction() {
+                    @Override
+                    public void doAction() {
+                        listener.propertyChange(evt);
+                    }
+                });
+            }
+        };
+    }
 
     public GanttDiagramGraph(List<Constraint<Date>> globalStartConstraints,
             List<Constraint<Date>> globalEndConstraints,
@@ -97,13 +168,13 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
                     continue;
                 }
                 subtask
-                        .addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
+                        .addFundamentalPropertiesChangeListener(decorateWithPreAndPostActions(new PropertyChangeListener() {
 
                             @Override
                             public void propertyChange(PropertyChangeEvent evt) {
                                 enforce();
                             }
-                        });
+                        }));
             }
         }
 
@@ -126,14 +197,14 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
             }
             this.task = task;
             this.task
-                    .addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
+                    .addFundamentalPropertiesChangeListener(decorateWithPreAndPostActions(new PropertyChangeListener() {
 
                         @Override
                         public void propertyChange(PropertyChangeEvent evt) {
                             DependencyRulesEnforcer.this.enforce();
                             updateOutgoing(DependencyRulesEnforcer.this.task);
                         }
-                    });
+                    }));
         }
 
         void enforce() {
@@ -185,14 +256,20 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
     }
 
     public void enforceAllRestrictions() {
-        for (DependencyRulesEnforcer rulesEnforcer : rulesEnforcersByTask
-                .values()) {
-            rulesEnforcer.enforce();
-        }
-        for (ParentShrinkingEnforcer parentShrinkingEnforcer : parentShrinkingEnforcerByTask
-                .values()) {
-            parentShrinkingEnforcer.enforce();
-        }
+        preAndPostActions.doAction(new IAction() {
+
+            @Override
+            public void doAction() {
+                for (DependencyRulesEnforcer rulesEnforcer : rulesEnforcersByTask
+                        .values()) {
+                    rulesEnforcer.enforce();
+                }
+                for (ParentShrinkingEnforcer parentShrinkingEnforcer : parentShrinkingEnforcerByTask
+                        .values()) {
+                    parentShrinkingEnforcer.enforce();
+                }
+            }
+        });
     }
 
     public void addTopLevel(Task task) {
@@ -261,11 +338,16 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         Task source = dependency.getSource();
         Task destination = dependency.getDestination();
         graph.addEdge(source, destination, dependency);
-        getEnforcer(destination).enforce();
+        enforceRestrictions(destination);
     }
 
-    public void enforceRestrictions(Task task) {
-        getEnforcer(task).enforce();
+    public void enforceRestrictions(final Task task) {
+        preAndPostActions.doAction(new IAction() {
+            @Override
+            public void doAction() {
+                getEnforcer(task).enforce();
+            }
+        });
     }
 
     public boolean contains(Dependency dependency) {
