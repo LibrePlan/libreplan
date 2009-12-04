@@ -117,7 +117,8 @@
 
         <!-- Save button -->
         <button onClick="materialsController.saveAndContinue()"
-            label="${i18n:_('Save')}" />
+            label="${i18n:_('Save')}"
+            sclass="save-button global-action"/>
 
     </window>
 

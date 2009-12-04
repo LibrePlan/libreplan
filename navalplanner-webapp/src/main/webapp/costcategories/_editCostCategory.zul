@@ -69,10 +69,10 @@
     </tabbox>
 
     <button onClick="controller.saveAndExit();"
-        label="${i18n:_('Save')}" />
+        label="${i18n:_('Save')}" sclass="save-button global-action" />
     <button onClick="controller.saveAndContinue();"
-        label="${i18n:_('Save &amp; Continue')}" />
+        label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
     <button onClick="controller.cancel();"
-        label="${i18n:_('Cancel')}" />
+        label="${i18n:_('Cancel')}" sclass="cancel-button global-action" />
 
 </window>
