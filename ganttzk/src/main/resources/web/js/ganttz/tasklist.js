@@ -94,6 +94,15 @@ function leftpanelcontainer() {
 	return YAHOO.util.Selector.query('.leftpanelcontainer')[0];
 }
 
+function timeplotcontainer_load() {
+	return YAHOO.util.Selector.query('.timeplot-canvas')[0];
+}
+
+function timeplotcontainer_earnedvalue() {
+	return YAHOO.util.Selector.query('.timeplot-canvas')[1];
+}
+
+
 zkTasklist.init = function(cmp) {
 	zkTasklist.adjust_height();
 	listenToScroll();
@@ -115,11 +124,16 @@ function listenToScroll() {
 	leftpanel_ = leftpanel();
 	rightpanellayout_ = rightpanellayout();
 	plannergraph_ = plannergraph();
+	timeplotcontainer_load_ = timeplotcontainer_load();
+	timeplotcontainer_earnedvalue_ = timeplotcontainer_earnedvalue();
 
 	var onScroll = function() {
 		timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
 		leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
 		plannergraph_.scrollLeft = scrolledpannel_.scrollLeft;
+		timeplotcontainer_load_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
+		timeplotcontainer_earnedvalue_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
+
 	};
 	rightpanellayout_.onscroll = onScroll;
 

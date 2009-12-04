@@ -23,10 +23,6 @@
 
 <vbox sclass="legend">
 
-    <hbox pack="center" sclass="legend-title">
-        <n:label class="title">${i18n:_('Chart legend')}</n:label>
-    </hbox>
-
     <hbox pack="center" sclass="legend-row">
         <n:div class="capability"/>
         <n:label>${i18n:_('Total capability')}</n:label>

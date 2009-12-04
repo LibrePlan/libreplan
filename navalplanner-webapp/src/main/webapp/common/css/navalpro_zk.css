@@ -662,8 +662,14 @@ div.z-grid {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 12px;
     border: solid 1px #000000;
-    padding: 10px 30px 10px 30px;
+    padding: 5px 10px;
     background-color: #FFFFFF;
+}
+
+.legend-container {
+    width: 226px;
+    height: 104px;
+    background-color: #E8E8E8;
 }
 
 .legend td {
@@ -714,14 +720,14 @@ div.z-grid {
 }
 
 .legend .overload-other {
-    border-top:solid 1px #FFFF00;
+    border-top:solid 1px #7f007f;
     height:7px;
     width:25px;
     margin-right:5px;
 }
 
 .legend .other {
-    background-color:#00FF00;
+    background-color:#7f007f;
     height:10px;
     width:25px;
     margin-bottom:2px;
@@ -913,3 +919,23 @@ tr.z-tree-row-seld, tr.z-list-item-seld {
     background-color: #2a83b4;
     color: #FFFFFF;
 }
+
+.timeplot-canvas {
+    position:relative;
+    overflow:hidden;
+ }
+
+.resourcesload .timetrackergap .z-grid-header{
+    heigth: 15px;
+}
+
+.scheduling-graphics .z-tabs-ver {
+    width: 60px !important;
+}
+.scheduling-graphics .z-tab-ver .z-tab-ver-text {
+    white-space: normal;
+}
+.earned-parameter-column {
+    width: 70px;
+}
+

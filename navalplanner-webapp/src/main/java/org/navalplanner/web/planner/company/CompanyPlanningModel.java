@@ -87,7 +87,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
@@ -159,7 +158,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
-        chartComponent.setHeight("200px");
         appendTabs(chartComponent);
 
         Timeplot chartLoadTimeplot = new Timeplot();
@@ -219,16 +217,19 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private org.zkoss.zk.ui.Component getLoadChartLegend() {
-        Div div = new Div();
+        Hbox hbox = new Hbox();
+        hbox.setClass("legend-container");
+        hbox.setAlign("center");
+        hbox.setPack("center");
         Executions.createComponents("/planner/_legendLoadChartCompany.zul",
-                div, null);
-        return div;
+                hbox, null);
+        return hbox;
     }
 
     private void appendEarnedValueChartAndLegend(
             Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot) {
         Hbox hbox = new Hbox();
-
+        hbox.setSclass("earned-value-chart");
         hbox.appendChild(getEarnedValueChartConfigurableLegend());
 
         Div div = new Div();
@@ -241,26 +242,23 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend() {
+        Hbox mainhbox = new Hbox();
+        mainhbox.setClass("legend-container");
+        mainhbox.setAlign("center");
+        mainhbox.setPack("center");
+
         Vbox vbox = new Vbox();
         vbox.setId("earnedValueChartConfiguration");
         vbox.setClass("legend");
 
-        Hbox hboxTitle = new Hbox();
-        hboxTitle.setClass("legend-title");
-        hboxTitle.setPack("center");
-
-        Label labelTitle = new Label(_("Chart legend"));
-        labelTitle.setClass("title");
-        hboxTitle.appendChild(labelTitle);
-
-        vbox.appendChild(hboxTitle);
-
         Vbox column1 = new Vbox();
         Vbox column2 = new Vbox();
-        column1.setWidth("75px");
-        column2.setWidth("75px");
+        Vbox column3 = new Vbox();
+        column1.setSclass("earned-parameter-column");
+        column2.setSclass("earned-parameter-column");
+        column3.setSclass("earned-parameter-column");
 
-        boolean odd = true;
+        int columnNumber = 0;
 
         for (EarnedValueType type : EarnedValueType.values()) {
             Checkbox checkbox = new Checkbox(type.getAcronym());
@@ -268,21 +266,29 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             checkbox.setAttribute("indicator", type);
             checkbox.setStyle("color: " + type.getColor());
 
-            if (odd) {
+            columnNumber = columnNumber + 1;
+            switch (columnNumber) {
+            case 1:
                 column1.appendChild(checkbox);
-            } else {
+                break;
+            case 2:
                 column2.appendChild(checkbox);
+                break;
+            case 3:
+                column3.appendChild(checkbox);
+                columnNumber = 0;
             }
-
             earnedValueChartConfigurationCheckboxes.add(checkbox);
-            odd = !odd;
+
         }
 
         Hbox hbox = new Hbox();
         hbox.appendChild(column1);
         hbox.appendChild(column2);
+        hbox.appendChild(column3);
 
         vbox.appendChild(hbox);
+        mainhbox.appendChild(vbox);
 
         markAsSelectedDefaultIndicators();
 

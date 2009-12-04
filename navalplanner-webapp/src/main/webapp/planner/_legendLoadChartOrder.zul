@@ -23,33 +23,29 @@
 
 <vbox sclass="legend">
 
-    <hbox pack="center" sclass="legend-title">
-        <n:label class="title">${i18n:_('Chart legend')}</n:label>
-    </hbox>
-
-    <hbox pack="center" sclass="legend-row">
+    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Resources capability')}">
         <n:div class="capability"/>
-        <n:label>${i18n:_('Capability')}</n:label>
+        <n:label>${i18n:_('Total capability')}</n:label>
     </hbox>
 
-    <hbox pack="center" sclass="legend-row">
+    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Overload due to other projects')}">
         <n:div class="overload-other"/>
-        <n:label>${i18n:_('Overload due to other')}</n:label>
+        <n:label>${i18n:_('Overload (*)')}</n:label>
     </hbox>
 
-    <hbox pack="center" sclass="legend-row">
+    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Overload due to order')}">
         <n:div class="overload-order"/>
-        <n:label>${i18n:_('Overload due to order')}</n:label>
+        <n:label>${i18n:_('Overload')}</n:label>
     </hbox>
 
-    <hbox pack="center" sclass="legend-row">
+    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Other assignments')}">
         <n:div class="other"/>
         <n:label>${i18n:_('Other assignments')}</n:label>
     </hbox>
 
-    <hbox pack="center" sclass="legend-row">
+    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Load due to order')}">
         <n:div class="load" />
-        <n:label>${i18n:_('Load due to order')}</n:label>
+        <n:label>${i18n:_('Load')}</n:label>
     </hbox>
 
 </vbox>
