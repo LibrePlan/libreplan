@@ -49,8 +49,9 @@ public abstract class HoursModification extends AllocationModification {
 
         @Override
         public void allocateUntil(LocalDate end) {
-            genericAllocation.forResources(getResources()).onInterval(
-                    getTaskStart(), end).allocateHours(getHours());
+            genericAllocation.forResources(getResources())
+                             .fromStartUntil(end)
+                             .allocateHours(getHours());
         }
     }
 
@@ -66,7 +67,8 @@ public abstract class HoursModification extends AllocationModification {
 
         @Override
         public void allocateUntil(LocalDate end) {
-            specific.onInterval(getTaskStart(), end).allocateHours(getHours());
+            specific.fromStartUntil(end)
+                    .allocateHours(getHours());
         }
     }
 
