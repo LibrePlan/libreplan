@@ -59,7 +59,7 @@
         <n:tr>
           <n:td><label> </label>
               <div align="center">
-                <n:input name="j_username" type="text" class="campotexto" id="textfield" size="30" />
+                <n:input name="j_username" type="text" class="campotexto" id="textfield" size="30" value="admin" />
             </div></n:td>
         </n:tr>
         <n:tr>
@@ -67,7 +67,7 @@
         </n:tr>
         <n:tr>
           <n:td><div align="center">
-              <n:input name="j_password" type="password" class="campotexto" id="textfield2" size="30" />
+              <n:input name="j_password" type="password" class="campotexto" id="textfield2" size="30" value="admin"/>
           </div></n:td>
         </n:tr>
         <n:tr>
