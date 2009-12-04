@@ -50,10 +50,10 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.api.Window;
 
@@ -235,36 +235,36 @@ public class CostCategoryCRUDController extends GenericForwardComposer
      *
      * @param row
      */
-    private void appendTextboxCost(Row row) {
-        Textbox txtCost = new Textbox();
-        bindTextboxCost(txtCost, (HourCost) row.getValue());
-        txtCost.setConstraint("no empty:" + _("cannot be null or empty"));
-        row.appendChild(txtCost);
+    private void appendDecimalboxCost(Row row) {
+        Decimalbox boxCost = new Decimalbox();
+        bindDecimalboxCost(boxCost, (HourCost) row.getValue());
+        boxCost.setConstraint("no empty:" + _("cannot be null or empty"));
+        row.appendChild(boxCost);
     }
 
     /**
-     * Binds Textbox "hour cost" to the corresponding attribute of a {@link HourCost}
+     * Binds Decimalbox "hour cost" to the corresponding attribute of a {@link HourCost}
      *
-     * @param txtCost
+     * @param boxCost
      * @param hourCost
      */
-    private void bindTextboxCost(final Textbox txtCost,
+    private void bindDecimalboxCost(final Decimalbox boxCost,
             final HourCost hourCost) {
-        Util.bind(txtCost, new Util.Getter<String>() {
+        Util.bind(boxCost, new Util.Getter<BigDecimal>() {
 
             @Override
-            public String get() {
+            public BigDecimal get() {
                 if (hourCost.getPriceCost() != null) {
-                    return hourCost.getPriceCost().toString();
+                    return hourCost.getPriceCost();
                 }
-                return "";
+                return new BigDecimal(0);
             }
 
-        }, new Util.Setter<String>() {
+        }, new Util.Setter<BigDecimal>() {
 
             @Override
-            public void set(String value) {
-                hourCost.setPriceCost(new BigDecimal(value));
+            public void set(BigDecimal value) {
+                hourCost.setPriceCost(value);
             }
         });
     }
@@ -428,7 +428,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
 
             // Create boxes
             appendAutocompleteType(row);
-            appendTextboxCost(row);
+            appendDecimalboxCost(row);
             appendDateboxInitDate(row);
             appendDateboxEndDate(row);
 
