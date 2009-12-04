@@ -31,27 +31,28 @@
     <n:td width="180" valign="center">
         <n:a href="/navalplanner-webapp/">
         <n:img src="/navalplanner-webapp/common/img/logo1.gif" width="180" height="45" /></n:a></n:td>
-  <n:td valign="top"><n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
+  <n:td valign="top">
+  <n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
     <n:tr>
-      <n:td><n:table width="98%"  border="0" cellspacing="0" cellpadding="0" style="float:right;">
-        <n:tr>
-          <n:td height="20" align="right"><n:table border="0" cellspacing="0" cellpadding="0">
-            <n:tr>
-              <n:td class="usuario">${i18n:_('user')}: ${desktop.execution.userPrincipal.name}</n:td>
-              <n:td><n:a href="/navalplanner-webapp/j_spring_security_logout" class="cerrar_sesion">${i18n:_('SIGN OUT')}</n:a></n:td>
-            <n:td><n:a href="https://naval.igalia.com/fileadmin/templates/doc/index.html"><n:img src="/navalplanner-webapp/common/img/axuda.gif" alt="Axuda" width="23" height="24" border="0" /></n:a></n:td>
-            </n:tr>
-          </n:table></n:td>
-        </n:tr>
-      </n:table>
+      <n:td>
 
         <customMenu top_id="customMenu" title="${i18n:_('Main menu')}"/>
 
-          </n:td>
+        </n:td>
     </n:tr>
   </n:table></n:td>
   </n:tr>
 </n:table>
+
+
+      <n:div class="user-area">
+          <n:table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <n:tr>
+              <n:td class="usuario">${i18n:_('user')}: ${desktop.execution.userPrincipal.name}</n:td>
+              <n:td><n:a href="/navalplanner-webapp/j_spring_security_logout" class="cerrar_sesion">[${i18n:_('Sign out')}]</n:a></n:td>
+            </n:tr>
+          </n:table>
+        </n:div>
 
 <n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
   <n:tr>

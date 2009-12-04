@@ -106,16 +106,23 @@ a.sub_menu:hover {
     text-decoration: none;
     text-align: right;
     padding-right: 15px;
+    color: #3195D7;
+    font-weight: bold;
 }
 
 .cerrar_sesion {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
-    text-decoration: underline;
+    text-decoration: none;
     text-align: right;
     padding-right: 15px;
     color: #009900;
     display: block;
+    font-weight: bold;
+}
+
+.cerrar_sesion:hover {
+    text-decoration: underline;
 }
 
 .ruta {
@@ -123,6 +130,7 @@ a.sub_menu:hover {
     font-size: 11px;
     color: #3B89B7;
     text-decoration: none;
+    vertical-align: middle;
 }
 
 .ruta span {
@@ -150,4 +158,28 @@ a.sub_menu:hover {
 
 .mainmenu {
     margin-top:10px;
+}
+
+.help-link {
+    width: 180px;
+}
+
+.help-link a {
+    font-family: Verdana,Arial,Helvetica,sans-serif,Tahoma;
+    font-size:11px;
+    color: #0068B1;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.help-link a span {
+    position: relative;
+    top:-6px;
+}
+
+.user-area {
+    position: absolute;
+    top:14px;
+    right:0;
+    z-index:2;
 }
