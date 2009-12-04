@@ -19,6 +19,7 @@
  */
 package org.navalplanner.business.planner.entities.allocationalgorithms;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -79,6 +80,15 @@ public abstract class HoursModification extends AllocationModification {
             SpecificResourceAllocation resourceAllocation, int hours) {
         return new OnSpecificAllocation(resourceAllocation, Collections
                 .singletonList(resourceAllocation.getResource()), hours);
+    }
+
+    public static List<HoursModification> fromExistent(
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        List<HoursModification> result = new ArrayList<HoursModification>();
+        for (ResourceAllocation<?> resourceAllocation : allocations) {
+            result.add(resourceAllocation.asHoursModification());
+        }
+        return result;
     }
 
     private final int hours;
