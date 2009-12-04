@@ -213,9 +213,12 @@ class FormBinder {
     }
 
     private void bindTotalHoursToHoursInputs() {
+        int sum = 0;
         for (AllocationRow each : rows) {
             each.addListenerForHoursInputChange(hoursRowInputChange);
+            sum += each.getHoursFromInput();
         }
+        allHoursInput.setValue(sum);
     }
 
     private int sumAllHoursFromHoursInputs() {
@@ -471,7 +474,6 @@ class FormBinder {
         this.recommendedAllocation = true;
         disableIfNeededWorkerSearchTab();
         applyDisabledRules();
-        distributeHoursFromTotalToRows();
         allHoursInput.addEventListener(Events.ON_CHANGE,
                 allHoursInputChange);
         allResourcesPerDay.addEventListener(Events.ON_CHANGE,

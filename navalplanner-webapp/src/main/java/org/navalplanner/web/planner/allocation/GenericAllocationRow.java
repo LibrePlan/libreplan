@@ -117,5 +117,4 @@ public class GenericAllocationRow extends AllocationRow {
     public List<Resource> getAssociatedResources() {
         return resources;
     }
-
 }

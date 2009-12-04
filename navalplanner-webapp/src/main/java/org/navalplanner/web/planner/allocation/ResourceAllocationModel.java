@@ -115,7 +115,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             List<Resource> resourcesFound = resourceDAO
                     .findAllSatisfyingCriterions(each.getCriterions());
             allocationRowsHandler.addGeneric(each.getCriterions(),
-                    reloadResources(resourcesFound));
+                    reloadResources(resourcesFound), each.getHours());
         }
         return ProportionalDistributor.create(hours);
     }

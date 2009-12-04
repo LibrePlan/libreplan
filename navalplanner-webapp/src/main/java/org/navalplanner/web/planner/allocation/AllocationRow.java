@@ -288,4 +288,8 @@ public abstract class AllocationRow {
         hoursInput.addEventListener(Events.ON_CHANGE, listener);
     }
 
+    public void setHoursToInput(Integer hours) {
+        hoursInput.setValue(hours);
+    }
+
 }
