@@ -37,6 +37,7 @@ import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -302,6 +303,12 @@ public class Task extends TaskElement {
             LocalDate end = ResourceAllocation.allocating(allocations)
                     .untilAllocating(getAssignedHours());
             setEndDate(end.toDateTimeAtStartOfDay().toDate());
+            break;
+        case RESOURCES_PER_DAY:
+            ResourceAllocation.allocatingHours(
+                    HoursModification.fromExistent(ModifiedAllocation
+                            .modified(copied))).allocateUntil(
+                    new LocalDate(getEndDate()));
             break;
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
