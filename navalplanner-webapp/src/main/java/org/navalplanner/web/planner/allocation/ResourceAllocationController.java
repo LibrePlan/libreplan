@@ -140,7 +140,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
         taskEndDate = new Datebox();
         allResourcesPerDay = new Decimalbox();
-        allResourcesPerDay.setVisible(false);
         makeReadyInputsForCalculationTypes();
         prepareCalculationTypesGrid();
     }
@@ -191,6 +190,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         formBinder.setAssignedHoursComponent(assignedHoursComponent);
         formBinder.setTaskStartDateBox(taskStartDateBox);
         formBinder.setEndDate(taskEndDate);
+        formBinder.setAllResourcesPerDay(allResourcesPerDay);
         formBinder.setApplyButton(applyButton);
         formBinder.setAllocationsList(allocationsList);
         formBinder.setMessagesForUser(messagesForUser);

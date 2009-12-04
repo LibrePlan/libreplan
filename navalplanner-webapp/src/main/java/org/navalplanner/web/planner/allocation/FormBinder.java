@@ -22,6 +22,7 @@ package org.navalplanner.web.planner.allocation;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -35,6 +36,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -53,6 +55,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.SimpleConstraint;
@@ -109,6 +112,8 @@ class FormBinder {
 
     private ProportionalDistributor hoursDistributorForRecommendedAllocation;
 
+    private ResourcesPerDay.ResourcesPerDayDistributor resourcesPerDayDistributorForRecommendedAllocation;
+
     private EventListener hoursRowInputChange = new EventListener() {
 
         @Override
@@ -129,9 +134,21 @@ class FormBinder {
         }
     };
 
+    private EventListener allResourcesPerDayChange = new EventListener() {
+
+        @Override
+        public void onEvent(Event event) throws Exception {
+            if (allResourcesPerDay.isVisible()) {
+                distributeResourcesPerDayToRows();
+            }
+        }
+    };
+
     private boolean recommendedAllocation = false;
 
     private Tab workerSearchTab;
+
+    private Decimalbox allResourcesPerDay;
 
     public FormBinder(
             AllocationRowsHandler allocationRowsHandler,
@@ -183,6 +200,7 @@ class FormBinder {
     private void applyDisabledRules() {
         assignedHoursComponentDisabilityRule();
         endDateDisabilityRule();
+        allResourcesPerDayVisibilityRule();
         applyDisabledRulesOnRows();
     }
 
@@ -237,6 +255,14 @@ class FormBinder {
         onChangeEnableApply(endDate);
     }
 
+    public void setAllResourcesPerDay(Decimalbox allResourcesPerDay) {
+        this.allResourcesPerDay = allResourcesPerDay;
+        this.allResourcesPerDay.setConstraint(new SimpleConstraint(
+                SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE));
+        allResourcesPerDayVisibilityRule();
+        onChangeEnableApply(allResourcesPerDay);
+    }
+
     private Constraint datePosteriorToStartDate() {
         return new Constraint() {
             @Override
@@ -259,6 +285,12 @@ class FormBinder {
     private void endDateDisabilityRule() {
         this.endDate.setDisabled(allocationRowsHandler
                 .getCalculatedValue() == CalculatedValue.END_DATE);
+    }
+
+    private void allResourcesPerDayVisibilityRule() {
+        this.allResourcesPerDay.setVisible(allocationRowsHandler
+                .getCalculatedValue() != CalculatedValue.RESOURCES_PER_DAY
+                && recommendedAllocation);
     }
 
     public List<AllocationRow> getCurrentRows() {
@@ -434,12 +466,16 @@ class FormBinder {
         allocationRowsHandler.removeAll();
         hoursDistributorForRecommendedAllocation = resourceAllocationModel
                 .addDefaultAllocations();
+        resourcesPerDayDistributorForRecommendedAllocation = ResourcesPerDay
+                .distributor(hoursDistributorForRecommendedAllocation);
         this.recommendedAllocation = true;
         disableIfNeededWorkerSearchTab();
         applyDisabledRules();
         distributeHoursFromTotalToRows();
         allHoursInput.addEventListener(Events.ON_CHANGE,
                 allHoursInputChange);
+        allResourcesPerDay.addEventListener(Events.ON_CHANGE,
+                allResourcesPerDayChange);
         Util.reloadBindings(allocationsList);
     }
 
@@ -451,11 +487,20 @@ class FormBinder {
         AllocationRow.assignHours(rows, hours);
     }
 
+    private void distributeResourcesPerDayToRows() {
+        BigDecimal total = allResourcesPerDay.getValue();
+        total = total != null ? total : BigDecimal.ZERO;
+        ResourcesPerDay[] forRows = resourcesPerDayDistributorForRecommendedAllocation
+                .distribute(ResourcesPerDay.amount(total));
+        AllocationRow.assignResourcesPerDay(rows, forRows);
+    }
+
     private void deactivatingRecommendedAllocation() {
         this.recommendedAllocation = false;
         allHoursInput
                 .removeEventListener(Events.ON_CHANGE,
                 allHoursInputChange);
+        applyDisabledRules();
         disableIfNeededWorkerSearchTab();
     }
 

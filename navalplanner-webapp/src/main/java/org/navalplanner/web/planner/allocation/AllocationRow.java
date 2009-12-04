@@ -56,6 +56,14 @@ public abstract class AllocationRow {
         }
     }
 
+    public static void assignResourcesPerDay(List<AllocationRow> rows,
+            ResourcesPerDay[] resourcesPerDay) {
+        int i = 0;
+        for (AllocationRow each : rows) {
+            each.setResourcesPerDay(resourcesPerDay[i++]);
+        }
+    }
+
     public static void loadDataFromLast(Collection<? extends AllocationRow> rows) {
         for (AllocationRow each : rows) {
             each.loadDataFromLast();
@@ -267,7 +275,8 @@ public abstract class AllocationRow {
             hoursInput.setConstraint((Constraint) null);
         }
         resourcesPerDayInput
-                .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY);
+                .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY
+                        || recommendedAllocation);
     }
 
     public void loadDataFromLast() {
