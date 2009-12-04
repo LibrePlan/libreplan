@@ -34,6 +34,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -42,7 +43,6 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.workreports.WorkReportCRUDController;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -82,15 +82,12 @@ public class CostCategoryCRUDController extends GenericForwardComposer
 
     private Grid listHourCosts;
 
-    private Textbox name;
-
     private HourCostListRenderer hourCostListRenderer = new HourCostListRenderer();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         listHourCosts = (Grid) createWindow.getFellowIfAny("listHourCosts");
-        name = (Textbox) createWindow.getFellowIfAny("name");
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
@@ -134,7 +131,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
     }
 
     public boolean save() {
-        if(!validate()) {
+        if(!ConstraintChecker.isValid(createWindow)) {
             return false;
         }
         try {
@@ -162,34 +159,6 @@ public class CostCategoryCRUDController extends GenericForwardComposer
 
     public Set<HourCost> getHourCosts() {
         return costCategoryModel.getHourCosts();
-    }
-
-    /* validates the constraints of the elements in ZK */
-    private boolean validate() {
-        try {
-            //we 'touch' the attributes in the interface
-            //if any of their constraints is active, they
-            //will throw an exception
-            name.getValue();
-            for (Object eachRow : listHourCosts.getRows().getChildren()) {
-
-                for (Object each: ((Row)eachRow).getChildren()) {
-                    if (each instanceof Textbox) {
-                        ((Textbox) each).getValue();
-                    }
-                    if (each instanceof Autocomplete) {
-                        ((Autocomplete) each).getValue();
-                    }
-                    if (each instanceof Datebox) {
-                        ((Datebox) each).getValue();
-                    }
-                }
-            }
-            return true;
-        }
-        catch (WrongValueException e) {
-            return false;
-        }
     }
 
     private OnlyOneVisible getVisibility() {
