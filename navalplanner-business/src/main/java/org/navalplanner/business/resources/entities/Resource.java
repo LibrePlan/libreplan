@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.AssertFalse;
 import org.hibernate.validator.InvalidValue;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -746,5 +747,33 @@ public abstract class Resource extends BaseEntity{
         resourcesCostCategoryAssignments.remove(assignment);
         if(assignment.getResource()==this)
             assignment.setResource(null);
+    }
+
+    @AssertFalse(message="Two assignments overlap in time")
+    public boolean checkAssignmentsOverlap() {
+        List<ResourcesCostCategoryAssignment> assignmentsList =
+            new ArrayList<ResourcesCostCategoryAssignment>();
+        assignmentsList.addAll(resourcesCostCategoryAssignments);
+        for(int i=0; i<assignmentsList.size(); i++) {
+            LocalDate initDate = assignmentsList.get(i).getInitDate();
+            LocalDate endDate = assignmentsList.get(i).getEndDate();
+            for(int j=i+1; j<assignmentsList.size(); j++) {
+                ResourcesCostCategoryAssignment listElement = assignmentsList.get(j);
+                if (endDate == null && listElement.getEndDate() == null) {
+                    return true;
+                }
+                else if((endDate == null && listElement.getEndDate().compareTo(initDate)>=0) ||
+                        (listElement.getEndDate() == null && listElement.getInitDate().compareTo(endDate)<=0)) {
+                    return true;
+                }
+                else if((listElement.getEndDate().compareTo(initDate)>=0 &&
+                        listElement.getEndDate().compareTo(endDate)<=0) ||
+                        (listElement.getInitDate().compareTo(initDate)>=0 &&
+                                listElement.getInitDate().compareTo(endDate)<=0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
