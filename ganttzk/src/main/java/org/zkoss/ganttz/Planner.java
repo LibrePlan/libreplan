@@ -49,6 +49,16 @@ import org.zkoss.zul.api.Button;
 
 public class Planner extends HtmlMacroComponent  {
 
+    public static void registerNeededScripts() {
+        IScriptsRegister register = getScriptsRegister();
+        register.register(ScriptsRequiredByPlanner.class);
+    }
+
+    private static IScriptsRegister getScriptsRegister() {
+        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
+                .retrieve();
+    }
+
     private GanttDiagramGraph diagramGraph;
 
     private LeftPane leftPane;
@@ -71,11 +81,6 @@ public class Planner extends HtmlMacroComponent  {
 
     public Planner() {
         registerNeededScripts();
-    }
-
-    private void registerNeededScripts() {
-        IScriptsRegister register = getScriptsRegister();
-        register.register(ScriptsRequiredByPlanner.class);
     }
 
     TaskList getTaskList() {
@@ -279,11 +284,6 @@ public class Planner extends HtmlMacroComponent  {
         setHeight(getHeight());// forcing smart update
         taskList.adjustZoomColumnsHeight();
         getDependencyList().redrawDependencies();
-    }
-
-    private IScriptsRegister getScriptsRegister() {
-        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
-                .retrieve();
     }
 
     @Override

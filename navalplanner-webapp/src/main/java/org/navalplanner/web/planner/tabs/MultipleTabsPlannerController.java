@@ -42,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.TabSwitcher;
 import org.zkoss.ganttz.TabsRegistry;
 import org.zkoss.ganttz.adapters.State;
@@ -201,6 +202,7 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+        Planner.registerNeededScripts();
         tabsSwitcher = (TabSwitcher) comp;
         breadcrumbs = comp.getPage().getFellow("breadcrumbs");
         tabsSwitcher.setConfiguration(buildTabsConfiguration());
