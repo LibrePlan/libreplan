@@ -22,11 +22,15 @@ package org.navalplanner.web.planner.tabs;
 import static org.navalplanner.web.I18nHelper._;
 import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
 
+import javax.annotation.Resource;
+
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.URLHandlerRegistry;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.navalplanner.web.planner.company.CompanyPlanningController;
@@ -56,7 +60,8 @@ import org.zkoss.zk.ui.util.Composer;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class MultipleTabsPlannerController implements Composer {
+public class MultipleTabsPlannerController implements Composer,
+        IGlobalViewEntryPoints {
 
     public static final String PLANNIFICATION = _("Scheduling");
 
@@ -102,6 +107,12 @@ public class MultipleTabsPlannerController implements Composer {
 
     @Autowired
     private IResourceDAO resourceDAO;
+
+    @Autowired
+    private URLHandlerRegistry registry;
+
+    @Resource
+    private IGlobalViewEntryPoints globalView;
 
     private TabsConfiguration buildTabsConfiguration() {
         planningTab = PlanningTabCreator.create(mode,
@@ -193,6 +204,10 @@ public class MultipleTabsPlannerController implements Composer {
         tabsSwitcher = (TabSwitcher) comp;
         breadcrumbs = comp.getPage().getFellow("breadcrumbs");
         tabsSwitcher.setConfiguration(buildTabsConfiguration());
+        final URLHandler<IGlobalViewEntryPoints> handler = registry
+                .getRedirectorFor(IGlobalViewEntryPoints.class);
+        handler.applyIfMatches(this);
+        handler.registerListener(this, comp.getPage());
     }
 
     private TabsRegistry getTabsRegistry() {
@@ -212,6 +227,21 @@ public class MultipleTabsPlannerController implements Composer {
                 return _("Up");
             }
         };
+    }
+
+    @Override
+    public void goToCompanyScheduling() {
+        getTabsRegistry().show(planningTab);
+    }
+
+    @Override
+    public void goToCompanyLoad() {
+        getTabsRegistry().show(resourceLoadTab);
+    }
+
+    @Override
+    public void goToOrdersList() {
+        getTabsRegistry().show(ordersTab);
     }
 
 }

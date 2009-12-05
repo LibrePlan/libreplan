@@ -165,11 +165,13 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     public void initializeMenu() {
-        topItem(_("Scheduling"), "/planner/index.zul", subItem(
-                _("Company view"), "/planner/index.zul#company_view"), subItem(
-                _("General resource allocation"),
-                "/planner/index.zul#company_resources"), subItem(
-                _("Orders list"), "/planner/index.zul#company_orders"));
+        topItem(_("Scheduling"), "/planner/index.zul",
+                subItem(_("Company view"),
+                        "/planner/index.zul;company_scheduling"),
+                subItem(_("General resource allocation"),
+                        "/planner/index.zul;company_load"),
+                subItem(_("Orders list"),
+                        "/planner/index.zul;orders_list"));
 
         topItem(_("Resources"), "/resources/worker/worker.zul",
                 subItem(_("Workers List"),
