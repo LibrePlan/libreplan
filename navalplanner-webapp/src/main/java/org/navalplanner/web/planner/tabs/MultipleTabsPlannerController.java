@@ -208,7 +208,9 @@ public class MultipleTabsPlannerController implements Composer,
         tabsSwitcher.setConfiguration(buildTabsConfiguration());
         final URLHandler<IGlobalViewEntryPoints> handler = registry
                 .getRedirectorFor(IGlobalViewEntryPoints.class);
-        handler.applyIfMatches(this);
+        if (!handler.applyIfMatches(this)) {
+            goToCompanyScheduling();
+        }
         handler.registerListener(this, comp.getPage());
     }
 
