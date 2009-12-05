@@ -40,6 +40,7 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -84,6 +85,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     private LocalizationsController localizationsForCreationController;
 
     private WorkRelationshipsController editWorkRelationship;
+
+    private ResourcesCostCategoryAssignmentController resourcesCostCategoryAssignmentController;
 
     private IWorkerCRUDControllerEntryPoints workerCRUD;
 
@@ -167,6 +170,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     public void goToEditForm(Worker worker) {
             getBookmarker().goToEditForm(worker);
             workerModel.prepareEditFor(worker);
+            resourcesCostCategoryAssignmentController.setResource(workerModel.getWorker());
             if (isCalendarNotNull()) {
                 editCalendar();
             }
@@ -205,6 +209,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             getBookmarker().goToCreateForm();
             workerModel.prepareForCreate();
             createAsignedCriterions();
+            resourcesCostCategoryAssignmentController.setResource(workerModel.getWorker());
             editWindow.setTitle(_("Create Worker"));
             getVisibility().showOnly(editWindow);
             Util.reloadBindings(editWindow);
@@ -238,11 +243,20 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 this.editWorkRelationship = new WorkRelationshipsController(
                         this.workerModel, this, messages),
                 editWorkRelationshipWindow);
+        setupResourcesCostCategoryAssignmentController(comp);
 
         final URLHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
         handler.registerListener(this, page);
         getVisibility().showOnly(listWindow);
+    }
+
+    private void setupResourcesCostCategoryAssignmentController(Component comp)
+    throws Exception {
+        Component costCategoryAssignmentContainer =
+            editWindow.getFellowIfAny("costCategoryAssignmentContainer");
+        resourcesCostCategoryAssignmentController = (ResourcesCostCategoryAssignmentController)
+            costCategoryAssignmentContainer.getVariable("assignmentController", true);
     }
 
     private void editAsignedCriterions(){

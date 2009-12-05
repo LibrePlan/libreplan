@@ -22,6 +22,7 @@
 <?component name="workRelationships" inline="true" macroURI="_workRelationships.zul"?>
 <?component name="resourceCalendar" inline="true" macroURI="_calendar.zul"?>
 <?component name="criterions" inline="true" macroURI="_criterions.zul"?>
+<?component name="costCategoryAssignment" inline="true" macroURI="../_costCategoryAssignment.zul"?>
 <window id="${arg.top_id}" title="${arg.title}">
     <tabbox>
         <tabs>
@@ -30,6 +31,7 @@
             <tab visible="false" label="${i18n:_('Locations')}"></tab>
             <tab visible="false" label="${i18n:_('Work record')}"></tab>
             <tab label="${i18n:_('Calendar')}"></tab>
+            <tab label="${i18n:_('Cost category assignment')}"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -69,6 +71,9 @@
             </tabpanel>
             <tabpanel>
                 <resourceCalendar />
+            </tabpanel>
+            <tabpanel>
+                <costCategoryAssignment id="costCategoryAssignmentContainer" />
             </tabpanel>
         </tabpanels>
     </tabbox>

@@ -1,0 +1,22 @@
+<vbox id="${arg.id}"
+        apply="org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentController">
+    <panel title="${i18n:_('Cost category assignment')}" border="normal">
+        <panelchildren>
+            <hbox>
+                <button label="${i18n:_('Add new row')}"
+                    onClick="assignmentController.addCostCategory()" />
+            </hbox>
+
+            <grid id="listResourcesCostCategoryAssignments"
+                    model="@{assignmentController.costCategoryAssignments}"
+                    rowRenderer="@{assignmentController.costCategoryAssignmentsRenderer}">
+                <columns>
+                    <column label="${i18n:_('Category name')}" align="center"/>
+                    <column label="${i18n:_('Init date')}" align="center"/>
+                    <column label="${i18n:_('End date')}" align="center"/>
+                    <column label="${i18n:_('Operations')}" width="150px" align="center"/>
+                </columns>
+            </grid>
+        </panelchildren>
+    </panel>
+</vbox>
