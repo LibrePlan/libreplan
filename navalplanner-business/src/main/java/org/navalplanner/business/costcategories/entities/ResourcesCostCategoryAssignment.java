@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.costcategories.entities;
 
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
@@ -87,5 +88,13 @@ public class ResourcesCostCategoryAssignment extends BaseEntity {
                 !resource.getResourcesCostCategoryAssignments().contains(this)) {
             resource.addResourcesCostCategoryAssignment(this);
         }
+    }
+
+    @AssertTrue(message="The end date cannot be before the init date")
+    public boolean checkPositiveTimeInterval() {
+        if (endDate == null) {
+            return true;
+        }
+        return (endDate.isAfter(initDate) || initDate.equals(endDate));
     }
 }

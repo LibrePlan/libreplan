@@ -34,6 +34,7 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
@@ -130,5 +131,14 @@ public class ResourcesCostCategoryAssignmentDAOTest {
 
         assignment.setResource(null);
         assertFalse(resource.getResourcesCostCategoryAssignments().contains(assignment));
+    }
+
+    @Test(expected=ValidationException.class)
+    public void testPositiveTimeInterval() {
+        ResourcesCostCategoryAssignment assignment = createValidResourcesCostCategoryAssignment();
+        assignment.setInitDate(new LocalDate(2000,12,31));
+        assignment.setEndDate(new LocalDate(2000,12,1));
+
+        resourcesCostCategoryAssignmentDAO.save(assignment);
     }
 }
