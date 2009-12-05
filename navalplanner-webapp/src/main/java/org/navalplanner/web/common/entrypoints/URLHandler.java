@@ -181,9 +181,9 @@ public class URLHandler<T> {
         }
     }
 
-    public <S extends T> void applyIfMatches(S controller) {
+    public <S extends T> boolean applyIfMatches(S controller) {
         String uri = getRequest().getRequestURI();
-        applyIfMatches(controller, uri);
+        return applyIfMatches(controller, uri);
     }
 
     private HttpServletRequest getRequest() {
@@ -193,9 +193,9 @@ public class URLHandler<T> {
         return request;
     }
 
-    public <S extends T> void applyIfMatches(S controller, String fragment) {
+    public <S extends T> boolean applyIfMatches(S controller, String fragment) {
         if (isFlagedInThisRequest()) {
-            return;
+            return false;
         }
         flagAlreadyExecutedInThisRequest();
         String string = insertSemicolonIfNeeded(fragment);
@@ -211,9 +211,10 @@ public class URLHandler<T> {
                         entryPointAnnotation, entryPointMetadata.method
                                 .getParameterTypes());
                 callMethod(controller, entryPointMetadata.method, arguments);
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     public <S extends T> void registerListener(final S controller, Page page) {
