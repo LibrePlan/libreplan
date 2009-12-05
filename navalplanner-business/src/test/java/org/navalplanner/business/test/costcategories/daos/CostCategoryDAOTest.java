@@ -104,6 +104,7 @@ public class CostCategoryDAOTest {
         CostCategory costCategory = createValidCostCategory();
         TypeOfWorkHours type1 = TypeOfWorkHours.create(UUID.randomUUID().toString(),
                 UUID.randomUUID().toString());
+        typeOfWorkHoursDAO.save(type1);
         HourCost hourCost1 = HourCost.create(BigDecimal.ONE, new LocalDate(2009, 11,1));
         hourCost1.setType(type1);
         hourCost1.setEndDate(new LocalDate(2009, 11,10));
@@ -128,9 +129,28 @@ public class CostCategoryDAOTest {
 
         TypeOfWorkHours type2 = TypeOfWorkHours.create(UUID.randomUUID().toString(),
                 UUID.randomUUID().toString());
+        typeOfWorkHoursDAO.save(type2);
         hourCost2.setType(type2);
         hourCost2.setInitDate(new LocalDate(2009,10,15));
         hourCost2.setEndDate(new LocalDate(2009,11,1));
+        assertTrue(costCategory.canAddHourCost(hourCost2));
+
+        hourCost2.setType(type1);
+        hourCost2.setInitDate(new LocalDate(2009,10,15));
+        hourCost2.setEndDate(null);
+        assertFalse(costCategory.canAddHourCost(hourCost2));
+        hourCost2.setInitDate(new LocalDate(2009,11,9));
+        assertFalse(costCategory.canAddHourCost(hourCost2));
+        hourCost2.setInitDate(new LocalDate(2009,11,11));
+        assertTrue(costCategory.canAddHourCost(hourCost2));
+
+        hourCost1.setEndDate(null);
+        assertFalse(costCategory.canAddHourCost(hourCost2));
+        hourCost2.setEndDate(new LocalDate(2009,11,30));
+        assertFalse(costCategory.canAddHourCost(hourCost2));
+        hourCost1.setEndDate(new LocalDate(2009,11,20));
+        assertFalse(costCategory.canAddHourCost(hourCost2));
+        hourCost1.setEndDate(new LocalDate(2009,12,1));
         assertTrue(costCategory.canAddHourCost(hourCost2));
     }
 

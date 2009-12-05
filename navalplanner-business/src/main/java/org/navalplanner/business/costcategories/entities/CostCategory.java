@@ -98,12 +98,20 @@ public class CostCategory extends BaseEntity {
         LocalDate initDate = hourCost.getInitDate();
         LocalDate endDate = hourCost.getEndDate();
         for(HourCost listElement:hourCosts) {
-            if(listElement.getType().equals(hourCost.getType()) &&
-                    ((listElement.getEndDate().compareTo(initDate)>=0 &&
+            if(listElement.getType().getId().equals(hourCost.getType().getId())) {
+                if (endDate == null && listElement.getEndDate() == null) {
+                    overlap = true;
+                }
+                else if((endDate == null && listElement.getEndDate().compareTo(initDate)>=0) ||
+                        (listElement.getEndDate() == null && listElement.getInitDate().compareTo(endDate)<=0)) {
+                    overlap = true;
+                }
+                else if((listElement.getEndDate().compareTo(initDate)>=0 &&
                         listElement.getEndDate().compareTo(endDate)<=0) ||
-                    (listElement.getInitDate().compareTo(initDate)>=0 &&
-                        listElement.getInitDate().compareTo(endDate)<=0))) {
-                overlap = true;
+                        (listElement.getInitDate().compareTo(initDate)>=0 &&
+                                listElement.getInitDate().compareTo(endDate)<=0)) {
+                    overlap = true;
+                }
             }
         }
         return !overlap;
@@ -118,12 +126,20 @@ public class CostCategory extends BaseEntity {
             LocalDate endDate = listHourCosts.get(i).getEndDate();
             for(int j=i+1; j<listHourCosts.size(); j++) {
                 HourCost listElement = listHourCosts.get(j);
-                if(listElement.getType().getId().equals(listHourCosts.get(i).getType().getId()) &&
-                        ((listElement.getEndDate().compareTo(initDate)>=0 &&
+                if(listElement.getType().getId().equals(listHourCosts.get(i).getType().getId())) {
+                    if (endDate == null && listElement.getEndDate() == null) {
+                        return true;
+                    }
+                    else if((endDate == null && listElement.getEndDate().compareTo(initDate)>=0) ||
+                            (listElement.getEndDate() == null && listElement.getInitDate().compareTo(endDate)<=0)) {
+                        return true;
+                    }
+                    else if((listElement.getEndDate().compareTo(initDate)>=0 &&
                             listElement.getEndDate().compareTo(endDate)<=0) ||
-                        (listElement.getInitDate().compareTo(initDate)>=0 &&
-                            listElement.getInitDate().compareTo(endDate)<=0))) {
-                    return true;
+                            (listElement.getInitDate().compareTo(initDate)>=0 &&
+                                    listElement.getInitDate().compareTo(endDate)<=0)) {
+                        return true;
+                    }
                 }
             }
         }
