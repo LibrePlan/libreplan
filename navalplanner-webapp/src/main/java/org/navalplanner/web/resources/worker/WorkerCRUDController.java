@@ -26,7 +26,6 @@ import static org.navalplanner.web.common.ConcurrentModificationDetector.addAuto
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -152,10 +151,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             Util.reloadBindings(listWindow);
             messages.showMessage(Level.INFO, _("Worker saved"));
         } catch (ValidationException e) {
-            for (InvalidValue invalidValue : e.getInvalidValues()) {
-                messages.showMessage(Level.ERROR, invalidValue.getPropertyName()+invalidValue.getMessage());
-                return;
-            }
+            messages.showInvalidValues(e);
         }
     }
 
