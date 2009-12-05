@@ -37,6 +37,6 @@
     <div id="idContextMenuTaskAssignment">
         <div />
     </div>
-    <tabSwitcher self="@{define(content)}" configuration="@{multipleTabsPlanner.tabs}" apply="${multipleTabsPlanner}">
+    <tabSwitcher self="@{define(content)}" apply="${multipleTabsPlanner}">
     </tabSwitcher>
 </zk>

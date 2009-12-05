@@ -103,13 +103,6 @@ public class MultipleTabsPlannerController implements Composer {
     @Autowired
     private IResourceDAO resourceDAO;
 
-    public TabsConfiguration getTabs() {
-        if (tabsConfiguration == null) {
-            tabsConfiguration = buildTabsConfiguration();
-        }
-        return tabsConfiguration;
-    }
-
     private TabsConfiguration buildTabsConfiguration() {
         planningTab = PlanningTabCreator.create(mode,
                 companyPlanningController, orderPlanningController, orderDAO,
@@ -199,6 +192,7 @@ public class MultipleTabsPlannerController implements Composer {
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         tabsSwitcher = (TabSwitcher) comp;
         breadcrumbs = comp.getPage().getFellow("breadcrumbs");
+        tabsSwitcher.setConfiguration(buildTabsConfiguration());
     }
 
     private TabsRegistry getTabsRegistry() {
