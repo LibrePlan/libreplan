@@ -165,7 +165,7 @@ class FormBinder {
         this.allHoursInput = assignedHoursComponent;
         this.allHoursInput.setConstraint(new SimpleConstraint(
                 SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE));
-        assignedHoursComponentDisabilityRule();
+        allHoursInputComponentDisabilityRule();
         loadValueForAssignedHoursComponent();
         onChangeEnableApply(assignedHoursComponent);
     }
@@ -176,7 +176,7 @@ class FormBinder {
                         .getTask().getWorkHours() : aggregate.getTotalHours());
     }
 
-    private void assignedHoursComponentDisabilityRule() {
+    private void allHoursInputComponentDisabilityRule() {
         CalculatedValue c = allocationRowsHandler.getCalculatedValue();
         boolean disabled = (CalculatedValue.NUMBER_OF_HOURS == c)
                 || (c == CalculatedValue.RESOURCES_PER_DAY && !recommendedAllocation);
@@ -200,7 +200,7 @@ class FormBinder {
     }
 
     private void applyDisabledRules() {
-        assignedHoursComponentDisabilityRule();
+        allHoursInputComponentDisabilityRule();
         endDateDisabilityRule();
         allResourcesPerDayVisibilityRule();
         applyDisabledRulesOnRows();
