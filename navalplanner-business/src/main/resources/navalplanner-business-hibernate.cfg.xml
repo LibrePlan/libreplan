@@ -9,5 +9,9 @@
         <property name="hibernate.format_sql">${hibernate.format_sql}</property>
         <property name="hibernate.use_sql_comments">${hibernate.use_sql_comments}</property>
         <property name="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</property>
+        <property name="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</property>
+        <property name="hibernate.cache.use_second_level_cache">true</property>
+        <property name="hibernate.cache.use_query_cache">true</property>
+        <property name="hibernate.cache.provider_configuration_file_resource_path">classpath:ehcache.xml</property>
     </session-factory>
 </hibernate-configuration>
