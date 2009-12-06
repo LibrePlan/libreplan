@@ -126,4 +126,7 @@ public class ResourceDAO extends GenericDAOHibernate<Resource, Long> implements
         return list;
     }
 
+    public List<Resource> getResources() {
+        return list(Resource.class);
+    }
 }

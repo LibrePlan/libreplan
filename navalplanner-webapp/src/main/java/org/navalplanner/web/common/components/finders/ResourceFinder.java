@@ -18,33 +18,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.resources.daos;
+package org.navalplanner.web.common.components.finders;
 
-import java.util.Collection;
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
-import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO interface for the <code>Resource</code> entity.
- *
- * @author Fernando Bellas Permuy <fbellas@udc.es>
- * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com> Implements a
+ *         {@link IFinder} class for providing {@link Worker} elements
  */
-public interface IResourceDAO extends IGenericDAO<Resource, Long> {
+@Repository
+public class ResourceFinder extends Finder implements IFinder {
 
-    public List<Worker> getWorkers();
+    @Autowired
+    private IResourceDAO resourceDAO;
 
-    /**
-     * Returns all {@link Resource} which satisfy a set of {@link Criterion}
-     */
-    List<Resource> findAllSatisfyingCriterions(Collection<? extends Criterion> criterions);
+    @Transactional(readOnly = true)
+    public List<Resource> getAll() {
+        return resourceDAO.getResources();
+    }
 
-    List<Resource> findResourcesRelatedTo(List<Task> tasks);
-
-    List<Resource> getResources();
+    @Override
+    public String _toString(Object value) {
+        final Resource resource = (Resource) value;
+        return (resource != null) ? resource.getDescription() : "";
+    }
 }

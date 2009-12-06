@@ -61,6 +61,7 @@ public class WorkReportLineDAOTest extends AbstractWorkReportTest {
     public void testRemoveWorkReportLine() throws InstanceNotFoundException {
         WorkReportLine workReportLine = createValidWorkReportLine();
         workReportLineDAO.save(workReportLine);
+        workReportLine.getWorkReport().removeWorkReportLine(workReportLine);
         workReportLineDAO.remove(workReportLine.getId());
         assertFalse(workReportLineDAO.exists(workReportLine.getId()));
     }

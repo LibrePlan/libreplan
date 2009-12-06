@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
@@ -35,6 +37,7 @@ import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLabelTypeAssigment;
@@ -46,7 +49,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractWorkReportTest {
 
     @Autowired
+    ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
+
+    @Autowired
     IWorkReportTypeDAO workReportTypeDAO;
+
+    @Autowired
+    IWorkReportDAO workReportDAO;
 
     @Autowired
     IResourceDAO resourceDAO;
@@ -66,11 +75,26 @@ public abstract class AbstractWorkReportTest {
     }
 
     public WorkReportLine createValidWorkReportLine() {
+        WorkReport workReport = createValidWorkReport();
+        workReportDAO.save(workReport);
+
         WorkReportLine workReportLine = WorkReportLine.create();
+        workReportLine.setWorkReport(workReport);
+        workReport.addWorkReportLine(workReportLine);
+        workReportLine.setDate(new Date());
         workReportLine.setNumHours(100);
         workReportLine.setResource(createValidWorker());
         workReportLine.setOrderElement(createValidOrderElement());
+        workReportLine.setTypeOfWorkHours(createValidTypeOfWorkHours());
         return workReportLine;
+    }
+
+    private TypeOfWorkHours createValidTypeOfWorkHours() {
+        TypeOfWorkHours typeOfWorkHours = TypeOfWorkHours.create(UUID
+                .randomUUID().toString(), UUID.randomUUID().toString());
+        typeOfWorkHoursDAO.save(typeOfWorkHours);
+        return typeOfWorkHours;
+
     }
 
     private Resource createValidWorker() {
@@ -100,16 +124,9 @@ public abstract class AbstractWorkReportTest {
     }
 
     public WorkReport createValidWorkReport() {
-        WorkReport workReport = WorkReport.create();
-
-        workReport.setDate(new Date());
-        workReport.setPlace(UUID.randomUUID().toString());
-        workReport.setResponsible(UUID.randomUUID().toString());
-
         WorkReportType workReportType = createValidWorkReportType();
         workReportTypeDAO.save(workReportType);
-        workReport.setWorkReportType(workReportType);
-
+        WorkReport workReport = WorkReport.create(workReportType);
         return workReport;
     }
 

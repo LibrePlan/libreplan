@@ -58,10 +58,18 @@
     <version name="version" access="property" type="long" />
 
     <property name="date"/>
-    <property name="place"/>
-    <property name="responsible"/>
 
     <many-to-one name="workReportType" class="WorkReportType" column="WORK_REPORT_TYPE_ID" not-null="true"/>
+
+    <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource" column="RESOURCE_ID"/>
+
+    <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID"/>
+
+    <set name="labels" table="WORKREPORTS_LABELS">
+        <key column="WORK_REPORT_ID"/>
+        <many-to-many column="LABEL_ID"
+            class="org.navalplanner.business.labels.entities.Label"/>
+    </set>
 
     <set name="workReportLines" cascade="all-delete-orphan" inverse="true">
         <key column="WORK_REPORT_ID"/>
@@ -71,7 +79,7 @@
     <set name="descriptionValues" table="DESCRIPTION_VALUES">
         <key column="DESCRIPTION_VALUE_ID"/>
         <composite-element class="org.navalplanner.business.workreports.valueobjects.DescriptionValue">
-                <property name="fieldName" unique="true" />
+                <property name="fieldName"/>
                 <property name="value"/>
         </composite-element>
     </set>
@@ -86,13 +94,32 @@
     </id>
     <version name="version" access="property" type="long" />
 
-    <property name="numHours"/>
+    <property name="numHours" access="field"/>
+    <property name="date" access="field"/>
+    <property name="clockStart" access="field"/>
+    <property name="clockFinish" access="field"/>
 
     <many-to-one name="workReport" class="org.navalplanner.business.workreports.entities.WorkReport" column="WORK_REPORT_ID" />
 
     <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource" column="RESOURCE_ID" not-null="true"/>
 
     <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID" not-null="true"/>
+
+    <many-to-one name="typeOfWorkHours" class="org.navalplanner.business.costcategories.entities.TypeOfWorkHours" column="TYPE_WORK_HOURS_ID" not-null="true"/>
+
+    <set name="labels" table="WORKREPORTSLINES_LABELS">
+        <key column="WORK_REPORT_LINE_ID"/>
+        <many-to-many column="LABEL_ID"
+            class="org.navalplanner.business.labels.entities.Label"/>
+    </set>
+
+    <set name="descriptionValues" table="DESCRIPTION_VALUES_IN_LINE">
+        <key column="DESCRIPTION_VALUE_ID"/>
+        <composite-element class="org.navalplanner.business.workreports.valueobjects.DescriptionValue">
+                <property name="fieldName"/>
+                <property name="value"/>
+        </composite-element>
+    </set>
 
 </class>
 

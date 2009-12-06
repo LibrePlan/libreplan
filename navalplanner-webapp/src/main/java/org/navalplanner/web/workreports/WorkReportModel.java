@@ -21,20 +21,29 @@
 package org.navalplanner.web.workreports;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.labels.daos.ILabelDAO;
+import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
+import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
+import org.navalplanner.business.workreports.entities.WorkReportLabelTypeAssigment;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
+import org.navalplanner.business.workreports.valueobjects.DescriptionField;
+import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -51,6 +60,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class WorkReportModel implements IWorkReportModel {
 
     @Autowired
+    private IWorkReportTypeDAO workReportTypeDAO;
+
+    @Autowired
     private IWorkReportDAO workReportDAO;
 
     @Autowired
@@ -59,21 +71,37 @@ public class WorkReportModel implements IWorkReportModel {
     @Autowired
     private IWorkerDAO workerDAO;
 
+    @Autowired
+    private ILabelDAO labelDAO;
+
+    private WorkReportType workReportType;
+
     private WorkReport workReport;
 
     private boolean editing = false;
+
+    private Map<DescriptionValue, DescriptionField> mapDescriptonValues = new HashMap<DescriptionValue, DescriptionField>();
+
+    private Map<Label, Integer> mapLabels = new HashMap<Label, Integer>();
+
+    private static final Map<LabelType, List<Label>> mapLabelTypes = new HashMap<LabelType, List<Label>>();
 
     @Override
     public WorkReport getWorkReport() {
         return workReport;
     }
 
+    private WorkReportType getWorkReportType() {
+        return this.workReportType;
+    }
+
     @Override
     @Transactional(readOnly = true)
     public void initCreate(WorkReportType workReportType) {
         editing = false;
-        workReport = WorkReport.create();
-        workReport.setWorkReportType(workReportType);
+        forceLoadWorkReportTypeFromDB(workReportType);
+        workReport = WorkReport.create(this.workReportType);
+        loadMaps();
     }
 
     @Override
@@ -82,6 +110,8 @@ public class WorkReportModel implements IWorkReportModel {
         editing = true;
         Validate.notNull(workReport);
         this.workReport = getFromDB(workReport);
+        forceLoadWorkReportTypeFromDB(workReport.getWorkReportType());
+        loadMaps();
     }
 
     @Transactional(readOnly = true)
@@ -108,13 +138,75 @@ public class WorkReportModel implements IWorkReportModel {
     private void forceLoadEntities(WorkReport workReport) {
         // Load WorkReportType
         workReport.getWorkReportType().getName();
+        if (workReport.getResource() != null) {
+            workReport.getResource().getDescription();
+        }
+        if (workReport.getOrderElement() != null) {
+            workReport.getOrderElement().getCode();
+        }
+
+        // Load Labels
+        for (Label label : workReport.getLabels()) {
+            label.getName();
+            label.getType().getName();
+        }
+
+        // Load DescriptionValues
+        for (DescriptionValue descriptionValue : workReport
+                .getDescriptionValues()) {
+            descriptionValue.getFieldName();
+        }
 
         // Load WorkReportLines
         for (WorkReportLine workReportLine : workReport.getWorkReportLines()) {
             workReportLine.getNumHours();
             workReportLine.getResource().getDescription();
             workReportLine.getOrderElement().getName();
+            workReportLine.getTypeOfWorkHours().getName();
 
+            // Load Labels
+            for (Label label : workReportLine.getLabels()) {
+                label.getName();
+                label.getType().getName();
+            }
+
+            // Load DescriptionValues
+            for (DescriptionValue descriptionValue : workReportLine
+                    .getDescriptionValues()) {
+                descriptionValue.getFieldName();
+            }
+
+        }
+    }
+
+    private void forceLoadWorkReportTypeFromDB(WorkReportType workReportType) {
+        this.workReportType = getWorkReportTypeFromDB(workReportType.getId());
+        forceLoadCollections(this.workReportType);
+    }
+
+    @Transactional(readOnly = true)
+    private WorkReportType getWorkReportTypeFromDB(Long id) {
+        try {
+            WorkReportType result = workReportTypeDAO.find(id);
+            return result;
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void forceLoadCollections(WorkReportType workReportType) {
+        for (DescriptionField line : workReportType.getLineFields()) {
+            line.getFieldName();
+        }
+
+        for (DescriptionField head : workReportType.getHeadingFields()) {
+            head.getFieldName();
+        }
+
+        for (WorkReportLabelTypeAssigment assignedLabel : workReportType
+                .getWorkReportLabelTypeAssigments()) {
+            assignedLabel.getDefaultLabel().getName();
+            assignedLabel.getLabelType().getName();
         }
     }
 
@@ -159,6 +251,12 @@ public class WorkReportModel implements IWorkReportModel {
         List<WorkReport> result = new ArrayList<WorkReport>();
         for (WorkReport each : workReportDAO.list(WorkReport.class)) {
             each.getWorkReportType().getName();
+            if (each.getResource() != null) {
+                each.getResource().getDescription();
+            }
+            if (each.getOrderElement() != null) {
+                each.getOrderElement().getName();
+            }
             result.add(each);
         }
         return result;
@@ -204,4 +302,136 @@ public class WorkReportModel implements IWorkReportModel {
         }
         return result;
     }
+
+    /* Operations to manage the Description Fields and the assigned labels */
+
+    @Override
+    public List<Object> getFieldsAndLabelsLineByDefault() {
+        if ((getWorkReport() != null)) {
+            return sort(getWorkReportType().getLineFieldsAndLabels());
+        }
+        return new ArrayList<Object>();
+    }
+
+    @Override
+    public List<Object> getFieldsAndLabelsHeading() {
+        List<Object> result = new ArrayList<Object>();
+        if (getWorkReport() != null) {
+            result.addAll(getWorkReport().getDescriptionValues());
+            result.addAll(getWorkReport().getLabels());
+            return sort(result);
+        }
+        return result;
+    }
+
+    @Override
+    public List<Object> getFieldsAndLabelsLine(WorkReportLine workReportLine) {
+        List<Object> result = new ArrayList<Object>();
+        if ((getWorkReport() != null) && (workReportLine != null)) {
+            result.addAll(workReportLine.getDescriptionValues());
+            result.addAll(workReportLine.getLabels());
+            return sort(result);
+        }
+        return result;
+    }
+
+    @Override
+    public Map<LabelType, List<Label>> getMapAssignedLabelTypes() {
+        return this.mapLabelTypes;
+    }
+
+    public void changeLabelInWorkReportLine(Label oldLabel, Label newLabel,
+            WorkReportLine line) {
+        if (line != null) {
+            line.getLabels().remove(oldLabel);
+            line.getLabels().add(newLabel);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void changeLabelInWorkReport(Label oldLabel, Label newLabel) {
+        if (getWorkReport() != null) {
+            getWorkReport().getLabels().remove(oldLabel);
+            getWorkReport().getLabels().add(newLabel);
+        }
+    }
+
+    private void loadMaps() {
+        loadLabelsByAssignedType();
+    }
+
+    private void loadLabelsByAssignedType() {
+        mapLabelTypes.clear();
+        //get the all assigned label types.
+        for (LabelType labelType : getAssignedLabelTypes()) {
+            List<Label> labels = new ArrayList<Label>(labelDAO
+                    .findByType(labelType));
+            mapLabelTypes.put(labelType, labels);
+        }
+    }
+
+    private DescriptionField getDescriptionFieldByName(String name){
+        WorkReportType type = getWorkReport().getWorkReportType();
+        for (DescriptionField descriptionField : type.getDescriptionFields()) {
+            if(descriptionField.getFieldName().equals(name)){
+                return descriptionField;
+            }
+        }
+        return null;
+    }
+
+    private Integer getAssignedLabelIndex(Label label){
+        for (WorkReportLabelTypeAssigment labelTypeAssigment : getWorkReportType()
+                .getWorkReportLabelTypeAssigments()) {
+            if(labelTypeAssigment.getLabelType().equals(label.getType())){
+                return labelTypeAssigment.getIndex();
+            }
+        }
+        return null;
+    }
+
+    private List<Object> sort(List<Object> list) {
+        List<Object> result = new ArrayList<Object>(list);
+        for (Object object : list) {
+            if ((getIndex(object) >= 0) && (getIndex(object) < list.size())) {
+                result.set(getIndex(object), object);
+            }
+        }
+        return result;
+    }
+
+    private List<LabelType> getAssignedLabelTypes() {
+        List<LabelType> result = new ArrayList<LabelType>();
+        for (WorkReportLabelTypeAssigment labelTypeAssigment : getWorkReportType()
+                .getWorkReportLabelTypeAssigments()) {
+            result.add(labelTypeAssigment.getLabelType());
+        }
+        return result;
+    }
+
+    private Integer getIndex(Object object) {
+        if (object instanceof DescriptionValue) {
+            DescriptionField descriptionField = getDescriptionFieldByName(((DescriptionValue) object)
+                    .getFieldName());
+            return descriptionField.getIndex();
+        }
+        if (object instanceof Label) {
+            return getAssignedLabelIndex((Label) object);
+        }
+        if (object instanceof DescriptionField) {
+            return ((DescriptionField) object).getIndex();
+        }
+        if (object instanceof WorkReportLabelTypeAssigment) {
+            return ((WorkReportLabelTypeAssigment) object).getIndex();
+        }
+        return null;
+    }
+
+    public Integer getLength(DescriptionValue descriptionValue) {
+        DescriptionField descriptionField = getDescriptionFieldByName(descriptionValue
+                .getFieldName());
+        return descriptionField.getLength();
+    }
+
 }

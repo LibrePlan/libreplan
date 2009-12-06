@@ -28,31 +28,47 @@
         <tabpanels>
             <tabpanel>
                 <vbox>
-                    <!-- Work report details  -->
-                    <grid fixedLayout="false">
-                        <columns>
-                            <column width="200px" />
-                            <column />
-                        </columns>
-                        <rows>
-                            <row>
-                                <label
-                                    value="${i18n:_('Responsible')}:" />
-                                <textbox id="responsible"
-                                    value="@{controller.workReport.responsible}" width="300px" />
-                            </row>
-                            <row>
-                                <label value="${i18n:_('Place')}:" />
-                                <textbox
-                                    value="@{controller.workReport.place}" width="300px" />
-                            </row>
-                            <row>
+
+            <panel title="${i18n:_('Heading Fields')}" border="normal"
+                    style="overflow:auto">
+                <panelchildren>
+                <grid id="HeadingRequirementsFields" mold="paging" pageSize="4" fixedLayout="true">
+                    <columns>
+                      <column width="200px"/>
+                      <column />
+                    </columns>
+                    <rows>
+                        <row visible = "@{controller.workReport.workReportType.dateIsSharedByLines}">
                                 <label value="${i18n:_('Date')}:" />
-                                <datebox id="date"
-                                    value="@{controller.workReport.date}" />
-                            </row>
-                        </rows>
-                    </grid>
+                                <datebox id="date" value="@{controller.workReport.date}" />
+                        </row>
+                        <row visible = "@{controller.workReport.workReportType.resourceIsSharedInLines}">
+                                <label value="${i18n:_('Resource')}:" />
+                                <autocomplete id="autocompleteResource" buttonVisible="true"
+                                    onChange ="controller.changeResource(self.selectedItem);"
+                                    finder="ResourceFinder"
+                                    selectedItem="@{controller.workReport.resource}"/>
+                        </row>
+                        <row visible = "@{controller.workReport.workReportType.orderElementIsSharedInLines}">
+                                <label value="${i18n:_('OrderElement Code')}:" />
+                                <textbox id="txtOrderElement" value="@{controller.codeOrderElement}" />
+                        </row>
+                    </rows>
+                </grid>
+
+                <grid id="headingFieldsAndLabels" mold="paging" pageSize="4"
+                    fixedLayout="true"
+                    model="@{controller.fieldsAndLabelsHeading}"
+                    rowRenderer= "@{controller.orderedFieldsAndLabelsRowRenderer}">
+                    <columns>
+                      <column width="200px"/>
+                      <column />
+                    </columns>
+                </grid>
+                </panelchildren>
+                </panel>
+
+                <separator bar="false" spacing="80px" orient="vertical"/>
 
                     <!-- Work report lines -->
                     <panel title="${i18n:_('Work report lines')}"
@@ -63,7 +79,7 @@
                                     onClick="controller.addWorkReportLine()" />
                             </hbox>
 
-                            <grid id="listWorkReportLines"
+                           <grid id="listWorkReportLines" fixedLayout="true"
                                 model="@{controller.workReportLines}"
                                 rowRenderer="@{controller.renderer}" />
                         </panelchildren>

@@ -243,7 +243,7 @@ public class WorkReportType extends BaseEntity {
         return false;
     }
 
-    private Set<DescriptionField> getDescriptionFields() {
+    public Set<DescriptionField> getDescriptionFields() {
         Set<DescriptionField> descriptionFields = new HashSet<DescriptionField>();
         descriptionFields.addAll(this.getHeadingFields());
         descriptionFields.addAll(this.getLineFields());
@@ -465,21 +465,20 @@ public class WorkReportType extends BaseEntity {
         return result;
     }
 
-    private List<Object> getHeadingLabels() {
-        List<Object> result = new ArrayList<Object>();
-        for (Object label : getWorkReportLabelTypeAssigments()) {
-            if (((WorkReportLabelTypeAssigment) label).getLabelsSharedByLines()) {
+    public List<WorkReportLabelTypeAssigment> getHeadingLabels() {
+        List<WorkReportLabelTypeAssigment> result = new ArrayList<WorkReportLabelTypeAssigment>();
+        for (WorkReportLabelTypeAssigment label : getWorkReportLabelTypeAssigments()) {
+            if (label.getLabelsSharedByLines()) {
                 result.add(label);
             }
         }
         return result;
     }
 
-    private List<Object> getLineLabels() {
-        List<Object> result = new ArrayList<Object>();
-        for (Object label : getWorkReportLabelTypeAssigments()) {
-            if (!((WorkReportLabelTypeAssigment) label)
-                    .getLabelsSharedByLines()) {
+    public List<WorkReportLabelTypeAssigment> getLineLabels() {
+        List<WorkReportLabelTypeAssigment> result = new ArrayList<WorkReportLabelTypeAssigment>();
+        for (WorkReportLabelTypeAssigment label : getWorkReportLabelTypeAssigments()) {
+            if (!label.getLabelsSharedByLines()) {
                 result.add(label);
             }
         }

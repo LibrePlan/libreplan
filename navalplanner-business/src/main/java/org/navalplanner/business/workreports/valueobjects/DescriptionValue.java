@@ -20,12 +20,27 @@
 
 package org.navalplanner.business.workreports.valueobjects;
 
+import org.navalplanner.business.INewObject;
+
 /**
  * Value Object <br />
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-public class DescriptionValue {
+public class DescriptionValue implements INewObject {
+
+    public static DescriptionValue create() {
+        DescriptionValue descriptionValue = new DescriptionValue();
+        descriptionValue.setNewObject(true);
+        return descriptionValue;
+    }
+
+    public static DescriptionValue create(String fieldName, String value) {
+        DescriptionValue descriptionValue = new DescriptionValue(fieldName,
+                value);
+        descriptionValue.setNewObject(true);
+        return descriptionValue;
+    }
 
     public DescriptionValue() {
 
@@ -39,6 +54,16 @@ public class DescriptionValue {
     private String fieldName;
 
     private String value;
+
+    private boolean newObject = false;
+
+    public boolean isNewObject() {
+        return newObject;
+    }
+
+    private void setNewObject(boolean newObject) {
+        this.newObject = newObject;
+    }
 
     public String getFieldName() {
         return fieldName;

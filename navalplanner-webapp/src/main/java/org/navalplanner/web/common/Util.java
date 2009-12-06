@@ -40,6 +40,7 @@ import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Timebox;
 
 /**
  * Utilities class. <br />
@@ -289,6 +290,48 @@ public class Util {
             }
         });
         return dateBox;
+    }
+
+    /**
+     * Binds a {@link Timebox} with a {@link Getter}. The {@link Getter} will be
+     * used to get the value that is going to be showed in the {@link Timebox}.
+     * @param dateBox
+     *            The {@link Timebox} to be bound
+     * @param getter
+     *            The {@link Getter} interface that will implement a get method.
+     * @return The {@link Timebox} bound
+     */
+    public static Timebox bind(final Timebox timeBox, final Getter<Date> getter) {
+        timeBox.setValue(getter.get());
+        timeBox.setDisabled(true);
+        return timeBox;
+    }
+
+    /**
+     * Binds a {@link Timebox} with a {@link Getter}. The {@link Getter} will be
+     * used to get the value that is going to be showed in the {@link Timebox}.
+     * The {@link Setter} will be used to store the value inserted by the user
+     * in the {@link Timebox}.
+     * @param timeBox
+     *            The {@link Timebox} to be bound
+     * @param getter
+     *            The {@link Getter} interface that will implement a get method.
+     * @param setter
+     *            The {@link Setter} interface that will implement a set method.
+     * @return The {@link Timebox} bound
+     */
+    public static Timebox bind(final Timebox timeBox,
+            final Getter<Date> getter, final Setter<Date> setter) {
+        timeBox.setValue(getter.get());
+        timeBox.addEventListener(Events.ON_CHANGE, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                setter.set(timeBox.getValue());
+                timeBox.setValue(getter.get());
+            }
+        });
+        return timeBox;
     }
 
     /**

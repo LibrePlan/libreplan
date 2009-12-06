@@ -25,10 +25,13 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 
 /**
@@ -37,8 +40,8 @@ import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 public class WorkReport extends BaseEntity {
 
     public static final String DATE = "date";
-
-    public static final String RESPONSIBLE = "responsible";
+    public static final String RESOURCE = "resource";
+    public static final String ORDERELEMENT = "orderElement";
 
     public static WorkReport create() {
         WorkReport workReport = new WorkReport();
@@ -46,25 +49,31 @@ public class WorkReport extends BaseEntity {
         return workReport;
     }
 
-    public static WorkReport create(Date date, String place,
-            WorkReportType workReportType, Set<WorkReportLine> workReportLines) {
-        WorkReport workReport = new WorkReport(date, place, workReportType,
-                workReportLines);
+    public static WorkReport create(WorkReportType workReportType) {
+        WorkReport workReport = new WorkReport(workReportType);
         workReport.setNewObject(true);
         return workReport;
     }
 
-    @NotNull
+    public static WorkReport create(Date date,
+            WorkReportType workReportType, Set<WorkReportLine> workReportLines,
+            Resource resource, OrderElement orderElement) {
+        WorkReport workReport = new WorkReport(date, workReportType,
+                workReportLines, resource, orderElement);
+        workReport.setNewObject(true);
+        return workReport;
+    }
+
     private Date date;
-
-    private String place;
-
-    @NotEmpty
-    private String responsible;
 
     private WorkReportType workReportType;
 
-    @Valid
+    private Resource resource;
+
+    private OrderElement orderElement;
+
+    private Set<Label> labels = new HashSet<Label>();
+
     private Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
 
     private Set<DescriptionValue> descriptionValues = new HashSet<DescriptionValue>();
@@ -76,12 +85,19 @@ public class WorkReport extends BaseEntity {
 
     }
 
-    private WorkReport(Date date, String place, WorkReportType workReportType,
-            Set<WorkReportLine> workReportLines) {
+    private WorkReport(WorkReportType workReportType) {
+        this.workReportType = workReportType;
+        updateItsFieldsAndLabels(workReportType);
+    }
+
+    private WorkReport(Date date, WorkReportType workReportType,
+            Set<WorkReportLine> workReportLines, Resource resource,
+            OrderElement orderElement) {
         this.date = date;
-        this.place = place;
         this.workReportType = workReportType;
         this.workReportLines = workReportLines;
+        this.resource = resource;
+        this.orderElement = orderElement;
     }
 
     public Date getDate() {
@@ -90,32 +106,39 @@ public class WorkReport extends BaseEntity {
 
     public void setDate(Date date) {
         this.date = date != null ? new Date(date.getTime()) : null;
-    }
-
-    public String getPlace() {
-        return place;
-    }
-
-    public void setPlace(String place) {
-        this.place = place;
-    }
-
-    public String getResponsible() {
-        return responsible;
-    }
-
-    public void setResponsible(String responsible) {
-        this.responsible = responsible;
+        if (workReportType != null) {
+            if (workReportType.getDateIsSharedByLines()) {
+                updateSharedDateByLines(date);
+            } else {
+                this.date = null;
+            }
+        }
     }
 
     public WorkReportType getWorkReportType() {
         return workReportType;
     }
 
+    /**
+     * Set the new {@link WorkReportType} and validate if the new
+     * {@link WorkReportType} is different to the old {@link WorkReportType}.If
+     * the new {@link WorkReportType} is different it updates the assigned
+     * fields and labels of the new {@link WorkReportType}.
+     * @param {@link WorkReportType}
+     */
     public void setWorkReportType(WorkReportType workReportType) {
+        if ((workReportType != null)
+                && ((this.workReportType == null) || (!this.workReportType
+                        .equals(workReportType)))) {
+            setDate(date);
+            setResource(resource);
+            setOrderElement(orderElement);
+            updateItsFieldsAndLabels(workReportType);
+        }
         this.workReportType = workReportType;
     }
 
+    @Valid
     public Set<WorkReportLine> getWorkReportLines() {
         return Collections.unmodifiableSet(workReportLines);
     }
@@ -123,6 +146,12 @@ public class WorkReport extends BaseEntity {
     public void addWorkReportLine(WorkReportLine workReportLine) {
         workReportLines.add(workReportLine);
         workReportLine.setWorkReport(this);
+
+        // update and copy the fields and label for each line
+        workReportLine.updateItsFieldsAndLabels(workReportType);
+
+        // copy the required fields if these are shared by lines
+        copyTheRequiredFieldIfIsNeeded(workReportLine);
     }
 
     public void removeWorkReportLine(WorkReportLine workReportLine) {
@@ -136,4 +165,134 @@ public class WorkReport extends BaseEntity {
     public void setDescriptionValues(Set<DescriptionValue> descriptionValues) {
         this.descriptionValues = descriptionValues;
     }
+
+    public Set<Label> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(Set<Label> labels) {
+        this.labels = labels;
+    }
+
+    public Resource getResource() {
+        return resource;
+    }
+
+    public void setResource(Resource resource) {
+        this.resource = resource;
+        if (workReportType != null) {
+            if (workReportType.getResourceIsSharedInLines()) {
+                updateSharedResourceByLines(resource);
+            } else {
+                this.resource = null;
+            }
+        }
+    }
+
+    public OrderElement getOrderElement() {
+        return orderElement;
+    }
+
+    public void setOrderElement(OrderElement orderElement) {
+        this.orderElement = orderElement;
+        if (workReportType != null) {
+            if (workReportType.getOrderElementIsSharedInLines()) {
+                this.updateSharedOrderElementByLines(orderElement);
+            } else {
+                this.orderElement = null;
+            }
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "date:the date must be not null if is shared by lines")
+    public boolean theDateMustBeNotNullIfIsSharedByLines() {
+        if (workReportType.getDateIsSharedByLines()) {
+            return (getDate() != null);
+        }
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "resource:the resource must be not null if is shared by lines")
+    public boolean theResourceMustBeNotNullIfIsSharedByLines() {
+        if (workReportType.getResourceIsSharedInLines()) {
+            return (getResource() != null);
+        }
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "orderElement:the order element must be not null if is shared by lines")
+    public boolean theOrderElementMustBeNotNullIfIsSharedByLines() {
+        if (workReportType.getOrderElementIsSharedInLines()) {
+            return (getOrderElement() != null);
+        }
+        return true;
+    }
+
+    private void updateItsFieldsAndLabels(WorkReportType workReportType) {
+        assignItsDescriptionValues(workReportType);
+        assignItsLabels(workReportType);
+
+        // it updates the fields and labels of its work report lines
+        for (WorkReportLine line : getWorkReportLines()) {
+            line.updateItsFieldsAndLabels(workReportType);
+        }
+    }
+
+    private void assignItsLabels(WorkReportType workReportType){
+        if (workReportType != null) {
+            labels.clear();
+            for (WorkReportLabelTypeAssigment labelTypeAssigment : workReportType.getHeadingLabels()) {
+                labels.add(labelTypeAssigment.getDefaultLabel());
+            }
+        }
+    }
+
+    private void assignItsDescriptionValues(WorkReportType workReportType) {
+        if (workReportType != null) {
+            descriptionValues.clear();
+            for (DescriptionField descriptionField : workReportType
+                    .getHeadingFields()) {
+                DescriptionValue descriptionValue = DescriptionValue.create(
+                        descriptionField.getFieldName(), null);
+                descriptionValues.add(descriptionValue);
+            }
+        }
+    }
+
+    private void copyTheRequiredFieldIfIsNeeded(WorkReportLine workReportLine) {
+        // copy the required fields if these are shared by lines
+        if (workReportType != null) {
+            if (workReportType.getDateIsSharedByLines()) {
+                workReportLine.setDate(date);
+            }
+            if (workReportType.getResourceIsSharedInLines()) {
+                workReportLine.setResource(resource);
+            }
+            if (workReportType.getResourceIsSharedInLines()) {
+                workReportLine.setOrderElement(orderElement);
+            }
+        }
+    }
+
+    private void updateSharedDateByLines(Date date) {
+        for (WorkReportLine line : getWorkReportLines()) {
+                line.setDate(date);
+        }
+    }
+
+    private void updateSharedResourceByLines(Resource resource) {
+        for (WorkReportLine line : getWorkReportLines()) {
+                line.setResource(resource);
+            }
+    }
+
+    private void updateSharedOrderElementByLines(OrderElement orderElement) {
+            for (WorkReportLine line : getWorkReportLines()) {
+                line.setOrderElement(orderElement);
+            }
+    }
+
 }

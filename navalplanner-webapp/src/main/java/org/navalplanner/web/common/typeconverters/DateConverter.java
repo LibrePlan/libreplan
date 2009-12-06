@@ -41,6 +41,7 @@ public class DateConverter implements TypeConverter {
 
     @Override
     public Object coerceToUi(Object object, Component component) {
-        return (new SimpleDateFormat("dd/MM/yyyy")).format((Date) object);
+        return object != null ? (new SimpleDateFormat("dd/MM/yyyy"))
+                .format((Date) object) : new String("");
     }
 }

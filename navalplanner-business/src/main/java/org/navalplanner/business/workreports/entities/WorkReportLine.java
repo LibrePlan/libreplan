@@ -20,10 +20,19 @@
 
 package org.navalplanner.business.workreports.entities;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workreports.valueobjects.DescriptionField;
+import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 
 /**
  * @author Diego Pino García <dpino@igalia.com>
@@ -31,9 +40,13 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public class WorkReportLine extends BaseEntity {
 
+    public static final String DATE = "date";
+
     public static final String RESOURCE = "resource";
 
     public static final String ORDER_ELEMENT = "orderElement";
+
+    public static final String HOURS = "numHours";
 
     public static WorkReportLine create() {
         WorkReportLine workReportLine = new WorkReportLine();
@@ -51,12 +64,23 @@ public class WorkReportLine extends BaseEntity {
 
     private Integer numHours;
 
+    private Date date;
+
+    private Date clockStart;
+
+    private Date clockFinish;
 
     private Resource resource;
 
     private OrderElement orderElement;
 
+    private Set<Label> labels = new HashSet<Label>();
+
+    private Set<DescriptionValue> descriptionValues = new HashSet<DescriptionValue>();
+
     private WorkReport workReport;
+
+    private TypeOfWorkHours typeOfWorkHours;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -72,6 +96,7 @@ public class WorkReportLine extends BaseEntity {
         this.orderElement = orderElement;
     }
 
+    @NotNull
     public Integer getNumHours() {
         return numHours;
     }
@@ -80,7 +105,33 @@ public class WorkReportLine extends BaseEntity {
         this.numHours = numHours;
     }
 
+    public Date getClockFinish() {
+        return clockFinish;
+    }
+
+    public void setClockFinish(Date clockFinish) {
+        this.clockFinish = clockFinish;
+        updateNumHours();
+    }
+
+    public Date getClockStart() {
+        return clockStart;
+    }
+
+    public void setClockStart(Date clockStart) {
+        this.clockStart = clockStart;
+        updateNumHours();
+    }
+
     @NotNull
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public Resource getResource() {
         return resource;
     }
@@ -89,7 +140,6 @@ public class WorkReportLine extends BaseEntity {
         this.resource = resource;
     }
 
-    @NotNull
     public OrderElement getOrderElement() {
         return orderElement;
     }
@@ -98,11 +148,148 @@ public class WorkReportLine extends BaseEntity {
         this.orderElement = orderElement;
     }
 
+    public Set<Label> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(Set<Label> labels) {
+        this.labels = labels;
+    }
+
     public WorkReport getWorkReport() {
         return workReport;
     }
 
     public void setWorkReport(WorkReport workReport) {
         this.workReport = workReport;
+    }
+
+    public Set<DescriptionValue> getDescriptionValues() {
+        return descriptionValues;
+    }
+
+    public void setDescriptionValues(Set<DescriptionValue> descriptionValues) {
+        this.descriptionValues = descriptionValues;
+    }
+
+    @NotNull
+    public TypeOfWorkHours getTypeOfWorkHours() {
+        return typeOfWorkHours;
+    }
+
+    public void setTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
+        this.typeOfWorkHours = typeOfWorkHours;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "resource:the resource must be not null")
+    public boolean theResourceMustBeNotNull() {
+        return (getResource() != null);
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "resource:the resource must be not null")
+    public boolean theOrderElementMustBeNotNull() {
+        return (getOrderElement() != null);
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "closckStart:the clockStart must be not null if number of hours is calcultate by clock")
+    public boolean theClockStartMustBeNotNullIfIsCalculatedByClock() {
+        if (workReport.getWorkReportType().getHoursManagement().equals(
+                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
+            return (getClockStart() != null);
+        }
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "closckStart:the clockStart must be greater than clockFinish")
+    public boolean theClockStartMustBePreviousToClockFinish() {
+        if ((getClockStart() != null)
+                && (getClockFinish() != null)
+                && (!workReport.getWorkReportType().getHoursManagement()
+                        .equals(HoursManagementEnum.NUMBER_OF_HOURS))) {
+            return (getClockStart().compareTo(getClockFinish()) <= 0);
+        }
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "closckStart:the clockStart must be not null if number of hours is calcultate by clock")
+    public boolean theClockFinishMustBeNotNullIfIsCalculatedByClock() {
+        if (workReport.getWorkReportType().getHoursManagement().equals(
+                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
+            return (getClockFinish() != null);
+        }
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "Hours:the number of hours must be less or equal to the diference between time start and time finish.")
+    public boolean theNumHoursIsValid() {
+        if ((clockStart != null)
+                && (clockFinish != null)
+                && (numHours != null)
+                && (!workReport.getWorkReportType().getHoursManagement()
+                        .equals(HoursManagementEnum.NUMBER_OF_HOURS))) {
+
+            return (this.numHours.compareTo(this
+                    .getDiferenceBetweenTimeStartAndFinish()) <= 0);
+        }
+        return true;
+    }
+
+    void updateItsFieldsAndLabels(WorkReportType workReportType) {
+        assignItsLabels(workReportType);
+        assignItsDescriptionValues(workReportType);
+    }
+
+    private void assignItsLabels(WorkReportType workReportType) {
+        if (workReportType != null) {
+            labels.clear();
+            for (WorkReportLabelTypeAssigment labelTypeAssigment : workReportType
+                    .getLineLabels()) {
+                labels.add(labelTypeAssigment.getDefaultLabel());
+            }
+        }
+    }
+
+    private void assignItsDescriptionValues(WorkReportType workReportType) {
+        if (workReportType != null) {
+            descriptionValues.clear();
+            for (DescriptionField descriptionField : workReportType
+                    .getLineFields()) {
+                DescriptionValue descriptionValue = DescriptionValue.create(
+                        descriptionField.getFieldName(), null);
+                descriptionValues.add(descriptionValue);
+            }
+        }
+    }
+
+    private void updateNumHours() {
+        if (workReport.getWorkReportType().getHoursManagement().equals(
+                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
+            setNumHours(getDiferenceBetweenTimeStartAndFinish());
+        }
+    }
+
+    private Integer getDiferenceBetweenTimeStartAndFinish() {
+        if ((getClockStart() != null) && (getClockFinish() != null)) {
+            Long clockStart = getClockStart().getTime();
+            Long clockFinish = getClockFinish().getTime();
+            Long numHours;
+            if (clockStart.compareTo(clockFinish) > 0) {
+                numHours = clockStart - clockFinish;
+            } else {
+                numHours = clockFinish - clockStart;
+            }
+            if (numHours.compareTo(new Long(0)) > 0) {
+                numHours = numHours / 3600000;
+            }
+            return numHours.intValue();
+        } else {
+            return null;
+        }
     }
 }
