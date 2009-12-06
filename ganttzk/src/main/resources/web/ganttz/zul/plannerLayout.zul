@@ -6,15 +6,14 @@ planner = self;
 
     <borderlayout sclass="plannerlayout" width="auto">
        <north height="30px" border="0">
-       <hbox align="center" id="toolbar">
+       <hbox align="center" id="toolbar" sclass="toolbar-box">
         <separator/>
         <button onClick="planner.zoomIncrease();" class="planner-icon"
             image="/common/img/zoom_in.png" tooltiptext="${i18n:_('Zoom increase')}" />
         <button onClick="planner.zoomDecrease();" class="planner-icon"
             image="/common/img/zoom_out.png" tooltiptext="${i18n:_('Zoom decrease')}" />
-        From: <datebox /> to: <datebox />
         <separator/>
-        Filter:
+        <label>${i18n:_('Filter')}:</label>
         <combobox>
             <comboitem label="Orders"
                 description="Show full orders and company view" />

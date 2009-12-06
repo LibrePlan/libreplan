@@ -339,7 +339,6 @@ button.z-button {
     font-size: 1.2em;
 }
 
-
 .message_ERROR, .message_INFO {
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -348,10 +347,16 @@ button.z-button {
     width: 300px;
 }
 
+.message_WARNING {
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    padding: 10px 5px;
+    margin: 5px;
+}
+
 .message_WARNING img, .message_ERROR img {
     display: none;
 }
-
 
 .message_ERROR {
     color: #ee0000;
@@ -391,13 +396,10 @@ div.z-errbox {
     width: auto;
 }
 
-
 .z-window-embedded {
     margin: 10px;
     margin-top: 5px;
 }
-
-
 
 /* Hide inner second level embed window titles */
 .z-window-embedded
@@ -618,8 +620,6 @@ div.z-grid {
 .orderTree .icono td {
     border:none;
 }
-
-
 
 .orderelements-tab .z-datebox-focus .z-datebox-inp  {
     border-top: 0px;
@@ -945,9 +945,11 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 .scheduling-graphics .z-tabs-ver {
     width: 60px !important;
 }
+
 .scheduling-graphics .z-tab-ver .z-tab-ver-text {
     white-space: normal;
 }
+
 .earned-parameter-column {
     width: 70px;
 }
@@ -962,4 +964,12 @@ padding: 10px;
 
 .perspectives-column {
     display:none;
+}
+
+.toolbar-box .z-button-cm {
+    height: 24px;
+}
+
+.toolbar-box .z-label {
+    color:#0068B1;
 }
