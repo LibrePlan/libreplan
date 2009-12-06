@@ -34,6 +34,7 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarException;
+import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 
@@ -92,9 +93,15 @@ public class BaseCalendarTest {
         calendarFixture = BaseCalendar.create();
     }
 
+    public static CalendarExceptionType createCalendarExceptionType() {
+        CalendarExceptionType result = CalendarExceptionType.create("TEST",
+                "black", true);
+        return result;
+    }
+
     public static void addChristmasAsExceptionDay(BaseCalendar calendar) {
         CalendarException christmasDay = CalendarException.create(
-                CHRISTMAS_DAY_LOCAL_DATE, 0);
+                CHRISTMAS_DAY_LOCAL_DATE, 0, createCalendarExceptionType());
 
         calendar.addExceptionDay(christmasDay);
     }
@@ -155,7 +162,8 @@ public class BaseCalendarTest {
     public void testGetWorkableHoursDerivedBasicCalendarWithException() {
         BaseCalendar calendar = createBasicCalendar().newDerivedCalendar();
 
-        CalendarException day = CalendarException.create(WEDNESDAY_LOCAL_DATE, 4);
+        CalendarException day = CalendarException.create(WEDNESDAY_LOCAL_DATE,
+                4, createCalendarExceptionType());
         calendar.addExceptionDay(day);
 
         int mondayHours = calendar.getWorkableHours(MONDAY_LOCAL_DATE);
@@ -172,7 +180,8 @@ public class BaseCalendarTest {
     public void testGetWorkableHoursDerivedChristmasCalendarRedefiningExceptionDay() {
         BaseCalendar calendar = createChristmasCalendar().newDerivedCalendar();
 
-        CalendarException day = CalendarException.create(CHRISTMAS_DAY_LOCAL_DATE, 4);
+        CalendarException day = CalendarException.create(
+                CHRISTMAS_DAY_LOCAL_DATE, 4, createCalendarExceptionType());
         calendar.addExceptionDay(day);
 
         int hours = calendar.getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE);
@@ -200,10 +209,12 @@ public class BaseCalendarTest {
     public void testAddTwoExceptionDaysInTheSameDate() {
         BaseCalendar calendar = createBasicCalendar();
 
-        CalendarException day = CalendarException.create(MONDAY_LOCAL_DATE, 8);
+        CalendarException day = CalendarException.create(MONDAY_LOCAL_DATE, 8,
+                createCalendarExceptionType());
         calendar.addExceptionDay(day);
 
-        CalendarException day2 = CalendarException.create(MONDAY_LOCAL_DATE, 4);
+        CalendarException day2 = CalendarException.create(MONDAY_LOCAL_DATE, 4,
+                createCalendarExceptionType());
         calendar.addExceptionDay(day2);
     }
 
@@ -312,13 +323,15 @@ public class BaseCalendarTest {
     public void testGettWorkableHoursNewVersionFromChristmasCalendar() {
         BaseCalendar calendar = createChristmasCalendar();
         CalendarException day = CalendarException.create(CHRISTMAS_DAY_LOCAL_DATE
-                .plusYears(1), 0);
+                .plusYears(1), 0,
+                createCalendarExceptionType());
         calendar.addExceptionDay(day);
 
         calendar.newVersion(CHRISTMAS_DAY_LOCAL_DATE.plusDays(1));
 
         calendar
-                .updateExceptionDay(CHRISTMAS_DAY_LOCAL_DATE.plusYears(1), 8);
+                .updateExceptionDay(CHRISTMAS_DAY_LOCAL_DATE.plusYears(1), 8,
+                createCalendarExceptionType());
 
         assertThat(calendar
                 .getWorkableHours(CHRISTMAS_DAY_LOCAL_DATE.plusYears(1)), equalTo(8));
@@ -384,7 +397,8 @@ public class BaseCalendarTest {
         calendar.newVersion(CHRISTMAS_DAY_LOCAL_DATE
                 .plusDays(1));
 
-        CalendarException day = CalendarException.create(CHRISTMAS_DAY_LOCAL_DATE, 0);
+        CalendarException day = CalendarException.create(
+                CHRISTMAS_DAY_LOCAL_DATE, 0, createCalendarExceptionType());
         calendar.addExceptionDay(day);
 
         assertThat(calendar.getExceptions().size(), equalTo(1));
@@ -549,8 +563,10 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createBasicCalendar();
         calendar.newVersion(WEDNESDAY_LOCAL_DATE);
 
-        calendar.addExceptionDay(CalendarException.create(MONDAY_LOCAL_DATE, 0));
-        calendar.addExceptionDay(CalendarException.create(FRIDAY_LOCAL_DATE, 0));
+        calendar.addExceptionDay(CalendarException.create(MONDAY_LOCAL_DATE, 0,
+                createCalendarExceptionType()));
+        calendar.addExceptionDay(CalendarException.create(FRIDAY_LOCAL_DATE, 0,
+                createCalendarExceptionType()));
 
         assertThat(calendar.getWorkableHours(MONDAY_LOCAL_DATE),
                 equalTo(0));
@@ -566,7 +582,8 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createBasicCalendar();
 
         LocalDate pastMonth = (new LocalDate()).minusMonths(1);
-        CalendarException exceptionDay = CalendarException.create(pastMonth, 0);
+        CalendarException exceptionDay = CalendarException.create(pastMonth, 0,
+                createCalendarExceptionType());
 
         calendar.addExceptionDay(exceptionDay);
     }

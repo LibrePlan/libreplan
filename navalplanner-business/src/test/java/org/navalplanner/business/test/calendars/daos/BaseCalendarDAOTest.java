@@ -30,13 +30,20 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.calendars.daos.BaseCalendarDAO;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarException;
+import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -62,7 +69,18 @@ public class BaseCalendarDAOTest {
     private IBaseCalendarDAO baseCalendarDAO;
 
     @Autowired
+    private ICalendarExceptionTypeDAO calendarExceptionTypeDAO;
+
+    @Autowired
     private SessionFactory session;
+
+    @Resource
+    private IDataBootstrap calendarBootstrap;
+
+    @Before
+    public void loadRequiredData() {
+        calendarBootstrap.loadRequiredData();
+    }
 
     @Test
     public void saveBasicCalendar() {
@@ -74,7 +92,7 @@ public class BaseCalendarDAOTest {
     @Test
     public void saveBasicCalendarWithExceptionDay() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
-        BaseCalendarTest.addChristmasAsExceptionDay(calendar);
+        addChristmasAsExceptionDay(calendar);
 
         baseCalendarDAO.save(calendar);
         assertTrue(baseCalendarDAO.exists(calendar.getId()));
@@ -85,6 +103,14 @@ public class BaseCalendarDAOTest {
         } catch (InstanceNotFoundException e) {
             fail("It should not throw an exception");
         }
+    }
+
+    private void addChristmasAsExceptionDay(BaseCalendar calendar) {
+        CalendarExceptionType type = calendarExceptionTypeDAO.list(
+                CalendarExceptionType.class).get(0);
+        CalendarException christmasDay = CalendarException.create(
+                BaseCalendarTest.CHRISTMAS_DAY_LOCAL_DATE, 0, type);
+        calendar.addExceptionDay(christmasDay);
     }
 
     @Test

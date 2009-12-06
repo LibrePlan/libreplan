@@ -22,10 +22,13 @@ package org.navalplanner.web.calendars;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarException;
+import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -71,6 +74,8 @@ public interface IBaseCalendarModel {
 
     boolean isDefaultCalendar(BaseCalendar baseCalendar);
 
+    List<CalendarExceptionType> getCalendarExceptionTypes();
+
     /*
      * Initial conversation steps
      */
@@ -103,7 +108,8 @@ public interface IBaseCalendarModel {
 
     Integer getHoursOfDay();
 
-    void createException(Integer hours);
+    void createException(CalendarExceptionType type, Date startDate,
+            Date endDate, Integer hours);
 
     Integer getHours(Days day);
 
@@ -146,6 +152,23 @@ public interface IBaseCalendarModel {
     String getName();
 
     LocalDate getValidFrom(CalendarData calendarData);
+
+    Set<CalendarException> getCalendarExceptions();
+
+    void removeException(LocalDate date);
+
+    CalendarExceptionType getCalendarExceptionType();
+
+    CalendarExceptionType getCalendarExceptionType(LocalDate date);
+
+    void updateException(CalendarExceptionType type, Date startDate,
+            Date endDate, Integer hours);
+
+    void removeCalendarData(CalendarData calendarData);
+
+    CalendarData getLastCalendarData();
+
+    CalendarData getCalendarData();
 
     /*
      * Final conversation steps

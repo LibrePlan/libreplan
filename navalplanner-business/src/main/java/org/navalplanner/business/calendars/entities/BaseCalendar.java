@@ -201,15 +201,17 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         exceptions.remove(day);
     }
 
-    public void updateExceptionDay(Date date, Integer hours)
+    public void updateExceptionDay(Date date, Integer hours,
+            CalendarExceptionType type)
             throws IllegalArgumentException {
-        updateExceptionDay(new LocalDate(date), hours);
+        updateExceptionDay(new LocalDate(date), hours, type);
     }
 
-    public void updateExceptionDay(LocalDate date, Integer hours)
+    public void updateExceptionDay(LocalDate date, Integer hours,
+            CalendarExceptionType type)
             throws IllegalArgumentException {
         removeExceptionDay(date);
-        CalendarException day = CalendarException.create(date, hours);
+        CalendarException day = CalendarException.create(date, hours, type);
         addExceptionDay(day);
     }
 
@@ -449,7 +451,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return Collections.unmodifiableList(calendarDataVersions);
     }
 
-    private CalendarData getCalendarData(LocalDate date) {
+    public CalendarData getCalendarData(LocalDate date) {
         for (CalendarData calendarData : calendarDataVersions) {
             if (calendarData.getExpiringDate() == null) {
                 return calendarData;
@@ -463,7 +465,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         throw new RuntimeException("Some version should not be expired");
     }
 
-    private CalendarData getLastCalendarData() {
+    public CalendarData getLastCalendarData() {
         if (calendarDataVersions.isEmpty()) {
             return null;
         }
@@ -641,6 +643,49 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
             }
         }
         return result;
+    }
+
+    public CalendarExceptionType getExceptionType(Date date) {
+        return getExceptionType(new LocalDate(date));
+    }
+
+    public CalendarExceptionType getExceptionType(LocalDate date) {
+        CalendarException exceptionDay = getExceptionDay(date);
+        if (exceptionDay == null) {
+            return null;
+        }
+
+        return exceptionDay.getType();
+    }
+
+    public void removeCalendarData(CalendarData calendarData)
+            throws IllegalArgumentException {
+        CalendarData lastCalendarData = getLastCalendarData();
+        if (calendarData.equals(lastCalendarData)) {
+            LocalDate validFrom = getValidFrom(calendarData);
+            if (validFrom == null) {
+                throw new IllegalArgumentException(
+                        "You can not remove the current calendar data");
+            }
+            if (validFrom.compareTo(new LocalDate()) > 0) {
+                calendarDataVersions.remove(lastCalendarData);
+                getLastCalendarData().removeExpiringDate();
+            } else {
+                throw new IllegalArgumentException(
+                        "You can not modify the past removing a calendar data");
+            }
+        } else {
+            throw new IllegalArgumentException(
+                    "You just can remove the last calendar data");
+        }
+    }
+
+    public LocalDate getValidFrom(CalendarData calendarData) {
+        Integer index = calendarDataVersions.indexOf(calendarData);
+        if (index > 0) {
+            return calendarDataVersions.get(index - 1).getExpiringDate();
+        }
+        return null;
     }
 
 }

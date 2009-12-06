@@ -22,6 +22,7 @@ package org.navalplanner.business.calendars.entities;
 
 import java.util.Date;
 
+import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 
@@ -35,14 +36,18 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class CalendarException extends BaseEntity {
 
-    public static CalendarException create(Date date, Integer hours) {
-        CalendarException exceptionDay = new CalendarException(new LocalDate(date), hours);
+    public static CalendarException create(Date date, Integer hours,
+            CalendarExceptionType type) {
+        CalendarException exceptionDay = new CalendarException(new LocalDate(
+                date), hours, type);
         exceptionDay.setNewObject(true);
         return exceptionDay;
     }
 
-    public static CalendarException create(LocalDate date, Integer hours) {
-        CalendarException exceptionDay = new CalendarException(date, hours);
+    public static CalendarException create(LocalDate date, Integer hours,
+            CalendarExceptionType type) {
+        CalendarException exceptionDay = new CalendarException(date, hours,
+                type);
         exceptionDay.setNewObject(true);
         return exceptionDay;
     }
@@ -51,6 +56,7 @@ public class CalendarException extends BaseEntity {
 
     private Integer hours;
 
+    @NotNull
     private CalendarExceptionType type;
 
     /**
@@ -60,9 +66,11 @@ public class CalendarException extends BaseEntity {
 
     }
 
-    private CalendarException(LocalDate date, Integer hours) {
+    private CalendarException(LocalDate date, Integer hours,
+            CalendarExceptionType type) {
         this.date = date;
         this.hours = hours;
+        this.type = type;
     }
 
     public LocalDate getDate() {

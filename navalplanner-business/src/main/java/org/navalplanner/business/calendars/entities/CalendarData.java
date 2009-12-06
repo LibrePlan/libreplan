@@ -128,4 +128,8 @@ public class CalendarData extends BaseEntity {
         this.parent = parent;
     }
 
+    public void removeExpiringDate() {
+        this.expiringDate = null;
+    }
+
 }

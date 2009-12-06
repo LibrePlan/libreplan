@@ -24,14 +24,17 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarException;
+import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -70,6 +73,9 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private ICalendarExceptionTypeDAO calendarExceptionTypeDAO;
 
 
     /*
@@ -139,6 +145,13 @@ public class BaseCalendarModel implements IBaseCalendarModel {
             }
         }
         baseCalendar.getExceptions().size();
+        forceLoadExceptionTypes();
+    }
+
+    private void forceLoadExceptionTypes() {
+        for (CalendarExceptionType calendarExceptionType : getCalendarExceptionTypes()) {
+            calendarExceptionType.getName();
+        }
     }
 
     @Transactional(readOnly = true)
@@ -224,12 +237,18 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
-    public void createException(Integer hours) {
-        if (getTypeOfDay().equals(DayType.OWN_EXCEPTION)) {
-            getBaseCalendar().updateExceptionDay(selectedDate, hours);
-        } else {
-            CalendarException day = CalendarException.create(selectedDate, hours);
-            getBaseCalendar().addExceptionDay(day);
+    public void createException(CalendarExceptionType type, Date startDate,
+            Date endDate, Integer hours) {
+        for (LocalDate date = new LocalDate(startDate); date
+                .compareTo(new LocalDate(endDate)) <= 0; date = date
+                .plusDays(1)) {
+            if (getTypeOfDay(date).equals(DayType.OWN_EXCEPTION)) {
+                getBaseCalendar().updateExceptionDay(date, hours, type);
+            } else {
+                CalendarException day = CalendarException.create(date, hours,
+                        type);
+                getBaseCalendar().addExceptionDay(day);
+            }
         }
     }
 
@@ -406,12 +425,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Override
     public LocalDate getValidFrom(CalendarData calendarData) {
         if (getBaseCalendar() != null) {
-            List<CalendarData> calendarDataVersions = getBaseCalendar()
-                    .getCalendarDataVersions();
-            Integer index = calendarDataVersions.indexOf(calendarData);
-            if (index > 0) {
-                return calendarDataVersions.get(index - 1).getExpiringDate();
-            }
+            return getBaseCalendar().getValidFrom(calendarData);
         }
 
         return null;
@@ -476,6 +490,94 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         return baseCalendar.getId().equals(
                 defaultCalendar
                         .getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CalendarExceptionType> getCalendarExceptionTypes() {
+        return calendarExceptionTypeDAO.list(CalendarExceptionType.class);
+    }
+
+    @Override
+    public Set<CalendarException> getCalendarExceptions() {
+        if (getBaseCalendar() == null) {
+            return null;
+        }
+        return getBaseCalendar().getExceptions();
+    }
+
+    @Override
+    public void removeException(LocalDate date) {
+        if (getBaseCalendar() != null) {
+            getBaseCalendar().removeExceptionDay(date);
+        }
+    }
+
+    @Override
+    public CalendarExceptionType getCalendarExceptionType() {
+        if (getBaseCalendar() == null) {
+            return null;
+        }
+
+        return getBaseCalendar().getExceptionType(selectedDate);
+    }
+
+    @Override
+    public CalendarExceptionType getCalendarExceptionType(LocalDate date) {
+        if (getBaseCalendar() == null) {
+            return null;
+        }
+
+        return getBaseCalendar().getExceptionType(date);
+    }
+
+    @Override
+    public void updateException(CalendarExceptionType type, Date startDate,
+            Date endDate, Integer hours) {
+        for (LocalDate date = new LocalDate(startDate); date
+                .compareTo(new LocalDate(endDate)) <= 0; date = date
+                .plusDays(1)) {
+            if (getTypeOfDay(date).equals(DayType.OWN_EXCEPTION)) {
+                if (type == null) {
+                    getBaseCalendar().removeExceptionDay(date);
+                } else {
+                    getBaseCalendar().updateExceptionDay(date, hours, type);
+                }
+            } else {
+                if (type != null) {
+                    CalendarException day = CalendarException.create(date,
+                            hours, type);
+                    getBaseCalendar().addExceptionDay(day);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void removeCalendarData(CalendarData calendarData) {
+        if (getBaseCalendar() != null) {
+            getBaseCalendar().removeCalendarData(calendarData);
+        }
+    }
+
+    @Override
+    public CalendarData getLastCalendarData() {
+        if (getBaseCalendar() == null) {
+            return null;
+        }
+        return getBaseCalendar().getLastCalendarData();
+    }
+
+    @Override
+    public CalendarData getCalendarData() {
+        if (getBaseCalendar() == null) {
+            return null;
+        }
+        Date selectedDay = getSelectedDay();
+        if (selectedDay == null) {
+            return null;
+        }
+        return getBaseCalendar().getCalendarData(new LocalDate(selectedDay));
     }
 
 }

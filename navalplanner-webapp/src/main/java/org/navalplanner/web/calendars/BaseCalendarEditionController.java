@@ -24,6 +24,8 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,10 +35,10 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarException;
+import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
-import org.navalplanner.web.common.IMessagesForUser;
-import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.CalendarHighlightedDays;
 import org.zkoss.zk.ui.Component;
@@ -55,7 +57,6 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.api.Datebox;
 import org.zkoss.zul.api.Window;
 
@@ -79,9 +80,7 @@ public abstract class BaseCalendarEditionController extends
 
     private HistoryVersionsRenderer historyVersionsRenderer = new HistoryVersionsRenderer();
 
-    private IMessagesForUser messagesForUser;
-
-    private Component messagesContainer;
+    private CalendarExceptionRenderer calendarExceptionRenderer = new CalendarExceptionRenderer();
 
     private boolean creatingNewVersion = false;
 
@@ -101,9 +100,39 @@ public abstract class BaseCalendarEditionController extends
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        messagesForUser = new MessagesForUser(messagesContainer);
         if (baseCalendarModel.isDerived()) {
             prepareParentCombo();
+        }
+        prepareExceptionTypeCombo();
+    }
+
+    private void prepareExceptionTypeCombo() {
+        Combobox exceptionTypes = (Combobox) window
+                .getFellow("exceptionTypes");
+        fillExceptionTypesComboAndMakrSelectedItem(exceptionTypes);
+    }
+
+    private void fillExceptionTypesComboAndMakrSelectedItem(
+            Combobox exceptionTypes) {
+        exceptionTypes.getChildren().clear();
+        CalendarExceptionType type = baseCalendarModel
+                .getCalendarExceptionType();
+
+        Comboitem defaultItem = new Comboitem("NO_EXCEPTION");
+        exceptionTypes.appendChild(defaultItem);
+        if (type == null) {
+            exceptionTypes.setSelectedItem(defaultItem);
+        }
+
+        for (CalendarExceptionType calendarExceptionType : baseCalendarModel
+                .getCalendarExceptionTypes()) {
+            Comboitem item = new Comboitem(calendarExceptionType.getName());
+            item.setValue(calendarExceptionType);
+            exceptionTypes.appendChild(item);
+            if ((type != null)
+                    && (type.getName().equals(calendarExceptionType.getName()))) {
+                exceptionTypes.setSelectedItem(item);
+            }
         }
     }
 
@@ -287,7 +316,56 @@ public abstract class BaseCalendarEditionController extends
 
     private void reloadDayInformation() {
         Util.reloadBindings(window.getFellow("dayInformation"));
+        Util.reloadBindings(window.getFellow("exceptionInformation"));
+        Util.reloadBindings(window.getFellow("historyInformation"));
+        reloadTypeDatesAndHours();
+        reloadParentCombo();
         highlightDaysOnCalendar();
+    }
+
+    private void reloadParentCombo() {
+        BaseCalendar parent = baseCalendarModel.getParent();
+        Combobox parentCalendars = (Combobox) window
+                .getFellow("parentCalendars");
+        List<Comboitem> items = parentCalendars.getItems();
+        for (Comboitem item : items) {
+            BaseCalendar baseCalendar = (BaseCalendar) item.getValue();
+            if (baseCalendar.getId().equals(parent.getId())) {
+                parentCalendars.setSelectedItem(item);
+                break;
+            }
+        }
+    }
+
+    private void reloadTypeDatesAndHours() {
+        Date selectedDay = baseCalendarModel.getSelectedDay();
+
+        CalendarExceptionType type = baseCalendarModel
+                .getCalendarExceptionType(new LocalDate(selectedDay));
+        Combobox exceptionTypes = (Combobox) window.getFellow("exceptionTypes");
+        List<Comboitem> items = exceptionTypes.getItems();
+        for (Comboitem item : items) {
+            CalendarExceptionType value = (CalendarExceptionType) item
+                    .getValue();
+            if ((value == null) && (type == null)) {
+                exceptionTypes.setSelectedItem(item);
+                break;
+            }
+            if ((value != null) && (type != null)
+                    && (value.getName().equals(type.getName()))) {
+                exceptionTypes.setSelectedItem(item);
+                break;
+            }
+        }
+
+        Datebox dateboxStartDate = (Datebox) window
+                .getFellow("exceptionStartDate");
+        dateboxStartDate.setValue(selectedDay);
+        Datebox dateboxEndDate = (Datebox) window.getFellow("exceptionEndDate");
+        dateboxEndDate.setValue(selectedDay);
+
+        Intbox intboxHours = (Intbox) window.getFellow("exceptionHours");
+        intboxHours.setValue(baseCalendarModel.getHoursOfDay());
     }
 
     private void highlightDaysOnCalendar() {
@@ -404,9 +482,51 @@ public abstract class BaseCalendarEditionController extends
     }
 
     public void createException() {
-        Component exceptionHoursIntbox = window.getFellow("exceptionHours");
+        Combobox exceptionTypes = (Combobox) window.getFellow("exceptionTypes");
+        CalendarExceptionType type = (CalendarExceptionType) exceptionTypes
+                .getSelectedItem().getValue();
+        if (type == null) {
+            throw new WrongValueException(exceptionTypes,
+                    _("You should select the type of exception"));
+        } else {
+            Clients.closeErrorBox(exceptionTypes);
+        }
 
-        Integer hours = ((Intbox) exceptionHoursIntbox).getValue();
+        Datebox dateboxStartDate = (Datebox) window
+                .getFellow("exceptionStartDate");
+        Date startDate = dateboxStartDate.getValue();
+        if (startDate == null) {
+            throw new WrongValueException(dateboxStartDate,
+                    _("You should select a start date for the exception"));
+        } else {
+            Clients.closeErrorBox(dateboxStartDate);
+        }
+        Datebox dateboxEndDate = (Datebox) window.getFellow("exceptionEndDate");
+        Date endDate = dateboxEndDate.getValue();
+        if (endDate == null) {
+            throw new WrongValueException(dateboxEndDate,
+                    _("You should select a end date for the exception"));
+        } else {
+            Clients.closeErrorBox(dateboxEndDate);
+        }
+        if (startDate.compareTo(new Date()) <= 0) {
+            throw new WrongValueException(
+                    dateboxStartDate,
+                    _("Exception start date should be greater than current date"));
+        } else {
+            Clients.closeErrorBox(dateboxStartDate);
+        }
+        if (startDate.compareTo(endDate) > 0) {
+            throw new WrongValueException(
+                    dateboxEndDate,
+                    _("Exception end date should be greater or equals than start date"));
+        } else {
+            Clients.closeErrorBox(dateboxEndDate);
+        }
+
+        Intbox exceptionHoursIntbox = (Intbox) window
+                .getFellow("exceptionHours");
+        Integer hours = exceptionHoursIntbox.getValue();
 
         if (hours < 0) {
             throw new WrongValueException(
@@ -414,7 +534,7 @@ public abstract class BaseCalendarEditionController extends
                     _("Hours for an exception day should be greater or equal than zero"));
         } else {
             Clients.closeErrorBox(exceptionHoursIntbox);
-            baseCalendarModel.createException(hours);
+            baseCalendarModel.createException(type, startDate, endDate, hours);
             reloadDayInformation();
         }
     }
@@ -481,6 +601,7 @@ public abstract class BaseCalendarEditionController extends
         @Override
         public void render(Listitem item, Object data) throws Exception {
             CalendarData calendarData = (CalendarData) data;
+            item.setValue(calendarData);
 
             Listcell nameListcell = new Listcell();
             nameListcell.appendChild(new Label(baseCalendarModel.getName()));
@@ -529,12 +650,70 @@ public abstract class BaseCalendarEditionController extends
                     " - ")));
             item.appendChild(summaryListcell);
 
-            Listcell buttonListcell = new Listcell();
-            Button button = new Button(_("Go to this calendar"));
-            button.addEventListener(Events.ON_CLICK, new EventListener() {
+            appendOperationsListcell(item, calendarData);
+            markAsSelected(item, calendarData);
+            addEventListener(item);
+        }
 
+        private void markAsSelected(Listitem item,
+                CalendarData calendarData) {
+            CalendarData selected = baseCalendarModel.getCalendarData();
+            if ((selected != null) && (calendarData.equals(selected))) {
+                item.setSelected(true);
+            }
+        }
+
+        private void appendOperationsListcell(Listitem item,
+                CalendarData calendarData) {
+            Listcell listcell = new Listcell();
+            listcell.appendChild(createRemoveButton(calendarData));
+            item.appendChild(listcell);
+        }
+
+        private Button createRemoveButton(
+                final CalendarData calendarData) {
+            Button result = createButton("/common/img/ico_borrar1.png",
+                    _("Delete"), "/common/img/ico_borrar.png", "icono",
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            baseCalendarModel.removeCalendarData(calendarData);
+                            reloadCurrentWindow();
+                        }
+                    });
+            LocalDate validFrom = baseCalendarModel.getValidFrom(calendarData);
+            if ((validFrom == null)
+                    || (!baseCalendarModel.getLastCalendarData().equals(
+                            calendarData))
+                    || (validFrom.compareTo(
+                            new LocalDate()) <= 0)) {
+                result.setDisabled(true);
+            }
+            return result;
+        }
+
+        private Button createButton(String image, String tooltip,
+                String hoverImage, String styleClass,
+                EventListener eventListener) {
+            Button result = new Button("", image);
+            result.setHoverImage(hoverImage);
+            result.setSclass(styleClass);
+            result.setTooltiptext(tooltip);
+            result.addEventListener(Events.ON_CLICK, eventListener);
+            return result;
+        }
+
+        private void addEventListener(Listitem item) {
+            item.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
+                    Listitem item = (Listitem) event.getTarget();
+                    CalendarData calendarData = (CalendarData) item.getValue();
+
+                    LocalDate dateValidFrom = baseCalendarModel
+                            .getValidFrom(calendarData);
+                    LocalDate expiringDate = calendarData.getExpiringDate();
+
                     if (dateValidFrom != null) {
                         goToDate(dateValidFrom.toDateTimeAtStartOfDay()
                                 .toDate());
@@ -546,8 +725,6 @@ public abstract class BaseCalendarEditionController extends
                     }
                 }
             });
-            buttonListcell.appendChild(button);
-            item.appendChild(buttonListcell);
         }
 
     }
@@ -559,7 +736,6 @@ public abstract class BaseCalendarEditionController extends
     public void goToDate(Date date) {
         setSelectedDay(date);
 
-        ((Tab) window.getFellow("dataTab")).setSelected(true);
         reloadCurrentWindow();
     }
 
@@ -610,6 +786,202 @@ public abstract class BaseCalendarEditionController extends
 
     public List<BaseCalendar> getParentCalendars() {
         return baseCalendarModel.getPossibleParentCalendars();
+    }
+
+    public List<CalendarException> getCalendarExceptions() {
+        List<CalendarException> calendarExceptions = new ArrayList<CalendarException>(baseCalendarModel.getCalendarExceptions());
+        Collections.sort(calendarExceptions,
+                new Comparator<CalendarException>() {
+                    @Override
+                    public int compare(CalendarException o1,
+                            CalendarException o2) {
+                        return o1.getDate().compareTo(o2.getDate());
+                    }
+                });
+        return calendarExceptions;
+    }
+
+    public CalendarExceptionRenderer getCalendarExceptionRenderer() {
+        return calendarExceptionRenderer;
+    }
+
+    public class CalendarExceptionRenderer implements ListitemRenderer {
+
+        @Override
+        public void render(Listitem item, Object data) throws Exception {
+            CalendarException calendarException = (CalendarException) data;
+            item.setValue(calendarException);
+
+            appendDayListcell(item, calendarException);
+            appendExceptionTypeListcell(item, calendarException);
+            appendHoursListcell(item, calendarException);
+            appendOperationsListcell(item, calendarException);
+
+            markAsSelected(item, calendarException);
+
+            addEventListener(item);
+        }
+
+        private void addEventListener(Listitem item) {
+            item.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    Listitem item = (Listitem) event.getTarget();
+                    CalendarException calendarException = (CalendarException) item
+                            .getValue();
+                    setSelectedDay(calendarException
+                            .getDate().toDateTimeAtStartOfDay().toDate());
+                    reloadDayInformation();
+                }
+            });
+        }
+
+        private void markAsSelected(Listitem item,
+                CalendarException calendarException) {
+            Date selectedDay = baseCalendarModel.getSelectedDay();
+            if (selectedDay != null) {
+                if (calendarException.getDate().equals(
+                        new LocalDate(selectedDay))) {
+                    item.setSelected(true);
+                }
+            }
+        }
+
+        private void appendDayListcell(Listitem item,
+                CalendarException calendarException) {
+            Listcell listcell = new Listcell();
+            listcell.appendChild(new Label(calendarException.getDate()
+                    .toString()));
+            item.appendChild(listcell);
+        }
+
+        private void appendHoursListcell(Listitem item,
+                CalendarException calendarException) {
+            Listcell listcell = new Listcell();
+            listcell.appendChild(new Label(calendarException.getHours()
+                    .toString()));
+            item.appendChild(listcell);
+        }
+
+        private void appendExceptionTypeListcell(Listitem item,
+                CalendarException calendarException) {
+            Listcell listcell = new Listcell();
+            String type = "";
+            if (calendarException.getType() != null) {
+                type = calendarException.getType().getName();
+            }
+            listcell.appendChild(new Label(type));
+            item.appendChild(listcell);
+        }
+
+        private void appendOperationsListcell(Listitem item, CalendarException calendarException) {
+            Listcell listcell = new Listcell();
+            listcell.appendChild(createRemoveButton(calendarException));
+            item.appendChild(listcell);
+        }
+
+        private Button createRemoveButton(
+                final CalendarException calendarException) {
+            Button result = createButton("/common/img/ico_borrar1.png",
+                    _("Delete"), "/common/img/ico_borrar.png", "icono",
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            baseCalendarModel
+                                    .removeException(calendarException
+                                    .getDate());
+                            reloadDayInformation();
+                        }
+                    });
+            if (isSelectedDateFromPast()) {
+                result.setDisabled(true);
+            }
+            return result;
+        }
+
+        private Button createButton(String image, String tooltip,
+                String hoverImage, String styleClass,
+                EventListener eventListener) {
+            Button result = new Button("", image);
+            result.setHoverImage(hoverImage);
+            result.setSclass(styleClass);
+            result.setTooltiptext(tooltip);
+            result.addEventListener(Events.ON_CLICK, eventListener);
+            return result;
+        }
+
+    }
+
+    public boolean isOwnExceptionDay() {
+        DayType typeOfDay = baseCalendarModel.getTypeOfDay();
+        if ((typeOfDay != null) && (typeOfDay.equals(DayType.OWN_EXCEPTION))) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isNotOwnExceptionDay() {
+        return !isOwnExceptionDay();
+    }
+
+    public void updateException() {
+        Combobox exceptionTypes = (Combobox) window.getFellow("exceptionTypes");
+        CalendarExceptionType type = (CalendarExceptionType) exceptionTypes
+                .getSelectedItem().getValue();
+
+        Datebox dateboxStartDate = (Datebox) window
+                .getFellow("exceptionStartDate");
+        Date startDate = dateboxStartDate.getValue();
+        if (startDate == null) {
+            throw new WrongValueException(dateboxStartDate,
+                    _("You should select a start date for the exception"));
+        } else {
+            Clients.closeErrorBox(dateboxStartDate);
+        }
+        Datebox dateboxEndDate = (Datebox) window.getFellow("exceptionEndDate");
+        Date endDate = dateboxEndDate.getValue();
+        if (endDate == null) {
+            throw new WrongValueException(dateboxEndDate,
+                    _("You should select a end date for the exception"));
+        } else {
+            Clients.closeErrorBox(dateboxEndDate);
+        }
+        if (startDate.compareTo(new Date()) <= 0) {
+            throw new WrongValueException(
+                    dateboxStartDate,
+                    _("Exception start date should be greater than current date"));
+        } else {
+            Clients.closeErrorBox(dateboxStartDate);
+        }
+        if (startDate.compareTo(endDate) > 0) {
+            throw new WrongValueException(
+                    dateboxEndDate,
+                    _("Exception end date should be greater or equals than start date"));
+        } else {
+            Clients.closeErrorBox(dateboxEndDate);
+        }
+
+        Intbox exceptionHoursIntbox = (Intbox) window
+                .getFellow("exceptionHours");
+        Integer hours = exceptionHoursIntbox.getValue();
+
+        if (hours < 0) {
+            throw new WrongValueException(
+                    exceptionHoursIntbox,
+                    _("Hours for an exception day should be greater or equal than zero"));
+        } else {
+            Clients.closeErrorBox(exceptionHoursIntbox);
+            baseCalendarModel.updateException(type, startDate, endDate, hours);
+            reloadDayInformation();
+        }
+    }
+
+    public String getNameParentCalendar() {
+        BaseCalendar parent = baseCalendarModel.getParent();
+        if (parent != null) {
+            return parent.getName();
+        }
+        return "";
     }
 
 }
