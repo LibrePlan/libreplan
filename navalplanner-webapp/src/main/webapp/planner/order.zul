@@ -83,7 +83,8 @@
 
     <window id="resourceAllocationWindow"
         apply="${allocationController}" closable="true"
-        title="${i18n:_('Resource allocation')}" width="600px" visible="false">
+        title="${i18n:_('Resource allocation')}" width="650px" visible="false"
+        border="normal">
 
     <tabbox mold="accordion">
         <tabs>

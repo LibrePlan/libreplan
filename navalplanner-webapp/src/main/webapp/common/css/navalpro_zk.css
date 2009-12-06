@@ -415,8 +415,8 @@ div.z-errbox {
 }
 
 /* ------ Overridden norrmoz.css.dsp styles ------ */
-.z-label,.z-radio-cnt,.z-checkbox-cnt,.z-slider-pp,input.button,input.file,.z-loading,.z-errbox
-    {
+.z-label,.z-radio-cnt,.z-checkbox-cnt,.z-slider-pp,input.button,input.file,.z-loading,.z-errbox,
+div.z-tree-footer-cnt, div.z-tree-cell-cnt, div.z-tree-col-cnt {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
     font-weight: normal;
@@ -979,4 +979,9 @@ padding: 10px;
     -moz-background-inline-policy:continuous;
     -moz-background-origin:padding;
     background: transparent url(/navalplanner-webapp/zkau/web/zkex/zul/img/layout/borderlayout-hm.png) repeat-x scroll 0 0;
+}
+
+.allocation-criterion-selector span.z-dottree-ico,
+.allocation-criterion-selector span.z-dottree-line {
+    min-height:14px;
 }
