@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -427,6 +428,18 @@ class FormBinder {
                 "end date: {0} must be after start date: {1}",
                 getAllocationEnd().toString(formatter), start
                         .toString(formatter)));
+    }
+
+    public void markNoEmptyResourcesPerDay(List<AllocationRow> rows) {
+        Validate.isTrue(!rows.isEmpty());
+        final String message = _("resources per day must be not empty and bigger than zero");
+        if (!recommendedAllocation) {
+            AllocationRow first = rows.get(0);
+            throw new WrongValueException(first.getResourcesPerDayInput(),
+                    message);
+        } else {
+            throw new WrongValueException(allResourcesPerDay, message);
+        }
     }
 
     public void setAllocationsList(Listbox allocationsList) {

@@ -148,6 +148,22 @@ public class AllocationRowsHandler {
                 new LocalDate(task.getStartDate()))) {
             formBinder.markEndDateMustBeAfterStartDate();
         }
+        if (calculatedValue != CalculatedValue.RESOURCES_PER_DAY) {
+            List<AllocationRow> rows = getRowsWithEmptyResourcesPerDay();
+            if (!rows.isEmpty()) {
+                formBinder.markNoEmptyResourcesPerDay(rows);
+            }
+        }
+    }
+
+    private List<AllocationRow> getRowsWithEmptyResourcesPerDay() {
+        List<AllocationRow> result = new ArrayList<AllocationRow>();
+        for (AllocationRow each : currentRows) {
+            if (each.isEmptyResourcesPerDay()) {
+                result.add(each);
+            }
+        }
+        return result;
     }
 
     public AllocationResult doAllocation() {
