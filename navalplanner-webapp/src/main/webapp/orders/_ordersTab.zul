@@ -30,7 +30,7 @@
        <north height="30px" border="0">
        <hbox align="center" id="toolbar">
         <separator/>
-        <button label="Create" tooltiptext="${i18n:_('Create new order')}" class="planner-command"/>
+        <button label="New order" tooltiptext="${i18n:_('Create new order')}" class="planner-command"/>
         <button label="Save" tooltiptext="${i18n:_('Save order')}" class="planner-command" disabled="true"/>
         <separator/>
         <hbox align="center" style="margin-left:240px;">

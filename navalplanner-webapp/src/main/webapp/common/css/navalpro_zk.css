@@ -178,10 +178,11 @@ button.z-button {
 }
 
 .planner-command .z-button-cm {
-   padding: 6px 2px;
+    height: 24px;
+    padding: 2px;
 }
 .planner-command .z-button-cm:active {
-   padding: 6px 1px 1px 6px;
+   padding: 2px 1px 1px 2px;
 }
 
 
@@ -916,6 +917,11 @@ span.z-dottree-ico, span.z-dottree-line {
 .orderslayout-area {
     overflow-y: auto;
 }
+
+.orderslayout .z-north {
+    border-bottom:1px solid #9ECAD8;
+}
+
 
 .orderelements-tab {
     overflow-x: auto;
