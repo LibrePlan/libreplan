@@ -28,7 +28,7 @@
             <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>
-            <row self="@{each='machine'}" value="@{machine}">
+            <row self="@{each='machine'}" value="@{machine}" onDoubleClick="controller.goToEditForm(self.value);">
                 <label value="@{machine.code}" />
                 <label value="@{machine.name}" />
                 <label value="@{machine.description}" />

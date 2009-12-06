@@ -163,7 +163,7 @@ public class MachineConfigurationController extends GenericForwardComposer {
                 bandbox.setValue("");
             }
         }
-        Util.reloadBindings(bandbox.getNextSibling().getNextSibling());
+        Util.reloadBindings(button.getNextSibling());
     }
 
     public void selectCriterionRequirement(Listitem item, Bandbox bandbox) {

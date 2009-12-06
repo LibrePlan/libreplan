@@ -921,7 +921,8 @@ span.z-dottree-ico, span.z-dottree-line {
     overflow-x: auto;
 }
 
-tr.z-tree-row-seld, tr.z-list-item-seld {
+tr.z-tree-row-seld, tr.z-list-item-seld,
+.z-combobox-pp .z-combo-item-seld {
     background-color: #2a83b4;
     color: #FFFFFF;
 }
@@ -944,4 +945,3 @@ tr.z-tree-row-seld, tr.z-list-item-seld {
 .earned-parameter-column {
     width: 70px;
 }
-

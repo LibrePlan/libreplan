@@ -39,15 +39,14 @@
             <row self="@{each='configurationUnit'}" value="@{configurationUnit}">
                 <detail>
                     <!-- Assigned resources -->
-                    <autocomplete finder="WorkerFinder" buttonVisible="true" value="" width="300px" style="margin-left:10px;margin-top:10px;"/>
-
-                    <button label="${i18n:_('Add new worker assignment')}"
-                        onClick="configurationController.addWorkerAssignment(self.parent.parent.value,self)"/>
-
                     <panel title="${i18n:_('Worker assignments')}" border="normal">
-                        <panelchildren>
+                        <panelchildren style="padding:10px;">
+                    <autocomplete finder="WorkerFinder" buttonVisible="true" width="300px" style="padding-bottom:10px;margin-top:10px;"/>
+                    <button label="${i18n:_('Add new worker assignment')}"
+                        onClick="configurationController.addWorkerAssignment(self.parent.parent.parent.parent.value,self)"/>
+
                             <grid fixedLayout="true"
-                                model="@{configurationUnit.workerAssignments}">
+                                model="@{configurationUnit.workerAssignments}" style="margin-top:10px;">
                                 <columns sizable="true">
                                     <column label="${i18n:_('Name')}" />
                                     <column label="${i18n:_('Start date')}" />
@@ -78,7 +77,10 @@
 
                     <!-- Assigned criteria -->
                     <textbox value="@{configurationUnit.id}" visible="false" />
-                    <bandbox value = "@{criterionSatisfactionDTO.criterionAndType}" width="300px" style="margin-left:10px;margin-top:100px;">
+                    <panel title="${i18n:_('Criterion requirements')}" border="normal">
+                        <panelchildren style="padding:10px;">
+                    <textbox value="@{configurationUnit.id}" visible="false" />
+                    <bandbox value = "@{criterionSatisfactionDTO.criterionAndType}" width="300px">
                         <bandpopup>
                                 <listbox width="500px" height="150px" fixedLayout="true"
                                 model="@{assignedCriterionsController.criterionWithItsTypes}"
@@ -96,13 +98,10 @@
                     </bandbox>
 
                     <button label="${i18n:_('Add new criterion requirement')}"
-                        onClick="configurationController.addCriterionRequirement(self.parent.parent.value,self)" />
+                        onClick="configurationController.addCriterionRequirement(self.parent.parent.parent.parent.value,self)" />
 
-                    <panel title="${i18n:_('Criterion requirements')}" border="normal">
-                        <panelchildren>
-                            <textbox value="@{configurationUnit.id}" visible="false" />
                             <grid fixedLayout="true"
-                                model="@{configurationUnit.requiredCriterions}">
+                                model="@{configurationUnit.requiredCriterions}" style="margin-top:10px;">
                                 <columns sizable="true">
                                     <column label="${i18n:_('Name')}" />
                                     <column label="${i18n:_('Operations')}" />
@@ -110,7 +109,7 @@
                                 <rows>
                                     <row self="@{each='requirement'}"
                                         value="@{requirement}">
-                                        <textbox value="@{requirement.completeName}" width="300px"/>
+                                        <label value="@{requirement.completeName}" />
                                         <button sclass="icono"
                                             image="/common/img/ico_borrar1.png"
                                             hoverImage="/common/img/ico_borrar.png"
