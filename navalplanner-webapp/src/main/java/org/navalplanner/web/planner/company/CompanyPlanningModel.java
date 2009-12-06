@@ -160,6 +160,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
+        chartComponent.setHeight("200px");
         appendTabs(chartComponent);
 
         configuration.setChartComponent(chartComponent);
@@ -189,7 +190,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         chartTabs.appendChild(new Tab(_("Indicators")));
 
         chartComponent.appendChild(chartTabs);
-        chartTabs.setWidth("100px");
+        chartTabs.setWidth("124px");
     }
 
     private void appendTabpanels(Tabbox chartComponent, Timeplot loadChart,
@@ -615,7 +616,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             appendPlotinfo(chart, plotInfoOverload, valueGeometry, timeGeometry);
 
             chart.setWidth(size + "px");
-            chart.setHeight("100px");
+            chart.setHeight("150px");
         }
 
         private SortedMap<LocalDate, BigDecimal> getLoad(Date start, Date finish) {

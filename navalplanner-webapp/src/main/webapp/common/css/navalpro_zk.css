@@ -951,15 +951,11 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 }
 
 .earned-parameter-column {
-    width: 70px;
+    width: 62px;
 }
 
-.z-panel-header {
-/* color: #0F3B82; */
-}
 .z-panel-body {
-padding: 10px;
-/* border-color: #0F3B82; */
+	padding: 10px;
 }
 
 .perspectives-column {
@@ -984,4 +980,15 @@ padding: 10px;
 .allocation-criterion-selector span.z-dottree-ico,
 .allocation-criterion-selector span.z-dottree-line {
     min-height:14px;
+}
+
+.timeplot-copyright {
+    display: none;
+}
+
+.timeplot-grid-label {
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    z-index: 2;
+    color: transparent;
 }

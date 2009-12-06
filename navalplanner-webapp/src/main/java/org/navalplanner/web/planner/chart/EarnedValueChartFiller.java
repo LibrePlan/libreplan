@@ -294,7 +294,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         }
 
         chart.setWidth(size + "px");
-        chart.setHeight("100px");
+        chart.setHeight("150px");
     }
 
     protected void addZeroBeforeTheFirstValue(

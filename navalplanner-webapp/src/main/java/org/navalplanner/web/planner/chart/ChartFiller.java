@@ -398,6 +398,9 @@ public abstract class ChartFiller implements IChartFiller {
 
         timeGeometry.setMin(Integer.valueOf(min));
         timeGeometry.setMax(Integer.valueOf(max));
+        timeGeometry.setAxisLabelsPlacement("bottom");
+        // Remove year separators
+        timeGeometry.setGridColor("#FFFFFF");
 
         return timeGeometry;
     }

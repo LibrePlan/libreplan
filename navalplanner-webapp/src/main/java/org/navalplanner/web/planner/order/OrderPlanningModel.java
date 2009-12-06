@@ -176,6 +176,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration.setEditTaskCommand(buildEditTaskCommand(editTaskController));
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
+        chartComponent.setHeight("200px");
         appendTabs(chartComponent);
 
         configuration.setChartComponent(chartComponent);
@@ -723,7 +724,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     timeGeometry);
 
             chart.setWidth(size + "px");
-            chart.setHeight("100px");
+            chart.setHeight("150px");
         }
 
         private void groupByWeekMaps() {
