@@ -314,4 +314,10 @@ public abstract class AllocationRow {
         hoursInput.setValue(hours);
     }
 
+    public void addListenerForResourcesPerDayInputChange(
+            EventListener resourcesPerDayRowInputChange) {
+        resourcesPerDayInput.addEventListener(Events.ON_CHANGE,
+                resourcesPerDayRowInputChange);
+    }
+
 }

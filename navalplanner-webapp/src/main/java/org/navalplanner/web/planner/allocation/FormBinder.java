@@ -125,6 +125,16 @@ class FormBinder {
         }
     };
 
+    private EventListener resourcesPerDayRowInputChange = new EventListener() {
+
+        @Override
+        public void onEvent(Event event) throws Exception {
+            if (allResourcesPerDay.isDisabled()) {
+                sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
+            }
+        }
+    };
+
     private EventListener allHoursInputChange = new EventListener() {
 
         @Override
@@ -139,7 +149,7 @@ class FormBinder {
 
         @Override
         public void onEvent(Event event) throws Exception {
-            if (allResourcesPerDay.isVisible()) {
+            if (!allResourcesPerDay.isDisabled()) {
                 distributeResourcesPerDayToRows();
             }
         }
@@ -293,15 +303,15 @@ class FormBinder {
     }
 
     private void allResourcesPerDayVisibilityRule() {
-        this.allResourcesPerDay.setVisible(recommendedAllocation);
         this.allResourcesPerDay.setDisabled(allocationRowsHandler
-                .getCalculatedValue() == CalculatedValue.RESOURCES_PER_DAY);
+                .getCalculatedValue() == CalculatedValue.RESOURCES_PER_DAY
+                || !recommendedAllocation);
         this.allResourcesPerDay
                 .setConstraint(constraintForAllResourcesPerDay());
     }
 
     private Constraint constraintForAllResourcesPerDay() {
-        if (!allResourcesPerDay.isVisible() || allResourcesPerDay.isDisabled()) {
+        if (allResourcesPerDay.isDisabled()) {
             return null;
         }
         return AllocationRow.CONSTRAINT_FOR_RESOURCES_PER_DAY;
@@ -313,9 +323,18 @@ class FormBinder {
         rows = result;
         applyDisabledRulesOnRows();
         bindTotalHoursToHoursInputs();
+        bindAllResourcesPerDayToRows();
         return result;
     }
 
+
+    private void bindAllResourcesPerDayToRows() {
+        sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
+        for (AllocationRow each : rows) {
+            each
+                    .addListenerForResourcesPerDayInputChange(resourcesPerDayRowInputChange);
+        }
+    }
 
     private List<AllocationRow> addListeners(List<AllocationRow> list) {
         for (AllocationRow each : list) {
@@ -542,7 +561,7 @@ class FormBinder {
     }
 
     private void sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay() {
-        if (allResourcesPerDay.isDisabled() && allResourcesPerDay.isVisible()) {
+        if (allResourcesPerDay.isDisabled()) {
             allResourcesPerDay.setValue(sumResourcesPerDayFromInputs());
         }
     }
