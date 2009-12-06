@@ -92,81 +92,79 @@
         </tabs>
         <tabpanels>
             <tabpanel>
-                <grid id="orderElementHoursGrid">
-                    <columns>
-                          <column  width="200px" label="${i18n:_('Criteria')}"/>
-                          <column label="${i18n:_('Hours')}" />
-                    </columns>
-                </grid>
-                <grid>
-                      <columns>
-                          <column width="200px" />
-                          <column />
-                      </columns>
-                      <rows>
-                        <row>
-                            <label value="${i18n:_('Total Estimated hours')}:" />
-                            <intbox value="@{allocationController.orderHours}" disabled="${true}" />
-                        </row>
-                        <row>
-                            <label value="${i18n:_('Start')}" />
-                            <datebox id="taskStartDateBox" />
-                        </row>
-                      </rows>
-                </grid>
-                <grid>
-                      <columns>
-                          <column width="200px" />
-                          <column />
-                      </columns>
-                      <rows>
-                        <!--  Calculation type -->
-                        <row>
-                            <label value="${i18n:_('Calculation type')}:" />
-                            <radiogroup id="calculationTypeSelector"
-                                onCheck="allocationController.calculationTypeSelected = self.selectedItem.value;">
-                                <grid id="calculationTypesGrid">
-                                    <columns>
-                                      <column width="200px" />
-                                      <column />
-                                    </columns>
-                                    <rows>
-                                        <row
-                                            forEach="${allocationController.calculationTypes}">
-                                            <radio label="${each.name}"
-                                                value="${each}" />
-                                        </row>
-                                    </rows>
-                                </grid>
-                            </radiogroup>
-                        </row>
-                    </rows>
-                </grid>
-                <panel style="margin-top: 5px">
-                    <panelchildren>
-                        <checkbox id="recommendedAllocationCheckbox"></checkbox>
-                        <label value="${i18n:_('Recommended Allocation')}" />
-                    </panelchildren>
-                </panel>
-                <!-- Assigned resources -->
-                <panel title="${i18n:_('Allocations')}" border="normal" style="margin-top: 5px" sclass="assignedresources">
-                    <panelchildren>
-                        <vbox id="messagesContainer"></vbox>
-                        <listbox id="allocationsList"
-                            model="@{allocationController.resourceAllocations}"
-                            itemRenderer="@{allocationController.resourceAllocationRenderer}"
-                            style="margin-bottom: 5px" fixedLayout="true" rows="4">
-                            <listhead>
-                                <listheader label="${i18n:_('Name')}" />
-                                <listheader
-                                    label="${i18n:_('Hours')}" />
-                                <listheader
-                                    label="${i18n:_('Resources Per Day')}" />
-                                <listheader />
-                            </listhead>
-                        </listbox>
-                    </panelchildren>
-                </panel>
+                <groupbox mold="3d" closable="false">
+                    <caption label="${i18n:_('Order Element Information')}:" />
+                    <grid id="orderElementHoursGrid">
+                        <columns>
+                              <column  width="200px" label="${i18n:_('Criteria')}"/>
+                              <column label="${i18n:_('Hours')}" />
+                        </columns>
+                    </grid>
+                    <grid>
+                          <columns>
+                              <column width="200px" />
+                              <column />
+                          </columns>
+                          <rows>
+                            <row>
+                                <label value="${i18n:_('Total Estimated hours')}:" />
+                                <intbox value="@{allocationController.orderHours}" disabled="${true}" />
+                            </row>
+                          </rows>
+                    </grid>
+                </groupbox>
+                <groupbox mold="3d" style="margin-top: 5px" closable="false">
+                    <caption label="${i18n:_('Task information')}:" />
+                    <grid>
+                        <columns>
+                            <column width="200px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Start')}" />
+                                <datebox id="taskStartDateBox" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('End')}" />
+                                <datebox id="taskEndDate" />
+                            </row>
+                         </rows>
+                    </grid>
+                </groupbox>
+                <groupbox mold="3d" style="margin-top: 5px" closable="false">
+                    <caption label="${i18n:_('Calculation type')}:" />
+                    <radiogroup id="calculationTypeSelector"
+                        onCheck="allocationController.calculationTypeSelected = self.selectedItem.value;">
+                        <grid id="calculationTypesGrid">
+                            <columns>
+                              <column />
+                            </columns>
+                        </grid>
+                    </radiogroup>
+                    <hbox>
+                        <checkbox id="recommendedAllocationCheckbox" label="${i18n:_('Recommended Allocation')}"/>
+                    </hbox>
+                </groupbox>
+
+                <vbox id="messagesContainer"></vbox>
+
+                <groupbox mold="3d" style="margin-top: 5px" sclass="assignedresources" closable="false">
+                    <caption label="${i18n:_('Allocations')}" />
+                    <listbox id="allocationsList"
+                        model="@{allocationController.resourceAllocations}"
+                        itemRenderer="@{allocationController.resourceAllocationRenderer}"
+                        style="margin-bottom: 5px" fixedLayout="true" rows="4">
+                        <listhead>
+                            <listheader label="${i18n:_('Name')}" />
+                            <listheader
+                                label="${i18n:_('Hours')}" />
+                            <listheader
+                                label="${i18n:_('Resources Per Day')}" />
+                            <listheader />
+                        </listhead>
+                    </listbox>
+                </groupbox>
             </tabpanel>
 
             <!-- Worker search -->

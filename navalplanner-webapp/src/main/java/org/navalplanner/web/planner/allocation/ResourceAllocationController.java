@@ -22,6 +22,7 @@ package org.navalplanner.web.planner.allocation;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +33,6 @@ import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.MessagesForUser;
@@ -138,7 +138,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         this.window = (Window) comp;
         messagesForUser = new MessagesForUser(messagesContainer);
-        taskEndDate = new Datebox();
         allResourcesPerDay = new Decimalbox();
         makeReadyInputsForCalculationTypes();
         prepareCalculationTypesGrid();
@@ -148,14 +147,13 @@ public class ResourceAllocationController extends GenericForwardComposer {
         final String width = "300px";
         taskEndDate.setWidth(width);
         assignedHoursComponent = new Intbox();
-        assignedHoursComponent.setWidth(width);
     }
 
     private void prepareCalculationTypesGrid() {
         calculationTypesGrid.setModel(new ListModelList(Arrays
                 .asList(CalculationTypeRadio.values())));
         calculationTypesGrid.setRowRenderer(OnColumnsRowRenderer.create(
-                calculationTypesRenderer(), Arrays.asList(0, 1)));
+                calculationTypesRenderer(), Arrays.asList(0)));
     }
 
     private ICellForDetailItemRenderer<Integer, CalculationTypeRadio> calculationTypesRenderer() {
@@ -163,11 +161,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             @Override
             public Component cellFor(Integer column, CalculationTypeRadio data) {
-                if (column == 0) {
-                    return data.createRadio();
-                } else {
-                    return data.input(ResourceAllocationController.this);
-                }
+                return data.createRadio();
             }
         };
     }
@@ -432,10 +426,16 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return resourceAllocationModel.getOrderHours();
     }
 
-    public List<AllocationRow> getResourceAllocations() {
-        return formBinder != null ? formBinder
-                .getCurrentRows() : Collections
+    public List<? extends Object> getResourceAllocations() {
+        return formBinder != null ? plusAggregatingRow(formBinder
+                .getCurrentRows()) : Collections
                 .<AllocationRow> emptyList();
+    }
+
+    private List<Object> plusAggregatingRow(List<AllocationRow> currentRows) {
+        List<Object> result = new ArrayList<Object>(currentRows);
+        result.add(null);
+        return result;
     }
 
     public ResourceAllocationRenderer getResourceAllocationRenderer() {
@@ -485,15 +485,16 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return new AdvanceAllocationResultReceiver(allocation);
     }
 
-    /**
-     * Renders a {@link SpecificResourceAllocation} item
-     * @author Diego Pino Garcia <dpino@igalia.com>
-     */
     private class ResourceAllocationRenderer implements ListitemRenderer {
 
         @Override
         public void render(Listitem item, Object data) throws Exception {
-            renderResourceAllocation(item, (AllocationRow) data);
+            if (data instanceof AllocationRow) {
+                AllocationRow row = (AllocationRow) data;
+                renderResourceAllocation(item, row);
+            } else {
+                renderAggregatingRow(item);
+            }
         }
 
         private void renderResourceAllocation(Listitem item,
@@ -513,6 +514,15 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     removeAllocation(row);
                 }
             });
+        }
+
+        private void renderAggregatingRow(Listitem item) {
+            ResourceAllocationController controller = ResourceAllocationController.this;
+            append(item, new Label());
+            append(item, CalculationTypeRadio.NUMBER_OF_HOURS.input(controller));
+            append(item, CalculationTypeRadio.RESOURCES_PER_DAY
+                    .input(controller));
+            append(item, new Label());
         }
 
         private void removeAllocation(AllocationRow row) {
