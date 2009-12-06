@@ -85,10 +85,10 @@
         apply="${allocationController}" closable="true"
         title="${i18n:_('Resource allocation')}" width="600px" visible="false">
 
-    <tabbox mold="accordion-lite">
+    <tabbox mold="accordion">
         <tabs>
-            <tab id="tbResourceAllocation" label="${i18n:_('Resource allocation')}" image="common/img/ico_bajar.png"/>
-            <tab id="workerSearchTab" label="${i18n:_('Worker search')}" image="common/img/ico_bajar.png"/>
+            <tab id="tbResourceAllocation" label="${i18n:_('Resource allocation')}" image="common/img/collapse.gif" />
+            <tab id="workerSearchTab" label="${i18n:_('Worker search')}" image="common/img/collapse.gif"/>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -182,12 +182,12 @@
     <!-- Control buttons -->
     <hbox>
         <button label="${i18n:_('Accept')}"
-            onClick="allocationController.accept()" />
-        <button label="${i18n:_('Apply')}" id="applyButton" />
+            onClick="allocationController.accept()" sclass="save-button global-action" />
+        <button label="${i18n:_('Apply')}" id="applyButton" sclass="global-action" />
         <button label="${i18n:_('Cancel')}"
-            onClick="allocationController.cancel()" />
+            onClick="allocationController.cancel()" sclass="cancel-button global-action" />
         <button label="${i18n:_('Advanced Allocation')}"
-            onClick="allocationController.goToAdvancedAllocation();" />
+            onClick="allocationController.goToAdvancedAllocation();" sclass="global-action" />
     </hbox>
     </window>
 

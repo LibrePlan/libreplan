@@ -973,3 +973,10 @@ padding: 10px;
 .toolbar-box .z-label {
     color:#0068B1;
 }
+
+.z-tab-accordion-hm, .z-tab-accordion-hr, .z-tab-accordion-hl {
+    -moz-background-clip:border;
+    -moz-background-inline-policy:continuous;
+    -moz-background-origin:padding;
+    background: transparent url(/navalplanner-webapp/zkau/web/zkex/zul/img/layout/borderlayout-hm.png) repeat-x scroll 0 0;
+}
