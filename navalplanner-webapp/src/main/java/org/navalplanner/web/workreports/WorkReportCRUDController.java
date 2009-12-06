@@ -62,7 +62,6 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
@@ -306,25 +305,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     return false;
                 }
 
-                if (!workReportLine.theClockStartMustBePreviousToClockFinish()) {
-                    Timebox timeStart = getTimeboxStart(row);
-                    String message = _("The time start must be previous to time finish.");
-                    showInvalidMessage(timeStart, message);
-                    return false;
-                }
-
                 if (workReportLine.getNumHours() == null) {
                     // Locate TextboxOrder
                     Intbox txtHours = getIntboxHours(row);
                     String message = _("Hours cannot be null");
-                    showInvalidMessage(txtHours, message);
-                    return false;
-                }
-
-                if (!workReportLine.theNumHoursIsValid()) {
-                    // Locate TextboxOrder
-                    Intbox txtHours = getIntboxHours(row);
-                    String message = _("Hours cannot be greater than diference between the time start and time finish.");
                     showInvalidMessage(txtHours, message);
                     return false;
                 }
@@ -839,14 +823,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         timeStart.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                Timebox timeFinish = (Timebox) getTimeboxFinish(row);
-                if (isValidClock(timeStart.getValue(), timeFinish.getValue())) {
                     reloadWorkReportLines();
-                } else {
-                    throw new WrongValueException(
-                            timeStart,
-                            _("The time start must be previous to time finish."));
-                }
             }
         });
 
@@ -894,13 +871,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         timeFinish.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                Timebox timeStart = (Timebox) getTimeboxStart(row);
-                if (isValidClock(timeStart.getValue(), timeFinish.getValue())) {
                     reloadWorkReportLines();
-                } else {
-                    throw new WrongValueException(timeFinish,
-                            _("The time finish must be later time finish."));
-                }
             }
         });
 
@@ -915,10 +886,14 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private void appendNumHours(Row row) {
         Intbox intNumHours = new Intbox();
         intNumHours.setWidth("50px");
-        bindIntboxNumHours(intNumHours, (WorkReportLine) row.getValue());
+        WorkReportLine workReportLine = (WorkReportLine) row.getValue();
+        bindIntboxNumHours(intNumHours, workReportLine);
+
+        if (getWorkReportType().getHoursManagement().equals(
+                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
+            intNumHours.setReadonly(true);
+        }
         row.appendChild(intNumHours);
-        intNumHours.setConstraint(validateNumHours((WorkReportLine) row
-                .getValue()));
     }
 
     private void appendHoursType(final Row row) {
@@ -1212,29 +1187,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
-    private boolean isValidClock(Date start ,Date finish){
-        if ((start != null) && (finish != null)){
-            return (start.compareTo(finish) <= 0);
-        }
-        return true;
-    }
-
-    public Constraint validateNumHours(final WorkReportLine workReportLine) {
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                workReportLine.setNumHours((Integer) value);
-                if (!workReportLine.theNumHoursIsValid()) {
-                    workReportLine.setNumHours(null);
-                    ((Intbox) comp).setValue(null);
-                    throw new WrongValueException(
-                            comp,
-                            _("The numHours must be lesss or equal to the diference between the time start and time finish."));
-                }
-            }
-        };
-    }
     private void reloadWorkReportLines() {
         this.prepareWorkReportList();
         Util.reloadBindings(listWorkReportLines);

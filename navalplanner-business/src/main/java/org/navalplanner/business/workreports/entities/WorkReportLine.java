@@ -204,38 +204,11 @@ public class WorkReportLine extends BaseEntity {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "closckStart:the clockStart must be greater than clockFinish")
-    public boolean theClockStartMustBePreviousToClockFinish() {
-        if ((getClockStart() != null)
-                && (getClockFinish() != null)
-                && (!workReport.getWorkReportType().getHoursManagement()
-                        .equals(HoursManagementEnum.NUMBER_OF_HOURS))) {
-            return (getClockStart().compareTo(getClockFinish()) <= 0);
-        }
-        return true;
-    }
-
-    @SuppressWarnings("unused")
-    @AssertTrue(message = "closckStart:the clockStart must be not null if number of hours is calcultate by clock")
+    @AssertTrue(message = "closckFinish:the clockStart must be not null if number of hours is calcultate by clock")
     public boolean theClockFinishMustBeNotNullIfIsCalculatedByClock() {
         if (workReport.getWorkReportType().getHoursManagement().equals(
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
             return (getClockFinish() != null);
-        }
-        return true;
-    }
-
-    @SuppressWarnings("unused")
-    @AssertTrue(message = "Hours:the number of hours must be less or equal to the diference between time start and time finish.")
-    public boolean theNumHoursIsValid() {
-        if ((clockStart != null)
-                && (clockFinish != null)
-                && (numHours != null)
-                && (!workReport.getWorkReportType().getHoursManagement()
-                        .equals(HoursManagementEnum.NUMBER_OF_HOURS))) {
-
-            return (this.numHours.compareTo(this
-                    .getDiferenceBetweenTimeStartAndFinish()) <= 0);
         }
         return true;
     }
@@ -276,20 +249,25 @@ public class WorkReportLine extends BaseEntity {
 
     private Integer getDiferenceBetweenTimeStartAndFinish() {
         if ((getClockStart() != null) && (getClockFinish() != null)) {
-            Long clockStart = getClockStart().getTime();
-            Long clockFinish = getClockFinish().getTime();
+            Long divisor = new Long(3600000);
+            Long topHour = new Long(24);
+            Long clockStart = new Long(0);
+            Long clockFinish = new Long(0);
             Long numHours;
+
+            clockStart = (getClockStart().getTime()) / divisor;
+            clockFinish = (getClockFinish().getTime()) / divisor;
+
+            // if clock start greater than clock finish
             if (clockStart.compareTo(clockFinish) > 0) {
-                numHours = clockStart - clockFinish;
+                numHours = topHour - clockStart;
+                numHours = numHours + clockFinish;
             } else {
                 numHours = clockFinish - clockStart;
             }
-            if (numHours.compareTo(new Long(0)) > 0) {
-                numHours = numHours / 3600000;
-            }
             return numHours.intValue();
-        } else {
-            return null;
         }
+        return null;
     }
+
 }
