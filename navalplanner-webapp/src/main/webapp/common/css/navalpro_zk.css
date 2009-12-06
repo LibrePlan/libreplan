@@ -953,3 +953,7 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 padding: 10px;
 /* border-color: #0F3B82; */
 }
+
+.perspectives-column {
+    display:none;
+}

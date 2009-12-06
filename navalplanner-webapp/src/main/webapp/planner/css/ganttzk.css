@@ -706,3 +706,10 @@ div.z-tree {
         url("/navalplanner-webapp/zkau/web/ganttz/img/deadline2.png");
 }
 
+body .perspectives-column {
+    display:inline;
+}
+
+.perspectives-column .z-west-body {
+    width: 200px !important;
+}
