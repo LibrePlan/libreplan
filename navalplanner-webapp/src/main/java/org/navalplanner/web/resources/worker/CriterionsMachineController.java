@@ -91,6 +91,11 @@ public class CriterionsMachineController extends GenericForwardComposer {
         return assignedMachineCriterionsModel.getCriterionWithItsType();
     }
 
+    public List<CriterionWithItsType> getCriterionWorkersWithItsTypes() {
+        // othermodel
+        return assignedMachineCriterionsModel.getCriterionWorkersWithItsType();
+    }
+
     public void reload() {
         Util.reloadBindings(listingCriterions);
     }

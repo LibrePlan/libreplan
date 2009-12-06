@@ -164,6 +164,12 @@ public class AssignedCriterionsModel implements IAssignedCriterionsModel {
         return criterionsWithItsTypes;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<CriterionWithItsType> getCriterionWorkersWithItsType() {
+        return getCriterionWithItsType();
+    }
+
     private List<CriterionType> getCriterionTypes() {
         return criterionTypeDAO
                 .getCriterionTypesByResources(applicableResources);

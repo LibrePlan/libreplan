@@ -945,3 +945,11 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 .earned-parameter-column {
     width: 70px;
 }
+
+.z-panel-header {
+/* color: #0F3B82; */
+}
+.z-panel-body {
+padding: 10px;
+/* border-color: #0F3B82; */
+}

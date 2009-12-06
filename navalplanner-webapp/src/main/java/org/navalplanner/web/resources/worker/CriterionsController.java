@@ -97,6 +97,10 @@ public class CriterionsController extends GenericForwardComposer {
         return assignedCriterionsModel.getCriterionWithItsType();
     }
 
+    public List<CriterionWithItsType> getCriterionWorkersWithItsTypes() {
+        return assignedCriterionsModel.getCriterionWorkersWithItsType();
+    }
+
     public void reload() {
         Util.reloadBindings(listingCriterions);
         forceSortGridSatisfaction();

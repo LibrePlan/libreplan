@@ -83,7 +83,7 @@
                     <bandbox value = "@{criterionSatisfactionDTO.criterionAndType}" width="300px">
                         <bandpopup>
                                 <listbox width="500px" height="150px" fixedLayout="true"
-                                model="@{assignedCriterionsController.criterionWithItsTypes}"
+                                    model="@{assignedCriterionsController.criterionWorkersWithItsTypes}"
                                     onSelect="configurationController.selectCriterionRequirement(self.selectedItem,self.parent.parent)">
                                 <listhead>
                                     <listheader label="Type" />

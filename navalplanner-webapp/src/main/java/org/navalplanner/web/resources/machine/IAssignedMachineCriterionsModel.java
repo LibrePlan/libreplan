@@ -48,6 +48,8 @@ public interface IAssignedMachineCriterionsModel {
 
     List<CriterionWithItsType> getCriterionWithItsType();
 
+    List<CriterionWithItsType> getCriterionWorkersWithItsType();
+
     Set<CriterionSatisfactionDTO> getFilterCriterionSatisfactions();
 
     void prepareForEdit(Resource resource);
@@ -67,4 +69,5 @@ public interface IAssignedMachineCriterionsModel {
     void validate() throws ValidationException, IllegalStateException;
 
     void confirm() throws ValidationException, IllegalStateException;
+
 }

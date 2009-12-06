@@ -56,6 +56,13 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
         applicableResources.add(ResourceEnum.MACHINE);
     }
 
+    private static List<ResourceEnum> applicableWorkerResources = new ArrayList<ResourceEnum>();
+
+    static {
+        applicableWorkerResources.add(ResourceEnum.RESOURCE);
+        applicableWorkerResources.add(ResourceEnum.WORKER);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public void prepareForEdit(Resource resource) {
@@ -180,10 +187,29 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
         return criterionsWithItsTypes;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<CriterionWithItsType> getCriterionWorkersWithItsType() {
+        criterionsWithItsTypes = new ArrayList<CriterionWithItsType>();
+        List<CriterionType> listTypes = getCriterionWorkersTypes();
+        for (CriterionType criterionType : listTypes) {
+            Set<Criterion> listCriterion = getDirectCriterions(criterionType);
+            getCriterionWithItsType(criterionType, listCriterion);
+        }
+        return criterionsWithItsTypes;
+    }
+
+
     @Transactional(readOnly = true)
     private List<CriterionType> getCriterionTypes() {
         return criterionTypeDAO
                 .getCriterionTypesByResources(applicableResources);
+    }
+
+    @Transactional(readOnly = true)
+    private List<CriterionType> getCriterionWorkersTypes() {
+        return criterionTypeDAO
+                .getCriterionTypesByResources(applicableWorkerResources);
     }
 
     private void getCriterionWithItsType(CriterionType type,
