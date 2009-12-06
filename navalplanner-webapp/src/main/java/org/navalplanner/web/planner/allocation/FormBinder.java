@@ -296,6 +296,15 @@ class FormBinder {
         this.allResourcesPerDay.setVisible(recommendedAllocation);
         this.allResourcesPerDay.setDisabled(allocationRowsHandler
                 .getCalculatedValue() == CalculatedValue.RESOURCES_PER_DAY);
+        this.allResourcesPerDay
+                .setConstraint(constraintForAllResourcesPerDay());
+    }
+
+    private Constraint constraintForAllResourcesPerDay() {
+        if (!allResourcesPerDay.isVisible() || allResourcesPerDay.isDisabled()) {
+            return null;
+        }
+        return AllocationRow.CONSTRAINT_FOR_RESOURCES_PER_DAY;
     }
 
     public List<AllocationRow> getCurrentRows() {

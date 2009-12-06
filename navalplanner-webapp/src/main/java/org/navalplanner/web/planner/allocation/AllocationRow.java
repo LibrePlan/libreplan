@@ -49,6 +49,10 @@ import org.zkoss.zul.SimpleConstraint;
  */
 public abstract class AllocationRow {
 
+    public static final SimpleConstraint CONSTRAINT_FOR_RESOURCES_PER_DAY = new SimpleConstraint(
+            SimpleConstraint.NO_EMPTY
+                    | SimpleConstraint.NO_ZERO | SimpleConstraint.NO_NEGATIVE);
+
     public static void assignHours(List<AllocationRow> rows, int[] hours) {
         int i = 0;
         for (AllocationRow each : rows) {
@@ -275,15 +279,26 @@ public abstract class AllocationRow {
         hoursInput
                 .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY
                         || recommendedAllocation);
-        if (!hoursInput.isDisabled()) {
-            hoursInput.setConstraint(new SimpleConstraint(
-                    SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE));
-        } else {
-            hoursInput.setConstraint((Constraint) null);
-        }
+        hoursInput.setConstraint(constraintForHoursInput());
         resourcesPerDayInput
                 .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY
                         || recommendedAllocation);
+        resourcesPerDayInput.setConstraint(constraintForResourcesPerDayInput());
+    }
+
+    private Constraint constraintForHoursInput() {
+        if (hoursInput.isDisabled()) {
+            return null;
+        }
+        return new SimpleConstraint(SimpleConstraint.NO_EMPTY
+                | SimpleConstraint.NO_NEGATIVE);
+    }
+
+    private Constraint constraintForResourcesPerDayInput() {
+        if (resourcesPerDayInput.isDisabled()) {
+            return null;
+        }
+        return CONSTRAINT_FOR_RESOURCES_PER_DAY;
     }
 
     public void loadDataFromLast() {
