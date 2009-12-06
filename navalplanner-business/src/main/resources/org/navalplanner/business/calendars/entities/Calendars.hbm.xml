@@ -42,6 +42,23 @@
         <property name="date" access="field"
             type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
         <property name="hours" access="field"/>
+        <many-to-one name="type" cascade="none"
+            column="CALENDAR_EXCEPTION_ID" />
+
+    </class>
+
+    <!-- CalendarExceptionType -->
+    <class name="CalendarExceptionType">
+        <id name="id" access="property" type="long">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <property name="name" access="field" unique="true" />
+        <property name="color" access="field"/>
+        <property name="notAssignable" access="field"/>
 
     </class>
 

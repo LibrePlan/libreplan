@@ -51,6 +51,8 @@ public class CalendarException extends BaseEntity {
 
     private Integer hours;
 
+    private CalendarExceptionType type;
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -69,6 +71,10 @@ public class CalendarException extends BaseEntity {
 
     public Integer getHours() {
         return hours;
+    }
+
+    public CalendarExceptionType getType() {
+        return type;
     }
 
 }
