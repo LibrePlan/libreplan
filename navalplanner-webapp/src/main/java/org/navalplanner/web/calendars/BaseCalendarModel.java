@@ -31,7 +31,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
-import org.navalplanner.business.calendars.entities.ExceptionDay;
+import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -228,7 +228,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         if (getTypeOfDay().equals(DayType.OWN_EXCEPTION)) {
             getBaseCalendar().updateExceptionDay(selectedDate, hours);
         } else {
-            ExceptionDay day = ExceptionDay.create(selectedDate, hours);
+            CalendarException day = CalendarException.create(selectedDate, hours);
             getBaseCalendar().addExceptionDay(day);
         }
     }
@@ -278,7 +278,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
             return false;
         }
 
-        ExceptionDay day = getBaseCalendar().getOwnExceptionDay(selectedDate);
+        CalendarException day = getBaseCalendar().getOwnExceptionDay(selectedDate);
         return (day != null);
     }
 

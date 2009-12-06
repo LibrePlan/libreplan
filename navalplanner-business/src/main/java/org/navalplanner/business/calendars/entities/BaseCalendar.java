@@ -56,7 +56,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     @NotEmpty
     private String name;
 
-    private Set<ExceptionDay> exceptions = new HashSet<ExceptionDay>();
+    private Set<CalendarException> exceptions = new HashSet<CalendarException>();
 
     private List<CalendarData> calendarDataVersions = new ArrayList<CalendarData>();
 
@@ -118,16 +118,16 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return (getParent(date) != null);
     }
 
-    public Set<ExceptionDay> getOwnExceptions() {
+    public Set<CalendarException> getOwnExceptions() {
         return Collections.unmodifiableSet(exceptions);
     }
 
-    public Set<ExceptionDay> getExceptions() {
-        Set<ExceptionDay> exceptionDays = new HashSet<ExceptionDay>();
+    public Set<CalendarException> getExceptions() {
+        Set<CalendarException> exceptionDays = new HashSet<CalendarException>();
         exceptionDays.addAll(exceptions);
 
         if (getParent() != null) {
-            for (ExceptionDay exceptionDay : getParent().getExceptions()) {
+            for (CalendarException exceptionDay : getParent().getExceptions()) {
                 if (!isExceptionDayAlreadyInExceptions(exceptionDay)) {
                     exceptionDays.add(exceptionDay);
                 }
@@ -137,16 +137,16 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return Collections.unmodifiableSet(exceptionDays);
     }
 
-    public Set<ExceptionDay> getExceptions(Date date) {
+    public Set<CalendarException> getExceptions(Date date) {
         return getExceptions(new LocalDate(date));
     }
 
-    public Set<ExceptionDay> getExceptions(LocalDate date) {
-        Set<ExceptionDay> exceptionDays = new HashSet<ExceptionDay>();
+    public Set<CalendarException> getExceptions(LocalDate date) {
+        Set<CalendarException> exceptionDays = new HashSet<CalendarException>();
         exceptionDays.addAll(exceptions);
 
         if (getParent(date) != null) {
-            for (ExceptionDay exceptionDay : getParent(date).getExceptions()) {
+            for (CalendarException exceptionDay : getParent(date).getExceptions()) {
                 if (!isExceptionDayAlreadyInExceptions(exceptionDay)) {
                     exceptionDays.add(exceptionDay);
                 }
@@ -156,8 +156,8 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return Collections.unmodifiableSet(exceptionDays);
     }
 
-    private boolean isExceptionDayAlreadyInExceptions(ExceptionDay exceptionDay) {
-        for (ExceptionDay day : exceptions) {
+    private boolean isExceptionDayAlreadyInExceptions(CalendarException exceptionDay) {
+        for (CalendarException day : exceptions) {
             if (day.getDate().equals(exceptionDay.getDate())) {
                 return true;
             }
@@ -166,7 +166,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return false;
     }
 
-    public void addExceptionDay(ExceptionDay day)
+    public void addExceptionDay(CalendarException day)
             throws IllegalArgumentException {
         if (day.getDate().compareTo(new LocalDate()) <= 0) {
             throw new IllegalArgumentException(
@@ -192,7 +192,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
                     "You can not modify the past removing an exception day");
         }
 
-        ExceptionDay day = getOwnExceptionDay(date);
+        CalendarException day = getOwnExceptionDay(date);
         if (day == null) {
             throw new IllegalArgumentException(
                     "There is not an exception day on that date");
@@ -209,16 +209,16 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     public void updateExceptionDay(LocalDate date, Integer hours)
             throws IllegalArgumentException {
         removeExceptionDay(date);
-        ExceptionDay day = ExceptionDay.create(date, hours);
+        CalendarException day = CalendarException.create(date, hours);
         addExceptionDay(day);
     }
 
-    public ExceptionDay getOwnExceptionDay(Date date) {
+    public CalendarException getOwnExceptionDay(Date date) {
         return getOwnExceptionDay(new LocalDate(date));
     }
 
-    public ExceptionDay getOwnExceptionDay(LocalDate date) {
-        for (ExceptionDay exceptionDay : exceptions) {
+    public CalendarException getOwnExceptionDay(LocalDate date) {
+        for (CalendarException exceptionDay : exceptions) {
             if (exceptionDay.getDate().equals(date)) {
                 return exceptionDay;
             }
@@ -227,12 +227,12 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return null;
     }
 
-    public ExceptionDay getExceptionDay(Date date) {
+    public CalendarException getExceptionDay(Date date) {
         return getExceptionDay(new LocalDate(date));
     }
 
-    public ExceptionDay getExceptionDay(LocalDate date) {
-        for (ExceptionDay exceptionDay : getExceptions(date)) {
+    public CalendarException getExceptionDay(LocalDate date) {
+        for (CalendarException exceptionDay : getExceptions(date)) {
             if (exceptionDay.getDate().equals(date)) {
                 return exceptionDay;
             }
@@ -254,7 +254,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
      * calendar restrictions.
      */
     public Integer getWorkableHours(LocalDate date) {
-        ExceptionDay exceptionDay = getExceptionDay(date);
+        CalendarException exceptionDay = getExceptionDay(date);
         if (exceptionDay != null) {
             return exceptionDay.getHours();
         }
@@ -416,7 +416,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         for (CalendarData calendarData : this.calendarDataVersions) {
             copy.calendarDataVersions.add(calendarData.copy());
         }
-        copy.exceptions = new HashSet<ExceptionDay>(this.exceptions);
+        copy.exceptions = new HashSet<CalendarException>(this.exceptions);
     }
 
     public BaseCalendar newCopyResourceCalendar() {
@@ -430,7 +430,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     }
 
     public DayType getType(LocalDate date) {
-        ExceptionDay exceptionDay = getExceptionDay(date);
+        CalendarException exceptionDay = getExceptionDay(date);
         if (exceptionDay != null) {
             if (getOwnExceptionDay(date) != null) {
                 return DayType.OWN_EXCEPTION;

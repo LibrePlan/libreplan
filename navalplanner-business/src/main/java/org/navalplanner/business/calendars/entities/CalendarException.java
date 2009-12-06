@@ -33,16 +33,16 @@ import org.navalplanner.business.common.BaseEntity;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class ExceptionDay extends BaseEntity {
+public class CalendarException extends BaseEntity {
 
-    public static ExceptionDay create(Date date, Integer hours) {
-        ExceptionDay exceptionDay = new ExceptionDay(new LocalDate(date), hours);
+    public static CalendarException create(Date date, Integer hours) {
+        CalendarException exceptionDay = new CalendarException(new LocalDate(date), hours);
         exceptionDay.setNewObject(true);
         return exceptionDay;
     }
 
-    public static ExceptionDay create(LocalDate date, Integer hours) {
-        ExceptionDay exceptionDay = new ExceptionDay(date, hours);
+    public static CalendarException create(LocalDate date, Integer hours) {
+        CalendarException exceptionDay = new CalendarException(date, hours);
         exceptionDay.setNewObject(true);
         return exceptionDay;
     }
@@ -54,11 +54,11 @@ public class ExceptionDay extends BaseEntity {
     /**
      * Constructor for hibernate. Do not use!
      */
-    public ExceptionDay() {
+    public CalendarException() {
 
     }
 
-    private ExceptionDay(LocalDate date, Integer hours) {
+    private CalendarException(LocalDate date, Integer hours) {
         this.date = date;
         this.hours = hours;
     }

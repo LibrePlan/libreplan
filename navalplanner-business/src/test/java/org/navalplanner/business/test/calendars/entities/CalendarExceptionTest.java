@@ -27,20 +27,20 @@ import java.util.Date;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
-import org.navalplanner.business.calendars.entities.ExceptionDay;
+import org.navalplanner.business.calendars.entities.CalendarException;
 
 /**
- * Tests for {@link ExceptionDay}.
+ * Tests for {@link CalendarException}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class ExceptionDayTest {
+public class CalendarExceptionTest {
 
     @Test
     public void testCreateExceptionDayWithDate() {
         Date date = new Date();
 
-        ExceptionDay day = ExceptionDay.create(date, 8);
+        CalendarException day = CalendarException.create(date, 8);
 
         assertThat(day.getDate(), equalTo(new LocalDate(date)));
         assertThat(day.getHours(), equalTo(8));

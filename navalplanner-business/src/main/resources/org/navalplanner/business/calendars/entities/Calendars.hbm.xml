@@ -16,7 +16,7 @@
 
         <set name="exceptions" access="field" cascade="all-delete-orphan">
             <key column="BASE_CALENDAR_ID" />
-            <one-to-many class="ExceptionDay" />
+            <one-to-many class="CalendarException" />
         </set>
 
         <list name="calendarDataVersions" access="field" cascade="all-delete-orphan">
@@ -30,8 +30,8 @@
         </joined-subclass>
     </class>
 
-    <!-- ExceptionDay -->
-    <class name="ExceptionDay">
+    <!-- CalendarException -->
+    <class name="CalendarException">
         <id name="id" access="property" type="long">
             <generator class="hilo">
                 <param name="max_lo">100</param>
