@@ -22,6 +22,7 @@ package org.navalplanner.business.calendars.entities;
 
 import java.util.Date;
 
+import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 
@@ -33,17 +34,23 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class CalendarAvailability extends BaseEntity {
 
+    public static CalendarAvailability craete() {
+        return create(new CalendarAvailability(new LocalDate(), null));
+    }
+
     public static CalendarAvailability craete(Date startDate, Date endDate) {
         return create(new CalendarAvailability(new LocalDate(startDate),
                 new LocalDate(endDate)));
     }
 
-    public static CalendarAvailability craete(LocalDate startDate,
+    public static CalendarAvailability create(LocalDate startDate,
             LocalDate endDate) {
         return create(new CalendarAvailability(startDate, endDate));
     }
 
+    @NotNull
     private LocalDate startDate;
+
     private LocalDate endDate;
 
     /**
@@ -52,16 +59,27 @@ public class CalendarAvailability extends BaseEntity {
     public CalendarAvailability() {
     }
 
-    private CalendarAvailability(LocalDate startDate, LocalDate endDate) {
-        this.startDate = startDate;
-        this.endDate = endDate;
+    private CalendarAvailability(LocalDate startDate, LocalDate endDate)
+            throws IllegalArgumentException {
+        setStartDate(startDate);
+        setEndDate(endDate);
     }
 
     public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(LocalDate startDate)
+            throws IllegalArgumentException {
+        if (startDate == null) {
+            throw new IllegalArgumentException("Start date must not be null");
+        }
+        if (endDate != null) {
+            if (startDate.compareTo(endDate) > 0) {
+                throw new IllegalArgumentException(
+                        "End date must be greater or equal than start date");
+            }
+        }
         this.startDate = startDate;
     }
 
@@ -69,8 +87,26 @@ public class CalendarAvailability extends BaseEntity {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(LocalDate endDate) throws IllegalArgumentException {
+        if (endDate != null) {
+            if (startDate.compareTo(endDate) > 0) {
+                throw new IllegalArgumentException(
+                        "End date must be greater or equal than start date");
+            }
+        }
         this.endDate = endDate;
+    }
+
+    public boolean isActive(LocalDate date) {
+        if (startDate.compareTo(date) > 0) {
+            return false;
+        }
+
+        if ((endDate != null) && (endDate.compareTo(date) < 0)) {
+            return false;
+        }
+
+        return true;
     }
 
 }

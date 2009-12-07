@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -30,10 +31,7 @@ import org.navalplanner.business.resources.entities.Resource;
 public class ResourceCalendar extends BaseCalendar {
 
     public static ResourceCalendar create() {
-        ResourceCalendar resourceCalendar = new ResourceCalendar(CalendarData
-                .create());
-        resourceCalendar.setNewObject(true);
-        return resourceCalendar;
+        return create(new ResourceCalendar(CalendarData.create()));
     }
 
     /**
@@ -44,6 +42,17 @@ public class ResourceCalendar extends BaseCalendar {
 
     private ResourceCalendar(CalendarData calendarData) {
         super(calendarData);
+        CalendarAvailability calendarAvailability = CalendarAvailability
+                .create(new LocalDate(), null);
+        addNewCalendarAvailability(calendarAvailability);
+    }
+
+    @Override
+    public Integer getWorkableHours(LocalDate date) {
+        if (!isActive(date)) {
+            return 0;
+        }
+        return super.getWorkableHours(date);
     }
 
 }

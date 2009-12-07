@@ -145,6 +145,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
             }
         }
         baseCalendar.getExceptions().size();
+        baseCalendar.getCalendarAvailabilities().size();
         forceLoadExceptionTypes();
     }
 

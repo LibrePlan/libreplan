@@ -694,18 +694,56 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return Collections.unmodifiableList(calendarAvailabilities);
     }
 
-    public void addCalendarAvailability(
-            CalendarAvailability calendarAvailability) {
+    public void addNewCalendarAvailability(
+            CalendarAvailability calendarAvailability)
+            throws IllegalArgumentException {
         if (this instanceof ResourceCalendar) {
+            if (!calendarAvailabilities.isEmpty()) {
+                CalendarAvailability lastCalendarAvailability = calendarAvailabilities
+                        .get(calendarAvailabilities.size() - 1);
+                if (lastCalendarAvailability.getEndDate() == null) {
+                    if (lastCalendarAvailability.getStartDate().compareTo(
+                            calendarAvailability.getStartDate()) >= 0) {
+                        throw new IllegalArgumentException(
+                                "New calendar availability should start after the last calendar availability");
+                    }
+                } else {
+                   if (lastCalendarAvailability.getEndDate().compareTo(
+                        calendarAvailability.getStartDate()) >= 0) {
+                    throw new IllegalArgumentException(
+                            "New calendar availability should start after the last calendar availability");
+                   }
+                }
+                lastCalendarAvailability.setEndDate(calendarAvailability
+                        .getStartDate().minusDays(1));
+            }
             calendarAvailabilities.add(calendarAvailability);
         }
     }
 
     public void removeCalendarAvailability(
-            CalendarAvailability calendarAvailability) {
+            CalendarAvailability calendarAvailability)
+            throws IllegalArgumentException {
         if (this instanceof ResourceCalendar) {
+            if (calendarAvailability.getStartDate().compareTo(new LocalDate()) <= 0) {
+                throw new IllegalArgumentException(
+                        "Calendar availabilty already in use");
+            }
             calendarAvailabilities.remove(calendarAvailability);
         }
+    }
+
+    public boolean isActive(Date date) {
+        return isActive(new LocalDate(date));
+    }
+
+    public boolean isActive(LocalDate date) {
+        for (CalendarAvailability calendarAvailability : calendarAvailabilities) {
+            if (calendarAvailability.isActive(date)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
