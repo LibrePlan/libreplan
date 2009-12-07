@@ -36,7 +36,7 @@
             <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>
-            <row self="@{each='order'}" value="@{order}">
+            <row self="@{each='order'}" value="@{order}" onClick="controller.goToEditForm(self.value);">
                 <label value="@{order.name}" />
                 <label value="@{order.code}" />
                 <label value="@{order.initDate}" />

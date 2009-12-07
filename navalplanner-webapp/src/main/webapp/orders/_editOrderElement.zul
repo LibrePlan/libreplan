@@ -54,6 +54,7 @@
         </tabpanels>
   </tabbox>
   <hbox>
-     <button label="${i18n:_('Back')}" onClick="orderElementController.back()"/>
+     <button label="${i18n:_('Back')}" onClick="orderElementController.back()"
+     sclass="back-button global-action"/>
   </hbox>
 </window>

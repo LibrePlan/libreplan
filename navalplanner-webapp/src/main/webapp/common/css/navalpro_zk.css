@@ -223,6 +223,7 @@ button.z-button {
 .global-action.z-button .z-button-cm {
     padding: 4px 25px;
     background-position: 5px;
+    background-repeat: no-repeat;
 }
 
 .global-action.z-button .z-button-cm:active {
@@ -231,38 +232,23 @@ button.z-button {
 }
 
 .save-button.z-button .z-button-cm {
-        background-image: url(../img/bt_ok.png);
-        background-repeat: no-repeat;
-}
-
-.save-button.z-button .z-button-cm:active {
-        background-image: url(../img/bt_ok.png);
-        background-repeat: no-repeat;
+    background-image: url(../img/bt_ok.png);
 }
 
 .create-button.z-button .z-button-cm {
-        background-image: url(../img/bt_create.png);
-        background-repeat: no-repeat;
-}
-
-.create-button.z-button .z-button-cm:active {
-        background-image: url(../img/bt_create.png);
-        background-repeat: no-repeat;
+    background-image: url(../img/bt_create.png);
 }
 
 .saveandcontinue-button.z-button .z-button-cm {
-        background-image: url(../img/bt_ok_continue.png);
-        background-repeat: no-repeat;
-}
-
-.saveandcontinue-button.z-button .z-button-cm:active {
-        background-image: url(../img/bt_ok_continue.png);
-        background-repeat: no-repeat;
+    background-image: url(../img/bt_ok_continue.png);
 }
 
 .cancel-button.z-button .z-button-cm {
-        background-image: url(../img/bt_cancel.png);
-        background-repeat: no-repeat;
+    background-image: url(../img/bt_cancel.png);
+}
+
+.back-button.z-button .z-button-cm {
+    background-image: url(../img/bt_back.png);
 }
 
 /* Embed tabbpanels button destyling */
@@ -316,7 +302,6 @@ button.z-button {
 .orderTree .depth_5 input,
 .orderTree .depth_6 input
 {
-    width: 460px !important;
     border-right: 0px;
 }
 
@@ -456,8 +441,8 @@ div.z-tree-footer-cnt, div.z-tree-cell-cnt, div.z-tree-col-cnt {
     background-image: none;
 }
 
-.z-window-embedded-hl,.z-window-highlighted-hl,.z-window-overlapped-hl,.z-window-popup-hl
-    {
+.z-window-embedded-hl, .z-window-highlighted-hl,
+.z-window-overlapped-hl, .z-window-popup-hl {
     background: none;
 }
 
@@ -469,10 +454,9 @@ div.z-tree-footer-cnt, div.z-tree-cell-cnt, div.z-tree-col-cnt {
     background-image: none;
 }
 
-.z-window-embedded-hr,.z-window-highlighted-hr,.z-window-overlapped-hr,.z-window-popup-hr
-    {
+.z-window-embedded-hr,.z-window-highlighted-hr,
+.z-window-overlapped-hr,.z-window-popup-hr {
     background: none;
-    /*padding-right:6px; */
 }
 
 .z-window-embedded-hr,.z-window-embedded-hr-noborder {
@@ -516,8 +500,8 @@ div.z-footer-cnt,div.z-row-cnt,div.z-group-cnt,div.z-group-foot-cnt,div.z-column
     font-weight: bold;
 }
 
-.z-word-wrap div.z-tree-cell-cnt,.z-word-wrap div.z-tree-footer-cnt,.z-word-wrap div.z-tree-col-cnt
-    {
+.z-word-wrap div.z-tree-cell-cnt,.z-word-wrap div.z-tree-footer-cnt,
+.z-word-wrap div.z-tree-col-cnt {
     word-wrap: normal;
 }
 
@@ -561,9 +545,8 @@ div.z-grid {
     overflow: hidden;
 }
 
-.z-listbox .z-textbox,.z-listbox .z-decimalbox,.z-listbox .z-intbox,.z-listbox .z-longbox,.z-listbox .z-doublebox
-{
-/*    width: 100%; */
+.z-listbox .z-textbox,.z-listbox .z-decimalbox,.z-listbox .z-intbox,
+.z-listbox .z-longbox,.z-listbox .z-doublebox {
     height: 22px;
     vertical-align:center;
     border-collapse: collapse;
@@ -585,29 +568,25 @@ div.z-grid {
 .z-tree .z-datebox-inp {
     height:25px;
 }
-
 .orderTree .operations {
     min-width:150px;
 }
-
 .orderTree .name {
-    min-width:140px;
+    min-width:100px;
 }
-
 .orderTree .hours {
     min-width:50px;
 }
 .orderTree .code {
-    min-width:100px;
+    min-width:90px;
 }
 .orderTree .scheduling_state {
-    min-width:260px;
+    min-width:250px;
 }
 
 .orderTree .tasknumber {
     display:none;
 }
-
 
 .orderTree div.z-tree-cell-cnt {
     padding:0px;
@@ -628,7 +607,7 @@ div.z-grid {
 
 .orderelements-tab .z-datebox-focus .z-datebox-inp,
 .orderelements-tab .z-datebox-inp {
-    width: 114px;
+    width: auto;
 }
 
 .orderelements-tab .z-datebox .z-datebox-img {
@@ -843,7 +822,6 @@ span.z-dottree-ico, span.z-dottree-line {
 .z-menu-body-seld .z-menu-inner-r {
     background-image:none;
 }
-
 
 .z-menu-body .z-menu-inner-m div {
     background-image:none;

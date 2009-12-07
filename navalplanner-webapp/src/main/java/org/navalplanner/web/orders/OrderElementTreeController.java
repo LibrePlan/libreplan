@@ -414,6 +414,14 @@ public class OrderElementTreeController extends GenericForwardComposer {
             final Treecell cell = addCell(
                     getDecorationFromState(currentOrderElement
                             .getSchedulingState()), schedulingStateToggler);
+            cell.addEventListener("onDoubleClick", new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    IOrderElementModel model = orderModel
+                            .getOrderElementModel(currentOrderElement);
+                    orderElementController.openWindow(model);
+                }
+            });
             currentOrderElement.getSchedulingState().addTypeChangeListener(
                     new ITypeChangedListener() {
 
