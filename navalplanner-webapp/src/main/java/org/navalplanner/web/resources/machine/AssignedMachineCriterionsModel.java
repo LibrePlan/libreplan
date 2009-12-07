@@ -318,7 +318,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     }
 
     public void save() throws ValidationException {
-        for (CriterionSatisfactionDTO satisfactionDTO : this.criterionSatisfactionDTOs) {
+        for (CriterionSatisfactionDTO satisfactionDTO : getWithCriterionAssignedDTOs()) {
             save(satisfactionDTO);
         }
     }
@@ -370,9 +370,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     }
 
     private void validateDTOs() throws ValidationException {
-        Set<CriterionSatisfactionDTO> listDTOs = new HashSet<CriterionSatisfactionDTO>(
-                criterionSatisfactionDTOs);
-        for (CriterionSatisfactionDTO satisfactionDTO : listDTOs) {
+        for (CriterionSatisfactionDTO satisfactionDTO : getWithCriterionAssignedDTOs()) {
             Criterion criterion = satisfactionDTO.getCriterionWithItsType()
                     .getCriterion();
             if (checkSameCriterionAndSameInterval(satisfactionDTO)) {
@@ -384,10 +382,15 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
         }
     }
 
+    private List<CriterionSatisfactionDTO> getWithCriterionAssignedDTOs() {
+        return CriterionSatisfactionDTO
+                .keepHavingCriterion(criterionSatisfactionDTOs);
+    }
+
     private void updateDTOs() throws ValidationException, IllegalStateException {
         // Create a new list of Criterion satisfaction
         Set<CriterionSatisfaction> newList = new HashSet<CriterionSatisfaction>();
-        for (CriterionSatisfactionDTO satisfactionDTO : criterionSatisfactionDTOs) {
+        for (CriterionSatisfactionDTO satisfactionDTO : getWithCriterionAssignedDTOs()) {
             CriterionSatisfaction satisfaction;
             if (satisfactionDTO.isNewObject()) {
                 Criterion criterion = satisfactionDTO.getCriterionWithItsType()

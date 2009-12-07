@@ -5,7 +5,10 @@
 
 package org.navalplanner.web.resources.worker;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.INewObject;
@@ -20,6 +23,17 @@ import org.navalplanner.business.resources.entities.Interval;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class CriterionSatisfactionDTO implements INewObject {
+
+    public static List<CriterionSatisfactionDTO> keepHavingCriterion(
+            Set<CriterionSatisfactionDTO> listDTOs) {
+        List<CriterionSatisfactionDTO> result = new ArrayList<CriterionSatisfactionDTO>();
+        for (CriterionSatisfactionDTO each : listDTOs) {
+            if (each != null && each.getCriterionWithItsType() != null) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
 
     public static final String START_DATE = "startDate";
 
@@ -212,4 +226,5 @@ public class CriterionSatisfactionDTO implements INewObject {
     public boolean isNewObject() {
         return newObject == null ? false : newObject;
     }
+
 }
