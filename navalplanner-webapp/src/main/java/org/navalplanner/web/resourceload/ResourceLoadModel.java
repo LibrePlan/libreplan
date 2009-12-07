@@ -37,6 +37,7 @@ import java.util.Map.Entry;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -66,6 +67,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private IOrderDAO orderDAO;
 
     @Autowired
+    private ITaskSourceDAO taskSourceDAO;
+
+    @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
 
     private List<LoadTimelinesGroup> loadTimeLines;
@@ -85,6 +89,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
     public void initGlobalView(Order filterBy) {
         this.filterBy = filterBy;
         orderDAO.reattach(filterBy);
+        if (filterBy.getTaskSource() != null) {
+            taskSourceDAO.reattach(filterBy.getTaskSource());
+        }
         doGlobalView();
     }
 
