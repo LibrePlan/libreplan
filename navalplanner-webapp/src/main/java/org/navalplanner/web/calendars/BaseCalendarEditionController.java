@@ -34,6 +34,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
@@ -52,12 +53,12 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.api.Datebox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -81,6 +82,8 @@ public abstract class BaseCalendarEditionController extends
     private HistoryVersionsRenderer historyVersionsRenderer = new HistoryVersionsRenderer();
 
     private CalendarExceptionRenderer calendarExceptionRenderer = new CalendarExceptionRenderer();
+
+    private CalendarAvailabilityRenderer calendarAvailabilityRenderer = new CalendarAvailabilityRenderer();
 
     private boolean creatingNewVersion = false;
 
@@ -986,6 +989,154 @@ public abstract class BaseCalendarEditionController extends
             return parent.getName();
         }
         return "";
+    }
+
+    public boolean isResourceCalendar() {
+        return baseCalendarModel.isResourceCalendar();
+    }
+
+    public List<CalendarAvailability> getCalendarAvailabilities() {
+        return baseCalendarModel.getCalendarAvailabilities();
+    }
+
+    public CalendarAvailabilityRenderer getCalendarAvailabilityRenderer() {
+        return calendarAvailabilityRenderer;
+    }
+
+    public class CalendarAvailabilityRenderer implements ListitemRenderer {
+
+        @Override
+        public void render(Listitem item, Object data) throws Exception {
+            CalendarAvailability calendarAvailability = (CalendarAvailability) data;
+            item.setValue(calendarAvailability);
+
+            appendValidFromListcell(item, calendarAvailability);
+            appendExpirationDateListcell(item, calendarAvailability);
+            appendOperationsListcell(item, calendarAvailability);
+        }
+
+        private void appendValidFromListcell(Listitem item,
+                final CalendarAvailability calendarAvailability) {
+            Listcell listcell = new Listcell();
+
+            final Datebox datebox = new Datebox();
+            Datebox dateboxValidFrom = Util.bind(datebox,
+                    new Util.Getter<Date>() {
+
+                        @Override
+                        public Date get() {
+                            LocalDate startDate = calendarAvailability
+                                    .getStartDate();
+                            if (startDate != null) {
+                                return startDate.toDateTimeAtStartOfDay()
+                                        .toDate();
+                            }
+                            return null;
+                        }
+
+                    }, new Util.Setter<Date>() {
+
+                        @Override
+                        public void set(Date value) {
+                            LocalDate startDate = new LocalDate(value);
+                            try {
+                                baseCalendarModel.setStartDate(
+                                        calendarAvailability, startDate);
+                            } catch (IllegalArgumentException e) {
+                                throw new WrongValueException(datebox, e
+                                        .getMessage());
+                            }
+                        }
+
+                    });
+
+            listcell.appendChild(dateboxValidFrom);
+            item.appendChild(listcell);
+        }
+
+        private void appendExpirationDateListcell(Listitem item,
+                final CalendarAvailability calendarAvailability) {
+            Listcell listcell = new Listcell();
+
+            final Datebox datebox = new Datebox();
+            Datebox dateboxExpirationDate = Util.bind(datebox,
+                    new Util.Getter<Date>() {
+
+                        @Override
+                        public Date get() {
+                            LocalDate endDate = calendarAvailability
+                                    .getEndDate();
+                            if (endDate != null) {
+                                return endDate.toDateTimeAtStartOfDay()
+                                        .toDate();
+                            }
+                            return null;
+                        }
+
+                    }, new Util.Setter<Date>() {
+
+                        @Override
+                        public void set(Date value) {
+                            LocalDate endDate = new LocalDate(value);
+                            try {
+                                baseCalendarModel.setEndDate(
+                                        calendarAvailability, endDate);
+                            } catch (IllegalArgumentException e) {
+                                throw new WrongValueException(datebox, e
+                                        .getMessage());
+                            }
+                        }
+
+                    });
+
+            listcell.appendChild(dateboxExpirationDate);
+            item.appendChild(listcell);
+        }
+
+        private void appendOperationsListcell(Listitem item,
+                CalendarAvailability calendarAvailability) {
+            Listcell listcell = new Listcell();
+            listcell.appendChild(createRemoveButton(calendarAvailability));
+            item.appendChild(listcell);
+        }
+
+        private Button createRemoveButton(
+                final CalendarAvailability calendarAvailability) {
+            Button result = createButton("/common/img/ico_borrar1.png",
+                    _("Delete"), "/common/img/ico_borrar.png", "icono",
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            baseCalendarModel
+                                    .removeCalendarAvailability(calendarAvailability);
+                            reloadDayInformation();
+                            reloadActivationPeriods();
+                        }
+                    });
+            return result;
+        }
+
+        private Button createButton(String image, String tooltip,
+                String hoverImage, String styleClass,
+                EventListener eventListener) {
+            Button result = new Button("", image);
+            result.setHoverImage(hoverImage);
+            result.setSclass(styleClass);
+            result.setTooltiptext(tooltip);
+            result.addEventListener(Events.ON_CLICK, eventListener);
+            return result;
+        }
+
+    }
+
+    public void createCalendarAvailability() {
+        baseCalendarModel.createCalendarAvailability();
+        reloadDayInformation();
+        reloadActivationPeriods();
+    }
+
+    private void reloadActivationPeriods() {
+        Util.reloadBindings(window.getFellow("calendarAvailabilities"));
     }
 
 }

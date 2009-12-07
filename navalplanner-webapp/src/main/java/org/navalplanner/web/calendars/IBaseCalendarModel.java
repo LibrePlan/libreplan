@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
@@ -169,6 +170,20 @@ public interface IBaseCalendarModel {
     CalendarData getLastCalendarData();
 
     CalendarData getCalendarData();
+
+    boolean isResourceCalendar();
+
+    List<CalendarAvailability> getCalendarAvailabilities();
+
+    void removeCalendarAvailability(CalendarAvailability calendarAvailability);
+
+    void createCalendarAvailability();
+
+    void setStartDate(CalendarAvailability calendarAvailability,
+            LocalDate startDate) throws IllegalArgumentException;
+
+    void setEndDate(CalendarAvailability calendarAvailability, LocalDate endDate)
+            throws IllegalArgumentException;
 
     /*
      * Final conversation steps

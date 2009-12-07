@@ -699,23 +699,24 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
             throws IllegalArgumentException {
         if (this instanceof ResourceCalendar) {
             if (!calendarAvailabilities.isEmpty()) {
-                CalendarAvailability lastCalendarAvailability = calendarAvailabilities
-                        .get(calendarAvailabilities.size() - 1);
-                if (lastCalendarAvailability.getEndDate() == null) {
-                    if (lastCalendarAvailability.getStartDate().compareTo(
+                CalendarAvailability lastCalendarAvailability = getLastCalendarAvailability();
+                if (lastCalendarAvailability != null) {
+                    if (lastCalendarAvailability.getEndDate() == null) {
+                        if (lastCalendarAvailability.getStartDate().compareTo(
+                                calendarAvailability.getStartDate()) >= 0) {
+                            throw new IllegalArgumentException(
+                                    "New calendar availability should start after the last calendar availability");
+                        }
+                    } else {
+                        if (lastCalendarAvailability.getEndDate().compareTo(
                             calendarAvailability.getStartDate()) >= 0) {
                         throw new IllegalArgumentException(
                                 "New calendar availability should start after the last calendar availability");
+                       }
                     }
-                } else {
-                   if (lastCalendarAvailability.getEndDate().compareTo(
-                        calendarAvailability.getStartDate()) >= 0) {
-                    throw new IllegalArgumentException(
-                            "New calendar availability should start after the last calendar availability");
-                   }
+                    lastCalendarAvailability.setEndDate(calendarAvailability
+                            .getStartDate().minusDays(1));
                 }
-                lastCalendarAvailability.setEndDate(calendarAvailability
-                        .getStartDate().minusDays(1));
             }
             calendarAvailabilities.add(calendarAvailability);
         }
@@ -724,13 +725,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     public void removeCalendarAvailability(
             CalendarAvailability calendarAvailability)
             throws IllegalArgumentException {
-        if (this instanceof ResourceCalendar) {
-            if (calendarAvailability.getStartDate().compareTo(new LocalDate()) <= 0) {
-                throw new IllegalArgumentException(
-                        "Calendar availabilty already in use");
-            }
-            calendarAvailabilities.remove(calendarAvailability);
-        }
+        calendarAvailabilities.remove(calendarAvailability);
     }
 
     public boolean isActive(Date date) {
@@ -744,6 +739,39 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
             }
         }
         return false;
+    }
+
+    public CalendarAvailability getLastCalendarAvailability() {
+        if (calendarAvailabilities.isEmpty()) {
+            return null;
+        }
+        return calendarAvailabilities.get(calendarAvailabilities.size() - 1);
+    }
+
+    public void setStartDate(CalendarAvailability calendarAvailability,
+            LocalDate startDate) throws IllegalArgumentException {
+        int index = calendarAvailabilities.indexOf(calendarAvailability);
+        if (index > 0) {
+            if (calendarAvailabilities.get(index - 1).getEndDate().compareTo(
+                    startDate) >= 0) {
+                throw new IllegalArgumentException(
+                        "Start date could not overlap previous calendar availability");
+            }
+        }
+        calendarAvailability.setStartDate(startDate);
+    }
+
+    public void setEndDate(CalendarAvailability calendarAvailability,
+            LocalDate endDate) throws IllegalArgumentException {
+        int index = calendarAvailabilities.indexOf(calendarAvailability);
+        if (index < (calendarAvailabilities.size() - 1)) {
+            if (calendarAvailabilities.get(index + 1).getStartDate().compareTo(
+                    endDate) <= 0) {
+                throw new IllegalArgumentException(
+                        "End date could not overlap next calendar availability");
+            }
+        }
+        calendarAvailability.setEndDate(endDate);
     }
 
 }

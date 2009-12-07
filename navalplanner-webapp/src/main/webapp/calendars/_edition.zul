@@ -71,6 +71,8 @@
             <tabs>
                 <tab label="${i18n:_('Exceptions')}" id="exceptionsTab" />
                 <tab label="${i18n:_('Work week')}" id="workWeekTab" />
+                <tab label="${i18n:_('Activation periods')}" id="activationPeriodsTab"
+                    visible="@{calendarController.editionController.isResourceCalendar}" />
             </tabs>
             <tabpanels>
 
@@ -162,7 +164,7 @@
                             <listheader label="${i18n:_('Name')}" />
                             <listheader label="${i18n:_('Parent')}" />
                             <listheader label="${i18n:_('Valid from')}" />
-                            <listheader label="${i18n:_('Expiring Date')}" />
+                            <listheader label="${i18n:_('Expiring date')}" />
                             <listheader label="${i18n:_('Summary')}" />
                             <listheader label="${i18n:_('Operations')}" />
                         </listhead>
@@ -200,6 +202,25 @@
             </vbox>
 
             </tabpanel>
+
+            <tabpanel>
+
+            <vbox>
+                <listbox id="calendarAvailabilities"
+                    model="@{calendarController.editionController.getCalendarAvailabilities}"
+                    itemRenderer="@{calendarController.editionController.calendarAvailabilityRenderer}">
+                    <listhead>
+                        <listheader label="${i18n:_('Valid from')}" />
+                        <listheader label="${i18n:_('Expiration date')}" />
+                        <listheader label="${i18n:_('Operations')}" />
+                    </listhead>
+                </listbox>
+                <button label="${i18n:_('Create activation period')}"
+                        onClick="calendarController.editionController.createCalendarAvailability();" />
+            </vbox>
+
+            </tabpanel>
+
             </tabpanels>
 
         </tabbox>

@@ -32,9 +32,11 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -579,6 +581,67 @@ public class BaseCalendarModel implements IBaseCalendarModel {
             return null;
         }
         return getBaseCalendar().getCalendarData(new LocalDate(selectedDay));
+    }
+
+    @Override
+    public boolean isResourceCalendar() {
+        if (getBaseCalendar() == null) {
+            return false;
+        }
+        return getBaseCalendar() instanceof ResourceCalendar;
+    }
+
+    @Override
+    public List<CalendarAvailability> getCalendarAvailabilities() {
+        if (getBaseCalendar() == null) {
+            return null;
+        }
+        return getBaseCalendar().getCalendarAvailabilities();
+    }
+
+    @Override
+    public void removeCalendarAvailability(
+            CalendarAvailability calendarAvailability) {
+        if (getBaseCalendar() != null) {
+            getBaseCalendar().removeCalendarAvailability(calendarAvailability);
+        }
+    }
+
+    @Override
+    public void createCalendarAvailability() {
+        if (getBaseCalendar() != null) {
+            LocalDate startDate = new LocalDate();
+            CalendarAvailability lastCalendarAvailability = getBaseCalendar()
+            .getLastCalendarAvailability();
+            if (lastCalendarAvailability != null) {
+                if (lastCalendarAvailability.getEndDate() == null) {
+                    startDate = lastCalendarAvailability.getStartDate();
+                } else {
+                    startDate = lastCalendarAvailability.getEndDate();
+                }
+                startDate = startDate.plusDays(1);
+            }
+
+            CalendarAvailability calendarAvailability = CalendarAvailability
+                    .create(startDate, null);
+            getBaseCalendar().addNewCalendarAvailability(calendarAvailability);
+        }
+    }
+
+    @Override
+    public void setStartDate(CalendarAvailability calendarAvailability,
+            LocalDate startDate) throws IllegalArgumentException {
+        if (getBaseCalendar() != null) {
+            getBaseCalendar().setStartDate(calendarAvailability, startDate);
+        }
+    }
+
+    @Override
+    public void setEndDate(CalendarAvailability calendarAvailability,
+            LocalDate endDate) throws IllegalArgumentException {
+        if (getBaseCalendar() != null) {
+            getBaseCalendar().setEndDate(calendarAvailability, endDate);
+        }
     }
 
 }
