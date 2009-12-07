@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz;
 
+import static org.zkoss.ganttz.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,7 +41,9 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
 import org.zkoss.ganttz.util.ComponentsFinder;
+import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
+import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -135,14 +139,35 @@ public class Planner extends HtmlMacroComponent  {
         if (ganttPanel == null) {
             return;
         }
-        ganttPanel.zoomIncrease();
+        LongOperationFeedback.execute(ganttPanel, new ILongOperation() {
+
+            @Override
+            public String getName() {
+                return _("increasing zoom");
+            }
+
+            @Override
+            public void doAction() throws Exception {
+                ganttPanel.zoomIncrease();
+            }
+        });
     }
 
     public void zoomDecrease() {
         if (ganttPanel == null) {
             return;
         }
-        ganttPanel.zoomDecrease();
+        LongOperationFeedback.execute(ganttPanel, new ILongOperation() {
+            @Override
+            public String getName() {
+                return _("decreasing zoom");
+            }
+
+            @Override
+            public void doAction() throws Exception {
+                ganttPanel.zoomDecrease();
+            }
+        });
     }
 
     public <T> void setConfiguration(PlannerConfiguration<T> configuration) {
