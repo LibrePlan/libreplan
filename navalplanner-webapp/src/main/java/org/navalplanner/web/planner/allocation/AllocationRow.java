@@ -50,8 +50,7 @@ import org.zkoss.zul.SimpleConstraint;
 public abstract class AllocationRow {
 
     public static final SimpleConstraint CONSTRAINT_FOR_RESOURCES_PER_DAY = new SimpleConstraint(
-            SimpleConstraint.NO_EMPTY
-                    | SimpleConstraint.NO_ZERO | SimpleConstraint.NO_NEGATIVE);
+            SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE);
 
     public static void assignHours(List<AllocationRow> rows, int[] hours) {
         int i = 0;
