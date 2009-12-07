@@ -47,7 +47,10 @@ import org.zkoss.ganttz.adapters.State;
 import org.zkoss.ganttz.adapters.TabsConfiguration;
 import org.zkoss.ganttz.adapters.TabsConfiguration.ChangeableTab;
 import org.zkoss.ganttz.extensions.ITab;
+import org.zkoss.ganttz.extensions.TabProxy;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
+import org.zkoss.ganttz.util.LongOperationFeedback;
+import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -130,10 +133,31 @@ public class MultipleTabsPlannerController implements Composer,
                 transactionService, orderDAO, taskElementDAO, resourceDAO,
                 returnToPlanningTab());
         return TabsConfiguration.create()
-            .add(tabWithNameReloading(planningTab, typeChanged))
-            .add(tabWithNameReloading(resourceLoadTab, typeChanged))
-            .add(tabWithNameReloading(ordersTab, typeChanged))
-            .add(visibleOnlyAtOrderMode(advancedAllocation));
+            .add(tabWithNameReloading(doFeedbackOn(planningTab), typeChanged))
+            .add(tabWithNameReloading(doFeedbackOn(resourceLoadTab), typeChanged))
+            .add(tabWithNameReloading(doFeedbackOn(ordersTab), typeChanged))
+            .add(visibleOnlyAtOrderMode(doFeedbackOn(advancedAllocation)));
+    }
+
+    private ITab doFeedbackOn(ITab tab) {
+        return new TabProxy(tab) {
+            @Override
+            public void show() {
+                LongOperationFeedback.execute(tabsSwitcher,
+                        new ILongOperation() {
+
+                            @Override
+                            public String getName() {
+                                return _("changing perspective");
+                            }
+
+                            @Override
+                            public void doAction() throws Exception {
+                                proxiedTab.show();
+                            }
+                        });
+            }
+        };
     }
 
     private IBack returnToPlanningTab() {
