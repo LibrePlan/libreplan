@@ -25,6 +25,12 @@
             <one-to-many class="CalendarData" />
         </list>
 
+        <list name="calendarAvailabilities" access="field" cascade="all-delete-orphan">
+            <key column="BASE_CALENDAR_ID" />
+            <index column="POSITION_IN_CALENDAR" />
+            <one-to-many class="CalendarAvailability" />
+        </list>
+
         <joined-subclass name="ResourceCalendar">
             <key column="BASE_CALENDAR_ID" />
         </joined-subclass>

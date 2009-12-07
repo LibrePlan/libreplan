@@ -60,6 +60,8 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
 
     private List<CalendarData> calendarDataVersions = new ArrayList<CalendarData>();
 
+    private List<CalendarAvailability> calendarAvailabilities = new ArrayList<CalendarAvailability>();
+
     public enum DayType {
         NORMAL, ZERO_HOURS, OWN_EXCEPTION, ANCESTOR_EXCEPTION
     }
@@ -686,6 +688,24 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
             return calendarDataVersions.get(index - 1).getExpiringDate();
         }
         return null;
+    }
+
+    public List<CalendarAvailability> getCalendarAvailabilities() {
+        return Collections.unmodifiableList(calendarAvailabilities);
+    }
+
+    public void addCalendarAvailability(
+            CalendarAvailability calendarAvailability) {
+        if (this instanceof ResourceCalendar) {
+            calendarAvailabilities.add(calendarAvailability);
+        }
+    }
+
+    public void removeCalendarAvailability(
+            CalendarAvailability calendarAvailability) {
+        if (this instanceof ResourceCalendar) {
+            calendarAvailabilities.remove(calendarAvailability);
+        }
     }
 
 }
