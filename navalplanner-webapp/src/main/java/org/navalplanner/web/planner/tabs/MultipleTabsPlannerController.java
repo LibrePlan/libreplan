@@ -22,8 +22,6 @@ package org.navalplanner.web.planner.tabs;
 import static org.navalplanner.web.I18nHelper._;
 import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
 
-import javax.annotation.Resource;
-
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -68,8 +66,6 @@ public class MultipleTabsPlannerController implements Composer,
 
     public static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";
 
-    private TabsConfiguration tabsConfiguration;
-
     private Mode mode = Mode.initial();
 
     @Autowired
@@ -111,9 +107,6 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Autowired
     private URLHandlerRegistry registry;
-
-    @Resource
-    private IGlobalViewEntryPoints globalView;
 
     private TabsConfiguration buildTabsConfiguration() {
         planningTab = PlanningTabCreator.create(mode,
