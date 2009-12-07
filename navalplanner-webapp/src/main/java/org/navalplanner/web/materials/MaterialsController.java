@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
@@ -326,6 +325,7 @@ public class MaterialsController extends
                 }
             }
         }
+        messagesForUser.showInvalidValues(validationException);
     }
 
     private boolean locateAndSelectMaterialCategory(MaterialCategory materialCategory) {

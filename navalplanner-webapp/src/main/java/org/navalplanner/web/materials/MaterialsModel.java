@@ -4,7 +4,9 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -159,9 +161,37 @@ public class MaterialsModel implements IMaterialsModel {
     @Transactional
     public void confirmSave() throws ValidationException {
         final List<MaterialCategory> categories = materialCategories.asList();
+        checkNoCodeRepeatedAtNewMaterials(categories);
         for (MaterialCategory each: categories) {
             categoryDAO.save(each);
         }
+    }
+
+    private void checkNoCodeRepeatedAtNewMaterials(
+            final List<MaterialCategory> categories) throws ValidationException {
+        List<Material> allMaterials = MaterialCategory
+                .getAllMaterialsFrom(categories);
+        Map<String, Material> byCode = new HashMap<String, Material>();
+        for (Material each : allMaterials) {
+            if (byCode.containsKey(each.getCode())) {
+                throw new ValidationException(sameCodeMessage(each, byCode
+                        .get(each.getCode())));
+            }
+            byCode.put(each.getCode(), each);
+        }
+    }
+
+    private String sameCodeMessage(Material first, Material second) {
+        return _(
+                "both {0} of category {1} and {2} of category {3} have the same code",
+                asStringForUser(first), first.getCategory().getName(),
+                asStringForUser(second), second.getCategory().getName());
+    }
+
+    private String asStringForUser(Material material) {
+        return String.format("{code: %s, description: %s}", material.getCode(),
+                material
+                .getDescription());
     }
 
     @Override

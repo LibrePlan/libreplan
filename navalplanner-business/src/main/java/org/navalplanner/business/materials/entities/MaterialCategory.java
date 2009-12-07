@@ -20,12 +20,13 @@
 
 package org.navalplanner.business.materials.entities;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
@@ -37,6 +38,15 @@ import org.navalplanner.business.common.BaseEntity;
  *
  */
 public class MaterialCategory extends BaseEntity {
+
+    public static List<Material> getAllMaterialsFrom(
+            Collection<? extends MaterialCategory> categories) {
+        List<Material> result = new ArrayList<Material>();
+        for (MaterialCategory each : categories) {
+            result.addAll(each.getMaterials());
+        }
+        return result;
+    }
 
     @NotEmpty
     private String name;
@@ -104,16 +114,4 @@ public class MaterialCategory extends BaseEntity {
         materials.remove(material);
     }
 
-//    @AssertTrue(message="material code must be unique within a category")
-//    public boolean checkConstraintNonRepeatedMaterialCodes() {
-//        Set<String> materialCodes = new HashSet<String>();
-//        for (Material each: materials) {
-//            final String code = each.getCode();
-//            if (materialCodes.contains(code)) {
-//                return false;
-//            }
-//            materialCodes.add(code);
-//        }
-//        return true;
-//    }
 }
