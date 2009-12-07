@@ -83,4 +83,20 @@
             type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
     </class>
 
+    <!-- CalendarAvailability -->
+    <class name="CalendarAvailability">
+        <id name="id" access="property" type="long">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <property name="startDate" access="field"
+            type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+        <property name="endDate" access="field"
+            type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+
+    </class>
+
 </hibernate-mapping>
