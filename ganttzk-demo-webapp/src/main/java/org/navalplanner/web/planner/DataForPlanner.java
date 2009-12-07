@@ -98,7 +98,7 @@ public class DataForPlanner {
                     }
 
                 });
-        configuration.setEditTaskCommand(new ICommandOnTask<ITaskFundamentalProperties>() {
+        configuration.setDoubleClickCommand(new ICommandOnTask<ITaskFundamentalProperties>() {
 
                     @Override
                     public void doAction(

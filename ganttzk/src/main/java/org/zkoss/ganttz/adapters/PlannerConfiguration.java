@@ -80,7 +80,7 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private ICommand<T> goingDownInLastArrowCommand = new NullCommand<T>();
 
-    private ICommandOnTask<T> editTaskCommand = new NullCommandOnTask<T>();
+    private ICommandOnTask<T> doubleClickCommand = new NullCommandOnTask<T>();
 
     private Component chartComponent;
 
@@ -149,13 +149,13 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         this.goingDownInLastArrowCommand = goingDownInLastArrowCommand;
     }
 
-    public ICommandOnTask<T> getEditTaskCommand() {
-        return editTaskCommand;
+    public ICommandOnTask<T> getDoubleClickCommand() {
+        return doubleClickCommand;
     }
 
-    public void setEditTaskCommand(ICommandOnTask<T> editTaskCommand) {
+    public void setDoubleClickCommand(ICommandOnTask<T> editTaskCommand) {
         Validate.notNull(editTaskCommand);
-        this.editTaskCommand = editTaskCommand;
+        this.doubleClickCommand = editTaskCommand;
     }
 
     public void setChartComponent(Component chartComponent) {

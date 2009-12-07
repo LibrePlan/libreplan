@@ -61,7 +61,7 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private List<Task> originalTasks;
 
-    private final CommandOnTaskContextualized<?> editTaskCommand;
+    private final CommandOnTaskContextualized<?> doubleClickCommand;
 
     private final List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized;
 
@@ -71,12 +71,12 @@ public class TaskList extends XulElement implements AfterCompose {
 
     public TaskList(
             FunctionalityExposedForExtensions<?> context,
-            CommandOnTaskContextualized<?> editTaskCommand,
+            CommandOnTaskContextualized<?> doubleClickCommand,
             List<Task> tasks,
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
             IDisabilityConfiguration disabilityConfiguration) {
         this.context = context;
-        this.editTaskCommand = editTaskCommand;
+        this.doubleClickCommand = doubleClickCommand;
         this.originalTasks = tasks;
         this.commandsOnTasksContextualized = commandsOnTasksContextualized;
         this.disabilityConfiguration = disabilityConfiguration;
@@ -84,10 +84,10 @@ public class TaskList extends XulElement implements AfterCompose {
 
     public static TaskList createFor(
             FunctionalityExposedForExtensions<?> context,
-            CommandOnTaskContextualized<?> editTaskCommand,
+            CommandOnTaskContextualized<?> doubleClickCommand,
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
             IDisabilityConfiguration disabilityConfiguration) {
-        TaskList result = new TaskList(context, editTaskCommand, context
+        TaskList result = new TaskList(context, doubleClickCommand, context
                 .getDiagramGraph().getTopLevelTasks(),
                 commandsOnTasksContextualized, disabilityConfiguration);
         return result;
@@ -195,14 +195,14 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private void addListenerForTaskComponentEditForm(
             final TaskComponent taskComponent) {
-        if (editTaskCommand == null) {
+        if (doubleClickCommand == null) {
             return;
         }
         taskComponent.addEventListener("onDoubleClick", new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                editTaskCommand.doAction(taskComponent);
+                doubleClickCommand.doAction(taskComponent);
             }
         });
     }

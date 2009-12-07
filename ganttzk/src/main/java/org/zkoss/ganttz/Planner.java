@@ -71,7 +71,7 @@ public class Planner extends HtmlMacroComponent  {
 
     private List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized;
 
-    private CommandOnTaskContextualized<?> editTaskCommand;
+    private CommandOnTaskContextualized<?> doubleClickCommand;
 
     private FunctionalityExposedForExtensions<?> context;
 
@@ -161,8 +161,8 @@ public class Planner extends HtmlMacroComponent  {
                 configuration.getCommandsOnTasks());
         goingDownInLastArrowCommand = contextualize(newContext, configuration
                 .getGoingDownInLastArrowCommand());
-        editTaskCommand = contextualize(newContext, configuration
-                .getEditTaskCommand());
+        doubleClickCommand = contextualize(newContext, configuration
+                .getDoubleClickCommand());
         this.context = newContext;
         this.disabilityConfiguration = configuration;
         newContext.add(configuration.getData());
@@ -234,7 +234,7 @@ public class Planner extends HtmlMacroComponent  {
         insertGlobalCommands();
         this.leftPane = new LeftPane(this.diagramGraph.getTopLevelTasks());
         this.ganttPanel = new GanttPanel(this.context,
-                commandsOnTasksContextualized, editTaskCommand,
+                commandsOnTasksContextualized, doubleClickCommand,
                 disabilityConfiguration);
     }
 

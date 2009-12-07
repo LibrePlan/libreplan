@@ -173,7 +173,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
 
-        configuration.setEditTaskCommand(buildEditTaskCommand(editTaskController));
+        configuration.setDoubleClickCommand(buildEditTaskCommand(editTaskController));
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
         chartComponent.setHeight("200px");
