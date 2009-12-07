@@ -641,7 +641,11 @@ public abstract class BaseCalendarEditionController extends
             for (Days day : Days.values()) {
                 Integer hours = calendarData.getHours(day);
                 if (hours == null) {
-                    summary.add("D");
+                    if (parent == null) {
+                        summary.add("0");
+                    } else {
+                        summary.add("D");
+                    }
                 } else {
                     summary.add(hours.toString());
                 }
