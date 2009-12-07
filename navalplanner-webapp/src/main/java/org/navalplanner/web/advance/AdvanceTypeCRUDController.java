@@ -149,9 +149,9 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
                     throw new WrongValueException(comp,
                             _("The name is not valid, the name must not be null "));
                 }
-                if (!(advanceTypeModel.distinctNames((String) value))) {
+                if (!advanceTypeModel.distinctNames((String) value)) {
                     throw new WrongValueException(comp,
-                            _("The name is not valid, there is another advance type with a similar name. "));
+                            _("The name is not valid, there is another advance type with the same name. "));
                 }
             }
         };

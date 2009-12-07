@@ -136,10 +136,8 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
         }
         for (AdvanceType advanceType : advanceTypeDAO
                 .list(AdvanceType.class)) {
-            if ((advanceType.getId() == null)
-                    || (!advanceType.getId().equals(this.advanceType.getId()))
-                    && (advanceType.getUnitName().contains(name) || (name
-                            .contains(advanceType.getUnitName())))) {
+            if (!advanceType.getId().equals(this.advanceType.getId())
+                    && advanceType.getUnitName().equalsIgnoreCase(name)) {
                 return false;
             }
         }
