@@ -29,7 +29,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -46,7 +50,6 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AllocationResult;
-import org.navalplanner.web.planner.allocation.AllocationRowsHandler;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;
@@ -78,6 +81,7 @@ public class AdvancedAllocationTabCreator {
             this.aggregate = this.allocationResult.getAggregate();
             this.task = task;
             this.associatedResources = getAssociatedResources(task);
+            reattachResources();
         }
 
         private Set<Resource> getAssociatedResources(Task task) {
@@ -147,6 +151,19 @@ public class AdvancedAllocationTabCreator {
         private void reattachResources() {
             for (Resource each : associatedResources) {
                 resourceDAO.reattach(each);
+                loadCalendar(each.getCalendar());
+            }
+        }
+
+        private void loadCalendar(ResourceCalendar calendar) {
+            calendar.getExceptions();
+            BaseCalendar current = calendar;
+            while (current.isDerived()) {
+                for (CalendarAvailability each : current
+                        .getCalendarAvailabilities()) {
+                    Hibernate.initialize(each);
+                }
+                current = calendar.getParent();
             }
         }
 
