@@ -518,7 +518,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         private void renderAggregatingRow(Listitem item) {
             ResourceAllocationController controller = ResourceAllocationController.this;
-            append(item, new Label());
+            append(item, new Label(_("Sum of all rows")));
             append(item, CalculationTypeRadio.NUMBER_OF_HOURS.input(controller));
             append(item, CalculationTypeRadio.RESOURCES_PER_DAY
                     .input(controller));
