@@ -168,12 +168,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         ISaveCommand saveCommand = buildSaveCommand();
         configuration.addGlobalCommand(saveCommand);
 
-        configuration.addCommandOnTask(buildResourceAllocationCommand(resourceAllocationController));
+        final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(resourceAllocationController);
+        configuration.addCommandOnTask(resourceAllocationCommand);
         configuration.addCommandOnTask(buildMilestoneCommand());
         configuration
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
-
-        configuration.setDoubleClickCommand(buildEditTaskCommand(editTaskController));
+        configuration
+                .addCommandOnTask(buildEditTaskCommand(editTaskController));
+        configuration.setDoubleClickCommand(resourceAllocationCommand);
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
         chartComponent.setHeight("200px");
