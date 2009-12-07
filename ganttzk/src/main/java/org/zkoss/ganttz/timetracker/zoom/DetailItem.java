@@ -39,13 +39,11 @@ public final class DetailItem {
     private boolean currentPeriod;
     private int currentDayOffset;
 
+    private boolean deadlinePeriod;
+    private int deadlineOffset;
+
     private DateTime startDate;
-
     private DateTime endDate;
-
-    public DetailItem(int size, String name) {
-        this(size, name, false);
-    }
 
     public DetailItem(int size, String name, DateTime startDate,
             DateTime endDate) {
@@ -55,16 +53,8 @@ public final class DetailItem {
         this.markCurrentDay();
     }
 
-    public void markCurrentDay() {
-        if (this.startDate.isBeforeNow() && this.endDate.isAfterNow()) {
-            int offsetInPx = Math
-                    .round((((float) Days.daysBetween(this.startDate,
-                            new DateTime()).getDays()) / ((float) Days
-                            .daysBetween(this.startDate, this.endDate)
-                            .getDays()))
-                            * this.size);
-            this.markCurrentDay(offsetInPx);
-        }
+    public DetailItem(int size, String name) {
+        this(size, name, false);
     }
 
     public DetailItem(int size, String name, boolean even) {
@@ -82,6 +72,33 @@ public final class DetailItem {
         this.bankHoliday = false;
         this.currentPeriod = true;
         this.currentDayOffset = currentdayoffset;
+    }
+
+    public DetailItem(int size, String name, int currentdayoffset,
+            int deadlineoffset) {
+        this(size, name, currentdayoffset);
+        this.deadlinePeriod = true;
+        this.deadlineOffset = deadlineoffset;
+    }
+
+    public void markCurrentDay() {
+        if (this.startDate.isBeforeNow() && this.endDate.isAfterNow()) {
+            int offsetInPx = Math.round((((float) Days.daysBetween(
+                    this.startDate, new DateTime()).getDays()) / ((float) Days
+                    .daysBetween(this.startDate, this.endDate).getDays()))
+                    * this.size);
+            this.markCurrentDay(offsetInPx);
+        }
+    }
+
+    public void markDeadlineDay(DateTime deadline) {
+        if (this.startDate.isBefore(deadline) && this.endDate.isAfter(deadline)) {
+            int offsetInPx = Math.round((((float) Days.daysBetween(
+                    this.startDate, deadline).getDays()) / ((float) Days
+                    .daysBetween(this.startDate, this.endDate).getDays()))
+                    * this.size);
+            this.markDeadlineDay(offsetInPx);
+        }
     }
 
     public int getSize() {
@@ -109,6 +126,11 @@ public final class DetailItem {
         this.currentDayOffset = offset;
     }
 
+    public void markDeadlineDay(int offset) {
+        this.deadlinePeriod = true;
+        this.deadlineOffset = offset;
+    }
+
     public boolean isEven() {
         return even;
     }
@@ -127,6 +149,29 @@ public final class DetailItem {
 
     public int getCurrentDayOffset() {
         return currentDayOffset;
+    }
+
+    public boolean isDeadlinePeriod() {
+        return deadlinePeriod;
+    }
+
+    public int getDeadlineOffset() {
+        return deadlineOffset;
+    }
+
+    public String getBackgroundOffset() {
+        String offset = "0px";
+        if (getCurrentDayOffset() != 0) {
+            if (getDeadlineOffset() != 0) {
+                offset = getCurrentDayOffset() + "px," + getDeadlineOffset()
+                        + "px";
+            } else {
+                offset = getCurrentDayOffset() + "px";
+            }
+        } else if (getDeadlineOffset() != 0) {
+            offset = getDeadlineOffset() + "px";
+        }
+        return offset;
     }
 
 }
