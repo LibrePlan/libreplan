@@ -52,6 +52,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
         private final String name;
         private final String unencodedURL;
+        private final String encodedURL;
         private final List<CustomMenuItem> children;
         private boolean activeParent;
         private boolean disabled;
@@ -62,6 +63,10 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
         public String getUrl() {
             return unencodedURL;
+        }
+
+        public String getEncodedUrl() {
+            return encodedURL;
         }
 
         public List<CustomMenuItem> getChildren() {
@@ -81,6 +86,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 List<CustomMenuItem> children) {
             this.name = name;
             this.unencodedURL = url;
+            this.encodedURL = Executions.getCurrent().encodeURL(url);
             this.children = children;
             this.disabled = false;
         }
@@ -136,6 +142,12 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         for (CustomMenuItem ci : this.firstLevel) {
             if (ci.contains(requestPath)) {
                 ci.setActive(true);
+                for (CustomMenuItem child : ci.children) {
+                    if (child.contains(requestPath)) {
+                        child.setActive(true);
+                        break;
+                    }
+                }
                 break;
             }
         }
@@ -175,7 +187,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
         topItem(_("Resources"), "/resources/worker/worker.zul",
                 subItem(_("Workers List"),
-                    "/resources/worker/worker.zul#list"),
+                    "/resources/worker/worker.zul"),
                 subItem(_("Machines List"),
                     "/resources/machine/machines.zul"));
 
@@ -212,6 +224,24 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         return this.firstLevel;
     }
 
+    public List<CustomMenuItem> getBreadcrumbsPath() {
+        List<CustomMenuItem> breadcrumbsPath = new ArrayList<CustomMenuItem>();
+        for (CustomMenuItem ci : this.firstLevel) {
+            if (ci.isActiveParent()) {
+                if ((ci.name != null) && (ci.name != _("Scheduling"))) {
+                    breadcrumbsPath.add(ci);
+                    for (CustomMenuItem child : ci.children) {
+                        if (child.isActiveParent()) {
+                            breadcrumbsPath.add(child);
+                        }
+                    }
+                }
+            }
+        }
+        return breadcrumbsPath;
+    }
+
+
     public List<CustomMenuItem> getCustomMenuSecondaryItems() {
         for (CustomMenuItem ci : this.firstLevel) {
             if (ci.isActiveParent()) {
@@ -219,6 +249,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             }
         }
         return Collections.<CustomMenuItem> emptyList();
+
     }
 
     private Button currentOne = null;
@@ -299,5 +330,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         setSelectClass(button);
         currentOne = button;
     }
+
 
 }

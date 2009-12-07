@@ -133,8 +133,12 @@ a.sub_menu:hover {
     vertical-align: middle;
 }
 
-.ruta span {
+.ruta span, .ruta a {
     font-weight:bold;
+}
+
+.ruta tr {
+    vertical-align: middle;
 }
 
 .fondo_cabecera {

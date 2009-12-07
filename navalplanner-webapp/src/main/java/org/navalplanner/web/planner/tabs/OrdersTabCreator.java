@@ -104,6 +104,7 @@ public class OrdersTabCreator {
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PlanningTabCreator.ENTERPRISE_VIEW));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(ORDER_ORDERS_VIEW));
@@ -127,6 +128,7 @@ public class OrdersTabCreator {
             @Override
             protected void afterShowAction() {
                 breadcrumbs.getChildren().clear();
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(ORDER_ORDERS_VIEW));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 if (mode.isOf(ModeType.ORDER)) {

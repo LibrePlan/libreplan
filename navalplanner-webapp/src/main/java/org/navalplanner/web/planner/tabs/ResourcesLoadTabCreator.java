@@ -104,6 +104,7 @@ public class ResourcesLoadTabCreator {
             @Override
             protected void afterShowAction() {
                 breadcrumbs.getChildren().clear();
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(ORDER_RESOURCE_LOAD_VIEW));
@@ -139,6 +140,7 @@ public class ResourcesLoadTabCreator {
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(RESOURCE_LOAD_VIEW));

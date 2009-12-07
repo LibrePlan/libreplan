@@ -130,6 +130,7 @@ public class PlanningTabCreator {
             protected void afterShowAction() {
                 companyPlanningController.setConfigurationForPlanner();
                 breadcrumbs.getChildren().clear();
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(ENTERPRISE_VIEW));
@@ -167,6 +168,7 @@ public class PlanningTabCreator {
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(ORDER_ENTERPRISE_VIEW));
