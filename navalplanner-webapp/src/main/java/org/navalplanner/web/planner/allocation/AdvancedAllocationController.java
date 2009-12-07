@@ -376,7 +376,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         TimeTrackedTableWithLeftPane<Row, Row> timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<Row, Row>(
                 getDataSource(), getColumnsForLeft(), getLeftRenderer(),
                 getRightRenderer(), timeTracker);
-
+        Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
         timeTracker.addZoomListener(new IZoomLevelChangedListener() {
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
@@ -385,6 +385,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         });
         table = timeTrackedTableWithLeftPane.getRightPane();
         leftPane = timeTrackedTableWithLeftPane.getLeftPane();
+        leftPane.setFixedLayout(true);
     }
 
     private void insertComponentsInLayout() {

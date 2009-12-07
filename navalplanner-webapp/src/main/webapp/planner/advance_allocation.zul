@@ -30,12 +30,13 @@
     <borderlayout width="auto" apply="${advancedAllocationController}" class="advancedallocationlayout">
        <north height="30px" border="0">
        <hbox align="center">
-        <button label="${i18n:_('Accept')}" id="acceptButton" />
-        <button label="${i18n:_('Cancel')}" id="cancelButton" />
+        <button label="${i18n:_('Accept')}" id="acceptButton" class="planner-command" />
+        <button label="${i18n:_('Cancel')}" id="cancelButton" class="planner-command" />
         <separator/>
-        <button label="${i18n:_('+')}" id="zoomIncrease"/>
-        <button label="${i18n:_('-')}" id="zoomDecrease"/>
-        ${i18n:_('From')}: <datebox /> ${i18n:_('To')}: <datebox />
+        <button class="planner-icon" id="zoomIncrease"
+            image="/common/img/zoom_in.png" tooltiptext="${i18n:_('Zoom increase')}" />
+        <button class="planner-icon" id="zoomDecrease"
+            image="/common/img/zoom_out.png" tooltiptext="${i18n:_('Zoom decrease')}"/>
         <div id="messages" />
        </hbox>
        </north>

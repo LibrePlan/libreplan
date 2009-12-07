@@ -177,7 +177,8 @@ button.z-button {
    padding: 2px 1px 1px 2px;
 }
 
-.planner-command .z-button-cm {
+.planner-command .z-button-cm,
+.advancedallocationlayout .z-north-body .z-button-cm {
     height: 24px;
     padding: 2px;
 }
@@ -969,4 +970,8 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
     font-size: 10px;
     z-index: 2;
     color: transparent;
+}
+
+.advancedassignmentdetails .hours {
+    min-width: 30px;
 }
