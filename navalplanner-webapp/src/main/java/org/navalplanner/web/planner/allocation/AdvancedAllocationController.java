@@ -198,10 +198,16 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             case NUMBER_OF_HOURS:
                 return Restriction.onlyAssignOnInterval(restrictionSource
                         .getStart(), restrictionSource.getEnd());
+            case RESOURCES_PER_DAY:
+                return Restriction.emptyRestriction();
             default:
                 throw new RuntimeException("unhandled case: "
                         + restrictionSource.getCalculatedValue());
             }
+        }
+
+        private static Restriction emptyRestriction() {
+            return new NoRestriction();
         }
 
         private static Restriction onlyAssignOnInterval(LocalDate start,
@@ -318,6 +324,39 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         @Override
         public void markInvalidTotalHours(Row groupingRow, int totalHours) {
             groupingRow.markErrorOnTotal(getMessage(totalHours));
+        }
+    }
+
+    private static class NoRestriction extends Restriction {
+
+        @Override
+        boolean isDisabledEditionOn(DetailItem item) {
+            return false;
+        }
+
+        @Override
+        public boolean isInvalidTotalHours(int totalHours) {
+            return false;
+        }
+
+        @Override
+        LocalDate limitEndDate(LocalDate endDate) {
+            return endDate;
+        }
+
+        @Override
+        LocalDate limitStartDate(LocalDate startDate) {
+            return startDate;
+        }
+
+        @Override
+        public void markInvalidTotalHours(Row groupingRow, int currentHours) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void showInvalidHours(IMessagesForUser messages, int totalHours) {
+            throw new UnsupportedOperationException();
         }
     }
 
