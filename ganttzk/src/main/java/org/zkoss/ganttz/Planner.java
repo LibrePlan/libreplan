@@ -330,13 +330,16 @@ public class Planner extends HtmlMacroComponent  {
     };
 
     public void showCriticalPath() {
+        Button showCriticalPathButton = (Button) getFellow("showCriticalPath");
         if (disabilityConfiguration.isCriticalPathEnabled()) {
             if (isShowingCriticalPath) {
                 context.hideCriticalPath();
                 diagramGraph.removePostGraphChangeListener(showCriticalPathOnChange);
+                showCriticalPathButton.setSclass("planner-command");
             } else {
                 context.showCriticalPath();
                 diagramGraph.addPostGraphChangeListener(showCriticalPathOnChange);
+                showCriticalPathButton.setSclass("planner-command clicked");
             }
             isShowingCriticalPath = !isShowingCriticalPath;
         }

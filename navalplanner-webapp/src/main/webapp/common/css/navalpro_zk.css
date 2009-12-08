@@ -186,6 +186,15 @@ button.z-button {
    padding: 2px 1px 1px 2px;
 }
 
+.planner-command.clicked .z-button-cm {
+    background-color: #A1D586; /* green2 (active background)*/
+    border-right: 1px solid #439e32;
+    border-bottom: 1px solid #439e32;
+    border-top: 2px solid #3f5917;
+    border-left: 2px solid #3f5917;
+    padding: 2px 1px 1px 2px;
+}
+
 
 .sub_menu .z-button-cm {
     background-color: transparent !important;
