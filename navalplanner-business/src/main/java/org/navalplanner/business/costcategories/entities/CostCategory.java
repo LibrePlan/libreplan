@@ -106,10 +106,11 @@ public class CostCategory extends BaseEntity {
                         (listElement.getEndDate() == null && listElement.getInitDate().compareTo(endDate)<=0)) {
                     overlap = true;
                 }
-                else if((listElement.getEndDate().compareTo(initDate)>=0 &&
+                else if((endDate != null && listElement.getEndDate() != null) &&
+                        ((listElement.getEndDate().compareTo(initDate)>=0 &&
                         listElement.getEndDate().compareTo(endDate)<=0) ||
                         (listElement.getInitDate().compareTo(initDate)>=0 &&
-                                listElement.getInitDate().compareTo(endDate)<=0)) {
+                                listElement.getInitDate().compareTo(endDate)<=0))) {
                     overlap = true;
                 }
             }
@@ -134,10 +135,11 @@ public class CostCategory extends BaseEntity {
                             (listElement.getEndDate() == null && listElement.getInitDate().compareTo(endDate)<=0)) {
                         return true;
                     }
-                    else if((listElement.getEndDate().compareTo(initDate)>=0 &&
+                    else if((endDate != null && listElement.getEndDate() != null) &&
+                            ((listElement.getEndDate().compareTo(initDate)>=0 &&
                             listElement.getEndDate().compareTo(endDate)<=0) ||
                             (listElement.getInitDate().compareTo(initDate)>=0 &&
-                                    listElement.getInitDate().compareTo(endDate)<=0)) {
+                                    listElement.getInitDate().compareTo(endDate)<=0))) {
                         return true;
                     }
                 }
