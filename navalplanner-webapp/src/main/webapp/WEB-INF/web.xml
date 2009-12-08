@@ -33,7 +33,7 @@
     <servlet>
         <description><![CDATA[Callback Servlet]]></description>
         <servlet-name>callbackServlet</servlet-name>
-        <servlet-class>org.navalplanner.web.servlets.CallbackServlet</servlet-class>
+        <servlet-class>org.zkoss.ganttz.servlets.CallbackServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>

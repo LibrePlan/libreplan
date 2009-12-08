@@ -103,6 +103,10 @@
             <groupId>jfree</groupId>
             <artifactId>jfreechart-igalia</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

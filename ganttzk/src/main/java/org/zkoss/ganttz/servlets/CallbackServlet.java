@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.navalplanner.web.servlets;
+package org.zkoss.ganttz.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,11 +31,11 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.Validate;
+import org.zkoss.web.servlet.http.HttpServlet;
 
 /**
  * Servlet that allows to register custom responses. It must be declared at
