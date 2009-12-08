@@ -3,10 +3,7 @@ package org.zkoss.ganttz.print;
 import gantt.builder.ChartBuilder;
 import gantt.builder.DatasetBuilder;
 import gantt.data.ExtendedGanttCategoryDataset;
-import gantt.data.ExtendedTaskSeriesCollection;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -14,17 +11,23 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.jfree.chart.ChartUtilities;
+import javax.servlet.http.HttpServletRequest;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.gantt.TaskSeries;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.servlets.CallbackServlet;
+import org.zkoss.ganttz.servlets.handlers.JFreeChartHandler;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.zk.ui.Executions;
 
 public class Print {
 
     private static final int INTERVAL_LENGTH_IN_MINUTES = 300 * 24 * 30;
+
     private static final String DEFAULT_SERIES_NAME = "Scheduled";
+
     private static final long serialVersionUID = 1L;
 
     public static void print(GanttDiagramGraph diagramGraph) {
@@ -35,8 +38,8 @@ public class Print {
         }
     }
 
-    public static void printGanttHorizontalPagingDemo(GanttDiagramGraph diagramGraph) throws Exception {
-        int i = 0;
+    public static void printGanttHorizontalPagingDemo(GanttDiagramGraph diagramGraph)
+            throws Exception {
         DatasetBuilder datasetBuilder = new DatasetBuilder();
 
         final List<Task> tasks = diagramGraph.getTasks();
@@ -59,10 +62,10 @@ public class Print {
 
         // Create a chart for each subdataset
         for (ExtendedGanttCategoryDataset each : subdatasets) {
-            final JFreeChart chart = createChart(each);
-            final String filename = "PAGE-" + i;
-            saveChartAsPNG(chart, filename);
-            i++;
+            final HttpServletRequest request = (HttpServletRequest) Executions
+                .getCurrent().getNativeRequest();
+            final JFreeChartHandler handler = new JFreeChartHandler(createChart(each));
+            CallbackServlet.registerAndCreateURLFor(request, handler);
         }
     }
 
@@ -70,15 +73,6 @@ public class Print {
         final ChartBuilder chartBuilder = new ChartBuilder();
         return chartBuilder.createChart("Gantt Diagram",
                 "Tasks", "Date", dataset, true, true, false, ZoomLevel.DETAIL_TWO);
-    }
-
-    private static void saveChartAsPNG(JFreeChart chart, String filename) {
-        try {
-            final File file = new File(filename + ".png");
-            ChartUtilities.saveChartAsPNG(file, chart, 600, 600);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private static Date getSmallestBeginDate(
