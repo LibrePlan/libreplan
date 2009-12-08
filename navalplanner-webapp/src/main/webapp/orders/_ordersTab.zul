@@ -19,8 +19,6 @@
 -->
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <?component name="list" inline="true" macroURI="_list.zul"?>
-<?component name="edition" inline="true" macroURI="_edition.zul"?>
-<?component name="orderElement" inline="true" macroURI="_editOrderElement.zul"?>
 <zk>
 <zscript><![CDATA[
     orderController = arg.get("orderController");
@@ -54,8 +52,6 @@
         <div>
             <vbox id="messagesContainer" />
             <list top_id="listWindow" />
-            <edition top_id="editWindow" />
-            <orderElement top_id="editOrderElement" title="${i18n:_('Edit order element')}" />
             </div>
         </center>
         </borderlayout>
