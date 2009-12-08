@@ -223,8 +223,13 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getVariable("assignedMaterialsController", true);
     }
 
+    private List<Order> ordersListCached;
+
     public List<Order> getOrders() {
-        return orderModel.getOrders();
+        if (ordersListCached != null) {
+            return ordersListCached;
+        }
+        return ordersListCached = orderModel.getOrders();
     }
 
     private OnlyOneVisible getVisibility() {
@@ -281,6 +286,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToList() {
         showWindow(listWindow);
+        ordersListCached = null;
     }
 
     public void reloadHoursGroupOrder() {
