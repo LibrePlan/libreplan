@@ -206,10 +206,12 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void saveAndContinue() {
-        save();
-        orderModel.initEdit((Order) orderModel.getOrder());
-        initializeTabs();
-        showWindow(editWindow);
+        final boolean couldSave = save();
+        if (couldSave) {
+            orderModel.initEdit((Order) orderModel.getOrder());
+            initializeTabs();
+            showWindow(editWindow);
+        }
     }
 
     public void saveAndExit() {
