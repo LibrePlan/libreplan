@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.common;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.INewObject;
@@ -35,6 +37,8 @@ import org.navalplanner.business.common.exceptions.ValidationException;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public abstract class BaseEntity implements INewObject {
+
+    private static final Log LOG = LogFactory.getLog(BaseEntity.class);
 
     private Long id;
 
@@ -90,6 +94,18 @@ public abstract class BaseEntity implements INewObject {
         InvalidValue[] invalidValues = classValidator.getInvalidValues(this);
         if (invalidValues.length > 0) {
             throw new ValidationException(invalidValues);
+        }
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return super.toString() + "[ id: " + getId() + ", newObject: "
+                    + isNewObject() + "]";
+        } catch (Exception e) {
+            final String message = "error doing toString";
+            LOG.error(message, e);
+            return message;
         }
     }
 
