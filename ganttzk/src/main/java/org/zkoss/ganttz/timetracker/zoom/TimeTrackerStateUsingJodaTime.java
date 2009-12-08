@@ -35,6 +35,12 @@ import org.zkoss.ganttz.util.Interval;
  */
 public abstract class TimeTrackerStateUsingJodaTime extends TimeTrackerState {
 
+    TimeTrackerStateUsingJodaTime(
+            IDetailItemModificator firstLevelModificator,
+            IDetailItemModificator secondLevelModificator) {
+        super(firstLevelModificator, secondLevelModificator);
+    }
+
     protected static LocalDate asLocalDate(Date date) {
         return new LocalDate(date);
     }

@@ -44,6 +44,7 @@ import org.zkoss.ganttz.data.TaskLeaf;
 import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
+import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
@@ -154,13 +155,16 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
     public FunctionalityExposedForExtensions(Planner planner,
             IAdapterToTaskFundamentalProperties<T> adapter,
-            IStructureNavigator<T> navigator, GanttDiagramGraph diagramGraph) {
+            IStructureNavigator<T> navigator, GanttDiagramGraph diagramGraph,
+            IDetailItemModificator firstLevelModificator,
+            IDetailItemModificator secondLevelModificator) {
         this.planner = planner;
         this.adapter = adapter;
         this.navigator = navigator;
         this.diagramGraph = diagramGraph;
         this.timeTracker = new TimeTracker(new Interval(TimeTrackerState
-                .year(2009), TimeTrackerState.year(2011)));
+                .year(2009), TimeTrackerState.year(2011)),
+                firstLevelModificator, secondLevelModificator);
     }
 
     /**

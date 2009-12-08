@@ -36,9 +36,14 @@ import org.zkoss.ganttz.util.Interval;
  */
 public class DetailTwoTimeTrackerState extends TimeTrackerState {
 
-    public static final DetailTwoTimeTrackerState INSTANCE = new DetailTwoTimeTrackerState();
     private static final int FIRST_LEVEL_ITEM_SIZE = 400;
     private static final int SECOND_LEVEL_ITEM_SIZE = 100;
+
+    protected DetailTwoTimeTrackerState(
+            IDetailItemModificator firstLevelModificator,
+            IDetailItemModificator secondLevelModificator) {
+        super(firstLevelModificator, secondLevelModificator);
+    }
 
     public final double daysPerPixel() {
         return ((double) 365 / FIRST_LEVEL_ITEM_SIZE);

@@ -38,8 +38,14 @@ public abstract class TimeTrackerState {
     protected static final long MILLSECONDS_IN_DAY = 1000 * 60 * 60 * 24;
     protected static final int NUMBER_OF_ITEMS_MINIMUM = 10;
 
-    public Collection<DetailItem> getFirstLevelDetails(Interval interval) {
-        return markEvens(createDetailsForFirstLevel(interval));
+    private final IDetailItemModificator firstLevelModificator;
+
+    private final IDetailItemModificator secondLevelModificator;
+
+    protected TimeTrackerState(IDetailItemModificator firstLevelModificator,
+            IDetailItemModificator secondLevelModificator) {
+        this.firstLevelModificator = firstLevelModificator;
+        this.secondLevelModificator = secondLevelModificator;
     }
 
     // When applied after setting current day, removes extra data as current day
@@ -65,7 +71,23 @@ public abstract class TimeTrackerState {
 
     public Collection<DetailItem> getSecondLevelDetails(Interval interval) {
         // Also mark holidays and current date
-        return markEvens(createDetailsForSecondLevel(interval));
+        return markEvens(applyConfiguredModifications(secondLevelModificator,
+                createDetailsForSecondLevel(interval)));
+    }
+
+    public Collection<DetailItem> getFirstLevelDetails(Interval interval) {
+        return markEvens(applyConfiguredModifications(firstLevelModificator,
+                createDetailsForFirstLevel(interval)));
+    }
+
+    private static List<DetailItem> applyConfiguredModifications(
+            IDetailItemModificator modificator,
+            Collection<? extends DetailItem> detailsItems) {
+        List<DetailItem> result = new ArrayList<DetailItem>(detailsItems.size());
+        for (DetailItem each : detailsItems) {
+            result.add(modificator.applyModificationsTo(each));
+        }
+        return result;
     }
 
     protected static int[] calculateInitialEndYear(Date initialDate,

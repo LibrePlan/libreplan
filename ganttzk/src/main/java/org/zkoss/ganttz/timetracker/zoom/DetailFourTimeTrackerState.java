@@ -33,7 +33,10 @@ import org.joda.time.Weeks;
  */
 public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
-    public static final DetailFourTimeTrackerState INSTANCE = new DetailFourTimeTrackerState();
+    DetailFourTimeTrackerState(IDetailItemModificator firstLevelModificator,
+            IDetailItemModificator secondLevelModificator) {
+        super(firstLevelModificator, secondLevelModificator);
+    }
 
     private static final int FIRST_LEVEL_SIZE = 200;
     private static final int SECOND_LEVEL_SIZE = 50;
@@ -41,6 +44,7 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
     public final double daysPerPixel() {
         return ((double) 7 / SECOND_LEVEL_SIZE);
     }
+
 
     @Override
     protected IDetailItemCreator getDetailItemCreatorFirstLevel() {

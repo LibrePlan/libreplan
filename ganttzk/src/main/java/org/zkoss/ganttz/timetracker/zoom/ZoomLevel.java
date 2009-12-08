@@ -25,20 +25,46 @@ package org.zkoss.ganttz.timetracker.zoom;
  */
 public enum ZoomLevel {
 
-    DETAIL_ONE(DetailOneTimeTrackerState.INSTANCE), DETAIL_TWO(
-            DetailTwoTimeTrackerState.INSTANCE), DETAIL_THREE(
-            DetailThreeTimeTrackerState.INSTANCE), DETAIL_FOUR(
-            DetailFourTimeTrackerState.INSTANCE), DETAIL_FIVE(
-            DetailFiveTimeTrackerState.INSTANCE);
-
-    private final TimeTrackerState state;
-
-    private ZoomLevel(TimeTrackerState state) {
-        if (state == null) {
-            throw new IllegalArgumentException("state cannot be null");
+    DETAIL_ONE {
+        @Override
+        public TimeTrackerState getTimeTrackerState(
+                IDetailItemModificator firstLevel,
+                IDetailItemModificator secondLevel) {
+            return new DetailOneTimeTrackerState(firstLevel, secondLevel);
         }
-        this.state = state;
-    }
+    },
+    DETAIL_TWO {
+        @Override
+        public TimeTrackerState getTimeTrackerState(
+                IDetailItemModificator firstLevel,
+                IDetailItemModificator secondLevel) {
+            return new DetailTwoTimeTrackerState(firstLevel, secondLevel);
+        }
+    },
+    DETAIL_THREE {
+        @Override
+        public TimeTrackerState getTimeTrackerState(
+                IDetailItemModificator firstLevel,
+                IDetailItemModificator secondLevel) {
+            return new DetailThreeTimeTrackerState(firstLevel, secondLevel);
+        }
+    },
+    DETAIL_FOUR {
+        @Override
+        public TimeTrackerState getTimeTrackerState(
+                IDetailItemModificator firstLevel,
+                IDetailItemModificator secondLevel) {
+            return new DetailFourTimeTrackerState(firstLevel, secondLevel);
+        }
+    },
+    DETAIL_FIVE {
+        @Override
+        public TimeTrackerState getTimeTrackerState(
+                IDetailItemModificator firstLevel,
+                IDetailItemModificator secondLevel) {
+            return new DetailFiveTimeTrackerState(firstLevel, secondLevel);
+        }
+    };
 
     /**
      * @return if there is no next, returns <code>this</code>. Otherwise returns
@@ -63,8 +89,8 @@ public enum ZoomLevel {
         return ZoomLevel.values()[ordinal() - 1];
     }
 
-    public TimeTrackerState getTimeTrackerState() {
-        return state;
-    }
+    public abstract TimeTrackerState getTimeTrackerState(
+            IDetailItemModificator firstLevel,
+            IDetailItemModificator secondLevel);
 
 }

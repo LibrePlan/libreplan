@@ -32,6 +32,8 @@ import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
+import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
+import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -97,6 +99,12 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     private boolean dependenciesConstraintsHavePriority = false;
 
     private boolean criticalPathEnabled = true;
+
+    private IDetailItemModificator firstLevelModificators = SeveralModificators
+            .empty();
+
+    private IDetailItemModificator secondLevelModificators = SeveralModificators
+            .empty();
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
@@ -230,6 +238,26 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isCriticalPathEnabled() {
         return criticalPathEnabled;
+    }
+
+    public IDetailItemModificator getSecondLevelModificators() {
+        return secondLevelModificators;
+    }
+
+    public void setSecondLevelModificators(
+            IDetailItemModificator... secondLevelModificators) {
+        this.secondLevelModificators = SeveralModificators
+                .create(secondLevelModificators);
+    }
+
+    public IDetailItemModificator getFirstLevelModificators() {
+        return firstLevelModificators;
+    }
+
+    public void setFirstLevelModificators(
+            IDetailItemModificator... firstLevelModificators) {
+        this.firstLevelModificators = SeveralModificators
+                .create(firstLevelModificators);
     }
 
 }

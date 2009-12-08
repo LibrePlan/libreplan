@@ -33,16 +33,16 @@ import org.zkoss.util.Locales;
  */
 public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
-    public static final DetailThreeTimeTrackerState INSTANCE = new DetailThreeTimeTrackerState();
+    DetailThreeTimeTrackerState(IDetailItemModificator firstLevelModificator,
+            IDetailItemModificator secondLevelModificator) {
+        super(firstLevelModificator, secondLevelModificator);
+    }
 
     private static final int FIRST_LEVEL_SIZE = 300;
     protected static final int SECOND_LEVEL_SIZE = 50;
 
     public final double daysPerPixel() {
         return ((double) 182.5 / FIRST_LEVEL_SIZE);
-    }
-
-    private DetailThreeTimeTrackerState() {
     }
 
     @Override

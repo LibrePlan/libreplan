@@ -37,18 +37,18 @@ import org.zkoss.ganttz.util.Interval;
  */
 public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
+
     public static final int FIRST_LEVEL_SIZE = 140;
 
     public static final int SECOND_LEVEL_SIZE = 20;
 
-    public static final DetailFiveTimeTrackerState INSTANCE = new DetailFiveTimeTrackerState();
+    DetailFiveTimeTrackerState(IDetailItemModificator firstLevelModificator,
+            IDetailItemModificator secondLevelModificator) {
+        super(firstLevelModificator, secondLevelModificator);
+    }
 
     public final double daysPerPixel() {
         return ((double) 1 / SECOND_LEVEL_SIZE);
-    }
-
-    private DetailFiveTimeTrackerState() {
-
     }
 
     @Override

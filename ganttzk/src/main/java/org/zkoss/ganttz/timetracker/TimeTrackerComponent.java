@@ -99,7 +99,7 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
     }
 
     private TimeTrackerState getTimeTrackerState() {
-        return getTimeTracker().getDetailLevel().getTimeTrackerState();
+        return getTimeTracker().getTimeTrackerState();
     }
 
     private Command _onincreasecmd = new ComponentCommand("onIncrease", 0) {

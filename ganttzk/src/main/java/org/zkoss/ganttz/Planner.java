@@ -179,7 +179,8 @@ public class Planner extends HtmlMacroComponent  {
                 configuration.isDependenciesConstraintsHavePriority());
         FunctionalityExposedForExtensions<T> newContext = new FunctionalityExposedForExtensions<T>(
                 this, configuration.getAdapter(), configuration.getNavigator(),
-                diagramGraph);
+                diagramGraph, configuration.getFirstLevelModificators(),
+                configuration.getSecondLevelModificators());
         this.contextualizedGlobalCommands = contextualize(newContext,
                 configuration.getGlobalCommands());
         this.commandsOnTasksContextualized = contextualize(newContext,

@@ -33,7 +33,6 @@ import org.zkoss.ganttz.util.Interval;
  */
 public class DetailOneTimeTrackerState extends TimeTrackerState {
 
-    public static final DetailOneTimeTrackerState INSTANCE = new DetailOneTimeTrackerState();
     private static final int FIRST_LEVEL_ITEM_SIZE = 200;
     private static final int SECOND_LEVEL_ITEM_SIZE = 100;
 
@@ -41,8 +40,10 @@ public class DetailOneTimeTrackerState extends TimeTrackerState {
         return ((double) 365 / FIRST_LEVEL_ITEM_SIZE);
     }
 
-    private DetailOneTimeTrackerState() {
-    };
+    DetailOneTimeTrackerState(IDetailItemModificator firstLevelModificator,
+            IDetailItemModificator secondLevelModificator) {
+        super(firstLevelModificator, secondLevelModificator);
+    }
 
     private Collection<DetailItem> buildCollectionDetailsFirstLevel(
             int initialYear, int endYear) {

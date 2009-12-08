@@ -25,12 +25,15 @@ import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Date;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.DatesMapperOnInterval;
 import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
+import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
+import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
@@ -52,9 +55,23 @@ public class TimeTracker {
 
     private Interval interval;
 
-    public TimeTracker(Interval interval) {
-        this.interval = interval;
+    private final IDetailItemModificator firstLevelModificator;
 
+    private final IDetailItemModificator secondLevelModificator;
+
+    public TimeTracker(Interval interval) {
+        this(interval, SeveralModificators.empty(), SeveralModificators.empty());
+    }
+
+    public TimeTracker(Interval interval,
+            IDetailItemModificator firstLevelModificator,
+            IDetailItemModificator secondLevelModificator) {
+        Validate.notNull(interval);
+        Validate.notNull(firstLevelModificator);
+        Validate.notNull(secondLevelModificator);
+        this.interval = interval;
+        this.firstLevelModificator = firstLevelModificator;
+        this.secondLevelModificator = secondLevelModificator;
     }
 
     public ZoomLevel getDetailLevel() {
@@ -91,8 +108,9 @@ public class TimeTracker {
         return realIntervalCached;
     }
 
-    private TimeTrackerState getTimeTrackerState() {
-        return detailLevel.getTimeTrackerState();
+    public TimeTrackerState getTimeTrackerState() {
+        return detailLevel.getTimeTrackerState(firstLevelModificator,
+                secondLevelModificator);
     }
 
     private void fireZoomChanged() {
