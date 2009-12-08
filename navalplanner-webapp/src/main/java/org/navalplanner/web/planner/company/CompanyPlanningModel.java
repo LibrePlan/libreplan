@@ -106,6 +106,10 @@ import org.zkoss.zul.Vbox;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
+    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // green
+    public static final String COLOR_CAPABILITY_LINE = "#000000"; // black
+    public static final String COLOR_OVERLOAD_GLOBAL = "#FDBE13";
+
     @Autowired
     private IOrderDAO orderDAO;
 
@@ -606,18 +610,20 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
             Plotinfo plotInfoLoad = createPlotinfo(getLoad(interval.getStart(),
                     interval.getFinish()), interval);
-            plotInfoLoad.setFillColor("0000FF");
+            plotInfoLoad.setFillColor(COLOR_ASSIGNED_LOAD_GLOBAL);
+            plotInfoLoad.setLineWidth(0);
 
             Plotinfo plotInfoMax = createPlotinfo(
                     getCalendarMaximumAvailability(interval.getStart(),
                             interval.getFinish()), interval);
-            plotInfoMax.setLineColor("FF0000");
-            plotInfoMax.setLineWidth(1);
+            plotInfoMax.setLineColor(COLOR_CAPABILITY_LINE);
+            plotInfoMax.setFillColor("#FFFFFF");
+            plotInfoMax.setLineWidth(2);
 
             Plotinfo plotInfoOverload = createPlotinfo(getOverload(interval
                     .getStart(), interval.getFinish()), interval);
-            plotInfoOverload.setLineColor("00FF00");
-            plotInfoOverload.setLineWidth(1);
+            plotInfoOverload.setFillColor(COLOR_OVERLOAD_GLOBAL);
+            plotInfoOverload.setLineWidth(0);
 
             ValueGeometry valueGeometry = getValueGeometry();
             TimeGeometry timeGeometry = getTimeGeometry(interval);

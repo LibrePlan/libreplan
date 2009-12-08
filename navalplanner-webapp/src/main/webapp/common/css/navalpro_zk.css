@@ -668,7 +668,7 @@ div.z-grid {
 
 .legend-container {
     width: 226px;
-    height: 104px;
+    height: 190px;
     background-color: #E8E8E8;
 }
 
@@ -690,38 +690,51 @@ div.z-grid {
     background-color: #E8E8E8;
 }
 
+/* Legend colors:
+    COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // green
+    COLOR_CAPABILITY_LINE = "#000000"; // black
+    COLOR_OVERLOAD_GLOBAL = "#FDBE13"; // orange
+
+    COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // green
+    COLOR_CAPABILITY_LINE = "#000000"; // black
+    COLOR_OVERLOAD_GLOBAL = "#FDBE13"; // orange
+
+    COLOR_ASSIGNED_LOAD_SPECIFIC = "#aa80d5"; // magenta
+    COLOR_OVERLOAD_SPECIFIC = "#FF5A11"; // red
+*/
+
 .legend .capability {
-    border-top:solid 1px #FF0000;
+    border-top:solid 2px #000000; /* COLOR_CAPABILITY_LINE */
     height:7px;
     width:25px;
     margin-right:5px;
 }
 
 .legend .load {
-    background-color:#0000FF;
-    height:10px;
-    width:25px;
-    margin-bottom:2px;
-    margin-right:5px;
+    background-color: #98D471; /* COLOR_ASSIGNED_LOAD_GLOBAL */
+    height: 10px;
+    width: 25px;
+    margin-bottom: 2px;
+    margin-right: 5px;
 }
 
 .legend .overload {
-    border-top:solid 1px #00FF00;
-    height:7px;
+    background-color: #FDBE13; /* COLOR_OVERLOAD_GLOBAL */
+    height:10px;
     width:25px;
     margin-right:5px;
 }
 
 .legend .overload-order {
-    border-top:solid 1px #00FFFF;
-    height:7px;
+    background-color: #FF5A11; /* COLOR_OVERLOAD_SPECIFIC */
+    height:10px;
     width:25px;
     margin-right:5px;
 }
 
 .legend .overload-other {
-    border-top:solid 1px #7f007f;
-    height:7px;
+    background-color: #FDBE13; /* COLOR_OVERLOAD_GLOBAL */
+    height:10px;
     width:25px;
     margin-right:5px;
 }
@@ -1001,6 +1014,8 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
     font-size: 10px;
     z-index: 2;
     color: transparent;
+    font-size:9px;
+    font-weight:bold;
 }
 
 .advancedassignmentdetails .hours {

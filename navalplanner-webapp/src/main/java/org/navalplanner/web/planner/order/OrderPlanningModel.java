@@ -110,6 +110,14 @@ import org.zkoss.zul.Vbox;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
+    public static final String COLOR_CAPABILITY_LINE = "#000000"; // Black
+
+    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // Green
+    public static final String COLOR_OVERLOAD_GLOBAL = "#FDBE13"; // Orange
+
+    public static final String COLOR_ASSIGNED_LOAD_SPECIFIC = "#aa80d5"; // Violet
+    public static final String COLOR_OVERLOAD_SPECIFIC = "#FF5A11"; // Red
+
     @Autowired
     private IOrderDAO orderDAO;
 
@@ -733,21 +741,31 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             Plotinfo plotOtherOverload = createPlotinfo(
                     convertToBigDecimal(mapOtherOverload), interval);
 
-            plotOrderLoad.setFillColor("0000FF");
-            plotOrderOverload.setLineColor("00FFFF");
-            plotMaxCapacity.setLineColor("FF0000");
+            plotOrderLoad.setFillColor(COLOR_ASSIGNED_LOAD_SPECIFIC);
+            plotOrderLoad.setLineWidth(0);
+
+            plotOtherLoad.setFillColor(COLOR_ASSIGNED_LOAD_GLOBAL);
+            plotOtherLoad.setLineWidth(0);
+
+            plotMaxCapacity.setLineColor(COLOR_CAPABILITY_LINE);
+            plotMaxCapacity.setFillColor("#FFFFFF");
             plotMaxCapacity.setLineWidth(2);
-            plotOtherLoad.setFillColor("00FF00");
-            plotOtherOverload.setLineColor("FFFF00");
+
+            plotOrderOverload.setFillColor(COLOR_OVERLOAD_SPECIFIC);
+            plotOrderOverload.setLineWidth(0);
+
+            plotOtherOverload.setFillColor(COLOR_OVERLOAD_GLOBAL);
+            plotOtherOverload.setLineWidth(0);
 
             ValueGeometry valueGeometry = getValueGeometry();
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
+            // Stacked area: load - otherLoad - max - overload - otherOverload
             appendPlotinfo(chart, plotOrderLoad, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotOtherLoad, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotMaxCapacity, valueGeometry, timeGeometry);
             appendPlotinfo(chart, plotOrderOverload, valueGeometry,
                     timeGeometry);
-            appendPlotinfo(chart, plotMaxCapacity, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotOtherLoad, valueGeometry, timeGeometry);
             appendPlotinfo(chart, plotOtherOverload, valueGeometry,
                     timeGeometry);
 

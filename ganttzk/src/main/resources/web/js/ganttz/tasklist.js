@@ -154,7 +154,7 @@ function listenToScroll() {
 		timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
 		leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
 		plannergraph_.scrollLeft = scrolledpannel_.scrollLeft;
-		for (j=0;j<=( timeplotcontainer_all_.length);j++)
+		for (j=0;j<timeplotcontainer_all_.length;j++)
 		{
 			timeplotcontainer_all_[j].style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
 		}
