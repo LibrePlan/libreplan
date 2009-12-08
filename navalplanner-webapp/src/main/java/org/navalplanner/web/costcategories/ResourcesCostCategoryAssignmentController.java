@@ -184,8 +184,10 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
                 // Updates the constraint of the endDate box with the new date
                 LocalDate initDate = ((ResourcesCostCategoryAssignment)row.getValue()).getInitDate();
                 Datebox endDateBox = (Datebox) row.getChildren().get(2);
-                endDateBox.setConstraint("after " + initDate.getYear() +
-                        initDate.getMonthOfYear() + initDate.getDayOfMonth());
+                endDateBox.setConstraint("after " +
+                        String.format("%04d", initDate.getYear()) +
+                        String.format("%02d", initDate.getMonthOfYear()) +
+                        String.format("%02d", initDate.getDayOfMonth()));
             }
         });
     }
@@ -235,8 +237,10 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
         bindDateboxEndDate(endDateBox, (ResourcesCostCategoryAssignment) row.getValue());
         LocalDate initDate = ((ResourcesCostCategoryAssignment)row.getValue()).getInitDate();
         if (initDate != null) {
-            endDateBox.setConstraint("after " + initDate.getYear() +
-                    initDate.getMonthOfYear() + initDate.getDayOfMonth());
+            endDateBox.setConstraint("after " +
+                    String.format("%04d", initDate.getYear()) +
+                    String.format("%02d", initDate.getMonthOfYear()) +
+                    String.format("%02d", initDate.getDayOfMonth()));
         }
         row.appendChild(endDateBox);
     }

@@ -287,8 +287,10 @@ public class CostCategoryCRUDController extends GenericForwardComposer
                 // Updates the constraint of the endDate box with the new date
                 LocalDate initDate = ((HourCost)row.getValue()).getInitDate();
                 Datebox endDateBox = (Datebox) row.getChildren().get(3);
-                endDateBox.setConstraint("after " + initDate.getYear() +
-                        initDate.getMonthOfYear() + initDate.getDayOfMonth());
+                endDateBox.setConstraint("after " +
+                        String.format("%04d", initDate.getYear()) +
+                        String.format("%02d", initDate.getMonthOfYear()) +
+                        String.format("%02d", initDate.getDayOfMonth()));
             }
         });
     }
@@ -338,8 +340,10 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         bindDateboxEndDate(endDateBox, (HourCost) row.getValue());
         LocalDate initDate = ((HourCost)row.getValue()).getInitDate();
         if (initDate != null) {
-            endDateBox.setConstraint("after " + initDate.getYear() +
-                    initDate.getMonthOfYear() + initDate.getDayOfMonth());
+            endDateBox.setConstraint("after " +
+                    String.format("%04d", initDate.getYear()) +
+                    String.format("%02d", initDate.getMonthOfYear()) +
+                    String.format("%02d", initDate.getDayOfMonth()));
         }
         row.appendChild(endDateBox);
     }
