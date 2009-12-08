@@ -242,7 +242,10 @@ public class Util {
             @Override
             public void onEvent(Event event) throws Exception {
                 InputEvent newInput = (InputEvent) event;
-                String value = newInput.getValue();
+                String value = newInput.getValue().trim();
+                if (value.isEmpty()) {
+                    value = "0";
+                }
                 setter.set(Integer.valueOf(value));
                 intBox.setValue(getter.get());
             }
