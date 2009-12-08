@@ -247,7 +247,10 @@ public class AssignedMaterialsToOrderElementModel implements
         final boolean canDelete = materialCategory.getSubcategories().isEmpty() &&  getAssignedMaterials(materialCategory).isEmpty();
         if (canDelete) {
             materialCategories.remove(materialCategory);
-            removeCategory(materialCategories, materialCategory.getParent());
+            final MaterialCategory parent = materialCategory.getParent();
+            if (parent != null) {
+                removeCategory(materialCategories, parent);
+            }
         }
     }
 
