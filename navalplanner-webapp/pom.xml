@@ -94,6 +94,10 @@
             <groupId>jfree</groupId>
             <artifactId>jcommon</artifactId>
         </dependency>
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jfreechart-igalia</artifactId>
+        </dependency>
         <!-- Apache Commons Fileupload (required by ZK) -->
         <dependency>
             <groupId>commons-fileupload</groupId>

@@ -37,6 +37,7 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.print.Print;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
@@ -357,6 +358,10 @@ public class Planner extends HtmlMacroComponent  {
             Clients.evalJavaScript("zkTasklist.hideAllTooltips();");
             showAllLabelsButton.setSclass("planner-command");
         }
+    }
+
+    public void print() {
+        Print.print(diagramGraph);
     }
 
 }
