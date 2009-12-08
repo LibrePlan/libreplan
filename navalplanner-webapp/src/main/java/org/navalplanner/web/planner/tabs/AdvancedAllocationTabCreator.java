@@ -42,6 +42,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -152,6 +153,13 @@ public class AdvancedAllocationTabCreator {
             for (Resource each : associatedResources) {
                 resourceDAO.reattach(each);
                 loadCalendar(each.getCalendar());
+                loadDayAssignments(each.getAssignments());
+            }
+        }
+
+        private void loadDayAssignments(List<DayAssignment> assignments) {
+            for (DayAssignment each : assignments) {
+                Hibernate.initialize(each);
             }
         }
 
