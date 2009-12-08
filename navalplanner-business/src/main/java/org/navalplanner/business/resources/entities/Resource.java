@@ -34,6 +34,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertFalse;
 import org.hibernate.validator.InvalidValue;
+import org.hibernate.validator.Valid;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.IWorkHours;
@@ -733,6 +734,7 @@ public abstract class Resource extends BaseEntity{
         return compositedCriterion.isSatisfiedBy(this);
     }
 
+    @Valid
     public Set<ResourcesCostCategoryAssignment> getResourcesCostCategoryAssignments() {
         return resourcesCostCategoryAssignments;
     }
@@ -753,12 +755,17 @@ public abstract class Resource extends BaseEntity{
     public boolean checkAssignmentsOverlap() {
         List<ResourcesCostCategoryAssignment> assignmentsList =
             new ArrayList<ResourcesCostCategoryAssignment>();
-        assignmentsList.addAll(resourcesCostCategoryAssignments);
+        assignmentsList.addAll(getResourcesCostCategoryAssignments());
         for(int i=0; i<assignmentsList.size(); i++) {
             LocalDate initDate = assignmentsList.get(i).getInitDate();
             LocalDate endDate = assignmentsList.get(i).getEndDate();
             for(int j=i+1; j<assignmentsList.size(); j++) {
                 ResourcesCostCategoryAssignment listElement = assignmentsList.get(j);
+                if (initDate == null || listElement.getInitDate() == null) {
+                    //this is not exactly an overlapping but a
+                    //problem with missing compulsory fields
+                    return true;
+                }
                 if (endDate == null && listElement.getEndDate() == null) {
                     return true;
                 }

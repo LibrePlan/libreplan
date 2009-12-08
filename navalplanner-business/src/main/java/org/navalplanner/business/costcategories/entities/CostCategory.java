@@ -41,7 +41,6 @@ public class CostCategory extends BaseEntity {
 
     private boolean enabled = true;
 
-    @Valid
     private Set<HourCost> hourCosts = new HashSet<HourCost>();
 
     // Default constructor, needed by Hibernate
@@ -77,6 +76,7 @@ public class CostCategory extends BaseEntity {
         this.enabled = enabled;
     }
 
+    @Valid
     public Set<HourCost> getHourCosts() {
         return hourCosts;
     }
@@ -121,13 +121,23 @@ public class CostCategory extends BaseEntity {
     @AssertFalse(message="Two hour costs with the same type overlap in time")
     public boolean checkHourCostsOverlap() {
         List<HourCost> listHourCosts = new ArrayList<HourCost>();
-        listHourCosts.addAll(hourCosts);
+        listHourCosts.addAll(getHourCosts());
         for(int i=0; i<listHourCosts.size(); i++) {
             LocalDate initDate = listHourCosts.get(i).getInitDate();
             LocalDate endDate = listHourCosts.get(i).getEndDate();
             for(int j=i+1; j<listHourCosts.size(); j++) {
                 HourCost listElement = listHourCosts.get(j);
+                if (listElement.getType() == null || listHourCosts.get(i).getType() == null) {
+                    //this is not exactly an overlapping but a
+                    //problem with missing compulsory fields
+                    return true;
+                }
                 if(listElement.getType().getId().equals(listHourCosts.get(i).getType().getId())) {
+                    if (initDate == null || listElement.getInitDate() == null) {
+                        //this is not exactly an overlapping but a
+                        //problem with missing compulsory fields
+                        return true;
+                    }
                     if (endDate == null && listElement.getEndDate() == null) {
                         return true;
                     }
