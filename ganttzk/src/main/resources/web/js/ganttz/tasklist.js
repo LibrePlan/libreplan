@@ -79,6 +79,16 @@ zkTasklist.hideTooltip = function(elem) {
 	document.getElementById(elem).style["display"] = "none";
 }
 
+zkTasklist.timeplotcontainer_rescroll = function(elem) {
+	var timeplotcontainer_all_ = YAHOO.util.Selector.query('.timeplot-canvas');
+	var scrolledpannel_ = scrolledpannel();
+	for (j=0;j<timeplotcontainer_all_.length;j++) {
+		timeplotcontainer_all_[j].style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
+	}
+}
+
+
+
 function scrolledpannel() {
 	return YAHOO.util.Selector.query('.rightpanellayout div')[0];
 }

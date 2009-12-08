@@ -740,7 +740,7 @@ div.z-grid {
 }
 
 .legend .other {
-    background-color:#7f007f;
+    background-color: #AA80d5; /* COLOR_ASSIGNED_LOAD_SPECIFIC */
     height:10px;
     width:25px;
     margin-bottom:2px;

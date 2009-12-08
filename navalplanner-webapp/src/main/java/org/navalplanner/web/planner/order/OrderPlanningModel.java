@@ -91,6 +91,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
@@ -115,7 +116,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // Green
     public static final String COLOR_OVERLOAD_GLOBAL = "#FDBE13"; // Orange
 
-    public static final String COLOR_ASSIGNED_LOAD_SPECIFIC = "#aa80d5"; // Violet
+    public static final String COLOR_ASSIGNED_LOAD_SPECIFIC = "#AA80d5"; // Violet
     public static final String COLOR_OVERLOAD_SPECIFIC = "#FF5A11"; // Red
 
     @Autowired
@@ -716,6 +717,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         public void fillChart(Timeplot chart, Interval interval, Integer size) {
             chart.getChildren().clear();
             chart.invalidate();
+
+            String javascript = "zkTasklist.timeplotcontainer_rescroll();";
+            Clients.evalJavaScript(javascript);
+
             resetMinimumAndMaximumValueForChart();
 
             List<DayAssignment> orderDayAssignments = order.getDayAssignments();
