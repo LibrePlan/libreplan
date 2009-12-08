@@ -87,11 +87,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView(Order filterBy) {
-        this.filterBy = filterBy;
-        orderDAO.reattach(filterBy);
-        if (filterBy.getTaskSource() != null) {
-            taskSourceDAO.reattach(filterBy.getTaskSource());
-        }
+        this.filterBy = orderDAO.findExistingEntity(filterBy.getId());
         doGlobalView();
     }
 
@@ -122,7 +118,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         if (filter()) {
             return resourceAllocationDAO
                     .findGenericAllocationsByCriterionFor(justTasks(filterBy
-                            .getAssociatedTasks()));
+                            .getAllChildrenAssociatedTaskElements()));
         } else {
             return resourceAllocationDAO.findGenericAllocationsByCriterion();
 
@@ -142,8 +138,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<Resource> resourcesForActiveTasks() {
-        return resourcesDAO.findResourcesRelatedTo(justTasks(filterBy
-                .getAssociatedTasks()));
+        return resourcesDAO
+                .findResourcesRelatedTo(justTasks(filterBy
+                .getAllChildrenAssociatedTaskElements()));
     }
 
     private List<Task> justTasks(Collection<? extends TaskElement> tasks) {
