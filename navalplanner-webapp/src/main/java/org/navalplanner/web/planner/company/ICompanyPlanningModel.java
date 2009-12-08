@@ -36,4 +36,8 @@ public interface ICompanyPlanningModel {
     void setConfigurationToPlanner(Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional);
 
+    public void setConfigurationToPlanner(Planner planner,
+            Collection<ICommandOnTask<TaskElement>> additional,
+            ICommandOnTask<TaskElement> doubleClickCommand);
+
 }

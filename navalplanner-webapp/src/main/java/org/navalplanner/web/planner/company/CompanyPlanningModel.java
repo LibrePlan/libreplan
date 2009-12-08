@@ -156,6 +156,14 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     @Transactional(readOnly = true)
     public void setConfigurationToPlanner(Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional) {
+        setConfigurationToPlanner(planner, additional, null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void setConfigurationToPlanner(Planner planner,
+            Collection<ICommandOnTask<TaskElement>> additional,
+            ICommandOnTask<TaskElement> doubleClickCommand) {
         PlannerConfiguration<TaskElement> configuration = createConfiguration();
 
         Tabbox chartComponent = new Tabbox();
@@ -164,6 +172,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         appendTabs(chartComponent);
 
         configuration.setChartComponent(chartComponent);
+        if (doubleClickCommand != null) {
+            configuration.setDoubleClickCommand(doubleClickCommand);
+        }
         addAdditionalCommands(additional, configuration);
         disableSomeFeatures(configuration);
         planner.setConfiguration(configuration);

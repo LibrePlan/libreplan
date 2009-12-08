@@ -53,6 +53,8 @@ public class CompanyPlanningController implements Composer{
 
     private Planner planner;
 
+    private ICommandOnTask<TaskElement> doubleClickCommand;
+
     public CompanyPlanningController() {
         getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
     }
@@ -68,13 +70,20 @@ public class CompanyPlanningController implements Composer{
     }
 
     public void setConfigurationForPlanner() {
-        model.setConfigurationToPlanner(planner, additional);
+        model
+                .setConfigurationToPlanner(planner, additional,
+                        doubleClickCommand);
     }
 
     public void setAdditional(List<ICommandOnTask<TaskElement>> additional) {
         Validate.notNull(additional);
         Validate.noNullElements(additional);
         this.additional = additional;
+    }
+
+    public void setDoubleClickCommand(
+            ICommandOnTask<TaskElement> doubleClickCommand) {
+        this.doubleClickCommand = doubleClickCommand;
     }
 
 }

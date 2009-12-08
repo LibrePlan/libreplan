@@ -97,7 +97,7 @@ public class PlanningTabCreator {
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
                 List<ICommandOnTask<TaskElement>> commands = new ArrayList<ICommandOnTask<TaskElement>>();
-                commands.add(new ICommandOnTask<TaskElement>() {
+                ICommandOnTask<TaskElement> scheduleCommand = new ICommandOnTask<TaskElement>() {
 
                     @Override
                     public void doAction(
@@ -114,8 +114,11 @@ public class PlanningTabCreator {
                     public String getName() {
                         return _("Schedule");
                     }
-                });
+                };
+                commands.add(scheduleCommand);
                 companyPlanningController.setAdditional(commands);
+                companyPlanningController
+                        .setDoubleClickCommand(scheduleCommand);
                 HashMap<String, Object> args = new HashMap<String, Object>();
                 args
                         .put("companyPlanningController",
