@@ -22,7 +22,9 @@ package org.navalplanner.web.orders;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
@@ -41,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -110,8 +113,38 @@ public class OrderCRUDController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
-        getVisibility().showOnly(listWindow);
+    }
 
+    private void addEditWindowIfNeeded() {
+        if (editWindow != null) {
+            return;
+        }
+        Map<String, Object> editWindowArgs = new HashMap<String, Object>();
+        editWindowArgs.put("top_id", editWindowArgs);
+        Component parent = listWindow.getParent();
+        listWindow.setVisible(false);
+        cachedOnlyOneVisible = null;
+        editWindow = (Window) Executions.createComponents(
+                "/orders/_edition.zul",
+                parent, editWindowArgs);
+        Map<String, Object> editOrderElementArgs = new HashMap<String, Object>();
+        editOrderElementArgs.put("top_id", "editOrderElement");
+        Component editOrderElement = Executions.createComponents(
+                "/orders/_editOrderElement.zul",
+                parent, editOrderElementArgs);
+        try {
+            setupEditControllers();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Util.createBindingsFor(editWindow);
+        Util.reloadBindings(editWindow);
+        Util.createBindingsFor(editOrderElement);
+        Util.reloadBindings(editOrderElement);
+    }
+
+    private void setupEditControllers() throws Exception {
+        Component comp = self;
         OrderElementController orderElementController = new OrderElementController();
         orderElementController.doAfterCompose(comp
                 .getFellow("editOrderElement"));
@@ -192,7 +225,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private OnlyOneVisible getVisibility() {
         if (cachedOnlyOneVisible == null) {
-            cachedOnlyOneVisible = new OnlyOneVisible(listWindow, editWindow);
+            cachedOnlyOneVisible = new OnlyOneVisible(listWindow);
         }
         return cachedOnlyOneVisible;
     }
@@ -316,6 +349,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void showEditWindow(String title) {
+        addEditWindowIfNeeded();
         clearEditWindow();
         initializeTabs();
         editWindow.setTitle(title);
