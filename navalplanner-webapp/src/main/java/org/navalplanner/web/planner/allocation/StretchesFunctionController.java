@@ -192,8 +192,8 @@ public class StretchesFunctionController extends GenericForwardComposer {
 
         private void appendAmountWorkPercentage(Listitem item,
                 final Stretch stretch) {
-            final Decimalbox tempDecimalbox = new Decimalbox();
-            Decimalbox decimalbox = Util.bind(tempDecimalbox,
+            final Decimalbox decimalBox = new Decimalbox();
+            Util.bind(decimalBox,
                     new Util.Getter<BigDecimal>() {
                         @Override
                         public BigDecimal get() {
@@ -203,18 +203,22 @@ public class StretchesFunctionController extends GenericForwardComposer {
                     }, new Util.Setter<BigDecimal>() {
                         @Override
                         public void set(BigDecimal value) {
+                            if(value==null){
+                                value = BigDecimal.ZERO;
+                            }
                             value = value.setScale(2).divide(
                                     new BigDecimal(100), RoundingMode.DOWN);
                             try {
                                 stretch.setAmountWorkPercentage(value);
                                 reloadStretchesListAndCharts();
                             } catch (IllegalArgumentException e) {
-                                throw new WrongValueException(tempDecimalbox,
+                                throw new WrongValueException(
+                                        decimalBox,
                                         _("Amount work percentage should be between 0 and 100"));
                             }
                         }
                     });
-            appendChild(item, decimalbox);
+            appendChild(item, decimalBox);
         }
 
         private void appendOperations(Listitem item, final Stretch stretch) {
