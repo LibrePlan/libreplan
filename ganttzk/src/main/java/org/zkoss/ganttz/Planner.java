@@ -48,6 +48,7 @@ import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.api.Button;
 
@@ -336,12 +337,25 @@ public class Planner extends HtmlMacroComponent  {
                 context.hideCriticalPath();
                 diagramGraph.removePostGraphChangeListener(showCriticalPathOnChange);
                 showCriticalPathButton.setSclass("planner-command");
+                showCriticalPathButton.setTooltiptext(_("Show critical path"));
             } else {
                 context.showCriticalPath();
                 diagramGraph.addPostGraphChangeListener(showCriticalPathOnChange);
                 showCriticalPathButton.setSclass("planner-command clicked");
+                showCriticalPathButton.setTooltiptext(_("Hide critical path"));
             }
             isShowingCriticalPath = !isShowingCriticalPath;
+        }
+    }
+
+    public void showAllLabels() {
+        Button showAllLabelsButton = (Button) getFellow("showAllLabels");
+        if (showAllLabelsButton.getSclass().equals("planner-command")) {
+            Clients.evalJavaScript("zkTasklist.showAllTooltips();");
+            showAllLabelsButton.setSclass("planner-command clicked");
+        } else {
+            Clients.evalJavaScript("zkTasklist.hideAllTooltips();");
+            showAllLabelsButton.setSclass("planner-command");
         }
     }
 

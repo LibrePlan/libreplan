@@ -68,6 +68,8 @@ public interface ITaskFundamentalProperties {
 
     public String getTooltipText();
 
+    public String getLabelsText();
+
     List<Constraint<Date>> getStartConstraints();
 
     public void moveTo(Date date);

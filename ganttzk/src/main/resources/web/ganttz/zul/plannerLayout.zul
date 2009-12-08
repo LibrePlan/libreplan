@@ -31,6 +31,9 @@ planner = self;
         <button id="showCriticalPath" onClick="planner.showCriticalPath();"
             label="${i18n:_('Critical path')}" />
 
+        <button id="showAllLabels" onClick="planner.showAllLabels();"
+            label="${i18n:_('Show all labels')}" class="planner-command" sclass="planner-command" />
+
        </hbox>
        </north>
 

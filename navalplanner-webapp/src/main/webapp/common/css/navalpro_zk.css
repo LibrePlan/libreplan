@@ -6,6 +6,10 @@
  * to integrate the custom appearance of the web application.
  */
 
+body {
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+}
+
 .logo {
     background-image: url("../img/v3/blue_ga.jpg");
     height: 50px;

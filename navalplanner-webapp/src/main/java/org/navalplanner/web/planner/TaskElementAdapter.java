@@ -306,31 +306,53 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                     });
         }
 
-        private String buildTooltipText() {
-            StringBuilder result = new StringBuilder();
-            result.append("Advance: ").append(
-                    getAdvancePercentage().multiply(
-                            new BigDecimal(100)))
-                    .append("% , ");
+        @Override
+        public String getLabelsText() {
+            return transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<String>() {
 
-            result.append("Hours invested: ").append(
-                    getHoursAdvancePercentage().multiply(
-                            new BigDecimal(100))).append(
-                    "% <br/>");
+                        @Override
+                        public String execute() {
+                            orderElementDAO
+                                    .reattachUnmodifiedEntity(taskElement
+                                    .getOrderElement());
+                            return buildLabelsText();
+                        }
+                    });
+        }
+
+        private String buildLabelsText() {
+            StringBuilder result = new StringBuilder();
 
             if (taskElement.getOrderElement() != null) {
                 Set<Label> labels = taskElement
                         .getOrderElement().getLabels();
 
                 if (!labels.isEmpty()) {
-                    result.append("Labels: ");
                     for (Label label : labels) {
-                        result.append(label.getName()).append(
-                                ", ");
+                        result.append(label.getName()).append(",");
                     }
-                    result.delete(result.length() - 2, result
+                    result.delete(result.length() - 1, result
                             .length());
                 }
+            }
+
+            return result.toString();
+        }
+
+        private String buildTooltipText() {
+            StringBuilder result = new StringBuilder();
+            result.append(_("Advance") + ": ").append(
+                    getAdvancePercentage().multiply(new BigDecimal(100)))
+                    .append("% , ");
+
+            result.append(_("Hours invested") + ": ").append(
+                    getHoursAdvancePercentage().multiply(new BigDecimal(100)))
+                    .append("% <br/>");
+            String labels = buildLabelsText();
+            if (!labels.equals("")) {
+                result.append("<div class='tooltip-labels'>" + _("Labels")
+                        + ": " + labels + "</div>");
             }
             return result.toString();
         }

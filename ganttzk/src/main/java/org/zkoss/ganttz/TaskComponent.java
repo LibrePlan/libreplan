@@ -451,4 +451,8 @@ public class TaskComponent extends Div implements AfterCompose {
         return task.getTooltipText();
     }
 
+    public String getLabelsText() {
+        return task.getLabelsText();
+    }
+
 }

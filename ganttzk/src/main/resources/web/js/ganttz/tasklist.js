@@ -45,15 +45,32 @@ SCROLLBAR_WIDTH = 15; // Scrollbars default width
 
 DRAGABLE_PADDING = 20; // Drag padding for dependency creation
 
+PERSPECTIVES_WIDTH = 90;
+
 zkTasklist.tooltipTimeout = "";
 
 zkTasklist.showTooltip = function(elem) {
 	zkTasklist.tooltipTimeout = setTimeout(function(offset) {
 		document.getElementById(elem).style['display'] = 'block';
-		offset = zkTask.xMouse - document.getElementById(elem).parentNode.offsetLeft - leftpanelcontainer().offsetWidth + rightpanellayout().scrollLeft;
+		offset = zkTask.xMouse - document.getElementById(elem).parentNode.offsetLeft - leftpanelcontainer().offsetWidth - PERSPECTIVES_WIDTH + rightpanellayout().scrollLeft;
 		document.getElementById(elem).style['left'] = offset + 'px';
 	}, 1000);
 }
+
+zkTasklist.showAllTooltips = function(elem) {
+	var tooltips = YAHOO.util.Selector.query('.task-labels');
+	for (j=0;j<tooltips.length;j++) {
+		tooltips[j].style["display"] = "inline";
+	}
+}
+
+zkTasklist.hideAllTooltips = function(elem) {
+	var tooltips = YAHOO.util.Selector.query('.task-labels');
+	for (j=0;j<tooltips.length;j++) {
+		tooltips[j].style["display"] = "none";
+	}
+}
+
 
 zkTasklist.hideTooltip = function(elem) {
 	if (zkTasklist.tooltipTimeout) {
