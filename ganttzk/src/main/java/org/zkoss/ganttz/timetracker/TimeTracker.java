@@ -178,11 +178,11 @@ public class TimeTracker {
         Date newStart = interval.getStart();
         Date newFinish = interval.getFinish();
         boolean changed = false;
-        if (getRealInterval().getStart().compareTo(startMinusOneYear(task)) > 0) {
+        if (interval.getStart().compareTo(startMinusOneYear(task)) > 0) {
             newStart = startMinusOneYear(task);
             changed = true;
         }
-        if (getRealInterval().getFinish()
+        if (interval.getFinish()
                 .compareTo(endPlusOneYear(task)) < 0) {
             newFinish = endPlusOneYear(task);
             changed = true;
