@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.costcategories.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 
@@ -27,5 +29,7 @@ import org.navalplanner.business.costcategories.entities.CostCategory;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 public interface ICostCategoryDAO extends IGenericDAO<CostCategory, Long> {
+
+    List<CostCategory> findActive();
 
 }

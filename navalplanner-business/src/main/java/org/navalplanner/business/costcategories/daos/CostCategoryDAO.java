@@ -20,6 +20,11 @@
 
 package org.navalplanner.business.costcategories.daos;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -34,4 +39,15 @@ import org.springframework.stereotype.Repository;
 public class CostCategoryDAO extends GenericDAOHibernate<CostCategory, Long>
         implements ICostCategoryDAO {
 
+
+    @Override
+    public List<CostCategory> findActive() {
+
+        Criteria c = getSession().createCriteria(CostCategory.class);
+        c.add(Restrictions.eq("enabled", true));
+
+        List<CostCategory> list = new ArrayList<CostCategory>();
+        list.addAll(c.list());
+        return list;
+    }
 }

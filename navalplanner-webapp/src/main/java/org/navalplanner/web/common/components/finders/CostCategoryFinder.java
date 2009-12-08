@@ -44,7 +44,7 @@ public class CostCategoryFinder extends Finder implements IFinder {
 
     @Transactional(readOnly = true)
     public List<CostCategory> getAll() {
-        return dao.list(CostCategory.class);
+        return dao.findActive();
     }
 
     @Override
