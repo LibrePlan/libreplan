@@ -40,6 +40,7 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
+import org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentController;
 import org.navalplanner.web.resources.worker.CriterionsController;
 import org.navalplanner.web.resources.worker.CriterionsMachineController;
 import org.zkoss.zk.ui.Component;
@@ -78,6 +79,8 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     private MachineConfigurationController configurationController;
 
+    private ResourcesCostCategoryAssignmentController resourcesCostCategoryAssignmentController;
+
     private static final Log LOG = LogFactory
             .getLog(MachineCRUDController.class);
 
@@ -102,6 +105,7 @@ public class MachineCRUDController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
         setupCriterionsController();
         setupConfigurationController();
+        setupResourcesCostCategoryAssignmentController(comp);
         showListWindow();
     }
 
@@ -128,10 +132,19 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .getVariable("configurationController", true);
     }
 
+    private void setupResourcesCostCategoryAssignmentController(Component comp)
+    throws Exception {
+        Component costCategoryAssignmentContainer =
+            editWindow.getFellowIfAny("costCategoryAssignmentContainer");
+        resourcesCostCategoryAssignmentController = (ResourcesCostCategoryAssignmentController)
+            costCategoryAssignmentContainer.getVariable("assignmentController", true);
+    }
+
     public void goToCreateForm() {
         machineModel.initCreate();
         criterionsController.prepareForCreate(machineModel.getMachine());
         configurationController.initConfigurationController(machineModel);
+        resourcesCostCategoryAssignmentController.setResource(machineModel.getMachine());
         selectMachineDataTab();
         showEditWindow(_("Create machine"));
     }
@@ -159,6 +172,7 @@ public class MachineCRUDController extends GenericForwardComposer {
         selectMachineDataTab();
         showEditWindow(_("Edit machine"));
         configurationController.initConfigurationController(machineModel);
+        resourcesCostCategoryAssignmentController.setResource(machineModel.getMachine());
     }
 
     private void selectMachineDataTab() {

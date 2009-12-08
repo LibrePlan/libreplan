@@ -310,5 +310,6 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
 
     public void setResource(Resource resource) {
         resourcesCostCategoryAssignmentModel.setResource(resource);
+        Util.reloadBindings(listResourcesCostCategoryAssignments);
     }
 }

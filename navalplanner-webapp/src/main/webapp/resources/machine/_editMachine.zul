@@ -21,6 +21,7 @@
 <?component name="criterions" inline="true" macroURI="_machineCriterions.zul"?>
 <?component name="resourceCalendar" inline="true" macroURI="_calendar.zul"?>
 <?component name="machineConfigurationUnits" inline="true" macroURI="_machineConfigurationUnits.zul"?>
+<?component name="costCategoryAssignment" inline="true" macroURI="../_costCategoryAssignment.zul"?>
 <window id="editWindow" >
     <tabbox>
         <tabs>
@@ -28,6 +29,7 @@
             <tab label="${i18n:_('Assigned criteria')}"></tab>
             <tab label="${i18n:_('Calendar')}"></tab>
             <tab label="${i18n:_('Configuration')}"></tab>
+            <tab label="${i18n:_('Cost category assignment')}"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -66,6 +68,9 @@
             <tabpanel visible="false">
                 <!-- Configuration units -->
                 <machineConfigurationUnits id="configurationUnits" />
+            </tabpanel>
+            <tabpanel>
+                <costCategoryAssignment id="costCategoryAssignmentContainer" />
             </tabpanel>
         </tabpanels>
     </tabbox>

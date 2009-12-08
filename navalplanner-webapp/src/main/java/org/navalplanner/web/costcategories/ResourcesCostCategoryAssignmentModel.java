@@ -21,8 +21,10 @@
 package org.navalplanner.web.costcategories;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
@@ -36,25 +38,32 @@ import org.springframework.transaction.annotation.Transactional;
  * Model for UI operations related to {@link ResourcesCostCategoryAssignment}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ResourcesCostCategoryAssignmentModel implements
         IResourcesCostCategoryAssignmentModel {
 
-    Resource resource;
+    private Resource resource;
 
     @Autowired
     IResourceDAO resourceDAO;
 
+    private List<ResourcesCostCategoryAssignment> resourceCostCategoryAssignments =
+        new ArrayList<ResourcesCostCategoryAssignment>();
+
     @Override
     public List<ResourcesCostCategoryAssignment> getCostCategoryAssignments() {
-        List<ResourcesCostCategoryAssignment> list =
-            new ArrayList<ResourcesCostCategoryAssignment>();
         if (resource != null) {
-            list.addAll(resource.getResourcesCostCategoryAssignments());
+            loadCostCategoryAssignments();
         }
-        return list;
+        return resourceCostCategoryAssignments;
+    }
+
+    private void loadCostCategoryAssignments() {
+        resourceCostCategoryAssignments.clear();
+        resourceCostCategoryAssignments.addAll(resource.getResourcesCostCategoryAssignments());
     }
 
     @Override
@@ -67,19 +76,30 @@ public class ResourcesCostCategoryAssignmentModel implements
     public void removeCostCategoryAssignment(
             ResourcesCostCategoryAssignment assignment) {
         resource.removeResourcesCostCategoryAssignment(assignment);
-    }
-
-    private void forceLoadCostCategoryAssignments(Resource resource) {
-        for (ResourcesCostCategoryAssignment assignment : resource.getResourcesCostCategoryAssignments()) {
-            assignment.getCostCategory().getName();
-        }
+        loadCostCategoryAssignments();
     }
 
     @Override
     @Transactional(readOnly = true)
     public void setResource(Resource resource) {
         resourceDAO.reattach(resource);
-        forceLoadCostCategoryAssignments(resource);
+        initializeCostCategoryAssignments(resource.getResourcesCostCategoryAssignments());
         this.resource = resource;
     }
+
+    private void initializeCostCategoryAssignments(Collection<ResourcesCostCategoryAssignment> resourceCostCategoryAssignments) {
+        for (ResourcesCostCategoryAssignment each: resourceCostCategoryAssignments) {
+            initializeCostCategoryAssignment(each);
+        }
+    }
+
+    private void initializeCostCategoryAssignment(ResourcesCostCategoryAssignment resourceCostCategoryAssignment) {
+        resourceCostCategoryAssignment.getEndDate();
+        initializeCostCategory(resourceCostCategoryAssignment.getCostCategory());
+    }
+
+    private void initializeCostCategory(CostCategory costCategory) {
+        costCategory.getName();
+    }
+
 }
