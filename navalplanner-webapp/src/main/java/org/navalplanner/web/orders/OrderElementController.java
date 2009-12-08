@@ -66,6 +66,8 @@ public class OrderElementController extends GenericForwardComposer {
 
     private AssignedCriterionRequirementToOrderElementController assignedCriterionRequirementController;
 
+    private AssignedMaterialsToOrderElementController assignedMaterialsController;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -75,6 +77,7 @@ public class OrderElementController extends GenericForwardComposer {
         setupManageOrderElementAdvancesController(comp);
         setupAssignedLabelsToOrderElementController(comp);
         setupAssignedCriterionRequirementToOrderElementController(comp);
+        setupAssignedMaterialsToOrderElementController(comp);
     }
 
     private void setupDetailsOrderElementController(Component comp) throws Exception{
@@ -93,7 +96,7 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     private void setupAssignedLabelsToOrderElementController(Component comp)
-    throws Exception {
+            throws Exception {
         assignedLabelsController = (AssignedLabelsToOrderElementController)
         orderElementLabels.getVariable("assignedLabelsController", true);
     }
@@ -102,6 +105,13 @@ public class OrderElementController extends GenericForwardComposer {
             Component comp) throws Exception {
         assignedCriterionRequirementController = (AssignedCriterionRequirementToOrderElementController) orderElementCriterionRequirements
                 .getVariable("assignedCriterionRequirementController", true);
+    }
+
+    private void setupAssignedMaterialsToOrderElementController(Component comp)
+            throws Exception {
+        Component orderElementMaterials = (Component) comp.getFellowIfAny("orderElementMaterials");
+        assignedMaterialsController = (AssignedMaterialsToOrderElementController) orderElementMaterials
+                .getVariable("assignedMaterialsController", true);
     }
 
     public OrderElement getOrderElement() {
@@ -123,6 +133,7 @@ public class OrderElementController extends GenericForwardComposer {
         manageOrderElementAdvancesController.openWindow(model);
         assignedLabelsController.openWindow(model);
         assignedCriterionRequirementController.openWindow(model);
+        assignedMaterialsController.openWindow(model);
 
         try {
             ((Window) self).doModal();

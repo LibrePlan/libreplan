@@ -23,6 +23,7 @@
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <?component name="listOrderElementLabels" inline="true" macroURI="_listOrderElementLabels.zul"?>
 <?component name="listOrderElementCriterionRequirements" inline="true" macroURI="_listOrderElementCriterionRequirements.zul"?>
+<?component name="listOrderElementMaterials" inline="true" macroURI="_listOrderElementMaterials.zul"?>
 
 <window id="${arg.top_id}" title="${i18n:_('Edit order element')}"
     width="950px" left="50px" top="50px"
@@ -34,6 +35,7 @@
             <tab id="tabAdvances" label="${i18n:_('Advances')}"></tab>
             <tab label="${i18n:_('Labels')}"></tab>
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"></tab>
+            <tab label="${i18n:_('Materials')}"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -50,6 +52,9 @@
             </tabpanel>
              <tabpanel style="overflow:auto">
                 <listOrderElementCriterionRequirements id="orderElementCriterionRequirements"/>
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementMaterials id="orderElementMaterials" />
             </tabpanel>
         </tabpanels>
   </tabbox>
