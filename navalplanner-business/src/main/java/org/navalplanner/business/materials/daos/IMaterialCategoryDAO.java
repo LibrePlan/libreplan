@@ -23,14 +23,33 @@ package org.navalplanner.business.materials.daos;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 
 /**
  * Interface MaterialDAO
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public interface IMaterialCategoryDAO extends IGenericDAO<MaterialCategory, Long> {
+
+    /**
+     * Returns true if {@link MaterialCategory} exists
+     *
+     * @param name
+     * @return
+     */
+    boolean existsMaterialCategoryWithNameInAnotherTransaction(String name);
+
+    /**
+     * Returns {@link Material} by name
+     *
+     * @param name
+     * @return
+     */
+    MaterialCategory findUniqueByNameInAnotherTransaction(String name) throws InstanceNotFoundException;
 
     List<MaterialCategory> getAll();
 

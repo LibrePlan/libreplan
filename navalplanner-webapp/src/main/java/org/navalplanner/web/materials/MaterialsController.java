@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Grid;
@@ -148,7 +149,14 @@ public class MaterialsController extends
         public void render(Treeitem ti, Object node) throws Exception {
             final MaterialCategory materialCategory = (MaterialCategory) node;
 
-            Textbox tb = new Textbox(materialCategory.getName());
+            final Textbox tb = new Textbox(materialCategory.getName());
+            tb.addEventListener("onChange", new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    final InputEvent ie = (InputEvent) event;
+                    materialCategory.setName(ie.getValue());
+                }
+            });
             Treecell tc = new Treecell();
 
             Treerow tr = null;
@@ -320,12 +328,19 @@ public class MaterialsController extends
             // Unique material in materialCategory
             if (bean instanceof MaterialCategory) {
                 final MaterialCategory materialCategory = (MaterialCategory) bean;
-                if (locateAndSelectMaterialCategory(materialCategory)) {
-                    messagesForUser.showMessage(Level.ERROR, each.getPropertyName() + ": " + each.getMessage());
+                final Treeitem treeitem = findTreeItemByMaterialCategory(categoriesTree, materialCategory);
+                if (treeitem != null) {
+                    throw new WrongValueException(getCategoryTextbox(treeitem), each.getMessage());
                 }
             }
         }
         messagesForUser.showInvalidValues(validationException);
+    }
+
+    private Textbox getCategoryTextbox(Treeitem treeitem) {
+        final Treerow treerow = (Treerow) treeitem.getChildren().get(0);
+        final Treecell treecell = (Treecell) treerow.getChildren().get(0);
+        return (Textbox) treecell.getChildren().get(0);
     }
 
     private boolean locateAndSelectMaterialCategory(MaterialCategory materialCategory) {

@@ -26,10 +26,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 
 /**
  * MaterialCategory entity
@@ -112,6 +115,33 @@ public class MaterialCategory extends BaseEntity {
 
     public void removeMaterial(Material material) {
         materials.remove(material);
+    }
+
+    @AssertTrue(message="material category name has to be unique. It is already used")
+    public boolean checkConstraintUniqueName() {
+        boolean result;
+        if (isNewObject()) {
+            result = !existsMaterialCategoryWithTheName();
+        } else {
+            result = isIfExistsTheExistentMaterialCategoryThisOne();
+        }
+        return result;
+    }
+
+    private boolean existsMaterialCategoryWithTheName() {
+        IMaterialCategoryDAO materialCategoryDAO = Registry.getMaterialCategoryDAO();
+        return materialCategoryDAO.existsMaterialCategoryWithNameInAnotherTransaction(name);
+    }
+
+    private boolean isIfExistsTheExistentMaterialCategoryThisOne() {
+        IMaterialCategoryDAO materialCategoryDAO = Registry.getMaterialCategoryDAO();
+        try {
+            MaterialCategory materialCategory =
+                materialCategoryDAO.findUniqueByNameInAnotherTransaction(name);
+            return materialCategory.getId().equals(getId());
+        } catch (InstanceNotFoundException e) {
+            return true;
+        }
     }
 
 }

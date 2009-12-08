@@ -22,12 +22,17 @@ package org.navalplanner.business.materials.daos;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO for {@link MaterialCategory}
@@ -48,6 +53,37 @@ public class MaterialCategoryDAO extends GenericDAOHibernate<MaterialCategory, L
     @Override
     public List<MaterialCategory> getAllRootMaterialCategories() {
         return getSession().createCriteria(MaterialCategory.class).add(Restrictions.isNull("parent")).list();
+    }
+
+    @Override
+    @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsMaterialCategoryWithNameInAnotherTransaction(
+            String name) {
+        try {
+            findUniqueByName(name);
+            return true;
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    private MaterialCategory findUniqueByName(String name)
+            throws InstanceNotFoundException {
+        Criteria criteria = getSession().createCriteria(MaterialCategory.class);
+        criteria.add(Restrictions.eq("name", name).ignoreCase());
+
+        List<MaterialCategory> list = criteria.list();
+        if (list.size() != 1) {
+            throw new InstanceNotFoundException(name, MaterialCategory.class.getName());
+        }
+        return list.get(0);
+    }
+
+    @Override
+    @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
+    public MaterialCategory findUniqueByNameInAnotherTransaction(String name)
+            throws InstanceNotFoundException {
+        return findUniqueByName(name);
     }
 
 }

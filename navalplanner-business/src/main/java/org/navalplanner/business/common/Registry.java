@@ -22,6 +22,7 @@ package org.navalplanner.business.common;
 
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
@@ -66,6 +67,9 @@ public class Registry {
     @Autowired
     private IMaterialDAO materialDAO;
 
+    @Autowired
+    private IMaterialCategoryDAO materialCategoryDAO;
+
     private Registry() {
     }
 
@@ -99,5 +103,9 @@ public class Registry {
 
     public static IMaterialDAO getMaterialDAO() {
         return getInstance().materialDAO;
+    }
+
+    public static IMaterialCategoryDAO getMaterialCategoryDAO() {
+        return getInstance().materialCategoryDAO;
     }
 }
