@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
@@ -80,6 +82,8 @@ import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
+import org.zkoss.ganttz.timetracker.zoom.DetailItem;
+import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
@@ -182,6 +186,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         appendTabs(chartComponent);
 
         configuration.setChartComponent(chartComponent);
+        showDeadlineIfExists(orderReloaded, configuration);
         planner.setConfiguration(configuration);
 
         Timeplot chartLoadTimeplot = new Timeplot();
@@ -202,6 +207,27 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 chartEarnedValueTimeplot, planner.getTimeTracker());
         refillLoadChartWhenNeeded(planner, saveCommand, earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
+    }
+
+    private void showDeadlineIfExists(Order orderReloaded,
+            PlannerConfiguration<TaskElement> configuration) {
+        if (orderReloaded.getDeadline() != null) {
+            configuration
+                    .setSecondLevelModificators(createDeadlineShower(orderReloaded
+                            .getDeadline()));
+        }
+    }
+
+    private IDetailItemModificator createDeadlineShower(Date orderDeadline) {
+        final DateTime deadline = new DateTime(orderDeadline);
+        return new IDetailItemModificator() {
+
+            @Override
+            public DetailItem applyModificationsTo(DetailItem item) {
+                item.markDeadlineDay(deadline);
+                return item;
+            }
+        };
     }
 
     private void appendTabs(Tabbox chartComponent) {
