@@ -40,6 +40,8 @@ import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Grid;
@@ -320,6 +322,14 @@ public class AssignedMaterialsToOrderElementController extends
             }
             // Add category name
             Treecell cellName = new Treecell();
+            cellName.addEventListener("onClick", new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    assignedMaterialsToOrderElementModel.searchMaterials("", materialCategory);
+                    Util.reloadBindings(lbFoundMaterials);
+                }
+            });
             lblName.setParent(cellName);
             cellName.setParent(tr);
         }
