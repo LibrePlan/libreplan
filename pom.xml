@@ -506,7 +506,7 @@
             <dependency>
                 <groupId>org.zkoss.zkforge.timeplot</groupId>
                 <artifactId>timeplotz</artifactId>
-                <version>1.0_2</version>
+                <version>1.0_2_1</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zkforge.timeline</groupId>
