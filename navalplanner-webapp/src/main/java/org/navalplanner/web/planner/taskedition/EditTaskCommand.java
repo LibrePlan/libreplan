@@ -71,7 +71,7 @@ public class EditTaskCommand implements IEditTaskCommand {
 
     @Override
     public String getName() {
-        return _("Edit");
+        return _("Task Properties");
     }
 
     @Override
