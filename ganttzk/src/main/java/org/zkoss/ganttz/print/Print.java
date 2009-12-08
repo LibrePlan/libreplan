@@ -18,6 +18,7 @@ import org.jfree.data.gantt.TaskSeries;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.servlets.CallbackServlet;
+import org.zkoss.ganttz.servlets.handlers.GeneratePrintPageHandler;
 import org.zkoss.ganttz.servlets.handlers.JFreeChartHandler;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.ui.Executions;
@@ -60,13 +61,39 @@ public class Print {
                 .splitDatasetInIntervals(dataset, begin, end,
                         INTERVAL_LENGTH_IN_MINUTES);
 
-        // Create a chart for each subdataset
-        for (ExtendedGanttCategoryDataset each : subdatasets) {
-            final HttpServletRequest request = (HttpServletRequest) Executions
-                .getCurrent().getNativeRequest();
-            final JFreeChartHandler handler = new JFreeChartHandler(createChart(each));
-            CallbackServlet.registerAndCreateURLFor(request, handler);
+        // Show resulting printing page
+        final List<String> URIs = convertDatasetsToURIs(subdatasets);
+        final String id = GanttDiagramURIStore.storeURIs(URIs);
+        final String URL = generatePrintPage(id);
+        showPage(URL);
+    }
+
+    private static void showPage(String URL) {
+        Executions.getCurrent().sendRedirect(URL, "_blank");
+    }
+
+    private static String generatePrintPage(String id) {
+        final GeneratePrintPageHandler handler = new GeneratePrintPageHandler(id);
+        String URL = CallbackServlet.registerAndCreateURLFor(getCurrentRequest(), handler);
+        URL = URL.replace("/navalplanner-webapp", "");
+        return URL;
+    }
+
+    private static HttpServletRequest getCurrentRequest() {
+        return (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+    }
+
+    private static List<String> convertDatasetsToURIs(List<ExtendedGanttCategoryDataset> datasets) {
+        List<String> result = new ArrayList<String>();
+
+        for (ExtendedGanttCategoryDataset each : datasets) {
+            final JFreeChartHandler handler = new JFreeChartHandler(
+                    createChart(each));
+            final String uri = CallbackServlet.registerAndCreateURLFor(getCurrentRequest(),
+                    handler);
+            result.add(uri);
         }
+        return result;
     }
 
     private static JFreeChart createChart(ExtendedGanttCategoryDataset dataset) {
