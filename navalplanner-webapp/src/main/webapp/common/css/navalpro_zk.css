@@ -777,6 +777,20 @@ div.z-listbox-pgi-b {
     padding-right:2px;
 }
 
+.orderTree .not-scheduled span.z-label,
+.orderTree .partially-scheduled span.z-label,
+.orderTree .completely-scheduled span.z-label {
+    -moz-border-radius-bottomleft: 6px;
+    -moz-border-radius-bottomright: 1px;
+    -moz-border-radius-topleft: 1px;
+    -moz-border-radius-topright: 6px;
+    border: 1px solid #888888;
+    color: #888888;
+    margin: 1px 6px;
+    padding: 2px 5px;
+    font-weight: bold;
+}
+
 .orderTree .not-scheduled,
 .orderTree .partially-scheduled,
 .orderTree .completely-scheduled {
@@ -791,8 +805,12 @@ div.z-listbox-pgi-b {
     background-color: #bee5a9;
 }
 
-span.z-dottree-ico, span.z-dottree-line {
+span.z-dottree-ico {
     min-height:22px;
+}
+
+span.z-dottree-line {
+    min-height:28px;
 }
 
 

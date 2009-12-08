@@ -63,11 +63,21 @@ public class SchedulingStateToggler extends HtmlMacroComponent {
 
     public String getButtonLabel() {
         if (state.isCompletelyScheduled()) {
-            return _("completely scheduled");
+            return _("C");
         } else if (state.isPartiallyScheduled()) {
-            return _("partially scheduled");
+            return _("P");
         } else {
-            return _("no scheduled");
+            return _("U");
+        }
+    }
+
+    public String getButtonTextTooltip() {
+        if (state.isCompletelyScheduled()) {
+            return _("Completely scheduled");
+        } else if (state.isPartiallyScheduled()) {
+            return _("Partially scheduled");
+        } else {
+            return _("Unscheduled");
         }
     }
 
