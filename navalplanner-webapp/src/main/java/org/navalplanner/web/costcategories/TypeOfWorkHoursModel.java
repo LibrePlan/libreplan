@@ -22,6 +22,7 @@ package org.navalplanner.web.costcategories;
 
 import java.util.List;
 
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
@@ -71,7 +72,12 @@ public class TypeOfWorkHoursModel implements ITypeOfWorkHoursModel {
     @Override
     @Transactional(readOnly = true)
     public void initEdit(TypeOfWorkHours typeOfWorkHours) {
-        this.typeOfWorkHours = typeOfWorkHours;
+        try {
+            this.typeOfWorkHours = typeOfWorkHoursDAO.find(typeOfWorkHours.getId());
+        }
+        catch(InstanceNotFoundException e) {
+            initCreate();
+        }
     }
 
 }
