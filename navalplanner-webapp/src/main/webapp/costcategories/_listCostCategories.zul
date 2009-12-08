@@ -23,11 +23,13 @@
         pageSize="10">
         <columns sizable="true">
             <newdatasortablecolumn label="${i18n:_('Category name')}" sort="auto(name)" />
+            <newdatasortablecolumn label="${i18n:_('Enabled')}" sort="auto(enabled)"/>
             <newdatasortablecolumn label="${i18n:_('Actions')}" />
         </columns>
         <rows>
             <row self="@{each='costCategory'}" value="@{costCategory}">
                 <label value="@{costCategory.name}" />
+                <checkbox checked="@{costCategory.enabled}" disabled="true" />
                 <hbox>
                     <button sclass="icono" image="/common/img/ico_editar1.png"
                         hoverImage="/common/img/ico_editar.png"
