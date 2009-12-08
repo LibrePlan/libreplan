@@ -41,7 +41,7 @@
                         <panel title="${i18n:_('Categories')}" border="normal">
                             <panelchildren>
                                 <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}"
-                                    onClick="assignedMaterialsController.clearSelection(categoriesTree)" />
+                                    onClick="assignedMaterialsController.clearSelectionCategoriesTree()" />
                                 <tree id="categoriesTree"
                                         fixedLayout="false"
                                         width="280px" rows="10" vflex="true" multiple="false"
@@ -120,7 +120,8 @@
                     <vbox>
                         <panel title="${i18n:_('Categories')}" border="normal">
                             <panelchildren>
-                                <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}" onClick="allCategoriesTree.clearSelection()" />
+                                <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}"
+                                    onClick="assignedMaterialsController.clearSelectionAllCategoriesTree()" />
                                 <tree id="allCategoriesTree"
                                         width="280px" rows="10" vflex="true" multiple="false">
                                     <treecols>

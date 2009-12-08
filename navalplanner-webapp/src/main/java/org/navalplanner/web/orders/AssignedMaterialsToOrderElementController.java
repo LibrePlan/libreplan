@@ -290,9 +290,19 @@ public class AssignedMaterialsToOrderElementController extends
         return result;
     }
 
-    public void clearSelection(Tree tree) {
-        tree.clearSelection();
+    public void clearSelectionCategoriesTree() {
+        categoriesTree.clearSelection();
         Util.reloadBindings(gridMaterials);
+    }
+
+    public void clearSelectionAllCategoriesTree() {
+        allCategoriesTree.clearSelection();
+        retrieveAllMaterials();
+        Util.reloadBindings(lbFoundMaterials);
+    }
+
+    private void retrieveAllMaterials() {
+        assignedMaterialsToOrderElementModel.searchMaterials("", null);
     }
 
     public MaterialCategoryRenderer getMaterialCategoryRenderer() {
