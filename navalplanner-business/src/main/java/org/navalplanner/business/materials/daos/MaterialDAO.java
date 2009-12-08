@@ -116,16 +116,10 @@ public class MaterialDAO extends GenericDAOHibernate<Material, Long> implements
     }
 
     @Override
+    @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
     public Material findUniqueByCodeInAnotherTransaction(String code)
             throws InstanceNotFoundException  {
-        Criteria criteria = getSession().createCriteria(Material.class);
-        criteria.add(Restrictions.eq("code", code).ignoreCase());
-
-        List<Material> list = criteria.list();
-        if (list.size() != 1) {
-            throw new InstanceNotFoundException(code, Material.class.getName());
-        }
-        return list.get(0);
+        return findUniqueByCode(code);
     }
 
 }

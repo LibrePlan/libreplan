@@ -120,7 +120,7 @@ public class Material extends BaseEntity implements Comparable {
       return code.compareTo(material.getCode());
     }
 
-    @AssertTrue(message="machine code has to be unique. It is already used")
+    @AssertTrue(message="materialcode has to be unique. It is already used")
     public boolean checkConstraintUniqueCode() {
         boolean result;
         if (isNewObject()) {
