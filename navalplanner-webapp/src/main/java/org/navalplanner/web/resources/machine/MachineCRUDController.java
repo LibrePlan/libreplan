@@ -210,9 +210,7 @@ public class MachineCRUDController extends GenericForwardComposer {
             goToList();
             messagesForUser.showMessage(Level.INFO, _("Machine saved"));
         } catch (ValidationException e) {
-            messagesForUser.showMessage(Level.ERROR,
-                    _("Could not save Machine") + " " + showInvalidValues(e));
-            LOG.error(e);
+            messagesForUser.showInvalidValues(e);
         }
     }
 

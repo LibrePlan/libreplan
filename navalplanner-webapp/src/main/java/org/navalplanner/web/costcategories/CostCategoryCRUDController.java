@@ -140,11 +140,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
                     _("Cost category saved"));
             return true;
         } catch (ValidationException e) {
-            String message = _("The following errors were found: ");
-            for(InvalidValue each: e.getInvalidValues()) {
-                message += each.getMessage();
-            }
-            messagesForUser.showMessage(Level.ERROR, message);
+            messagesForUser.showInvalidValues(e);
         }
         return false;
     }
