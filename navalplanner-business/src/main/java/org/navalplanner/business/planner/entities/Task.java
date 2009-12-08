@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.AssertTrue;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -47,6 +49,8 @@ import org.navalplanner.business.resources.entities.Worker;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class Task extends TaskElement {
+
+    private static final Log LOG = LogFactory.getLog(Task.class);
 
     public static Task createTask(TaskSource taskSource) {
         Task task = new Task();
@@ -104,7 +108,21 @@ public class Task extends TaskElement {
     }
 
     public Set<ResourceAllocation<?>> getResourceAllocations() {
-        return Collections.unmodifiableSet(resourceAllocations);
+        return Collections.unmodifiableSet(filterEmpty(resourceAllocations));
+    }
+
+    private Set<ResourceAllocation<?>> filterEmpty(
+            Set<ResourceAllocation<?>> allocations) {
+        Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
+        for (ResourceAllocation<?> each : allocations) {
+            if (each.hasAssignments()) {
+                result.add(each);
+            } else {
+                LOG.warn("there is an empty resource allocation: "
+                        + each.toString() + " ,on task: " + this);
+            }
+        }
+        return result;
     }
 
     public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
@@ -112,8 +130,13 @@ public class Task extends TaskElement {
             throw new IllegalArgumentException(
                     "the resourceAllocation's task must be this task");
         }
-        resourceAllocations.add(resourceAllocation);
-        resourceAllocation.associateAssignmentsToResource();
+        if (resourceAllocation.hasAssignments()) {
+            resourceAllocations.add(resourceAllocation);
+            resourceAllocation.associateAssignmentsToResource();
+        } else {
+            LOG.warn("adding a resource allocation without assignments: "
+                    + resourceAllocation);
+        }
     }
 
     public void removeResourceAllocation(
@@ -289,7 +312,7 @@ public class Task extends TaskElement {
     @Override
     protected void moveAllocations() {
         List<ModifiedAllocation> copied = ModifiedAllocation
-                .copy(resourceAllocations);
+                .copy(getResourceAllocations());
         List<ResourcesPerDayModification> allocations = ResourcesPerDayModification
                 .fromExistent(ModifiedAllocation.modified(copied));
         if (allocations.isEmpty()) {

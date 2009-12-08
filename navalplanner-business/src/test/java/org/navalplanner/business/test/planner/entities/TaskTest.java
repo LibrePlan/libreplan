@@ -34,7 +34,6 @@ import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.TaskSource;
-import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -80,23 +79,31 @@ public class TaskTest {
     }
 
     @Test
-    public void taskAddResourceAllocation() {
+    public void addingEmptyResourceAllocationDoesntAddIt() {
         assertThat(task.getResourceAllocations().size(), equalTo(0));
 
         SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
         task.addResourceAllocation(resourceAllocation);
 
+        assertThat(task.getResourceAllocations().size(), equalTo(0));
+    }
+
+    @Test
+    public void addingNoEmptyResourceAllocationAddsIt() {
+        assertThat(task.getResourceAllocations().size(), equalTo(0));
+
+        SpecificResourceAllocation resourceAllocation = stubResourceAllocationWithAssignedHours(
+                task, 500);
+        task.addResourceAllocation(resourceAllocation);
         assertThat(task.getResourceAllocations().size(), equalTo(1));
-        assertThat(
-                resourceAllocation.getTask().getResourceAllocations().size(),
-                equalTo(1));
     }
 
     @Test
     public void taskRemoveResourceAllocation() {
         assertThat(task.getResourceAllocations().size(), equalTo(0));
 
-        SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
+        SpecificResourceAllocation resourceAllocation = stubResourceAllocationWithAssignedHours(
+                task, 500);
         task.addResourceAllocation(resourceAllocation);
 
         assertThat(task.getResourceAllocations().size(), equalTo(1));
@@ -112,17 +119,21 @@ public class TaskTest {
 
     @Test
     public void aTaskWithAllocationsReturnsTheSumOfItsAllocations() {
-        task.addResourceAllocation(stubResourceAllocationWithAssignedHours(5));
-        task.addResourceAllocation(stubResourceAllocationWithAssignedHours(3));
+        task.addResourceAllocation(stubResourceAllocationWithAssignedHours(
+                task, 5));
+        task.addResourceAllocation(stubResourceAllocationWithAssignedHours(
+                task, 3));
         assertThat(task.getAssignedHours(), equalTo(8));
     }
 
-    private ResourceAllocation<?> stubResourceAllocationWithAssignedHours(
+    private SpecificResourceAllocation stubResourceAllocationWithAssignedHours(
+            Task task,
             int hours) {
-        ResourceAllocation<?> resourceAllocation = createNiceMock(ResourceAllocation.class);
+        SpecificResourceAllocation resourceAllocation = createNiceMock(SpecificResourceAllocation.class);
         expect(resourceAllocation.getAssignedHours()).andReturn(hours)
                 .anyTimes();
         expect(resourceAllocation.getTask()).andReturn(task).anyTimes();
+        expect(resourceAllocation.hasAssignments()).andReturn(true).anyTimes();
         replay(resourceAllocation);
         return resourceAllocation;
     }
