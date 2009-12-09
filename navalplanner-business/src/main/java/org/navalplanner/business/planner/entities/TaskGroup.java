@@ -99,7 +99,7 @@ public class TaskGroup extends TaskElement {
     public void addChildren(List<TaskElement> children) {
         List<TaskElement> toRemove = new ArrayList<TaskElement>();
         for (TaskElement each : taskElements) {
-            if (!children.contains(each)) {
+            if (!children.contains(each) && !(each instanceof TaskMilestone)) {
                 toRemove.add(each);
             }
         }
