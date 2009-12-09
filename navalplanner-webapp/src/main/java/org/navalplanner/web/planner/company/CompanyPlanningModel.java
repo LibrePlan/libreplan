@@ -274,16 +274,15 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         mainhbox.setId("indicatorsTable");
         mainhbox.setAlign("center");
         mainhbox.setPack("center");
+        mainhbox.setClass("legend-container");
 
         Vbox vbox = new Vbox();
         vbox.setClass("legend");
 
         Vbox column1 = new Vbox();
         Vbox column2 = new Vbox();
-        Vbox column3 = new Vbox();
         column1.setSclass("earned-indicator-column");
         column2.setSclass("earned-indicator-column");
-        column3.setSclass("earned-indicator-column");
 
         int columnNumber = 0;
 
@@ -314,9 +313,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 break;
             case 2:
                 column2.appendChild(hbox);
-                break;
-            case 3:
-                column3.appendChild(hbox);
                 columnNumber = 0;
             }
         }
@@ -324,7 +320,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         Hbox hbox = new Hbox();
         hbox.appendChild(column1);
         hbox.appendChild(column2);
-        hbox.appendChild(column3);
 
         vbox.appendChild(hbox);
         mainhbox.appendChild(vbox);
@@ -382,10 +377,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         Vbox column1 = new Vbox();
         Vbox column2 = new Vbox();
-        Vbox column3 = new Vbox();
         column1.setSclass("earned-parameter-column");
         column2.setSclass("earned-parameter-column");
-        column3.setSclass("earned-parameter-column");
 
         int columnNumber = 0;
 
@@ -402,9 +395,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 break;
             case 2:
                 column2.appendChild(checkbox);
-                break;
-            case 3:
-                column3.appendChild(checkbox);
                 columnNumber = 0;
             }
             earnedValueChartConfigurationCheckboxes.add(checkbox);
@@ -414,14 +404,13 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         Hbox hbox = new Hbox();
         hbox.appendChild(column1);
         hbox.appendChild(column2);
-        hbox.appendChild(column3);
 
         vbox.appendChild(hbox);
         mainhbox.appendChild(vbox);
 
         markAsSelectedDefaultIndicators();
 
-        return vbox;
+        return mainhbox;
     }
 
     private void markAsSelectedDefaultIndicators() {
