@@ -114,6 +114,11 @@ public class PlanningTabCreator {
                     public String getName() {
                         return _("Schedule");
                     }
+
+                    @Override
+                    public String getIcon() {
+                        return null;
+                    }
                 };
                 commands.add(scheduleCommand);
                 companyPlanningController.setAdditional(commands);

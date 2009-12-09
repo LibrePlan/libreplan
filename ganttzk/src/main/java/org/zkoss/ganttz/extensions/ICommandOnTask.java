@@ -24,6 +24,8 @@ public interface ICommandOnTask<T> {
 
     public String getName();
 
+    public String getIcon();
+
     public void doAction(IContextWithPlannerTask<T> context, T task);
 
 }

@@ -63,5 +63,9 @@ public class CalendarAllocationCommand implements ICalendarAllocationCommand {
         this.calendarAllocationController = calendarAllocationController;
     }
 
+    @Override
+    public String getIcon() {
+        return null;
+    }
 
 }

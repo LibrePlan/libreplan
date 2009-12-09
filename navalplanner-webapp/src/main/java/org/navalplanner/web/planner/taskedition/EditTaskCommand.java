@@ -79,4 +79,9 @@ public class EditTaskCommand implements IEditTaskCommand {
         this.editTaskController = editTaskController;
     }
 
+    @Override
+    public String getIcon() {
+        return null;
+    }
+
 }

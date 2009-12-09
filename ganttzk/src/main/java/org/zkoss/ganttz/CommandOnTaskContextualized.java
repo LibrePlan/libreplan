@@ -88,4 +88,8 @@ public class CommandOnTaskContextualized<T> {
         };
     }
 
+    public String getIcon() {
+        return commandOnTask.getIcon();
+    }
+
 }

@@ -68,6 +68,11 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
             return "";
         }
 
+        @Override
+        public String getIcon() {
+            return null;
+        }
+
     }
 
     private IAdapterToTaskFundamentalProperties<T> adapter;

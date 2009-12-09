@@ -55,17 +55,22 @@ public class MenuBuilder<T extends XulElement> {
 
     private class Item {
         private final String name;
+        private final String icon;
 
         private final ItemAction<T> action;
 
-        Item(String name, ItemAction<T> action) {
+        Item(String name, String icon, ItemAction<T> action) {
             this.name = name;
+            this.icon = icon;
             this.action = action;
         }
 
         Menuitem createMenuItem() {
             Menuitem result = new Menuitem();
             result.setLabel(name);
+            if (icon != null) {
+                result.setImage(icon);
+            }
             return result;
         }
 
@@ -82,14 +87,15 @@ public class MenuBuilder<T extends XulElement> {
         this.root = page.getLastRoot();
     }
 
-    public MenuBuilder<T> item(String name, ItemAction<T> itemAction) {
+    public MenuBuilder<T> item(String name, String icon,
+            ItemAction<T> itemAction) {
         if (name == null) {
             throw new IllegalArgumentException("name cannot be null");
         }
         if (itemAction == null) {
             throw new IllegalArgumentException("itemAction cannot be null");
         }
-        items.add(new Item(name, itemAction));
+        items.add(new Item(name, icon, itemAction));
         return this;
     }
 

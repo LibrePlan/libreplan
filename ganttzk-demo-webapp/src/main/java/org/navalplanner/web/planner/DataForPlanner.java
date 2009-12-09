@@ -97,6 +97,11 @@ public class DataForPlanner {
                         return "Remove";
                     }
 
+                    @Override
+                    public String getIcon() {
+                        return null;
+                    }
+
                 });
         configuration.setDoubleClickCommand(new ICommandOnTask<ITaskFundamentalProperties>() {
 
@@ -112,6 +117,12 @@ public class DataForPlanner {
                     public String getName() {
                         return "";
                     }
+
+                    @Override
+                    public String getIcon() {
+                        return null;
+                    }
+
                 });
         return configuration;
     }

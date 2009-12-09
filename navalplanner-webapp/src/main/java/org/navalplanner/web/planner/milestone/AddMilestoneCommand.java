@@ -99,4 +99,9 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
         return _("Add Milestone");
     }
 
+    @Override
+    public String getIcon() {
+        return null;
+    }
+
 }

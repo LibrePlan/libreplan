@@ -286,7 +286,7 @@ public class TaskList extends XulElement implements AfterCompose {
             MenuBuilder<TaskComponent> menuBuilder = MenuBuilder.on(getPage(),
                     getTaskComponents());
             if (disabilityConfiguration.isAddingDependenciesEnabled()) {
-                menuBuilder.item("Add Dependency",
+                menuBuilder.item("Add Dependency", null,
                         new ItemAction<TaskComponent>() {
 
                             @Override
@@ -297,7 +297,8 @@ public class TaskList extends XulElement implements AfterCompose {
                         });
             }
             for (CommandOnTaskContextualized<?> command : commandsOnTasksContextualized) {
-                menuBuilder.item(command.getName(), command.toItemAction());
+                menuBuilder.item(command.getName(), command.getIcon(), command
+                        .toItemAction());
             }
             contextMenu = menuBuilder.createWithoutSettingContext();
         }

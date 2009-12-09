@@ -191,6 +191,7 @@ public class DependencyList extends XulElement implements AfterCompose {
         if (contextMenu == null) {
             MenuBuilder<DependencyComponent> contextMenuBuilder = MenuBuilder
                     .on(getPage(), getDependencyComponents()).item("Erase",
+                            null,
                             new ItemAction<DependencyComponent>() {
                                 @Override
                                 public void onEvent(
@@ -200,13 +201,15 @@ public class DependencyList extends XulElement implements AfterCompose {
                                             .removeDependency(choosen.getDependency());
                                 }
                             });
-            contextMenuBuilder.item("Set End-Start", new ChangeTypeAction(
+            contextMenuBuilder.item("Set End-Start", null,
+                    new ChangeTypeAction(
                     DependencyType.END_START));
 
-            contextMenuBuilder.item("Set Start-Start", new ChangeTypeAction(
+            contextMenuBuilder.item("Set Start-Start", null,
+                    new ChangeTypeAction(
                     DependencyType.START_START));
 
-            contextMenuBuilder.item("Set End-End", new ChangeTypeAction(
+            contextMenuBuilder.item("Set End-End", null, new ChangeTypeAction(
                     DependencyType.END_END));
 
             contextMenu = contextMenuBuilder.create();

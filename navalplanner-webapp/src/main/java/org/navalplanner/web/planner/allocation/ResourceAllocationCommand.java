@@ -67,5 +67,10 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
         this.planningState = planningState;
     }
 
+    @Override
+    public String getIcon() {
+        return null;
+    }
+
 
 }
