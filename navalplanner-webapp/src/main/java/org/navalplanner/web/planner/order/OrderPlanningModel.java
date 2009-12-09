@@ -243,7 +243,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         Tabs chartTabs = new Tabs();
         chartTabs.appendChild(new Tab(_("Load")));
         chartTabs.appendChild(new Tab(_("Earned value")));
-        chartTabs.appendChild(new Tab(_("Indicators")));
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setSclass("charts-tabbox");
