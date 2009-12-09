@@ -46,6 +46,7 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -377,6 +378,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 default:
                     throw new RuntimeException("can't handle " + constraintType);
                 }
+            } else if (taskElement instanceof TaskMilestone) {
+                return Collections.singletonList(DateConstraint
+                        .biggerOrEqualThan(taskElement.getStartDate()));
             } else {
                 return Collections.emptyList();
             }
