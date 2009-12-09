@@ -32,6 +32,7 @@ import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 
 /**
@@ -64,5 +65,7 @@ public interface IChartFiller {
 
     void appendPlotinfo(Timeplot chart, Plotinfo plotinfo, ValueGeometry valueGeometry,
             TimeGeometry timeGeometry);
+
+    void setZoomLevel(ZoomLevel zoomLevel);
 
 }

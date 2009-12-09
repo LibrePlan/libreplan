@@ -561,4 +561,9 @@ public abstract class ChartFiller implements IChartFiller {
         chart.appendChild(plotinfo);
     }
 
+    @Override
+    public void setZoomLevel(ZoomLevel zoomLevel) {
+        this.zoomLevel = zoomLevel;
+    }
+
 }

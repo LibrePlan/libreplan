@@ -22,6 +22,7 @@ package org.navalplanner.web.planner.chart;
 import org.apache.commons.lang.Validate;
 import org.zkforge.timeplot.Timeplot;
 import org.zkoss.ganttz.timetracker.TimeTracker;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -45,6 +46,12 @@ public class Chart {
 
     public void fillChart() {
         filler.fillChart(timeplot, timeTracker.getRealInterval(), timeTracker.getHorizontalSize());
+    }
+
+    public void setZoomLevel(ZoomLevel zoomLevel) {
+        if (zoomLevel != null) {
+            filler.setZoomLevel(zoomLevel);
+        }
     }
 
 }

@@ -495,7 +495,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
 
             @Override
-            public void zoomLevelChanged(final ZoomLevel detailLevel) {
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                loadChart.setZoomLevel(detailLevel);
+
                 transactionService
                         .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                     @Override

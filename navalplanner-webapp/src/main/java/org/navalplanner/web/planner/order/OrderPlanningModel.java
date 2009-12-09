@@ -572,6 +572,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
+                loadChart.setZoomLevel(detailLevel);
+
                 transactionService
                         .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                             @Override
