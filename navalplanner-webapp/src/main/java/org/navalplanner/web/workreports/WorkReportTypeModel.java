@@ -75,6 +75,8 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
 
     private boolean editing = false;
 
+    private boolean listing = true;
+
     private static final Map<LabelType, List<Label>> mapLabels = new HashMap<LabelType, List<Label>>();
 
     @Override
@@ -97,7 +99,7 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     @Override
     @Transactional(readOnly = true)
     public boolean thereAreWorkReportsFor(WorkReportType workReportType) {
-        if (isEditing()) {
+        if ((listing) || (isEditing())) {
             final List<WorkReport> workReports = workReportDAO
                     .getAllByWorkReportType(workReportType);
             return (workReports != null && !workReports.isEmpty());
@@ -115,6 +117,7 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     @Transactional(readOnly = true)
     public void prepareForCreate() {
         loadLabels();
+        setListing(false);
         editing = false;
         this.workReportType = WorkReportType.create();
     }
@@ -122,6 +125,7 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     @Override
     @Transactional(readOnly = true)
     public void initEdit(WorkReportType workReportType) {
+        setListing(false);
         editing = true;
         Validate.notNull(workReportType);
         loadLabels();
@@ -195,6 +199,11 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     @Override
     public boolean isEditing() {
         return this.editing;
+    }
+
+    @Override
+    public void setListing(boolean listing) {
+        this.listing = listing;
     }
 
     /* Operations to manage the Description field */

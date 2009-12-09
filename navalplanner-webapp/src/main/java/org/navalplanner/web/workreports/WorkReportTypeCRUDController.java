@@ -157,6 +157,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     }
 
     public void goToList() {
+        this.workReportTypeModel.setListing(true);
         Util.reloadBindings(listWindow);
         getVisibility().showOnly(listWindow);
     }
@@ -216,12 +217,6 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
     public boolean isEditable() {
         return (!thereAreWorkReportsFor(getWorkReportType()));
-    }
-    public void remove(WorkReportType workReportType) {
-        workReportTypeModel.confirmRemove(workReportType);
-        Util.reloadBindings(listWindow);
-        messagesForUser.showMessage(
-            Level.INFO, _("Removed {0}", workReportType.getName()));
     }
 
     public void goToEditForm() {

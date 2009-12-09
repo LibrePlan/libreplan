@@ -94,14 +94,18 @@ public interface IWorkReportTypeModel {
 
     /**
      * Check if it's or not editing a {@link WorkReportType}
-     *
      * @return true if it's editing a {@link WorkReportType}
      */
     boolean isEditing();
 
     /**
+     * Set if it's or not shows {@link WorkReportType} list
+     * @return true if it's shows the list.
+     */
+    void setListing(boolean listing);
+
+    /**
      * Check if there is any {@link WorkReport} bound to {@link WorkReportType}
-     *
      * @param workReportType
      * @return
      */
