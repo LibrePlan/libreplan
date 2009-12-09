@@ -79,8 +79,7 @@
                                     onClick="controller.addWorkReportLine()" />
                             </hbox>
 
-                           <grid id="listWorkReportLines" fixedLayout="true"
-                                model="@{controller.workReportLines}"
+                           <newdatasortablegrid id="listWorkReportLines" fixedLayout="true"
                                 rowRenderer="@{controller.renderer}" />
                         </panelchildren>
                     </panel>

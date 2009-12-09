@@ -38,7 +38,7 @@ import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class WorkReportLine extends BaseEntity {
+public class WorkReportLine extends BaseEntity implements Comparable {
 
     public static final String DATE = "date";
 
@@ -179,6 +179,15 @@ public class WorkReportLine extends BaseEntity {
 
     public void setTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
         this.typeOfWorkHours = typeOfWorkHours;
+    }
+
+    @Override
+    public int compareTo(Object arg0) {
+        if (date != null) {
+            final WorkReportLine workReportLine = (WorkReportLine) arg0;
+            return date.compareTo(workReportLine.getDate());
+        }
+        return -1;
     }
 
     @SuppressWarnings("unused")

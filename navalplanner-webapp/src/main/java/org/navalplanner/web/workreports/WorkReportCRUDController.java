@@ -35,7 +35,6 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workreports.entities.HoursManagementEnum;
 import org.navalplanner.business.workreports.entities.WorkReport;
@@ -50,6 +49,8 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
+import org.navalplanner.web.common.components.NewDataSortableColumn;
+import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.zk.ui.Component;
@@ -59,7 +60,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
@@ -68,6 +68,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
 import org.zkoss.zul.api.Window;
@@ -102,7 +103,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private OrderedFieldsAndLabelsRowRenderer orderedFieldsAndLabelsRowRenderer = new OrderedFieldsAndLabelsRowRenderer();
 
-    private Grid listWorkReportLines;
+    private NewDataSortableGrid listWorkReportLines;
 
     private Grid headingFieldsAndLabels;
 
@@ -119,7 +120,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        listWorkReportLines = (Grid) createWindow.getFellowIfAny("listWorkReportLines");
+        listWorkReportLines = (NewDataSortableGrid) createWindow
+                .getFellowIfAny("listWorkReportLines");
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
         final URLHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
@@ -446,7 +448,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     private void loadComponents(Component window) {
-        listWorkReportLines = (Grid) window.getFellow("listWorkReportLines");
+        listWorkReportLines = (NewDataSortableGrid) window
+                .getFellow("listWorkReportLines");
         headingFieldsAndLabels = (Grid) window
                 .getFellow("headingFieldsAndLabels");
         autocompleteResource = (Autocomplete) window
@@ -477,6 +480,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
          listWorkReportLines.setPageSize(PAGING);
 
          appendColumns(listWorkReportLines);
+        listWorkReportLines
+                .setSortedColumn((NewDataSortableColumn) listWorkReportLines
+                        .getColumns().getFirstChild());
+
+        listWorkReportLines.setModel(new SimpleListModel(getWorkReportLines()
+                .toArray()));
     }
 
     /**
@@ -498,19 +507,32 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         // Add static headers
         if (getWorkReport() != null) {
             if (!getWorkReport().getWorkReportType().getDateIsSharedByLines()) {
-                Column columnDate = new Column(_("Date"));
+                NewDataSortableColumn columnDate = new NewDataSortableColumn();
+                columnDate.setLabel(_("Date"));
+                columnDate.setSort("auto=(date)");
+                columnDate.setSortDirection("ascending");
+
+                columnDate.addEventListener("onSort", new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        sortWorkReportLines();
+                    }
+                });
+
                 columnDate.setWidth("100px");
                 columns.appendChild(columnDate);
             }
             if (!getWorkReport().getWorkReportType()
                     .getResourceIsSharedInLines()) {
-                Column columnResource = new Column(_("Resource"));
+                NewDataSortableColumn columnResource = new NewDataSortableColumn();
+                columnResource.setLabel(_("Resource"));
                 columnResource.setWidth("100px");
                 columns.appendChild(columnResource);
             }
             if (!getWorkReport().getWorkReportType()
                     .getOrderElementIsSharedInLines()) {
-                Column columnCode = new Column(_("Order Code"));
+                NewDataSortableColumn columnCode = new NewDataSortableColumn();
+                columnCode.setLabel(_("Order Code"));
                 columnCode.setWidth("100px");
                 columns.appendChild(columnCode);
             }
@@ -525,28 +547,34 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     columnName = ((WorkReportLabelTypeAssigment) fieldOrLabel)
                             .getLabelType().getName();
                 }
-                Column columnFieldOrLabel = new Column(_(columnName));
+                NewDataSortableColumn columnFieldOrLabel = new NewDataSortableColumn();
+                columnFieldOrLabel.setLabel(_(columnName));
                 columnFieldOrLabel.setWidth("100px");
                 columns.appendChild(columnFieldOrLabel);
             }
 
             if (!getWorkReport().getWorkReportType().getHoursManagement()
                     .equals(HoursManagementEnum.NUMBER_OF_HOURS)) {
-                Column columnHourStart = new Column(_("Hour start"));
+                NewDataSortableColumn columnHourStart = new NewDataSortableColumn();
+                columnHourStart.setLabel(_("Hour start"));
                 columnHourStart.setWidth("50px");
                 columns.appendChild(columnHourStart);
-                Column columnHourFinish = new Column(_("Hour finish"));
+                NewDataSortableColumn columnHourFinish = new NewDataSortableColumn();
+                columnHourFinish.setLabel(_("Hour finish"));
                 columnHourFinish.setWidth("50px");
                 columns.appendChild(columnHourFinish);
             }
         }
-        Column columnNumHours = new Column(_("Hours"));
+        NewDataSortableColumn columnNumHours = new NewDataSortableColumn();
+        columnNumHours.setLabel(_("Hours"));
         columnNumHours.setWidth("50px");
         columns.appendChild(columnNumHours);
-        Column columnHoursType = new Column(_("Hours type"));
+        NewDataSortableColumn columnHoursType = new NewDataSortableColumn();
+        columnHoursType.setLabel(_("Hours type"));
         columnHoursType.setWidth("100px");
         columns.appendChild(columnHoursType);
-        Column columnOperations = new Column(_("Operations"));
+        NewDataSortableColumn columnOperations = new NewDataSortableColumn();
+        columnOperations.setLabel(_("Operations"));
         columnOperations.setAlign("center");
         columnOperations.setWidth("50px");
         columns.appendChild(columnOperations);
@@ -570,7 +598,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     public void addWorkReportLine() {
         WorkReportLine workReportLine = workReportModel.addWorkReportLine();
-        listWorkReportLines.getRows().appendChild(createWorkReportLine(workReportLine));
+        reloadWorkReportLines();
+        // listWorkReportLines.getRows().appendChild(createWorkReportLine(workReportLine));
     }
 
     private void removeWorkReportLine(WorkReportLine workReportLine) {
@@ -582,49 +611,49 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         return workReportModel.getWorkReportLines();
     }
 
-    /**
-     * Returns a new row bound to to a {@link WorkReportLine}
-     *
-     * A row consists of a several textboxes plus several listboxes, one
-     * for every {@link CriterionType} associated with current @{link
-     * WorkReport}
-     *
-     * @param workReportLine
-     * @return
-     */
-    private Row createWorkReportLine(WorkReportLine workReportLine) {
-        Row row = new Row();
-
-        // Bind workReportLine to row
-        row.setValue(workReportLine);
-
-        // Create textboxes
-        if (!getWorkReport().getWorkReportType().getDateIsSharedByLines()) {
-            appendDateInLines(row);
-        }
-        if (!getWorkReport().getWorkReportType().getResourceIsSharedInLines()) {
-            appendResourceInLines(row);
-        }
-        if (!getWorkReport().getWorkReportType()
-                .getOrderElementIsSharedInLines()) {
-            appendOrderElementInLines(row);
-        }
-
-        // Create the fields and labels
-        appendFieldsAndLabelsInLines(row);
-
-        if (!getWorkReport().getWorkReportType().getHoursManagement().equals(
-                HoursManagementEnum.NUMBER_OF_HOURS)) {
-            appendHourStart(row);
-            appendHourFinish(row);
-        }
-
-        appendNumHours(row);
-        appendHoursType(row);
-        appendDeleteButton(row);
-
-        return row;
-    }
+    // /**
+    // * Returns a new row bound to to a {@link WorkReportLine}
+    // *
+    // * A row consists of a several textboxes plus several listboxes, one
+    // * for every {@link CriterionType} associated with current @{link
+    // * WorkReport}
+    // *
+    // * @param workReportLine
+    // * @return
+    // */
+    // private Row createWorkReportLine(WorkReportLine workReportLine) {
+    // Row row = new Row();
+    //
+    // // Bind workReportLine to row
+    // row.setValue(workReportLine);
+    //
+    // // Create textboxes
+    // if (!getWorkReport().getWorkReportType().getDateIsSharedByLines()) {
+    // appendDateInLines(row);
+    // }
+    // if (!getWorkReport().getWorkReportType().getResourceIsSharedInLines()) {
+    // appendResourceInLines(row);
+    // }
+    // if (!getWorkReport().getWorkReportType()
+    // .getOrderElementIsSharedInLines()) {
+    // appendOrderElementInLines(row);
+    // }
+    //
+    // // Create the fields and labels
+    // appendFieldsAndLabelsInLines(row);
+    //
+    // if (!getWorkReport().getWorkReportType().getHoursManagement().equals(
+    // HoursManagementEnum.NUMBER_OF_HOURS)) {
+    // appendHourStart(row);
+    // appendHourFinish(row);
+    // }
+    //
+    // appendNumHours(row);
+    // appendHoursType(row);
+    // appendDeleteButton(row);
+    //
+    // return row;
+    // }
 
     private void appendDateInLines(final Row row) {
         final Datebox date = new Datebox();
@@ -1190,5 +1219,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private void reloadWorkReportLines() {
         this.prepareWorkReportList();
         Util.reloadBindings(listWorkReportLines);
+    }
+
+    private void sortWorkReportLines() {
+        System.out.println("sort lines");
+        listWorkReportLines.setModel(new SimpleListModel(getWorkReportLines()
+                .toArray()));
     }
 }
