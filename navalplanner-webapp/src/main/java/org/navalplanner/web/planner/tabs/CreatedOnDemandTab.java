@@ -32,16 +32,23 @@ public class CreatedOnDemandTab implements ITab {
     private Component parent;
     private final IComponentCreator componentCreator;
     private Component component;
+    private final String cssClass;
 
     public interface IComponentCreator {
         public Component create(Component parent);
     }
 
     public CreatedOnDemandTab(String name, IComponentCreator componentCreator) {
+        this(name, null, componentCreator);
+    }
+
+    public CreatedOnDemandTab(String name, String cssClass,
+            IComponentCreator componentCreator) {
         Validate.notNull(name);
         Validate.notNull(componentCreator);
         this.componentCreator = componentCreator;
         this.name = name;
+        this.cssClass = cssClass;
     }
 
     @Override
@@ -71,6 +78,11 @@ public class CreatedOnDemandTab implements ITab {
     }
 
     protected void afterShowAction() {
+    }
+
+    @Override
+    public String getCssClass() {
+        return cssClass;
     }
 
 }

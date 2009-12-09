@@ -97,7 +97,7 @@ public class OrdersTabCreator {
     }
 
     private ITab createGlobalOrdersTab() {
-        return new CreatedOnDemandTab(ORDERS_VIEW, ordersTabCreator) {
+        return new CreatedOnDemandTab(ORDERS_VIEW, "orders", ordersTabCreator) {
             @Override
             protected void afterShowAction() {
                 orderCRUDController.goToList();
@@ -124,7 +124,8 @@ public class OrdersTabCreator {
     }
 
     private ITab createOrderOrdersTab() {
-        return new CreatedOnDemandTab(ORDER_ORDERS_VIEW, ordersTabCreator) {
+        return new CreatedOnDemandTab(ORDER_ORDERS_VIEW, "order-data",
+                ordersTabCreator) {
             @Override
             protected void afterShowAction() {
                 breadcrumbs.getChildren().clear();

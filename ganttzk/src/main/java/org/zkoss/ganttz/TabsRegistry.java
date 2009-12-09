@@ -60,7 +60,7 @@ public class TabsRegistry {
     public void loadNewName(ITab tab) {
         if (fromTabToMenuKey.containsKey(tab)) {
             Object key = fromTabToMenuKey.get(tab);
-            menu.renameMenuItem(key, tab.getName());
+            menu.renameMenuItem(key, tab.getName(), tab.getCssClass());
         }
     }
 
@@ -94,7 +94,8 @@ public class TabsRegistry {
     public void registerAtMenu(IMenuItemsRegister menu) {
         this.menu = menu;
         for (final ITab t : tabs) {
-            Object key = menu.addMenuItem(t.getName(), new EventListener() {
+            Object key = menu.addMenuItem(t.getName(), t.getCssClass(),
+                    new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {

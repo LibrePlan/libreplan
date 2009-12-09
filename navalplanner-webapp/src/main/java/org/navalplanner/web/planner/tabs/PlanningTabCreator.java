@@ -128,7 +128,8 @@ public class PlanningTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(ENTERPRISE_VIEW, componentCreator) {
+        return new CreatedOnDemandTab(ENTERPRISE_VIEW, "company-scheduling",
+                componentCreator) {
             @Override
             protected void afterShowAction() {
                 companyPlanningController.setConfigurationForPlanner();
@@ -159,7 +160,8 @@ public class PlanningTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(ORDER_ENTERPRISE_VIEW, componentCreator) {
+        return new CreatedOnDemandTab(ORDER_ENTERPRISE_VIEW,
+                "order-scheduling", componentCreator) {
             @Override
             protected void afterShowAction() {
 

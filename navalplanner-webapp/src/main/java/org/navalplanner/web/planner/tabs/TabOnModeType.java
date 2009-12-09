@@ -117,6 +117,11 @@ public class TabOnModeType implements ITab {
     }
 
     @Override
+    public String getCssClass() {
+        return getCurrentTab().getCssClass();
+    }
+
+    @Override
     public void hide() {
         beingShown = false;
         getCurrentTab().hide();

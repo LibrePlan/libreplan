@@ -52,4 +52,9 @@ public class TabProxy implements ITab {
         proxiedTab.show();
     }
 
+    @Override
+    public String getCssClass() {
+        return proxiedTab.getCssClass();
+    }
+
 }

@@ -25,6 +25,8 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.security.SecurityUtils;
@@ -255,11 +257,14 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     private Button currentOne = null;
 
     @Override
-    public Object addMenuItem(String name,
+    public Object addMenuItem(String name, String cssClass,
             org.zkoss.zk.ui.event.EventListener eventListener) {
         Vbox insertionPoint = getRegisteredItemsInsertionPoint();
         Button button = new Button();
         button.setLabel(_(name));
+        if (cssClass != null) {
+            toggleDomainCssClass(cssClass, button);
+        }
         setDeselectedClass(button);
         button.addEventListener(Events.ON_CLICK, doNotCallTwice(button,
                 eventListener));
@@ -274,9 +279,24 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     @Override
-    public void renameMenuItem(Object key, String name) {
+    public void renameMenuItem(Object key, String name, String cssClass) {
         Button button = (Button) key;
         button.setLabel(name);
+        if (cssClass != null) {
+            toggleDomainCssClass(cssClass, button);
+        }
+    }
+
+    private void toggleDomainCssClass(String cssClass, Button button) {
+        Matcher matcher = perspectiveCssClass
+                .matcher(button.getSclass() == null ? "" : button.getSclass());
+        String previousPerspectiveClass;
+        if (matcher.find()) {
+            previousPerspectiveClass = matcher.group();
+        } else {
+            previousPerspectiveClass = "";
+        }
+        button.setSclass(previousPerspectiveClass + " " + cssClass);
     }
 
     @Override
@@ -287,11 +307,32 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     private void setSelectClass(final Button button) {
-        button.setSclass("perspective-active");
+        togglePerspectiveClassTo(button, "perspective-active");
     }
 
     private void setDeselectedClass(Button button) {
-        button.setSclass("perspective");
+        togglePerspectiveClassTo(button, "perspective");
+    }
+
+    private static final Pattern perspectiveCssClass = Pattern
+    .compile("\\bperspective(-\\w+)?\\b");
+
+    private void togglePerspectiveClassTo(final Button button,
+            String newPerspectiveClass) {
+        button
+                .setSclass(togglePerspectiveCssClass(newPerspectiveClass,
+                        button));
+    }
+
+    private String togglePerspectiveCssClass(String newPerspectiveClass,
+            Button button) {
+        String sclass = button.getSclass();
+        if (!perspectiveCssClass.matcher(sclass).find()) {
+            return newPerspectiveClass + " " + sclass;
+        } else {
+            Matcher matcher = perspectiveCssClass.matcher(sclass);
+            return matcher.replaceAll(newPerspectiveClass);
+        }
     }
 
     private EventListener doNotCallTwice(final Button button,
@@ -324,7 +365,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             return;
         }
         if (currentOne != null) {
-            currentOne.setSclass("sub_menu");
             setDeselectedClass(currentOne);
         }
         setSelectClass(button);

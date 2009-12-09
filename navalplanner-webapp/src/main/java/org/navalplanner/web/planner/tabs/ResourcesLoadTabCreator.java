@@ -98,7 +98,7 @@ public class ResourcesLoadTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(ORDER_RESOURCE_LOAD_VIEW,
+        return new CreatedOnDemandTab(ORDER_RESOURCE_LOAD_VIEW, "order-load",
                 componentCreator) {
 
             @Override
@@ -132,7 +132,8 @@ public class ResourcesLoadTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(RESOURCE_LOAD_VIEW, componentCreator) {
+        return new CreatedOnDemandTab(RESOURCE_LOAD_VIEW, "company-load",
+                componentCreator) {
             @Override
             protected void afterShowAction() {
                 resourceLoadControllerGlobal.filterBy(null);

@@ -26,6 +26,12 @@ public interface ITab {
 
     String getName();
 
+    /**
+     * the css class is optional so it can be null
+     * @return
+     */
+    String getCssClass();
+
     void addToParent(Component parent);
 
     void show();

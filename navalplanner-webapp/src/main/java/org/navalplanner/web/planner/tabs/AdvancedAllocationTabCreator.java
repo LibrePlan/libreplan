@@ -233,6 +233,7 @@ public class AdvancedAllocationTabCreator {
 
         };
         return new CreatedOnDemandTab(ADVANCED_ALLOCATION_VIEW,
+                "advanced-allocation",
                 advanceAllocationComponentCreator) {
             private boolean firstTime = true;
 
