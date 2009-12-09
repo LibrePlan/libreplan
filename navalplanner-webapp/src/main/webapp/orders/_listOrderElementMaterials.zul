@@ -28,10 +28,10 @@
             .values();
     </zscript>
 
-    <tabbox mold="accordion-lite">
+    <tabbox mold="accordion">
         <tabs>
-            <tab id="tbAssignedMaterials" label="${i18n:_('Materials')}" image="common/img/ico_bajar.png"/>
-            <tab label="${i18n:_('Material search')}" image="common/img/ico_bajar.png"/>
+            <tab id="tbAssignedMaterials" label="${i18n:_('Materials')}" image="common/img/collapse.gif"/>
+            <tab label="${i18n:_('Material search')}" image="common/img/collapse.gif"/>
         </tabs>
         <tabpanels>
             <tabpanel>
