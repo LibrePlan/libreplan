@@ -18,6 +18,7 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -185,6 +186,10 @@ public class CriterionsController extends GenericForwardComposer {
     private void validateStartDate(Component comp, Object value){
         CriterionSatisfactionDTO criterionSatisfactionDTO =
             (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
+        if(value == null) {
+            throw new WrongValueException(comp,
+                    _("Start date cannot be null"));
+        }
         if(!criterionSatisfactionDTO.isLessToEndDate((Date) value)){
             throw new WrongValueException(comp,
                 _("Start date is not valid, the new start date must be lower than the end date"));
@@ -378,5 +383,9 @@ public class CriterionsController extends GenericForwardComposer {
     private Bandbox getBandType(Row row) {
         return (Bandbox)((Hbox) row.getChildren().get(0))
                 .getChildren().get(0);
+    }
+
+    public void validateConstraints() {
+        ConstraintChecker.isValid(self);
     }
 }

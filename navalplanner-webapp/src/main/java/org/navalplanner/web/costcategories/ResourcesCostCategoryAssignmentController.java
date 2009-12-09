@@ -30,6 +30,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -311,5 +312,9 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     public void setResource(Resource resource) {
         resourcesCostCategoryAssignmentModel.setResource(resource);
         Util.reloadBindings(listResourcesCostCategoryAssignments);
+    }
+
+    public void validateConstraints() {
+        ConstraintChecker.isValid(self);
     }
 }

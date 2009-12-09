@@ -33,6 +33,7 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.calendars.BaseCalendarEditionController;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -47,6 +48,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -137,6 +139,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void save() {
+        validateConstraints();
         try {
             if (baseCalendarEditionController != null) {
                 baseCalendarEditionController.save();
@@ -156,6 +159,26 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         } catch (ValidationException e) {
             messages.showInvalidValues(e);
         }
+    }
+
+    private void validateConstraints() {
+        Tab tab = (Tab) editWindow.getFellowIfAny("personalDataTab");
+        try {
+            validatePersonalDataTab();
+            tab = (Tab) editWindow.getFellowIfAny("assignedCriteriaTab");
+            criterionsController.validateConstraints();
+            tab = (Tab) editWindow.getFellowIfAny("costCategoryAssignmentTab");
+            resourcesCostCategoryAssignmentController.validateConstraints();
+            //TODO: check 'calendar' tab
+        }
+        catch(WrongValueException e) {
+            tab.setSelected(true);
+            throw e;
+        }
+    }
+
+    private void validatePersonalDataTab() {
+        ConstraintChecker.isValid(editWindow.getFellowIfAny("personalDataTabpanel"));
     }
 
     public void cancel() {

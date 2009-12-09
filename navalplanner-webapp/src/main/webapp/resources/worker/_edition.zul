@@ -26,15 +26,15 @@
 <window id="${arg.top_id}" title="${arg.title}">
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('Personal data')}"></tab>
-            <tab label="${i18n:_('Assigned criteria')}"></tab>
+            <tab id="personalDataTab" label="${i18n:_('Personal data')}"></tab>
+            <tab id="assignedCriteriaTab" label="${i18n:_('Assigned criteria')}"></tab>
             <tab visible="false" label="${i18n:_('Locations')}"></tab>
             <tab visible="false" label="${i18n:_('Work record')}"></tab>
             <tab label="${i18n:_('Calendar')}"></tab>
-            <tab label="${i18n:_('Cost category assignment')}"></tab>
+            <tab id="costCategoryAssignmentTab" label="${i18n:_('Cost category assignment')}"></tab>
         </tabs>
         <tabpanels>
-            <tabpanel>
+            <tabpanel id="personalDataTabpanel">
                 <grid fixedLayout="true">
                     <columns>
                         <column width="200px" />
@@ -53,7 +53,7 @@
                         </row>
                         <row>
                             <label value="${i18n:_('NIF')}" />
-                            <textbox value="@{controller.worker.nif}" />
+                            <textbox value="@{controller.worker.nif}" constraint="no empty"/>
                         </row>
                     </rows>
                 </grid>

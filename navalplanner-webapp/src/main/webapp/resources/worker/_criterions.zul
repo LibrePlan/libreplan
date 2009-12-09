@@ -26,6 +26,7 @@
                 <row self="@{each='criterionSatisfactionDTO'}" value="@{criterionSatisfactionDTO}">
                     <hbox>
                     <bandbox
+                        constraint="no empty"
                         visible ="@{criterionSatisfactionDTO.newObject}"
                         value = "@{criterionSatisfactionDTO.criterionAndType}">
                         <bandpopup>
