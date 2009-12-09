@@ -132,6 +132,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
         this.baseCalendar = getFromDB(baseCalendar).newCopy();
         forceLoad(this.baseCalendar);
+        forceLoadExceptionTypes();
     }
 
     @Override
@@ -139,7 +140,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         this.baseCalendar = baseCalendar;
     }
 
-    protected void forceLoad(BaseCalendar baseCalendar) {
+    public static void forceLoad(BaseCalendar baseCalendar) {
         for (CalendarData calendarData : baseCalendar.getCalendarDataVersions()) {
             calendarData.getHoursPerDay().size();
             if (calendarData.getParent() != null) {
@@ -148,7 +149,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         }
         baseCalendar.getExceptions().size();
         baseCalendar.getCalendarAvailabilities().size();
-        forceLoadExceptionTypes();
     }
 
     private void forceLoadExceptionTypes() {

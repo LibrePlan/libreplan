@@ -31,9 +31,6 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.CalendarAvailability;
-import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -48,6 +45,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AllocationResult;
@@ -152,7 +150,7 @@ public class AdvancedAllocationTabCreator {
         private void reattachResources() {
             for (Resource each : associatedResources) {
                 resourceDAO.reattach(each);
-                loadCalendar(each.getCalendar());
+                BaseCalendarModel.forceLoad(each.getCalendar());
                 loadDayAssignments(each.getAssignments());
             }
         }
@@ -160,18 +158,6 @@ public class AdvancedAllocationTabCreator {
         private void loadDayAssignments(List<DayAssignment> assignments) {
             for (DayAssignment each : assignments) {
                 Hibernate.initialize(each);
-            }
-        }
-
-        private void loadCalendar(ResourceCalendar calendar) {
-            calendar.getExceptions();
-            BaseCalendar current = calendar;
-            while (current.isDerived()) {
-                for (CalendarAvailability each : current
-                        .getCalendarAvailabilities()) {
-                    Hibernate.initialize(each);
-                }
-                current = calendar.getParent();
             }
         }
 
