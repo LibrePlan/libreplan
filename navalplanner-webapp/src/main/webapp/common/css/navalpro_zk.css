@@ -46,13 +46,6 @@ table {
     display: none;
 }
 
-/* Hide icon borders */
-.icono .z-button-tl, .icono .z-button-tm, .icono .z-button-tr,
-.icono .z-button-cl, .icono .z-button-cr,
-.icono .z-button-bl, .icono .z-button-bm, .icono .z-button-br {
-    display: none;
-}
-
 body .z-window-embedded .icono .z-button-cm,
 body .z-window-modal .icono .z-button-cm {
     color: #007bbe;
@@ -65,7 +58,7 @@ body .z-window-modal .icono .z-button-cm {
 .z-button {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 
@@ -94,20 +87,6 @@ body .z-window-modal .icono .z-button-cm {
 
 /* Global custom styles
 --------------------------------------------------- */
-
-/* Custom 3D background images */
-.z-button .z-button-tm, .z-button .z-button-bm {
-    background-image:url("../img/btn-x.gif");
-}
-
-.z-button .z-button-cl, .z-button .z-button-cr {
-    background-image:url("../img/btn-y.gif");
-}
-
-.z-button .z-button-tl, .z-button .z-button-tr,
-.z-button .z-button-bl, .z-button .z-button-br {
-    background-image:url("../img/btn-corner.gif");
-}
 
 table.z-button {
     table-layout: auto;
@@ -224,6 +203,7 @@ button.z-button {
 --------------------------------------------------- */
 .global-action.z-button {
     margin-top: 10px;
+    font-weight: bold;
 }
 
 .global-action.z-button .z-button-cm {
@@ -489,9 +469,11 @@ div.z-tree-footer-cnt, div.z-tree-cell-cnt, div.z-tree-col-cnt {
     padding-bottom: 0;
 }
 
-.z-textbox,.z-decimalbox,.z-intbox,.z-longbox,
+.z-textbox,.z-decimalbox,.z-intbox,.z-longbox, .z-combobox-inp,
 .z-doublebox, .z-datebox,  .z-datebox-inp, .z-datebox-focus .z-datebox-inp {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    padding-left: 2px;
 }
 
 .leftpanelgap .z-textbox,.leftpanelgap .z-decimalbox,.leftpanelgap .z-intbox,
