@@ -648,6 +648,15 @@ div.z-tree {
 
 .advancedallocationlayout .leftpanelgap input {
     height:19px;
+    width: 52px;
+}
+
+.advancedallocationlayout .leftpanelgap .hours {
+    width: 60px;
+}
+
+.advancedallocationlayout .leftpanelgap .name {
+    min-width: 200px;
 }
 
 

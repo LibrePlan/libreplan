@@ -28,7 +28,7 @@
             <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>
         <rows>
-            <row self="@{each='worker'}" value="@{worker}">
+            <row self="@{each='worker'}" value="@{worker}" onDoubleClick="controller.goToEditForm(self.value);">
                 <label value="@{worker.firstName}" />
                 <label value="@{worker.surname}" />
                 <label value="@{worker.nif}" />

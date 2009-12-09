@@ -47,7 +47,7 @@
                     splittable="true" autoscroll="true">
 
                     <borderlayout >
-                        <north border="0" height="0px" flex="true" collapsible="true">
+                        <north border="0" height="0px" flex="true" collapsible="true" autoscroll="true">
                         <vbox pack="center" align="center">
                             <!--  tree fixedLayout="false">
                                 <treecols sizable="false">

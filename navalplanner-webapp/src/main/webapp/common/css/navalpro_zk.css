@@ -199,7 +199,6 @@ button.z-button {
     padding: 2px 1px 1px 2px;
 }
 
-
 .sub_menu .z-button-cm {
     background-color: transparent !important;
     border: 0px;
@@ -220,13 +219,6 @@ button.z-button {
 .sub_menu.z-button td {
     background-image: none;
 }
-
-/*
-.plannerlayout .z-button-tl, .plannerlayout .z-button-tm, .plannerlayout .z-button-tr,
-.plannerlayout .z-button-cl, .plannerlayout .z-button-cr,
-.plannerlayout .z-button-bl, .plannerlayout .z-button-bm, .plannerlayout .z-button-br {
-    display: visible;
-}*/
 
 /* Global action button styles
 --------------------------------------------------- */
@@ -885,34 +877,58 @@ span.z-dottree-line {
     border: 0px;
 }
 
+/* ---- Perspectives ------ */
 .perspective, .perspective-active {
-    width:84px;
-    height:84px;
+    width: 84px;
+    height: 84px;
     margin: 0 0 4px 4px;
-    font-weight:normal;
+    font-weight: normal;
+    font-size: 10px;
+}
+
+.perspective .z-button-cm,
+.perspective-active .z-button-cm {
+    padding-top: 60px;
+    background-position: 18px 10px;
+    background-repeat: no-repeat;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
 }
 
 .perspective .z-button-cm {
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    background-image: none;
-    background-color: #d4e1ef;
+    border: 1px solid #FFFFFF;
+    background-color: #FFFFFF;
+}
+
+.perspective-active .z-button-cm,
+.perspective-active .z-button-cm:hover,
+.perspective-active .z-button-cm:active,
+.perspective .z-button-cm:hover,
+.perspective .z-button-cm:active {
+    border: 1px solid #CCCCCC;
+}
+
+.perspective-active .z-button-cm,
+.perspective-active .z-button-cm:hover,
+.perspective-active .z-button-cm:active,
+.perspective .z-button-cm:active {
+    background-color: #71B0D4;
+}
+
+.perspective .z-button-cm {
     color: #005782;
+    background-repeat: no-repeat;
 }
 
 .perspective-active .z-button-cm {
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    background-image: none;
-    background-color: #2a83b4;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
     color: #FFFFFF;
-    border-top: 2px solid #3f5917;
-    border-left: 2px solid #3f5917;
+    border-color:#006699 #DFF5FE #DFF5FE #006699;
 }
 
 .perspective .z-button-cm:hover {
-    background-color: #399bd4;
-    color: #FFFFFF;
+    background-color: #E6F2F9;
 }
 
 .perspectives-label {
@@ -923,6 +939,38 @@ span.z-dottree-line {
 .z-button.perspective-active .z-button-cm {
     white-space:normal;
 }
+
+.perspective.company-scheduling .z-button-cm,
+.perspective-active.company-scheduling  .z-button-cm {
+    background-image: url(../img/ico_company-scheduling.png);
+}
+.perspective.company-load .z-button-cm,
+.perspective-active.company-load .z-button-cm {
+    background-image: url(../img/ico_company-load.png);
+}
+.perspective.orders .z-button-cm,
+.perspective-active.orders .z-button-cm {
+    background-image: url(../img/ico_orders.png);
+}
+.perspective.order-scheduling .z-button-cm,
+.perspective-active.order-scheduling .z-button-cm {
+    background-image: url(../img/ico_order-scheduling.png);
+}
+.perspective.order-load .z-button-cm,
+.perspective-active.order-load .z-button-cm {
+    background-image: url(../img/ico_order-load.png);
+}
+.perspective.order-data .z-button-cm,
+.perspective-active.order-data .z-button-cm {
+    background-image: url(../img/ico_order-data.png);
+}
+.perspective.advanced-allocation .z-button-cm,
+.perspective-active.advanced-allocation .z-button-cm {
+    background-image: url(../img/ico_advanced-allocation.png);
+}
+
+
+/* End perspectives */
 
 .vertical-separator {
     display:none;
@@ -944,7 +992,6 @@ span.z-dottree-line {
 .orderslayout .z-north {
     border-bottom:1px solid #9ECAD8;
 }
-
 
 .orderelements-tab {
     overflow-x: auto;
@@ -1020,4 +1067,9 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 
 .advancedassignmentdetails .hours {
     min-width: 30px;
+}
+
+
+.function {
+    min-width: 90px;
 }
