@@ -285,8 +285,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void goToList() {
-        showWindow(listWindow);
         ordersListCached = null;
+        showWindow(listWindow);
     }
 
     public void reloadHoursGroupOrder() {
