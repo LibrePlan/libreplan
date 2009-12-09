@@ -662,7 +662,7 @@ div.z-grid {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 12px;
     border: solid 1px #000000;
-    padding: 5px 10px;
+    padding: 5px;
     background-color: #FFFFFF;
 }
 
@@ -974,7 +974,7 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 }
 
 .earned-parameter-column {
-    width: 62px;
+    width: 102px;
 }
 
 .z-panel-body {

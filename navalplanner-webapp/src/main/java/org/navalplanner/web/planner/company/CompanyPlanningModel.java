@@ -203,7 +203,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         Tabs chartTabs = new Tabs();
         chartTabs.appendChild(new Tab(_("Load")));
         chartTabs.appendChild(new Tab(_("Earned value")));
-        chartTabs.appendChild(new Tab(_("Indicators")));
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setWidth("124px");
@@ -220,34 +219,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         Tabpanel earnedValueChartPannel = new Tabpanel();
         appendEarnedValueChartAndLegend(earnedValueChartPannel,
-                chartEarnedValueTimeplot);
+                chartEarnedValueTimeplot, earnedValueChartFiller);
         chartTabpanels.appendChild(earnedValueChartPannel);
 
-        Tabpanel indicatorsChartPannel = new Tabpanel();
-        appendIndicators(indicatorsChartPannel, earnedValueChartFiller);
-        chartTabpanels.appendChild(indicatorsChartPannel);
-
         chartComponent.appendChild(chartTabpanels);
-    }
-
-    private void appendIndicators(Tabpanel indicatorsChartPannel,
-            CompanyEarnedValueChartFiller earnedValueChartFiller) {
-        Vbox vbox = new Vbox();
-
-        Hbox dateHbox = new Hbox();
-        dateHbox.appendChild(new Label(_("Select date:")));
-
-        LocalDate date = new LocalDate();
-        Datebox datebox = new Datebox(date.toDateTimeAtStartOfDay().toDate());
-        dateHbox.appendChild(datebox);
-
-        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox,
-                datebox);
-        vbox.appendChild(dateHbox);
-
-        vbox.appendChild(getIndicatorsTable(earnedValueChartFiller, date));
-
-        indicatorsChartPannel.appendChild(vbox);
     }
 
     private void appendEventListenerToDateboxIndicators(
@@ -261,70 +236,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 org.zkoss.zk.ui.Component child = vbox
                         .getFellow("indicatorsTable");
                 vbox.removeChild(child);
-                vbox.appendChild(getIndicatorsTable(earnedValueChartFiller,
-                        date));
+                vbox.appendChild(getEarnedValueChartConfigurableLegend(
+                        earnedValueChartFiller, date));
             }
 
         });
-    }
-
-    private org.zkoss.zk.ui.Component getIndicatorsTable(
-            CompanyEarnedValueChartFiller earnedValueChartFiller, LocalDate date) {
-        Hbox mainhbox = new Hbox();
-        mainhbox.setId("indicatorsTable");
-        mainhbox.setAlign("center");
-        mainhbox.setPack("center");
-        mainhbox.setClass("legend-container");
-
-        Vbox vbox = new Vbox();
-        vbox.setClass("legend");
-
-        Vbox column1 = new Vbox();
-        Vbox column2 = new Vbox();
-        column1.setSclass("earned-indicator-column");
-        column2.setSclass("earned-indicator-column");
-
-        int columnNumber = 0;
-
-        for (EarnedValueType indicator : EarnedValueType.values()) {
-            Label indicatorLabel = new Label(indicator.getAcronym());
-            indicatorLabel.setTooltiptext(indicator.getName());
-            indicatorLabel.setStyle("color: " + indicator.getColor());
-
-            BigDecimal value = earnedValueChartFiller.getIndicator(indicator,
-                    date);
-            String units = _("h");
-            if (indicator.equals(EarnedValueType.CPI)
-                    || indicator.equals(EarnedValueType.SPI)) {
-                value = value.multiply(new BigDecimal(100));
-                units = "%";
-            }
-            Label valueLabel = new Label(value.intValue() + " " + units);
-            valueLabel.setStyle("color: " + indicator.getColor());
-
-            Hbox hbox = new Hbox();
-            hbox.appendChild(indicatorLabel);
-            hbox.appendChild(valueLabel);
-
-            columnNumber = columnNumber + 1;
-            switch (columnNumber) {
-            case 1:
-                column1.appendChild(hbox);
-                break;
-            case 2:
-                column2.appendChild(hbox);
-                columnNumber = 0;
-            }
-        }
-
-        Hbox hbox = new Hbox();
-        hbox.appendChild(column1);
-        hbox.appendChild(column2);
-
-        vbox.appendChild(hbox);
-        mainhbox.appendChild(vbox);
-
-        return mainhbox;
     }
 
     private void appendLoadChartAndLegend(Tabpanel loadChartPannel,
@@ -351,10 +267,31 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private void appendEarnedValueChartAndLegend(
-            Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot) {
+            Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot,
+            CompanyEarnedValueChartFiller earnedValueChartFiller) {
+        Vbox vbox = new Vbox();
+        vbox.setClass("legend-container");
+        vbox.setAlign("center");
+        vbox.setPack("center");
+
+        Hbox dateHbox = new Hbox();
+        dateHbox.appendChild(new Label(_("Select date:")));
+
+        LocalDate date = new LocalDate();
+        Datebox datebox = new Datebox(date.toDateTimeAtStartOfDay().toDate());
+        dateHbox.appendChild(datebox);
+
+        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox,
+                datebox);
+        vbox.appendChild(dateHbox);
+
+        vbox.appendChild(getEarnedValueChartConfigurableLegend(
+                earnedValueChartFiller, date));
+
         Hbox hbox = new Hbox();
         hbox.setSclass("earned-value-chart");
-        hbox.appendChild(getEarnedValueChartConfigurableLegend());
+
+        hbox.appendChild(vbox);
 
         Div div = new Div();
         div.appendChild(chartEarnedValueTimeplot);
@@ -365,11 +302,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         earnedValueChartPannel.appendChild(hbox);
     }
 
-    private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend() {
+    private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend(
+            CompanyEarnedValueChartFiller earnedValueChartFiller, LocalDate date) {
         Hbox mainhbox = new Hbox();
-        mainhbox.setClass("legend-container");
-        mainhbox.setAlign("center");
-        mainhbox.setPack("center");
+        mainhbox.setId("indicatorsTable");
 
         Vbox vbox = new Vbox();
         vbox.setId("earnedValueChartConfiguration");
@@ -388,13 +324,27 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             checkbox.setAttribute("indicator", type);
             checkbox.setStyle("color: " + type.getColor());
 
+            BigDecimal value = earnedValueChartFiller.getIndicator(type,
+                    date);
+            String units = _("h");
+            if (type.equals(EarnedValueType.CPI)
+                    || type.equals(EarnedValueType.SPI)) {
+                value = value.multiply(new BigDecimal(100));
+                units = "%";
+            }
+            Label valueLabel = new Label(value.intValue() + " " + units);
+
+            Hbox hbox = new Hbox();
+            hbox.appendChild(checkbox);
+            hbox.appendChild(valueLabel);
+
             columnNumber = columnNumber + 1;
             switch (columnNumber) {
             case 1:
-                column1.appendChild(checkbox);
+                column1.appendChild(hbox);
                 break;
             case 2:
-                column2.appendChild(checkbox);
+                column2.appendChild(hbox);
                 columnNumber = 0;
             }
             earnedValueChartConfigurationCheckboxes.add(checkbox);
