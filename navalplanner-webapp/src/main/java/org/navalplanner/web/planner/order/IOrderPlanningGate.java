@@ -23,10 +23,15 @@ package org.navalplanner.web.planner.order;
 import org.navalplanner.business.orders.entities.Order;
 
 /**
- * This interface allows to go to the schedule of an {@link Order}
+ * This interface allows to go to the schedule and the details of an
+ * {@link Order}.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public interface IOrderPlanningGate {
 
-    public void goToScheduleOf(Order order);
+    void goToScheduleOf(Order order);
+
+    void goToOrderDetails(Order order);
+
 }

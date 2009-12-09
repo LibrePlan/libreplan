@@ -127,6 +127,13 @@ public class MultipleTabsPlannerController implements Composer,
                         mode.goToOrderMode(order);
                         getTabsRegistry().show(planningTab);
                     }
+
+                    @Override
+                    public void goToOrderDetails(Order order) {
+                        mode.goToOrderMode(order);
+                        getTabsRegistry().show(ordersTab);
+                    }
+
                 });
         final State<Void> typeChanged = typeChangedState();
         ITab advancedAllocation = AdvancedAllocationTabCreator.create(mode,

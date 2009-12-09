@@ -307,6 +307,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Runnable onUp;
 
     public void goToEditForm(Order order) {
+        planningControllerEntryPoints.goToOrderDetails(order);
+    }
+
+    public void initEdit(Order order) {
         orderModel.initEdit(order);
         showEditWindow(_("Edit order"));
     }

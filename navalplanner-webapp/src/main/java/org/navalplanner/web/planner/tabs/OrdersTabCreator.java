@@ -133,7 +133,7 @@ public class OrdersTabCreator {
                 breadcrumbs.appendChild(new Label(ORDER_ORDERS_VIEW));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 if (mode.isOf(ModeType.ORDER)) {
-                    orderCRUDController.goToEditForm(mode.getOrder());
+                    orderCRUDController.initEdit(mode.getOrder());
                     breadcrumbs
                             .appendChild(new Label(mode.getOrder().getName()));
                 }
