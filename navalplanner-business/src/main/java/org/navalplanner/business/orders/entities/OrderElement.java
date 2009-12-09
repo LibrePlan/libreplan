@@ -688,4 +688,16 @@ public abstract class OrderElement extends BaseEntity {
         return result;
     }
 
+    public Order getOrder() {
+        if (this instanceof Order) {
+            return (Order) this;
+        }
+
+        if (parent != null) {
+            return parent.getOrder();
+        }
+
+        return null;
+    }
+
 }
