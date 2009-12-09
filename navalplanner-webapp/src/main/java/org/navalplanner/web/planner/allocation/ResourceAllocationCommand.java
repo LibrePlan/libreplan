@@ -69,7 +69,7 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
 
     @Override
     public String getIcon() {
-        return null;
+        return "/common/img/ico_allocation.png";
     }
 
 

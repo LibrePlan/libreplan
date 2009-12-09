@@ -65,7 +65,7 @@ public class CalendarAllocationCommand implements ICalendarAllocationCommand {
 
     @Override
     public String getIcon() {
-        return null;
+        return "/common/img/ico_calendar.png";
     }
 
 }

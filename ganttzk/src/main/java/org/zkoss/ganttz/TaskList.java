@@ -286,7 +286,8 @@ public class TaskList extends XulElement implements AfterCompose {
             MenuBuilder<TaskComponent> menuBuilder = MenuBuilder.on(getPage(),
                     getTaskComponents());
             if (disabilityConfiguration.isAddingDependenciesEnabled()) {
-                menuBuilder.item("Add Dependency", null,
+                menuBuilder.item("Add Dependency",
+                        "/common/img/ico_dependency.png",
                         new ItemAction<TaskComponent>() {
 
                             @Override

@@ -101,7 +101,7 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
 
     @Override
     public String getIcon() {
-        return null;
+        return "/common/img/milestone.png";
     }
 
 }
