@@ -333,7 +333,12 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
             Treecell operationsTreecell = new Treecell();
 
-            Button createDerivedButton = new Button(_("Create derived"));
+            Button createDerivedButton = new Button();
+            createDerivedButton.setTooltiptext(_("Create derived"));
+            createDerivedButton.setSclass("icono");
+            createDerivedButton.setImage("/common/img/ico_derived1.png");
+            createDerivedButton.setHoverImage("/common/img/ico_derived.png");
+
             createDerivedButton.addEventListener(Events.ON_CLICK,
                     new EventListener() {
 
@@ -344,8 +349,12 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
             });
             operationsTreecell.appendChild(createDerivedButton);
+            Button createCopyButton = new Button();
+            createCopyButton.setSclass("icono");
+            createCopyButton.setTooltiptext(_("Create copy"));
+            createCopyButton.setImage("/common/img/ico_copy1.png");
+            createCopyButton.setHoverImage("/common/img/ico_copy.png");
 
-            Button createCopyButton = new Button(_("Create copy"));
             createCopyButton.addEventListener(Events.ON_CLICK,
                     new EventListener() {
 
@@ -357,7 +366,12 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             });
             operationsTreecell.appendChild(createCopyButton);
 
-            Button editButton = new Button(_("Edit"));
+            Button editButton = new Button();
+            editButton.setTooltiptext(_("Edit"));
+            editButton.setSclass("icono");
+            editButton.setImage("/common/img/ico_editar1.png");
+            editButton.setHoverImage("/common/img/ico_editar.png");
+
             editButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
@@ -368,7 +382,12 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             });
             operationsTreecell.appendChild(editButton);
 
-            Button removeButton = new Button(_("Remove"));
+            Button removeButton = new Button();
+            removeButton.setTooltiptext(_("Remove"));
+            removeButton.setSclass("icono");
+            removeButton.setImage("/common/img/ico_borrar1.png");
+            removeButton.setHoverImage("/common/img/ico_borrar.png");
+
             removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
@@ -379,6 +398,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             });
             if (baseCalendarModel.isDefaultCalendar(baseCalendar)) {
                 removeButton.setDisabled(true);
+                removeButton.setImage("/common/img/ico_borrar_out.png");
+                removeButton.setHoverImage("/common/img/ico_borrar_out.png");
             }
             operationsTreecell.appendChild(removeButton);
 

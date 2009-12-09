@@ -20,12 +20,16 @@
 
 <window id="${arg.top_id}" title="${arg.title}">
 
-<vbox>
+    <tabbox>
+        <tabs>
+            <tab label="${i18n:_('Calendar data')}"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
 
-    <vbox>
-        <grid>
+        <grid  fixedLayout="true" style="margin-bottom: 10px;">
             <columns>
-                <column/>
+                <column width="200px" />
                 <column/>
             </columns>
             <rows>
@@ -43,7 +47,6 @@
                 </row>
             </rows>
         </grid>
-    </vbox>
 
     <hbox>
 
@@ -226,6 +229,9 @@
         </tabbox>
 
     </hbox>
+    </tabpanel>
+    </tabpanels>
+    </tabbox>
 
     <hbox>
         <button onClick="calendarController.editionController.save();"
@@ -236,7 +242,5 @@
             label="${arg.cancel_button_label}"
             sclass="cancel-button global-action" />
     </hbox>
-
-</vbox>
 
 </window>
