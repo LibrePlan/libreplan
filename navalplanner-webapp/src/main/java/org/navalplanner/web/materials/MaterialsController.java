@@ -405,4 +405,9 @@ public class MaterialsController extends
         Util.reloadBindings(gridMaterials);
     }
 
+    public void clearSelectionCategoriesTree() {
+        categoriesTree.clearSelection();
+        Util.reloadBindings(gridMaterials);
+    }
+
 }

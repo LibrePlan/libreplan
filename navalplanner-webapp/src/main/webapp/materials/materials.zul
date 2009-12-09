@@ -48,11 +48,17 @@
                             <panel title="${i18n:_('Categories')}"
                                 border="normal">
                                 <panelchildren>
-                                    <textbox id="txtCategory" onOK="materialsController.addMaterialCategory()"
-                                        style="margin-bottom: 4px;" />
-                                    <button label="${i18n:_('Add')}"
-                                        onClick="materialsController.addMaterialCategory()" />
-                                    <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}" onClick="categoriesTree.clearSelection()" />
+                                    <hbox>
+                                        <textbox id="txtCategory" onOK="materialsController.addMaterialCategory()"
+                                            style="padding-bottom: 4px" />
+                                        <button label="${i18n:_('Add')}"
+                                            onClick="materialsController.addMaterialCategory()" />
+                                    </hbox>
+                                    <separator spacing="10px" orient="horizontal" />
+
+                                    <button label="${i18n:_('Unselect')}" onClick="materialsController.clearSelectionCategoriesTree()" />
+                                    <separator spacing="5px" orient="horizontal" />
+
                                     <tree id="categoriesTree" zclass="z-dottree"
                                         width="280px" rows="10" vflex="true" multiple="false"
                                         model="@{materialsController.materialCategories}"

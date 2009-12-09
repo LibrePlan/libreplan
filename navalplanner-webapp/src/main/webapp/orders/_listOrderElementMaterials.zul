@@ -40,8 +40,9 @@
                     <vbox>
                         <panel title="${i18n:_('Categories')}" border="normal">
                             <panelchildren>
-                                <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}"
-                                    onClick="assignedMaterialsController.clearSelectionCategoriesTree()" />
+                                <button label="${i18n:_('Unselect')}"
+                                        onClick="assignedMaterialsController.clearSelectionCategoriesTree()" />
+                                <separator spacing="5px" orient="horizontal" />
                                 <tree id="categoriesTree"
                                         fixedLayout="false"
                                         width="280px" rows="10" vflex="true" multiple="false"
@@ -140,12 +141,14 @@
 
                                 <!-- Search textbox -->
                                 <hbox>
-                                    <textbox id="txtSearchMaterial" width="250px" style="margin-top: 5px" />
-                                    <button label="${i18n:_('Search')}" style="margin-bottom: 5px"
+                                    <textbox id="txtSearchMaterial" width="250px" style="margin-top: 2px" />
+                                    <button label="${i18n:_('Search')}"
                                         onClick="assignedMaterialsController.searchMaterials()"/>
                                     <button label="${i18n:_('Assign')}"
                                         onClick="assignedMaterialsController.assignSelectedMaterials()" />
                                 </hbox>
+
+                                <separator spacing="10px" orient="horizontal" />
 
                                 <listbox id="lbFoundMaterials"
                                     multiple="true"
