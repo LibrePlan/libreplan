@@ -62,10 +62,10 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
 
         nodes = createGraphNodes();
 
-        forward(bop);
+        forward(bop, null);
         eop.updateLatestValues();
 
-        backward(eop);
+        backward(eop, null);
 
         return getTasksOnCriticalPath();
     }
@@ -116,7 +116,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
         return DependencyType.END_START;
     }
 
-    private void forward(Node<T> currentNode) {
+    private void forward(Node<T> currentNode, T previousTask) {
         T currentTask = currentNode.getTask();
         int earliestStart = currentNode.getEarliestStart();
         int earliestFinish = currentNode.getEarliestFinish();
@@ -128,6 +128,14 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
             int countStartStart = 0;
 
             for (T task : nextTasks) {
+                if (graph.isContainer(currentTask)) {
+                    if (graph.contains(currentTask, previousTask)) {
+                        if (graph.contains(currentTask, task)) {
+                            continue;
+                        }
+                    }
+                }
+
                 Node<T> node = nodes.get(task);
                 DependencyType dependencyType = getDependencyTypeEndStartByDefault(
                         currentTask, task);
@@ -148,7 +156,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
                     break;
                 }
 
-                forward(node);
+                forward(node, currentTask);
             }
 
             if (nextTasks.size() == countStartStart) {
@@ -187,7 +195,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
         return null;
     }
 
-    private void backward(Node<T> currentNode) {
+    private void backward(Node<T> currentNode, T nextTask) {
         T currentTask = currentNode.getTask();
         int latestStart = currentNode.getLatestStart();
         int latestFinish = currentNode.getLatestFinish();
@@ -199,6 +207,14 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
             int countEndEnd = 0;
 
             for (T task : previousTasks) {
+                if (graph.isContainer(currentTask)) {
+                    if (graph.contains(currentTask, nextTask)) {
+                        if (graph.contains(currentTask, task)) {
+                            continue;
+                        }
+                    }
+                }
+
                 Node<T> node = nodes.get(task);
                 DependencyType dependencyType = getDependencyTypeEndStartByDefault(
                         task, currentTask);
@@ -219,7 +235,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
                     break;
                 }
 
-                backward(node);
+                backward(node, currentTask);
             }
 
             if (previousTasks.size() == countEndEnd) {
