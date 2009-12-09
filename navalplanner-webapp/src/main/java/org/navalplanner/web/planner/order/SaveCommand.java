@@ -122,12 +122,26 @@ public class SaveCommand implements ISaveCommand {
     private void saveTasksToSave() {
         for (TaskElement taskElement : state.getTasksToSave()) {
             taskElementDAO.save(taskElement);
+            dontPoseAsTransient(taskElement);
             if (taskElement instanceof Task) {
                 saveTask(taskElement, (Task) taskElement);
             }
         }
         if (!state.getTasksToSave().isEmpty()) {
             updateRootTaskPosition();
+        }
+    }
+
+    // newly added TaskElement such as milestones must be called
+    // dontPoseAsTransientObjectAnymore
+    private void dontPoseAsTransient(TaskElement taskElement) {
+        if (taskElement.isNewObject()) {
+            taskElement.dontPoseAsTransientObjectAnymore();
+        }
+        if (!taskElement.isLeaf()) {
+            for (TaskElement each : taskElement.getChildren()) {
+                dontPoseAsTransient(each);
+            }
         }
     }
 
