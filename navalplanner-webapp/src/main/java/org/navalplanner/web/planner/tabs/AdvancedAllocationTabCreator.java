@@ -150,7 +150,7 @@ public class AdvancedAllocationTabCreator {
         private void reattachResources() {
             for (Resource each : associatedResources) {
                 resourceDAO.reattach(each);
-                BaseCalendarModel.forceLoad(each.getCalendar());
+                BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
                 loadDayAssignments(each.getAssignments());
             }
         }
