@@ -724,10 +724,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             SortedMap<LocalDate, Map<Resource, Integer>> resourceDayAssignmentsGrouped = groupDayAssignmentsByDayAndResource(resourcesDayAssignments);
 
             fillMaps(orderDayAssignmentsGrouped, resourceDayAssignmentsGrouped);
-            groupByWeekMaps();
+            convertAsNeededByZoomMaps();
 
             Plotinfo plotOrderLoad = createPlotinfo(
-                    convertToBigDecimal(mapOrderLoad), interval);
+                    convertToBigDecimal(convertAsNeededByZoom(mapOrderLoad)),
+                    interval);
             Plotinfo plotOrderOverload = createPlotinfo(
                     convertToBigDecimal(mapOrderOverload), interval);
             Plotinfo plotMaxCapacity = createPlotinfo(
@@ -769,12 +770,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             chart.setHeight("150px");
         }
 
-        private void groupByWeekMaps() {
-            mapOrderLoad = groupByWeek(mapOrderLoad);
-            mapOrderOverload = groupByWeek(mapOrderOverload);
-            mapMaxCapacity = groupByWeek(mapMaxCapacity);
-            mapOtherLoad = groupByWeek(mapOtherLoad);
-            mapOtherOverload = groupByWeek(mapOtherOverload);
+        private void convertAsNeededByZoomMaps() {
+            mapOrderLoad = convertAsNeededByZoom(mapOrderLoad);
+            mapOrderOverload = convertAsNeededByZoom(mapOrderOverload);
+            mapMaxCapacity = convertAsNeededByZoom(mapMaxCapacity);
+            mapOtherLoad = convertAsNeededByZoom(mapOtherLoad);
+            mapOtherOverload = convertAsNeededByZoom(mapOtherOverload);
         }
 
         private void fillMaps(
