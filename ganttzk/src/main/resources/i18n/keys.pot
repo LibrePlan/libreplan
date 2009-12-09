@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-10 19:41 +0100\n"
+"POT-Creation-Date: 2009-12-09 12:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,18 +16,56 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:104
-msgid "100%"
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:35
+msgid "Show all labels"
 msgstr ""
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:99
-msgid "0% - 100%"
-msgstr ""
-
-#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:94
-msgid "Assignation percentage"
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:38
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:14
+msgid "Zoom decrease"
 msgstr ""
 
 #: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:109
+msgid "100%"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:104
+msgid "0% - 100%"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:16
+msgid "Filter"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:36
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:12
+msgid "Zoom increase"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:99
+msgid "Assignation percentage"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:32
+msgid "Critical path"
+msgstr ""
+
+#: /home/jaragunde/projects/xestion-producion/ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:147
+msgid "increasing zoom"
+msgstr ""
+
+#: /home/jaragunde/projects/xestion-producion/ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:164
+msgid "decreasing zoom"
+msgstr ""
+
+#: /home/jaragunde/projects/xestion-producion/ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:345
+msgid "Hide critical path"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:114
 msgid "+ 100%"
+msgstr ""
+
+#: /home/jaragunde/projects/xestion-producion/ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:340
+msgid "Show critical path"
 msgstr ""
