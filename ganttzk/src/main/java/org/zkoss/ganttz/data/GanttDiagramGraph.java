@@ -392,8 +392,8 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         for (Task task : graph.vertexSet()) {
             int dependencies = graph.inDegreeOf(task);
             if ((dependencies == 0)
-                    || (dependencies == getNumberOfDependenciesByType(task,
-                            DependencyType.END_END))) {
+                    || (dependencies == getNumberOfIncomingDependenciesByType(
+                            task, DependencyType.END_END))) {
                 tasks.add(task);
             }
         }
@@ -435,8 +435,8 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         for (Task task : graph.vertexSet()) {
             int dependencies = graph.outDegreeOf(task);
             if ((dependencies == 0)
-                    || (dependencies == getNumberOfDependenciesByType(task,
-                            DependencyType.START_START))) {
+                    || (dependencies == getNumberOfOutgoingDependenciesByType(
+                            task, DependencyType.START_START))) {
                 tasks.add(task);
             }
         }
@@ -444,7 +444,18 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         return tasks;
     }
 
-    private int getNumberOfDependenciesByType(Task task,
+    private int getNumberOfIncomingDependenciesByType(Task task,
+            DependencyType dependencyType) {
+        int count = 0;
+        for (Dependency dependency : graph.incomingEdgesOf(task)) {
+            if (dependency.getType().equals(dependencyType)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int getNumberOfOutgoingDependenciesByType(Task task,
             DependencyType dependencyType) {
         int count = 0;
         for (Dependency dependency : graph.outgoingEdgesOf(task)) {
