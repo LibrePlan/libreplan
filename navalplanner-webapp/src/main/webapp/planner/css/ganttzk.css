@@ -276,8 +276,7 @@ min-width:200px;
 
 #watermark .timetracker_column_today.timetracker_column_deadline,
 #watermark .timetracker_column_deadline.timetracker_column_today  {
-    background-image:url(/navalplanner-webapp/zkau/web/ganttz/img/watermark_today.png),
-    url("/navalplanner-webapp/zkau/web/ganttz/img/watermark_deadline.png");
+    background-image: url("/navalplanner-webapp/zkau/web/ganttz/img/watermark_deadline.png");
 }
 
 /* Background image for current day vertical line */

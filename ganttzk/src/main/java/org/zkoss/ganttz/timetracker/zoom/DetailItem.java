@@ -92,12 +92,14 @@ public final class DetailItem {
     }
 
     public void markDeadlineDay(DateTime deadline) {
-        if (this.startDate.isBefore(deadline) && this.endDate.isAfter(deadline)) {
+        if (!this.startDate.isAfter(deadline)
+                && !this.endDate.isBefore(deadline)) {
             int offsetInPx = Math.round((((float) Days.daysBetween(
                     this.startDate, deadline).getDays()) / ((float) Days
                     .daysBetween(this.startDate, this.endDate).getDays()))
                     * this.size);
-            this.markDeadlineDay(offsetInPx);
+            // Management of left border case for current line format
+            this.markDeadlineDay(Math.min((this.size - 6), offsetInPx));
         }
     }
 
@@ -163,8 +165,7 @@ public final class DetailItem {
         String offset = "0px";
         if (getCurrentDayOffset() != 0) {
             if (getDeadlineOffset() != 0) {
-                offset = getCurrentDayOffset() + "px," + getDeadlineOffset()
-                        + "px";
+                offset = getDeadlineOffset() + "px";
             } else {
                 offset = getCurrentDayOffset() + "px";
             }
