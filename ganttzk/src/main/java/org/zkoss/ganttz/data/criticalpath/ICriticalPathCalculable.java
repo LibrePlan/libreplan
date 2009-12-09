@@ -48,4 +48,8 @@ public interface ICriticalPathCalculable<T extends ITaskFundamentalProperties> {
 
     List<T> getTasks();
 
+    boolean isContainer(T task);
+
+    boolean contains(T container, T task);
+
 }

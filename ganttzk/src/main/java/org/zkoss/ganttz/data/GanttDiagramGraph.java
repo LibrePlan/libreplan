@@ -455,4 +455,17 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         return count;
     }
 
+    @Override
+    public boolean isContainer(Task task) {
+        return task.isContainer();
+    }
+
+    @Override
+    public boolean contains(Task container, Task task) {
+        if (container.isContainer()) {
+            return container.getTasks().contains(task);
+        }
+        return false;
+    }
+
 }
