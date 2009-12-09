@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 
@@ -33,12 +35,18 @@ import org.zkoss.ganttz.data.DependencyType;
  */
 public class DomainDependency<T> {
 
+    private static final Log LOG = LogFactory.getLog(DomainDependency.class);
+
     public static <T> List<Dependency> toDependencies(
             IDomainAndBeansMapper<T> mapper,
             Collection<DomainDependency<T>> dependencies) {
         List<Dependency> result = new ArrayList<Dependency>();
         for (DomainDependency<T> domainDependency : dependencies) {
-            result.add(domainDependency.toDependency(mapper));
+            try {
+                result.add(domainDependency.toDependency(mapper));
+            } catch (Exception e) {
+                LOG.error("error creating dependency from domainDependency", e);
+            }
         }
         return result;
     }
