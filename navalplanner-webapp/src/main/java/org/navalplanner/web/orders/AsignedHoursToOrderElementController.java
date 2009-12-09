@@ -24,9 +24,11 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Progressmeter;
+import org.zkoss.zul.Vbox;
 
 /**
  * Controller for show the asigned hours of the selected order element<br />
@@ -36,6 +38,8 @@ public class AsignedHoursToOrderElementController extends
         GenericForwardComposer {
 
     private IAsignedHoursToOrderElementModel asignedHoursToOrderElementModel;
+
+    private Vbox orderElementHours;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -72,6 +76,11 @@ public class AsignedHoursToOrderElementController extends
     public void openWindow(IOrderElementModel orderElementModel) {
         setOrderElementModel(orderElementModel);
         asignedHoursToOrderElementModel.initOrderElement(getOrderElement());
+
+        if (orderElementHours != null) {
+            Util.reloadBindings(orderElementHours);
+        }
+
         viewPercentage();
     }
 
