@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz;
 
+import static org.zkoss.ganttz.i18n.I18nHelper._;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -190,8 +192,8 @@ public class DependencyList extends XulElement implements AfterCompose {
     private Menupopup getContextMenu() {
         if (contextMenu == null) {
             MenuBuilder<DependencyComponent> contextMenuBuilder = MenuBuilder
-                    .on(getPage(), getDependencyComponents()).item("Erase",
-                            null,
+                    .on(getPage(), getDependencyComponents()).item(_("Erase"),
+                            "/common/img/ico_borrar.png",
                             new ItemAction<DependencyComponent>() {
                                 @Override
                                 public void onEvent(
@@ -201,15 +203,16 @@ public class DependencyList extends XulElement implements AfterCompose {
                                             .removeDependency(choosen.getDependency());
                                 }
                             });
-            contextMenuBuilder.item("Set End-Start", null,
+            contextMenuBuilder.item(_("Set End-Start"), null,
                     new ChangeTypeAction(
                     DependencyType.END_START));
 
-            contextMenuBuilder.item("Set Start-Start", null,
+            contextMenuBuilder.item(_("Set Start-Start"), null,
                     new ChangeTypeAction(
                     DependencyType.START_START));
 
-            contextMenuBuilder.item("Set End-End", null, new ChangeTypeAction(
+            contextMenuBuilder.item(_("Set End-End"), null,
+                    new ChangeTypeAction(
                     DependencyType.END_END));
 
             contextMenu = contextMenuBuilder.create();

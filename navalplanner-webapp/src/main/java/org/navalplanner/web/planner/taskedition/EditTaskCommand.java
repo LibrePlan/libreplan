@@ -81,7 +81,7 @@ public class EditTaskCommand implements IEditTaskCommand {
 
     @Override
     public String getIcon() {
-        return null;
+        return "/common/img/ico_editar.png";
     }
 
 }

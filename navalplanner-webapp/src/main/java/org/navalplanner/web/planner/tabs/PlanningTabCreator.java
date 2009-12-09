@@ -117,7 +117,7 @@ public class PlanningTabCreator {
 
                     @Override
                     public String getIcon() {
-                        return null;
+                        return "/common/img/ico_planificador.png";
                     }
                 };
                 commands.add(scheduleCommand);
