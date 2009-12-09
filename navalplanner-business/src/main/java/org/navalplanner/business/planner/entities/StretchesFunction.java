@@ -94,9 +94,6 @@ public class StretchesFunction extends AssignmentFunction {
         public void apply(ResourceAllocation<?> resourceAllocation,
                 LocalDate allocationStart, LocalDate allocationEnd,
                 int totalHours) {
-            if (loadProportion.signum() == 0) {
-                return;
-            }
             resourceAllocation.withPreviousAssociatedResources()
                               .onInterval(getStartFor(allocationStart),
                                       getEndFor(allocationEnd))

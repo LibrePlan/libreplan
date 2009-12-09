@@ -72,6 +72,8 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
 
     private Task task;
 
+    private Date taskEndDate;
+
     private StretchesFunction originalStretchesFunction;
 
     @Autowired
@@ -93,6 +95,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
 
             this.task = task;
             forceLoadTask();
+            this.taskEndDate = task.getEndDate();
         }
     }
 
@@ -184,17 +187,36 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     @Override
     public void setStretchDate(Stretch stretch, Date date)
             throws IllegalArgumentException {
-        if ((date.compareTo(task.getStartDate()) < 0)
-                || (date.compareTo(task.getEndDate()) > 0)) {
+        if (date.compareTo(task.getStartDate()) < 0) {
             throw new IllegalArgumentException(
-                    _("Stretch date should be between task dates"));
+                    _("Stretch date should be greater or equals than task start date"));
         }
 
         stretch.setDate(new LocalDate(date));
 
-        long stretchDate = date.getTime();
+        if ((date.compareTo(taskEndDate) > 0)
+                || (stretch.getAmountWorkPercentage().compareTo(BigDecimal.ONE) == 0)) {
+            taskEndDate = date;
+            recalculateStretchesPercentages();
+        } else {
+            calculatePercentage(stretch);
+        }
+    }
+
+    private void recalculateStretchesPercentages() {
+        List<Stretch> stretches = stretchesFunction.getStretches();
+        if (!stretches.isEmpty()) {
+            for (Stretch stretch : stretches) {
+                calculatePercentage(stretch);
+            }
+        }
+    }
+
+    private void calculatePercentage(Stretch stretch) {
+        long stretchDate = stretch.getDate().toDateTimeAtStartOfDay().toDate()
+                .getTime();
         long startDate = task.getStartDate().getTime();
-        long endDate = task.getEndDate().getTime();
+        long endDate = taskEndDate.getTime();
 
         // (stretchDate - startDate) / (endDate - startDate)
         BigDecimal lengthPercenage = (new BigDecimal(stretchDate - startDate)
@@ -209,7 +231,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         stretch.setLengthPercentage(lengthPercentage);
 
         long startDate = task.getStartDate().getTime();
-        long endDate = task.getEndDate().getTime();
+        long endDate = taskEndDate.getTime();
 
         // startDate + (percentage * (endDate - startDate))
         long stretchDate = startDate + lengthPercentage.multiply(
