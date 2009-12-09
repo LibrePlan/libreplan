@@ -745,7 +745,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
                     descriptionField.setFieldName(null);
                     throw new WrongValueException(
                             comp,
-                            _("A description field of the same name already exist."));
+                            _("A description field of the same name already exists."));
                 }
             }
         };

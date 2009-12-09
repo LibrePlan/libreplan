@@ -26,7 +26,7 @@ criterionRequirementsController = new org.navalplanner.web.orders.AssignedCriter
 </zscript>
 <vbox id="${arg.id}"
     apply="${criterionRequirementsController}">
-<panel title="${i18n:_('Assigned Criterions Requirement')}" border="normal"
+<panel title="${i18n:_('Assigned Criterion Requirements')}" border="normal"
     style="overflow:auto" width="99%">
     <panelchildren>
         <hbox align="center">

@@ -135,7 +135,7 @@ public final class CriterionConverter {
 
         if (value == null) {
             throw new RuntimeException(_("Unable to convert {0} " +
-                 " value to {1} type", resource.toString(),
+                 "value to {1} type", resource.toString(),
                  ResourceEnumDTO.class.getName()));
         } else {
             return value;

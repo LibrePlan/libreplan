@@ -88,7 +88,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void cancel() throws InterruptedException {
         configurationModel.cancel();
-        Messagebox.show(_("Changes has been canceled"), _("Information"),
+        Messagebox.show(_("Changes have been canceled"), _("Information"),
                 Messagebox.OK, Messagebox.INFORMATION);
         reloadWindow();
     }

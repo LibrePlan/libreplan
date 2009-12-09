@@ -164,7 +164,7 @@
                             <listheader label="${i18n:_('Name')}" />
                             <listheader label="${i18n:_('Parent')}" />
                             <listheader label="${i18n:_('Valid from')}" />
-                            <listheader label="${i18n:_('Expiring date')}" />
+                            <listheader label="${i18n:_('Expiry date')}" />
                             <listheader label="${i18n:_('Summary')}" />
                             <listheader label="${i18n:_('Operations')}" />
                         </listhead>
@@ -211,7 +211,7 @@
                     itemRenderer="@{calendarController.editionController.calendarAvailabilityRenderer}">
                     <listhead>
                         <listheader label="${i18n:_('Valid from')}" />
-                        <listheader label="${i18n:_('Expiration date')}" />
+                        <listheader label="${i18n:_('Expiry date')}" />
                         <listheader label="${i18n:_('Operations')}" />
                     </listhead>
                 </listbox>

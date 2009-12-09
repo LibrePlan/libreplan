@@ -443,7 +443,7 @@ class FormBinder {
 
     public void markThereisAlreadyAssignmentWith(Set<Criterion> criterions) {
         messagesForUser.showMessage(Level.ERROR, _(
-                "for criterions {0} already exists an allocation",
+                "already exists an allocation for criteria {0}",
                 ResourceLoadModel.getName(criterions)));
     }
 

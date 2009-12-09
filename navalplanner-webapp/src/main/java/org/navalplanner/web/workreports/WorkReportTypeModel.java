@@ -354,7 +354,7 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
         getWorkReportType().setName(name);
         if (!getWorkReportType().checkConstraintUniqueWorkReportTypeName()) {
             throw new IllegalArgumentException(
-                    _("Exist other workReportType with the same name."));
+                    _("There exists other workReportType with the same name."));
         }
     }
 

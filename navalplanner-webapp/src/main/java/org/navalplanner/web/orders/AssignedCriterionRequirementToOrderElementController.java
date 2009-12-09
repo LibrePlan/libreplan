@@ -231,7 +231,7 @@ setValidCriterionRequirementWrapper(requirement, true);
         try {
             int status = Messagebox
                     .show(
-                            _("You are sure of change the resource type. You will lose the criterions with different resource type."),
+                            _("Are you sure of changing the resource type? You will lose the criterions with different resource type."),
                             "Question", Messagebox.OK | Messagebox.CANCEL,
                             Messagebox.QUESTION);
 
