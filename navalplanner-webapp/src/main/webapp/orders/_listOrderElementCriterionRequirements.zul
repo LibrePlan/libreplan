@@ -19,21 +19,26 @@
 -->
 
 <?component name="listHoursGroupCriterionRequirements" inline="true" macroURI="_listHoursGroupCriterionRequirement.zul"?>
+<zk>
+<zscript><![CDATA[
+criterionRequirementsController = new org.navalplanner.web.orders.AssignedCriterionRequirementToOrderElementController();
+]]>
+</zscript>
 <vbox id="${arg.id}"
-    apply="org.navalplanner.web.orders.AssignedCriterionRequirementToOrderElementController">
+    apply="${criterionRequirementsController}">
 <panel title="${i18n:_('Assigned Criterions Requirement')}" border="normal"
     style="overflow:auto" width="99%">
     <panelchildren>
         <hbox align="center">
                 <separator bar="false" spacing="40px" orient="horizontal"/>
                 <separator bar="false" spacing="20px" orient="vertical"/>
-                <button onClick="assignedCriterionRequirementController.addCriterionRequirementWrapper();"
+                <button onClick="criterionRequirementsController.addCriterionRequirementWrapper();"
                     label="${i18n:_('Add criterion requirement')}" />
                 <separator bar="false" spacing="40px" orient="vertical"/>
         </hbox>
         <newdatasortablegrid id="listingRequirements" mold="paging"
             pageSize="4" fixedLayout="true"
-            model="@{assignedCriterionRequirementController.criterionRequirementWrappers}">
+            model="@{criterionRequirementsController.criterionRequirementWrappers}">
             <columns>
                 <newdatasortablecolumn label="${i18n:_('Criterion name')}" sort="auto(criterionAndType)" sortDirection="ascending"/>
                 <newdatasortablecolumn label="${i18n:_('Type')}" sort="auto(type)" width="100px" align="center"/>
@@ -47,8 +52,8 @@
                         value = "@{criterionRequirementWrapper.criterionAndType}">
                         <bandpopup>
                                 <listbox width="500px" height="150px" fixedLayout="true"
-                                model="@{assignedCriterionRequirementController.criterionWithItsTypes}"
-                                onSelect="assignedCriterionRequirementController.selectCriterionAndType(self.selectedItem,
+                                model="@{criterionRequirementsController.criterionWithItsTypes}"
+                                onSelect="criterionRequirementsController.selectCriterionAndType(self.selectedItem,
                                     self.parent.parent,self.parent.parent.parent.parent.value);">
                                 <listhead>
                                     <listheader label="Type" />
@@ -71,15 +76,15 @@
                             sclass="icono" image="/common/img/ico_borrar1.png"
                             hoverImage="/common/img/ico_borrar.png"
                             tooltiptext="${i18n:_('Delete')}"
-                            onClick="assignedCriterionRequirementController.remove(self.parent.parent.value);">
+                            onClick="criterionRequirementsController.remove(self.parent.parent.value);">
                         </button>
                         <button visible = "@{criterionRequirementWrapper.indirectInvalid}"
                             label = "${i18n:_('Validate')}"
-                            onClick = "assignedCriterionRequirementController.validate(self.parent.parent.value);">
+                            onClick = "criterionRequirementsController.validate(self.parent.parent.value);">
                         </button>
                         <button visible = "@{criterionRequirementWrapper.indirectValid}"
                             label = "${i18n:_('Invalidate')}"
-                            onClick = "assignedCriterionRequirementController.invalidate(self.parent.parent.value);">
+                            onClick = "criterionRequirementsController.invalidate(self.parent.parent.value);">
                         </button>
                     </hbox>
                 </row>
@@ -96,13 +101,13 @@
                 <separator bar="false" spacing="40px" orient="horizontal"/>
                 <separator bar="false" spacing="20px" orient="vertical"/>
                 <intbox id="orderElementTotalHours"
-                    visible = "@{assignedCriterionRequirementController.editableHoursGroup}"
-                    value = "@{assignedCriterionRequirementController.orderElement.workHours}"
-                    onChange="assignedCriterionRequirementController.changeTotalHours();"
-                    readonly = "@{assignedCriterionRequirementController.readOnly}"
-                    constraint = "@{assignedCriterionRequirementController.validateTotalHours}"/>
-                <label value = "@{assignedCriterionRequirementController.orderElement.workHours}"
-                       visible = "@{assignedCriterionRequirementController.readOnly}" />
+                    visible = "@{criterionRequirementsController.editableHoursGroup}"
+                    value = "@{criterionRequirementsController.orderElement.workHours}"
+                    onChange="criterionRequirementsController.changeTotalHours();"
+                    readonly = "@{criterionRequirementsController.readOnly}"
+                    constraint = "@{criterionRequirementsController.validateTotalHours}"/>
+                <label value = "@{criterionRequirementsController.orderElement.workHours}"
+                       visible = "@{criterionRequirementsController.readOnly}" />
                 <separator bar="false" spacing="20px" orient="vertical"/>
         </hbox>
         </panelchildren>
@@ -114,11 +119,11 @@
 
 <!-- List Hours Groups in OrdeLineGroup -->
 <panel title="${i18n:_('Hours group')}"
-    visible = "@{assignedCriterionRequirementController.readOnly}">
+    visible = "@{criterionRequirementsController.readOnly}">
         <panelchildren>
             <listbox id="hoursGroupsInOrderLineGroup" multiple="true"
-                model="@{assignedCriterionRequirementController.hoursGroups}"
-                itemRenderer="@{assignedCriterionRequirementController.renderer}">
+                model="@{criterionRequirementsController.hoursGroups}"
+                itemRenderer="@{criterionRequirementsController.renderer}">
                 <listhead>
                     <listheader label="${i18n:_('Criterion Requirements')}" width = "500px"/>
                     <listheader label="${i18n:_('Type')}" align="center" width = "150px" />
@@ -130,18 +135,18 @@
 
 <!--Manage Hours Groups in OrdeLine-->
 <panel title="${i18n:_('Hours Group')}" border="normal" width="99%"
-    visible = "@{assignedCriterionRequirementController.editableHoursGroup}">
+    visible = "@{criterionRequirementsController.editableHoursGroup}">
     <panelchildren>
     <hbox align="center">
         <separator bar="false" spacing="40px" orient="horizontal"/>
         <separator bar="false" spacing="20px" orient="vertical"/>
         <button id="buttonAddHoursGroup"
             label="${i18n:_('Add new hours group')}"
-            onClick="assignedCriterionRequirementController.addHoursGroup()" />
+            onClick="criterionRequirementsController.addHoursGroup()" />
         <separator bar="false" spacing="20px" orient="vertical"/>
     </hbox>
     <grid id = "listHoursGroups" mold="paging" pageSize="4" fixedLayout="true"
-        model="@{assignedCriterionRequirementController.hoursGroupWrappers}">
+        model="@{criterionRequirementsController.hoursGroupWrappers}">
         <columns>
             <column width="25px" />
             <column label="Name" width="160px" align="center"/>
@@ -158,35 +163,35 @@
                     <separator bar="false" spacing="40px" orient="vertical"/>
                 </detail>
                 <textbox value="@{hoursGroupWrapper.name}"
-                    readonly = "@{assignedCriterionRequirementController.readOnly}"/>
+                    readonly = "@{criterionRequirementsController.readOnly}"/>
                 <combobox id="comboboxTypeHoursGroup" width="80px"
                         value = "@{hoursGroupWrapper.resourceType}"
-                        onChange = "assignedCriterionRequirementController.selectResourceType(self);"
-                        model = "@{assignedCriterionRequirementController.resourceTypes}"
-                        disabled = "@{assignedCriterionRequirementController.readOnly}">
+                        onChange = "criterionRequirementsController.selectResourceType(self);"
+                        model = "@{criterionRequirementsController.resourceTypes}"
+                        disabled = "@{criterionRequirementsController.readOnly}">
                 </combobox>
                 <intbox value="@{hoursGroupWrapper.workingHours}"
                     readonly ="@{hoursGroupWrapper.workingHoursReadOnly}"
-                    onChange = "assignedCriterionRequirementController.recalculateHoursGroup()"/>
+                    onChange = "criterionRequirementsController.recalculateHoursGroup()"/>
                 <decimalbox scale = "2" value="@{hoursGroupWrapper.percentage}"
-                    constraint = "@{assignedCriterionRequirementController.validatePercentage}"
+                    constraint = "@{criterionRequirementsController.validatePercentage}"
                     readonly ="@{hoursGroupWrapper.percentageReadOnly}"
-                    onChange = "assignedCriterionRequirementController.recalculateHoursGroup()"/>
+                    onChange = "criterionRequirementsController.recalculateHoursGroup()"/>
                 <checkbox checked="@{hoursGroupWrapper.fixedPercentage}"
-                    onCheck = "assignedCriterionRequirementController.recalculateHoursGroup()"/>
+                    onCheck = "criterionRequirementsController.recalculateHoursGroup()"/>
                 <hbox>
                     <button id="buttonDeleteHoursGroup"
                         sclass="icono" image="/common/img/ico_borrar1.png"
                         hoverImage="/common/img/ico_borrar.png"
                         tooltiptext="${i18n:_('Delete')}"
-                        onClick="assignedCriterionRequirementController.deleteHoursGroups(self)" />
+                        onClick="criterionRequirementsController.deleteHoursGroups(self)" />
                     <button id="buttonAddCriterion"
                         label="${i18n:_('Add Criterion')}"
-                        onClick="assignedCriterionRequirementController.addCriterionToHoursGroup(self)" />
+                        onClick="criterionRequirementsController.addCriterionToHoursGroup(self)" />
                     <button id="buttonAddException"
                         disabled = "@{hoursGroupWrapper.dontExistValidCriterions}"
                         label="${i18n:_('Add Exception')}"
-                        onClick="assignedCriterionRequirementController.addExceptionToHoursGroups(self)" />
+                        onClick="criterionRequirementsController.addExceptionToHoursGroups(self)" />
                 </hbox>
             </row>
         </rows>
@@ -194,3 +199,4 @@
     </panelchildren>
 </panel>
 </vbox>
+</zk>
