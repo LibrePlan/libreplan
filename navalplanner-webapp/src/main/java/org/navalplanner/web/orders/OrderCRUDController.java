@@ -150,7 +150,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellow("editOrderElement"));
 
         setupOrderElementTreeController(comp, orderElementController);
-        setupDetailsOrderElementController(comp);
         setupAsignedHoursToOrderElementController(comp);
         setupManageOrderElementAdvancesController(comp);
         setupAssignedLabelsToOrderElementController(comp);
@@ -163,14 +162,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         OrderElementTreeController controller = new OrderElementTreeController(
                 orderModel, orderElementController);
         controller.doAfterCompose(editWindow.getFellowIfAny("orderElementTree"));
-    }
-
-    private DetailsOrderElementController detailsController;
-
-    private void setupDetailsOrderElementController(Component comp) throws Exception {
-        Component orderElementDetails = editWindow.getFellowIfAny("orderElementDetails");
-        detailsController = (DetailsOrderElementController)
-            orderElementDetails.getVariable("detailsController", true);
     }
 
     private IOrderElementModel getOrderElementModel() {
@@ -365,7 +356,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void initializeTabs() {
         final IOrderElementModel orderElementModel = getOrderElementModel();
 
-        detailsController.openWindow(orderElementModel);
         assignedHoursController.openWindow(orderElementModel);
         manageOrderElementAdvancesController.openWindow(orderElementModel);
         assignedLabelsController.openWindow(orderElementModel);

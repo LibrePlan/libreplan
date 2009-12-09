@@ -19,7 +19,6 @@
 -->
 
 <?component name="orderElementTree" inline="true" macroURI="_orderElementTree.zul"?>
-<?component name="orderElementDetails" inline="true" macroURI="_orderElementDetails.zul"?>
 <?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <?component name="listOrderElementLabels" inline="true" macroURI="_listOrderElementLabels.zul"?>
@@ -31,7 +30,6 @@
         <tabs>
             <tab id="tabGeneralData" label="${i18n:_('General data')}" />
             <tab label="${i18n:_('Order elements')}" />
-            <tab label="${i18n:_('Details')}" />
             <tab label="${i18n:_('Assigned hours')}" />
             <tab id="tabAdvances" label="${i18n:_('Advances')}" />
             <tab label="${i18n:_('Label')}" />
@@ -98,9 +96,6 @@
             </tabpanel>
             <tabpanel sclass="orderelements-tab">
                 <orderElementTree />
-            </tabpanel>
-            <tabpanel>
-                <orderElementDetails id="orderElementDetails" />
             </tabpanel>
             <tabpanel>
                 <listOrderElementHours id="orderElementHours" />
