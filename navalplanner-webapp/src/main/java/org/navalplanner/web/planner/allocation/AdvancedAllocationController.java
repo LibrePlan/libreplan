@@ -388,6 +388,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     public void reset(IBack back, List<AllocationInput> allocationInputs) {
+        rowsCached = null;
         setInputData(back, allocationInputs);
         loadAndInitializeComponents();
     }
