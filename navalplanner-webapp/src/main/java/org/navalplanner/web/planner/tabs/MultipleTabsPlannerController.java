@@ -112,9 +112,9 @@ public class MultipleTabsPlannerController implements Composer,
     private URLHandlerRegistry registry;
 
     private TabsConfiguration buildTabsConfiguration() {
-        planningTab = PlanningTabCreator.create(mode,
+        planningTab = doFeedbackOn(PlanningTabCreator.create(mode,
                 companyPlanningController, orderPlanningController, orderDAO,
-                breadcrumbs);
+                breadcrumbs));
         resourceLoadTab = ResourcesLoadTabCreator.create(mode,
                 resourceLoadController, upCommand(),
                 resourceLoadControllerGlobal,
@@ -136,14 +136,14 @@ public class MultipleTabsPlannerController implements Composer,
 
                 });
         final State<Void> typeChanged = typeChangedState();
-        ITab advancedAllocation = AdvancedAllocationTabCreator.create(mode,
+        ITab advancedAllocation = doFeedbackOn(AdvancedAllocationTabCreator.create(mode,
                 transactionService, orderDAO, taskElementDAO, resourceDAO,
-                returnToPlanningTab());
+                returnToPlanningTab()));
         return TabsConfiguration.create()
-            .add(tabWithNameReloading(doFeedbackOn(planningTab), typeChanged))
-            .add(tabWithNameReloading(doFeedbackOn(resourceLoadTab), typeChanged))
-            .add(tabWithNameReloading(doFeedbackOn(ordersTab), typeChanged))
-            .add(visibleOnlyAtOrderMode(doFeedbackOn(advancedAllocation)));
+            .add(tabWithNameReloading(planningTab, typeChanged))
+            .add(tabWithNameReloading(resourceLoadTab, typeChanged))
+            .add(tabWithNameReloading(ordersTab, typeChanged))
+            .add(visibleOnlyAtOrderMode(advancedAllocation));
     }
 
     private ITab doFeedbackOn(ITab tab) {
