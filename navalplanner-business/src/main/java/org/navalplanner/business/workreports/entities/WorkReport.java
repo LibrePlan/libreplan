@@ -146,12 +146,6 @@ public class WorkReport extends BaseEntity {
     public void addWorkReportLine(WorkReportLine workReportLine) {
         workReportLines.add(workReportLine);
         workReportLine.setWorkReport(this);
-
-        // update and copy the fields and label for each line
-        workReportLine.updateItsFieldsAndLabels(workReportType);
-
-        // copy the required fields if these are shared by lines
-        copyTheRequiredFieldIfIsNeeded(workReportLine);
     }
 
     public void removeWorkReportLine(WorkReportLine workReportLine) {
@@ -237,7 +231,7 @@ public class WorkReport extends BaseEntity {
 
         // it updates the fields and labels of its work report lines
         for (WorkReportLine line : getWorkReportLines()) {
-            line.updateItsFieldsAndLabels(workReportType);
+            line.updateItsFieldsAndLabels();
         }
     }
 
@@ -258,21 +252,6 @@ public class WorkReport extends BaseEntity {
                 DescriptionValue descriptionValue = DescriptionValue.create(
                         descriptionField.getFieldName(), null);
                 descriptionValues.add(descriptionValue);
-            }
-        }
-    }
-
-    private void copyTheRequiredFieldIfIsNeeded(WorkReportLine workReportLine) {
-        // copy the required fields if these are shared by lines
-        if (workReportType != null) {
-            if (workReportType.getDateIsSharedByLines()) {
-                workReportLine.setDate(date);
-            }
-            if (workReportType.getResourceIsSharedInLines()) {
-                workReportLine.setResource(resource);
-            }
-            if (workReportType.getResourceIsSharedInLines()) {
-                workReportLine.setOrderElement(orderElement);
             }
         }
     }

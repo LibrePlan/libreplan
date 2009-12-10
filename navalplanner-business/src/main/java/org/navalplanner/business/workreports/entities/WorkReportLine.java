@@ -162,6 +162,12 @@ public class WorkReportLine extends BaseEntity implements Comparable {
 
     public void setWorkReport(WorkReport workReport) {
         this.workReport = workReport;
+
+        // update and copy the fields and label for each line
+        updateItsFieldsAndLabels();
+
+        // copy the required fields if these are shared by lines
+        copyTheRequiredFieldIfIsNeeded();
     }
 
     public Set<DescriptionValue> getDescriptionValues() {
@@ -222,9 +228,11 @@ public class WorkReportLine extends BaseEntity implements Comparable {
         return true;
     }
 
-    void updateItsFieldsAndLabels(WorkReportType workReportType) {
-        assignItsLabels(workReportType);
-        assignItsDescriptionValues(workReportType);
+    void updateItsFieldsAndLabels() {
+        if (workReport != null) {
+            assignItsLabels(workReport.getWorkReportType());
+            assignItsDescriptionValues(workReport.getWorkReportType());
+        }
     }
 
     private void assignItsLabels(WorkReportType workReportType) {
@@ -249,6 +257,21 @@ public class WorkReportLine extends BaseEntity implements Comparable {
         }
     }
 
+    void copyTheRequiredFieldIfIsNeeded() {
+        // copy the required fields if these are shared by lines
+        if ((workReport != null) && (workReport.getWorkReportType() != null)) {
+            WorkReportType workReportType = workReport.getWorkReportType();
+            if (workReportType.getDateIsSharedByLines()) {
+                setDate(workReport.getDate());
+            }
+            if (workReportType.getResourceIsSharedInLines()) {
+                setResource(workReport.getResource());
+            }
+            if (workReportType.getOrderElementIsSharedInLines()) {
+                setOrderElement(workReport.getOrderElement());
+            }
+        }
+    }
     private void updateNumHours() {
         if (workReport.getWorkReportType().getHoursManagement().equals(
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
