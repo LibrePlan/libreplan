@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,11 +35,14 @@ public class OnlyOneVisible {
     private List<Component> components;
 
     public OnlyOneVisible(Component... components) {
-        this.components = Arrays.asList(components);
+        this.components = new ArrayList<Component>(Arrays.asList(components));
         showOnly(null);
     }
 
     public void showOnly(Component component) {
+        if (!components.contains(component)) {
+            components.add(component);
+        }
         for (Component c : components) {
             if (c != null) {
                 c.setVisible(component != null && c.equals(component));
