@@ -316,7 +316,7 @@ public class AssignedCriterionRequirementToOrderElementModel  implements
             (asOrderLine()).addHoursGroup(newHoursGroup);
 
             // Set generated name
-            int number = (asOrderLine()).getHoursGroups().size();
+            int number = (asOrderLine()).getHoursGroups().size() - 1;
             newHoursGroup.setName(_("New hours group ") + number);
 
             return newHoursGroup;

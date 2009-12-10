@@ -145,16 +145,16 @@ criterionRequirementsController = new org.navalplanner.web.orders.AssignedCriter
             onClick="criterionRequirementsController.addHoursGroup()" />
         <separator bar="false" spacing="20px" orient="vertical"/>
     </hbox>
-    <grid id = "listHoursGroups" mold="paging" pageSize="4" fixedLayout="true"
+    <newdatasortablegrid id = "listHoursGroups" mold="paging" pageSize="4" fixedLayout="true"
         model="@{criterionRequirementsController.hoursGroupWrappers}">
         <columns>
-            <column width="25px" />
-            <column label="Name" width="160px" align="center"/>
-            <column label="Type" width="130px" align="center"/>
-            <column label="Hours" width="120px" align="center"/>
-            <column label="%" width="100px" align="center"/>
-            <column label="Fixed %" width="50px" align="center"/>
-            <column label="Operations" align="center"/>
+            <newdatasortablecolumn width="25px" sort="auto"/>
+            <newdatasortablecolumn label="Name" width="160px" sort="auto(name)" sortDirection="ascending" align="center"/>
+            <newdatasortablecolumn label="Type" width="130px" align="center"/>
+            <newdatasortablecolumn label="Hours" width="120px" align="center"/>
+            <newdatasortablecolumn label="%" width="100px" align="center"/>
+            <newdatasortablecolumn label="Fixed %" width="50px" align="center"/>
+            <newdatasortablecolumn label="Operations" align="center"/>
         </columns>
         <rows>
             <row self="@{each='hoursGroupWrapper'}" value="@{hoursGroupWrapper}">
@@ -195,7 +195,7 @@ criterionRequirementsController = new org.navalplanner.web.orders.AssignedCriter
                 </hbox>
             </row>
         </rows>
-    </grid>
+    </newdatasortablegrid>
     </panelchildren>
 </panel>
 </vbox>

@@ -50,7 +50,6 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
@@ -90,7 +89,7 @@ public class AssignedCriterionRequirementToOrderElementController extends
 
     private NewDataSortableGrid listingRequirements;
 
-    private Grid listHoursGroups;
+    private NewDataSortableGrid listHoursGroups;
 
     private Intbox orderElementTotalHours;
 

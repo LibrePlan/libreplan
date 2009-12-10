@@ -40,7 +40,7 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
  * requirement.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class HoursGroupWrapper implements INewObject {
+public class HoursGroupWrapper implements INewObject, Comparable {
 
     private Boolean newObject = false;
 
@@ -82,7 +82,9 @@ public class HoursGroupWrapper implements INewObject {
     }
 
     public void setName(String name) {
-        this.hoursGroup.setName(name);
+        if (hoursGroup != null) {
+            hoursGroup.setName(name);
+        }
     }
 
     public ResourceEnum getResourceType() {
@@ -349,4 +351,9 @@ public class HoursGroupWrapper implements INewObject {
         return result;
     }
 
+    @Override
+    public int compareTo(Object arg0) {
+        final HoursGroupWrapper hoursGroupWrapper = (HoursGroupWrapper) arg0;
+        return getName().compareTo(hoursGroupWrapper.getName());
+    }
 }
