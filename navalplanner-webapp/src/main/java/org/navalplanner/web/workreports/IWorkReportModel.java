@@ -104,7 +104,7 @@ public interface IWorkReportModel {
      *
      * @return
      */
-    List<WorkReport> getWorkReports();
+    List<WorkReportDTO> getWorkReportDTOs();
 
     /**
      * Returns true if WorkReport is being edited
@@ -196,5 +196,4 @@ public interface IWorkReportModel {
      * @return
      */
     Integer getLength(DescriptionValue descriptionValue);
-
 }

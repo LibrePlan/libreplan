@@ -19,21 +19,19 @@
 -->
 
 <window id="${arg.top_id}" title="${i18n:_('Work report listing')}">
-    <newdatasortablegrid id="listing" model="@{controller.workReports}" mold="paging"
-        pageSize="10">
+    <grid id="listing"  mold="paging" pageSize="10"
+        model="@{controller.workReportDTOs}">
         <columns sizable="true">
-            <newdatasortablecolumn label="${i18n:_('Date')}" sort="auto(date)" />
-            <newdatasortablecolumn label="${i18n:_('Resource')}" sort="auto(resource)" />
-            <newdatasortablecolumn label="${i18n:_('Order code')}" sort="auto(orderElement)" />
-            <newdatasortablecolumn label="${i18n:_('Type')}" sort="auto(workReportType.name)"/>
-            <newdatasortablecolumn label="${i18n:_('Actions')}" />
+            <column label="${i18n:_('Date Start')}" sort="auto(dateStart)"/>
+            <column label="${i18n:_('Date Finish')}" sort="auto(dateFinish)"/>
+            <column label="${i18n:_('Type')}" sort="auto(type)"/>
+            <column label="${i18n:_('Actions')}" />
         </columns>
         <rows>
-            <row self="@{each='workReport'}" value="@{workReport}">
-                <label value="@{workReport.date, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
-                <label value="@{workReport.resource.description}" />
-                <label value="@{workReport.orderElement.name}" />
-                <label value="@{workReport.workReportType.name}" />
+            <row self="@{each='workReportDTO'}" value="@{workReportDTO}">
+                <label value="@{workReportDTO.dateStart, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
+                <label value="@{workReportDTO.dateFinish, converter='org.navalplanner.web.common.typeconverters.DateConverter'}"/>
+                <label value="@{workReportDTO.type}" />
 
                 <hbox>
                     <button sclass="icono" image="/common/img/ico_editar1.png"
@@ -50,5 +48,5 @@
                 </hbox>
             </row>
         </rows>
-    </newdatasortablegrid>
+    </grid>
 </window>

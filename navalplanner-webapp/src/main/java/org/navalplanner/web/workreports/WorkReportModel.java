@@ -247,7 +247,18 @@ public class WorkReportModel implements IWorkReportModel {
 
     @Override
     @Transactional(readOnly = true)
-    public List<WorkReport> getWorkReports() {
+    public List<WorkReportDTO> getWorkReportDTOs() {
+        // load the work reports
+        List<WorkReport> listWorkReports = getAllWorkReports();
+        List<WorkReportDTO> resultDTOs = new ArrayList<WorkReportDTO>();
+        for (WorkReport workReport : listWorkReports) {
+            WorkReportDTO workReportDTO = new WorkReportDTO(workReport);
+            resultDTOs.add(workReportDTO);
+        }
+        return resultDTOs;
+    }
+
+    private List<WorkReport> getAllWorkReports() {
         List<WorkReport> result = new ArrayList<WorkReport>();
         for (WorkReport each : workReportDAO.list(WorkReport.class)) {
             each.getWorkReportType().getName();

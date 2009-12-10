@@ -135,8 +135,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      *
      * @param workReport
      */
-    public void showConfirmDelete(WorkReport workReport) {
+    public void showConfirmDelete(WorkReportDTO workReportDTO) {
+        WorkReport workReport = workReportDTO.getWorkReport();
         try {
+
             final String workReportName = formatWorkReportName(workReport);
             int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?", workReportName), "Delete",
                     Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
@@ -155,8 +157,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         return workReport.getWorkReportType().getName();
     }
 
-    public List<WorkReport> getWorkReports() {
-        return workReportModel.getWorkReports();
+    public List<WorkReportDTO> getWorkReportDTOs() {
+        return workReportModel.getWorkReportDTOs();
     }
 
     private OnlyOneVisible getVisibility() {
@@ -437,6 +439,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         getVisibility().showOnly(createWindow);
         loadComponents(createWindow);
         Util.reloadBindings(createWindow);
+    }
+
+    public void goToEditForm(WorkReportDTO workReportDTO) {
+        WorkReport workReport = workReportDTO.getWorkReport();
+        goToEditForm(workReport);
     }
 
     public void goToEditForm(WorkReport workReport) {
