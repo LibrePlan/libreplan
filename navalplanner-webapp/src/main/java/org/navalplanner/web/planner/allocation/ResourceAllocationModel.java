@@ -39,6 +39,7 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -78,6 +79,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Autowired
     private IBaseCalendarDAO calendarDAO;
+
+    @Autowired
+    private ICriterionDAO criterionDAO;
 
     private PlanningState planningState;
 
@@ -153,7 +157,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional(readOnly = true)
     public <T> T onAllocationContext(
             IResourceAllocationContext<T> resourceAllocationContext) {
-        ensureResourcesAreReadyForDoingAllocation();
+        reattachmentsBeforeDoingAllocation();
         return resourceAllocationContext.doInsideTransaction();
     }
 
@@ -166,11 +170,15 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void stepsBeforeDoingAllocation() {
+        reattachmentsBeforeDoingAllocation();
+        removeDeletedAllocations();
+    }
+
+    private void reattachmentsBeforeDoingAllocation() {
         ensureResourcesAreReadyForDoingAllocation();
         if (task.getCalendar() != null) {
             calendarDAO.reattachUnmodifiedEntity(task.getCalendar());
         }
-        removeDeletedAllocations();
     }
 
     private void reassociateResourcesWithSession() {
@@ -253,6 +261,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void reattachCriterion(Criterion criterion) {
+        criterionDAO.reattachUnmodifiedEntity(criterion);
         criterion.getName();
         reattachCriterionType(criterion.getType());
     }
