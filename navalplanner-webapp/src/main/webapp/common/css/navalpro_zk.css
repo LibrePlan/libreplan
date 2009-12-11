@@ -210,11 +210,13 @@ button.z-button {
     padding: 4px 25px;
     background-position: 5px;
     background-repeat: no-repeat;
+    margin-right: 1px;
 }
 
 .global-action.z-button .z-button-cm:active {
-    padding: 4px 21px 3px 28px;
-    background-position: 7px 4px;
+    margin-right: 0px;
+    border-bottom: 0px;
+    border-right: 0px;
 }
 
 .save-button.z-button .z-button-cm {
