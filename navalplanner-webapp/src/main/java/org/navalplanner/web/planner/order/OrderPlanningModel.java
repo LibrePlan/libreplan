@@ -726,8 +726,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             convertAsNeededByZoomMaps();
 
             Plotinfo plotOrderLoad = createPlotinfo(
-                    convertToBigDecimal(convertAsNeededByZoom(mapOrderLoad)),
-                    interval);
+                    convertToBigDecimal(mapOrderLoad), interval);
             Plotinfo plotOrderOverload = createPlotinfo(
                     convertToBigDecimal(mapOrderOverload), interval);
             Plotinfo plotMaxCapacity = createPlotinfo(
