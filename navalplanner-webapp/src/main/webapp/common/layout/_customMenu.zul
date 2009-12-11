@@ -52,7 +52,7 @@
           </n:td>
         </n:tr>
     </n:table></n:td>
-    <n:td valign="top" align="right" class="help-link"><n:a href="https://naval.igalia.com/fileadmin/templates/doc/index.html" target="_blank">
+    <n:td valign="top" align="right" class="help-link"><n:a href="https://naval.igalia.com/fileadmin/templates/doc/${menuContainer.helpLink}" target="_blank">
         <n:span>${i18n:_('Help')}</n:span>
         <n:img src="/navalplanner-webapp/common/img/axuda.gif" alt="Axuda" width="23" height="24" border="0" style="margin-top:4px;"/>
     </n:a></n:td>

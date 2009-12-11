@@ -57,6 +57,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         private final String encodedURL;
         private final List<CustomMenuItem> children;
         private boolean activeParent;
+        private String helpLink;
         private boolean disabled;
 
         public String getName() {
@@ -79,6 +80,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             this(name, url, new ArrayList<CustomMenuItem>());
         }
 
+        public CustomMenuItem(String name, String url, String helpLink) {
+            this(name, url, new ArrayList<CustomMenuItem>());
+            this.helpLink = helpLink;
+        }
+
         public CustomMenuItem(String name, String url, boolean disabled) {
             this(name, url, new ArrayList<CustomMenuItem>());
             this.disabled = disabled;
@@ -91,6 +97,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             this.encodedURL = Executions.getCurrent().encodeURL(url);
             this.children = children;
             this.disabled = false;
+            this.helpLink = "";
         }
 
         public void appendChildren(CustomMenuItem newChildren) {
@@ -129,6 +136,10 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             this.activeParent = activeParent;
         }
 
+        public void setHelpLink(String helpLink) {
+            this.helpLink = helpLink;
+        }
+
     }
 
     public CustomMenuController() {
@@ -160,13 +171,16 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     private CustomMenuController topItem(String name, String url,
+            String helpUri,
             CustomMenuItem... items) {
-        return topItem(name, url, false, items);
+        return topItem(name, url, helpUri, false, items);
     }
 
     private CustomMenuController topItem(String name, String url,
+            String helpLink,
             boolean disabled, CustomMenuItem... items) {
         CustomMenuItem parent = new CustomMenuItem(name, url, disabled);
+        parent.setHelpLink(helpLink);
         this.firstLevel.add(parent);
         for (CustomMenuItem child : items) {
             parent.appendChildren(child);
@@ -174,48 +188,60 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         return this;
     }
 
-    private CustomMenuItem subItem(String name, String url) {
-        return new CustomMenuItem(name, url);
+    private CustomMenuItem subItem(String name, String url, String helpLink) {
+        return new CustomMenuItem(name, url, helpLink);
     }
 
     public void initializeMenu() {
-        topItem(_("Scheduling"), "/planner/index.zul",
-                subItem(_("Company view"),
-                        "/planner/index.zul;company_scheduling"),
-                subItem(_("General resource allocation"),
-                        "/planner/index.zul;company_load"),
-                subItem(_("Orders list"),
-                        "/planner/index.zul;orders_list"));
+        topItem(_("Scheduling"), "/planner/index.zul", "01-introducion.html",
+ subItem(
+                _("Company view"), "/planner/index.zul;company_scheduling",
+                        "01-introducion.html"), subItem(
+                _("General resource allocation"),
+                        "/planner/index.zul;company_load",
+                        "01-introducion.html#id1"),
+                subItem(_("Orders list"), "/planner/index.zul;orders_list",
+                        "01-introducion.html#id2"));
 
-        topItem(_("Resources"), "/resources/worker/worker.zul",
-                subItem(_("Workers List"),
-                    "/resources/worker/worker.zul"),
-                subItem(_("Machines List"),
-                    "/resources/machine/machines.zul"));
+        topItem(_("Resources"), "/resources/worker/worker.zul", "",
+ subItem(
+                _("Workers List"), "/resources/worker/worker.zul",
+                "05-recursos.html#xesti-n-de-traballadores"), subItem(
+                _("Machines List"), "/resources/machine/machines.zul",
+                "05-recursos.html#xesti-n-de-m-quinas"));
 
-        topItem(_("Work reports"), "/workreports/workReportTypes.zul",
+        topItem(_("Work reports"), "/workreports/workReportTypes.zul", "",
                 subItem(_("Work report types"),
-                    "/workreports/workReportTypes.zul"),
-                subItem(_("Work report list"),
-                    "/workreports/workReport.zul"));
+                        "/workreports/workReportTypes.zul",
+                        "02-criterios.html#id1"), subItem(
+                        _("Work report list"), "/workreports/workReport.zul",
+                        "02-criterios.html#id1"));
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
-            topItem(_("Administration"), "/advance/advanceTypes.zul",
+            topItem(_("Administration"), "/advance/advanceTypes.zul", "",
                     subItem(_("Manage advance types"),
-                        "/advance/advanceTypes.zul"),
+                            "/advance/advanceTypes.zul",
+                            "02-criterios.html#id1"),
                     subItem(_("Manage criteria"),
-                        "/resources/criterions/criterions-V2.zul"),
-                    subItem(_("Calendars"), "/calendars/calendars.zul"),
-                    subItem(_("Label types"), "/labels/labelTypes.zul"),
-                    subItem(_("Materials"), "/materials/materials.zul"),
+                            "/resources/criterions/criterions-V2.zul",
+                            "02-criterios.html#id1"),
+                    subItem(_("Calendars"), "/calendars/calendars.zul",
+                            "02-criterios.html#id1"), subItem(_("Label types"),
+                            "/labels/labelTypes.zul", "02-criterios.html#id1"),
+                    subItem(_("Materials"), "/materials/materials.zul",
+                            "02-criterios.html#id1"),
                     subItem(_("Manage cost categories"),
-                        "/costcategories/costCategory.zul"),
-                    subItem(_("Manage types of work hours"),
-                        "/costcategories/typeOfWorkHours.zul"),
-                    subItem(_("Configuration"), "/common/configuration.zul"));
+                            "/costcategories/costCategory.zul",
+                            "02-criterios.html#id1"), subItem(_(
+                            "Manage types of work hours",
+                            "02-criterios.html#id1"),
+                            "/costcategories/typeOfWorkHours.zul",
+                            "02-criterios.html#id1"), subItem(
+                            _("Configuration"), "/common/configuration.zul",
+                            "02-criterios.html#id1"));
         }
 
-        topItem(_("Quality management"), "/", true);
+        topItem(_("Quality management"), "/", "", true);
     }
 
     private Vbox getRegisteredItemsInsertionPoint() {
@@ -243,6 +269,21 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         return breadcrumbsPath;
     }
 
+    public String getHelpLink() {
+        String helpLink = "index.html";
+        for (CustomMenuItem ci : this.firstLevel) {
+            if (ci.isActiveParent()) {
+                if ((ci.name != null)) {
+                    for (CustomMenuItem child : ci.children) {
+                        if (child.isActiveParent()) {
+                            helpLink = child.helpLink;
+                        }
+                    }
+                }
+            }
+        }
+        return helpLink;
+    }
 
     public List<CustomMenuItem> getCustomMenuSecondaryItems() {
         for (CustomMenuItem ci : this.firstLevel) {
