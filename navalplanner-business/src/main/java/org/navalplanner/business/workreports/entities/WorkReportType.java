@@ -32,6 +32,7 @@ import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 /**
@@ -222,6 +223,38 @@ public class WorkReportType extends BaseEntity {
             }
         }
         return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "the assigned label type can not repeat in the work report type.")
+    public boolean validateNotExistRepeatedLabelTypes() {
+        for (WorkReportLabelTypeAssigment assignedLabelType : this.workReportLabelTypeAssigments) {
+            if (existRepeatedLabelType(assignedLabelType)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean existRepeatedLabelType(
+            WorkReportLabelTypeAssigment assignedLabelType) {
+        for (WorkReportLabelTypeAssigment oldAssignedLabelType : this.workReportLabelTypeAssigments) {
+            if ((!oldAssignedLabelType.equals(assignedLabelType))
+                    && (isTheSameLabelType(oldAssignedLabelType.getLabelType(),
+                            assignedLabelType.getLabelType()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isTheSameLabelType(LabelType oldLabelType,
+            LabelType newLabelType) {
+        if ((oldLabelType != null) && (newLabelType != null)
+                && (oldLabelType.equals(newLabelType))) {
+            return true;
+        }
+        return false;
     }
 
     public boolean existSameFieldName(DescriptionField descriptionField) {

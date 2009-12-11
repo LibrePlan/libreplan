@@ -408,7 +408,9 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
 
     public WorkReportLabelTypeAssigment validateLabelTypes() {
         for (WorkReportLabelTypeAssigment labelTypeAssigment : getWorkReportLabelTypeAssigments()) {
-            if (labelTypeAssigment.getLabelType() == null) {
+            if ((labelTypeAssigment.getLabelType() == null)
+                    || (getWorkReportType()
+                            .existRepeatedLabelType(labelTypeAssigment))) {
                 return labelTypeAssigment;
             }
         }

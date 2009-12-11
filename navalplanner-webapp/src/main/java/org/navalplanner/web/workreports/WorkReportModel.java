@@ -383,8 +383,8 @@ public class WorkReportModel implements IWorkReportModel {
     }
 
     private DescriptionField getDescriptionFieldByName(String name){
-        WorkReportType type = getWorkReport().getWorkReportType();
-        for (DescriptionField descriptionField : type.getDescriptionFields()) {
+        for (DescriptionField descriptionField : getWorkReportType()
+                .getDescriptionFields()) {
             if(descriptionField.getFieldName().equals(name)){
                 return descriptionField;
             }

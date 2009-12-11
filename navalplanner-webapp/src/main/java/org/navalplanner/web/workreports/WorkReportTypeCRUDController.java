@@ -435,7 +435,6 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
             DescriptionField descriptionField) {
         PositionInWorkReportEnum newPosition = (PositionInWorkReportEnum) selectedItem
                 .getValue();
-        System.out.println("**" + newPosition.name());
         workReportTypeModel.changePositionDescriptionField(newPosition,
                 descriptionField);
     }
@@ -519,6 +518,8 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
             @Override
             public void onEvent(Event event) throws Exception {
                 changeLabelType(comboLabelTypes.getSelectedItem(),
+                        workReportLabelTypeAssigment);
+                validateIfExistTheSameLabelType(comboLabelTypes,
                         workReportLabelTypeAssigment);
                 Util.reloadBindings(listWorkReportLabelTypeAssigments);
             }
@@ -727,6 +728,17 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         };
     }
 
+    public void validateIfExistTheSameLabelType(
+          final Combobox comboLabelTypes,
+          final WorkReportLabelTypeAssigment workReportLabelTypeAssigment) throws WrongValueException {
+        if ((getWorkReportType() != null) && (getWorkReportType().existRepeatedLabelType(workReportLabelTypeAssigment))) {
+                      workReportLabelTypeAssigment.setLabelType(null);
+                      throw new WrongValueException(
+                    comboLabelTypes,
+                    _("This label type already is assigned to the work report type."));
+        }
+    }
+
     public Constraint validateIfExistTheSameFieldName(
             final DescriptionField descriptionField) {
         return new Constraint() {
@@ -790,7 +802,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
                 .validateLabelTypes();
         if (labelTypeAssigment != null) {
             selectTab(tabReportStructure);
-            String errorMessage = "The label type must not null.";
+            String errorMessage = "The label type must unique and not null.";
             showInvalidWorkReportLabelTypeAssigment(0, errorMessage,
                     labelTypeAssigment);
             return false;

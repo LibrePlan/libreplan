@@ -72,7 +72,6 @@ public class WorkReportTypeDAO extends
             WorkReportType t = findUniqueByName(workReportType);
             return (t != null && t != workReportType);
         } catch (InstanceNotFoundException e) {
-            System.out.println("Intancia not found");
             return false;
         }
     }
