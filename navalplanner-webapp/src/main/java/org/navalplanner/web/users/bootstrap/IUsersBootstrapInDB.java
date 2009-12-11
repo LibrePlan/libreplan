@@ -23,8 +23,8 @@ package org.navalplanner.web.users.bootstrap;
 import org.navalplanner.business.IDataBootstrap;
 
 /**
- * It creates necessary users initially.
+ * It registers mandatory users in the database (if not registered yet).
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public interface IUsersBootstrap extends IDataBootstrap {}
+public interface IUsersBootstrapInDB extends IDataBootstrap {}

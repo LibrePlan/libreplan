@@ -24,9 +24,14 @@ package org.navalplanner.web.test;
  * A class containing constants for global names.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class WebappGlobalNames {
 
-    public final static String WEBAPP_SPRING_CONFIG_TEST_FILE = "classpath:/navalplanner-webapp-spring-config-test.xml";
+    public final static String WEBAPP_SPRING_CONFIG_TEST_FILE =
+        "classpath:/navalplanner-webapp-spring-config-test.xml";
+
+    public final static String WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE =
+        "classpath:/navalplanner-webapp-spring-security-config-test.xml";
 
 }

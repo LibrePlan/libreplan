@@ -18,67 +18,75 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.test.users.bootstrap;
+package org.navalplanner.web.test.users.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
+import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.users.daos.IUserDAO;
-import org.navalplanner.business.users.entities.User;
-import org.navalplanner.web.users.bootstrap.IUsersBootstrap;
+import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.users.bootstrap.IUsersBootstrapInDB;
 import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.userdetails.UserDetailsService;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Tests for <code>IUsersBootstrap</code>.
+ * Tests for <code>DBUserDetailsService</code>.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-    WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = {BUSINESS_SPRING_CONFIG_FILE,
+    WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+    WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE})
 @Transactional
-public class UsersBootstrapTest {
+public class DBUserDetailsServiceTest {
 
     @Autowired
-    private IUsersBootstrap usersBootstrap;
+    private UserDetailsService userDetailsService;
 
     @Autowired
-    private IUserDAO userDAO;
+    private IUsersBootstrapInDB usersBootstrap;
 
     @Test
-    public void testMandatoryUsersCreated() throws InstanceNotFoundException {
-
-       checkLoadRequiredData();
-
-        /*
-         * Load data again to verify that a second load does not cause
-         * problems.
-         */
-       checkLoadRequiredData();
-
-    }
-
-    private void checkLoadRequiredData() throws InstanceNotFoundException {
+    public void testLoadUserByUsername() {
 
         usersBootstrap.loadRequiredData();
 
         for (MandatoryUser u : MandatoryUser.values()) {
 
-            User user = userDAO.findByLoginName(u.getLoginName());
+            UserDetails userDetails =
+                userDetailsService.loadUserByUsername(u.getLoginName());
 
-            assertEquals(u.getLoginName(), user.getLoginName());
-            assertEquals(u.getInitialRoles(), user.getRoles());
+            assertEquals(u.getLoginName(), userDetails.getUsername());
+
+            assertEquals(u.getInitialRoles(), getUserRoles(userDetails));
 
         }
+
+    }
+
+    private Set<UserRole> getUserRoles(UserDetails userDetails) {
+
+        Set<UserRole> userRoles = new HashSet<UserRole>();
+
+        for (GrantedAuthority a : userDetails.getAuthorities()) {
+            userRoles.add(UserRole.valueOf(a.getAuthority()));
+        }
+
+        return userRoles;
 
     }
 

@@ -35,7 +35,6 @@ import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.security.userdetails.UserDetails;
 import org.springframework.security.userdetails.UserDetailsService;
 import org.springframework.security.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -45,8 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@Service("defaultUserDetailsService")
-public class DefaultUserDetailsService implements UserDetailsService {
+public class DBUserDetailsService implements UserDetailsService {
 
     @Autowired
     private IUserDAO userDAO;

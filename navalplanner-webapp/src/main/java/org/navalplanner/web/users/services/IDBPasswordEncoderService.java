@@ -18,42 +18,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.users.bootstrap;
-
-import org.navalplanner.business.users.daos.IUserDAO;
-import org.navalplanner.business.users.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+package org.navalplanner.web.users.services;
 
 /**
+ * Service for encoding passwords when information about users
+ * is stored in the database. In particular, it must be used to encode a
+ * password when creating a user and to change a user's password.
+ * <b/>
+ * When information about users is maintained externally (e.g. in a LDAP
+ * server), this service is not used, since the Web application is not
+ * in charge of creating users or changing passwords.
+ *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@Service
-@Transactional
-public class UsersBootstrap implements IUsersBootstrap {
+public interface IDBPasswordEncoderService {
 
-    @Autowired
-    private IUserDAO userDAO;
-
-    @Override
-    public void loadRequiredData() {
-
-        for (MandatoryUser u : MandatoryUser.values()) {
-            createUserIfNotExists(u);
-        }
-
-    }
-
-    private void createUserIfNotExists(MandatoryUser u) {
-
-        if (!userDAO.existsByLoginName(u.getLoginName())) {
-
-            userDAO.save(User.create(u.getLoginName(), u.getClearPassword(),
-                u.getInitialRoles()));
-
-        }
-
-    }
+    /**
+     * Encodes a clear password. The second parameter (which must be the
+     * login name) may be used as a salt.
+     */
+    public String encodePassword(String clearPassword, String loginName);
 
 }

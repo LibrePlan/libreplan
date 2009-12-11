@@ -3,6 +3,7 @@
 <beans:beans xmlns="http://www.springframework.org/schema/security"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
 
@@ -28,16 +29,33 @@
 
     </http>
 
-    <authentication-provider user-service-ref="defaultUserDetailsService">
-        <!--
-        <password-encoder hash="md5">
-        -->
-            <!-- NOTE: see IPasswordEncoderService's JavaDoc for restrictions
-                 on "user-property". -->
-        <!--
-            <salt-source user-property="username"/>
-        </password-encoder>
-        -->
-    </authentication-provider>
+    <!--
+          Beans used by Spring Security (current configuration assumes users
+          are registered in the database).
+    -->
+    <beans:bean id="passwordEncoder" class="org.springframework.security.providers.encoding.ShaPasswordEncoder">
+        <beans:constructor-arg value="512"/>
+    </beans:bean>
+
+    <beans:bean id="saltSource" class="org.springframework.security.providers.dao.salt.ReflectionSaltSource"
+        p:userPropertyToUse="username"/>
+
+    <beans:bean id="authenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider"
+        p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource" p:userDetailsService-ref="dbUserDetailsService">
+        <custom-authentication-provider/>
+    </beans:bean>
+
+    <!--
+          Beans used by the Naval Planner Web application when users are
+          registered in the database. When users are registered externally
+          (e.g. in a LDAP server), these lines may be commented.
+    -->
+    <beans:bean id="dbUserDetailsService" class="org.navalplanner.web.users.services.DBUserDetailsService"/>
+
+    <beans:bean id="dbPasswordEncoderService" class="org.navalplanner.web.users.services.DBPasswordEncoderService"
+        p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource"/>
+
+    <beans:bean id="usersBootstrapInDB" class="org.navalplanner.web.users.bootstrap.UsersBootstrapInDB"
+        p:dbPasswordEncoderService-ref="dbPasswordEncoderService"/>
 
 </beans:beans>
