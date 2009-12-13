@@ -28,12 +28,15 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
@@ -80,6 +83,9 @@ import org.zkoss.zul.api.Window;
 @org.springframework.stereotype.Component("resourceAllocationController")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ResourceAllocationController extends GenericForwardComposer {
+
+    private static final Log LOG = LogFactory
+            .getLog(ResourceAllocationController.class);
 
     private ViewSwitcher switcher;
 
@@ -203,11 +209,20 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     public enum HoursRendererColumn {
 
+
         CRITERIONS {
             @Override
             public Component cell(HoursRendererColumn column,
                     AggregatedHoursGroup data) {
                 return new Label(data.getCriterionsJoinedByComma());
+            }
+        },
+        RESOURCE_TYPE{
+
+            @Override
+            public Component cell(HoursRendererColumn column,
+                    AggregatedHoursGroup data) {
+                return new Label(asString(data.getResourceType()));
             }
         },
         HOURS {
@@ -219,6 +234,20 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 return result;
             }
         };
+
+        private static String asString(ResourceEnum resourceType) {
+            switch (resourceType) {
+            case RESOURCE:
+                return _("Resource");
+            case MACHINE:
+                return _("Machine");
+            case WORKER:
+                return _("Worker");
+            default:
+                LOG.warn("no i18n for " + resourceType.name());
+                return resourceType.name();
+            }
+        }
 
         public abstract Component cell(HoursRendererColumn column,
                 AggregatedHoursGroup data);

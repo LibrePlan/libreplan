@@ -98,16 +98,19 @@
                     <grid id="orderElementHoursGrid">
                         <columns>
                               <column  width="200px" label="${i18n:_('Criteria')}"/>
+                              <column  width="200px" label="${i18n:_('Type')}"/>
                               <column label="${i18n:_('Hours')}" />
                         </columns>
                     </grid>
                     <grid>
                           <columns>
                               <column width="200px" />
+                              <column width="200px" />
                               <column />
                           </columns>
                           <rows>
                             <row>
+                                <label  />
                                 <label value="${i18n:_('Total Estimated hours')}:" />
                                 <intbox value="@{allocationController.orderHours}" disabled="${true}" />
                             </row>
