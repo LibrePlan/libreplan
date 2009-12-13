@@ -30,13 +30,64 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 
 /**
  * A collection of HoursGroup with the same name required <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class AggregatedHoursGroup {
+
+    private static class GroupingCriteria {
+
+        private static Map<GroupingCriteria, List<HoursGroup>> byCriterions(
+                Collection<? extends HoursGroup> hours) {
+            Map<GroupingCriteria, List<HoursGroup>> result = new HashMap<GroupingCriteria, List<HoursGroup>>();
+            for (HoursGroup each : hours) {
+                GroupingCriteria key = asGroupingCriteria(each);
+                if (!result.containsKey(key)) {
+                    result.put(key,
+                            new ArrayList<HoursGroup>());
+                }
+                result.get(key).add(each);
+            }
+            return result;
+        }
+
+        private static GroupingCriteria asGroupingCriteria(HoursGroup hoursGroup) {
+            return new GroupingCriteria(hoursGroup.getResourceType(),
+                    hoursGroup.getValidCriterions());
+        }
+
+        private final ResourceEnum type;
+
+        private final Set<Criterion> criterions;
+
+        private GroupingCriteria(ResourceEnum type, Set<Criterion> criterions) {
+            this.type = type;
+            this.criterions = criterions;
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder().append(type).append(criterions)
+                    .toHashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof GroupingCriteria) {
+                GroupingCriteria other = (GroupingCriteria) obj;
+                return new EqualsBuilder().append(type, other.type).append(
+                        criterions,
+                        other.criterions).isEquals();
+            }
+            return false;
+        }
+    }
 
     public static List<AggregatedHoursGroup> aggregate(HoursGroup... hours) {
         return aggregate(Arrays.asList(hours));
@@ -45,7 +96,8 @@ public class AggregatedHoursGroup {
     public static List<AggregatedHoursGroup> aggregate(
             Collection<? extends HoursGroup> hours) {
         List<AggregatedHoursGroup> result = new ArrayList<AggregatedHoursGroup>();
-        for (Entry<Set<Criterion>, List<HoursGroup>> entry : byCriterions(hours)
+        for (Entry<GroupingCriteria, List<HoursGroup>> entry : GroupingCriteria
+                .byCriterions(hours)
                 .entrySet()) {
             result.add(new AggregatedHoursGroup(entry.getKey(), entry
                     .getValue()));
@@ -61,27 +113,19 @@ public class AggregatedHoursGroup {
         return result;
     }
 
-    private static Map<Set<Criterion>, List<HoursGroup>> byCriterions(
-            Collection<? extends HoursGroup> hours) {
-        Map<Set<Criterion>, List<HoursGroup>> result = new HashMap<Set<Criterion>, List<HoursGroup>>();
-        for (HoursGroup each : hours) {
-            if (!result.containsKey(each.getValidCriterions())) {
-                result.put(each.getValidCriterions(),
-                        new ArrayList<HoursGroup>());
-            }
-            result.get(each.getValidCriterions()).add(each);
-        }
-        return result;
-    }
-
     private final Set<Criterion> criterions;
 
     private final List<HoursGroup> hoursGroup;
 
-    private AggregatedHoursGroup(Set<Criterion> criterions,
+    private ResourceEnum resourceType;
+
+
+    private AggregatedHoursGroup(GroupingCriteria groupingCriteria,
             List<HoursGroup> hours) {
-        this.criterions = Collections.unmodifiableSet(criterions);
+        this.criterions = Collections
+                .unmodifiableSet(groupingCriteria.criterions);
         this.hoursGroup = Collections.unmodifiableList(hours);
+        this.resourceType = groupingCriteria.type;
     }
 
     public Set<Criterion> getCriterions() {
@@ -90,6 +134,10 @@ public class AggregatedHoursGroup {
 
     public List<HoursGroup> getHoursGroup() {
         return hoursGroup;
+    }
+
+    public ResourceEnum getResourceType() {
+        return resourceType;
     }
 
     public int getHours() {

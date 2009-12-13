@@ -40,6 +40,7 @@ import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -93,6 +94,23 @@ public class AggregatedHoursGroupTest {
         h2.setWorkingHours(5);
         List<AggregatedHoursGroup> list = AggregatedHoursGroup.aggregate(h1, h2);
         assertThat(AggregatedHoursGroup.sum(list), equalTo(15));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void theResourceTypeIsTakingIntoAccountWhenGrouping() {
+        HoursGroup h1 = createHoursGroupWithCriterions(ResourceEnum.MACHINE, criterion1,
+                criterion2);
+        h1.setWorkingHours(10);
+        HoursGroup h2 = createHoursGroupWithCriterions(ResourceEnum.WORKER,
+                criterion1, criterion2);
+        h1.setWorkingHours(5);
+        List<AggregatedHoursGroup> aggregate = AggregatedHoursGroup.aggregate(h1,h2);
+        assertThat(aggregate.size(), equalTo(2));
+        assertThat(aggregate, hasItem(allOf(withCriterions(criterion1,
+                criterion2), withHours(h1))));
+        assertThat(aggregate, hasItem(allOf(withCriterions(criterion1,
+                criterion2), withHours(h2))));
     }
 
     private static abstract class AggregatedHoursGroupMatcher extends
@@ -149,9 +167,14 @@ public class AggregatedHoursGroupTest {
     }
 
     private HoursGroup createHoursGroupWithCriterions(Criterion... criterions) {
+        return createHoursGroupWithCriterions(ResourceEnum.WORKER, criterions);
+    }
+
+    private HoursGroup createHoursGroupWithCriterions(
+            ResourceEnum resourceType, Criterion... criterions) {
         HoursGroup result = new HoursGroup();
-        result
-                .setCriterionRequirements(asCriterionRequirements(criterions));
+        result.setCriterionRequirements(asCriterionRequirements(criterions));
+        result.setResourceType(resourceType);
         return result;
     }
 
