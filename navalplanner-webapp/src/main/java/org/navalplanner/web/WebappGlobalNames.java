@@ -20,6 +20,7 @@
 
 package org.navalplanner.web;
 
+
 /**
  * A class containing constants for global names.
  *
@@ -31,5 +32,7 @@ public class WebappGlobalNames {
     }
 
     public final static String WEBAPP_SPRING_CONFIG_FILE = "classpath:/navalplanner-webapp-spring-config.xml";
+
+    public final static String WEBAPP_SPRING_SECURITY_CONFIG_FILE = "classpath:/navalplanner-webapp-spring-security-config.xml";
 
 }
