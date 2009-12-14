@@ -80,7 +80,7 @@
                     <panel title="${i18n:_('Criterion requirements')}" border="normal">
                         <panelchildren style="padding:10px;">
                     <textbox value="@{configurationUnit.id}" visible="false" />
-                    <bandbox value = "@{criterionSatisfactionDTO.criterionAndType}" width="300px">
+                    <bandbox width="300px">
                         <bandpopup>
                                 <listbox width="500px" height="150px" fixedLayout="true"
                                     model="@{assignedCriterionsController.criterionWorkersWithItsTypes}"
