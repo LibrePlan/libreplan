@@ -83,10 +83,10 @@ public class MachineDAO extends GenericDAOHibernate<Machine, Long>
     @SuppressWarnings("unchecked")
     @Override
     public List<Machine> findByNameOrCode(String name) {
+        String containsName = "%" + name + "%";
         return getSession().createCriteria(Machine.class).add(
-                Restrictions.or(Restrictions.ilike("name", "%" + name + "%"),
-                        Restrictions
-                        .ilike("code", name))).list();
+                Restrictions.or(Restrictions.ilike("name", containsName),
+                        Restrictions.ilike("code", containsName))).list();
     }
 
     @Override
