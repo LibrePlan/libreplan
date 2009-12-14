@@ -264,7 +264,7 @@ class FormBinder {
 
     public void setEndDate(Datebox endDate) {
         this.endDate = endDate;
-        this.endDate.setConstraint(datePosteriorToStartDate());
+        this.endDate.setConstraint(datePosteriorOrEqualToStartDate());
         endDateDisabilityRule();
         loadValueForEndDate();
         onChangeEnableApply(endDate);
@@ -278,16 +278,16 @@ class FormBinder {
         onChangeEnableApply(allResourcesPerDay);
     }
 
-    private Constraint datePosteriorToStartDate() {
+    private Constraint datePosteriorOrEqualToStartDate() {
         return new Constraint() {
             @Override
             public void validate(Component comp, Object value)
                     throws WrongValueException {
                 Date date = (Date) value;
                 Date startDate = allocationRowsHandler.getStartDate();
-                if (!date.after(startDate)) {
+                if (date.before(startDate)) {
                     throw new WrongValueException(comp, _(
-                            "{0} must be after {1}", date, startDate));
+                            "{0} must not be before {1}", date, startDate));
                 }
             }
         };

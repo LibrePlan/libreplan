@@ -54,6 +54,7 @@ import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -180,31 +181,36 @@ public class ResourceAllocationController extends GenericForwardComposer {
      */
     public void showWindow(Task task, org.zkoss.ganttz.data.Task ganttTask,
             PlanningState planningState) {
-        if (formBinder != null) {
-            formBinder.detach();
+        try {
+            if (formBinder != null) {
+                formBinder.detach();
+            }
+            allocationRows = resourceAllocationModel.initAllocationsFor(
+                    task, ganttTask, planningState);
+            formBinder = allocationRows
+                    .createFormBinder(resourceAllocationModel);
+            formBinder.setAssignedHoursComponent(assignedHoursComponent);
+            formBinder.setTaskStartDateBox(taskStartDateBox);
+            formBinder.setEndDate(taskEndDate);
+            formBinder.setAllResourcesPerDay(allResourcesPerDay);
+            formBinder.setApplyButton(applyButton);
+            formBinder.setAllocationsList(allocationsList);
+            formBinder.setMessagesForUser(messagesForUser);
+            formBinder.setWorkerSearchTab(workerSearchTab);
+            formBinder.setCheckbox(recommendedAllocationCheckbox);
+            CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
+                    .from(formBinder.getCalculatedValue());
+            calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
+            tbResourceAllocation.setSelected(true);
+            orderElementHoursGrid.setModel(new ListModelList(
+                    resourceAllocationModel.getHoursAggregatedByCriterions()));
+            orderElementHoursGrid.setRowRenderer(createOrderElementHoursRenderer());
+            newAllocationSelector.setAllocationsAdder(resourceAllocationModel);
+            showWindow();
+        } catch (WrongValueException e) {
+            LOG.error("there was a WrongValueException initializing window", e);
+            throw e;
         }
-        allocationRows = resourceAllocationModel.initAllocationsFor(
-                task, ganttTask, planningState);
-        formBinder = allocationRows
-                .createFormBinder(resourceAllocationModel);
-        formBinder.setAssignedHoursComponent(assignedHoursComponent);
-        formBinder.setTaskStartDateBox(taskStartDateBox);
-        formBinder.setEndDate(taskEndDate);
-        formBinder.setAllResourcesPerDay(allResourcesPerDay);
-        formBinder.setApplyButton(applyButton);
-        formBinder.setAllocationsList(allocationsList);
-        formBinder.setMessagesForUser(messagesForUser);
-        formBinder.setWorkerSearchTab(workerSearchTab);
-        formBinder.setCheckbox(recommendedAllocationCheckbox);
-        CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
-                .from(formBinder.getCalculatedValue());
-        calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
-        tbResourceAllocation.setSelected(true);
-        orderElementHoursGrid.setModel(new ListModelList(
-                resourceAllocationModel.getHoursAggregatedByCriterions()));
-        orderElementHoursGrid.setRowRenderer(createOrderElementHoursRenderer());
-        newAllocationSelector.setAllocationsAdder(resourceAllocationModel);
-        showWindow();
     }
 
     public enum HoursRendererColumn {
