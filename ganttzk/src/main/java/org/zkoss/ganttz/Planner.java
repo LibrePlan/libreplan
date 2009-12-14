@@ -200,6 +200,7 @@ public class Planner extends HtmlMacroComponent  {
         leftPane.afterCompose();
         setAt("insertionPointRightPanel", ganttPanel);
         ganttPanel.afterCompose();
+        leftPane.setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
 
         TimeTrackerComponent timetrackerheader = new TimeTrackerComponentWithoutColumns(
                 ganttPanel.getTimeTracker(), "timetrackerheader");
