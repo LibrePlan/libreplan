@@ -81,6 +81,11 @@ public class AdvancedAllocationTabCreator {
             this.task = task;
             this.associatedResources = getAssociatedResources(task);
             reattachResources();
+            loadNeededDataOfTask();
+        }
+
+        private void loadNeededDataOfTask() {
+            BaseCalendarModel.forceLoadBaseCalendar(task.getCalendar());
         }
 
         private Set<Resource> getAssociatedResources(Task task) {
