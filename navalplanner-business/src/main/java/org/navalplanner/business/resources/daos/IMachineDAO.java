@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 
 /**
@@ -34,19 +33,6 @@ import org.navalplanner.business.resources.entities.Machine;
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public interface IMachineDAO extends IGenericDAO<Machine, Long> {
-
-    /**
-     * Returns machines which name/NIF partially matches with name, and complies
-     * all of the given criterions
-     *
-     * @param name
-     *            search machine by name/NIF
-     * @param criterions
-     *            search machine that matches with criterions
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    List<Machine> findByNameAndCriterions(String name, List<Criterion> criterions);
 
     /**
      * Returns machines which name/NIF partially matches with name

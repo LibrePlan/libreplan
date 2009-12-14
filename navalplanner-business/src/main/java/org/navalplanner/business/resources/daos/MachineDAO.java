@@ -20,15 +20,12 @@
 
 package org.navalplanner.business.resources.daos;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -46,34 +43,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class MachineDAO extends GenericDAOHibernate<Machine, Long>
     implements IMachineDAO {
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Machine> findByNameAndCriterions(String name,
-            List<Criterion> criterions) {
-
-        // Find machines by name
-        List<Machine> machines;
-        if (name == null || name.isEmpty()) {
-            machines = getAll();
-        } else {
-            machines = findByNameOrCode(name);
-        }
-
-        // If no criterions selected, returned found machines
-        if (criterions.isEmpty()) {
-            return machines;
-        }
-
-        // Filter by criterion
-        final List<Machine> result = new ArrayList<Machine>();
-        for (Machine machine : machines) {
-            if (machine.satisfiesCriterions(new HashSet(criterions))) {
-                result.add(machine);
-            }
-        }
-        return result;
-    }
 
     @Override
     public List<Machine> getAll() {
