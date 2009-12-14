@@ -89,7 +89,7 @@
     <tabbox mold="accordion">
         <tabs>
             <tab id="tbResourceAllocation" label="${i18n:_('Resource allocation')}" image="common/img/collapse.gif" />
-            <tab id="workerSearchTab" label="${i18n:_('Worker search')}" image="common/img/collapse.gif"/>
+            <tab id="workerSearchTab" label="${i18n:_('Resources search')}" image="common/img/collapse.gif"/>
         </tabs>
         <tabpanels>
             <tabpanel>

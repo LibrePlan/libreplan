@@ -20,16 +20,22 @@
 
 package org.navalplanner.web.resources.search;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.IMachineDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -41,17 +47,23 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public class WorkerSearchModel implements IWorkerSearchModel {
+public class ResourceSearchModel implements IResourceSearchModel {
 
     @Autowired
     private IWorkerDAO workerDAO;
+
+    @Autowired
+    private IMachineDAO machineDAO;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
 
     @Autowired
     private ICriterionDAO criterionDAO;
 
     @Override
     @Transactional(readOnly = true)
-    public HashMap<CriterionType, Set<Criterion>> getCriterions() {
+    public Map<CriterionType, Set<Criterion>> getCriterions() {
         HashMap<CriterionType, Set<Criterion>> result = new HashMap<CriterionType, Set<Criterion>>();
 
         List<Criterion> criterions = criterionDAO.getAll();
@@ -67,24 +79,54 @@ public class WorkerSearchModel implements IWorkerSearchModel {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Worker> findWorkers(String name, List<Criterion> criterions) {
-        return workerDAO.findByNameAndCriterions(name, criterions);
+    public List<Resource> findResources(String name, List<Criterion> criterions) {
+        return findByNameAndCriterions(name, criterions);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Worker> findWorkers(String name) {
-        return workerDAO.findByNameOrNif(name);
+    public List<Resource> findResources(String name) {
+        return findByNameAndCriterions(name, Collections
+                .<Criterion> emptyList());
     }
 
-    public List<Worker> findByNameAndCriterions(String name,
+    private List<Resource> findByNameAndCriterions(String name,
             List<Criterion> criterions) {
-        return workerDAO.findByNameAndCriterions(name, criterions);
+        final boolean emptyName = StringUtils.isEmpty(name);
+        if (criterions.isEmpty() && emptyName) {
+            return resourceDAO.list(Resource.class);
+        }
+        Set<Resource> resourcesMatchingCriterions = null;
+        if (!criterions.isEmpty()) {
+            resourcesMatchingCriterions = new HashSet<Resource>(resourceDAO
+                    .findAllSatisfyingCriterions(criterions));
+            if (resourcesMatchingCriterions.isEmpty()) {
+                return new ArrayList<Resource>();
+            }
+        }
+        if (emptyName) {
+            return new ArrayList<Resource>(resourcesMatchingCriterions);
+        }
+        Set<Resource> result = intersect(workerDAO.findByNameOrNif(name),
+                resourcesMatchingCriterions);
+        result.addAll(intersect(machineDAO.findByNameOrCode(name),
+                resourcesMatchingCriterions));
+        return new ArrayList<Resource>(result);
+    }
+
+    private static Set<Resource> intersect(List<? extends Resource> all,
+            Set<Resource> filteringBy) {
+        if (filteringBy == null) {
+            return new HashSet<Resource>(all);
+        }
+        Set<Resource> result = new HashSet<Resource>(filteringBy);
+        result.retainAll(all);
+        return result;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Worker> getAllWorkers() {
-        return workerDAO.getWorkers();
+    public List<Resource> getAllResources() {
+        return resourceDAO.getResources();
     }
 }

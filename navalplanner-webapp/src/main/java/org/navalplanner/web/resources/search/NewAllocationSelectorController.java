@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,17 +59,15 @@ import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 
 /**
- * Controller for searching for {@link Worker}
- *
+ * Controller for searching for {@link Resource}
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
  */
 public class NewAllocationSelectorController extends GenericForwardComposer {
 
     @Autowired
-    private IWorkerSearchModel workerSearchModel;
+    private IResourceSearchModel resourceSearchModel;
 
-    private WorkerListRenderer workerListRenderer = new WorkerListRenderer();
+    private ResourceListRenderer resourceListRenderer = new ResourceListRenderer();
 
     private Textbox txtName;
 
@@ -77,7 +75,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
 
     private Tree criterionsTree;
 
-    private Listbox listBoxWorkers;
+    private Listbox listBoxResources;
 
     private CriterionRenderer criterionRenderer = new CriterionRenderer();
 
@@ -106,17 +104,17 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
                 // is executed, refreshing the results into the workers listbox
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    searchWorkers(txtName.getValue(), getSelectedCriterions());
+                    searchResources(txtName.getValue(), getSelectedCriterions());
                 }
             });
         }
 
         // Initialize components
         criterionsTree.setTreeitemRenderer(criterionRenderer);
-        listBoxWorkers.setItemRenderer(getListitemRenderer());
+        listBoxResources.setItemRenderer(getListitemRenderer());
 
         // Show all workers
-        refreshListBoxWorkers(workerSearchModel.getAllWorkers());
+        refreshListBoxResources(resourceSearchModel.getAllResources());
 
         allocationTypeSelector.addEventListener(Events.ON_CHECK,
                 new EventListener() {
@@ -128,12 +126,13 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
                         onType(type);
                     }
                 });
-        listBoxWorkers.addEventListener(Events.ON_SELECT, new EventListener() {
+        listBoxResources.addEventListener(Events.ON_SELECT,
+                new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
                 if (currentAllocationType == AllocationType.GENERIC) {
-                    clearSelection(listBoxWorkers);
+                            clearSelection(listBoxResources);
                 }
             }
         });
@@ -147,9 +146,9 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
     }
 
     private void onType(AllocationType type) {
-        listBoxWorkers.setDisabled(AllocationType.GENERIC == type);
+        listBoxResources.setDisabled(AllocationType.GENERIC == type);
         if (AllocationType.GENERIC == type) {
-            clearSelection(listBoxWorkers);
+            clearSelection(listBoxResources);
         }
         currentAllocationType = type;
     }
@@ -177,7 +176,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
      * @param event
      */
     public void searchWorkers(InputEvent event) {
-        searchWorkers(event.getValue(), getSelectedCriterions());
+        searchResources(event.getValue(), getSelectedCriterions());
     }
 
     /**
@@ -186,10 +185,11 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
      * @param name
      * @param criterions
      */
-    private void searchWorkers(String name, List<Criterion> criterions) {
-        final List<Worker> workers = workerSearchModel.findWorkers(name,
+    private void searchResources(String name, List<Criterion> criterions) {
+        final List<Resource> resources = resourceSearchModel.findResources(
+                name,
                 criterions);
-        refreshListBoxWorkers(workers);
+        refreshListBoxResources(resources);
     }
 
     /**
@@ -212,12 +212,12 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
         return result;
     }
 
-    private void refreshListBoxWorkers(List<Worker> workers) {
-        listBoxWorkers.setModel(new SimpleListModel(workers));
+    private void refreshListBoxResources(List<? extends Resource> resources) {
+        listBoxResources.setModel(new SimpleListModel(resources));
     }
 
-    public WorkerListRenderer getListitemRenderer() {
-        return workerListRenderer;
+    public ResourceListRenderer getListitemRenderer() {
+        return resourceListRenderer;
     }
 
     public void onClose() {
@@ -226,39 +226,37 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
 
     public void clearAll() {
         txtName.setValue("");
-        refreshListBoxWorkers(workerSearchModel.getAllWorkers());
+        refreshListBoxResources(resourceSearchModel.getAllResources());
         criterionsTree.setModel(getCriterions());
-        clearSelection(listBoxWorkers);
+        clearSelection(listBoxResources);
         clearSelection(criterionsTree);
         doInitialSelection();
     }
 
-    public List<Worker> getSelectedWorkers() {
+    public List<Resource> getSelectedWorkers() {
         if(currentAllocationType== AllocationType.GENERIC){
-            return allWorkersShown();
+            return allResourcesShown();
         } else {
-            return getSelectedWorkersOnListbox();
+            return getSelectedResourcesOnListbox();
         }
     }
 
     @SuppressWarnings("unchecked")
-    private List<Worker> allWorkersShown() {
-        List<Worker> result = new ArrayList<Worker>();
-        List<Listitem> selectedItems = listBoxWorkers.getItems();
+    private List<Resource> allResourcesShown() {
+        List<Resource> result = new ArrayList<Resource>();
+        List<Listitem> selectedItems = listBoxResources.getItems();
         for (Listitem item : selectedItems) {
-            Worker worker = (Worker) item.getValue();
-            result.add(worker);
+            result.add((Resource) item.getValue());
         }
         return result;
     }
 
     @SuppressWarnings("unchecked")
-    private List<Worker> getSelectedWorkersOnListbox() {
-        List<Worker> result = new ArrayList<Worker>();
-        Set<Listitem> selectedItems = listBoxWorkers.getSelectedItems();
+    private List<Resource> getSelectedResourcesOnListbox() {
+        List<Resource> result = new ArrayList<Resource>();
+        Set<Listitem> selectedItems = listBoxResources.getSelectedItems();
         for (Listitem item : selectedItems) {
-            Worker worker = (Worker) item.getValue();
-            result.add(worker);
+            result.add((Resource) item.getValue());
         }
         return result;
     }
@@ -300,7 +298,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
      * @return
      */
     public TreeModel getCriterions() {
-        Map<CriterionType, Set<Criterion>> criterions = workerSearchModel
+        Map<CriterionType, Set<Criterion>> criterions = resourceSearchModel
                 .getCriterions();
 
         List<CriterionTreeNode> rootList = new ArrayList<CriterionTreeNode>();
@@ -353,30 +351,24 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
     }
 
     /**
-     * Render for listBoxWorkers
-     *
+     * Render for listBoxResources
      * @author Diego Pino García <dpino@igalia.com>
-     *
      */
-    private class WorkerListRenderer implements ListitemRenderer {
+    private class ResourceListRenderer implements ListitemRenderer {
 
         @Override
         public void render(Listitem item, Object data) throws Exception {
-            item.setValue((Worker) data);
+            item.setValue((Resource) data);
 
-            appendLabelWorker(item);
+            appendLabelResource(item);
         }
 
-        private void appendLabelWorker(Listitem item) {
-            Worker worker = (Worker) item.getValue();
+        private void appendLabelResource(Listitem item) {
+            Resource resource = (Resource) item.getValue();
 
-            Listcell listWorker = new Listcell();
-            listWorker.appendChild(new Label(worker.getName()));
-            item.appendChild(listWorker);
-
-            Listcell listName = new Listcell();
-            listName.appendChild(new Label(worker.getNif()));
-            item.appendChild(listName);
+            Listcell cell = new Listcell();
+            cell.appendChild(new Label(resource.getShortDescription()));
+            item.appendChild(cell);
         }
     }
 
