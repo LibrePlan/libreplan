@@ -24,6 +24,7 @@ import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
+import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -70,6 +71,9 @@ public class Registry {
     @Autowired
     private IMaterialCategoryDAO materialCategoryDAO;
 
+    @Autowired
+    private IQualityFormDAO qualityFormDAO;
+
     private Registry() {
     }
 
@@ -107,5 +111,9 @@ public class Registry {
 
     public static IMaterialCategoryDAO getMaterialCategoryDAO() {
         return getInstance().materialCategoryDAO;
+    }
+
+    public static IQualityFormDAO getQualityFormDAO() {
+        return getInstance().qualityFormDAO;
     }
 }

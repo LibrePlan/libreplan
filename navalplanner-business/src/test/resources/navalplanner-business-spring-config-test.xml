@@ -72,6 +72,9 @@
                 <value>
                     TestEntities.hbm.xml
                 </value>
+                <value>
+                    org/navalplanner/business/qualityforms/entities/QualityForms.hbm.xml
+                </value>
             </list>
         </property>
 

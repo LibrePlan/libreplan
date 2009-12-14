@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.qualityforms.entities" default-access="field">
+
+<!-- QualityForm -->
+<class name="QualityForm" table="QUALITY_FORM">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="name" access="field" unique="true"/>
+    <property name="description" access="field"/>
+
+    <property name="qualityFormType">
+      <type name="org.hibernate.type.EnumType">
+        <param name="enumClass">org.navalplanner.business.qualityforms.entities.QualityFormType</param>
+      </type>
+    </property>
+
+    <list name="qualityFormItems" table="QUALITY_FORM_ITEMS">
+        <key column="QUALITY_FORM_ID"/>
+        <index column="position"/>
+        <composite-element class="org.navalplanner.business.qualityforms.entities.QualityFormItem">
+                <property name="name"/>
+                <property name="percentage"/>
+        </composite-element>
+    </list>
+</class>
+
+</hibernate-mapping>

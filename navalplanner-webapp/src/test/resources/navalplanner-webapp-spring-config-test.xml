@@ -69,6 +69,9 @@
                 <value>
                     org/navalplanner/business/costcategories/entities/CostCategories.hbm.xml
                 </value>
+                <value>
+                    org/navalplanner/business/qualityforms/entities/QualityForms.hbm.xml
+                </value>
             </list>
         </property>
 
