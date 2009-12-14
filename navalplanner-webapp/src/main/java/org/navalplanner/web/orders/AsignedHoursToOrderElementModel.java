@@ -76,7 +76,7 @@ public class AsignedHoursToOrderElementModel implements
         Iterator<WorkReportLine> iterador = listWRL.iterator();
         while (iterador.hasNext()) {
             WorkReportLine w = iterador.next();
-            w.getResource().getDescription();
+            w.getResource().getShortDescription();
             w.getOrderElement().getWorkHours();
             w.getWorkReport().getDate();
             this.asignedDirectHours = this.asignedDirectHours + w.getNumHours();

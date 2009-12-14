@@ -967,7 +967,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         if (resource == null || orderElement == null) {
             return ITEM;
         }
-        return resource.getDescription() + " - " + orderElement.getCode();
+        return resource.getShortDescription() + " - " + orderElement.getCode();
     }
 
     /**

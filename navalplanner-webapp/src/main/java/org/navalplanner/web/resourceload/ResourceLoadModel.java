@@ -202,7 +202,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 .sortedByStartDate(resourceAllocationDAO
                         .findAllocationsRelatedTo(resource));
         return new LoadTimelinesGroup(buildTimeLine(resource, resource
-                .getDescription(), sortedByStartDate), buildSecondLevel(
+                .getShortDescription(), sortedByStartDate), buildSecondLevel(
                 resource, sortedByStartDate));
     }
 

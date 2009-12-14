@@ -506,7 +506,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             Restriction restriction) {
         return Row.createRow(messages, restriction,
                 specificResourceAllocation.getResource()
-                        .getDescription(), 1, Arrays
+                        .getShortDescription(), 1, Arrays
                         .asList(specificResourceAllocation));
     }
 

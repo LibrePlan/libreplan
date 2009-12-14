@@ -75,9 +75,12 @@ public class Machine extends Resource {
         this.name = name;
     }
 
-    @Override
     public String getDescription() {
         return description;
+    }
+
+    public String getShortDescription() {
+        return code + " :: " + name;
     }
 
     public void setDescription(String description) {

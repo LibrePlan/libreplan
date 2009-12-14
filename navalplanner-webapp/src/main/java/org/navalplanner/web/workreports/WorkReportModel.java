@@ -139,7 +139,7 @@ public class WorkReportModel implements IWorkReportModel {
         // Load WorkReportType
         workReport.getWorkReportType().getName();
         if (workReport.getResource() != null) {
-            workReport.getResource().getDescription();
+            workReport.getResource().getShortDescription();
         }
         if (workReport.getOrderElement() != null) {
             workReport.getOrderElement().getCode();
@@ -160,7 +160,7 @@ public class WorkReportModel implements IWorkReportModel {
         // Load WorkReportLines
         for (WorkReportLine workReportLine : workReport.getWorkReportLines()) {
             workReportLine.getNumHours();
-            workReportLine.getResource().getDescription();
+            workReportLine.getResource().getShortDescription();
             workReportLine.getOrderElement().getName();
             workReportLine.getTypeOfWorkHours().getName();
 
@@ -252,7 +252,7 @@ public class WorkReportModel implements IWorkReportModel {
         for (WorkReport each : workReportDAO.list(WorkReport.class)) {
             each.getWorkReportType().getName();
             if (each.getResource() != null) {
-                each.getResource().getDescription();
+                each.getResource().getShortDescription();
             }
             if (each.getOrderElement() != null) {
                 each.getOrderElement().getName();

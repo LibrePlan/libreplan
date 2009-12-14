@@ -66,9 +66,13 @@ public class Worker extends Resource {
         this.nif = nif;
     }
 
-    @Override
-    public String getDescription(){
+    public String getDescription() {
         return getFirstName()+" "+getSurname();
+    }
+
+    @Override
+    public String getShortDescription() {
+        return getNif() + " :: " + getDescription();
     }
 
     public String getFirstName() {

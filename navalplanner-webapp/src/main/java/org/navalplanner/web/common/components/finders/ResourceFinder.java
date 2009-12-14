@@ -47,6 +47,6 @@ public class ResourceFinder extends Finder implements IFinder {
     @Override
     public String _toString(Object value) {
         final Resource resource = (Resource) value;
-        return (resource != null) ? resource.getDescription() : "";
+        return (resource != null) ? resource.getShortDescription() : "";
     }
 }

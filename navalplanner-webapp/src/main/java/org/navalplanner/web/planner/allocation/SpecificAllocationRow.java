@@ -92,7 +92,7 @@ public class SpecificAllocationRow extends AllocationRow {
 
     public static SpecificAllocationRow forResource(Resource resource) {
         SpecificAllocationRow result = new SpecificAllocationRow();
-        result.setName(resource.getDescription());
+        result.setName(resource.getShortDescription());
         result.setResource(resource);
         result.setResourcesPerDay(ResourcesPerDay.amount(1));
         return result;

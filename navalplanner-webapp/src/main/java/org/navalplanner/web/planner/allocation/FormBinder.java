@@ -426,7 +426,7 @@ class FormBinder {
     private List<String> getResourcesDescriptions(List<Resource> resources) {
         List<String> resourcesDescriptions = new ArrayList<String>();
         for (Resource each : resources) {
-            resourcesDescriptions.add(each.getDescription());
+            resourcesDescriptions.add(each.getShortDescription());
         }
         return resourcesDescriptions;
     }
