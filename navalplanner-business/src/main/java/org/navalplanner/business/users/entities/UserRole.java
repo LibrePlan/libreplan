@@ -30,7 +30,9 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 public enum UserRole {
 
     ROLE_BASIC_USER(_("Basic user")),
-    ROLE_ADMINISTRATION(_("Administration"));
+    ROLE_ADMINISTRATION(_("Administration")),
+    ROLE_WS_READER(_("Web service reader")),
+    ROLE_WS_WRITER(_("Web service writer"));
 
     private final String displayName;
 

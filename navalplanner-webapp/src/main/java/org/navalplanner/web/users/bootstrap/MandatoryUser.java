@@ -36,7 +36,10 @@ public enum MandatoryUser {
 
     USER(Arrays.asList(UserRole.ROLE_BASIC_USER)),
     ADMIN(Arrays.asList(UserRole.ROLE_BASIC_USER,
-        UserRole.ROLE_ADMINISTRATION));
+        UserRole.ROLE_ADMINISTRATION)),
+    WSREADER(Arrays.asList(UserRole.ROLE_WS_READER)),
+    WSWRITER(Arrays.asList(UserRole.ROLE_WS_READER,
+        UserRole.ROLE_WS_WRITER));
 
     private Set<UserRole> initialRoles;
 

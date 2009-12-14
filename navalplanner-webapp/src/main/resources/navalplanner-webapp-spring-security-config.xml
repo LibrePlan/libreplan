@@ -7,12 +7,11 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
 
-    <global-method-security secured-annotations="enabled"/>
-
-    <http auto-config="true" >
+    <http auto-config="true" realm="Naval Planner Web Application" >
 
         <!-- Web services -->
-        <intercept-url pattern="/ws/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_READER" method="GET" />
+        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_WRITER" method="POST" />
 
         <!--  Web application -->
         <intercept-url pattern="/common/img/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
@@ -24,7 +23,7 @@
         <intercept-url pattern="/calendars/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/labels/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/common/configuration.zul" access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/**" access="IS_AUTHENTICATED_REMEMBERED" />
+        <intercept-url pattern="/**" access="ROLE_BASIC_USER" />
         <form-login login-page="/common/layout/login.zul" authentication-failure-url="/common/layout/login.zul?login_error=x"/>
 
     </http>
