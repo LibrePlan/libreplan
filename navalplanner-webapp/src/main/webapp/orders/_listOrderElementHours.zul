@@ -35,10 +35,8 @@
                     </columns>
                     <rows>
                         <row self="@{each='workReportLine'}">
-                            <label
-                                value="@{workReportLine.workReport.date}" />
-                            <label
-                                value="@{workReportLine.resource.description}" />
+                            <label value="@{workReportLine.workReport.date}" />
+                            <label value="@{workReportLine.resource.shortDescription}" />
                             <label value="@{workReportLine.numHours}" />
                         </row>
                     </rows>
