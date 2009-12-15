@@ -28,13 +28,11 @@
         </set>
 
 		<set name="labels" table="ORDER_ELEMENT_LABEL" access="field" cascade="all">
-            <cache usage="read-write"/>
 			<key column="ORDER_ELEMENT_ID" not-null="true"/>
 			<many-to-many column="LABEL_ID" class="org.navalplanner.business.labels.entities.Label" />
 		</set>
 
         <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true">
-            <cache usage="read-write"/>
             <key column="ORDER_ELEMENT_ID" not-null="false"></key>
             <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement"/>
         </set>

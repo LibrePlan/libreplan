@@ -54,7 +54,6 @@
 
   <!-- Criterion -->
   <class name="Criterion">
-    <cache usage="read-write"/>
     <id name="id" access="property" type="long">
       <generator class="hilo">
         <param name="max_lo">100</param>
@@ -68,7 +67,6 @@
     <many-to-one name="parent" column="parent" access="field" not-null="false"/>
 
     <set name="children" access="field" lazy="true" cascade="save-update">
-        <cache usage="read-write"/>
         <key column="parent" not-null="false"></key>
         <one-to-many class="Criterion"/>
     </set>
@@ -87,7 +85,6 @@
 
   <!-- CriterionSatisfaction -->
   <class name="CriterionSatisfaction">
-    <cache usage="read-write"/>
     <id name="id" access="property" type="long">
       <generator class="hilo">
         <param name="max_lo">100</param>
@@ -103,7 +100,6 @@
 
   <!-- CriterionType -->
   <class name="CriterionType">
-    <cache usage="read-write"/>
     <id name="id" access="property" type="long">
       <generator class="hilo"/>
     </id>
