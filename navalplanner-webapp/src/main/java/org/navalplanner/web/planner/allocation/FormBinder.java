@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -105,7 +106,7 @@ class FormBinder {
 
     private final IResourceAllocationModel resourceAllocationModel;
 
-    private List<AllocationRow> rows;
+    private List<AllocationRow> rows = Collections.emptyList();
 
     private Checkbox recommendedAllocationCheckbox;
 
@@ -188,7 +189,8 @@ class FormBinder {
 
     private void allHoursInputComponentDisabilityRule() {
         CalculatedValue c = allocationRowsHandler.getCalculatedValue();
-        boolean disabled = (CalculatedValue.NUMBER_OF_HOURS == c)
+        boolean disabled = rows.isEmpty()
+                || (CalculatedValue.NUMBER_OF_HOURS == c)
                 || (c == CalculatedValue.RESOURCES_PER_DAY && !recommendedAllocation);
         this.allHoursInput.setDisabled(disabled);
     }
@@ -303,8 +305,10 @@ class FormBinder {
     }
 
     private void allResourcesPerDayVisibilityRule() {
-        this.allResourcesPerDay.setDisabled(allocationRowsHandler
-                .getCalculatedValue() == CalculatedValue.RESOURCES_PER_DAY
+        CalculatedValue c = allocationRowsHandler
+            .getCalculatedValue();
+        this.allResourcesPerDay.setDisabled(rows.isEmpty()
+                || c == CalculatedValue.RESOURCES_PER_DAY
                 || !recommendedAllocation);
         this.allResourcesPerDay
                 .setConstraint(constraintForAllResourcesPerDay());
@@ -323,7 +327,9 @@ class FormBinder {
         rows = result;
         applyDisabledRulesOnRows();
         bindTotalHoursToHoursInputs();
+        allHoursInputComponentDisabilityRule();
         bindAllResourcesPerDayToRows();
+        allResourcesPerDayVisibilityRule();
         return result;
     }
 
