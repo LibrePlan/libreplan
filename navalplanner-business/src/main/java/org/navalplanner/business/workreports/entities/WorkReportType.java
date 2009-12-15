@@ -311,7 +311,7 @@ public class WorkReportType extends BaseEntity {
             int position) {
         if (isValidIndexToAdd(position, getLineFieldsAndLabels())) {
             updateIndexFromPosition(getLineFieldsAndLabels(), position, 1);
-            descriptionField.setIndex(position);
+            descriptionField.setPositionNumber(position);
             getLineFields().add(descriptionField);
         }
     }
@@ -320,7 +320,7 @@ public class WorkReportType extends BaseEntity {
             int position) {
         if (isValidIndexToAdd(position, getHeadingFieldsAndLabels())) {
             updateIndexFromPosition(getHeadingFieldsAndLabels(), position, 1);
-            descriptionField.setIndex(position);
+            descriptionField.setPositionNumber(position);
             getHeadingFields().add(descriptionField);
         }
     }
@@ -331,7 +331,7 @@ public class WorkReportType extends BaseEntity {
         if (isValidIndexToAdd(position, getHeadingFieldsAndLabels())) {
             updateIndexFromPosition(getHeadingFieldsAndLabels(), position, 1);
             workReportLabelTypeAssigment.setLabelsSharedByLines(true);
-            workReportLabelTypeAssigment.setIndex(position);
+            workReportLabelTypeAssigment.setPositionNumber(position);
             getWorkReportLabelTypeAssigments()
                     .add(workReportLabelTypeAssigment);
         }
@@ -343,7 +343,9 @@ public class WorkReportType extends BaseEntity {
         if (isValidIndexToAdd(position, getLineFieldsAndLabels())) {
             updateIndexFromPosition(getLineFieldsAndLabels(), position, 1);
             workReportLabelTypeAssigment.setLabelsSharedByLines(false);
-            workReportLabelTypeAssigment.setIndex(position);
+            workReportLabelTypeAssigment.setPositionNumber(
+
+            position);
             getWorkReportLabelTypeAssigments()
                     .add(workReportLabelTypeAssigment);
         }
@@ -409,11 +411,11 @@ public class WorkReportType extends BaseEntity {
         if (getHeadingFields().contains(descriptionField)) {
             getHeadingFields().remove(descriptionField);
             updateIndexFromPosition(getHeadingFieldsAndLabels(),
-                    descriptionField.getIndex(), -1);
+                    descriptionField.getPositionNumber(), -1);
         } else {
             getLineFields().remove(descriptionField);
             updateIndexFromPosition(getLineFieldsAndLabels(), descriptionField
-                    .getIndex(), -1);
+                    .getPositionNumber(), -1);
         }
 
     }
@@ -422,18 +424,18 @@ public class WorkReportType extends BaseEntity {
         getWorkReportLabelTypeAssigments().remove(workReportLabelTypeAssigment);
         if (workReportLabelTypeAssigment.getLabelsSharedByLines()) {
             updateIndexFromPosition(getHeadingFieldsAndLabels(),
-                    workReportLabelTypeAssigment.getIndex(), -1);
+                    workReportLabelTypeAssigment.getPositionNumber(), -1);
         } else {
             updateIndexFromPosition(getLineFieldsAndLabels(),
-                    workReportLabelTypeAssigment.getIndex(), -1);
+                    workReportLabelTypeAssigment.getPositionNumber(), -1);
         }
     }
 
     private void setIndex(Object object, Integer index) {
         if (object instanceof DescriptionField) {
-            ((DescriptionField) object).setIndex(index);
+            ((DescriptionField) object).setPositionNumber(index);
         } else {
-            ((WorkReportLabelTypeAssigment) object).setIndex(index);
+            ((WorkReportLabelTypeAssigment) object).setPositionNumber(index);
         }
     }
 
@@ -520,9 +522,9 @@ public class WorkReportType extends BaseEntity {
 
     private Integer getIndex(Object object) {
         if (object instanceof DescriptionField) {
-            return ((DescriptionField) object).getIndex();
+            return ((DescriptionField) object).getPositionNumber();
         } else {
-            return ((WorkReportLabelTypeAssigment) object).getIndex();
+            return ((WorkReportLabelTypeAssigment) object).getPositionNumber();
         }
     }
 

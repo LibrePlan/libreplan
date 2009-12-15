@@ -94,14 +94,14 @@ public class WorkReportLabelTypeAssigment extends BaseEntity implements
 
     /* Methos for the index */
 
-    private Integer index;
+    private Integer positionNumber;
 
-    public Integer getIndex() {
-        return index;
+    public Integer getPositionNumber() {
+        return positionNumber;
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
+    public void setPositionNumber(Integer positionNumber) {
+        this.positionNumber = positionNumber;
     }
 
 }

@@ -45,7 +45,7 @@ public class DescriptionField implements INewObject {
         return descriptionField;
     }
 
-    private DescriptionField() {
+    public DescriptionField() {
     }
 
     private DescriptionField(String fieldName, Integer lenght) {
@@ -88,14 +88,14 @@ public class DescriptionField implements INewObject {
 
     /* Methos for the index */
 
-    private Integer index;
+    private Integer positionNumber;
 
-    public Integer getIndex() {
-        return index;
+    public Integer getPositionNumber() {
+        return positionNumber;
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
+    public void setPositionNumber(Integer positionNumber) {
+        this.positionNumber = positionNumber;
     }
 
 }

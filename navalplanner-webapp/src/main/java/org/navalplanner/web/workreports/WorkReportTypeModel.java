@@ -459,31 +459,35 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
 
     private int getIndex(Object object) {
         if (object instanceof DescriptionField) {
-            return ((DescriptionField) object).getIndex();
+            return ((DescriptionField) object).getPositionNumber();
         } else {
-            return ((WorkReportLabelTypeAssigment) object).getIndex();
+            return ((WorkReportLabelTypeAssigment) object).getPositionNumber();
         }
     }
 
     public void upFieldOrLabel(Object objectToUp, boolean intoHeading) {
         if (objectToUp instanceof DescriptionField) {
-            int newPosition = ((DescriptionField) objectToUp).getIndex() - 1;
+            int newPosition = ((DescriptionField) objectToUp)
+                    .getPositionNumber() - 1;
             moveDescriptionField((DescriptionField) objectToUp, intoHeading, newPosition);
         } else {
-            int newPosition = ((WorkReportLabelTypeAssigment) objectToUp).getIndex()-1;
+            int newPosition = ((WorkReportLabelTypeAssigment) objectToUp)
+                    .getPositionNumber() - 1;
             moveWorkReportLabelTypeAssigment(
-                    (WorkReportLabelTypeAssigment) objectToUp, intoHeading, newPosition);
+                    (WorkReportLabelTypeAssigment) objectToUp, intoHeading,
+                    newPosition);
         }
     }
 
     public void downFieldOrLabel(Object objectToDown, boolean intoHeading) {
         if (objectToDown instanceof DescriptionField) {
-            int newPosition = ((DescriptionField) objectToDown).getIndex() + 1;
+            int newPosition = ((DescriptionField) objectToDown)
+                    .getPositionNumber() + 1;
             moveDescriptionField((DescriptionField) objectToDown, intoHeading,
                     newPosition);
         } else {
             int newPosition = ((WorkReportLabelTypeAssigment) objectToDown)
-                    .getIndex() + 1;
+                    .getPositionNumber() + 1;
             moveWorkReportLabelTypeAssigment(
                     (WorkReportLabelTypeAssigment) objectToDown, intoHeading,
                     newPosition);

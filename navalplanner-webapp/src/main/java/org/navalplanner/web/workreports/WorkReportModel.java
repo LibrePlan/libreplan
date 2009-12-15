@@ -396,7 +396,7 @@ public class WorkReportModel implements IWorkReportModel {
         for (WorkReportLabelTypeAssigment labelTypeAssigment : getWorkReportType()
                 .getWorkReportLabelTypeAssigments()) {
             if(labelTypeAssigment.getLabelType().equals(label.getType())){
-                return labelTypeAssigment.getIndex();
+                return labelTypeAssigment.getPositionNumber();
             }
         }
         return null;
@@ -425,16 +425,16 @@ public class WorkReportModel implements IWorkReportModel {
         if (object instanceof DescriptionValue) {
             DescriptionField descriptionField = getDescriptionFieldByName(((DescriptionValue) object)
                     .getFieldName());
-            return descriptionField.getIndex();
+            return descriptionField.getPositionNumber();
         }
         if (object instanceof Label) {
             return getAssignedLabelIndex((Label) object);
         }
         if (object instanceof DescriptionField) {
-            return ((DescriptionField) object).getIndex();
+            return ((DescriptionField) object).getPositionNumber();
         }
         if (object instanceof WorkReportLabelTypeAssigment) {
-            return ((WorkReportLabelTypeAssigment) object).getIndex();
+            return ((WorkReportLabelTypeAssigment) object).getPositionNumber();
         }
         return null;
     }

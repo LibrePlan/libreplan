@@ -300,10 +300,10 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         WorkReportLabelTypeAssigment labelAssigment_3 = createValidWorkReportLabelTypeAssigment();
         workReportType.addLabelAssigmentToEndLine(labelAssigment_3);
 
-        // Set repeat indes labels
-        labelAssigment_1.setIndex(3);
-        labelAssigment_2.setIndex(0);
-        labelAssigment_3.setIndex(2);
+        // Set not consecutives index labels
+        labelAssigment_1.setPositionNumber(3);
+        labelAssigment_2.setPositionNumber(0);
+        labelAssigment_3.setPositionNumber(2);
 
         try {
             workReportTypeDAO.save(workReportType);
@@ -326,9 +326,9 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         workReportType.addLabelAssigmentToEndLine(labelAssigment_3);
 
         // Set repeat indes labels
-        labelAssigment_1.setIndex(1);
-        labelAssigment_2.setIndex(2);
-        labelAssigment_3.setIndex(3);
+        labelAssigment_1.setPositionNumber(1);
+        labelAssigment_2.setPositionNumber(2);
+        labelAssigment_3.setPositionNumber(3);
 
         try {
             workReportTypeDAO.save(workReportType);
@@ -351,9 +351,9 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         workReportType.addLabelAssigmentToEndLine(labelAssigment_3);
 
         // Set repeat indes labels
-        labelAssigment_1.setIndex(1);
-        labelAssigment_2.setIndex(0);
-        labelAssigment_3.setIndex(1);
+        labelAssigment_1.setPositionNumber(1);
+        labelAssigment_2.setPositionNumber(0);
+        labelAssigment_3.setPositionNumber(1);
 
         try {
             workReportTypeDAO.save(workReportType);
