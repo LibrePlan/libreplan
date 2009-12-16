@@ -62,11 +62,6 @@ public class TaskSource extends BaseEntity {
 
     public static abstract class TaskSourceSynchronization {
         public abstract TaskElement apply(ITaskSourceDAO taskSourceDAO);
-
-        protected void saveTaskSource(ITaskSourceDAO taskSourceDAO,
-                TaskSource taskSource) {
-            taskSourceDAO.save(taskSource);
-        }
     }
 
     static class TaskSourceMustBeAdded extends TaskSourceSynchronization {
@@ -96,7 +91,7 @@ public class TaskSource extends BaseEntity {
 
         @Override
         public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
-            saveTaskSource(taskSourceDAO, taskSource);
+            taskSourceDAO.save(taskSource);
             return taskSource.getTask();
         }
     }
@@ -187,7 +182,7 @@ public class TaskSource extends BaseEntity {
                 result.addTaskElement(taskElement);
             }
             taskSource.setTask(result);
-            saveTaskSource(taskSourceDAO, taskSource);
+            taskSourceDAO.save(taskSource);
             return result;
         }
 
