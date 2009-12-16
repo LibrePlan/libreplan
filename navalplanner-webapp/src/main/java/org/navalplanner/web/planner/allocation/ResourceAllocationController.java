@@ -185,6 +185,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             if (formBinder != null) {
                 formBinder.detach();
             }
+            window.setTitle(task.getName());
             allocationRows = resourceAllocationModel.initAllocationsFor(
                     task, ganttTask, planningState);
             formBinder = allocationRows
