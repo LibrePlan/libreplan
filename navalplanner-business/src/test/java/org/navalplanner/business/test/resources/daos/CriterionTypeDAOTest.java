@@ -23,6 +23,7 @@ package org.navalplanner.business.test.resources.daos;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
@@ -53,6 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Test cases for CriterionTypeDAO <br />
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
@@ -113,6 +115,83 @@ public class CriterionTypeDAOTest {
     }
 
     @Test
+    @NotTransactional
+    public void testUpdateWithExistingName() {
+
+        final String name1 = getUniqueName();
+        final String name2 = getUniqueName();
+
+        IOnTransaction<Void> createCriterionTypes = new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                criterionTypeDAO.save(createValidCriterionType(name1, ""));
+                criterionTypeDAO.save(createValidCriterionType(name2, ""));
+                return null;
+            }
+        };
+
+        IOnTransaction<Void> updateCriterionType1 = new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                CriterionType criterionType = null;
+                try {
+                    criterionType = criterionTypeDAO.findUniqueByName(name1);
+                } catch (InstanceNotFoundException e) {
+                    fail("InstanceNotFoundException not expected");
+                }
+                criterionType.setName(name2);
+                criterionTypeDAO.save(criterionType);
+                return null;
+            }
+        };
+
+        transactionService.runOnTransaction(createCriterionTypes);
+
+        try {
+            transactionService.runOnTransaction(updateCriterionType1);
+            fail("ValidationException expected");
+        } catch (ValidationException e) {
+        }
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testUpdateWithTheSameName() {
+
+        final String name1 = getUniqueName();
+        final String name2 = getUniqueName();
+
+        IOnTransaction<Void> createCriterionTypes = new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                criterionTypeDAO.save(createValidCriterionType(name1, ""));
+                criterionTypeDAO.save(createValidCriterionType(name2, ""));
+                return null;
+            }
+        };
+
+        IOnTransaction<Void> updateCriterionType1 = new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                CriterionType criterionType = null;
+                try {
+                    criterionType = criterionTypeDAO.findUniqueByName(name1);
+                } catch (InstanceNotFoundException e) {
+                    fail("InstanceNotFoundException not expected");
+                }
+                criterionType.setDescription("New description");
+                criterionTypeDAO.save(criterionType);
+                return null;
+            }
+        };
+
+        transactionService.runOnTransaction(createCriterionTypes);
+        transactionService.runOnTransaction(updateCriterionType1);
+
+    }
+
+    @Test
     public void testRemove() throws InstanceNotFoundException {
         CriterionType criterionType = createValidCriterionType();
         criterionTypeDAO.save(criterionType);
@@ -167,6 +246,10 @@ public class CriterionTypeDAOTest {
         int numberOfCriterionsOfTypeResourceAndWorker = criterions.size();
 
         assertTrue(numberOfCriterionsOfTypeResourceAndWorker >= numberOfCriterionsOfTypeResource);
+    }
+
+    private String getUniqueName() {
+        return UUID.randomUUID().toString();
     }
 
 }
