@@ -96,7 +96,7 @@ public class WorkReportLine extends BaseEntity implements Comparable {
         this.orderElement = orderElement;
     }
 
-    @NotNull
+    @NotNull(message = "number of hours not specified")
     public Integer getNumHours() {
         return numHours;
     }
@@ -123,7 +123,7 @@ public class WorkReportLine extends BaseEntity implements Comparable {
         updateNumHours();
     }
 
-    @NotNull
+    @NotNull(message = "date not specified")
     public Date getDate() {
         return date;
     }
@@ -132,6 +132,7 @@ public class WorkReportLine extends BaseEntity implements Comparable {
         this.date = date;
     }
 
+    @NotNull(message = "resource not specified")
     public Resource getResource() {
         return resource;
     }
@@ -140,6 +141,7 @@ public class WorkReportLine extends BaseEntity implements Comparable {
         this.resource = resource;
     }
 
+    @NotNull(message = "order element not specified")
     public OrderElement getOrderElement() {
         return orderElement;
     }
@@ -167,7 +169,7 @@ public class WorkReportLine extends BaseEntity implements Comparable {
         updateItsFieldsAndLabels();
 
         // copy the required fields if these are shared by lines
-        copyTheRequiredFieldIfIsNeeded();
+        updatesAllSharedDataByLines();
     }
 
     public Set<DescriptionValue> getDescriptionValues() {
@@ -178,7 +180,7 @@ public class WorkReportLine extends BaseEntity implements Comparable {
         this.descriptionValues = descriptionValues;
     }
 
-    @NotNull
+    @NotNull(message = "type of work hours not specified")
     public TypeOfWorkHours getTypeOfWorkHours() {
         return typeOfWorkHours;
     }
@@ -197,20 +199,8 @@ public class WorkReportLine extends BaseEntity implements Comparable {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "resource:the resource must be not null")
-    public boolean theResourceMustBeNotNull() {
-        return (getResource() != null);
-    }
-
-    @SuppressWarnings("unused")
-    @AssertTrue(message = "resource:the resource must be not null")
-    public boolean theOrderElementMustBeNotNull() {
-        return (getOrderElement() != null);
-    }
-
-    @SuppressWarnings("unused")
     @AssertTrue(message = "closckStart:the clockStart must be not null if number of hours is calcultate by clock")
-    public boolean theClockStartMustBeNotNullIfIsCalculatedByClock() {
+    public boolean checkConstraintClockStartMustBeNotNullIfIsCalculatedByClock() {
         if (workReport.getWorkReportType().getHoursManagement().equals(
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
             return (getClockStart() != null);
@@ -220,7 +210,7 @@ public class WorkReportLine extends BaseEntity implements Comparable {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "closckFinish:the clockStart must be not null if number of hours is calcultate by clock")
-    public boolean theClockFinishMustBeNotNullIfIsCalculatedByClock() {
+    public boolean checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock() {
         if (workReport.getWorkReportType().getHoursManagement().equals(
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
             return (getClockFinish() != null);
@@ -257,21 +247,37 @@ public class WorkReportLine extends BaseEntity implements Comparable {
         }
     }
 
-    void copyTheRequiredFieldIfIsNeeded() {
+    void updatesAllSharedDataByLines() {
         // copy the required fields if these are shared by lines
-        if ((workReport != null) && (workReport.getWorkReportType() != null)) {
-            WorkReportType workReportType = workReport.getWorkReportType();
-            if (workReportType.getDateIsSharedByLines()) {
-                setDate(workReport.getDate());
-            }
-            if (workReportType.getResourceIsSharedInLines()) {
-                setResource(workReport.getResource());
-            }
-            if (workReportType.getOrderElementIsSharedInLines()) {
-                setOrderElement(workReport.getOrderElement());
-            }
+        updateSharedDateByLines();
+        updateSharedResourceByLines();
+        updateSharedOrderElementByLines();
+    }
+
+    void updateSharedDateByLines() {
+        if ((workReport != null) && (workReport.getWorkReportType() != null)
+                && (workReport.getWorkReportType().getDateIsSharedByLines())) {
+            setDate(workReport.getDate());
         }
     }
+
+    void updateSharedResourceByLines() {
+        if ((workReport != null)
+                && (workReport.getWorkReportType() != null)
+                && (workReport.getWorkReportType().getResourceIsSharedInLines())) {
+            setResource(workReport.getResource());
+        }
+    }
+
+    void updateSharedOrderElementByLines() {
+        if ((workReport != null)
+                && (workReport.getWorkReportType() != null)
+                && (workReport.getWorkReportType()
+                        .getOrderElementIsSharedInLines())) {
+            setOrderElement(workReport.getOrderElement());
+        }
+    }
+
     private void updateNumHours() {
         if (workReport.getWorkReportType().getHoursManagement().equals(
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {

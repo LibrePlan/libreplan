@@ -36,6 +36,7 @@ import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 
 /**
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class WorkReport extends BaseEntity {
 
@@ -86,15 +87,14 @@ public class WorkReport extends BaseEntity {
     }
 
     private WorkReport(WorkReportType workReportType) {
-        this.workReportType = workReportType;
-        updateItsFieldsAndLabels(workReportType);
+        this.setWorkReportType(workReportType);
     }
 
     private WorkReport(Date date, WorkReportType workReportType,
             Set<WorkReportLine> workReportLines, Resource resource,
             OrderElement orderElement) {
         this.date = date;
-        this.workReportType = workReportType;
+        this.setWorkReportType(workReportType);
         this.workReportLines = workReportLines;
         this.resource = resource;
         this.orderElement = orderElement;
@@ -127,15 +127,12 @@ public class WorkReport extends BaseEntity {
      * @param {@link WorkReportType}
      */
     public void setWorkReportType(WorkReportType workReportType) {
-        if ((workReportType != null)
-                && ((this.workReportType == null) || (!this.workReportType
-                        .equals(workReportType)))) {
-            setDate(date);
-            setResource(resource);
-            setOrderElement(orderElement);
-            updateItsFieldsAndLabels(workReportType);
-        }
         this.workReportType = workReportType;
+
+        updateSharedDateByLines(date);
+        updateSharedResourceByLines(resource);
+        updateSharedOrderElementByLines(orderElement);
+        updateItsFieldsAndLabels(workReportType);
     }
 
     @Valid
@@ -153,7 +150,7 @@ public class WorkReport extends BaseEntity {
     }
 
     public Set<DescriptionValue> getDescriptionValues() {
-        return descriptionValues;
+        return Collections.unmodifiableSet(descriptionValues);
     }
 
     public void setDescriptionValues(Set<DescriptionValue> descriptionValues) {
@@ -200,7 +197,7 @@ public class WorkReport extends BaseEntity {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "date:the date must be not null if is shared by lines")
-    public boolean theDateMustBeNotNullIfIsSharedByLines() {
+    public boolean checkConstraintDateMustBeNotNullIfIsSharedByLines() {
         if (workReportType.getDateIsSharedByLines()) {
             return (getDate() != null);
         }
@@ -209,7 +206,7 @@ public class WorkReport extends BaseEntity {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "resource:the resource must be not null if is shared by lines")
-    public boolean theResourceMustBeNotNullIfIsSharedByLines() {
+    public boolean checkConstraintResourceMustBeNotNullIfIsSharedByLines() {
         if (workReportType.getResourceIsSharedInLines()) {
             return (getResource() != null);
         }
@@ -218,7 +215,7 @@ public class WorkReport extends BaseEntity {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "orderElement:the order element must be not null if is shared by lines")
-    public boolean theOrderElementMustBeNotNullIfIsSharedByLines() {
+    public boolean checkConstraintOrderElementMustBeNotNullIfIsSharedByLines() {
         if (workReportType.getOrderElementIsSharedInLines()) {
             return (getOrderElement() != null);
         }
@@ -258,20 +255,20 @@ public class WorkReport extends BaseEntity {
 
     private void updateSharedDateByLines(Date date) {
         for (WorkReportLine line : getWorkReportLines()) {
-                line.setDate(date);
+            line.updateSharedDateByLines();
         }
     }
 
     private void updateSharedResourceByLines(Resource resource) {
         for (WorkReportLine line : getWorkReportLines()) {
-                line.setResource(resource);
-            }
+            line.updateSharedResourceByLines();
+        }
     }
 
     private void updateSharedOrderElementByLines(OrderElement orderElement) {
-            for (WorkReportLine line : getWorkReportLines()) {
-                line.setOrderElement(orderElement);
-            }
+        for (WorkReportLine line : getWorkReportLines()) {
+            line.updateSharedOrderElementByLines();
+        }
     }
 
 }

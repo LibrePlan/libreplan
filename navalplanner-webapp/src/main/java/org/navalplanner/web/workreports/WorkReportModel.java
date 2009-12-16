@@ -404,9 +404,12 @@ public class WorkReportModel implements IWorkReportModel {
 
     private List<Object> sort(List<Object> list) {
         List<Object> result = new ArrayList<Object>(list);
-        for (Object object : list) {
-            if ((getIndex(object) >= 0) && (getIndex(object) < list.size())) {
-                result.set(getIndex(object), object);
+        if (list != null) {
+            for (Object object : list) {
+                Integer index = getIndex(object);
+                if ((index != null) && ((index >= 0) && (index < list.size()))) {
+                    result.set(getIndex(object), object);
+                }
             }
         }
         return result;

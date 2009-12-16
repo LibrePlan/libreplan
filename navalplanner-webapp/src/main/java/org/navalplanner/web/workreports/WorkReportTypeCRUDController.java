@@ -728,12 +728,14 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         };
     }
 
-    public void validateIfExistTheSameLabelType(
-          final Combobox comboLabelTypes,
-          final WorkReportLabelTypeAssigment workReportLabelTypeAssigment) throws WrongValueException {
-        if ((getWorkReportType() != null) && (getWorkReportType().existRepeatedLabelType(workReportLabelTypeAssigment))) {
-                      workReportLabelTypeAssigment.setLabelType(null);
-                      throw new WrongValueException(
+    public void validateIfExistTheSameLabelType(final Combobox comboLabelTypes,
+            final WorkReportLabelTypeAssigment workReportLabelTypeAssigment)
+            throws WrongValueException {
+        if ((getWorkReportType() != null)
+                && (getWorkReportType()
+                        .existRepeatedLabelType(workReportLabelTypeAssigment))) {
+            workReportLabelTypeAssigment.setLabelType(null);
+            throw new WrongValueException(
                     comboLabelTypes,
                     _("This label type already is assigned to the work report type."));
         }

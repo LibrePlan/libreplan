@@ -85,7 +85,7 @@ public class WorkReportType extends BaseEntity {
         this.code = code;
     }
 
-    @NotEmpty
+    @NotEmpty(message = "code not specified or empty")
     public String getCode() {
         return code;
     }
@@ -94,7 +94,7 @@ public class WorkReportType extends BaseEntity {
         this.code = code;
     }
 
-    @NotEmpty
+    @NotEmpty(message = "name not specified or empty")
     public String getName() {
         return name;
     }
@@ -168,7 +168,7 @@ public class WorkReportType extends BaseEntity {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "Value is not valid.\n Code cannot contain chars like '_'.")
-    public boolean validateWorkReportTypeCode() {
+    public boolean checkConstraintWorkReportTypeCodeWithoutIncorrectCharacter() {
         if ((code == null) || (code.contains("_"))) {
             return false;
         }
@@ -216,7 +216,7 @@ public class WorkReportType extends BaseEntity {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "The field name must be unique.")
-    public boolean validateTheUniqueNamesDescriptionFields() {
+    public boolean checkConstraintUniqueNamesDescriptionFields() {
         for (DescriptionField descriptionField : getDescriptionFields()) {
             if (existSameFieldName(descriptionField)) {
                 return false;
@@ -227,7 +227,7 @@ public class WorkReportType extends BaseEntity {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "the assigned label type can not repeat in the work report type.")
-    public boolean validateNotExistRepeatedLabelTypes() {
+    public boolean checkConstraintNotExistRepeatedLabelTypes() {
         for (WorkReportLabelTypeAssigment assignedLabelType : this.workReportLabelTypeAssigments) {
             if (existRepeatedLabelType(assignedLabelType)) {
                 return false;
@@ -450,13 +450,13 @@ public class WorkReportType extends BaseEntity {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "In Heading the index labels and fields  must be unique and consecutive.")
-    public boolean validateTheIndexHeadingFieldsAndLabel() {
+    public boolean checkConstraintTheIndexHeadingFieldsAndLabelMustBeUniqueAndConsecutive() {
         return validateTheIndexFieldsAndLabels(getHeadingFieldsAndLabels());
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "In Lines the index labels and fields  must be unique and consecutive.")
-    public boolean validateTheIndexLineFieldsAndLabel() {
+    public boolean checkConstraintTheIndexLineFieldsAndLabelMustBeUniqueAndConsecutive() {
         return validateTheIndexFieldsAndLabels(getLineFieldsAndLabels());
     }
 
@@ -544,4 +544,5 @@ public class WorkReportType extends BaseEntity {
         return ((position.compareTo(0) >= 0) && (position
                 .compareTo(list.size()) <= 0));
     }
+
 }

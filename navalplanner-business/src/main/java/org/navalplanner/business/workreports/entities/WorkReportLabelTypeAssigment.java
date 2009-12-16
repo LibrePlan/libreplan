@@ -21,7 +21,6 @@
 package org.navalplanner.business.workreports.entities;
 
 import org.hibernate.validator.NotNull;
-import org.navalplanner.business.INewObject;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
@@ -30,7 +29,7 @@ import org.navalplanner.business.labels.entities.LabelType;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class WorkReportLabelTypeAssigment extends BaseEntity implements
-        INewObject {
+        Comparable {
 
     public static WorkReportLabelTypeAssigment create() {
         WorkReportLabelTypeAssigment workReportLabelTypeAssigment = new WorkReportLabelTypeAssigment();
@@ -54,18 +53,12 @@ public class WorkReportLabelTypeAssigment extends BaseEntity implements
         this.labelsSharedByLines = labelsSharedByLines;
     }
 
-    public boolean isNewObject() {
-        return newObject;
-    }
-
-    private boolean newObject = false;
-
     private Boolean labelsSharedByLines = false;
 
-    @NotNull
+    @NotNull(message = "label type not specified")
     private LabelType labelType;
 
-    @NotNull
+    @NotNull(message = "default label not specified")
     private Label defaultLabel;
 
     public LabelType getLabelType() {
@@ -102,6 +95,15 @@ public class WorkReportLabelTypeAssigment extends BaseEntity implements
 
     public void setPositionNumber(Integer positionNumber) {
         this.positionNumber = positionNumber;
+    }
+
+    @Override
+    public int compareTo(Object arg0) {
+        if (labelType != null) {
+            return labelType.compareTo(
+                    ((WorkReportLabelTypeAssigment) arg0).getLabelType());
+        }
+        return -1;
     }
 
 }

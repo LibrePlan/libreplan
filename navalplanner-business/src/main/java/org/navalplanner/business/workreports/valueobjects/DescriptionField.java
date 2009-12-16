@@ -67,7 +67,7 @@ public class DescriptionField implements INewObject {
         return this.newObject = newObject;
     }
 
-    @NotEmpty
+    @NotEmpty(message = "field name not specified or empty")
     public String getFieldName() {
         return fieldName;
     }
@@ -76,8 +76,8 @@ public class DescriptionField implements INewObject {
         this.fieldName = fieldName;
     }
 
-    @Min(value = 1)
-    @NotNull
+    @Min(message = "length less than 1", value = 1)
+    @NotNull(message = "length not specified")
     public Integer getLength() {
         return length;
     }

@@ -34,7 +34,7 @@ import org.navalplanner.business.common.BaseEntity;
  * @author Diego Pino Garcia<dpino@igalia.com>
  *
  */
-public class LabelType extends BaseEntity {
+public class LabelType extends BaseEntity implements Comparable {
 
     @NotEmpty
     private String name;
@@ -76,4 +76,11 @@ public class LabelType extends BaseEntity {
         labels.remove(label);
     }
 
+    @Override
+    public int compareTo(Object arg0) {
+        if (getName() != null) {
+            return getName().compareTo(((LabelType) arg0).getName());
+        }
+        return -1;
+    }
 }

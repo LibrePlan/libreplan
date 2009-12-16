@@ -429,8 +429,8 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     /* Operations to calculated the index position of the fields into workReport */
 
     public boolean validateTheIndexFieldsAndLabels() {
-        return ((getWorkReportType().validateTheIndexHeadingFieldsAndLabel()) && (getWorkReportType()
-                .validateTheIndexLineFieldsAndLabel()));
+        return ((getWorkReportType().checkConstraintTheIndexHeadingFieldsAndLabelMustBeUniqueAndConsecutive()) && (getWorkReportType()
+                .checkConstraintTheIndexLineFieldsAndLabelMustBeUniqueAndConsecutive()));
     }
 
     public List<Object> getOrderedListHeading() {
