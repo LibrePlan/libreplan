@@ -69,10 +69,10 @@ public class Criterion extends BaseEntity implements ICriterion {
         return criterion;
     }
 
-    @NotEmpty
+    @NotEmpty(message="criterion name not specified")
     private String name;
 
-    @NotNull
+    @NotNull(message="criterion type not specified")
     private CriterionType type;
 
     private Criterion parent = null;

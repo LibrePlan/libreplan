@@ -85,7 +85,7 @@ public class CriterionType extends BaseEntity implements
         return criterionType;
     }
 
-    @NotEmpty
+    @NotEmpty(message="criterion type name not specified")
     private String name;
 
     private String description;
