@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.labels.entities.Label;
@@ -172,6 +173,7 @@ public class WorkReportLine extends BaseEntity implements Comparable {
         updatesAllSharedDataByLines();
     }
 
+    @Valid
     public Set<DescriptionValue> getDescriptionValues() {
         return descriptionValues;
     }

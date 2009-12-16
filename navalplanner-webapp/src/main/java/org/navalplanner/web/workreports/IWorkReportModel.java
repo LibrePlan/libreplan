@@ -196,4 +196,19 @@ public interface IWorkReportModel {
      * @return
      */
     Integer getLength(DescriptionValue descriptionValue);
+
+    /**
+     * Check if the {@link DescriptionValue} value assigned to current
+     * {@link WorkReport} is null or empty
+     * @return
+     */
+    DescriptionValue validateWorkReportDescriptionValues();
+
+    /**
+     * Check if the {@link DescriptionValue} value assigned to
+     * {@link WorkReportLine} is null or empty
+     * @return
+     */
+    DescriptionValue validateWorkReportLineDescriptionValues(WorkReportLine line);
+
 }

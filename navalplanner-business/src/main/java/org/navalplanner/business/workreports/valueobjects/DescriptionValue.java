@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.workreports.valueobjects;
 
+import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.INewObject;
 
 /**
@@ -65,6 +66,7 @@ public class DescriptionValue implements INewObject {
         this.newObject = newObject;
     }
 
+    @NotEmpty(message = "field name not specified or empty")
     public String getFieldName() {
         return fieldName;
     }
@@ -73,6 +75,7 @@ public class DescriptionValue implements INewObject {
         this.fieldName = fieldName;
     }
 
+    @NotEmpty(message = "value not specified or empty")
     public String getValue() {
         return value;
     }

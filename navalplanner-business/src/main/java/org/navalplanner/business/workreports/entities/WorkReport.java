@@ -149,6 +149,7 @@ public class WorkReport extends BaseEntity {
         workReportLines.remove(workReportLine);
     }
 
+    @Valid
     public Set<DescriptionValue> getDescriptionValues() {
         return Collections.unmodifiableSet(descriptionValues);
     }
