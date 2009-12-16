@@ -38,6 +38,13 @@ public interface IUserDAO extends IGenericDAO<User, Long>{
         throws InstanceNotFoundException;
 
     /**
+     * NOTE: Login name comparison is case-insensitive, and the method is
+     * executed in another transaction.
+     */
+    public User findByLoginNameAnotherTransaction(String loginName)
+        throws InstanceNotFoundException;
+
+    /**
      * NOTE: Login name comparison is case-insensitive.
      */
     public boolean existsByLoginName(String loginName);

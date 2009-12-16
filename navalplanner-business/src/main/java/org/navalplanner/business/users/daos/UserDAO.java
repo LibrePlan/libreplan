@@ -55,6 +55,14 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
 
     }
 
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public User findByLoginNameAnotherTransaction(String loginName)
+        throws InstanceNotFoundException {
+
+        return findByLoginName(loginName);
+
+    }
 
     @Override
     public boolean existsByLoginName(String loginName) {

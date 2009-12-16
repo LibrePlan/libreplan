@@ -100,7 +100,7 @@ public class UserDAOTest {
 
     @Test
     @NotTransactional
-    public void testSaveWithExistingLoginName() {
+    public void testCreateWithExistingLoginName() {
 
         final String loginName = getUniqueName();
 
@@ -122,6 +122,83 @@ public class UserDAOTest {
 
     }
 
+    @Test
+    @NotTransactional
+    public void testUpdateWithExistingLoginName() {
+
+        final String loginName1 = getUniqueName();
+        final String loginName2 = getUniqueName();
+
+        IOnTransaction<Void> createUsers = new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                userDAO.save(createUser(loginName1));
+                userDAO.save(createUser(loginName2));
+                return null;
+            }
+        };
+
+        IOnTransaction<Void> updateUser1 = new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                User user = null;
+                try {
+                    user = userDAO.findByLoginName(loginName1);
+                } catch (InstanceNotFoundException e) {
+                    fail("InstanceNotFoundException not expected");
+                }
+                user.setLoginName(loginName2);
+                userDAO.save(user);
+                return null;
+            }
+        };
+
+        transactionService.runOnTransaction(createUsers);
+
+        try {
+            transactionService.runOnTransaction(updateUser1);
+            fail("ValidationException expected");
+        } catch (ValidationException e) {
+        }
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testUpdateWithTheSameLoginName() {
+
+        final String loginName1 = getUniqueName();
+        final String loginName2 = getUniqueName();
+
+        IOnTransaction<Void> createUsers = new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                userDAO.save(createUser(loginName1));
+                userDAO.save(createUser(loginName2));
+                return null;
+            }
+        };
+
+        IOnTransaction<Void> updateUser1 = new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                User user = null;
+                try {
+                    user = userDAO.findByLoginName(loginName1);
+                } catch (InstanceNotFoundException e) {
+                    fail("InstanceNotFoundException not expected");
+                }
+                user.getRoles().add(getSecondUserRole());
+                userDAO.save(user);
+                return null;
+            }
+        };
+
+        transactionService.runOnTransaction(createUsers);
+        transactionService.runOnTransaction(updateUser1);
+
+    }
+
     private String getUniqueName() {
         return UUID.randomUUID().toString();
     }
@@ -129,11 +206,19 @@ public class UserDAOTest {
     private User createUser(String loginName) {
 
         Set<UserRole> roles = new HashSet<UserRole>();
-        roles.add(UserRole.ROLE_BASIC_USER);
-        roles.add(UserRole.ROLE_ADMINISTRATION);
+        roles.add(getFirstUserRole());
 
         return User.create(loginName, loginName, roles);
 
+    }
+
+    private UserRole getFirstUserRole() {
+        return UserRole.values()[0];
+    }
+
+    private UserRole getSecondUserRole() {
+        return UserRole.values().length == 1 ? UserRole.values()[0] :
+            UserRole.values()[1];
     }
 
 }

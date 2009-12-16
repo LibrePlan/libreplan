@@ -97,7 +97,7 @@ public class User extends BaseEntity {
             return !userDAO.existsByLoginNameAnotherTransaction(loginName);
         } else {
             try {
-                User u = userDAO.findByLoginName(loginName);
+                User u = userDAO.findByLoginNameAnotherTransaction(loginName);
                 return u.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
