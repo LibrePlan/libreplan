@@ -23,6 +23,8 @@ package org.navalplanner.business.common;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.navalplanner.business.labels.daos.ILabelDAO;
+import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
@@ -80,6 +82,12 @@ public class Registry {
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
 
+    @Autowired
+    private ILabelDAO labelDAO;
+
+    @Autowired
+    private ILabelTypeDAO labelTypeDAO;
+
     private Registry() {
     }
 
@@ -125,6 +133,14 @@ public class Registry {
 
     public static IBaseCalendarDAO getBaseCalendarDAO() {
         return getInstance().baseCalendarDAO;
+    }
+
+    public static ILabelDAO getLabelDAO() {
+        return getInstance().labelDAO;
+    }
+
+    public static ILabelTypeDAO getLabelTypeDAO() {
+        return getInstance().labelTypeDAO;
     }
 
 }

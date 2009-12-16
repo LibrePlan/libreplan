@@ -26,8 +26,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.NonUniqueResultException;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -37,6 +41,7 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
 import org.navalplanner.ws.common.impl.ResourceEnumConverter;
 import org.navalplanner.ws.orders.api.HoursGroupDTO;
+import org.navalplanner.ws.orders.api.LabelDTO;
 import org.navalplanner.ws.orders.api.OrderDTO;
 import org.navalplanner.ws.orders.api.OrderElementDTO;
 import org.navalplanner.ws.orders.api.OrderLineDTO;
@@ -59,6 +64,11 @@ public final class OrderElementConverter {
         Date deadline = orderElement.getDeadline();
         String description = orderElement.getDescription();
 
+        Set<LabelDTO> labels = new HashSet<LabelDTO>();
+        for (Label label : orderElement.getLabels()) {
+            labels.add(toDTO(label));
+        }
+
         if (orderElement instanceof OrderLine) {
             Set<HoursGroupDTO> hoursGroups = new HashSet<HoursGroupDTO>();
             for (HoursGroup hoursGroup : ((OrderLine) orderElement)
@@ -67,7 +77,7 @@ public final class OrderElementConverter {
             }
 
             return new OrderLineDTO(name, code, initDate, deadline,
-                    description, hoursGroups);
+                    description, labels, hoursGroups);
         } else { // orderElement instanceof OrderLineGroup
             List<OrderElementDTO> children = new ArrayList<OrderElementDTO>();
             for (OrderElement element : orderElement.getChildren()) {
@@ -84,13 +94,17 @@ public final class OrderElementConverter {
                 }
 
                 return new OrderDTO(name, code, initDate, deadline,
-                        description, children,
+                        description, labels, children,
                         dependenciesConstraintsHavePriority, calendarName);
             } else { // orderElement instanceof OrderLineGroup
                 return new OrderLineGroupDTO(name, code, initDate, deadline,
-                        description, children);
+                        description, labels, children);
             }
         }
+    }
+
+    public final static LabelDTO toDTO(Label label) {
+        return new LabelDTO(label.getName(), label.getType().getName());
     }
 
     public final static HoursGroupDTO toDTO(HoursGroup hoursGroup) {
@@ -141,7 +155,35 @@ public final class OrderElementConverter {
         orderElement.setDeadline(orderElementDTO.deadline);
         orderElement.setDescription(orderElementDTO.description);
 
+        if (orderElementDTO.labels != null) {
+            for (LabelDTO labelDTO : orderElementDTO.labels) {
+                orderElement.addLabel(toEntity(labelDTO));
+            }
+        }
+
         return orderElement;
+    }
+
+    public final static Label toEntity(LabelDTO labelDTO) {
+        LabelType labelType = null;
+        try {
+            labelType = Registry.getLabelTypeDAO().findUniqueByName(
+                    labelDTO.type);
+        } catch (NonUniqueResultException e) {
+            throw new RuntimeException(e);
+        } catch (InstanceNotFoundException e) {
+            labelType = LabelType.create(labelDTO.type);
+            Registry.getLabelTypeDAO().save(labelType);
+        }
+
+        Label label = Registry.getLabelDAO().findByNameAndType(labelDTO.name,
+                labelType);
+        if (label == null) {
+            label = Label.create(labelDTO.name);
+            label.setType(labelType);
+        }
+
+        return label;
     }
 
     private static HoursGroup toEntity(HoursGroupDTO hoursGroupDTO) {

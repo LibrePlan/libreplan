@@ -22,6 +22,7 @@ package org.navalplanner.ws.orders.api;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -50,8 +51,9 @@ public class OrderLineGroupDTO extends OrderElementDTO {
     }
 
     public OrderLineGroupDTO(String name, String code, Date initDate,
-            Date deadline, String description, List<OrderElementDTO> children) {
-        super(name, code, initDate, deadline, description);
+            Date deadline, String description, Set<LabelDTO> labels,
+            List<OrderElementDTO> children) {
+        super(name, code, initDate, deadline, description, labels);
         this.children = children;
     }
 

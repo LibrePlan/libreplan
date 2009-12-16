@@ -21,8 +21,11 @@
 package org.navalplanner.ws.orders.api;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -50,16 +53,21 @@ public class OrderElementDTO {
     @XmlAttribute
     public String description;
 
+    @XmlElementWrapper(name = "labels")
+    @XmlElement(name = "label")
+    public Set<LabelDTO> labels;
+
     public OrderElementDTO() {
     }
 
     public OrderElementDTO(String name, String code, Date initDate,
-            Date deadline, String description) {
+            Date deadline, String description, Set<LabelDTO> labels) {
         this.name = name;
         this.code = code;
         this.initDate = initDate;
         this.deadline = deadline;
         this.description = description;
+        this.labels = labels;
     }
 
 }

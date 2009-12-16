@@ -46,8 +46,9 @@ public class OrderLineDTO extends OrderElementDTO {
     }
 
     public OrderLineDTO(String name, String code, Date initDate, Date deadline,
-            String description, Set<HoursGroupDTO> hoursGroups) {
-        super(name, code, initDate, deadline, description);
+            String description, Set<LabelDTO> labels,
+            Set<HoursGroupDTO> hoursGroups) {
+        super(name, code, initDate, deadline, description, labels);
         this.hoursGroups = hoursGroups;
     }
 

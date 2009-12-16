@@ -20,40 +20,31 @@
 
 package org.navalplanner.ws.orders.api;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.labels.entities.Label;
 
 /**
- * DTO for {@link Order} entity.
+ * DTO for {@link Label} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlRootElement(name = "order")
-public class OrderDTO extends OrderLineGroupDTO {
+@XmlRootElement(name = "label")
+public class LabelDTO {
 
-    @XmlAttribute(name = "dependencies-constraints-have-priority")
-    public Boolean dependenciesConstraintsHavePriority;
+    @XmlAttribute
+    public String name;
 
-    @XmlAttribute(name = "calendar-name")
-    public String calendarName;
+    @XmlAttribute
+    public String type;
 
-    public OrderDTO() {
-        super();
+    public LabelDTO() {
     }
 
-    public OrderDTO(String name, String code, Date initDate, Date deadline,
-            String description, Set<LabelDTO> labels,
-            List<OrderElementDTO> children,
-            Boolean dependenciesConstraintsHavePriority, String calendarName) {
-        super(name, code, initDate, deadline, description, labels, children);
-        this.dependenciesConstraintsHavePriority = dependenciesConstraintsHavePriority;
-        this.calendarName = calendarName;
+    public LabelDTO(String name, String type) {
+        this.name = name;
+        this.type = type;
     }
 
 }
