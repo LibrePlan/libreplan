@@ -52,8 +52,10 @@ public class OrderLineGroupDTO extends OrderElementDTO {
 
     public OrderLineGroupDTO(String name, String code, Date initDate,
             Date deadline, String description, Set<LabelDTO> labels,
+            Set<MaterialAssignmentDTO> materialAssignments,
             List<OrderElementDTO> children) {
-        super(name, code, initDate, deadline, description, labels);
+        super(name, code, initDate, deadline, description, labels,
+                materialAssignments);
         this.children = children;
     }
 

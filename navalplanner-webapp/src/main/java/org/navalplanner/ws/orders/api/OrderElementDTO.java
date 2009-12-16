@@ -21,6 +21,7 @@
 package org.navalplanner.ws.orders.api;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -55,19 +56,25 @@ public class OrderElementDTO {
 
     @XmlElementWrapper(name = "labels")
     @XmlElement(name = "label")
-    public Set<LabelDTO> labels;
+    public Set<LabelDTO> labels = new HashSet<LabelDTO>();
+
+    @XmlElementWrapper(name = "material-assignments")
+    @XmlElement(name = "material-assignment")
+    public Set<MaterialAssignmentDTO> materialAssignments = new HashSet<MaterialAssignmentDTO>();
 
     public OrderElementDTO() {
     }
 
     public OrderElementDTO(String name, String code, Date initDate,
-            Date deadline, String description, Set<LabelDTO> labels) {
+            Date deadline, String description, Set<LabelDTO> labels,
+            Set<MaterialAssignmentDTO> materialAssignments) {
         this.name = name;
         this.code = code;
         this.initDate = initDate;
         this.deadline = deadline;
         this.description = description;
         this.labels = labels;
+        this.materialAssignments = materialAssignments;
     }
 
 }

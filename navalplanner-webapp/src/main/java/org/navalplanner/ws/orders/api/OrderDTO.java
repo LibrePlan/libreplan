@@ -49,9 +49,11 @@ public class OrderDTO extends OrderLineGroupDTO {
 
     public OrderDTO(String name, String code, Date initDate, Date deadline,
             String description, Set<LabelDTO> labels,
+            Set<MaterialAssignmentDTO> materialAssignments,
             List<OrderElementDTO> children,
             Boolean dependenciesConstraintsHavePriority, String calendarName) {
-        super(name, code, initDate, deadline, description, labels, children);
+        super(name, code, initDate, deadline, description, labels,
+                materialAssignments, children);
         this.dependenciesConstraintsHavePriority = dependenciesConstraintsHavePriority;
         this.calendarName = calendarName;
     }

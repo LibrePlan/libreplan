@@ -32,6 +32,10 @@ import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
+import org.navalplanner.business.materials.entities.Material;
+import org.navalplanner.business.materials.entities.MaterialAssignment;
+import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.materials.entities.PredefinedMaterialCategories;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -42,6 +46,7 @@ import org.navalplanner.ws.common.api.ResourceEnumDTO;
 import org.navalplanner.ws.common.impl.ResourceEnumConverter;
 import org.navalplanner.ws.orders.api.HoursGroupDTO;
 import org.navalplanner.ws.orders.api.LabelDTO;
+import org.navalplanner.ws.orders.api.MaterialAssignmentDTO;
 import org.navalplanner.ws.orders.api.OrderDTO;
 import org.navalplanner.ws.orders.api.OrderElementDTO;
 import org.navalplanner.ws.orders.api.OrderLineDTO;
@@ -69,6 +74,12 @@ public final class OrderElementConverter {
             labels.add(toDTO(label));
         }
 
+        Set<MaterialAssignmentDTO> materialAssignments = new HashSet<MaterialAssignmentDTO>();
+        for (MaterialAssignment materialAssignment : orderElement
+                .getMaterialAssignments()) {
+            materialAssignments.add(toDTO(materialAssignment));
+        }
+
         if (orderElement instanceof OrderLine) {
             Set<HoursGroupDTO> hoursGroups = new HashSet<HoursGroupDTO>();
             for (HoursGroup hoursGroup : ((OrderLine) orderElement)
@@ -77,7 +88,7 @@ public final class OrderElementConverter {
             }
 
             return new OrderLineDTO(name, code, initDate, deadline,
-                    description, labels, hoursGroups);
+                    description, labels, materialAssignments, hoursGroups);
         } else { // orderElement instanceof OrderLineGroup
             List<OrderElementDTO> children = new ArrayList<OrderElementDTO>();
             for (OrderElement element : orderElement.getChildren()) {
@@ -94,13 +105,20 @@ public final class OrderElementConverter {
                 }
 
                 return new OrderDTO(name, code, initDate, deadline,
-                        description, labels, children,
+                        description, labels, materialAssignments, children,
                         dependenciesConstraintsHavePriority, calendarName);
             } else { // orderElement instanceof OrderLineGroup
                 return new OrderLineGroupDTO(name, code, initDate, deadline,
-                        description, labels, children);
+                        description, labels, materialAssignments, children);
             }
         }
+    }
+
+    public final static MaterialAssignmentDTO toDTO(
+            MaterialAssignment materialAssignment) {
+        return new MaterialAssignmentDTO(materialAssignment.getMaterial()
+                .getCode(), materialAssignment.getUnits(), materialAssignment
+                .getUnitPrice());
     }
 
     public final static LabelDTO toDTO(Label label) {
@@ -155,13 +173,40 @@ public final class OrderElementConverter {
         orderElement.setDeadline(orderElementDTO.deadline);
         orderElement.setDescription(orderElementDTO.description);
 
-        if (orderElementDTO.labels != null) {
-            for (LabelDTO labelDTO : orderElementDTO.labels) {
-                orderElement.addLabel(toEntity(labelDTO));
-            }
+        for (LabelDTO labelDTO : orderElementDTO.labels) {
+            orderElement.addLabel(toEntity(labelDTO));
+        }
+
+        for (MaterialAssignmentDTO materialAssignmentDTO : orderElementDTO.materialAssignments) {
+            orderElement.addMaterialAssignment(toEntity(materialAssignmentDTO));
         }
 
         return orderElement;
+    }
+
+    public final static MaterialAssignment toEntity(
+            MaterialAssignmentDTO materialAssignmentDTO) {
+        Material material = null;
+
+        try {
+            material = Registry.getMaterialDAO()
+                    .findUniqueByCodeInAnotherTransaction(
+                            materialAssignmentDTO.materialCode);
+        } catch (InstanceNotFoundException e) {
+            material = Material.create(materialAssignmentDTO.materialCode);
+
+            MaterialCategory defaultMaterialCategory = PredefinedMaterialCategories.IMPORTED_MATERIALS_WITHOUT_CATEGORY
+                    .getMaterialCategory();
+            material.setCategory(defaultMaterialCategory);
+
+            Registry.getMaterialDAO().save(material);
+        }
+
+        MaterialAssignment materialAssignment = MaterialAssignment
+                .create(material);
+        materialAssignment.setUnits(materialAssignmentDTO.units);
+        materialAssignment.setUnitPrice(materialAssignmentDTO.unitPrice);
+        return materialAssignment;
     }
 
     public final static Label toEntity(LabelDTO labelDTO) {

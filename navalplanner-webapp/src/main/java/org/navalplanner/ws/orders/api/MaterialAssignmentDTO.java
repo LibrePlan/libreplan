@@ -20,37 +20,36 @@
 
 package org.navalplanner.ws.orders.api;
 
-import java.util.Date;
-import java.util.Set;
+import java.math.BigDecimal;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAttribute;
 
-import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.materials.entities.MaterialAssignment;
 
 /**
- * DTO for {@link OrderLine} entity.
+ * DTO for {@link MaterialAssignment} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlRootElement(name = "order-line")
-public class OrderLineDTO extends OrderElementDTO {
+public class MaterialAssignmentDTO {
 
-    @XmlElementWrapper(name = "hours-groups")
-    @XmlElement(name = "hours-group")
-    public Set<HoursGroupDTO> hoursGroups;
+    @XmlAttribute(name = "material-code")
+    public String materialCode;
 
-    public OrderLineDTO() {
-        super();
+    @XmlAttribute
+    public Double units;
+
+    @XmlAttribute(name = "unit-price")
+    public BigDecimal unitPrice;
+
+    public MaterialAssignmentDTO() {
     }
 
-    public OrderLineDTO(String name, String code, Date initDate, Date deadline,
-            String description, Set<LabelDTO> labels,
-            Set<MaterialAssignmentDTO> materialAssignments,
-            Set<HoursGroupDTO> hoursGroups) {
-        super(name, code, initDate, deadline, description, labels, materialAssignments);
-        this.hoursGroups = hoursGroups;
+    public MaterialAssignmentDTO(String materialCode, Double units,
+            BigDecimal unitPrice) {
+        this.materialCode = materialCode;
+        this.units = units;
+        this.unitPrice = unitPrice;
     }
 
 }
