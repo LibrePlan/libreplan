@@ -35,7 +35,7 @@
                     </columns>
                     <rows>
                         <row self="@{each='workReportLine'}">
-                            <label value="@{workReportLine.workReport.date}" />
+                            <label value="@{workReportLine.date, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
                             <label value="@{workReportLine.resource.shortDescription}" />
                             <label value="@{workReportLine.numHours}" />
                         </row>
