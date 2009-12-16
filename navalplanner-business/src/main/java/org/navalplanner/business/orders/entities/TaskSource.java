@@ -314,4 +314,8 @@ public class TaskSource extends BaseEntity {
         }
         return result;
     }
+
+    public void detachAssociatedTaskFromParent() {
+        task.detach();
+    }
 }

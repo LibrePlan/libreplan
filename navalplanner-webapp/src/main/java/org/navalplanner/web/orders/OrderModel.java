@@ -255,8 +255,15 @@ public class OrderModel implements IOrderModel {
         reattachCriterions();
         reattachTasksForTasksSources();
         this.orderDAO.save(order);
-        synchronizeWithSchedule(order);
+        reattachCurrentTaskSources();
         deleteOrderElementWithoutParent();
+        synchronizeWithSchedule(order);
+    }
+
+    private void reattachCurrentTaskSources() {
+        for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
+            taskSourceDAO.reattach(each);
+        }
     }
 
     private void reattachTasksForTasksSources() {

@@ -30,6 +30,8 @@ import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,9 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
 
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
+
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
 
     @Override
     public List<OrderElement> findWithoutParent() {
@@ -162,6 +167,16 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
         }
 
         return assignedHours.divide(estimatedHours, RoundingMode.DOWN);
+    }
+
+    @Override
+    public void remove(Long id) throws InstanceNotFoundException {
+        OrderElement orderElement = find(id);
+        for (TaskSource each : orderElement.getTaskSourcesFromBottomToTop()) {
+            each.detachAssociatedTaskFromParent();
+            taskSourceDAO.remove(each.getId());
+        }
+        super.remove(id);
     }
 
 }
