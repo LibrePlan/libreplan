@@ -20,11 +20,11 @@
 
 package org.navalplanner.ws.common.impl;
 
-import javax.management.InstanceNotFoundException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.ws.common.api.InternalErrorDTO;
 import org.springframework.stereotype.Component;
 

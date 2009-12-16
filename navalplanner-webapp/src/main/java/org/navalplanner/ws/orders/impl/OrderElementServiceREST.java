@@ -32,7 +32,6 @@ import javax.ws.rs.Produces;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
@@ -59,21 +58,13 @@ public class OrderElementServiceREST implements IOrderElementService {
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
-    @Autowired
-    private IOrderDAO orderDAO;
-
     @Override
     @GET
     @Path("/{id}")
     @Transactional(readOnly = true)
     public OrderElementDTO getOrderElement(@PathParam("id") Long id)
             throws InstanceNotFoundException {
-        try {
-            return OrderElementConverter.toDTO(orderElementDAO.find(id));
-        } catch (InstanceNotFoundException e) {
-            // FIXME it should throw a InstanceNotFoundException
-            throw new RuntimeException(e);
-        }
+        return OrderElementConverter.toDTO(orderElementDAO.find(id));
     }
 
     @Override
