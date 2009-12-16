@@ -28,6 +28,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.Task;
@@ -255,8 +256,11 @@ public class TaskSource extends BaseEntity {
     public TaskSource(OrderElement orderElement) {
         Validate.notNull(orderElement);
         this.setOrderElement(orderElement);
-        this.setHoursGroups(new HashSet<HoursGroup>(orderElement
-                .getHoursGroups()));
+        Type orderElementType = orderElement.getSchedulingState().getType();
+        if (orderElementType == SchedulingState.Type.SCHEDULING_POINT) {
+            this.setHoursGroups(new HashSet<HoursGroup>(orderElement
+                    .getHoursGroups()));
+        }
     }
 
     public TaskSourceSynchronization withCurrentHoursGroup(
