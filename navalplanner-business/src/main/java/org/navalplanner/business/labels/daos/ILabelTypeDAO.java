@@ -22,7 +22,9 @@ package org.navalplanner.business.labels.daos;
 
 import java.util.List;
 
+import org.hibernate.NonUniqueResultException;
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.LabelType;
 
 /**
@@ -35,5 +37,8 @@ public interface ILabelTypeDAO extends IGenericDAO<LabelType, Long> {
     boolean existsByName(LabelType labelType);
 
     boolean isUnique(LabelType labelType);
+
+    LabelType findUniqueByName(String type) throws InstanceNotFoundException,
+            NonUniqueResultException;
 
 }

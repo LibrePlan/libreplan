@@ -22,6 +22,9 @@ package org.navalplanner.business.labels.daos;
 
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
+import org.hibernate.Criteria;
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -53,9 +56,12 @@ public class LabelTypeDAO extends GenericDAOHibernate<LabelType, Long> implement
         try {
             LabelType result = findUniqueByName(labelType);
             return (result == null || result.getId().equals(labelType.getId()));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (InstanceNotFoundException e) {
+            return true;
+        } catch (NonUniqueResultException e) {
             return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -65,23 +71,29 @@ public class LabelTypeDAO extends GenericDAOHibernate<LabelType, Long> implement
             return findUniqueByName(labelType) != null;
         } catch (InstanceNotFoundException e) {
             return false;
+        } catch (NonUniqueResultException e) {
+            return true;
         }
     }
 
     private LabelType findUniqueByName(LabelType labelType)
-            throws InstanceNotFoundException {
-        List<LabelType> list = findByName(labelType);
-        if (list != null && list.size() > 1) {
-            throw new InstanceNotFoundException(labelType, LabelType.class
-                    .getName());
-        }
-        return (list != null && list.size() > 0) ? list.get(0) : null;
+            throws InstanceNotFoundException, NonUniqueResultException {
+        Validate.notNull(labelType);
+
+        return findUniqueByName(labelType.getName());
     }
 
-    @SuppressWarnings("unchecked")
-    private List<LabelType> findByName(LabelType labelType) {
-        return getSession().createCriteria(LabelType.class).add(
-                Restrictions.eq("name", labelType.getName())).list();
+    @Override
+    public LabelType findUniqueByName(String name)
+            throws InstanceNotFoundException, NonUniqueResultException {
+        Criteria c = getSession().createCriteria(LabelType.class);
+        c.add(Restrictions.eq("name", name));
+        LabelType labelType = (LabelType) c.uniqueResult();
+
+        if (labelType == null) {
+            throw new InstanceNotFoundException(null, "LabelType");
+        }
+        return labelType;
     }
 
 }
