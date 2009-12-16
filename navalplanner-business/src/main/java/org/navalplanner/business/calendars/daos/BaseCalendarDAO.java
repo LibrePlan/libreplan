@@ -83,8 +83,13 @@ public class BaseCalendarDAO extends GenericDAOHibernate<BaseCalendar, Long>
             return new ArrayList<BaseCalendar>();
         }
 
+        return findByName(baseCalendar.getName());
+    }
+
+    @Override
+    public List<BaseCalendar> findByName(String name) {
         Criteria c = getSession().createCriteria(BaseCalendar.class);
-        c.add(Restrictions.eq("name", baseCalendar.getName()));
+        c.add(Restrictions.eq("name", name));
 
         List<BaseCalendar> list = (List<BaseCalendar>) c.list();
         removeResourceCalendarInstances(list);

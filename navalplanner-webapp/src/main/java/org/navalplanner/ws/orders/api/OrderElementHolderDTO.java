@@ -18,28 +18,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
+package org.navalplanner.ws.orders.api;
 
-import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
- * Contract for {@link BaseCalendarDAO}
+ * Holder for {@link OrderElement} DTO.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IBaseCalendarDAO extends IGenericDAO<BaseCalendar, Long> {
+public class OrderElementHolderDTO {
 
-    List<BaseCalendar> getBaseCalendars();
+    @XmlElements( {
+            @XmlElement(name = "order-line", type = OrderLineDTO.class),
+            @XmlElement(name = "order-line-group", type = OrderLineGroupDTO.class),
+            @XmlElement(name = "order", type = OrderDTO.class) })
+    public OrderElementDTO orderElementDTO;
 
-    List<BaseCalendar> findByParent(BaseCalendar baseCalendar);
+    public OrderElementHolderDTO() {
+    }
 
-    List<BaseCalendar> findByName(BaseCalendar baseCalendar);
-
-    List<BaseCalendar> findByName(String name);
-
-    boolean thereIsOtherWithSameName(BaseCalendar baseCalendar);
+    public OrderElementHolderDTO(OrderElementDTO orderElementDTO) {
+        this.orderElementDTO = orderElementDTO;
+    }
 
 }

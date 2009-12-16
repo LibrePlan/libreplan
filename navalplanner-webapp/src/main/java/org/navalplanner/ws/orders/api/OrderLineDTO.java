@@ -18,28 +18,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
+package org.navalplanner.ws.orders.api;
 
-import java.util.List;
+import java.util.Date;
+import java.util.Set;
 
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.daos.IGenericDAO;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.navalplanner.business.orders.entities.OrderLine;
 
 /**
- * Contract for {@link BaseCalendarDAO}
+ * DTO for {@link OrderLine} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IBaseCalendarDAO extends IGenericDAO<BaseCalendar, Long> {
+@XmlRootElement(name = "order-line")
+public class OrderLineDTO extends OrderElementDTO {
 
-    List<BaseCalendar> getBaseCalendars();
+    @XmlElementWrapper(name = "hours-groups")
+    @XmlElement(name = "hours-group")
+    public Set<HoursGroupDTO> hoursGroups;
 
-    List<BaseCalendar> findByParent(BaseCalendar baseCalendar);
+    public OrderLineDTO() {
+        super();
+    }
 
-    List<BaseCalendar> findByName(BaseCalendar baseCalendar);
-
-    List<BaseCalendar> findByName(String name);
-
-    boolean thereIsOtherWithSameName(BaseCalendar baseCalendar);
+    public OrderLineDTO(String name, String code, Date initDate, Date deadline,
+            String description, Set<HoursGroupDTO> hoursGroups) {
+        super(name, code, initDate, deadline, description);
+        this.hoursGroups = hoursGroups;
+    }
 
 }

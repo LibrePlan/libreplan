@@ -18,28 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
+package org.navalplanner.ws.common.api;
 
-import java.util.List;
-
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.daos.IGenericDAO;
+import javax.xml.bind.annotation.XmlEnum;
 
 /**
- * Contract for {@link BaseCalendarDAO}
+ * DTO for <code>ResourceEnum</code> entity.
  *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public interface IBaseCalendarDAO extends IGenericDAO<BaseCalendar, Long> {
-
-    List<BaseCalendar> getBaseCalendars();
-
-    List<BaseCalendar> findByParent(BaseCalendar baseCalendar);
-
-    List<BaseCalendar> findByName(BaseCalendar baseCalendar);
-
-    List<BaseCalendar> findByName(String name);
-
-    boolean thereIsOtherWithSameName(BaseCalendar baseCalendar);
-
+@XmlEnum
+public enum ResourceEnumDTO {
+    RESOURCE,
+    WORKER,
+    MACHINE
 }

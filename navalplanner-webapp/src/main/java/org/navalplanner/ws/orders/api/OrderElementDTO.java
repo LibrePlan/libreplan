@@ -18,28 +18,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
+package org.navalplanner.ws.orders.api;
 
-import java.util.List;
+import java.util.Date;
 
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.daos.IGenericDAO;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
- * Contract for {@link BaseCalendarDAO}
+ * DTO for {@link OrderElement} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IBaseCalendarDAO extends IGenericDAO<BaseCalendar, Long> {
+@XmlRootElement(name = "order-element")
+public class OrderElementDTO {
 
-    List<BaseCalendar> getBaseCalendars();
+    @XmlAttribute
+    public String name;
 
-    List<BaseCalendar> findByParent(BaseCalendar baseCalendar);
+    @XmlAttribute
+    public String code;
 
-    List<BaseCalendar> findByName(BaseCalendar baseCalendar);
+    @XmlAttribute(name = "init-date")
+    public Date initDate;
 
-    List<BaseCalendar> findByName(String name);
+    @XmlAttribute
+    public Date deadline;
 
-    boolean thereIsOtherWithSameName(BaseCalendar baseCalendar);
+    @XmlAttribute
+    public String description;
+
+    public OrderElementDTO() {
+    }
+
+    public OrderElementDTO(String name, String code, Date initDate,
+            Date deadline, String description) {
+        this.name = name;
+        this.code = code;
+        this.initDate = initDate;
+        this.deadline = deadline;
+        this.description = description;
+    }
 
 }

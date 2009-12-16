@@ -40,6 +40,7 @@ import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
+import org.navalplanner.ws.common.impl.Util;
 import org.navalplanner.ws.resources.criterion.api.CriterionTypeDTO;
 import org.navalplanner.ws.resources.criterion.api.CriterionTypeListDTO;
 import org.navalplanner.ws.resources.criterion.api.ICriterionService;
@@ -115,7 +116,7 @@ public class CriterionServiceREST implements ICriterionService {
             } catch (ValidationException e) {
                 instanceConstraintViolationsDTO =
                     ConstraintViolationConverter.toDTO(
-                        generateInstanceId(instanceNumber,
+                        Util.generateInstanceId(instanceNumber,
                             criterionTypeDTO.name),
                         e.getInvalidValues());
             }
@@ -128,7 +129,7 @@ public class CriterionServiceREST implements ICriterionService {
                 if (instanceConstraintViolationsDTO == null) {
                     instanceConstraintViolationsDTO =
                         new InstanceConstraintViolationsDTO(
-                            generateInstanceId(instanceNumber,
+                            Util.generateInstanceId(instanceNumber,
                                 criterionTypeDTO.name),
                             new ArrayList<ConstraintViolationDTO>());
                 }
@@ -158,18 +159,6 @@ public class CriterionServiceREST implements ICriterionService {
 
         return new InstanceConstraintViolationsListDTO(
             instanceConstraintViolationsList);
-
-    }
-
-    private String generateInstanceId(int instanceNumber, String name) {
-
-        String instanceId = instanceNumber + "";
-
-        if (name != null &&  name.length() >= 0) {
-            instanceId += " (" + name + ")";
-        }
-
-        return instanceId;
 
     }
 

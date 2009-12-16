@@ -21,6 +21,7 @@
 package org.navalplanner.business.common;
 
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
@@ -37,10 +38,12 @@ import org.springframework.beans.factory.annotation.Autowired;
  * to access DAOs. For the rest of classes (e.g. services, tests, etc.), Spring
  * DI is a more convenient option. The DAOs or services are added to the
  * registry as needed.
+ * 
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Javier Moran Rua <jmoran@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class Registry {
 
@@ -73,6 +76,9 @@ public class Registry {
 
     @Autowired
     private IQualityFormDAO qualityFormDAO;
+
+    @Autowired
+    private IBaseCalendarDAO baseCalendarDAO;
 
     private Registry() {
     }
@@ -116,4 +122,9 @@ public class Registry {
     public static IQualityFormDAO getQualityFormDAO() {
         return getInstance().qualityFormDAO;
     }
+
+    public static IBaseCalendarDAO getBaseCalendarDAO() {
+        return getInstance().baseCalendarDAO;
+    }
+
 }

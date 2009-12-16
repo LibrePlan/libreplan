@@ -20,9 +20,6 @@
 
 package org.navalplanner.ws.common.impl;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -41,19 +38,9 @@ public class RuntimeExceptionMapper
     implements ExceptionMapper<RuntimeException> {
 
     public Response toResponse(RuntimeException e) {
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
-            entity(new InternalErrorDTO(e.getMessage(),
-                getStackTrace(e))).type("application/xml").build();
-    }
-
-    private String getStackTrace(RuntimeException e) {
-
-        StringWriter stringWriter = new StringWriter();
-
-        e.printStackTrace(new PrintWriter(stringWriter));
-
-        return stringWriter.toString();
-
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(
+                new InternalErrorDTO(e.getMessage(), Util.getStackTrace(e)))
+                .type("application/xml").build();
     }
 
 }

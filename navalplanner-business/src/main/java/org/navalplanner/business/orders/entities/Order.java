@@ -179,7 +179,7 @@ public class Order extends OrderLineGroup {
     }
 
     public void setDependenciesConstraintsHavePriority(
-            boolean dependenciesConstraintsHavePriority) {
+            Boolean dependenciesConstraintsHavePriority) {
         this.dependenciesConstraintsHavePriority = dependenciesConstraintsHavePriority;
     }
 

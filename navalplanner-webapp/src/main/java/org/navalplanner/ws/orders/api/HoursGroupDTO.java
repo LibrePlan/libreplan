@@ -18,28 +18,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
+package org.navalplanner.ws.orders.api;
 
-import java.util.List;
+import javax.xml.bind.annotation.XmlAttribute;
 
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.ws.common.api.ResourceEnumDTO;
 
 /**
- * Contract for {@link BaseCalendarDAO}
+ * DTO for {@link HoursGroup} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IBaseCalendarDAO extends IGenericDAO<BaseCalendar, Long> {
+public class HoursGroupDTO {
 
-    List<BaseCalendar> getBaseCalendars();
+    @XmlAttribute(name = "code")
+    public String name;
 
-    List<BaseCalendar> findByParent(BaseCalendar baseCalendar);
+    @XmlAttribute(name = "resource-type")
+    public ResourceEnumDTO resourceType;
 
-    List<BaseCalendar> findByName(BaseCalendar baseCalendar);
+    @XmlAttribute(name = "working-hours")
+    public Integer workingHours;
 
-    List<BaseCalendar> findByName(String name);
+    public HoursGroupDTO() {
+    }
 
-    boolean thereIsOtherWithSameName(BaseCalendar baseCalendar);
+    public HoursGroupDTO(String name, ResourceEnumDTO resourceType,
+            Integer workingHours) {
+        this.name = name;
+        this.resourceType = resourceType;
+        this.workingHours = workingHours;
+    }
 
 }

@@ -18,28 +18,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
+package org.navalplanner.ws.common.impl;
 
-import java.util.List;
-
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.daos.IGenericDAO;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
- * Contract for {@link BaseCalendarDAO}
+ * Utilities class related with web service.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IBaseCalendarDAO extends IGenericDAO<BaseCalendar, Long> {
+public class Util {
 
-    List<BaseCalendar> getBaseCalendars();
+    public static String generateInstanceId(int instanceNumber,
+            String instanceIdentifier) {
+        String instanceId = instanceNumber + "";
 
-    List<BaseCalendar> findByParent(BaseCalendar baseCalendar);
+        if (instanceIdentifier != null && instanceIdentifier.length() >= 0) {
+            instanceId += " (" + instanceIdentifier + ")";
+        }
 
-    List<BaseCalendar> findByName(BaseCalendar baseCalendar);
+        return instanceId;
+    }
 
-    List<BaseCalendar> findByName(String name);
-
-    boolean thereIsOtherWithSameName(BaseCalendar baseCalendar);
+    public static String getStackTrace(Exception e) {
+        StringWriter stringWriter = new StringWriter();
+        e.printStackTrace(new PrintWriter(stringWriter));
+        return stringWriter.toString();
+    }
 
 }

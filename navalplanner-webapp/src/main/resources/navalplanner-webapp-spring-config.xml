@@ -46,9 +46,11 @@
     <jaxrs:server id="rest" address="/">
         <jaxrs:serviceBeans>
             <ref bean="criterionServiceREST"/>
+            <ref bean="orderElementServiceREST"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="runtimeExceptionMapper" />
+            <ref bean="instanceNotFoundExceptionMapper" />
         </jaxrs:providers>
         <!-- FIXME: in root pom.xml, enable CXF logging on development and
              disable it in production.

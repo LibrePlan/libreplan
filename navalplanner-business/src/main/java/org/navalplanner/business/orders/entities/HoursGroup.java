@@ -43,6 +43,15 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return result;
     }
 
+    public static HoursGroup createUnvalidated(String name,
+            ResourceEnum resourceType, Integer workingHours) {
+        HoursGroup result = new HoursGroup();
+        result.setName(name);
+        result.setResourceType(resourceType);
+        result.setWorkingHours(workingHours);
+        return create(result);
+    }
+
     private String name;
 
     private ResourceEnum resourceType = ResourceEnum.WORKER;

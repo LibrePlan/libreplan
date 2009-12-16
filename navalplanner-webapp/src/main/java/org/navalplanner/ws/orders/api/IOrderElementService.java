@@ -18,18 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.resources.criterion.api;
+package org.navalplanner.ws.orders.api;
 
-import javax.xml.bind.annotation.XmlEnum;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
- * DTO for <code>ResourceEnum</code> entity.
+ * Service for managing {@link OrderElement} entities.
  *
- * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlEnum
-public enum ResourceEnumDTO {
-    RESOURCE,
-    WORKER,
-    MACHINE
+public interface IOrderElementService {
+
+    OrderElementDTO getOrderElement(Long id) throws InstanceNotFoundException;
+
+    InstanceConstraintViolationsListDTO addOrder(OrderDTO order);
+
 }

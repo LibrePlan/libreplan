@@ -18,28 +18,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
+package org.navalplanner.ws.common.impl;
 
-import java.util.List;
+import javax.management.InstanceNotFoundException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.ws.common.api.InternalErrorDTO;
+import org.springframework.stereotype.Component;
 
 /**
- * Contract for {@link BaseCalendarDAO}
+ * Exception mapper for <code>InstanceNotFoundException</code>.
  *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public interface IBaseCalendarDAO extends IGenericDAO<BaseCalendar, Long> {
+@Provider
+@Component("instanceNotFoundExceptionMapper")
+public class InstanceNotFoundExceptionMapper implements
+        ExceptionMapper<InstanceNotFoundException> {
 
-    List<BaseCalendar> getBaseCalendars();
-
-    List<BaseCalendar> findByParent(BaseCalendar baseCalendar);
-
-    List<BaseCalendar> findByName(BaseCalendar baseCalendar);
-
-    List<BaseCalendar> findByName(String name);
-
-    boolean thereIsOtherWithSameName(BaseCalendar baseCalendar);
+    public Response toResponse(InstanceNotFoundException e) {
+        return Response.status(Response.Status.NOT_FOUND).entity(
+                new InternalErrorDTO(e.getMessage(), Util.getStackTrace(e)))
+                .type("application/xml").build();
+    }
 
 }

@@ -18,28 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
-
-import java.util.List;
-
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.daos.IGenericDAO;
-
 /**
- * Contract for {@link BaseCalendarDAO}
+ * Specification of namespace for REST-based services.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IBaseCalendarDAO extends IGenericDAO<BaseCalendar, Long> {
+@javax.xml.bind.annotation.XmlSchema(elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED, namespace = WSCommonGlobalNames.REST_NAMESPACE)
+package org.navalplanner.ws.orders.api;
 
-    List<BaseCalendar> getBaseCalendars();
-
-    List<BaseCalendar> findByParent(BaseCalendar baseCalendar);
-
-    List<BaseCalendar> findByName(BaseCalendar baseCalendar);
-
-    List<BaseCalendar> findByName(String name);
-
-    boolean thereIsOtherWithSameName(BaseCalendar baseCalendar);
-
-}
+import org.navalplanner.ws.common.api.WSCommonGlobalNames;
