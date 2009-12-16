@@ -310,7 +310,8 @@ public class CriterionType extends BaseEntity implements
             return !criterionTypeDAO.existsByNameAnotherTransaction(this);
         } else {
             try {
-                CriterionType c = criterionTypeDAO.findUniqueByName(name);
+                CriterionType c =
+                    criterionTypeDAO.findUniqueByNameAnotherTransaction(name);
                 return c.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;

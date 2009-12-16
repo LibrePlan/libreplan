@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * DAO implementation for Criterion. <br />
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 
 @Component
@@ -63,11 +64,29 @@ public class CriterionTypeDAO extends GenericDAOHibernate<CriterionType, Long>
     @Override
     public CriterionType findUniqueByName(String name)
             throws InstanceNotFoundException {
+
           Criteria c = getSession().createCriteria(CriterionType.class);
 
           c.add(Restrictions.eq("name", name));
 
-          return (CriterionType) c.uniqueResult();
+          CriterionType criterionType = (CriterionType) c.uniqueResult();
+
+          if (criterionType == null) {
+              throw new InstanceNotFoundException(name,
+                  CriterionType.class.getName());
+          } else {
+              return criterionType;
+          }
+
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public CriterionType findUniqueByNameAnotherTransaction(String name)
+        throws InstanceNotFoundException {
+
+        return findUniqueByName(name);
+
     }
 
     @Override

@@ -31,11 +31,15 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 /**
  * DAO for {@link CriterionTypeDAO} <br />
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public interface ICriterionTypeDAO extends IGenericDAO<CriterionType, Long> {
 
     CriterionType findUniqueByName(String name)
             throws InstanceNotFoundException;
+
+    CriterionType findUniqueByNameAnotherTransaction(String name)
+        throws InstanceNotFoundException;
 
     CriterionType findUniqueByName(CriterionType criterionType)
             throws InstanceNotFoundException;
