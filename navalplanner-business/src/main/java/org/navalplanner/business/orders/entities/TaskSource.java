@@ -201,7 +201,7 @@ public class TaskSource extends BaseEntity {
         protected TaskElement apply(ITaskSourceDAO taskSourceDAO,
                 List<TaskElement> children) {
             TaskGroup taskGroup = (TaskGroup) taskSource.getTask();
-            taskGroup.addChildren(children);
+            taskGroup.setTaskChildrenTo(children);
             taskSourceDAO.save(taskSource);
             return taskGroup;
         }

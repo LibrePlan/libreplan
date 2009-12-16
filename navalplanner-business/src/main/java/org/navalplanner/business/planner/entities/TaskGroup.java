@@ -96,7 +96,7 @@ public class TaskGroup extends TaskElement {
         // do nothing
     }
 
-    public void addChildren(List<TaskElement> children) {
+    public void setTaskChildrenTo(List<TaskElement> children) {
         List<TaskElement> toRemove = new ArrayList<TaskElement>();
         for (TaskElement each : taskElements) {
             if (!children.contains(each) && !(each instanceof TaskMilestone)) {
