@@ -259,111 +259,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         Tabpanel earnedValueChartPannel = new Tabpanel();
         appendEarnedValueChartAndLegend(earnedValueChartPannel,
-                chartEarnedValueTimeplot);
+                chartEarnedValueTimeplot, earnedValueChartFiller);
         chartTabpanels.appendChild(earnedValueChartPannel);
 
-        Tabpanel indicatorsChartPannel = new Tabpanel();
-        appendIndicators(indicatorsChartPannel, earnedValueChartFiller);
-        chartTabpanels.appendChild(indicatorsChartPannel);
-
         chartComponent.appendChild(chartTabpanels);
-    }
-
-    private void appendIndicators(Tabpanel indicatorsChartPannel,
-            OrderEarnedValueChartFiller earnedValueChartFiller) {
-        Vbox vbox = new Vbox();
-
-        Hbox dateHbox = new Hbox();
-        dateHbox.appendChild(new Label(_("Select date:")));
-
-        LocalDate date = new LocalDate();
-        Datebox datebox = new Datebox(date.toDateTimeAtStartOfDay().toDate());
-        dateHbox.appendChild(datebox);
-
-        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox,
-                datebox);
-        vbox.appendChild(dateHbox);
-
-        vbox.appendChild(getIndicatorsTable(earnedValueChartFiller, date));
-
-        indicatorsChartPannel.appendChild(vbox);
-    }
-
-    private void appendEventListenerToDateboxIndicators(
-            final OrderEarnedValueChartFiller earnedValueChartFiller,
-            final Vbox vbox, final Datebox datebox) {
-        datebox.addEventListener(Events.ON_CHANGE, new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                LocalDate date = new LocalDate(datebox.getValue());
-                org.zkoss.zk.ui.Component child = vbox
-                        .getFellow("indicatorsTable");
-                vbox.removeChild(child);
-                vbox.appendChild(getIndicatorsTable(earnedValueChartFiller,
-                        date));
-            }
-
-        });
-    }
-
-    private org.zkoss.zk.ui.Component getIndicatorsTable(
-            OrderEarnedValueChartFiller earnedValueChartFiller, LocalDate date) {
-        Hbox mainhbox = new Hbox();
-        mainhbox.setId("indicatorsTable");
-        mainhbox.setAlign("center");
-        mainhbox.setPack("center");
-        mainhbox.setClass("legend-container");
-
-        Vbox vbox = new Vbox();
-        vbox.setClass("legend");
-
-        Vbox column1 = new Vbox();
-        Vbox column2 = new Vbox();
-        column1.setSclass("earned-indicator-column");
-        column2.setSclass("earned-indicator-column");
-
-        int columnNumber = 0;
-
-        for (EarnedValueType indicator : EarnedValueType.values()) {
-            Label indicatorLabel = new Label(indicator.getAcronym());
-            indicatorLabel.setTooltiptext(indicator.getName());
-            indicatorLabel.setStyle("color: " + indicator.getColor());
-
-            BigDecimal value = earnedValueChartFiller.getIndicator(indicator,
-                    date);
-            String units = _("h");
-            if (indicator.equals(EarnedValueType.CPI)
-                    || indicator.equals(EarnedValueType.SPI)) {
-                value = value.multiply(new BigDecimal(100));
-                units = "%";
-            }
-            Label valueLabel = new Label(value.intValue() + " " + units);
-            valueLabel.setStyle("color: " + indicator.getColor());
-
-            Hbox hbox = new Hbox();
-            hbox.appendChild(indicatorLabel);
-            hbox.appendChild(valueLabel);
-
-            columnNumber = columnNumber + 1;
-            switch (columnNumber) {
-            case 1:
-                column1.appendChild(hbox);
-                break;
-            case 2:
-                column2.appendChild(hbox);
-                columnNumber = 0;
-            }
-        }
-
-        Hbox hbox = new Hbox();
-        hbox.appendChild(column1);
-        hbox.appendChild(column2);
-
-        vbox.appendChild(hbox);
-        mainhbox.appendChild(vbox);
-
-        return mainhbox;
     }
 
     private void appendLoadChartAndLegend(Tabpanel loadChartPannel,
@@ -391,23 +290,63 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private void appendEarnedValueChartAndLegend(
-            Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot) {
+            Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot,
+            OrderEarnedValueChartFiller earnedValueChartFiller) {
+        Vbox vbox = new Vbox();
+        vbox.setClass("legend-container");
+        vbox.setAlign("center");
+        vbox.setPack("center");
+
+        Hbox dateHbox = new Hbox();
+        dateHbox.appendChild(new Label(_("Select date:")));
+
+        LocalDate date = new LocalDate();
+        Datebox datebox = new Datebox(date.toDateTimeAtStartOfDay().toDate());
+        dateHbox.appendChild(datebox);
+
+        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox,
+                datebox);
+        vbox.appendChild(dateHbox);
+
+        vbox.appendChild(getEarnedValueChartConfigurableLegend(
+                earnedValueChartFiller, date));
+
         Hbox hbox = new Hbox();
-        hbox.appendChild(getEarnedValueChartConfigurableLegend());
+        hbox.setSclass("earned-value-chart");
+
+        hbox.appendChild(vbox);
 
         Div div = new Div();
         div.appendChild(chartEarnedValueTimeplot);
         div.setSclass("plannergraph");
+
         hbox.appendChild(div);
 
         earnedValueChartPannel.appendChild(hbox);
     }
 
-    private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend() {
+    private void appendEventListenerToDateboxIndicators(
+            final OrderEarnedValueChartFiller earnedValueChartFiller,
+            final Vbox vbox, final Datebox datebox) {
+        datebox.addEventListener(Events.ON_CHANGE, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                LocalDate date = new LocalDate(datebox.getValue());
+                org.zkoss.zk.ui.Component child = vbox
+                        .getFellow("indicatorsTable");
+                vbox.removeChild(child);
+                vbox.appendChild(getEarnedValueChartConfigurableLegend(
+                        earnedValueChartFiller, date));
+            }
+
+        });
+    }
+
+    private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend(
+            OrderEarnedValueChartFiller earnedValueChartFiller, LocalDate date) {
         Hbox mainhbox = new Hbox();
-        mainhbox.setClass("legend-container");
-        mainhbox.setAlign("center");
-        mainhbox.setPack("center");
+        mainhbox.setId("indicatorsTable");
 
         Vbox vbox = new Vbox();
         vbox.setId("earnedValueChartConfiguration");
@@ -426,17 +365,30 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             checkbox.setAttribute("indicator", type);
             checkbox.setStyle("color: " + type.getColor());
 
+            BigDecimal value = earnedValueChartFiller.getIndicator(type, date);
+            String units = _("h");
+            if (type.equals(EarnedValueType.CPI)
+                    || type.equals(EarnedValueType.SPI)) {
+                value = value.multiply(new BigDecimal(100));
+                units = "%";
+            }
+            Label valueLabel = new Label(value.intValue() + " " + units);
+
+            Hbox hbox = new Hbox();
+            hbox.appendChild(checkbox);
+            hbox.appendChild(valueLabel);
+
             columnNumber = columnNumber + 1;
             switch (columnNumber) {
             case 1:
-                column1.appendChild(checkbox);
+                column1.appendChild(hbox);
                 break;
             case 2:
-                column2.appendChild(checkbox);
+                column2.appendChild(hbox);
                 columnNumber = 0;
-                break;
             }
             earnedValueChartConfigurationCheckboxes.add(checkbox);
+
         }
 
         Hbox hbox = new Hbox();
@@ -444,7 +396,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         hbox.appendChild(column2);
 
         vbox.appendChild(hbox);
-        mainhbox.setClass("legend-container");
         mainhbox.appendChild(vbox);
 
         markAsSelectedDefaultIndicators();
