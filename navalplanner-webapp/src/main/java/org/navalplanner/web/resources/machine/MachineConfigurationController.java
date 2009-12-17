@@ -22,30 +22,22 @@ package org.navalplanner.web.resources.machine;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.MachineWorkerAssignment;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
-import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -229,11 +221,12 @@ public class MachineConfigurationController extends GenericForwardComposer {
     private void validateEndDate(Component comp, Object value) {
         Datebox startDateBox = (Datebox) comp.getPreviousSibling();
         if (startDateBox != null) {
-            if ((startDateBox.getValue() != null)
-                    && (startDateBox.getValue().compareTo((Date) value) > 0)) {
-            throw new WrongValueException(
-                    comp,
-                    _("End date is not valid, the new end date must be greater than the start date"));
+            if (startDateBox.getValue() != null) {
+                if (startDateBox.getValue().compareTo((Date) value) > 0) {
+                    throw new WrongValueException(
+                            comp,
+                            _("End date is not valid, the new end date must be greater than the start date"));
+                }
             }
         }
     }
