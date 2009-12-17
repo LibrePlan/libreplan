@@ -36,6 +36,8 @@ public interface IQualityFormDAO extends IGenericDAO<QualityForm, Long> {
 
     List<QualityForm> getAll();
 
+    boolean isUnique(QualityForm qualityForm);
+
     QualityForm findByNameAndType(String name, QualityFormType type);
 
     List<QualityForm> getAllByType(QualityFormType type);

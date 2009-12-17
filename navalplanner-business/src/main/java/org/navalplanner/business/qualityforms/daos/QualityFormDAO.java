@@ -52,6 +52,20 @@ public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long>
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public boolean isUnique(QualityForm qualityForm) {
+        try {
+            QualityForm result = findUniqueByName(qualityForm);
+            return (result == null || result.getId()
+                    .equals(qualityForm.getId()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public QualityForm findByNameAndType(String name, QualityFormType type) {
         return (QualityForm) getSession().createCriteria(QualityForm.class)
                 .add(Restrictions.eq("name", name)).add(
@@ -60,6 +74,7 @@ public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long>
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public List<QualityForm> getAllByType(QualityFormType type) {
         Criteria c = getSession().createCriteria(QualityForm.class).add(
                 Restrictions.eq("qualityFormType", type));
@@ -67,6 +82,7 @@ public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long>
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public QualityForm findUniqueByName(QualityForm qualityForm)
             throws InstanceNotFoundException {
         Validate.notNull(qualityForm);
@@ -74,6 +90,7 @@ public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long>
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public QualityForm findUniqueByName(String name)
             throws InstanceNotFoundException, NonUniqueResultException {
         Criteria c = getSession().createCriteria(QualityForm.class);
@@ -87,6 +104,7 @@ public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long>
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public boolean existsOtherWorkReportTypeByName(QualityForm qualityForm) {
         try {
             QualityForm t = findUniqueByName(qualityForm);
@@ -97,7 +115,7 @@ public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long>
     }
 
     @Override
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public boolean existsByNameAnotherTransaction(QualityForm qualityForm) {
         return existsOtherWorkReportTypeByName(qualityForm);
     }

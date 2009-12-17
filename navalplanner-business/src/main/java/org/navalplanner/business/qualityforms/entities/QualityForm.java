@@ -51,7 +51,7 @@ public class QualityForm extends BaseEntity {
         return qualityForm;
     }
 
-    public QualityForm() {
+    protected QualityForm() {
 
     }
 
@@ -68,7 +68,7 @@ public class QualityForm extends BaseEntity {
 
     private List<QualityFormItem> qualityFormItems = new ArrayList<QualityFormItem>();
 
-    @NotEmpty
+    @NotEmpty(message = "quality form name not specified")
     public String getName() {
         return name;
     }
@@ -85,7 +85,7 @@ public class QualityForm extends BaseEntity {
         this.description = description;
     }
 
-    @NotNull
+    @NotNull(message = "quality form type not specified")
     public QualityFormType getQualityFormType() {
         return qualityFormType;
     }
@@ -107,13 +107,15 @@ public class QualityForm extends BaseEntity {
         if (qualityFormItem != null) {
             Integer position = this.qualityFormItems.size();
             qualityFormItem.setPosition(position);
-            this.qualityFormItems.add(qualityFormItem);
+            qualityFormItems.add(qualityFormItem);
+            updateAndSortQualityFormItemPositions();
         }
         return false;
     }
 
     public void removeQualityFormItem(QualityFormItem qualityFormItem) {
-        this.qualityFormItems.remove(qualityFormItem);
+        qualityFormItems.remove(qualityFormItem);
+        updateAndSortQualityFormItemPositions();
     }
 
     @SuppressWarnings("unused")
@@ -135,8 +137,14 @@ public class QualityForm extends BaseEntity {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "The quality item positions must be uniques, consecutives and corrects in function to the percentage.")
-    public boolean validateTheQualityFormItemPositions() {
+    @AssertTrue(message = "Quality form item name must be unique")
+    public boolean checkConstraintUniqueQualityFormItemsName() {
+        return (findQualityFormItemWithDuplicateName() == null);
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "The quality item positions must be uniques, consecutives.")
+    public boolean checkConstraintConsecutivesAndUniquesQualityFormItemPositions() {
         List<QualityFormItem> result = getListToNull(qualityFormItems);
         for (QualityFormItem qualityFormItem : qualityFormItems) {
             // Check if index is out of range
@@ -163,12 +171,32 @@ public class QualityForm extends BaseEntity {
                 return false;
             }
         }
+        return true;
+    }
 
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "The quality item positions must be corrects in function to the percentage.")
+    public boolean checkConstraintCorrectPositionsQualityFormItemsByPercentage() {
         // check the position is correct in function to the percentage.
-        for (QualityFormItem item : qualityFormItems) {
-            if (!item.getPosition().equals(getCorrectPosition(item))) {
-                return false;
+        if ((qualityFormType != null)
+                && (qualityFormType.equals(QualityFormType.BY_PERCENTAGE))) {
+            for (QualityFormItem item : qualityFormItems) {
+                if (!item.getPosition().equals(getCorrectPosition(item))) {
+                    return false;
+                }
             }
+        }
+        return true;
+
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "The quality form item porcentage must be uniques if the quality form type is by percentage.")
+    public boolean checkConstraintDuplicatesQualityFormItemPercentage() {
+        if ((qualityFormType != null)
+                && (qualityFormType.equals(QualityFormType.BY_PERCENTAGE))
+                && (findQualityFormItemWithDuplicatePercentage() != null)) {
+            return false;
         }
         return true;
     }
@@ -176,7 +204,11 @@ public class QualityForm extends BaseEntity {
     private Integer getCorrectPosition(QualityFormItem itemToFind) {
         Integer position = 0;
         for (QualityFormItem item : qualityFormItems) {
+            if (itemToFind.getPercentage() == null) {
+                return null;
+            }
             if ((!itemToFind.equals(item))
+                    && (item.getPercentage() != null)
                     && (itemToFind.getPercentage().compareTo(item
                             .getPercentage())) > 0) {
                 position++;
@@ -192,6 +224,62 @@ public class QualityForm extends BaseEntity {
             result.add(null);
         }
         return result;
+    }
+
+    public void updateAndSortQualityFormItemPositions() {
+        List<QualityFormItem> result = getListToNull(qualityFormItems);
+        if ((qualityFormType != null)
+                && (qualityFormType.equals(QualityFormType.BY_PERCENTAGE))) {
+            int nulos = 0;
+            for (QualityFormItem item : qualityFormItems) {
+
+                Integer position = getCorrectPosition(item);
+                if (position == null) {
+                    nulos++;
+                    position = qualityFormItems.size() - nulos;
+                }
+
+                while (result.get(position) != null) {
+                    position++;
+                }
+
+                item.setPosition(position);
+                result.set(position, item);
+            }
+            setQualityFormItems(result);
+        }
+    }
+
+    public QualityFormItem findQualityFormItemWithDuplicateName() {
+        List<QualityFormItem> items = new ArrayList<QualityFormItem>(
+                qualityFormItems);
+        for (int i = 0; i < items.size(); i++) {
+            for (int j = i + 1; j < items.size(); j++) {
+                if ((items.get(j).getName() != null)
+                        && (items.get(i).getName() != null)
+                        && (items.get(j).getName().equals(items.get(i)
+                                .getName()))) {
+                    return items.get(j);
+                }
+            }
+        }
+        return null;
+    }
+
+    public QualityFormItem findQualityFormItemWithDuplicatePercentage() {
+        List<QualityFormItem> items = new ArrayList<QualityFormItem>(
+                qualityFormItems);
+        for (int i = 0; i < items.size(); i++) {
+            for (int j = i + 1; j < items.size(); j++) {
+                if ((items.get(j).getPercentage() != null)
+                        && (items.get(i).getPercentage() != null)
+                        && (items.get(j).getPercentage().equals(items.get(i)
+                                .getPercentage()))) {
+                    return items.get(j);
+                }
+            }
+        }
+        return null;
     }
 
 }

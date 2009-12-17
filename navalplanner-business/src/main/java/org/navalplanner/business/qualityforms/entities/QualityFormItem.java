@@ -25,11 +25,16 @@ package org.navalplanner.business.qualityforms.entities;
 
 import java.math.BigDecimal;
 
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.INewObject;
 
 public class QualityFormItem implements INewObject {
+
+    public final static String propertyName = "name";
+
+    public final static String propertyPercentage = "percentage";
 
     public static QualityFormItem create() {
         QualityFormItem qualityFormItem = new QualityFormItem();
@@ -63,7 +68,7 @@ public class QualityFormItem implements INewObject {
 
     private BigDecimal percentage;
 
-    @NotEmpty
+    @NotEmpty(message = "quality form item name not specified or empty")
     public String getName() {
         return name;
     }
@@ -72,16 +77,16 @@ public class QualityFormItem implements INewObject {
         this.name = name;
     }
 
-    @NotNull
+    @NotNull(message = "quality form item position not specified")
     public Integer getPosition() {
-        return position;
+        return position == null ? null : position;
     }
 
     public void setPosition(Integer newPosition) {
         this.position = newPosition;
     }
 
-    @NotNull
+    @NotNull(message = "quality form item percentage not specified")
     public BigDecimal getPercentage() {
         return percentage;
     }
@@ -96,6 +101,18 @@ public class QualityFormItem implements INewObject {
 
     private void setNewObject(boolean newObject) {
         this.newObject = newObject;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "percentage should be greater than 0% and less than 100%")
+    public boolean checkConstraintQualityFormItemPercentage() {
+        if (percentage == null)
+            return true;
+        if ((percentage.compareTo(new BigDecimal(100).setScale(2)) <= 0)
+                && (percentage.compareTo(new BigDecimal(0).setScale(2)) > 0)) {
+            return true;
+        }
+        return false;
     }
 
 }

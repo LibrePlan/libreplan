@@ -1,0 +1,110 @@
+<!--
+  This file is part of ###PROJECT_NAME###
+
+  Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+                     Desenvolvemento Tecnolóxico de Galicia
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<window id="${arg.id}" title="${arg.title}" visible="false">
+    <!--  Messages for user -->
+    <vbox id="messagesContainer"/>
+
+    <tabbox>
+        <tabs>
+           <tab label="${i18n:_('Quality form')}"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <!--  Name qualityForm -->
+                <vbox style="margin-bottom: 5px">
+                    <grid>
+                        <columns>
+                            <column width="200px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Name')}" />
+                                <textbox id="qualityFormName"
+                                    width="500px" value="@{controller.qualityForm.name}"
+                                    constraint="@{controller.checkConstraintUniqueQualityFormName}"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Description')}" />
+                                <textbox id="qualityFormDescription"
+                                    rows="6" width="500px"
+                                    value="@{controller.qualityForm.description}"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Quality form type')}" />
+                                <label value="@{controller.qualityForm.qualityFormType}"/>
+                            </row>
+                        </rows>
+                    </grid>
+                </vbox>
+
+                <!-- Quality form items list -->
+                <panel title="${i18n:_('Quality form items list')}" border="normal">
+                    <panelchildren>
+                        <hbox valign="center">
+                            <button label="${i18n:_('New quality form item')}"
+                            onClick="controller.createQualityFormItem()" />
+                        </hbox>
+                        <grid id="gridQualityFormItems" height="220px"
+                            model="@{controller.qualityFormItems}" fixedLayout="true">
+                            <columns sizable="true">
+                                <column label="${i18n:_('Name')}"/>
+                                <column label="${i18n:_('Position')}" align="center" width="150px"
+                                    sort="auto(position)" sortDirection="ascending"/>
+                                <column label="${i18n:_('Percentage')}" align="center" width="200px"/>
+                                <column label="${i18n:_('Operations')}" align="center" width="150px"/>
+                            </columns>
+                            <rows>
+                                <row self="@{each='qualityFormItem'}" value="@{qualityFormItem}">
+                                    <textbox value="@{qualityFormItem.name}" width="250px"
+                                        constraint="@{controller.checkConstraintQualityFormItemName}"/>
+                                    <label value="@{qualityFormItem.position}" width="50px"/>
+                                    <decimalbox scale = "2" width="100px"
+                                        value="@{qualityFormItem.percentage}"
+                                        constraint = "@{controller.checkConstraintQualityFormItemPercentage}"
+                                        onChange = "controller.onChangeQualityFormItemPercentage()"/>
+                                    <button sclass="icono" image="/common/img/ico_borrar1.png"
+                                        hoverImage="/common/img/ico_borrar.png"
+                                        tooltiptext="${i18n:_('Delete')}" width="150px"
+                                        onClick="controller.confirmDeleteQualityFormItem(self.parent.value);">
+                                    </button>
+                                </row>
+                            </rows>
+                        </grid>
+                    </panelchildren>
+                </panel>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+    <!-- Control buttons -->
+    <hbox>
+        <button label="${i18n:_('Save')}"
+            onClick="controller.save()"
+            sclass="save-button global-action"/>
+        <button label="${i18n:_('Save &amp; Continue')}"
+            onClick="controller.saveAndContinue()"
+            sclass="saveandcontinue-button global-action"/>
+        <button label="${i18n:_('Cancel')}"
+            onClick="controller.close()"
+            sclass="cancel-button global-action"/>
+    </hbox>
+</window>

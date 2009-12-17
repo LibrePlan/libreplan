@@ -165,9 +165,9 @@ public class QualityFormTest extends AbstractQualityFormTest {
         qualityForm.addQualityFormItemAtEnd(qualityFormItem2);
 
         qualityFormItem1.setPosition(0);
-        qualityFormItem1.setPercentage(new BigDecimal(0));
+        qualityFormItem1.setPercentage(new BigDecimal(1));
         qualityFormItem2.setPosition(1);
-        qualityFormItem2.setPercentage(new BigDecimal(1));
+        qualityFormItem2.setPercentage(new BigDecimal(2));
 
         try {
             qualityFormDAO.save(qualityForm);
@@ -175,8 +175,8 @@ public class QualityFormTest extends AbstractQualityFormTest {
             fail("It shouldn't throw an exception");
         }
 
-        qualityFormItem1.setPercentage(new BigDecimal(1));
-        qualityFormItem2.setPercentage(new BigDecimal(0));
+        qualityFormItem1.setPercentage(new BigDecimal(2));
+        qualityFormItem2.setPercentage(new BigDecimal(1));
 
         try {
             qualityFormDAO.save(qualityForm);
@@ -194,7 +194,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
         try {
             qualityFormDAO.save(qualityForm);
         } catch (ValidationException e) {
-            fail("It should throw an exception");
+            fail("It should not throw an exception");
         }
 
         qualityFormItem.setName(null);
@@ -214,7 +214,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
         }
     }
 
-     @Test
+    @Test
     public void checkNotNullQualityFormItemPosition()
             throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
@@ -225,6 +225,8 @@ public class QualityFormTest extends AbstractQualityFormTest {
             qualityFormDAO.save(qualityForm);
             fail("It should throw an exception");
         } catch (ValidationException e) {
+            // It should throw an exception
+        } catch (IllegalStateException e) {
             // It should throw an exception
         }
     }
@@ -243,4 +245,20 @@ public class QualityFormTest extends AbstractQualityFormTest {
             // It should throw an exception
         }
     }
+
+    @Test
+    public void checkIncorrectQualityFormItemPercentage()
+            throws ValidationException {
+        QualityForm qualityForm = createValidQualityForm();
+        QualityFormItem qualityFormItem = createValidQualityFormItem();
+        qualityFormItem.setPercentage(new BigDecimal(100.1));
+        qualityForm.addQualityFormItemAtEnd(qualityFormItem);
+        try {
+            qualityFormDAO.save(qualityForm);
+            fail("It should throw an exception");
+        } catch (ValidationException e) {
+            // It should throw an exception
+        }
+    }
+
 }

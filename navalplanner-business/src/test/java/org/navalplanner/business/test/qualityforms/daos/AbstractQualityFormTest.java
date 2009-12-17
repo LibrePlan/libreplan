@@ -45,7 +45,7 @@ public abstract class AbstractQualityFormTest {
 
     public QualityFormItem createValidQualityFormItem() {
         QualityFormItem qualityFormItem = QualityFormItem.create(UUID
-                .randomUUID().toString(), new Integer(0), new BigDecimal(0));
+                .randomUUID().toString(), new Integer(0), new BigDecimal(1));
         return qualityFormItem;
     }
 

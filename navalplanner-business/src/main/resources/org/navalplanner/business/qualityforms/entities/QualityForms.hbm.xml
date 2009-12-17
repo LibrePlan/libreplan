@@ -22,10 +22,11 @@
 
     <list name="qualityFormItems" table="QUALITY_FORM_ITEMS">
         <key column="QUALITY_FORM_ID"/>
-        <index column="position"/>
+        <index column="idx"/>
         <composite-element class="org.navalplanner.business.qualityforms.entities.QualityFormItem">
-                <property name="name"/>
-                <property name="percentage"/>
+                <property name="name" access="field"/>
+                <property name="percentage" access="field"/>
+                <property name="position" access="field"/>
         </composite-element>
     </list>
 </class>
