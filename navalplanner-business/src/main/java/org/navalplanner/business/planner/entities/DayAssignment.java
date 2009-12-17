@@ -141,6 +141,11 @@ public abstract class DayAssignment extends BaseEntity {
         getResource().addNewAssignments(Arrays.asList(this));
     }
 
-    abstract void detach();
+    final void detach() {
+        getResource().removeAssignments(Arrays.asList(this));
+        detachFromAllocation();
+    }
+
+    protected abstract void detachFromAllocation();
 
 }
