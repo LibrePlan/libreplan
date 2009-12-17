@@ -38,6 +38,12 @@ public class DerivedDayAssignment extends DayAssignment {
                 derivedAllocation));
     }
 
+    /**
+     * Constructor for Hibernate. DO NOT USE!
+     */
+    public DerivedDayAssignment() {
+    }
+
     @NotNull
     private DerivedAllocation allocation;
 

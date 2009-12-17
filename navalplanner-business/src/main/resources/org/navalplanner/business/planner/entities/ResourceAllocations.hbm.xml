@@ -20,6 +20,11 @@
             column="ASSIGNMENT_FUNCTION" not-null="false"
             cascade="all" lazy="false" />
 
+        <set name="derivedAllocations" cascade="all" inverse="true">
+            <key column="RESOURCE_ALLOCATION_ID" />
+            <one-to-many class="DerivedAllocation"/>
+        </set>
+
         <joined-subclass name="SpecificResourceAllocation" table="specific_resource_allocation">
             <key column="RESOURCE_ALLOCATION_ID" />
 
@@ -78,6 +83,9 @@
             <many-to-one name="genericResourceAllocation"
                 class="GenericResourceAllocation" column="GENERIC_RESOURCE_ALLOCATION_ID" />
         </subclass>
+        <subclass name="DerivedDayAssignment" discriminator-value="DERIVED_DAY">
+            <many-to-one name="allocation" column="DERIVED_ALLOCATION_ID"/>
+        </subclass>
     </class>
 
     <!-- AssignmentFunction -->
@@ -107,4 +115,20 @@
 
     </class>
 
+    <class name="DerivedAllocation">
+        <id name="id" type="long" access="property" >
+	        <generator class="hilo">
+	            <param name="max_lo">100</param>
+	        </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <many-to-one class="ResourceAllocation" column="RESOURCE_ALLOCATION_ID"
+                     name="derivedFrom" not-null="true" />
+        <many-to-one class="org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit"
+            name="configurationUnit" not-null="true"/>
+        <set name="assignments" cascade="all" inverse="true">
+            <key column="DERIVED_ALLOCATION_ID"/>
+            <one-to-many class="DerivedDayAssignment"/>
+        </set>
+    </class>
 </hibernate-mapping>
