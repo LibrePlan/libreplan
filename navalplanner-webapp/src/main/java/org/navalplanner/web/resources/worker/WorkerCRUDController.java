@@ -138,13 +138,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             if (baseCalendarEditionController != null) {
                 baseCalendarEditionController.save();
             }
-            if (workerModel.getCalendar() == null) {
-                createCalendar();
-            }
             if(criterionsController != null){
                 if(!criterionsController.validate()){
                     return;
                 }
+            }
+            if (workerModel.getWorker().isVirtual()) {
+                workerModel.setCapacity(getVirtualWorkerCapacity());
             }
             workerModel.save();
             goToList();
@@ -222,6 +222,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     public void goToCreateForm() {
             getBookmarker().goToCreateForm();
             workerModel.prepareForCreate();
+        if (workerModel.getCalendar() == null) {
+            createCalendar();
+        }
             createAsignedCriterions();
             resourcesCostCategoryAssignmentController.setResource(workerModel.getWorker());
             editWindow.setTitle(_("Create Worker"));
@@ -337,7 +340,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         if (parentCalendar == null) {
             parentCalendar = workerModel.getDefaultCalendar();
         }
-
         workerModel.setCalendar(parentCalendar.newDerivedResourceCalendar());
     }
 
@@ -397,10 +399,12 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
             @Override
             public void save() {
+                Integer capacity = workerModel.getCapacity();
                 workerModel
                         .setCalendar((ResourceCalendar) resourceCalendarModel
                                 .getBaseCalendar());
                 reloadCurrentWindow();
+                workerModel.setCapacity(capacity);
             }
 
         };
@@ -435,6 +439,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void goToCreateVirtualWorkerForm() {
         workerModel.prepareForCreate(true);
+        if (workerModel.getCalendar() == null) {
+            createCalendar();
+        }
         createAsignedCriterions();
         resourcesCostCategoryAssignmentController.setResource(workerModel
                 .getWorker());
@@ -473,11 +480,17 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         }
     }
 
-    public String getVirtualWorkerCapacity() {
-        return "";
+    public Integer getVirtualWorkerCapacity() {
+        if (isVirtualWorker()) {
+            if (this.workerModel.getCalendar() != null) {
+                return this.workerModel.getCapacity();
+            }
+        }
+        return 1;
     }
 
-    public void setVirtualWorkerCapacity(String capacity) {
+    public void setVirtualWorkerCapacity(Integer capacity) {
+        this.workerModel.setCapacity(capacity);
     }
 
 }

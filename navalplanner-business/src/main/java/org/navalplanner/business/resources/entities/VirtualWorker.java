@@ -32,6 +32,8 @@ public class VirtualWorker extends Worker {
         VirtualWorker virtualWorker = new VirtualWorker();
         virtualWorker.setNewObject(true);
         virtualWorker.setNif("[Virtual]");
+        virtualWorker.setSurname("---");
+        virtualWorker.getCalendar();
         return virtualWorker;
     }
 
@@ -41,7 +43,6 @@ public class VirtualWorker extends Worker {
      * Constructor for hibernate. Do not use!
      */
     public VirtualWorker() {
-
     }
 
     @Override

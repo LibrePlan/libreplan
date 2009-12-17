@@ -135,7 +135,11 @@ public class WorkerModel implements IWorkerModel {
     @Override
     @Transactional(readOnly = true)
     public List<Worker> getVirtualWorkers() {
-        return resourceDAO.getVirtualWorkers();
+        List<Worker> list = resourceDAO.getVirtualWorkers();
+        for (Worker each : list) {
+            each.getCalendar().getCapacity();
+        }
+        return list;
     }
 
     @Override
@@ -155,7 +159,7 @@ public class WorkerModel implements IWorkerModel {
 
         if (virtual) {
             worker = VirtualWorker.create();
-            worker.setFirstName("Virtual");
+            setCapacity(1);
         } else {
             worker = Worker.create();
         }
@@ -505,6 +509,22 @@ public class WorkerModel implements IWorkerModel {
             return worker.getCalendar();
         }
         return null;
+    }
+
+    @Override
+    public Integer getCapacity() {
+        if (getCalendar() != null) {
+            return getCalendar().getCapacity();
+        }
+        return null;
+    }
+
+    @Override
+    public void setCapacity(Integer capacity) {
+        if (getCalendar() != null) {
+            getCalendar().setCapacity(capacity);
+            System.out.println("not null" + getCalendar().getCapacity());
+        }
     }
 
     public IAssignedCriterionsModel getAssignedCriterionsModel() {

@@ -133,4 +133,8 @@ public interface IWorkerModel {
 
     BaseCalendar getDefaultCalendar();
 
+    Integer getCapacity();
+
+    void setCapacity(Integer capacity);
+
 }

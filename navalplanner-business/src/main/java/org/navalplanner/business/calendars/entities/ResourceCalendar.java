@@ -25,10 +25,20 @@ import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * Calendar for a {@link Resource}.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class ResourceCalendar extends BaseCalendar {
+
+    private Integer capacity = 1;
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
 
     public static ResourceCalendar create() {
         return create(new ResourceCalendar(CalendarData.create()));

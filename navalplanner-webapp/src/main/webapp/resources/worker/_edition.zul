@@ -62,7 +62,7 @@
                         </row>
                         <row visible="@{controller.isVirtualWorker}">
                             <label value="${i18n:_('Capacity')}" />
-                            <textbox value="@{controller.virtualWorkerCapacity}" width="500px" />
+                            <intbox value="@{controller.virtualWorkerCapacity}" width="100px" constraint="no negative,no zero" />
                         </row>
                         <row visible="@{controller.isVirtualWorker}">
                             <label value="${i18n:_('Observations')}" />
