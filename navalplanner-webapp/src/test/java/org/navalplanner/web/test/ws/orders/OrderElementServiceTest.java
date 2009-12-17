@@ -40,8 +40,11 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.common.api.ResourceEnumDTO;
+import org.navalplanner.ws.orders.api.HoursGroupDTO;
 import org.navalplanner.ws.orders.api.IOrderElementService;
 import org.navalplanner.ws.orders.api.OrderDTO;
+import org.navalplanner.ws.orders.api.OrderLineDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -170,6 +173,118 @@ public class OrderElementServiceTest {
         orderDTO.name = "Order name";
         orderDTO.code = code;
         orderDTO.initDate = new Date();
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+
+        assertThat(orderElementDAO.findByCode(code).size(),
+                equalTo(previous + 1));
+    }
+
+    @Test
+    public void orderWithInvalidOrderLine() {
+        int previous = orderDAO.getOrders().size();
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = "order-code";
+        orderDTO.initDate = new Date();
+
+        OrderLineDTO orderLineDTO = new OrderLineDTO();
+        orderDTO.children.add(orderLineDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
+
+        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
+                .get(0).constraintViolations;
+        // Mandatory fields: code, name. Check constraints:
+        // checkConstraintAtLeastOneHoursGroupForEachOrderElement
+        assertThat(constraintViolations.size(), equalTo(3));
+
+        assertThat(orderDAO.getOrders().size(), equalTo(previous));
+    }
+
+    @Test
+    public void orderWithInvalidOrderLineWithoutHoursGroup() {
+        int previous = orderDAO.getOrders().size();
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = "order-code";
+        orderDTO.initDate = new Date();
+
+        OrderLineDTO orderLineDTO = new OrderLineDTO();
+        orderLineDTO.name = "Order line";
+        orderLineDTO.code = "order-line-code";
+        orderDTO.children.add(orderLineDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
+
+        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
+                .get(0).constraintViolations;
+        // Check constraints:
+        // checkConstraintAtLeastOneHoursGroupForEachOrderElement
+        assertThat(constraintViolations.size(), equalTo(1));
+
+        assertThat(orderDAO.getOrders().size(), equalTo(previous));
+    }
+
+    @Test
+    public void orderWithOrderLineWithInvalidHoursGroup() {
+        int previous = orderDAO.getOrders().size();
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = "order-code";
+        orderDTO.initDate = new Date();
+
+        OrderLineDTO orderLineDTO = new OrderLineDTO();
+        orderLineDTO.name = "Order line";
+        orderLineDTO.code = "order-line-code";
+        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO();
+        hoursGroupDTO.resourceType = ResourceEnumDTO.WORKER;
+        orderLineDTO.hoursGroups.add(hoursGroupDTO);
+        orderDTO.children.add(orderLineDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
+
+        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
+                .get(0).constraintViolations;
+        // Mandatory fields: name, workingHours
+        assertThat(constraintViolations.size(), equalTo(2));
+        for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
+            assertThat(constraintViolationDTO.fieldName, anyOf(
+                    equalTo("HoursGroup::name"),
+                    equalTo("HoursGroup::workingHours")));
+        }
+
+        assertThat(orderDAO.getOrders().size(), equalTo(previous));
+    }
+
+    @Test
+    public void validOrderWithOrderLine() {
+        String code = "order-code";
+        int previous = orderElementDAO.findByCode(code).size();
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = code;
+        orderDTO.initDate = new Date();
+
+        OrderLineDTO orderLineDTO = new OrderLineDTO();
+        orderLineDTO.name = "Order line";
+        orderLineDTO.code = "order-line-code";
+        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group",
+                ResourceEnumDTO.WORKER, 1000);
+        orderLineDTO.hoursGroups.add(hoursGroupDTO);
+        orderDTO.children.add(orderLineDTO);
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
                 .addOrder(orderDTO).instanceConstraintViolationsList;

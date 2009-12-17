@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
@@ -52,11 +53,12 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return create(result);
     }
 
+    @NotEmpty(message = "name (code) not specified")
     private String name;
 
     private ResourceEnum resourceType = ResourceEnum.WORKER;
 
-    @NotNull
+    @NotNull(message = "working hours not specified")
     private Integer workingHours = 0;
 
     private BigDecimal percentage = new BigDecimal(0).setScale(2);
@@ -103,7 +105,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
 
     public void setWorkingHours(Integer workingHours)
             throws IllegalArgumentException {
-        if (workingHours < 0) {
+        if ((workingHours != null) && (workingHours < 0)) {
             throw new IllegalArgumentException(
                     _("Working hours shouldn't be neagtive"));
         }

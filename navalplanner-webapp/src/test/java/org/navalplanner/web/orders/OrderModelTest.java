@@ -280,6 +280,7 @@ public class OrderModelTest {
         result.setCode("000000000");
 
         HoursGroup hoursGroup = HoursGroup.create(result);
+        hoursGroup.setName("hoursGroupName");
         hoursGroup.setWorkingHours(0);
         result.addHoursGroup(hoursGroup);
 
@@ -311,6 +312,7 @@ public class OrderModelTest {
         container.add(leaf);
         order.add(container);
         HoursGroup hoursGroup = HoursGroup.create(leaf);
+        hoursGroup.setName("hoursGroupName");
         hoursGroup.setWorkingHours(3);
         leaf.addHoursGroup(hoursGroup);
         orderModel.setOrder(order);
@@ -358,8 +360,10 @@ public class OrderModelTest {
         order.add(orderLine);
 
         HoursGroup hoursGroup = HoursGroup.create(orderLine);
+        hoursGroup.setName("hoursGroupName");
         hoursGroup.setWorkingHours(10);
         HoursGroup hoursGroup2 = HoursGroup.create(orderLine);
+        hoursGroup2.setName("hoursGroupName2");
         hoursGroup2.setWorkingHours(5);
 
         orderLine.addHoursGroup(hoursGroup);

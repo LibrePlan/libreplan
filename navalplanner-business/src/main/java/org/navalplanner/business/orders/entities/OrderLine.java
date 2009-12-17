@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
@@ -111,6 +112,7 @@ public class OrderLine extends OrderElement {
         }
     }
 
+    @Valid
     @Override
     public List<HoursGroup> getHoursGroups() {
         return new ArrayList<HoursGroup>(hoursGroups);
@@ -312,7 +314,10 @@ public class OrderLine extends OrderElement {
     private Integer calculateTotalHours(Set<HoursGroup> hoursGroups) {
         Integer result = 0;
         for (HoursGroup hoursGroup : hoursGroups) {
-            result += hoursGroup.getWorkingHours();
+            Integer workingHours = hoursGroup.getWorkingHours();
+            if (workingHours != null) {
+                result += workingHours;
+            }
         }
         return result;
     }

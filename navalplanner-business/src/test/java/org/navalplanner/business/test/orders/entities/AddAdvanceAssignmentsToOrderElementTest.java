@@ -125,6 +125,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
         result.setCode(code);
         HoursGroup hoursGroup = HoursGroup.create(result);
         hoursGroup.setWorkingHours(0);
+        hoursGroup.setName("hoursGroupName");
         result.addHoursGroup(hoursGroup);
         return result;
     }

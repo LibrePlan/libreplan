@@ -115,6 +115,7 @@ public class ResourceAllocationDAOTest {
         orderElementDAO.save(orderLine);
 
         HoursGroup hoursGroup = HoursGroup.create(orderLine);
+        hoursGroup.setName("hoursGroupName");
         hoursGroupDAO.save(hoursGroup);
 
         List<HoursGroup> hoursGroups = Arrays.asList(hoursGroup);
