@@ -577,18 +577,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public List<DayAssignment> getAssignments(LocalDate start,
             LocalDate endExclusive) {
-        List<DayAssignment> result = new ArrayList<DayAssignment>();
-        for (DayAssignment dayAssignment : getAssignments()) {
-            if (dayAssignment.getDay().compareTo(endExclusive) >= 0) {
-                break;
-            }
-            if (dayAssignment.includedIn(start, endExclusive)) {
-                result.add(dayAssignment);
-            }
-        }
-        return result;
+        return new ArrayList<DayAssignment>(DayAssignment.getAtInterval(
+                getAssignments(), start, endExclusive));
     }
-
 
     public int getAssignedHours(LocalDate start, LocalDate endExclusive) {
         return getAssignedHours(getAssignments(start, endExclusive));

@@ -39,6 +39,21 @@ import org.navalplanner.business.resources.entities.Resource;
 
 public abstract class DayAssignment extends BaseEntity {
 
+    public static <T extends DayAssignment> List<T> getAtInterval(
+            List<T> orderedAssignments, LocalDate startInclusive,
+            LocalDate endExclusive) {
+        List<T> result = new ArrayList<T>();
+        for (T dayAssignment : orderedAssignments) {
+            if (dayAssignment.getDay().compareTo(endExclusive) >= 0) {
+                break;
+            }
+            if (dayAssignment.includedIn(startInclusive, endExclusive)) {
+                result.add(dayAssignment);
+            }
+        }
+        return result;
+    }
+
     public static int sum(Collection<? extends DayAssignment> assignments) {
         int result = 0;
         for (DayAssignment dayAssignment : assignments) {
