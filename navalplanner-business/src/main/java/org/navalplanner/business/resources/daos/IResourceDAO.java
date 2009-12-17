@@ -39,6 +39,10 @@ public interface IResourceDAO extends IGenericDAO<Resource, Long> {
 
     public List<Worker> getWorkers();
 
+    public List<Worker> getRealWorkers();
+
+    public List<Worker> getVirtualWorkers();
+
     /**
      * Returns all {@link Resource} which satisfy a set of {@link Criterion}
      */

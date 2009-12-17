@@ -29,7 +29,7 @@ import java.util.List;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.calendars.BaseCalendarEditionController;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
@@ -54,6 +54,7 @@ import org.zkoss.zul.api.Window;
 /**
  * Controller for {@link Worker} resource <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class WorkerCRUDController extends GenericForwardComposer implements
         IWorkerCRUDControllerEntryPoints {
@@ -61,12 +62,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     private Window listWindow;
 
     private Window editWindow;
-
-    private Window workRelationshipsWindow;
-
-    private Window addWorkRelationshipWindow;
-
-    private Window editWorkRelationshipWindow;
 
     private IWorkerModel workerModel;
 
@@ -80,13 +75,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private CriterionsController criterionsController;
 
-    private WorkRelationshipsController addWorkRelationship;
-
     private LocalizationsController localizationsForEditionController;
 
     private LocalizationsController localizationsForCreationController;
-
-    private WorkRelationshipsController editWorkRelationship;
 
     private ResourcesCostCategoryAssignmentController resourcesCostCategoryAssignmentController;
 
@@ -105,18 +96,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     public WorkerCRUDController() {
     }
 
-    public WorkerCRUDController( Window listWindow,
-            Window editWindow, Window workRelationshipsWindow,
-            Window addWorkRelationshipWindow,
-            Window editWorkRelationshipWindow, Window editCalendarWindow,
+    public WorkerCRUDController(Window listWindow, Window editWindow,
+            Window editCalendarWindow,
             IWorkerModel workerModel,
             IMessagesForUser messages,
             IWorkerCRUDControllerEntryPoints workerCRUD) {
         this.listWindow = listWindow;
         this.editWindow = editWindow;
-        this.workRelationshipsWindow = workRelationshipsWindow;
-        this.addWorkRelationshipWindow = addWorkRelationshipWindow;
-        this.editWorkRelationshipWindow = editWorkRelationshipWindow;
         this.workerModel = workerModel;
         this.messages = messages;
         this.workerCRUD = workerCRUD;
@@ -129,6 +115,14 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public List<Worker> getWorkers() {
         return workerModel.getWorkers();
+    }
+
+    public List<Worker> getRealWorkers() {
+        return workerModel.getRealWorkers();
+    }
+
+    public List<Worker> getVirtualWorkers() {
+        return workerModel.getVirtualWorkers();
     }
 
     public LocalizationsController getLocalizations() {
@@ -186,7 +180,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToList() {
-        getBookmarker().goToList();
         getVisibility().showOnly(listWindow);
     }
 
@@ -201,8 +194,21 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             editWindow.setTitle(_("Edit Worker"));
             getVisibility().showOnly(editWindow);
             Util.reloadBindings(editWindow);
-
     }
+
+    public void goToEditVirtualWorkerForm(Worker worker) {
+        workerModel.prepareEditFor(worker);
+        resourcesCostCategoryAssignmentController.setResource(workerModel
+                .getWorker());
+        if (isCalendarNotNull()) {
+            editCalendar();
+        }
+        editAsignedCriterions();
+        editWindow.setTitle(_("Edit virtual worker groups"));
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
+    }
+
 
     public void goToEditForm() {
         if (isCalendarNotNull()) {
@@ -213,21 +219,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         Util.reloadBindings(editWindow);
     }
 
-    public void goToWorkRelationshipsForm(Worker worker) {
-        getVisibility().showOnly(workRelationshipsWindow);
-        Util.reloadBindings(workRelationshipsWindow);
-    }
-
-    public void goToWorkRelationshipsForm() {
-        getVisibility().showOnly(workRelationshipsWindow);
-        Util.reloadBindings(workRelationshipsWindow);
-    }
-
-    public void goToAddWorkRelationshipForm() {
-        this.addWorkRelationship.prepareForCreate();
-        getVisibility().showOnly(addWorkRelationshipWindow);
-    }
-
     public void goToCreateForm() {
             getBookmarker().goToCreateForm();
             workerModel.prepareForCreate();
@@ -236,11 +227,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             editWindow.setTitle(_("Create Worker"));
             getVisibility().showOnly(editWindow);
             Util.reloadBindings(editWindow);
-    }
-
-    public void goToEditWorkRelationshipForm(CriterionSatisfaction satisfaction) {
-        this.editWorkRelationship.prepareForEdit(satisfaction);
-        getVisibility().showOnly(editWorkRelationshipWindow);
     }
 
     @Override
@@ -258,14 +244,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             throw new RuntimeException(_("MessagesContainer is needed"));
         }
         messages = new MessagesForUser(messagesContainer);
-        this.addWorkRelationship = new WorkRelationshipsController(
-                this.workerModel, this, messages);
-        setupWorkRelationshipController(this.addWorkRelationship,
-                this.addWorkRelationshipWindow);
-        setupWorkRelationshipController(
-                this.editWorkRelationship = new WorkRelationshipsController(
-                        this.workerModel, this, messages),
-                editWorkRelationshipWindow);
         setupResourcesCostCategoryAssignmentController(comp);
 
         final URLHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
@@ -310,14 +288,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         return baseCalendarEditionController;
     }
 
-    private void setupWorkRelationshipController(
-            WorkRelationshipsController workRelationshipController,
-            Window workRelationshipWindow) throws Exception {
-        workRelationshipController.doAfterCompose(workRelationshipWindow);
-        workRelationshipWindow.setVariable("workRelationship",
-                workRelationshipController, true);
-    }
-
     private LocalizationsController createLocalizationsController(
             Component comp, String localizationsContainerName) throws Exception {
         LocalizationsController localizationsController = new LocalizationsController(
@@ -330,15 +300,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private OnlyOneVisible getVisibility() {
         if (visibility == null) {
-            visibility = new OnlyOneVisible(listWindow, editWindow,
-                    workRelationshipsWindow,addWorkRelationshipWindow,
-                    editWorkRelationshipWindow);
+            visibility = new OnlyOneVisible(listWindow, editWindow);
         }
         return visibility;
-    }
-
-    public GenericForwardComposer getWorkRelationship() {
-        return this.addWorkRelationship;
     }
 
     private IWorkerCRUDControllerEntryPoints getBookmarker() {
@@ -467,7 +431,53 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             BaseCalendar defaultCalendar = workerModel.getDefaultCalendar();
             return defaultCalendar.getId().equals(calendar.getId());
         }
+    }
 
+    public void goToCreateVirtualWorkerForm() {
+        workerModel.prepareForCreate(true);
+        createAsignedCriterions();
+        resourcesCostCategoryAssignmentController.setResource(workerModel
+                .getWorker());
+        editWindow.setTitle(_("Create virtual resource"));
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
+    }
+
+    public boolean isVirtualWorker() {
+        boolean isVirtual = false;
+        if (this.workerModel != null) {
+            if (this.workerModel.getWorker() != null ) {
+                isVirtual = this.workerModel.getWorker().isVirtual();
+            }
+        }
+        return isVirtual;
+    }
+
+    public boolean isRealWorker() {
+        return !isVirtualWorker();
+    }
+
+    public String getVirtualWorkerObservations() {
+        if (isVirtualWorker()) {
+            return ((VirtualWorker) this.workerModel.getWorker())
+                    .getObservations();
+        } else {
+            return "";
+        }
+    }
+
+    public void setVirtualWorkerObservations(String observations) {
+        if (isVirtualWorker()) {
+            ((VirtualWorker) this.workerModel.getWorker())
+                    .setObservations(observations);
+        }
+    }
+
+    public String getVirtualWorkerCapacity() {
+        return "";
+    }
+
+    public void setVirtualWorkerCapacity(String capacity) {
     }
 
 }

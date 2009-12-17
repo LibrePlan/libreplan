@@ -103,4 +103,12 @@ public class Worker extends Resource {
         this.nif = nif;
     }
 
+    public boolean isVirtual() {
+        return false;
+    }
+
+    public boolean isReal() {
+        return !isVirtual();
+    }
+
 }

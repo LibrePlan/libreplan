@@ -51,6 +51,7 @@ import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,6 +127,18 @@ public class WorkerModel implements IWorkerModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Worker> getRealWorkers() {
+        return resourceDAO.getRealWorkers();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Worker> getVirtualWorkers() {
+        return resourceDAO.getVirtualWorkers();
+    }
+
+    @Override
     public Worker getWorker() {
         return worker;
     }
@@ -133,11 +146,24 @@ public class WorkerModel implements IWorkerModel {
     @Override
     @Transactional(readOnly = true)
     public void prepareForCreate() {
-        worker = Worker.create();
+        prepareForCreate(false);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void prepareForCreate(boolean virtual) {
+
+        if (virtual) {
+            worker = VirtualWorker.create();
+            worker.setFirstName("Virtual");
+        } else {
+            worker = Worker.create();
+        }
         localizationsAssigner = new MultipleCriterionActiveAssigner(
                 criterionDAO, worker,
                 PredefinedCriterionTypes.LOCATION_GROUP);
     }
+
 
     @Override
     @Transactional(readOnly = true)

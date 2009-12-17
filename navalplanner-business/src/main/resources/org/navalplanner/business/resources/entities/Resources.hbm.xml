@@ -36,6 +36,12 @@
       <property name="firstName"/>
       <property name="surname"/>
       <property name="nif"/>
+
+        <joined-subclass name="org.navalplanner.business.resources.entities.VirtualWorker">
+            <key column="VIRTUALWORKER_ID"/>
+            <property name="observations"/>
+        </joined-subclass>
+
     </joined-subclass>
 
     <joined-subclass name="org.navalplanner.business.resources.entities.Machine">

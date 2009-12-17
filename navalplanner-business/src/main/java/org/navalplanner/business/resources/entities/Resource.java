@@ -784,4 +784,8 @@ public abstract class Resource extends BaseEntity{
         }
         return false;
     }
+
+    public boolean isVirtual() {
+        return false;
+    }
 }

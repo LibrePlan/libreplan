@@ -194,7 +194,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     public void initializeMenu() {
         topItem(_("Scheduling"), "/planner/index.zul", "01-introducion.html",
- subItem(
+                subItem(
                 _("Company view"), "/planner/index.zul;company_scheduling",
                         "01-introducion.html"), subItem(
                 _("General resource allocation"),
@@ -208,7 +208,10 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 _("Workers List"), "/resources/worker/worker.zul",
                 "05-recursos.html#xesti-n-de-traballadores"), subItem(
                 _("Machines List"), "/resources/machine/machines.zul",
-                "05-recursos.html#xesti-n-de-m-quinas"));
+                "05-recursos.html#xesti-n-de-m-quinas"), subItem(
+                _("Virtual worker groups"),
+                "/resources/worker/virtualWorkers.zul",
+                "05-recursos.html#xesti-n-de-traballadores"));
 
         topItem(_("Work reports"), "/workreports/workReportTypes.zul", "",
                 subItem(_("Work report types"),

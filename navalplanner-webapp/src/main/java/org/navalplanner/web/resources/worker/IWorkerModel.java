@@ -84,9 +84,15 @@ public interface IWorkerModel {
 
     List<Worker> getWorkers();
 
+    List<Worker> getRealWorkers();
+
+    List<Worker> getVirtualWorkers();
+
     Worker getWorker();
 
     void prepareForCreate();
+
+    void prepareForCreate(boolean virtual);
 
     void prepareEditFor(Worker worker);
 

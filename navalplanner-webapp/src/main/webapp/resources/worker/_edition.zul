@@ -41,19 +41,32 @@
                         <column  />
                     </columns>
                     <rows>
-                        <row>
+                        <row visible="@{controller.isRealWorker}">
                             <label value="${i18n:_('First name')}" />
                             <textbox
                                 value="@{controller.worker.firstName}" constraint="no empty" width="500px"/>
                         </row>
-                        <row>
+                        <row visible="@{controller.isVirtualWorker}">
+                            <label value="${i18n:_('Group name')}" />
+                            <textbox
+                                value="@{controller.worker.firstName}" constraint="no empty" width="500px"/>
+                        </row>
+                        <row visible="@{controller.isRealWorker}">
                             <label value="${i18n:_('Last name')}" />
                             <textbox
                                 value="@{controller.worker.surname}" constraint="no empty" width="500px"/>
                         </row>
-                        <row>
+                        <row visible="@{controller.isRealWorker}">
                             <label value="${i18n:_('NIF')}" />
                             <textbox value="@{controller.worker.nif}" constraint="no empty"/>
+                        </row>
+                        <row visible="@{controller.isVirtualWorker}">
+                            <label value="${i18n:_('Capacity')}" />
+                            <textbox value="@{controller.virtualWorkerCapacity}" width="500px" />
+                        </row>
+                        <row visible="@{controller.isVirtualWorker}">
+                            <label value="${i18n:_('Observations')}" />
+                            <textbox value="@{controller.virtualWorkerObservations}" width="500px" multiline="true" />
                         </row>
                     </rows>
                 </grid>
@@ -62,12 +75,9 @@
                 <criterions />
             </tabpanel>
             <tabpanel visible="false">
-                <localizations />
             </tabpanel>
             <tabpanel visible="false">
-                <workRelationships top_id="workRelationshipsWindow"
-                    title="${i18n:_('Work relationships')}" save_button_label="${i18n:_('Save')}"
-                    cancel_button_label="${i18n:_('Cancel')}" />
+                <localizations />
             </tabpanel>
             <tabpanel>
                 <resourceCalendar />

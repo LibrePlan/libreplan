@@ -22,6 +22,7 @@ package org.navalplanner.business.resources.daos;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,6 +53,30 @@ public class ResourceDAO extends GenericDAOHibernate<Resource, Long> implements
     @Override
     public List<Worker> getWorkers() {
         return list(Worker.class);
+    }
+
+    @Override
+    public List<Worker> getVirtualWorkers() {
+        List<Worker> list = getWorkers();
+        for (Iterator<Worker> iterator = list.iterator(); iterator.hasNext();) {
+            Worker worker = iterator.next();
+            if (worker.isReal()) {
+                iterator.remove();
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<Worker> getRealWorkers() {
+        List<Worker> list = getWorkers();
+        for (Iterator<Worker> iterator = list.iterator(); iterator.hasNext();) {
+            Worker worker = iterator.next();
+            if (worker.isVirtual()) {
+                iterator.remove();
+            }
+        }
+        return list;
     }
 
     @Override

@@ -34,9 +34,6 @@ public interface IWorkerCRUDControllerEntryPoints {
     @EntryPoint("edit")
     public abstract void goToEditForm(Worker worker);
 
-    @EntryPoint("workRelationships")
-    public abstract void goToWorkRelationshipsForm(Worker worker);
-
     @EntryPoint("create")
     public abstract void goToCreateForm();
 
