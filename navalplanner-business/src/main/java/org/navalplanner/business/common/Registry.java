@@ -22,6 +22,7 @@ package org.navalplanner.business.common;
 
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
@@ -88,6 +89,9 @@ public class Registry {
     @Autowired
     private ILabelTypeDAO labelTypeDAO;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     private Registry() {
     }
 
@@ -141,6 +145,10 @@ public class Registry {
 
     public static ILabelTypeDAO getLabelTypeDAO() {
         return getInstance().labelTypeDAO;
+    }
+
+    public static IConfigurationDAO getConfigurationDAO() {
+        return getInstance().configurationDAO;
     }
 
 }

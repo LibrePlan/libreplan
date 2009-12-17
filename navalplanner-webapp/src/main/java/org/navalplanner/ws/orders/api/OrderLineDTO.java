@@ -21,6 +21,7 @@
 package org.navalplanner.ws.orders.api;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -39,7 +40,7 @@ public class OrderLineDTO extends OrderElementDTO {
 
     @XmlElementWrapper(name = "hours-groups")
     @XmlElement(name = "hours-group")
-    public Set<HoursGroupDTO> hoursGroups;
+    public Set<HoursGroupDTO> hoursGroups = new HashSet<HoursGroupDTO>();
 
     public OrderLineDTO() {
         super();

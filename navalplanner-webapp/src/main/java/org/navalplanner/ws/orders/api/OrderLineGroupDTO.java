@@ -20,6 +20,7 @@
 
 package org.navalplanner.ws.orders.api;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +45,7 @@ public class OrderLineGroupDTO extends OrderElementDTO {
             @XmlElement(name = "order-line", type = OrderLineDTO.class),
             @XmlElement(name = "order-line-group", type = OrderLineGroupDTO.class),
             @XmlElement(name = "order", type = OrderDTO.class) })
-    public List<OrderElementDTO> children;
+    public List<OrderElementDTO> children = new ArrayList<OrderElementDTO>();
 
     public OrderLineGroupDTO() {
         super();

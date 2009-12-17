@@ -54,7 +54,7 @@ import org.navalplanner.business.requirements.entities.IndirectCriterionRequirem
 import org.navalplanner.business.resources.entities.Criterion;
 public abstract class OrderElement extends BaseEntity {
 
-
+    @NotEmpty(message = "name not specified")
     private String name;
 
     private Date initDate;
@@ -73,6 +73,7 @@ public abstract class OrderElement extends BaseEntity {
 
     private Set<Label> labels = new HashSet<Label>();
 
+    @NotEmpty(message = "code not specified")
     private String code;
 
     private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
@@ -243,7 +244,6 @@ public abstract class OrderElement extends BaseEntity {
 
     public abstract List<HoursGroup> getHoursGroups();
 
-    @NotEmpty
     public String getName() {
         return name;
     }
@@ -334,7 +334,6 @@ public abstract class OrderElement extends BaseEntity {
         this.code = code;
     }
 
-    @NotEmpty
     public String getCode() {
         return code;
     }

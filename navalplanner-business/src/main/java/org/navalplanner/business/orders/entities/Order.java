@@ -63,7 +63,7 @@ public class Order extends OrderLineGroup {
 
     private Boolean dependenciesConstraintsHavePriority;
 
-    @NotNull
+    @NotNull(message = "order calendar not specified")
     private BaseCalendar calendar;
 
     public String getResponsible() {
@@ -118,19 +118,19 @@ public class Order extends OrderLineGroup {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "the order must have a init date")
-    private boolean theOrderMustHaveStartDate() {
+    private boolean checkConstraintOrderMustHaveStartDate() {
         return getInitDate() != null;
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "deadline must be after start date")
-    private boolean theDeadlineMustBeAfterStart() {
+    private boolean checkConstraintDeadlineMustBeAfterStart() {
         return !this.isDeadlineBeforeStart();
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "At least one HoursGroup is needed for each OrderElement")
-    private boolean atLeastOneHoursGroupForEachOrderElement() {
+    private boolean checkConstraintAtLeastOneHoursGroupForEachOrderElement() {
         for (OrderElement orderElement : this.getOrderElements()) {
             if (!orderElement.checkAtLeastOneHoursGroup()) {
                 return false;

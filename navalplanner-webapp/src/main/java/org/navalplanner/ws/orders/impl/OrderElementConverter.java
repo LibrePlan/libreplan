@@ -153,11 +153,17 @@ public final class OrderElementConverter {
 
                 ((Order) orderElement)
                         .setDependenciesConstraintsHavePriority(((OrderDTO) orderElementDTO).dependenciesConstraintsHavePriority);
+
                 List<BaseCalendar> calendars = Registry.getBaseCalendarDAO()
                         .findByName(((OrderDTO) orderElementDTO).calendarName);
+                BaseCalendar calendar;
                 if ((calendars != null) && (calendars.size() == 1)) {
-                    ((Order) orderElement).setCalendar(calendars.get(0));
+                    calendar = calendars.get(0);
+                } else {
+                    calendar = Registry.getConfigurationDAO()
+                            .getConfiguration().getDefaultCalendar();
                 }
+                ((Order) orderElement).setCalendar(calendar);
             } else { // orderElementDTO instanceof OrderLineGroupDTO
                 orderElement = OrderLineGroup.create();
             }
