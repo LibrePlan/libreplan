@@ -79,8 +79,8 @@ As máquinas son recursos a todos os efectos, polo cal, tal e como sucede cos tr
 As máquinas son administradas dende a sección de recursos. En dita sección existe unha operación chamada "Listado de máquinas" que permitirá a visualización das máquinas que dipoñen nunha empresa. A partir deste listado poderáse editar ou borrar unha máquina.
 
 
-A edición dunha máquina o sistema maosará unha serie de pestanas dende as cales se permitirá administrar a seguinte información:
-1) Pestana de datos da máquina. Pestana para a eEdición de datos identificativos das máquinas. Os datos modificables nesta pestana son:
+A edición dunha máquina o sistema amosará unha serie de pestanas dende as cales se permitirá administrar a seguinte información:
+1) Pestana de datos da máquina. Pestana para a Edición de datos identificativos das máquinas. Os datos modificables nesta pestana son:
 
    i Nome.
    ii Código da máquina.
@@ -116,3 +116,22 @@ A edición dunha máquina o sistema maosará unha serie de pestanas dende as cal
 
    i Asignando específicamente un rango de datas nas que o traballador se desexa asignar a unha máquina. Será unha asignación específica de modo que o sistema asignará automáticamente horas ó traballador cando se planifique a máquina.
    ii Asignando específicamente criterios que se desexa satisfagan os traballadores que sexan asignados ás máquinas. Deste xeito farase unha asignación xenérica ós traballadores que satisfan os criterios.
+
+
+Grupos de traballadores virtuais
+================================
+
+A aplicación permite a creación de recursos no sistema os cales non son traballadores reais, senón que son persoal simulado que permite aumentar a capacidade productiva nun momento determinado segundo as configuracións que se definan do seu calendario. 
+
+Mediante os grupos de traballadores virtuais será posible comprobar como se vería afectada a planificación dos proxectos contratando e asignando persoal que satisfaga os criterios que se definan, axudando deste modo no proceso de toma de decisións
+
+As pestanas das que consta o formulario de creación de grupos de traballadores virtuals son as mesmas que as que permiten configurar os traballadores, e dicir:
+
+   * Datos xerais
+   * Criterios asignados
+   * Calendarios
+   * Horas asociadas
+
+A diferencia con respecto ós traballadores, e que nos grupos de traballadores virtuais especificaremos un nome para o grupo e unha cantidade que se corresponderá co número de persoas reais que forman este grupo. Adicionalmente existe un campo de observacións no que se pode aportar información adicional como por exemplo para que proxecto estaría prevista a contratación do equivalente do grupo de recursos virtuais, etc.
+
+
