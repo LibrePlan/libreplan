@@ -41,7 +41,7 @@ O sistema conta con dous tipos de avance creados por defecto:
 O usuario poderá crear novos tipos de avance do seguinte xeito:
 
 * O usuario accede á sección de "Administración".
-* Preme na opción do menú de segundo nivel "______".
+* Preme na opción do menú de segundo nivel "Navalpro".
 * O sistema amosa un listado de tipos de avance existentes.
 * Con cada tipo de avance o usuario poderá:
 
@@ -74,7 +74,7 @@ Para introducir medicións de avance será necesario realizar o seguinte:
 
   * Se non existe ningún tipo de avance é necesario engadir un tipo de avance.
 
-* No formulario que aparece debaixo cos campos "______" e "______" introducir o valor absoluto da medida e a data que se lle desexa asignar á medida tomada.
+* No formulario que aparece debaixo cos campos "Navalpro" e "Navalpro" introducir o valor absoluto da medida e a data que se lle desexa asignar á medida tomada.
 * O sistema almacenará automáticamente os datos introducidos.
 
 
@@ -82,7 +82,7 @@ Para introducir medicións de avance será necesario realizar o seguinte:
 Contraste de avances sobre un elemento do pedido
 ================================================
 
-Será posible contrastar gráficamente as evolucións dos avances dos pedidos en base ás medicións realizadas. Cada tipo de avance dispón dunha columna con botóns de chequeo (de título "______") o cal ó ser marcado se amosará a gráfica de evolucións de medidas realizadas sobre o elemento de pedido.
+Será posible contrastar gráficamente as evolucións dos avances dos pedidos en base ás medicións realizadas. Cada tipo de avance dispón dunha columna con botóns de chequeo (de título "Navalpro") o cal ó ser marcado se amosará a gráfica de evolucións de medidas realizadas sobre o elemento de pedido.
 
 .. figure:: images/contraste-avance.png
    :scale: 70

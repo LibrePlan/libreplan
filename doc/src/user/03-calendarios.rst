@@ -32,13 +32,13 @@ A administración de calendarios está accesible dende as operacións de "Admini
 Creación dun novo calendario
 ----------------------------
 
-Para a creación dun novo calendario é necesario premer no botón "______". O sistema amosará un formulario no que o usuario poderá realizar as seguintes operacións:
+Para a creación dun novo calendario é necesario premer no botón "Navalpro". O sistema amosará un formulario no que o usuario poderá realizar as seguintes operacións:
 
 * Marcar as horas dispoñibles para cada día da semana (luns, martes, mércores, xoves, venres, sábados e domingos).
 * Seleccionar un día específico do calendario.
 * Asignar horas como excepción a un día específico do calendario.
 
-Con estas operacións un usuario da aplicación ten a capacidade de personalizar os calendarios completamente ás súas necesidades. Para almacenar os cambios no formulario é necesario premer no botón "______".
+Con estas operacións un usuario da aplicación ten a capacidade de personalizar os calendarios completamente ás súas necesidades. Para almacenar os cambios no formulario é necesario premer no botón "Navalpro".
 
 .. figure:: images/calendar-edition.png
    :scale: 70
@@ -61,7 +61,7 @@ Para crear un calendario derivado na aplicación, é necesario facer o seguinte:
 
 * Acceder ó menú de *Administración*.
 * Premer na operación de administración de calendarios.
-* Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "______".
+* Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "Navalpro".
 * Unha vez realizada esta operación o sistema amosará un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.
 
 Creación dun calendario por copia
@@ -77,7 +77,7 @@ Para crear un calendario copiado na aplicación, é necesario facer o seguinte:
 
 * Acceder ó menú de *Administración*.
 * Premer na operación de administración de calendarios.
-* Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "______".
+* Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "Navalpro".
 * Unha vez realizada esta operación o sistema amosará un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.
 
 Asignación de calendario a recursos
@@ -94,13 +94,10 @@ Os casos posibles son:
 Para asignar un calendario a un recurso é necesario dar os seguintes pasos:
 
 * Acceder á edición de recursos.
-* Seleccionar a pestana de "______".
+* Seleccionar a pestana de "Navalpro".
 * A partir da pestana anterior aparecerá un formulario de edición de calendarios que permitirá:
-  * Crear un calendario dende cero premendo no botón "______".
-  * Crear un calendario derivado premendo no botón "______".
-  * Crear un botón como copia premendo no botón "______".
+  * Crear un calendario dende cero premendo no botón "Navalpro".
+  * Crear un calendario derivado premendo no botón "Navalpro".
+  * Crear un botón como copia premendo no botón "Navalpro".
 * O sistema amosará un formulario de edición de calendarios cos datos cargados en base á opción elixida no paso anterior.
 * Para almacenar é necsario premer en Save.
-
-
-

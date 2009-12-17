@@ -9,12 +9,12 @@ A aplicación para xestión da produción do sector auxiliar do naval pretende r
 .. figure:: images/company_view.png
    :scale: 50
 
-¿Por que me é útil "______"?
-============================
+¿Por que me é útil "Navalpro"?
+==============================
 
-"______" é un proxecto desenvolvido co obxectivo de dotar ó usuario dunha ferramenta de planificación que se basea nunha serie de conceptos clave, os cales forman parte das características que distinguen a aplicación e a definen como unha ferramenta diseñada tendo en conta os problemas clave do sector:
+"Navalpro" é un proxecto desenvolvido co obxectivo de dotar ó usuario dunha ferramenta de planificación que se basea nunha serie de conceptos clave, os cales forman parte das características que distinguen a aplicación e a definen como unha ferramenta diseñada tendo en conta os problemas clave do sector:
 
-* Vista global de empresa e multiproxecto: "______" é unha aplicación orientada específicamente a dotar de información ós usuarios dos proxectos que se levan a cabo nunha empresa, polo que a base é multiproxecto. Non se determinou que o enfoque do proxecto sexa orientado individualmente a cada proxecto. Sen embargo, tamén será posible dipoñer de varias vistas específicas, entre elas a de proxectos individuais.
+* Vista global de empresa e multiproxecto: "Navalpro" é unha aplicación orientada específicamente a dotar de información ós usuarios dos proxectos que se levan a cabo nunha empresa, polo que a base é multiproxecto. Non se determinou que o enfoque do proxecto sexa orientado individualmente a cada proxecto. Sen embargo, tamén será posible dipoñer de varias vistas específicas, entre elas a de proxectos individuais.
 * Criterios: Os criterios son unha entidade do sistema que permitirán clasificar os recursos (tanto humanos como máquinas) e as tarefas. Dende o punto de vista dos recursos, estes satisfarán criterios e, dende o punto de vista das tarefas, estas requerirán criterios a ser satisfeitos. Correspóndense con un dos aspectos máis importantes da aplicación, xa que os criterios formarán parte da base das asignacións xenéricas na aplicación, resolvendo un dos problemas máis importantes para o sector, a alta temporalidade dos recursos humanos e a dificultade para ter estimacións de carga da empresa a longo prazo.
 * Recursos: Serán de dous tipos diferentes: humanos e máquinas. Os recursos humanos serán os traballadores da empresa que se utilizarán para controlar a carga da empresa e de uso dos mesmos. Por outro lado, as máquinas, dependentes das persoas que as xestionan, serán outros recursos que tamén serán controlables na aplicación.
 * Asignación de recursos: Unha das claves é o feito de ofrecer a posibilidade de dous tipos diferentes de asignación: asignación específica e asignación xenérica. A xenérica é unha asignación baseada nos criterios que se lle establecen a unha tarefa para ser satisfeitos polos usuarios que teñen a capacidade de realizala.
@@ -32,20 +32,18 @@ A maiores das funcionalidades que ofrece a aplicación caben destacar outras car
 * Xestión de versións: A aplicación permitirá a xestión de diversas versións de planificacións e ó mesmo tempo a posibilidade de consultar a información de cada unha delas.
 * Xestión de históricos: A aplicación non borra información, solo a invalida, polo que é posible consultar mediante filtrados por datas a información antiga.
 
-Políticas de usabilidade
-========================
+Convencións de usabilidade
+==========================
 
-Sección en construción...
-
-Formularios
------------
+Comportamento dos formularios
+-----------------------------
 Antes de realizar unha exposición das distintas funcionalidades asociadas ós módulos máis importantes, é necesario facer unha explicación xeral da filosofía de navegación e formularios.
 
-Existen 3 tipos de formularios:
+Existen fundamentalmente 3 tipos de formularios de edición:
 
-* Formularios con botón de *Back*. Estes formularios forman parte de unha navegación máis completa, e os cambios que se van realizando vanse almacenando en memoria. Os cambios só se aplican cando o usuario almacena explícitamente toda pantalla dende a que chegou a dito formulario.
-* Formularios con botón de *Save* e *Close*. Estes formularios permiten realizar 2 operacións. A primeira delas almacena e pecha a ventana actual e a segunda delas pecha sen almacenar os cambios.
-* Formularios con botón de *Save*, "Save&Close" e "Close. Permiten realizar 3 operacións. A primeira delas almacena pero continúa no formulario actual. A segunda almacena e pecha o formulario. E a terceira pecha a ventana sen almacenar os cambios.
+* Formularios con botón de *Voltar*. Estes formularios forman parte de unha navegación máis completa, e os cambios que se van realizando vanse almacenando en memoria. Os cambios só se aplican cando o usuario almacena explícitamente toda pantalla dende a que chegou a dito formulario.
+* Formularios con botón de *Gardar* e *Pechar*. Estes formularios permiten realizar 2 operacións. A primeira delas almacena e pecha a ventana actual e a segunda delas pecha sen almacenar os cambios.
+* Formularios con botón de *Gardar*, "Gardar e Pechar" e "Pechar". Permiten realizar 3 operacións. A primeira delas almacena pero continúa no formulario actual. A segunda almacena e pecha o formulario. E a terceira pecha a ventana sen almacenar os cambios.
 
 Iconas e botóns estándar
 ------------------------
@@ -56,5 +54,13 @@ Iconas e botóns estándar
 * Borrado: Os borrados poderán ser realizados coa icona da papeleira.
 * Procura: A lupa é unha icona que indicará que a entrada de texto á esquerda da mesma está pensada para a procura de elementos.
 
+Pestanas
+--------
+Existirán formularios de edición e administración de contidos que se atopan representados mediante compoñentes gráficos baseados en pestanas. Dita presentación é un mecanismo para organizar a información de un formulario global en diferentes seccións que poden ser accedidas premedo nos
+títulos das diferentes pestanas, mantendo o estado no que se atopaban as demáis. En todos estes casos, as operacións de gardar ou cancelar que se executen afectarán ó conxunto de subformularios das diferentes pestanas.
 
-
+Accións explícitas e axuda contextual
+-------------------------------------
+Están implementados na aplicación compoñentes que proporcionan un texto descriptivo adicional do elemento sobre que se atopa enfocado o transcurrir un segundo sobre os mesmos.
+As accións que o usuario pode executar na aplicación están explicitadas tanto nas etiquetas dos botóns e nos textos de axuda que aparecen sobre os mesmos, nas opcións do menú de navegación ou nas opcións dos menús contextuais que se desplegan o facer botón dereito na área do planificador.
+Asimesmo, tamén se proporcionan atallos ás operacións principais facendo doble click nos elementos que se listan, ou asociando os eventos de teclado cos cursores e a tecla intro ó desplazamento polos formularios é á acción de engadir elementos, respectivamente.

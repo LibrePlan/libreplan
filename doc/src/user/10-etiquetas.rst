@@ -30,11 +30,11 @@ Tanto a edición como a creación de etiquetas comparten formulario. Dende dito 
 
 i. O usuario debería seleccionar unha etiqueta a editar ou premer no botón de creación de unha nova.
 ii. O sistema amosará un formulario con unha entrada de texto para o nome e un listado de entradas de texto coas etiquetas existentes e asignadas.
-iii. Se o usuario desexa engadir unha nova etiqueta debe premer no botón "______".
+iii. Se o usuario desexa engadir unha nova etiqueta debe premer no botón "Navalpro".
 iv. O sistema amosará unha nova fila ó listado con unha entrada de texto baleira que o usuario debe editar.
 v. O usuario introduce un nome para a etiqueta.
 vi. O sistema engade o nome ó listado.
-vii. O usuario preme en "______" para gardar e saír ou "______ e ______" para gardar e continuar editando o formulario.
+vii. O usuario preme en "Navalpro" para gardar e saír ou "Navalpro e Navalpro" para gardar e continuar editando o formulario.
 
 
 

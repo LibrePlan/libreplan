@@ -34,7 +34,7 @@ Xestión de traballadores
 ========================
 
 
-A xestión de traballadores realizarase dende a pestana de "Recursos" e a operación de "______". Dende a lista de recursos é posible editar cada un dos traballadores premendo na icona estándar de edición.
+A xestión de traballadores realizarase dende a pestana de "Recursos" e a operación de "Navalpro". Dende a lista de recursos é posible editar cada un dos traballadores premendo na icona estándar de edición.
 
 Unha vez na edición dun recurso, o usuario poderá acceder ás seguintes pestanas:
 
@@ -49,7 +49,7 @@ Unha vez na edición dun recurso, o usuario poderá acceder ás seguintes pestan
 
 2) Pestana de criterios. Dende este punto poderase configurar os criterios que un traballador satisfai. O usuario poderá asignar calquera valor de criterio de tipo traballador ou xenérico que así considere a un traballador. É importante, para que a aplicación sexa utilizada en todo o seu valor, que os traballadores satisfagan criterios. Para asignar criterios o usuario debe:
 
-   i. Premer no botón "______".
+   i. Premer no botón "Navalpro".
 
    ii. Buscar o criterio que desexa engadir e seleccionar o que encaixe coa súa procura.
 
@@ -93,7 +93,7 @@ A edición dunha máquina o sistema maosará unha serie de pestanas dende as cal
 
 2) Pestana de criterios. Tal e como se comentou na anterior sección de recursos traballadores, esta será a pestana na que se poden engadir criterios que satisfán as diversas máquinas do sistema. Os criterios que serán asignables ás máquinas serán aqueles que se identificaran como criterios de máquina ou xenéricos. Non se poderán asignar criterios de traballadores. Para asignar criterios o usuario deberá:
 
-   i. Premer no botón "______".
+   i. Premer no botón "Navalpro".
 
    ii. Buscar o criterio que desexa engadir e seleccionar o que encaixe coa súa procura.
 

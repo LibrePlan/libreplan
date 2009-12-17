@@ -13,7 +13,7 @@ Nas seguintes seccións describiranse as operacións que un usuario pode realiza
 Pedido
 ======
 
-Un pedido é un proxecto ou traballo que un cliente lle solicita a unha empresa. O pedido para o planificador identifica a entidade de proxecto dentro da empresa. A diferencia das aplicacións de xestión globais, "______" só necesita utilizar certos datos dos pedidos. Estes datos son:
+Un pedido é un proxecto ou traballo que un cliente lle solicita a unha empresa. O pedido para o planificador identifica a entidade de proxecto dentro da empresa. A diferencia das aplicacións de xestión globais, "Navalpro" só necesita utilizar certos datos dos pedidos. Estes datos son:
 
 * Nome do pedido
 * Código do pedido.
@@ -109,12 +109,12 @@ Tal e como se pode ver na imaxe, dende a pestana de **etiquetas**, o usuario pod
 * Visualización das etiquetas que un elemento do pedido terá asociadas por herdanza dun elemento de pedido superior na xerarquía á que lle foi asignada directamente. A tarefa de planificación asociada a cada elemento de pedido terá as mesmas etiquetas asociadas.
 * Visualización das etiquetas que un elemento do pedido ten asociadas directamente a través do seguinte formulario de asignación de etiquetas inferior.
 * Asignar etiquetas existentes: Un usuario poderá asignar etiquetas existentes a partir da procura dunha entre as existentes no formulario inferior ó listado de etiquetas directas. Para buscar unha etiqueta chega con premer na icona coa lupa ou escribir o inicio da etiqueta na entrada de texto para que o sistema amose as opcións dispoñibles.
-* Crear e asignar etiquetas novas: Un usuario poderá crear novas etiquetas asociadas a un tipo de etiquetas existente dende dito formulario. Para relizar a operación é necesario que seleccione un tipo de etiqueta á que se asociará e se introduza o valor da etiqueta para o tipo seleccionado. Premendo en "______ e ______" o sistema xa a creará automáticamente e a asigna ó elemento de pedido.
+* Crear e asignar etiquetas novas: Un usuario poderá crear novas etiquetas asociadas a un tipo de etiquetas existente dende dito formulario. Para relizar a operación é necesario que seleccione un tipo de etiqueta á que se asociará e se introduza o valor da etiqueta para o tipo seleccionado. Premendo en "Navalpro e Navalpro" o sistema xa a creará automáticamente e a asigna ó elemento de pedido.
 
 Visualización de horas imputadas a elementos de pedido
 ------------------------------------------------------
 
-A pestana de "Horas ______" permite visualizar os partes de traballo asociados a un elemento de pedido e ó mesmo tempo permite visualizar cantas horas das presupostadas están xa realizadas.
+A pestana de "Horas Navalpro" permite visualizar os partes de traballo asociados a un elemento de pedido e ó mesmo tempo permite visualizar cantas horas das presupostadas están xa realizadas.
 
 .. figure:: images/order-element-hours.png
    :scale: 70

@@ -6,11 +6,11 @@ Copyright: This stylesheet has been placed in the public domain - free to edit a
 */
 
 body {
-  font: 100% sans-serif;
+  font: 11px Verdana, Tahoma, sans-serif;
   background: #ffffff;
   color: black;
   margin: 2em;
-  padding: 0em 2em;
+/*  padding: 0em 2em; */
 }
 
 p.topic-title {

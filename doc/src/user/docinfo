@@ -1,6 +1,17 @@
-#############################################################################################
-Documento de usuario para a aplicación de xestión da produción do sector do auxiliar do naval
-#############################################################################################
+.. image:: images/logo1.gif
+   :align: left
 
-:Version: !!git log -1 --format=%H
-:Date: !!git log -1 --format=%ad
+#######################################
+Documentación de usuario da aplicación
+#######################################
+
+
+No seguinte documento proporciónase a documentación de axuda necesaria para utilizar a  aplicación de xestión da producción do auxiliar do naval Navalpro.
+
+Esta documentación está organizada do seguinte modo:
+
+En primeiro lugar descríbense os obxectivos fundamentais da aplicación e o comportamento global da mesma a modo  introductorio e como contextualización xeral do uso da mesma.
+
+A continuación introdúcense as entidades básicas que será necesario administrar para poder empregar todas as  funcionalidades de Navalpro e que se mencionarán nas seguintes seccións da documentación.
+
+Posteriormente, detállanse os procesos completos de creación de pedidos e proxectos, planificación, asignación de recursos, imputación de avances e extración de resultados.
