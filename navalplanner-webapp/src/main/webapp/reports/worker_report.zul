@@ -1,0 +1,112 @@
+<!--
+    This file is part of ###PROJECT_NAME###
+
+    Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+    Desenvolvemento Tecnolóxico de Galicia
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page  id="reports"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+<?component name="combobox_output_format" macroURI="combobox_output_format.zul"
+    class="org.navalplanner.web.reports.ComboboxOutputFormat" ?>
+
+<zk>
+
+    <window self="@{define(content)}"
+        apply="org.navalplanner.web.reports.HoursWorkedPerWorkerController"
+        title="Hours worked per worker"
+        border="normal" >
+
+         <!-- Select output format -->
+         <panel title="${i18n:_('Dates')}" border="normal"
+             style="overflow:auto">
+             <panelchildren>
+                 <grid width="600px">
+                     <columns>
+                         <column width="200px" />
+                         <column />
+                     </columns>
+                     <rows>
+                         <row>
+                             <label value="${i18n:_('Start date:')}" />
+                             <datebox id="startingDate" />
+                         </row>
+                         <row>
+                             <label value="${i18n:_('End date:')}" />
+                             <datebox id="endingDate" />
+                         </row>
+                     </rows>
+                 </grid>
+             </panelchildren>
+         </panel>
+
+          <!-- Select output format -->
+        <panel title="${i18n:_('Workers')}"
+            border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                <listbox id="lbWorkers"
+                        width="600px"
+                        multiple="true"
+                        model="@{controller.workers}">
+                    <listhead>
+                        <listheader label="${i18n:_('NIF')}" sort="auto(nif)" />
+                        <listheader label="${i18n:_('Name')}" sort="auto(name)" />
+                    </listhead>
+                    <listitem self="@{each='worker'}" value="@{worker}">
+                        <listcell label="@{worker.nif}" />
+                        <listcell label="@{worker.name}" />
+                    </listitem>
+                </listbox>
+            </panelchildren>
+        </panel>
+
+        <!-- Select output format -->
+        <panel title="${i18n:_('Format')}" border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                <grid width="600px">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Output format:')}" />
+                            <combobox_output_format id="outputFormat" />
+                        </row>
+                    </rows>
+                </grid>
+
+            </panelchildren>
+        </panel>
+
+        <separator spacing="10px" orient="horizontal"/>
+
+        <button label="Show" onClick="controller.showReport(report)" />
+
+        <jasperreport id="report" />
+
+    </window>
+
+</zk>

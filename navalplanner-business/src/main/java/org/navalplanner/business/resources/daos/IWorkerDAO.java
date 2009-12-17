@@ -20,10 +20,12 @@
 
 package org.navalplanner.business.resources.daos;
 
+import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerDTO;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,4 +68,10 @@ public interface IWorkerDAO extends IGenericDAO<Worker, Long> {
      */
     @Transactional(readOnly = true)
     List<Worker> getWorkers();
+
+    /**
+     *
+     */
+    List<HoursWorkedPerWorkerDTO> getWorkingHoursPerWorker(List<Worker> workers, Date startingDate, Date endingDate);
+
 }

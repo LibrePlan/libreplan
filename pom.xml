@@ -194,6 +194,12 @@
     <!-- Dependency management -->
     <dependencyManagement>
         <dependencies>
+            <!-- Jasper Reports -->
+            <dependency>
+              <groupId>jasperreports</groupId>
+              <artifactId>jasperreports</artifactId>
+              <version>3.7.0</version>
+            </dependency>
             <!-- Gettext commons -->
             <dependency>
                 <groupId>org.xnap.commons</groupId>

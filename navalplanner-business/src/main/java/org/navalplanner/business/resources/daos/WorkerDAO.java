@@ -20,16 +20,20 @@
 
 package org.navalplanner.business.resources.daos;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerDTO;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate DAO for the <code>Worker</code> entity.
@@ -72,6 +76,50 @@ public class WorkerDAO extends GenericDAOHibernate<Worker, Long>
                                 "firstName", containsName), Restrictions.ilike(
                                 "surname", containsName)), Restrictions.like(
                                 "nif", containsName))).list();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<HoursWorkedPerWorkerDTO> getWorkingHoursPerWorker(List<Worker> workers, Date startingDate, Date endingDate) {
+        String strQuery =
+            "SELECT new org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerDTO(worker, wrl) " +
+            "FROM Worker worker, WorkReportLine wrl " +
+            "LEFT OUTER JOIN wrl.resource resource " +
+                "WHERE resource.id = worker.id ";
+
+        // Set date range
+        if (startingDate != null && endingDate != null) {
+            strQuery += "AND wrl.date BETWEEN :startingDate AND :endingDate ";
+        }
+        if (startingDate != null && endingDate == null) {
+            strQuery += "AND wrl.date >= :startingDate ";
+        }
+        if (startingDate == null && endingDate != null) {
+            strQuery += "AND wrl.date <= :endingDate ";
+        }
+
+        // Set workers
+        if (workers != null && !workers.isEmpty()) {
+            strQuery += "AND worker IN (:workers) ";
+        }
+
+        // Order by
+        strQuery += "ORDER BY worker.id, wrl.date";
+
+        // Set parameters
+        Query query = getSession().createQuery(strQuery);
+        if (startingDate != null) {
+            query.setParameter("startingDate", startingDate);
+        }
+        if (endingDate != null) {
+            query.setParameter("endingDate", endingDate);
+        }
+        if (workers != null && !workers.isEmpty()) {
+            query.setParameterList("workers", workers);
+        }
+
+        // Get result
+        return query.list();
     }
 
 }

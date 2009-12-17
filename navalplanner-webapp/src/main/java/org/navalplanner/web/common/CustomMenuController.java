@@ -241,7 +241,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                             "02-criterios.html#id1"));
         }
 
-        topItem(_("Quality management"), "/", "", true);
+        topItem(_("Reports"), "", "",
+                subItem(_("Worker report"),
+                        "/reports/worker_report.zul", ""));
     }
 
     private Vbox getRegisteredItemsInsertionPoint() {
