@@ -1203,7 +1203,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             final DescriptionValue descriptionValue) {
         Textbox textbox = new Textbox();
         Integer length = workReportModel.getLength(descriptionValue);
-        textbox.setWidth(length.toString() + "px");
+        textbox.setCols(length);
         textbox.setParent(row);
 
         Util.bind(textbox, new Util.Getter<String>() {

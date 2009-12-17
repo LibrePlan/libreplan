@@ -389,10 +389,14 @@ div.z-errbox {
 
 /* ------ Overridden norrmoz.css.dsp styles ------ */
 .z-label,.z-radio-cnt,.z-checkbox-cnt,.z-slider-pp,input.button,input.file,.z-loading,.z-errbox,
-div.z-tree-footer-cnt, div.z-tree-cell-cnt, div.z-tree-col-cnt {
+div.z-tree-footer-cnt, div.z-tree-cell-cnt, div.z-tree-col-cnt, .z-listbox {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
     font-weight: normal;
+}
+
+div.z-row-cnt {
+    padding:0;
 }
 
 .z-word-wrap {
@@ -403,8 +407,7 @@ div.z-tree-footer-cnt, div.z-tree-cell-cnt, div.z-tree-col-cnt {
     word-wrap: normal;
 }
 
-.z-window-embedded-tl,.z-window-highlighted-tl,.z-window-overlapped-tl,.z-window-popup-tl
-    {
+.z-window-embedded-tl,.z-window-highlighted-tl,.z-window-overlapped-tl,.z-window-popup-tl {
     background: none;
 }
 
