@@ -103,4 +103,10 @@ public interface IProfileModel {
      * @throws InstanceNotFoundException
      */
     void confirmRemove(Profile profile) throws InstanceNotFoundException;
+
+    /**
+     * Returns a list of the {@link UserRole} objects related with the current profile.
+     * @return a list of {@link UserRole} objects.
+     */
+    List<UserRole> getRoles();
 }

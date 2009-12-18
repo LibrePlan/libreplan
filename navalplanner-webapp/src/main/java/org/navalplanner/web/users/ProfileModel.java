@@ -125,4 +125,13 @@ public class ProfileModel implements IProfileModel {
         profileDAO.remove(profile.getId());
     }
 
+    @Override
+    public List<UserRole> getRoles() {
+        List<UserRole> list = new ArrayList<UserRole>();
+        if (profile != null) {
+            list.addAll(profile.getRoles());
+        }
+        return list;
+    }
+
 }

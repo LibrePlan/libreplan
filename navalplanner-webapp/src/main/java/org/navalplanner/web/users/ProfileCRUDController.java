@@ -36,14 +36,10 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Label;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -69,14 +65,27 @@ public class ProfileCRUDController extends GenericForwardComposer implements
 
     private Component messagesContainer;
 
-    private UserRoleListRenderer userRoleListRenderer = new UserRoleListRenderer();
+    private Combobox userRolesCombo;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
+        userRolesCombo = (Combobox) createWindow.getFellowIfAny("userRolesCombo");
         getVisibility().showOnly(listWindow);
+        appendAllUserRoles(userRolesCombo);
+    }
+
+    /**
+     * Appends the existing UserRoles to the Combobox passed.
+     * @param combo
+     */
+    private void appendAllUserRoles(Combobox combo) {
+        for(UserRole role : getAllRoles()) {
+            Comboitem item = combo.appendItem(role.getDisplayName());
+            item.setValue(role);
+        }
     }
 
     @Override
@@ -142,17 +151,25 @@ public class ProfileCRUDController extends GenericForwardComposer implements
         return profileModel.getAllRoles();
     }
 
-    public boolean roleBelongs(UserRole role) {
-        return profileModel.roleBelongs(role);
+    public void addSelectedRole() {
+        Comboitem comboItem = userRolesCombo.getSelectedItem();
+        if(comboItem != null) {
+            addRole((UserRole)comboItem.getValue());
+        }
     }
 
-    public void checkRole(UserRole role, boolean checked) {
-        if (checked) {
-            profileModel.addRole(role);
-        }
-        else {
-            profileModel.removeRole(role);
-        }
+    public List<UserRole> getRoles() {
+        return profileModel.getRoles();
+    }
+
+    public void addRole(UserRole role) {
+        profileModel.addRole(role);
+        Util.reloadBindings(createWindow);
+    }
+
+    public void removeRole(UserRole role) {
+        profileModel.removeRole(role);
+        Util.reloadBindings(createWindow);
     }
 
     public void removeProfile(Profile profile) {
@@ -180,47 +197,4 @@ public class ProfileCRUDController extends GenericForwardComposer implements
                 : visibility;
     }
 
-    /**
-     * RowRenderer for a {@link UserRole} element inside a {@link Profile}
-     *
-     * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
-     *
-     */
-    public class UserRoleListRenderer implements RowRenderer {
-
-        @Override
-        public void render(Row row, Object data) throws Exception {
-            UserRole role = (UserRole) data;
-
-            row.setValue(role);
-
-            // Create boxes
-            appendLabel(row);
-            appendCheckbox(row);
-        }
-    }
-
-    public void appendLabel(Row row) {
-        Label label = new Label();
-        label.setValue(((UserRole)row.getValue()).getDisplayName());
-        row.appendChild(label);
-    }
-
-    public void appendCheckbox(final Row row) {
-        Checkbox checkbox = new Checkbox();
-        checkbox.setChecked(roleBelongs((UserRole)row.getValue()));
-
-        checkbox.addEventListener("onCheck", new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                checkRole((UserRole)row.getValue(),
-                        ((Checkbox)event.getTarget()).isChecked());
-            }
-        });
-        row.appendChild(checkbox);
-    }
-
-    public UserRoleListRenderer getRenderer() {
-        return userRoleListRenderer;
-    }
 }
