@@ -48,6 +48,10 @@ public class Profile extends BaseEntity {
         this.setRoles(roles);
     }
 
+    public static Profile create() {
+        return create(new Profile());
+    }
+
     public static Profile create(String loginName, Set<UserRole> roles) {
         return create(new Profile(loginName, roles));
     }
