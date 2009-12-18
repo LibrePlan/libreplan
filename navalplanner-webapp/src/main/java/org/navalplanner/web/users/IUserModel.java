@@ -82,4 +82,11 @@ public interface IUserModel {
      */
     void removeRole(UserRole role);
 
+    /**
+     * Adds a role to the UserRoles associated with the current User.
+     *
+     * @param role The {@link UserRole} object to be added.
+     */
+    void addRole(UserRole role);
+
 }

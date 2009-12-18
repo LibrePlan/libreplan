@@ -99,6 +99,10 @@ public class User extends BaseEntity {
         this.roles = roles;
     }
 
+    public void addRole(UserRole role) {
+        roles.add(role);
+    }
+
     public void removeRole(UserRole role) {
         roles.remove(role);
     }

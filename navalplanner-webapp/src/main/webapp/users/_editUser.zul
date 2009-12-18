@@ -54,6 +54,11 @@
                         </rows>
                     </grid>
                     <!-- Associated UserRoles -->
+                    <hbox align="center">
+                        <combobox id="userRolesCombo"/>
+                        <button label="${i18n:_('Add role')}"
+                            onClick="controller.addSelectedRole()"/>
+                    </hbox>
                     <grid id="listing" model="@{controller.roles}">
                         <columns sizable="true">
                             <column label="${i18n:_('Role name')}" />

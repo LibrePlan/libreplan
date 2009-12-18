@@ -123,4 +123,9 @@ public class UserModel implements IUserModel {
     public void removeRole(UserRole role) {
         user.removeRole(role);
     }
+
+    @Override
+    public void addRole(UserRole role) {
+        user.addRole(role);
+    }
 }

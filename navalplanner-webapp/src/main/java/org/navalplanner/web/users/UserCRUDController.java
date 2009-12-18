@@ -35,6 +35,8 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -58,12 +60,27 @@ public class UserCRUDController extends GenericForwardComposer implements
 
     private Component messagesContainer;
 
+    private Combobox userRolesCombo;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
+        userRolesCombo = (Combobox) createWindow.getFellowIfAny("userRolesCombo");
+        appendAllUserRoles(userRolesCombo);
+    }
+
+    /**
+     * Appends the existing UserRoles to the Combobox passed.
+     * @param combo
+     */
+    private void appendAllUserRoles(Combobox combo) {
+        for(UserRole role : UserRole.values()) {
+            Comboitem item = combo.appendItem(role.getDisplayName());
+            item.setValue(role);
+        }
     }
 
     @Override
@@ -127,6 +144,18 @@ public class UserCRUDController extends GenericForwardComposer implements
 
     public List<UserRole> getRoles() {
         return userModel.getRoles();
+    }
+
+    public void addSelectedRole() {
+        Comboitem comboItem = userRolesCombo.getSelectedItem();
+        if(comboItem != null) {
+            addRole((UserRole)comboItem.getValue());
+        }
+    }
+
+    public void addRole(UserRole role) {
+        userModel.addRole(role);
+        Util.reloadBindings(createWindow);
     }
 
     public void removeRole(UserRole role) {
