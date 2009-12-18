@@ -77,6 +77,17 @@
                             </row>
                         </rows>
                     </grid>
+                    <!-- Associated Profiles -->
+                    <grid id="profilesListing" model="@{controller.profiles}">
+                        <columns sizable="true">
+                            <column label="${i18n:_('Profile name')}" />
+                        </columns>
+                        <rows>
+                            <row self="@{each='profile'}" value="@{profile}">
+                                <label value="@{profile.profileName}" />
+                            </row>
+                        </rows>
+                    </grid>
                 </vbox>
             </tabpanel>
         </tabpanels>

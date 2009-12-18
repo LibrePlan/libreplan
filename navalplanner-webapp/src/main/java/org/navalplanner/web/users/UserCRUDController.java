@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.ConstraintChecker;
@@ -161,6 +162,10 @@ public class UserCRUDController extends GenericForwardComposer implements
     public void removeRole(UserRole role) {
         userModel.removeRole(role);
         Util.reloadBindings(createWindow);
+    }
+
+    public List<Profile> getProfiles() {
+        return userModel.getProfiles();
     }
 
     private OnlyOneVisible getVisibility() {

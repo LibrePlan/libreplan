@@ -128,4 +128,13 @@ public class UserModel implements IUserModel {
     public void addRole(UserRole role) {
         user.addRole(role);
     }
+
+    @Override
+    public List<Profile> getProfiles() {
+        List<Profile> list = new ArrayList<Profile>();
+        if (user != null) {
+            list.addAll(user.getProfiles());
+        }
+        return list;
+    }
 }

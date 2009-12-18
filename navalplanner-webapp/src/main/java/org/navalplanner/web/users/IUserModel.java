@@ -23,6 +23,7 @@ package org.navalplanner.web.users;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 
@@ -88,5 +89,11 @@ public interface IUserModel {
      * @param role The {@link UserRole} object to be added.
      */
     void addRole(UserRole role);
+
+    /**
+     * Retrieves the list of Profiles associated with the current user.
+     * @return List of {@link Profile} objects.
+     */
+    List<Profile> getProfiles();
 
 }
