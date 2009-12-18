@@ -46,6 +46,8 @@ public class User extends BaseEntity {
     @NotEmpty(message="user roles not specified")
     private Set<UserRole> roles = new HashSet<UserRole>();
 
+    private String email;
+
     /**
      * Necessary for Hibernate. Please, do not call it.
      */
@@ -86,6 +88,14 @@ public class User extends BaseEntity {
 
     public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     @AssertTrue(message="login name is already being used by another user")

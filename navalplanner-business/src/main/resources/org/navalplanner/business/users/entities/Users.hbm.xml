@@ -21,6 +21,7 @@
         <version name="version" access="property" type="long" />
         <property name="loginName" not-null="true" unique="true"/>
         <property name="password" not-null="true"/>
+        <property name="email"/>
         <set name="roles" table="USER_ROLES">
             <key column="userId"/>
             <element>
@@ -33,4 +34,25 @@
         </set>
     </class>
 
+    <class name="Profile" table="NAVAL_PROFILE">
+        <id name="id" access="property" type="long">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <property name="profileName" not-null="true" unique="true"/>
+
+        <set name="roles" table="PROFILE_ROLES">
+            <key column="profileId"/>
+            <element>
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">org.navalplanner.business.users.entities.UserRole</param>
+                    <!-- 12 is java.sql.Types.VARCHAR -->
+                    <param name="type">12</param>
+                </type>
+            </element>
+        </set>
+    </class>
 </hibernate-mapping>
