@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Profile;
+import org.navalplanner.business.users.entities.UserRole;
 
 /**
  * Model for UI operations related to {@link Profile}
@@ -66,4 +67,32 @@ public interface IProfileModel {
      *             If validation fails
      */
     void confirmSave() throws ValidationException;
+
+    /**
+     * Returns a list of the available user roles in the system.
+     */
+    List<UserRole> getAllRoles();
+
+    /**
+     * Adds a role to the current {@link Profile}
+     *
+     * @param role {@link UserRole} element to be added
+     */
+    void addRole(UserRole role);
+
+    /**
+     * Removes a role from the current {@link Profile}
+     *
+     * @param role {@link UserRole} element to be removed
+     */
+    void removeRole(UserRole role);
+
+    /**
+     * Checks if the role is included in the current profile.
+     *
+     * @param role {@link UserRole} element to be checked
+     * @return true if the role belongs to the profile,
+     *  false otherwise.
+     */
+    boolean roleBelongs(UserRole role);
 }

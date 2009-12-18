@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Profile;
+import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -33,7 +34,13 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -56,6 +63,8 @@ public class ProfileCRUDController extends GenericForwardComposer implements
     private IMessagesForUser messagesForUser;
 
     private Component messagesContainer;
+
+    private UserRoleListRenderer userRoleListRenderer = new UserRoleListRenderer();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -124,9 +133,70 @@ public class ProfileCRUDController extends GenericForwardComposer implements
         return profileModel.getProfile();
     }
 
+    public List<UserRole> getAllRoles() {
+        return profileModel.getAllRoles();
+    }
+
+    public boolean roleBelongs(UserRole role) {
+        return profileModel.roleBelongs(role);
+    }
+
+    public void checkRole(UserRole role, boolean checked) {
+        if (checked) {
+            profileModel.addRole(role);
+        }
+        else {
+            profileModel.removeRole(role);
+        }
+    }
+
     private OnlyOneVisible getVisibility() {
         return (visibility == null) ? new OnlyOneVisible(createWindow,
                 listWindow)
                 : visibility;
+    }
+
+    /**
+     * RowRenderer for a {@link UserRole} element inside a {@link Profile}
+     *
+     * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+     *
+     */
+    public class UserRoleListRenderer implements RowRenderer {
+
+        @Override
+        public void render(Row row, Object data) throws Exception {
+            UserRole role = (UserRole) data;
+
+            row.setValue(role);
+
+            // Create boxes
+            appendLabel(row);
+            appendCheckbox(row);
+        }
+    }
+
+    public void appendLabel(Row row) {
+        Label label = new Label();
+        label.setValue(((UserRole)row.getValue()).getDisplayName());
+        row.appendChild(label);
+    }
+
+    public void appendCheckbox(final Row row) {
+        Checkbox checkbox = new Checkbox();
+        checkbox.setChecked(roleBelongs((UserRole)row.getValue()));
+
+        checkbox.addEventListener("onCheck", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                checkRole((UserRole)row.getValue(),
+                        ((Checkbox)event.getTarget()).isChecked());
+            }
+        });
+        row.appendChild(checkbox);
+    }
+
+    public UserRoleListRenderer getRenderer() {
+        return userRoleListRenderer;
     }
 }

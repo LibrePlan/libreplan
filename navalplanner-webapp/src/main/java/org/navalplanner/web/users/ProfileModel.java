@@ -20,12 +20,14 @@
 
 package org.navalplanner.web.users;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.daos.IProfileDAO;
 import org.navalplanner.business.users.entities.Profile;
+import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -70,13 +72,50 @@ public class ProfileModel implements IProfileModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void initEdit(Profile profile) {
         try {
             this.profile = profileDAO.find(profile.getId());
+            forceLoadEntities(this.profile);
         }
         catch (InstanceNotFoundException e) {
             initCreate();
         }
+    }
+
+    @Transactional(readOnly = true)
+    private void forceLoadEntities(Profile profile) {
+        profile.getProfileName();
+        for(UserRole role : profile.getRoles()) {
+            role.name();
+        }
+    }
+
+    @Override
+    public List<UserRole> getAllRoles() {
+        List<UserRole> list = new ArrayList<UserRole>();
+        for(UserRole role : UserRole.values()) {
+            list.add(role);
+        }
+        return list;
+    }
+
+    @Override
+    public void addRole(UserRole role) {
+        profile.addRole(role);
+    }
+
+    @Override
+    public void removeRole(UserRole role) {
+        profile.removeRole(role);
+    }
+
+    @Override
+    public boolean roleBelongs(UserRole role) {
+        if (profile == null) {
+            return false;
+        }
+        return profile.getRoles().contains(role);
     }
 
 }

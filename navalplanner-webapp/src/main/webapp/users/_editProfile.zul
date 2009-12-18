@@ -44,6 +44,12 @@
                         </rows>
                     </grid>
                 </vbox>
+                <grid id="listing" model="@{controller.allRoles}" rowRenderer="@{controller.renderer}">
+                    <columns sizable="true">
+                        <column label="${i18n:_('Role name')}" />
+                        <column label="${i18n:_('Assigned')}" />
+                    </columns>
+                </grid>
             </tabpanel>
         </tabpanels>
     </tabbox>
