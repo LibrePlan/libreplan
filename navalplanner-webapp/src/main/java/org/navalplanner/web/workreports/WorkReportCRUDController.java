@@ -68,7 +68,6 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
@@ -176,7 +175,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     public void saveAndContinue() {
         if (save()) {
-            // goToEditForm(getWorkReport());
+            goToEditForm(getWorkReport());
         }
     }
 
@@ -209,9 +208,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             if (value instanceof WorkReportLine) {
                 validateWorkReportLine((WorkReportLine) invalidValue.getBean());
             }
-            if (value instanceof DescriptionValue) {
-                validateDescriptionValue((DescriptionValue) value);
-            }
         }
     }
 
@@ -223,25 +219,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     .getWorkReportLines()) {
                 if (!validateWorkReportLine(workReportLine))
                     return;
-            }
-        }
-    }
-
-    /**
-     * Validates {@link DescriptionValue} data constraints
-     * @param invalidValue
-     */
-    private void validateDescriptionValue(DescriptionValue value) {
-        if ((getWorkReport() != null)
-                && (getWorkReport().getDescriptionValues().contains(value))) {
-            showInvalidWorkReportDescriptionValue(value);
-        } else {
-            for (WorkReportLine line : getWorkReport().getWorkReportLines()) {
-                if (line.getDescriptionValues().contains(value)) {
-                    Row row = findWorkReportLine(listWorkReportLines.getRows()
-                            .getChildren(), line);
-                    showInvalidWorkReportLineDescriptionValue(row, value);
-                }
             }
         }
     }
@@ -272,64 +249,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     _("Order Element code cannot be null"));
             return false;
         }
-        return validateWorkReportDescriptionValues();
-    }
-
-    private boolean validateWorkReportDescriptionValues() {
-        DescriptionValue descriptionValue = workReportModel
-                .validateWorkReportDescriptionValues();
-        if (descriptionValue != null) {
-            showInvalidWorkReportDescriptionValue(descriptionValue);
-            return false;
-        }
         return true;
-    }
-
-    private void showInvalidWorkReportDescriptionValue(DescriptionValue value) {
-        // Find which row contains the description value inside grid
-        Row row = findRowByWorkReportDescriptionValue(headingFieldsAndLabels
-                .getRows(), value);
-        Textbox textboxValue = (Textbox) row.getChildren().get(1);
-        throw new WrongValueException(textboxValue,
-                _("The description field valuemust be not null and not empty"));
-    }
-
-    private void showInvalidWorkReportLineDescriptionValue(Row row,
-            DescriptionValue descriptionValue) {
-        Integer position = findPositionByWorkReportLineDescriptionValue(descriptionValue);
-        if ((row != null) && (position != null)) {
-            Textbox textboxValue = getTextboxInPosition(row, position);
-             String message = _("The value must be spicified.");
-             showInvalidMessage(textboxValue, message);
-        }
-    }
-
-    private Row findRowByWorkReportDescriptionValue(Rows rows,
-            DescriptionValue value) {
-        List<Row> listRows = (List<Row>) rows.getChildren();
-        for (Row row : listRows) {
-            if ((row.getValue() instanceof DescriptionValue)
-                    && (value.equals(row.getValue()))) {
-                return row;
-            }
-        }
-        return null;
-    }
-
-    private Integer findPositionByWorkReportLineDescriptionValue(
-            DescriptionValue value) {
-        Columns columns = this.listWorkReportLines.getColumns();
-        List<Component> listColumns = columns.getChildren();
-        Integer position = new Integer(0);
-        for(Component child : listColumns){
-            if ((child instanceof NewDataSortableColumn)
-                    && (((NewDataSortableColumn) child).getLabel().equals(value
-                            .getFieldName()))) {
-                return position;
-            }
-            position++;
-        }
-        return null;
     }
 
     /**
@@ -412,13 +332,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     return false;
                 }
 
-                 DescriptionValue descriptionValue = workReportModel
-                 .validateWorkReportLineDescriptionValues(workReportLine);
-                 if (descriptionValue != null) {
-                    showInvalidWorkReportLineDescriptionValue(row,
-                            descriptionValue);
-                    return false;
-                 }
             }
         }
         return true;

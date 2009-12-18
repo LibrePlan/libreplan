@@ -448,28 +448,4 @@ public class WorkReportModel implements IWorkReportModel {
         return descriptionField.getLength();
     }
 
-    @Override
-    public DescriptionValue validateWorkReportDescriptionValues(){
-        for (DescriptionValue descriptionValue : getWorkReport()
-                .getDescriptionValues()) {
-            if ((descriptionValue.getValue() == null)
-                    || (descriptionValue.getValue().isEmpty())) {
-                return descriptionValue;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public DescriptionValue validateWorkReportLineDescriptionValues(
-            WorkReportLine line) {
-        for (DescriptionValue descriptionValue : line.getDescriptionValues()) {
-            if ((descriptionValue.getValue() == null)
-                    || (descriptionValue.getValue().isEmpty())) {
-                return descriptionValue;
-            }
-        }
-        return null;
-    }
-
 }

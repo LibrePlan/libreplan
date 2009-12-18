@@ -21,6 +21,7 @@
 package org.navalplanner.business.workreports.valueobjects;
 
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.INewObject;
 
 /**
@@ -49,12 +50,12 @@ public class DescriptionValue implements INewObject {
 
     public DescriptionValue(String fieldName, String value) {
         this.fieldName = fieldName;
-        this.value = value;
+        setValue(value);
     }
 
     private String fieldName;
 
-    private String value;
+    private String value = "";
 
     private boolean newObject = false;
 
@@ -75,12 +76,15 @@ public class DescriptionValue implements INewObject {
         this.fieldName = fieldName;
     }
 
-    @NotEmpty(message = "value not specified or empty")
+    @NotNull(message = "value cannot be null")
     public String getValue() {
         return value;
     }
 
     public void setValue(String value) {
+        if (value == null)
+            value = "";
         this.value = value;
     }
+
 }
