@@ -39,6 +39,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -62,6 +64,8 @@ public class UserCRUDController extends GenericForwardComposer implements
 
     private Component messagesContainer;
 
+    private Textbox passwordBox;
+
     private Combobox userRolesCombo;
 
     private Autocomplete profileAutocomplete;
@@ -72,6 +76,7 @@ public class UserCRUDController extends GenericForwardComposer implements
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
+        passwordBox = (Textbox) createWindow.getFellowIfAny("password");
         profileAutocomplete = (Autocomplete) createWindow.getFellowIfAny("profileAutocomplete");
         userRolesCombo = (Combobox) createWindow.getFellowIfAny("userRolesCombo");
         appendAllUserRoles(userRolesCombo);
@@ -101,6 +106,9 @@ public class UserCRUDController extends GenericForwardComposer implements
     @Override
     public void goToCreateForm() {
         userModel.initCreate();
+        //password is compulsory when creating
+        passwordBox.setConstraint("no empty:" +
+                _("The password for a new user cannot be empty"));
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
@@ -108,8 +116,13 @@ public class UserCRUDController extends GenericForwardComposer implements
     @Override
     public void goToEditForm(User user) {
         userModel.initEdit(user);
+        //password is not compulsory when editing, so we remove
+        //the constraint
+        passwordBox.setConstraint((Constraint)null);
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
+        //this line makes the new Constraint (null) apply
+        passwordBox.setValue("");
     }
 
     public void cancel() {
