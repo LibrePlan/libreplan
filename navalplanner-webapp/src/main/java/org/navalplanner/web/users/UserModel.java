@@ -22,12 +22,18 @@ package org.navalplanner.web.users;
 
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.daos.IUserDAO;
+import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for UI operations related to {@link User}
@@ -41,9 +47,65 @@ public class UserModel implements IUserModel {
     @Autowired
     private IUserDAO userDAO;
 
+    private User user;
+
     @Override
+    @Transactional(readOnly=true)
     public List<User> getUsers() {
         return userDAO.list(User.class);
     }
 
+    @Override
+    @Transactional
+    public void confirmSave() throws ValidationException {
+        userDAO.save(user);
+    }
+
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public void initCreate() {
+        this.user = User.create();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void initEdit(User user) {
+        Validate.notNull(user);
+        this.user = getFromDB(user);
+    }
+
+    @Transactional(readOnly = true)
+    private User getFromDB(User user) {
+        return getFromDB(user.getId());
+    }
+
+    @Transactional(readOnly = true)
+    private User getFromDB(Long id) {
+        try {
+            User result = userDAO.find(id);
+            forceLoadEntities(result);
+            return result;
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Load entities that will be needed in the conversation
+     *
+     * @param costCategory
+     */
+    private void forceLoadEntities(User user) {
+        user.getLoginName();
+        for (UserRole each : user.getRoles()) {
+            each.name();
+        }
+        for (Profile each : user.getProfiles()) {
+            each.getProfileName();
+        }
+    }
 }

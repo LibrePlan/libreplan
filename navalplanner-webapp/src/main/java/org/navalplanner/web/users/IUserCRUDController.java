@@ -20,11 +20,18 @@
 
 package org.navalplanner.web.users;
 
+import org.navalplanner.business.users.entities.User;
 import org.navalplanner.web.common.entrypoints.EntryPoint;
 import org.navalplanner.web.common.entrypoints.EntryPoints;
 
 @EntryPoints(page = "/users/users.zul", registerAs = "userCRUD")
 public interface IUserCRUDController {
+
+    @EntryPoint("edit")
+    public abstract void goToEditForm(User user);
+
+    @EntryPoint("create")
+    public abstract void goToCreateForm();
 
     @EntryPoint("list")
     public abstract void goToList();

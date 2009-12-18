@@ -22,6 +22,7 @@ package org.navalplanner.web.users;
 
 import java.util.List;
 
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.User;
 
 /**
@@ -37,5 +38,33 @@ public interface IUserModel {
      * @return
      */
     List<User> getUsers();
+
+    /**
+     * Makes some operations needed before edit a {@link User}.
+     *
+     * @param user
+     *            The object to be edited
+     */
+    void initEdit(User user);
+
+    /**
+     * Makes some operations needed before create a new {@link User}.
+     */
+    void initCreate();
+
+    /**
+     * Gets the current {@link User}.
+     *
+     * @return A {@link User}
+     */
+    User getUser();
+
+    /**
+     * Stores the current {@link User}.
+     *
+     * @throws ValidationException
+     *             If validation fails
+     */
+    void confirmSave() throws ValidationException;
 
 }

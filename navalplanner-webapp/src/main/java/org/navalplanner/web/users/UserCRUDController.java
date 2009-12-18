@@ -20,10 +20,15 @@
 
 package org.navalplanner.web.users;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.List;
 
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
@@ -68,6 +73,55 @@ public class UserCRUDController extends GenericForwardComposer implements
 
     public List<User> getUsers() {
         return userModel.getUsers();
+    }
+
+    @Override
+    public void goToCreateForm() {
+        userModel.initCreate();
+        getVisibility().showOnly(createWindow);
+        Util.reloadBindings(createWindow);
+    }
+
+    @Override
+    public void goToEditForm(User user) {
+        userModel.initEdit(user);
+        getVisibility().showOnly(createWindow);
+        Util.reloadBindings(createWindow);
+    }
+
+    public void cancel() {
+        goToList();
+    }
+
+    public void saveAndExit() {
+        if (save()) {
+            goToList();
+        }
+    }
+
+    public void saveAndContinue() {
+        if (save()) {
+            goToEditForm(getUser());
+        }
+    }
+
+    public boolean save() {
+        if(!ConstraintChecker.isValid(createWindow)) {
+            return false;
+        }
+        try {
+            userModel.confirmSave();
+            messagesForUser.showMessage(Level.INFO,
+                    _("User saved"));
+            return true;
+        } catch (ValidationException e) {
+            messagesForUser.showInvalidValues(e);
+        }
+        return false;
+    }
+
+    public User getUser() {
+        return userModel.getUser();
     }
 
     private OnlyOneVisible getVisibility() {

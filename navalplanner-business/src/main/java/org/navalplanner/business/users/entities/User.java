@@ -71,6 +71,10 @@ public class User extends BaseEntity {
 
     }
 
+    public static User create() {
+        return create(new User());
+    }
+
     public String getLoginName() {
         return loginName;
     }

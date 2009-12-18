@@ -26,11 +26,13 @@
 <?link rel="stylesheet" type="text/css" href="/resources/css/resources.css"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?component name="list" inline="true" macroURI="_listUsers.zul"?>
+<?component name="edition" inline="true" macroURI="_editUser.zul"?>
 <zk>
     <window self="@{define(content)}"
         apply="org.navalplanner.web.users.UserCRUDController">
         <vbox id="messagesContainer"></vbox>
 
         <list top_id="listWindow" />
+        <edition top_id="createWindow" />
     </window>
 </zk>
