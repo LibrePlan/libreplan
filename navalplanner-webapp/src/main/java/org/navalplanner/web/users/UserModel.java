@@ -142,4 +142,9 @@ public class UserModel implements IUserModel {
     public void removeProfile(Profile profile) {
         user.removeProfile(profile);
     }
+
+    @Override
+    public void addProfile(Profile profile) {
+        user.addProfile(profile);
+    }
 }

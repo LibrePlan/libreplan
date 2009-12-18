@@ -34,6 +34,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
@@ -63,12 +64,15 @@ public class UserCRUDController extends GenericForwardComposer implements
 
     private Combobox userRolesCombo;
 
+    private Autocomplete profileAutocomplete;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
+        profileAutocomplete = (Autocomplete) createWindow.getFellowIfAny("profileAutocomplete");
         userRolesCombo = (Combobox) createWindow.getFellowIfAny("userRolesCombo");
         appendAllUserRoles(userRolesCombo);
     }
@@ -166,6 +170,18 @@ public class UserCRUDController extends GenericForwardComposer implements
 
     public List<Profile> getProfiles() {
         return userModel.getProfiles();
+    }
+
+    public void addSelectedProfile() {
+        Comboitem comboItem = profileAutocomplete.getSelectedItem();
+        if(comboItem != null) {
+            addProfile((Profile)comboItem.getValue());
+        }
+    }
+
+    public void addProfile(Profile profile) {
+        userModel.addProfile(profile);
+        Util.reloadBindings(createWindow);
     }
 
     public void removeProfile(Profile profile) {

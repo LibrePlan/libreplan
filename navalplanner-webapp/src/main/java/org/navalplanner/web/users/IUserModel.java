@@ -104,4 +104,12 @@ public interface IUserModel {
      */
     void removeProfile(Profile profile);
 
+    /**
+     * Adds a profile to the list of {@link Profile} objects associated
+     * with the current User.
+     *
+     * @param role The {@link Profile} object to be added.
+     */
+    void addProfile(Profile profile);
+
 }

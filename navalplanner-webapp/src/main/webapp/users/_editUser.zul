@@ -78,6 +78,13 @@
                         </rows>
                     </grid>
                     <!-- Associated Profiles -->
+                    <hbox align="center">
+                        <autocomplete id="profileAutocomplete"
+                            autodrop="true" constraint=""
+                            finder="ProfileFinder" />
+                        <button label="${i18n:_('Add profile')}"
+                            onClick="controller.addSelectedProfile()" />
+                    </hbox>
                     <grid id="profilesListing" model="@{controller.profiles}">
                         <columns sizable="true">
                             <column label="${i18n:_('Profile name')}" />
