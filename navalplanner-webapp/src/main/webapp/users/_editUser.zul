@@ -81,10 +81,18 @@
                     <grid id="profilesListing" model="@{controller.profiles}">
                         <columns sizable="true">
                             <column label="${i18n:_('Profile name')}" />
+                            <column label="${i18n:_('Actions')}" />
                         </columns>
                         <rows>
                             <row self="@{each='profile'}" value="@{profile}">
                                 <label value="@{profile.profileName}" />
+                                <hbox>
+                                    <button sclass="icono" image="/common/img/ico_borrar1.png"
+                                        hoverImage="/common/img/ico_borrar.png"
+                                        tooltiptext="${i18n:_('Delete')}"
+                                        onClick="controller.removeProfile(self.parent.parent.value);">
+                                    </button>
+                                </hbox>
                             </row>
                         </rows>
                     </grid>

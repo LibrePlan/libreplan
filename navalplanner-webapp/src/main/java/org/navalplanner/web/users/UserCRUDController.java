@@ -168,6 +168,11 @@ public class UserCRUDController extends GenericForwardComposer implements
         return userModel.getProfiles();
     }
 
+    public void removeProfile(Profile profile) {
+        userModel.removeProfile(profile);
+        Util.reloadBindings(createWindow);
+    }
+
     private OnlyOneVisible getVisibility() {
         return (visibility == null) ? new OnlyOneVisible(createWindow,
                 listWindow)

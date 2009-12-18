@@ -137,4 +137,9 @@ public class UserModel implements IUserModel {
         }
         return list;
     }
+
+    @Override
+    public void removeProfile(Profile profile) {
+        user.removeProfile(profile);
+    }
 }

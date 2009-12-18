@@ -96,4 +96,12 @@ public interface IUserModel {
      */
     List<Profile> getProfiles();
 
+    /**
+     * Removes a profile from the list of {@link Profile} objects associated
+     * with the current User.
+     *
+     * @param role The {@link Profile} object to be removed.
+     */
+    void removeProfile(Profile profile);
+
 }
