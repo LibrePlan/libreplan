@@ -22,6 +22,7 @@
         <property name="loginName" not-null="true" unique="true"/>
         <property name="password" not-null="true"/>
         <property name="email"/>
+        <property name="disabled"/>
         <set name="roles" table="USER_ROLES">
             <key column="userId"/>
             <element>

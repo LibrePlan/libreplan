@@ -51,6 +51,8 @@ public class User extends BaseEntity {
 
     private String email;
 
+    private boolean disabled = false;
+
     /**
      * Necessary for Hibernate. Please, do not call it.
      */
@@ -111,6 +113,14 @@ public class User extends BaseEntity {
 
     public void removeProfile(Profile profile) {
         profiles.remove(profile);
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
     }
 
     @AssertTrue(message="login name is already being used by another user")
