@@ -53,6 +53,17 @@
                             </row>
                         </rows>
                     </grid>
+                    <!-- Associated UserRoles -->
+                    <grid id="listing" model="@{controller.roles}">
+                        <columns sizable="true">
+                            <column label="${i18n:_('Role name')}" />
+                        </columns>
+                        <rows>
+                            <row self="@{each='role'}" value="@{role}">
+                                <label value="@{role.displayName}" />
+                            </row>
+                        </rows>
+                    </grid>
                 </vbox>
             </tabpanel>
         </tabpanels>

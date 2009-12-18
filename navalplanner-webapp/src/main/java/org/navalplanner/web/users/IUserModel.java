@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.users.entities.UserRole;
 
 /**
  * Model for UI operations related to {@link User}
@@ -66,5 +67,12 @@ public interface IUserModel {
      *             If validation fails
      */
     void confirmSave() throws ValidationException;
+
+    /**
+     * Retrieves the list of UserRoles associated with the current User.
+     *
+     * @return List of {@link UserRole} objects.
+     */
+    List<UserRole> getRoles();
 
 }

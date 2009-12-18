@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -122,6 +123,10 @@ public class UserCRUDController extends GenericForwardComposer implements
 
     public User getUser() {
         return userModel.getUser();
+    }
+
+    public List<UserRole> getRoles() {
+        return userModel.getRoles();
     }
 
     private OnlyOneVisible getVisibility() {

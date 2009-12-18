@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.users;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -107,5 +108,14 @@ public class UserModel implements IUserModel {
         for (Profile each : user.getProfiles()) {
             each.getProfileName();
         }
+    }
+
+    @Override
+    public List<UserRole> getRoles() {
+        List<UserRole> list = new ArrayList<UserRole>();
+        if (user != null) {
+            list.addAll(user.getRoles());
+        }
+        return list;
     }
 }
