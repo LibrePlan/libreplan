@@ -73,6 +73,12 @@ public class DBUserDetailsService implements UserDetailsService {
             allRoles.addAll(eachProfile.getRoles());
         }
 
+        if(allRoles.isEmpty()) {
+            //that user doesn't have any roles, so we forbid his login
+            throw new UsernameNotFoundException(_("User with login name " +
+                    "'{0}': access forbidden", loginName));
+        }
+
         return new org.springframework.security.userdetails.User(
             user.getLoginName(),
             user.getPassword(),
