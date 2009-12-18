@@ -22,10 +22,12 @@ package org.navalplanner.web.users.services;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.users.daos.IUserDAO;
+import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
  * <code>IUserDAO</code>.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 public class DBUserDetailsService implements UserDetailsService {
 
@@ -63,6 +66,13 @@ public class DBUserDetailsService implements UserDetailsService {
                 "'{0}': not found", loginName));
         }
 
+        //Retrieve roles from the user and its profiles
+        Set<UserRole> allRoles = new HashSet<UserRole>();
+        allRoles.addAll(user.getRoles());
+        for(Profile eachProfile : user.getProfiles()) {
+            allRoles.addAll(eachProfile.getRoles());
+        }
+
         return new org.springframework.security.userdetails.User(
             user.getLoginName(),
             user.getPassword(),
@@ -70,7 +80,7 @@ public class DBUserDetailsService implements UserDetailsService {
             true, // accountNonExpired
             true, // credentialsNonExpired
             true, // accountNonLocked
-            getGrantedAuthorities(user.getRoles()));
+            getGrantedAuthorities(allRoles));
 
     }
 
