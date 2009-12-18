@@ -34,6 +34,7 @@ import org.navalplanner.business.users.daos.IUserDAO;
  * Entity for modeling a user.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 public class User extends BaseEntity {
 
@@ -45,6 +46,8 @@ public class User extends BaseEntity {
 
     @NotEmpty(message="user roles not specified")
     private Set<UserRole> roles = new HashSet<UserRole>();
+
+    private Set<Profile> profiles = new HashSet<Profile>();
 
     private String email;
 
@@ -96,6 +99,18 @@ public class User extends BaseEntity {
 
     public String getEmail() {
         return email;
+    }
+
+    public Set<Profile> getProfiles() {
+        return profiles;
+    }
+
+    public void addProfile(Profile profile) {
+        profiles.add(profile);
+    }
+
+    public void removeProfile(Profile profile) {
+        profiles.remove(profile);
     }
 
     @AssertTrue(message="login name is already being used by another user")

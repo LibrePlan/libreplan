@@ -32,6 +32,11 @@
                 </type>
             </element>
         </set>
+        <set name="profiles" table="USER_PROFILES">
+            <key column="USER_ID"/>
+            <many-to-many column="PROFILE_ID"
+                class="org.navalplanner.business.users.entities.Profile"/>
+        </set>
     </class>
 
     <class name="Profile" table="NAVAL_PROFILE">

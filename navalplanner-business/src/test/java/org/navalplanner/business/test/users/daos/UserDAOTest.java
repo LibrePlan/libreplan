@@ -36,7 +36,9 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.users.daos.IProfileDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
+import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Tests for <code>IUserDAO</code>.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
@@ -61,6 +64,9 @@ public class UserDAOTest {
 
     @Autowired
     private IUserDAO userDAO;
+
+    @Autowired
+    IProfileDAO profileDAO;
 
     @Test
     public void testBasicSave() throws InstanceNotFoundException {
@@ -196,7 +202,26 @@ public class UserDAOTest {
 
         transactionService.runOnTransaction(createUsers);
         transactionService.runOnTransaction(updateUser1);
+    }
 
+    @Test
+    public void testListProfiles() throws InstanceNotFoundException{
+
+        User user = createUser(getUniqueName());
+        userDAO.save(user);
+
+        Profile profile = createProfile(getUniqueName());
+        profileDAO.save(profile);
+
+        int previous = user.getProfiles().size();
+        user.addProfile(profile);
+        userDAO.save(user);
+        assertEquals(previous + 1, userDAO.find(user.getId()).getProfiles().size());
+
+        previous = user.getProfiles().size();
+        user.removeProfile(profile);
+        userDAO.save(user);
+        assertEquals(previous - 1, userDAO.find(user.getId()).getProfiles().size());
     }
 
     private String getUniqueName() {
@@ -221,4 +246,9 @@ public class UserDAOTest {
             UserRole.values()[1];
     }
 
+    private Profile createProfile(String profileName) {
+        Set<UserRole> roles = new HashSet<UserRole>();
+        roles.add(UserRole.ROLE_BASIC_USER);
+        return Profile.create(profileName, roles);
+    }
 }
