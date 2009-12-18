@@ -99,6 +99,10 @@ public class User extends BaseEntity {
         this.roles = roles;
     }
 
+    public void removeRole(UserRole role) {
+        roles.remove(role);
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }

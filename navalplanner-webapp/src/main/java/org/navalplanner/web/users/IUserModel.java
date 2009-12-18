@@ -75,4 +75,11 @@ public interface IUserModel {
      */
     List<UserRole> getRoles();
 
+    /**
+     * Removes a role from the UserRoles associated with the current User.
+     *
+     * @param role The {@link UserRole} object to be removed.
+     */
+    void removeRole(UserRole role);
+
 }

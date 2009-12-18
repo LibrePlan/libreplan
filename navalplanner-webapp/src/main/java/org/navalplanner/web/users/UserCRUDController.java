@@ -129,6 +129,11 @@ public class UserCRUDController extends GenericForwardComposer implements
         return userModel.getRoles();
     }
 
+    public void removeRole(UserRole role) {
+        userModel.removeRole(role);
+        Util.reloadBindings(createWindow);
+    }
+
     private OnlyOneVisible getVisibility() {
         return (visibility == null) ? new OnlyOneVisible(createWindow,
                 listWindow)
