@@ -44,7 +44,6 @@ public class User extends BaseEntity {
     @NotEmpty(message="password not specified")
     private String password;
 
-    @NotEmpty(message="user roles not specified")
     private Set<UserRole> roles = new HashSet<UserRole>();
 
     private Set<Profile> profiles = new HashSet<Profile>();
