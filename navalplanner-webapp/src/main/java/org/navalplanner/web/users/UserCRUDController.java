@@ -189,6 +189,16 @@ public class UserCRUDController extends GenericForwardComposer implements
         Util.reloadBindings(createWindow);
     }
 
+    /**
+     * Tells the XXXModel to set the password attribute of the inner
+     * {@ link User} object.
+     *
+     * @param password String with the <b>unencrypted</b> password.
+     */
+    public void setPassword(String password) {
+        userModel.setPassword(password);
+    }
+
     private OnlyOneVisible getVisibility() {
         return (visibility == null) ? new OnlyOneVisible(createWindow,
                 listWindow)

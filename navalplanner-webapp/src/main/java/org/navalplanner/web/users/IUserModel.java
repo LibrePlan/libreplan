@@ -112,4 +112,11 @@ public interface IUserModel {
      */
     void addProfile(Profile profile);
 
+    /**
+     * Sets the password attribute to the inner {@ link User} object.
+     *
+     * @param password String with the <b>unencrypted</b> password.
+     */
+    void setPassword(String password);
+
 }

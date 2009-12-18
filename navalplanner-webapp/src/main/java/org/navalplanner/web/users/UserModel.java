@@ -30,6 +30,7 @@ import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.users.services.IDBPasswordEncoderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -48,7 +49,12 @@ public class UserModel implements IUserModel {
     @Autowired
     private IUserDAO userDAO;
 
+    @Autowired
+    private IDBPasswordEncoderService dbPasswordEncoderService;
+
     private User user;
+
+    private String clearNewPassword;
 
     @Override
     @Transactional(readOnly=true)
@@ -59,6 +65,19 @@ public class UserModel implements IUserModel {
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
+        try {
+            //user.getLoginName() has to be validated before encoding password,
+            //because it must exist to perform the encoding
+            Validate.notEmpty(user.getLoginName());
+
+            if (clearNewPassword != null) {
+                user.setPassword(dbPasswordEncoderService.
+                        encodePassword(clearNewPassword, user.getLoginName()));
+            }
+        }
+        catch (IllegalArgumentException e) {}
+
+        user.validate();
         userDAO.save(user);
     }
 
@@ -146,5 +165,18 @@ public class UserModel implements IUserModel {
     @Override
     public void addProfile(Profile profile) {
         user.addProfile(profile);
+    }
+
+    @Override
+    public void setPassword(String password) {
+        //password is not encrypted right away, because
+        //user.getLoginName must exist to do that, and we're
+        //not sure at this point
+        if(password != "") {
+            clearNewPassword = password;
+        }
+        else{
+            clearNewPassword = null;
+        }
     }
 }
