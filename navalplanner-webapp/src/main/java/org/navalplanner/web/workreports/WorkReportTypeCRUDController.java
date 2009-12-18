@@ -50,6 +50,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
@@ -995,4 +996,19 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
             tab.setSelected(true);
         }
     }
+
+    public void sortWorkReportTypes() {
+        Column columnName = (Column) listWindow
+                .getFellow("workReportTypeName");
+        if (columnName != null) {
+            if (columnName.getSortDirection().equals("ascending")) {
+                columnName.sort(false, false);
+                columnName.setSortDirection("ascending");
+            } else if (columnName.getSortDirection().equals("descending")) {
+                columnName.sort(true, false);
+                columnName.setSortDirection("descending");
+            }
+        }
+    }
+
 }

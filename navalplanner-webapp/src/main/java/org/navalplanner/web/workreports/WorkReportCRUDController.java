@@ -60,6 +60,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
@@ -127,7 +128,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         final URLHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
         handler.registerListener(this, page);
-        getVisibility().showOnly(listWindow);
+        goToList();
     }
 
     /**
@@ -1214,4 +1215,19 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         listWorkReportLines.setModel(new SimpleListModel(getWorkReportLines()
                 .toArray()));
     }
+
+    public void sortWorkReports() {
+        Column columnDateStart = (Column) listWindow
+                .getFellow("columnDateStart");
+        if (columnDateStart != null) {
+            if (columnDateStart.getSortDirection().equals("ascending")) {
+                columnDateStart.sort(false, false);
+                columnDateStart.setSortDirection("ascending");
+            } else if (columnDateStart.getSortDirection().equals("descending")) {
+                columnDateStart.sort(true, false);
+                columnDateStart.setSortDirection("descending");
+            }
+        }
+    }
+
 }

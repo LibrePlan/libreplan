@@ -19,10 +19,11 @@
 -->
 
 <window id="${arg.top_id}" title="${i18n:_('Work Report types')}">
-    <grid id="listing" model="@{controller.workReportTypes}" mold="paging"
-        pageSize="10">
+    <grid id="listing" mold="paging" pageSize="10"
+        model="@{controller.workReportTypes}"
+        onInitRender ="controller.sortWorkReportTypes();">
         <columns>
-            <column label="${i18n:_('Name')}" sort="auto(name)" />
+            <column id="workReportTypeName" label="${i18n:_('Name')}" sort="auto(name)" sortDirection="descending"/>
             <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>

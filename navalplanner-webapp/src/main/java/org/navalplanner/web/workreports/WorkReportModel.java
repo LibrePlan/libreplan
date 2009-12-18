@@ -248,7 +248,7 @@ public class WorkReportModel implements IWorkReportModel {
     @Override
     @Transactional(readOnly = true)
     public List<WorkReportDTO> getWorkReportDTOs() {
-        // load the work reports
+        // load the work reports DTOs
         List<WorkReport> listWorkReports = getAllWorkReports();
         List<WorkReportDTO> resultDTOs = new ArrayList<WorkReportDTO>();
         for (WorkReport workReport : listWorkReports) {
