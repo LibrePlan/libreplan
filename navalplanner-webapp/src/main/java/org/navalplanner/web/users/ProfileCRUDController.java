@@ -24,6 +24,8 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.UserRole;
@@ -39,6 +41,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.api.Window;
@@ -51,6 +54,8 @@ import org.zkoss.zul.api.Window;
 @SuppressWarnings("serial")
 public class ProfileCRUDController extends GenericForwardComposer implements
         IProfileCRUDController {
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(ProfileCRUDController.class);
 
     private Window createWindow;
 
@@ -148,6 +153,25 @@ public class ProfileCRUDController extends GenericForwardComposer implements
         else {
             profileModel.removeRole(role);
         }
+    }
+
+    public void removeProfile(Profile profile) {
+        try {
+            int status = Messagebox.show(_("Confirm deleting this profile. Are you sure?"), _("Delete"),
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                profileModel.confirmRemove(profile);
+            }
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(
+                    Level.ERROR, e.getMessage());
+            LOG.error(_("Error on showing removing element: ", profile.getId()), e);
+        } catch (InstanceNotFoundException e) {
+            messagesForUser.showMessage(
+                    Level.ERROR, _("Cannot delete profile: it does not exist anymore"));
+            LOG.error(_("Error removing element: ", profile.getId()), e);
+        }
+        goToList();
     }
 
     private OnlyOneVisible getVisibility() {

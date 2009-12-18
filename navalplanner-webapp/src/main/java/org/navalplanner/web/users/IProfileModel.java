@@ -22,6 +22,7 @@ package org.navalplanner.web.users;
 
 import java.util.List;
 
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.UserRole;
@@ -95,4 +96,11 @@ public interface IProfileModel {
      *  false otherwise.
      */
     boolean roleBelongs(UserRole role);
+
+    /**
+     *  Stores the removal of the passed {@link Profile}
+     * @param profile {@link Profile} element to be removed.
+     * @throws InstanceNotFoundException
+     */
+    void confirmRemove(Profile profile) throws InstanceNotFoundException;
 }

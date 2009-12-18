@@ -118,4 +118,11 @@ public class ProfileModel implements IProfileModel {
         return profile.getRoles().contains(role);
     }
 
+    @Override
+    @Transactional
+    public void confirmRemove(Profile profile)
+        throws InstanceNotFoundException {
+        profileDAO.remove(profile.getId());
+    }
+
 }
