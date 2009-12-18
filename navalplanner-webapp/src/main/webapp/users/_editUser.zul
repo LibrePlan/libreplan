@@ -29,6 +29,8 @@
             <tabpanel>
                 <vbox>
                     <!-- User details  -->
+                    <panel title="${i18n:_('General user data')}" border="normal">
+                    <panelchildren>
                     <grid fixedLayout="false">
                         <columns>
                             <column width="200px" />
@@ -53,9 +55,13 @@
                             </row>
                         </rows>
                     </grid>
+                    </panelchildren>
+                    </panel>
                     <!-- Associated UserRoles -->
+                    <panel title="${i18n:_('Association with roles')}" border="normal">
+                    <panelchildren>
                     <hbox align="center">
-                        <combobox id="userRolesCombo"/>
+                        <combobox id="userRolesCombo" autodrop="true" />
                         <button label="${i18n:_('Add role')}"
                             onClick="controller.addSelectedRole()"/>
                     </hbox>
@@ -77,7 +83,11 @@
                             </row>
                         </rows>
                     </grid>
+                    </panelchildren>
+                    </panel>
                     <!-- Associated Profiles -->
+                    <panel title="${i18n:_('Association with profiles')}" border="normal">
+                    <panelchildren>
                     <hbox align="center">
                         <autocomplete id="profileAutocomplete"
                             autodrop="true" constraint=""
@@ -103,6 +113,8 @@
                             </row>
                         </rows>
                     </grid>
+                    </panelchildren>
+                    </panel>
                 </vbox>
             </tabpanel>
         </tabpanels>
