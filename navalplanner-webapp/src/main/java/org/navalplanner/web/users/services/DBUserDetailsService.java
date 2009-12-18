@@ -60,7 +60,7 @@ public class DBUserDetailsService implements UserDetailsService {
         User user;
 
         try {
-            user = userDAO.findByLoginName(loginName);
+            user = userDAO.findByLoginNameNotDisabled(loginName);
         } catch (InstanceNotFoundException e) {
             throw new UsernameNotFoundException(_("User with login name " +
                 "'{0}': not found", loginName));

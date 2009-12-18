@@ -205,6 +205,22 @@ public class UserDAOTest {
     }
 
     @Test
+    public void testFindByName() throws InstanceNotFoundException {
+        User user = createUser(getUniqueName());
+        user.setDisabled(true);
+        userDAO.save(user);
+
+        assertEquals(userDAO.findByLoginName(user.getLoginName()),user);
+        try {
+            userDAO.findByLoginNameNotDisabled(user.getLoginName());
+            fail("InstanceNotFoundException was expected");
+        }
+        catch(InstanceNotFoundException e) {
+            assertEquals((String)e.getKey(),user.getLoginName());
+        }
+    }
+
+    @Test
     public void testListProfiles() throws InstanceNotFoundException{
 
         User user = createUser(getUniqueName());

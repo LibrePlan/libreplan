@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Hibernate DAO for the <code>User</code> entity.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 @Repository
 public class UserDAO extends GenericDAOHibernate<User, Long>
@@ -44,6 +45,24 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
 
         Criteria c = getSession().createCriteria(User.class);
         c.add(Restrictions.eq("loginName", loginName).ignoreCase());
+        User user = (User) c.uniqueResult();
+
+        if (user == null) {
+            throw new InstanceNotFoundException(loginName,
+                User.class.getName());
+        } else {
+            return user;
+        }
+
+    }
+
+    @Override
+    public User findByLoginNameNotDisabled(String loginName)
+        throws InstanceNotFoundException {
+
+        Criteria c = getSession().createCriteria(User.class);
+        c.add(Restrictions.eq("loginName", loginName).ignoreCase());
+        c.add(Restrictions.eq("disabled", false));
         User user = (User) c.uniqueResult();
 
         if (user == null) {

@@ -55,4 +55,15 @@ public interface IUserDAO extends IGenericDAO<User, Long>{
      */
     public boolean existsByLoginNameAnotherTransaction(String loginName);
 
+    /**
+     * Finds a User entity by its loginName, among those with the disabled
+     * attribute set to false.
+     * @param loginName loginName to perform the search. NOTE: Login name
+     * comparison is case-insensitive.
+     * @return a {@link User} object.
+     * @throws InstanceNotFoundException
+     */
+    User findByLoginNameNotDisabled(String loginName)
+            throws InstanceNotFoundException;
+
 }
