@@ -65,9 +65,9 @@ import org.zkoss.zk.ui.Executions;
 public abstract class ChartFiller implements IChartFiller {
 
     protected abstract class HoursByDayCalculator<T> {
-        public SortedMap<LocalDate, Integer> calculate(
+        public SortedMap<LocalDate, BigDecimal> calculate(
                 Collection<? extends T> elements) {
-            SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
+            SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
             if (elements.isEmpty()) {
                 return result;
             }
@@ -76,9 +76,9 @@ public abstract class ChartFiller implements IChartFiller {
                     int hours = getHoursFor(element);
                     LocalDate day = getDayFor(element);
                     if (!result.containsKey(day)) {
-                        result.put(day, 0);
+                        result.put(day, BigDecimal.ZERO);
                     }
-                    result.put(day, result.get(day) + hours);
+                    result.put(day, result.get(day).add(new BigDecimal(hours)));
                 }
             }
             return convertAsNeededByZoom(result);
@@ -352,28 +352,30 @@ public abstract class ChartFiller implements IChartFiller {
         return maximumValueForChart;
     }
 
-    protected SortedMap<LocalDate, Integer> groupByWeek(
-            SortedMap<LocalDate, Integer> map) {
-        SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
-        for (Entry<LocalDate, Integer> entry : map.entrySet()) {
+    protected SortedMap<LocalDate, BigDecimal> groupByWeek(
+            SortedMap<LocalDate, BigDecimal> map) {
+        SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+        for (Entry<LocalDate, BigDecimal> entry : map.entrySet()) {
             LocalDate day = entry.getKey();
             LocalDate key = getThursdayOfThisWeek(day);
-            Integer hours = entry.getValue() == null ? 0 : entry.getValue();
+            BigDecimal hours = entry.getValue() == null ? BigDecimal.ZERO
+                    : entry.getValue();
             if (result.get(key) == null) {
                 result.put(key, hours);
             } else {
-                result.put(key, result.get(key) + hours);
+                result.put(key, result.get(key).add(hours));
             }
         }
-        for (Entry<LocalDate, Integer> entry : result.entrySet()) {
+        for (Entry<LocalDate, BigDecimal> entry : result.entrySet()) {
             LocalDate day = entry.getKey();
-            result.put(entry.getKey(), result.get(day) / 7);
+            result.put(entry.getKey(), result.get(day).setScale(2).divide(
+                    new BigDecimal(7), RoundingMode.DOWN));
         }
         return result;
     }
 
-    protected SortedMap<LocalDate, Integer> convertAsNeededByZoom(
-            SortedMap<LocalDate, Integer> map) {
+    protected SortedMap<LocalDate, BigDecimal> convertAsNeededByZoom(
+            SortedMap<LocalDate, BigDecimal> map) {
         if (isZoomByDay()) {
             return map;
         } else {

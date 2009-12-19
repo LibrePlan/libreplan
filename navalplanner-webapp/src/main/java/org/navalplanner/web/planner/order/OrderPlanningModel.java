@@ -679,11 +679,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         private final Order order;
 
-        private SortedMap<LocalDate, Integer> mapOrderLoad = new TreeMap<LocalDate, Integer>();
-        private SortedMap<LocalDate, Integer> mapOrderOverload = new TreeMap<LocalDate, Integer>();
-        private SortedMap<LocalDate, Integer> mapMaxCapacity = new TreeMap<LocalDate, Integer>();
-        private SortedMap<LocalDate, Integer> mapOtherLoad = new TreeMap<LocalDate, Integer>();
-        private SortedMap<LocalDate, Integer> mapOtherOverload = new TreeMap<LocalDate, Integer>();
+        private SortedMap<LocalDate, BigDecimal> mapOrderLoad = new TreeMap<LocalDate, BigDecimal>();
+        private SortedMap<LocalDate, BigDecimal> mapOrderOverload = new TreeMap<LocalDate, BigDecimal>();
+        private SortedMap<LocalDate, BigDecimal> mapMaxCapacity = new TreeMap<LocalDate, BigDecimal>();
+        private SortedMap<LocalDate, BigDecimal> mapOtherLoad = new TreeMap<LocalDate, BigDecimal>();
+        private SortedMap<LocalDate, BigDecimal> mapOtherOverload = new TreeMap<LocalDate, BigDecimal>();
 
         public OrderLoadChartFiller(Order orderReloaded) {
             this.order = orderReloaded;
@@ -712,15 +712,17 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             convertAsNeededByZoomMaps();
 
             Plotinfo plotOrderLoad = createPlotinfo(
-                    convertToBigDecimal(mapOrderLoad), interval);
+                    mapOrderLoad, interval);
             Plotinfo plotOrderOverload = createPlotinfo(
-                    convertToBigDecimal(mapOrderOverload), interval);
+                    mapOrderOverload,
+                    interval);
             Plotinfo plotMaxCapacity = createPlotinfo(
-                    convertToBigDecimal(mapMaxCapacity), interval);
+                    mapMaxCapacity, interval);
             Plotinfo plotOtherLoad = createPlotinfo(
-                    convertToBigDecimal(mapOtherLoad), interval);
+                    mapOtherLoad, interval);
             Plotinfo plotOtherOverload = createPlotinfo(
-                    convertToBigDecimal(mapOtherOverload), interval);
+                    mapOtherOverload,
+                    interval);
 
             plotOrderLoad.setFillColor(COLOR_ASSIGNED_LOAD_SPECIFIC);
             plotOrderLoad.setLineWidth(0);
@@ -767,8 +769,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 SortedMap<LocalDate, Map<Resource, Integer>> resourceDayAssignmentsGrouped) {
 
             for (LocalDate day : orderDayAssignmentsGrouped.keySet()) {
-                int maxCapacity = getMaxCapcity(orderDayAssignmentsGrouped, day);
-                mapMaxCapacity.put(day, maxCapacity);
+                Integer maxCapacity = getMaxCapcity(orderDayAssignmentsGrouped,
+                        day);
+                mapMaxCapacity.put(day, new BigDecimal(maxCapacity));
 
                 Integer orderLoad = 0;
                 Integer orderOverload = 0;
@@ -809,11 +812,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     }
                 }
 
-                mapOrderLoad.put(day, orderLoad);
-                mapOrderOverload.put(day, orderOverload + maxCapacity);
-                mapOtherLoad.put(day, otherLoad + orderLoad);
-                mapOtherOverload.put(day, otherOverload + orderOverload
-                        + maxCapacity);
+                mapOrderLoad.put(day, new BigDecimal(orderLoad));
+                mapOrderOverload.put(day, new BigDecimal(orderOverload
+                        + maxCapacity));
+                mapOtherLoad.put(day, new BigDecimal(otherLoad + orderLoad));
+                mapOtherOverload.put(day, new BigDecimal(otherOverload
+                        + orderOverload + maxCapacity));
             }
         }
 

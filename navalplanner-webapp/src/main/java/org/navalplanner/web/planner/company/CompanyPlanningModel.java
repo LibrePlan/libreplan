@@ -587,9 +587,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     .list(DayAssignment.class);
 
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
-            SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
+            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
 
-            return convertToBigDecimal(mapDayAssignments);
+            return mapDayAssignments;
         }
 
         private SortedMap<LocalDate, BigDecimal> getOverload(Date start,
@@ -598,23 +598,23 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     .list(DayAssignment.class);
 
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
-            SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
-            SortedMap<LocalDate, Integer> mapMaxAvailability = calculateHoursAdditionByDay(
+            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
+            SortedMap<LocalDate, BigDecimal> mapMaxAvailability = calculateHoursAdditionByDay(
                     resourceDAO.list(Resource.class), start, finish);
 
             for (LocalDate day : mapDayAssignments.keySet()) {
                 if ((day.compareTo(new LocalDate(start)) >= 0)
                         && (day.compareTo(new LocalDate(finish)) <= 0)) {
-                    Integer overloadHours = mapDayAssignments.get(day);
-                    Integer maxHours = mapMaxAvailability.get(day);
-                    mapDayAssignments.put(day, overloadHours + maxHours);
+                    BigDecimal overloadHours = mapDayAssignments.get(day);
+                    BigDecimal maxHours = mapMaxAvailability.get(day);
+                    mapDayAssignments.put(day, overloadHours.add(maxHours));
                 }
             }
 
-            return convertToBigDecimal(mapDayAssignments);
+            return mapDayAssignments;
         }
 
-        private SortedMap<LocalDate, Integer> calculateHoursAdditionByDayWithoutOverload(
+        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayWithoutOverload(
                 SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped) {
             SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
 
@@ -643,10 +643,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 map.put(day, result);
             }
 
-            return convertAsNeededByZoom(map);
+            return convertAsNeededByZoom(convertToBigDecimal(map));
         }
 
-        private SortedMap<LocalDate, Integer> calculateHoursAdditionByDayJustOverload(
+        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayJustOverload(
                 SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped) {
             SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
 
@@ -673,18 +673,18 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 map.put(day, result);
             }
 
-            return convertAsNeededByZoom(map);
+            return convertAsNeededByZoom(convertToBigDecimal(map));
         }
 
         private SortedMap<LocalDate, BigDecimal> getCalendarMaximumAvailability(
                 Date start, Date finish) {
-            SortedMap<LocalDate, Integer> mapDayAssignments = calculateHoursAdditionByDay(
+            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDay(
                     resourceDAO.list(Resource.class), start, finish);
 
-            return convertToBigDecimal(mapDayAssignments);
+            return mapDayAssignments;
         }
 
-        private SortedMap<LocalDate, Integer> calculateHoursAdditionByDay(
+        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDay(
                 List<Resource> resources, Date start, Date finish) {
             return new HoursByDayCalculator<Entry<LocalDate, List<Resource>>>() {
 
