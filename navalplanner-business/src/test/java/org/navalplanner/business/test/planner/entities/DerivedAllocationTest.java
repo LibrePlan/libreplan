@@ -49,6 +49,8 @@ import org.navalplanner.business.resources.entities.Worker;
  */
 public class DerivedAllocationTest {
 
+    private Worker worker = Worker.create();
+
     private Machine machine = Machine.create();
 
     private MachineWorkersConfigurationUnit configurationUnit;
@@ -165,7 +167,7 @@ public class DerivedAllocationTest {
     @Test
     public void aDerivedAllocationCanBeResetToSomeDayAssignmentsAndIsOrderedByDay() {
         givenADerivedAllocation();
-        givenDayAssignments(new LocalDate(2008, 12, 1), machine, 8, 8, 8, 8);
+        givenDayAssignments(new LocalDate(2008, 12, 1), worker, 8, 8, 8, 8);
         derivedAllocation.resetAssignmentsTo(dayAssignments);
         assertThat(derivedAllocation.getAssignments(), equalTo(dayAssignments));
     }
@@ -184,7 +186,7 @@ public class DerivedAllocationTest {
         givenADerivedAllocation();
         DerivedAllocation another = DerivedAllocation.create(derivedFrom,
                 configurationUnit);
-        givenDayAssignments(another, new LocalDate(2008, 12, 1), machine, 8, 8,
+        givenDayAssignments(another, new LocalDate(2008, 12, 1), worker, 8, 8,
                 8);
         derivedAllocation.resetAssignmentsTo(dayAssignments);
     }
@@ -193,12 +195,12 @@ public class DerivedAllocationTest {
     public void theAssignmentsCanBeResetOnAnInterval() {
         givenADerivedAllocation();
         LocalDate start = new LocalDate(2008, 12, 1);
-        givenDayAssignments(start, machine, 8, 8, 8, 8);
+        givenDayAssignments(start, worker, 8, 8, 8, 8);
         derivedAllocation.resetAssignmentsTo(dayAssignments);
         final LocalDate startInterval = start.plusDays(2);
         final LocalDate finishInterval = start.plusDays(4);
         DerivedDayAssignment newAssignment = DerivedDayAssignment.create(
-                startInterval, 3, machine, derivedAllocation);
+                startInterval, 3, worker, derivedAllocation);
         derivedAllocation.resetAssignmentsTo(startInterval, finishInterval,
                 Arrays.asList(newAssignment));
         assertThat(derivedAllocation.getAssignments(), equalTo(Arrays.asList(
@@ -209,10 +211,10 @@ public class DerivedAllocationTest {
     public void whenResettingAssignmentsOnIntervalOnlyTheOnesAtTheIntervalAreAdded() {
         givenADerivedAllocation();
         LocalDate start = new LocalDate(2008, 12, 1);
-        givenDayAssignments(start, machine, 8, 8, 8, 8);
+        givenDayAssignments(start, worker, 8, 8, 8, 8);
         derivedAllocation.resetAssignmentsTo(dayAssignments);
         DerivedDayAssignment newAssignment = DerivedDayAssignment.create(start
-                .minusDays(1), 3, machine, derivedAllocation);
+                .minusDays(1), 3, worker, derivedAllocation);
         derivedAllocation.resetAssignmentsTo(start, start.plusDays(4), Arrays
                 .asList(newAssignment));
         assertTrue(derivedAllocation.getAssignments().isEmpty());

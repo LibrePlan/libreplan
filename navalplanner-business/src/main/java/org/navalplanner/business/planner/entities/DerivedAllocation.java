@@ -111,12 +111,6 @@ public class DerivedAllocation extends BaseEntity {
 
     private void checkIsValid(DerivedDayAssignment dayAssingment) {
         Machine machine = configurationUnit.getMachine();
-        if (!dayAssingment.getResource().equals(machine)) {
-            throw new IllegalArgumentException(dayAssingment
-                    + " has the resource: " + dayAssingment.getResource()
-                    + " but this derived allocation has the resource: "
-                    + machine);
-        }
         if (!dayAssingment.getAllocation().equals(this)) {
             throw new IllegalArgumentException(dayAssingment
                     + " is related to " + dayAssingment.getAllocation()

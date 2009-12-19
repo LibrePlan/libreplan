@@ -22,8 +22,8 @@ package org.navalplanner.business.planner.entities;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.Worker;
 
 
 /**
@@ -51,7 +51,7 @@ public class DerivedDayAssignment extends DayAssignment {
             DerivedAllocation derivedAllocation) {
         super(day, hours, resource);
         Validate.notNull(derivedAllocation);
-        Validate.isTrue(resource instanceof Machine);
+        Validate.isTrue(resource instanceof Worker);
         this.allocation = derivedAllocation;
     }
 
