@@ -32,7 +32,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.IWorkHours;
-import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
+import org.navalplanner.business.planner.entities.HoursDistributor.ResourceWithAssignedHours;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -130,57 +130,25 @@ public class GenericResourceAllocation extends
 
     private class GenericAllocation extends AssignmentsAllocation {
 
-        private final List<Resource> resources;
-
-        private final List<IWorkHours> workHours;
+        private HoursDistributor hoursDistributor;
 
         public GenericAllocation(List<Resource> resources) {
-            this.resources = resources;
-            this.workHours = new ArrayList<IWorkHours>();
-            for (Resource resource : resources) {
-                this.workHours.add(generateWorkHoursFor(resource));
-            }
-        }
-
-        private final IWorkHours generateWorkHoursFor(Resource resource) {
-            if (resource.getCalendar() != null) {
-                return resource.getCalendar();
-            } else {
-                return SameWorkHoursEveryDay.getDefaultWorkingDay();
-            }
+            hoursDistributor = new HoursDistributor(
+                    resources);
         }
 
         @Override
         protected List<GenericDayAssignment> distributeForDay(LocalDate day,
                 int totalHours) {
             List<GenericDayAssignment> result = new ArrayList<GenericDayAssignment>();
-            List<Share> shares = currentSharesFor(day);
-            ShareDivision currentDivision = ShareDivision.create(shares);
-            ShareDivision newDivison = currentDivision.plus(totalHours);
-            int[] differences = currentDivision.to(newDivison);
-            for (int i = 0; i < differences.length; i++) {
-                assert differences[i] >= 0;
-                GenericDayAssignment dayAssignment = GenericDayAssignment
-                        .create(day, differences[i], resources.get(i));
-                result.add(dayAssignment);
+            for (ResourceWithAssignedHours each : hoursDistributor
+                    .distributeForDay(day, totalHours)) {
+                result.add(GenericDayAssignment.create(day, each.hours,
+                        each.resource));
             }
             return result;
         }
 
-        private List<Share> currentSharesFor(LocalDate day) {
-            List<Share> shares = new ArrayList<Share>();
-            for (int i = 0; i < resources.size(); i++) {
-                Resource resource = resources.get(i);
-                IWorkHours workHoursForResource = workHours.get(i);
-                int alreadyAssignedHours = resource.getAssignedHours(day);
-                Integer workableHours = workHoursForResource
-                        .getWorkableHours(day);
-                // a resource would have a zero share if all it's hours for a
-                // given day are filled
-                shares.add(new Share(alreadyAssignedHours - workableHours));
-            }
-            return shares;
-        }
     }
 
     @Override
