@@ -26,8 +26,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
@@ -87,6 +89,15 @@ public abstract class DayAssignment extends BaseEntity {
                 result.put(day, new ArrayList<T>());
             }
             result.get(day).add(t);
+        }
+        return result;
+    }
+
+    public static Set<Resource> getAllResources(
+            Collection<? extends DayAssignment> assignments) {
+        Set<Resource> result = new HashSet<Resource>();
+        for (DayAssignment dayAssignment : assignments) {
+            result.add(dayAssignment.getResource());
         }
         return result;
     }

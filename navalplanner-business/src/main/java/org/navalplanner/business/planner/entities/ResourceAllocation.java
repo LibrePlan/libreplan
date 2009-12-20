@@ -532,11 +532,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public int getAssignedHours() {
-        int total = 0;
-        for (DayAssignment dayAssignment : getAssignments()) {
-                total += dayAssignment.getHours();
-        }
-        return total;
+        return DayAssignment.sum(getAssignments());
     }
 
     /**
