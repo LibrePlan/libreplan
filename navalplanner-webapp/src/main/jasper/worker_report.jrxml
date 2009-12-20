@@ -43,7 +43,7 @@
 		</groupHeader>
 		<groupFooter>
 			<band height="27">
-				<textField>
+				<textField evaluationTime="Group" evaluationGroup="Worker" isBlankWhenNull="true">
 					<reportElement x="153" y="1" width="30" height="20"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{sumHoursPerWorker}]]></textFieldExpression>
@@ -121,7 +121,7 @@
 		</groupHeader>
 		<groupFooter>
 			<band height="26">
-				<textField>
+				<textField evaluationTime="Group" evaluationGroup="Data" isBlankWhenNull="true">
 					<reportElement x="153" y="4" width="30" height="20"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{sumHoursPerDay}]]></textFieldExpression>
