@@ -142,15 +142,14 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional(readOnly = true)
     public void accept() {
         stepsBeforeDoingAllocation();
-        doTheAllocation(allocationRowsHandler
-                .doAllocation());
+        applyAllocationResult(allocationRowsHandler.doAllocation());
     }
 
     @Override
     @Transactional(readOnly = true)
     public void accept(AllocationResult modifiedAllocationResult) {
         stepsBeforeDoingAllocation();
-        doTheAllocation(modifiedAllocationResult);
+        applyAllocationResult(modifiedAllocationResult);
     }
 
     @Override
@@ -193,7 +192,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
-    private void doTheAllocation(AllocationResult allocationResult) {
+    private void applyAllocationResult(AllocationResult allocationResult) {
         Date previousStartDate = ganttTask.getBeginDate();
         long previousLength = ganttTask.getLengthMilliseconds();
         allocationResult.applyTo(task);
