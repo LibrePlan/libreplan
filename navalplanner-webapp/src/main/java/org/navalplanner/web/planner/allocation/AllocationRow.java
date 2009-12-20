@@ -80,7 +80,7 @@ public abstract class AllocationRow {
             ResourcesPerDayModification modification = each
                     .toResourcesPerDayModification(task);
             result.add(modification);
-            each.setLast(modification.getBeingModified());
+            each.setTemporal(modification.getBeingModified());
         }
         return result;
     }
@@ -92,7 +92,7 @@ public abstract class AllocationRow {
             HoursModification hoursModification = each
                     .toHoursModification(task);
             result.add(hoursModification);
-            each.setLast(hoursModification.getBeingModified());
+            each.setTemporal(hoursModification.getBeingModified());
         }
         return result;
     }
@@ -101,9 +101,9 @@ public abstract class AllocationRow {
             Collection<? extends AllocationRow> rows) {
         List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
         for (AllocationRow each : rows) {
-            Validate.notNull(each.last);
+            Validate.notNull(each.temporal);
             if (each.origin != null) {
-                result.add(new ModifiedAllocation(each.origin, each.last));
+                result.add(new ModifiedAllocation(each.origin, each.temporal));
             }
         }
         return result;
@@ -113,9 +113,20 @@ public abstract class AllocationRow {
             List<AllocationRow> rows) {
         List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
         for (AllocationRow each : rows) {
-            Validate.notNull(each.last);
+            Validate.notNull(each.temporal);
             if (each.origin == null) {
-                result.add(each.last);
+                result.add(each.temporal);
+            }
+        }
+        return result;
+    }
+
+    public static List<ResourceAllocation<?>> getTemporalFrom(
+            List<AllocationRow> rows) {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        for (AllocationRow each : rows) {
+            if (each.temporal != null) {
+                result.add(each.temporal);
             }
         }
         return result;
@@ -144,7 +155,7 @@ public abstract class AllocationRow {
 
     private ResourceAllocation<?> origin;
 
-    private ResourceAllocation<?> last;
+    private ResourceAllocation<?> temporal;
 
     private String name;
 
@@ -228,9 +239,9 @@ public abstract class AllocationRow {
         resourcesPerDayInput.setValue(this.resourcesPerDay.getAmount());
     }
 
-    public void setLast(ResourceAllocation<?> last) {
+    public void setTemporal(ResourceAllocation<?> last) {
         Validate.notNull(last);
-        this.last = last;
+        this.temporal = last;
     }
 
     public abstract boolean isGeneric();
@@ -264,8 +275,8 @@ public abstract class AllocationRow {
     }
 
     private Integer getHours() {
-        if (last != null) {
-            return last.getAssignedHours();
+        if (temporal != null) {
+            return temporal.getAssignedHours();
         }
         if (origin != null) {
             return origin.getAssignedHours();
@@ -301,8 +312,8 @@ public abstract class AllocationRow {
     }
 
     public void loadDataFromLast() {
-        hoursInput.setValue(last.getAssignedHours());
-        resourcesPerDayInput.setValue(last.getResourcesPerDay().getAmount());
+        hoursInput.setValue(temporal.getAssignedHours());
+        resourcesPerDayInput.setValue(temporal.getResourcesPerDay().getAmount());
     }
 
     public void addListenerForHoursInputChange(EventListener listener) {
