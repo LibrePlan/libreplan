@@ -266,13 +266,6 @@ public abstract class OrderElement extends BaseEntity {
 
     public void setInitDate(Date initDate) {
         this.initDate = initDate;
-        updateMaterialAssigmentsEstimatedAvailability(this.initDate);
-    }
-
-    private void updateMaterialAssigmentsEstimatedAvailability(Date estimatedAvailability) {
-        for (MaterialAssignment each: materialAssignments) {
-            each.setEstimatedAvailability(estimatedAvailability);
-        }
     }
 
     public Date getDeadline() {
