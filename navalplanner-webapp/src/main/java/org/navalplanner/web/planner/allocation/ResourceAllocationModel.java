@@ -39,12 +39,14 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -216,9 +218,24 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         loadResources(this.task.getResourceAllocations());
         List<AllocationRow> initialRows = AllocationRow.toRows(this.task
                 .getResourceAllocations());
-        allocationRowsHandler = AllocationRowsHandler.create(
-                task, initialRows, resourceDAO);
+        allocationRowsHandler = AllocationRowsHandler.create(task, initialRows,
+                createWorkerFinder());
         return allocationRowsHandler;
+    }
+
+    private IWorkerFinder createWorkerFinder() {
+        return new IWorkerFinder() {
+
+            @Override
+            public Collection<Worker> findWorkersMatching(
+                    Collection<? extends Criterion> requiredCriterions) {
+                reassociateResourcesWithSession();
+                List<Resource> findAllSatisfyingCriterions = resourceDAO
+                        .findAllSatisfyingCriterions(requiredCriterions);
+                return Resource.workers(reloadResources(Resource
+                        .workers(findAllSatisfyingCriterions)));
+            }
+        };
     }
 
     private void loadCriterionsOfGenericAllocations() {

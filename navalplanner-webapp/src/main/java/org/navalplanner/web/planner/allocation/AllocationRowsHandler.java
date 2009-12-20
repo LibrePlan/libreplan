@@ -34,29 +34,14 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.entities.Worker;
 
 public class AllocationRowsHandler {
 
     public static AllocationRowsHandler create(Task task,
-            List<AllocationRow> initialAllocations, IResourceDAO resourceDAO) {
-        return new AllocationRowsHandler(task, initialAllocations,
-                workersFinderOn(resourceDAO));
-    }
-
-    private static IWorkerFinder workersFinderOn(final IResourceDAO resourceDAO) {
-        return new IWorkerFinder() {
-
-            @Override
-            public Collection<Worker> findWorkersMatching(
-                    Collection<? extends Criterion> requiredCriterions) {
-                return Resource.workers(resourceDAO
-                        .findAllSatisfyingCriterions(requiredCriterions));
-            }
-        };
+            List<AllocationRow> initialAllocations, IWorkerFinder workerFinder) {
+        return new AllocationRowsHandler(task, initialAllocations, workerFinder);
     }
 
     private final List<AllocationRow> currentRows;
