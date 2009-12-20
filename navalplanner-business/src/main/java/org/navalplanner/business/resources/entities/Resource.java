@@ -61,6 +61,26 @@ import org.navalplanner.business.planner.entities.DayAssignment;
  */
 public abstract class Resource extends BaseEntity{
 
+    public static List<Machine> machines(
+            Collection<? extends Resource> resources) {
+        return filter(Machine.class, resources);
+    }
+
+    public static List<Worker> workers(Collection<? extends Resource> resources) {
+        return filter(Worker.class, resources);
+    }
+
+    public static <T extends Resource> List<T> filter(Class<T> klass,
+            Collection<? extends Resource> resources) {
+        List<T> result = new ArrayList<T>();
+        for (Resource each : resources) {
+            if (klass.isInstance(each)) {
+                result.add(klass.cast(each));
+            }
+        }
+        return result;
+    }
+
     private ResourceCalendar calendar;
 
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
@@ -788,4 +808,5 @@ public abstract class Resource extends BaseEntity{
     public boolean isVirtual() {
         return false;
     }
+
 }
