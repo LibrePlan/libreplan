@@ -39,10 +39,13 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForSpecifiedResourcesPerDayAndHours;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.resources.entities.Machine;
+import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -252,6 +255,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     }
 
+    /**
+     * Returns the associated resources from the day assignments of this
+     * {@link ResourceAllocation}.
+     * @return the associated resources with no repeated elements
+     */
     public abstract List<Resource> getAssociatedResources();
 
     protected void setResourcesPerDay(ResourcesPerDay resourcesPerDay) {
@@ -538,6 +546,25 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public ResourcesPerDay getResourcesPerDay() {
         return resourcesPerDay;
+    }
+
+    public void createDerived(IWorkerFinder finder) {
+        final List<? extends DayAssignment> assignments = getAssignments();
+        List<DerivedAllocation> result = new ArrayList<DerivedAllocation>();
+        List<Machine> machines = Resource.machines(getAssociatedResources());
+        for (Machine machine : machines) {
+            for (MachineWorkersConfigurationUnit each : machine
+                    .getConfigurationUnits()) {
+                result.add(DerivedAllocationGenerator.generate(this, finder,
+                        each,
+                        assignments));
+            }
+        }
+        derivedAllocations = new HashSet<DerivedAllocation>(result);
+    }
+
+    public Set<DerivedAllocation> getDerivedAllocations() {
+        return Collections.unmodifiableSet(derivedAllocations);
     }
 
     public LocalDate getStartDate() {

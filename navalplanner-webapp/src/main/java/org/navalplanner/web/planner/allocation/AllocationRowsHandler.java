@@ -31,17 +31,32 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.Worker;
 
 public class AllocationRowsHandler {
 
     public static AllocationRowsHandler create(Task task,
             List<AllocationRow> initialAllocations, IResourceDAO resourceDAO) {
-        return new AllocationRowsHandler(task, initialAllocations);
+        return new AllocationRowsHandler(task, initialAllocations,
+                workersFinderOn(resourceDAO));
+    }
+
+    private static IWorkerFinder workersFinderOn(final IResourceDAO resourceDAO) {
+        return new IWorkerFinder() {
+
+            @Override
+            public Collection<Worker> findWorkersMatching(
+                    Collection<? extends Criterion> requiredCriterions) {
+                return Resource.workers(resourceDAO
+                        .findAllSatisfyingCriterions(requiredCriterions));
+            }
+        };
     }
 
     private final List<AllocationRow> currentRows;
@@ -56,9 +71,12 @@ public class AllocationRowsHandler {
 
     private Integer daysDuration;
 
-    private AllocationRowsHandler(Task task,
-            List<AllocationRow> initialRows) {
+    private final IWorkerFinder workersFinder;
+
+    private AllocationRowsHandler(Task task, List<AllocationRow> initialRows,
+            IWorkerFinder workersFinder) {
         this.task = task;
+        this.workersFinder = workersFinder;
         this.currentRows = new ArrayList<AllocationRow>(initialRows);
         this.calculatedValue = task.getCalculatedValue();
         this.daysDuration = task.getDaysDuration();
@@ -183,6 +201,7 @@ public class AllocationRowsHandler {
                 throw new RuntimeException("cant handle: " + calculatedValue);
             }
         }
+        createDerived();
         AllocationResult result = AllocationResult.create(task,
                 calculatedValue, currentRows);
         daysDuration = result.getDaysDuration();
@@ -209,6 +228,14 @@ public class AllocationRowsHandler {
                 .createHoursModificationsAndAssociate(task, currentRows);
         ResourceAllocation.allocatingHours(hours).allocateUntil(
                 formBinder.getAllocationEnd());
+    }
+
+    private void createDerived() {
+        List<ResourceAllocation<?>> lastFrom = AllocationRow
+                .getTemporalFrom(currentRows);
+        for (ResourceAllocation<?> each : lastFrom) {
+            each.createDerived(workersFinder);
+        }
     }
 
     public FormBinder createFormBinder(
