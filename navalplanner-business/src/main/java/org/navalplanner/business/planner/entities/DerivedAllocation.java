@@ -22,6 +22,7 @@ package org.navalplanner.business.planner.entities;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
@@ -64,7 +65,7 @@ public class DerivedAllocation extends BaseEntity {
     @NotNull
     private MachineWorkersConfigurationUnit configurationUnit;
 
-    private HashSet<DerivedDayAssignment> assignments;
+    private Set<DerivedDayAssignment> assignments;
 
     public static DerivedAllocation create(ResourceAllocation<?> derivedFrom,
             MachineWorkersConfigurationUnit configurationUnit) {
