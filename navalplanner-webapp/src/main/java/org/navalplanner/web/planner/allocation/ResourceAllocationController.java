@@ -66,13 +66,11 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listcell;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
+import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.api.Window;
 
@@ -100,7 +98,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private IMessagesForUser messagesForUser;
 
-    private Listbox allocationsList;
+    private Grid allocationsGrid;
 
     private Window window;
 
@@ -195,7 +193,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             formBinder.setEndDate(taskEndDate);
             formBinder.setAllResourcesPerDay(allResourcesPerDay);
             formBinder.setApplyButton(applyButton);
-            formBinder.setAllocationsList(allocationsList);
+            formBinder.setAllocationsGrid(allocationsGrid);
             formBinder.setMessagesForUser(messagesForUser);
             formBinder.setWorkerSearchTab(workerSearchTab);
             formBinder.setCheckbox(recommendedAllocationCheckbox);
@@ -299,7 +297,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         } finally {
             tbResourceAllocation.setSelected(true);
             newAllocationSelector.clearAll();
-            Util.reloadBindings(allocationsList);
+            Util.reloadBindings(allocationsGrid);
         }
     }
 
@@ -497,7 +495,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private void clear() {
         newAllocationSelector.clearAll();
-        allocationsList.getItems().clear();
+        allocationsGrid.setModel(new SimpleListModel(Collections.emptyList()));
     }
 
     public void accept() {
@@ -521,10 +519,10 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return new AdvanceAllocationResultReceiver(allocation);
     }
 
-    private class ResourceAllocationRenderer implements ListitemRenderer {
+    private class ResourceAllocationRenderer implements RowRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Row item, Object data) throws Exception {
             if (data instanceof AllocationRow) {
                 AllocationRow row = (AllocationRow) data;
                 renderResourceAllocation(item, row);
@@ -533,58 +531,50 @@ public class ResourceAllocationController extends GenericForwardComposer {
             }
         }
 
-        private void renderResourceAllocation(Listitem item,
-                final AllocationRow row) throws Exception {
-            item.setValue(row);
+        private void renderResourceAllocation(Row row, final AllocationRow data)
+                throws Exception {
+            row.setValue(data);
             // Label fields are fixed, can only be viewed
-            append(item, new Label(row.getName()));
-            append(item, row.getHoursInput());
-            append(item, row.getResourcesPerDayInput());
+            append(row, new Label(data.getName()));
+            append(row, data.getHoursInput());
+            append(row, data.getResourcesPerDayInput());
             // On click delete button
-            Button deleteButton = appendDeleteButton(item);
-            formBinder.setDeleteButtonFor(row, deleteButton);
+            Button deleteButton = appendDeleteButton(row);
+            formBinder.setDeleteButtonFor(data, deleteButton);
             deleteButton.addEventListener("onClick", new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    removeAllocation(row);
+                    removeAllocation(data);
                 }
             });
         }
 
-        private void renderAggregatingRow(Listitem item) {
+        private void renderAggregatingRow(Row row) {
             ResourceAllocationController controller = ResourceAllocationController.this;
-            append(item, new Label(_("Sum of all rows")));
-            append(item, CalculationTypeRadio.NUMBER_OF_HOURS.input(controller));
-            append(item, CalculationTypeRadio.RESOURCES_PER_DAY
+            append(row, new Label(_("Sum of all rows")));
+            append(row, CalculationTypeRadio.NUMBER_OF_HOURS.input(controller));
+            append(row, CalculationTypeRadio.RESOURCES_PER_DAY
                     .input(controller));
-            append(item, new Label());
+            append(row, new Label());
         }
 
         private void removeAllocation(AllocationRow row) {
             allocationRows.remove(row);
-            Util.reloadBindings(allocationsList);
+            Util.reloadBindings(allocationsGrid);
         }
 
-        /**
-         * Appends delete {@link Button} to {@link Listitem}
-         * @param listitem
-         *            value for {@link Button}
-         * @return
-         */
-        private Button appendDeleteButton(Listitem listitem) {
+        private Button appendDeleteButton(Row row) {
             Button button = new Button();
             button.setSclass("icono");
             button.setImage("/common/img/ico_borrar1.png");
             button.setHoverImage("/common/img/ico_borrar.png");
             button.setTooltiptext(_("Delete"));
-            return append(listitem, button);
+            return append(row, button);
         }
 
-        private <T extends Component> T append(Listitem item, T component) {
-            Listcell listcell = new Listcell();
-            listcell.appendChild(component);
-            item.appendChild(listcell);
+        private <T extends Component> T append(Row row, T component) {
+            row.appendChild(component);
             return component;
         }
     }

@@ -58,8 +58,8 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.impl.api.InputElement;
@@ -91,12 +91,12 @@ class FormBinder {
                     return;
                 }
             }
-            Clients.closeErrorBox(allocationsList);
+            Clients.closeErrorBox(allocationsGrid);
             applyButton.setDisabled(false);
         }
     };
 
-    private Listbox allocationsList;
+    private Grid allocationsGrid;
 
     private EventListener applyButtonListener;
 
@@ -476,8 +476,8 @@ class FormBinder {
         }
     }
 
-    public void setAllocationsList(Listbox allocationsList) {
-        this.allocationsList = allocationsList;
+    public void setAllocationsGrid(Grid allocationsGrid) {
+        this.allocationsGrid = allocationsGrid;
     }
 
     public void setMessagesForUser(IMessagesForUser messages) {
@@ -530,7 +530,7 @@ class FormBinder {
         allResourcesPerDay.addEventListener(Events.ON_CHANGE,
                 allResourcesPerDayChange);
         sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
-        Util.reloadBindings(allocationsList);
+        Util.reloadBindings(allocationsGrid);
     }
 
     private void distributeHoursFromTotalToRows() {

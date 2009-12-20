@@ -155,19 +155,20 @@
 
                 <groupbox mold="3d" style="margin-top: 5px" sclass="assignedresources" closable="false">
                     <caption label="${i18n:_('Allocations')}" />
-                    <listbox id="allocationsList"
+                    <grid id="allocationsGrid"
                         model="@{allocationController.resourceAllocations}"
-                        itemRenderer="@{allocationController.resourceAllocationRenderer}"
-                        style="margin-bottom: 5px" fixedLayout="true" rows="4">
-                        <listhead>
-                            <listheader label="${i18n:_('Name')}" />
-                            <listheader
+                        rowRenderer="@{allocationController.resourceAllocationRenderer}"
+                        style="margin-bottom: 5px" fixedLayout="true">
+                        <columns>
+                            <column label="${i18n:_('Name')}" />
+                            <column
                                 label="${i18n:_('Hours')}" />
-                            <listheader
+                            <column
                                 label="${i18n:_('Resources Per Day')}" />
-                            <listheader />
-                        </listhead>
-                    </listbox>
+                            <column
+                                label="${i18n:_('Operations')}" />
+                        </columns>
+                    </grid>
                 </groupbox>
             </tabpanel>
 
