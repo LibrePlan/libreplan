@@ -216,6 +216,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         reattachHoursGroup(this.task.getHoursGroup());
         reattachCriterions(this.task.getHoursGroup().getValidCriterions());
         loadResources(this.task.getResourceAllocations());
+        loadDerivedAllocations(this.task.getResourceAllocations());
         List<AllocationRow> initialRows = AllocationRow.toRows(this.task
                 .getResourceAllocations());
         allocationRowsHandler = AllocationRowsHandler.create(task, initialRows,
@@ -264,6 +265,13 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void loadResources(Set<ResourceAllocation<?>> resourceAllocations) {
         for (ResourceAllocation<?> each : resourceAllocations) {
             each.getAssociatedResources();
+        }
+    }
+
+    private void loadDerivedAllocations(
+            Set<ResourceAllocation<?>> resourceAllocations) {
+        for (ResourceAllocation<?> each : resourceAllocations) {
+            each.getDerivedAllocations().size();
         }
     }
 

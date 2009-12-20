@@ -23,10 +23,12 @@ package org.navalplanner.web.planner.allocation;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
@@ -216,6 +218,22 @@ public abstract class AllocationRow {
         loadHours();
     }
 
+    public boolean hasDerivedAllocations() {
+        return ! getDerivedAllocations().isEmpty();
+    }
+
+    public List<DerivedAllocation> getDerivedAllocations() {
+        if (temporal != null) {
+            return new ArrayList<DerivedAllocation>(temporal
+                    .getDerivedAllocations());
+        } else if (origin != null) {
+            return new ArrayList<DerivedAllocation>(origin
+                    .getDerivedAllocations());
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     public String getName() {
         return name;
     }
@@ -313,7 +331,8 @@ public abstract class AllocationRow {
 
     public void loadDataFromLast() {
         hoursInput.setValue(temporal.getAssignedHours());
-        resourcesPerDayInput.setValue(temporal.getResourcesPerDay().getAmount());
+        resourcesPerDayInput
+                .setValue(temporal.getResourcesPerDay().getAmount());
     }
 
     public void addListenerForHoursInputChange(EventListener listener) {
