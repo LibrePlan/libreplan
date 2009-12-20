@@ -41,7 +41,7 @@
         title="Hours worked per worker"
         border="normal" >
 
-         <!-- Select output format -->
+         <!-- Select dates -->
          <panel title="${i18n:_('Dates')}" border="normal"
              style="overflow:auto">
              <panelchildren>
@@ -64,8 +64,8 @@
              </panelchildren>
          </panel>
 
-          <!-- Select output format -->
-        <panel title="${i18n:_('Workers')}"
+          <!-- Select workers -->
+        <panel title="${i18n:_('Filter by workers')}"
             border="normal"
             style="overflow:auto">
             <panelchildren>
