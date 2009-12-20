@@ -37,12 +37,18 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModi
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.planner.allocation.ResourceAllocationController.DerivedAllocationColumn;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Detail;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.SimpleConstraint;
+import org.zkoss.zul.SimpleListModel;
 
 /**
  * The information that must be introduced to create a
@@ -166,6 +172,8 @@ public abstract class AllocationRow {
     private Intbox hoursInput = new Intbox();
 
     private final Decimalbox resourcesPerDayInput = new Decimalbox();
+
+    private Grid derivedAllocationsGrid;
 
     private void initializeResourcesPerDayInput() {
         resourcesPerDayInput.setConstraint(new SimpleConstraint(
@@ -347,6 +355,49 @@ public abstract class AllocationRow {
             EventListener resourcesPerDayRowInputChange) {
         resourcesPerDayInput.addEventListener(Events.ON_CHANGE,
                 resourcesPerDayRowInputChange);
+    }
+
+    public void reloadDerivedAllocationsGrid() {
+        if (hasDerivedAllocations() && !(currentDetail instanceof Detail)) {
+            replaceOld(currentDetail, createDetail());
+        }
+        reloadDerivedAllocationsData();
+    }
+
+    private void reloadDerivedAllocationsData() {
+        if (derivedAllocationsGrid != null) {
+            derivedAllocationsGrid.setModel(new SimpleListModel(
+                    getDerivedAllocations()));
+        }
+    }
+
+    private void replaceOld(Component oldDetail, Component newDetail) {
+        Component parent = oldDetail.getParent();
+        parent.insertBefore(newDetail, oldDetail);
+        parent.removeChild(oldDetail);
+    }
+
+    private Component currentDetail;
+
+    public Component createDetail() {
+        if (!hasDerivedAllocations()) {
+            return currentDetail = new Label();
+        }
+        Detail result = new Detail();
+        createDerivedAllocationsGrid();
+        result.appendChild(derivedAllocationsGrid);
+        reloadDerivedAllocationsData();
+        return currentDetail = result;
+    }
+
+    private void createDerivedAllocationsGrid() {
+        if (derivedAllocationsGrid != null) {
+            return;
+        }
+        derivedAllocationsGrid = new Grid();
+        DerivedAllocationColumn.appendColumnsTo(derivedAllocationsGrid);
+        derivedAllocationsGrid.setRowRenderer(DerivedAllocationColumn
+                .createRenderer());
     }
 
 }

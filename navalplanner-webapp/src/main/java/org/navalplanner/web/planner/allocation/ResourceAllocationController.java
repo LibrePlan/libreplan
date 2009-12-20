@@ -34,6 +34,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.ResourceEnum;
@@ -49,6 +50,7 @@ import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
+import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
 import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
@@ -60,6 +62,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Columns;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
@@ -445,6 +449,63 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
     }
 
+    public enum DerivedAllocationColumn implements IConvertibleToColumn {
+        NAME("Name") {
+            @Override
+            public Component cellFor(DerivedAllocation data) {
+                return new Label(data.getName());
+            }
+        },
+        ALPHA("Alpha") {
+            @Override
+            public Component cellFor(DerivedAllocation data) {
+                return new Label(String.format("%3.2f", data.getAlpha()));
+            }
+        },
+        HOURS("Total Hours") {
+            @Override
+            public Component cellFor(DerivedAllocation data) {
+                return new Label(data.getHours() + "");
+            }
+        };
+
+        private final String name;
+
+        private DerivedAllocationColumn(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public org.zkoss.zul.api.Column toColumn() {
+            return new Column(_(name));
+        }
+
+        public static void appendColumnsTo(Grid grid) {
+            Columns columns = new Columns();
+            grid.appendChild(columns);
+            for (DerivedAllocationColumn each : values()) {
+                columns.appendChild(each.toColumn());
+            }
+        }
+
+        public static RowRenderer createRenderer() {
+            return OnColumnsRowRenderer.create(cellRenderer, Arrays
+                    .asList(DerivedAllocationColumn.values()));
+        }
+
+        private static final ICellForDetailItemRenderer<DerivedAllocationColumn, DerivedAllocation> cellRenderer= new ICellForDetailItemRenderer<DerivedAllocationColumn, DerivedAllocation>() {
+
+                                @Override
+                                public Component cellFor(
+                                        DerivedAllocationColumn column,
+                                        DerivedAllocation data) {
+                                    return column.cellFor(data);
+                                }
+                            };
+
+        abstract Component cellFor(DerivedAllocation data);
+    }
+
     public List<CalculationTypeRadio> getCalculationTypes() {
         return Arrays.asList(CalculationTypeRadio.values());
     }
@@ -534,7 +595,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         private void renderResourceAllocation(Row row, final AllocationRow data)
                 throws Exception {
             row.setValue(data);
-            // Label fields are fixed, can only be viewed
+            append(row, data.createDetail());
             append(row, new Label(data.getName()));
             append(row, data.getHoursInput());
             append(row, data.getResourcesPerDayInput());

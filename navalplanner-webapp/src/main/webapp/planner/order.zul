@@ -160,6 +160,7 @@
                         rowRenderer="@{allocationController.resourceAllocationRenderer}"
                         style="margin-bottom: 5px" fixedLayout="true">
                         <columns>
+                            <column />
                             <column label="${i18n:_('Name')}" />
                             <column
                                 label="${i18n:_('Hours')}" />

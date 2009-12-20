@@ -369,11 +369,18 @@ class FormBinder {
         loadValueForAssignedHoursComponent();
         loadValueForTaskStartDateBox();
         loadValueForEndDate();
+        loadDerivedAllocations();
     }
 
     private void loadHoursValues() {
         for (AllocationRow each : rows) {
             each.loadHours();
+        }
+    }
+
+    private void loadDerivedAllocations() {
+        for (AllocationRow each : rows) {
+            each.reloadDerivedAllocationsGrid();
         }
     }
 
