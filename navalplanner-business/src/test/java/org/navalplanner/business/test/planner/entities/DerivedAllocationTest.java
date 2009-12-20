@@ -23,6 +23,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -218,6 +219,30 @@ public class DerivedAllocationTest {
         derivedAllocation.resetAssignmentsTo(start, start.plusDays(4), Arrays
                 .asList(newAssignment));
         assertTrue(derivedAllocation.getAssignments().isEmpty());
+    }
+
+    @Test
+    public void asDerivedFromReturnsTheSameAllocation() {
+        givenADerivedAllocation();
+        assertThat(derivedAllocation
+                .asDerivedFrom(GenericResourceAllocation.create()), sameInstance(derivedAllocation));
+    }
+
+    @Test
+    public void asDerivedFromChangesTheDerivedFromProperty() {
+        givenADerivedAllocation();
+        ResourceAllocation<?> newDerivedFrom = GenericResourceAllocation
+                .create();
+        DerivedAllocation modified = derivedAllocation
+                .asDerivedFrom(newDerivedFrom);
+        assertEquals(newDerivedFrom, modified.getDerivedFrom());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void asDerivedFromCanOnlyBeUsedIfTheDerivedAllocationIsANewObject() {
+        givenADerivedAllocation();
+        derivedAllocation.dontPoseAsTransientObjectAnymore();
+        derivedAllocation.asDerivedFrom(GenericResourceAllocation.create());
     }
 
 }

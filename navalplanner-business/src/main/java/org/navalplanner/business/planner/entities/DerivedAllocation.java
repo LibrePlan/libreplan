@@ -122,6 +122,18 @@ public class DerivedAllocation extends BaseEntity {
         this.assignments = new HashSet<DerivedDayAssignment>(dayAssignments);
     }
 
+    public DerivedAllocation asDerivedFrom(ResourceAllocation<?> allocation)
+            throws IllegalStateException {
+        if (!isNewObject()) {
+            throw new IllegalStateException(
+                    "a "
+                            + DerivedAllocation.class.getSimpleName()
+                            + " that already exists can't change its derivedFrom property");
+        }
+        this.derivedFrom = allocation;
+        return this;
+    }
+
     private void checkAreValid(List<DerivedDayAssignment> dayAssignments) {
         for (DerivedDayAssignment each : dayAssignments) {
             checkIsValid(each);
@@ -150,6 +162,4 @@ public class DerivedAllocation extends BaseEntity {
         return DayAssignment.orderedByDay(new ArrayList<DerivedDayAssignment>(
                 assignments));
     }
-
-
 }
