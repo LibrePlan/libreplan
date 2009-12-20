@@ -19,6 +19,7 @@
  */
 package org.navalplanner.business.planner.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,8 +29,8 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -59,6 +60,11 @@ public class DerivedAllocation extends BaseEntity {
         return true;
     }
 
+    public static DerivedAllocation create(ResourceAllocation<?> derivedFrom,
+            MachineWorkersConfigurationUnit configurationUnit) {
+        return create(new DerivedAllocation(derivedFrom, configurationUnit));
+    }
+
     @NotNull
     private ResourceAllocation<?> derivedFrom;
 
@@ -67,9 +73,21 @@ public class DerivedAllocation extends BaseEntity {
 
     private Set<DerivedDayAssignment> assignments;
 
-    public static DerivedAllocation create(ResourceAllocation<?> derivedFrom,
-            MachineWorkersConfigurationUnit configurationUnit) {
-        return create(new DerivedAllocation(derivedFrom, configurationUnit));
+    public BigDecimal getAlpha() {
+        return configurationUnit.getAlpha();
+    }
+
+    public List<Resource> getResources() {
+        return new ArrayList<Resource>(DayAssignment
+                .getAllResources(assignments));
+    }
+
+    public int getHours() {
+        return DayAssignment.sum(assignments);
+    }
+
+    public String getName() {
+        return configurationUnit.getName();
     }
 
     /**
@@ -111,7 +129,6 @@ public class DerivedAllocation extends BaseEntity {
     }
 
     private void checkIsValid(DerivedDayAssignment dayAssingment) {
-        Machine machine = configurationUnit.getMachine();
         if (!dayAssingment.getAllocation().equals(this)) {
             throw new IllegalArgumentException(dayAssingment
                     + " is related to " + dayAssingment.getAllocation()
