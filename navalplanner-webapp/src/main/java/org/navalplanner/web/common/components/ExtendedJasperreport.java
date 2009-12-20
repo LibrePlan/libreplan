@@ -18,11 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.reports;
+package org.navalplanner.web.common.components;
 
+import org.zkoss.zkex.zul.Jasperreport;
 
-public interface INavalplannerReport {
+/**
+ * Extends ZK Jasperreport component to offer access to encodedSrc() method
+ *
+ * @author Diego Pino Garcia <dpino@igalia.com>
+ *
+ */
+public class ExtendedJasperreport extends Jasperreport {
 
-    String show(String type);
+    public String getEncodedSrc() {
+        return super.getEncodedSrc();
+    }
 
 }

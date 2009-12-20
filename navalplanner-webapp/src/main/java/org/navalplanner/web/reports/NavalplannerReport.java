@@ -24,23 +24,27 @@ import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
-import org.zkoss.zkex.zul.Jasperreport;
+import org.navalplanner.web.common.components.ExtendedJasperreport;
+import org.zkoss.zk.ui.Executions;
 
 public abstract class NavalplannerReport implements INavalplannerReport {
 
-    private Jasperreport report;
+    private ExtendedJasperreport report;
 
-    public Jasperreport getReport() {
+    public ExtendedJasperreport getReport() {
         return report;
     }
 
-    public void setReport(Jasperreport report) {
+    public void setReport(ExtendedJasperreport report) {
         this.report = report;
     }
 
     @Override
-    public void show(String type) {
+    public String show(String type) {
         this.report.setType(type);
+
+        String URI = report.getEncodedSrc();
+        return URI.replace("navalplanner-webapp/", "");
     }
 
     public void setParameters(Map parameters) {

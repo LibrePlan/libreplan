@@ -30,6 +30,10 @@
 <?component name="combobox_output_format" macroURI="combobox_output_format.zul"
     class="org.navalplanner.web.reports.ComboboxOutputFormat" ?>
 
+<?component name="extendedjasperreport"
+    class="org.navalplanner.web.common.components.ExtendedJasperreport"
+    extends="jasperreport" ?>
+
 <zk>
 
     <window self="@{define(content)}"
@@ -101,11 +105,19 @@
             </panelchildren>
         </panel>
 
-        <separator spacing="10px" orient="horizontal"/>
+        <separator spacing="10px" orient="horizontal" />
+
+        <hbox style="display: none" id="URItext">
+            <label value="${i18n:_('Click on ')}" />
+            <toolbarbutton id="URIlink" class="z-label" zclass="z-label"
+                    label="${i18n:_('direct link')}" />
+            <label value="${i18n:_(' to go to output directly')}" />
+        </hbox>
+        <separator spacing="10px" orient="horizontal" />
 
         <button label="Show" onClick="controller.showReport(report)" />
 
-        <jasperreport id="report" />
+        <extendedjasperreport style="display: none" id="report" />
 
     </window>
 

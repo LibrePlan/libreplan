@@ -20,12 +20,12 @@
 
 package org.navalplanner.web.reports;
 
-import org.zkoss.zkex.zul.Jasperreport;
+import org.navalplanner.web.common.components.ExtendedJasperreport;
 
 
 public class HoursWorkedPerWorkerReport extends NavalplannerReport {
 
-    public HoursWorkedPerWorkerReport(Jasperreport report) {
+    public HoursWorkedPerWorkerReport(ExtendedJasperreport report) {
         report.setSrc("worker_report.jasper");
         setReport(report);
     }

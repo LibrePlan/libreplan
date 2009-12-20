@@ -30,12 +30,15 @@ import java.util.Set;
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zkex.zul.Jasperreport;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Toolbarbutton;
 
 /**
  *
@@ -56,6 +59,12 @@ public class HoursWorkedPerWorkerController extends GenericForwardComposer {
 
     private ComboboxOutputFormat outputFormat;
 
+    private Hbox URItext;
+
+    private Toolbarbutton URIlink;
+
+    private static final String HTML = "html";
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -66,13 +75,21 @@ public class HoursWorkedPerWorkerController extends GenericForwardComposer {
         return hoursWorkedPerWorkerModel.getWorkers();
     }
 
-    public void showReport(Jasperreport report) {
+    public void showReport(ExtendedJasperreport report) {
         final String type = outputFormat.getOutputFormat();
 
         workerReport = new HoursWorkedPerWorkerReport(report);
         workerReport.setDatasource(getDataSource());
         workerReport.setParameters(getParameters());
-        workerReport.show(type);
+
+        String URI = workerReport.show(type);
+        if (type.equals(HTML)) {
+            URItext.setStyle("display: none");
+            Executions.getCurrent().sendRedirect(URI, "_blank");
+        } else {
+            URItext.setStyle("display: inline");
+            URIlink.setHref(URI);
+        }
     }
 
     private JRDataSource getDataSource() {
