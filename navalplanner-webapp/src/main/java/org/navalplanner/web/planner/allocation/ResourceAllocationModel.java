@@ -36,6 +36,7 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -45,6 +46,8 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Machine;
+import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.order.PlanningState;
@@ -268,10 +271,22 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
+    private void loadMachine(Machine eachMachine) {
+        for (MachineWorkersConfigurationUnit eachUnit : eachMachine
+                .getConfigurationUnits()) {
+            Hibernate.initialize(eachUnit);
+        }
+    }
+
     private void loadDerivedAllocations(
             Set<ResourceAllocation<?>> resourceAllocations) {
         for (ResourceAllocation<?> each : resourceAllocations) {
-            each.getDerivedAllocations().size();
+            for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
+                Hibernate.initialize(eachDerived);
+                eachDerived.getAssignments();
+                eachDerived.getAlpha();
+                eachDerived.getName();
+            }
         }
     }
 
@@ -300,6 +315,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         calendarDAO.reattachUnmodifiedEntity(resource.getCalendar());
         for (DayAssignment dayAssignment : resource.getAssignments()) {
             Hibernate.initialize(dayAssignment);
+        }
+        if (resource instanceof Machine) {
+            loadMachine((Machine) resource);
         }
     }
 
