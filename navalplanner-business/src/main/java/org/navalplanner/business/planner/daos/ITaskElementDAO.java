@@ -20,9 +20,12 @@
 
 package org.navalplanner.business.planner.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -33,5 +36,7 @@ public interface ITaskElementDAO extends IGenericDAO<TaskElement, Long> {
      * Removes {@link DayAssignment} that have no parent
      */
     void removeOrphanedDayAssignments();
+
+    List<TaskElement> findChildrenOf(TaskGroup each);
 
 }

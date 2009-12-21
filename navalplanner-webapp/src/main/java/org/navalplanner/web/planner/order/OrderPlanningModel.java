@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.hibernate.Hibernate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -43,10 +45,12 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ICostCalculator;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
@@ -129,6 +133,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
+
+    @Autowired
+    private ITaskElementDAO taskDAO;
 
     @Autowired
     private IAdHocTransactionService transactionService;
@@ -562,11 +569,13 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             Order orderReloaded) {
         taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setOrder(orderReloaded);
-        planningState = new PlanningState(orderReloaded
-                .getAssociatedTaskElement(),
+        TaskGroup taskElement = orderReloaded
+                .getAssociatedTaskElement();
+        forceLoadOfChildren(Arrays.asList(taskElement));
+        planningState = new PlanningState(taskElement,
                 orderReloaded.getAssociatedTasks(),
                 resourceDAO.list(Resource.class));
-
+        forceLoadOfChildren(planningState.getInitial());
         forceLoadOfDependenciesCollections(planningState.getInitial());
         forceLoadOfWorkingHours(planningState.getInitial());
         forceLoadOfLabels(planningState.getInitial());
@@ -577,6 +586,22 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         result.setDependenciesConstraintsHavePriority(orderReloaded
                 .getDependenciesConstraintsHavePriority());
         return result;
+    }
+
+    private void forceLoadOfChildren(Collection<? extends TaskElement> initial) {
+        for (TaskElement each : initial) {
+            if (each instanceof TaskGroup) {
+                findChildrenWithQueryToAvoidProxies((TaskGroup) each);
+                List<TaskElement> children = each.getChildren();
+                forceLoadOfChildren(children);
+            }
+        }
+    }
+
+    private void findChildrenWithQueryToAvoidProxies(TaskGroup group) {
+        for (TaskElement eachTask : taskDAO.findChildrenOf(group)) {
+            Hibernate.initialize(eachTask);
+        }
     }
 
     private void forceLoadOfWorkingHours(List<TaskElement> initial) {

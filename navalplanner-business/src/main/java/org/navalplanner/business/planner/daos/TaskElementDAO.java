@@ -29,6 +29,7 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -71,5 +72,12 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
     private List<SpecificDayAssignment> findOrphanedSpecificDayAssignments() {
         return getSession().createCriteria(SpecificDayAssignment.class).add(
                 Restrictions.isNull("specificResourceAllocation")).list();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<TaskElement> findChildrenOf(TaskGroup each) {
+        return getSession().createCriteria(TaskElement.class).add(
+                Restrictions.eq("parent", each)).list();
     }
 }
