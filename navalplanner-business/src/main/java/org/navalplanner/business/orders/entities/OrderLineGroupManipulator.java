@@ -91,7 +91,7 @@ public class OrderLineGroupManipulator implements IOrderLineGroup {
     }
 
     @Override
-    public void up(OrderElement orderElement) {
+    public void down(OrderElement orderElement) {
         int position = orderElements.indexOf(orderElement);
         if (position < orderElements.size() - 1) {
             orderElements.remove(position);
@@ -100,7 +100,7 @@ public class OrderLineGroupManipulator implements IOrderLineGroup {
     }
 
     @Override
-    public void down(OrderElement orderElement) {
+    public void up(OrderElement orderElement) {
         int position = orderElements.indexOf(orderElement);
         if (position > 0) {
             orderElements.remove(position);
