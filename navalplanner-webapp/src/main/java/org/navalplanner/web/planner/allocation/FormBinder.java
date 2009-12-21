@@ -491,10 +491,14 @@ class FormBinder {
     }
 
     public void detach() {
-        this.applyButton.removeEventListener(Events.ON_CLICK,
-                applyButtonListener);
-        this.recommendedAllocationCheckbox.removeEventListener(Events.ON_CHECK,
-                recommendedCheckboxListener);
+        if (this.applyButton != null) {
+            this.applyButton.removeEventListener(Events.ON_CLICK,
+                    applyButtonListener);
+        }
+        if (this.recommendedAllocationCheckbox != null) {
+            this.recommendedAllocationCheckbox.removeEventListener(
+                    Events.ON_CHECK, recommendedCheckboxListener);
+        }
         for (InputElement inputElement : inputsAssociatedWithOnChangeEnableApply) {
             inputElement.removeEventListener(Events.ON_CHANGE,
                     onChangeEnableApply);
