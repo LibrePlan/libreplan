@@ -64,4 +64,9 @@ public class DerivedDayAssignment extends DayAssignment {
         return allocation;
     }
 
+    DerivedDayAssignment copyAsChildOf(DerivedAllocation allocation) {
+        return create(this.getDay(), this.getHours(), this.getResource(),
+                allocation);
+    }
+
 }

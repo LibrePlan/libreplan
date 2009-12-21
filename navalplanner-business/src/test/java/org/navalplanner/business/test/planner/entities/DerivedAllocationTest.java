@@ -245,4 +245,27 @@ public class DerivedAllocationTest {
         derivedAllocation.asDerivedFrom(GenericResourceAllocation.create());
     }
 
+    @Test
+    public void copyAssignmentsAsChildrenOfReturnsCopiesTheAssignments() {
+        givenADerivedAllocation();
+        givenDayAssignments(new LocalDate(2008, 12, 1), worker, 8, 8, 8, 8);
+        derivedAllocation.resetAssignmentsTo(dayAssignments);
+        DerivedAllocation anotherDerived = createNiceMock(DerivedAllocation.class);
+        replay(anotherDerived);
+
+        List<DerivedDayAssignment> withNewParent = derivedAllocation
+                .copyAssignmentsAsChildrenOf(anotherDerived);
+
+        assertThat(dayAssignments.size(), equalTo(withNewParent.size()));
+        for (int i = 0; i < dayAssignments.size(); i++) {
+            DerivedDayAssignment original = dayAssignments.get(i);
+            DerivedDayAssignment moved = withNewParent.get(i);
+            assertThat(original.getDay(), equalTo(moved.getDay()));
+            assertThat(original.getHours(), equalTo(moved.getHours()));
+            assertThat(original.getResource(), equalTo(moved.getResource()));
+            assertThat(original.getAllocation(), equalTo(derivedAllocation));
+            assertThat(moved.getAllocation(), equalTo(anotherDerived));
+        }
+    }
+
 }

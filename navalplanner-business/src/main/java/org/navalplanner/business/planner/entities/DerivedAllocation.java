@@ -162,4 +162,13 @@ public class DerivedAllocation extends BaseEntity {
         return DayAssignment.orderedByDay(new ArrayList<DerivedDayAssignment>(
                 assignments));
     }
+
+    public List<DerivedDayAssignment> copyAssignmentsAsChildrenOf(
+            DerivedAllocation allocation) {
+        List<DerivedDayAssignment> result = new ArrayList<DerivedDayAssignment>();
+        for (DerivedDayAssignment each : getAssignments()) {
+            result.add(each.copyAsChildOf(allocation));
+        }
+        return result;
+    }
 }
