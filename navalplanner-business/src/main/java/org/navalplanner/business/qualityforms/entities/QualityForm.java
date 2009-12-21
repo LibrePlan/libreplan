@@ -103,9 +103,9 @@ public class QualityForm extends BaseEntity {
         this.qualityFormItems = qualityFormItems;
     }
 
-    public boolean addQualityFormItemAtEnd(QualityFormItem qualityFormItem) {
+    public boolean addQualityFormItemOnTop(QualityFormItem qualityFormItem) {
         if (qualityFormItem != null) {
-            Integer position = this.qualityFormItems.size();
+            Integer position = 0;
             qualityFormItem.setPosition(position);
             qualityFormItems.add(qualityFormItem);
             updateAndSortQualityFormItemPositions();
@@ -143,7 +143,7 @@ public class QualityForm extends BaseEntity {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "The quality item positions must be uniques, consecutives.")
+    @AssertTrue(message = "The quality item positions must be unique and consecutive.")
     public boolean checkConstraintConsecutivesAndUniquesQualityFormItemPositions() {
         List<QualityFormItem> result = getListToNull(qualityFormItems);
         for (QualityFormItem qualityFormItem : qualityFormItems) {
@@ -175,7 +175,7 @@ public class QualityForm extends BaseEntity {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "The quality item positions must be corrects in function to the percentage.")
+    @AssertTrue(message = "The quality item positions must be correct in function to the percentage.")
     public boolean checkConstraintCorrectPositionsQualityFormItemsByPercentage() {
         // check the position is correct in function to the percentage.
         if ((qualityFormType != null)
@@ -191,7 +191,7 @@ public class QualityForm extends BaseEntity {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "The quality form item porcentage must be uniques if the quality form type is by percentage.")
+    @AssertTrue(message = "The quality form item porcentage must be unique if the quality form type is by percentage.")
     public boolean checkConstraintDuplicatesQualityFormItemPercentage() {
         if ((qualityFormType != null)
                 && (qualityFormType.equals(QualityFormType.BY_PERCENTAGE))
@@ -207,10 +207,9 @@ public class QualityForm extends BaseEntity {
             if (itemToFind.getPercentage() == null) {
                 return null;
             }
-            if ((!itemToFind.equals(item))
-                    && (item.getPercentage() != null)
-                    && (itemToFind.getPercentage().compareTo(item
-                            .getPercentage())) > 0) {
+            if ((((!itemToFind.equals(item)) && (item.getPercentage() != null) && (itemToFind
+                    .getPercentage().compareTo(item.getPercentage())) > 0))
+                    || (item.getPercentage() == null)) {
                 position++;
             }
         }
@@ -235,8 +234,8 @@ public class QualityForm extends BaseEntity {
 
                 Integer position = getCorrectPosition(item);
                 if (position == null) {
+                    position = nulos;
                     nulos++;
-                    position = qualityFormItems.size() - nulos;
                 }
 
                 while (result.get(position) != null) {

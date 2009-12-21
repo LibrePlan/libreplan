@@ -296,7 +296,6 @@ public class QualityFormCRUDController extends GenericForwardComposer {
     }
 
     public void createQualityFormItem() {
-        // validate();
         qualityFormModel.addQualityFormItem();
         Util.reloadBindings(gridQualityFormItems);
 

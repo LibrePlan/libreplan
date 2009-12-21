@@ -124,7 +124,7 @@ public class QualityFormModel implements IQualityFormModel {
     @Override
     public void addQualityFormItem() {
         QualityFormItem item = QualityFormItem.create();
-        qualityForm.addQualityFormItemAtEnd(item);
+        qualityForm.addQualityFormItemOnTop(item);
     }
 
     @Override

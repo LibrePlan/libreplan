@@ -89,7 +89,7 @@ public class QualityFormDAOTest extends AbstractQualityFormTest {
     public void testSaveQualityFormItems() {
         QualityForm qualityForm = createValidQualityForm();
         QualityFormItem qualityFormItem = createValidQualityFormItem();
-        qualityForm.addQualityFormItemAtEnd(qualityFormItem);
+        qualityForm.addQualityFormItemOnTop(qualityFormItem);
         qualityFormDAO.save(qualityForm);
 
         assertTrue(qualityForm.getId() != null);
@@ -101,7 +101,7 @@ public class QualityFormDAOTest extends AbstractQualityFormTest {
             throws InstanceNotFoundException {
         QualityForm qualityForm = createValidQualityForm();
         QualityFormItem qualityFormItem = createValidQualityFormItem();
-        qualityForm.addQualityFormItemAtEnd(qualityFormItem);
+        qualityForm.addQualityFormItemOnTop(qualityFormItem);
         qualityFormDAO.save(qualityForm);
 
         assertTrue(qualityForm.getId() != null);
