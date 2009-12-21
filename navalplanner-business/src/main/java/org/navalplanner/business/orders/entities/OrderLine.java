@@ -37,6 +37,8 @@ import org.navalplanner.business.requirements.entities.DirectCriterionRequiremen
 
 public class OrderLine extends OrderElement {
 
+    private static final String INITIAL_HOURS_GROUP_NAME = "New hours group 0";
+
     public static OrderLine create() {
         OrderLine result = new OrderLine();
         result.setNewObject(true);
@@ -47,7 +49,7 @@ public class OrderLine extends OrderElement {
         OrderLine result = create();
         HoursGroup hoursGroup = HoursGroup.create(result);
         result.addHoursGroup(hoursGroup);
-        hoursGroup.setName(_("New hours group 0"));
+        hoursGroup.setName(_(INITIAL_HOURS_GROUP_NAME));
         hoursGroup.setFixedPercentage(false);
         hoursGroup.setPercentage(new BigDecimal(1));
         hoursGroup.setWorkingHours(hours);
@@ -154,7 +156,7 @@ public class OrderLine extends OrderElement {
             HoursGroup hoursGroup = HoursGroup.create(this);
             hoursGroup.setWorkingHours(workHours);
             hoursGroup.setPercentage((new BigDecimal(1).setScale(2)));
-
+            hoursGroup.setName(_(INITIAL_HOURS_GROUP_NAME));
             hoursGroups.add(hoursGroup);
         } else {
 
