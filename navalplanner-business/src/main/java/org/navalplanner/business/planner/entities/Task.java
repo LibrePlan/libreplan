@@ -165,8 +165,9 @@ public class Task extends TaskElement {
     }
 
     public Integer getDaysDuration() {
-        Days daysBetween = Days.daysBetween(toDateTime(getStartDate()),
-                toDateTime(getEndDate()));
+        Days daysBetween = Days.daysBetween(new LocalDate(
+                toDateTime(getStartDate())), new LocalDate(
+                toDateTime(getEndDate())));
         return daysBetween.getDays();
     }
 

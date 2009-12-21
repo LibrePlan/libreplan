@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderLine;
@@ -124,6 +125,13 @@ public class TaskTest {
         task.addResourceAllocation(stubResourceAllocationWithAssignedHours(
                 task, 3));
         assertThat(task.getAssignedHours(), equalTo(8));
+    }
+
+    @Test
+    public void theDaysBetweenIsCalculatedBasedOnlyOnDatesNotHours() {
+        task.setStartDate(new DateTime(2008, 10, 5, 23, 0, 0, 0).toDate());
+        task.setEndDate(new DateTime(2008, 10, 6, 1, 0, 0, 0).toDate());
+        assertThat(task.getDaysDuration(), equalTo(1));
     }
 
     private SpecificResourceAllocation stubResourceAllocationWithAssignedHours(
