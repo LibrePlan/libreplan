@@ -31,4 +31,30 @@
     </list>
 </class>
 
+<!-- TaskQualityForm -->
+<class name="TaskQualityForm" table="TASK_QUALITY_FORM">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <many-to-one name="qualityForm" class="QualityForm" column="QUALITY_FORM_ID"/>
+
+    <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID"/>
+
+    <list name="taskQualityFormItems" table="TASK_QUALITY_FORM_ITEMS">
+        <key column="TASK_QUALITY_FORM_ID"/>
+        <index column="idx"/>
+        <composite-element class="org.navalplanner.business.qualityforms.entities.TaskQualityFormItem">
+                <property name="name" access="field"/>
+                <property name="percentage" access="field"/>
+                <property name="position" access="field"/>
+                <property name="passed" access="field"/>
+                <property name="date" access="field"/>
+        </composite-element>
+    </list>
+</class>
+
 </hibernate-mapping>

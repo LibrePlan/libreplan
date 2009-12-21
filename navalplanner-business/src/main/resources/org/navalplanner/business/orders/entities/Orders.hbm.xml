@@ -42,6 +42,11 @@
             <one-to-many class="org.navalplanner.business.materials.entities.MaterialAssignment" />
         </set>
 
+        <set name="taskQualityForms" cascade="all-delete-orphan" inverse="true">
+            <key column="ORDER_ELEMENT_ID" not-null="true" />
+            <one-to-many class="org.navalplanner.business.qualityforms.entities.TaskQualityForm" />
+        </set>
+
         <!-- Inverse navigation from OrderElement to OrderLineGroup -->
         <many-to-one name="parent" access="field" cascade="all"/>
 

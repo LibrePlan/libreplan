@@ -49,10 +49,14 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
+import org.navalplanner.business.qualityforms.entities.QualityForm;
+import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.test.orders.entities.OrderElementTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -75,6 +79,9 @@ public class OrderElementDAOTest {
     public void loadRequiredaData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
     }
+
+    @Autowired
+    IQualityFormDAO qualityFormDAO;
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
@@ -332,6 +339,55 @@ public class OrderElementDAOTest {
             found = null;
         }
         assertNull(found);
+    }
+
+    @Test
+    public void testSaveAndRemoveTaskQualityForm() {
+        OrderElement orderElement = OrderElementTest
+                .givenOrderLineGroupWithTwoOrderLines(2000, 3000);
+        QualityForm qualityForm = QualityForm.create(UUID.randomUUID()
+                .toString(), UUID.randomUUID().toString());
+        qualityFormDAO.save(qualityForm);
+        TaskQualityForm taskQualityForm = orderElement
+                .addTaskQualityForm(qualityForm);
+
+        orderElementDAO.save(orderElement);
+        orderElementDAO.flush();
+        assertThat(orderElement.getTaskQualityForms().size(), equalTo(1));
+
+        orderElement.remove(taskQualityForm);
+
+        orderElementDAO.save(orderElement);
+        orderElementDAO.flush();
+        assertThat(orderElement.getTaskQualityForms().size(), equalTo(0));
+    }
+
+    @Test
+    public void testCheckUniqueQualityForm() {
+        OrderElement orderElement = OrderElementTest
+                .givenOrderLineGroupWithTwoOrderLines(2000, 3000);
+        QualityForm qualityForm = QualityForm.create(UUID.randomUUID()
+                .toString(), UUID.randomUUID().toString());
+        qualityFormDAO.save(qualityForm);
+        orderElement.addTaskQualityForm(qualityForm);
+
+        orderElementDAO.save(orderElement);
+        orderElementDAO.flush();
+        assertThat(orderElement.getTaskQualityForms().size(), equalTo(1));
+
+        try {
+            orderElement.addTaskQualityForm(null);
+            fail("It should throw an exception");
+        } catch (IllegalArgumentException e) {
+            //
+        }
+
+        try {
+            orderElement.addTaskQualityForm(qualityForm);
+            fail("It should throw an exception");
+        } catch (ValidationException e) {
+            //
+        }
     }
 
 }

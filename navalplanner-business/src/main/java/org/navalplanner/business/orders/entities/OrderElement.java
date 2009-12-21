@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.InvalidValue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
@@ -41,6 +42,7 @@ import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
@@ -48,6 +50,8 @@ import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.qualityforms.entities.QualityForm;
+import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
@@ -72,6 +76,8 @@ public abstract class OrderElement extends BaseEntity {
     protected Set<MaterialAssignment> materialAssignments = new HashSet<MaterialAssignment>();
 
     private Set<Label> labels = new HashSet<Label>();
+
+    private Set<TaskQualityForm> taskQualityForms = new HashSet<TaskQualityForm>();
 
     @NotEmpty(message = "code not specified")
     private String code;
@@ -691,6 +697,41 @@ public abstract class OrderElement extends BaseEntity {
         }
 
         return null;
+    }
+
+    @Valid
+    public Set<TaskQualityForm> getTaskQualityForms() {
+        return Collections.unmodifiableSet(taskQualityForms);
+    }
+
+    public void setTaskQualityFormItems(Set<TaskQualityForm> taskQualityForms) {
+        this.taskQualityForms = taskQualityForms;
+    }
+
+    public TaskQualityForm addTaskQualityForm(QualityForm qualityForm)
+            throws ValidationException {
+        ckeckUniqueQualityForm(qualityForm);
+        TaskQualityForm taskQualityForm = TaskQualityForm.create(this,
+                qualityForm);
+        this.taskQualityForms.add(taskQualityForm);
+        return taskQualityForm;
+    }
+
+    public void remove(TaskQualityForm taskQualityForm) {
+        this.taskQualityForms.remove(taskQualityForm);
+    }
+
+    private void ckeckUniqueQualityForm(QualityForm qualityForm)
+            throws ValidationException, IllegalArgumentException {
+        Validate.notNull(qualityForm);
+        for (TaskQualityForm taskQualityForm : getTaskQualityForms()) {
+            if (qualityForm.equals(taskQualityForm.getQualityForm())) {
+                throw new ValidationException(new InvalidValue(_(
+                        "{0} already exists", qualityForm.getName()),
+                        QualityForm.class, "name", qualityForm.getName(),
+                        qualityForm));
+            }
+        }
     }
 
 }
