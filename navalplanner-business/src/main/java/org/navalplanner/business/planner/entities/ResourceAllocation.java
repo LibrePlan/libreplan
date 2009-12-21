@@ -230,7 +230,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         public void allocateUntil(LocalDate end) {
             Validate.notNull(end);
-            Validate.isTrue(end.isAfter(new LocalDate(task.getStartDate())));
+            Validate.isTrue(!end.isBefore(new LocalDate(task.getStartDate())));
             for (HoursModification each : hoursModifications) {
                 each.allocateUntil(end);
             }
