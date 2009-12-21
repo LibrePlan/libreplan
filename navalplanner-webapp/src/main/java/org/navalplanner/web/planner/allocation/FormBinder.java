@@ -286,8 +286,8 @@ class FormBinder {
             public void validate(Component comp, Object value)
                     throws WrongValueException {
                 Date date = (Date) value;
-                Date startDate = allocationRowsHandler.getStartDate();
-                if (date.before(startDate)) {
+                LocalDate startDate = allocationRowsHandler.getStartDate();
+                if (new LocalDate(date).isBefore(startDate)) {
                     throw new WrongValueException(comp, _(
                             "{0} must not be before {1}", date, startDate));
                 }
@@ -463,8 +463,7 @@ class FormBinder {
     public void markEndDateMustBeAfterStartDate() {
         DateTimeFormatter formatter = ISODateTimeFormat.basicDate().withLocale(
                 Locales.getCurrent());
-        LocalDate start = new LocalDate(allocationRowsHandler
-                .getStartDate());
+        LocalDate start = allocationRowsHandler.getStartDate();
         throw new WrongValueException(endDate, _(
                 "end date: {0} must be after start date: {1}",
                 getAllocationEnd().toString(formatter), start

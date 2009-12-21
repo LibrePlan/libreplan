@@ -264,12 +264,12 @@ public class AllocationRowsHandler {
     }
 
     public Date getEnd() {
-        LocalDate start = new LocalDate(getStartDate());
+        LocalDate start = getStartDate();
         return toDate(start.plusDays(getDaysDuration()));
     }
 
-    public Date getStartDate() {
-        return task.getStartDate();
+    public LocalDate getStartDate() {
+        return new LocalDate(task.getStartDate());
     }
 
     private Date toDate(LocalDate date) {
