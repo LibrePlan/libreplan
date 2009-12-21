@@ -83,7 +83,6 @@ public class ChartFillerTest {
 
         assertThat(result.get(FINISH_DAY), equalTo(new BigDecimal(150)
                 .setScale(2)));
-        System.out.println("HERE");
     }
 
 }
