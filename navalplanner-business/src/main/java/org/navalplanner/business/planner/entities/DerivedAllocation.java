@@ -21,8 +21,11 @@ package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -37,6 +40,15 @@ import org.navalplanner.business.resources.entities.Resource;
  *
  */
 public class DerivedAllocation extends BaseEntity {
+
+    public static Map<MachineWorkersConfigurationUnit, DerivedAllocation> byConfigurationUnit(
+            Collection<? extends DerivedAllocation> derivedAllocations) {
+        Map<MachineWorkersConfigurationUnit, DerivedAllocation> map = new HashMap<MachineWorkersConfigurationUnit, DerivedAllocation>();
+        for (DerivedAllocation each : derivedAllocations) {
+            map.put(each.getConfigurationUnit(), each);
+        }
+        return map;
+    }
 
     private static boolean isIfGenericContainsMachine(
             ResourceAllocation<?> derivedFrom,

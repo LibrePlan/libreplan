@@ -639,6 +639,29 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         mergeAssignments(modifications);
         setResourcesPerDay(modifications.getResourcesPerDay());
         setAssignmentFunction(modifications.getAssignmentFunction());
+        mergeDerivedAllocations(modifications.getDerivedAllocations());
+    }
+
+    private void mergeDerivedAllocations(
+            Set<DerivedAllocation> derivedAllocations) {
+        Map<MachineWorkersConfigurationUnit, DerivedAllocation> newMap = DerivedAllocation
+                .byConfigurationUnit(derivedAllocations);
+        Map<MachineWorkersConfigurationUnit, DerivedAllocation> currentMap = DerivedAllocation
+                .byConfigurationUnit(getDerivedAllocations());
+        for (Entry<MachineWorkersConfigurationUnit, DerivedAllocation> entry : newMap
+                .entrySet()) {
+            final MachineWorkersConfigurationUnit key = entry.getKey();
+            final DerivedAllocation modification = entry.getValue();
+            DerivedAllocation current = currentMap.get(key);
+            if (current == null) {
+                currentMap.put(key, modification.asDerivedFrom(this));
+            } else {
+                current.resetAssignmentsTo(modification
+                        .copyAssignmentsAsChildrenOf(current));
+            }
+        }
+        this.derivedAllocations = new HashSet<DerivedAllocation>(currentMap
+                .values());
     }
 
     protected abstract void mergeAssignments(ResourceAllocation<?> modifications);
