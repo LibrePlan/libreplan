@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -97,19 +98,21 @@ public class TaskGroup extends TaskElement {
     }
 
     public void setTaskChildrenTo(List<TaskElement> children) {
-        List<TaskElement> toRemove = new ArrayList<TaskElement>();
-        for (TaskElement each : taskElements) {
-            if (!children.contains(each) && !(each instanceof TaskMilestone)) {
-                toRemove.add(each);
+        for (int i = 0; i < children.size(); i++) {
+            TaskElement element = children.get(i);
+            if (i >= taskElements.size()) {
+                taskElements.add(element);
+            } else {
+                taskElements.set(i, element);
             }
         }
-        taskElements.removeAll(toRemove);
-        for (TaskElement each : children) {
-            each.setParent(this);
-            if (!taskElements.contains(each)) {
-                taskElements.add(each);
-            }
+        if (children.size() < taskElements.size()) {
+            ListIterator<TaskElement> listIterator = taskElements
+                    .listIterator(children.size());
+            do {
+                listIterator.next();
+                listIterator.remove();
+            } while (listIterator.hasNext());
         }
-
     }
 }
