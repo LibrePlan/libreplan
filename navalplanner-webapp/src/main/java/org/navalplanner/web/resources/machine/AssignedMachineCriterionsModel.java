@@ -124,17 +124,17 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     }
 
     @Override
-    public Set<CriterionSatisfactionDTO> getAllCriterionSatisfactions() {
+    public List<CriterionSatisfactionDTO> getAllCriterionSatisfactions() {
         if (resource == null) {
-            return new HashSet<CriterionSatisfactionDTO>();
+            return new ArrayList<CriterionSatisfactionDTO>();
         }
         return allSatisfactionsDTO();
     }
 
     @Override
-    public Set<CriterionSatisfactionDTO> getFilterCriterionSatisfactions() {
+    public List<CriterionSatisfactionDTO> getFilterCriterionSatisfactions() {
         if (resource == null) {
-            return new HashSet<CriterionSatisfactionDTO>();
+            return new ArrayList<CriterionSatisfactionDTO>();
         }
         return filterSatisfactionsDTO();
     }
@@ -145,8 +145,8 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
         this.criterionSatisfactionDTOs.add(criterionSatisfactionDTO);
     }
 
-    private Set<CriterionSatisfactionDTO> allSatisfactionsDTO() {
-        Set<CriterionSatisfactionDTO> satisfactions = new HashSet<CriterionSatisfactionDTO>();
+    private List<CriterionSatisfactionDTO> allSatisfactionsDTO() {
+        List<CriterionSatisfactionDTO> satisfactions = new ArrayList<CriterionSatisfactionDTO>();
         for (CriterionSatisfactionDTO criterionSatisfactionDTO : criterionSatisfactionDTOs) {
             if (!criterionSatisfactionDTO.isIsDeleted()) {
                 satisfactions.add(criterionSatisfactionDTO);
@@ -155,8 +155,8 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
         return satisfactions;
     }
 
-    private Set<CriterionSatisfactionDTO> filterSatisfactionsDTO() {
-        Set<CriterionSatisfactionDTO> satisfactions = new HashSet<CriterionSatisfactionDTO>();
+    private List<CriterionSatisfactionDTO> filterSatisfactionsDTO() {
+        List<CriterionSatisfactionDTO> satisfactions = new ArrayList<CriterionSatisfactionDTO>();
         for (CriterionSatisfactionDTO criterionSatisfactionDTO : criterionSatisfactionDTOs) {
             if ((!criterionSatisfactionDTO.isIsDeleted())
                     && (criterionSatisfactionDTO.isCurrent())) {

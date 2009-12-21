@@ -21,7 +21,6 @@
 package org.navalplanner.web.resources.machine;
 
 import java.util.List;
-import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
@@ -44,13 +43,13 @@ public interface IAssignedMachineCriterionsModel {
     public boolean checkSameCriterionAndSameInterval(
             CriterionSatisfactionDTO satisfaction);
 
-    Set<CriterionSatisfactionDTO> getAllCriterionSatisfactions();
+    List<CriterionSatisfactionDTO> getAllCriterionSatisfactions();
 
     List<CriterionWithItsType> getCriterionWithItsType();
 
     List<CriterionWithItsType> getCriterionWorkersWithItsType();
 
-    Set<CriterionSatisfactionDTO> getFilterCriterionSatisfactions();
+    List<CriterionSatisfactionDTO> getFilterCriterionSatisfactions();
 
     void prepareForEdit(Resource resource);
 

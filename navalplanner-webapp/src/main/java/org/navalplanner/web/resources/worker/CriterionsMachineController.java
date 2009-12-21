@@ -10,7 +10,6 @@ import static org.navalplanner.web.common.InvalidInputsChecker.thereAreInvalidIn
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -18,6 +17,7 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -27,12 +27,14 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
@@ -67,13 +69,14 @@ public class CriterionsMachineController extends GenericForwardComposer {
     public void prepareForEdit(Machine machine) {
         machine.getConfigurationUnits();
         assignedMachineCriterionsModel.prepareForEdit(machine);
+        reload();
     }
 
     public void prepareForCreate(Machine machine) {
         assignedMachineCriterionsModel.prepareForCreate(machine);
     }
 
-    public Set<CriterionSatisfactionDTO> getCriterionSatisfactionDTOs() {
+    public List<CriterionSatisfactionDTO> getCriterionSatisfactionDTOs() {
         Comboitem comboitem = comboboxFilter.getSelectedItem();
         if((comboitem != null) && (comboitem.getLabel().equals("in force"))) {
             return assignedMachineCriterionsModel
@@ -98,6 +101,18 @@ public class CriterionsMachineController extends GenericForwardComposer {
 
     public void reload() {
         Util.reloadBindings(listingCriterions);
+        forceSortGridSatisfaction();
+    }
+
+    public void forceSortGridSatisfaction() {
+        Column column = (Column) listingCriterions.getColumns().getFirstChild();
+        ListModelExt model = (ListModelExt) listingCriterions.getModel();
+        if ("ascending".equals(column.getSortDirection())) {
+            model.sort(column.getSortAscending(), true);
+        }
+        if ("descending".equals(column.getSortDirection())) {
+            model.sort(column.getSortDescending(), false);
+        }
     }
 
     public void remove(CriterionSatisfactionDTO criterionSatisfactionDTO){
@@ -195,7 +210,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
         } else if (!criterionSatisfactionDTO.isPreviousStartDate((Date) value)) {
             throw new WrongValueException(
                     comp,
-                    _("End date is not valid, the new end date must be later the current end date"));
+                    _("Start date is not valid, the new start date must be previous the current start date"));
         }
     }
 
@@ -363,5 +378,9 @@ public class CriterionsMachineController extends GenericForwardComposer {
      */
     private Bandbox getBandType(Row row) {
         return (Bandbox) ((Hbox) row.getChildren().get(0)).getChildren().get(0);
+    }
+
+    public void validateConstraints() {
+        ConstraintChecker.isValid(self);
     }
 }

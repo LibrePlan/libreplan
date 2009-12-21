@@ -26,13 +26,13 @@
     <tabbox>
         <tabs>
             <tab id="tbMachineData" label="${i18n:_('Machine data')}"></tab>
-            <tab label="${i18n:_('Assigned criteria')}"></tab>
+            <tab id="assignedCriteriaTab" label="${i18n:_('Assigned criteria')}"></tab>
             <tab label="${i18n:_('Calendar')}"></tab>
             <tab label="${i18n:_('Configuration')}"></tab>
-            <tab label="${i18n:_('Cost category assignment')}"></tab>
+            <tab id="costCategoryAssignmentTab" label="${i18n:_('Cost category assignment')}"></tab>
         </tabs>
         <tabpanels>
-            <tabpanel>
+            <tabpanel id="machineDataTabpanel">
                 <grid fixedLayout="true">
                     <columns>
                         <column width="200px" />

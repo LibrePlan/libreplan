@@ -40,7 +40,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 
 /**
- *
+ * Controller for {@link Criterion} worker <br />
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class CriterionsController extends GenericForwardComposer {
@@ -194,8 +194,9 @@ public class CriterionsController extends GenericForwardComposer {
             throw new WrongValueException(comp,
                 _("Start date is not valid, the new start date must be lower than the end date"));
         }else if(!criterionSatisfactionDTO.isPreviousStartDate((Date) value)){
-            throw new WrongValueException(comp,
-                _("End date is not valid, the new end date must be later the current end date"));
+            throw new WrongValueException(
+                    comp,
+                    _("Start date is not valid, the new start date must be previous the current start date"));
         }
     }
 

@@ -34,6 +34,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.web.calendars.BaseCalendarEditionController;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -203,9 +204,12 @@ public class MachineCRUDController extends GenericForwardComposer {
     }
 
     public void save() {
+        validateConstraints();
         try {
             saveCalendar();
-            saveCriterions();
+            if (!confirmCriterions()) {
+                return;
+            }
             machineModel.confirmSave();
             goToList();
             messagesForUser.showMessage(Level.INFO, _("Machine saved"));
@@ -215,9 +219,12 @@ public class MachineCRUDController extends GenericForwardComposer {
     }
 
     public void saveAndContinue() {
+        validateConstraints();
         try {
             saveCalendar();
-            saveCriterions();
+            if (!confirmCriterions()) {
+                return;
+            }
             machineModel.confirmSave();
             goToEditForm(machineModel.getMachine());
             messagesForUser.showMessage(Level.INFO,_("Machine saved"));
@@ -225,6 +232,26 @@ public class MachineCRUDController extends GenericForwardComposer {
             messagesForUser.showMessage(Level.ERROR,
                     _("Could not save machine") + " " + showInvalidValues(e));
         }
+    }
+
+    private void validateConstraints() {
+        Tab tab = (Tab) editWindow.getFellowIfAny("tbMachineData");
+        try {
+            validateMachineDataTab();
+            tab = (Tab) editWindow.getFellowIfAny("assignedCriteriaTab");
+            criterionsController.validateConstraints();
+            tab = (Tab) editWindow.getFellowIfAny("costCategoryAssignmentTab");
+            resourcesCostCategoryAssignmentController.validateConstraints();
+            // TODO: check 'calendar' tab
+        } catch (WrongValueException e) {
+            tab.setSelected(true);
+            throw e;
+        }
+    }
+
+    private void validateMachineDataTab() {
+        ConstraintChecker.isValid(editWindow
+                .getFellowIfAny("machineDataTabpanel"));
     }
 
     private String showInvalidValues(ValidationException e) {
@@ -243,11 +270,14 @@ public class MachineCRUDController extends GenericForwardComposer {
         }
     }
 
-    private void saveCriterions() throws ValidationException {
+    private boolean confirmCriterions() throws ValidationException {
         if (criterionsController != null) {
-            criterionsController.validate();
+            if (!criterionsController.validate()) {
+                return false;
+            }
             criterionsController.save();
         }
+        return true;
     }
 
     private void goToList() {

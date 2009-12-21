@@ -15,25 +15,25 @@
                 </combobox>
                 <separator bar="false" spacing="20px" orient="vertical"/>
         </hbox>
-        <grid id="listingCriterions"
-            model="@{assignedCriterionsController.criterionSatisfactionDTOs}"
-            mold="paging" pageSize="10">
+        <newdatasortablegrid id="listingCriterions" mold="paging" pageSize="10" fixedLayout="true"
+            model="@{assignedCriterionsController.criterionSatisfactionDTOs}">
             <columns>
-                <column label="${i18n:_('Criterion name')}" sort="auto(criterionAndType)" sortDirection="ascending" />
-                <column label="${i18n:_('Starting date')}" width="200px" align="center"/>
-                <column label="${i18n:_('Ending date')}" width="200px" align="center"/>
-                <column label="${i18n:_('State')}" width="70px" align="center"/>
-                <column label="${i18n:_('Operations')}" width="70px" align="center"/>
+                <newdatasortablecolumn label="${i18n:_('Criterion name')}" sort="auto(criterionAndType)" sortDirection="ascending" />
+                <newdatasortablecolumn label="${i18n:_('Starting date')}" sort="auto(startDate)" width="200px" align="center"/>
+                <newdatasortablecolumn label="${i18n:_('Ending date')}" sort="auto(endDate)" width="200px" align="center"/>
+                <newdatasortablecolumn label="${i18n:_('State')}" sort="auto(state)" width="70px" align="center"/>
+                <newdatasortablecolumn label="${i18n:_('Operations')}" width="70px" align="center"/>
             </columns>
             <rows>
                 <row self="@{each='criterionSatisfactionDTO'}" value="@{criterionSatisfactionDTO}">
                     <hbox>
                     <!--  Select criterion -->
-                    <bandbox width="500px"
-                        visible="@{criterionSatisfactionDTO.isNewObject}"
+                    <bandbox width="300px"
+                        constraint="no empty"
+                        visible="@{criterionSatisfactionDTO.newObject}"
                         value = "@{criterionSatisfactionDTO.criterionAndType}">
                         <bandpopup>
-                            <listbox id="lbCriterions" width="500px" height="150px" fixedLayout="true"
+                            <listbox width="500px" height="150px" fixedLayout="true"
                              model="@{assignedCriterionsController.criterionWithItsTypes}"
                              onSelect="assignedCriterionsController.selectCriterionAndType(self.selectedItem,
                                     self.parent.parent,self.parent.parent.parent.parent.value);">
@@ -48,7 +48,7 @@
                             </listbox>
                         </bandpopup>
                     </bandbox>
-                    <label visible="@{criterionSatisfactionDTO.isOldObject}"
+                    <label visible="@{criterionSatisfactionDTO.oldObject}"
                         value="@{criterionSatisfactionDTO.criterionAndType}"/>
                     </hbox>
                     <datebox id="startDate" value="@{criterionSatisfactionDTO.startDate}"
@@ -68,7 +68,7 @@
                     </button>
                 </row>
             </rows>
-        </grid>
+        </newdatasortablegrid>
     </panelchildren>
 </panel>
 </vbox>
