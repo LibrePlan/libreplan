@@ -23,7 +23,9 @@ package org.navalplanner.web.common;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -122,8 +124,25 @@ public class ConfigurationModel implements IConfigurationModel {
                     _("Just one order sequence must be active"));
         }
 
+        if (!checkConstraintPrefixNotRepeated()) {
+            throw new ValidationException(
+                    _("Order sequence prefixes can not be repeated"));
+        }
+
         configurationDAO.save(configuration);
         storeAndRemoveOrderSequences();
+    }
+
+    private boolean checkConstraintPrefixNotRepeated() {
+        Set<String> prefixes = new HashSet<String>();
+        for (OrderSequence orderSequence : orderSequences) {
+            String prefix = orderSequence.getPrefix();
+            if (prefixes.contains(prefix)) {
+                return false;
+            }
+            prefixes.add(prefix);
+        }
+        return true;
     }
 
     private void storeAndRemoveOrderSequences() {
