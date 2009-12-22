@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<criterion-type-list xmlns="http://rest.ws.navalplanner.org">
+
+    <!-- Several errors: see comments -->
+    <criterion-type name="ct-1" description="ct-1 desc"
+        allow-hierarchy="false"
+        allow-simultaneous-criterions-per-resource="true" enabled="true"
+        resource="RESOURCE">
+
+        <criterion-list>
+            <!-- Missing criterion name -->
+            <criterion active="true"/>
+            <criterion name="c2" active="true">
+                <!-- Criterion hierarchy is not allowed -->
+                <children>
+                    <criterion name="c2-1" active="true">
+                        <children>
+                            <criterion name="c2-1-1" active="false"/>
+                            <criterion name="c2-1-2" active="true"/>
+                        </children>
+                    </criterion>
+                    <!-- Repeated criterion name -->
+                    <criterion name="c2-1" active="true"/>
+                </children>
+            </criterion>
+        </criterion-list>
+    </criterion-type>
+
+    <!-- Missing criterion type name -->
+    <criterion-type description="ct-2 desc" allow-hierarchy="true"
+        allow-simultaneous-criterions-per-resource="true" enabled="true"
+        resource="RESOURCE">
+        <criterion-list>
+            <criterion name="c1" active="true"/>
+            <criterion name="c2" active="true"/>
+        </criterion-list>
+    </criterion-type>
+
+    <!-- OK -->
+    <criterion-type name="ct-4" description="ct-4 desc" allow-hierarchy="true"
+        allow-simultaneous-criterions-per-resource="true" enabled="true"
+        resource="RESOURCE">
+
+        <criterion-list>
+            <criterion name="c1" active="true"/>
+            <criterion name="c2" active="true">
+                <children>
+                    <criterion name="c2-1" active="true">
+                        <children>
+                            <criterion name="c2-1-1" active="false"/>
+                            <criterion name="c2-1-2" active="true"/>
+                        </children>
+                    </criterion>
+                    <criterion name="c2-2" active="true"/>
+                </children>
+            </criterion>
+        </criterion-list>
+    </criterion-type>
+
+    <!-- Repeated criterion type name (see above) -->
+    <criterion-type name="ct-4" description="ct-4 desc" allow-hierarchy="false"
+        allow-simultaneous-criterions-per-resource="false" enabled="false"
+        resource="WORKER"/>
+
+    <!-- Repeated criterion type name (probably a criterion type with this name
+         already exists in the database) -->
+    <criterion-type name="TRAINING" description="ct-4 desc"
+        allow-hierarchy="false" allow-simultaneous-criterions-per-resource="false" enabled="false" resource="WORKER"/>
+
+    <!-- A non-active criterion has an active subcriterion -->
+    <criterion-type name="ct-5" description="ct-5 desc" allow-hierarchy="true"
+        allow-simultaneous-criterions-per-resource="true" enabled="true"
+        resource="RESOURCE">
+
+        <criterion-list>
+            <criterion name="c1" active="true"/>
+            <criterion name="c2" active="false">
+                <children>
+                    <criterion name="c2-1" active="false"/>
+                    <criterion name="c2-2" active="false">
+                        <children>
+                            <criterion name="c2-2-1" active="true"/>
+                        </children>
+                    </criterion>
+                </children>
+            </criterion>
+        </criterion-list>
+    </criterion-type>
+
+    <!-- OK -->
+    <criterion-type name="ct-6" description="ct-6 desc"
+        allow-hierarchy="false" allow-simultaneous-criterions-per-resource="false" enabled="false" resource="WORKER"/>
+
+    <!-- Resource type does not allow enabled criteria -->
+    <criterion-type name="ct-7" description="ct-5 desc" allow-hierarchy="true"
+        allow-simultaneous-criterions-per-resource="true" enabled="false"
+        resource="RESOURCE">
+
+        <criterion-list>
+            <criterion name="c1" active="true"/>
+            <criterion name="c2" active="false"/>
+        </criterion-list>
+    </criterion-type>
+
+</criterion-type-list>
