@@ -15,6 +15,8 @@
         <many-to-one name="defaultCalendar" cascade="none"
             column="CONFIGURATION_ID" />
 
+        <property name="companyCode" />
+
     </class>
 
 </hibernate-mapping>

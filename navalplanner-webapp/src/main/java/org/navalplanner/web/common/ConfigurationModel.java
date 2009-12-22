@@ -108,4 +108,19 @@ public class ConfigurationModel implements IConfigurationModel {
         configuration = getCurrentConfiguration();
     }
 
+    @Override
+    public String getCompanyCode() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getCompanyCode();
+    }
+
+    @Override
+    public void setCompanyCode(String companyCode) {
+        if (configuration != null) {
+            configuration.setCompanyCode(companyCode);
+        }
+    }
+
 }

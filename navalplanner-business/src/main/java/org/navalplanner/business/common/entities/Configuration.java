@@ -20,6 +20,9 @@
 
 package org.navalplanner.business.common.entities;
 
+import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.BaseEntity;
 
@@ -36,12 +39,36 @@ public class Configuration extends BaseEntity {
 
     private BaseCalendar defaultCalendar;
 
+    private String companyCode;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
 
+    @NotNull(message = "default calendar not specified")
     public BaseCalendar getDefaultCalendar() {
         return defaultCalendar;
+    }
+
+    public void setCompanyCode(String companyCode) {
+        if (companyCode != null) {
+            companyCode = companyCode.trim();
+        }
+        this.companyCode = companyCode;
+    }
+
+    @NotEmpty(message = "company code not specified")
+    public String getCompanyCode() {
+        return companyCode;
+    }
+
+    @AssertTrue(message = "company code must not contain white spaces")
+    public boolean checkConstraintCompanyCodeWithoutWhiteSpaces() {
+        if ((companyCode == null) || (companyCode.isEmpty())) {
+            return false;
+        }
+
+        return !companyCode.contains(" ");
     }
 
 }

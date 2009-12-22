@@ -47,6 +47,9 @@ public interface IConfigurationModel {
     BaseCalendar getDefaultCalendar();
     void setDefaultCalendar(BaseCalendar calendar);
 
+    String getCompanyCode();
+    void setCompanyCode(String companyCode);
+
     /*
      * Final conversation steps
      */

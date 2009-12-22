@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.Configuration;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -49,6 +50,10 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private IConfigurationModel configurationModel;
 
+    private IMessagesForUser messages;
+
+    private Component messagesContainer;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -66,6 +71,8 @@ public class ConfigurationController extends GenericForwardComposer {
                                 .getValue());
                     }
                 });
+
+        messages = new MessagesForUser(messagesContainer);
     }
 
     public List<BaseCalendar> getCalendars() {
@@ -81,9 +88,15 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void save() throws InterruptedException {
-        configurationModel.confirm();
-        Messagebox.show(_("Changes saved"), _("Information"), Messagebox.OK,
-                Messagebox.INFORMATION);
+        if (ConstraintChecker.isValid(configurationWindow)) {
+            try {
+                configurationModel.confirm();
+                messages.showMessage(Level.INFO, _("Changes saved"));
+                reloadWindow();
+            } catch (ValidationException e) {
+                messages.showInvalidValues(e);
+            }
+        }
     }
 
     public void cancel() throws InterruptedException {
@@ -95,6 +108,14 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private void reloadWindow() {
         Util.reloadBindings(configurationWindow);
+    }
+
+    public String getCompanyCode() {
+        return configurationModel.getCompanyCode();
+    }
+
+    public void setCompanyCode(String companyCode) {
+        configurationModel.setCompanyCode(companyCode);
     }
 
 }

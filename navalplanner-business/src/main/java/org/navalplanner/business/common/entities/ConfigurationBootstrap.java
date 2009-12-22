@@ -40,6 +40,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope("singleton")
 public class ConfigurationBootstrap implements IConfigurationBootstrap {
 
+    private final String COMPANY_CODE = "COMPANY_CODE";
+
     @Autowired
     private IConfigurationDAO configurationDAO;
 
@@ -53,6 +55,7 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
         if (list.isEmpty()) {
             Configuration configuration = Configuration.create();
             configuration.setDefaultCalendar(getDefaultCalendar());
+            configuration.setCompanyCode(COMPANY_CODE);
             configurationDAO.save(configuration);
         }
     }

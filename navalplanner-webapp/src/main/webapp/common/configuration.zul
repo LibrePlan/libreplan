@@ -32,18 +32,27 @@
 <window id="configurationWindow" self="@{define(content)}"
     apply="org.navalplanner.web.common.ConfigurationController"
     title="${i18n:_('Configuration')}">
+
+    <vbox id="messagesContainer" />
+
     <tabbox>
         <tabs>
             <tab label="${i18n:_('Main preferences')}" />
         </tabs>
         <tabpanels>
             <tabpanel>
-                <grid fixedLayout="true">
+                <grid fixedLayout="true" id="configurationVariables">
                     <columns>
                         <column width="200px" />
                         <column />
                     </columns>
                     <rows>
+                        <row>
+                            <label value="${i18n:_('Company code')}" />
+                            <textbox id="companyCode"
+                                value="@{configurationController.companyCode}"
+                                constraint="no empty:${i18n:_('Cannot be empty or null')}" />
+                        </row>
                         <row>
                             <label value="${i18n:_('Default calendar')}" />
                             <bandboxSearch
