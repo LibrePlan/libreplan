@@ -53,7 +53,8 @@ public interface IConfigurationModel {
 
     List<OrderSequence> getOrderSequences();
     void addOrderSequence();
-    void removeOrderSequence(OrderSequence orderSequence);
+    void removeOrderSequence(OrderSequence orderSequence)
+            throws IllegalArgumentException;
 
     /*
      * Final conversation steps

@@ -39,7 +39,6 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
@@ -111,8 +110,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void cancel() throws InterruptedException {
         configurationModel.cancel();
-        Messagebox.show(_("Changes have been canceled"), _("Information"),
-                Messagebox.OK, Messagebox.INFORMATION);
+        messages.showMessage(Level.INFO, _("Changes have been canceled"));
         reloadWindow();
     }
 
@@ -138,7 +136,11 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void removeOrderSequence(OrderSequence orderSequence) {
-        configurationModel.removeOrderSequence(orderSequence);
+        try {
+            configurationModel.removeOrderSequence(orderSequence);
+        } catch (IllegalArgumentException e) {
+            messages.showMessage(Level.ERROR, e.getMessage());
+        }
         reloadOrderSequencesList();
     }
 
@@ -249,7 +251,8 @@ public class ConfigurationController extends GenericForwardComposer {
         }
 
         private void appendOperations(Row row, final OrderSequence orderSequence) {
-            Button removeButton = Util.createRemoveButton(new EventListener() {
+            final Button removeButton = Util
+                    .createRemoveButton(new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {

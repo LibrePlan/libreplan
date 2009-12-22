@@ -23,6 +23,7 @@ package org.navalplanner.business.common.daos;
 import java.util.List;
 
 import org.navalplanner.business.common.entities.OrderSequence;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 
 /**
  * DAO interface for {@link OrderSequenceDAO}.
@@ -35,5 +36,8 @@ public interface IOrderSequenceDAO extends IGenericDAO<OrderSequence, Long> {
 
     List<OrderSequence> findOrderSquencesNotIn(
             List<OrderSequence> orderSequences);
+
+    void remove(OrderSequence orderSequence) throws InstanceNotFoundException,
+            IllegalArgumentException;
 
 }

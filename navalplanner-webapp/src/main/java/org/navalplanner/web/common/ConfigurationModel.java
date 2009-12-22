@@ -35,6 +35,7 @@ import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.OrderSequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.i18n.I18nHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -154,8 +155,10 @@ public class ConfigurationModel implements IConfigurationModel {
                 .findOrderSquencesNotIn(orderSequences);
         for (OrderSequence orderSequence : toRemove) {
             try {
-                orderSequenceDAO.remove(orderSequence.getId());
+                orderSequenceDAO.remove(orderSequence);
             } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalArgumentException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -206,7 +209,13 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
-    public void removeOrderSequence(OrderSequence orderSequence) {
+    public void removeOrderSequence(OrderSequence orderSequence)
+            throws IllegalArgumentException {
+        if (orderSequence.getLastValue() > 0) {
+            throw new IllegalArgumentException(
+                    I18nHelper
+                            ._("You can not remove this order sequence, it is already in use"));
+        }
         orderSequences.remove(orderSequence);
     }
 

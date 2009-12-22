@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.entities.OrderSequence;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.i18n.I18nHelper;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -56,6 +58,18 @@ public class OrderSequenceDAO extends GenericDAOHibernate<OrderSequence, Long>
         return getSession().createCriteria(OrderSequence.class).add(
                 Restrictions.not(Restrictions.in("id", orderSequenceIds)))
                 .list();
+    }
+
+    @Override
+    public void remove(OrderSequence orderSequence)
+            throws InstanceNotFoundException, IllegalArgumentException {
+        if (orderSequence.getLastValue() > 0) {
+            throw new IllegalArgumentException(
+                    I18nHelper
+                            ._("You can not remove this order sequence, it is already in use"));
+        }
+
+        remove(orderSequence.getId());
     }
 
 }
