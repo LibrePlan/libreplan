@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.common;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +34,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.databind.DataBinder;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -465,6 +468,44 @@ public class Util {
             }
         });
         return radio;
+    }
+
+    /**
+     * Creates an edit button with class and icon already set.
+     *
+     * @param eventListener
+     *            A event listener for {@link Events.ON_CLICK}
+     * @return An edit {@link Button}
+     */
+    public static Button createEditButton(EventListener eventListener) {
+        Button result = new Button();
+        result.setTooltiptext(_("Edit"));
+        result.setSclass("icono");
+        result.setImage("/common/img/ico_editar1.png");
+        result.setHoverImage("/common/img/ico_editar.png");
+
+        result.addEventListener(Events.ON_CLICK, eventListener);
+
+        return result;
+    }
+
+    /**
+     * Creates a remove button with class and icon already set.
+     *
+     * @param eventListener
+     *            A event listener for {@link Events.ON_CLICK}
+     * @return A remove {@link Button}
+     */
+    public static Button createRemoveButton(EventListener eventListener) {
+        Button result = new Button();
+        result.setTooltiptext(_("Remove"));
+        result.setSclass("icono");
+        result.setImage("/common/img/ico_borrar1.png");
+        result.setHoverImage("/common/img/ico_borrar.png");
+
+        result.addEventListener(Events.ON_CLICK, eventListener);
+
+        return result;
     }
 
 }
