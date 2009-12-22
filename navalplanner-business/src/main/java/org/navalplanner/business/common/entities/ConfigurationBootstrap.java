@@ -26,13 +26,15 @@ import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.daos.IOrderSequenceDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Creates a default {@link Configuration} with a default {@link BaseCalendar}.
+ * Creates a default {@link Configuration} with default values. It also creates
+ * a default {@link OrderSequence}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
@@ -40,13 +42,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope("singleton")
 public class ConfigurationBootstrap implements IConfigurationBootstrap {
 
-    private final String COMPANY_CODE = "COMPANY_CODE";
+    private static final String COMPANY_CODE = "COMPANY_CODE";
+
+    private static final String PREFIX = "PREFIX";
 
     @Autowired
     private IConfigurationDAO configurationDAO;
 
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
+
+    @Autowired
+    private IOrderSequenceDAO orderSequenceDAO;
 
     @Override
     @Transactional
@@ -57,6 +64,18 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
             configuration.setDefaultCalendar(getDefaultCalendar());
             configuration.setCompanyCode(COMPANY_CODE);
             configurationDAO.save(configuration);
+        }
+
+        createDefaultOrderSquenceIfNotExist();
+    }
+
+    private void createDefaultOrderSquenceIfNotExist() {
+        List<OrderSequence> orderSequences = orderSequenceDAO.getAll();
+
+        if (orderSequences.isEmpty()) {
+            OrderSequence orderSequence = OrderSequence.create(PREFIX);
+            orderSequence.setActive(true);
+            orderSequenceDAO.save(orderSequence);
         }
     }
 
