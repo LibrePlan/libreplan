@@ -119,6 +119,11 @@ public class PlanningTabCreator {
                     public String getIcon() {
                         return "/common/img/ico_planificador.png";
                     }
+
+                    @Override
+                    public boolean isApplicableTo(TaskElement task) {
+                        return true;
+                    }
                 };
                 commands.add(scheduleCommand);
                 companyPlanningController.setAdditional(commands);

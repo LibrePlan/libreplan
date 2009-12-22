@@ -73,6 +73,11 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
             return null;
         }
 
+        @Override
+        public boolean isApplicableTo(T task) {
+            return true;
+        }
+
     }
 
     private IAdapterToTaskFundamentalProperties<T> adapter;

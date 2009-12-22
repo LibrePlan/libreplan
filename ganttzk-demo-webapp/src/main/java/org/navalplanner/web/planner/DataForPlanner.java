@@ -102,6 +102,11 @@ public class DataForPlanner {
                         return null;
                     }
 
+                    @Override
+                    public boolean isApplicableTo(ITaskFundamentalProperties task) {
+                        return true;
+                    }
+
                 });
         configuration.setDoubleClickCommand(new ICommandOnTask<ITaskFundamentalProperties>() {
 
@@ -121,6 +126,11 @@ public class DataForPlanner {
                     @Override
                     public String getIcon() {
                         return null;
+                    }
+
+                    @Override
+                    public boolean isApplicableTo(ITaskFundamentalProperties task) {
+                        return true;
                     }
 
                 });

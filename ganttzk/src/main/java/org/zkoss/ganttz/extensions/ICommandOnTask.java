@@ -28,4 +28,11 @@ public interface ICommandOnTask<T> {
 
     public void doAction(IContextWithPlannerTask<T> context, T task);
 
+    /**
+     * @param task
+     * @return <code>true</code> if and only if this command is applicable to
+     *         task
+     */
+    public boolean isApplicableTo(T task);
+
 }

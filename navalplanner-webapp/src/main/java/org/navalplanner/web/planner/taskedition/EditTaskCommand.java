@@ -84,4 +84,9 @@ public class EditTaskCommand implements IEditTaskCommand {
         return "/common/img/ico_editar.png";
     }
 
+    @Override
+    public boolean isApplicableTo(TaskElement task) {
+        return true;
+    }
+
 }

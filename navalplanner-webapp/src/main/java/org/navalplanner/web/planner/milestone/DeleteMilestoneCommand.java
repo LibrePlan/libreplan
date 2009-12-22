@@ -42,7 +42,7 @@ public class DeleteMilestoneCommand implements IDeleteMilestoneCommand {
     @Override
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement task) {
-        if (task instanceof TaskMilestone) {
+        if (isApplicableTo(task)) {
             planningState.removed(task);
             context.remove(task);
         }
@@ -61,6 +61,11 @@ public class DeleteMilestoneCommand implements IDeleteMilestoneCommand {
     @Override
     public void setState(PlanningState planningState) {
         this.planningState = planningState;
+    }
+
+    @Override
+    public boolean isApplicableTo(TaskElement task) {
+        return task instanceof TaskMilestone;
     }
 
 }

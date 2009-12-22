@@ -93,7 +93,8 @@ public class CommandOnTaskContextualized<T> {
     }
 
     public boolean accepts(TaskComponent taskComponent) {
-        return true;
+        T domainObject = domainObjectFor(taskComponent.getTask());
+        return commandOnTask.isApplicableTo(domainObject);
     }
 
 }

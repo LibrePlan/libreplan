@@ -104,4 +104,9 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
         return "/common/img/milestone.png";
     }
 
+    @Override
+    public boolean isApplicableTo(TaskElement task) {
+        return true;
+    }
+
 }

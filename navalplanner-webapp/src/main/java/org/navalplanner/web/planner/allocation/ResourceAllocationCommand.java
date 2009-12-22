@@ -48,7 +48,7 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
     @Override
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement task) {
-        if (task instanceof Task) {
+        if (isApplicableTo(task)) {
             this.resourceAllocationController.showWindow((Task) task, context
                     .getTask(), planningState);
         }
@@ -72,5 +72,9 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
         return "/common/img/ico_allocation.png";
     }
 
+    @Override
+    public boolean isApplicableTo(TaskElement task) {
+        return task instanceof Task;
+    }
 
 }

@@ -46,7 +46,7 @@ public class CalendarAllocationCommand implements ICalendarAllocationCommand {
     @Override
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement task) {
-        if (task instanceof Task) {
+        if (isApplicableTo(task)) {
             this.calendarAllocationController.showWindow((Task) task, context
                     .getTask());
         }
@@ -66,6 +66,11 @@ public class CalendarAllocationCommand implements ICalendarAllocationCommand {
     @Override
     public String getIcon() {
         return "/common/img/ico_calendar.png";
+    }
+
+    @Override
+    public boolean isApplicableTo(TaskElement task) {
+        return task instanceof Task;
     }
 
 }
