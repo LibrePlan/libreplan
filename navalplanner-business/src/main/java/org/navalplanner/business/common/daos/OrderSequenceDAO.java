@@ -20,8 +20,10 @@
 
 package org.navalplanner.business.common.daos;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.entities.OrderSequence;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -40,6 +42,20 @@ public class OrderSequenceDAO extends GenericDAOHibernate<OrderSequence, Long>
     @Override
     public List<OrderSequence> getAll() {
         return list(OrderSequence.class);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<OrderSequence> findOrderSquencesNotIn(
+            List<OrderSequence> orderSequences) {
+        List<Long> orderSequenceIds = new ArrayList<Long>();
+        for (OrderSequence orderSequence : orderSequences) {
+            orderSequenceIds.add(orderSequence.getId());
+        }
+
+        return getSession().createCriteria(OrderSequence.class).add(
+                Restrictions.not(Restrictions.in("id", orderSequenceIds)))
+                .list();
     }
 
 }

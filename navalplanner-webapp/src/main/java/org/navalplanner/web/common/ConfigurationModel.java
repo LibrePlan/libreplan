@@ -20,12 +20,19 @@
 
 package org.navalplanner.web.common;
 
+import static org.navalplanner.web.I18nHelper._;
+
+import java.util.Collections;
 import java.util.List;
 
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.daos.IOrderSequenceDAO;
 import org.navalplanner.business.common.entities.Configuration;
+import org.navalplanner.business.common.entities.OrderSequence;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -44,11 +51,16 @@ public class ConfigurationModel implements IConfigurationModel {
      */
     private Configuration configuration;
 
+    private List<OrderSequence> orderSequences;
+
     @Autowired
     private IConfigurationDAO configurationDAO;
 
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
+
+    @Autowired
+    private IOrderSequenceDAO orderSequenceDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -68,6 +80,7 @@ public class ConfigurationModel implements IConfigurationModel {
     @Transactional(readOnly = true)
     public void init() {
         this.configuration = getCurrentConfiguration();
+        this.orderSequences = orderSequenceDAO.getAll();
     }
 
     private Configuration getCurrentConfiguration() {
@@ -99,13 +112,53 @@ public class ConfigurationModel implements IConfigurationModel {
     @Override
     @Transactional
     public void confirm() {
+        if (orderSequences.isEmpty()) {
+            throw new ValidationException(
+                    _("At least one order sequence is needed"));
+        }
+
+        if (!checkConstraintJustOneOrderSequenceActive()) {
+            throw new ValidationException(
+                    _("Just one order sequence must be active"));
+        }
+
         configurationDAO.save(configuration);
+        storeAndRemoveOrderSequences();
+    }
+
+    private void storeAndRemoveOrderSequences() {
+        for (OrderSequence orderSequence : orderSequences) {
+            orderSequenceDAO.save(orderSequence);
+        }
+
+        List<OrderSequence> toRemove = orderSequenceDAO
+                .findOrderSquencesNotIn(orderSequences);
+        for (OrderSequence orderSequence : toRemove) {
+            try {
+                orderSequenceDAO.remove(orderSequence.getId());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private boolean checkConstraintJustOneOrderSequenceActive() {
+        boolean someoneActive = false;
+        for (OrderSequence orderSequence : orderSequences) {
+            if (orderSequence.isActive()) {
+                if (someoneActive) {
+                    return false;
+                }
+                someoneActive = true;
+            }
+        }
+        return someoneActive;
     }
 
     @Override
     @Transactional(readOnly = true)
     public void cancel() {
-        configuration = getCurrentConfiguration();
+        init();
     }
 
     @Override
@@ -121,6 +174,21 @@ public class ConfigurationModel implements IConfigurationModel {
         if (configuration != null) {
             configuration.setCompanyCode(companyCode);
         }
+    }
+
+    @Override
+    public List<OrderSequence> getOrderSequences() {
+        return Collections.unmodifiableList(orderSequences);
+    }
+
+    @Override
+    public void addOrderSequence() {
+        orderSequences.add(OrderSequence.create(""));
+    }
+
+    @Override
+    public void removeOrderSequence(OrderSequence orderSequence) {
+        orderSequences.remove(orderSequence);
     }
 
 }

@@ -33,4 +33,7 @@ public interface IOrderSequenceDAO extends IGenericDAO<OrderSequence, Long> {
 
     List<OrderSequence> getAll();
 
+    List<OrderSequence> findOrderSquencesNotIn(
+            List<OrderSequence> orderSequences);
+
 }

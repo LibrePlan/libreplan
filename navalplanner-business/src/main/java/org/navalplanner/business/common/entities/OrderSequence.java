@@ -20,6 +20,9 @@
 
 package org.navalplanner.business.common.entities;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import org.hibernate.criterion.Order;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
@@ -123,6 +126,16 @@ public class OrderSequence extends BaseEntity {
             return true;
         }
         return false;
+    }
+
+    public static String formatValue(int numberOfDigits, int value) {
+        String format = "";
+        for (int i = 0; i < numberOfDigits; i++) {
+            format += "0";
+        }
+
+        NumberFormat numberFormat = new DecimalFormat(format);
+        return numberFormat.format(value);
     }
 
 }

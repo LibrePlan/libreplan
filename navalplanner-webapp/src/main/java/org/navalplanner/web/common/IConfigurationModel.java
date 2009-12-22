@@ -23,6 +23,7 @@ package org.navalplanner.web.common;
 import java.util.List;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.entities.OrderSequence;
 
 /**
  * Contract for {@link ConfigurationModel}.
@@ -49,6 +50,10 @@ public interface IConfigurationModel {
 
     String getCompanyCode();
     void setCompanyCode(String companyCode);
+
+    List<OrderSequence> getOrderSequences();
+    void addOrderSequence();
+    void removeOrderSequence(OrderSequence orderSequence);
 
     /*
      * Final conversation steps
