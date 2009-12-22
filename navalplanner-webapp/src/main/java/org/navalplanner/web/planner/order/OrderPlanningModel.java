@@ -69,6 +69,7 @@ import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
+import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.navalplanner.web.planner.taskedition.IEditTaskCommand;
@@ -191,6 +192,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(resourceAllocationController);
         configuration.addCommandOnTask(resourceAllocationCommand);
         configuration.addCommandOnTask(buildMilestoneCommand());
+        configuration.addCommandOnTask(buildDeleteMilestoneCommand());
         configuration
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
         configuration
@@ -223,6 +225,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 chartEarnedValueTimeplot, planner.getTimeTracker());
         refillLoadChartWhenNeeded(planner, saveCommand, earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
+    }
+
+    private IDeleteMilestoneCommand buildDeleteMilestoneCommand() {
+        IDeleteMilestoneCommand result = getDeleteMilestoneCommand();
+        result.setState(planningState);
+        return result;
     }
 
     private void showDeadlineIfExists(Order orderReloaded,
@@ -652,6 +660,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract IResourceAllocationCommand getResourceAllocationCommand();
 
     protected abstract IAddMilestoneCommand getAddMilestoneCommand();
+
+    protected abstract IDeleteMilestoneCommand getDeleteMilestoneCommand();
 
     protected abstract IEditTaskCommand getEditTaskCommand();
 
