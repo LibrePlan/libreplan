@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.Registry;
 
 /**
@@ -47,14 +46,10 @@ public class Worker extends Resource {
         return worker;
     }
 
-    @NotNull
-    @NotEmpty
     private String firstName;
 
-    @NotEmpty
     private String surname;
 
-    @NotEmpty
     private String nif;
 
     /**
@@ -79,6 +74,7 @@ public class Worker extends Resource {
         return getNif() + " :: " + getDescription();
     }
 
+    @NotEmpty
     public String getFirstName() {
         return firstName;
     }
@@ -87,6 +83,7 @@ public class Worker extends Resource {
         this.firstName = firstName;
     }
 
+    @NotEmpty
     public String getSurname() {
         return surname;
     }
@@ -99,6 +96,7 @@ public class Worker extends Resource {
         return firstName + " " + surname;
     }
 
+    @NotEmpty
     public String getNif() {
         return nif;
     }

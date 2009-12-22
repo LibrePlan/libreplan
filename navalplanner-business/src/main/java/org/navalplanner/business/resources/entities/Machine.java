@@ -16,16 +16,14 @@ import org.navalplanner.business.resources.daos.IMachineDAO;
 * Entity
 *
 * @author Javier Moran Rua <jmoran@igalia.com>
+* @author Fernando Bellas Permuy <fbellas@udc.es>
 */
 public class Machine extends Resource {
 
-    @NotEmpty
     private String code;
 
-    @NotEmpty
     private String name;
 
-    @NotEmpty
     private String description;
 
     private Set<MachineWorkersConfigurationUnit> configurationUnits = new HashSet<MachineWorkersConfigurationUnit>();
@@ -45,6 +43,12 @@ public class Machine extends Resource {
         configurationUnits.remove(unit);
     }
 
+    public static Machine create(String code, String name, String description) {
+        Machine machine = new Machine(code, name, description);
+        machine.setNewObject(true);
+        return machine;
+    }
+
     protected Machine() {
 
     }
@@ -59,6 +63,7 @@ public class Machine extends Resource {
         return create(new Machine());
     }
 
+    @NotEmpty
     public String getCode() {
         return code;
     }
@@ -67,6 +72,7 @@ public class Machine extends Resource {
         this.code = code;
     }
 
+    @NotEmpty
     public String getName() {
         return name;
     }
