@@ -92,4 +92,8 @@ public class CommandOnTaskContextualized<T> {
         return commandOnTask.getIcon();
     }
 
+    public boolean accepts(TaskComponent taskComponent) {
+        return true;
+    }
+
 }

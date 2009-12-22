@@ -57,8 +57,6 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private transient IZoomLevelChangedListener zoomLevelChangedListener;
 
-    private Menupopup contextMenu;
-
     private List<Task> originalTasks;
 
     private final CommandOnTaskContextualized<?> doubleClickCommand;
@@ -213,7 +211,7 @@ public class TaskList extends XulElement implements AfterCompose {
             @Override
             public void onEvent(Event event) throws Exception {
                 try {
-                    getContextMenuForTasks().open(taskComponent);
+                    getContextMenuFor(taskComponent).open(taskComponent);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -281,8 +279,10 @@ public class TaskList extends XulElement implements AfterCompose {
         }
     }
 
-    private Menupopup getContextMenuForTasks() {
-        if (contextMenu == null) {
+    private Map<TaskComponent, Menupopup> contextMenus = new HashMap<TaskComponent, Menupopup>();
+
+    private Menupopup getContextMenuFor(TaskComponent taskComponent) {
+        if (contextMenus.get(taskComponent) == null) {
             MenuBuilder<TaskComponent> menuBuilder = MenuBuilder.on(getPage(),
                     getTaskComponents());
             if (disabilityConfiguration.isAddingDependenciesEnabled()) {
@@ -298,12 +298,16 @@ public class TaskList extends XulElement implements AfterCompose {
                         });
             }
             for (CommandOnTaskContextualized<?> command : commandsOnTasksContextualized) {
-                menuBuilder.item(command.getName(), command.getIcon(), command
-                        .toItemAction());
+                if (command.accepts(taskComponent)) {
+                    menuBuilder.item(command.getName(), command.getIcon(),
+                            command.toItemAction());
+                }
             }
-            contextMenu = menuBuilder.createWithoutSettingContext();
+            Menupopup result = menuBuilder.createWithoutSettingContext();
+            contextMenus.put(taskComponent, result);
+            return result;
         }
-        return contextMenu;
+        return contextMenus.get(taskComponent);
     }
 
     GanttPanel getGanttPanel() {
