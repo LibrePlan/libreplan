@@ -190,7 +190,8 @@ public class ConfigurationController extends GenericForwardComposer {
 
         private void appendPrefixTextbox(Row row,
                 final OrderSequence orderSequence) {
-            Textbox textbox = Util.bind(new Textbox(),
+            final Textbox tempTextbox = new Textbox();
+            Textbox textbox = Util.bind(tempTextbox,
                     new Util.Getter<String>() {
 
                 @Override
@@ -201,10 +202,19 @@ public class ConfigurationController extends GenericForwardComposer {
 
                 @Override
                 public void set(String value) {
-                    orderSequence.setPrefix(value);
+                    try {
+                        orderSequence.setPrefix(value);
+                    } catch (IllegalArgumentException e) {
+                        throw new WrongValueException(tempTextbox, e
+                                .getMessage());
+                    }
                 }
             });
             textbox.setConstraint("no empty:" + _("cannot be null or empty"));
+
+            if (orderSequence.isAlreadyInUse()) {
+                textbox.setDisabled(true);
+            }
 
             row.appendChild(textbox);
         }
@@ -230,6 +240,10 @@ public class ConfigurationController extends GenericForwardComposer {
                 }
             });
             intbox.setConstraint("no empty:" + _("cannot be null or empty"));
+
+            if (orderSequence.isAlreadyInUse()) {
+                intbox.setDisabled(true);
+            }
 
             row.appendChild(intbox);
         }

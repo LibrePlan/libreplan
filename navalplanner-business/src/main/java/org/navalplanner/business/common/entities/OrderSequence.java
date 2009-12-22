@@ -62,7 +62,13 @@ public class OrderSequence extends BaseEntity {
 
     private Boolean active = false;
 
-    public void setPrefix(String prefix) {
+    public void setPrefix(String prefix) throws IllegalArgumentException {
+        if (isAlreadyInUse()) {
+            throw new IllegalArgumentException(
+                    I18nHelper
+                            ._("You can not modifiy this order sequence, it is already in use"));
+        }
+
         this.prefix = prefix;
     }
 
@@ -72,10 +78,6 @@ public class OrderSequence extends BaseEntity {
             prefix = prefix.trim();
         }
         return prefix;
-    }
-
-    public void setLastValue(Integer lastValue) {
-        this.lastValue = lastValue;
     }
 
     @NotNull(message = "last value not specified")
@@ -102,6 +104,12 @@ public class OrderSequence extends BaseEntity {
 
     public void setNumberOfDigits(Integer numberOfDigits)
             throws IllegalArgumentException {
+        if (isAlreadyInUse()) {
+            throw new IllegalArgumentException(
+                    I18nHelper
+                            ._("You can not modifiy this order sequence, it is already in use"));
+        }
+
         if ((numberOfDigits != null)
                 && (numberOfDigits >= MIN_NUMBER_OF_DIGITS)
                 && (numberOfDigits <= MAX_NUMBER_OF_DIGITS)) {
@@ -136,6 +144,10 @@ public class OrderSequence extends BaseEntity {
 
         NumberFormat numberFormat = new DecimalFormat(format);
         return numberFormat.format(value);
+    }
+
+    public boolean isAlreadyInUse() {
+        return lastValue > 0;
     }
 
 }
