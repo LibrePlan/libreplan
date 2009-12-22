@@ -25,12 +25,14 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * DTO for a list of <code>Resource</code> entities.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
+@XmlRootElement(name="resource-list")
 public class ResourceListDTO {
 
     @XmlElements({

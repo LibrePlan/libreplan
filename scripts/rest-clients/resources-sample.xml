@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<resource-list xmlns="http://rest.ws.navalplanner.org">
+
+    <!--  *** Machines *** -->
+    <!-- OK -->
+    <machine code="m1" name="m1-name" description="m1-desc"/>
+    <!--  Missing code and name (description is optional). -->
+    <machine code="" description=""/>
+
+    <!--  *** Workers *** -->
+    <!-- OK -->
+    <worker first-name="w1-firstName" surname="w1-surname" nif="w1-nif"/>
+    <!--  Missing first name, surname, and nif. -->
+    <worker first-name="" surname="" nif=""/>
+
+</resource-list>

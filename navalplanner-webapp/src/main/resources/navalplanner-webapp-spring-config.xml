@@ -48,6 +48,7 @@
         <jaxrs:serviceBeans>
             <ref bean="criterionServiceREST"/>
             <ref bean="orderElementServiceREST"/>
+            <ref bean="resourceServiceREST"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="runtimeExceptionMapper" />

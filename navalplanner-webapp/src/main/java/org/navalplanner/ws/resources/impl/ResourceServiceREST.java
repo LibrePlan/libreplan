@@ -23,6 +23,8 @@ package org.navalplanner.ws.resources.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
@@ -38,6 +40,7 @@ import org.navalplanner.ws.resources.api.ResourceDTO;
 import org.navalplanner.ws.resources.api.ResourceListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * REST-based implementation of <code>IResourceService</code>.
@@ -53,6 +56,9 @@ public class ResourceServiceREST implements IResourceService {
     private IResourceDAO resourceDAO;
 
     @Override
+    @POST
+    @Consumes("application/xml")
+    @Transactional
     public InstanceConstraintViolationsListDTO addResources(
         ResourceListDTO resources) {
 
