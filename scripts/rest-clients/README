@@ -10,7 +10,7 @@
 
   * Import criterion types:
 
-    - post-criterions-types.sh criterion-types-sample.xml
+    - import-criterions-types.sh criterion-types-sample.xml
       (authenticate with wswriter/wswriter)
 
     - Check the returned errors are consistent with the comments in
@@ -18,11 +18,11 @@
 
   * Export criterion types:
 
-    - get-criterion-types.sh (authenticate with wsreader/wsreader)
+    - export-criterion-types.sh (authenticate with wsreader/wsreader)
 
 + When working with the online demo:
 
-  * post-criterions-types.sh --prod criterion-types-sample.xml
+  * import-criterions-types.sh --prod criterion-types-sample.xml
     (authenticate with wswriter/wswriter)
 
-  * get-criterion-types.sh --prod (authenticate with wsreader/wsreader)
+  * export-criterion-types.sh --prod (authenticate with wsreader/wsreader)
