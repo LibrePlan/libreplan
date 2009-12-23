@@ -146,6 +146,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             if (workerModel.getWorker().isVirtual()) {
                 workerModel.setCapacity(getVirtualWorkerCapacity());
             }
+            if (workerModel.getCalendar() == null) {
+                createCalendar();
+            }
             workerModel.save();
             goToList();
             Util.reloadBindings(listWindow);
