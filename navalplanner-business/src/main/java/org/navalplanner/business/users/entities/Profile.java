@@ -23,8 +23,12 @@ package org.navalplanner.business.users.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.users.daos.IProfileDAO;
 
 /**
  * Entity for modeling a profile.
@@ -78,5 +82,24 @@ public class Profile extends BaseEntity {
 
     public void removeRole(UserRole role) {
         roles.remove(role);
+    }
+
+    @AssertTrue(message="profile name is already being used by another profile")
+    public boolean checkConstraintUniqueLoginName() {
+
+        IProfileDAO dao = Registry.getProfileDAO();
+
+        if (isNewObject()) {
+            return !dao.existsByProfileNameAnotherTransaction(profileName);
+        } else {
+            try {
+                Profile p = dao.findByProfileNameAnotherTransaction(profileName);
+                return p.getId().equals(getId());
+            } catch (InstanceNotFoundException e) {
+                return true;
+            }
+
+        }
+
     }
 }

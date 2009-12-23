@@ -31,6 +31,7 @@ import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
+import org.navalplanner.business.users.daos.IProfileDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +93,9 @@ public class Registry {
     @Autowired
     private IConfigurationDAO configurationDAO;
 
+    @Autowired
+    private IProfileDAO profileDAO;
+
     private Registry() {
     }
 
@@ -149,6 +153,10 @@ public class Registry {
 
     public static IConfigurationDAO getConfigurationDAO() {
         return getInstance().configurationDAO;
+    }
+
+    public static IProfileDAO getProfileDAO() {
+        return getInstance().profileDAO;
     }
 
 }

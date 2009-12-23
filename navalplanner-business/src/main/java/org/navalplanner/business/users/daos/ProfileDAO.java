@@ -20,9 +20,14 @@
 
 package org.navalplanner.business.users.daos;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.users.entities.Profile;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate DAO for the <code>Profile</code> entity.
@@ -32,5 +37,46 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
         IProfileDAO {
+
+    @Override
+    public boolean existsByProfileName(String profileName) {
+        try {
+            findByProfileName(profileName);
+            return true;
+        }
+        catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByProfileNameAnotherTransaction(String profileName) {
+        return existsByProfileName(profileName);
+    }
+
+    @Override
+    public Profile findByProfileName(String profileName)
+        throws InstanceNotFoundException{
+
+        Criteria c = getSession().createCriteria(Profile.class);
+        c.add(Restrictions.eq("profileName", profileName).ignoreCase());
+        Profile profile = (Profile) c.uniqueResult();
+
+        if (profile == null) {
+            throw new InstanceNotFoundException(profileName,
+                Profile.class.getName());
+        } else {
+            return profile;
+        }
+
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public Profile findByProfileNameAnotherTransaction(String profileName)
+            throws InstanceNotFoundException {
+        return findByProfileName(profileName);
+    }
 
 }

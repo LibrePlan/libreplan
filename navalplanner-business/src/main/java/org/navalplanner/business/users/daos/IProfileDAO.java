@@ -21,6 +21,7 @@
 package org.navalplanner.business.users.daos;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.users.entities.Profile;
 
 /**
@@ -29,5 +30,15 @@ import org.navalplanner.business.users.entities.Profile;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 public interface IProfileDAO extends IGenericDAO<Profile, Long>{
+
+    boolean existsByProfileName(String profileName);
+
+    boolean existsByProfileNameAnotherTransaction(String profileName);
+
+    Profile findByProfileName(String profileName)
+        throws InstanceNotFoundException;
+
+    Profile findByProfileNameAnotherTransaction(String profileName)
+        throws InstanceNotFoundException;
 
 }
