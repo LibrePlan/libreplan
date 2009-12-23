@@ -126,7 +126,7 @@
                      name="derivedFrom" not-null="true" />
         <many-to-one class="org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit"
             name="configurationUnit" not-null="true"/>
-        <set name="assignments" cascade="all" inverse="true">
+        <set name="assignments" cascade="all-delete-orphan" inverse="true">
             <key column="DERIVED_ALLOCATION_ID"/>
             <one-to-many class="DerivedDayAssignment"/>
         </set>

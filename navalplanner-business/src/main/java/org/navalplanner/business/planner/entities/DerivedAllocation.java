@@ -83,7 +83,7 @@ public class DerivedAllocation extends BaseEntity {
     @NotNull
     private MachineWorkersConfigurationUnit configurationUnit;
 
-    private Set<DerivedDayAssignment> assignments;
+    private Set<DerivedDayAssignment> assignments = new HashSet<DerivedDayAssignment>();
 
     public BigDecimal getAlpha() {
         return configurationUnit.getAlpha();
@@ -131,7 +131,8 @@ public class DerivedAllocation extends BaseEntity {
 
     public void resetAssignmentsTo(List<DerivedDayAssignment> dayAssignments) {
         checkAreValid(dayAssignments);
-        this.assignments = new HashSet<DerivedDayAssignment>(dayAssignments);
+        this.assignments.clear();
+        this.assignments.addAll(dayAssignments);
     }
 
     public DerivedAllocation asDerivedFrom(ResourceAllocation<?> allocation)

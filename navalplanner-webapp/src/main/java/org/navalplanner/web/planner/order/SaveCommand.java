@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +36,8 @@ import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.DerivedAllocation;
+import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -138,9 +141,25 @@ public class SaveCommand implements ISaveCommand {
         if (taskElement.isNewObject()) {
             taskElement.dontPoseAsTransientObjectAnymore();
         }
+        Set<ResourceAllocation<?>> resourceAllocations = taskElement.getResourceAllocations();
+        derivedDontPoseAsTransient(resourceAllocations);
         if (!taskElement.isLeaf()) {
             for (TaskElement each : taskElement.getChildren()) {
                 dontPoseAsTransient(each);
+            }
+        }
+    }
+
+    private void derivedDontPoseAsTransient(
+            Set<ResourceAllocation<?>> resourceAllocations) {
+        for (ResourceAllocation<?> each : resourceAllocations) {
+            for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
+                eachDerived.dontPoseAsTransientObjectAnymore();
+                List<DerivedDayAssignment> assignments = eachDerived
+                        .getAssignments();
+                for (DerivedDayAssignment eachAssignment : assignments) {
+                    eachAssignment.dontPoseAsTransientObjectAnymore();
+                }
             }
         }
     }
