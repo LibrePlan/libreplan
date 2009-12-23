@@ -36,6 +36,7 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -210,6 +211,22 @@ public class UserCRUDController extends GenericForwardComposer implements
      */
     public void setPassword(String password) {
         userModel.setPassword(password);
+        //update the constraint on the confirmation password box
+        ((Textbox)createWindow.getFellowIfAny("passwordConfirmation")).
+            clearErrorMessage(true);
+    }
+
+    public Constraint validatePasswordConfirmation() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                ((Textbox)comp).setRawValue(value);
+                if(!((String)value).equals(passwordBox.getValue())) {
+                    throw new WrongValueException(comp, _("passwords don't match"));
+                }
+            }
+        };
     }
 
     private OnlyOneVisible getVisibility() {

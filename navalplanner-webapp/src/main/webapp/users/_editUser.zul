@@ -49,6 +49,12 @@
                                     onChange="controller.setPassword(self.value);" width="300px"/>
                             </row>
                             <row>
+                                <label value="${i18n:_('Password confirmation')}:" />
+                                <textbox id="passwordConfirmation" type="password"
+                                    constraint="@{controller.validatePasswordConfirmation}"
+                                    width="300px"/>
+                            </row>
+                            <row>
                                 <label value="${i18n:_('Disabled')}:" />
                                 <checkbox id="disabled"
                                     checked="@{controller.user.disabled}" width="300px" />
