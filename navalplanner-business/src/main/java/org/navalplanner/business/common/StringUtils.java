@@ -18,28 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.common.api;
-
-import javax.xml.bind.annotation.XmlAttribute;
+package org.navalplanner.business.common;
 
 /**
- * DTO for modeling a constraint violation.
+ * String utility methods.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class ConstraintViolationDTO {
+public class StringUtils {
 
-    @XmlAttribute(name="field-name")
-    public String fieldName;
+    private StringUtils() {}
 
-    @XmlAttribute
-    public String message;
-
-    public ConstraintViolationDTO() {}
-
-    public ConstraintViolationDTO(String fieldName, String message) {
-        this.fieldName = fieldName;
-        this.message = message;
+    /**
+     * Check if a String is null or "" after being trimmed.
+     */
+    public static boolean isEmpty(String s) {
+        return s == null ? true : s.trim().equals("");
     }
 
 }

@@ -22,9 +22,15 @@ package org.navalplanner.ws.resources.impl;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.List;
+
+import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.ws.common.impl.DateConverter;
+import org.navalplanner.ws.resources.api.CriterionSatisfactionDTO;
 import org.navalplanner.ws.resources.api.MachineDTO;
 import org.navalplanner.ws.resources.api.ResourceDTO;
 import org.navalplanner.ws.resources.api.WorkerDTO;
@@ -38,28 +44,67 @@ public class ResourceConverter {
 
     private ResourceConverter() {}
 
-    public final static Resource toEntity(ResourceDTO resourceDTO) {
+    public final static Resource toEntity(ResourceDTO resourceDTO)
+        throws CreateUnvalidatedException {
+
+        Resource resource;
 
         if (resourceDTO instanceof MachineDTO) {
-            return toEntity((MachineDTO) resourceDTO);
+            resource = createResourceWithBasicData((MachineDTO) resourceDTO);
         } else if (resourceDTO instanceof WorkerDTO) {
-            return toEntity((WorkerDTO) resourceDTO);
+            resource = createResourceWithBasicData((WorkerDTO) resourceDTO);
         } else {
             throw new RuntimeException(
                 _("Service does not manages resource of type: {0}",
                     resourceDTO.getClass().getName()));
         }
 
+        addCriterionSatisfactions(resource,
+            resourceDTO.criterionSatisfactions);
+
+        return resource;
+
     }
 
-    public final static Machine toEntity(MachineDTO machineDTO) {
-        return Machine.create(machineDTO.code,machineDTO.name,
+    private final static Machine createResourceWithBasicData(
+        MachineDTO machineDTO) {
+        return Machine.createUnvalidated(machineDTO.code,machineDTO.name,
             machineDTO.description);
     }
 
-    public final static Worker toEntity(WorkerDTO workerDTO) {
-        return Worker.create(workerDTO.firstName, workerDTO.surname,
+    private final static Worker createResourceWithBasicData(
+        WorkerDTO workerDTO) {
+        return Worker.createUnvalidated(workerDTO.firstName, workerDTO.surname,
             workerDTO.nif);
+    }
+
+    private static void addCriterionSatisfactions(Resource resource,
+        List<CriterionSatisfactionDTO> criterionSatisfactions)
+        throws CreateUnvalidatedException {
+
+        for (CriterionSatisfactionDTO criterionSatisfactionDTO :
+            criterionSatisfactions) {
+
+            CriterionSatisfaction criterionSatisfaction =
+                toEntity(criterionSatisfactionDTO, resource);
+
+            resource.addUnvalidatedSatisfaction(criterionSatisfaction);
+
+        }
+
+    }
+
+    private static CriterionSatisfaction toEntity(
+        CriterionSatisfactionDTO criterionSatisfactionDTO, Resource resource)
+        throws CreateUnvalidatedException {
+
+        return CriterionSatisfaction.createUnvalidated(
+            criterionSatisfactionDTO.criterionTypeName,
+            criterionSatisfactionDTO.criterionName,
+            resource,
+            DateConverter.toDate(criterionSatisfactionDTO.startDate),
+            DateConverter.toDate(criterionSatisfactionDTO.finishDate));
+
     }
 
 }

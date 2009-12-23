@@ -20,6 +20,7 @@
 
 package org.navalplanner.ws.common.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -41,10 +42,23 @@ public class InstanceConstraintViolationsDTO {
     public InstanceConstraintViolationsDTO() {}
 
     public InstanceConstraintViolationsDTO(String instanceId,
-            List<ConstraintViolationDTO> constraintViolations) {
+        List<ConstraintViolationDTO> constraintViolations) {
 
         this.instanceId = instanceId;
         this.constraintViolations = constraintViolations;
+
+    }
+
+    public static InstanceConstraintViolationsDTO create(String instanceId,
+        String message) {
+
+        List<ConstraintViolationDTO> constraintViolations =
+            new ArrayList<ConstraintViolationDTO>();
+
+        constraintViolations.add(new ConstraintViolationDTO(null, message));
+
+        return new InstanceConstraintViolationsDTO(instanceId,
+            constraintViolations);
 
     }
 

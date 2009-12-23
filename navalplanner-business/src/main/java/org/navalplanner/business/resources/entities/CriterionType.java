@@ -284,6 +284,20 @@ public class CriterionType extends BaseEntity implements
         return criterions.size();
     }
 
+    public Criterion getCriterion(String criterionName)
+        throws InstanceNotFoundException {
+
+        for (Criterion c : criterions) {
+            if (c.getName().trim().equalsIgnoreCase(criterionName)) {
+                return c;
+            }
+        }
+
+        throw new InstanceNotFoundException(name + "::" + criterionName,
+            Criterion.class.getName());
+
+    }
+
     @AssertTrue(message="criterion names must be unique inside a criterion " +
         "type")
     public boolean checkConstraintNonRepeatedCriterionNames() {

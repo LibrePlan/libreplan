@@ -10,7 +10,20 @@
 
     <!--  *** Workers *** -->
     <!-- OK -->
-    <worker first-name="w1-firstName" surname="w1-surname" nif="w1-nif"/>
+    <worker first-name="w1-firstName" surname="w1-surname" nif="w1-nif">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                criterion-type-name="WORK_RELATIONSHIP"
+                criterion-name="hiredResourceWorkingRelationship"
+                start-date="2009-01-01"
+                finish-date=""/>
+            <criterion-satisfaction
+                criterion-type-name="LEAVE"
+                criterion-name="paternityLeave"
+                start-date="2009-12-24"
+                finish-date="2009-12-25"/>
+        </criterion-satisfaction-list>
+    </worker>
     <!--  Missing first name, surname, and nif. -->
     <worker first-name="" surname="" nif=""/>
 

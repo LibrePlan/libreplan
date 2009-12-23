@@ -46,6 +46,20 @@ public class Worker extends Resource {
         return worker;
     }
 
+    public static Worker createUnvalidated(String firstName, String surname,
+        String nif) {
+
+        Worker worker = new Worker();
+
+        worker.firstName = firstName;
+        worker.surname = surname;
+        worker.nif = nif;
+        worker.setNewObject(true);
+
+        return worker;
+
+    }
+
     private String firstName;
 
     private String surname;
@@ -74,7 +88,7 @@ public class Worker extends Resource {
         return getNif() + " :: " + getDescription();
     }
 
-    @NotEmpty
+    @NotEmpty(message="worker's first name not specified")
     public String getFirstName() {
         return firstName;
     }
@@ -83,7 +97,7 @@ public class Worker extends Resource {
         this.firstName = firstName;
     }
 
-    @NotEmpty
+    @NotEmpty(message="worker's surname not specified")
     public String getSurname() {
         return surname;
     }
@@ -96,7 +110,7 @@ public class Worker extends Resource {
         return firstName + " " + surname;
     }
 
-    @NotEmpty
+    @NotEmpty(message="worker's NIF not specified")
     public String getNif() {
         return nif;
     }

@@ -21,26 +21,38 @@
 package org.navalplanner.web.test.ws.resources.api;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Machine;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.resources.api.CriterionSatisfactionDTO;
 import org.navalplanner.ws.resources.api.IResourceService;
 import org.navalplanner.ws.resources.api.MachineDTO;
 import org.navalplanner.ws.resources.api.ResourceDTO;
 import org.navalplanner.ws.resources.api.ResourceListDTO;
 import org.navalplanner.ws.resources.api.WorkerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,6 +76,12 @@ public class ResourceServiceTest {
 
     @Autowired
     private IWorkerDAO workerDAO;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     @Test
     public void testAddResourcesWithBasicContraintViolations()
@@ -96,6 +114,162 @@ public class ResourceServiceTest {
             constraintViolations.size() == 3); // w2 constraint violations.
         assertTrue(machineDAO.findByNameOrCode(m1Code).size() == 1);
         workerDAO.findUniqueByNif(w1Nif);
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourceWithCriterionSatisfactions()
+        throws InstanceNotFoundException {
+
+        /* Create a criterion type. */
+        CriterionType ct = createCriterionType();
+
+        /* Create a resource DTO. */
+        MachineDTO machineDTO = new MachineDTO(ct.getName(), "name", "desc");
+        machineDTO.criterionSatisfactions.add(
+            new CriterionSatisfactionDTO(ct.getName(), "c1",
+                Calendar.getInstance().getTime(), null));
+        machineDTO.criterionSatisfactions.add(
+            new CriterionSatisfactionDTO(ct.getName(), "c2",
+                Calendar.getInstance().getTime(), null));
+
+        /* Test. */
+        List<ResourceDTO> resources = new ArrayList<ResourceDTO>();
+        resources.add(machineDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+            resourceService.addResources(new ResourceListDTO(resources)).
+                instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.isEmpty());
+
+        Machine machine = findUniqueMachineByCode(machineDTO.code);
+        assertTrue(machine.getCriterionSatisfactions().size() == 2);
+
+        for (CriterionSatisfaction cs : machine.getCriterionSatisfactions()) {
+            if (!(cs.getCriterion().getName().equals("c1") ||
+                cs.getCriterion().getName().equals("c2"))) {
+                fail("Criterion not expected");
+            }
+        }
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourceWithCriterionSatisfactionsWithIncorrectNames() {
+
+        /* Create a criterion type. */
+        CriterionType ct = createCriterionType();
+
+        /* Create resource DTOs. */
+        MachineDTO m1 = new MachineDTO(getUniqueName(), "name", "desc");
+        m1.criterionSatisfactions.add(
+            new CriterionSatisfactionDTO("", "X", // Missing criterion type.
+                Calendar.getInstance().getTime(), null));
+        MachineDTO m2 = new MachineDTO(getUniqueName(), "name", "desc");
+        m2.criterionSatisfactions.add(
+            new CriterionSatisfactionDTO(ct.getName(), // Missing criterion.
+                null, Calendar.getInstance().getTime(), null));
+        MachineDTO m3 = new MachineDTO(getUniqueName(), "name", "desc");
+        m3.criterionSatisfactions.add(
+            new CriterionSatisfactionDTO(
+                ct.getName() + 'X', // Non-existent criterion type.
+                "c1", Calendar.getInstance().getTime(), null));
+        MachineDTO m4 = new MachineDTO(getUniqueName(), "name", "desc");
+        m4.criterionSatisfactions.add(
+            new CriterionSatisfactionDTO(
+                 ct.getName(),
+                 "c1" + 'X', // Criterion name is not of ct's type.
+                 Calendar.getInstance().getTime(), null));
+
+        /* Test. */
+        List<MachineDTO> machines = new ArrayList<MachineDTO>();
+        machines.add(m1);
+        machines.add(m2);
+        machines.add(m3);
+        machines.add(m4);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+            resourceService.addResources(new ResourceListDTO(machines)).
+                instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.size() == machines.size());
+
+        for (InstanceConstraintViolationsDTO i :
+            instanceConstraintViolationsList) {
+            assertTrue(i.constraintViolations.size() == 1);
+        }
+
+        for (MachineDTO m : machines) {
+            try {
+                findUniqueMachineByCode(m.code);
+                fail("InstanceNotFoundException expected");
+            } catch (InstanceNotFoundException e) {
+            }
+        }
+
+    }
+
+    private CriterionType createCriterionType() {
+
+        IOnTransaction<CriterionType> createCriterionType =
+            new IOnTransaction<CriterionType>() {
+
+            @Override
+            public CriterionType execute() {
+
+                CriterionType ct = CriterionType.create(getUniqueName(),
+                    "desc");
+                Criterion c1 = Criterion.create("c1", ct);
+                Criterion c2 = Criterion.create("c2", ct);
+                ct.getCriterions().add(c1);
+                ct.getCriterions().add(c2);
+                criterionTypeDAO.save(ct);
+
+                return ct;
+
+            }
+        };
+
+        return transactionService.runOnTransaction(createCriterionType);
+
+    }
+
+    private Machine findUniqueMachineByCode(final String code)
+        throws InstanceNotFoundException {
+
+        IOnTransaction<Machine> find = new IOnTransaction<Machine>() {
+
+            @Override
+            public Machine execute() {
+                try {
+                    return (Machine) initializeResource(
+                        machineDAO.findUniqueByCode(code));
+                } catch (InstanceNotFoundException e) {
+                    return null;
+                }
+            }
+        };
+
+        Machine machine = transactionService.runOnTransaction(find);
+
+        if (machine == null) {
+            throw new InstanceNotFoundException(code, Machine.class.getName());
+        } else {
+            return machine;
+        }
+
+    }
+
+    private Resource initializeResource(Resource resource) {
+
+        for (CriterionSatisfaction cs : resource.getCriterionSatisfactions()) {
+            cs.getCriterion().getType().getName();
+        }
+
+        return resource;
 
     }
 

@@ -23,7 +23,13 @@ package org.navalplanner.ws.resources.api;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
- * Service for managing resources.
+ * Service for managing resources.<br/><br/>
+ *
+ * NOTE: When a resource can not be imported because one of its criterion
+ * satisfactions uses an incorrect criterion type name or criterion name, no
+ * other validations on such a resource are executed (because the corresponding
+ * criterion satisfaction can not be constructed, and in consequence, the
+ * resource itself can not be constructed).
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */

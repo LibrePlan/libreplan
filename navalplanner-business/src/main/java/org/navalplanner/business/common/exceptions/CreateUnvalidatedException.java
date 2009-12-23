@@ -18,28 +18,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.common.api;
-
-import javax.xml.bind.annotation.XmlAttribute;
+package org.navalplanner.business.common.exceptions;
 
 /**
- * DTO for modeling a constraint violation.
+ * An exception representing that a "createUnvalidated" method in an entity
+ * class could not create an instance.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class ConstraintViolationDTO {
+@SuppressWarnings("serial")
+public class CreateUnvalidatedException extends Exception {
 
-    @XmlAttribute(name="field-name")
-    public String fieldName;
-
-    @XmlAttribute
-    public String message;
-
-    public ConstraintViolationDTO() {}
-
-    public ConstraintViolationDTO(String fieldName, String message) {
-        this.fieldName = fieldName;
-        this.message = message;
+    public CreateUnvalidatedException(String message) {
+        super(message);
     }
 
 }

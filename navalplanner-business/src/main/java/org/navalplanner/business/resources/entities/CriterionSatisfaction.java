@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.resources.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.Comparator;
 import java.util.Date;
 
@@ -27,9 +29,15 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.StringUtils;
+import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 /**
  * Declares a interval of time in which the criterion is satisfied <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class CriterionSatisfaction extends BaseEntity {
 
@@ -67,6 +75,58 @@ public class CriterionSatisfaction extends BaseEntity {
         return criterionSatisfaction;
     }
 
+    public static CriterionSatisfaction createUnvalidated(
+        String criterionTypeName, String criterionName,
+        Resource resource, Date startDate, Date finishDate)
+        throws CreateUnvalidatedException {
+
+        ICriterionTypeDAO criterionTypeDAO =
+            Registry.getCriterionTypeDAO();
+
+        /* Get CriterionType. */
+        if (StringUtils.isEmpty(criterionTypeName)) {
+            throw new CreateUnvalidatedException(
+                _("criterion type name not specified"));
+        }
+
+        CriterionType criterionType = null;
+        try {
+            criterionType = criterionTypeDAO.findUniqueByName(
+                criterionTypeName);
+        } catch (InstanceNotFoundException e) {
+            throw new CreateUnvalidatedException(
+                _("{0}: criterion type does not exist", criterionTypeName));
+        }
+
+        /* Get Criterion. */
+        if (StringUtils.isEmpty(criterionName)) {
+            throw new CreateUnvalidatedException(
+                _("criterion name not specified"));
+        }
+
+        Criterion criterion = null;
+        try {
+            criterion = criterionType.getCriterion(
+                criterionName);
+        } catch (InstanceNotFoundException e) {
+            throw new CreateUnvalidatedException(
+                 _("{0}: criterion is not of type {1}", criterionName,
+                     criterionTypeName));
+        }
+
+        /* Create instance of CriterionSatisfaction. */
+        CriterionSatisfaction criterionSatisfaction =
+            new CriterionSatisfaction();
+        criterionSatisfaction.setNewObject(true);
+        criterionSatisfaction.criterion = criterion;
+        criterionSatisfaction.resource = resource;
+        criterionSatisfaction.startDate = startDate;
+        criterionSatisfaction.finishDate = finishDate;
+
+        return criterionSatisfaction;
+
+    }
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -92,7 +152,6 @@ public class CriterionSatisfaction extends BaseEntity {
         }
     }
 
-    @NotNull
     private Date startDate;
 
     private Date finishDate;
@@ -117,6 +176,7 @@ public class CriterionSatisfaction extends BaseEntity {
         return result;
     }
 
+    @NotNull(message="criterion satisfaction's start date not specified")
     public Date getStartDate() {
         return startDate != null ? new Date(startDate.getTime()) : null;
     }
@@ -133,6 +193,7 @@ public class CriterionSatisfaction extends BaseEntity {
         return Interval.range(startDate, finishDate);
     }
 
+    @NotNull(message="criterion satisfaction's criterion not specified")
     public Criterion getCriterion() {
         return criterion;
     }
@@ -141,6 +202,7 @@ public class CriterionSatisfaction extends BaseEntity {
         this.criterion = criterion;
     }
 
+    @NotNull(message="criterion satisfaction's resource not specified")
     public Resource getResource() {
         return resource;
     }

@@ -43,10 +43,17 @@ public class Machine extends Resource {
         configurationUnits.remove(unit);
     }
 
-    public static Machine create(String code, String name, String description) {
-        Machine machine = new Machine(code, name, description);
+    public static Machine createUnvalidated(String code, String name, String description) {
+
+        Machine machine = new Machine();
+
+        machine.code = code;
+        machine.name = name;
+        machine.description = description;
         machine.setNewObject(true);
+
         return machine;
+
     }
 
     protected Machine() {
@@ -63,7 +70,7 @@ public class Machine extends Resource {
         return create(new Machine());
     }
 
-    @NotEmpty
+    @NotEmpty(message="machine code not specified")
     public String getCode() {
         return code;
     }
@@ -72,7 +79,7 @@ public class Machine extends Resource {
         this.code = code;
     }
 
-    @NotEmpty
+    @NotEmpty(message="machine name not specified")
     public String getName() {
         return name;
     }

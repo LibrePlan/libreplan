@@ -39,11 +39,11 @@ public class ResourceListDTO {
         @XmlElement(name = "worker", type = WorkerDTO.class),
         @XmlElement(name = "machine", type = MachineDTO.class)
     })
-    public List<ResourceDTO> resources = new ArrayList<ResourceDTO>();
+    public List<? extends ResourceDTO> resources = new ArrayList<ResourceDTO>();
 
     public ResourceListDTO() {}
 
-    public ResourceListDTO(List<ResourceDTO> resources) {
+    public ResourceListDTO(List<? extends ResourceDTO> resources) {
         this.resources = resources;
     }
 

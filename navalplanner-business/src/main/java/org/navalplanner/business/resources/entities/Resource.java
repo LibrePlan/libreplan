@@ -700,6 +700,13 @@ public abstract class Resource extends BaseEntity{
         return sum;
     }
 
+    public void addUnvalidatedSatisfaction(CriterionSatisfaction
+        criterionSatisfaction) {
+
+        criterionSatisfactions.add(criterionSatisfaction);
+
+    }
+
     public void addSatisfactions(Set<CriterionSatisfaction> addlist) throws ValidationException {
         //Create a newList with new Satisfactions and the old satisfactions
         Set<CriterionSatisfaction> newList = new HashSet<CriterionSatisfaction>(addlist);

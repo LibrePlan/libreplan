@@ -28,6 +28,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
@@ -66,30 +67,47 @@ public class ResourceServiceREST implements IResourceService {
             new ArrayList<InstanceConstraintViolationsDTO>();
         int instanceNumber = 1;
 
+        /* Process resources. */
         for (ResourceDTO resourceDTO : resources.resources) {
 
-            Resource resource = ResourceConverter.toEntity(resourceDTO);
             InstanceConstraintViolationsDTO instanceConstraintViolationsDTO =
                 null;
+            Resource resource = null;
 
+            /* Convert DTO to entity. */
             try {
-
-                /*
-                 * See CriterionServiceREST::addCriterionTypes for a
-                 * justification of the explicit use of BaseEntity::validate.
-                 *
-                 */
-                resource.validate();
-                resourceDAO.save(resource);
-
-            } catch (ValidationException e) {
+                resource = ResourceConverter.toEntity(resourceDTO);
+            } catch (CreateUnvalidatedException e) {
                 instanceConstraintViolationsDTO =
-                    ConstraintViolationConverter.toDTO(
+                    InstanceConstraintViolationsDTO.create(
                         Util.generateInstanceId(instanceNumber,
                             resourceDTO.getUserProvidedId()),
-                        e.getInvalidValues());
+                        e.getMessage());
             }
 
+            /* Validate resource. */
+            if (resource != null) {
+                try {
+
+                    /*
+                     * See CriterionServiceREST::addCriterionTypes for a
+                     * justification of the explicit use of
+                     * BaseEntity::validate.
+                     *
+                     */
+                    resource.validate();
+                    resourceDAO.save(resource);
+
+                } catch (ValidationException e) {
+                    instanceConstraintViolationsDTO =
+                        ConstraintViolationConverter.toDTO(
+                            Util.generateInstanceId(instanceNumber,
+                                resourceDTO.getUserProvidedId()),
+                            e.getInvalidValues());
+                }
+            }
+
+            /* Add constraint violations (if any). */
             if (instanceConstraintViolationsDTO != null) {
                 instanceConstraintViolationsList.add(
                     instanceConstraintViolationsDTO);

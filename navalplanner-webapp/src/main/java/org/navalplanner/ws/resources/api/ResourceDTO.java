@@ -20,12 +20,23 @@
 
 package org.navalplanner.ws.resources.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+
 /**
  * DTO for <code>Resource</code> entity.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public abstract class ResourceDTO {
+
+    @XmlElementWrapper(name="criterion-satisfaction-list")
+    @XmlElement(name="criterion-satisfaction")
+    public List<CriterionSatisfactionDTO> criterionSatisfactions =
+        new ArrayList<CriterionSatisfactionDTO>();
 
     public abstract String getUserProvidedId();
 
