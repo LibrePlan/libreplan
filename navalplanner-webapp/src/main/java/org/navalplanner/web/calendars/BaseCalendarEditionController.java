@@ -327,15 +327,17 @@ public abstract class BaseCalendarEditionController extends
     }
 
     private void reloadParentCombo() {
-        BaseCalendar parent = baseCalendarModel.getParent();
-        Combobox parentCalendars = (Combobox) window
-                .getFellow("parentCalendars");
-        List<Comboitem> items = parentCalendars.getItems();
-        for (Comboitem item : items) {
-            BaseCalendar baseCalendar = (BaseCalendar) item.getValue();
-            if (baseCalendar.getId().equals(parent.getId())) {
-                parentCalendars.setSelectedItem(item);
-                break;
+        if (baseCalendarModel.isDerived()) {
+            BaseCalendar parent = baseCalendarModel.getParent();
+            Combobox parentCalendars = (Combobox) window
+                    .getFellow("parentCalendars");
+            List<Comboitem> items = parentCalendars.getItems();
+            for (Comboitem item : items) {
+                BaseCalendar baseCalendar = (BaseCalendar) item.getValue();
+                if (baseCalendar.getId().equals(parent.getId())) {
+                    parentCalendars.setSelectedItem(item);
+                    break;
+                }
             }
         }
     }
