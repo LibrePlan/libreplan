@@ -38,11 +38,9 @@ import org.navalplanner.business.users.daos.IUserDAO;
  */
 public class User extends BaseEntity {
 
-    @NotEmpty(message="login name not specified")
-    private String loginName;
+    private String loginName="";
 
-    @NotEmpty(message="password not specified")
-    private String password;
+    private String password="";
 
     private Set<UserRole> roles = new HashSet<UserRole>();
 
@@ -50,7 +48,7 @@ public class User extends BaseEntity {
 
     private String email;
 
-    private boolean disabled = false;
+    private Boolean disabled = false;
 
     /**
      * Necessary for Hibernate. Please, do not call it.
@@ -74,6 +72,7 @@ public class User extends BaseEntity {
         return create(new User());
     }
 
+    @NotEmpty(message="login name not specified")
     public String getLoginName() {
         return loginName;
     }
@@ -82,6 +81,7 @@ public class User extends BaseEntity {
         this.loginName = loginName;
     }
 
+    @NotEmpty(message="password not specified")
     public String getPassword() {
         return password;
     }
