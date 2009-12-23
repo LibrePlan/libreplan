@@ -23,6 +23,7 @@ package org.navalplanner.web.calendars;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -508,7 +509,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Override
     public Set<CalendarException> getCalendarExceptions() {
         if (getBaseCalendar() == null) {
-            return null;
+            return new HashSet<CalendarException>();
         }
         return getBaseCalendar().getExceptions();
     }
