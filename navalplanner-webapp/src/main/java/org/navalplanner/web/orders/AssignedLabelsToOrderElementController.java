@@ -116,7 +116,11 @@ public class AssignedLabelsToOrderElementController extends
         if (isAssigned(label)) {
             throw new WrongValueException(bdLabels, _("already assigned"));
         }
-        assignLabel(label);
+        try {
+            assignLabel(label);
+        } catch (IllegalArgumentException e) {
+            throw new WrongValueException(bdLabels, e.getMessage());
+        }
         bdLabels.clear();
     }
 
@@ -155,7 +159,11 @@ public class AssignedLabelsToOrderElementController extends
                         _("already assigned"));
             }
         }
-        assignLabel(label);
+        try {
+            assignLabel(label);
+        } catch (IllegalArgumentException e) {
+            throw new WrongValueException(txtLabelName, e.getMessage());
+        }
         clear(txtLabelName);
     }
 

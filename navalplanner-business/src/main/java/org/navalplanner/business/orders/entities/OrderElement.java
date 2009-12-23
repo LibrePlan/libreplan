@@ -371,6 +371,15 @@ public abstract class OrderElement extends BaseEntity {
 
     public void addLabel(Label label) {
         Validate.notNull(label);
+
+        if (!checkAncestorsNoOtherLabelRepeated(label)) {
+            throw new IllegalArgumentException(
+                    _("Some ancestor has the same label assigned, "
+                            + "so this element is already inheriting this label"));
+        }
+
+        removeLabelOnChildren(label);
+
         labels.add(label);
     }
 
@@ -763,19 +772,46 @@ public abstract class OrderElement extends BaseEntity {
 
     private boolean containsLabel(HashSet<Label> labels, Label label) {
         for (Label each : labels) {
-            if ((each.getName() != null)
-                    && (label.getName() != null)
-                    && (each.getType() != null)
-                    && (label.getType() != null)
-                    && (each.getType().getName() != null)
-                    && (label.getType().getName() != null)
-                    && each.getName().equals(label.getName())
-                    && each.getType().getName().equals(
-                            label.getType().getName())) {
+            if (each.isEqualTo(label)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean checkAncestorsNoOtherLabelRepeated(Label newLabel) {
+        for (Label label : labels) {
+            if (label.equals(newLabel)) {
+                return false;
+            }
+        }
+
+        if (parent != null) {
+            if (!((OrderElement) parent)
+                    .checkAncestorsNoOtherLabelRepeated(newLabel)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void removeLabelOnChildren(Label newLabel) {
+        Label toRemove = null;
+
+        for (Label label : labels) {
+            if (label.equals(newLabel)) {
+                toRemove = label;
+                break;
+            }
+        }
+
+        if (toRemove != null) {
+            removeLabel(toRemove);
+        }
+
+        for (OrderElement child : getChildren()) {
+            child.removeLabelOnChildren(newLabel);
+        }
     }
 
 }

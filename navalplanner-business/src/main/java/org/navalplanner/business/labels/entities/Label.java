@@ -87,4 +87,17 @@ public class Label extends BaseEntity {
     public void removeOrderElement(OrderElement orderElement) {
         orderElements.add(orderElement);
     }
+
+    public boolean isEqualTo(Label label) {
+        if ((this.getName() != null) && (label.getName() != null)
+                && (this.getType() != null) && (label.getType() != null)
+                && (this.getType().getName() != null)
+                && (label.getType().getName() != null)
+                && this.getName().equals(label.getName())
+                && this.getType().getName().equals(label.getType().getName())) {
+            return true;
+        }
+        return false;
+    }
+
 }

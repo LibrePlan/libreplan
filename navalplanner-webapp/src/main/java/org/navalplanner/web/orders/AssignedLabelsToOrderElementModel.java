@@ -74,11 +74,27 @@ public class AssignedLabelsToOrderElementModel implements
 
     private void initializeOrderElement(OrderElement orderElement) {
         reattachLabels();
+        initialize(orderElement);
+
+        OrderElement parent = orderElement.getParent();
+        while (parent != null) {
+            initialize(parent);
+            parent = parent.getParent();
+        }
+
+        initializeChildren(orderElement);
+    }
+
+    private void initializeChildren(OrderElement orderElement) {
+        initialize(orderElement);
+        for (OrderElement child : orderElement.getChildren()) {
+            initializeChildren(child);
+        }
+    }
+
+    private void initialize(OrderElement orderElement) {
         orderDAO.reattach(orderElement);
         orderElement.getName();
-        if (orderElement.getParent() != null) {
-            orderElement.getParent().getName();
-        }
         initializeLabels(orderElement.getLabels());
     }
 
@@ -117,7 +133,6 @@ public class AssignedLabelsToOrderElementModel implements
             reattachLabels();
             OrderLineGroup parent = orderElement.getParent();
             while (parent != null) {
-                initializeOrderElement(parent);
                 result.addAll(parent.getLabels());
                 parent = parent.getParent();
             }
