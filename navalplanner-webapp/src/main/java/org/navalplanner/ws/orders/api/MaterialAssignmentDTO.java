@@ -21,6 +21,7 @@
 package org.navalplanner.ws.orders.api;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
@@ -42,14 +43,18 @@ public class MaterialAssignmentDTO {
     @XmlAttribute(name = "unit-price")
     public BigDecimal unitPrice;
 
+    @XmlAttribute(name = "estimated-availability")
+    public Date estimatedAvailability;
+
     public MaterialAssignmentDTO() {
     }
 
     public MaterialAssignmentDTO(String materialCode, Double units,
-            BigDecimal unitPrice) {
+            BigDecimal unitPrice, Date estimatedAvailability) {
         this.materialCode = materialCode;
         this.units = units;
         this.unitPrice = unitPrice;
+        this.estimatedAvailability = estimatedAvailability;
     }
 
 }

@@ -49,8 +49,7 @@ public enum PredefinedMaterialCategories {
 
     public MaterialCategory getMaterialCategory() {
         try {
-            return Registry.getMaterialCategoryDAO()
-                    .findUniqueByNameInAnotherTransaction(name);
+            return Registry.getMaterialCategoryDAO().findUniqueByName(name);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

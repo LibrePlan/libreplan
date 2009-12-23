@@ -118,7 +118,7 @@ public final class OrderElementConverter {
             MaterialAssignment materialAssignment) {
         return new MaterialAssignmentDTO(materialAssignment.getMaterial()
                 .getCode(), materialAssignment.getUnits(), materialAssignment
-                .getUnitPrice());
+                .getUnitPrice(), materialAssignment.getEstimatedAvailability());
     }
 
     public final static LabelDTO toDTO(Label label) {
@@ -212,6 +212,8 @@ public final class OrderElementConverter {
                 .create(material);
         materialAssignment.setUnits(materialAssignmentDTO.units);
         materialAssignment.setUnitPrice(materialAssignmentDTO.unitPrice);
+        materialAssignment
+                .setEstimatedAvailability(materialAssignmentDTO.estimatedAvailability);
         return materialAssignment;
     }
 
@@ -237,7 +239,7 @@ public final class OrderElementConverter {
         return label;
     }
 
-    private static HoursGroup toEntity(HoursGroupDTO hoursGroupDTO) {
+    public final static HoursGroup toEntity(HoursGroupDTO hoursGroupDTO) {
         ResourceEnum resourceType = ResourceEnumConverter
                 .fromDTO(hoursGroupDTO.resourceType);
         HoursGroup hoursGroup = HoursGroup.createUnvalidated(

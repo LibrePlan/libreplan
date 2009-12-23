@@ -49,6 +49,9 @@ public interface IMaterialCategoryDAO extends IGenericDAO<MaterialCategory, Long
      * @param name
      * @return
      */
+    MaterialCategory findUniqueByName(String name)
+            throws InstanceNotFoundException;
+
     MaterialCategory findUniqueByNameInAnotherTransaction(String name) throws InstanceNotFoundException;
 
     List<MaterialCategory> getAll();

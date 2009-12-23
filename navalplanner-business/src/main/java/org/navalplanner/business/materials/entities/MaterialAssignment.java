@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 
@@ -36,9 +37,9 @@ public class MaterialAssignment extends BaseEntity implements Comparable {
 
     private Material material;
 
-    private double units = 0;
+    private Double units = 0.0;
 
-    private BigDecimal unitPrice = new BigDecimal(0);
+    private BigDecimal unitPrice = BigDecimal.ZERO;
 
     private Date estimatedAvailability;
 
@@ -71,6 +72,7 @@ public class MaterialAssignment extends BaseEntity implements Comparable {
         return result;
     }
 
+    @NotNull(message = "material not specified")
     public Material getMaterial() {
         return material;
     }
@@ -79,14 +81,16 @@ public class MaterialAssignment extends BaseEntity implements Comparable {
         this.material = material;
     }
 
-    public double getUnits() {
+    @NotNull(message = "units not specified")
+    public Double getUnits() {
         return units;
     }
 
-    public void setUnits(double units) {
+    public void setUnits(Double units) {
         this.units = units;
     }
 
+    @NotNull(message = "unit price not specified")
     public BigDecimal getUnitPrice() {
         return unitPrice;
     }

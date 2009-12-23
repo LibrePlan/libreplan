@@ -654,6 +654,7 @@ public abstract class OrderElement extends BaseEntity {
         }
     }
 
+    @Valid
     public Set<MaterialAssignment> getMaterialAssignments() {
         return Collections.unmodifiableSet(materialAssignments);
     }

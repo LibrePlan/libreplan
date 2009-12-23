@@ -38,8 +38,7 @@ import org.navalplanner.business.materials.daos.IMaterialDAO;
  */
 public class Material extends BaseEntity implements Comparable {
 
-    @NotNull
-    @NotEmpty
+    @NotEmpty(message = "code not specified")
     private String code;
 
     private String description;

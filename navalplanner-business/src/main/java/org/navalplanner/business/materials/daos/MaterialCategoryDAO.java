@@ -26,7 +26,6 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -67,7 +66,9 @@ public class MaterialCategoryDAO extends GenericDAOHibernate<MaterialCategory, L
         }
     }
 
-    private MaterialCategory findUniqueByName(String name)
+    @Override
+    @Transactional(readOnly = true)
+    public MaterialCategory findUniqueByName(String name)
             throws InstanceNotFoundException {
         Criteria criteria = getSession().createCriteria(MaterialCategory.class);
         criteria.add(Restrictions.eq("name", name).ignoreCase());

@@ -105,6 +105,10 @@ public class MaterialDAO extends GenericDAOHibernate<Material, Long> implements
 
     private Material findUniqueByCode(String code)
             throws InstanceNotFoundException {
+        if (code == null) {
+            throw new InstanceNotFoundException(null, Material.class.getName());
+        }
+
         Criteria criteria = getSession().createCriteria(Material.class);
         criteria.add(Restrictions.eq("code", code).ignoreCase());
 
