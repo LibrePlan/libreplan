@@ -144,7 +144,7 @@ public class AllocationRowsHandler {
 
     public void checkInvalidValues() {
         if (calculatedValue != CalculatedValue.NUMBER_OF_HOURS
-                && formBinder.getAssignedHours() <= 0) {
+                && !currentRows.isEmpty() && formBinder.getAssignedHours() <= 0) {
             formBinder.markAssignedHoursMustBePositive();
         }
         if (formBinder.getAllocationEnd().isBefore(
