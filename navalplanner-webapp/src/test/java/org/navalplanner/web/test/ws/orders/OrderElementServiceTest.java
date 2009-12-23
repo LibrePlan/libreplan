@@ -22,6 +22,7 @@ package org.navalplanner.web.test.ws.orders;
 
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
@@ -542,6 +543,42 @@ public class OrderElementServiceTest {
 
         assertThat(orderElementDAO.findByCode(code).size(),
                 equalTo(previous + 1));
+    }
+
+    @Test
+    public void orderWithLabelRepeatedInTheSameBranch() {
+        int previous = orderDAO.getOrders().size();
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = "order-code";
+        orderDTO.initDate = new Date();
+
+        LabelDTO labelDTO = new LabelDTO();
+        labelDTO.name = "Label name";
+        labelDTO.type = "Label type";
+        orderDTO.labels.add(labelDTO);
+
+        OrderLineDTO orderLineDTO = new OrderLineDTO();
+        orderLineDTO.name = "Order line";
+        orderLineDTO.code = "order-line-code";
+        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group",
+                ResourceEnumDTO.WORKER, 1000);
+        orderLineDTO.hoursGroups.add(hoursGroupDTO);
+        orderLineDTO.labels.add(labelDTO);
+        orderDTO.children.add(orderLineDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
+
+        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
+                .get(0).constraintViolations;
+        // Mandatory fields: checkConstraintLabelNotRepeatedInTheSameBranch
+        assertThat(constraintViolations.size(), equalTo(1));
+        assertNull(constraintViolations.get(0).fieldName);
+
+        assertThat(orderDAO.getOrders().size(), equalTo(previous));
     }
 
 }

@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.InvalidValue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
@@ -735,6 +736,46 @@ public abstract class OrderElement extends BaseEntity {
                         qualityForm));
             }
         }
+    }
+
+    @AssertTrue(message = "a label can not be assigned twice in the same branch")
+    public boolean checkConstraintLabelNotRepeatedInTheSameBranch() {
+        return checkConstraintLabelNotRepeatedInTheSameBranch(new HashSet<Label>());
+    }
+
+    private boolean checkConstraintLabelNotRepeatedInTheSameBranch(
+            HashSet<Label> labels) {
+        for (Label label : getLabels()) {
+            if (containsLabel(labels, label)) {
+                return false;
+            }
+            labels.add(label);
+        }
+
+        for (OrderElement child : getChildren()) {
+            if (!child.checkConstraintLabelNotRepeatedInTheSameBranch(labels)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean containsLabel(HashSet<Label> labels, Label label) {
+        for (Label each : labels) {
+            if ((each.getName() != null)
+                    && (label.getName() != null)
+                    && (each.getType() != null)
+                    && (label.getType() != null)
+                    && (each.getType().getName() != null)
+                    && (label.getType().getName() != null)
+                    && each.getName().equals(label.getName())
+                    && each.getType().getName().equals(
+                            label.getType().getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
