@@ -1,0 +1,97 @@
+<!--
+  This file is part of ###PROJECT_NAME###
+
+  Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+                     Desenvolvemento Tecnolóxico de Galicia
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<vbox id="${arg.id}"
+    apply="org.navalplanner.web.orders.AssignedTaskQualityFormsToOrderElementController" >
+    <!-- Quality Forms-->
+    <vbox>
+        <panel title="${i18n:_('Task quality forms')}" border="normal">
+            <panelchildren>
+                <!-- Assign quality form -->
+                <vbox>
+                    <label value="${i18n:_('Assign quality form')}" />
+                    <hbox>
+                        <bandboxSearch id="bdQualityForms" finder="QualityFormBandboxFinder"
+                            model="@{assignedTaskQualityFormsController.notAssignedQualityForms}" />
+                        <button label="${i18n:_('Assign')}"
+                            onClick="assignedTaskQualityFormsController.onAssignTaskQualityForm()"
+                            style="margin-top: -4px" />
+                    </hbox>
+                </vbox>
+                <separator bar="false" spacing="40px" orient="vertical"/>
+                <newdatasortablegrid id="assignedTaskQualityForms" height="100px" fixedLayout="true"
+                    model="@{assignedTaskQualityFormsController.taskQualityForms}">
+                    <columns>
+                        <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(qualityForm.name)"/>
+                        <newdatasortablecolumn label="${i18n:_('Type')}" />
+                        <newdatasortablecolumn label="${i18n:_('Operations')}" />
+                    </columns>
+                    <rows>
+                        <row self="@{each='taskQualityForm'}" value="@{taskQualityForm}">
+                            <label value="@{taskQualityForm.qualityForm.name}" />
+                            <label value="@{taskQualityForm.qualityForm.qualityFormType}" />
+
+                            <hbox>
+                                <button sclass="icono" image="/common/img/ico_editar1.png"
+                                    hoverImage="/common/img/ico_editar.png"
+                                    tooltiptext="${i18n:_('Edit')}"
+                                    onClick="assignedTaskQualityFormsController.editTaskQualityForm(self.parent.parent.value);">
+                                </button>
+
+                                <button sclass="icono" image="/common/img/ico_borrar1.png"
+                                    hoverImage="/common/img/ico_borrar.png"
+                                    tooltiptext="${i18n:_('Delete')}"
+                                    onClick="assignedTaskQualityFormsController.confirmRemove(self.parent.parent.value)">
+                                </button>
+                            </hbox>
+
+                        </row>
+                    </rows>
+                </newdatasortablegrid>
+
+                <separator bar="false" spacing="40px" orient="vertical"/>
+                <panel title="${i18n:_('Task quality form Item Edition')}" border="none">
+                <panelchildren>
+                    <grid id="editedTaskQualityFormItems" height="100px" fixedLayout="true"
+                        model="@{assignedTaskQualityFormsController.taskQualityFormItems}">
+                        <columns>
+                            <column label="${i18n:_('Name')}" sort="auto(name)"/>
+                            <column label="${i18n:_('Position')}" />
+                            <column label="${i18n:_('Percentage')}" />
+                            <column label="${i18n:_('Passed')}" />
+                            <column label="${i18n:_('Date')}" />
+                        </columns>
+                        <rows>
+                            <row self="@{each='taskQualityFormItem'}" value="@{taskQualityFormItem}">
+                                <label value="@{taskQualityFormItem.name}" />
+                                <label value="@{taskQualityFormItem.position}" />
+                                <label value="@{taskQualityFormItem.percentage}" />
+                                <checkbox checked="@{taskQualityFormItem.passed}" />
+                                <datebox value="@{taskQualityFormItem.date}"/>
+                            </row>
+                        </rows>
+                    </grid>
+                </panelchildren>
+                </panel>
+                <separator bar="false" spacing="40px" orient="vertical"/>
+            </panelchildren>
+        </panel>
+    </vbox>
+</vbox>

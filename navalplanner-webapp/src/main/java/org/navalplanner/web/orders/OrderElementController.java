@@ -62,6 +62,10 @@ public class OrderElementController extends GenericForwardComposer {
 
     private AssignedLabelsToOrderElementController assignedLabelsController;
 
+    private Component orderElementTaskQualityForms;
+
+    private AssignedTaskQualityFormsToOrderElementController assignedTaskQualityFormsController;
+
     private Component orderElementCriterionRequirements;
 
     private AssignedCriterionRequirementToOrderElementController assignedCriterionRequirementController;
@@ -78,6 +82,7 @@ public class OrderElementController extends GenericForwardComposer {
         setupAssignedLabelsToOrderElementController(comp);
         setupAssignedCriterionRequirementToOrderElementController(comp);
         setupAssignedMaterialsToOrderElementController(comp);
+        setupAssignedTaskQualityFormsToOrderElementController(comp);
     }
 
     private void setupDetailsOrderElementController(Component comp) throws Exception{
@@ -114,6 +119,12 @@ public class OrderElementController extends GenericForwardComposer {
                 .getVariable("assignedMaterialsController", true);
     }
 
+    private void setupAssignedTaskQualityFormsToOrderElementController(
+            Component comp) throws Exception {
+        assignedTaskQualityFormsController = (AssignedTaskQualityFormsToOrderElementController) orderElementTaskQualityForms
+                .getVariable("assignedTaskQualityFormsController", true);
+    }
+
     public OrderElement getOrderElement() {
         return (orderElementModel == null) ? OrderLine.create() : orderElementModel.getOrderElement();
     }
@@ -134,6 +145,7 @@ public class OrderElementController extends GenericForwardComposer {
         assignedLabelsController.openWindow(model);
         assignedCriterionRequirementController.openWindow(model);
         assignedMaterialsController.openWindow(model);
+        assignedTaskQualityFormsController.openWindow(model);
 
         try {
             ((Window) self).doModal();

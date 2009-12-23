@@ -24,6 +24,7 @@
 <?component name="listOrderElementLabels" inline="true" macroURI="_listOrderElementLabels.zul"?>
 <?component name="listOrderElementCriterionRequirements" inline="true" macroURI="_listOrderElementCriterionRequirements.zul"?>
 <?component name="listOrderElementMaterials" inline="true" macroURI="_listOrderElementMaterials.zul"?>
+<?component name="listOrderElementTaskQualityForms" inline="true" macroURI="_listOrderElementTaskQualityForms.zul"?>
 
 <window id="${arg.top_id}" title="${i18n:_('Edit order element')}"
     width="950px" left="50px" top="50px"
@@ -36,6 +37,7 @@
             <tab label="${i18n:_('Labels')}"></tab>
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"></tab>
             <tab label="${i18n:_('Materials')}"></tab>
+            <tab label="${i18n:_('Task quality forms')}"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -55,6 +57,9 @@
             </tabpanel>
             <tabpanel>
                 <listOrderElementMaterials id="orderElementMaterials" />
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementTaskQualityForms id="orderElementTaskQualityForms" />
             </tabpanel>
         </tabpanels>
   </tabbox>

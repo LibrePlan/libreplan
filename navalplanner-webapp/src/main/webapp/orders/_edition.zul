@@ -24,6 +24,7 @@
 <?component name="listOrderElementLabels" inline="true" macroURI="_listOrderElementLabels.zul"?>
 <?component name="listOrderElementCriterionRequirements" inline="true" macroURI="_listOrderElementCriterionRequirements.zul"?>
 <?component name="listOrderElementMaterials" inline="true" macroURI="_listOrderElementMaterials.zul"?>
+<?component name="listOrderElementTaskQualityForms" inline="true" macroURI="_listOrderElementTaskQualityForms.zul"?>
 
 <window id="${arg.top_id}">
     <tabbox>
@@ -36,6 +37,7 @@
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
                  onClick = "controller.reloadHoursGroupOrder();"/>
             <tab label="${i18n:_('Materials')}" />
+            <tab label="${i18n:_('Task quality forms')}" />
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -111,6 +113,9 @@
             </tabpanel>
             <tabpanel>
                 <listOrderElementMaterials id="orderElementMaterials"/>
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementTaskQualityForms id="orderElementTaskQualityForms" />
             </tabpanel>
         </tabpanels>
     </tabbox>

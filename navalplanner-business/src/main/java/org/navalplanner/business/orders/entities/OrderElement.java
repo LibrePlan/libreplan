@@ -717,7 +717,7 @@ public abstract class OrderElement extends BaseEntity {
         return taskQualityForm;
     }
 
-    public void remove(TaskQualityForm taskQualityForm) {
+    public void removeTaskQualityForm(TaskQualityForm taskQualityForm) {
         this.taskQualityForms.remove(taskQualityForm);
     }
 

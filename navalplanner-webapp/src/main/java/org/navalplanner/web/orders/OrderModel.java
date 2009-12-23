@@ -54,6 +54,9 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
+import org.navalplanner.business.qualityforms.entities.QualityForm;
+import org.navalplanner.business.qualityforms.entities.QualityFormItem;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -97,12 +100,17 @@ public class OrderModel implements IOrderModel {
     private ILabelDAO labelDAO;
 
     @Autowired
+    private IQualityFormDAO qualityFormDAO;
+
+    @Autowired
     private IOrderElementDAO orderElementDAO;
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
 
     private Set<Label> cacheLabels = new HashSet<Label>();
+
+    private Set<QualityForm> cacheQualityForms = new HashSet<QualityForm>();
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
@@ -117,6 +125,13 @@ public class OrderModel implements IOrderModel {
     public List<Label> getLabels() {
         final List<Label> result = new ArrayList<Label>();
         result.addAll(cacheLabels);
+        return result;
+    }
+
+    @Override
+    public List<QualityForm> getQualityForms() {
+        final List<QualityForm> result = new ArrayList<QualityForm>();
+        result.addAll(cacheQualityForms);
         return result;
     }
 
@@ -156,6 +171,7 @@ public class OrderModel implements IOrderModel {
     public void initEdit(Order order) {
         Validate.notNull(order);
         initializeCacheLabels();
+        initializeCacheQualityForms();
         loadCriterions();
         this.order = getFromDB(order);
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
@@ -182,6 +198,30 @@ public class OrderModel implements IOrderModel {
     private void initializeLabel(Label label) {
         label.getName();
         label.getType().getName();
+    }
+
+    private void initializeCacheQualityForms() {
+        if (cacheQualityForms.isEmpty()) {
+            cacheQualityForms = new HashSet<QualityForm>();
+            final List<QualityForm> qualityForms = qualityFormDAO.getAll();
+            initializeQualityForms(qualityForms);
+            cacheQualityForms.addAll(qualityForms);
+        }
+    }
+
+    private void initializeQualityForms(Collection<QualityForm> qualityForms) {
+        for (QualityForm qualityForm : qualityForms) {
+            initializeQualityForm(qualityForm);
+        }
+    }
+
+    private void initializeQualityForm(QualityForm qualityForm) {
+        qualityForm.getName();
+        qualityForm.getQualityFormType();
+        for (QualityFormItem qualityFormItem : qualityForm
+                .getQualityFormItems()) {
+            qualityFormItem.getName();
+        }
     }
 
     private static void forceLoadCriterionRequirements(OrderElement orderElement) {
@@ -243,6 +283,7 @@ public class OrderModel implements IOrderModel {
     public void prepareForCreate() {
         loadCriterions();
         initializeCacheLabels();
+        initializeCacheQualityForms();
         this.order = Order.create();
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
         this.order.setInitDate(new Date());
@@ -333,6 +374,7 @@ public class OrderModel implements IOrderModel {
             reattachOrderElement(orderElement);
             reattachLabels();
             initializeLabels(orderElement.getLabels());
+
             // Accepts predicate, add it to list of orderElements
             if (predicate.accepts(orderElement)) {
                 orderElements.add(orderElement);
@@ -345,6 +387,12 @@ public class OrderModel implements IOrderModel {
     private void reattachLabels() {
         for (Label label : cacheLabels) {
             labelDAO.reattach(label);
+        }
+    }
+
+    private void reattachQualityForms() {
+        for (QualityForm qualityForm : cacheQualityForms) {
+            qualityFormDAO.reattach(qualityForm);
         }
     }
 

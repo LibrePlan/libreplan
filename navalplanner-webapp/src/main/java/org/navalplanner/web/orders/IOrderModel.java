@@ -29,6 +29,7 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 
@@ -57,6 +58,8 @@ public interface IOrderModel {
     Map<CriterionType, List<Criterion>> getMapCriterions();
 
     List<Label> getLabels();
+
+    List<QualityForm> getQualityForms();
 
     IOrderLineGroup getOrder();
 

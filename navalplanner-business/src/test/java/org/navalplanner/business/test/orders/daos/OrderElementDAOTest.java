@@ -355,7 +355,7 @@ public class OrderElementDAOTest {
         orderElementDAO.flush();
         assertThat(orderElement.getTaskQualityForms().size(), equalTo(1));
 
-        orderElement.remove(taskQualityForm);
+        orderElement.removeTaskQualityForm(taskQualityForm);
 
         orderElementDAO.save(orderElement);
         orderElementDAO.flush();
