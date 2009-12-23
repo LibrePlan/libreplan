@@ -23,9 +23,10 @@ package org.navalplanner.web.common;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.impl.api.InputElement;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  * Class for checking if a component is completely valid (checks all constraints within a component)
@@ -58,12 +59,22 @@ public class ConstraintChecker {
     }
 
     private static boolean textboxIsValid(Textbox component) {
-        component.getValue();            // Forces constraint to be checked
-        return (component.isValid());
-    }
-
-    private static boolean dateboxIsValid(Datebox component) {
+        inputElementIsValid((InputElement) component);
+        // Forces constraint to be checked
         component.getValue();
         return (component.isValid());
     }
+
+    private static void inputElementIsValid(InputElement component) {
+        if (!component.isValid()) {
+            throw new WrongValueException(component, component.getErrorMessage());
+        }
+    }
+
+    private static boolean dateboxIsValid(Datebox component) {
+        inputElementIsValid((InputElement) component);
+        component.getValue();
+        return (component.isValid());
+    }
+
 }
