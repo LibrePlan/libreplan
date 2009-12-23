@@ -33,8 +33,7 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class Profile extends BaseEntity {
 
-    @NotEmpty(message="profile name not specified")
-    private String profileName;
+    private String profileName = "";
 
     private Set<UserRole> roles = new HashSet<UserRole>();
 
@@ -60,6 +59,7 @@ public class Profile extends BaseEntity {
         this.profileName = profileName;
     }
 
+    @NotEmpty(message="profile name not specified")
     public String getProfileName() {
         return profileName;
     }
