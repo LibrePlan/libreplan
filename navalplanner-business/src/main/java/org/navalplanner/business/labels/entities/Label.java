@@ -38,10 +38,10 @@ import org.navalplanner.business.orders.entities.OrderElement;
  */
 public class Label extends BaseEntity {
 
-    @NotEmpty
+    @NotEmpty(message = "name not specified")
     private String name;
 
-    @NotNull
+    @NotNull(message = "type not specified")
     private LabelType type;
 
     private Set<OrderElement> orderElements = new HashSet<OrderElement>();

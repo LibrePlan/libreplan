@@ -75,9 +75,10 @@ public class OrderElementServiceREST implements IOrderElementService {
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
 
-        OrderElement orderElement = OrderElementConverter.toEntity(orderDTO);
         InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
         try {
+            OrderElement orderElement = OrderElementConverter
+                    .toEntity(orderDTO);
             orderElement.validate();
             orderElementDAO.save(orderElement);
         } catch (ValidationException e) {

@@ -73,8 +73,10 @@ public abstract class OrderElement extends BaseEntity {
 
     protected Set<DirectAdvanceAssignment> directAdvanceAssignments = new HashSet<DirectAdvanceAssignment>();
 
+    @Valid
     protected Set<MaterialAssignment> materialAssignments = new HashSet<MaterialAssignment>();
 
+    @Valid
     private Set<Label> labels = new HashSet<Label>();
 
     private Set<TaskQualityForm> taskQualityForms = new HashSet<TaskQualityForm>();

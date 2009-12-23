@@ -36,7 +36,7 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class LabelType extends BaseEntity implements Comparable {
 
-    @NotEmpty
+    @NotEmpty(message = "name not specified")
     private String name;
 
     private Set<Label> labels = new HashSet<Label>();

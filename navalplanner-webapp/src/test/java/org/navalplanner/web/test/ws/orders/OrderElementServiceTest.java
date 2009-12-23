@@ -46,6 +46,7 @@ import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
 import org.navalplanner.ws.orders.api.HoursGroupDTO;
 import org.navalplanner.ws.orders.api.IOrderElementService;
+import org.navalplanner.ws.orders.api.LabelDTO;
 import org.navalplanner.ws.orders.api.MaterialAssignmentDTO;
 import org.navalplanner.ws.orders.api.OrderDTO;
 import org.navalplanner.ws.orders.api.OrderLineDTO;
@@ -458,6 +459,82 @@ public class OrderElementServiceTest {
         materialAssignmentDTO.unitPrice = BigDecimal.TEN;
         materialAssignmentDTO.units = 100.0;
         orderDTO.materialAssignments.add(materialAssignmentDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+
+        assertThat(orderElementDAO.findByCode(code).size(),
+                equalTo(previous + 1));
+    }
+
+    @Test
+    public void orderWithInvalidLabel() {
+        int previous = orderDAO.getOrders().size();
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = "order-code";
+        orderDTO.initDate = new Date();
+
+        LabelDTO labelDTO = new LabelDTO();
+        orderDTO.labels.add(labelDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
+
+        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
+                .get(0).constraintViolations;
+        // Mandatory fields: material, units, unitPrice
+        assertThat(constraintViolations.size(), equalTo(1));
+        assertThat(constraintViolations.get(0).fieldName,
+                equalTo("LabelType::name"));
+
+        assertThat(orderDAO.getOrders().size(), equalTo(previous));
+    }
+
+    @Test
+    public void orderWithInvalidLabelWithoutName() {
+        int previous = orderDAO.getOrders().size();
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = "order-code";
+        orderDTO.initDate = new Date();
+
+        LabelDTO labelDTO = new LabelDTO();
+        labelDTO.type = "Label type";
+        orderDTO.labels.add(labelDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
+
+        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
+                .get(0).constraintViolations;
+        // Mandatory fields: material, units, unitPrice
+        assertThat(constraintViolations.size(), equalTo(1));
+        assertThat(constraintViolations.get(0).fieldName,
+                equalTo("Label::name"));
+
+        assertThat(orderDAO.getOrders().size(), equalTo(previous));
+    }
+
+    @Test
+    public void validOrderWithLabel() {
+        String code = "order-code";
+        int previous = orderElementDAO.findByCode(code).size();
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = code;
+        orderDTO.initDate = new Date();
+
+        LabelDTO labelDTO = new LabelDTO();
+        labelDTO.name = "Label name";
+        labelDTO.type = "Label type";
+        orderDTO.labels.add(labelDTO);
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
                 .addOrder(orderDTO).instanceConstraintViolationsList;
