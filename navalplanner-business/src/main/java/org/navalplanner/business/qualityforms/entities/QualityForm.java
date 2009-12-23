@@ -23,10 +23,12 @@
  */
 package org.navalplanner.business.qualityforms.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
@@ -91,7 +93,12 @@ public class QualityForm extends BaseEntity {
     }
 
     public void setQualityFormType(QualityFormType qualityFormType) {
+        Validate.notNull(qualityFormType);
+        if (changeFromByItemsToByPercentage(qualityFormType)) {
+            updatePercentageByPercentage();
+        }
         this.qualityFormType = qualityFormType;
+        updateAndSortQualityFormItem();
     }
 
     @Valid
@@ -107,15 +114,67 @@ public class QualityForm extends BaseEntity {
         if (qualityFormItem != null) {
             Integer position = 0;
             qualityFormItem.setPosition(position);
-            qualityFormItems.add(qualityFormItem);
-            updateAndSortQualityFormItemPositions();
+            qualityFormItems.add(position, qualityFormItem);
+            updateAndSortQualityFormItem();
         }
         return false;
     }
 
     public void removeQualityFormItem(QualityFormItem qualityFormItem) {
         qualityFormItems.remove(qualityFormItem);
-        updateAndSortQualityFormItemPositions();
+        updateAndSortQualityFormItem();
+    }
+
+    public void updateAndSortQualityFormItem() {
+        if (qualityFormType != null) {
+            if (this.qualityFormType.equals(QualityFormType.BY_PERCENTAGE)) {
+                updateAndSortQualityFormItemPositionsByPercentage();
+            } else {
+                updateAndSortQualityFormItemPositionsByItems();
+                updatePercentageByItems();
+            }
+        }
+    }
+
+    public void moveQualityFormItem(QualityFormItem qualityFormItem,
+            Integer newPosition) {
+        if (checkValidPosition(newPosition)) {
+            qualityFormItems.remove(qualityFormItem);
+            qualityFormItems.add(newPosition, qualityFormItem);
+            updateAndSortQualityFormItemPositionsByItems();
+        }
+    }
+
+    public QualityFormItem findQualityFormItemWithDuplicateName() {
+        List<QualityFormItem> items = new ArrayList<QualityFormItem>(
+                qualityFormItems);
+        for (int i = 0; i < items.size(); i++) {
+            for (int j = i + 1; j < items.size(); j++) {
+                if ((items.get(j).getName() != null)
+                        && (items.get(i).getName() != null)
+                        && (items.get(j).getName().equals(items.get(i)
+                                .getName()))) {
+                    return items.get(j);
+                }
+            }
+        }
+        return null;
+    }
+
+    public QualityFormItem findQualityFormItemWithDuplicatePercentage() {
+        List<QualityFormItem> items = new ArrayList<QualityFormItem>(
+                qualityFormItems);
+        for (int i = 0; i < items.size(); i++) {
+            for (int j = i + 1; j < items.size(); j++) {
+                if ((items.get(j).getPercentage() != null)
+                        && (items.get(i).getPercentage() != null)
+                        && (items.get(j).getPercentage().equals(items.get(i)
+                                .getPercentage()))) {
+                    return items.get(j);
+                }
+            }
+        }
+        return null;
     }
 
     @SuppressWarnings("unused")
@@ -181,13 +240,15 @@ public class QualityForm extends BaseEntity {
         if ((qualityFormType != null)
                 && (qualityFormType.equals(QualityFormType.BY_PERCENTAGE))) {
             for (QualityFormItem item : qualityFormItems) {
+                if (item.getPosition() == null) {
+                    return false;
+                }
                 if (!item.getPosition().equals(getCorrectPosition(item))) {
                     return false;
                 }
             }
         }
         return true;
-
     }
 
     @SuppressWarnings("unused")
@@ -197,6 +258,23 @@ public class QualityForm extends BaseEntity {
                 && (qualityFormType.equals(QualityFormType.BY_PERCENTAGE))
                 && (findQualityFormItemWithDuplicatePercentage() != null)) {
             return false;
+        }
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "percentage should be greater than 0% and less than 100%")
+    public boolean checkConstraintQualityFormItemsPercentage() {
+        if ((qualityFormItems.size() > 0) && (qualityFormType != null)
+                && (qualityFormType.equals(QualityFormType.BY_ITEMS))) {
+            BigDecimal sum = new BigDecimal(0);
+            for (QualityFormItem item : qualityFormItems) {
+                if (item.getPercentage() == null) {
+                    return false;
+                }
+                sum = sum.add(item.getPercentage());
+            }
+            return (sum.compareTo(new BigDecimal(100).setScale(2)) == 0);
         }
         return true;
     }
@@ -225,60 +303,76 @@ public class QualityForm extends BaseEntity {
         return result;
     }
 
-    public void updateAndSortQualityFormItemPositions() {
+    private void updateAndSortQualityFormItemPositionsByPercentage() {
         List<QualityFormItem> result = getListToNull(qualityFormItems);
-        if ((qualityFormType != null)
-                && (qualityFormType.equals(QualityFormType.BY_PERCENTAGE))) {
-            int nulos = 0;
+        int nulos = 0;
+        for (QualityFormItem item : qualityFormItems) {
+            Integer position = getCorrectPosition(item);
+            if (position == null) {
+                position = nulos;
+                nulos++;
+            }
+
+            while (result.get(position) != null) {
+                position++;
+            }
+
+            item.setPosition(position);
+            result.set(position, item);
+        }
+        setQualityFormItems(result);
+    }
+
+    private void updateAndSortQualityFormItemPositionsByItems() {
+        List<QualityFormItem> result = getListToNull(qualityFormItems);
+        for (QualityFormItem item : qualityFormItems) {
+            int position = qualityFormItems.indexOf(item);
+            item.setPosition(position);
+            result.set(position, item);
+        }
+        setQualityFormItems(result);
+    }
+
+    private boolean changeFromByItemsToByPercentage(
+            QualityFormType qualityFormType) {
+        return (this.qualityFormType.equals(QualityFormType.BY_ITEMS) && qualityFormType
+                .equals(QualityFormType.BY_PERCENTAGE));
+    }
+
+    private void updatePercentageByPercentage() {
+        BigDecimal sum = new BigDecimal(0);
+        for (QualityFormItem item : qualityFormItems) {
+            item.setPercentage(item.getPercentage().add(sum));
+            sum = sum.add(new BigDecimal(1));
+        }
+    }
+
+    private void updatePercentageByItems() {
+        if (qualityFormItems.size() > 0) {
+            BigDecimal percentageTotal = new BigDecimal(100).setScale(2);
+            BigDecimal numItems = new BigDecimal(qualityFormItems.size())
+                    .setScale(2);
+            BigDecimal percentageByItem = percentageTotal.divide(numItems, 2,
+                    BigDecimal.ROUND_DOWN);
             for (QualityFormItem item : qualityFormItems) {
-
-                Integer position = getCorrectPosition(item);
-                if (position == null) {
-                    position = nulos;
-                    nulos++;
-                }
-
-                while (result.get(position) != null) {
-                    position++;
-                }
-
-                item.setPosition(position);
-                result.set(position, item);
+                item.setPercentage(percentageByItem);
             }
-            setQualityFormItems(result);
+
+            // Calculate the division remainder
+            BigDecimal sumByItems = (percentageByItem.multiply(numItems))
+                    .setScale(2);
+            BigDecimal remainder = (percentageTotal.subtract(sumByItems))
+                    .setScale(2);
+            QualityFormItem lastItem = qualityFormItems
+                .get(qualityFormItems.size() - 1);
+            BigDecimal lastPercentage = (lastItem.getPercentage()
+                    .add(remainder)).setScale(2);
+            lastItem.setPercentage(lastPercentage);
         }
     }
 
-    public QualityFormItem findQualityFormItemWithDuplicateName() {
-        List<QualityFormItem> items = new ArrayList<QualityFormItem>(
-                qualityFormItems);
-        for (int i = 0; i < items.size(); i++) {
-            for (int j = i + 1; j < items.size(); j++) {
-                if ((items.get(j).getName() != null)
-                        && (items.get(i).getName() != null)
-                        && (items.get(j).getName().equals(items.get(i)
-                                .getName()))) {
-                    return items.get(j);
-                }
-            }
-        }
-        return null;
-    }
-
-    public QualityFormItem findQualityFormItemWithDuplicatePercentage() {
-        List<QualityFormItem> items = new ArrayList<QualityFormItem>(
-                qualityFormItems);
-        for (int i = 0; i < items.size(); i++) {
-            for (int j = i + 1; j < items.size(); j++) {
-                if ((items.get(j).getPercentage() != null)
-                        && (items.get(i).getPercentage() != null)
-                        && (items.get(j).getPercentage().equals(items.get(i)
-                                .getPercentage()))) {
-                    return items.get(j);
-                }
-            }
-        }
-        return null;
+    private boolean checkValidPosition(Integer position) {
+        return (position >= 0 && position < qualityFormItems.size());
     }
 
 }

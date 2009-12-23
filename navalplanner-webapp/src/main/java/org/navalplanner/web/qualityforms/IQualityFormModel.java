@@ -105,4 +105,19 @@ public interface IQualityFormModel {
      * @param percentage
      */
     boolean checkConstraintUniqueQualityFormItemPercentage();
+
+    /**
+     * Changes the current {@link QualityFormItem } position to a greater
+     * position and updates the others position {@link QualityFormItem } position
+     * @param qualityFormItem
+     */
+    void downQualityFormItem(QualityFormItem qualityFormItem);
+
+    /**
+     * Changes the current {@link QualityFormItem } position to a lower position
+     * and updates the others position {@link QualityFormItem } position
+     * @param qualityFormItem
+     */
+    void upQualityFormItem(QualityFormItem qualityFormItem);
+
 }

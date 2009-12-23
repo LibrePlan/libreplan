@@ -32,6 +32,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.QualityFormItem;
+import org.navalplanner.business.qualityforms.entities.QualityFormType;
 import org.navalplanner.business.test.qualityforms.daos.AbstractQualityFormTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -74,11 +75,13 @@ public class QualityFormTest extends AbstractQualityFormTest {
     @Test
     public void checkInvalidQualityFormType() throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
-        qualityForm.setQualityFormType(null);
         try {
+            qualityForm.setQualityFormType(null);
             qualityFormDAO.save(qualityForm);
             fail("It should throw an exception");
         } catch (ValidationException e) {
+            // It should throw an exception
+        } catch (IllegalArgumentException e) {
             // It should throw an exception
         }
     }
@@ -186,6 +189,62 @@ public class QualityFormTest extends AbstractQualityFormTest {
         }
     }
 
+    @Test
+    public void checkInvalidQualityFormItemPositionByItems()
+            throws ValidationException {
+        QualityForm qualityForm = createValidQualityForm();
+        qualityForm.setQualityFormType(QualityFormType.BY_ITEMS);
+
+        QualityFormItem qualityFormItem1 = createValidQualityFormItem();
+        qualityForm.addQualityFormItemOnTop(qualityFormItem1);
+
+        QualityFormItem qualityFormItem2 = createValidQualityFormItem();
+        qualityForm.addQualityFormItemOnTop(qualityFormItem2);
+
+        try {
+            qualityFormDAO.save(qualityForm);
+        } catch (ValidationException e) {
+            fail("It shouldn't throw an exception");
+        }
+
+        // Incorrect Position
+        qualityFormItem1.setPosition(2);
+        qualityFormItem2.setPosition(1);
+
+        try {
+            qualityFormDAO.save(qualityForm);
+            fail("It shouldn't throw an exception");
+        } catch (ValidationException e) {
+            // It should throw an exception
+        }
+
+        // Incorrect Percentage
+        qualityFormItem1.setPosition(0);
+        qualityFormItem2.setPosition(1);
+        qualityFormItem1.setPercentage(new BigDecimal(100));
+        qualityFormItem2.setPercentage(new BigDecimal(1));
+
+        try {
+            qualityFormDAO.save(qualityForm);
+            fail("It should throw an exception");
+        } catch (ValidationException e) {
+            // It should throw an exception
+        }
+
+        // Incorrect Percentage
+        qualityFormItem1.setPosition(0);
+        qualityFormItem2.setPosition(1);
+        qualityFormItem1.setPercentage(new BigDecimal(10));
+        qualityFormItem2.setPercentage(new BigDecimal(1));
+
+        try {
+            qualityFormDAO.save(qualityForm);
+            fail("It should throw an exception");
+        } catch (ValidationException e) {
+            // It should throw an exception
+        }
+    }
+
      @Test
     public void checkInvalidQualityFormItemName() throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
@@ -225,8 +284,6 @@ public class QualityFormTest extends AbstractQualityFormTest {
             qualityFormDAO.save(qualityForm);
             fail("It should throw an exception");
         } catch (ValidationException e) {
-            // It should throw an exception
-        } catch (IllegalStateException e) {
             // It should throw an exception
         }
     }

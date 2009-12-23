@@ -359,7 +359,7 @@ public class QualityFormCRUDController extends GenericForwardComposer {
 
     public void onChangeQualityFormItemPercentage() {
         // it must update the order of the items if it is necessary.
-        getQualityForm().updateAndSortQualityFormItemPositions();
+        getQualityForm().updateAndSortQualityFormItem();
         Util.reloadBindings(gridQualityFormItems);
     }
 
@@ -412,6 +412,8 @@ public class QualityFormCRUDController extends GenericForwardComposer {
                 QualityFormItem item = (QualityFormItem) ((Row) comp
                         .getParent()).getValue();
                 BigDecimal newPercentage = (BigDecimal) value;
+                item.setPercentage(newPercentage);
+
                 if (newPercentage == null) {
                     item.setPercentage(null);
                     throw new WrongValueException(comp, _("cannot be null"));
@@ -422,11 +424,8 @@ public class QualityFormCRUDController extends GenericForwardComposer {
                     throw new WrongValueException(comp,
                             _("percentage must be in range (0,100]"));
                 }
-
-                item.setPercentage(newPercentage);
                 if (!qualityFormModel
                         .checkConstraintUniqueQualityFormItemPercentage()) {
-                    System.out.println("duplicate??");
                     item.setPercentage(null);
                     throw new WrongValueException(comp,
                             _("percentage cannot be duplicated"));
@@ -434,4 +433,35 @@ public class QualityFormCRUDController extends GenericForwardComposer {
             }
         };
     }
+
+    public boolean isByPercentage() {
+        if (this.getQualityForm() != null) {
+            return getQualityForm().getQualityFormType().equals(
+                    QualityFormType.BY_PERCENTAGE);
+        }
+        return false;
+    }
+
+    public boolean isByItems() {
+        if (this.getQualityForm() != null) {
+            return getQualityForm().getQualityFormType().equals(
+                    QualityFormType.BY_ITEMS);
+        }
+        return true;
+    }
+
+    public void changeQualityFormType() {
+        Util.reloadBindings(gridQualityFormItems);
+    }
+
+    public void downQualityFormItem(QualityFormItem qualityFormItem) {
+        qualityFormModel.downQualityFormItem(qualityFormItem);
+        Util.reloadBindings(gridQualityFormItems);
+    }
+
+    public void upQualityFormItem(QualityFormItem qualityFormItem) {
+        qualityFormModel.upQualityFormItem(qualityFormItem);
+        Util.reloadBindings(gridQualityFormItems);
+    }
+
 }

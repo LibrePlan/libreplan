@@ -165,4 +165,15 @@ public class QualityFormModel implements IQualityFormModel {
         }
         return true;
     }
+
+    public void downQualityFormItem(QualityFormItem qualityFormItem) {
+        Integer newPosition = qualityFormItem.getPosition() + 1;
+        this.getQualityForm().moveQualityFormItem(qualityFormItem, newPosition);
+    }
+
+    public void upQualityFormItem(QualityFormItem qualityFormItem) {
+        Integer newPosition = qualityFormItem.getPosition() - 1;
+        this.getQualityForm().moveQualityFormItem(qualityFormItem, newPosition);
+    }
+
 }

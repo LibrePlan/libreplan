@@ -108,11 +108,8 @@ public class QualityFormItem implements INewObject {
     public boolean checkConstraintQualityFormItemPercentage() {
         if (percentage == null)
             return true;
-        if ((percentage.compareTo(new BigDecimal(100).setScale(2)) <= 0)
-                && (percentage.compareTo(new BigDecimal(0).setScale(2)) > 0)) {
-            return true;
-        }
-        return false;
+        return ((percentage.compareTo(new BigDecimal(100).setScale(2)) <= 0) && (percentage
+                .compareTo(new BigDecimal(0).setScale(2)) > 0));
     }
 
 }
