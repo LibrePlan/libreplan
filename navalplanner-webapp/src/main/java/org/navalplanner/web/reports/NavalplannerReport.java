@@ -27,9 +27,21 @@ import net.sf.jasperreports.engine.JRDataSource;
 import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.zkoss.zk.ui.Executions;
 
-public abstract class NavalplannerReport implements INavalplannerReport {
+public class NavalplannerReport implements INavalplannerReport {
 
     private ExtendedJasperreport report;
+
+    public NavalplannerReport() {
+
+    }
+
+    public NavalplannerReport(ExtendedJasperreport report, String reportName) {
+        if (!reportName.endsWith(".jasper")) {
+            reportName += ".jasper";
+        }
+        report.setSrc(reportName);
+        setReport(report);
+    }
 
     public ExtendedJasperreport getReport() {
         return report;

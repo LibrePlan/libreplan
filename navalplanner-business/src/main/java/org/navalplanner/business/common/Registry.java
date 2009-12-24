@@ -35,6 +35,7 @@ import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.users.daos.IProfileDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
+import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,7 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * to access DAOs. For the rest of classes (e.g. services, tests, etc.), Spring
  * DI is a more convenient option. The DAOs or services are added to the
  * registry as needed.
- * 
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Javier Moran Rua <jmoran@igalia.com>
@@ -103,6 +104,9 @@ public class Registry {
 
     @Autowired
     private IWorkerDAO workerDAO;
+    
+    @Autowired
+    private IWorkReportLineDAO workReportLineDAO;
 
     private Registry() {
     }
@@ -174,5 +178,7 @@ public class Registry {
     public static IWorkerDAO getWorkerDAO() {
         return getInstance().workerDAO;
     }
-
+    public static IWorkReportLineDAO getWorkReportLineDAO() {
+        return getInstance().workReportLineDAO;
+    }
 }

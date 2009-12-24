@@ -1,0 +1,134 @@
+/*
+ * This file is part of ###PROJECT_NAME###
+ *
+ * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+ *                    Desenvolvemento Tecnolóxico de Galicia
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.navalplanner.business.reports.dtos;
+
+import java.util.List;
+
+import org.joda.time.LocalDate;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
+import org.navalplanner.business.workreports.entities.WorkReportLine;
+
+/**
+ *
+ * @author Diego Pino Garcia <dpino@igalia.com>
+ *
+ */
+public class CompletedEstimatedHoursPerTaskDTO {
+
+    private IWorkReportLineDAO workReportLineDAO;
+
+    private String taskName;
+
+    private Integer estimatedHours;
+
+    private Integer totalPlannedHours;
+
+    private Integer partialPlannedHours;
+
+    private Integer realHours;
+
+    private CompletedEstimatedHoursPerTaskDTO() {
+        workReportLineDAO = Registry.getWorkReportLineDAO();
+    }
+
+    public CompletedEstimatedHoursPerTaskDTO(Task task, LocalDate date) {
+        this();
+        this.taskName = task.getName();
+        this.estimatedHours = task.getHoursSpecifiedAtOrder();
+        this.totalPlannedHours = calculatePlannedHours(task, null);
+        this.partialPlannedHours = calculatePlannedHours(task, date);
+        this.realHours = calculateRealHours(task, date);
+    }
+
+    public Integer calculatePlannedHours(Task task, LocalDate date) {
+        Integer result = new Integer(0);
+
+        final List<DayAssignment> dayAssignments = task.getDayAssignments();
+        if (dayAssignments.isEmpty()) {
+            return result;
+        }
+
+        for (DayAssignment dayAssignment : dayAssignments) {
+            if (date == null || dayAssignment.getDay().compareTo(date) <= 0) {
+                result += dayAssignment.getHours();
+            }
+        }
+        return result;
+    }
+
+    public Integer calculateRealHours(Task task, LocalDate date) {
+        Integer result = new Integer(0);
+
+        final List<WorkReportLine> workReportLines = workReportLineDAO
+                .findByOrderElementAndChildren(task.getOrderElement());
+        if (workReportLines.isEmpty()) {
+            return result;
+        }
+
+        for (WorkReportLine workReportLine : workReportLines) {
+            final LocalDate workReportLineDate = new LocalDate(workReportLine.getDate());
+            if (date == null || workReportLineDate.compareTo(date) <= 0) {
+                result += workReportLine.getNumHours();
+            }
+        }
+        return result;
+    }
+
+    public Integer getEstimatedHours() {
+        return estimatedHours;
+    }
+
+    public void setEstimatedHours(Integer estimatedHours) {
+        this.estimatedHours = estimatedHours;
+    }
+
+    public Integer getTotalPlannedHours() {
+        return totalPlannedHours;
+    }
+
+    public void setTotalPlannedHours(Integer totalPlannedHours) {
+        this.totalPlannedHours = totalPlannedHours;
+    }
+
+    public Integer getPartialPlannedHours() {
+        return partialPlannedHours;
+    }
+
+    public void setPartialPlannedHours(Integer partialPlannedHours) {
+        this.partialPlannedHours = partialPlannedHours;
+    }
+
+    public Integer getRealHours() {
+        return realHours;
+    }
+
+    public void setRealHours(Integer realHours) {
+        this.realHours = realHours;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+}

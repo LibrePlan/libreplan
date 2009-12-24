@@ -20,16 +20,14 @@
 
 package org.navalplanner.web.reports;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
-import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.orders.entities.Order;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
@@ -40,17 +38,15 @@ import org.zkoss.zul.Listitem;
  * @author Diego Pino Garcia <dpino@igalia.com>
  *
  */
-public class HoursWorkedPerWorkerController extends NavalplannerReportController {
+public class CompletedEstimatedHoursPerTaskController extends NavalplannerReportController {
 
-    private static final String REPORT_NAME = "hoursWorkedPerWorkerReport";
+    private static final String REPORT_NAME = "completedEstimatedHours";
 
-    private IHoursWorkedPerWorkerModel hoursWorkedPerWorkerModel;
+    private ICompletedEstimatedHoursPerTaskModel completedEstimatedHoursPerTaskModel;
 
-    private Listbox lbWorkers;
+    private Listbox lbOrders;
 
-    private Datebox startingDate;
-
-    private Datebox endingDate;
+    private Datebox deadlineDate;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -58,8 +54,8 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
         comp.setVariable("controller", this, true);
     }
 
-    public List<Worker> getWorkers() {
-        return hoursWorkedPerWorkerModel.getWorkers();
+    public List<Order> getOrders() {
+        return completedEstimatedHoursPerTaskModel.getOrders();
     }
 
     @Override
@@ -69,33 +65,29 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
     @Override
     protected JRDataSource getDataSource() {
-        return hoursWorkedPerWorkerModel.getWorkerReport(getSelectedWorkers(), getStartingDate(), getEndingDate());
+        return completedEstimatedHoursPerTaskModel
+                .getCompletedEstimatedHoursReportPerTask(getSelectedOrder(),
+                        getDeadlineDate());
     }
 
-    private List<Worker> getSelectedWorkers() {
-        List<Worker> result = new ArrayList<Worker>();
+    private Order getSelectedOrder() {
+        final Listitem item = lbOrders.getSelectedItem();
+        return (item != null) ? (Order) item.getValue() : null;
+    }
 
-        final Set<Listitem> listItems = lbWorkers.getSelectedItems();
-        for (Listitem each: listItems) {
-            result.add((Worker) each.getValue());
+    private Date getDeadlineDate() {
+        Date result = deadlineDate.getValue();
+        if (result == null) {
+            deadlineDate.setValue(new Date());
         }
-        return result;
-    }
-
-    private Date getStartingDate() {
-         return startingDate.getValue();
-    }
-
-    private Date getEndingDate() {
-        return endingDate.getValue();
+        return deadlineDate.getValue();
     }
 
     @Override
     protected Map<String, Object> getParameters() {
         Map<String, Object> result = new HashMap<String, Object>();
 
-        result.put("startingDate", getStartingDate());
-        result.put("endingDate", getEndingDate());
+        result.put("deadlineDate", getDeadlineDate());
 
         return result;
     }
