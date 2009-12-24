@@ -167,7 +167,6 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
         orderLine.addAdvanceAssignment(advanceAssignment);
 
-        order.add(orderLine);
         orderDao.save(order);
         this.sessionFactory.getCurrentSession().flush();
 

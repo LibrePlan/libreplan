@@ -134,7 +134,7 @@ public class OrderModelTest {
         order.setInitDate(year(2000));
         order.setName("name");
         order.setResponsible("responsible");
-        order.setCode("code");
+        order.setCode("code-" + UUID.randomUUID());
         order.setCalendar(configurationDAO.getConfiguration()
                 .getDefaultCalendar());
         return order;
@@ -224,7 +224,7 @@ public class OrderModelTest {
                         }
                     });
             containers[i].setName("bla");
-            containers[i].setCode("000000000");
+            containers[i].setCode("code-" + UUID.randomUUID());
             order.add(containers[i]);
         }
         OrderLineGroup container = (OrderLineGroup) containers[0];
@@ -286,7 +286,7 @@ public class OrderModelTest {
     private OrderLine createValidLeaf(String parameter) {
         OrderLine result = OrderLine.create();
         result.setName(parameter);
-        result.setCode("000000000");
+        result.setCode("code-" + UUID.randomUUID());
 
         HoursGroup hoursGroup = HoursGroup.create(result);
         hoursGroup.setName("hoursGroupName");
@@ -314,10 +314,10 @@ public class OrderModelTest {
                     }
                 });
         container.setName("bla");
-        container.setCode("000000000");
+        container.setCode("code-" + UUID.randomUUID());
         OrderLine leaf = OrderLine.create();
         leaf.setName("leaf");
-        leaf.setCode("000000000");
+        leaf.setCode("code-" + UUID.randomUUID());
         container.add(leaf);
         order.add(container);
         HoursGroup hoursGroup = HoursGroup.create(leaf);

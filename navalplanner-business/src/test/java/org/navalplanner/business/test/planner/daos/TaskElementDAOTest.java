@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -128,14 +129,14 @@ public class TaskElementDAOTest {
     private OrderLine createOrderLine() {
         OrderLine orderLine = OrderLine.create();
         orderLine.setName("bla");
-        orderLine.setCode("000000000");
+        orderLine.setCode("code-" + UUID.randomUUID());
         HoursGroup hoursGroup = new HoursGroup();
         hoursGroup.setName("hoursGroupName");
         orderLine.addHoursGroup(hoursGroup);
         Order order = Order.create();
         order.setName("bla");
         order.setInitDate(new Date());
-        order.setCode("code");
+        order.setCode("code-" + UUID.randomUUID());
         order.add(orderLine);
         order.setCalendar(configurationDAO.getConfiguration()
                 .getDefaultCalendar());
