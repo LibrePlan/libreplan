@@ -125,10 +125,10 @@ public class SaveCommand implements ISaveCommand {
     private void saveTasksToSave() {
         for (TaskElement taskElement : state.getTasksToSave()) {
             taskElementDAO.save(taskElement);
-            dontPoseAsTransient(taskElement);
             if (taskElement instanceof Task) {
                 saveTask(taskElement, (Task) taskElement);
             }
+            dontPoseAsTransient(taskElement);
         }
         if (!state.getTasksToSave().isEmpty()) {
             updateRootTaskPosition();
@@ -142,7 +142,7 @@ public class SaveCommand implements ISaveCommand {
             taskElement.dontPoseAsTransientObjectAnymore();
         }
         Set<ResourceAllocation<?>> resourceAllocations = taskElement.getResourceAllocations();
-        derivedDontPoseAsTransient(resourceAllocations);
+        dontPoseAsTransient(resourceAllocations);
         if (!taskElement.isLeaf()) {
             for (TaskElement each : taskElement.getChildren()) {
                 dontPoseAsTransient(each);
@@ -150,14 +150,17 @@ public class SaveCommand implements ISaveCommand {
         }
     }
 
-    private void derivedDontPoseAsTransient(
+    private void dontPoseAsTransient(
             Set<ResourceAllocation<?>> resourceAllocations) {
         for (ResourceAllocation<?> each : resourceAllocations) {
+            each.dontPoseAsTransientObjectAnymore();
+            for (DayAssignment eachAssignment : each.getAssignments()) {
+                eachAssignment.dontPoseAsTransientObjectAnymore();
+            }
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
                 eachDerived.dontPoseAsTransientObjectAnymore();
-                List<DerivedDayAssignment> assignments = eachDerived
-                        .getAssignments();
-                for (DerivedDayAssignment eachAssignment : assignments) {
+                for (DerivedDayAssignment eachAssignment : eachDerived
+                        .getAssignments()) {
                     eachAssignment.dontPoseAsTransientObjectAnymore();
                 }
             }
