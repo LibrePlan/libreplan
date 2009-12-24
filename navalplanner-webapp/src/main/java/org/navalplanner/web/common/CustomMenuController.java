@@ -193,66 +193,36 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     public void initializeMenu() {
-        topItem(_("Scheduling"), "/planner/index.zul", "01-introducion.html",
-                subItem(
-                _("Company view"), "/planner/index.zul;company_scheduling",
-                        "01-introducion.html"), subItem(
-                _("General resource allocation"),
-                        "/planner/index.zul;company_load",
-                        "01-introducion.html#id1"),
-                subItem(_("Orders list"), "/planner/index.zul;orders_list",
-                        "01-introducion.html#id2"));
+        topItem(_("Scheduling"), "/planner/index.zul", "",
+            subItem(_("Company view"), "/planner/index.zul;company_scheduling","01-introducion.html"),
+            subItem(_("General resource allocation"),"/planner/index.zul;company_load","01-introducion.html#id1"),
+            subItem(_("Orders list"), "/planner/index.zul;orders_list","01-introducion.html#id2"));
 
         topItem(_("Resources"), "/resources/worker/worker.zul", "",
- subItem(
-                _("Workers List"), "/resources/worker/worker.zul",
-                "05-recursos.html#xesti-n-de-traballadores"), subItem(
-                _("Machines List"), "/resources/machine/machines.zul",
-                "05-recursos.html#xesti-n-de-m-quinas"), subItem(
-                _("Virtual worker groups"),
-                "/resources/worker/virtualWorkers.zul",
-                "05-recursos.html#xesti-n-de-traballadores"));
+            subItem(_("Workers List"), "/resources/worker/worker.zul","05-recursos.html#xesti-n-de-traballadores"),
+            subItem(_("Machines List"), "/resources/machine/machines.zul","05-recursos.html#xesti-n-de-m-quinas"),
+            subItem(_("Virtual worker groups"),"/resources/worker/virtualWorkers.zul","05-recursos.html#xesti-n-de-traballadores"));
 
         topItem(_("Work reports"), "/workreports/workReportTypes.zul", "",
-                subItem(_("Work report types"),
-                        "/workreports/workReportTypes.zul",
-                        "02-criterios.html#id1"), subItem(
-                        _("Work report list"), "/workreports/workReport.zul",
-                        "02-criterios.html#id1"));
+            subItem(_("Work report types"),"/workreports/workReportTypes.zul","09-partes.html#id2"),
+            subItem(_("Work report list"), "/workreports/workReport.zul", "09-partes.html#id3"));
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             topItem(_("Administration"), "/advance/advanceTypes.zul", "",
-                    subItem(_("Manage advance types"),
-                            "/advance/advanceTypes.zul",
-                            "02-criterios.html#id1"),
-                    subItem(_("Manage criteria"),
-                            "/resources/criterions/criterions-V2.zul",
-                            "02-criterios.html#id1"),
-                    subItem(_("Calendars"), "/calendars/calendars.zul",
-                            "02-criterios.html#id1"), subItem(_("Label types"),
-                            "/labels/labelTypes.zul", "02-criterios.html#id1"),
-                    subItem(_("Materials"), "/materials/materials.zul",
-                            "02-criterios.html#id1"),
-                    subItem(_("Manage cost categories"),
-                            "/costcategories/costCategory.zul",
-                            "02-criterios.html#id1"), subItem(_(
-                            "Manage types of work hours",
-                            "02-criterios.html#id1"),
-                            "/costcategories/typeOfWorkHours.zul",
-                            "02-criterios.html#id1"), subItem(
-                            _("Configuration"), "/common/configuration.zul",
-                            "02-criterios.html#id1"), subItem(
-                            _("Quality forms"),
-                            "/qualityforms/qualityForms.zul",
-                            "02-criterios.html#id1"),
-                            subItem(_("Manage user profiles"), "/users/profiles.zul",
-                            "02-criterios.html#id1"),
-                            subItem(_("Manage user accounts"), "/users/users.zul",
-                            "02-criterios.html#id1"));
+                subItem(_("Manage advance types"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
+                subItem(_("Manage criteria"),"/resources/criterions/criterions-V2.zul","02-criterios.html#id1"),
+                subItem(_("Calendars"),"/calendars/calendars.zul", "03-calendarios.html"),
+                subItem(_("Label types"), "/labels/labelTypes.zul","10-etiquetas.html"),
+                subItem(_("Materials"), "/materials/materials.zul", ""),
+                subItem(_("Manage cost categories"),"/costcategories/costCategory.zul","04-avances.html"),
+                subItem(_("Manage types of work hours"),"/costcategories/typeOfWorkHours.zul","04-avances.html"),
+                subItem(_("Configuration"), "/common/configuration.zul",""),
+                subItem(_("Quality forms"),"/qualityforms/qualityForms.zul",""),
+                subItem(_("Manage user profiles"), "/users/profiles.zul",""),
+                subItem(_("Manage user accounts"), "/users/users.zul",""));
         }
         topItem(_("Reports"), "", "",
-                subItem(_("Worker report"),
-                        "/reports/worker_report.zul", ""));
+            subItem(_("Worker report"),"/reports/worker_report.zul", ""));
     }
 
     private Vbox getRegisteredItemsInsertionPoint() {
@@ -286,7 +256,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             if (ci.isActiveParent()) {
                 if ((ci.name != null)) {
                     for (CustomMenuItem child : ci.children) {
-                        if (child.isActiveParent()) {
+                        if (child.isActiveParent()
+                                && !child.helpLink.equals("")) {
                             helpLink = child.helpLink;
                         }
                     }
