@@ -22,12 +22,14 @@ package org.navalplanner.web.test.ws.orders;
 
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
-import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
+import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -40,9 +42,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.ws.common.api.ConstraintViolationDTO;
+import org.navalplanner.ws.common.api.IncompatibleTypeException;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
 import org.navalplanner.ws.orders.api.HoursGroupDTO;
@@ -579,6 +585,48 @@ public class OrderElementServiceTest {
         assertNull(constraintViolations.get(0).fieldName);
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
+    }
+
+    @Test
+    public void updateLabels() throws InstanceNotFoundException,
+            IncompatibleTypeException {
+        String code = "order-code";
+        try {
+            orderElementDAO.findUniqueByCode(code);
+            fail("Order with code " + code + " already exists");
+        } catch (InstanceNotFoundException e) {
+            // It should throw an exception
+        }
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = code;
+        orderDTO.initDate = new Date();
+
+        LabelDTO labelDTO = new LabelDTO("Label name", "Label type");
+        orderDTO.labels.add(labelDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+
+        OrderElement orderElement = orderElementDAO.findUniqueByCode(code);
+        assertNotNull(orderElement);
+        assertThat(orderElement.getLabels().size(), equalTo(1));
+
+        LabelDTO labelDTO2 = new LabelDTO("Label name2", "Label type");
+        orderDTO.labels.add(labelDTO2);
+        instanceConstraintViolationsList = orderElementService
+                .updateOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+
+        orderElement = orderElementDAO.findUniqueByCode(code);
+        assertThat(orderElement.getLabels().size(), equalTo(2));
+        for (Label label : orderElement.getLabels()) {
+            assertThat(label.getName(), anyOf(equalTo("Label name"),
+                    equalTo("Label name2")));
+            assertThat(label.getType().getName(), equalTo("Label type"));
+        }
     }
 
 }
