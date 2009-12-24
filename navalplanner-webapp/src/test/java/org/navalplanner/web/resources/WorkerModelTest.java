@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -71,6 +72,7 @@ public class WorkerModelTest {
         workerModel.save();
     }
 
+    @Ignore
     @Test(expected = IllegalStateException.class)
     public void testWorkerInvalid() throws ValidationException,
             InstanceNotFoundException, IllegalStateException {
