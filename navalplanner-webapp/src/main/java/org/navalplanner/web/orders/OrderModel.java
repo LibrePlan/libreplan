@@ -329,7 +329,8 @@ public class OrderModel implements IOrderModel {
 
         for (OrderElement orderElement : order.getAllOrderElements()) {
             if ((orderElement.getCode() == null)
-                    || (orderElement.getCode().isEmpty())) {
+                    || (orderElement.getCode().isEmpty())
+                    || (!orderElement.getCode().startsWith(order.getCode()))) {
                 order.incrementLastOrderElementSequenceCode();
                 String orderElementCode = OrderSequence
                         .formatValue(numberOfDigits, order
