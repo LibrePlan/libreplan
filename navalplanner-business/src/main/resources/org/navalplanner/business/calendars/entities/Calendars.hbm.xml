@@ -33,7 +33,7 @@
 
         <joined-subclass name="ResourceCalendar">
             <key column="BASE_CALENDAR_ID" />
-            <property name="capacity" />
+            <property name="capacity" not-null="true" />
         </joined-subclass>
     </class>
 

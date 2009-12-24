@@ -33,6 +33,7 @@ import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -69,13 +70,45 @@ public class WorkerDAO extends GenericDAOHibernate<Worker, Long>
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Worker> findByNameOrNif(String name) {
+    public List<Worker> findByNameSubpartOrNifCaseInsensitive(String name) {
         String containsName = "%" + name + "%";
-        return getSession().createCriteria(Worker.class).add(
+        return getSession().createCriteria(Worker.class)
+                .add(
                         Restrictions.or(Restrictions.or(Restrictions.ilike(
                                 "firstName", containsName), Restrictions.ilike(
                                 "surname", containsName)), Restrictions.like(
                                 "nif", containsName))).list();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Worker> findByFirstNameCaseInsensitive(String name) {
+        return getSession().createCriteria(Worker.class).add(
+                Restrictions.ilike("firstName", name)).list();
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public List<Worker> findByFirstNameAnotherTransactionCaseInsensitive(String name) {
+        return findByFirstNameCaseInsensitive(name);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Worker> findByFirstNameSecondNameAndNif(String firstname,
+            String secondname, String nif) {
+        return getSession().createCriteria(Worker.class).add(
+                Restrictions.and(Restrictions.ilike("firstName", firstname),
+                        Restrictions.and(Restrictions.ilike("surname",
+                                secondname), Restrictions.like("nif", nif))))
+                .list();
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public List<Worker> findByFirstNameSecondNameAndNifAnotherTransaction(
+            String firstname, String secondname, String nif) {
+        return findByFirstNameSecondNameAndNif(firstname, secondname, nif);
     }
 
     @Override

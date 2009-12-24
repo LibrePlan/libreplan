@@ -46,7 +46,7 @@ public interface IWorkerDAO extends IGenericDAO<Worker, Long> {
      *            search worker by name(firstname or surname)/NIF
      *
      */
-    List<Worker> findByNameOrNif(String name);
+    List<Worker> findByNameSubpartOrNifCaseInsensitive(String name);
 
     /**
      * Finds a {@link Worker} with the NIF param that should be unique.
@@ -73,5 +73,39 @@ public interface IWorkerDAO extends IGenericDAO<Worker, Long> {
      *
      */
     List<HoursWorkedPerWorkerDTO> getWorkingHoursPerWorker(List<Worker> workers, Date startingDate, Date endingDate);
+
+    /**
+     * Return list of workers with a particular firstName
+     * @param name
+     *            The string with the name searched
+     * @return The list of {@link Worker} entities found
+     */
+    List<Worker> findByFirstNameCaseInsensitive(String name);
+
+    /**
+     * Return list of workers with a particular firstName when called from
+     * inside an external transaction
+     * @param name
+     *            The string with the name searched
+     * @return The list of {@link Worker} entities found
+     */
+    List<Worker> findByFirstNameAnotherTransactionCaseInsensitive(String name);
+
+    /**
+     * Return list of workers with a particular set of firstName, surname and
+     * nif values
+     * @param firstname
+     *            String value for firstname
+     * @param surname
+     *            String value for surname
+     * @param nif
+     *            String value for nif
+     * @return The list of {@link Worker} entities found
+     */
+    List<Worker> findByFirstNameSecondNameAndNif(String firstname,
+            String surname, String nif);
+
+    List<Worker> findByFirstNameSecondNameAndNifAnotherTransaction(
+            String firstname, String surname, String nif);
 
 }

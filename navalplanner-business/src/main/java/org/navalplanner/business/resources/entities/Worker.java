@@ -21,8 +21,12 @@
 package org.navalplanner.business.resources.entities;
 
 
+import java.util.List;
+
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.common.Registry;
 
 /**
  * This class models a worker.
@@ -109,6 +113,25 @@ public class Worker extends Resource {
 
     public boolean isReal() {
         return !isVirtual();
+    }
+
+    @AssertTrue(message = "Worker with the same firstname, surname and nif previously existed")
+    public boolean checkConstraintUniqueFirstName() {
+
+        if (this instanceof VirtualWorker) {
+            return true;
+        }
+
+        List<Worker> list = Registry.getWorkerDAO()
+                .findByFirstNameSecondNameAndNifAnotherTransaction(firstName,
+                        surname, nif);
+
+        if ((isNewObject() && list.isEmpty()) || list.isEmpty()) {
+            return true;
+        } else {
+            return list.get(0).getId().equals(getId());
+        }
+
     }
 
 }

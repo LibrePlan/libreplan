@@ -71,9 +71,9 @@ public class WorkerModelTest {
         workerModel.save();
     }
 
-    @Test(expected = ValidationException.class)
+    @Test(expected = IllegalStateException.class)
     public void testWorkerInvalid() throws ValidationException,
-            InstanceNotFoundException {
+            InstanceNotFoundException, IllegalStateException {
 
         IResourceDAO resourceDAOMock = createMock(IResourceDAO.class);
         ICriterionDAO criterionServiceMock = createMock(ICriterionDAO.class);

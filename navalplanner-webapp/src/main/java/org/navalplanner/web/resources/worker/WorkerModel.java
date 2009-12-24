@@ -523,7 +523,6 @@ public class WorkerModel implements IWorkerModel {
     public void setCapacity(Integer capacity) {
         if (getCalendar() != null) {
             getCalendar().setCapacity(capacity);
-            System.out.println("not null" + getCalendar().getCapacity());
         }
     }
 

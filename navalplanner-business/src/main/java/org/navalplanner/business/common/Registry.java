@@ -32,6 +32,7 @@ import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
+import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.users.daos.IProfileDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
@@ -100,6 +101,9 @@ public class Registry {
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
+    @Autowired
+    private IWorkerDAO workerDAO;
+
     private Registry() {
     }
 
@@ -165,6 +169,10 @@ public class Registry {
 
     public static IOrderElementDAO getOrderElementDAO() {
         return getInstance().orderElementDAO;
+    }
+
+    public static IWorkerDAO getWorkerDAO() {
+        return getInstance().workerDAO;
     }
 
 }

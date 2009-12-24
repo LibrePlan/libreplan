@@ -107,7 +107,7 @@ public class ResourceSearchModel implements IResourceSearchModel {
         if (emptyName) {
             return new ArrayList<Resource>(resourcesMatchingCriterions);
         }
-        Set<Resource> result = intersect(workerDAO.findByNameOrNif(name),
+        Set<Resource> result = intersect(workerDAO.findByNameSubpartOrNifCaseInsensitive(name),
                 resourcesMatchingCriterions);
         result.addAll(intersect(machineDAO.findByNameOrCode(name),
                 resourcesMatchingCriterions));

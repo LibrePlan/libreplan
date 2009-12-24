@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import org.hibernate.validator.AssertTrue;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -63,6 +64,11 @@ public class ResourceCalendar extends BaseCalendar {
             return 0;
         }
         return super.getWorkableHours(date);
+    }
+
+    @AssertTrue(message = "Capacity must be a positive integer number")
+    public boolean checkCapacityPositiveIntegerNumber() {
+        return (capacity >= 1);
     }
 
 }

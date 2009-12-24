@@ -20,6 +20,11 @@
 
 package org.navalplanner.business.resources.entities;
 
+import java.util.List;
+
+import org.hibernate.validator.AssertTrue;
+import org.navalplanner.business.common.Registry;
+
 
 /**
  * This class models a VirtualWorker.
@@ -65,6 +70,21 @@ public class VirtualWorker extends Worker {
 
     public void setObservations(String observations) {
         this.observations = observations;
+    }
+
+
+    @AssertTrue(message = "Virtual worker group name must be unique")
+    public boolean checkConstraintUniqueVirtualGroupName() {
+
+        List<Worker> list = Registry.getWorkerDAO()
+                .findByFirstNameAnotherTransactionCaseInsensitive(
+                        this.getFirstName());
+
+        if ((isNewObject() && list.isEmpty()) || list.isEmpty()) {
+            return true;
+        } else {
+            return list.get(0).getId().equals(getId());
+        }
     }
 
 }
