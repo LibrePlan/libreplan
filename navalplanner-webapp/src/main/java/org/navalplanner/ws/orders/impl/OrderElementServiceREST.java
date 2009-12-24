@@ -60,11 +60,12 @@ public class OrderElementServiceREST implements IOrderElementService {
 
     @Override
     @GET
-    @Path("/{id}")
+    @Path("/{code}")
     @Transactional(readOnly = true)
-    public OrderElementDTO getOrderElement(@PathParam("id") Long id)
+    public OrderElementDTO getOrderElement(@PathParam("code") String code)
             throws InstanceNotFoundException {
-        return OrderElementConverter.toDTO(orderElementDAO.find(id));
+        return OrderElementConverter.toDTO(orderElementDAO
+                .findUniqueByCode(code));
     }
 
     @Override

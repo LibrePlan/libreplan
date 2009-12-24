@@ -31,7 +31,8 @@ import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
  */
 public interface IOrderElementService {
 
-    OrderElementDTO getOrderElement(Long id) throws InstanceNotFoundException;
+    OrderElementDTO getOrderElement(String code)
+            throws InstanceNotFoundException;
 
     InstanceConstraintViolationsListDTO addOrder(OrderDTO order);
 
