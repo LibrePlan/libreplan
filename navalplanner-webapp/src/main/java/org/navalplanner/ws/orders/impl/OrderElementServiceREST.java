@@ -26,6 +26,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -33,7 +34,9 @@ import javax.ws.rs.Produces;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.ws.common.api.IncompatibleTypeException;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
@@ -93,6 +96,25 @@ public class OrderElementServiceREST implements IOrderElementService {
                     .add(instanceConstraintViolationsDTO);
         }
 
+        return new InstanceConstraintViolationsListDTO(
+                instanceConstraintViolationsList);
+    }
+
+    @Override
+    @PUT
+    @Consumes("application/xml")
+    @Transactional
+    public InstanceConstraintViolationsListDTO updateOrder(OrderDTO orderDTO)
+            throws InstanceNotFoundException, IncompatibleTypeException {
+        OrderElement orderElement = orderElementDAO
+                .findUniqueByCode(orderDTO.code);
+        if (!(orderElement instanceof Order)) {
+            throw new IncompatibleTypeException(orderElement.getCode(),
+                    Order.class, orderElement.getClass());
+        }
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
+        // TODO
         return new InstanceConstraintViolationsListDTO(
                 instanceConstraintViolationsList);
     }

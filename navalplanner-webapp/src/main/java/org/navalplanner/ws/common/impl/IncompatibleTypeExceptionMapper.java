@@ -18,26 +18,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.orders.api;
+package org.navalplanner.ws.common.impl;
 
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.entities.OrderElement;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
+
 import org.navalplanner.ws.common.api.IncompatibleTypeException;
-import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+import org.navalplanner.ws.common.api.InternalErrorDTO;
+import org.springframework.stereotype.Component;
 
 /**
- * Service for managing {@link OrderElement} entities.
+ * Exception mapper for {@link IncompatibleTypeException}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IOrderElementService {
+@Provider
+@Component("incompatibleTypeExceptionMapper")
+public class IncompatibleTypeExceptionMapper implements
+        ExceptionMapper<IncompatibleTypeException> {
 
-    OrderElementDTO getOrderElement(String code)
-            throws InstanceNotFoundException;
-
-    InstanceConstraintViolationsListDTO addOrder(OrderDTO order);
-
-    InstanceConstraintViolationsListDTO updateOrder(OrderDTO orderDTO)
-            throws InstanceNotFoundException, IncompatibleTypeException;
+    public Response toResponse(IncompatibleTypeException e) {
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(
+                new InternalErrorDTO(e.getMessage(), Util.getStackTrace(e)))
+                .type("application/xml").build();
+    }
 
 }
