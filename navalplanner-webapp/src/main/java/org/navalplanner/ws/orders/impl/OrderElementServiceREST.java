@@ -114,7 +114,23 @@ public class OrderElementServiceREST implements IOrderElementService {
         }
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
-        // TODO
+
+        InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
+        try {
+            OrderElementConverter.update((Order) orderElement, orderDTO);
+            orderElement.validate();
+            orderElementDAO.save(orderElement);
+        } catch (ValidationException e) {
+            instanceConstraintViolationsDTO = ConstraintViolationConverter
+                    .toDTO(Util.generateInstanceId(1, orderDTO.code), e
+                            .getInvalidValues());
+        }
+
+        if (instanceConstraintViolationsDTO != null) {
+            instanceConstraintViolationsList
+                    .add(instanceConstraintViolationsDTO);
+        }
+
         return new InstanceConstraintViolationsListDTO(
                 instanceConstraintViolationsList);
     }

@@ -834,4 +834,35 @@ public abstract class OrderElement extends BaseEntity {
         }
     }
 
+    public boolean containsOrderElement(String code) {
+        for (OrderElement child : getChildren()) {
+            if (child.getCode().equals(code)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public OrderElement getOrderElement(String code) {
+        for (OrderElement child : getChildren()) {
+            if (child.getCode().equals(code)) {
+                return child;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean containsLabel(String name, String type) {
+        for (Label label : getLabels()) {
+            if (label.getName().equals(name)
+                    && label.getType().getName().equals(type)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

@@ -42,6 +42,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.ws.common.api.IncompatibleTypeException;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
 import org.navalplanner.ws.common.impl.ResourceEnumConverter;
 import org.navalplanner.ws.orders.api.HoursGroupDTO;
@@ -245,6 +246,46 @@ public final class OrderElementConverter {
         HoursGroup hoursGroup = HoursGroup.createUnvalidated(
                 hoursGroupDTO.name, resourceType, hoursGroupDTO.workingHours);
         return hoursGroup;
+    }
+
+    public final static void update(OrderElement orderElement,
+            OrderElementDTO orderElementDTO) throws IncompatibleTypeException {
+
+        if (orderElementDTO instanceof OrderLineDTO) {
+            if (!(orderElement instanceof OrderLine)) {
+                throw new IncompatibleTypeException(orderElement.getCode(),
+                        OrderLine.class, orderElement.getClass());
+            }
+        } else { // orderElementDTO instanceof OrderLineGroupDTO
+            if (orderElementDTO instanceof OrderDTO) {
+                if (!(orderElement instanceof Order)) {
+                    throw new IncompatibleTypeException(orderElement.getCode(),
+                            Order.class, orderElement.getClass());
+                }
+            } else { // orderElementDTO instanceof OrderLineGroupDTO
+                if (!(orderElement instanceof OrderLineGroup)) {
+                    throw new IncompatibleTypeException(orderElement.getCode(),
+                            OrderLineGroup.class, orderElement.getClass());
+                }
+            }
+
+            for (OrderElementDTO childDTO : ((OrderLineGroupDTO) orderElementDTO).children) {
+                if (orderElement.containsOrderElement(childDTO.code)) {
+                    update(orderElement.getOrderElement(childDTO.code),
+                            childDTO);
+                } else {
+                    ((OrderLineGroup) orderElement).add(toEntity(childDTO));
+                }
+            }
+
+        }
+
+        for (LabelDTO labelDTO : orderElementDTO.labels) {
+            if (!orderElement.containsLabel(labelDTO.name, labelDTO.type)) {
+                orderElement.addLabel(toEntity(labelDTO));
+            }
+        }
+
     }
 
 }
