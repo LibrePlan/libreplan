@@ -98,9 +98,9 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="name" access="field" />
+        <property name="name" access="field" not-null="true"/>
         <property name="resourceType" access="field" />
-        <property name="workingHours" access="field" />
+        <property name="workingHours" access="field" not-null="true"/>
         <property name="percentage" access="field" />
         <property name="fixedPercentage" access="field" />
 
