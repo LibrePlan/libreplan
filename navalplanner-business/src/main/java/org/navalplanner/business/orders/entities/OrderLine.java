@@ -476,4 +476,22 @@ public class OrderLine extends OrderElement {
         return null;
     }
 
+    public boolean containsHoursGroup(String name) {
+        for (HoursGroup hoursGroup : getHoursGroups()) {
+            if (hoursGroup.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public HoursGroup getHoursGroup(String name) {
+        for (HoursGroup hoursGroup : getHoursGroups()) {
+            if (hoursGroup.getName().equals(name)) {
+                return hoursGroup;
+            }
+        }
+        return null;
+    }
+
 }

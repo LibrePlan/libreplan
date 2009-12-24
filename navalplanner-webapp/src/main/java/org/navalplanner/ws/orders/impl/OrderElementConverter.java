@@ -258,6 +258,17 @@ public final class OrderElementConverter {
                 throw new IncompatibleTypeException(orderElement.getCode(),
                         OrderLine.class, orderElement.getClass());
             }
+
+            for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
+                if (((OrderLine) orderElement)
+                        .containsHoursGroup(hoursGroupDTO.name)) {
+                    update(((OrderLine) orderElement)
+                            .getHoursGroup(hoursGroupDTO.name), hoursGroupDTO);
+                } else {
+                    ((OrderLine) orderElement)
+                            .addHoursGroup(toEntity(hoursGroupDTO));
+                }
+            }
         } else { // orderElementDTO instanceof OrderLineGroupDTO
             if (orderElementDTO instanceof OrderDTO) {
                 if (!(orderElement instanceof Order)) {
@@ -299,6 +310,23 @@ public final class OrderElementConverter {
                 orderElement
                         .addMaterialAssignment(toEntity(materialAssignmentDTO));
             }
+        }
+    }
+
+    public final static void update(HoursGroup hoursGroup,
+            HoursGroupDTO hoursGroupDTO) {
+        if (!hoursGroup.getName().equals(hoursGroupDTO.name)) {
+            throw new RuntimeException(
+                    _("Not the same hours group, impossible to update"));
+        }
+
+        if (hoursGroupDTO.workingHours != null) {
+            hoursGroup.setWorkingHours(hoursGroupDTO.workingHours);
+        }
+
+        if (hoursGroupDTO.resourceType != null) {
+            hoursGroup.setResourceType(ResourceEnumConverter
+                    .fromDTO(hoursGroupDTO.resourceType));
         }
     }
 

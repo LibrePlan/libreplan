@@ -47,7 +47,10 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.IncompatibleTypeException;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
@@ -678,6 +681,69 @@ public class OrderElementServiceTest {
                     equalTo(200.0)));
             assertThat(materialAssignment.getUnitPrice(), anyOf(
                     equalTo(BigDecimal.TEN), equalTo(BigDecimal.ONE)));
+        }
+    }
+
+    @Test
+    public void updateHoursGroup() throws InstanceNotFoundException,
+            IncompatibleTypeException {
+        String code = "order-code";
+        try {
+            orderElementDAO.findUniqueByCode(code);
+            fail("Order with code " + code + " already exists");
+        } catch (InstanceNotFoundException e) {
+            // It should throw an exception
+        }
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = code;
+        orderDTO.initDate = new Date();
+
+        OrderLineDTO orderLineDTO = new OrderLineDTO();
+        orderLineDTO.name = "Order line";
+        orderLineDTO.code = "order-line-code";
+        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group",
+                ResourceEnumDTO.WORKER, 1000);
+        orderLineDTO.hoursGroups.add(hoursGroupDTO);
+        orderDTO.children.add(orderLineDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+
+        OrderElement orderElement = orderElementDAO.findUniqueByCode(code);
+        assertNotNull(orderElement);
+
+        OrderLine orderLine = (OrderLine) orderElementDAO
+                .findUniqueByCode("order-line-code");
+        assertNotNull(orderLine);
+        assertThat(orderLine.getHoursGroups().size(), equalTo(1));
+
+        orderLineDTO.hoursGroups.iterator().next().workingHours = 1500;
+        HoursGroupDTO hoursGroupDTO2 = new HoursGroupDTO("hours-group2",
+                ResourceEnumDTO.WORKER, 2000);
+        orderLineDTO.hoursGroups.add(hoursGroupDTO2);
+
+        instanceConstraintViolationsList = orderElementService
+                .updateOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+
+        orderElement = orderElementDAO.findUniqueByCode(code);
+        assertNotNull(orderElement);
+
+        orderLine = (OrderLine) orderElementDAO
+                .findUniqueByCode("order-line-code");
+        assertNotNull(orderLine);
+        assertThat(orderLine.getHoursGroups().size(), equalTo(2));
+
+        for (HoursGroup hoursGroup : orderLine.getHoursGroups()) {
+            assertThat(hoursGroup.getName(), anyOf(equalTo("hours-group"),
+                    equalTo("hours-group2")));
+            assertThat(hoursGroup.getWorkingHours(), anyOf(
+                    equalTo(1500), equalTo(2000)));
+            assertThat(hoursGroup.getResourceType(),
+                    equalTo(ResourceEnum.WORKER));
         }
     }
 
