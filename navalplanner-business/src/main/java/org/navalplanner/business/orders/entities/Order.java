@@ -154,7 +154,7 @@ public class Order extends OrderLineGroup {
         return dayAssignments;
     }
 
-    private List<OrderElement> getAllOrderElements() {
+    public List<OrderElement> getAllOrderElements() {
         List<OrderElement> result = new ArrayList<OrderElement>(
                 this
                 .getChildren());

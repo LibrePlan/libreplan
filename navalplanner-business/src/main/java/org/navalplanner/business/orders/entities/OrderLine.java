@@ -99,8 +99,12 @@ public class OrderLine extends OrderElement {
         // removed the direct criterion requirements
         removeAllDirectCriterionRequirement();
 
-        this.setName(getName() + " (copy)");
-        this.setCode(getCode() + " (copy)");
+        if (getName() != null) {
+            this.setName(getName() + " (copy)");
+        }
+        if (getCode() != null) {
+            this.setCode(getCode() + " (copy)");
+        }
         result.add(this);
 
         return result;
