@@ -44,6 +44,7 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -626,6 +627,57 @@ public class OrderElementServiceTest {
             assertThat(label.getName(), anyOf(equalTo("Label name"),
                     equalTo("Label name2")));
             assertThat(label.getType().getName(), equalTo("Label type"));
+        }
+    }
+
+    @Test
+    public void updateMaterialAssignment() throws InstanceNotFoundException,
+            IncompatibleTypeException {
+        String code = "order-code";
+        try {
+            orderElementDAO.findUniqueByCode(code);
+            fail("Order with code " + code + " already exists");
+        } catch (InstanceNotFoundException e) {
+            // It should throw an exception
+        }
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = code;
+        orderDTO.initDate = new Date();
+
+        MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO(
+                "material-code", 100.0, BigDecimal.TEN, null);
+        orderDTO.materialAssignments.add(materialAssignmentDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+
+        OrderElement orderElement = orderElementDAO.findUniqueByCode(code);
+        assertNotNull(orderElement);
+        assertThat(orderElement.getMaterialAssignments().size(), equalTo(1));
+
+        orderDTO.materialAssignments.iterator().next().units = 150.0;
+
+        MaterialAssignmentDTO materialAssignmentDTO2 = new MaterialAssignmentDTO(
+                "material-code2", 200.0, BigDecimal.ONE, null);
+        orderDTO.materialAssignments.add(materialAssignmentDTO2);
+
+        instanceConstraintViolationsList = orderElementService
+                .updateOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+
+        orderElement = orderElementDAO.findUniqueByCode(code);
+        assertThat(orderElement.getMaterialAssignments().size(), equalTo(2));
+        for (MaterialAssignment materialAssignment : orderElement
+                .getMaterialAssignments()) {
+            assertThat(materialAssignment.getMaterial().getCode(), anyOf(
+                    equalTo("material-code"), equalTo("material-code2")));
+            assertThat(materialAssignment.getUnits(), anyOf(equalTo(150.0),
+                    equalTo(200.0)));
+            assertThat(materialAssignment.getUnitPrice(), anyOf(
+                    equalTo(BigDecimal.TEN), equalTo(BigDecimal.ONE)));
         }
     }
 

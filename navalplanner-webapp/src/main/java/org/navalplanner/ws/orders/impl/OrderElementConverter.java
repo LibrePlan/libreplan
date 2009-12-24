@@ -20,6 +20,8 @@
 
 package org.navalplanner.ws.orders.impl;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -286,6 +288,37 @@ public final class OrderElementConverter {
             }
         }
 
+        for (MaterialAssignmentDTO materialAssignmentDTO : orderElementDTO.materialAssignments) {
+            if (orderElement
+                    .containsMaterialAssignment(materialAssignmentDTO.materialCode)) {
+                update(
+                        orderElement
+                                .getMaterialAssignment(materialAssignmentDTO.materialCode),
+                        materialAssignmentDTO);
+            } else {
+                orderElement
+                        .addMaterialAssignment(toEntity(materialAssignmentDTO));
+            }
+        }
+    }
+
+    public final static void update(MaterialAssignment materialAssignment,
+            MaterialAssignmentDTO materialAssignmentDTO) {
+        if (!materialAssignment.getMaterial().getCode().equals(
+                materialAssignmentDTO.materialCode)) {
+            throw new RuntimeException(_("Not the same material, impossible to update"));
+        }
+
+        if (materialAssignmentDTO.units != null) {
+            materialAssignment.setUnits(materialAssignmentDTO.units);
+        }
+        if (materialAssignmentDTO.unitPrice != null) {
+            materialAssignment.setUnitPrice(materialAssignmentDTO.unitPrice);
+        }
+        if (materialAssignmentDTO.estimatedAvailability != null) {
+            materialAssignment
+                    .setEstimatedAvailability(materialAssignmentDTO.estimatedAvailability);
+        }
     }
 
 }

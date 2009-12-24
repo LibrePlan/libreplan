@@ -865,4 +865,24 @@ public abstract class OrderElement extends BaseEntity {
         return false;
     }
 
+    public boolean containsMaterialAssignment(String materialCode) {
+        for (MaterialAssignment materialAssignment : getMaterialAssignments()) {
+            if (materialAssignment.getMaterial().getCode().equals(materialCode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public MaterialAssignment getMaterialAssignment(String materialCode) {
+        for (MaterialAssignment materialAssignment : getMaterialAssignments()) {
+            if (materialAssignment.getMaterial().getCode().equals(materialCode)) {
+                return materialAssignment;
+            }
+        }
+
+        return null;
+    }
+
 }
