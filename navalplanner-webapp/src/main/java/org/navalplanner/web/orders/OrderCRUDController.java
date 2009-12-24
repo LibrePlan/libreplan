@@ -31,9 +31,11 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -82,9 +84,17 @@ public class OrderCRUDController extends GenericForwardComposer {
                         + invalidValue.getPropertyName() + ": "
                         + invalidValue.getMessage());
                 return result;
-            } else {
-                return MessagesForUser
-                        .createLabelFor(invalidValue);
+            } else if (invalidValue.getBean() instanceof HoursGroup) {
+                Label result = new Label();
+                HoursGroup hoursGroup = (HoursGroup) invalidValue.getBean();
+                OrderLine parentOrderLine = hoursGroup.getParentOrderLine();
+                result.setValue(_("Hours Group at ")
+                        + parentOrderLine.getName() + ". "
+                        + invalidValue.getPropertyName() + ": "
+                        + invalidValue.getMessage());
+                return result;
+            }else {
+                return MessagesForUser.createLabelFor(invalidValue);
             }
         }
     }
