@@ -24,6 +24,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.INewObject;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -40,7 +42,10 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
  * requirement.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class HoursGroupWrapper implements INewObject, Comparable {
+public class HoursGroupWrapper implements INewObject,
+        Comparable<HoursGroupWrapper> {
+
+    private static final Log LOG = LogFactory.getLog(HoursGroupWrapper.class);
 
     private Boolean newObject = false;
 
@@ -148,8 +153,8 @@ public class HoursGroupWrapper implements INewObject, Comparable {
 
     public void setPercentage(BigDecimal percentage) {
         if (percentage != null) {
-            BigDecimal proportion = percentage.divide(
-                    new BigDecimal(100), BigDecimal.ROUND_DOWN);
+            BigDecimal proportion = percentage.divide(new BigDecimal(100),
+                    BigDecimal.ROUND_DOWN);
             hoursGroup.setPercentage(proportion);
         } else {
             hoursGroup.setPercentage(new BigDecimal(0).setScale(2));
@@ -186,7 +191,7 @@ public class HoursGroupWrapper implements INewObject, Comparable {
     /* Operations to manage the criterions requirements */
     public void assignCriterionRequirementWrapper(
             CriterionRequirementWrapper newRequirementWrapper) {
-            directRequirementWrappers.add(newRequirementWrapper);
+        directRequirementWrappers.add(newRequirementWrapper);
     }
 
     public boolean canSelectCriterion(
@@ -271,7 +276,7 @@ public class HoursGroupWrapper implements INewObject, Comparable {
     public void removeDirectCriterionsWithDiferentResourceType() {
         for (CriterionRequirement requirement : hoursGroup
                 .getDirectCriterionRequirement()) {
-            if(!hoursGroup.isValidResourceType(requirement)){
+            if (!hoursGroup.isValidResourceType(requirement)) {
                 removeCriterionRequirementWrapper(requirement);
             }
         }
@@ -322,7 +327,7 @@ public class HoursGroupWrapper implements INewObject, Comparable {
                 .getCriterionRequirementWrappersView()) {
             if ((requirementWrapper.getCriterionRequirement() != null)
                     && (requirementWrapper.getCriterionRequirement())
-                    .equals(requirement)) {
+                            .equals(requirement)) {
                 return requirementWrapper;
             }
         }
@@ -352,8 +357,17 @@ public class HoursGroupWrapper implements INewObject, Comparable {
     }
 
     @Override
-    public int compareTo(Object arg0) {
-        final HoursGroupWrapper hoursGroupWrapper = (HoursGroupWrapper) arg0;
-        return getName().compareTo(hoursGroupWrapper.getName());
+    public int compareTo(HoursGroupWrapper hoursGroupWrapper) {
+        final String name = getName();
+        final String otherName = hoursGroupWrapper.getName();
+        if (name == null) {
+            LOG.warn(hoursGroup + " has a null name");
+            return -1;
+        }
+        if (otherName == null) {
+            LOG.warn(hoursGroupWrapper.hoursGroup + " has a null name");
+            return 1;
+        }
+        return name.compareTo(otherName);
     }
 }
