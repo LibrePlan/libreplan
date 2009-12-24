@@ -63,6 +63,7 @@ public class OrderLine extends OrderElement {
 
     }
 
+    @Valid
     private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
 
     @Override

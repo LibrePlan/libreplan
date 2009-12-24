@@ -53,12 +53,10 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return create(result);
     }
 
-    @NotEmpty(message = "name (code) not specified")
     private String name;
 
     private ResourceEnum resourceType = ResourceEnum.WORKER;
 
-    @NotNull(message = "working hours not specified")
     private Integer workingHours = 0;
 
     private BigDecimal percentage = new BigDecimal(0).setScale(2);
@@ -83,6 +81,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         this.parentOrderLine = parentOrderLine;
     }
 
+    @NotEmpty(message = "name (code) not specified")
     public String getName() {
         return name;
     }
@@ -113,6 +112,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         this.workingHours = workingHours;
     }
 
+    @NotNull(message = "working hours not specified")
     public Integer getWorkingHours() {
         return workingHours;
     }
