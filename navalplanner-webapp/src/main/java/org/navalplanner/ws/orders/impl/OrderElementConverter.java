@@ -275,6 +275,27 @@ public final class OrderElementConverter {
                     throw new IncompatibleTypeException(orderElement.getCode(),
                             Order.class, orderElement.getClass());
                 }
+
+                Boolean dependenciesConstraintsHavePriority = ((OrderDTO) orderElementDTO).dependenciesConstraintsHavePriority;
+                if (dependenciesConstraintsHavePriority != null) {
+                    ((Order) orderElement)
+                            .setDependenciesConstraintsHavePriority(dependenciesConstraintsHavePriority);
+                }
+
+                String calendarName = ((OrderDTO) orderElementDTO).calendarName;
+                if (calendarName != null) {
+                    if (!((Order) orderElement).getCalendar().getName().equals(
+                            calendarName)) {
+                        List<BaseCalendar> calendars = Registry
+                                .getBaseCalendarDAO()
+                                .findByName(
+                                        ((OrderDTO) orderElementDTO).calendarName);
+                        if (calendars.size() == 1) {
+                            ((Order) orderElement)
+                                    .setCalendar(calendars.get(0));
+                        }
+                    }
+                }
             } else { // orderElementDTO instanceof OrderLineGroupDTO
                 if (!(orderElement instanceof OrderLineGroup)) {
                     throw new IncompatibleTypeException(orderElement.getCode(),
@@ -311,6 +332,23 @@ public final class OrderElementConverter {
                         .addMaterialAssignment(toEntity(materialAssignmentDTO));
             }
         }
+
+        if (orderElementDTO.name != null) {
+            orderElement.setName(orderElementDTO.name);
+        }
+
+        if (orderElementDTO.initDate != null) {
+            orderElement.setInitDate(orderElementDTO.initDate);
+        }
+
+        if (orderElementDTO.deadline != null) {
+            orderElement.setDeadline(orderElementDTO.deadline);
+        }
+
+        if (orderElementDTO.description != null) {
+            orderElement.setDescription(orderElementDTO.description);
+        }
+
     }
 
     public final static void update(HoursGroup hoursGroup,
