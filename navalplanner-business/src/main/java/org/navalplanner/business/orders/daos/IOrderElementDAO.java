@@ -87,4 +87,11 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
      */
     BigDecimal getHoursAdvancePercentage(OrderElement orderElement);
 
+    OrderElement findUniqueByCodeAnotherTransaction(String code)
+            throws InstanceNotFoundException;
+
+    boolean existsOtherOrderElementByCode(OrderElement orderElement);
+
+    boolean existsByCodeAnotherTransaction(OrderElement orderElement);
+
 }

@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -63,22 +64,6 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
         Criteria c = getSession().createCriteria(OrderElement.class);
         c.add(Restrictions.isNull("parent"));
         return (List<OrderElement>) c.list();
-    }
-
-    public List<OrderElement> findByCode(String code) {
-        Criteria c = getSession().createCriteria(OrderElement.class);
-        c.add(Restrictions.eq("code", code));
-        return (List<OrderElement>) c.list();
-    }
-
-    public OrderElement findUniqueByCode(String code)
-            throws InstanceNotFoundException {
-        List<OrderElement> list = findByCode(code);
-        if (list.size() > 1) {
-            throw new InstanceNotFoundException(code, OrderElement.class
-                    .getName());
-        }
-        return list.get(0);
     }
 
     public List<OrderElement> findByCodeAndParent(OrderElement parent,
@@ -177,6 +162,51 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
             taskSourceDAO.remove(each.getId());
         }
         super.remove(id);
+    }
+
+    @Override
+    public List<OrderElement> findByCode(String code) {
+        Criteria c = getSession().createCriteria(OrderElement.class);
+        c.add(Restrictions.eq("code", code).ignoreCase());
+        return (List<OrderElement>) c.list();
+    }
+
+    @Override
+    public OrderElement findUniqueByCode(String code)
+            throws InstanceNotFoundException {
+        Criteria c = getSession().createCriteria(OrderElement.class);
+        c.add(Restrictions.eq("code", code));
+
+        OrderElement orderElement = (OrderElement) c.uniqueResult();
+        if (orderElement == null) {
+            throw new InstanceNotFoundException(code, OrderElement.class
+                    .getName());
+        } else {
+            return orderElement;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public OrderElement findUniqueByCodeAnotherTransaction(String code)
+            throws InstanceNotFoundException {
+        return findUniqueByCode(code);
+    }
+
+    @Override
+    public boolean existsOtherOrderElementByCode(OrderElement orderElement) {
+        try {
+            OrderElement t = findUniqueByCode(orderElement.getCode());
+            return t != null && t != orderElement;
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByCodeAnotherTransaction(OrderElement orderElement) {
+        return existsOtherOrderElementByCode(orderElement);
     }
 
 }

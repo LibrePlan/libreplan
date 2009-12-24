@@ -43,9 +43,12 @@ import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
@@ -811,6 +814,23 @@ public abstract class OrderElement extends BaseEntity {
 
         for (OrderElement child : getChildren()) {
             child.removeLabelOnChildren(newLabel);
+        }
+    }
+
+    @AssertTrue(message = "code is already being used")
+    public boolean checkConstraintUniqueCode() {
+        IOrderElementDAO orderElementDAO = Registry.getOrderElementDAO();
+
+        if (isNewObject()) {
+            return !orderElementDAO.existsByCodeAnotherTransaction(this);
+        } else {
+            try {
+                OrderElement orderElement = orderElementDAO
+                        .findUniqueByCodeAnotherTransaction(code);
+                return orderElement.getId().equals(getId());
+            } catch (InstanceNotFoundException e) {
+                return true;
+            }
         }
     }
 
