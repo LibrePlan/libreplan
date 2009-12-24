@@ -23,6 +23,7 @@ package org.navalplanner.web.common;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,7 @@ import org.navalplanner.business.i18n.I18nHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -130,8 +132,14 @@ public class ConfigurationModel implements IConfigurationModel {
                     _("Order sequence prefixes can not be repeated"));
         }
 
-        configurationDAO.save(configuration);
-        storeAndRemoveOrderSequences();
+        try {
+            configurationDAO.save(configuration);
+            storeAndRemoveOrderSequences();
+        } catch (HibernateOptimisticLockingFailureException e) {
+            throw new ConcurrentModificationException(
+                    _("Some order was created during the configuration process, it is impossible to update order sequence table. Please, try again later"));
+        }
+
     }
 
     private boolean checkConstraintPrefixNotRepeated() {

@@ -40,6 +40,8 @@ public class OrderSequence extends BaseEntity {
     public static final Integer MIN_NUMBER_OF_DIGITS = 5;
     public static final Integer MAX_NUMBER_OF_DIGITS = 9;
 
+    public static final String CODE_SEPARATOR = "-";
+
     public static OrderSequence create(String prefix) {
         return create(new OrderSequence(prefix));
     }
@@ -148,6 +150,14 @@ public class OrderSequence extends BaseEntity {
 
     public boolean isAlreadyInUse() {
         return lastValue > 0;
+    }
+
+    public String getCode() {
+        return prefix + CODE_SEPARATOR + formatValue(numberOfDigits, lastValue);
+    }
+
+    public void incrementLastValue() {
+        lastValue++;
     }
 
 }

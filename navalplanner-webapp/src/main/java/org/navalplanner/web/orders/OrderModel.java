@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +39,7 @@ import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.daos.IOrderSequenceDAO;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -120,6 +122,9 @@ public class OrderModel implements IOrderModel {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private IOrderSequenceDAO orderSequenceDAO;
 
     @Override
     public List<Label> getLabels() {
@@ -280,7 +285,7 @@ public class OrderModel implements IOrderModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void prepareForCreate() {
+    public void prepareForCreate() throws ConcurrentModificationException {
         loadCriterions();
         initializeCacheLabels();
         initializeCacheQualityForms();
@@ -288,6 +293,17 @@ public class OrderModel implements IOrderModel {
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
         this.order.setInitDate(new Date());
         this.order.setCalendar(getDefaultCalendar());
+
+        setDefaultOrderCode();
+    }
+
+    private void setDefaultOrderCode() throws ConcurrentModificationException {
+        String code = orderSequenceDAO.getNextOrderCode();
+        if (code == null) {
+            throw new ConcurrentModificationException(
+                    _("Could not get order code, please try again later"));
+        }
+        this.order.setCode(code);
     }
 
     @Override

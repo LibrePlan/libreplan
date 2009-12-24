@@ -22,6 +22,7 @@ package org.navalplanner.web.orders;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -378,8 +379,12 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void goToCreateForm() {
-        orderModel.prepareForCreate();
-        showEditWindow(_("Create order"));
+        try {
+            orderModel.prepareForCreate();
+            showEditWindow(_("Create order"));
+        } catch (ConcurrentModificationException e) {
+            messagesForUser.showMessage(Level.ERROR, e.getMessage());
+        }
     }
 
     public void setPlanningControllerEntryPoints(

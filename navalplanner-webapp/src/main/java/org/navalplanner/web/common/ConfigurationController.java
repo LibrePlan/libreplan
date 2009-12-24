@@ -22,6 +22,7 @@ package org.navalplanner.web.common;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -104,6 +105,10 @@ public class ConfigurationController extends GenericForwardComposer {
                 reloadWindow();
             } catch (ValidationException e) {
                 messages.showInvalidValues(e);
+            } catch (ConcurrentModificationException e) {
+                messages.showMessage(Level.ERROR, e.getMessage());
+                configurationModel.init();
+                reloadWindow();
             }
         }
     }

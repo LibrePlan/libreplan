@@ -64,6 +64,7 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.resources.criterion.ICriterionsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -137,6 +138,14 @@ public class OrderModelTest {
         order.setCalendar(configurationDAO.getConfiguration()
                 .getDefaultCalendar());
         return order;
+    }
+
+    @Test
+    @Rollback(false)
+    public void testNotRollback() {
+        // Just to do not make rollback in order to have the default
+        // configuration, needed for prepareForCreate in order to autogenerate
+        // the order code
     }
 
     @Test

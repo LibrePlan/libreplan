@@ -40,4 +40,8 @@ public interface IOrderSequenceDAO extends IGenericDAO<OrderSequence, Long> {
     void remove(OrderSequence orderSequence) throws InstanceNotFoundException,
             IllegalArgumentException;
 
+    OrderSequence getActiveOrderSequence();
+
+    String getNextOrderCode();
+
 }

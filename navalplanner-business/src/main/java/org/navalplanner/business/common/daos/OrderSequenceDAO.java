@@ -29,7 +29,10 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.i18n.I18nHelper;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO for {@link OrderSequence}.
@@ -70,6 +73,29 @@ public class OrderSequenceDAO extends GenericDAOHibernate<OrderSequence, Long>
         }
 
         remove(orderSequence.getId());
+    }
+
+    @Override
+    public OrderSequence getActiveOrderSequence() {
+        return (OrderSequence) getSession().createCriteria(OrderSequence.class)
+                .add(Restrictions.eq("active", true)).uniqueResult();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public String getNextOrderCode() {
+        for (int i = 0; i < 5; i++) {
+            try {
+                OrderSequence orderSequence = getActiveOrderSequence();
+                orderSequence.incrementLastValue();
+                save(orderSequence);
+                return orderSequence.getCode();
+            } catch (HibernateOptimisticLockingFailureException e) {
+                // Do nothing (optimistic approach 5 attempts)
+            }
+        }
+
+        return null;
     }
 
 }

@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.orders;
 
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +81,7 @@ public interface IOrderModel {
 
     void initEdit(Order order);
 
-    void prepareForCreate();
+    void prepareForCreate() throws ConcurrentModificationException;
 
     void remove(Order order);
 
