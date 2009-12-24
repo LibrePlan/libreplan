@@ -89,7 +89,7 @@ public class OrderLine extends OrderElement {
     public OrderLineGroup toContainer() {
         OrderLineGroup result = OrderLineGroup.create();
         result.setName(getName());
-        result.setCode(getCode());
+        result.setCode(null);
         result.setInitDate(getInitDate());
         result.setDeadline(getDeadline());
 
@@ -103,7 +103,7 @@ public class OrderLine extends OrderElement {
             this.setName(getName() + " (copy)");
         }
         if (getCode() != null) {
-            this.setCode(getCode() + " (copy)");
+            this.setCode(getCode());
         }
         result.add(this);
 
