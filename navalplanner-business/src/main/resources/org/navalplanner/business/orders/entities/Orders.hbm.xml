@@ -87,6 +87,8 @@
                 <key column="PARENT_ORDER_LINE" not-null="false"></key>
                 <one-to-many class="HoursGroup" />
             </set>
+
+            <property name="lastHoursGroupSequenceCode" access="field" />
         </joined-subclass>
     </class>
 

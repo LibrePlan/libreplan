@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceType;
@@ -65,6 +66,8 @@ public class OrderLine extends OrderElement {
 
     @Valid
     private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
+
+    private Integer lastHoursGroupSequenceCode = 0;
 
     @Override
     public Integer getWorkHours() {
@@ -492,6 +495,15 @@ public class OrderLine extends OrderElement {
             }
         }
         return null;
+    }
+
+    public void incrementLastHoursGroupSequenceCode() {
+        lastHoursGroupSequenceCode++;
+    }
+
+    @NotNull(message = "last hours group sequence code not specified")
+    public Integer getLastHoursGroupSequenceCode() {
+        return lastHoursGroupSequenceCode;
     }
 
 }
