@@ -148,7 +148,9 @@ public class Order extends OrderLineGroup {
         for (OrderElement orderElement : getAllOrderElements()) {
             Set<TaskElement> taskElements = orderElement.getTaskElements();
             for (TaskElement taskElement : taskElements) {
-                dayAssignments.addAll(taskElement.getDayAssignments());
+                if (taskElement instanceof Task) {
+                    dayAssignments.addAll(taskElement.getDayAssignments());
+                }
             }
         }
         return dayAssignments;
